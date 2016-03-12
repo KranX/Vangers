@@ -3,10 +3,10 @@ VANGERS: One for the Road
 
 1. Required libraries:
 
-   - SDL
-   - SDL_net
+   - SDL2
+   - SDL2_net
    - libvorbis
-   - clunk (http://media.netive.ru/clunk/)
+   - clunk (https://github.com/stalkerg/clunk)
    - ffmpeg
    - zlib
 
