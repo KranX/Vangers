@@ -16,8 +16,13 @@ Vangers
 Required libraries
 =======
  SDL2
+
  SDL2_net
+
  libvorbis
+
  clunk (https://github.com/stalkerg/clunk)
+
  ffmpeg
+ 
  zlib
