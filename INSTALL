@@ -1,0 +1,28 @@
+VANGERS: One for the Road
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Required libraries:
+
+   - SDL
+   - SDL_net
+   - libvorbis
+   - clunk (http://media.netive.ru/clunk/)
+   - ffmpeg
+   - zlib
+
+2. Required tools:
+
+   - cmake
+   - make
+
+3. Building:
+
+   $ mkdir build
+   $ cd build
+   $ cmake ..
+   $ make
+
+4. Running:
+
+   $ cd data
+   $ ../build/src/vangers

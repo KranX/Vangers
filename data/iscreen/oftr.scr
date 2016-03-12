@@ -1,0 +1,34 @@
+
+#include "iscreen/scripts/strings.inc"
+#include "iscreen/scripts/strings1.inc"
+
+#include "iscreen/scripts/vkeys.inc"
+#include "iscreen/scripts/bugs.inc"
+
+#include "actint/aci_ev.inc"
+#include "actint/a_consts.h"
+#include "actint/mlconsts.h"
+#include "actint/aci_ml.inc"
+#include "iscreen/scripts/oftr.inc"
+#include "iscreen/scripts/buttons.inc"
+
+#include "iscreen/scripts/mainmenu.inc"
+#include "iscreen/scripts/mmenu1.inc"
+
+#include "iscreen/scripts/main.inc"
+
+#include "iscreen/scripts/cr_main1.inc"
+
+/* ------------------------------ TEXT SECTION ------------------------------ */
+
+text_object	$iTEXT_ENG2_ID	$iSTR_Genesis		"resource/iscreen/text/eng/genesis.txt"
+text_object	$iTEXT_ENG1_ID	$iSTR_Prehistory	"resource/iscreen/text/eng/prehist.txt"
+text_object	$iTEXT_ENG3_ID	$iSTR_Present		"resource/iscreen/text/eng/present.txt"
+
+//text_object	  $iTEXT_RUS2_ID  $iSTR_Genesis 	  "resource/iscreen/text/rus/genesis.txt"
+//text_object	  $iTEXT_RUS1_ID  $iSTR_Prehistory	  "resource/iscreen/text/rus/prehist.txt"
+//text_object	  $iTEXT_RUS3_ID  $iSTR_Present 	  "resource/iscreen/text/rus/present.txt"
+
+/* -------------------------- END OF TEXT SECTION --------------------------- */
+
+

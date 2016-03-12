@@ -1,0 +1,275 @@
+// Please refer to the remarks I've made (seperated by a double-slash //)
+
+/*
+	iScreen string defines
+
+	English Version:
+	#define <SOMEWORD>1	"..."
+
+	Local Version:
+	#define <SOMEWORD>2	"..."
+*/
+
+#define iSTR_LOAD_GAME1 		"LOAD GAME"
+#define iSTR_LOAD_GAME2 		"ПРОДОЛЖИТЬ ИГРУ"
+
+#define iSTR_MULTIPLAYER1		"MULTIPLAYER"
+#define iSTR_MULTIPLAYER2		"СЕТЕВАЯ ИГРА"
+
+#define iSTR_NEW_GAME1			"NEW GAME"
+#define iSTR_NEW_GAME2			"НОВАЯ ИГРА"
+
+#define iSTR_OPTIONS1			"OPTIONS"
+#define iSTR_OPTIONS2			"НАСТРОЙКИ"
+
+#define iSTR_CREDITS1			"CREDITS"
+#define iSTR_CREDITS2			"АВТОРЫ"
+
+#define iSTR_EXIT1			"EXIT"
+#define iSTR_EXIT2			"ВЫХОД"
+
+#define iSTR_Credits1			"Credits"
+#define iSTR_Credits2			"О создателях"
+
+#define iSTR_MAIN_MENU1 		"MAIN MENU"
+#define iSTR_MAIN_MENU2 		"ГЛАВНОЕ МЕНЮ"
+
+#define iSTR_HALL_OF_FAME1		"HALL OF FAME"
+#define iSTR_HALL_OF_FAME2		"ТАБЛИЦА РЕКОРДОВ"
+
+#define iSTR_Options1			"Options"
+#define iSTR_Options2			"Настройки"
+
+#define iSTR_GRAPHICS1			"GRAPHICS"
+#define iSTR_GRAPHICS2			"ГРАФИКА"
+
+#define iSTR_SOUND1			"SOUND"
+#define iSTR_SOUND2			"ЗВУК"
+
+#define iSTR_CONTROLS1			"CONTROLS"
+#define iSTR_CONTROLS2			"УПРАВЛЕНИЕ"
+
+
+#define iSTR_Graphics_Options1		"Graphics Options"
+#define iSTR_Graphics_Options2		"Настройка графики"
+
+#define iSTR_DETAIL1			"MEMORY:"
+#define iSTR_DETAIL2			"ПАМЯТЬ:"
+
+#define iSTR_MEM16MB1			"GOOD-16MB"
+#define iSTR_MEM16MB2			"ХОРОШО - 16 MB"
+
+#define iSTR_MEM32MB1			"EXCELLENT-32MB"
+#define iSTR_MEM32MB2			"ОТЛИЧНО - 32 MB"
+
+#define iSTR_TIPS1			"TIPS:"
+#define iSTR_TIPS2			"ПОДСКАЗКИ:"
+
+#define iSTR_ON1			"ON"
+#define iSTR_ON2			"ДА"
+
+#define iSTR_OFF1			"OFF"
+#define iSTR_OFF2			"НЕТ"
+
+#define iSTR_BACK1			"BACK"
+#define iSTR_BACK2			"НАЗАД"
+
+#define iSTR_SCREEN1			"SCREEN:"
+#define iSTR_SCREEN2			"ЭКРАН:"
+
+#define iSTR_800x6001			"800x600"
+#define iSTR_800x6002			"800x600"
+
+#define iSTR_640x4801			"640x480"
+#define iSTR_640x4802			"640x480"
+
+#define iSTR_DEFORMABLE_LANDSCAPE1	"DEFORMABLE LANDSCAPE:"
+#define iSTR_DEFORMABLE_LANDSCAPE2	"ИЗМЕНЯЕМЫЙ ЛАНДШАФТ:"
+
+#define iSTR_KEEP_ALL_TERRAIN_CHANGES1	"KEEP ALL TERRAIN CHANGES:"
+#define iSTR_KEEP_ALL_TERRAIN_CHANGES2	"ХРАНИТЬ ВСЕ ИЗМЕНЕНИЯ ЛАНДШАФТА:"
+
+#define iSTR_DISK_SPACE_IN_USE1 	"DISK SPACE IN USE: 100 MB"
+#define iSTR_DISK_SPACE_IN_USE2 	"МЕСТА НА ДИСКЕ: 100 MB"
+
+#define iSTR_CLEAN_UP1			"CLEAN UP!"
+#define iSTR_CLEAN_UP2			"ОСВОБОДИТЬ!"
+
+
+#define iSTR_Sound_Options1		"Sound Options"
+#define iSTR_Sound_Options2		"Настройка звука"
+
+#define iSTR_SOUND_EFFECTS1		"SOUND EFFECTS"
+#define iSTR_SOUND_EFFECTS2		"ЗВУКОВЫЕ ЭФФЕКТЫ"
+
+#define iSTR_MUSIC1			"MUSIC"
+#define iSTR_MUSIC2			"МУЗЫКА"
+
+#define iSTR_SOUND_VOLUME1		"SOUND VOLUME"
+#define iSTR_SOUND_VOLUME2		"ГРОМКОСТЬ ЗВУКА"
+
+#define iSTR_MUSIC_VOLUME1		"MUSIC VOLUME"
+#define iSTR_MUSIC_VOLUME2		"ГРОМКОСТЬ МУЗЫКИ"
+
+#define iSTR_EFFECTS_PANNING1		"EFFECTS PANNING"
+#define iSTR_EFFECTS_PANNING2		"ЭФФЕКТ ПАНОРАМЫ"
+
+#define iSTR_ENGINE_NOISE1		"ENGINE NOISE"
+#define iSTR_ENGINE_NOISE2		"РАБОТА ДВИГАТЕЛЯ"
+
+#define iSTR_BACKGROUND_SOUND1		"BACKGROUND SOUND"
+#define iSTR_BACKGROUND_SOUND2		"ФОНОВЫЕ ЗВУКИ"
+
+#define iSTR_Controls1			"Controls"
+#define iSTR_Controls2			"Управление"
+
+#define iSTR_Multiplayer1		"Multiplayer"
+#define iSTR_Multiplayer2		"Сетевая игра"
+
+#define iSTR_JOIN_SERVER1		"JOIN SERVER"
+#define iSTR_JOIN_SERVER2		"НАЙТИ СЕРВЕР"
+
+#define iSTR_CREATE_SERVER1		"CREATE SERVER"
+#define iSTR_CREATE_SERVER2		"СОЗДАТЬ СЕРВЕР"
+
+#define iSTR_PLAYER_SETUP1		"PLAYER SETUP"
+#define iSTR_PLAYER_SETUP2		"НАСТРОИТЬ ИГРОКА"
+
+#define iSTR_SERVER_PO// Please refer to the remarks I've made (seperated by a double-slash //)
+
+/*
+	iScreen string defines
+
+	English Version:
+	#define <SOMEWORD>1	"..."
+
+	Local Version:
+	#define <SOMEWORD>2	"..."
+*/
+
+#define iSTR_LOAD_GAME1 		"LOAD GAME"
+#define iSTR_LOAD_GAME2 		"ПРОДОЛЖИТЬ ИГРУ"
+
+#define iSTR_MULTIPLAYER1		"MULTIPLAYER"
+#define iSTR_MULTIPLAYER2		"СЕТЕВАЯ ИГРА"
+
+#define iSTR_NEW_GAME1			"NEW GAME"
+#define iSTR_NEW_GAME2			"НОВАЯ ИГРА"
+
+#define iSTR_OPTIONS1			"OPTIONS"
+#define iSTR_OPTIONS2			"НАСТРОЙКИ"
+
+#define iSTR_CREDITS1			"CREDITS"
+#define iSTR_CREDITS2			"АВТОРЫ"
+
+#define iSTR_EXIT1			"EXIT"
+#define iSTR_EXIT2			"ВЫХОД"
+
+#define iSTR_Credits1			"Credits"
+#define iSTR_Credits2			"О создателях"
+
+#define iSTR_MAIN_MENU1 		"MAIN MENU"
+#define iSTR_MAIN_MENU2 		"ГЛАВНОЕ МЕНЮ"
+
+#define iSTR_HALL_OF_FAME1		"HALL OF FAME"
+#define iSTR_HALL_OF_FAME2		"ТАБЛИЦА РЕКОРДОВ"
+
+#define iSTR_Options1			"Options"
+#define iSTR_Options2			"Настройки"
+
+#define iSTR_GRAPHICS1			"GRAPHICS"
+#define iSTR_GRAPHICS2			"ГРАФИКА"
+
+#define iSTR_SOUND1			"SOUND"
+#define iSTR_SOUND2			"ЗВУК"
+
+#define iSTR_CONTROLS1			"CONTROLS"
+#define iSTR_CONTROLS2			"УПРАВЛЕНИЕ"
+
+
+#define iSTR_Graphics_Options1		"Graphics Options"
+#define iSTR_Graphics_Options2		"Настройка графики"
+
+#define iSTR_DETAIL1			"MEMORY:"
+#define iSTR_DETAIL2			"ПАМЯТЬ:"
+
+#define iSTR_MEM16MB1			"GOOD-16MB"
+#define iSTR_MEM16MB2			"ХОРОШО - 16 MB"
+
+#define iSTR_MEM32MB1			"EXCELLENT-32MB"
+#define iSTR_MEM32MB2			"ОТЛИЧНО - 32 MB"
+
+#define iSTR_TIPS1			"TIPS:"
+#define iSTR_TIPS2			"ПОДСКАЗКИ:"
+
+#define iSTR_ON1			"ON"
+#define iSTR_ON2			"ДА"
+
+#define iSTR_OFF1			"OFF"
+#define iSTR_OFF2			"НЕТ"
+
+#define iSTR_BACK1			"BACK"
+#define iSTR_BACK2			"НАЗАД"
+
+#define iSTR_SCREEN1			"SCREEN:"
+#define iSTR_SCREEN2			"ЭКРАН:"
+
+#define iSTR_800x6001			"800x600"
+#define iSTR_800x6002			"800x600"
+
+#define iSTR_640x4801			"640x480"
+#define iSTR_640x4802			"640x480"
+
+#define iSTR_DEFORMABLE_LANDSCAPE1	"DEFORMABLE LANDSCAPE:"
+#define iSTR_DEFORMABLE_LANDSCAPE2	"ИЗМЕНЯЕМЫЙ ЛАНДШАФТ:"
+
+#define iSTR_KEEP_ALL_TERRAIN_CHANGES1	"KEEP ALL TERRAIN CHANGES:"
+#define iSTR_KEEP_ALL_TERRAIN_CHANGES2	"ХРАНИТЬ ВСЕ ИЗМЕНЕНИЯ ЛАНДШАФТА:"
+
+#define iSTR_DISK_SPACE_IN_USE1 	"DISK SPACE IN USE: 100 MB"
+#define iSTR_DISK_SPACE_IN_USE2 	"МЕСТА НА ДИСКЕ: 100 MB"
+
+#define iSTR_CLEAN_UP1			"CLEAN UP!"
+#define iSTR_CLEAN_UP2			"ОСВОБОДИТЬ!"
+
+
+#define iSTR_Sound_Options1		"Sound Options"
+#define iSTR_Sound_Options2		"Настройка звука"
+
+#define iSTR_SOUND_EFFECTS1		"SOUND EFFECTS"
+#define iSTR_SOUND_EFFECTS2		"ЗВУКОВЫЕ ЭФФЕКТЫ"
+
+#define iSTR_MUSIC1			"MUSIC"
+#define iSTR_MUSIC2			"МУЗЫКА"
+
+#define iSTR_SOUND_VOLUME1		"SOUND VOLUME"
+#define iSTR_SOUND_VOLUME2		"ГРОМКОСТЬ ЗВУКА"
+
+#define iSTR_MUSIC_VOLUME1		"MUSIC VOLUME"
+#define iSTR_MUSIC_VOLUME2		"ГРОМКОСТЬ МУЗЫКИ"
+
+#define iSTR_EFFECTS_PANNING1		"EFFECTS PANNING"
+#define iSTR_EFFECTS_PANNING2		"ЭФФЕКТ ПАНОРАМЫ"
+
+#define iSTR_ENGINE_NOISE1		"ENGINE NOISE"
+#define iSTR_ENGINE_NOISE2		"РАБОТА ДВИГАТЕЛЯ"
+
+#define iSTR_BACKGROUND_SOUND1		"BACKGROUND SOUND"
+#define iSTR_BACKGROUND_SOUND2		"ФОНОВЫЕ ЗВУКИ"
+
+#define iSTR_Controls1			"Controls"
+#define iSTR_Controls2			"Управление"
+
+#define iSTR_Multiplayer1		"Multiplayer"
+#define iSTR_Multiplayer2		"Сетевая игра"
+
+#define iSTR_JOIN_SERVER1		"JOIN SERVER"
+#define iSTR_JOIN_SERVER2		"НАЙТИ СЕРВЕР"
+
+#define iSTR_CREATE_SERVER1		"CREATE SERVER"
+#define iSTR_CREATE_SERVER2		"СОЗДАТЬ СЕРВЕР"
+
+#define iSTR_PLAYER_SETUP1		"PLAYER SETUP"
+#define iSTR_PLAYER_SETUP2		"НАСТРОИТЬ ИГРОКА"
+
+#define iSTR_SERVER_PO
