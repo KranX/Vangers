@@ -1104,7 +1104,7 @@ void vrtMap::dump_terrain() {
 
 	SDL_Palette *gray_pal = SDL_AllocPalette(256);
 	for (i2 = 0; i2 < 256; i2++) {
-		SDL_Color color = {i2, i2, i2, 255};
+		SDL_Color color = {(Uint8)i2, (Uint8)i2, (Uint8)i2, 255};
 		SDL_SetPaletteColors(gray_pal, &color, i2, 1);
 	}
 
