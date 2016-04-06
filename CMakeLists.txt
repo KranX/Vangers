@@ -84,15 +84,12 @@ INCLUDE_DIRECTORIES(SYSTEM
 	/usr/local/include
 )
 
-ADD_DEFINITIONS(-Wall -Wextra )
-#ADD_DEFINITIONS(-Weffc++) #Extra debug
-ADD_DEFINITIONS(-g)
-ADD_DEFINITIONS(-O2)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+
 IF (NOT MINGW)
-	ADD_DEFINITIONS(-ftree-vectorize)
-	ADD_DEFINITIONS(-ffast-math)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftree-vectorize -ffast-math")
 ENDIF (NOT MINGW)
-ADD_DEFINITIONS(-msse2)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
 
 
 
