@@ -1041,7 +1041,7 @@ void iMS_LeftPress(int fl, int x, int y)
 	aciML_ToolzerON = 1;
 
 	if(actIntLog)
-		aMS_LeftPress(NULL,x,y);
+		aMS_LeftPress(0,x,y);
 
 	XGR_MouseSetSeq(0,1,XGM_PLAY_ONCE,1);
 }
@@ -1055,7 +1055,7 @@ void iMS_LeftUnpress(int fl, int x, int y)
 	iMouseLPressFlag = 0;
 
 	if(actIntLog)
-		aMS_LeftUnpress(NULL,x,y);
+		aMS_LeftUnpress(0,x,y);
 
 	XGR_MouseSetSeq(XGR_MouseCurFrame,XGR_MouseNumFrames - 1,XGM_PLAY_ONCE,1);
 }
@@ -1069,7 +1069,7 @@ void iMS_RightPress(int fl, int x, int y)
 	iMouseRPressFlag = 1;
 
 	if(actIntLog)
-		aMS_RightPress(NULL,x,y);
+		aMS_RightPress(0,x,y);
 
 	XGR_MouseSetSeq(0,1,XGM_PLAY_ONCE,1);
 }
@@ -1082,7 +1082,7 @@ void iMS_RightUnpress(int fl, int x, int y)
 	iMouseRPressFlag = 0;
 
 	if(actIntLog)
-		aMS_RightUnpress(NULL,x,y);
+		aMS_RightUnpress(0,x,y);
 
 	XGR_MouseSetSeq(XGR_MouseCurFrame,XGR_MouseNumFrames - 1,XGM_PLAY_ONCE,1);
 }

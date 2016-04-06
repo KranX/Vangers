@@ -138,8 +138,8 @@ aciScreenScroller::aciScreenScroller(void)
 
 	ActiveSX = ActiveSY = 0;
 
-	ScrResSX = ScrResSY = NULL;
-	sResSX = sResSY = NULL;
+	ScrResSX = ScrResSY = 0;
+	sResSX = sResSY = 0;
 }
 
 aciScreenScroller::~aciScreenScroller(void)
