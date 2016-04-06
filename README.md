@@ -1,6 +1,9 @@
 Vangers
 =======
+
 ![Vangers](http://cdn.akamai.steamstatic.com/steam/apps/264080/header.jpg?t=1447359431)
+
+[![Build Status](https://travis-ci.org/KranX/Vangers.svg?branch=master)](https://travis-ci.org/KranX/Vangers)
 
 
  Video game that combines elements of the racing and role-playing genres.
