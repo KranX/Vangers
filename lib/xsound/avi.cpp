@@ -33,10 +33,6 @@ AVIFile::AVIFile(char* aviname,int initFlags,int channel)
 	open(aviname, initFlags, channel);
 }
 
-Uint32 AVITimerCallback(Uint32 interval, void *param) {
-	((AVIFile *)param)->draw();
-}
-
 int AVIFile::open(char* aviname,int initFlags,int channel)
 {
 	int i;
