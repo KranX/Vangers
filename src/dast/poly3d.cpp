@@ -186,7 +186,7 @@ int dastPoly3D::quant_make_sign(void){
 				p->x += dx;
 				p->y += dy;
 			}
-			delete data;
+			delete[] data;
 			break;
 		}
 		case DAST_SIGN_TYPE::MOVE:	

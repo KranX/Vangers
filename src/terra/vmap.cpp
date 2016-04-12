@@ -186,7 +186,7 @@ int GetKeepSpace(void)
 			ff.close();
 			}
 		}
-	delete buf;
+	delete[] buf;
 	pFile.finit();
 	GetTargetName(NULL);
 	return size/1024/1024;
@@ -215,7 +215,7 @@ void KeepCleanUp(void)
 			remove(GetTargetName(buf));
 			}
 		}
-	delete buf;
+	delete[] buf;
 	pFile.finit();
 	GetTargetName(NULL);
 }

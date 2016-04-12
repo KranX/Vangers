@@ -137,7 +137,7 @@ Parser::Parser(const char* name,const char* del_chars)
 		} else {
 			memcpy(address(),compressed_buff + 2 + 4,(unsigned)(compressed_size - 2 - 4));
 		}
-		delete compressed_buff;
+		delete[] compressed_buff;
 		buf[decompressed_size] = 0;
 #else
 		ErrH.Abort("Parser: unable to read coded file");
