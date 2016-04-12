@@ -3266,7 +3266,7 @@ uvsBunch::uvsBunch(PrmFile* pfile,char* atom){
 	Pescave -> Pbunch = this;
 
 	char* s = pfile -> getAtom();
-	register int i;
+	int i;
 	for(i = 0;i < BIOS_MAX;i++) if(!strcasecmp(s,BIOS_NAMES[i])) break;
 	if(i == BIOS_MAX) ErrH.Abort(PrmWrongValue,XERR_USER,-1,"Bios Name");
 	biosNindex = i;
@@ -3348,8 +3348,7 @@ uvsBunch::uvsBunch(XStream& pf, PrmFile* pfile,char* atom){
 	Pescave -> Pbunch = this;
 
 	char* s = pfile -> getAtom();
-	register int i;
-	int j;
+	int i, j;
 
 	for(i = 0;i < BIOS_MAX;i++) if(!strcasecmp(s,BIOS_NAMES[i])) break;
 	if(i == BIOS_MAX) ErrH.Abort(PrmWrongValue,XERR_USER,-1,"Bios Name");

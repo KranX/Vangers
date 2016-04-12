@@ -164,7 +164,7 @@ inline void MainStage(BYTE* pa0,int& hC,BYTE* pc0,int SizeX,int& x,BYTE*& grid,i
 	BYTE* palCLRlast;
 	BYTE* lightCLRlast;
 	BYTE typeC = 0xFF;
-	register int i;
+	int i;
 	for(i = 0;i < SizeX;i += 2){
 		if(*pf & DOUBLE_LEVEL){
 			const BYTE lxVal = *pa;
@@ -316,7 +316,7 @@ inline void MainStage2(BYTE* pa0,int& hC,BYTE* pc0,int SizeX,int& x,BYTE*& grid,
 	BYTE* palCLRlast;
 	BYTE* lightCLRlast;
 	BYTE typeC = 0xFF;
-	register int i;
+	int i;
 	for(i = 0;i < SizeX;i += 2){
 		if(*pf & DOUBLE_LEVEL){
 			const BYTE lxVal = *pa;
@@ -447,7 +447,7 @@ void regRender(int LowX,int LowY,int HiX,int HiY,int changed)
 	int SizeX = (0 == XCYCL(HiX - LowX)) ? H_SIZE : XCYCL(HiX - LowX);
 
 	int BackScanLen = 0;
-	register int j;
+	int j;
 	for(j = 0;j < SizeY;j++){
 		const int y = YCYCL(j + LowY);
 		BYTE* pa0 = vMap -> lineT[y];

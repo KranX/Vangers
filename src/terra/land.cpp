@@ -78,7 +78,7 @@ int VisiRegR = 0;
 void RenderPrepare(void)
 {
 	int i;
-	register int j,ind,v;
+	int j,ind,v;
 	if(!shadowParent){
 		memset(shadowParent = new uchar[4*map_size_x],0,4*map_size_x);
 #ifndef TERRAIN16
@@ -135,7 +135,7 @@ void landPrepare(void)
 	int max = 0;
 
 	int calc = 1;
-	register int i,j,r,ind;
+	int i,j,r,ind;
 	short* p = rad;
 	if(calc){
 		for(j = -MAX_RADIUS;j <= MAX_RADIUS;j++)
@@ -179,7 +179,7 @@ void deltaZone(int x,int y,int rad,int smth,int dh,int smode,int eql)
 {
 	static int locp;
 
-	register int i,j;
+	int i,j;
 	int max;
 	int* xx,*yy;
 
@@ -537,7 +537,7 @@ void deltaZone(int x,int y,int rad,int smth,int dh,int smode,int eql)
 
 void GeoSetZone(int x,int y,int rad,int level,int delta)
 {
-	register int i,j;
+	int i,j;
 	int max;
 	int* xx,*yy;
 
@@ -923,7 +923,7 @@ void regSet(int x0,int y0,int x1,int y1,int dry,int surf)
 	int x0l = XCYCL(x0 - 1);
 	int x0r = XCYCL(x1 + 1);
 
-	register int x,y;
+	int x,y;
 #ifndef TERRAIN16
 	uchar *pfd,*pfd0;
 	uchar* uw = waterBuf[0],*w = waterBuf[1],*dw = waterBuf[2];
@@ -1012,7 +1012,7 @@ void LINE_render(int y)
 	pf0 = pf = pa0 + H_SIZE;
 	pc0 = pc = vMap -> lineTcolor[y];
 	
-	for(register int x = 0;x < map_size_x;x++,pa++,pc++,pf++){
+	for(int x = 0;x < map_size_x;x++,pa++,pc++,pf++){
 		if(*pf & DOUBLE_LEVEL){
 			x++; pc++; pf++; pa++;
 			type = (*pf & TERRAIN_MASK) >> TERRAIN_OFFSET;

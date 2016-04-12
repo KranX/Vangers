@@ -57,7 +57,7 @@ inline uchar* get_up_ground( int x, int y )
 
 
 /*uchar sqr3( int x ){
-	register uchar i;
+	uchar i;
 
 	//if ( x >= 512 ) ErrH.Abort( "DAST : greater when table sqrt3" );
 	if ( x >= 512 ) return 8;
@@ -102,8 +102,8 @@ dastPoly3D::dastPoly3D(  Vector _p, int _n ){
 	p = new Vector;
 	*p = _p;
 
-/*	 register uchar *l1 = get_real_ground(0, p[0].x & clip_mask_x, p[0].y);
-	 register uchar *l2 = get_real_ground(1, p[0].x & clip_mask_x, p[0].y);
+/*	 uchar *l1 = get_real_ground(0, p[0].x & clip_mask_x, p[0].y);
+	 uchar *l2 = get_real_ground(1, p[0].x & clip_mask_x, p[0].y);
 
 	if ( abs( *l1 - p[0].z) < abs(*l2 - p[0].z)){
 		pf = &get_up_ground;
@@ -172,14 +172,14 @@ int dastPoly3D::quant_make_sign(void){
 			p->y <<= 16;    p->y += 1<<15;
 
 			if ( abs(dx ) > abs(dy) ) max = abs(dx); else max = abs(dy);
-			register int tt = (1<<16)/max;
+			int tt = (1<<16)/max;
 
 			dx *= tt;
 			dy *= tt;
 
 			for( int i = 0; i < max; i++){
-				register int x = (p->x)>>16;
-				register int y = (p->y)>>16;
+				int x = (p->x)>>16;
+				int y = (p->y)>>16;
 				//dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(5), dastResSign -> wide[n][count] );
 				dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(6), dastResSign -> wide[n][count] );
 				//regRender(x - 7, y - 7, x + 7, y + 7, 0);
@@ -251,7 +251,7 @@ void dastPoly3D::make_dast( void ){
 	int mv;
 	float dxh, dyh, dzh;
 	int mh;
-	register float x, y, z;
+	float x, y, z;
 	int i, j, k;
 	int *h;
 	int *hh;
@@ -267,8 +267,8 @@ void dastPoly3D::make_dast( void ){
 
 //  Нахождение уровня машинки
 
-	 register uchar *l1 = get_real_ground(0, p[0].x & clip_mask_x, p[0].y);
-	 register uchar *l2 = get_real_ground(1, p[0].x & clip_mask_x, p[0].y);
+	 uchar *l1 = get_real_ground(0, p[0].x & clip_mask_x, p[0].y);
+	 uchar *l2 = get_real_ground(1, p[0].x & clip_mask_x, p[0].y);
 
 	if ( abs( *l1 - p[0].z) < abs(*l2 - p[0].z)){
 		down = 0;
@@ -358,13 +358,13 @@ void dastPoly3D::make_dast( void ){
 	}
 
 	if ( xr > xl ) {
-		register int tmp = xr;
+		int tmp = xr;
 		xr = xl;
 		xl = tmp;
 	}
 
 	if ( yr > yl ) {
-		register int tmp = yr;
+		int tmp = yr;
 		yr = yl;
 		yl = tmp;
 	}
@@ -388,7 +388,7 @@ void dastPoly3D::make_dast( void ){
 //  Цикл по шагам сдвига ковша.
 
 	for( i = 0; i < mh + d_wide; i++){
-		register float xx = x, yy = y, zz = z;
+		float xx = x, yy = y, zz = z;
 
 		
 //     Цикл по точкам ковша - сдвигание поверхности.
@@ -446,7 +446,7 @@ const int _boder_ = 8;
 void dastPoly3D::make_dast( void ){
 	int dxv, dyv, dzv, mv;
 	int dxh, dyh, dzh, mh;
-	register int x, y, z;
+	int x, y, z;
 	int i, j, k;
 	int *h;
 	int *hh;
@@ -462,8 +462,8 @@ void dastPoly3D::make_dast( void ){
 
 //  Нахождение уровня машинки
 
-	 register uchar *l1 = get_real_ground(0, p[0].x & clip_mask_x, p[0].y);
-	 register uchar *l2 = get_real_ground(1, p[0].x & clip_mask_x, p[0].y);
+	 uchar *l1 = get_real_ground(0, p[0].x & clip_mask_x, p[0].y);
+	 uchar *l2 = get_real_ground(1, p[0].x & clip_mask_x, p[0].y);
 
 	if ( abs( *l1 - p[0].z) < abs(*l2 - p[0].z)){
 		down = 0;
@@ -551,13 +551,13 @@ void dastPoly3D::make_dast( void ){
 	}
 
 	if ( xr > xl ) {
-		register int tmp = xr;
+		int tmp = xr;
 		xr = xl;
 		xl = tmp;
 	}
 
 	if ( yr > yl ) {
-		register int tmp = yr;
+		int tmp = yr;
 		yr = yl;
 		yl = tmp;
 	}
@@ -584,14 +584,14 @@ void dastPoly3D::make_dast( void ){
 //  Цикл по шагам сдвига ковша.
 
 	for( i = 0; i < mh + 4; i++){
-		register int xx = x, yy = y, zz = z;
+		int xx = x, yy = y, zz = z;
 
 //     Цикл по точкам ковша - пересыпание сдвинутой поверхности.
 
 		memset( hh - _boder_*2, 0, (mv+_boder_*4)*sizeof( int ));
 
 		for( j = 0; j < mv; j++){
-			register int ha = h[j];
+			int ha = h[j];
 
 			hh[j] += ha>>2;
 
@@ -609,7 +609,7 @@ void dastPoly3D::make_dast( void ){
 
 		for( j = -_boder_*2; j < mv+_boder_*2; j++){
 			int _h_;
-			register xxx  = (xx >> 16) & clip_mask_x, yyy = yy >> 16;
+			xxx  = (xx >> 16) & clip_mask_x, yyy = yy >> 16;
 
 			p0 = pf(  xxx, yyy );
 			_h_ = hh[j] >> 10;
@@ -669,7 +669,7 @@ void dastPoly3D::make_dast( void ){
 	memset( hh - _boder_*2, 0, (mv+_boder_*4)*sizeof( int ));
 
 	for( j = 0; j < mv; j++){
-		register int ha = h[j];
+		int ha = h[j];
 
 		hh[j] += ha>>2;
 
@@ -698,12 +698,12 @@ void dastPoly3D::make_dast( void ){
 		p0 = pf( (( x >> 16) & clip_mask_x), y>>16 );
 		*p0 += hhh;
 
-		register int _xx = xx, _yy = yy;
+		int _xx = xx, _yy = yy;
 
 		for( k = 0; k < 8*hhh; k++){//6
 			int xxx = _xx , yyy = _yy;
 
-			register int _xxx = (xxx >> 16) & clip_mask_x, _yyy = yyy >> 16;
+			int _xxx = (xxx >> 16) & clip_mask_x, _yyy = yyy >> 16;
 			uchar tt = 0;
 			 tt = hhh - (k>>3);
 
@@ -785,7 +785,7 @@ void dastPoly3D::make_mole( dastResourcePoly3D* res ){
 		return;
 
 	unsigned int scale;
-	register int dz = *get_down_ground( (p_array[0].x) & clip_mask_x, p_array[0].y );
+	int dz = *get_down_ground( (p_array[0].x) & clip_mask_x, p_array[0].y );
 
 	if ( dz < 50 ) scale = 1 << 15;
 	else if ( dz < 120 ) scale = 1 << 14;
@@ -810,7 +810,7 @@ int dastPoly3D::make_first_mole( dastResourcePoly3D* res ){
 	if (!vMap -> lineT[p->y & clip_mask_y])
 		return 0;
 
-	register int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
+	int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
 
 	n -= 3;
 	count -= 3;
@@ -841,7 +841,7 @@ int dastPoly3D::make_last_mole( dastResourcePoly3D* res ){
 	if (!vMap -> lineT[p->y & clip_mask_y])
 		return 0;
 
-	register int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
+	int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
 
 	count += 3;
 
@@ -871,7 +871,7 @@ int dastPoly3D::make_catch_dolly( dastResourcePoly3D* res ){
 	if (!vMap -> lineT[p->y & clip_mask_y])
 		return 0;
 
-	register int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
+	int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
 
 	if ( dz < 50 ) scale = 1 << 15;
 	else if ( dz < 160 ) scale = 1 << 14;
@@ -1009,7 +1009,7 @@ void dastPutSpriteOnMapAlt(int x, int y, uchar *data, int x_size, int y_size, un
 			for( j = x - (x_size>>1); j < x + (x_size>>1); j++, data++){
 				llt = get_down_ground( (j) & clip_mask_x, i );
 				if (BREAKABLE_TERRAIN(*(llt + H_SIZE))){
-					register int dz = (*data)*scale>>15;
+					int dz = (*data)*scale>>15;
 					if ( *llt + dz < 256 ) *llt += dz;
 					else *llt = 255;
 				}
@@ -1022,8 +1022,8 @@ void dastPutSandOnMapAlt(int x, int y, uchar _z,  uchar newter, uchar wide){
 		uchar _d = 82;
 		newter <<= TERRAIN_OFFSET;
 
-		register int x_size = wide;
-		register int y_size = wide;
+		int x_size = wide;
+		int y_size = wide;
 
 		for( i = y - (y_size>>1); i < y + (y_size>>1); i++)
 			if (!lt[(i) & clip_mask_y]) return;
@@ -1036,7 +1036,7 @@ void dastPutSandOnMapAlt(int x, int y, uchar _z,  uchar newter, uchar wide){
 				if ( *lc > _z ) lc = get_down_ground( (j) & clip_mask_x, i );
 				if (*lc + _d < _z) continue;
 
-				register uchar hh = RND(4);
+				uchar hh = RND(4);
 				//if ( GET_TERRAIN(*(lc + H_SIZE)) ){
 					*lc += hh + RND(2);
 					//*lc += RND(6);

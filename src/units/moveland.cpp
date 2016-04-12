@@ -648,7 +648,7 @@ extern int* NumLocationData[WORLD_MAX];
 
 void MLload(void)
 {
-	register int i,j,t;
+	int i,j,t;
 	XBuffer buf;
 	
 #ifdef _ROAD_
@@ -901,7 +901,7 @@ void MobileLocation::load(char* fname,int direct)
 	
 	MLverify(ff);
 	ff.read(name,MLNAMELEN + 1);
-	register int i;
+	int i;
 	ff > maxFrame > DryTerrain > Impulse;
 	ff.seek(1,XS_CUR);
 	uchar t; ff > t; mode = t;
@@ -973,7 +973,7 @@ void MobileLocation::erase(void)
 
 void MobileLocation::save(int reserve)
 {
-	register int i;
+	int i;
 	XBuffer buf;
 	XStream ff(0);
 
@@ -1253,7 +1253,7 @@ int MLFrame::quant(int& step,int dx,int dy,MLAtype* alt,int dry,int render,int f
 		}
 #endif
 
-	register int i,j,x,y,v;
+	int i,j,x,y,v;
 	uchar* pr;
 	if(step == period || fastMode){
 #ifdef ML_COMPRESS_ON
@@ -1450,7 +1450,7 @@ int MLFrame::quantAbs(int& step,int dx,int dy,MLAtype* alt,int dry,int render,in
 		}
 #endif
 
-	register int i,j,x,y;
+	int i,j,x,y;
 	uchar* pr;
 	if(step == 1 || fastMode) {
 #ifdef ML_COMPRESS_ON
@@ -1524,7 +1524,7 @@ void MLFrame::start(int dx,int dy,MLAtype* alt)
 	uchar* pa0;
 	MLAtype* pt = alt;
 
-	register int i,j,x,y;
+	int i,j,x,y;
 	for(j = 0,y = YCYCL(y0 + dy);j < sy;j++,y = YCYCL(y + 1)){
 		pa0 = lt[y];
 		for(i = 0,x = XCYCL(x0 + dx);i < sx;i++,x = XCYCL(x + 1),pt++)
@@ -1535,7 +1535,7 @@ void MLFrame::start(int dx,int dy,MLAtype* alt)
 int MLFrame::check(int dy)
 {
 	uchar** lt = vMap -> lineT;
-	register int j,y;
+	int j,y;
 	for(j = 0,y = YCYCL(y0 + dy);j < sy;j++,y = YCYCL(y + 1))
 		if(!lt[y]) return 0;
 	return 1;
@@ -1641,7 +1641,7 @@ void VLload(void)
 	XBuffer buf;
 	XStream ff(0);
 	char sign[8];
-	register int i;
+	int i;
 
 	buf < "data.vot/" < VLfilenames[0] < ".vlc";
 	if(ff.open(GetTargetName(buf.GetBuf()),XS_IN)){
@@ -1834,7 +1834,7 @@ int MLFrame::DestroyQuant(int dx,int dy,MLAtype* alt,int dry)
 	} 
 #endif
 
-	register int i,j,x,y,v;
+	int i,j,x,y,v;
 	for(j = 0,y = YCYCL(y0 + dy);j < sy;j++,y = YCYCL(y + 1)){
 		pa0 = lt[y];
 		pf0 = pa0 + H_SIZE;
@@ -1871,7 +1871,7 @@ void DestroySmoothInit(void)
 {
 	NumDestroyRadiusTable = new short[MAX_DESTROY_SIDE*MAX_DESTROY_SIDE];
 
-	register int i,j,r,ind;
+	int i,j,r,ind;
 	short* p = NumDestroyRadiusTable;
 	int* xheap;
 	int* yheap;
@@ -1932,7 +1932,7 @@ int DestroyBarellSmoothWithCheck(int x0,int y0,int SmoothRadius,int SpotRadius,i
 {
 	int Phi = RND(PI/2);
 	uchar* pa0,*pf0;
-	register int i,j,n;
+	int i,j,n;
 
 	uchar** lt = vMap -> lineT;
 
@@ -2016,7 +2016,7 @@ void DestroyBarellSmooth(int x0,int y0,int SmoothRadius,int SpotRadius,int Delta
 {
 	int Phi = RND(PI/2);
 	uchar* pa0,*pf0;
-	register int i,j,n;
+	int i,j,n;
 
 	uchar** lt = vMap -> lineT;
 
@@ -2101,7 +2101,7 @@ void DestroyBarellSmooth(int x0,int y0,int SmoothRadius,int SpotRadius,int Delta
 void ClearBarell(int x0,int y0,int radius,uchar terrain,int z0)
 {
 	uchar* pa0,*pf0;
-	register int i,j;
+	int i,j;
 
 	uchar** lt = vMap -> lineT;
 
@@ -2158,7 +2158,7 @@ void ClearBarell(int x0,int y0,int radius,uchar terrain,int z0)
 void DestroySmooth(int x0,int y0,int SmoothRadius,int SpotRadius,int Delta,int cDelta,uchar terrain,int Num,uchar rfactor)
 {
 	int Phi = RND(PI/2);
-	register int i,n,rx,ry;
+	int i,n,rx,ry;
 
 	uchar** lt = vMap -> lineT;
 	for(i = y0 - SmoothRadius;i <= y0 + SmoothRadius;i++) if(!lt[YCYCL(i)]) return;
@@ -2206,7 +2206,7 @@ void DestroySmooth(int x0,int y0,int SmoothRadius,int SpotRadius,int Delta,int c
 void DestroySpot(int x0,int y0,int Radius,uchar terrain,int delta,uchar rfactor)
 {
 	uchar* pa0,*pf0;
-	register int i,j;
+	int i,j;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
 	uchar t;
@@ -2314,7 +2314,7 @@ void DestroySpot(int x0,int y0,int Radius,uchar terrain,int delta,uchar rfactor)
 void DestroyBarellSpot(int x0,int y0,int Radius,uchar terrain,int delta,uchar rfactor)
 {
 	uchar* pa0,*pf0;
-	register int i,j;
+	int i,j;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
 	uchar t;
@@ -2411,7 +2411,7 @@ void DestroyBarellSpot(int x0,int y0,int Radius,uchar terrain,int delta,uchar rf
 	uchar _zr = z0;
 	z0 -= 50;
 	uchar _z0 = (z0 > 0) ? (z0): (0);
-	register int i,j;
+	int i,j;
 	uchar** lt = vMap -> lineT;
 	short *pR = NumDestroyRadiusTable + (MAX_DESTROY_RADIUS - Radius)*(MAX_DESTROY_SIDE-1);
 	int side = (2*Radius+3);
@@ -2493,7 +2493,7 @@ void DestroyBarellSpot(int x0,int y0,int Radius,uchar terrain,int delta,uchar rf
 		pR += offset;
 		for(j = 0; j < _side; j++, _pt++, _ph++){
 			int _r = *pR++;
-			register int l = Radius - _r;
+			int l = Radius - _r;
 
 			if(((int)(RND(Radius)) < l ) && (SmoothTerrainMask[GET_TERRAIN(*ph)])){
 				unsigned short t;
@@ -2587,8 +2587,8 @@ void DestroySmoothCheck(int x0,int y0,int Radius)
 {
 	uchar *pf0,*pf1,*pac,*pc0;
 	uchar v,a;
-	register int i,j;
-	register unsigned int t;
+	int i,j;
+	unsigned int t;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
 	int x1,y1;
@@ -2677,7 +2677,7 @@ void DestroySmoothPut(int x0,int y0,int Radius)
 {
 	uchar *pf0,*pf1,*pac,*pc0;
 	uchar v,a;
-	register int i,j;
+	int i,j;
 	unsigned int t;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
@@ -2754,7 +2754,7 @@ void DestroySmoothPut(int x0,int y0,int Radius)
 void xRestoreDestroySpot(int x0,int y0,int Radius,uchar terrain,int delta,uchar rfactor)
 {
 	uchar* pa0,*pf0;
-	register int i,j;
+	int i,j;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
 	int r;
@@ -2828,7 +2828,7 @@ void xRestoreDestroySpot(int x0,int y0,int Radius,uchar terrain,int delta,uchar 
 void xDestroySpot(int x0,int y0,int Radius,uchar terrain,int delta,uchar rfactor)
 {
 	uchar* pa0,*pf0;
-	register int i,j;
+	int i,j;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
 	uchar t;
@@ -2959,7 +2959,7 @@ void RadialRender(int x0,int y0,int radius)
 {
 	uchar *pf0,*pf1,*pac,*pc0,*plc;
 	uchar v;
-	register int t,i,j,t1;
+	int t,i,j,t1;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
 	int x1,y1;
@@ -3108,7 +3108,7 @@ void RadialRender(int x0,int y0,int radius)
 /*int LandSlide(int x0,int y0,int Radius,int z0)
 {
 	uchar *pf0,*pac,*pc0,*plc;
-	register int t,i,j;
+	int t,i,j;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
 	int x1,y1;
@@ -3456,7 +3456,7 @@ int LandSlideLine(int x0,int y0,int z0,int x1,int delta)
 void MapCircleProcess(int x0,int y0,int z0,int r0,int mode,uchar terrain)
 {
 	uchar *pc,*pf0,*pf,*ph;
-	register int j;
+	int j;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;													     
 	int* dx,*dy;
@@ -3515,7 +3515,7 @@ void MapCircleProcess(int x0,int y0,int z0,int r0,int mode,uchar terrain)
 int GetLandAlt(int x0,int y0,int Radius)	       
 {
 /*	uchar *pc0,*pf0;
-	register int t,i,j,t1;
+	int t,i,j,t1;
 	uchar** lt = vMap -> lineT;
 	int rx,ry;
 	int* dx,*dy;
@@ -3542,7 +3542,7 @@ int GetLandAlt(int x0,int y0,int Radius)
 	uchar *pf0,*pf;
 	uchar** lt;
 	lt = vMap -> lineT;
-	register int t,i,j,t1;
+	int t,i,j,t1;
 
 	t1 = 255;
 	for(i = y0 - Radius;i <= y0 + Radius;i++) if(!lt[YCYCL(i)]) return -1;
@@ -3567,7 +3567,7 @@ void MakeSecondLevel(int x0,int y0,uchar z0,int Radius)
 	uchar *pf0,*pf1,*pf;
 	uchar** lt;
 	lt = vMap -> lineT;
-	register int t,i,j;
+	int t,i,j;
 	int d = 32;
 
 	for(i = y0 - Radius;i <= y0 + Radius;i++) if(!lt[YCYCL(i)]) return;
@@ -3827,7 +3827,7 @@ void MapAcidSpot::Quant(void)
 int MobileLocation::QuickCheck(void)
 { 
 	uchar** lt = vMap -> lineT;
-	register int j,y;
+	int j,y;
 	for(j = 0,y = YCYCL(y0 + dy);j < altSy;j++,y = YCYCL(y + 1))
 		if(!lt[y]) return 0;
 	return 1;
@@ -3836,7 +3836,7 @@ int MobileLocation::QuickCheck(void)
 int MobileLocation::NetQuickCheck(int x83,int y83,int r83)
 { 
 	uchar** lt = vMap -> lineT;
-	register int j,y;
+	int j,y;
 
 	if(abs(getDistX(x83,ViewX)) - r83 < TurnSideX && abs(getDistY(y83,ViewY)) - r83 < TurnSideY && lt[YCYCL(y83 - r83)] && lt[YCYCL(y83 + r83)]){
 		for(j = 0,y = YCYCL(y0 + dy);j < altSy;j++,y = YCYCL(y + 1))

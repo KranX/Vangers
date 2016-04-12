@@ -44,16 +44,16 @@ DHuff::~DHuff(void){
 }
 
 void DHuff::compress_line(unsigned char *in, char *out){
-   register unsigned char    thebyte = 0;
-   register short           loop1;
-   register unsigned int  loop;
+   unsigned char    thebyte = 0;
+   short           loop1;
+   unsigned int  loop;
 
    unsigned short   curbyte = 0;
    int           curbit = 7;
 
    for (loop = 0; loop < (1<<11); loop++) {
       unsigned char dvalue = *in++;
-      register unsigned int  current_code  = code[dvalue];
+      unsigned int  current_code  = code[dvalue];
       int current_length = code_length[dvalue];
 
       for (loop1 = current_length-1; loop1 >= 0; --loop1) {
@@ -83,9 +83,9 @@ void DHuff::compress_line(unsigned char *in, char *out){
  **************************************************************************/
 
 unsigned short DHuff::generate_code_table (void){
-   register unsigned short  loop;
-   register unsigned char  current_length;
-   register unsigned int  current_bit;
+   unsigned short  loop;
+   unsigned char  current_length;
+   unsigned int  current_bit;
 
    unsigned int  bitcode;
    int           parent;
@@ -130,8 +130,8 @@ unsigned short DHuff::generate_code_table (void){
 
 void DHuff::build_code_tree (void){
 
-   register unsigned short  findex;
-   register unsigned long   heap_value;
+   unsigned short  findex;
+   unsigned long   heap_value;
 
 
    while (heap_length != 1){
@@ -161,8 +161,8 @@ void DHuff::build_code_tree (void){
  **************************************************************************/
 
 void DHuff::reheap (unsigned short  heap_entry){
-   register unsigned short  index;
-   register unsigned short  flag = 1;
+   unsigned short  index;
+   unsigned short  flag = 1;
 
    unsigned long   heap_value;
 
@@ -196,7 +196,7 @@ void DHuff::reheap (unsigned short  heap_entry){
 
 void DHuff::build_initial_heap (void){
 
-   register unsigned short  loop;
+   unsigned short  loop;
 
 
    heap_length = 0;
@@ -217,8 +217,8 @@ void DHuff::build_initial_heap (void){
  **************************************************************************/
 
 void  DHuff::build_decomp_tree (void){
-   register unsigned short  loop1;
-   register unsigned int  current_index;
+   unsigned short  loop1;
+   unsigned int  current_index;
 
    unsigned short  loop;
    unsigned short  current_node = 1;
@@ -250,10 +250,10 @@ void  DHuff::build_decomp_tree (void){
  **************************************************************************/
 
 void  DHuff::decompress_line1 (char*& in, char*& out){
-   register unsigned short  cindex = 1;
-   register char            curchar;
-   register char            lastchar = 0;
-   register short           bitshift;
+   unsigned short  cindex = 1;
+   char            curchar;
+   char            lastchar = 0;
+   short           bitshift;
 
    unsigned long  charcount = 0L;
 
@@ -278,10 +278,10 @@ void  DHuff::decompress_line1 (char*& in, char*& out){
 }
 
 void  DHuff::decompress_line2 (char*& in, char*& out){
-   register unsigned short  cindex = 1;
-   register char            curchar;
-   register char            lastchar = 0;
-   register short           bitshift;
+   unsigned short  cindex = 1;
+   char            curchar;
+   char            lastchar = 0;
+   short           bitshift;
 
    unsigned long  charcount = 0L;
 

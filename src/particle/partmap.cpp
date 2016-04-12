@@ -134,8 +134,8 @@ int ParticleMapProcess::process(char* vb,int Xc,int Yc,int XcS,int turn,int noou
 		}
 	phase = !phase;
 
-	 register uchar l1;
-	 register uchar l2;
+	 uchar l1;
+	 uchar l2;
 
 	if ( vMap -> lineT[Yreal] ){
 		l1 = *(get_real_ground(0, Xreal, Yreal));

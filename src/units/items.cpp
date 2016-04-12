@@ -3845,7 +3845,7 @@ void ShowLuckMessage(int l) //znfo
 
 void StuffObject::SetStuffColor(void)
 {
-	register int t;
+	int t;
 	t = GetColorDevice(ActIntBuffer.type);
 	if(t >= 0) set_body_color(t);
 };

@@ -1300,7 +1300,7 @@ void PalettePrepare(void) {
 	palbuf = palbufA;
 	int k;
 	memset(palbuf,0,768);
-	register int i,j;
+	int i,j;
 	memset(palbufC,0,768);
 
 	if(CurrentWorld < MAIN_WORLD_MAX - 1){

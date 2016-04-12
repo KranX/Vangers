@@ -108,7 +108,7 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 	::MapSkipFactor = ky;
 #endif
 	int k_xscr_x,k_xscr_y;
-	register int i,fx,fy;
+	int i,fx,fy;
 	i = 0;
 	int i_float = 0;
 	int ScreenSkipFactor;
