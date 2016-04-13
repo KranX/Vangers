@@ -949,7 +949,7 @@ inline int get_three_heights(int x,int y)
 	if(!p)
 		return 255;
 	p += x & clip_mask_x;
-	register unsigned char attr = *(p + H_SIZE);
+	unsigned char attr = *(p + H_SIZE);
 	if(!(attr & DOUBLE_LEVEL))
 		return *p;
 	//64 bit problem
@@ -4259,7 +4259,7 @@ models.
 int obb_disjoint(const DBM&  B, const DBV& T, double ax, double ay, double az, double bx, double by, double bz)
 {
   double t, s;
-  register int r;
+  int r;
   double Bf[9];
   const double reps = 1e-6;
 

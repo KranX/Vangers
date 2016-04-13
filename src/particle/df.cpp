@@ -326,7 +326,7 @@ void FireBallProcess::Show(int x,int y,int z,int scale,int& frame)
 	int vadd,dadd;
 	uchar* vbuf;
 	uchar* dbuf;
-	register uchar c;
+	uchar c;
 
 	if(y > VcutDown) return;
 	if(x > UcutRight) return;
@@ -387,7 +387,7 @@ void FireBallProcess::Show2(int x,int y,int& frame)
 	int nxs,nys;
 	int i,j;
 	int vadd,dadd;
-	register uchar c;
+	uchar c;
 	uchar* vbuf;
 	uchar* dbuf;
 
@@ -589,7 +589,7 @@ void TeleportShowPrepare(void)
 
 	short* rad = new short[SIDE*SIDE];
 	int max = 0;
-	register int i,j,r,ind;
+	int i,j,r,ind;
 	short* p = rad;
 
 	for(j = -MAX_LOCATOR_RADIUS;j <= MAX_LOCATOR_RADIUS;j++){
@@ -673,7 +673,7 @@ void TeleportShowFree(void)
 
 void TeleportShowProcess(int x,int y,uchar* p)
 {
-	register int i,j;
+	int i,j;
 	int max;
 	uchar* vb;
 	uchar* vf;

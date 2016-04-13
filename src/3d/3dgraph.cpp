@@ -137,7 +137,7 @@ Parser::Parser(const char* name,const char* del_chars)
 		} else {
 			memcpy(address(),compressed_buff + 2 + 4,(unsigned)(compressed_size - 2 - 4));
 		}
-		delete compressed_buff;
+		delete[] compressed_buff;
 		buf[decompressed_size] = 0;
 #else
 		ErrH.Abort("Parser: unable to read coded file");
@@ -398,8 +398,8 @@ void Normal::calc_intensity() // Metal
 {
 	int Intens;
 	if(n_power){
-		register int Ln = Vector(*this)*Refl;
-		register int RV = (Refl - (Vector(*this)*Ln >> 13))*View;
+		int Ln = Vector(*this)*Refl;
+		int RV = (Refl - (Vector(*this)*Ln >> 13))*View;
 		if(Ln < 0 || RV < 0){
 			I = 0;
 			I_8 = 0;
@@ -409,7 +409,7 @@ void Normal::calc_intensity() // Metal
 				      + (Ln >> 1);
 		}
 	else{
-		register int Ln = Vector(*this)*Refl;
+		int Ln = Vector(*this)*Refl;
 		if(Ln < 0){
 			I = 0;
 			I_8 = 0;

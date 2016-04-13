@@ -1627,7 +1627,7 @@ uchar GetAlt(int x,int y,int z,uchar& alt)
 {
 	uchar* p = vMap->lineT[y];
 	uchar* t;
-	register uchar d;
+	uchar d;
 	if(p){
 		p += x;
 		t = p + H_SIZE;

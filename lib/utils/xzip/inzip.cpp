@@ -143,7 +143,7 @@ void send_bits(int value,int length)
 
 unsigned bi_reverse(unsigned code,int len)
 {
-	register unsigned res = 0;
+	unsigned res = 0;
 	do {
 		res |= code & 1;
 		code >>= 1, res <<= 1;
@@ -307,7 +307,7 @@ static config configuration_table[10] = {
 
 void lm_init(int pack_level,ushort* flags)
 {
-	register unsigned j;
+	unsigned j;
 
 	//if(pack_level < 1 || pack_level > 9) ErrH.Abort(IErrMsg);
 
@@ -383,15 +383,15 @@ void lm_free(void)
 int longest_match(IPos cur_match)
 {
 	unsigned chain_length = max_chain_length;
-	register uchar *scan = window + strstart;
-	register uchar *match;
-	register int len;
+	uchar *scan = window + strstart;
+	uchar *match;
+	int len;
 	int best_len = prev_length;
 	IPos limit = strstart > (IPos)MAX_DIST ? strstart - (IPos)MAX_DIST : NIL;
 
-	register uchar *strend = window + strstart + MAX_MATCH;
-	register uchar scan_end1  = scan[best_len-1];
-	register uchar scan_end   = scan[best_len];
+	uchar *strend = window + strstart + MAX_MATCH;
+	uchar scan_end1  = scan[best_len-1];
+	uchar scan_end   = scan[best_len];
 	if(prev_length >= good_match){
 		chain_length >>= 2;
 	}
@@ -427,7 +427,7 @@ int longest_match(IPos cur_match)
 
 void fill_window(void)
 {
-	register unsigned n, m;
+	unsigned n, m;
 	unsigned more = (unsigned)(window_size - (unsigned int)lookahead - (unsigned int)strstart);
 	if(more == (unsigned)EOF){
 		more--;
@@ -514,7 +514,7 @@ unsigned int deflate(void)
 	IPos prev_match;
 	int flush;
 	int match_available = 0;
-	register unsigned match_length = MIN_MATCH - 1;
+	unsigned match_length = MIN_MATCH - 1;
 
 	if(level <= 3) return deflate_fast();
 

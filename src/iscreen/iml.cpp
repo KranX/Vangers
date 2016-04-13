@@ -111,7 +111,7 @@ void iMobileLocation::load(char* fname)
 
 	MLverify(ff);
 	ff.read(name,MLNAMELEN + 1);
-	register int i;
+	int i;
 	ff > maxFrame > DryTerrain > Impulse;
 	ff.seek(1,XS_CUR);
 	uchar t; ff > t; mode = t;
@@ -261,7 +261,7 @@ int iMLFrame::quant(int& step,MLAtype* alt,int dry,int render,int fastMode)
 		}
 #endif
 
-	register int i,j,x,y,v;
+	int i,j,x,y,v;
 	uchar* pr,t;
 	if(step == period || fastMode){
 #ifdef ML_COMPRESS_ON
@@ -428,7 +428,7 @@ int iMLFrame::quantAbs(int& step,MLAtype* alt,int dry,int render,int fastMode)
 		}
 #endif
 
-	register int i,j,x,y;
+	int i,j,x,y;
 	uchar* pr;
 	if(step == 1 || fastMode) {
 #ifdef ML_COMPRESS_ON
@@ -500,7 +500,7 @@ void iMLFrame::start(MLAtype* alt)
 	uchar* pa0;
 	MLAtype* pt = alt;
 
-	register int i,j,x,y;
+	int i,j,x,y;
 	for(j = 0,y = y0;j < sy;j++,y = iYCYCL(y + 1)){
 		pa0 = lt[y];
 		for(i = 0,x = x0;i < sx;i++,x = iXCYCL(x + 1),pt++)
@@ -690,7 +690,7 @@ void ilandPrepare(void)
 	int max = 0;
 
 	int calc = 1;
-	register int i,j,r,ind;
+	int i,j,r,ind;
 	short* p = rad;
 	if(calc){
 		for(j = -MAX_RADIUS;j <= MAX_RADIUS;j++)
@@ -776,7 +776,7 @@ static void deltaZone(int x,int y,int rad,int smth,int dh,int smode,int eql)
 {
 	static int locp;
 
-	register int i,j;
+	int i,j;
 	int max;
 	int* xx,*yy;
 

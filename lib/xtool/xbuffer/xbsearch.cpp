@@ -2,7 +2,7 @@
 
 int XBuffer::search(const char* what, int mode, int cs)
 {
-	register int i,j;
+	int i,j;
 	unsigned int wlen = strlen(what) - 1;
 	if(mode == XB_GLOBAL) { i = 0; mode = XB_FORWARD; } else i = offset;
 	if(mode == XB_FORWARD){
@@ -55,7 +55,7 @@ int XBuffer::search(const char* what, int mode, int cs)
 
 int XBuffer::search(char* what, int mode, int cs)
 {
-	register int i,j;
+	int i,j;
 	unsigned int wlen = strlen(what) - 1;
 	if(mode == XB_GLOBAL) { i = 0; mode = XB_FORWARD; } else i = offset;
 	if(mode == XB_FORWARD){

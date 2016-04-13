@@ -71,7 +71,7 @@ ivrtMap* ivMap;
 
 void iRenderPrepare(void)
 {
-	register int j,ind,v;
+	int j,ind,v;
 	if(!ishadowParent)
 		memset(ishadowParent = new uchar[4*map_size_x],0,4*map_size_x);
 
@@ -143,7 +143,7 @@ void ivrtMap::init(void)
 	freeTail = freeTail_c = 0;
 
 	ivrtNode* p;
-	register int i;
+	int i;
 	for(i = 0,p = freeNodes;i < MAX_LINE - 1;i++,p++) p -> next = p + 1;
 	p -> next = freeNodes;
 	for(i = 0,p = freeNodes_c;i < MAX_LINE - 1;i++,p++) p -> next = p + 1;
@@ -154,7 +154,7 @@ void ivrtMap::finit(void)
 {
 #ifdef SAVE_ABILITY
 	int max = iYCYCL(downLine + 1);
-	register int i = upLine;
+	int i = upLine;
 	do {
 		if(lineT[i]){
 			fmap.seek(foffset + i*H2_SIZE,XS_BEG);
@@ -209,7 +209,7 @@ void ivrtMap::analyzeINI(const char* name)
 
 	int tmax = atoi(iniparser_getstring(dict_name,"Rendering Parameters:Terrain Max", NULL));
 	if((!tmax && TERRAIN_MAX != 8) || (tmax && tmax != TERRAIN_MAX)) ErrH.Abort("Incorrect Terrain Max");
-	register int i;
+	int i;
 	{
 		char* p = iniparser_getstring(dict_name,"Rendering Parameters:Begin Colors", NULL);
 		XBuffer buf(p,128);
@@ -354,7 +354,7 @@ void ivrtMap::accept(int up,int down)
 	down = iYCYCL(down);
 
 	int max = iYCYCL(down + 1);
-	register int i = up;
+	int i = up;
 	uchar* p;
 	int off;
 	if(!isCompressed)
@@ -413,7 +413,7 @@ void iLINE_render(int y)
 	pa0 = pa = ivMap -> lineT[y];
 	pf0 = pf = pa0 + H_SIZE;
 	pc0 = pc = ivMap -> lineTcolor[y];
-	for(register unsigned int x = 0;x < map_size_x;x++,pa++,pc++,pf++){
+	for(unsigned int x = 0;x < map_size_x;x++,pa++,pc++,pf++){
 		if(*pf & DOUBLE_LEVEL){
 			x++; pc++; pf++; pa++;
 			type = (*pf & TERRAIN_MASK) >> TERRAIN_OFFSET;
@@ -517,7 +517,7 @@ inline void iMainStage(BYTE* pa0,int& hC,BYTE* pc0,int SizeX,int& x,BYTE*& grid,
 	BYTE* palCLRlast;
 	BYTE* lightCLRlast;
 	BYTE typeC = 0xFF;
-	register int i;
+	int i;
 	for(i = 0;i < SizeX;i += 2){
 		if(*pf & DOUBLE_LEVEL){
 			const BYTE lxVal = *pa;
@@ -640,7 +640,7 @@ void iregRender(int LowX,int LowY,int HiX,int HiY)
 	int SizeX = (0 == iXCYCL(HiX - LowX)) ? H_SIZE : iXCYCL(HiX - LowX);
 
 	int BackScanLen = 0;
-	register int j;
+	int j;
 	for(j = 0;j < SizeY;j++){
 		const int y = iYCYCL(j + LowY);
 		BYTE* pa0 = ivMap -> lineT[y];
@@ -801,7 +801,7 @@ void ipal_iter0(void)
 	static int cnt = PRD;
 	static int add = 1;
 
-	register int i;
+	int i;
 	uchar* p = ipalbuf + 3*(BEG + 1);
 	uchar* po = ipalbufOrg + 3*(BEG + 1);
 	memcpy(p,po,3*SZ);
@@ -841,7 +841,7 @@ void ipal_iter1(void)
 	static int cnt = PRD;
 	static int add = 1;
 
-	register int i;
+	int i;
 	uchar* p = ipalbuf + 3*(iBEGCOLOR[iPAL_WAVE_TERRAIN] + 1);
 	uchar* po = ipalbufOrg + 3*(iBEGCOLOR[iPAL_WAVE_TERRAIN] + 1);
 	memcpy(p,po,3*SZ);

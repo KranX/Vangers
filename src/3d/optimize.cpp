@@ -268,7 +268,7 @@ void Model::draw_child(const Vector& R,const DBM& A_c2p,const DBM& A_p2c)
 }
 void Model::z_buffering_draw()
 {
-	register int i;
+	int i;
 	for(i = 0;i < num_vert;i++)
 		vertices[i].fast_convert_z();
 
@@ -339,7 +339,7 @@ void Object::pixel_draw()
 
 void Model::pixel_draw()
 {
-	register int i;
+	int i;
 	for(i = 0;i < num_vert;i++)
 		vertices[i].fast_convert_z();
 
