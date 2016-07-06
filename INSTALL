@@ -10,6 +10,8 @@ VANGERS: One for the Road
    - ffmpeg
    - zlib
 
+See `.travis.yml` script for the exact command lines for Ubuntu/Debian systems.
+
 2. Required tools:
 
    - cmake
