@@ -11,6 +11,7 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
     avutil.h
   PATHS
     /usr/include
+    /usr/include/x86_64-linux-gnu
     /usr/local/include
     /local/include
     /mingw/include
@@ -27,6 +28,7 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
     avcodec.h
   PATHS
     /usr/include
+    /usr/include/x86_64-linux-gnu
     /usr/local/include
     /opt/local/include
     /local/include
@@ -43,10 +45,11 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
     avformat.h
   PATHS
     /usr/include
+    /usr/include/x86_64-linux-gnu
     /usr/local/include
     /opt/local/include
     /local/include
-    /mingw/include    
+    /mingw/include
     /opt/include
     /sw/include
   PATH_SUFFIXES
@@ -59,6 +62,7 @@ FIND_LIBRARY(AVUTIL_LIBRARY
     avutil
   PATHS
     /usr/lib
+    /usr/lib/x86_64-linux-gnu
     /usr/local/lib
     /opt/local/lib
     /sw/lib
@@ -73,6 +77,7 @@ FIND_LIBRARY(AVCODEC_LIBRARY
     avcodec
   PATHS
     /usr/lib
+    /usr/lib/x86_64-linux-gnu
     /usr/local/lib
     /opt/local/lib
     /sw/lib
@@ -87,6 +92,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
     avformat
   PATHS
     /usr/lib
+    /usr/lib/x86_64-linux-gnu
     /usr/local/lib
     /opt/local/lib
     /sw/lib
