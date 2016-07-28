@@ -21,6 +21,14 @@ void xtUnRegisterSysFinitFnc(int id);
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
+// compatability with newer libavcodec
+#if LIBAVCODEC_VERSION_MAJOR < 57
+  #define AV_FRAME_ALLOC avcodec_alloc_frame
+  #define AV_PACKET_UNREF av_free_packet
+#else
+  #define AV_FRAME_ALLOC av_frame_alloc
+  #define AV_PACKET_UNREF av_packet_unref
+#endif
 
 static XList aviXList;
 
@@ -82,7 +90,7 @@ int AVIFile::open(char* aviname,int initFlags,int channel)
 	}
 
 	// Allocate video frame
-	pFrame=avcodec_alloc_frame();
+	pFrame=AV_FRAME_ALLOC();
 
 	width = pCodecCtx->width;
 	height = pCodecCtx->height;
@@ -125,11 +133,11 @@ void AVIFile::draw(void) {
 #endif
 				 // Did we get a video frame?
 				if(frameFinished) {
-					av_free_packet(&packet);
+					AV_PACKET_UNREF(&packet);
 					break;
 				}
 			}
-		av_free_packet(&packet);
+	        AV_PACKET_UNREF(&packet);
 		}
 		if(frame<0 && (flags & AVI_LOOPING)) {
 				// Close the codec
