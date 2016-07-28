@@ -85,6 +85,7 @@ TARGET_LINK_LIBRARIES(vangers
 	${ZLIB_LIBRARIES}
 	${OPENGL_LIBRARIES}
 	${WIN_LIB}
+	${APPLE_LIB}
 	xtool
 	xgraph
 	xsound

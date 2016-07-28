@@ -28,3 +28,13 @@ See `.travis.yml` script for the exact command lines for Ubuntu/Debian systems.
 
    $ cd data
    $ ../build/src/vangers
+
+
+OSX prerequisites
+
+a. Install homebrew
+b. brew install sdl2 sdl2_net libvorbis libogg ffmpeg
+c. Build/install clunk (https://github.com/stalkerg/clunk).
+d. Go to 3.
+
+
