@@ -1876,7 +1876,7 @@ int aciReInitItem(actintItemData* p)
 int aciReInitItemXY(actintItemData* p,int x,int y)
 {
 	int id;
-	invItem* it = aScrDisp -> get_item_ptr_xy(p -> type,x,y);
+	invItem* it = aScrDisp->get_item_ptr_xy(p->type, x, y);
 	if(!it) {
 		std::cout<<"aciReInitItemXY !it p:"<<p<<std::endl;
 		return 0;
@@ -4691,8 +4691,10 @@ int aciPutItem(int id,int x,int y)
 				return 0;
 			}
 		}
+		return 1;
 	}
-	return 1;
+	aScrDisp->free_item(p);
+	return 0;
 }
 
 void aciRemoveItem(actintItemData* d)
@@ -5289,42 +5291,83 @@ void acsLoadData(void)
 		aciLoadUVSList(fh,&GCharItem,1);
 		aciLoadUVSList(fh,&GTreasureItem,1);
 
-		aScrDisp -> load_data(&fh);
+		aScrDisp->load_data(&fh);
 		//stalkerg Попытемся проверить трюм магазина и трюм мехоса в мире
-		//Эти трюмы должны совподать по содержимому, а иначе игра будет умирать
+		//Эти трюмы должны совпадать по содержимому, а иначе игра будет умирать
 		if(aScrDisp->curMatrix) { //Существует ли матрица
 			listElem *el = NULL;
+			listElem *el2 = NULL;
 			uvsActInt *new_item = NULL;
 			uvsActInt *iter_gamer = (uvsActInt*)GGamer;
+			invItem* p,*p1;
 			while (iter_gamer) {
 				bool item_detect = false;
 				int i, j, index = 0;
 				for(i = 0; i < aScrDisp->curMatrix->SizeY; i++){
 					for(j = 0; j < aScrDisp->curMatrix->SizeX; j++){
-						if(aScrDisp->curMatrix->matrix[index]->flags & AS_BUSY_CELL && aScrDisp->curMatrix->matrix[index]->item) {
-							if (aScrDisp->curMatrix->matrix[index]->item->ID == iter_gamer->type) {
-								//std::cout<<"GGamer:"<<iter_gamer->type<<" matrix:"<<aScrDisp->curMatrix->matrix[index]->item->ID<<" index:"<<index<<std::endl;
+						invMatrixCell *cell = aScrDisp->curMatrix->matrix[index];
+						/*std::cout<<"GGamer type:"<<iter_gamer->type
+							<<" x:"<<iter_gamer->pos_x
+							<<" y:"<<iter_gamer->pos_y
+							<<" i:"<<i
+							<<" j:"<<j
+							<<" mcell flags:"<<cell->flags
+							<<" mcell type:"<<cell->type
+							<<" index:"<<index<<std::endl;*/
+						if(cell->flags & AS_BUSY_CELL && cell->item) {
+							/*std::cout<<"item_type:"<<cell->item->ID
+								<<" MX:"<<cell->item->MatrixX
+								<<" MY:"<<cell->item->MatrixY<<std::endl;*/
+							if (cell->item->ID == iter_gamer->type &&
+								cell->item->MatrixX == iter_gamer->pos_x &&
+								cell->item->MatrixY == iter_gamer->pos_y
+							) {
 								item_detect = true;
-								break;
+								goto end_find;
 							}
 						}
 						index++;
 					}
 				}
-				
-				if (!item_detect) {
-					std::cout<<"Can't find item GGamer type:"<<iter_gamer->type<<std::endl;
-				} else {
-					new_item = new uvsActInt;
-					new_item->pos_x = iter_gamer->pos_x;
-					new_item->pos_y = iter_gamer->pos_y;
-					new_item->type = iter_gamer->type;
-					new_item->price = iter_gamer->price;
-					new_item->sell_price = iter_gamer->sell_price;
-					new_item->param1 = iter_gamer->param1;
-					new_item->param2 = iter_gamer->param2;
-					new_item->link(el);
+				std::cout<<"Can't find item GGamer type:"<<iter_gamer->type
+						<<" pos_x:"<<iter_gamer->pos_x
+						<<" pos_y:"<<iter_gamer->pos_y
+						<<" and we make it"<<std::endl;
+				if(aScrDisp->flags & AS_ISCREEN)
+					p = aScrDisp->get_iitem(iter_gamer->type);
+				else
+					p = aScrDisp->get_item(iter_gamer->type);
+
+				p1 = aScrDisp->alloc_item();
+				p->clone(p1);
+				aScrDisp->curMatrix->put_item(iter_gamer->pos_x, iter_gamer->pos_y, p1, 1);
+				end_find:
+				//Is it duplicate?
+				if (el != NULL) {
+					el2 = el;
+					while (el2) {
+						uvsActInt *item = dynamic_cast<uvsActInt*> (el2);
+						if (item->pos_x == iter_gamer->pos_x && item->pos_y == iter_gamer->pos_y && item->type == iter_gamer->type) {
+							std::cout<<"We find duplicate item GGamer type:"<<iter_gamer->type
+								<<" pos_x:"<<iter_gamer->pos_x
+								<<" pos_y:"<<iter_gamer->pos_y
+								<<std::endl;
+							goto next;
+						}
+						el2 = el2->next;
+					}
 				}
+				new_item = new uvsActInt;
+				new_item->pos_x = iter_gamer->pos_x;
+				new_item->pos_y = iter_gamer->pos_y;
+				new_item->type = iter_gamer->type;
+				new_item->price = iter_gamer->price;
+				new_item->sell_price = iter_gamer->sell_price;
+				new_item->param1 = iter_gamer->param1;
+				new_item->param2 = iter_gamer->param2;
+				new_item->link(el);
+
+				next:
 				iter_gamer = (uvsActInt*)iter_gamer->next;
 			}
 			
