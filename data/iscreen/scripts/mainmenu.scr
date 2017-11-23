@@ -119,17 +119,17 @@
 #define NEW_GAME_X		60
 #define NEW_GAME_Y		20
 
-#define MULTIPLAYER_X		230
-#define MULTIPLAYER_Y		340
-
 #define LOAD_GAME_X		60
-#define LOAD_GAME_Y		110
+#define LOAD_GAME_Y		90
 
 #define OPTIONS_X		160
-#define OPTIONS_Y		200
+#define OPTIONS_Y		160
 
 #define CREDITS_X		80
-#define CREDITS_Y		290
+#define CREDITS_Y		310
+
+#define MULTIPLAYER_X		230
+#define MULTIPLAYER_Y		240
 
 #define MAIN_FNT		1
 
@@ -395,7 +395,7 @@ Screen "Main Screen"
 		} 
 	}
 
-/*	Object "Multiplayer Option"
+Object "Multiplayer Option"
 	{
 		x	$MULTIPLAYER_X
 		y	$MULTIPLAYER_Y
@@ -525,7 +525,7 @@ Screen "Main Screen"
 			$EV_CHANGE_OBJ
 		}
 	}
-*/
+
 	Object "New Game Option"
 	{
 		x	$NEW_GAME_X
