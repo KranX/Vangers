@@ -5,16 +5,16 @@ compiler:
   - gcc
   - clang
 addons:
-	apt:
-		packages:
-		- cmake
-		- libsdl2-dev
-		- libsdl2-net-dev
-		- libogg-dev
-		- libvorbis-dev
-		- libavcodec-dev
-		- libavformat-dev
-		- libavutil-dev
+    apt:
+        packages:
+          - cmake
+          - libsdl2-dev
+          - libsdl2-net-dev
+          - libogg-dev
+          - libvorbis-dev
+          - libavcodec-dev
+          - libavformat-dev
+          - libavutil-dev
 before_install:
   - git clone --depth 1 https://github.com/stalkerg/clunk.git /tmp/clunk
   - cd /tmp/clunk && cmake -DCMAKE_INSTALL_PREFIX=/usr . && make && sudo make install
