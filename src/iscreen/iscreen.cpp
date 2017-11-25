@@ -3465,9 +3465,8 @@ void iScreenDispatcher::input_string_quant(void)
 						if(!(ActiveEl -> flags & EL_NUMBER)){
 							if(KeyBuf -> flag & SHIFT_PRESSED) shift_flag = 1;
 							code = SDL_GetKeyFromScancode((SDL_Scancode)k);
-							//std::cout<<"AAA code:"<<code<<std::endl;
-							if(code){
-								if(hfnt && (hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
+							if(code && hfnt && code < hfnt->NumChars){
+								if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
 									break;
 								sz = strlen((char*)ptr);
 								if(sz < cur_max_input){
@@ -3483,7 +3482,6 @@ void iScreenDispatcher::input_string_quant(void)
 						else {
 							if(KeyBuf -> flag & SHIFT_PRESSED) shift_flag = 1;
 							code = SDL_GetKeyFromScancode((SDL_Scancode)k);
-							//std::cout<<"AAA2 code:"<<code<<std::endl;
 							if(code && code >= '0' && code <= '9'){
 								if(hfnt && (hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
 									break;
