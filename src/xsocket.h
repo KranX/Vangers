@@ -26,6 +26,7 @@ class XSocket
 	int ErrHUsed;
 	TCPsocket tcpSock;
 	UDPsocket udpSock;
+	SDLNet_SocketSet socketSet;
 	IPaddress addr;
 
 	public:

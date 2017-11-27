@@ -183,7 +183,7 @@ ServerFindChain::ServerFindChain(int IP,int port,char* domain_name,int game_ID,c
 	XBuffer str_buf;
 	if(!game_ID)
 #if defined(RUSSIAN_VERSION) && !defined(GERMAN_VERSION)
-		str_buf < "Ќ®ў п ЁЈа  ­  ";
+		str_buf < "Ќ®ў п ЁЈа  ­  ";
 #else
 		str_buf < "New Game on ";
 #endif
@@ -222,22 +222,22 @@ int identification(XSocket& socket)
 	char string[256] = "";
 	memset(string,0,256);
 	unsigned int len,identificated = 0;
-	START_TIMER(60*1000);
+	START_TIMER(60*CLOCKS_PER_SEC);
 	const char* request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
 	strcpy(string, request_str);
 	string[strlen(string) + 1] = CLIENT_VERSION;
 	socket.send(string,strlen(string) + 2);
 	while(CHECK_TIMER())
-		if((len = socket.receive(string,255)) != 0 && !strcmp(string,"Enter, my son, please...")){
-			if(!SERVER_VERSION || len > strlen(string) + 1 && string[strlen(string) + 1] == SERVER_VERSION)
+		if((len = socket.receive(string, 255, 1000)) != 0 && !strcmp(string,"Enter, my son, please...")){
+			if(!SERVER_VERSION || (len > strlen(string) + 1 && string[strlen(string) + 1] == SERVER_VERSION))
 				identificated = 1;
 			break;
 			}
-	if(!identificated){
+	if(!identificated) {
 		std::cout<<"Network:identificated is wrong! SV:"<<SERVER_VERSION<<" SV2:"<<(int)string[strlen(string)+1]<<std::endl;
 		socket.close();
 		return 0;
-		}
+	}
 // zMod fixed ---------------------------------------------------------
 
     XBuffer zbuffer(10000);
@@ -247,7 +247,7 @@ int identification(XSocket& socket)
 
     unsigned int z_end_time_ = SDL_GetTicks() + 2*60*1000;
     while (((int)(SDL_GetTicks() - z_end_time_) < 0))
-	if (socket.receive(zbuffer.GetBuf(), zbuffer.length()))
+	if (socket.receive(zbuffer.GetBuf(), zbuffer.length(), 1000))
 	   break;
 
     unsigned char zevent_ID;
@@ -257,17 +257,18 @@ int identification(XSocket& socket)
     zbuffer.set(0);
     zbuffer > zevent_size > zevent_ID > zresponse;
 
-    if(zevent_ID == SERVER_TIME)
-	zserver_version = 1;
+	if(zevent_ID == SERVER_TIME)
+		zserver_version = 1;
 
     //std::cout<<"Client auth: "<<(int)zevent_ID<<" "<<zSERVER_VERSION_RESPONSE<<" "<<(int)zresponse<<" "<<zCLIENT_VERSION<<std::endl;
-    if (zevent_ID == zSERVER_VERSION_RESPONSE)
-	if (zCLIENT_VERSION == zresponse) {
-	    zserver_version = zresponse;
-	} else {
-	//NEED SEE!
-	//    ErrH.Abort(zSTR_WRONG_VERSION);
-	 //   return 0;
+	if (zevent_ID == zSERVER_VERSION_RESPONSE) {
+		if (zCLIENT_VERSION == zresponse) {
+			zserver_version = zresponse;
+		} else {
+		//NEED SEE!
+		//    ErrH.Abort(zSTR_WRONG_VERSION);
+		 //   return 0;
+		}
 	}
 
 // /zMod ---------------------------------------------------------
@@ -303,9 +304,9 @@ int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_g
 	if(!sock.send(servers_buffer.GetBuf(),servers_buffer.tell()))
 		return 0;
 
-	START_TIMER(2*60*1000);
+	START_TIMER(60*CLOCKS_PER_SEC);
 	while(CHECK_TIMER())
-		if(sock.receive(servers_buffer.GetBuf(), servers_buffer.length()))
+		if(sock.receive(servers_buffer.GetBuf(), servers_buffer.length(), 1000))
 			break;
 
 	ServerFindChain* p;
@@ -339,7 +340,7 @@ int ServersList::find_servers(int bc_port)
 	XSocket udp_sock;
 	udp_sock.openUDP(bc_port);
 	clear_states();
-	START_TIMER(5*1000);
+	START_TIMER(5*CLOCKS_PER_SEC);
 	while(CHECK_TIMER()){
 		sent_size = udp_sock.receivefrom(buffer,256);
 		if(buffer[0] != 'K' || buffer[1] != 'D'){
@@ -590,27 +591,30 @@ InputEventBuffer::InputEventBuffer(unsigned int size)
 {
 	reset();
 }
+
 void InputEventBuffer::reset()
 {
 	next_event_pointer = 0;
 	filled_size = 0;
 	offset = 0;
 }
+
 int InputEventBuffer::receive(XSocket& sock,int dont_free)
 {
 	restore_connection();
 
-	if(next_event_pointer != tell()){
+	if(next_event_pointer != tell()) {
 		XBuffer str;
 		str < "Connection's problems: " <= event_ID < "  "  <= object_ID < "  "  <= next_event_pointer - tell();
 		ErrH.Abort(str.GetBuf(),XERR_USER);
-		}
-	if(next_event_pointer && !dont_free){
+	}
+
+	if(next_event_pointer && !dont_free) {
 		if(filled_size != next_event_pointer)
 			memmove(address(),address() + next_event_pointer,filled_size - next_event_pointer);
 		filled_size -= next_event_pointer;
 		offset = next_event_pointer = 0;
-		}
+	}
 
 	int add_size = sock.receive(address() + filled_size,length() - filled_size);
 	filled_size += add_size;
@@ -628,28 +632,29 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 {
 	//std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
 	receive(sock);
-	START_TIMER(100*1000);
-	while(current_event() || CHECK_TIMER()){
-		do{
-			//std::cout<<"current_event:"<<(int)current_event()<<std::endl;
-			if(current_event() == event){
+	START_TIMER(10*CLOCKS_PER_SEC);
+	while(current_event() || CHECK_TIMER()) {
+		do {
+			//std::cout<<"current_event:"<<(int)current_event()<<" clock:"<<clock()<<" _end_time_:"<<_end_time_<<std::endl;
+			if(current_event() == event) {
 				//std::cout<<"ok"<<std::endl;
 				int size = event_size + 2;
 				int prefix = next_event_pointer - size;
-				if(prefix > 0){
+				if(prefix > 0) {
 					memmove(buf + size,buf,filled_size);
 					memmove(buf,buf + size + prefix,size);
 					memmove(buf + size + prefix,buf + 2*size + prefix,filled_size - size - prefix);
 					//offset = next_event_pointer = size - body_size;
 					offset = next_event_pointer = 0;
 					return next_event();
-					}
-				return event;
 				}
+				return event;
+			}
 			ignore_event();
-			}while(next_event());
+		} while(next_event());
+
 		receive(sock,1);
-		}
+	}
 	if(!skip_if_aint)
 #if defined(RUSSIAN_VERSION) && !defined(GERMAN_VERSION)
 		ErrH.Abort("Сервер не отвечает", XERR_USER, event);
@@ -837,7 +842,7 @@ int connect_to_server(ServerFindChain* p)
 		events_in.ignore_event();
 
 		zGameBirthTime = 0;
-		if (zserver_version>1) {
+		if (zserver_version > 1) {
 			//std::cout<<"zTIME_RESPONSE"<<std::endl;
 			events_in.receive_waiting_for_event(zTIME_RESPONSE); //ZMOD second network packet
 			//std::cout<<"[ok]"<<std::endl;
@@ -868,7 +873,7 @@ int restore_connection()
 			ErrH.Abort("Unable to restore connection to Server");
 #endif
 		return 0;
-		}
+	}
 	number_of_reconnection_attempt = 5;
 	events_out.clear();
 	events_in.reset();
@@ -885,9 +890,9 @@ int restore_connection()
 void disconnect_from_server()
 {
 	events_out.send_simple_query(CLOSE_SOCKET);
-	delay(256);
+	delay(256*(CLOCKS_PER_SEC/1000));
 	main_socket.close();
-	delay(256);
+	delay(256*(CLOCKS_PER_SEC/1000));
 	events_out.clear();
 	events_in.reset();
 }
@@ -928,7 +933,7 @@ int set_world(int world,int world_y_size) //znfo - send set_world event
 	events_out.set_world(world,world_y_size);
 	events_out.send(1);
 	events_in.receive_waiting_for_event(SET_WORLD_RESPONSE);
-	int resp_world = events_in.get_byte();
+	events_in.get_byte(); //resp_world
 	int resp_status = events_in.get_byte();
 	events_in.ignore_event();
 	set_world_status = resp_status;
@@ -1205,10 +1210,10 @@ int send_server_data(char* name, ServerData* data, zServerData* zdata)
 void void_network_quant()
 {
 	events_in.receive();
-	while(events_in.current_event()){
+	while(events_in.current_event()) {
 		events_in.ignore_event();
 		events_in.next_event();
-		}
+	}
 }
 /*******************************************************************************
 				Player's List
@@ -1291,7 +1296,7 @@ unsigned int PlayersList::get_team_mask(int color)
 	PlayerData* p = first();
 	while(p){
 		if(p -> body.color == color && p -> status != FINISHED_STATUS)
-			mask |= 1 << p -> client_ID - 1;
+			mask |= 1 << (p -> client_ID - 1);
 		p = p -> next;
 		}
 	return mask;
@@ -1349,13 +1354,13 @@ void MessageDispatcher::send(char* message,int mode,int parameter)
 	unsigned int cors;
 	switch(mode){
 		case MESSAGE_FOR_ALL:
-			cors = 0xffffffff & ~(1 << GlobalStationID - 1);
+			cors = 0xffffffff & ~(1 << (GlobalStationID - 1));
 			break;
 		case MESSAGE_FOR_TEAM:
-			cors = players_list.get_team_mask(parameter) & ~(1 << GlobalStationID - 1);
+			cors = players_list.get_team_mask(parameter) & ~(1 << (GlobalStationID - 1));
 			break;
 		case MESSAGE_FOR_PLAYER:
-			cors = 1 << parameter - 1;
+			cors = 1 << (parameter - 1);
 			break;
 		}
 	events_out.begin_direct_send(cors);
