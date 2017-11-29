@@ -3657,7 +3657,7 @@ void GameObjectDispatcher::NetEvent(void)
 	int id,type;
 
 	//restore_connection();
-	NETWORK_IN_STREAM.receive();	
+	NETWORK_IN_STREAM.receive();
 
 	while((type = NETWORK_IN_STREAM.current_event())){
 		if(!(type & AUXILIARY_EVENT)){
@@ -3698,7 +3698,7 @@ void GameObjectDispatcher::NetEvent(void)
 					NETWORK_IN_STREAM.ignore_event();
 					break;
 			};
-		};		
+		};
 		NETWORK_IN_STREAM.next_event();
 	};	
 	NETWORK_OUT_STREAM.send();

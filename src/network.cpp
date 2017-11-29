@@ -405,7 +405,7 @@ void OutputEventBuffer::create_permanent_object(int ID,int x,int y,int radius,in
 	n_event++;
 	pointer_to_size_of_event = tell();
 	*this < short(0) < (unsigned char)(CREATE_PERMANENT_OBJECT | flags);
-	*this < ID < GLOBAL_CLOCK() < (unsigned short)x < (unsigned short)y < (unsigned short)radius;
+	*this < ID < (unsigned int)GLOBAL_CLOCK() < (unsigned short)x < (unsigned short)y < (unsigned short)radius;
 	OUT_EVENTS_LOG1(CREATE_PERMANENT_OBJECT,ID);
 }
 void OutputEventBuffer::update_object(int ID,int x,int y,int flags)
@@ -413,14 +413,14 @@ void OutputEventBuffer::update_object(int ID,int x,int y,int flags)
 	n_event++;
 	pointer_to_size_of_event = tell();
 	*this < short(0) < (unsigned char)(UPDATE_OBJECT | flags);
-	*this < ID < GLOBAL_CLOCK() < (unsigned short)x < (unsigned short)y;
+	*this < ID < (unsigned int)GLOBAL_CLOCK() < (unsigned short)x < (unsigned short)y;
 	OUT_EVENTS_LOG1(UPDATE_OBJECT,ID);
 }
 void OutputEventBuffer::delete_object(int ID)
 {
 	n_event++;
 	pointer_to_size_of_event = tell();
-	*this < short(0) < (unsigned char)DELETE_OBJECT < ID < GLOBAL_CLOCK();
+	*this < short(0) < (unsigned char)DELETE_OBJECT < ID < (unsigned int)GLOBAL_CLOCK();
 	OUT_EVENTS_LOG1(DELETE_OBJECT,ID);
 }
 void OutputEventBuffer::begin_create_z_object(int Type, int ID)
@@ -487,15 +487,16 @@ void OutputEventBuffer::end_body()
 	if(pointer_to_size_of_event < 0)
 		ErrH.Abort("There wasn't a beginning of event");
 
+	//std::cout<<"OutputEventBuffer::end_body size:"<<tell() - pointer_to_size_of_event - sizeof(short int)<<std::endl;
 	*(short*)(address() + pointer_to_size_of_event) = tell() - pointer_to_size_of_event - sizeof(short int);
 
 	int ev_ID,event_ID = *(unsigned char*)(address() + pointer_to_size_of_event + 2);
-	if((event_ID & (~ECHO_EVENT)) == UPDATE_OBJECT){
+	if((event_ID & (~ECHO_EVENT)) == UPDATE_OBJECT) {
 		int object_ID = *(int*)(address() + pointer_to_size_of_event + 3);
-		for(i = pointer_to_the_first_event;i < pointer_to_the_last_event;i += full_event_size(i)){
+		for(i = pointer_to_the_first_event; i < pointer_to_the_last_event; i += full_event_size(i)) {
 			ev_ID = *((unsigned char*)(address() + i + 2));
-			if((ev_ID & (~ECHO_EVENT)) == UPDATE_OBJECT)
-				if(*((int*)(address() + i + 3)) == object_ID){
+			if((ev_ID & (~ECHO_EVENT)) == UPDATE_OBJECT) {
+				if(*((int*)(address() + i + 3)) == object_ID) {
 					int event_size = full_event_size(i);
 					memmove(address() + i, address() + i + event_size, tell() - (i + event_size));
 					*(unsigned char*)(address() + pointer_to_size_of_event + 2) |= ev_ID & ECHO_EVENT;
@@ -504,9 +505,10 @@ void OutputEventBuffer::end_body()
 					n_event--;
 					OUT_EVENTS_LOG1(Pack_update,object_ID);
 					break;
-					}
+				}
 			}
 		}
+	}
 	pointer_to_size_of_event = -1;
 }
 int OutputEventBuffer::send(int system_send, XSocket& sock)
@@ -599,24 +601,24 @@ void InputEventBuffer::reset()
 	offset = 0;
 }
 
-int InputEventBuffer::receive(XSocket& sock,int dont_free)
-{
+int InputEventBuffer::receive(XSocket& sock,int dont_free) {
 	restore_connection();
 
 	if(next_event_pointer != tell()) {
 		XBuffer str;
 		str < "Connection's problems: " <= event_ID < "  "  <= object_ID < "  "  <= next_event_pointer - tell();
-		ErrH.Abort(str.GetBuf(),XERR_USER);
+		ErrH.Abort(str.GetBuf(), XERR_USER);
 	}
 
 	if(next_event_pointer && !dont_free) {
-		if(filled_size != next_event_pointer)
-			memmove(address(),address() + next_event_pointer,filled_size - next_event_pointer);
+		if(filled_size != next_event_pointer) {
+			memmove(address(), address() + next_event_pointer, filled_size - next_event_pointer);
+		}
 		filled_size -= next_event_pointer;
 		offset = next_event_pointer = 0;
 	}
 
-	int add_size = sock.receive(address() + filled_size,length() - filled_size);
+	int add_size = sock.receive(address() + filled_size, length() - filled_size);
 	filled_size += add_size;
 	n_received_bytes += add_size;
 	if(add_size)
@@ -628,6 +630,7 @@ int InputEventBuffer::receive(XSocket& sock,int dont_free)
 	//std::cout<<"InputEventBuffer::receive "<<add_size<<" "<<std::endl;
 	return next_event();
 }
+
 int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int skip_if_aint)
 {
 	//std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
@@ -665,28 +668,31 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 	offset = next_event_pointer = 0;
 	return 0;
 }
-int InputEventBuffer::next_event()
-{
+
+int InputEventBuffer::next_event() {
 	int prev_event_ID = event_ID;
 	event_ID = 0;
 
-	if(next_event_pointer + 2 > filled_size)
+	//std::cout<<"InputEventBuffer::next_event event_ID:"<<(int)event_ID<<" client_ID:"<<(int)client_ID<<" next_event_pointer:"<<next_event_pointer
+	//		 <<" filled_size:"<<filled_size<<std::endl;
+	if(next_event_pointer + 2 > filled_size) {
 		return 0;
-	if(next_event_pointer != tell()){
+	}
+	if(next_event_pointer != tell()) {
 		XBuffer str;
 		str < "Connection's problems: " <= prev_event_ID < "  "  <= object_ID < "  "  <= next_event_pointer - tell();
-		ErrH.Abort(str.GetBuf(),XERR_USER);
-		}
+		ErrH.Abort(str.GetBuf(), XERR_USER);
+	}
 
 	*this > event_size;
 	//std::cout<<"event_size:"<<(int)event_size<<std::endl;
 	unsigned int new_pointer = next_event_pointer + event_size + 2;
-	if(new_pointer > filled_size){
+	if(new_pointer > filled_size) {
 		set(next_event_pointer);
 		return 0;
-		}
-	 next_event_pointer = new_pointer;
-	 if(!event_size)
+	}
+	next_event_pointer = new_pointer;
+	if(!event_size)
 		return next_event();
 
 	n_received_events++;
@@ -697,7 +703,7 @@ int InputEventBuffer::next_event()
 	unsigned char factory_number, ammo_count;
 	zCreateObjectQueue* temp;
 	if (event_ID == zCREATE_OBJECT_BY_SERVER) {
-		//std::cout<<"zCREATE_OBJECT_BY_SERVER"<<std::endl;
+		std::cout<<"zCREATE_OBJECT_BY_SERVER"<<std::endl;
 		//zmod - пакет "создай предмед"
 		*this > factory_number > ammo_count;
 		body_size = 0;
@@ -709,17 +715,16 @@ int InputEventBuffer::next_event()
 			}
 			z_create_object_queue = temp;
 		}
-
-	}else if(!(event_ID & AUXILIARY_EVENT)){
+	}else if(!(event_ID & AUXILIARY_EVENT)) {
 		*this > object_ID;
-		switch(event_ID){
+		switch(event_ID) {
 			case UPDATE_OBJECT:
 				*this  > client_ID > time > x  > y;
 				body_size = event_size - 14;
-				if(GET_OBJECT_TYPE(object_ID) == NID_VANGER){
+				if(GET_OBJECT_TYPE(object_ID) == NID_VANGER) {
 					PlayerData* p = players_list.find(client_ID);
 					p -> x = x; p -> y = y;
-					}
+				}
 				delay_time += GLOBAL_CLOCK() - time;
 				delay_time_counter++;
 				IN_EVENTS_LOG1(UPDATE_OBJECT,object_ID);
@@ -737,33 +742,34 @@ int InputEventBuffer::next_event()
 				break;
 			default:
 				ErrH.Abort("Received unknown event",XERR_USER,event_ID);
-			}
+		}
 
-		if(NON_GLOBAL_OBJECT(object_ID)){
-			if(!enable_transferring){
+		if(NON_GLOBAL_OBJECT(object_ID)) {
+			if(!enable_transferring) {
 				IN_EVENTS_LOG1(Disable_query,object_ID);
 				ignore_event();
-				}
-			if(GET_WORLD(object_ID) != CurrentWorld){
+			}
+			if(GET_WORLD(object_ID) != CurrentWorld) {
 				IN_EVENTS_LOG1(Receive_from_another_world,object_ID);
 				ignore_event();
-				}
 			}
-	}else{
+		}
+	} else {
 		IN_EVENTS_LOG1(AXILIARY_EVENT,event_ID);
 		switch(event_ID){
 			case SERVER_TIME:
 				//zmod
 				z_time_collect();
 				*this > time;
-				if(enable_transferring){
+				if(enable_transferring) {
 					ignore_event();
-					if(!lag_averaging_t0.empty()){
+					if(!lag_averaging_t0.empty()) {
 						int dt = (int)(SDL_GetTicks() - lag_averaging_t0.get());
-						if(dt > 100 && dt < 20000)
+						if(dt > 100 && dt < 20000) {
 							average_lag = (dt + average_lag*3) >> 2;
 						}
 					}
+				}
 				body_size = 0;
 				break;
 			case ATTACH_TO_GAME_RESPONSE:
@@ -791,27 +797,28 @@ int InputEventBuffer::next_event()
 
 			case DIRECT_RECEIVING:
 				*this > client_ID;
-				if(get_byte()){
+				if(get_byte()) {
 					--*this;
 					message_dispatcher.receive();
 					body_size = 0;
 					ignore_event();
-					}
-				else{
+				} else {
 					body_size = event_size - 2;
-					}
+				}
 				break;
 
 			default:
-				ErrH.Abort("Received unknown axiliary event",XERR_USER,event_ID);
-			}
+				ErrH.Abort("Received unknown axiliary event", XERR_USER, event_ID);
 		}
+	}
 	return event_ID ? event_ID : next_event();
 }
+
 void InputEventBuffer::ignore_event()
 {
 	event_ID = 0;
 	set(next_event_pointer);
+	//std::cout<<"InputEventBuffer::ignore_event next_event_pointer:"<<next_event_pointer<<std::endl;
 }
 /***********************************************************************
 				Some utilites
