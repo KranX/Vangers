@@ -1,0 +1,12 @@
+
+#include "actint/acsconst.h"
+#include "actint/aci_evnt.h"
+#include "actint/a_consts.h"
+
+#include "iscreen/scripts/vkeys.inc"
+
+#include "actint/acs_str.inc"
+#include "actint/acs_str2.inc"
+
+#include "actint/acs_main.inc"
+
