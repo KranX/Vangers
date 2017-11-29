@@ -1,0 +1,15 @@
+
+#include "actint/a_consts.h"
+#include "actint/aci_ev.inc"
+
+#include "actint/a_str.inc"
+#include "actint/a_str1.inc"
+#include "actint/actint.inc"
+
+#include "actint/tutorial.inc"
+
+#include "actint/main_l.inc"
+
+#include "actint/item_prm.inc"
+#include "actint/mech_prm.inc"
+

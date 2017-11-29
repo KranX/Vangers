@@ -1,0 +1,53 @@
+
+// MLs...
+#define AML_HEAD		0
+#define AML_BREATHE		1
+
+#define AML_WND1		2
+#define AML_WND12		3
+#define AML_WND2		4
+#define AML_WND3		5
+#define AML_WND4		6
+#define AML_WND8		7
+
+#define AML_HAND		8
+
+// Phases...
+#define AML_WND1_END_PHASE	6
+#define AML_WND12_END_PHASE	6
+#define AML_WND2_END_PHASE	6
+#define AML_WND3_END_PHASE	6
+#define AML_WND4_END_PHASE	6
+#define AML_WND8_END_PHASE	6
+
+#define AML_HEAD_END_PHASE	13
+#define AML_BREATHE_END_PHASE	8
+
+#define AML_HAND_END_PHASE	8
+
+#define AML_WND1_START_PHASE	0
+#define AML_WND12_START_PHASE	0
+#define AML_WND2_START_PHASE	0
+#define AML_WND3_START_PHASE	0
+#define AML_WND4_START_PHASE	0
+#define AML_WND8_START_PHASE	0
+
+#define AML_HEAD_START_PHASE	0
+#define AML_BREATHE_START_PHASE 0
+
+#define AML_HAND_START_PHASE	0
+
+// Channels...
+#define AML_HEAD_CHANNEL	1
+#define AML_HAND_CHANNEL	2
+
+// ML Sets...
+#define PODISH_ML_SET		0
+#define INCUBATOR_ML_SET	1
+#define VIGBOO_ML_SET		2
+#define LAMPASY_ML_SET		3
+#define OGOROD_ML_SET		4
+#define ZEEPA_ML_SET		5
+#define BZONE_DATA_SET		6
+#define SPOBS_DATA_SET		7
+
