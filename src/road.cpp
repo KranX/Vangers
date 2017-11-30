@@ -325,6 +325,8 @@ const char* nVER = "Patch 4.20";
 
 
 #include "video/winvideo.h"
+#include "cli_options.h"
+
 sWinVideo winVideo;
 
 void showModal(char* fname, float reelW, float reelH, float screenW, float screenH) {
@@ -369,7 +371,7 @@ void showModal(char* fname, float reelW, float reelH, float screenW, float scree
 
 
 
-int xtInitApplication(void)
+int xtInitApplication(int argc, char **argv)
 {
 	XGraphWndID = "VANGERS";
 	char* tmp;
@@ -465,29 +467,14 @@ int xtInitApplication(void)
 
 	if(!videoMode){
 		actintLowResFlag = 1;
-#ifdef ISCREEN
-		videoMode = 2;
-#endif
 	}
-	videoMode = 1;
-	float w = 800;
-	float h = 600;
 
-	switch(videoMode){
-		case 1:
-			w = 800;
-			h = 600;
-			break;
-		case 2:
-			w = 1024;
-			h = 768;
-			break;
-		case 3:
-			w = 1280;
-			h = 720;
-	}
+    CommandLineOptions options;
+    options.parseArgs(argc, argv);
 	
-	if(XGR_Init(w,h,emode)) ErrH.Abort(ErrorVideoMss);
+	if(XGR_Init(options.getScreenWidth(), options.getScreenHeight(), emode)) {
+        ErrH.Abort(ErrorVideoMss);
+    }
 
 //WORK	sWinVideo::Init();
 //	::ShowCursor(0);
