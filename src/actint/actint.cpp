@@ -3252,7 +3252,8 @@ void actIntDispatcher::redraw(void)
 	}
 	if(!(flags & AS_FULL_REDRAW)){
 		XGR_MouseObj.flags &= ~XGM_PROMPT_ACTIVE;
-		curIbs -> back -> load2mem(XGR_VIDEOBUF);
+		curIbs -> back -> load(NULL, 1);
+		curIbs -> back -> show(0);
 		if(curMode == AS_INV_MODE && curMatrix && curMatrix -> back){
 			curMatrix -> back -> load();
 			XGR_PutSpr(curMatrix -> back -> OffsX,curMatrix -> back -> OffsY,curMatrix -> back -> SizeX,curMatrix -> back -> SizeY,curMatrix -> back -> frames,XGR_BLACK_FON);
