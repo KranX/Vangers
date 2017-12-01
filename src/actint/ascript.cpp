@@ -318,7 +318,8 @@ enum aOptions
 	SET_ESCAVE_FLAG,		// 153
 
 	ADD_MAP_INFO_FILE,		// 154
-
+	ANCHOR_RIGHT,                 //155
+	ANCHOR_BOTTOM,                 //156
 	MAX_OPTION
 };
 
@@ -547,7 +548,9 @@ static const char* aOptIDs[MAX_OPTION] =
 	"prm_template",         // 152
 	"show_escave",          // 153
 
-	"map_data"              // 154
+	"map_data",             // 154
+	"anchor_right",         // 155
+	"anchor_bottom"         // 156
 };
 
 int curMode = AS_NONE;
@@ -2125,6 +2128,23 @@ void aParseScript(const char* fname,char* bname)
 						handle_error("Misplaced option",aOptIDs[id]);
 					}
 					break;
+				case ANCHOR_RIGHT:
+					{
+						if(curMode == AS_INIT_MENU){
+							fnMnu -> anchor |= FM_ANCHOR_RIGHT;
+						}else{
+							handle_error("Misplaced option",aOptIDs[id]);
+						}
+					}
+				case ANCHOR_BOTTOM:
+				{
+					if(curMode == AS_INIT_MENU){
+						fnMnu -> anchor |= FM_ANCHOR_BOTTOM;
+					}else{
+						handle_error("Misplaced option",aOptIDs[id]);
+					}
+				}
+				break;
 			}
 #ifndef _BINARY_SCRIPT_
 		}
@@ -2218,6 +2238,7 @@ void end_block(void)
 			curMode = AS_INIT_MATRIX;
 			break;
 		case AS_INIT_MENU:
+			fnMnu->recalc_anchors();
 			if(!iScreenFlag){
 				if(fnMnu -> flags & FM_ITEM_MENU){
 					curMode = AS_INIT_ITEM;

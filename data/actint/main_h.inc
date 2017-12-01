@@ -581,9 +581,10 @@ fncMenu {
 fncMenu {
 	menu_type	$MENU2
 
-	x	618
-	y	310
-
+	x	50
+	y	50
+	anchor_right
+	anchor_bottom
 	size_x	177
 	size_y	222
 

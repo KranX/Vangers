@@ -783,12 +783,16 @@ const int 	FM_NO_ALIGN		= 0x1000;
 const int 	FM_MAIN_MENU		= 0x2000;
 const int 	FM_RANGE_FONT		= 0x4000;
 
+const int   FM_ANCHOR_RIGHT = 0x1;
+const int   FM_ANCHOR_BOTTOM = 0x2;
+
 struct fncMenu : public iListElement
 {
 	int type;
 
 	int PosX;
 	int PosY;
+	int anchor = 0;
 
 	int SizeX;
 	int SizeY;
@@ -893,6 +897,8 @@ struct fncMenu : public iListElement
 
 	fncMenu(void);
 	~fncMenu(void);
+
+	void recalc_anchors();
 };
 
 // fncMenuSet flags...

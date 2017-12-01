@@ -9324,6 +9324,15 @@ void fncMenu::activate_item(int code)
 	}
 }
 
+void fncMenu::recalc_anchors() {
+	if(anchor & FM_ANCHOR_RIGHT ){
+		PosX = XGR_MAXX - PosX - SizeX;
+	}
+	if(anchor & FM_ANCHOR_BOTTOM ){
+		PosY = XGR_MAXY - PosY - SizeY;
+	}
+}
+
 void aciWorldMap::show_jump_count(void)
 {
 	int i,x,sx0,col_in0,col_in1,col_out,index0,index1;
