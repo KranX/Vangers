@@ -73,7 +73,8 @@ enum iScreenOptionID
 	iCAMERA_SCALE,			// 44
 	
 	iFULLSCREEN,			// 45
-	
+	iLIGHTINGCYCLE,			// 46
+
 	iMAX_OPTION_ID
 };
 

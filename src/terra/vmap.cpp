@@ -10,6 +10,8 @@
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
 
+#include "../iscreen/iscreen_options.h"
+
 #include "vmap.h"
 #include "world.h"
 #include "render.h"
@@ -695,6 +697,7 @@ void vrtMap::analyzeINI(const char* name)
 	const char* secStorage = "Storage";
 	const char* secRender = "Rendering Parameters";
 	const char* secPalette = "Dynamic Palette";
+	const char* secLightPalette = "Lighting Cycle Dynamic Palette";
 	const char* secCreation = "Creation Parameters";
 
 	
@@ -746,42 +749,62 @@ void vrtMap::analyzeINI(const char* name)
 			buf >= ENDCOLOR[i];
 	}
 
+//  char* palette_name = "Lighting Cycle Dynamic Palette";
+  char* dp_terrain_number = "Lighting Cycle Dynamic Palette:Terrain Number";
+  char* dp_wave_terrain = "Lighting Cycle Dynamic Palette:Wave Terrain";
+  char* dp_terrains = "Lighting Cycle Dynamic Palette:Terrains";
+  char* dp_speeds = "Lighting Cycle Dynamic Palette:Speeds";
+  char* dp_amplitudes = "Lighting Cycle Dynamic Palette:Amplitudes";
+  char* dp_red = "Lighting Cycle Dynamic Palette:Red";
+  char* dp_green = "Lighting Cycle Dynamic Palette:Green";
+  char* dp_blue = "Lighting Cycle Dynamic Palette:Blue";
+  if (!iGetOptionValue(iLIGHTINGCYCLE)) {
+    dp_terrain_number = "Dynamic Palette:Terrain Number";
+    dp_wave_terrain = "Dynamic Palette:Wave Terrain";
+    dp_terrains = "Dynamic Palette:Terrains";
+    dp_speeds = "Dynamic Palette:Speeds";
+    dp_amplitudes = "Dynamic Palette:Amplitudes";
+    dp_red = "Dynamic Palette:Red";
+    dp_green = "Dynamic Palette:Green";
+    dp_blue = "Dynamic Palette:Blue";
+	}
+
 	pal_iter_init();
-	PAL_MAX = iniparser_getint(dict_name,"Dynamic Palette:Terrain Number", 0);
-	PAL_WAVE_TERRAIN = atoi(iniparser_getstring(dict_name,"Dynamic Palette:Wave Terrain", NULL));
+	PAL_MAX = iniparser_getint(dict_name,dp_terrain_number, 0);
+	PAL_WAVE_TERRAIN = atoi(iniparser_getstring(dict_name,dp_wave_terrain, NULL));
 	if(PAL_MAX > 0){
 		{
-			char* pp = iniparser_getstring(dict_name,"Dynamic Palette:Terrains", NULL);
+			char* pp = iniparser_getstring(dict_name,dp_terrains, NULL);
 			XBuffer b(pp,128);
 			for(i = 0;i < PAL_MAX;i++)
 				b >= PAL_TERRAIN[i];
 		}
 		{
-			char* pp = iniparser_getstring(dict_name,"Dynamic Palette:Speeds", NULL);
+			char* pp = iniparser_getstring(dict_name,dp_speeds, NULL);
 			XBuffer b(pp,128);
 			for(i = 0;i < PAL_MAX;i++)
 				b >= PAL_SPEED[i];
 		}
 		{
-			char* pp = iniparser_getstring(dict_name,"Dynamic Palette:Amplitudes", NULL);
+			char* pp = iniparser_getstring(dict_name,dp_amplitudes, NULL);
 			XBuffer b(pp,128);
 			for(i = 0;i < PAL_MAX;i++)
 				b >= PAL_AMPL[i];
 		}
 		{
-			char* pp = iniparser_getstring(dict_name,"Dynamic Palette:Red", NULL);
+			char* pp = iniparser_getstring(dict_name,dp_red, NULL);
 			XBuffer b(pp,128);
 			for(i = 0;i < PAL_MAX;i++)
 				b >= PAL_RED[i];
 		}
 		{
-			char* pp = iniparser_getstring(dict_name,"Dynamic Palette:Green", NULL);
+			char* pp = iniparser_getstring(dict_name,dp_green, NULL);
 			XBuffer b(pp,128);
 			for(i = 0;i < PAL_MAX;i++) 
 				b >= PAL_GREEN[i];
 		}
 		{
-			char* pp = iniparser_getstring(dict_name,"Dynamic Palette:Blue", NULL);
+			char* pp = iniparser_getstring(dict_name,dp_blue, NULL);
 			XBuffer b(pp,128);
 			for(i = 0;i < PAL_MAX;i++) 
 				b >= PAL_BLUE[i];
