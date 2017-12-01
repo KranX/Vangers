@@ -1178,8 +1178,12 @@ void ibsObject::load(char* fname)
 	fh.read(image,ImageSize);
 	fh.close();
 
-	SideX = SizeX/2;
-	SideY = SizeY/2;
+	recalc_geometry();
+}
+
+void ibsObject::recalc_geometry() {
+	SideX = SizeX / 2;
+	SideY = SizeY / 2;
 
 	CenterX = PosX + SideX;
 	CenterY = PosY + SideY;
@@ -4347,11 +4351,16 @@ void fncMenu::init(void)
 		if(bml_name){
 			if(!bml) bml = new bmlObject;
 			bml -> load(bml_name);
-			bml -> change_color(0,aciCurColorScheme[ACI_BACK_COL]);
+			bml -> OffsX = (short)PosX;
+			bml -> OffsY = (short)PosY;
+			bml -> change_color(0, aciCurColorScheme[ACI_BACK_COL]);
 		}
 		if(ibs_name){
 			if(!ibs) ibs = new ibsObject;
 			ibs -> load(ibs_name);
+			ibs -> PosX = (short)PosX;
+			ibs -> PosY = (short)PosY;
+			ibs -> recalc_geometry();
 		}
 	}
 	init_objects();

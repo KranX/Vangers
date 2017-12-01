@@ -166,6 +166,8 @@ struct ibsObject : public iListElement
 
 	ibsObject(void);
 	~ibsObject(void);
+
+	inline void recalc_geometry();
 };
 
 struct iScanCode : public iListElement
