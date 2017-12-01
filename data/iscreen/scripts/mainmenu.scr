@@ -1702,7 +1702,7 @@ Screen "Graphics screen"
 	/*Object "ResStr"
 	{
 		x	$RESOLUTION_STR_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 1 }
 
 		Element STRING {
 			align_x 	center
@@ -1717,7 +1717,7 @@ Screen "Graphics screen"
 	}*/
 	Trigger "ResTrig" {
 		x	$RESOLUTION_TRG_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 1 }
 
 		num_state	2
 
@@ -1761,7 +1761,7 @@ Screen "Graphics screen"
 	Object "DestrStr"
 	{
 		x	$DESTR_STR_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 1 }
 
 		Element STRING {
 			space		$OPTION_SPACE
@@ -1776,7 +1776,7 @@ Screen "Graphics screen"
 	}
 	Trigger "DestrTrig" {
 		x	$DESTR_TRG_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 1 }
 
 		num_state	2
 
@@ -1818,7 +1818,7 @@ Screen "Graphics screen"
 	Object "KeepStr"
 	{
 		x	$KEEP_STR_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 3 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
 
 		Element STRING {
 			space		$OPTION_SPACE
@@ -1833,7 +1833,7 @@ Screen "Graphics screen"
 	}
 	Trigger "KeepTrig" {
 		x	$KEEP_TRG_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 3 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
 
 		num_state	2
 
@@ -1879,7 +1879,7 @@ Screen "Graphics screen"
 	Object "FullScreenObj"
 	{
 		x	$KEEP_STR_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 3 }
 
 		Element STRING {
 			space		$OPTION_SPACE
@@ -1894,7 +1894,7 @@ Screen "Graphics screen"
 	}
 	Trigger "FullScreenTrig" {
 		x	$KEEP_TRG_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 3 }
 
 		num_state	2
 
@@ -1937,6 +1937,66 @@ Screen "Graphics screen"
 			}
 		}
 	}
+	Object "LightingCycleObj" {
+  	x	$KEEP_STR_X
+  	y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
+
+  	Element STRING {
+  		space		$OPTION_SPACE
+  		align_x 	center
+
+  		terrain_num	$TERRAIN2
+
+  		font		$GRAPHICS_FONT
+  		null_level	$DEFAULT_NULL
+  		string		$iSTR_LIGHTINGCYCLE
+  	}
+  }
+  Trigger "LightingCycleTrig" {
+  	x	$KEEP_TRG_X
+  	y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
+
+  	num_state	2
+
+  	null_level	$DEFAULT_NULL
+
+  	State 1 "STRING"{
+  		align_x center
+  		align_y center
+
+  		font		$GRAPHICS_FONT
+  		space		$OPTION_SPACE
+  		terrain_num	$TERRAIN4
+
+  		string		$iSTR_ON
+  		null_level	$DEFAULT_NULL
+  	}
+  	State 0 "STRING"{
+  		align_x center
+  		align_y center
+
+  		font		$GRAPHICS_FONT
+  		space		$OPTION_SPACE
+  		terrain_num	$TERRAIN4
+
+  		string		$iSTR_OFF
+  		null_level	$DEFAULT_NULL
+  	}
+  	Event {
+  		key $VK_LBUTTON
+  		key $VK_RBUTTON
+
+  		time { $TRIGGER_TIME + 1 }
+  		EvComm {
+  			change_trigger	"LightingCycleTrig"
+  			time $TRIGGER_TIME
+  		}
+  		EvComm {
+  			ext_event	$iEXT_INIT_KEEP_OPTIONS 0
+  			start_time	{ $TRIGGER_TIME / 2 }
+  		}
+  	}
+ 	}
 	Object "InUseObj"
 	{
 		x	$Graphics_screen_InUseObj_PosX
