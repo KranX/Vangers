@@ -3,6 +3,7 @@ data/*
 !data/iscreen
 !data/actint
 !data/resource/iscreen/oftr2.scb
+!data/resource
 
 # CMake files
 CMakeFiles/

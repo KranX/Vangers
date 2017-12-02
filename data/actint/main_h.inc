@@ -423,7 +423,7 @@ ibs_obj $IBS1 { 	// Info window 600x600
 
 	font		7
 
-	file	"resource/actint/800x600/screens/s600"
+	file	"resource/actint/hd/screens/frame-1280x720"
 	bground $BG1
 }
 
@@ -466,10 +466,9 @@ ibs_obj $IBS3 { 	// Info window 400x600
 }
 
 bml_obj $BG1 {
-	file	"resource/actint/800x600/screens/b600.bmp"
-
-	size_x	640
-	size_y	480
+	file	"resource/actint/hd/screens/frame-1280x720.bmp"
+	size_x	1280
+	size_y	720
 }
 
 bml_obj $BG2 {
@@ -555,9 +554,9 @@ Button INV_BUTTON
 fncMenu {
 	menu_type	$MENU1
 
-	x	607
+	x	6
 	y	64
-
+	anchor_right
 	size_x	179
 	size_y	234
 
@@ -581,8 +580,8 @@ fncMenu {
 fncMenu {
 	menu_type	$MENU2
 
-	x	50
-	y	50
+	x	6
+	y	68
 	anchor_right
 	anchor_bottom
 	size_x	177
