@@ -2131,15 +2131,21 @@ void aParseScript(const char* fname,char* bname)
 				case ANCHOR_RIGHT:
 					{
 						if(curMode == AS_INIT_MENU){
-							fnMnu -> anchor |= FM_ANCHOR_RIGHT;
-						}else{
+							fnMnu -> anchor |= WIDGET_ANCHOR_RIGHT;
+						}else if(curMode == AS_INIT_INFO_PANEL){
+							iPl -> anchor |= WIDGET_ANCHOR_RIGHT;;
+						}
+						else{
 							handle_error("Misplaced option",aOptIDs[id]);
 						}
 					}
+                break;
 				case ANCHOR_BOTTOM:
 				{
 					if(curMode == AS_INIT_MENU){
-						fnMnu -> anchor |= FM_ANCHOR_BOTTOM;
+						fnMnu -> anchor |= WIDGET_ANCHOR_BOTTOM;
+					}else if(curMode == AS_INIT_INFO_PANEL){
+						iPl -> anchor |= WIDGET_ANCHOR_BOTTOM;;
 					}else{
 						handle_error("Misplaced option",aOptIDs[id]);
 					}
@@ -2307,6 +2313,7 @@ void end_block(void)
 			curMode = AS_NONE;
 			break;
 		case AS_INIT_INFO_PANEL:
+			iPl->recalc_anchors();
 			if(iScreenFlag){
 				if(!iPl -> type)
 					aScrDisp -> iscr_iP = iPl;

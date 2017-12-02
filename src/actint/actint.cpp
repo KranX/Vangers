@@ -4316,10 +4316,16 @@ void InfoPanel::init(void)
 	if(bml_name){
 		if(!bml) bml = new bmlObject;
 		bml -> load(bml_name);
+		bml -> OffsX = (short)PosX;
+		bml -> OffsX = (short)PosY;
+
 	}
 	if(ibs_name){
 		if(!ibs) ibs = new ibsObject;
 		ibs -> load(ibs_name);
+		ibs -> PosX = (short)PosX;
+		ibs -> PosY = (short)PosY;
+		ibs -> recalc_geometry();
 	}
 }
 
@@ -9053,6 +9059,15 @@ void actIntDispatcher::remove_menu_item(fncMenu* p)
 	if(p -> flags & FM_ACTIVE) p -> go2upmenu(curMode);
 }
 
+void Widget::recalc_anchors() {
+    if(anchor & WIDGET_ANCHOR_RIGHT ){
+        PosX = XGR_MAXX - PosX - SizeX;
+    }
+    if(anchor & WIDGET_ANCHOR_BOTTOM ){
+        PosY = XGR_MAXY - PosY - SizeY;
+    }
+}
+
 void fncMenuItem::clone(fncMenuItem* p)
 {
 	p -> PosX = PosX;
@@ -9321,15 +9336,6 @@ void fncMenu::activate_item(int code)
 			items -> connect(itm);
 		}
 		itm = itm1;
-	}
-}
-
-void fncMenu::recalc_anchors() {
-	if(anchor & FM_ANCHOR_RIGHT ){
-		PosX = XGR_MAXX - PosX - SizeX;
-	}
-	if(anchor & FM_ANCHOR_BOTTOM ){
-		PosY = XGR_MAXY - PosY - SizeY;
 	}
 }
 

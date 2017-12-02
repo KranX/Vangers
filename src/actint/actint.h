@@ -719,6 +719,23 @@ struct aButton : public iListElement
 	~aButton(void);
 };
 
+const int   WIDGET_ANCHOR_RIGHT = 0x1;
+const int   WIDGET_ANCHOR_BOTTOM = 0x2;
+
+
+class Widget {
+
+public:
+    int PosX;
+    int PosY;
+    int anchor = 0;
+    int SizeX;
+    int SizeY;
+
+    void recalc_anchors();
+};
+
+
 // fncMenuItem flags...
 const int 	FM_SELECTED		= 0x01;
 const int 	FM_VISIBLE		= 0x02;
@@ -783,21 +800,10 @@ const int 	FM_NO_ALIGN		= 0x1000;
 const int 	FM_MAIN_MENU		= 0x2000;
 const int 	FM_RANGE_FONT		= 0x4000;
 
-const int   FM_ANCHOR_RIGHT = 0x1;
-const int   FM_ANCHOR_BOTTOM = 0x2;
-
-struct fncMenu : public iListElement
-{
+struct fncMenu : public iListElement, public Widget {
 	int type;
 
-	int PosX;
-	int PosY;
-	int anchor = 0;
-
-	int SizeX;
-	int SizeY;
-
-	int VItems;
+    int VItems;
 	int itemY;
 
 	int curFunction;
@@ -898,7 +904,6 @@ struct fncMenu : public iListElement
 	fncMenu(void);
 	~fncMenu(void);
 
-	void recalc_anchors();
 };
 
 // fncMenuSet flags...
@@ -1016,19 +1021,13 @@ struct InfoPanelItem : public iListElement
 	int font;
 };
 
-struct InfoPanel : public iListElement
+struct InfoPanel : public iListElement, public Widget
 {
 	int type;
 	int interf_type;
 
-	int PosX;
-	int PosY;
-
 	int OffsX;
 	int OffsY;
-
-	int SizeX;
-	int SizeY;
 
 	int MaxStr;
 	int bCol;
