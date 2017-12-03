@@ -3255,6 +3255,7 @@ void actIntDispatcher::redraw(void)
 			}
 			break;
 	}
+    curIbs -> show();
 	if(!(flags & AS_FULL_REDRAW)){
 		XGR_MouseObj.flags &= ~XGM_PROMPT_ACTIVE;
 		curIbs -> back -> load(NULL, 1);
@@ -3318,7 +3319,6 @@ void actIntDispatcher::redraw(void)
 		}
 		flags |= AS_FULL_REDRAW;
 	}
-	curIbs -> show();
 	b = (aButton*)intButtons -> last;
 	while(b){
 		if(b -> flags & B_REDRAW){
@@ -3357,7 +3357,7 @@ void actIntDispatcher::redraw(void)
 	if(curMode == AS_INFO_MODE){
 		p = (fncMenu*)menuList -> last;
 		while(p){
-			if(p -> flags & FM_REDRAW){
+            if(!(p -> flags & FM_SUBMENU) ){
 				p -> redraw();
 				p -> set_flush();
 			}

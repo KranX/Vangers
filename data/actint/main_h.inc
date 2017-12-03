@@ -558,7 +558,7 @@ Button INV_BUTTON
 fncMenu {
 	menu_type	$MENU1
 
-	x	6
+	x	15
 	y	64
 	anchor_right
 	size_x	179
