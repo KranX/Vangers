@@ -3341,10 +3341,7 @@ void actIntDispatcher::redraw(void)
 	if(curMode == AS_INFO_MODE){
 		b = (aButton*)infButtons -> last;
 		while(b){
-			if(b -> flags & B_REDRAW){
-				b -> redraw();
-				b -> set_flush();
-			}
+			b -> redraw();
 			b = (aButton*)b -> prev;
 		}
 	}
