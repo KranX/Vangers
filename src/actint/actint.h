@@ -575,6 +575,25 @@ struct invMatrix : public iListElement
 	~invMatrix(void);
 };
 
+const int   WIDGET_ANCHOR_RIGHT = 0x1;
+const int   WIDGET_ANCHOR_BOTTOM = 0x2;
+
+
+class Widget {
+
+public:
+	int PosX;
+	int PosY;
+	int anchor = 0;
+	int SizeX;
+	int SizeY;
+    void recalc_anchors();
+private:
+    bool anchorsRecalced = false;
+
+};
+
+
 // aIndData flags...
 const int 	IND_REDRAW	= 0x01;
 const int 	IND_FLUSH	= 0x02;
@@ -665,13 +684,10 @@ const int 	INTERF_BUTTON		= 0x00;
 const int 	INV_BUTTON		= 0x01;
 const int 	INFO_BUTTON		= 0x02;
 
-struct aButton : public iListElement
+struct aButton : public iListElement, public Widget
 {
 	int ID;
 	int ControlID;
-
-	int PosX;
-	int PosY;
 
 	int type;
 	int flags;
@@ -681,9 +697,6 @@ struct aButton : public iListElement
 
 	int eventCode;
 	int eventData;
-
-	int SizeX;
-	int SizeY;
 
 	int numFrames;
 
@@ -719,21 +732,6 @@ struct aButton : public iListElement
 	~aButton(void);
 };
 
-const int   WIDGET_ANCHOR_RIGHT = 0x1;
-const int   WIDGET_ANCHOR_BOTTOM = 0x2;
-
-
-class Widget {
-
-public:
-    int PosX;
-    int PosY;
-    int anchor = 0;
-    int SizeX;
-    int SizeY;
-
-    void recalc_anchors();
-};
 
 
 // fncMenuItem flags...

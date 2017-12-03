@@ -412,14 +412,14 @@ ibs_obj $IBS1 { 	// Info window 600x600
 	offs_x		0	13
 	offs_y		0	1
 
-	offs_x		1	-6
+	offs_x		1	203
 	offs_y		1	-3
 
 	offs_x		2	14
 	offs_y		2	-1
 
-	offs_x		3	-6
-	offs_y		3	-2
+	offs_x		3	199
+	offs_y		3	5
 
 	font		7
 
@@ -491,8 +491,10 @@ Button INT_BUTTON
 
 	id	$B_INT1
 
-	x	726
-	y	533
+	x	0 
+	y	0
+	anchor_right
+	anchor_bottom
 
 	key	$VK_RETURN
 	control_id	12	       // iKEY_INVENTORY
@@ -510,8 +512,10 @@ Button INF_BUTTON
 
 	id	$B_INF0
 
-	x	620
-	y	530
+	x	102
+	y	3
+	anchor_right
+	anchor_bottom
 
 	key	$VK_SPACE
 	control_id	13	       // iKEY_OPEN
@@ -689,8 +693,9 @@ info_panel {	// Time info panel...
 
 	ibs_name	"resource/actint/800x600/time_pl"
 
-	x	624
+	x	32
 	y	7
+	anchor_right
 	size_x	146
 	size_y	45
 }

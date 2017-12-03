@@ -2133,9 +2133,12 @@ void aParseScript(const char* fname,char* bname)
 						if(curMode == AS_INIT_MENU){
 							fnMnu -> anchor |= WIDGET_ANCHOR_RIGHT;
 						}else if(curMode == AS_INIT_INFO_PANEL){
-							iPl -> anchor |= WIDGET_ANCHOR_RIGHT;;
-						}
+							iPl -> anchor |= WIDGET_ANCHOR_RIGHT;
+						}else if(curMode == AS_INIT_BUTTON){
+                            aBt -> anchor |= WIDGET_ANCHOR_RIGHT;
+                        }
 						else{
+							std::cout<<curMode<<std::endl;
 							handle_error("Misplaced option",aOptIDs[id]);
 						}
 					}
@@ -2146,7 +2149,9 @@ void aParseScript(const char* fname,char* bname)
 						fnMnu -> anchor |= WIDGET_ANCHOR_BOTTOM;
 					}else if(curMode == AS_INIT_INFO_PANEL){
 						iPl -> anchor |= WIDGET_ANCHOR_BOTTOM;;
-					}else{
+					}else if(curMode == AS_INIT_BUTTON){
+                        aBt -> anchor |= WIDGET_ANCHOR_BOTTOM;;
+                    }else{
 						handle_error("Misplaced option",aOptIDs[id]);
 					}
 				}

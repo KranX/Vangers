@@ -2378,6 +2378,7 @@ void aButton::load_frames(void)
 		fh.close();
 
 		flags |= B_FRAMES_LOADED;
+		recalc_anchors();
 	}
 }
 
@@ -3317,6 +3318,7 @@ void actIntDispatcher::redraw(void)
 		}
 		flags |= AS_FULL_REDRAW;
 	}
+	curIbs -> show();
 	b = (aButton*)intButtons -> last;
 	while(b){
 		if(b -> flags & B_REDRAW){
@@ -3584,7 +3586,7 @@ void actIntDispatcher::flush(void)
 		curPrompt -> redraw(curIbs -> PosX,curIbs -> PosY,curIbs -> SizeX,curIbs -> SizeY);
 		curPrompt -> quant();
 	}
-	curIbs -> show();
+
 	ind = (aIndData*)indList -> last;
 	while(ind){
 		ind -> redraw();
@@ -9060,6 +9062,10 @@ void actIntDispatcher::remove_menu_item(fncMenu* p)
 }
 
 void Widget::recalc_anchors() {
+    if(anchorsRecalced){
+        return;
+    }
+    anchorsRecalced = true;
     if(anchor & WIDGET_ANCHOR_RIGHT ){
         PosX = XGR_MAXX - PosX - SizeX;
     }
