@@ -3374,7 +3374,7 @@ void ActionDispatcher::CameraQuant(void)
 		int Turn = Active -> psi;
 		//if(Active -> traction < 0)
 		//	Turn = rPI(Turn + PI);
-		camera_quant(Active -> R_curr.x,Active -> R_curr.y,Turn,Active -> V.vabs());
+        camera_quant(Active -> R_curr.x + 100 ,Active -> R_curr.y,Turn,Active -> V.vabs());
 //		fout < "camera_quant(x,y,t,v): " <= ViewX < "\t" <= ViewY < "\n";
 		}
 }
