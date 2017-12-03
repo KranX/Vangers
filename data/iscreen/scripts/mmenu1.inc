@@ -72,6 +72,7 @@
 #define Game_Params_0_AccessStr_PosX		$Game_Params_0_AccessStr_PosX1
 #define Game_Params_0_TeamTrig_PosX		$Game_Params_0_TeamTrig_PosX1
 #define Game_Params_0_TeamStr_PosX		$Game_Params_0_TeamStr_PosX1
+#define Game_Params_0_EscaveTrig_PosX		$Game_Params_0_EscaveTrig_PosX1
 #define Game_Params_0_BirthTrig_PosX		$Game_Params_0_BirthTrig_PosX1
 #define Game_Params_0_BirthStr_PosX		$Game_Params_0_BirthStr_PosX1
 #define Game_Params_0_EscaveMinStr_PosX 	$Game_Params_0_EscaveMinStr_PosX1
