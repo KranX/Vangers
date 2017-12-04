@@ -68,6 +68,7 @@ extern int multi_draw;
 extern int RAM16;
 extern int GameQuantReturnValue;
 
+int mechosCameraOffsetX = 0;
 extern int aciWorldIndex;
 
 extern int light_modulation;
@@ -3374,7 +3375,8 @@ void ActionDispatcher::CameraQuant(void)
 		int Turn = Active -> psi;
 		//if(Active -> traction < 0)
 		//	Turn = rPI(Turn + PI);
-        camera_quant(Active -> R_curr.x + 100 ,Active -> R_curr.y,Turn,Active -> V.vabs());
+//        std::cout<<mechosCameraOffsetX<<std::endl;
+        camera_quant(Active -> R_curr.x + mechosCameraOffsetX ,Active -> R_curr.y,Turn,Active -> V.vabs());
 //		fout < "camera_quant(x,y,t,v): " <= ViewX < "\t" <= ViewY < "\n";
 		}
 }

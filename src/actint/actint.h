@@ -1256,6 +1256,11 @@ const int 	AS_TEXT_MODE		= 0x2000;
 const int 	AS_CHAT_MODE		= 0x4000;
 const int 	AS_WORLDS_INIT		= 0x8000;
 
+/** actInt camera offsets
+**/
+const int AS_INF_CAMERA_OFFSET = 100;
+const int AS_INV_CAMERA_OFFSET = 300;  // ??
+
 struct actIntDispatcher
 {
 	int flags;
