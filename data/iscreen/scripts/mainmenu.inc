@@ -140,6 +140,7 @@
 #define Game_Params_0_AccessStr_PosX1		 245
 #define Game_Params_0_TeamTrig_PosX1		 445
 #define Game_Params_0_TeamStr_PosX1		 260
+#define Game_Params_0_EscaveTrig_PosX1		 405
 #define Game_Params_0_BirthTrig_PosX1		 405
 #define Game_Params_0_BirthStr_PosX1		 245
 #define Game_Params_0_EscaveMinStr_PosX1	 500
@@ -169,6 +170,7 @@
 #define Game_Params_0_AccessStr_PosX2	 263
 #define Game_Params_0_TeamTrig_PosX2	 499
 #define Game_Params_0_TeamStr_PosX2	 244
+#define Game_Params_0_EscaveTrig_PosX2	 418
 #define Game_Params_0_BirthTrig_PosX2	 418
 #define Game_Params_0_BirthStr_PosX2	 235
 #define Game_Params_0_EscaveMinStr_PosX2 571
