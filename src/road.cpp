@@ -1096,7 +1096,6 @@ _MEM_STATISTIC_("AFTER GAME QUANT INIT -> ");
 
 int GameQuantRTO::Quant(void)
 {
-
 	int ret = 0;
 	if(Pause <= 1 || NetworkON){
 		if(Pause) Pause++;
@@ -1890,7 +1889,6 @@ void iGameMap::flush()
 
 void iGameMap::draw(int self)
 {
-	//XGR_Flip();
 	static XBuffer status;
 	static int blink,clcnt;
 	
@@ -2002,7 +2000,6 @@ void iGameMap::draw(int self)
 				sysfont.drawtext(xc - xside + 3,yc + yside - 60,status.address(),255,-1);
 			#endif
 		}
-
 
 		switch(message_mode % 3){
 			case 0:

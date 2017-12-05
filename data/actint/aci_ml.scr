@@ -1,0 +1,55 @@
+
+#include "actint/escaves.inc"
+#include "actint/mlconsts.h"
+#include "actint/aci_ml.inc"
+
+startup_time	30
+shutdown_time	50
+
+// Podish MLs...
+ml_data_set {
+	id	$ESCAVE_ML_SET0
+	#include "actint/ml_data0.inc"
+}
+
+// Incubator MLs...
+ml_data_set {
+	id	$ESCAVE_ML_SET1
+	#include "actint/ml_data1.inc"
+}
+
+// VigBoo MLs...
+ml_data_set {
+	id	$ESCAVE_ML_SET2
+	#include "actint/ml_data2.inc"
+}
+
+// Lampasso MLs...
+ml_data_set {
+	id	$ESCAVE_ML_SET3
+	#include "actint/ml_data3.inc"
+}
+
+// Ogorod MLs...
+ml_data_set {
+	id	$ESCAVE_ML_SET4
+	#include "actint/ml_data4.inc"
+}
+
+// ZeePa MLs...
+ml_data_set {
+	id	$ESCAVE_ML_SET5
+	#include "actint/ml_data5.inc"
+}
+
+// B-Zone MLs...
+ml_data_set {
+	id	$ESCAVE_ML_SET6
+	#include "actint/ml_data6.inc"
+}
+
+// Spobs MLs...
+ml_data_set {
+	id	$ESCAVE_ML_SET7
+}
+

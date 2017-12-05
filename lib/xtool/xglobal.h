@@ -25,7 +25,7 @@
 #endif
 #endif
 
-#if WIN32
+#ifdef WIN32
 #define snprintf sprintf_s
 #endif
 

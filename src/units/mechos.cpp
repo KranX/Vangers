@@ -2502,6 +2502,7 @@ void ActionDispatcher::Quant(void)
 							RaceTxtBuff <= n_position < "|" <= n_total;
 						};
 
+						//std::cout<<"age_of_current_game: "<<age_of_current_game()<<" Van_War.MaxTime:"<<my_server_data.Van_War.MaxTime*60<<std::endl;
 						if(age_of_current_game() >= my_server_data.Van_War.MaxTime*60 || drop_log){
 							GameOverID = GAME_OVER_NETWORK;
 							ActD.Active->Status |= SOBJ_DISCONNECT;
