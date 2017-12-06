@@ -1259,7 +1259,7 @@ const int 	AS_WORLDS_INIT		= 0x8000;
 /** actInt camera offsets
 **/
 const int AS_INF_CAMERA_OFFSET = 100;
-const int AS_INV_CAMERA_OFFSET = 300;  // ??
+const int AS_INV_CAMERA_OFFSET = 250;  // ??
 
 struct actIntDispatcher
 {

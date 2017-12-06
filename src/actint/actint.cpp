@@ -5444,6 +5444,7 @@ void actIntDispatcher::change_mode(void)
 				b -> set_flush();
 				b = (aButton*)b -> prev;
 			}
+			mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
 			break;
 		case AS_INFO_MODE:
 			curMode = AS_INV_MODE;
@@ -5461,6 +5462,7 @@ void actIntDispatcher::change_mode(void)
 				b -> set_flush();
 				b = (aButton*)b -> prev;
 			}
+			mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
 			break;
 	}
 	flags &= ~AS_CHANGE_MODE;
