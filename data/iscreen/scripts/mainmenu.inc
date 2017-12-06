@@ -140,6 +140,7 @@
 #define Game_Params_0_AccessStr_PosX1		 245
 #define Game_Params_0_TeamTrig_PosX1		 445
 #define Game_Params_0_TeamStr_PosX1		 260
+#define Game_Params_0_EscaveTrig_PosX1		 405
 #define Game_Params_0_BirthTrig_PosX1		 405
 #define Game_Params_0_BirthStr_PosX1		 245
 #define Game_Params_0_EscaveMinStr_PosX1	 500
@@ -160,27 +161,28 @@
 
 // ------------ Screen: "Game Params 0" LOC ------------
 
-#define Game_Params_0_MaxKillsNumberStr_PosX2	 494
-#define Game_Params_0_MaxKillsStr_PosX2  231
+#define Game_Params_0_MaxKillsNumberStr_PosX2	 509
+#define Game_Params_0_MaxKillsStr_PosX2  246
 #define Game_Params_0_MaxTimeNumberStr_PosX2	 391
 #define Game_Params_0_MaxTimeMinStr_PosX2	 480
 #define Game_Params_0_MaxTimeStr_PosX2	 272
-#define Game_Params_0_AccessTrig_PosX2	 410
-#define Game_Params_0_AccessStr_PosX2	 253
-#define Game_Params_0_TeamTrig_PosX2	 489
-#define Game_Params_0_TeamStr_PosX2	 254
-#define Game_Params_0_BirthTrig_PosX2	 398
-#define Game_Params_0_BirthStr_PosX2	 215
-#define Game_Params_0_EscaveMinStr_PosX2 551
-#define Game_Params_0_EscaveTimeStr_PosX2	 208
-#define Game_Params_0_TimeTrig_PosX2	 475
-#define Game_Params_0_ArtefactsTrig_PosX2	 441
-#define Game_Params_0_ArtefactsStr_PosX2 238
-#define Game_Params_0_BeebosNumberStr_PosX2	 416
-#define Game_Params_0_BeebosStr_PosX2	 560
-#define Game_Params_0_CashStr_PosX2	 195
-#define Game_Params_0_Ok_Option_PosX2	 230
-#define Game_Params_0_Back_Option_PosX2  408
+#define Game_Params_0_AccessTrig_PosX2	 400
+#define Game_Params_0_AccessStr_PosX2	 263
+#define Game_Params_0_TeamTrig_PosX2	 499
+#define Game_Params_0_TeamStr_PosX2	 244
+#define Game_Params_0_EscaveTrig_PosX2	 418
+#define Game_Params_0_BirthTrig_PosX2	 418
+#define Game_Params_0_BirthStr_PosX2	 235
+#define Game_Params_0_EscaveMinStr_PosX2 571
+#define Game_Params_0_EscaveTimeStr_PosX2	 188
+#define Game_Params_0_TimeTrig_PosX2	 535
+#define Game_Params_0_ArtefactsTrig_PosX2	 591
+#define Game_Params_0_ArtefactsStr_PosX2 168
+#define Game_Params_0_BeebosNumberStr_PosX2	 481
+#define Game_Params_0_BeebosStr_PosX2	 595
+#define Game_Params_0_CashStr_PosX2	 190
+#define Game_Params_0_Ok_Option_PosX2	 245
+#define Game_Params_0_Back_Option_PosX2  423
 
 // ------------ Screen: "Game Params 1" ENG ------------
 
@@ -197,16 +199,16 @@
 
 // ------------ Screen: "Game Params 1" LOC ------------
 
-#define Game_Params_1_OneTimeNum_PosX2	 497
-#define Game_Params_1_OneTimeStr_PosX2	 232
-#define Game_Params_1_ItemsNumber2_PosX2 550
-#define Game_Params_1_ItemsNumber1_PosX2 350
-#define Game_Params_1_ItemStrTrig2_PosX2 410
-#define Game_Params_1_ItemStrTrig1_PosX2 210
-#define Game_Params_1_TeamTrig_PosX2	 478
-#define Game_Params_1_TeamStr_PosX2	 246
-#define Game_Params_1_WorldTrig_PosX2	 386
-#define Game_Params_1_WorldStr_PosX2	 286
+#define Game_Params_1_OneTimeNum_PosX2	 552
+#define Game_Params_1_OneTimeStr_PosX2	 227
+#define Game_Params_1_ItemsNumber2_PosX2 560
+#define Game_Params_1_ItemsNumber1_PosX2 360
+#define Game_Params_1_ItemStrTrig2_PosX2 420
+#define Game_Params_1_ItemStrTrig1_PosX2 220
+#define Game_Params_1_TeamTrig_PosX2	 513
+#define Game_Params_1_TeamStr_PosX2	 251
+#define Game_Params_1_WorldTrig_PosX2	 401
+#define Game_Params_1_WorldStr_PosX2	 301
 
 // ------------ Screen: "Server Info screen" ENG ------------
 
@@ -253,8 +255,8 @@
 #define INet_Host_screen_ProxyServerStr_PosX2	 160
 #define INet_Host_screen_ProxyTrg_PosX2  490
 #define INet_Host_screen_ProxyStr_PosX2  241
-#define INet_Host_screen_Ok_Option_PosX2 304
-#define INet_Host_screen_Back_Option_PosX2	 490
+#define INet_Host_screen_Ok_Option_PosX2 234
+#define INet_Host_screen_Back_Option_PosX2	 420
 #define INet_Host_screen_IP_Str_PosX2	270
 #define INet_Host_screen_IP_Addr_PosX2	420
 

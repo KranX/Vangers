@@ -747,7 +747,11 @@ void uniVangPrepare(void){
 			break;
 		case PASSEMBLOSS:
 			aciUpdateCurCredits(my_server_data.Passembloss.InitialCash);
-			CurrentWorld = my_server_data.Passembloss.RandomEscave;
+//			CurrentWorld = my_server_data.Passembloss.RandomEscave;
+			if (my_server_data.Passembloss.RandomEscave == 255 || my_server_data.Passembloss.RandomEscave == -1)
+				uvsRandomWorld = my_server_data.Passembloss.RandomEscave;
+			else
+				CurrentWorld = my_server_data.Passembloss.RandomEscave;
 			break;
 		case HUNTAGE:
 			aciUpdateCurCredits(my_server_data.Huntage.InitialCash);
