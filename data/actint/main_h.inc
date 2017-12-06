@@ -442,7 +442,8 @@ ibs_obj $IBS2 { 	// Inventory window 400x600
 
 	font		0
 
-	file	"resource/actint/800x600/screens/s400v"
+	//file	"resource/actint/800x600/screens/s400v"
+	file	"resource/actint/hd/screens/frame-inventory-1280x720"
 	bground $BG3
 }
 
@@ -479,10 +480,10 @@ bml_obj $BG2 {
 }
 
 bml_obj $BG3 {
-	file	"resource/actint/800x600/screens/b400v.bmp"
-
-	size_x	640
-	size_y	480
+	//file	"resource/actint/800x600/screens/b400v.bmp"
+    file	"resource/actint/hd/screens/frame-inventory-1280x720.bmp"
+	size_x	1280
+	size_y	720
 }
 
 Button INT_BUTTON
