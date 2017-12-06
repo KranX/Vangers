@@ -3322,19 +3322,15 @@ void actIntDispatcher::redraw(void)
 	}
 	b = (aButton*)intButtons -> last;
 	while(b){
-		if(b -> flags & B_REDRAW){
 			b -> redraw();
 			b -> set_flush();
-		}
 		b = (aButton*)b -> prev;
 	}
 	if(curMode == AS_INV_MODE){
 		b = (aButton*)invButtons -> last;
 		while(b){
-			if(b -> flags & B_REDRAW){
 				b -> redraw();
 				b -> set_flush();
-			}
 			b = (aButton*)b -> prev;
 		}
 	}
@@ -3349,10 +3345,8 @@ void actIntDispatcher::redraw(void)
 
 	if(curMode == AS_INV_MODE && curMatrix){
 		m = curMatrix;
-		if(m -> flags & IM_REDRAW){
 			m -> redraw();
 			m -> set_flush();
-		}
 	}
 
 	if(curMode == AS_INFO_MODE){
