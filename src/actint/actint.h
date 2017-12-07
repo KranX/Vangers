@@ -963,16 +963,10 @@ const int 	CP_REDRAW	= 0x01;
 const int 	CP_FLUSH	= 0x02;
 const int 	CP_RANGE_FONT	= 0x04;
 
-struct CounterPanel : public iListElement
+struct CounterPanel : public iListElement, public Widget
 {
 	int ID;
 	int type;
-
-	int PosX;
-	int PosY;
-
-	int SizeX;
-	int SizeY;
 
 	int MaxLen;
 

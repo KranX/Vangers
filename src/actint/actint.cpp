@@ -7735,6 +7735,8 @@ void CounterPanel::init(void)
 	if(ibs_name){
 		if(!ibs) ibs = new ibsObject;
 		ibs -> load(ibs_name);
+		ibs->PosX = PosX;
+		ibs->PosY = PosY;
 	}
 	SizeX = MaxLen * (aCellSize + 1);
 	SizeY = aCellSize + 1;

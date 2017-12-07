@@ -431,14 +431,14 @@ ibs_obj $IBS2 { 	// Inventory window 400x600
 	offs_x		0	13
 	offs_y		0	1
 
-	offs_x		1	-1
-	offs_y		1	-1
+	offs_x		1	393
+	offs_y		1	3
 
 	offs_x		2	14
 	offs_y		2	0
 
-	offs_x		3	-4
-	offs_y		3	-2
+    offs_x		3	390
+    offs_y		3	5
 
 	font		0
 
@@ -532,8 +532,9 @@ Button INV_BUTTON
 {
 	id	$ACI_WPN_PICKUP_BUTTON
 
-	x	413
+	x	387
 	y	4
+    anchor_right
 
 	event	$EV_SET_WPN_PICKUP	0
 
@@ -546,8 +547,9 @@ Button INV_BUTTON
 {
 	id	$ACI_ITM_PICKUP_BUTTON
 
-	x	706
+	x	64
 	y	18
+    anchor_right
 
 	event	$EV_SET_ITM_PICKUP	0
 
@@ -705,8 +707,9 @@ counter INV_COUNTER {
 	font	2
 	range_font
 
-	x	484
+	x	203
 	y	21
+	anchor_right
 	size_x	213
 	size_y	38
 
