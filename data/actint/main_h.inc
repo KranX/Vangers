@@ -665,8 +665,9 @@ ind_data $IND_NRG {
 }
 
 info_panel {	// Inventory info panel...
-	x	465
+	x	60
 	y	464
+	anchor_right
 
 	size_x	275
 	size_y	94
