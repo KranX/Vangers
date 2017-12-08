@@ -448,6 +448,26 @@ struct invItem : public iListElement
 	~invItem(void);
 };
 
+
+const int   WIDGET_ANCHOR_RIGHT = 0x1;
+const int   WIDGET_ANCHOR_BOTTOM = 0x2;
+
+
+class Widget {
+
+public:
+	int PosX;
+	int PosY;
+	int anchor = 0;
+	int SizeX;
+	int SizeY;
+	void recalc_anchors();
+private:
+	bool anchorsRecalced = false;
+
+};
+
+
 enum CellTypes
 {
 	AS_NO_CELL,		// 0
@@ -490,22 +510,15 @@ const int 	IM_RAFFA		= 0x20;
 
 const int 	IM_NUM_PARAMS		= 7;
 
-struct invMatrix : public iListElement
+struct invMatrix : public iListElement, public Widget
 {
 	int internalID;
 
 	int type;
 	int flags;
 
-	int SizeX;
-	int SizeY;
-
-	int ScreenX;
-	int ScreenY;
-
-	int ScreenSizeX;
-	int ScreenSizeY;
-
+	int MatrixSizeX;
+	int MatrixSizeY;
 	int maxLoad;
 
 	char* mech_name;
@@ -574,25 +587,6 @@ struct invMatrix : public iListElement
 
 	~invMatrix(void);
 };
-
-const int   WIDGET_ANCHOR_RIGHT = 0x1;
-const int   WIDGET_ANCHOR_BOTTOM = 0x2;
-
-
-class Widget {
-
-public:
-	int PosX;
-	int PosY;
-	int anchor = 0;
-	int SizeX;
-	int SizeY;
-    void recalc_anchors();
-private:
-    bool anchorsRecalced = false;
-
-};
-
 
 // aIndData flags...
 const int 	IND_REDRAW	= 0x01;

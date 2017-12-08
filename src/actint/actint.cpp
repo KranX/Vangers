@@ -1925,9 +1925,9 @@ invMatrix::invMatrix(void)
 
 	maxLoad = 1;
 
+	MatrixSizeX = MatrixSizeY = 0;
+	PosX = PosY = 0;
 	SizeX = SizeY = 0;
-	ScreenX = ScreenY = 0;
-	ScreenSizeX = ScreenSizeY = 0;
 
 	pData = NULL;
 	back = NULL;
@@ -1948,11 +1948,11 @@ invMatrix::invMatrix(int sx,int sy)
 	type = 0;
 	flags = 0;
 
-	SizeX = sx;
-	SizeY = sy;
+	MatrixSizeX = sx;
+	MatrixSizeY = sy;
 
-	ScreenX = ScreenY = 0;
-	ScreenSizeX = ScreenSizeY = 0;
+	PosX = PosY = 0;
+	SizeX = SizeY = 0;
 
 	back = NULL;
 	mech_name = NULL;
@@ -1999,9 +1999,9 @@ invMatrix::~invMatrix(void)
 	type = 0;
 	flags = 0;
 
+	MatrixSizeX = MatrixSizeY = 0;
+	PosX = PosY = 0;
 	SizeX = SizeY = 0;
-	ScreenX = ScreenY = 0;
-	ScreenSizeX = ScreenSizeY = 0;
 }
 
 void invMatrix::alloc_prm(void)
@@ -2018,7 +2018,7 @@ void invItem::alloc_prm(void)
 
 void invMatrix::alloc_matrix(void)
 {
-	int i,sz = SizeX * SizeY;
+	int i,sz = MatrixSizeX * MatrixSizeY;
 	matrix = new invMatrixCell*[sz];
 	matrix_heap = new char[sz * sizeof(invMatrixCell)];
 	for(i = 0; i < sz; i ++){
@@ -2029,7 +2029,7 @@ void invMatrix::alloc_matrix(void)
 
 int invMatrix::slot_exist(int id)
 {
-	int i,sz = SizeX * SizeY;
+	int i,sz = MatrixSizeX * MatrixSizeY;
 	for(i = 0; i < sz; i ++){
 		if(matrix[i] -> slotType == id) return 1;
 	}
@@ -2044,7 +2044,7 @@ void invMatrix::free_matrix(void)
 
 int invMatrix::get_item_slot(invItem* p)
 {
-	return matrix[p -> MatrixX + p -> MatrixY * SizeX] -> slotNumber;
+	return matrix[p -> MatrixX + p -> MatrixY * MatrixSizeX] -> slotNumber;
 }
 
 int invMatrix::check_fit(int x,int y,invItem* p)
@@ -2062,10 +2062,10 @@ int invMatrix::check_fit(int x,int y,invItem* p)
 		if((y & 0x01) && (dy[i] & 0x01))
 			ix ++;
 
-		if(ix < 0 || iy < 0 || ix >= SizeX || iy >= SizeY)
+		if(ix < 0 || iy < 0 || ix >= MatrixSizeX || iy >= MatrixSizeY)
 			return 0;
 
-		offs = ix + iy * SizeX;
+		offs = ix + iy * MatrixSizeX;
 
 		if(matrix[offs] -> type == AS_NO_CELL || (tp != matrix[offs] -> slotType && matrix[offs] -> slotType != -1) || (matrix[offs] -> flags & AS_BUSY_CELL))
 			return 0;
@@ -2076,8 +2076,8 @@ int invMatrix::check_fit(int x,int y,invItem* p)
 int invMatrix::auto_put_item(invItem* p)
 {
 	int x,y,offs = 0;
-	for(y = 0; y < SizeY; y ++){
-		for(x = 0; x < SizeX; x ++){
+	for(y = 0; y < MatrixSizeY; y ++){
+		for(x = 0; x < MatrixSizeX; x ++){
 			if(!(p -> flags & INV_ITEM_NO_ACTIVATE) || p -> slotType != matrix[offs] -> slotType){
 				if(put_item(x,y,p))
 					return 1;
@@ -2107,7 +2107,7 @@ int invMatrix::put_item(int x,int y,invItem* p,int mode)
 		if((y & 0x01) && (p -> ShapeY[i] & 0x01))
 			ix ++;
 
-		offs = ix + iy * SizeX;
+		offs = ix + iy * MatrixSizeX;
 		matrix[offs] -> put_item(p);
 	}
 	
@@ -2133,7 +2133,7 @@ int invMatrix::put_item_shadow(int x,int y,invItem* p)
 		if((y & 0x01) && (p -> ShapeY[i] & 0x01))
 			ix ++;
 
-		offs = ix + iy * SizeX;
+		offs = ix + iy * MatrixSizeX;
 		matrix[offs] -> flags |= AS_IN_SHADOW;
 	}
 	return 1;
@@ -2147,8 +2147,8 @@ void invMatrix::fill(invItem* p)
 	while(flag){
 		index = 0;
 		flag = 0;
-		for(y = 0; y < SizeY; y ++){
-			for(x = 0; x < SizeX; x ++){
+		for(y = 0; y < MatrixSizeY; y ++){
+			for(x = 0; x < MatrixSizeX; x ++){
 				ic = matrix[index];
 				if(ic -> flags & AS_BUSY_CELL && ic -> item == p && ic -> slotType != -1){
 					if(x){
@@ -2158,7 +2158,7 @@ void invMatrix::fill(invItem* p)
 							ic1 -> put_item(p);
 						}
 					}
-					if(x < SizeX - 1){
+					if(x < MatrixSizeX - 1){
 						ic1 = matrix[index + 1];
 						if(ic1 -> slotNumber == ic -> slotNumber && !(ic1 -> flags & AS_BUSY_CELL)){
 							flag = 1;
@@ -2166,14 +2166,14 @@ void invMatrix::fill(invItem* p)
 						}
 					}
 					if(y){
-						ic1 = matrix[index - SizeX];
+						ic1 = matrix[index - MatrixSizeX];
 						if(ic1 -> slotNumber == ic -> slotNumber && !(ic1 -> flags & AS_BUSY_CELL)){
 							flag = 1;
 							ic1 -> put_item(p);
 						}
 					}
-					if(y < SizeY - SizeX){
-						ic1 = matrix[index + SizeX];
+					if(y < MatrixSizeY - MatrixSizeX){
+						ic1 = matrix[index + MatrixSizeX];
 						if(ic1 -> slotNumber == ic -> slotNumber && !(ic1 -> flags & AS_BUSY_CELL)){
 							flag = 1;
 							ic1 -> put_item(p);
@@ -2191,8 +2191,8 @@ void invMatrix::remove_item(invItem* p,int mode)
 	int i, j, index = 0;
 	invItem* itm;
 
-	for(i = 0; i < SizeY; i ++){
-		for(j = 0; j < SizeX; j ++){
+	for(i = 0; i < MatrixSizeY; i ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> flags & AS_BUSY_CELL && matrix[index] -> item == p)
 				matrix[index] -> remove_item();
 			index ++;
@@ -2212,7 +2212,7 @@ void invMatrix::remove_item(invItem* p,int mode)
 
 invItem* invMatrix::get_item(int x,int y)
 {
-	int index = x + y * SizeX;
+	int index = x + y * MatrixSizeX;
 	if(matrix[index] -> flags & AS_BUSY_CELL)
 		return matrix[index] -> item;
 	else
@@ -2231,10 +2231,10 @@ invItem* invMatrix::get_area_item(int x,int y,invItem* it)
 		if((y & 0x01) && (it -> ShapeY[i] & 0x01))
 			ix ++;
 
-		if(ix < 0 || ix >= SizeX || iy < 0 || iy >= SizeY)
+		if(ix < 0 || ix >= MatrixSizeX || iy < 0 || iy >= MatrixSizeY)
 			return NULL;
 
-		index = ix + iy * SizeX;
+		index = ix + iy * MatrixSizeX;
 		if(matrix[index] -> flags & AS_BUSY_CELL){
 			if(!p){
 				p = matrix[index] -> item;
@@ -2725,8 +2725,8 @@ void invMatrix::redraw_matrix(void)
 	int dx2 = aCellSize >> 1;
 	int dx4 = aCellSize >> 2;
 
-	int ssx = ScreenSizeX + aCellSize;
-	int ssy = ScreenSizeY + aCellSize;
+	int ssx = SizeX + aCellSize;
+	int ssy = SizeY + aCellSize;
 	int ssz = ssx * ssy;
 
 	unsigned char* p,*scr_buf;
@@ -2737,11 +2737,11 @@ void invMatrix::redraw_matrix(void)
 		memset(scr_buf,0,ssz);
 	}
 
-	for(i = 0; i < SizeY; i ++){
+	for(i = 0; i < MatrixSizeY; i ++){
 		if(i & 0x01){
 			x += dx2;
 		}
-		for(j = 0; j < SizeX; j ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> type && !(matrix[index] -> flags & AS_BUSY_CELL)){
 				memcpy(p,aCellFrame,(dx + 1) * (dx + 1));
 
@@ -2757,8 +2757,8 @@ void invMatrix::redraw_matrix(void)
 				swap_buf_col(1,col1,dx + 1,dx + 1,p);
 				swap_buf_col(2,col,dx + 1,dx + 1,p);
 
-				x0 = x + ScreenX;
-				y0 = y + ScreenY;
+				x0 = x + PosX;
+				y0 = y + PosY;
 
 				if(aciBufRedrawFlag)
 					mem_putspr_h(x,y,dx + 1,dx + 1,ssx,ssy,p,scr_buf);
@@ -2776,11 +2776,11 @@ void invMatrix::redraw_matrix(void)
 	y = 0;
 	index = 0;
 
-	for(i = 0; i < SizeY; i ++){
+	for(i = 0; i < MatrixSizeY; i ++){
 		if(i & 0x01){
 			x += dx2;
 		}
-		for(j = 0; j < SizeX; j ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> type && (matrix[index] -> flags & AS_BUSY_CELL)){
 				memcpy(p,aCellFrame,(dx + 1) * (dx + 1));
 
@@ -2796,8 +2796,8 @@ void invMatrix::redraw_matrix(void)
 				swap_buf_col(1,col1,dx + 1,dx + 1,p);
 				swap_buf_col(2,col,dx + 1,dx + 1,p);
 
-				x0 = x + ScreenX;
-				y0 = y + ScreenY;
+				x0 = x + PosX;
+				y0 = y + PosY;
 
 				if(aciBufRedrawFlag)
 					mem_putspr_h(x,y,dx + 1,dx + 1,ssx,ssy,p,scr_buf);
@@ -2813,7 +2813,7 @@ void invMatrix::redraw_matrix(void)
 
 	delete[] p;
 	if(aciBufRedrawFlag){
-		put_buf2col(800 + ScreenX,ScreenY,ssx,ssy,scr_buf,300,0);
+		put_buf2col(800 + PosX,PosY,ssx,ssy,scr_buf,300,0);
 		delete[] scr_buf;
 	}
 }
@@ -2830,11 +2830,11 @@ void invMatrix::redraw_shadow_cells(void)
 	unsigned char* p;
 	p = new unsigned char[(dx + 1) * (dx + 1)];
 
-	for(i = 0; i < SizeY; i ++){
+	for(i = 0; i < MatrixSizeY; i ++){
 		if(i & 0x01){
 			x += dx2;
 		}
-		for(j = 0; j < SizeX; j ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> type && !(matrix[index] -> flags & AS_IN_SHADOW) && (matrix[index] -> flags & AS_REDRAW_CELL) && !(matrix[index] -> flags & AS_BUSY_CELL)){
 				memcpy(p,aCellFrame,(dx + 1) * (dx + 1));
 
@@ -2850,8 +2850,8 @@ void invMatrix::redraw_shadow_cells(void)
 				swap_buf_col(1,col1,dx + 1,dx + 1,p);
 				swap_buf_col(2,col,dx + 1,dx + 1,p);
 
-				x0 = x + ScreenX;
-				y0 = y + ScreenY;
+				x0 = x + PosX;
+				y0 = y + PosY;
 
 				if(aciBufRedrawFlag)
 					put_buf2col(800 + x0,y0,dx + 1,dx + 1,p,300,0);
@@ -2869,11 +2869,11 @@ void invMatrix::redraw_shadow_cells(void)
 	y = 0;
 	index = 0;
 
-	for(i = 0; i < SizeY; i ++){
+	for(i = 0; i < MatrixSizeY; i ++){
 		if(i & 0x01){
 			x += dx2;
 		}
-		for(j = 0; j < SizeX; j ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> type && !(matrix[index] -> flags & AS_IN_SHADOW) && (matrix[index] -> flags & AS_REDRAW_CELL) && (matrix[index] -> flags & AS_BUSY_CELL)){
 				memcpy(p,aCellFrame,(dx + 1) * (dx + 1));
 
@@ -2889,8 +2889,8 @@ void invMatrix::redraw_shadow_cells(void)
 				swap_buf_col(1,col1,dx + 1,dx + 1,p);
 				swap_buf_col(2,col,dx + 1,dx + 1,p);
 
-				x0 = x + ScreenX;
-				y0 = y + ScreenY;
+				x0 = x + PosX;
+				y0 = y + PosY;
 
 				matrix[index] -> item -> flags |= INV_ITEM_REDRAW;
 
@@ -2910,11 +2910,11 @@ void invMatrix::redraw_shadow_cells(void)
 	y = 0;
 	index = 0;
 
-	for(i = 0; i < SizeY; i ++){
+	for(i = 0; i < MatrixSizeY; i ++){
 		if(i & 0x01){
 			x += dx2;
 		}
-		for(j = 0; j < SizeX; j ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> type && (matrix[index] -> flags & AS_IN_SHADOW) && !(matrix[index] -> flags & AS_BUSY_CELL)){
 				matrix[index] -> flags &= ~AS_REDRAW_CELL;
 				memcpy(p,aCellFrame,(dx + 1) * (dx + 1));
@@ -2930,8 +2930,8 @@ void invMatrix::redraw_shadow_cells(void)
 				swap_buf_col(1,col1,dx + 1,dx + 1,p);
 				swap_buf_col(2,col,dx + 1,dx + 1,p);
 
-				x0 = x + ScreenX;
-				y0 = y + ScreenY;
+				x0 = x + PosX;
+				y0 = y + PosY;
 
 				if(matrix[index] -> flags & AS_BUSY_CELL)
 					matrix[index] -> item -> flags |= INV_ITEM_REDRAW;
@@ -2952,11 +2952,11 @@ void invMatrix::redraw_shadow_cells(void)
 	y = 0;
 	index = 0;
 
-	for(i = 0; i < SizeY; i ++){
+	for(i = 0; i < MatrixSizeY; i ++){
 		if(i & 0x01){
 			x += dx2;
 		}
-		for(j = 0; j < SizeX; j ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> type && (matrix[index] -> flags & AS_IN_SHADOW) && (matrix[index] -> flags & AS_BUSY_CELL)){
 				matrix[index] -> flags &= ~AS_REDRAW_CELL;
 				memcpy(p,aCellFrame,(dx + 1) * (dx + 1));
@@ -2972,8 +2972,8 @@ void invMatrix::redraw_shadow_cells(void)
 				swap_buf_col(1,col1,dx + 1,dx + 1,p);
 				swap_buf_col(2,col,dx + 1,dx + 1,p);
 
-				x0 = x + ScreenX;
-				y0 = y + ScreenY;
+				x0 = x + PosX;
+				y0 = y + PosY;
 
 				if(matrix[index] -> flags & AS_BUSY_CELL)
 					matrix[index] -> item -> flags |= INV_ITEM_REDRAW;
@@ -2994,16 +2994,16 @@ void invMatrix::redraw_shadow_cells(void)
 	y = 0;
 	index = 0;
 
-	for(i = 0; i < SizeY; i ++){
+	for(i = 0; i < MatrixSizeY; i ++){
 		if(i & 0x01){
 			x += dx2;
 		}
-		for(j = 0; j < SizeX; j ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> type && ((matrix[index] -> flags & AS_IN_SHADOW) || (matrix[index] -> flags & AS_REDRAW_CELL))){
 				matrix[index] -> flags &= ~AS_REDRAW_CELL;
 
-				x0 = x + ScreenX;
-				y0 = y + ScreenY;
+				x0 = x + PosX;
+				y0 = y + PosY;
 
 				if(aciBufRedrawFlag)
 					put_map(800 + x0,y0,dx + 1,dx + 1);
@@ -3022,7 +3022,7 @@ void invMatrix::redraw_shadow_cells(void)
 	invItem* itm = (invItem*)items -> last;
 	while(itm){
 		if(itm -> flags & INV_ITEM_REDRAW){
-			itm -> redraw(ScreenX,ScreenY,1,1);
+			itm -> redraw(PosX,PosY,1,1);
 			itm -> flags &= ~INV_ITEM_REDRAW;
 		}
 		itm = (invItem*)itm -> prev;
@@ -3032,8 +3032,8 @@ void invMatrix::redraw_shadow_cells(void)
 void invMatrix::clear_shadow_cells(void)
 {
 	int i,j,index = 0;
-	for(i = 0; i < SizeY; i ++){
-		for(j = 0; j < SizeX; j ++){
+	for(i = 0; i < MatrixSizeY; i ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> type && (matrix[index] -> flags & AS_IN_SHADOW)){
 				matrix[index] -> flags ^= AS_IN_SHADOW;
 				matrix[index] -> flags |= AS_REDRAW_CELL;
@@ -3048,7 +3048,7 @@ void invMatrix::redraw_items(void)
 	invItem* p = (invItem*)items -> last;
 	
 	while(p){
-		p -> redraw(ScreenX,ScreenY,1);
+		p -> redraw(PosX,PosY,1);
 		p = (invItem*)p -> prev;
 	}
 }
@@ -3056,7 +3056,7 @@ void invMatrix::redraw_items(void)
 void invMatrix::get_item_coords(invItem* p,int& x,int &y,int &sx,int &sy)
 {
 	int _x,_y,_sx,_sy;
-	p -> get_coords(ScreenX,ScreenY,_x,_y,_sx,_sy);
+	p -> get_coords(PosX,PosY,_x,_y,_sx,_sy);
 
 	x = _x;
 	y = _y;
@@ -3070,7 +3070,7 @@ void invMatrix::redraw(void)
 	redraw_items();
 
 	if(aciBufRedrawFlag)
-		put_map(800 + ScreenX,ScreenY,ScreenSizeX,ScreenSizeY);
+		put_map(800 + PosX,PosY,SizeX,SizeY);
 
 	flags &= ~IM_REDRAW;
 }
@@ -3091,14 +3091,14 @@ void invMatrix::flush(void)
 {
 	int x;
 #ifdef _ACI_BOUND_TEST_
-	XGR_Rectangle(ScreenX,ScreenY,ScreenSizeX,ScreenSizeY,aciCurColorScheme[INV_NUM_ITM_COL],aciCurColorScheme[INV_NUM_ITM_COL],XGR_OUTLINED);
+	XGR_Rectangle(PosX,PosY,SizeX,SizeY,aciCurColorScheme[INV_NUM_ITM_COL],aciCurColorScheme[INV_NUM_ITM_COL],XGR_OUTLINED);
 #endif
 	if(aciBufRedrawFlag){
-		x = ScreenX - iScreenOffs + 800;
-		XGR_Flush(x,ScreenY,ScreenSizeX,ScreenSizeY);
+		x = PosX - iScreenOffs + 800;
+		XGR_Flush(x,PosY,SizeX,SizeY);
 	}
 	else
-		XGR_Flush(ScreenX,ScreenY,ScreenSizeX,ScreenSizeY);
+		XGR_Flush(PosX,PosY,SizeX,SizeY);
 
 	flags &= ~IM_FLUSH;
 }
@@ -3135,9 +3135,9 @@ void aIndData::flush(int dx,int dy)
 
 void invMatrix::init(void)
 {
-	int i,sz = SizeX * SizeY;
-	if(!ScreenSizeX) ScreenSizeX = SizeX * aCellSize + (aCellSize >> 1) + 1;
-	if(!ScreenSizeY) ScreenSizeY = SizeY * aCellSize - ((SizeY - 1) * (aCellSize >> 2)) + 1;
+	int i,sz = MatrixSizeX * MatrixSizeY;
+	if(!SizeX) SizeX = MatrixSizeX * aCellSize + (aCellSize >> 1) + 1;
+	if(!SizeY) SizeY = MatrixSizeY * aCellSize - ((MatrixSizeY - 1) * (aCellSize >> 2)) + 1;
 	maxLoad = 0;
 	for(i = 0; i < sz; i ++){
 		if(matrix[i] -> type != AS_NO_CELL) maxLoad ++;
@@ -3360,10 +3360,10 @@ void actIntDispatcher::redraw(void)
 		}
 	}
 	if(iP && curMode == AS_INV_MODE){
-		if(iP -> flags & IP_REDRAW){
+//		if(iP -> flags & IP_REDRAW){
 			iP -> redraw();
 			iP -> set_flush();
-		}
+//		}
 	}
 	cp = (CounterPanel*)intCounters -> last;
 	while(cp){
@@ -3396,10 +3396,10 @@ void actIntDispatcher::redraw(void)
 
 	iPl = (InfoPanel*)infoPanels -> last;
 	while(iPl){
-		if(iPl -> flags & IP_REDRAW){
+//		if(iPl -> flags & IP_REDRAW){
 			iPl -> redraw();
 			iPl -> set_flush();
-		}
+//		}
 		iPl = (InfoPanel*)iPl -> prev;
 	}
 }
@@ -4627,7 +4627,9 @@ void InfoPanel::redraw(void)
 			else
 				x = OffsX + ((SizeX - aStrLen32((void*)p->ID_ptr.c_str(), font,hSpace)) >> 1);
 		}
-		if(y < 0) ErrH.Abort("InfoPanel overflow...");
+		if (y < 0) {
+			ErrH.Abort("InfoPanel overflow...");
+		}
 		if(!(flags & IP_RANGE_FONT)){
 			aPutStr(x,y,fnt,col,(unsigned char*)p->ID_ptr.c_str(),SizeX,buf,hSpace);
 		}
@@ -5199,7 +5201,7 @@ void actIntDispatcher::EventQuant(void)
 				break;
 			case EV_ACTIVATE_MATRIX:
 				secondMatrix = alloc_matrix(aci_SecondMatrixID,1);
-				secondMatrix -> ScreenX += 400;
+				secondMatrix -> PosX += 400;
 				if(curMatrix){
 					backupMatrix = alloc_matrix(curMatrix -> type,1);
 					curMatrix -> backup(backupMatrix);
@@ -6123,8 +6125,8 @@ void actIntDispatcher::inv_mouse_quant_l(void)
 
 	if(curMatrix && curMatrix -> check_xy(mx,my)){
 		if(flags & AS_INV_MOVE_ITEM){
-			x = iMouseX - curMatrix -> ScreenX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
-			y = iMouseY - curMatrix -> ScreenY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
+			x = iMouseX - curMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
+			y = iMouseY - curMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
 
 			if(flags & AS_ISCREEN)
 				x += iScreenOffs - 800;
@@ -6135,8 +6137,8 @@ void actIntDispatcher::inv_mouse_quant_l(void)
 			x /= aCellSize;
 		}
 		else {
-			x = iMouseX - curMatrix -> ScreenX;
-			y = iMouseY - curMatrix -> ScreenY;
+			x = iMouseX - curMatrix -> PosX;
+			y = iMouseY - curMatrix -> PosY;
 
 			if(flags & AS_ISCREEN)
 				x += iScreenOffs - 800;
@@ -6146,9 +6148,9 @@ void actIntDispatcher::inv_mouse_quant_l(void)
 			if(y & 0x01) x -= (aCellSize >> 1);
 			x /= aCellSize;
 		}
-		index = x + y * curMatrix -> SizeX;
+		index = x + y * curMatrix -> MatrixSizeX;
 
-		if(x >= 0 && x < curMatrix -> SizeX && y >= 0 && y < curMatrix -> SizeY){
+		if(x >= 0 && x < curMatrix -> MatrixSizeX && y >= 0 && y < curMatrix -> MatrixSizeY){
 			if(flags & AS_INV_MOVE_ITEM){
 				if(curMatrix -> check_fit(x,y,curItem)){
 					if(flags & AS_ISCREEN && curItem -> flags & INV_ITEM_NO_PAY){
@@ -6186,8 +6188,8 @@ void actIntDispatcher::inv_mouse_quant_l(void)
 		else {
 			if(secondMatrix && secondMatrix -> check_xy(mx,my)){
 				if(flags & AS_INV_MOVE_ITEM){
-					x = iMouseX - secondMatrix -> ScreenX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
-					y = iMouseY - secondMatrix -> ScreenY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
+					x = iMouseX - secondMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
+					y = iMouseY - secondMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
 
 					x += iScreenOffs - 800;
 
@@ -6197,8 +6199,8 @@ void actIntDispatcher::inv_mouse_quant_l(void)
 					x /= aCellSize;
 				}
 				else {
-					x = iMouseX - secondMatrix -> ScreenX;
-					y = iMouseY - secondMatrix -> ScreenY;
+					x = iMouseX - secondMatrix -> PosX;
+					y = iMouseY - secondMatrix -> PosY;
 
 					x += iScreenOffs - 800;
 
@@ -6207,9 +6209,9 @@ void actIntDispatcher::inv_mouse_quant_l(void)
 					if(y & 0x01) x -= (aCellSize >> 1);
 					x /= aCellSize;
 				}
-				index = x + y * secondMatrix -> SizeX;
+				index = x + y * secondMatrix -> MatrixSizeX;
 
-				if(x >= 0 && x < secondMatrix -> SizeX && y >= 0 && y < secondMatrix -> SizeY){
+				if(x >= 0 && x < secondMatrix -> MatrixSizeX && y >= 0 && y < secondMatrix -> MatrixSizeY){
 					if(flags & AS_INV_MOVE_ITEM){
 						if(secondMatrix -> check_fit(x,y,curItem)){
 							put_item_xy(curItem,x,y,1);
@@ -6244,8 +6246,8 @@ void actIntDispatcher::inv_mouse_quant_r(void)
 
 	if(curMatrix && curMatrix -> check_xy(mx,my)){
 		if(flags & AS_INV_MOVE_ITEM){
-			x = iMouseX - curMatrix -> ScreenX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
-			y = iMouseY - curMatrix -> ScreenY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
+			x = iMouseX - curMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
+			y = iMouseY - curMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
 
 			if(flags & AS_ISCREEN)
 				x += iScreenOffs - 800;
@@ -6256,8 +6258,8 @@ void actIntDispatcher::inv_mouse_quant_r(void)
 			x /= aCellSize;
 		}
 		else {
-			x = iMouseX - curMatrix -> ScreenX;
-			y = iMouseY - curMatrix -> ScreenY;
+			x = iMouseX - curMatrix -> PosX;
+			y = iMouseY - curMatrix -> PosY;
 
 			if(flags & AS_ISCREEN)
 				x += iScreenOffs - 800;
@@ -6267,9 +6269,9 @@ void actIntDispatcher::inv_mouse_quant_r(void)
 			if(y & 0x01) x -= (aCellSize >> 1);
 			x /= aCellSize;
 		}
-		index = x + y * curMatrix -> SizeX;
+		index = x + y * curMatrix -> MatrixSizeX;
 
-		if(x >= 0 && x < curMatrix -> SizeX && y >= 0 && y < curMatrix -> SizeY){
+		if(x >= 0 && x < curMatrix -> MatrixSizeX && y >= 0 && y < curMatrix -> MatrixSizeY){
 			if(flags & AS_INV_MOVE_ITEM){
 				if(curMatrix -> check_fit(x,y,curItem)){
 					if(flags & AS_ISCREEN && curItem -> flags & INV_ITEM_NO_PAY){
@@ -6308,8 +6310,8 @@ void actIntDispatcher::inv_mouse_quant_r(void)
 		else {
 			if(secondMatrix){
 				if(flags & AS_INV_MOVE_ITEM){
-					x = iMouseX - secondMatrix -> ScreenX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
-					y = iMouseY - secondMatrix -> ScreenY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
+					x = iMouseX - secondMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
+					y = iMouseY - secondMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
 
 					x += iScreenOffs - 800;
 
@@ -6319,8 +6321,8 @@ void actIntDispatcher::inv_mouse_quant_r(void)
 					x /= aCellSize;
 				}
 				else {
-					x = iMouseX - secondMatrix -> ScreenX;
-					y = iMouseY - secondMatrix -> ScreenY;
+					x = iMouseX - secondMatrix -> PosX;
+					y = iMouseY - secondMatrix -> PosY;
 
 					x += iScreenOffs - 800;
 
@@ -6329,9 +6331,9 @@ void actIntDispatcher::inv_mouse_quant_r(void)
 					if(y & 0x01) x -= (aCellSize >> 1);
 					x /= aCellSize;
 				}
-				index = x + y * secondMatrix -> SizeX;
+				index = x + y * secondMatrix -> MatrixSizeX;
 
-				if(x >= 0 && x < secondMatrix -> SizeX && y >= 0 && y < secondMatrix -> SizeY){
+				if(x >= 0 && x < secondMatrix -> MatrixSizeX && y >= 0 && y < secondMatrix -> MatrixSizeY){
 					if(flags & AS_INV_MOVE_ITEM){
 						if(secondMatrix -> check_fit(x,y,curItem)){
 							put_item_xy(curItem,x,y,1);
@@ -7316,6 +7318,9 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 
 	if(flags & aMS_MOVED)
 		curMatrix -> clear_shadow_cells();
+	if (iP) {
+		iP->free_list();
+	}
 
 	x = iMouseX;
 	y = iMouseY;
@@ -7325,120 +7330,124 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 
 	isx = ix + curIbs -> SizeX;
 	isy = iy + curIbs -> SizeY;
+	printf("MouseEvent(iMouseX: %d, iMouseY: %d, isy: %d, isy: %d)\n", iMouseX, iMouseY, isx, isy);
 
-	if(x >= ix && x < isx && y >= iy && y < isy){
-		id = aciGetScreenItem(x,y);
-		if(id != -1){
-			p = get_item(id);
-			if(iP){
-				if(p){
-					iP -> free_list();
-					iP -> add_item(p->ID_ptr.c_str(),-1,aciCurColorScheme[FM_SELECT_COL]);
-					iP -> add_items(p -> numComments,p -> comments);
-					iP -> set_redraw();
+//	if(x >= ix && x < isx && y >= iy && y < isy){
+	id = aciGetScreenItem(x,y);
+	if(id != -1){
+		printf("MouseEvent: got screen item, id: %d\n", id);
+		p = get_item(id);
+		if(iP){
+			if(p){
+				iP -> free_list();
+				iP -> add_item(p->ID_ptr.c_str(),-1,aciCurColorScheme[FM_SELECT_COL]);
+				iP -> add_items(p -> numComments,p -> comments);
+				iP -> set_redraw();
+			}
+			else {
+				XBuf = new XBuffer;
+				*XBuf < "Undefined item, ID = " <= id;
+				ptr = XBuf -> address();
+				iP -> free_list();
+				iP -> add_item(ptr,-1,aciCurColorScheme[FM_SELECT_COL]);
+				iP -> set_redraw();
+				delete XBuf;
+			}
+		}
+	} else if(aciGetScreenMechos(x,y)){
+		printf("MouseEvent: got screen mechos\n");
+		if(iP -> items -> Size){
+			iP -> free_list();
+			iP -> set_redraw();
+		}
+		if(curMatrix && curMatrix -> mech_name){
+			iP -> add_item(curMatrix -> mech_name,-1,aciCurColorScheme[FM_SELECT_COL]);
+		}
+
+	} else if(curMatrix && curMatrix -> check_xy(iMouseX,iMouseY)){
+		printf("MouseEvent: inside inv matrix\n");
+		if(flags & AS_INV_MOVE_ITEM){
+			printf("MouseEvent: inside inv matrix. AS_INV_MOVE_ITEM\n");
+			x = iMouseX - curMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
+			y = iMouseY - curMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
+
+			y /= aCellSize - (aCellSize >> 2);
+
+			if(y & 0x01) x -= (aCellSize >> 1);
+			x /= aCellSize;
+		}
+		else {
+			x = iMouseX - curMatrix -> PosX;
+			y = iMouseY - curMatrix -> PosY;
+
+			y /= aCellSize - (aCellSize >> 2);
+
+			if(y & 0x01) x -= (aCellSize >> 1);
+			x /= aCellSize;
+		}
+		printf("MouseEvent(x: %d, y: %d)\n", x, y);
+		if(x >= 0 && x < curMatrix -> MatrixSizeX && y >= 0 && y < curMatrix -> MatrixSizeY){
+			if(flags & AS_INV_MOVE_ITEM){
+				printf("MouseEvent AS_INV_MOVE_ITEM\n");
+				if(curMatrix -> check_fit(x,y,curItem)){
+					printf("Item fit\n");
+					curMatrix -> put_item_shadow(x,y,curItem);
+					curMatrix -> flags |= IM_REDRAW_SHADOW;
 				}
 				else {
-					XBuf = new XBuffer;
-					*XBuf < "Undefined item, ID = " <= id;
-					ptr = XBuf -> address();
-					iP -> free_list();
-					iP -> add_item(ptr,-1,aciCurColorScheme[FM_SELECT_COL]);
-					iP -> set_redraw();
-					delete XBuf;
-				}
-			}
-		}
-		if(id == -1){
-			if(aciGetScreenMechos(x,y)){
-				if(iP -> items -> Size){
-					iP -> free_list();
-					iP -> set_redraw();
-				}
-				if(curMatrix && curMatrix -> mech_name)
-					iP -> add_item(curMatrix -> mech_name,-1,aciCurColorScheme[FM_SELECT_COL]);
-			}
-			else {
-				if(iP -> items -> Size){
-					iP -> free_list();
-					iP -> set_redraw();
-				}
-			}
-		}
-	}
-	else {
-		if(curMatrix && curMatrix -> check_xy(iMouseX,iMouseY)){
-			if(flags & AS_INV_MOVE_ITEM){
-				x = iMouseX - curMatrix -> ScreenX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
-				y = iMouseY - curMatrix -> ScreenY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
+					p = curMatrix -> get_area_item(x,y,curItem);
+					if(p){
+						curMatrix -> remove_item(p,1);
+						if(curMatrix -> check_fit(x,y,curItem)){
+							curMatrix -> put_item_shadow(x,y,curItem);
+							curMatrix -> flags |= IM_REDRAW_SHADOW;
+						}
 
-				y /= aCellSize - (aCellSize >> 2);
-
-				if(y & 0x01) x -= (aCellSize >> 1);
-				x /= aCellSize;
-			}
-			else {
-				x = iMouseX - curMatrix -> ScreenX;
-				y = iMouseY - curMatrix -> ScreenY;
-
-				y /= aCellSize - (aCellSize >> 2);
-
-				if(y & 0x01) x -= (aCellSize >> 1);
-				x /= aCellSize;
-			}
-
-			if(x >= 0 && x < curMatrix -> SizeX && y >= 0 && y < curMatrix -> SizeY){
-				if(flags & AS_INV_MOVE_ITEM){
-					if(curMatrix -> check_fit(x,y,curItem)){
-						curMatrix -> put_item_shadow(x,y,curItem);
+						curMatrix -> put_item(p -> MatrixX,p -> MatrixY,p,1);
 					}
-					else {
-						p = curMatrix -> get_area_item(x,y,curItem);
-						if(p){
-							curMatrix -> remove_item(p,1);
-							if(curMatrix -> check_fit(x,y,curItem))
-								curMatrix -> put_item_shadow(x,y,curItem);
-							curMatrix -> put_item(p -> MatrixX,p -> MatrixY,p,1);
+				}
+			}
+			else {
+				printf("MouseEvent not AS_INV_MOVE_ITEM\n");
+				if(iP){
+					p = curMatrix -> get_item(x,y);
+					if(p){
+						printf("MouseEvent got matrix item, id: %d\n", p->ID);
+						if(iP -> items -> Size){
+							iP -> free_list();
+							iP -> set_redraw();
+						}
+						iP -> add_item(p->ID_ptr.c_str(),-1,aciCurColorScheme[FM_SELECT_COL]);
+						iP -> add_items(p -> numComments,p -> comments);
+						if(p -> pTemplate)
+							iP -> add_item(aciGetItemLoad(p,0));
+						if(p -> promptData && XGR_MouseObj.promptData){
+							if(!pr){
+								pr = new XGR_MousePromptData;
+								pr -> ID = ACI_ITEM_PROMPT;
+								XGR_MouseObj.promptData -> AddElement((XListElement*)pr);
+							}
+							pr -> set_text(p -> promptData);
+							curMatrix -> get_item_coords(p,pr -> StartX,pr -> StartY,pr -> SizeX,pr -> SizeY);
 						}
 					}
-				}
-				else {
-					if(iP){
-						p = curMatrix -> get_item(x,y);
-						if(p){
+					else {
+						if(!(flags & AS_INV_MOVE_ITEM)){
+							printf("MouseEvent not matrix item, cleaning up\n");
 							if(iP -> items -> Size){
 								iP -> free_list();
 								iP -> set_redraw();
 							}
-							iP -> add_item(p->ID_ptr.c_str(),-1,aciCurColorScheme[FM_SELECT_COL]);
-							iP -> add_items(p -> numComments,p -> comments);
-							if(p -> pTemplate)
-								iP -> add_item(aciGetItemLoad(p,0));
-							if(p -> promptData && XGR_MouseObj.promptData){
-								if(!pr){
-									pr = new XGR_MousePromptData;
-									pr -> ID = ACI_ITEM_PROMPT;
-									XGR_MouseObj.promptData -> AddElement((XListElement*)pr);
-								}
-								pr -> set_text(p -> promptData);
-								curMatrix -> get_item_coords(p,pr -> StartX,pr -> StartY,pr -> SizeX,pr -> SizeY);
-							}
-						}
-						else {
-							if(!(flags & AS_INV_MOVE_ITEM)){
-								if(iP -> items -> Size){
-									iP -> free_list();
-									iP -> set_redraw();
-								}
-							}
 						}
 					}
 				}
 			}
-		}
-		else {
+		} else {
+			printf("MouseEvent: not inside inv matrix\n");
 			if(!(flags & AS_INV_MOVE_ITEM)){
 				if(iP){
 					if(iP -> items -> Size){
+						printf("MouseEvent: cleaning up\n");
 						iP -> free_list();
 						iP -> set_redraw();
 					}
@@ -7564,18 +7573,18 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 				XGR_MouseObj.promptData -> AddElement((XListElement*)pr);
 				pr -> set_text(aciSTR_NO_CASH);
 			}
-			pr -> StartX = curMatrix -> ScreenX + iScreenOffs;
-			pr -> StartY = curMatrix -> ScreenY;
+			pr -> StartX = curMatrix -> PosX + iScreenOffs;
+			pr -> StartY = curMatrix -> PosY;
 
-			pr -> SizeX = curMatrix -> ScreenSizeX;
-			pr -> SizeY = curMatrix -> ScreenSizeY;
+			pr -> SizeX = curMatrix -> SizeX;
+			pr -> SizeY = curMatrix -> SizeY;
 		}
 	}
 
 	if(curMatrix && curMatrix -> check_xy(mx,my)){
 		if(flags & AS_INV_MOVE_ITEM){
-			x = iMouseX - curMatrix -> ScreenX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
-			y = iMouseY - curMatrix -> ScreenY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
+			x = iMouseX - curMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
+			y = iMouseY - curMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
 
 			x += iScreenOffs - 800;
 
@@ -7585,8 +7594,8 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 			x /= aCellSize;
 		}
 		else {
-			x = iMouseX - curMatrix -> ScreenX;
-			y = iMouseY - curMatrix -> ScreenY;
+			x = iMouseX - curMatrix -> PosX;
+			y = iMouseY - curMatrix -> PosY;
 
 			x += iScreenOffs - 800;
 
@@ -7596,7 +7605,7 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 			x /= aCellSize;
 		}
 
-		if(x >= 0 && x < curMatrix -> SizeX && y >= 0 && y < curMatrix -> SizeY){
+		if(x >= 0 && x < curMatrix -> MatrixSizeX && y >= 0 && y < curMatrix -> MatrixSizeY){
 			if(flags & AS_INV_MOVE_ITEM){
 				if(curMatrix -> check_fit(x,y,curItem)){
 					curMatrix -> put_item_shadow(x,y,curItem);
@@ -7634,8 +7643,8 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 	else {
 		if(secondMatrix && secondMatrix -> check_xy(mx,my)){
 			if(flags & AS_INV_MOVE_ITEM){
-				x = iMouseX - secondMatrix -> ScreenX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
-				y = iMouseY - secondMatrix -> ScreenY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
+				x = iMouseX - secondMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
+				y = iMouseY - secondMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
 
 				x += iScreenOffs - 800;
 
@@ -7645,8 +7654,8 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 				x /= aCellSize;
 			}
 			else {
-				x = iMouseX - secondMatrix -> ScreenX;
-				y = iMouseY - secondMatrix -> ScreenY;
+				x = iMouseX - secondMatrix -> PosX;
+				y = iMouseY - secondMatrix -> PosY;
 
 				x += iScreenOffs - 800;
 
@@ -7656,7 +7665,7 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 				x /= aCellSize;
 			}
 
-			if(x >= 0 && x < secondMatrix -> SizeX && y >= 0 && y < secondMatrix -> SizeY){
+			if(x >= 0 && x < secondMatrix -> MatrixSizeX && y >= 0 && y < secondMatrix -> MatrixSizeY){
 				if(flags & AS_INV_MOVE_ITEM){
 					if(secondMatrix -> check_fit(x,y,curItem)){
 						secondMatrix -> put_item_shadow(x,y,curItem);
@@ -7720,8 +7729,8 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 int invMatrix::check_redraw(void)
 {
 	int i,j,index = 0;
-	for(i = 0; i < SizeY; i ++){
-		for(j = 0; j < SizeX; j ++){
+	for(i = 0; i < MatrixSizeY; i ++){
+		for(j = 0; j < MatrixSizeX; j ++){
 			if(matrix[index] -> flags & (AS_IN_SHADOW | AS_REDRAW_CELL))
 				return 1;
 			index ++;
@@ -7829,8 +7838,9 @@ void actIntDispatcher::deactivate_items(void)
 
 int invMatrix::check_xy(int x,int y)
 {
-	if(x >= ScreenX && x < ScreenX + ScreenSizeX && y >= ScreenY && y < ScreenY + ScreenSizeY)
+	if(x >= PosX && x < PosX + SizeX && y >= PosY && y < PosY + SizeY){
 		return 1;
+	}
 	return 0;
 }
 
@@ -7863,21 +7873,21 @@ void invMatrix::clone(invMatrix* p)
 	p -> type = type;
 	p -> flags = flags;
 
+	p -> MatrixSizeX = MatrixSizeX;
+	p -> MatrixSizeY = MatrixSizeY;
+
+	p -> PosX = PosX;
+	p -> PosY = PosY;
+
 	p -> SizeX = SizeX;
 	p -> SizeY = SizeY;
-
-	p -> ScreenX = ScreenX;
-	p -> ScreenY = ScreenY;
-
-	p -> ScreenSizeX = ScreenSizeX;
-	p -> ScreenSizeY = ScreenSizeY;
 
 	p -> back = back;
 	p -> mech_name = mech_name;
 
 	p -> maxLoad = maxLoad;
 
-	for(i = 0; i < SizeX * SizeY; i ++){
+	for(i = 0; i < MatrixSizeX * MatrixSizeY; i ++){
 		p -> matrix[i] -> type = matrix[i] -> type;
 		p -> matrix[i] -> flags = 0;
 
@@ -7932,7 +7942,7 @@ invMatrix* actIntDispatcher::alloc_matrix(int type,int imode)
 /*
 	p = (invMatrix*)freeMatrixList -> last;
 	while(p){
-		if(p -> SizeX == t -> SizeX && p -> SizeY == t -> SizeY){
+		if(p -> MatrixSizeX == t -> MatrixSizeX && p -> MatrixSizeY == t -> MatrixSizeY){
 			t -> clone(p);
 			freeMatrixList -> dconnect(p);
 			return p;
@@ -7940,7 +7950,7 @@ invMatrix* actIntDispatcher::alloc_matrix(int type,int imode)
 		p = (invMatrix*)p -> prev;
 	}
 */
-	p = new invMatrix(t -> SizeX,t -> SizeY);
+	p = new invMatrix(t -> MatrixSizeX,t -> MatrixSizeY);
 	t -> clone(p);
 	return p;
 }
@@ -7994,7 +8004,7 @@ void actIntDispatcher::calc_load(void)
 {
 	int i,sz;
 	if(!curMatrix) return;
-	sz = curMatrix -> SizeX * curMatrix -> SizeY;
+	sz = curMatrix -> MatrixSizeX * curMatrix -> MatrixSizeY;
 	aciCurLoad = 0;
 	for(i = 0; i < sz; i ++){
 		if(curMatrix -> matrix[i] -> flags & AS_BUSY_CELL) aciCurLoad ++;
@@ -8214,12 +8224,12 @@ void actIntDispatcher::swap_matrices(void)
 			v -= ((uvsActInt*)curMatrix -> uvsDataPtr) -> sell_price;
 			aciUpdateCurCredits(v);
 		}
-		secondMatrix -> ScreenX = curMatrix -> ScreenX;
+		secondMatrix -> PosX = curMatrix -> PosX;
 		free_matrix(curMatrix);
 		free_matrix(backupMatrix);
 	}
 	else {
-		secondMatrix -> ScreenX -= 400;
+		secondMatrix -> PosX -= 400;
 	}
 	curMatrix = secondMatrix;
 	aciInitCurMatrixPtr();
@@ -8238,7 +8248,7 @@ void actIntDispatcher::cancel_matrix(void)
 	}
 	free_matrix(secondMatrix);
 	if(curMatrix){
-		backupMatrix -> ScreenX = curMatrix -> ScreenX;
+		backupMatrix -> PosX = curMatrix -> PosX;
 		free_matrix(curMatrix);
 		curMatrix = alloc_matrix(backupMatrix -> type,1);
 		backupMatrix -> backup(curMatrix);
@@ -8330,8 +8340,8 @@ void actIntDispatcher::put_in_slot(actintItemData* d)
 		if(id == AS_DEVICE_SLOT) return;
 	}
 
-	for(y = 0; y < curMatrix -> SizeY; y ++){
-		for(x = 0; x < curMatrix -> SizeX; x ++){
+	for(y = 0; y < curMatrix -> MatrixSizeY; y ++){
+		for(x = 0; x < curMatrix -> MatrixSizeX; x ++){
 			if(curMatrix -> matrix[index] -> slotType == AS_DEVICE_SLOT){
 				if(curMatrix -> check_fit(x,y,p)){
 					if(!ms_flag){
@@ -8509,8 +8519,8 @@ void aciBitmapMenu::remap_coords(void)
 int invMatrix::check_slot(int type)
 {
 	int i,j,index = 0;
-	for(i = 0; i < SizeX; i ++){
-		for(j = 0; j < SizeY; j ++){
+	for(i = 0; i < MatrixSizeX; i ++){
+		for(j = 0; j < MatrixSizeY; j ++){
 			if(matrix[index] -> slotType == type) return 1;
 			index ++;
 		}

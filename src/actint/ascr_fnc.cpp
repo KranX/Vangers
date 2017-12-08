@@ -5303,8 +5303,8 @@ void acsLoadData(void)
 			while (iter_gamer) {
 				bool item_detect = false;
 				int i, j, index = 0;
-				for(i = 0; i < aScrDisp->curMatrix->SizeY; i++){
-					for(j = 0; j < aScrDisp->curMatrix->SizeX; j++){
+				for(i = 0; i < aScrDisp->curMatrix->MatrixSizeY; i++){
+					for(j = 0; j < aScrDisp->curMatrix->MatrixSizeX; j++){
 						invMatrixCell *cell = aScrDisp->curMatrix->matrix[index];
 						/*std::cout<<"GGamer type:"<<iter_gamer->type
 							<<" x:"<<iter_gamer->pos_x
