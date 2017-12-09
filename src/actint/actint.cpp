@@ -3181,29 +3181,6 @@ void actIntDispatcher::redraw(void)
 	aci_tmp ++;
 	if(aci_tmp > 64) aci_tmp = 0;
 
-	iPl = (InfoPanel*)infoPanels -> last;
-	while(iPl){
-		if(!(iPl -> flags & IP_NO_REDRAW)){
-			if(iPl -> interf_type == INT_PANEL){
-				iPl -> set_redraw();
-			}
-			else {
-				switch(curMode){
-					case AS_INFO_MODE:
-						if(iPl -> interf_type == INF_PANEL){
-							iPl -> set_redraw();
-						}
-						break;
-					case AS_INV_MODE:
-						if(iPl -> interf_type == INV_PANEL){
-							iPl -> set_redraw();
-						}
-						break;
-				}
-			}
-		}
-		iPl = (InfoPanel*)iPl -> prev;
-	}
 	if(curMode == AS_INFO_MODE){
 		p = (fncMenu*)menuList -> last;
 		while(p){
@@ -3396,10 +3373,11 @@ void actIntDispatcher::redraw(void)
 
 	iPl = (InfoPanel*)infoPanels -> last;
 	while(iPl){
-//		if(iPl -> flags & IP_REDRAW){
+		if ( curMode == AS_INFO_MODE && iPl-> interf_type == INF_PANEL ||
+			 curMode == AS_INV_MODE && iPl-> interf_type == INV_PANEL) {
 			iPl -> redraw();
 			iPl -> set_flush();
-//		}
+		}
 		iPl = (InfoPanel*)iPl -> prev;
 	}
 }
