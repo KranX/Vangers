@@ -532,7 +532,7 @@ Button INV_BUTTON
 {
 	id	$ACI_WPN_PICKUP_BUTTON
 
-	x	387
+	x	334
 	y	4
     anchor_right
 
@@ -547,7 +547,7 @@ Button INV_BUTTON
 {
 	id	$ACI_ITM_PICKUP_BUTTON
 
-	x	64
+	x	38
 	y	18
     anchor_right
 
@@ -709,7 +709,7 @@ counter INV_COUNTER {
 	font	2
 	range_font
 
-	x	203
+	x	103
 	y	21
 	anchor_right
 	size_x	213
