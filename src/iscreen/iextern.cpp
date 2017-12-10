@@ -42,6 +42,7 @@
 
 // PASSEMBLOSS...
 #define iMP_CHECKPOINTS_NUM	3
+#define iMP_ESCAVE	4
 
 // MUSTODONT...
 #define iMP_MECHOS_NAME 	4
@@ -1496,7 +1497,7 @@ void iInitMultiGames(void)
 
 	scr = (iScreen*)iScrDisp -> get_object("Game Params 2");
 	if(!scr) ErrH.Abort("iMP_Screen not found...");
-	iMP_Games[iMP_PASSEMBLOSS] -> alloc_mem(4);
+	iMP_Games[iMP_PASSEMBLOSS] -> alloc_mem(5);
 
 	el = scr -> get_object("BeebosNumberID");
 	if(!el) ErrH.Abort("iObject not found...");
@@ -1519,6 +1520,12 @@ void iInitMultiGames(void)
 	if(!el) ErrH.Abort("iObject not found...");
 	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_CHECKPOINTS_NUM] -> alloc_mem(1);
 	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_CHECKPOINTS_NUM] -> add_obj(el);
+
+	el = scr -> get_object("EscaveTrig");
+	if(!el) ErrH.Abort("iObject not found...");
+	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_ESCAVE] -> type = iMP_TRIGGER_STATE;
+	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_ESCAVE] -> alloc_mem(1);
+	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_ESCAVE] -> add_obj(el);
 
 	scr = (iScreen*)iScrDisp -> get_object("Game Params 3");
 	if(!scr) ErrH.Abort("iMP_Screen not found...");
@@ -1694,7 +1701,10 @@ void iGetMultiGameParameters(void)
 
 			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
 			my_server_data.Passembloss.CheckpointsNumber = value;
-			my_server_data.Passembloss.RandomEscave = tm % 3;
+
+			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ESCAVE);
+			my_server_data.Passembloss.RandomEscave = value - 1;
+//			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;
 		case iMP_HUNTAGE:
 			value = iGetMultiGameParameter(iMP_HUNTAGE,iMP_INITIAL_CASH);
@@ -1789,6 +1799,10 @@ void iSetMultiGameParameters(void)
 
 			value = my_server_data.Passembloss.CheckpointsNumber;
 			iSetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM,value);
+
+			value = my_server_data.Passembloss.RandomEscave + 1;
+			if(value > 3) value = 0;
+			iSetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ESCAVE,value);
 			break;
 		case iMP_HUNTAGE:
 			value = my_server_data.Huntage.InitialCash;

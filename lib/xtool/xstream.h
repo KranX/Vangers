@@ -60,7 +60,8 @@ struct XStream
 	int	eof(){ return eofFlag || pos >= size(); }
 	long	size();
 
-	XSHANDLE	gethandler(){ return handler; }
+	XSHANDLE gethandler(){ return handler; }
+
 
 	void	flush();
 	const char*	GetFileName() const { return fname.c_str(); }
