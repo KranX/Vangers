@@ -720,8 +720,9 @@ mode_key	$VK_F1
 #define MATRIX_LOWRES	x	360	\
 			y	60
 
-#define MATRIX_HIRES	x	456	\
-			y	76
+#define MATRIX_HIRES	x	344 \
+			y	76 \
+			anchor_right
 
 #define iMATRIX_HIRES	x	476	\
 			y	70

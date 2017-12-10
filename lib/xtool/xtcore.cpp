@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 
 	initclock();
 	prevID = 0;
-	id = xtInitApplication();
+	id = xtInitApplication(argc, argv);
 	XObj = xtGetRuntimeObject(id);
 #ifdef _RTO_LOG_
 	if(XRec.flags & XRC_PLAY_MODE)

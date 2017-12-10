@@ -412,18 +412,18 @@ ibs_obj $IBS1 { 	// Info window 600x600
 	offs_x		0	13
 	offs_y		0	1
 
-	offs_x		1	-6
+	offs_x		1	203
 	offs_y		1	-3
 
 	offs_x		2	14
 	offs_y		2	-1
 
-	offs_x		3	-6
-	offs_y		3	-2
+	offs_x		3	199
+	offs_y		3	5
 
 	font		7
 
-	file	"resource/actint/800x600/screens/s600"
+	file	"resource/actint/hd/screens/frame-1280x720"
 	bground $BG1
 }
 
@@ -431,18 +431,19 @@ ibs_obj $IBS2 { 	// Inventory window 400x600
 	offs_x		0	13
 	offs_y		0	1
 
-	offs_x		1	-1
-	offs_y		1	-1
+	offs_x		1	393
+	offs_y		1	3
 
 	offs_x		2	14
 	offs_y		2	0
 
-	offs_x		3	-4
-	offs_y		3	-2
+    offs_x		3	390
+    offs_y		3	5
 
 	font		0
 
-	file	"resource/actint/800x600/screens/s400v"
+	//file	"resource/actint/800x600/screens/s400v"
+	file	"resource/actint/hd/screens/frame-inventory-1280x720"
 	bground $BG3
 }
 
@@ -466,10 +467,9 @@ ibs_obj $IBS3 { 	// Info window 400x600
 }
 
 bml_obj $BG1 {
-	file	"resource/actint/800x600/screens/b600.bmp"
-
-	size_x	640
-	size_y	480
+	file	"resource/actint/hd/screens/frame-1280x720.bmp"
+	size_x	1280
+	size_y	720
 }
 
 bml_obj $BG2 {
@@ -480,10 +480,10 @@ bml_obj $BG2 {
 }
 
 bml_obj $BG3 {
-	file	"resource/actint/800x600/screens/b400v.bmp"
-
-	size_x	640
-	size_y	480
+	//file	"resource/actint/800x600/screens/b400v.bmp"
+    file	"resource/actint/hd/screens/frame-inventory-1280x720.bmp"
+	size_x	1280
+	size_y	720
 }
 
 Button INT_BUTTON
@@ -492,8 +492,10 @@ Button INT_BUTTON
 
 	id	$B_INT1
 
-	x	726
-	y	533
+	x	0 
+	y	0
+	anchor_right
+	anchor_bottom
 
 	key	$VK_RETURN
 	control_id	12	       // iKEY_INVENTORY
@@ -511,8 +513,10 @@ Button INF_BUTTON
 
 	id	$B_INF0
 
-	x	620
-	y	530
+	x	102
+	y	3
+	anchor_right
+	anchor_bottom
 
 	key	$VK_SPACE
 	control_id	13	       // iKEY_OPEN
@@ -528,8 +532,9 @@ Button INV_BUTTON
 {
 	id	$ACI_WPN_PICKUP_BUTTON
 
-	x	413
+	x	334
 	y	4
+    anchor_right
 
 	event	$EV_SET_WPN_PICKUP	0
 
@@ -542,8 +547,9 @@ Button INV_BUTTON
 {
 	id	$ACI_ITM_PICKUP_BUTTON
 
-	x	706
+	x	38
 	y	18
+    anchor_right
 
 	event	$EV_SET_ITM_PICKUP	0
 
@@ -555,9 +561,9 @@ Button INV_BUTTON
 fncMenu {
 	menu_type	$MENU1
 
-	x	607
+	x	15
 	y	64
-
+	anchor_right
 	size_x	179
 	size_y	234
 
@@ -581,9 +587,10 @@ fncMenu {
 fncMenu {
 	menu_type	$MENU2
 
-	x	618
-	y	310
-
+	x	6
+	y	68
+	anchor_right
+	anchor_bottom
 	size_x	177
 	size_y	222
 
@@ -658,8 +665,10 @@ ind_data $IND_NRG {
 }
 
 info_panel {	// Inventory info panel...
-	x	465
-	y	464
+	x	60
+	y	42
+	anchor_right
+	anchor_bottom
 
 	size_x	275
 	size_y	94
@@ -689,8 +698,9 @@ info_panel {	// Time info panel...
 
 	ibs_name	"resource/actint/800x600/time_pl"
 
-	x	624
+	x	32
 	y	7
+	anchor_right
 	size_x	146
 	size_y	45
 }
@@ -699,8 +709,9 @@ counter INV_COUNTER {
 	font	2
 	range_font
 
-	x	484
+	x	103
 	y	21
+	anchor_right
 	size_x	213
 	size_y	38
 

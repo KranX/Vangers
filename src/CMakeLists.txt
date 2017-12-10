@@ -63,7 +63,7 @@ SET(vangers_SRCS
 	xsocket.cpp
 	zmod_client.cpp 
 	${WINDOWS_RES}
-)
+		cli_options.cpp cli_options.h)
 
 ADD_EXECUTABLE(vangers ${vangers_SRCS})
 

@@ -448,6 +448,26 @@ struct invItem : public iListElement
 	~invItem(void);
 };
 
+
+const int   WIDGET_ANCHOR_RIGHT = 0x1;
+const int   WIDGET_ANCHOR_BOTTOM = 0x2;
+
+
+class Widget {
+
+public:
+	int PosX;
+	int PosY;
+	int anchor = 0;
+	int SizeX;
+	int SizeY;
+	void recalc_anchors();
+private:
+	bool anchorsRecalced = false;
+
+};
+
+
 enum CellTypes
 {
 	AS_NO_CELL,		// 0
@@ -490,22 +510,15 @@ const int 	IM_RAFFA		= 0x20;
 
 const int 	IM_NUM_PARAMS		= 7;
 
-struct invMatrix : public iListElement
+struct invMatrix : public iListElement, public Widget
 {
 	int internalID;
 
 	int type;
 	int flags;
 
-	int SizeX;
-	int SizeY;
-
-	int ScreenX;
-	int ScreenY;
-
-	int ScreenSizeX;
-	int ScreenSizeY;
-
+	int MatrixSizeX;
+	int MatrixSizeY;
 	int maxLoad;
 
 	char* mech_name;
@@ -665,13 +678,10 @@ const int 	INTERF_BUTTON		= 0x00;
 const int 	INV_BUTTON		= 0x01;
 const int 	INFO_BUTTON		= 0x02;
 
-struct aButton : public iListElement
+struct aButton : public iListElement, public Widget
 {
 	int ID;
 	int ControlID;
-
-	int PosX;
-	int PosY;
 
 	int type;
 	int flags;
@@ -681,9 +691,6 @@ struct aButton : public iListElement
 
 	int eventCode;
 	int eventData;
-
-	int SizeX;
-	int SizeY;
 
 	int numFrames;
 
@@ -718,6 +725,8 @@ struct aButton : public iListElement
 	aButton(void);
 	~aButton(void);
 };
+
+
 
 // fncMenuItem flags...
 const int 	FM_SELECTED		= 0x01;
@@ -783,17 +792,10 @@ const int 	FM_NO_ALIGN		= 0x1000;
 const int 	FM_MAIN_MENU		= 0x2000;
 const int 	FM_RANGE_FONT		= 0x4000;
 
-struct fncMenu : public iListElement
-{
+struct fncMenu : public iListElement, public Widget {
 	int type;
 
-	int PosX;
-	int PosY;
-
-	int SizeX;
-	int SizeY;
-
-	int VItems;
+    int VItems;
 	int itemY;
 
 	int curFunction;
@@ -893,6 +895,7 @@ struct fncMenu : public iListElement
 
 	fncMenu(void);
 	~fncMenu(void);
+
 };
 
 // fncMenuSet flags...
@@ -954,16 +957,10 @@ const int 	CP_REDRAW	= 0x01;
 const int 	CP_FLUSH	= 0x02;
 const int 	CP_RANGE_FONT	= 0x04;
 
-struct CounterPanel : public iListElement
+struct CounterPanel : public iListElement, public Widget
 {
 	int ID;
 	int type;
-
-	int PosX;
-	int PosY;
-
-	int SizeX;
-	int SizeY;
 
 	int MaxLen;
 
@@ -1010,19 +1007,13 @@ struct InfoPanelItem : public iListElement
 	int font;
 };
 
-struct InfoPanel : public iListElement
+struct InfoPanel : public iListElement, public Widget
 {
 	int type;
 	int interf_type;
 
-	int PosX;
-	int PosY;
-
 	int OffsX;
 	int OffsY;
-
-	int SizeX;
-	int SizeY;
 
 	int MaxStr;
 	int bCol;
@@ -1252,6 +1243,11 @@ const int 	AS_LOCKED		= 0x1000;
 const int 	AS_TEXT_MODE		= 0x2000;
 const int 	AS_CHAT_MODE		= 0x4000;
 const int 	AS_WORLDS_INIT		= 0x8000;
+
+/** actInt camera offsets
+**/
+const int AS_INF_CAMERA_OFFSET = 100;
+const int AS_INV_CAMERA_OFFSET = 250;  // ??
 
 struct actIntDispatcher
 {

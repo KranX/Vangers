@@ -92,7 +92,7 @@ void xtUnRegisterSysQuant(int id);
 
 void xtClearMessageQueue(void);
 
-int xtInitApplication(void);
+int xtInitApplication(int argc, char **argv);
 void xtDoneApplication(void);
 
 void* xtGet_hInstance(void);

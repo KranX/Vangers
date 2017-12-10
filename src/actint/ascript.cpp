@@ -318,7 +318,8 @@ enum aOptions
 	SET_ESCAVE_FLAG,		// 153
 
 	ADD_MAP_INFO_FILE,		// 154
-
+	ANCHOR_RIGHT,                 //155
+	ANCHOR_BOTTOM,                 //156
 	MAX_OPTION
 };
 
@@ -547,7 +548,9 @@ static const char* aOptIDs[MAX_OPTION] =
 	"prm_template",         // 152
 	"show_escave",          // 153
 
-	"map_data"              // 154
+	"map_data",             // 154
+	"anchor_right",         // 155
+	"anchor_bottom"         // 156
 };
 
 int curMode = AS_NONE;
@@ -1204,7 +1207,7 @@ void aParseScript(const char* fname,char* bname)
 					break;
 				case INIT_X:
 					if(curMode == AS_INIT_MATRIX){
-						invMat -> ScreenX = script -> read_idata();
+						invMat -> PosX = script -> read_idata();
 					}
 					else {
 						if(curMode == AS_INIT_MENU){
@@ -1247,7 +1250,7 @@ void aParseScript(const char* fname,char* bname)
 					break;
 				case INIT_Y:
 					if(curMode == AS_INIT_MATRIX){
-						invMat -> ScreenY = script -> read_idata();
+						invMat -> PosY = script -> read_idata();
 					}
 					else {
 						if(curMode == AS_INIT_MENU){
@@ -1290,7 +1293,7 @@ void aParseScript(const char* fname,char* bname)
 					break;
 				case INIT_MSX:
 					if(curMode == AS_INIT_MATRIX){
-						invMat -> SizeX = script -> read_idata();
+						invMat -> MatrixSizeX = script -> read_idata();
 					}
 					else {
 						handle_error("Misplaced option",aOptIDs[id]);
@@ -1391,7 +1394,7 @@ void aParseScript(const char* fname,char* bname)
 					break;
 				case INIT_MSY:
 					if(curMode == AS_INIT_MATRIX){
-						invMat -> SizeY = script -> read_idata();
+						invMat -> MatrixSizeY = script -> read_idata();
 					}
 					else {
 						handle_error("Misplaced option",aOptIDs[id]);
@@ -1423,7 +1426,7 @@ void aParseScript(const char* fname,char* bname)
 					break;
 				case INIT_SX:
 					if(curMode == AS_INIT_MATRIX){
-						invMat -> ScreenSizeX = script -> read_idata();
+						invMat -> SizeX = script -> read_idata();
 					}
 					else {
 						if(curMode == AS_INIT_ITEM){
@@ -1465,7 +1468,7 @@ void aParseScript(const char* fname,char* bname)
 					break;
 				case INIT_SY:
 					if(curMode == AS_INIT_MATRIX){
-						invMat -> ScreenSizeY = script -> read_idata();
+						invMat -> SizeY = script -> read_idata();
 					}
 					else {
 						if(curMode == AS_INIT_ITEM){
@@ -2125,6 +2128,49 @@ void aParseScript(const char* fname,char* bname)
 						handle_error("Misplaced option",aOptIDs[id]);
 					}
 					break;
+				case ANCHOR_RIGHT:
+					switch (curMode) {
+						case AS_INIT_MENU:
+							fnMnu->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						case AS_INIT_INFO_PANEL:
+							iPl->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						case AS_INIT_BUTTON:
+							aBt->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						case AS_INIT_COUNTER:
+							cP->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						case AS_INIT_MATRIX:
+							invMat->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
+					}
+
+                	break;
+				case ANCHOR_BOTTOM:
+					switch (curMode) {
+						case AS_INIT_MENU:
+							fnMnu->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						case AS_INIT_INFO_PANEL:
+							iPl->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						case AS_INIT_BUTTON:
+							aBt->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						case AS_INIT_COUNTER:
+							cP->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						case AS_INIT_MATRIX:
+							invMat->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
+					}
+					break;
 			}
 #ifndef _BINARY_SCRIPT_
 		}
@@ -2156,8 +2202,8 @@ void load_matrix(void)
 {
 	int i,j,index = 0;
 	invMat -> alloc_matrix();
-	for(i = 0; i < invMat -> SizeY; i ++){
-		for(j = 0; j < invMat -> SizeX; j ++){
+	for(i = 0; i < invMat -> MatrixSizeY; i ++){
+		for(j = 0; j < invMat -> MatrixSizeX; j ++){
 			invMat -> matrix[index] -> type = script -> read_idata();
 			index ++;
 		}
@@ -2167,8 +2213,8 @@ void load_matrix(void)
 void load_slot_nums(void)
 {
 	int i,j,index = 0;
-	for(i = 0; i < invMat -> SizeY; i ++){
-		for(j = 0; j < invMat -> SizeX; j ++){
+	for(i = 0; i < invMat -> MatrixSizeY; i ++){
+		for(j = 0; j < invMat -> MatrixSizeX; j ++){
 			invMat -> matrix[index] -> slotNumber = script -> read_idata() - 1;
 			index ++;
 		}
@@ -2178,8 +2224,8 @@ void load_slot_nums(void)
 void load_slot_types(void)
 {
 	int i,j,index = 0;
-	for(i = 0; i < invMat -> SizeY; i ++){
-		for(j = 0; j < invMat -> SizeX; j ++){
+	for(i = 0; i < invMat -> MatrixSizeY; i ++){
+		for(j = 0; j < invMat -> MatrixSizeX; j ++){
 			invMat -> matrix[index] -> slotType = script -> read_idata();
 			if(!invMat -> matrix[index] -> slotType)
 				invMat -> matrix[index] -> slotType = -1;
@@ -2208,6 +2254,7 @@ void end_block(void)
 				aScrDisp -> add_item(invItm);
 			break;
 		case AS_INIT_MATRIX:
+			invMat->recalc_anchors();
 			curMode = AS_NONE;
 			if(iScreenFlag)
 				aScrDisp -> add_imatrix(invMat);
@@ -2218,6 +2265,7 @@ void end_block(void)
 			curMode = AS_INIT_MATRIX;
 			break;
 		case AS_INIT_MENU:
+			fnMnu->recalc_anchors();
 			if(!iScreenFlag){
 				if(fnMnu -> flags & FM_ITEM_MENU){
 					curMode = AS_INIT_ITEM;
@@ -2265,6 +2313,7 @@ void end_block(void)
 				aScrDisp -> i_Counters -> connect((iListElement*)cP);
 			}
 			else {
+				cP->recalc_anchors();
 				if(cP -> type == CP_INT)
 					aScrDisp -> intCounters -> connect((iListElement*)cP);
 				if(cP -> type == CP_INV)
@@ -2286,6 +2335,7 @@ void end_block(void)
 			curMode = AS_NONE;
 			break;
 		case AS_INIT_INFO_PANEL:
+			iPl->recalc_anchors();
 			if(iScreenFlag){
 				if(!iPl -> type)
 					aScrDisp -> iscr_iP = iPl;
