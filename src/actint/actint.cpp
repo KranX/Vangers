@@ -3169,217 +3169,231 @@ void actIntDispatcher::ind_redraw(void)
 
 void actIntDispatcher::redraw(void)
 {
-    fncMenu* p;
-	aButton* b;
-	invMatrix* m;
-	CounterPanel* cp;
-	InfoPanel* iPl;
+	fncMenu *p;
+	aButton *b;
+	invMatrix *m;
+	CounterPanel *cp;
+	InfoPanel *iPl;
 
-	if(flags & AS_FULLSCR)
+	if (flags & AS_FULLSCR)
 		return;
 
-	aci_tmp ++;
-	if(aci_tmp > 64) aci_tmp = 0;
+	aci_tmp++;
+	if (aci_tmp > 64) aci_tmp = 0;
 
-	if(curMode == AS_INFO_MODE){
-		p = (fncMenu*)menuList -> last;
-		while(p){
-			if(!(p -> flags & FM_ACTIVE) && p -> curFunction && !(p -> flags & FM_SUBMENU) && !(p -> flags & FM_HIDDEN))
-				p -> set_redraw();
+	if (curMode == AS_INFO_MODE) {
+		p = (fncMenu *) menuList->last;
+		while (p) {
+			if (!(p->flags & FM_ACTIVE) && p->curFunction && !(p->flags & FM_SUBMENU) && !(p->flags & FM_HIDDEN))
+				p->set_redraw();
 
-			if((p -> flags & FM_ACTIVE) && !p -> trigger){
-				p -> curCount --;
-				if(p -> curCount <= 0){
-					if(!(p -> flags & FM_SUBMENU)){
-						p -> flags &= ~FM_ACTIVE;
-						p -> set_redraw();
+			if ((p->flags & FM_ACTIVE) && !p->trigger) {
+				p->curCount--;
+				if (p->curCount <= 0) {
+					if (!(p->flags & FM_SUBMENU)) {
+						p->flags &= ~FM_ACTIVE;
+						p->set_redraw();
 						init_menus();
 						init_submenu(p);
-						p -> curCount = p -> activeCount;
+						p->curCount = p->activeCount;
 						SOUND_SELECT();
-					}
-					else {
-						if(p -> activeCount)
-							p -> go2upmenu();
+					} else {
+						if (p->activeCount)
+							p->go2upmenu();
 					}
 				}
 			}
 
-			p = (fncMenu*)p -> prev;
+			p = (fncMenu *) p->prev;
 		}
 	}
 
-	cp = (CounterPanel*)intCounters -> last;
-	while(cp){
-		if(*cp -> value_ptr != cp -> last_value)
-			cp -> set_redraw();
-		cp = (CounterPanel*)cp -> prev;
+	cp = (CounterPanel *) intCounters->last;
+	while (cp) {
+		if (*cp->value_ptr != cp->last_value)
+			cp->set_redraw();
+		cp = (CounterPanel *) cp->prev;
 	}
-	switch(curMode){
+	switch (curMode) {
 		case AS_INFO_MODE:
-			cp = (CounterPanel*)infCounters -> last;
-			while(cp){
-				if(*cp -> value_ptr != cp -> last_value)
-					cp -> set_redraw();
-				cp = (CounterPanel*)cp -> prev;
+			cp = (CounterPanel *) infCounters->last;
+			while (cp) {
+				if (*cp->value_ptr != cp->last_value)
+					cp->set_redraw();
+				cp = (CounterPanel *) cp->prev;
 			}
 			break;
 		case AS_INV_MODE:
-			cp = (CounterPanel*)invCounters -> last;
-			while(cp){
-				if(*cp -> value_ptr != cp -> last_value)
-					cp -> set_redraw();
-				cp = (CounterPanel*)cp -> prev;
+			cp = (CounterPanel *) invCounters->last;
+			while (cp) {
+				if (*cp->value_ptr != cp->last_value)
+					cp->set_redraw();
+				cp = (CounterPanel *) cp->prev;
 			}
 			break;
 	}
-    curIbs -> show();
-	if(!(flags & AS_FULL_REDRAW)){
+	curIbs->show();
+	if (!(flags & AS_FULL_REDRAW)) {
 		XGR_MouseObj.flags &= ~XGM_PROMPT_ACTIVE;
-		curIbs -> back -> load(NULL, 1);
-		curIbs -> back -> show(0);
-		if(curMode == AS_INV_MODE && curMatrix && curMatrix -> back){
-			curMatrix -> back -> load();
-			XGR_PutSpr(curMatrix -> back -> OffsX,curMatrix -> back -> OffsY,curMatrix -> back -> SizeX,curMatrix -> back -> SizeY,curMatrix -> back -> frames,XGR_BLACK_FON);
-			curMatrix -> back -> free();
+		curIbs->back->load(NULL, 1);
+		curIbs->back->show(0);
+		if (curMode == AS_INV_MODE && curMatrix && curMatrix->back) {
+			curMatrix->back->load();
+			XGR_PutSpr(curMatrix->back->OffsX, curMatrix->back->OffsY, curMatrix->back->SizeX, curMatrix->back->SizeY,
+					   curMatrix->back->frames, XGR_BLACK_FON);
+			curMatrix->back->free();
 		}
 		flags |= AS_FULL_FLUSH;
-		cp = (CounterPanel*)intCounters -> last;
-		while(cp){
-			cp -> redraw();
-			cp = (CounterPanel*)cp -> prev;
+		cp = (CounterPanel *) intCounters->last;
+		while (cp) {
+			cp->redraw();
+			cp = (CounterPanel *) cp->prev;
 		}
-		b = (aButton*)intButtons -> last;
-		while(b){
-			b -> redraw();
-			b = (aButton*)b -> prev;
+		b = (aButton *) intButtons->last;
+		while (b) {
+			b->redraw();
+			b = (aButton *) b->prev;
 		}
-		switch(curMode){
+		switch (curMode) {
 			case AS_INV_MODE:
-				b = (aButton*)invButtons -> last;
-				while(b){
-					b -> redraw();
-					b = (aButton*)b -> prev;
+				b = (aButton *) invButtons->last;
+				while (b) {
+					b->redraw();
+					b = (aButton *) b->prev;
 				}
-				if(curMatrix){
-					curMatrix -> redraw();
+				if (curMatrix) {
+					curMatrix->redraw();
 				}
-				if(iP){
-					iP -> redraw();
+				if (iP) {
+					iP->redraw();
 				}
-				cp = (CounterPanel*)invCounters -> last;
-				while(cp){
-					cp -> redraw();
-					cp = (CounterPanel*)cp -> prev;
+				cp = (CounterPanel *) invCounters->last;
+				while (cp) {
+					cp->redraw();
+					cp = (CounterPanel *) cp->prev;
 				}
 				break;
 			case AS_INFO_MODE:
-				b = (aButton*)infButtons -> last;
-				while(b){
-					b -> redraw();
-					b = (aButton*)b -> prev;
+				b = (aButton *) infButtons->last;
+				while (b) {
+					b->redraw();
+					b = (aButton *) b->prev;
 				}
-				p = (fncMenu*)menuList -> last;
-				while(p){
-					if(!(p -> flags & FM_SUBMENU) || (p -> flags & FM_ACTIVE))
-						p -> redraw();
+				p = (fncMenu *) menuList->last;
+				while (p) {
+					if (!(p->flags & FM_SUBMENU) || (p->flags & FM_ACTIVE))
+						p->redraw();
 					else
-						p -> flags &= ~FM_REDRAW;
+						p->flags &= ~FM_REDRAW;
 
-					p = (fncMenu*)p -> prev;
+					p = (fncMenu *) p->prev;
 				}
-				cp = (CounterPanel*)infCounters -> last;
-				while(cp){
-					cp -> redraw();
-					cp = (CounterPanel*)cp -> prev;
+				cp = (CounterPanel *) infCounters->last;
+				while (cp) {
+					cp->redraw();
+					cp = (CounterPanel *) cp->prev;
 				}
 				break;
 		}
 		flags |= AS_FULL_REDRAW;
 	}
-	b = (aButton*)intButtons -> last;
-	while(b){
-			b -> redraw();
-			b -> set_flush();
-		b = (aButton*)b -> prev;
+	b = (aButton *) intButtons->last;
+	while (b) {
+		b->redraw();
+		b->set_flush();
+		b = (aButton *) b->prev;
 	}
-	if(curMode == AS_INV_MODE){
-		b = (aButton*)invButtons -> last;
-		while(b){
-				b -> redraw();
-				b -> set_flush();
-			b = (aButton*)b -> prev;
+	if (curMode == AS_INV_MODE) {
+		b = (aButton *) invButtons->last;
+		while (b) {
+			b->redraw();
+			b->set_flush();
+			b = (aButton *) b->prev;
 		}
 	}
 
-	if(curMode == AS_INFO_MODE){
-		b = (aButton*)infButtons -> last;
-		while(b){
-			b -> redraw();
-			b = (aButton*)b -> prev;
+	if (curMode == AS_INFO_MODE) {
+		b = (aButton *) infButtons->last;
+		while (b) {
+			b->redraw();
+			b = (aButton *) b->prev;
 		}
 	}
 
-	if(curMode == AS_INV_MODE && curMatrix){
+	if (curMode == AS_INV_MODE && curMatrix) {
 		m = curMatrix;
-			m -> redraw();
-			m -> set_flush();
+		m->redraw();
+		m->set_flush();
 	}
 
-	if(curMode == AS_INFO_MODE){
-		p = (fncMenu*)menuList -> last;
-		while(p){
-            if(!(p -> flags & FM_SUBMENU) ){
-				p -> redraw();
-				p -> set_flush();
+	iPl = (InfoPanel *) infoPanels->last;
+	while (iPl) {
+//		std::cout<<"InfoPanel "
+//				 <<", type: "<<iPl->type
+//				 <<", interfType: "<<iPl->interf_type
+//				 <<", ibs_name: "<<(iPl->ibs_name != NULL ? iPl->ibs_name : "null")
+//				 << std::endl;
+		// TODO: refactor condition  for ACI_PARAMS_PANEL
+		if (iPl->type != ACI_PARAMS_PANEL) {
+			if (curMode == AS_INFO_MODE && iPl->interf_type == INF_PANEL ||
+				curMode == AS_INV_MODE && iPl->interf_type == INV_PANEL) {
+				iPl->redraw();
+				iPl->set_flush();
 			}
-			p = (fncMenu*)p -> prev;
+		}
+		iPl = (InfoPanel *) iPl->prev;
+	}
+
+
+	if (curMode == AS_INFO_MODE) {
+		p = (fncMenu *) menuList->last;
+		while (p) {
+//			std::cout<<"Menu: "<<p->type
+//					 <<", curFunction: "<<p->curFunction
+//					 <<", FM_ACTIVE: "<<(bool)(p -> flags & FM_ACTIVE)
+//					 <<", FM_SUBMENU: "<<(bool)(p -> flags & FM_SUBMENU)
+//					 <<", FM_HIDDEN: "<<(bool)(p -> flags & FM_HIDDEN)<<std::endl;
+
+			if (!(p->flags & FM_SUBMENU) || p->flags & FM_ACTIVE) {
+				p->redraw();
+				p->set_flush();
+			}
+			p = (fncMenu *) p->prev;
 		}
 	}
-	if(iP && curMode == AS_INV_MODE){
-//		if(iP -> flags & IP_REDRAW){
-			iP -> redraw();
-			iP -> set_flush();
-//		}
+	if (iP && curMode == AS_INV_MODE) {
+		iP->redraw();
+		iP->set_flush();
 	}
-	cp = (CounterPanel*)intCounters -> last;
-	while(cp){
-		if(cp -> flags & CP_REDRAW){
-			cp -> redraw();
-			cp -> set_flush();
+	cp = (CounterPanel *) intCounters->last;
+	while (cp) {
+		if (cp->flags & CP_REDRAW) {
+			cp->redraw();
+			cp->set_flush();
 		}
-		cp = (CounterPanel*)cp -> prev;
+		cp = (CounterPanel *) cp->prev;
 	}
-	if(curMode == AS_INFO_MODE){
-		cp = (CounterPanel*)infCounters -> last;
-		while(cp){
-			if(cp -> flags & CP_REDRAW){
-				cp -> redraw();
-				cp -> set_flush();
+	if (curMode == AS_INFO_MODE) {
+		cp = (CounterPanel *) infCounters->last;
+		while (cp) {
+			if (cp->flags & CP_REDRAW) {
+				cp->redraw();
+				cp->set_flush();
 			}
-			cp = (CounterPanel*)cp -> prev;
+			cp = (CounterPanel *) cp->prev;
 		}
 	}
-	if(curMode == AS_INV_MODE){
-		cp = (CounterPanel*)invCounters -> last;
-		while(cp){
-			if(cp -> flags & CP_REDRAW){
-				cp -> redraw();
-				cp -> set_flush();
+	if (curMode == AS_INV_MODE) {
+		cp = (CounterPanel *) invCounters->last;
+		while (cp) {
+			if (cp->flags & CP_REDRAW) {
+				cp->redraw();
+				cp->set_flush();
 			}
-			cp = (CounterPanel*)cp -> prev;
+			cp = (CounterPanel *) cp->prev;
 		}
 	}
 
-	iPl = (InfoPanel*)infoPanels -> last;
-	while(iPl){
-		if ( curMode == AS_INFO_MODE && iPl-> interf_type == INF_PANEL ||
-			 curMode == AS_INV_MODE && iPl-> interf_type == INV_PANEL) {
-			iPl -> redraw();
-			iPl -> set_flush();
-		}
-		iPl = (InfoPanel*)iPl -> prev;
-	}
 }
 
 void actIntDispatcher::i_redraw(void)
@@ -4516,7 +4530,9 @@ void fncMenu::redraw(void)
 			}
 		}
 	}
-	if(ibs) ibs -> show();
+	if(ibs){
+		ibs -> show();
+	}
 
 	if(flags & FM_OFF){
 		flags &= ~(FM_ACTIVE | FM_OFF);
