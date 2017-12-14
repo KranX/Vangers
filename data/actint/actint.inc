@@ -235,9 +235,9 @@ mode_key	$VK_F1
 										\
 					visible_items	5			\
 										\
-					x	484				\
-					y	48				\
-										\
+                    x	15 \
+                    y	64 \
+                    anchor_right \
 					size_x	152				\
 					size_y	193				\
 										\
@@ -273,8 +273,9 @@ mode_key	$VK_F1
 										\
 					visible_items	5			\
 										\
-					x	484				\
-					y	48				\
+                    x	15 \
+                    y	64 \
+                    anchor_right \
 										\
 					size_x	152				\
 					size_y	193				\
@@ -376,8 +377,9 @@ mode_key	$VK_F1
 										\
 					visible_items	5			\
 										\
-					x	484				\
-					y	48				\
+                    x	15 \
+                    y	64 \
+                    anchor_right \
 										\
 					size_x	152				\
 					size_y	193				\
@@ -460,8 +462,9 @@ mode_key	$VK_F1
 										\
 					visible_items	5			\
 										\
-					x	484				\
-					y	48				\
+                    x	15 \
+                    y	64 \
+                    anchor_right \
 										\
 					size_x	152				\
 					size_y	193				\
