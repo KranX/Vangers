@@ -65,7 +65,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 	${VORBISFILE_INCLUDE_DIR}
 )
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter -fpermissive")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter")
 # For modern gcc
 add_definitions(-D_USE_MATH_DEFINES)
 

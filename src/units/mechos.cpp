@@ -197,7 +197,7 @@ char CheckAddLink(LinkType* l,BranchType* b,int s)
 /*	l += s;
 	if((int)(l) >= (int)(b->Link + b->NumLink)) return 0;
 	return 1;*/
-	if(((unsigned long)(l) + s*sizeof(LinkType)) >= (unsigned long)(b->Link + b->NumLink)) return 0;
+	if(((uintptr_t)(l) + s*sizeof(LinkType)) >= (uintptr_t)(b->Link + b->NumLink)) return 0;
 	return 1;
 };
 
@@ -207,7 +207,7 @@ char CheckDecLink(LinkType* l,BranchType* b,int s)
 /*	l -= s;
 	if(int(l) < (int)(b->Link)) return 0;
 	return 1;*/
-	if(((unsigned long)(l) - s*sizeof(LinkType)) < (unsigned long)(b->Link)) return 0;
+	if(((uintptr_t)(l) - s*sizeof(LinkType)) < (uintptr_t)(b->Link)) return 0;
 	return 1;
 };
 
