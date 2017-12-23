@@ -65,14 +65,13 @@ INCLUDE_DIRECTORIES(SYSTEM
 	${VORBISFILE_INCLUDE_DIR}
 )
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter -msse2")
 # For modern gcc
 add_definitions(-D_USE_MATH_DEFINES)
 
 IF (NOT MINGW)
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftree-vectorize -ffast-math")
 ENDIF (NOT MINGW)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
 
 # subdirs
 ADD_SUBDIRECTORY("src")
