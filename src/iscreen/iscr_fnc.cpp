@@ -618,7 +618,7 @@ void iQuantFirst(void)
 #ifdef _ISCREEN_GERMAN_
 			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
 #else
-			iSetOptionValueCHR(iPLAYER_NAME2,"‚ ­ЈҐа");
+			iSetOptionValueCHR(iPLAYER_NAME2,"‚ ­ЈҐа");
 #endif
 		else
 			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
@@ -3143,7 +3143,8 @@ void aciShowLocationPicture(void)
 
 void iGetIP(void)
 {
-	int IP = ntohl(XSocketLocalHostExternADDR.host);
+	//Should be BigEndian in anycase
+	int IP = XSocketLocalHostExternADDR.host;
 	XBuffer XBuf;
 
 	XBuf <= (IP & 0xff) < "." <= ((IP >> 8) & 0xff) < "." <= ((IP >> 16) & 0xff) < "." <= ((IP >> 24) & 0xff);
