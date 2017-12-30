@@ -1206,8 +1206,6 @@ actIntDispatcher::actIntDispatcher(void)
 	int i;
 	flags = 0;
 
-	curIbsID = 0;
-
 	iP = NULL;
 
 	wMap = NULL;
@@ -1269,7 +1267,7 @@ actIntDispatcher::actIntDispatcher(void)
 	events = new actEventHeap;
 
 	curMode = AS_INFO_MODE;
-    mechosCameraOffsetX = 100;
+	mechosCameraOffsetX = 100;
 
 	mapObj = new bmlObject;
 	mapObj -> flags |= BMP_FLAG;
@@ -1277,7 +1275,7 @@ actIntDispatcher::actIntDispatcher(void)
 	ibsList = new iList;
 	backList = new iList;
 
-	curIbs = NULL;
+//	curIbs = NULL;
 	curMatrix = NULL;
 }
 
@@ -2379,7 +2377,6 @@ void aButton::load_frames(void)
 		fh.close();
 
 		flags |= B_FRAMES_LOADED;
-		recalc_anchors();
 	}
 }
 
@@ -3232,11 +3229,13 @@ void actIntDispatcher::redraw(void)
 			}
 			break;
 	}
-	curIbs->show();
+//	curIbs->show();
+	screens[currentScreenId]->redraw();
+
 	if (!(flags & AS_FULL_REDRAW)) {
 		XGR_MouseObj.flags &= ~XGM_PROMPT_ACTIVE;
-		curIbs->back->load(NULL, 1);
-		curIbs->back->show(0);
+//		curIbs->back->load(NULL, 1);
+//		curIbs->back->show(0);
 		if (curMode == AS_INV_MODE && curMatrix && curMatrix->back) {
 			curMatrix->back->load();
 			XGR_PutSpr(curMatrix->back->OffsX, curMatrix->back->OffsY, curMatrix->back->SizeX, curMatrix->back->SizeY,
@@ -3393,7 +3392,6 @@ void actIntDispatcher::redraw(void)
 			cp = (CounterPanel *) cp->prev;
 		}
 	}
-
 }
 
 void actIntDispatcher::i_redraw(void)
@@ -3567,7 +3565,8 @@ void actIntDispatcher::flush(void)
 		return;
 	}
 	if(curPrompt -> NumStr){
-		curPrompt -> redraw(curIbs -> PosX,curIbs -> PosY,curIbs -> SizeX,curIbs -> SizeY);
+	    auto screen = get_current_screen();
+		curPrompt -> redraw(screen -> PosX,screen -> PosY,screen -> SizeX, screen -> SizeY);
 		curPrompt -> quant();
 	}
 
@@ -3844,64 +3843,72 @@ aIndData* actIntDispatcher::get_ind(int id)
 	return NULL;
 }
 
-void actIntDispatcher::init(void)
-{
-	fncMenu* it;
-	invItem* itm;
-	invMatrix* p;
-	aButton* b;
-	aIndData* ind;
-	CounterPanel* cp;
-	InfoPanel* ip;
-	aciBitmapMenu* bm;
+void actIntDispatcher::init(void) {
+	fncMenu *it;
+	invItem *itm;
+	invMatrix *p;
+	aButton *b;
+	aIndData *ind;
+	CounterPanel *cp;
+	InfoPanel *ip;
+	aciBitmapMenu *bm;
 
-	ibsObject* ibs;
-	bmlObject* bml;
+	ibsObject *ibs;
+	bmlObject *bml;
 
 	aciCurColorScheme = aciColorSchemes[SCH_DEFAULT];
-	if(iP) iP -> init();
-	ip = (InfoPanel*)infoPanels -> last;
-	while(ip){
-		ip -> init();
-		ip = (InfoPanel*)ip -> prev;
+	if (iP) {
+		iP->init();
+		iP->layout(XGR_MAXX, XGR_MAXY);
 	}
 
-	bm = (aciBitmapMenu*)b_menuList -> last;
-	while(bm){
-		bm -> init();
-		bm = (aciBitmapMenu*)bm -> prev;
+	ip = (InfoPanel *) infoPanels->last;
+	while (ip) {
+		ip->init();
+		ip->layout(XGR_MAXX, XGR_MAXY);
+		ip = (InfoPanel *) ip->prev;
 	}
 
-	if(wMap) wMap -> init();
+	bm = (aciBitmapMenu *) b_menuList->last;
+	while (bm) {
+		bm->init();
+		bm = (aciBitmapMenu *) bm->prev;
+	}
+
+	if (wMap) wMap->init();
 
 	aciSet_aMouse();
 
-	ind = (aIndData*)indList -> last;
-	while(ind){
-		ind -> init();
-		ind = (aIndData*)ind -> prev;
+	ind = (aIndData *) indList->last;
+	while (ind) {
+		ind->init();
+		ind = (aIndData *) ind->prev;
 	}
 
-	cp = (CounterPanel*)intCounters -> last;
-	while(cp){
-		cp -> init();
-		cp = (CounterPanel*)cp -> prev;
+	cp = (CounterPanel *) intCounters->last;
+	while (cp) {
+		cp->init();
+		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp = (CounterPanel *) cp->prev;
 	}
-	cp = (CounterPanel*)infCounters -> last;
-	while(cp){
-		cp -> init();
-		cp = (CounterPanel*)cp -> prev;
+	cp = (CounterPanel *) infCounters->last;
+	while (cp) {
+		cp->init();
+		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp = (CounterPanel *) cp->prev;
 	}
-	cp = (CounterPanel*)invCounters -> last;
-	while(cp){
-		cp -> init();
-		cp = (CounterPanel*)cp -> prev;
+	cp = (CounterPanel *) invCounters->last;
+	while (cp) {
+		cp->init();
+		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp = (CounterPanel *) cp->prev;
 	}
 
-	p = (invMatrix*)matrixList -> last;
-	while(p){
-		p -> init();
-		p = (invMatrix*)p -> prev;
+	p = (invMatrix *) matrixList->last;
+	while (p) {
+		p->init();
+		p->layout(XGR_MAXX, XGR_MAXY);
+		p = (invMatrix *) p->prev;
 	}
 
 #ifdef _ACI_SKIP_SHOP_
@@ -3910,60 +3917,63 @@ void actIntDispatcher::init(void)
 	}
 #endif
 
-	ibs = (ibsObject*)ibsList -> last;
-	while(ibs){
-		bml = get_back_bml(ibs -> backObjID);
-		ibs -> back = bml;
-		ibs = (ibsObject*)ibs -> prev;
+	ibs = (ibsObject *) ibsList->last;
+	while (ibs) {
+		bml = get_back_bml(ibs->backObjID);
+		ibs->back = bml;
+		ibs = (ibsObject *) ibs->prev;
 	}
-	curIbs = get_ibs(curIbsID);
-	load_ibs();
 
-	if(wMap -> world_ids[CurrentWorld] != -1 && map_names[wMap -> world_ids[CurrentWorld]]){
-		mapObj -> free();
-		mapObj -> load(map_names[wMap -> world_ids[CurrentWorld]],1);
-	}
-	else {
+	init_inds();
+
+	if (wMap->world_ids[CurrentWorld] != -1 && map_names[wMap->world_ids[CurrentWorld]]) {
+		mapObj->free();
+		mapObj->load(map_names[wMap->world_ids[CurrentWorld]], 1);
+	} else {
 		ErrH.Abort("Map BMP not found...");
 	}
 
-	itm = (invItem*)itemList -> last;
-	while(itm){
-		itm -> init();
-		itm = (invItem*)itm -> prev;
+	itm = (invItem *) itemList->last;
+	while (itm) {
+		itm->init();
+		itm = (invItem *) itm->prev;
 	}
 
-	it = (fncMenu*)menuList -> last;
-	while(it){
-		it -> init();
-		it = (fncMenu*)it -> prev;
+	it = (fncMenu *) menuList->last;
+	while (it) {
+		it->init();
+		it->layout(XGR_MAXX, XGR_MAXY);
+		it = (fncMenu *) it->prev;
 	}
 
-	b = (aButton*)intButtons -> last;
-	while(b){
-		b -> init();
-		b = (aButton*)b -> prev;
+	b = (aButton *) intButtons->last;
+	while (b) {
+		b->init();
+		b->layout(XGR_MAXX, XGR_MAXY);
+		b = (aButton *) b->prev;
 	}
-	b = (aButton*)invButtons -> last;
-	while(b){
-		b -> init();
-		b = (aButton*)b -> prev;
+
+	b = (aButton *) invButtons->last;
+	while (b) {
+		b->init();
+		b->layout(XGR_MAXX, XGR_MAXY);
+		b = (aButton *) b->prev;
 	}
-	b = (aButton*)infButtons -> last;
-	while(b){
-		b -> init();
-		b = (aButton*)b -> prev;
+	b = (aButton *) infButtons->last;
+	while (b) {
+		b->init();
+		b->layout(XGR_MAXX, XGR_MAXY);
+		b = (aButton *) b->prev;
 	}
 	init_menus();
 
 	build_cell_frame();
 
-	if(flags & AS_FULLSCR){
+	if (flags & AS_FULLSCR) {
 		XGR_MouseSetPromptData(NULL);
 		XGR_MouseHide();
-	}
-	else {
-		switch(curMode){
+	} else {
+		switch (curMode) {
 			case AS_INV_MODE:
 				XGR_MouseSetPromptData(invPrompt);
 				break;
@@ -3974,6 +3984,10 @@ void actIntDispatcher::init(void)
 	}
 	XGR_MouseObj.PromptColor = 160 | (1 << 16);
 	aciPrevJumpCount = -1;
+
+	for (auto const &screen: screens) {
+		screen.second->layout(XGR_MAXX, XGR_MAXY);
+	}
 }
 
 void actIntDispatcher::i_init(void)
@@ -4173,7 +4187,6 @@ void actIntDispatcher::finit(void)
 		cp = (CounterPanel*)cp -> prev;
 	}
 
-	free_ibs();
 	mapObj -> free();
 
 	itm = (invItem*)itemList -> last;
@@ -5173,7 +5186,8 @@ void actIntDispatcher::EventQuant(void)
 				else {
 					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+//					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
 					XGR_MouseShow();
 					if(curMode == AS_INV_MODE){
                         mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
@@ -5333,7 +5347,8 @@ void actIntDispatcher::EventQuant(void)
 				if(flags & AS_FULLSCR){
 					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+//					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
 					XGR_MouseShow();
 					if(curMode == AS_INV_MODE)
 						XGR_MouseSetPromptData(invPrompt);
@@ -5357,7 +5372,8 @@ void actIntDispatcher::EventQuant(void)
 				if(flags & AS_FULLSCR){
 					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+//					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
 					if(curMode == AS_INV_MODE)
 						XGR_MouseSetPromptData(invPrompt);
 					if(curMode == AS_INFO_MODE)
@@ -5397,7 +5413,8 @@ void actIntDispatcher::EventQuant(void)
 				if(flags & AS_FULLSCR){
 					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+//					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
 					XGR_MouseShow();
 					if(curMode == AS_INV_MODE)
 						XGR_MouseSetPromptData(invPrompt);
@@ -5417,47 +5434,27 @@ void actIntDispatcher::EventQuant(void)
 
 void actIntDispatcher::change_mode(void)
 {
-	//std::cout<<"actIntDispatcher::change_mode"<<std::endl;
 	aButton* b;
 	fncMenu* p;
 	switch(curMode){
 		case AS_INV_MODE:
 			if(flags & AS_INV_MOVE_ITEM) break;
 			curMode = AS_INFO_MODE;
+			currentScreenId = SCREEN_INFO_ID;
 			XGR_MouseSetPromptData(infPrompt);
-			change_screen(prevScrMode);
 			curScrMode = prevScrMode;
 
-			p = (fncMenu*)menuList -> last;
-			while(p){
-				p -> set_redraw();
-				p -> set_flush();
-				p = (fncMenu*)p -> prev;
-			}
-			b = (aButton*)infButtons -> last;
-			while(b){
-				b -> set_redraw();
-				b -> set_flush();
-				b = (aButton*)b -> prev;
-			}
+			init_inds();
 			mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
 			break;
 		case AS_INFO_MODE:
+			currentScreenId = SCREEN_INVENTORY_ID;
 			curMode = AS_INV_MODE;
 			XGR_MouseSetPromptData(invPrompt);
 			prevScrMode = curScrMode;
 			curScrMode = INVSCR_MODE;
-			change_screen(INVSCR_MODE);
 
-			curMatrix -> set_redraw();
-			curMatrix -> set_flush();
-			b = (aButton*)invButtons -> last;
-
-			while(b){
-				b -> set_redraw();
-				b -> set_flush();
-				b = (aButton*)b -> prev;
-			}
+			init_inds();
 			mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
 			break;
 	}
@@ -6356,56 +6353,6 @@ bmlObject* actIntDispatcher::get_back_bml(int id)
 	return NULL;
 }
 
-ibsObject* actIntDispatcher::get_ibs(int id)
-{
-	ibsObject* p = (ibsObject*)ibsList -> last;
-	while(p){
-		if(p -> ID == id)
-			return p;
-		p = (ibsObject*)p -> prev;
-	}
-	return NULL;
-}
-
-void actIntDispatcher::change_ibs(int id)
-{
-	if(curIbs){
-		curIbs -> free();
-//		  if(curIbs -> back) curIbs -> back -> free();
-	}
-	curIbs = get_ibs(id);
-	if(!curIbs) ErrH.Abort("IBS object not present",XERR_USER,id);
-	load_ibs();
-}
-
-void actIntDispatcher::next_ibs(void)
-{
-	if(curIbs){
-		curIbs -> free();
-		if(curIbs -> back) curIbs -> back -> free();
-	}
-	curIbs = (ibsObject*)curIbs -> next;
-	if(!curIbs) ErrH.Abort("IBS object not present");
-	load_ibs();
-}
-
-void actIntDispatcher::load_ibs(void)
-{
-	if(!curIbs)
-		ErrH.Abort("curIBS object not present");
-
-	curIbsID = curIbs -> ID;
-	curIbs -> load();
-	init_inds();
-}
-
-void actIntDispatcher::free_ibs(void)
-{
-	if(!curIbs)
-		ErrH.Abort("curIBS object not present");
-
-	curIbs -> free();
-}
 
 void actIntDispatcher::set_move_item(int index,int sflag)
 {
@@ -6826,85 +6773,82 @@ void aIndData::redraw(int dx,int dy)
 
 void actIntDispatcher::init_inds(void)
 {
-	int lx,ly,rx,ry,cx,cy;
-	ibsObject* ibs = curIbs;
-	XGR_MousePromptData* pr;
+	int lx, ly, rx, ry, cx, cy;
+	auto screen = get_current_screen();
+	XGR_MousePromptData *pr;
 
-	lx = ibs -> PosX;
-	ly = ibs -> PosY;
+	lx = screen->PosX;
+	ly = screen->PosY;
 
-	rx = lx + ibs -> SizeX;
-	ry = ly + ibs -> SizeY;
+	rx = lx + screen->SizeX;
+	ry = ly + screen->SizeY;
 
-	aIndData* p = (aIndData*)indList -> last;
-	while(p){
-		switch(p -> CornerNum){
+	aIndData *p = (aIndData *) indList->last;
+	while (p) {
+		switch (p->CornerNum) {
 			case IND_UP_LEFT:
-				p -> PosX = lx + ibs -> indPosX[0];
-				p -> PosY = ly + ibs -> indPosY[0];
+				p->PosX = lx + screen->getIndicatorPosX(0);
+				p->PosY = ly + screen->getIndicatorPosY(0);
 				break;
 			case IND_UP_RIGHT:
-				p -> PosX = rx - ibs -> indPosX[1] - p -> SizeX;
-				p -> PosY = ly + ibs -> indPosY[1];
+				p->PosX = rx - screen->getIndicatorPosX(1) - p->SizeX;
+				p->PosY = ly + screen->getIndicatorPosY(1);
 				break;
 			case IND_DN_LEFT:
-				p -> PosX = lx + ibs -> indPosX[2];
-				p -> PosY = ry - ibs -> indPosY[2] - p -> SizeY;
+				p->PosX = lx + screen->getIndicatorPosX(2);
+				p->PosY = ry - screen->getIndicatorPosY(2) - p->SizeY;
 				break;
 			case IND_DN_RIGHT:
-				p -> PosX = rx - ibs -> indPosX[3] - p -> SizeX;
-				p -> PosY = ry - ibs -> indPosY[3] - p -> SizeY;
+				p->PosX = rx - screen->getIndicatorPosX(3) - p->SizeX;
+				p->PosY = ry - screen->getIndicatorPosY(3) - p->SizeY;
 				break;
 		}
-		if(p -> bml){
-			cx = p -> PosX + (p -> SizeX >> 1);
-			cy = p -> PosY + (p -> SizeY >> 1);
-			p -> bml -> OffsX = cx - (p -> bml -> SizeX >> 1);
-			p -> bml -> OffsY = cy - (p -> bml -> SizeY >> 1);
+		if (p->bml) {
+			cx = p->PosX + (p->SizeX >> 1);
+			cy = p->PosY + (p->SizeY >> 1);
+			p->bml->OffsX = cx - (p->bml->SizeX >> 1);
+			p->bml->OffsY = cy - (p->bml->SizeY >> 1);
 		}
-		if(p -> ID == IND_DVC){
-			if(curMatrix && !curMatrix -> slot_exist(3)){
-				p -> flags |= IND_DISABLED;
-			}
-			else {
-				p -> flags &= ~IND_DISABLED;
-			}
-		}
-		pr = invPrompt -> getData(p -> ID);
-		if(pr){
-			if(p -> flags & IND_DISABLED){
-				pr -> StartX = 0;
-				pr -> StartY = 0;
-
-				pr -> SizeX = 0;
-				pr -> SizeY = 0;
-			}
-			else {
-				pr -> StartX = p -> PosX;
-				pr -> StartY = p -> PosY;
-
-				pr -> SizeX = p -> SizeX;
-				pr -> SizeY = p -> SizeY;
+		if (p->ID == IND_DVC) {
+			if (curMatrix && !curMatrix->slot_exist(3)) {
+				p->flags |= IND_DISABLED;
+			} else {
+				p->flags &= ~IND_DISABLED;
 			}
 		}
-		pr = infPrompt -> getData(p -> ID);
-		if(pr){
-			if(p -> flags & IND_DISABLED){
-				pr -> StartX = 0;
-				pr -> StartY = 0;
+		pr = invPrompt->getData(p->ID);
+		if (pr) {
+			if (p->flags & IND_DISABLED) {
+				pr->StartX = 0;
+				pr->StartY = 0;
 
-				pr -> SizeX = 0;
-				pr -> SizeY = 0;
-			}
-			else {
-				pr -> StartX = p -> PosX;
-				pr -> StartY = p -> PosY;
+				pr->SizeX = 0;
+				pr->SizeY = 0;
+			} else {
+				pr->StartX = p->PosX;
+				pr->StartY = p->PosY;
 
-				pr -> SizeX = p -> SizeX;
-				pr -> SizeY = p -> SizeY;
+				pr->SizeX = p->SizeX;
+				pr->SizeY = p->SizeY;
 			}
 		}
-		p = (aIndData*)p -> prev;
+		pr = infPrompt->getData(p->ID);
+		if (pr) {
+			if (p->flags & IND_DISABLED) {
+				pr->StartX = 0;
+				pr->StartY = 0;
+
+				pr->SizeX = 0;
+				pr->SizeY = 0;
+			} else {
+				pr->StartX = p->PosX;
+				pr->StartY = p->PosY;
+
+				pr->SizeX = p->SizeX;
+				pr->SizeY = p->SizeY;
+			}
+		}
+		p = (aIndData *) p->prev;
 	}
 }
 
@@ -7319,11 +7263,12 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 	x = iMouseX;
 	y = iMouseY;
 
-	ix = curIbs -> PosX;
-	iy = curIbs -> PosY;
+	auto screen = get_current_screen();
+	ix = screen -> PosX;
+	iy = screen -> PosY;
 
-	isx = ix + curIbs -> SizeX;
-	isy = iy + curIbs -> SizeY;
+	isx = ix + screen -> SizeX;
+	isy = iy + screen -> SizeY;
 	printf("MouseEvent(iMouseX: %d, iMouseY: %d, isy: %d, isy: %d)\n", iMouseX, iMouseY, isx, isy);
 
 //	if(x >= ix && x < isx && y >= iy && y < isy){
@@ -9064,17 +9009,17 @@ void actIntDispatcher::remove_menu_item(fncMenu* p)
 	if(p -> flags & FM_ACTIVE) p -> go2upmenu(curMode);
 }
 
-void Widget::recalc_anchors() {
-    if(anchorsRecalced){
-        return;
-    }
-    anchorsRecalced = true;
-    if(anchor & WIDGET_ANCHOR_RIGHT ){
-        PosX = XGR_MAXX - PosX - SizeX;
-    }
-    if(anchor & WIDGET_ANCHOR_BOTTOM ){
-        PosY = XGR_MAXY - PosY - SizeY;
-    }
+void Widget::layout(int width, int height) {
+	if (_layoutDone) {
+		return;
+	}
+	_layoutDone = true;
+	if (anchor & WIDGET_ANCHOR_RIGHT) {
+		PosX = width - PosX - SizeX;
+	}
+	if (anchor & WIDGET_ANCHOR_BOTTOM) {
+		PosY = height - PosY - SizeY;
+	}
 }
 
 void fncMenuItem::clone(fncMenuItem* p)
@@ -9445,6 +9390,10 @@ void actIntDispatcher::init_prompt(void)
 	}
 }
 
+void actIntDispatcher::addScreen(const shared_ptr<Screen> &screen) {
+	screens[screen.get()->getId()] = screen;
+}
+
 aciScreenTextPage::aciScreenTextPage(void)
 {
 	StrTable = NULL;
@@ -9702,4 +9651,83 @@ void invItem::set_template(char* p)
 	int sz = strlen(p) + 1;
 	pTemplate = new char[sz];
 	strcpy(pTemplate,p);
+}
+
+
+void BitmapImage::redraw() {
+	XGR_Obj.putspr(PosX, PosY, SizeX, SizeY, image->pixels, 0);
+}
+
+void BitmapImage::init() {
+	image = IMG_Load(imagePath.c_str());
+	if (!image) {
+		printf("IMG_Load: %s\n", IMG_GetError());
+		exit(1);
+	}
+	SizeX = image->w;
+	SizeY = image->h;
+}
+
+BitmapImage::~BitmapImage() {
+	if (image != nullptr) {
+		SDL_FreeSurface(image);
+	}
+}
+
+void Screen::addWidget(const shared_ptr<Widget> &image) {
+	widgets.push_back(image);
+}
+
+void Screen::layout(int width, int height) {
+	SizeX = width;
+	SizeY = height;
+
+	for (auto const &widget : widgets) {
+		widget->layout(SizeX, SizeY);
+	}
+}
+
+void Screen::redraw() {
+	for (auto const & widget : widgets) {
+		widget->redraw();
+	}
+}
+
+int Screen::getFontId() const {
+	return fontId;
+}
+
+void Screen::setFontId(int fontId) {
+	Screen::fontId = fontId;
+}
+
+Screen::Screen() {
+	PosX = 0;
+	PosY = 0;
+	memset(indicatorPosX, 0, 4);
+	memset(indicatorPosY, 0, 4);
+}
+
+void Screen::setId(int id) {
+	this->id = id;
+}
+
+int Screen::getId() const {
+	return id;
+}
+
+int Screen::getIndicatorPosX(int index) {
+	return indicatorPosX[index];
+}
+
+int Screen::getIndicatorPosY(int index) {
+	return indicatorPosY[index];
+}
+
+void Screen::setIndicatorPosX(int index, int value) {
+	indicatorPosX[index] = value;
+}
+
+void Screen::setIndicatorPosY(int index, int value) {
+	indicatorPosY[index] = value;
 }

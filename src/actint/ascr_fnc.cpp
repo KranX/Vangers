@@ -1532,9 +1532,9 @@ void load_map_bmp(int num)
 
 void change_screen(int mode)
 {
-	aScrDisp -> change_ibs(mode);
-	aScrDisp -> flags &= ~AS_FULL_REDRAW;
-	set_screen(aScrDisp -> curIbs -> SideX,aScrDisp -> curIbs -> SideY,0,aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY);
+//	aScrDisp -> change_ibs(mode);
+//	aScrDisp -> flags &= ~AS_FULL_REDRAW;
+//	set_screen(aScrDisp -> curIbs -> SideX,aScrDisp -> curIbs -> SideY,0,aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY);
 }
 
 void aciSendEvent2actint(int code,actintItemData* p,int data)
@@ -4822,7 +4822,7 @@ void aciPromptData::redraw(int scr_x,int scr_y,int scr_sx,int scr_sy)
 	int font = ACI_PROMPT_FONT;
 
 	if(!(aScrDisp -> flags & AS_FULLSCR)){
-		font = aScrDisp -> curIbs -> fontID;
+		font = aScrDisp->get_current_screen()->getFontId();
 	}
 	if(fontID != -1) font = fontID;
 
@@ -6003,28 +6003,26 @@ void aciInitPricePanel(InfoPanel* ip,iListElement* p,int mode,int sell_mode)
 
 void aciShowRacingPlace(void)
 {
-	int x,y,dx;
-	aciXConv -> init();
+	int x, y, dx;
+	aciXConv->init();
 	*aciXConv < aciCurRaceType < " ";
+	auto screen = aScrDisp->get_current_screen();
 
-	if(!(aScrDisp -> flags & AS_FULLSCR)){
-		if(actintLowResFlag){
-			x = aScrDisp -> curIbs -> PosX + ACI_RACING_X;
-			y = aScrDisp -> curIbs -> PosY + ACI_RACING_Y;
-		}
-		else {
-			x = aScrDisp -> curIbs -> PosX + ACI_RACING_X_H;
-			y = aScrDisp -> curIbs -> PosY + ACI_RACING_Y_H;
+	if (!(aScrDisp->flags & AS_FULLSCR)) {
+		if (actintLowResFlag) {
+			x = screen->PosX + ACI_RACING_X;
+			y = screen->PosY + ACI_RACING_Y;
+		} else {
+			x = screen->PosX + ACI_RACING_X_H;
+			y = screen->PosY + ACI_RACING_Y_H;
 		}
 
 		y = XGR_MAXY - y;
-	}
-	else {
-		if(actintLowResFlag){
+	} else {
+		if (actintLowResFlag) {
 			x = ACI_RACING2_X;
 			y = ACI_RACING2_Y;
-		}
-		else {
+		} else {
 			x = ACI_RACING2_X_H;
 			y = ACI_RACING2_Y_H;
 		}
@@ -6032,12 +6030,12 @@ void aciShowRacingPlace(void)
 		y = XGR_MAXY - y;
 	}
 
-	aOutStr(x,y,ACI_RACING_FONT,ACI_RACING_COL,(unsigned char*)aciXConv -> address(),1);
+	aOutStr(x, y, ACI_RACING_FONT, ACI_RACING_COL, (unsigned char *) aciXConv->address(), 1);
 
-	dx = aStrLen((unsigned char*)aciXConv -> address(),ACI_RACING_FONT,1);
-	aciXConv -> init();
+	dx = aStrLen((unsigned char *) aciXConv->address(), ACI_RACING_FONT, 1);
+	aciXConv->init();
 	*aciXConv < aciCurRaceInfo;
-	aOutStr(x + dx,y,ACI_RACING_FONT,ACI_RACING_COL2,(unsigned char*)aciXConv -> address(),1);
+	aOutStr(x + dx, y, ACI_RACING_FONT, ACI_RACING_COL2, (unsigned char *) aciXConv->address(), 1);
 }
 
 void aciPrepareText(char* ptr)

@@ -80,7 +80,8 @@ enum aScriptModes
 	BM_INIT_MENU,		// 23
 
 	AS_INIT_SHUTTER,	// 24
-
+	AS_INIT_IMAGE,  // 25
+	AS_INIT_SCREEN,  // 26
 
 	AS_MAX_MODE
 };
@@ -158,6 +159,7 @@ enum aOptions
 	INIT_FILE,		// 48
 	INIT_BGROUND,		// 49
 
+	// TODO: refactor to current screen
 	INIT_CUR_IBS,		// 50
 
 	INIT_SLOT_NUMS, 	// 51
@@ -320,6 +322,8 @@ enum aOptions
 	ADD_MAP_INFO_FILE,		// 154
 	ANCHOR_RIGHT,                 //155
 	ANCHOR_BOTTOM,                 //156
+	NEW_IMAGE,             //157
+	NEW_SCREEN,   	       //158
 	MAX_OPTION
 };
 
@@ -550,7 +554,9 @@ static const char* aOptIDs[MAX_OPTION] =
 
 	"map_data",             // 154
 	"anchor_right",         // 155
-	"anchor_bottom"         // 156
+	"anchor_bottom",        // 156
+	"Image",     			// 157
+	"Screen"     			// 158
 };
 
 int curMode = AS_NONE;
@@ -559,6 +565,8 @@ int curScheme = 0;
 
 invMatrix* invMat;
 invItem* invItm;
+BitmapImage* image;
+Screen* screen;
 
 InfoPanel* iPl;
 
@@ -950,17 +958,17 @@ void aParseScript(const char* fname,char* bname)
 						handle_error("Misplaced option",aOptIDs[id]);
 					break;
 				case INIT_OFFS_X:
-					if(curMode == AS_INIT_WORLD_MAP){
-						t_id = script -> read_idata();
-						wMap -> ShapeOffsX[t_id] = script -> read_idata();
-					}
-					else {
-						if(curMode == AS_INIT_IBS){
-							t_id = script -> read_idata();
-							ibsObj -> indPosX[t_id] = script -> read_idata();
-						}
-						else
-							handle_error("Misplaced option",aOptIDs[id]);
+					switch (curMode) {
+						case AS_INIT_WORLD_MAP:
+							t_id = script->read_idata();
+							wMap->ShapeOffsX[t_id] = script->read_idata();
+							break;
+						case AS_INIT_SCREEN:
+							t_id = script->read_idata();
+							screen->setIndicatorPosX(t_id, script->read_idata());
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
 					}
 					break;
 				case SET_WORLD_NAME:
@@ -1074,17 +1082,17 @@ void aParseScript(const char* fname,char* bname)
 						handle_error("Misplaced option",aOptIDs[id]);
 					break;
 				case INIT_OFFS_Y:
-					if(curMode == AS_INIT_WORLD_MAP){
-						t_id = script -> read_idata();
-						wMap -> ShapeOffsY[t_id] = script -> read_idata();
-					}
-					else {
-						if(curMode == AS_INIT_IBS){
-							t_id = script -> read_idata();
-							ibsObj -> indPosY[t_id] = script -> read_idata();
-						}
-						else
-							handle_error("Misplaced option",aOptIDs[id]);
+					switch (curMode) {
+						case AS_INIT_WORLD_MAP:
+							t_id = script->read_idata();
+							wMap->ShapeOffsY[t_id] = script->read_idata();
+							break;
+						case AS_INIT_SCREEN:
+							t_id = script->read_idata();
+							screen->setIndicatorPosY(t_id, script->read_idata());
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
 					}
 					break;
 				case NEW_WORLD_MAP:
@@ -1206,89 +1214,71 @@ void aParseScript(const char* fname,char* bname)
 						handle_error("Misplaced option",aOptIDs[id]);
 					break;
 				case INIT_X:
-					if(curMode == AS_INIT_MATRIX){
-						invMat -> PosX = script -> read_idata();
-					}
-					else {
-						if(curMode == AS_INIT_MENU){
-							fnMnu -> PosX = script -> read_idata();
-						}
-						else {
-							if(curMode == AS_INIT_BUTTON){
-								aBt -> PosX = script -> read_idata();
-							}
-							else {
-								if(curMode == AS_INIT_IND){
-									aInd -> PosX = script -> read_idata();
-									aInd -> dX = aInd -> PosX;
-								}
-								else {
-									if(curMode == AS_INIT_INFO_PANEL){
-										iPl -> PosX = script -> read_idata();
-									}
-									else {
-										if(curMode == AS_INIT_COUNTER){
-											cP -> PosX = script -> read_idata();
-										}
-										else {
-											if(curMode == AS_INIT_WORLD_DATA){
-												wData -> PosX = script -> read_idata();
-											}
-											else {
-												if(curMode == BM_INIT_MENU_ITEM){
-													aciBM_it -> PosX = script -> read_idata();
-												}
-												else
-													handle_error("Misplaced option",aOptIDs[id]);
-											}
-										}
-									}
-								}
-							}
-						}
+					switch (curMode) {
+						case AS_INIT_MATRIX:
+							invMat->PosX = script->read_idata();
+							break;
+						case AS_INIT_MENU:
+							fnMnu->PosX = script->read_idata();
+							break;
+						case AS_INIT_BUTTON:
+							aBt->PosX = script->read_idata();
+							break;
+						case AS_INIT_IND:
+							aInd->PosX = script->read_idata();
+							aInd->dX = aInd->PosX;
+							break;
+						case AS_INIT_INFO_PANEL:
+							iPl->PosX = script->read_idata();
+							break;
+						case AS_INIT_COUNTER:
+							cP->PosX = script->read_idata();
+							break;
+						case AS_INIT_WORLD_DATA:
+							wData->PosX = script->read_idata();
+							break;
+						case BM_INIT_MENU_ITEM:
+							aciBM_it->PosX = script->read_idata();
+							break;
+						case AS_INIT_IMAGE:
+							image->PosX = script->read_idata();
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
 					}
 					break;
 				case INIT_Y:
-					if(curMode == AS_INIT_MATRIX){
-						invMat -> PosY = script -> read_idata();
-					}
-					else {
-						if(curMode == AS_INIT_MENU){
-							fnMnu -> PosY = script -> read_idata();
-						}
-						else {
-							if(curMode == AS_INIT_BUTTON){
-								aBt -> PosY = script -> read_idata();
-							}
-							else {
-								if(curMode == AS_INIT_IND){
-									aInd -> PosY = script -> read_idata();
-									aInd -> dY = aInd -> PosY;
-								}
-								else {
-									if(curMode == AS_INIT_INFO_PANEL){
-										iPl -> PosY = script -> read_idata();
-									}
-									else {
-										if(curMode == AS_INIT_COUNTER){
-											cP -> PosY = script -> read_idata();
-										}
-										else {
-											if(curMode == AS_INIT_WORLD_DATA){
-												wData -> PosY = script -> read_idata();
-											}
-											else {
-												if(curMode == BM_INIT_MENU_ITEM){
-													aciBM_it -> PosY = script -> read_idata();
-												}
-												else
-													handle_error("Misplaced option",aOptIDs[id]);
-											}
-										}
-									}
-								}
-							}
-						}
+					switch (curMode) {
+						case AS_INIT_MATRIX:
+							invMat->PosY = script->read_idata();
+							break;
+						case AS_INIT_MENU:
+							fnMnu->PosY = script->read_idata();
+							break;
+						case AS_INIT_BUTTON:
+							aBt->PosY = script->read_idata();
+							break;
+						case AS_INIT_IND:
+							aInd->PosY = script->read_idata();
+							aInd->dY = aInd->PosY;
+							break;
+						case AS_INIT_INFO_PANEL:
+							iPl->PosY = script->read_idata();
+							break;
+						case AS_INIT_COUNTER:
+							cP->PosY = script->read_idata();
+							break;
+						case AS_INIT_WORLD_DATA:
+							wData->PosY = script->read_idata();
+							break;
+						case BM_INIT_MENU_ITEM:
+							aciBM_it->PosY = script->read_idata();
+							break;
+						case AS_INIT_IMAGE:
+							image->PosY = script->read_idata();
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
 					}
 					break;
 				case INIT_MSX:
@@ -1635,16 +1625,20 @@ void aParseScript(const char* fname,char* bname)
 					break;
 				case INIT_FILE:
 					script -> prepare_pdata();
-					if(curMode == AS_INIT_IBS){
-						ibsObj -> set_name(script -> get_conv_ptr());
-					}
-					else {
-						if(curMode == AS_INIT_BML){
-							bmlObj -> init_name(script -> get_conv_ptr());
-						}
-						else
+					switch (curMode){
+						case AS_INIT_IBS:
+							ibsObj->set_name(script->get_conv_ptr());
+							break;
+						case AS_INIT_BML:
+							bmlObj->init_name(script->get_conv_ptr());
+							break;
+						case AS_INIT_IMAGE:
+							image->setImagePath(script->get_conv_ptr());
+							break;
+						default:
 							handle_error("Misplaced option",aOptIDs[id]);
 					}
+
 					break;
 				case INIT_BGROUND:
 					if(curMode == AS_INIT_IBS){
@@ -1903,30 +1897,27 @@ void aParseScript(const char* fname,char* bname)
 					}
 					break;
 				case INIT_FONT:
-					if(curMode == AS_INIT_MENU_ITEM){
-						fnMnuItm -> font = script -> read_idata();
-					}
-					else {
-						if(curMode == AS_INIT_INFO_PANEL){
-							iPl -> font = script -> read_idata();
-						}
-						else {
-							if(curMode == AS_INIT_WORLD_DATA){
-								wData -> font = script -> read_idata();
-							}
-							else {
-								if(curMode == AS_INIT_COUNTER){
-									cP -> font = script -> read_idata();
-								}
-								else {
-									if(curMode == AS_INIT_IBS){
-										ibsObj -> fontID = script -> read_idata();
-									}
-									else
-										handle_error("Misplaced option",aOptIDs[id]);
-								}
-							}
-						}
+					switch (curMode) {
+						case AS_INIT_MENU_ITEM:
+							fnMnuItm->font = script->read_idata();
+							break;
+						case AS_INIT_INFO_PANEL:
+							iPl->font = script->read_idata();
+							break;
+						case AS_INIT_WORLD_DATA:
+							wData->font = script->read_idata();
+							break;
+						case AS_INIT_COUNTER:
+							cP->font = script->read_idata();
+							break;
+						case AS_INIT_IBS:
+							ibsObj->fontID = script->read_idata();
+							break;
+						case AS_INIT_SCREEN:
+							screen->setFontId(script->read_idata());
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
 					}
 					break;
 				case INIT_VSPACE:
@@ -2006,61 +1997,47 @@ void aParseScript(const char* fname,char* bname)
 					}
 					break;
 				case INIT_ID:
-					if(curMode == AS_INIT_BUTTON){
-						aBt -> ID = script -> read_idata();
-					}
-					else {
-						if(curMode == AS_INIT_ITEM){
-							invItm -> ID = script -> read_idata();
-						}
-						else {
-							if(curMode == AS_INIT_LOC_DATA){
-								t_id = script -> read_idata();
-								script -> read_pdata(&locData -> objIDs[t_id],1);
-							}
-							else {
-								if(curMode == AS_INIT_MATRIX){
-									script -> read_pdata(&invMat -> mech_name,1);
-								}
-								else {
-									if(curMode == AS_INIT_INFO_PANEL){
-										iPl -> type = script -> read_idata();
-									}
-									else {
-										if(curMode == AS_INIT_COUNTER){
-											cP -> ID = script -> read_idata();
-										}
-										else {
-											if(curMode == AML_INIT_DATA_SET){
-												mlDataSet -> ID = script -> read_idata();
-											}
-											else {
-												if(curMode == AML_INIT_DATA){
-													mlData -> ID = script -> read_idata();
-												}
-												else {
-													if(curMode == BM_INIT_MENU_ITEM){
-														aciBM_it -> ID = script -> read_idata();
-													}
-													else {
-														if(curMode == BM_INIT_MENU){
-															aciBM -> ID = script -> read_idata();
-														}
-														else {
-															if(curMode == AML_INIT_EVENT_SEQ){
-																mlEvSeq -> add_id(script -> read_idata());
-															}
-															else
-																handle_error("Misplaced option",aOptIDs[id]);
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
+					switch (curMode){
+						case AS_INIT_BUTTON:
+							aBt->ID = script->read_idata();
+							break;
+						case AS_INIT_ITEM:
+							invItm->ID = script->read_idata();
+							break;
+						case AS_INIT_LOC_DATA:
+							t_id = script->read_idata();
+							script->read_pdata(&locData->objIDs[t_id], 1);
+							break;
+						case AS_INIT_MATRIX:
+							script->read_pdata(&invMat->mech_name, 1);
+							break;
+						case AS_INIT_INFO_PANEL:
+							iPl->type = script->read_idata();
+							break;
+						case AS_INIT_COUNTER:
+							cP->ID = script->read_idata();
+							break;
+						case AML_INIT_DATA_SET:
+							mlDataSet->ID = script->read_idata();
+							break;
+						case AML_INIT_DATA:
+							mlData->ID = script->read_idata();
+							break;
+						case BM_INIT_MENU_ITEM:
+							aciBM_it->ID = script->read_idata();
+							break;
+						case BM_INIT_MENU:
+							aciBM->ID = script->read_idata();
+							break;
+						case AML_INIT_EVENT_SEQ:
+							mlEvSeq->add_id(script->read_idata());
+							break;
+						case AS_INIT_SCREEN:
+							screen->setId(script->read_idata());
+							break;
+						default:
+							handle_error("Misplaced option",aOptIDs[id]);
+
 					}
 					break;
 				case INIT_S_ID:
@@ -2085,7 +2062,7 @@ void aParseScript(const char* fname,char* bname)
 					curMatrix = script -> read_idata();
 					break;
 				case INIT_CUR_IBS:
-					aScrDisp -> curIbsID = script -> read_idata();
+					aScrDisp->currentScreenId = script->read_idata();
 					break;
 				case NEW_LOC_DATA:
 					if(curMode != AS_NONE){
@@ -2145,6 +2122,9 @@ void aParseScript(const char* fname,char* bname)
 						case AS_INIT_MATRIX:
 							invMat->anchor |= WIDGET_ANCHOR_RIGHT;
 							break;
+						case AS_INIT_IMAGE:
+							image->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
 						default:
 							handle_error("Misplaced option", aOptIDs[id]);
 					}
@@ -2167,9 +2147,26 @@ void aParseScript(const char* fname,char* bname)
 						case AS_INIT_MATRIX:
 							invMat->anchor |= WIDGET_ANCHOR_BOTTOM;
 							break;
+						case AS_INIT_IMAGE:
+							image->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
 						default:
 							handle_error("Misplaced option", aOptIDs[id]);
 					}
+					break;
+				case NEW_IMAGE:
+					if(curMode != AS_INIT_SCREEN){
+						handle_error("Misplaced option", aOptIDs[id]);
+					}
+					curMode = AS_INIT_IMAGE;
+					image = new BitmapImage();
+					break;
+				case NEW_SCREEN:
+					if(curMode != AS_NONE){
+						handle_error("Misplaced option", aOptIDs[id]);
+					}
+					curMode = AS_INIT_SCREEN;
+					screen = new Screen();
 					break;
 			}
 #ifndef _BINARY_SCRIPT_
@@ -2254,7 +2251,6 @@ void end_block(void)
 				aScrDisp -> add_item(invItm);
 			break;
 		case AS_INIT_MATRIX:
-			invMat->recalc_anchors();
 			curMode = AS_NONE;
 			if(iScreenFlag)
 				aScrDisp -> add_imatrix(invMat);
@@ -2265,7 +2261,6 @@ void end_block(void)
 			curMode = AS_INIT_MATRIX;
 			break;
 		case AS_INIT_MENU:
-			fnMnu->recalc_anchors();
 			if(!iScreenFlag){
 				if(fnMnu -> flags & FM_ITEM_MENU){
 					curMode = AS_INIT_ITEM;
@@ -2313,7 +2308,6 @@ void end_block(void)
 				aScrDisp -> i_Counters -> connect((iListElement*)cP);
 			}
 			else {
-				cP->recalc_anchors();
 				if(cP -> type == CP_INT)
 					aScrDisp -> intCounters -> connect((iListElement*)cP);
 				if(cP -> type == CP_INV)
@@ -2335,7 +2329,6 @@ void end_block(void)
 			curMode = AS_NONE;
 			break;
 		case AS_INIT_INFO_PANEL:
-			iPl->recalc_anchors();
 			if(iScreenFlag){
 				if(!iPl -> type)
 					aScrDisp -> iscr_iP = iPl;
@@ -2399,6 +2392,15 @@ void end_block(void)
 		case AML_INIT_EVENT_SEQ:
 			mlDataSet -> add_seq(mlEvSeq);
 			curMode = AML_INIT_DATA_SET;
+			break;
+		case AS_INIT_IMAGE:
+			curMode = AS_INIT_SCREEN;
+			image->init();
+			screen->addWidget(shared_ptr<Widget>(image));
+			break;
+		case AS_INIT_SCREEN:
+			curMode = AS_NONE;
+			aScrDisp->addScreen(shared_ptr<Screen>(screen));
 			break;
 	}
 }

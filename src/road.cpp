@@ -763,15 +763,16 @@ _MEM_STATISTIC_("AFTER MAIN MENU FINIT -> ");
 void LoadingRTO1::Init(int id)
 {
 	RAM16 = 0;//iGetOptionValue(iDETAIL_SETTING);
-	if(!MuteLog && EffectInUsePriory){
-		if(!iGetOptionValue(iSOUND_ON)){
-			SetSoundVolume(iGetOptionValue(iSOUND_VOLUME_CUR)*256/iGetOptionValue(iSOUND_VOLUME_MAX));
+	if (!MuteLog && EffectInUsePriory) {
+		if (!iGetOptionValue(iSOUND_ON)) {
+			SetSoundVolume(iGetOptionValue(iSOUND_VOLUME_CUR) * 256 / iGetOptionValue(iSOUND_VOLUME_MAX));
 		} else {
-			MuteLog = 1; EffectInUsePriory = EffectInUse = 0;
+			MuteLog = 1;
+			EffectInUsePriory = EffectInUse = 0;
 		}
 	}
 
-	if(!(flags & RTO_INIT_FLAG)){
+	if (!(flags & RTO_INIT_FLAG)) {
 		uniVangPrepare();
 		uvsCreateItem_in_Crypt();
 	}
@@ -784,8 +785,9 @@ void LoadingRTO1::Init(int id)
 #endif
 
 #ifdef ACTINT
-	XSIDE = aScrDisp -> curIbs -> SideX;
-	YSIDE = aScrDisp -> curIbs -> SideY;
+	auto screen = aScrDisp->get_current_screen();
+	XSIDE = screen->SizeX / 2;
+	YSIDE = screen->SizeY / 2;
 	XSIZE = 2*XSIDE;
 	YSIZE = 2*YSIDE;
 #else
@@ -795,23 +797,22 @@ void LoadingRTO1::Init(int id)
 	YSIZE = 2*YSIDE;
 #endif
 
-	set_key_nadlers(&KeyCenter,NULL);
+	set_key_nadlers(&KeyCenter, NULL);
 
 	graph3d_init();
 
 	GeneralSystemInit();
 
 //	palTr -> set(iscrPal,palbufInt,0,255,&Quit);
-	palTr -> set(iscrPal,NULL,0,255,&Quit);
+	palTr->set(iscrPal, NULL, 0, 255, &Quit);
 
 	Quit = 1;
-	while(Quit){
-		palTr -> quant();
+	while (Quit) {
+		palTr->quant();
 		SDL_Delay(10);
 	}
 	LoadingMessage(1);
-	diagenPrepare();
-_MEM_STATISTIC_("AFTER LOADING RTO1 INIT -> ");
+	diagenPrepare();_MEM_STATISTIC_("AFTER LOADING RTO1 INIT -> ");
 }
 
 int LoadingRTO1::Quant(void)
@@ -954,7 +955,8 @@ _MEM_STATISTIC_("AFTER TABLE GENERAL  -> ");
 _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 
 #ifdef ACTINT
-	curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
+	auto screen = aScrDisp->get_current_screen();
+	curGMap = new iGameMap(screen->SizeX / 2, screen->SizeY / 2, XSIDE, YSIDE);
 #else
 	curGMap = new iGameMap(XGR_MAXX/2,XGR_MAXY/2,XSIDE,YSIDE);
 #endif
@@ -1526,7 +1528,7 @@ void creat_poster() {
 	dstrect.h = 256;
 	
 	
-    surface = SDL_CreateRGBSurface(0, map_size_x, map_size_y, 8,
+	surface = SDL_CreateRGBSurface(0, map_size_x, map_size_y, 8,
 		0, 0, 0, 0);
 	surface->format = XGR_Obj.XGR_ScreenSurface->format;
 	
@@ -2620,7 +2622,7 @@ void sqFont::drawtext(int x,int y,char* s,int fore,int back)
 
 void sqFont::drawchar(int x,int y,int ch,int fore,int back)
 {
-    if(x < 0 || y < 0 || x + sx >= XGR_MAXX || y + sy >= XGR_MAXY) return;
+	if(x < 0 || y < 0 || x + sx >= XGR_MAXX || y + sy >= XGR_MAXY) return;
 	unsigned char* p = (unsigned char*)data[ch];
 	int i,j,m;
 	for(j = 0;j < sy;j++)
