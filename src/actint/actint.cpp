@@ -9390,7 +9390,7 @@ void actIntDispatcher::init_prompt(void)
 	}
 }
 
-void actIntDispatcher::addScreen(const shared_ptr<Screen> &screen) {
+void actIntDispatcher::addScreen(const std::shared_ptr<Screen> &screen) {
 	screens[screen.get()->getId()] = screen;
 }
 
@@ -9674,7 +9674,7 @@ BitmapImage::~BitmapImage() {
 	}
 }
 
-void Screen::addWidget(const shared_ptr<Widget> &image) {
+void Screen::addWidget(const std::shared_ptr<Widget> &image) {
 	widgets.push_back(image);
 }
 

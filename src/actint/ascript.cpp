@@ -2396,11 +2396,11 @@ void end_block(void)
 		case AS_INIT_IMAGE:
 			curMode = AS_INIT_SCREEN;
 			image->init();
-			screen->addWidget(shared_ptr<Widget>(image));
+			screen->addWidget(std::shared_ptr<Widget>(image));
 			break;
 		case AS_INIT_SCREEN:
 			curMode = AS_NONE;
-			aScrDisp->addScreen(shared_ptr<Screen>(screen));
+			aScrDisp->addScreen(std::shared_ptr<Screen>(screen));
 			break;
 	}
 }

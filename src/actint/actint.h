@@ -1,4 +1,5 @@
 #include <vector>
+#include <memory>
 #include <map>
 #include "SDL_image.h"
 #define _ACI_PACK_SAVES_
@@ -49,7 +50,6 @@ const int 	MAX_NUM_MAP		= 13;
 struct actEvent;
 
 #ifdef _ACI_BML_FONTS_
-using namespace std;
 // aciFont flags...
 #define ACI_RANGE_FONT		0x01
 
@@ -476,19 +476,19 @@ private:
 class BitmapImage: public Widget {
 public:
 	void redraw();
-	inline void setImagePath(string imagePath){
+	inline void setImagePath(std::string imagePath){
 		this->imagePath = imagePath;
 	}
 	void init();
 	~BitmapImage();
 private:
 	SDL_Surface *image = nullptr;
-	string imagePath = "";
+	std::string imagePath = "";
 };
 
 class Screen: public Widget {
 private:
-	vector<shared_ptr<Widget>> widgets;
+	std::vector<std::shared_ptr<Widget>> widgets;
 	int id = -1;
 	int fontId;
 	int indicatorPosX[4]; // TODO: very unflexible, try to refactor
@@ -506,7 +506,7 @@ public:
 	void setId(int id);
 	int getId() const;
 
-	void addWidget(const shared_ptr<Widget>& widget);
+	void addWidget(const std::shared_ptr<Widget>& widget);
 	void redraw();
 	void layout(int width, int height);
 
@@ -1299,7 +1299,7 @@ const int SCREEN_INVENTORY_ID = 2;
 
 struct actIntDispatcher
 {
-	map<int, shared_ptr<Screen>> screens;
+	std::map<int, std::shared_ptr<Screen>> screens;
 	int currentScreenId;
 
 	int flags;
@@ -1376,7 +1376,7 @@ struct actIntDispatcher
 
 	actEventHeap* events;
 
-	const shared_ptr<Screen>& get_current_screen(){
+	const std::shared_ptr<Screen>& get_current_screen(){
 		return screens[currentScreenId];
 	}
 
@@ -1493,7 +1493,7 @@ struct actIntDispatcher
 	actIntDispatcher(void);
 	~actIntDispatcher(void);
 
-	void addScreen(const shared_ptr<Screen> &screen);
+	void addScreen(const std::shared_ptr<Screen> &screen);
 };
 
 void aPutStr(int x,int y,int font,int color,unsigned char* str,int bsx,unsigned char* buf,int space = I_STR_SPACE);
