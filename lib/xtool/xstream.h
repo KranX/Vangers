@@ -62,6 +62,7 @@ struct XStream
 
 	XSHANDLE gethandler(){ return handler; }
 
+
 	void	flush();
 	const char*	GetFileName() const { return fname.c_str(); }
 	void	SetRadix(int r){ radix=r; }

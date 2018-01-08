@@ -60,6 +60,7 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 FIND_LIBRARY(AVUTIL_LIBRARY
   NAMES
     avutil
+	avutil-55
   PATHS
     /usr/lib
     /usr/lib/x86_64-linux-gnu
@@ -70,11 +71,13 @@ FIND_LIBRARY(AVUTIL_LIBRARY
     /mingw/lib
 	/local/bin
 	/mingw/bin
+	/bin
 )
 
 FIND_LIBRARY(AVCODEC_LIBRARY
   NAMES
     avcodec
+	avcodec-57
   PATHS
     /usr/lib
     /usr/lib/x86_64-linux-gnu
@@ -85,11 +88,13 @@ FIND_LIBRARY(AVCODEC_LIBRARY
     /mingw/lib
 	/local/bin
 	/mingw/bin
+	/bin
 )
 
 FIND_LIBRARY(AVFORMAT_LIBRARY
   NAMES
     avformat
+	avformat-57
   PATHS
     /usr/lib
     /usr/lib/x86_64-linux-gnu
@@ -100,7 +105,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 	/local/bin
 	/mingw/bin
     /mingw/lib
-
+	/bin
 )
 
 SET(FFMPEG_INCLUDE_DIRS

@@ -40,7 +40,7 @@ FIND_PATH(VORBIS_INCLUDE_DIR
 )
 
 FIND_LIBRARY(VORBIS_LIBRARY 
-	NAMES vorbis libvorbis
+	NAMES vorbis libvorbis libvorbis-0
 	HINTS
 	$ENV{VORBISDIR}
 	$ENV{VORBIS_PATH}
@@ -69,11 +69,6 @@ IF(NOT VORBIS_LIBRARY_DEBUG)
 		PATHS ${VORBIS_SEARCH_PATHS}
 	)
 ENDIF()
-
-if (MINGW)
-	set(VORBIS_INCLUDE_DIR "/local/include/vorbis")
-	set(VORBIS_LIBRARY "/local/lib/libvorbis.dll.a")
-endif (MINGW)
 
 IF(VORBIS_LIBRARY)
 	IF(VORBIS_LIBRARY_DEBUG)

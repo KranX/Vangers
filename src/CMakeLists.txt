@@ -70,7 +70,8 @@ ADD_EXECUTABLE(vangers ${vangers_SRCS})
 IF(WIN32)
 	SET(WIN_LIB 
 		wsock32
-		-mwindows
+		#-mwindows
+		#-Wl,-subsystem,windows
 	)
 ENDIF(WIN32)
 

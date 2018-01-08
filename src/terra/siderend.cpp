@@ -662,7 +662,7 @@ void regRender2(int LowX,int LowY,int HiX,int HiY,int changed)
 		//препроход
 		PreStage(LastStep,HiX,pLineAddr,hC,shadowParent + MAX_ALT);
 		//основной проход
-		BYTE* grid =(BYTE*)((long)(shadowParent+_SS_WIDTH+_MAX_ALT+1)|0x00ff)+1;
+		BYTE* grid =(BYTE*)((uintptr_t)(shadowParent+_SS_WIDTH+_MAX_ALT+1)|0x00ff)+1;
 		
 		int MaxAlt = 0;
 		int x = HiX;

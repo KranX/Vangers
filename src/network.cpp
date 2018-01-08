@@ -181,12 +181,15 @@ ServerFindChain::ServerFindChain(int IP,int port,char* domain_name,int game_ID,c
 	prev = next = 0;
 	list = 0;
 	XBuffer str_buf;
-	if(!game_ID)
+	if(!game_ID) {
 #if defined(RUSSIAN_VERSION) && !defined(GERMAN_VERSION)
-		str_buf < "Ќ®ў п ЁЈа  ­  ";
+		//CP866 Новая игра на
+		const unsigned char new_game_on[] = {0x8D, 0xAE, 0xA2, 0xA0, 0xEF, 0x20, 0xA8, 0xA3, 0xE0, 0xA0, 0x20, 0xAD, 0xA0, 0x20};
+		str_buf < (const char *)new_game_on;
 #else
 		str_buf < "New Game on ";
 #endif
+	}
 	if(!game_name)
 		if(domain_name)
 			str_buf < domain_name;
@@ -194,7 +197,7 @@ ServerFindChain::ServerFindChain(int IP,int port,char* domain_name,int game_ID,c
 			str_buf <= (IP & 0xff) < "." <= ((IP >> 8) & 0xff) < "." <= ((IP >> 16) & 0xff) < "." <= ((IP >> 24) & 0xff);
 	else
 		str_buf < game_name;
-	strncpy(name,str_buf.GetBuf(),50);
+	strncpy(name, str_buf.GetBuf(), 50);
 	name[50] = 0;
 }
 ServerFindChain::~ServerFindChain()
@@ -286,16 +289,16 @@ void ServersList::clear_states()
 int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_game)
 {
 	XSocket sock;
-	if(IP)
+	if(IP) {
 		sock.open(IP,port);
-	else{
+	} else {
 		if(!domain_name)
 			return 0;
 // 		if(!iProxyUsage || !iProxyServer)
 			sock.open(domain_name,port);
 // 		else
 // 			sock.open_by_socks5(domain_name,port,iProxyServer,iProxyPort);
-		}
+	}
 	if(!sock || !identification(sock))
 		return 0;
 
@@ -320,12 +323,12 @@ int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_g
 		return 0;
 	if(only_new_game)
 		n_games = 0;
-	for(int i = 0;i < n_games;i++){
+	for(int i = 0;i < n_games;i++) {
 		servers_buffer > game_ID > game_name;
-		p = new ServerFindChain(IP,port,domain_name,game_ID,game_name);
+		std::cout<<"game_ID:"<<game_ID<<" game_name:"<<game_name<<std::endl;
+		p = new ServerFindChain(IP, port, domain_name, game_ID, game_name);
 		append(p);
-		}
-	//std::cout<<"Network: new ServerFindChain "<<IP<<" "<<port<<" "<<domain_name<<std::endl;
+	}
 	p = new ServerFindChain(IP,port,domain_name,0,0);
 	append(p);
 	return n_games + 1;
@@ -376,8 +379,8 @@ int ServersList::find_servers(int bc_port)
 int ServersList::find_servers_in_the_internet(char* host_name,int host_port)
 {
 	clear_states();
-	strcpy(domain_name,host_name);
-	return talk_to_server(0,host_port,domain_name);
+	strcpy(domain_name, host_name);
+	return talk_to_server(0, host_port, domain_name);
 }
 
 /***********************************************************************

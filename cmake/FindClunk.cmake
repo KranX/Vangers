@@ -2,14 +2,14 @@ FIND_PATH(CLUNK_INCLUDE_DIR
   NAMES
     clunk.h
   PATHS
-    /usr/include
+	/usr/include
+    /usr/include/x86_64-linux-gnu
     /usr/local/include
     /local/include
     /mingw/include
     /opt/local/include
     /opt/include
     /sw/include
-    /usr/local/include
   PATH_SUFFIXES
     clunk
 )
@@ -24,10 +24,9 @@ FIND_LIBRARY(CLUNK_LIBRARY
     /sw/lib
     /local/lib
     /mingw/lib
-	 /local/bin
-	 /mingw/bin
-   /usr/local/lib
-
+	/local/bin
+	/mingw/bin
+	/usr/local/lib
 )
 IF(CLUNK_INCLUDE_DIR AND CLUNK_LIBRARY)
    SET(CLUNK_FOUND TRUE)
