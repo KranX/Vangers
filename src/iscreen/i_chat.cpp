@@ -57,13 +57,13 @@ int aTextHeight32(void* text,int font,int vspace);
 void iChatInit(void);
 void iChatQuant(int flush = 0);
 void iChatFinit(void);
-void iChatKeyQuant(int k);
+void iChatKeyQuant(SDL_Event *k);
 void iChatMouseQuant(int x,int y,int bt);
 
 void iInitChatButtons(void);
 void iInitChatScreen(void);
 
-void iChatInputChar(int code);
+void iChatInputChar(SDL_Event *code);
 void iChatInputFlush(void);
 void iChatInputBack(void);
 
@@ -694,10 +694,15 @@ void iChatFinit(void)
 	iChatButtons = NULL;
 }
 
-void iChatKeyQuant(int k)
+void iChatKeyQuant(SDL_Event *k)
 {
-	if(iCheckKeyID(iKEY_CHAT,k)) iChatExit = 1;
-	switch(k){
+	if (k->type != SDL_KEYDOWN) {
+		iChatExit = 1;
+		return;
+	}
+	if(iCheckKeyID(iKEY_CHAT, k->key.keysym.scancode))
+		iChatExit = 1;
+	switch(k->key.keysym.scancode) {
 		case SDL_SCANCODE_ESCAPE:
 			iChatExit = 1;
 			break;
@@ -842,7 +847,7 @@ iChatButton* iGetChatPlayerButton(int id)
 	return 0;
 }
 
-void iChatInputChar(int code)
+void iChatInputChar(SDL_Event *code)
 {
 	char* ptr,*ptr0 = iChatInput -> string;
 	int x, sz;
@@ -856,9 +861,8 @@ void iChatInputChar(int code)
 	sz = strlen(ptr0);
 	if(sz < ISC_MAX_STRING_LEN && x < iChatInput -> SizeX - 10){
 		aciFont* hfnt = aScrFonts32[iChatInput -> font];
-		code = SDL_GetKeyFromScancode((SDL_Scancode)code);
-		if(code && hfnt && code < hfnt->Size){
-			ptr0[sz - 1] = code;
+		if(code->key.keysym.sym && hfnt && code->key.keysym.sym < hfnt->Size){
+			ptr0[sz - 1] = code->key.keysym.sym;
 			ptr0[sz] = '_';
 			ptr0[sz + 1] = 0;
 		}

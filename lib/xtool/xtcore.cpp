@@ -70,8 +70,8 @@ void* hXConInput = NULL;
 
 int XAppMode = 0;
 
-void (*press_handler)(int);
-void (*unpress_handler)(int);
+void (*press_handler)(SDL_Event* m);
+void (*unpress_handler)(SDL_Event* m);
 
 XList XSysQuantLst;
 XList XSysFinitLst;
@@ -226,45 +226,45 @@ void xtRegisterRuntimeObject(XRuntimeObject* p)
 }
 
 int xtCallXKey(SDL_Event* m) {
-	switch(m->type){
+	switch(m->type) {
 		case SDL_KEYDOWN:
 			if (press_handler) {
-				(*press_handler)(m->key.keysym.scancode);
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_KEYUP:
 			if (unpress_handler) {
-				(*unpress_handler)(m->key.keysym.scancode);
+				(*unpress_handler)(m);
 			}
 			break;
 		case SDL_JOYBUTTONDOWN:
 			//std::cout<<"jevent down button:"<<(int)m->jbutton.button<<std::endl;
 			if (press_handler) {
-				(*press_handler)(m->jbutton.button | SDLK_JOYSTICK_BUTTON_MASK);
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_JOYBUTTONUP:
 			//std::cout<<"jevent up"<<std::endl;
 			if (unpress_handler) {
-				(*unpress_handler)(m->jbutton.button | SDLK_JOYSTICK_BUTTON_MASK);
+				(*unpress_handler)(m);
 			}
 			break;
 		case SDL_CONTROLLERBUTTONDOWN:
 			//std::cout<<"CONTROLLERBUTTONDOWN"<<std::endl;
 			if (press_handler) {
-				(*press_handler)(m->cbutton.button | SDLK_GAMECONTROLLER_BUTTON_MASK);
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_CONTROLLERBUTTONUP:
 			//std::cout<<"CONTROLLERBUTTONUP"<<std::endl;
 			if (unpress_handler) {
-				(*unpress_handler)(m->cbutton.button | SDLK_GAMECONTROLLER_BUTTON_MASK);
+				(*unpress_handler)(m);
 			}
 			break;
 		case SDL_JOYHATMOTION:
 			//std::cout<<"SDL_JOYHATMOTION:"<<(int)m->jhat.hat<<" value"<<(int)m->jhat.value<<" k:"<<std::endl;
 			if (press_handler) {
-				(*press_handler)((m->jhat.value + 10*m->jhat.hat) | SDLK_JOYSTICK_HAT_MASK);
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_JOYBALLMOTION:
@@ -592,7 +592,7 @@ void xtSysQuantDisable(int v)
 }
 
 
-void set_key_nadlers(void (*pH)(int),void (*upH)(int)) {
+void set_key_nadlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*)) {
 	press_handler = pH;
 	unpress_handler = upH;
 }

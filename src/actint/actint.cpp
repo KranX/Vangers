@@ -149,7 +149,7 @@ void aciChangeWorld(int id);
 void iChatInit(void);
 void iChatQuant(int flush = 0);
 void iChatFinit(void);
-void iChatKeyQuant(int k);
+void iChatKeyQuant(SDL_Event *k);
 void iChatMouseQuant(int x,int y,int bt);
 
 void LoadResourceSOUND(const char *path_name, int surface);

@@ -831,7 +831,7 @@ void aciScreen::init_objects(void)
 	}
 }
 
-void aciScreenDispatcher::KeyTrap(int code)
+void aciScreenDispatcher::KeyTrap(SDL_Event *code)
 {
 	if(activeInput) {
 		InputQuant(code);

@@ -254,7 +254,7 @@ void aLoadFonts(void);
 void aFreeFonts(void);
 
 void aKeyInit(void);
-void aKeyTrap(int k);
+void aKeyTrap(SDL_Event *k);
 void aKeyQuant(void);
 void actIntQuant(void);
 void aci_iScreenQuant(void);
@@ -1157,7 +1157,7 @@ void aPutChar(int x,int y,int font,int color,int str,int bsx,int bsy,unsigned ch
 }
 #endif
 
-void aKeyTrap(int k)
+void aKeyTrap(SDL_Event *k)
 {
 	if(aInitFlag){
 		KeyBuf -> put(k,CUR_KEY_PRESSED);

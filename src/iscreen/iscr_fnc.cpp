@@ -136,7 +136,7 @@ void iCreateServer(void);
 void iChatInit(void);
 void iChatQuant(int flush = 0);
 void iChatFinit(void);
-void iChatKeyQuant(int k);
+void iChatKeyQuant(SDL_Event *k);
 void iChatMouseQuant(int x,int y,int bt);
 
 void iSoundQuant(int value = 0);
@@ -235,7 +235,7 @@ void iregRender(int x0,int y0,int x1,int y1);
 void MS_init(void);
 
 void recorder_synchro(unsigned int frame);
-void KeyCenter(int key);
+void KeyCenter(SDL_Event *key);
 
 void i_getpal(unsigned char* p);
 
@@ -696,7 +696,7 @@ void iQuantPrepare(void)
 
 int iQuantSecond(void)
 {
-	int k;
+	SDL_Event *k;
 #ifdef _DEBUG
 	int cr;
 	int count = 0;
@@ -745,12 +745,13 @@ int iQuantSecond(void)
 				XGR_MouseHide();
 				return 1;
 			}
-			if(!(iScrDisp -> flags & SD_INPUT_STRING)){
-				while(KeyBuf -> size){
+			if(!(iScrDisp -> flags & SD_INPUT_STRING)) {
+				while(KeyBuf -> size) {
 					k = KeyBuf -> get();
 					//std::cout<<k<<" "<<actIntLog<<std::endl;
-					if(iChatON && !(k & 0x1000)) iChatKeyQuant(k);
-					if((k == SDL_SCANCODE_ESCAPE) && actIntLog){
+					if(iChatON)
+						iChatKeyQuant(k);
+					if((k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_ESCAPE) && actIntLog){
 						iPause ^= 1;
 						acsScreenID = 2;
 					}
@@ -791,7 +792,7 @@ int iQuantSecond(void)
 						aciUpdateCurCredits(cr);
 					}
 #endif
-					if(k == SDL_SCANCODE_F11){
+					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
 						shotFlush();
 					}
 
@@ -853,7 +854,15 @@ int iQuantSecond(void)
 					}
 					if(k == 'T') iTimerLog ^= 1;
 #endif
-					iKeyTrap(k);
+					if (k->type == SDL_KEYDOWN || k->type == SDL_KEYUP) {
+						iKeyTrap(k->key.keysym.scancode);
+					} else if (k->type == SDL_JOYBUTTONDOWN || k->type == SDL_JOYBUTTONUP) {
+						iKeyTrap(k->jbutton.button | SDLK_JOYSTICK_BUTTON_MASK);
+					} else if (k->type == SDL_CONTROLLERBUTTONDOWN || k->type == SDL_CONTROLLERBUTTONUP) {
+						iKeyTrap(k->cbutton.button | SDLK_GAMECONTROLLER_BUTTON_MASK);
+					} else if (k->type == SDL_JOYHATMOTION) {
+						iKeyTrap((k->jhat.value + 10*k->jhat.hat) | SDLK_JOYSTICK_HAT_MASK);
+					}
 				}
 			} /*else {
 				k = JoystickWhatsPressedNow();
@@ -1331,7 +1340,7 @@ void iScrQuantFinit(void)
 	static unsigned char pal_buf[768];
 	if(iScreenLog){
 		iFinitQuant();
-		set_key_nadlers(&KeyCenter,NULL);
+		set_key_nadlers(&KeyCenter, NULL);
 
 		i_slake_pal(iscrPal,16);
 

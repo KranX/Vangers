@@ -1,3 +1,7 @@
+#ifndef __ACI_SCR_H__
+#define __ACI_SCR_H__
+
+#include <SDL.h>
 
 // aciScreenResource::type values...
 #define ACS_NONE	0
@@ -399,7 +403,7 @@ struct aciScreenDispatcher
 	aciScreenObject* GetObject(int id);
 	aciScreenResource* GetResource(int id);
 
-	void KeyTrap(int code);
+	void KeyTrap(SDL_Event *code);
 
 	void alloc_mem(void);
 	void free_mem(void);
@@ -438,4 +442,4 @@ void acsFreeResource(aciScreenResource* p);
 aciScreenObject* acsAllocObject(int type);
 void acsFreeObject(aciScreenObject* p);
 
-
+#endif

@@ -168,7 +168,7 @@ int MLquant(void);
 void aciLoadData(void);
 void aInit(void);
 void aRedraw(void);
-void aKeyTrap(int k);
+void aKeyTrap(SDL_Event *k);
 void actIntQuant(void);
 void aciPrepareMenus(void);
 int acsQuant(void);
@@ -187,7 +187,7 @@ void aci_LocationQuantPrepare(void);
 void aci_LocationQuantFinit(void);
 #endif
 
-void KeyCenter(int key);
+void KeyCenter(SDL_Event *key);
 int distance(int,int);
 extern int ibsout(int,int,void*,void*);
 
@@ -808,7 +808,7 @@ void LoadingRTO1::Init(int id)
 	YSIZE = 2*YSIDE;
 #endif
 
-	set_key_nadlers(&KeyCenter,NULL);
+	set_key_nadlers(&KeyCenter, NULL);
 
 	graph3d_init();
 
@@ -1566,7 +1566,7 @@ void creat_poster() {
 	SDL_SaveBMP(surface, "./poster.bmp");
 }
 
-void KeyCenter(int key)
+void KeyCenter(SDL_Event *key)
 {
 	extern int entry_scan_code;
 	SDL_Keymod mod;
@@ -1579,7 +1579,7 @@ void KeyCenter(int key)
 	}
 
 	entry_scan_code = key;
-	switch(key){
+	switch(key) {
 		case SDL_SCANCODE_ESCAPE:
 #ifdef ESCAPE_EXIT
 			disconnect_from_server();
