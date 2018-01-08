@@ -21,6 +21,7 @@ Developers chat: https://t.me/vangers
 
 * SDL2
 * SDL2_net
+* SDL2_image
 * libvorbis
 * clunk (https://github.com/stalkerg/clunk)
 * ffmpeg
