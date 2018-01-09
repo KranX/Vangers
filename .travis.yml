@@ -10,6 +10,7 @@ addons:
           - cmake
           - libsdl2-dev
           - libsdl2-net-dev
+          - libsdl2-image-dev
           - libogg-dev
           - libvorbis-dev
           - libavcodec-dev
