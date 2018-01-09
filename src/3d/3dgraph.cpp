@@ -276,7 +276,7 @@ void MemoryHeap::end_alloc()
 		} else {
 			ErrH.Abort("Abundance of locked memory");
         }
-    }
+	}
 	heap = 0;
 	size = 0;
 }

@@ -307,7 +307,7 @@ double DBV::angle(const DBV& w) const
 		} else {
 			return M_PI;
         }
-    }
+	}
 	return acos(c);
 }
 double DBV::angle(const DBV& v1,const DBV& v2) const

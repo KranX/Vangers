@@ -11,16 +11,17 @@ All source code is published under the GPLv3 license.
 
 The necessary resources for the game (maps, sounds, textures, etc.) you can take from the games purchased here:
 
-Developers chat: https://t.me/vangers
-
 http://store.steampowered.com/app/264080
 
 http://www.gog.com/game/vangers
+
+Developers chat: https://t.me/vangers
 
 ## Required libraries ##
 
 * SDL2
 * SDL2_net
+* SDL2_image
 * libvorbis
 * clunk (https://github.com/stalkerg/clunk)
 * ffmpeg

@@ -70,7 +70,8 @@ ADD_EXECUTABLE(vangers ${vangers_SRCS})
 IF(WIN32)
 	SET(WIN_LIB 
 		wsock32
-		-mwindows
+		#-mwindows
+		#-Wl,-subsystem,windows
 	)
 ENDIF(WIN32)
 
@@ -81,6 +82,7 @@ TARGET_LINK_LIBRARIES(vangers
 	${VORBISFILE_LIBRARY}
 	${CLUNK_LIBRARY}
 	${SDL2_NET_LIBRARY}
+		${SDL2_IMAGE_LIBRARY}
 	${FFMPEG_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	${OPENGL_LIBRARIES}

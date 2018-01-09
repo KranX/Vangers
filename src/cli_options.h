@@ -8,17 +8,19 @@
 
 class CommandLineOptions {
 public:
-    void parseArgs(int argc, char** argv);
-    static void printUsage();
+	void parseArgs(int argc, char **argv);
 
-    int getScreenWidth() const;
+	static void printUsage();
 
-    int getScreenHeight() const;
+	int getScreenWidth() const;
 
-    CommandLineOptions();
+	int getScreenHeight() const;
+
+	CommandLineOptions();
+
 private:
-    int screenWidth;
-    int screenHeight;
+	int screenWidth;
+	int screenHeight;
 
 };
 

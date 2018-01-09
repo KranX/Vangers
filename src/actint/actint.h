@@ -1,4 +1,7 @@
-
+#include <vector>
+#include <memory>
+#include <map>
+#include "SDL_image.h"
 #define _ACI_PACK_SAVES_
 
 /* ----------------------------- Debug options ------------------------------ */
@@ -47,7 +50,6 @@ const int 	MAX_NUM_MAP		= 13;
 struct actEvent;
 
 #ifdef _ACI_BML_FONTS_
-
 // aciFont flags...
 #define ACI_RANGE_FONT		0x01
 
@@ -456,14 +458,57 @@ const int   WIDGET_ANCHOR_BOTTOM = 0x2;
 class Widget {
 
 public:
-	int PosX;
-	int PosY;
+	int PosX = 0;
+	int PosY = 0;
 	int anchor = 0;
-	int SizeX;
-	int SizeY;
-	void recalc_anchors();
+	int SizeX = 0;
+	int SizeY = 0;
+
+	virtual void init() {};
+	virtual void layout(int width, int height);
+	virtual void redraw() = 0;
+	virtual ~Widget(){};
 private:
-	bool anchorsRecalced = false;
+	bool _layoutDone = false;
+
+};
+
+class BitmapImage: public Widget {
+public:
+	void redraw();
+	inline void setImagePath(std::string imagePath){
+		this->imagePath = imagePath;
+	}
+	void init();
+	~BitmapImage();
+private:
+	SDL_Surface *image = nullptr;
+	std::string imagePath = "";
+};
+
+class Screen: public Widget {
+private:
+	std::vector<std::shared_ptr<Widget>> widgets;
+	int id = -1;
+	int fontId;
+	int indicatorPosX[4]; // TODO: very unflexible, try to refactor
+	int indicatorPosY[4]; // TODO: very unflexible, try to refactor
+public:
+	Screen();
+
+	int getIndicatorPosX(int index);
+	int getIndicatorPosY(int index);
+	void setIndicatorPosX(int index, int value);
+	void setIndicatorPosY(int index, int value);
+	int getFontId() const;
+	void setFontId(int fontId);
+
+	void setId(int id);
+	int getId() const;
+
+	void addWidget(const std::shared_ptr<Widget>& widget);
+	void redraw();
+	void layout(int width, int height);
 
 };
 
@@ -795,7 +840,7 @@ const int 	FM_RANGE_FONT		= 0x4000;
 struct fncMenu : public iListElement, public Widget {
 	int type;
 
-    int VItems;
+	int VItems;
 	int itemY;
 
 	int curFunction;
@@ -1249,8 +1294,14 @@ const int 	AS_WORLDS_INIT		= 0x8000;
 const int AS_INF_CAMERA_OFFSET = 100;
 const int AS_INV_CAMERA_OFFSET = 250;  // ??
 
+const int SCREEN_INFO_ID = 1;
+const int SCREEN_INVENTORY_ID = 2;
+
 struct actIntDispatcher
 {
+	std::map<int, std::shared_ptr<Screen>> screens;
+	int currentScreenId;
+
 	int flags;
 	int curMode;
 
@@ -1312,8 +1363,6 @@ struct actIntDispatcher
 
 	iList* ibsList;
 	iList* backList;
-	ibsObject* curIbs;
-	int curIbsID;
 
 	iList* freeItemList;
 	iList* freeMatrixList;
@@ -1326,6 +1375,10 @@ struct actIntDispatcher
 #endif
 
 	actEventHeap* events;
+
+	const std::shared_ptr<Screen>& get_current_screen(){
+		return screens[currentScreenId];
+	}
 
 	void add_matrix(invMatrix* m);
 	void add_imatrix(invMatrix* m);
@@ -1358,7 +1411,6 @@ struct actIntDispatcher
 	CounterPanel* get_icounter(int id);
 
 	bmlObject* get_back_bml(int id);
-	ibsObject* get_ibs(int id);
 
 	void init(void);
 	void finit(void);
@@ -1381,11 +1433,6 @@ struct actIntDispatcher
 	void calc_load(void);
 
 	void init_submenu(fncMenu* m);
-
-	void change_ibs(int id);
-	void next_ibs(void);
-	void load_ibs(void);
-	void free_ibs(void);
 
 	void lock(void){ flags |= AS_LOCKED; }
 	void unlock(void){ flags &= ~AS_LOCKED; }
@@ -1445,6 +1492,8 @@ struct actIntDispatcher
 
 	actIntDispatcher(void);
 	~actIntDispatcher(void);
+
+	void addScreen(const std::shared_ptr<Screen> &screen);
 };
 
 void aPutStr(int x,int y,int font,int color,unsigned char* str,int bsx,unsigned char* buf,int space = I_STR_SPACE);

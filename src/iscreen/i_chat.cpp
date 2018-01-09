@@ -7,6 +7,10 @@
 #include "controls.h"
 #include "i_chat.h"
 #include "i_str.h"
+#include "hfont.h"
+#include "iscreen.h"
+#include "../actint/item_api.h"
+#include "../actint/actint.h"
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -39,6 +43,8 @@ extern char* iSTR_Yellow;
 extern char* iSTR_Orange;
 extern char* iSTR_Blue;
 extern char* iSTR_Green;
+
+extern aciFont** aScrFonts32;
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
@@ -839,19 +845,23 @@ iChatButton* iGetChatPlayerButton(int id)
 void iChatInputChar(int code)
 {
 	char* ptr,*ptr0 = iChatInput -> string;
-	int x,sz;
+	int x, sz;
 
 	iChatInput -> XConv -> init();
 	*iChatInput -> XConv < CurPlayerName < iChatInput -> string;
 	ptr = iChatInput -> XConv -> address();
 
-	x = aTextWidth32(ptr,iChatInput -> font,1);
+	x = aTextWidth32(ptr, iChatInput -> font, 1);
 
 	sz = strlen(ptr0);
 	if(sz < ISC_MAX_STRING_LEN && x < iChatInput -> SizeX - 10){
-		ptr0[sz - 1] = code;
-		ptr0[sz] = '_';
-		ptr0[sz + 1] = 0;
+		aciFont* hfnt = aScrFonts32[iChatInput -> font];
+		code = SDL_GetKeyFromScancode((SDL_Scancode)code);
+		if(code && hfnt && code < hfnt->Size){
+			ptr0[sz - 1] = code;
+			ptr0[sz] = '_';
+			ptr0[sz + 1] = 0;
+		}
 	}
 }
 

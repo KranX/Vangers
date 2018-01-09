@@ -408,83 +408,6 @@ invItem $ITM78_NAME
 
 /* -------------------------------------------------------------------------- */
 
-ibs_obj $IBS1 { 	// Info window 600x600
-	offs_x		0	13
-	offs_y		0	1
-
-	offs_x		1	203
-	offs_y		1	-3
-
-	offs_x		2	14
-	offs_y		2	-1
-
-	offs_x		3	199
-	offs_y		3	5
-
-	font		7
-
-	file	"resource/actint/hd/screens/frame-1280x720"
-	bground $BG1
-}
-
-ibs_obj $IBS2 { 	// Inventory window 400x600
-	offs_x		0	13
-	offs_y		0	1
-
-	offs_x		1	393
-	offs_y		1	3
-
-	offs_x		2	14
-	offs_y		2	0
-
-    offs_x		3	390
-    offs_y		3	5
-
-	font		0
-
-	//file	"resource/actint/800x600/screens/s400v"
-	file	"resource/actint/hd/screens/frame-inventory-1280x720"
-	bground $BG3
-}
-
-ibs_obj $IBS3 { 	// Info window 400x600
-	offs_x		0	13
-	offs_y		0	8
-
-	offs_x		1	-4
-	offs_y		1	3
-
-	offs_x		2	14
-	offs_y		2	7
-
-	offs_x		3	-4
-	offs_y		3	5
-
-	font		0
-
-	file	"resource/actint/800x600/screens/s400f"
-	bground $BG2
-}
-
-bml_obj $BG1 {
-	file	"resource/actint/hd/screens/frame-1280x720.bmp"
-	size_x	1280
-	size_y	720
-}
-
-bml_obj $BG2 {
-	file	"resource/actint/800x600/screens/b400f.bmp"
-
-	size_x	640
-	size_y	480
-}
-
-bml_obj $BG3 {
-	//file	"resource/actint/800x600/screens/b400v.bmp"
-    file	"resource/actint/hd/screens/frame-inventory-1280x720.bmp"
-	size_x	1280
-	size_y	720
-}
 
 Button INT_BUTTON
 {
@@ -534,7 +457,7 @@ Button INV_BUTTON
 
 	x	334
 	y	4
-    anchor_right
+	anchor_right
 
 	event	$EV_SET_WPN_PICKUP	0
 
@@ -664,6 +587,81 @@ ind_data $IND_NRG {
 
 	prompt_text	$ENERGY_IND_TEXT
 }
+
+Screen {
+	// TODO: rename ibs
+	id $IBS1
+	font 7
+	offs_x		0	13
+	offs_y		0	1
+
+	offs_x		1	203
+	offs_y		1	-3
+
+	offs_x		2	14
+	offs_y		2	-1
+
+	offs_x		3	199
+	offs_y		3	5
+
+	Image {
+		file "resource/actint/hd/screens/info/top-left.png"
+	}
+
+	Image {
+		file "resource/actint/hd/screens/info/top-right.png"
+		anchor_right
+	}
+
+	Image {
+		file "resource/actint/hd/screens/info/bottom-right.png"
+		anchor_right
+		anchor_bottom
+	}
+
+	Image {
+		file "resource/actint/hd/screens/info/bottom-left.png"
+		anchor_bottom
+	}
+}
+
+Screen {
+	id $IBS2
+	font 0
+
+	offs_x		0	13
+	offs_y		0	1
+
+	offs_x		1	393
+	offs_y		1	3
+
+	offs_x		2	14
+	offs_y		2	0
+
+	offs_x		3	390
+	offs_y		3	5
+
+	Image {
+		file "resource/actint/hd/screens/inventory/top-left.png"
+	}
+
+	Image {
+		file "resource/actint/hd/screens/inventory/top-right.png"
+		anchor_right
+	}
+
+	Image {
+		file "resource/actint/hd/screens/inventory/bottom-right.png"
+		anchor_right
+		anchor_bottom
+	}
+
+	Image {
+		file "resource/actint/hd/screens/inventory/bottom-left.png"
+		anchor_bottom
+	}
+}
+
 
 info_panel {	// Inventory info panel...
 	x	60
@@ -1071,5 +1069,4 @@ bitmap_menu {
 		bml_name	"resource/actint/640x480/bitmap/cam_p.bml"
 	}
 }
-
 

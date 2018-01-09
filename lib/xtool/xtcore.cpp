@@ -89,8 +89,7 @@ extern bool XGR_FULL_SCREEN;
 
 
 #ifdef win_arg
-//int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
-int SDL_main(int argc, char *argv[])
+int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 #else
 int main(int argc, char *argv[])
 #endif
@@ -102,6 +101,7 @@ int main(int argc, char *argv[])
 		LoadLibraryA("backtrace.dll");
 		std::cout<<"Set priority class"<<std::endl;
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+		putenv("SDL_AUDIODRIVER=DirectSound");
 	#endif
 #ifdef win_arg
 	std::string cmd_line = szCmdLine;

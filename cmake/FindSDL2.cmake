@@ -108,6 +108,14 @@ IF(NOT SDL2_BUILDING_LIBRARY)
     # SDL2main. This is mainly for Windows and OS X. Other (Unix) platforms
     # seem to provide SDL2main for compatibility even though they don't
     # necessarily need it.
+	IF(MINGW)
+		SET(OLD_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+		SET(CMAKE_FIND_LIBRARY_SUFFIXES
+			".a"
+			".dll.a"
+			".a.lib"
+		)
+	ENDIF()
     FIND_LIBRARY(SDL2MAIN_LIBRARY
       NAMES SDL2main
       HINTS
@@ -118,8 +126,11 @@ IF(NOT SDL2_BUILDING_LIBRARY)
       /opt/local
       /opt/csw
       /opt
-	    C:/MinGW/
+	  C:/MinGW/
     )
+	IF(MINGW)
+		SET(CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_FIND_LIBRARY_SUFFIXES})
+	ENDIF()
   ENDIF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")
 ENDIF(NOT SDL2_BUILDING_LIBRARY)
 
