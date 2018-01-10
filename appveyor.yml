@@ -1,0 +1,50 @@
+version: 1.0.{build}
+# skip_non_tags: true
+install:
+  - mkdir c:\dist
+  - mkdir c:\prefix
+  - cd c:\dist\
+  - set PATH=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin;c:\msys64\bin;c:\msys64\usr\bin;c:\msys64\usr\local\bin;c:\msys64\mingw32\bin;%PATH%
+  - wget -q https://gist.github.com/lpenguin/6081341f66ef064878cf9d1556866544/raw/3a921f5cd712f35b0355eb886558cfeab93891cc/prefix.tar.gz
+  - tar xzf prefix.tar.gz
+  - mv vangers /c/prefix/vangers
+shallow_clone: true
+build_script:
+  - cd c:\projects\vangers
+  - mkdir build
+  - cd build
+  - cmake -G "MSYS Makefiles" -DBINARY_SCRIPT=OFF  -DCMAKE_INSTALL_PREFIX:PATH=c:/prefix/vangers  -DCMAKE_SHARED_LINKER_FLAGS=" -static-libgcc -static-libstdc++ -static" ..
+  - make
+  - mkdir dist
+  - mkdir dist\bin
+  - cp -r ../data/ dist/
+  - cp src/vangers.exe dist/bin
+  - cp /c/prefix/vangers/bin/zlib1.dll dist/bin
+  - cp /c/prefix/vangers/bin/avformat-57.dll dist/bin
+  - cp /c/prefix/vangers/bin/avcodec-57.dll dist/bin
+  - cp /c/prefix/vangers/bin/avutil-55.dll dist/bin
+  - cp /c/prefix/vangers/bin/swresample-2.dll dist/bin
+  - cp /c/prefix/vangers/bin/SDL2.dll dist/bin/
+  - cp /c/prefix/vangers/bin/SDL2_image.dll dist/bin/
+  - cp /c/prefix/vangers/bin/SDL2_net.dll dist/bin/
+  - cp /c/prefix/vangers/lib/libclunk.dll dist/bin/
+  - cp /c/prefix/vangers/bin/libvorbisfile-3.dll dist/bin/
+  - cp /c/prefix/vangers/bin/libvorbis-0.dll dist/bin/
+  - cp /c/prefix/vangers/bin/libogg-0.dll dist/bin/
+  - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libgcc_s_dw2-1.dll dist/bin
+  - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libstdc++-6.dll dist/bin
+  - cp /c/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/libwinpthread-1.dll dist/bin
+  - cp /c/prefix/vangers/bin/libpng16-16.dll dist/bin
+
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: BY0+700TBGsmXiP8YN2bGv3A0jeOyOVjilX0Lppi2i6mrRMf9ncS7kbNF9fkk+gp
+  # draft: true
+  prerelease: true
+  force_update: true
+  on:
+    appveyor_repo_tag: true  
+artifacts:
+  - path: build\dist
+    name: vangers
