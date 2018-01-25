@@ -58,6 +58,7 @@ extern int NetworkON;
 extern int zGameBirthTime;
 extern int CurrentWorld;
 
+
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
 void restore(void);
 int LayerWrite(int n,uchar* p);
@@ -227,8 +228,7 @@ void YSetup(void)
 	TOR_YSIZE = TOR_POWER*map_size_y;
 	V_POWER = MAP_POWER_Y;
 	V_SIZE = map_size_y;
-	if(V_POWER <= 11 && !RAM16)
-		MAX_LINE = V_SIZE + 2;
+	MAX_LINE = V_SIZE + 2;
 
 	QUANT = 1 << POWER;
 	part_map_size_y = 1 << WPART_POWER;
@@ -445,6 +445,7 @@ void vrtMap::allocHeap(void)
 
 void vrtMap::release(void)
 {
+//	printf("vrtMap::release()\n");
 #ifdef _ROAD_
 	if(ExclusiveLog && LockSuccess){
 		//WHAT is IT?
@@ -470,12 +471,12 @@ void vrtMap::release(void)
 
 void vrtMap::init(void)
 {
-	UI_OR_GAME=0;
-	//std::cout<<"vrtMap::init "<<"V_SIZE:"<<V_SIZE<<std::endl;
-	memset(lineT = new uchar*[V_SIZE],0,V_SIZE*sizeof(uchar*));
-	memset(lineTcolor = new uchar*[V_SIZE],0,V_SIZE*sizeof(uchar*));
-	memset(SkipLineTable = new uchar*[V_SIZE],0,V_SIZE*sizeof(uchar*));
-	memset(changedT = new uchar[V_SIZE],0,V_SIZE);
+	UI_OR_GAME = 0;
+	std::cout << "vrtMap::init " << "V_SIZE:" << V_SIZE << std::endl;
+	memset(lineT = new uchar *[V_SIZE], 0, V_SIZE * sizeof(uchar *));
+	memset(lineTcolor = new uchar *[V_SIZE], 0, V_SIZE * sizeof(uchar *));
+	memset(SkipLineTable = new uchar *[V_SIZE], 0, V_SIZE * sizeof(uchar *));
+	memset(changedT = new uchar[V_SIZE], 0, V_SIZE);
 
 	freeNodes = new vrtNode[MAX_LINE];
 	freeNodes_c = new vrtNode[MAX_LINE];
@@ -485,12 +486,16 @@ void vrtMap::init(void)
 	freeMax = freeMax_c = MAX_LINE;
 	freeTail = freeTail_c = 0;
 
-	vrtNode* p;
+	vrtNode *p;
 	int i;
-	for(i = 0,p = freeNodes;i < MAX_LINE - 1;i++,p++) p -> next = p + 1;
-	p -> next = freeNodes;
-	for(i = 0,p = freeNodes_c;i < MAX_LINE - 1;i++,p++) p -> next = p + 1;
-	p -> next = freeNodes_c;
+	for (i = 0, p = freeNodes; i < MAX_LINE - 1; i++, p++) {
+		p->next = p + 1;
+	}
+	p->next = freeNodes;
+	for (i = 0, p = freeNodes_c; i < MAX_LINE - 1; i++, p++) {
+		p->next = p + 1;
+	}
+	p->next = freeNodes_c;
 
 #ifdef SESSION
 	if(!DirectLog){
@@ -631,6 +636,7 @@ void vrtMap::closeMirror(void)
 
 void vrtMap::finit(void)
 {
+//	printf("vrtMap::finit\n");
 #ifdef SESSION
 	if(!DirectLog){
 		if(sssUpdateLog){
@@ -821,6 +827,7 @@ void vrtMap::fileLoad(void)
 //Удалил не используемый код - смотреть старые версии
 void vrtMap::load(const char* name,int nWorld)
 {
+//	printf("vrtMap::load(name: %s, nWorld: %d)\n", name, nWorld);
 	on = true;
 	pFile -> init(name);
 	maxWorld = atoi(pFile -> getAtom());
@@ -914,6 +921,7 @@ void vrtMap::load(const char* name,int nWorld)
 
 void vrtMap::reload(int nWorld)
 {
+//		printf("vrtMap::reload(nWorld: %d)\n", nWorld);
 	on  = true;
 	if(nWorld >= maxWorld || nWorld < 0) ErrH.Abort("World Index out of range");
 #ifdef _SURMAP_
@@ -1076,6 +1084,7 @@ void vrtMap::reload(int nWorld)
 
 void vrtMap::increase(int up,int down)
 {
+//	printf("vrtMap::increase\n");
 	if(MAP_POWER_Y <= 11 && !RAM16) return;
 
 	up = YCYCL(up);
@@ -1165,11 +1174,12 @@ void vrtMap::dump_terrain() {
 Удалил закомментированный код, смотреть в svn.*/
 void vrtMap::accept(int up,int down) 
 {
+//	printf("vrtMap::accept(up: %d, down: %d)\n", up, down);
 #ifdef _ROAD_
-	if(!(V_POWER <= 11 && !RAM16)){
-		up -= MAX_LINE/2 - 4;
-		down += MAX_LINE/2 - 4;
-		}
+//	if(!(V_POWER <= 11 && !RAM16)){
+//		up -= MAX_LINE/2 - 4;
+//		down += MAX_LINE/2 - 4;
+//		}
 #endif
 
 	up = YCYCL(up);
@@ -1254,6 +1264,7 @@ void vrtMap::lockMem(void)
 
 void vrtMap::another(int up,int down)
 {
+//	printf("vrtMap::another(up: %d, up: %d)\n", up, down);
 	up = YCYCL(up);
 	down = YCYCL(down);
 
@@ -1268,7 +1279,10 @@ void vrtMap::another(int up,int down)
 
 void vrtMap::change(int up,int down)
 {
-	int du,dd,req;
+//	printf("vrtMap::change(up: %d (%d), down: %d (%d), upLine: %d, downLine: %d)\n",
+//	       up, YCYCL(up), down, YCYCL(down), upLine, downLine
+//	);
+	int du, dd, req;
 	up = YCYCL(up);
 	down = YCYCL(down);
 
@@ -1281,29 +1295,30 @@ void vrtMap::change(int up,int down)
 		return;
 		}
 #endif
-	du = getDistY(upLine,up);
-	dd = getDistY(downLine,down);
-	req = MAX(du,-dd);
-	if(req > 0 && freeMax <= req + 1){
-		if(du < 0){
-			delink(upLine,upLine + req - 1);
-			upLine = YCYCL(upLine + req);
-			}
-		if(dd > 0){
-			delink(downLine - req + 1,downLine);
-			downLine = YCYCL(downLine - req);
-			}
+	du = getDistY(upLine, up);
+	dd = getDistY(downLine, down);
+		if (du < 0) {
+			delink(upLine, up - 1);
+			upLine = up;
 		}
-	if(du > 0){
-		if(isCompressed) linkC(up,upLine - 1,1);
-		else link(up,upLine - 1,1);
+		if (dd > 0) {
+			delink(down + 1, downLine);
+			downLine = down;
+		}
+//	}
+	if (du > 0) {
+		if (isCompressed) linkC(up, upLine - 1, 1);
+		else link(up, upLine - 1, 1);
 		upLine = up;
-		}
-	if(dd < 0){
-		if(isCompressed) linkC(downLine + 1,down,1);
-		else link(downLine + 1,down,1);
+	}
+	if (dd < 0) {
+		if (isCompressed) linkC(downLine + 1, down, 1);
+		else link(downLine + 1, down, 1);
 		downLine = down;
-		}
+	}
+//	printf("vrtMap::change: upLine <- %d, downLine <- %d\n",
+//	       upLine, downLine
+//	);
 }
 
 void vrtMap::updownSetup(void)
@@ -1444,6 +1459,11 @@ void vrtMap::link(int up,int down,int d)
 void vrtMap::linkC(int up,int down,int d)
 {
 //std::cout<<"vrtMap::linkC"<<std::endl;
+
+//	printf("vrtMap::linkC(up: %d, down: %d)\n", up, down);
+//	if(abs(getDistY(up, down)) > 3000){
+//		printf("warning, something wrong\n");
+//	}
 	if(MAP_POWER_Y <= 11 && !RAM16) return;
 	up = YCYCL(up);
 	down = YCYCL(down);
@@ -1520,6 +1540,7 @@ if (NetworkON && zMod_flood_level_delta!=0) {
 
 void vrtMap::delink(int up,int down)
 {
+//	printf("vrtMap::delink(up: %d, down: %d)\n", up, down);
 	static int keeped = 0;
 	if(MAP_POWER_Y <= 11 && !RAM16) return;
 	up = YCYCL(up);
@@ -1930,6 +1951,10 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 //Посути первичная и основная функция рендринга
 void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int yside)
 {
+//    printf("vrtMap::turning(cx: %d, cy: %d)\n",
+//           cx, cy
+//    );
+
 	char* vp = (char*)XGR_VIDEOBUF + (yc - yside)*XGR_MAXX + (xc - xside);
 	int xsize = 2*xside;
 	int ysize = 2*yside;
@@ -2124,6 +2149,10 @@ void calcLineTable(int curr_lenght,int k_vu,int base_step,int up_step)
 
 void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize)
 {
+//	printf("vrtMap::turning(cx: %d, cy: %d)\n",
+//		   cx, cy
+//	);
+
 #ifdef WITH_OPENGL
 	float d_size = ((float)XSrcSize)/((float)XDstSize*2);
 	float gip_size=sqrt(XDstSize*XDstSize+YDstSize*YDstSize);
@@ -2223,10 +2252,13 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 	int edge_y3 = (int)(cy + sina*XSrcSize - cosa*YSrcSize);
 	int edge_y4 = (int)(cy - sina*XSrcSize + cosa*YSrcSize);
 
-	request(MIN(MIN(MIN(edge_y1,edge_y2),edge_y3),edge_y4) - MAX_RADIUS/2,
-			MAX(MAX(MAX(edge_y1,edge_y2),edge_y3),edge_y4) + MAX_RADIUS/2, 0, 0);
+	int min_edge = MIN(MIN(MIN(edge_y1,edge_y2),edge_y3),edge_y4);
+	int max_edge = MAX(MAX(MAX(edge_y1,edge_y2),edge_y3),edge_y4);
+
+	request(min_edge - MAX_RADIUS/2, max_edge + MAX_RADIUS/2, 0, 0);
 
 	int x, y;
+
 	for (y = -YDstSize; y < YDstSize; y++) {
 		for (x = -XDstSize; x < XDstSize; x++) {
 			char *dst = (char*)XGR_VIDEOBUF + (yc + y)*XGR_MAXX + (xc + x);
@@ -2238,11 +2270,16 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 			int srcy = cy + (int)dy;
 
 			uchar *srcline = vMap->lineTcolor[(srcy) & clip_mask_y];
-			uchar *src = &srcline[(srcx) & clip_mask_x];
-
-			*dst = *src;
+			if (!srcline) {
+				*dst = 0;
+				// TODO: handle NULL lines
+			} else {
+					uchar *src = &srcline[(srcx) & clip_mask_x];
+					*dst = *src;
+			}
 		}
 	}
+
 #endif
 	// NOTE(stalkeg): rewrite function of AMDmi3 with fixed point
 	// and bit shift + normal scaling.

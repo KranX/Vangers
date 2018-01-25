@@ -965,8 +965,6 @@ _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 _MEM_STATISTIC_("AFTER curGMap  -> ");
 	loadingStatus = 0;
 
-	vMap -> quant();
-
 	uvsAddStationaryObjs();
 
 	uvsRestoreVanger();
