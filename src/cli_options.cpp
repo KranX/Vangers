@@ -43,7 +43,7 @@ void CommandLineOptions::printUsage() {
 	const char *usage =
 			"Usage:\n"
 					"-h, --help   Show this help message and exit\n"
-					"--screen-widht <screenWidth>\n"
+					"--screen-width <screenWidth>\n"
 					"--screen-height <screenHeight>\n"
 					"";
 	std::cout << usage;
