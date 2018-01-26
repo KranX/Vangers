@@ -9661,8 +9661,8 @@ void BitmapImage::redraw() {
 void BitmapImage::init() {
 	image = IMG_Load(imagePath.c_str());
 	if (!image) {
-		printf("IMG_Load: %s\n", IMG_GetError());
-		exit(1);
+		const char* err = IMG_GetError();
+		ErrH.Abort("IMG_Load: ", XERR_USER, 0, err);
 	}
 	SizeX = image->w;
 	SizeY = image->h;
