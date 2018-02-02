@@ -2993,13 +2993,13 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 	v0.x = XCYCL(v0.x);
 	v1.x = XCYCL(v1.x);
 
-	if(AdvancedView){
+//	if(AdvancedView){
 		G2LQ(v0.x,v0.y,v0.z,x0,y0);
 		G2LQ(v1.x,v1.y,v1.z,x1,y1);
-	}else{
-		G2LP(v0.x,v0.y,v0.z,x0,y0);
-		G2LP(v1.x,v1.y,v1.z,x1,y1);
-	};
+//	}else{
+//		G2LP(v0.x,v0.y,v0.z,x0,y0);
+//		G2LP(v1.x,v1.y,v1.z,x1,y1);
+//	};
 
 	dx = x1 - x0;
 	dy = y1 - y0;
