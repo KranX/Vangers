@@ -6407,6 +6407,7 @@ VangerUnit* addVanger(uvsVanger* p,uvsEscave* origin,int Human)
 				ViewX = s->R_curr.x;
 				preViewY = ViewY = s->R_curr.y;
 				vMap->reload(CurrentWorld);
+				vMap->request(ViewY - XGR_MAXY/2, ViewY + XGR_MAXY/2, 0, 0);
 				GeneralMapReload = 0;
 #ifndef NEW_TNT
 				RestoreFlagBarell();
