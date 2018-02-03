@@ -3193,6 +3193,8 @@ double A_vibration;
 double alpha_vibration;
 double oscillar_vibration;
 
+int lastViewX = -1, lastViewY = -1, lastViewZ = -1;
+
 void start_vibration()
 {
 	time_vibration = 1;
@@ -3217,16 +3219,26 @@ void camera_reset() {
 	camera_rotate_enable = iGetOptionValue(iCAMERA_TURN);
 }
 
-void camera_quant(int X,int Y,int Turn,double V_abs) {
-	if(stop_camera)
+void camera_quant(int X, int Y, int Turn, double V_abs) {
+	if (stop_camera)
 		return;
 
-	int t,dx,dy;
+//	printf("camera_moving_xy_enable: %d, \ncamera_moving_z_enable: %d, \ncamera_slope_enable: %d, \ncamera_rotate_enable: %d\n",
+//	       camera_moving_xy_enable, camera_moving_z_enable, camera_slope_enable, camera_rotate_enable
+//	);
 
-	if(!camera_moving_xy_enable) {
-		dx = getDistX(X,camera_X_prev);
-		dy = getDistY(Y,camera_Y_prev);
-		if(dx < 400 && dy < 400) {
+	if(lastViewX != -1){
+		ViewX = lastViewX;
+		ViewY = lastViewY;
+		ViewZ = lastViewZ;
+	}
+	int t, dx, dy;
+
+
+	if (!camera_moving_xy_enable) {
+		dx = getDistX(X, camera_X_prev);
+		dy = getDistY(Y, camera_Y_prev);
+		if (dx < 400 && dy < 400) {
 			ViewX += dx;
 			ViewY += dy;
 		} else {
@@ -3234,31 +3246,31 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 			ViewY = Y;
 		}
 	}
-	dx = getDistX(X,ViewX);
-	dy = getDistY(Y,ViewY);
-	if(dx > 400 || dy > 400){
+	dx = getDistX(X, ViewX);
+	dy = getDistY(Y, ViewY);
+	if (dx > 400 || dy > 400) {
 		ViewX = X;
 		ViewY = Y;
 	} else {
-		camera_vx += (double)dx*camera_mi * XTCORE_FRAME_NORMAL;
+		camera_vx += (double) dx * camera_mi * XTCORE_FRAME_NORMAL;
 		camera_vx *= camera_drag;
 		camera_x += camera_vx * XTCORE_FRAME_NORMAL;
 		ViewX += (t = round(camera_x));
 		camera_x -= t;
 
-		camera_vy += (double)dy*camera_mi * XTCORE_FRAME_NORMAL;
+		camera_vy += (double) dy * camera_mi * XTCORE_FRAME_NORMAL;
 		camera_vy *= camera_drag;
 		camera_y += camera_vy * XTCORE_FRAME_NORMAL;
 		ViewY += (t = round(camera_y));
 		camera_y -= t;
 	}
-	if(time_vibration) {
+	if (time_vibration) {
 		static int phase_vibration;
-		double k = A_vibration*exp(-alpha_vibration*time_vibration);
-		double t = oscillar_vibration*(time_vibration + phase_vibration);
-		ViewX += round(k*sin(1.276*t)+.8*sin(2.878*t)+0.3*sin(23.876*t)) * XTCORE_FRAME_NORMAL;
-		ViewY += round(k*sin(0.981*t)+.8*sin(2.98*t)+0.3*sin(20.82*t)) * XTCORE_FRAME_NORMAL;
-		if(time_vibration++ > max_time_vibration) {
+		double k = A_vibration * exp(-alpha_vibration * time_vibration);
+		double t = oscillar_vibration * (time_vibration + phase_vibration);
+		ViewX += round(k * sin(1.276 * t) + .8 * sin(2.878 * t) + 0.3 * sin(23.876 * t)) * XTCORE_FRAME_NORMAL;
+		ViewY += round(k * sin(0.981 * t) + .8 * sin(2.98 * t) + 0.3 * sin(20.82 * t)) * XTCORE_FRAME_NORMAL;
+		if (time_vibration++ > max_time_vibration) {
 			time_vibration = 0;
 			phase_vibration = realRND(1367339);
 		}
@@ -3268,50 +3280,73 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	camera_Y_prev = Y;
 
 	int TurnSecX_old = TurnSecX;
-	int z = camera_moving_z_enable ? (V_abs < camera_vmax ? camera_zmin + ((curGMap -> xsize*MAX_ZOOM >> 8) - camera_zmin)*V_abs/camera_vmax : camera_zmax)
-					: camera_zmin;
-	camera_vz += (double)(z - TurnSecX)*camera_miz * XTCORE_FRAME_NORMAL;
+	int z = camera_moving_z_enable ? (V_abs < camera_vmax ? camera_zmin +
+	                                                        ((curGMap->xsize * MAX_ZOOM >> 8) - camera_zmin) * V_abs /
+	                                                        camera_vmax : camera_zmax)
+	                               : camera_zmin;
+	camera_vz += (double) (z - TurnSecX) * camera_miz * XTCORE_FRAME_NORMAL;
 	//camera_vz -= camera_vz*camera_dragz;
-	camera_vz *= camera_dragz*pow(0.97,camera_vz_min/(fabs(camera_vz) + 1e-10));
+	camera_vz *= camera_dragz * pow(0.97, camera_vz_min / (fabs(camera_vz) + 1e-10));
 	camera_z += camera_vz * XTCORE_FRAME_NORMAL;
 	TurnSecX += (t = round(camera_z));
 	camera_z -= t;
-	if(TurnSecX > (t = curGMap -> xsize*(RAM16 ? MAX_ZOOM_16 : MAX_ZOOM) >> 8))
+	if (TurnSecX > (t = curGMap->xsize * (RAM16 ? MAX_ZOOM_16 : MAX_ZOOM) >> 8))
 		TurnSecX = t;
-	if(TurnSecX < (t = curGMap -> xsize*MIN_ZOOM >> 8))
+	if (TurnSecX < (t = curGMap->xsize * MIN_ZOOM >> 8))
 		TurnSecX = t;
-	if(RAM16 && (SlopeAngle || TurnAngle) && TurnSecX > curGMap -> xsize)
+	if (RAM16 && (SlopeAngle || TurnAngle) && TurnSecX > curGMap->xsize)
 		TurnSecX = TurnSecX_old;
-	if(abs(TurnSecX - curGMap -> xsize) < 4)
-		TurnSecX = curGMap -> xsize;
+	if (abs(TurnSecX - curGMap->xsize) < 4)
+		TurnSecX = curGMap->xsize;
 
-	int s = camera_slope_enable ? (V_abs < camera_vmax ? camera_slope_min + (-SLOPE_MAX - camera_slope_min)*V_abs/camera_vmax : -SLOPE_MAX)
-					: camera_slope_min;
-	camera_vs += (double)(s - SlopeAngle)*camera_mis * XTCORE_FRAME_NORMAL;
-	camera_vs *= camera_drags*pow(0.97,camera_vs_min/(fabs(camera_vs) + 1e-10));
+	int s = camera_slope_enable ? (V_abs < camera_vmax ? camera_slope_min +
+	                                                     (-SLOPE_MAX - camera_slope_min) * V_abs / camera_vmax :
+	                               -SLOPE_MAX)
+	                            : camera_slope_min;
+	camera_vs += (double) (s - SlopeAngle) * camera_mis * XTCORE_FRAME_NORMAL;
+	camera_vs *= camera_drags * pow(0.97, camera_vs_min / (fabs(camera_vs) + 1e-10));
 	camera_s += camera_vs * XTCORE_FRAME_NORMAL;
 	SlopeAngle += (t = round(camera_s));
-	if(SlopeAngle < -SLOPE_MAX)
+	if (SlopeAngle < -SLOPE_MAX)
 		SlopeAngle = -SLOPE_MAX;
 	camera_s -= t;
-	if(RAM16 && (TurnSecX > curGMap -> xsize || TurnAngle) && SlopeAngle)
-		SlopeAngle  = 0;
-	if(abs(DistPi(SlopeAngle,0)) < 8)
+	if (RAM16 && (TurnSecX > curGMap->xsize || TurnAngle) && SlopeAngle)
+		SlopeAngle = 0;
+	if (abs(DistPi(SlopeAngle, 0)) < 8)
 		SlopeAngle = 0;
 
-	
-	camera_vt += (double)DistPi(camera_rotate_enable ? Turn : 0,TurnAngle)*camera_mit * XTCORE_FRAME_NORMAL;
-	camera_vt *= camera_dragt*pow(0.97,camera_vt_min/(fabs(camera_vt) + 1e-10));
-	camera_vi *= camera_dragi*pow(0.97,camera_vt_min/(fabs(camera_vi) + 1e-10));
-	camera_t += camera_vt*XTCORE_FRAME_NORMAL + camera_vi;
+
+	camera_vt += (double) DistPi(camera_rotate_enable ? Turn : 0, TurnAngle) * camera_mit * XTCORE_FRAME_NORMAL;
+	camera_vt *= camera_dragt * pow(0.97, camera_vt_min / (fabs(camera_vt) + 1e-10));
+	camera_vi *= camera_dragi * pow(0.97, camera_vt_min / (fabs(camera_vi) + 1e-10));
+	camera_t += camera_vt * XTCORE_FRAME_NORMAL + camera_vi;
 	TurnAngle += (t = round(camera_t));
 	camera_t -= t;
-	if(RAM16 && (TurnSecX > curGMap -> xsize || SlopeAngle) && TurnAngle)
-		TurnAngle  = 0;
-	if(abs(DistPi(TurnAngle,0)) < 8)
+	if (RAM16 && (TurnSecX > curGMap->xsize || SlopeAngle) && TurnAngle)
+		TurnAngle = 0;
+	if (abs(DistPi(TurnAngle, 0)) < 8)
 		TurnAngle = 0;
 
 	calc_view_factors();
+
+	lastViewX = ViewX;
+	lastViewY = ViewY;
+	lastViewZ = ViewZ;
+
+	double turnf = 1.5 * M_PI - GTOR(TurnAngle);
+	double cdx, cdy;
+	if (camera_rotate_enable) {
+		cdx = -mechosCameraOffsetX * cos(M_PI / 2 - turnf);
+		cdy = mechosCameraOffsetX * sin(M_PI / 2 - turnf);
+	} else {
+		cdx = mechosCameraOffsetX;
+		cdy = 0;
+	}
+
+//	printf("cdx: %f, cdy: %f\n", cdx, cdy);
+
+	ViewX += cdx;
+	ViewY += cdy;
 }
 
 void camera_impulse(int amplitude_8)
@@ -3376,8 +3411,7 @@ void ActionDispatcher::CameraQuant(void)
 		int Turn = Active -> psi;
 		//if(Active -> traction < 0)
 		//	Turn = rPI(Turn + PI);
-//        std::cout<<mechosCameraOffsetX<<std::endl;
-        camera_quant(Active -> R_curr.x + mechosCameraOffsetX ,Active -> R_curr.y,Turn,Active -> V.vabs());
+		camera_quant(Active->R_curr.x, Active->R_curr.y, Turn, Active->V.vabs());
 //		fout < "camera_quant(x,y,t,v): " <= ViewX < "\t" <= ViewY < "\n";
 		}
 }
@@ -3554,7 +3588,7 @@ void VangerUnit::DrawQuant(void)
 	int i;
 
 	if(!ExternalDraw || (Status & SOBJ_WAIT_CONFIRMATION)) return;
-	TrackUnit::DrawQuant();	
+	TrackUnit::DrawQuant();
 	Vector vCheck;
 
 	if(ExternalMode == EXTERNAL_MODE_NORMAL){
@@ -6373,6 +6407,7 @@ VangerUnit* addVanger(uvsVanger* p,uvsEscave* origin,int Human)
 				ViewX = s->R_curr.x;
 				preViewY = ViewY = s->R_curr.y;
 				vMap->reload(CurrentWorld);
+				vMap->request(ViewY - XGR_MAXY/2, ViewY + XGR_MAXY/2, 0, 0);
 				GeneralMapReload = 0;
 #ifndef NEW_TNT
 				RestoreFlagBarell();
@@ -8126,12 +8161,28 @@ void ActionDispatcher::DrawResource(void)
 	sx = x0 - x1;
 
 	if(DrawResourceValue > 0){
-		XGR_Rectangle(x0 - sx * DrawResourceValue / DrawResourceMaxValue,y0,sx * DrawResourceValue / DrawResourceMaxValue,RES_DRAW_STEP_Y,228,228,XGR_FILLED);
+		XGR_Rectangle(
+				x0 - sx * DrawResourceValue / DrawResourceMaxValue,  // x
+				y0, // y
+				sx * DrawResourceValue / DrawResourceMaxValue,  // sx
+				RES_DRAW_STEP_Y,  // sy
+				228,
+				228,
+				XGR_FILLED
+		);
 		DrawResourceValue = -DrawResourceValue;
 		DrawResourceTime = 130;
 	}else{
 		if(DrawResourceTime > 0){
-			XGR_Rectangle(x0 + sx * DrawResourceValue / DrawResourceMaxValue,y0,-sx * DrawResourceValue / DrawResourceMaxValue,RES_DRAW_STEP_Y,228,228,XGR_FILLED);
+			XGR_Rectangle(
+					x0 + sx * DrawResourceValue / DrawResourceMaxValue,
+					y0,
+					-sx * DrawResourceValue / DrawResourceMaxValue,
+					RES_DRAW_STEP_Y,
+					228,
+					228,
+					XGR_FILLED
+			);
 			DrawResourceTime -= 128 / 20;
 		};
 	};
