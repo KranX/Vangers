@@ -4,6 +4,8 @@
 #ifndef _VTEST_
 #include "../3d/3d_math.h"
 #include "vmap.h"
+#include "../util/TimerStorage.h"
+
 #else
 const uint H_POWER = MAP_POWER_X;
 extern uint V_POWER;
@@ -16,6 +18,7 @@ extern uint V_SIZE;
 int* sTables;
 
 extern uchar** SkipLineTable;
+extern util::TimerStorage _debugTimerStorage;
 #ifdef _VTEST_
 extern uchar** lineTcolor;
 #endif
@@ -118,6 +121,7 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 #ifndef TURN_TEST
 #ifndef _VTEST_
 	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
+	_debugTimerStorage.event_start("render");
 	uchar** lt = vMap -> lineTcolor;
 #else
 	uchar** lt = lineTcolor;
@@ -220,6 +224,7 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 				i++;
 			}
 		}
+	_debugTimerStorage.event_end("render");
 	return 1;
 }
 

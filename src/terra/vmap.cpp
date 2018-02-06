@@ -18,6 +18,8 @@
 #include "../palette.h"
 
 #include "../zmod_common.h"
+#include "../util/ring_buffer.h"
+#include "../util/TimerStorage.h"
 
 #include <iostream>
 
@@ -58,7 +60,7 @@ extern int NetworkON;
 extern int zGameBirthTime;
 extern int CurrentWorld;
 
-
+extern util::TimerStorage _debugTimerStorage;
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
 void restore(void);
 int LayerWrite(int n,uchar* p);
@@ -1337,7 +1339,9 @@ void vrtMap::request(int up,int down,int left, int right)
 #ifdef _SURMAP_
 	if(MAP_POWER_Y > 10)
 #endif
-		change(up,down);
+	_debugTimerStorage.event_start("request");
+	change(up,down);
+	_debugTimerStorage.event_end("request");
 }
 
 void vrtMap::quant(void)
@@ -1976,7 +1980,7 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 	int y1 = y0 + YSrcSize;
 
 	request(MIN(y0,y1) - MAX_RADIUS/2,MAX(y0,y1) + MAX_RADIUS/2,MIN(x0,x1) - 4,MAX(x0,x1) + 4);
-
+	_debugTimerStorage.event_start("render");
 #if defined(_ROAD_) && defined(_DEBUG)
 	if(!TotalDrawFlag) return;
 #endif
@@ -2108,6 +2112,7 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 				vp += XADD;
 			}
 #endif
+	_debugTimerStorage.event_end("render");
 }
 #endif
 
@@ -2303,7 +2308,7 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 
 	request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,
 			MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
-	
+	_debugTimerStorage.event_start("render");
 	int x, y, srcx, srcy;
 	
 	char *dst;
@@ -2342,6 +2347,7 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 			}
 		}
 	}
+	_debugTimerStorage.event_end("render");
 #endif	
 #if defined OLD_TURNING
 	char* vp = (char*)XGR_VIDEOBUF + (yc - YDstSize)*XGR_MAXX + (xc - XDstSize);
@@ -2657,7 +2663,7 @@ void vrtMap::scaling_3D(DBM& A,int H,int focus,int cx,int cy,int xc,int yc,int x
 	int y3 = ((int)round((-bi - bj)/(Oc - ci - cj)) + cy) >> 16;
 
 	request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
-
+	_debugTimerStorage.event_start("render");
 	double al = -ai - aj;
 	double bl = -bi - bj;
 	double cl = Oc - ci - cj;
@@ -2726,6 +2732,7 @@ void vrtMap::scaling_3D(DBM& A,int H,int focus,int cx,int cy,int xc,int yc,int x
 
 			vp += XADD;
 			}
+	_debugTimerStorage.event_end("render");
 }
 #endif
 

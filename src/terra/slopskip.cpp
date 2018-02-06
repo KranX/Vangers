@@ -3,6 +3,8 @@
 #ifndef _VTEST_
 #include "../3d/3d_math.h"
 #include "vmap.h"
+#include "../util/TimerStorage.h"
+
 #else
 const uint H_POWER = MAP_POWER_X;
 extern uint V_POWER;
@@ -25,7 +27,7 @@ extern uint V_SIZE;
 
 void (*slope_line)(int,void*,void*,int,int,int,int);
 void (*slope_line2)(int,void*,void*,int,int,int,int);
-
+extern util::TimerStorage _debugTimerStorage;
 uchar** SetSkipLineTable(uchar** lt,int ky,int Ymin,int Ymax);
 int ParaMapSkipFactor0 = 100;
 int ParaMapSkipFactor = 100;
@@ -90,6 +92,7 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 
 #ifndef _VTEST_
 	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
+	_debugTimerStorage.event_start("render");
 	uchar** lt = vMap -> lineTcolor;
 #else
 	uchar** lt = lineTcolor;
@@ -164,4 +167,5 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 		DrawPrev = (i_float >> 16) > tmp_i + 1;
 		i++;
 		}
+	_debugTimerStorage.event_end("render");
 }
