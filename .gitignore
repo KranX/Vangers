@@ -4,6 +4,7 @@ data/*
 !data/actint
 !data/resource/iscreen/oftr2.scb
 !data/resource
+!data/vangers.bat
 
 # CMake files
 CMakeFiles/
