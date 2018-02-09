@@ -592,15 +592,20 @@ Screen {
 	// TODO: rename ibs
 	id $IBS1
 	font 7
-	offs_x		0	13
-	offs_y		0	1
 
-	offs_x		1	203
-	offs_y		1	-3
+	// IND_UP_LEFT
+	offs_x		0	17
+	offs_y		0	8
 
-	offs_x		2	14
-	offs_y		2	-1
+	// IND_UP_RIGHT
+	offs_x		1	200
+	offs_y		1	5
 
+	// IND_DN_LEFT
+	offs_x		2	17
+	offs_y		2	5
+
+	// IND_DN_RIGHT
 	offs_x		3	199
 	offs_y		3	5
 
@@ -629,16 +634,20 @@ Screen {
 	id $IBS2
 	font 0
 
-	offs_x		0	13
-	offs_y		0	1
+	// IND_UP_LEFT
+	offs_x		0	17
+	offs_y		0	8
 
-	offs_x		1	393
+	// IND_UP_RIGHT
+	offs_x		1	398
 	offs_y		1	3
 
-	offs_x		2	14
-	offs_y		2	0
+	// IND_DN_LEFT
+	offs_x		2	17
+	offs_y		2	5
 
-	offs_x		3	390
+	// IND_DN_RIGHT
+	offs_x		3	398
 	offs_y		3	5
 
 	Image {
