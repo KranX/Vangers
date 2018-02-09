@@ -3223,7 +3223,9 @@ void camera_quant(int X, int Y, int Turn, double V_abs) {
 	if (stop_camera)
 		return;
 
-//	printf("camera_moving_xy_enable: %d, \ncamera_moving_z_enable: %d, \ncamera_slope_enable: %d, \ncamera_rotate_enable: %d\n",
+//	printf("camera_quant(X: %d, Y: %d, Turn: %d, V_abs: %f\n", X, Y, Turn, V_abs);
+//
+//	printf("camera_quant() camera_moving_xy_enable: %d, camera_moving_z_enable: %d, camera_slope_enable: %d, camera_rotate_enable: %d\n",
 //	       camera_moving_xy_enable, camera_moving_z_enable, camera_slope_enable, camera_rotate_enable
 //	);
 
@@ -3280,10 +3282,16 @@ void camera_quant(int X, int Y, int Turn, double V_abs) {
 	camera_Y_prev = Y;
 
 	int TurnSecX_old = TurnSecX;
-	int z = camera_moving_z_enable ? (V_abs < camera_vmax ? camera_zmin +
-	                                                        ((curGMap->xsize * MAX_ZOOM >> 8) - camera_zmin) * V_abs /
-	                                                        camera_vmax : camera_zmax)
-	                               : camera_zmin;
+	int z;
+	if (camera_moving_z_enable) {
+		auto v = V_abs < camera_vmax ? V_abs : camera_vmax;
+		auto z_max = curGMap->xsize * 1.35; // camera_z_max / curGMap->xsize or 800 / 592 in old version
+
+		z = static_cast<int>(camera_zmin + (z_max - camera_zmin) * v / camera_vmax);
+	} else {
+		z = camera_zmin;
+	}
+
 	camera_vz += (double) (z - TurnSecX) * camera_miz * XTCORE_FRAME_NORMAL;
 	//camera_vz -= camera_vz*camera_dragz;
 	camera_vz *= camera_dragz * pow(0.97, camera_vz_min / (fabs(camera_vz) + 1e-10));
@@ -3335,11 +3343,12 @@ void camera_quant(int X, int Y, int Turn, double V_abs) {
 
 	double turnf = 1.5 * M_PI - GTOR(TurnAngle);
 	double cdx, cdy;
+	auto offset = (TurnSecX / (double)curGMap->xsize) * mechosCameraOffsetX;
 	if (camera_rotate_enable) {
-		cdx = -mechosCameraOffsetX * cos(M_PI / 2 - turnf);
-		cdy = mechosCameraOffsetX * sin(M_PI / 2 - turnf);
+		cdx = -offset * cos(M_PI / 2 - turnf);
+		cdy = offset * sin(M_PI / 2 - turnf);
 	} else {
-		cdx = mechosCameraOffsetX;
+		cdx = offset;
 		cdy = 0;
 	}
 
