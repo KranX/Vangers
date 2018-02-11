@@ -1909,12 +1909,12 @@ void iGameMap::draw(int self)
 		}
 
 		if(DepthShow) {
-			if(SkipShow) {
-				//Наклон изображения
-				vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
-			} else {
+//			if(SkipShow) {
+//				//Наклон изображения
+//				vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
+//			} else {
 				vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
-			}
+//			}
 		} else {
 			if(TurnAngle) {
 				//Вращение
