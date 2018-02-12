@@ -1791,6 +1791,38 @@ void iGameMap::reset(void)
 		GeneralLoadReleaseFlag = 1;
 	}
 	camera_reset();
+	vMap->accept(0, V_SIZE - 1);
+
+	renderer = std::unique_ptr<VMapRenderer>(new VMapRenderer(H_SIZE, V_SIZE, "shaders/heightmap"));
+	auto colorData = new uint8_t[H_SIZE * V_SIZE];
+	auto heightData = new uint8_t[H_SIZE * V_SIZE];
+	auto metaData = new uint8_t[H_SIZE * V_SIZE];
+
+	for (int i = 0; i < V_SIZE; i++) {
+		memcpy(colorData + H_SIZE * i, vMap->lineTcolor[i], sizeof(uint8_t) * H_SIZE);
+		memcpy(heightData + H_SIZE * i, vMap->lineT[i], sizeof(uint8_t) * H_SIZE);
+		memcpy(metaData + H_SIZE * i, vMap->lineT[i] + H_SIZE, sizeof(uint8_t) * H_SIZE);
+	}
+
+	auto paletteData = new uint32_t[256];
+	memset(paletteData, 0, sizeof(uint32_t) * 256);
+
+	auto heightMapTexture = Texture::createTexture(H_SIZE, V_SIZE, TextureFormat::Format8Bit, heightData);
+	auto colorTexture = Texture::createTexture(H_SIZE, V_SIZE, TextureFormat::Format8Bit, colorData);
+	auto metaTexture = Texture::createTexture(H_SIZE, V_SIZE, TextureFormat::Format8Bit, metaData);
+
+	auto paletteTexture = Texture::createPalette(256);
+	paletteTexture->bindData(paletteData);
+
+	delete colorData;
+	delete heightData;
+	delete paletteData;
+	delete metaData;
+
+	renderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
+
+//	vMap->accept(0, V_SIZE - 1);
+//	renderer->init(vMap->lineT, vMap->lineTcolor);
 }
 
 void calc_view_factors()
@@ -1884,6 +1916,7 @@ void iGameMap::flush()
 void iGameMap::draw(int self)
 {
 	_debugTimerStorage.event_start("draw");
+	XGR_Obj.fill(255);
 	static XBuffer status;
 	static int blink,clcnt;
 	
@@ -1909,23 +1942,36 @@ void iGameMap::draw(int self)
 			
 		}
 
-		if(DepthShow) {
-			if(SkipShow) {
-				//Наклон изображения
-				vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
-			} else {
-				vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
-			}
-		} else {
-			if(TurnAngle) {
-				//Вращение
-				vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
-			} else {
-				vMap -> scaling(TurnSecX,ViewX,ViewY,xc,yc,xside,yside);
-			}
-		}
-		
-		
+//		if(DepthShow) {
+//			if(SkipShow) {
+//				//Наклон изображения
+//				vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
+//			} else {
+//				vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
+//			}
+//		} else {
+//			if(TurnAngle) {
+//				//Вращение
+//				vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
+//			} else {
+//				vMap -> scaling(TurnSecX,ViewX,ViewY,xc,yc,xside,yside);
+//			}
+//		}
+//        vMap->request(0, V_SIZE - 1, 0, 0);
+//		vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
+//		vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
+		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
+		double height = XGR_MAXY;
+		double hz = height * 0.5 / tan(glm::radians(45.0) * 0.5);
+
+		float z = static_cast<float>(hz);
+		float turn = -GTOR(TurnAngle);
+		float slope = GTOR(SlopeAngle);
+
+		renderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
+		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
+		renderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, z, turn, slope);
+
 		//Отрисовка 3д моделей
 		if(curGMap) {
 			GameD.DrawQuant();

@@ -108,8 +108,8 @@ XGR_Screen::XGR_Screen(void)
 	XGR_ScreenSurface = NULL;
 	XGR32_ScreenSurface = NULL;
 	sdlWindow = NULL;
-	sdlRenderer = NULL;
-	sdlTexture = NULL;
+//	sdlRenderer = NULL;
+//	sdlTexture = NULL;
 }
 
 #ifdef WITH_OPENGL
@@ -168,32 +168,53 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	flags = flags_in;
 	std::cout<<"XGR_Screen::init"<<std::endl;
 	// Init SDL video
-	if (XGR_ScreenSurface==NULL) {
+	if (XGR_ScreenSurface == nullptr) {
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
 			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 		}
-		SDL_AddTimer(100, CursorAnim, NULL);
+		SDL_AddTimer(100, CursorAnim, nullptr);
 	} else {
-		SDL_DestroyTexture(sdlTexture);
+//		SDL_DestroyTexture(sdlTexture);
 
-		SDL_DestroyRenderer(sdlRenderer);
+//		SDL_DestroyRenderer(sdlRenderer);
 		SDL_DestroyWindow(sdlWindow);
 	}
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+//	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+//	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+//	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	std::cout<<"SDL_CreateWindowAndRenderer"<<std::endl;
 	if (XGR_FULL_SCREEN) {
-		if (SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP, &sdlWindow, &sdlRenderer) < 0) {
-			std::cout<<"ERROR1"<<std::endl;
-			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
-		}
+//		if (SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL, &sdlWindow, &sdlRenderer) < 0) {
+//			std::cout<<"ERROR1"<<std::endl;
+//			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
+//		}
 	} else {
-		if (SDL_CreateWindowAndRenderer(x, y, 0, &sdlWindow, &sdlRenderer) < 0) {
-			std::cout<<"ERROR2"<<std::endl;
-			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
-		}
+		sdlWindow = SDL_CreateWindow("Vangers", 0, 0, x, y, SDL_WINDOW_OPENGL);
+//		sdlRenderer = SDL_CreateRenderer(sdlWindow, 0, 0);
+//		if (SDL_CreateWindowAndRenderer(x, y, SDL_WINDOW_OPENGL, &sdlWindow, &sdlRenderer) < 0) {
+//			std::cout<<"ERROR2"<<std::endl;
+//			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
+//		}
 	}
+
+	glContext = SDL_GL_CreateContext(sdlWindow);
+	assert(glContext != nullptr);
+
+	glewExperimental = GL_TRUE;
+	GLenum glewError = glewInit();
+	if (glewError != GLEW_OK) {
+		fprintf(stderr, "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
+		exit(1);
+	}
+	glGetError();
+	printf("OpenGL version supported by this platform: %s\n", glGetString(GL_VERSION));
 	std::cout<<"SDL_SetWindowTitle"<<std::endl;
 	SDL_SetWindowTitle(sdlWindow, "Vangers");
-	
+
 	std::cout<<"Load and set icon"<<std::endl;
 #ifdef __APPLE__
 	IconSurface = SDL_LoadBMP("vangers_mac.bmp");
@@ -201,47 +222,73 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	IconSurface = SDL_LoadBMP("vangers.bmp");
 #endif
 	if (IconSurface) {
-		SDL_SetWindowIcon(sdlWindow, IconSurface); 
+		SDL_SetWindowIcon(sdlWindow, IconSurface);
 		SDL_FreeSurface(IconSurface);
 	} else {
 		std::cout<<"Can't load icon vangers.bmp"<<std::endl;
 	}
-	std::cout<<"SDL_SetRenderDrawColor"<<std::endl;
-	SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
-	std::cout<<"SDL_RenderClear"<<std::endl;
-	SDL_RenderClear(sdlRenderer);
-	std::cout<<"SDL_RenderPresent"<<std::endl;
-	SDL_RenderPresent(sdlRenderer);
-	
+//	std::cout<<"SDL_SetRenderDrawColor"<<std::endl;
+//	SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
+//	std::cout<<"SDL_RenderClear"<<std::endl;
+//	SDL_RenderClear(sdlRenderer);
+//	std::cout<<"SDL_RenderPresent"<<std::endl;
+//	SDL_RenderPresent(sdlRenderer);
+
 	std::cout<<"SDL_SetHint"<<std::endl;
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");  // "linear" make the scaled rendering look smoother.
-	
+
 	XGR_Palette = SDL_AllocPalette(256);
-	
+
 	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
-	
+
 	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
-	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 32, 0, 0, 0, 0);
-	
+
+	int bpp;
+	Uint32 Rmask, Gmask, Bmask, Amask;
+	SDL_PixelFormatEnumToMasks(
+			SDL_PIXELFORMAT_RGBA8888,
+			&bpp,
+			&Rmask,
+			&Gmask,
+			&Bmask,
+			&Amask
+	);
+
+
+	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, bpp, Rmask, Gmask, Bmask, Amask);
+//	XGR32_ScreenSurface = SDL_CreateRGBSurfaceWithFormat(0, x, y, 32, SDL_PIXELFORMAT_ARGB8888);
+
 	std::cout<<"SDL_SetSurfacePalette"<<std::endl;
 	SDL_SetSurfacePalette(XGR_ScreenSurface, XGR_Palette);
-	
-	
-	std::cout<<"SDL_CreateTexture sdlTexture"<<std::endl;
-	sdlTexture = SDL_CreateTexture(sdlRenderer,
-		SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
-		SDL_TEXTUREACCESS_STREAMING,
-		x, y);
-	
+
+
+//	std::cout<<"SDL_CreateTexture sdlTexture"<<std::endl;
+//	sdlTexture = SDL_CreateTexture(sdlRenderer,
+//								   SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
+//	                               SDL_TEXTUREACCESS_STREAMING,
+//	                               x, y);
+
+	texture = Texture::createTexture(
+			x,
+			y,
+			TextureFormat::Format32bit
+	);
+	texture->bindData(static_cast<uint8_t *>(XGR32_ScreenSurface->pixels));
+
+	textureShader = std::unique_ptr<TextureShader>(new TextureShader(
+			texture
+	));
+
+//	SDL_SetTextureBlendMode(sdlTexture, SDL_BLENDMODE_NONE);
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
 	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
 	SDL_SetSurfacePalette(HDBackgroundSurface, XGR_Palette);
-	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
+//	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_ShowCursor(0);
-	
+
 	if (XGR_FULL_SCREEN) {
 		std::cout<<"SDL_SetWindowPosition"<<std::endl;
 		SDL_SetWindowPosition(sdlWindow, 0, 0);
@@ -258,7 +305,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	ScreenY = xgrScreenSizeY = XGR_ScreenSurface->h;
 
 	if(yOffsTable) delete[] yOffsTable;
-		yOffsTable = new int[y + 1];
+	yOffsTable = new int[y + 1];
 	set_pitch(XGR_ScreenSurface->pitch);
 
 
@@ -290,7 +337,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 // 		SDL_FreeSurface(old_surface_1);
 // 		SDL_FreeSurface(old_surface_2);
 // 	}
-	
+
 	return false;
 }
 
@@ -708,6 +755,7 @@ void XGR_Screen::finit(void)
 
 //		if(XGR_hWnd) KillTimer((HWND)XGR_hWnd,1);
 
+		SDL_GL_DeleteContext(glContext);
 		SDL_UnlockSurface(XGR_ScreenSurface);
 		SDL_Quit();
 
@@ -825,7 +873,12 @@ void XGR_Screen::blitScreen(uint32_t *dst, uint8_t *src) {
 	for (y = XGR_ScreenSurface->h; y > 0; y--) {
 		for (x = XGR_ScreenSurface->w; x > 0; x--) {
 			color = XGR_Palette->colors[*src];
-			*(dst++) = SDL_MapRGBA(XGR32_ScreenSurface->format, color.r, color.g, color.b, color.a);
+			if(*src == 255){
+				*(dst++) = 0x00000000;///SDL_MapRGBA(XGR32_ScreenSurface->format, color.r, color.g, color.b, 0);
+			}else{
+				*(dst++) = SDL_MapRGBA(XGR32_ScreenSurface->format, color.r, color.g, color.b, 255);
+			}
+
 			src++;
 		}
 	}
@@ -839,65 +892,25 @@ void XGR_Screen::set_render_buffer(SDL_Surface *buf) {
 void XGR_Screen::flip()
 {
 	if(flags & XGR_INIT){
-		
 		XGR_MouseObj.GetFon();
 		XGR_MouseObj.PutFrame();
 		//XGR_MouseObj.GetPromptFon();
 		//XGR_MouseObj.PutPrompt();
 		//std::cout<<"Flip"<<std::endl;
+
+
+//		glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
-#ifdef WITH_OPENGL
-		//SDL_GL_SwapBuffers();
-		SDL_RenderPresent(sdlRenderer);
-		if (UI_OR_GAME) {
-			//Texture realisation
-			/*SDL_Surface *tmp_surf = SDL_ConvertSurface(XGR_ScreenSurface,XGR_ScreenSurface_Real->format, 0);
-			GLuint screen_tex=SurfToTexture(tmp_surf);
-			glBindTexture( GL_TEXTURE_2D, screen_tex );
- 
-			glBegin( GL_QUADS );
-			//Top-left vertex (corner)
-			glTexCoord2i( 0, 0 );
-			glVertex3f( 0, 0, 0.0f );
-	
-			//Bottom-left vertex (corner)
-			glTexCoord2i( 1, 0 );
-			glVertex3f( tmp_surf->w, 0, 0.0f );
-	
-			//Bottom-right vertex (corner)
-			glTexCoord2i( 1, 1 );
-			glVertex3f( tmp_surf->w, tmp_surf->h, 0.0f );
-	
-			//Top-right vertex (corner)
-			glTexCoord2i( 0, 1 );
-			glVertex3f( 0, tmp_surf->h, 0.0f );
-			glEnd();
-		
-		
-			SDL_FreeSurface(tmp_surf);
-			glDeleteTextures(1, &screen_tex);*/
-		} else {
-			
-		}
-#else
-		SDL_LockTexture(sdlTexture, NULL, &XGR32_ScreenSurface->pixels, &XGR32_ScreenSurface->pitch);
 		blitScreen((uint32_t *)XGR32_ScreenSurface->pixels, (uint8_t *)XGR_ScreenSurface->pixels);
-		SDL_UnlockTexture(sdlTexture);
-		
-		SDL_RenderClear(sdlRenderer);
-		
-		if (XGR_FULL_SCREEN) {
-			SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
-			SDL_RenderSetLogicalSize(sdlRenderer, RealX, RealY);
-			SDL_SetTextureColorMod(HDBackgroundTexture, averageColorPalette.r, averageColorPalette.g, averageColorPalette.b);
-			SDL_RenderCopy(sdlRenderer, HDBackgroundTexture, NULL, NULL);
-		}
-		SDL_RenderSetLogicalSize(sdlRenderer, XGR_ScreenSurface->w, XGR_ScreenSurface->h);
-		SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
-		
-		SDL_RenderPresent(sdlRenderer);
-#endif
-		SDL_UnlockSurface(XGR_ScreenSurface);
+		SDL_UnlockSurface(XGR32_ScreenSurface);
+
+		texture->update(0, 0, XGR_ScreenSurface->w, XGR_ScreenSurface->h, static_cast<uint8_t *>(XGR32_ScreenSurface->pixels));
+		textureShader->render();
+
+		SDL_GL_SwapWindow(sdlWindow);
 		XGR_MouseObj.PutFon();
 		//XGR_MouseObj.PutPromptFon();
 	}

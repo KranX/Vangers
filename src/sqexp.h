@@ -1,4 +1,6 @@
 
+#include "terra/vmaprenderer.h"
+
 #define E_MAINMAP      24
 #define E_AUXMAP       25
 
@@ -8,6 +10,7 @@
 #define PRM_NETWORK	0x0008
 
 struct iGameMap {
+	std::unique_ptr<VMapRenderer> renderer;
 	int xc,yc;
 	int xside,yside;
 	int xsize,ysize;

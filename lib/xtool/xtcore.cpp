@@ -143,6 +143,9 @@ int main(int argc, char *argv[])
 		clockCnt = clocki();
 		clockCntGlobal = clockCnt;
 		while(!id) {
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+
 			if(XObj->Timer) {
 				id = XObj -> Quant();
 				clockNow = clockNowGlobal = clocki();

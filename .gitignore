@@ -1,5 +1,6 @@
 # Data files
 data/*
+!data/shaders
 !data/iscreen
 !data/actint
 !data/resource/iscreen/oftr2.scb

@@ -3571,12 +3571,12 @@ void actIntDispatcher::flush(void)
 		curPrompt -> quant();
 	}
 
-	ind = (aIndData*)indList -> last;
-	while(ind){
-		ind -> redraw();
-		if(!(flags & AS_FULL_FLUSH)) ind -> flush();
-		ind = (aIndData*)ind -> prev;
-	}
+//	ind = (aIndData*)indList -> last;
+//	while(ind){
+//		ind -> redraw();
+//		if(!(flags & AS_FULL_FLUSH)) ind -> flush();
+//		ind = (aIndData*)ind -> prev;
+//	}
 
 	if(aciRacingFlag){
 		aciShowRacingPlace();

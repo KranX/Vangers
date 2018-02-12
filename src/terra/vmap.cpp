@@ -2309,44 +2309,44 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 	request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,
 			MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
 	_debugTimerStorage.event_start("render");
-	int x, y, srcx, srcy;
-	
-	char *dst;
-	uchar *src, *srcline;
-	float d_size;
-	d_size = ((float)YSrcSize)/((float)YDstSize*2);
-	if (d_size!=1) {
-		XSrcSize*=0.5;
-		YSrcSize*=0.5;
-		float src_x, src_y;
-		for (y = -YDstSize, src_y = -YSrcSize; y < YDstSize; ++y, src_y += d_size) {
-			for (x = -XDstSize, src_x = -XSrcSize; x < XDstSize; ++x, src_x += d_size) {
-				dst = (char*)XGR_VIDEOBUF + (yc + y)*XGR_MAXX + (xc + x);
-
-				srcx = cx + ((((int)src_x)*cosa - ((int)src_y)*sina)>>16);
-				srcy = cy + ((((int)src_x)*sina + ((int)src_y)*cosa)>>16);
-
-				srcline = vMap->lineTcolor[(srcy) & clip_mask_y];
-				src = &srcline[(srcx) & clip_mask_x];
-
-				*dst = *src;
-			}
-		}
-	} else {
-		for (y = -YDstSize; y < YDstSize; ++y) {
-			for (x = -XDstSize; x < XDstSize; ++x) {
-				dst = (char*)XGR_VIDEOBUF + (yc + y)*XGR_MAXX + (xc + x);
-
-				srcx = cx + ((x*cosa - y*sina)>>16);
-				srcy = cy + ((x*sina + y*cosa)>>16);
-
-				srcline = vMap->lineTcolor[(srcy) & clip_mask_y];
-				src = &srcline[(srcx) & clip_mask_x];
-
-				*dst = *src;
-			}
-		}
-	}
+//	int x, y, srcx, srcy;
+//
+//	char *dst;
+//	uchar *src, *srcline;
+//	float d_size;
+//	d_size = ((float)YSrcSize)/((float)YDstSize*2);
+//	if (d_size!=1) {
+//		XSrcSize*=0.5;
+//		YSrcSize*=0.5;
+//		float src_x, src_y;
+//		for (y = -YDstSize, src_y = -YSrcSize; y < YDstSize; ++y, src_y += d_size) {
+//			for (x = -XDstSize, src_x = -XSrcSize; x < XDstSize; ++x, src_x += d_size) {
+//				dst = (char*)XGR_VIDEOBUF + (yc + y)*XGR_MAXX + (xc + x);
+//
+//				srcx = cx + ((((int)src_x)*cosa - ((int)src_y)*sina)>>16);
+//				srcy = cy + ((((int)src_x)*sina + ((int)src_y)*cosa)>>16);
+//
+//				srcline = vMap->lineTcolor[(srcy) & clip_mask_y];
+//				src = &srcline[(srcx) & clip_mask_x];
+//
+//				*dst = *src;
+//			}
+//		}
+//	} else {
+//		for (y = -YDstSize; y < YDstSize; ++y) {
+//			for (x = -XDstSize; x < XDstSize; ++x) {
+//				dst = (char*)XGR_VIDEOBUF + (yc + y)*XGR_MAXX + (xc + x);
+//
+//				srcx = cx + ((x*cosa - y*sina)>>16);
+//				srcy = cy + ((x*sina + y*cosa)>>16);
+//
+//				srcline = vMap->lineTcolor[(srcy) & clip_mask_y];
+//				src = &srcline[(srcx) & clip_mask_x];
+//
+//				*dst = *src;
+//			}
+//		}
+//	}
 	_debugTimerStorage.event_end("render");
 #endif	
 #if defined OLD_TURNING

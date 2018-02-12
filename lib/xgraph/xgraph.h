@@ -11,12 +11,8 @@
 #ifndef __XGRAPH_H__
 #define __XGRAPH_H__
 
-#include "xglobal.h"
-
-#ifdef WITH_OPENGL
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
+#include <GL/glew.h>
+#include "gl.h"
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
 #define XGR_64KR(c)		(((c) >> XGR_SHIFT_R) & XGR_COLOR_MASK_R)
@@ -110,16 +106,18 @@ struct XGR_Screen
 	//SDL_Surface *XGR32_ScreenSurface2D;
 	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
-	SDL_Texture *sdlTexture;
+	std::shared_ptr<Texture> texture;
+	std::unique_ptr<TextureShader> textureShader;
+//	SDL_Texture *sdlTexture;
 	//SDL_Texture *sdlTexture2D;
-	SDL_Texture *HDBackgroundTexture;
+//	SDL_Texture *HDBackgroundTexture;
 	SDL_Window *sdlWindow;
-	SDL_Renderer *sdlRenderer;
+//	SDL_Renderer *sdlRenderer;
 	
 	//SDL_Color   XGR_Palette[256];
 	SDL_Palette *XGR_Palette;
 	SDL_Color averageColorPalette = {255,255,255,0};
-
+	SDL_GLContext glContext;
 	int ClipMode;
 
 	int clipLeft;
@@ -133,7 +131,8 @@ struct XGR_Screen
 #ifdef WITH_OPENGL
 	SDL_Surface *XGR_ScreenSurface_Real;
 	GLuint SurfToTexture(SDL_Surface *surf);
-#endif	
+#endif
+
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
 	void get_clip(int& left,int& top,int& right,int& bottom);
