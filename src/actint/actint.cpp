@@ -8,6 +8,7 @@
 #include "../iscreen/iscreen.h"
 #include "item_api.h"
 #include "actint.h"
+#include "aci_scr.h"
 #include "aci_str.h"
 #include "aci_evnt.h"
 #include "a_consts.h"
@@ -4865,7 +4866,7 @@ void actIntDispatcher::KeyQuant(void)
 	}
 
 	while(KeyBuf -> size){
-		k = KeyBuf -> get();
+		k = sdlEventToCode(KeyBuf->get());
 		if(flags & AS_TEXT_MODE){
 			if(iCheckKeyID(iKEY_SKIP_TEXT,k)){
 				if(!ScrTextData -> NextPage()){

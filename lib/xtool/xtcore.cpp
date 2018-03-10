@@ -237,6 +237,11 @@ int xtCallXKey(SDL_Event* m) {
 				(*unpress_handler)(m);
 			}
 			break;
+		case SDL_TEXTINPUT:
+			if (press_handler) {
+				(*press_handler)(m);
+			}
+			break;
 		case SDL_JOYBUTTONDOWN:
 			//std::cout<<"jevent down button:"<<(int)m->jbutton.button<<std::endl;
 			if (press_handler) {

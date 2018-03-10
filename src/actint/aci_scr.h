@@ -403,7 +403,7 @@ struct aciScreenDispatcher
 	aciScreenObject* GetObject(int id);
 	aciScreenResource* GetResource(int id);
 
-	void KeyTrap(SDL_Event *code);
+	void KeyTrap(int code, SDL_Event *event);
 
 	void alloc_mem(void);
 	void free_mem(void);
@@ -417,7 +417,7 @@ struct aciScreenDispatcher
 	void flush(void);
 
 	void PrepareInput(int obj_id);
-	void InputQuant(int code);
+	void InputQuant(SDL_Event *event);
 	void CancelInput(void);
 	void DoneInput(void);
 
@@ -441,5 +441,7 @@ void acsFreeResource(aciScreenResource* p);
 
 aciScreenObject* acsAllocObject(int type);
 void acsFreeObject(aciScreenObject* p);
+int sdlEventToCode(SDL_Event *event);
+unsigned char UTF8toCP866(unsigned short utf);
 
 #endif

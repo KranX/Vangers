@@ -748,112 +748,17 @@ int iQuantSecond(void)
 			if(!(iScrDisp -> flags & SD_INPUT_STRING)) {
 				while(KeyBuf -> size) {
 					k = KeyBuf -> get();
-					//std::cout<<k<<" "<<actIntLog<<std::endl;
 					if(iChatON)
 						iChatKeyQuant(k);
 					if((k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_ESCAPE) && actIntLog){
 						iPause ^= 1;
 						acsScreenID = 2;
 					}
-#ifdef iMOVE_MOUSE_OBJECTS
-					if(k == SDL_SCANCODE_TAB){
-						if(iScreenOffs){
-							iScrDisp -> move_screen(-800,20);
-							iScrDisp -> move_screen(800,20);
-						}
-						else {
-							iScrDisp -> move_screen(800,20);
-							iScrDisp -> move_screen(-800,20);
-						}
-					}
 
-					if(k == SDL_SCANCODE_LEFT) iMoveMouseObj(-1,0);
-					if(k == SDL_SCANCODE_UP) iMoveMouseObj(0,-1);
-					if(k == SDL_SCANCODE_RIGHT) iMoveMouseObj(1,0);
-					if(k == SDL_SCANCODE_DOWN) iMoveMouseObj(0,1);
-
-					if(k == SDL_SCANCODE_HOME) iMoveMouseObj(-10,0);
-					if(k == SDL_SCANCODE_PAGEDOWN) iMoveMouseObj(0,10);
-					if(k == SDL_SCANCODE_END) iMoveMouseObj(10,0);
-					if(k == SDL_SCANCODE_PAGEUP) iMoveMouseObj(0,-10);
-
-					if(k == 'S')
-						iWriteScreenSummary();
-#endif
-
-#ifdef _ACI_ESCAVE_DEBUG_
-					if(k == SDL_SCANCODE_1) aci_dgMoodNext = 0;
-					if(k == SDL_SCANCODE_2) aci_dgMoodNext = 1;
-					if(k == SDL_SCANCODE_3) aci_dgMoodNext = 2;
-					if(k == SDL_SCANCODE_4) aci_dgMoodNext = 3;
-					if(k == VK_ADD){
-						cr = aciGetCurCredits();
-						cr += 10000;
-						aciUpdateCurCredits(cr);
-					}
-#endif
 					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
 						shotFlush();
 					}
 
-#ifdef _DEBUG
-					if(!NetworkON){
-						// TODO(amdmi3): EQUALS/PLUS UNDERSCORE/MINUS stuff
-						if(k == SDL_SCANCODE_EQUALS) aciResizeItem(1.05);
-						if(k == SDL_SCANCODE_MINUS) aciResizeItem(0.95);
-						if(k == 'I' && actIntLog) aScrDisp -> save_items();
-//						  if(k == SDL_SCANCODE_F11){
-//							  iMapShot();
-//						  }
-						if(k == 'B')
-							iBoundsLog ^= 1;
-						if(k == SDL_SCANCODE_F9){
-							XBufBMP = new XBuffer;
-							XBufPAL = new XBuffer;
-
-							if(actIntLog){
-								*XBufBMP < "escave";
-								*XBufPAL < "escave";
-								if(iScreenOffs){
-									*XBufBMP < "_shop";
-									*XBufPAL < "_shop";
-									count = iEscaveShopShotCount;
-									iEscaveShopShotCount ++;
-								}
-								else {
-									count = iEscaveShotCount;
-									iEscaveShotCount ++;
-								}
-							}
-							else {
-								*XBufBMP < "main_menu";
-								*XBufPAL < "main_menu";
-								count = iMainMenuShotCount;
-								iMainMenuShotCount ++;
-							}
-							if(count < 10){
-								*XBufBMP < "0";
-								*XBufPAL < "0";
-							}
-							if(count < 100){
-								*XBufBMP < "0";
-								*XBufPAL < "0";
-							}
-
-							*XBufBMP <= count < ".bmp";
-							*XBufPAL <= count < ".pal";
-
-							XGR_WriteScreen(XBufBMP -> address(),XBufPAL -> address());
-
-							delete XBufBMP;
-							delete XBufPAL;
-						}
-					}
-					if(actIntLog && k == SDL_SCANCODE_F6){
-						aciChangeMouseItem();
-					}
-					if(k == 'T') iTimerLog ^= 1;
-#endif
 					if (k->type == SDL_KEYDOWN || k->type == SDL_KEYUP) {
 						iKeyTrap(k->key.keysym.scancode);
 					} else if (k->type == SDL_JOYBUTTONDOWN || k->type == SDL_JOYBUTTONUP) {

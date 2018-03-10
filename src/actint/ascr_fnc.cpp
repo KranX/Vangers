@@ -4945,26 +4945,32 @@ int acsQuant(void)
 		}
 		KeyBuf -> clear();
 	}
-	while(KeyBuf -> size){
-		k = KeyBuf -> get();
-		acsScrD -> KeyTrap(k);
+	while(KeyBuf->size){
+		SDL_Event *e = KeyBuf->get();
+		if (e->type == SDL_KEYDOWN) {
+			k = sdlEventToCode(e);
+		}
+		if (e->type == SDL_KEYDOWN || e->type == SDL_TEXTINPUT) {
+			acsScrD->KeyTrap(0, e);
+		}
+
 	}
 	if(aScrDisp -> flags & aMS_MOVED){
-		acsScrD -> KeyTrap(iMOUSE_MOVE_CODE);
+		acsScrD -> KeyTrap(iMOUSE_MOVE_CODE, nullptr);
 		aScrDisp -> flags ^= aMS_MOVED;
 		if(aciMouseFlagL){
-			acsScrD -> KeyTrap(iMOUSE_LEFT_MOVE);
+			acsScrD -> KeyTrap(iMOUSE_LEFT_MOVE, nullptr);
 		}
 		if(aciMouseFlagR){
-			acsScrD -> KeyTrap(iMOUSE_RIGHT_MOVE);
+			acsScrD -> KeyTrap(iMOUSE_RIGHT_MOVE, nullptr);
 		}
 	}
 	if(aScrDisp -> flags & aMS_LEFT_PRESS){
-		acsScrD -> KeyTrap(iMOUSE_LEFT_PRESS_CODE);
+		acsScrD -> KeyTrap(iMOUSE_LEFT_PRESS_CODE, nullptr);
 		aScrDisp -> flags ^= aMS_LEFT_PRESS;
 	}
 	if(aScrDisp -> flags & aMS_RIGHT_PRESS){
-		acsScrD -> KeyTrap(iMOUSE_RIGHT_PRESS_CODE);
+		acsScrD -> KeyTrap(iMOUSE_RIGHT_PRESS_CODE, nullptr);
 		aScrDisp -> flags ^= aMS_RIGHT_PRESS;
 	}
 	if(NetworkON){
@@ -7128,6 +7134,29 @@ void aciDisableParametersMenu(void)
 		if(m -> flags & FM_MAIN_MENU)
 			m -> delete_item(FMENU_PARAMETERS);
 		m = (fncMenu*)m -> prev;
+	}
+}
+
+int sdlEventToCode(SDL_Event *event) {
+	switch (event->type) {
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+			return event->key.keysym.scancode;
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			switch (event->button.button) {
+				case SDL_BUTTON_LEFT:
+					return iMOUSE_LEFT_PRESS_CODE;
+				case SDL_BUTTON_RIGHT:
+					return iMOUSE_RIGHT_PRESS_CODE;
+			}
+		case SDL_MOUSEMOTION:
+			if (event->motion.state & SDL_BUTTON_LMASK)
+				return iMOUSE_LEFT_MOVE;
+			else if (event->motion.state & SDL_BUTTON_RMASK)
+				return iMOUSE_RIGHT_MOVE;
+			else
+				return iMOUSE_MOVE_CODE;
 	}
 }
 
