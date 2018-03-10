@@ -28,7 +28,7 @@ out vec4 Target0;
 
 struct Surface {
 	float low_alt, high_alt, delta;
-//	uint low_type, high_type;
+	uint low_type, high_type;
 	vec2 tex_coord;
 //	bool is_shadowed;
 };
@@ -39,9 +39,9 @@ vec3 palColor(uvec4 color_id){
 	return texture(t_Palette, c).rgb;
 }
 
-//uint get_terrain_type(uint meta) {
-//	return (meta >> c_TerrainShift) & ((1U << c_TerrainBits) - 1U);
-//}
+uint get_terrain_type(uint meta) {
+	return (meta >> c_TerrainShift) & ((1U << c_TerrainBits) - 1U);
+}
 uint get_delta(uint meta) {
 	return (meta >> c_DeltaShift) & ((1U << c_DeltaBits) - 1U);
 }
@@ -54,20 +54,20 @@ Surface get_surface(vec2 pos) {
 	suf.tex_coord = tc;
 	uint meta = texture(t_Meta, tc).x;
 //	suf.is_shadowed = (meta & c_ShadowMask) != 0U;
-//	suf.low_type = get_terrain_type(meta);
+	suf.low_type = get_terrain_type(meta);
 	if ((meta & c_DoubleLevelMask) != 0U) {
 		//TODO: we need either low or high for the most part
 		// so this can be more efficient with a boolean param
 		uint delta;
 		if (!(mod(pos.x, 2.0) >= 1.0)) { // high
 			uint meta_low = textureOffset(t_Meta, tc, ivec2(-1, 0)).x;
-//			suf.high_type = suf.low_type;
-//			suf.low_type = get_terrain_type(meta_low);
+			suf.high_type = suf.low_type;
+			suf.low_type = get_terrain_type(meta_low);
 			delta = get_delta(meta_low) << c_DeltaBits + get_delta(meta);
 		}else { // low
 			uint meta_high = textureOffset(t_Meta, tc, ivec2(1, 0)).x;
 			suf.tex_coord.x += 1.0 / u_TextureScale.x;
-//			suf.high_type = get_terrain_type(meta_high);
+			suf.high_type = get_terrain_type(meta_high);
 			delta = get_delta(meta) << c_DeltaBits + get_delta(meta_high);
 		}
 		float lh = textureOffset(t_Height, suf.tex_coord, ivec2(-1, 0)).x;
@@ -83,6 +83,7 @@ Surface get_surface(vec2 pos) {
 		h = h / 256.0;
 		suf.low_alt = h * u_TextureScale.z;
 		suf.high_alt = suf.low_alt;
+		suf.high_type = suf.low_type;
 		suf.delta = 0.0;
 	}
 	return suf;
@@ -132,7 +133,7 @@ Surface cast_ray_impl(
 
 struct CastPoint {
 	vec3 pos;
-//	uint type;
+	uint type;
 	vec2 tex_coord;
 //	bool is_underground;
 //	bool is_shadowed;
@@ -160,7 +161,7 @@ CastPoint cast_ray_to_map(vec3 base, vec3 dir) {
 	vec3 b = c;
 	Surface suf = cast_ray_impl(a, b, true, 7, 7);
 	CastPoint result;
-//
+	result.type = suf.high_type;
 	if (suf.low_alt <= b.z && b.z < suf.low_alt + suf.delta) {
 		// continue the cast underground
 		a = b; b = c;
@@ -179,14 +180,6 @@ void main() {
 	vec3 view = normalize(sp_world.xyz / sp_world.w - u_CamPos.xyz);
 	CastPoint pt = cast_ray_to_map(u_CamPos.xyz, view);
 
-//	vec3 a = cast_ray_to_plane(u_TextureScale.z, u_CamPos.xyz, view);
-//	vec3 c = cast_ray_to_plane(0.0, u_CamPos.xyz, view);
-//	vec3 b = c;
-//	Surface suf = cast_ray_impl(a, b, true, 7, 7);
-//	CastPoint result;
-//	result.pos = b;
-//	result.tex_coord = suf.tex_coord;
-//	vec3 col = palColor(texture(t_Color, suf.tex_coord));
 	uint meta = texture(t_Meta, pt.tex_coord).x;
 	float metab = (meta & c_DoubleLevelMask) != 0U ? 0.0f : 0.0f;
 
@@ -203,24 +196,27 @@ void main() {
 //		1.0f
 //	);
 	Target0 = vec4(col);
-//	Target0 = vec4(1.0, 0, 0, 1);
-//	vec4 frag_color = evaluate_color(pt);
-//	if (pt.type == TERRAIN_WATER) {
-//		vec3 a = pt.pos;
-//		vec2 variance = mod(a.xy, c_ReflectionVariance);
-//		vec3 reflected = normalize(view * vec3(1.0 + variance, -1.0));
-//		vec3 outside = cast_ray_to_plane(u_TextureScale.z, a, reflected);
-//		vec3 b = outside;
-//		Surface suf = cast_ray_impl(a, b, true, 4, 4);
-//		if (b != outside) {
-//			CastPoint other;
-//			other.pos = b;
-//			other.type = suf.high_type;
-//			other.tex_coord = suf.tex_coord;
+
+	if (pt.type == TERRAIN_WATER) {
+		vec3 a = pt.pos;
+		vec2 variance = mod(a.xy, c_ReflectionVariance);
+		vec3 reflected = normalize(view * vec3(1.0 + variance, -1.0));
+		vec3 outside = cast_ray_to_plane(u_TextureScale.z, a, reflected);
+		vec3 b = outside;
+		Surface suf = cast_ray_impl(a, b, true, 4, 4);
+
+		if (b != outside) {
+			CastPoint other;
+			other.pos = b;
+			other.type = suf.high_type;
+			other.tex_coord = suf.tex_coord;
 //			other.is_shadowed = suf.is_shadowed;
-//			frag_color += c_ReflectionPower * evaluate_color(other);
-//		}
-//	}
+			Target0 += c_ReflectionPower * evaluate_color(other.tex_coord);
+//			Target0 = vec4(0.5, 0.5, 0, 1);
+		}else {
+//			Target0 = vec4(1.0, 0, 0, 1);
+		}
+	}
 //	Target0 = frag_color;
 //
 //	vec4 target_ndc = u_ViewProj * vec4(pt.pos, 1.0);
