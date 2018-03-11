@@ -877,22 +877,7 @@ void iChatInputChar(SDL_Event *event)
 
 	aciFont* hfnt = aScrFonts32[iChatInput->font];
 
-//	if(sz < ISC_MAX_STRING_LEN && x < iChatInput->SizeX - 10){
-//		aciFont* hfnt = aScrFonts32[iChatInput->font];
-//		if(event->key.keysym.sym && hfnt && event->key.keysym.sym < hfnt->Size) {
-//			ptr0[sz - 1] = event->key.keysym.sym;
-//			ptr0[sz] = '_';
-//			ptr0[sz + 1] = 0;
-//		}
-//	}
-
-	if (event->type == SDL_KEYDOWN) {
-		if(event->key.keysym.sym && hfnt && event->key.keysym.sym < hfnt->Size) {
-			ptr0[sz - 1] = event->key.keysym.sym;
-			ptr0[sz] = '_';
-			ptr0[sz + 1] = 0;
-		}
-	} else if (event->type == SDL_TEXTINPUT) {
+	if (event->type == SDL_TEXTINPUT) {
 		if ((unsigned char)event->text.text[0] < 128) {
 			chr = event->text.text[0];
 		} else {

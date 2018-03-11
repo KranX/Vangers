@@ -52,7 +52,7 @@ void KeyBuffer::put(SDL_Event *key, int state)
 {
 	if(size < MAX_SIZE) {
 		table[last_index] = *key;
-		std::cout<<"KeyBuffer::put key:"<<key<<" last_index:"<<last_index<<std::endl;
+//		std::cout<<"KeyBuffer::put key:"<<key<<" last_index:"<<last_index<<std::endl;
 		state_table[last_index] = state;
 		last_index ++;
 		if(last_index >= MAX_SIZE)
@@ -68,7 +68,7 @@ SDL_Event *KeyBuffer::get(void)
 	SDL_Event *key;
 	if(size){
 		key = &table[first_index];
-		std::cout<<"KeyBuffer::get key:"<<key<<" first_index:"<<first_index<<std::endl;
+//		std::cout<<"KeyBuffer::get key:"<<key<<" first_index:"<<first_index<<std::endl;
 		cur_state = state_table[first_index];
 
 		first_index ++;
