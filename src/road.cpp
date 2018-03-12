@@ -1909,10 +1909,13 @@ void iGameMap::draw(int self)
 		}
 
 		if(DepthShow) {
+			// Commented SlopTurnSkip branch because of unstable behaviour on big resolutions.
+			// Using instead scaling_3D, it's a bit slower than SlopTurnSkip but much stable
 //			if(SkipShow) {
 //				//Наклон изображения
 //				vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
 //			} else {
+//				A_g2s = DBM(SlopeAngle,X_AXIS)*DBM(TurnAngle,Z_AXIS);
 				vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
 //			}
 		} else {
