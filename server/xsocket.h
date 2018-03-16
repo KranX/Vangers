@@ -2,6 +2,8 @@
 #ifndef _XSOCKET_H
 #define _XSOCKET_H
 
+#include "../lib/xtool/xglobal.h"
+
 int XSocketInit(int ErrHUsed = 1);
 int XSocketGetErrorStatus();
 char* XSocketGetLastError();
@@ -447,15 +449,15 @@ inline Type* XTListAlt<Type>::search(int ID)
 ******************************************************************/
 template <class Type> class XQueue {
 	int size;
-	int head,tail;
+	int head, tail;
 	Type* buffer;
 public:
 
-		XQueue(int size); // must be 2^n
+	XQueue(int size); // must be 2^n
 	
 	int tell();
 	int empty();
-	int full();
+//	int full();
 	void clear();
 	
 	int simple_put(Type p);  
@@ -492,11 +494,12 @@ inline int XQueue<Type>::empty()
 	return head == tail;
 }
 
-template <class Type> 
-inline int XQueue<Type>::full()
-{
-	return (head + 1) & (size - 1) == last;
-}
+//TODO: we have no last, WTF?
+//template <class Type>
+//inline int XQueue<Type>::full()
+//{
+//	return (head + 1) & (size - 1) == last;
+//}
 
 template <class Type> 
 inline int XQueue<Type>::put(Type p)
@@ -557,18 +560,18 @@ inline Type XQueue<Type>::simple_get()
 ******************************************************************/
 template <class Type> class XIQueue {
 	int size;
-	int head,tail;
+	int head, tail;
 	struct Node {
 		int ID;
 		Type data;
-		};
+	};
 	Node* buffer;
 public:
 
-		XIQueue(int size); // must be 2^n
+	XIQueue(int size); // must be 2^n
 	
 	int empty();
-	int full();
+//	int full();
 	void clear();
 
 	Type put(Type p,int ID); // The second element with the same ID removes the first, but remains at the end of queue.
@@ -597,11 +600,12 @@ inline int XIQueue<Type>::empty()
 	return head == tail;
 }
 
-template <class Type> 
-inline int XIQueue<Type>::full()
-{
-	return (head + 1) & (size - 1) == last;
-}
+//TODO: we have no last WTF?
+//template <class Type>
+//inline int XIQueue<Type>::full()
+//{
+//	return (head + 1) & (size - 1) == last;
+//}
 
 template <class Type> 
 inline Type XIQueue<Type>::put(Type p,int ID)
