@@ -1,8 +1,8 @@
 SET(server_SRCS
 	kdsplus.cpp
-	win32f.cpp
 	xsocket.cpp
 	server.cpp
+#win32f.cpp -- candidat to remove
 )
 
 ADD_EXECUTABLE(vangers_server ${server_SRCS})

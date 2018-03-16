@@ -78,7 +78,10 @@ void Syncro() {
 }
 
 int KDsPlus::Quant(void) {
-	if(GlobalExit || XKey.Pressed(VK_ESCAPE)) return XT_TERMINATE_ID;
+	//if(GlobalExit || XKey.Pressed(VK_ESCAPE)) return XT_TERMINATE_ID;
+	//TODO: I hope you can stop server by ctrl+c
+	if(GlobalExit)
+		return XT_TERMINATE_ID;
 	frame++;
 	Syncro();
 	server -> quant();
@@ -107,7 +110,8 @@ void ComlineAnalyze(int argc,char** argv) {
 						std::cout << "Time to Live: " << time_to_live << " second\n";
 						break;
 					case 'i':
-						FreeConsole();
+						//TODO: looks like only windows strange function
+						//FreeConsole();
 						break;
 					case 's':
 						std::cout << "Logging ON\n";
