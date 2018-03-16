@@ -8,9 +8,10 @@
 
 FIND_PATH(AVUTIL_INCLUDE_DIR
   NAMES
-    avutil.h
+    libavutil/avutil.h
   PATHS
     /usr/include
+    /usr/include/ffmpeg
     /usr/include/x86_64-linux-gnu
     /usr/local/include
     /local/include
@@ -19,15 +20,14 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
     /opt/include
     /sw/include
   PATH_SUFFIXES
-    libavutil
-    ffmpeg
 )
 
 FIND_PATH(AVCODEC_INCLUDE_DIR
   NAMES
-    avcodec.h
+    libavcodec/avcodec.h
   PATHS
     /usr/include
+    /usr/include/ffmpeg
     /usr/include/x86_64-linux-gnu
     /usr/local/include
     /opt/local/include
@@ -36,15 +36,14 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
     /opt/include
     /sw/include
   PATH_SUFFIXES
-    libavcodec
-    ffmpeg
 )
 
 FIND_PATH(AVFORMAT_INCLUDE_DIR
   NAMES
-    avformat.h
+    libavformat/avformat.h
   PATHS
     /usr/include
+    /usr/include/ffmpeg
     /usr/include/x86_64-linux-gnu
     /usr/local/include
     /opt/local/include
@@ -53,8 +52,6 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
     /opt/include
     /sw/include
   PATH_SUFFIXES
-    libavformat
-    ffmpeg
 )
 
 FIND_LIBRARY(AVUTIL_LIBRARY
@@ -63,6 +60,7 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 	avutil-55
   PATHS
     /usr/lib
+    /usr/lib/ffmpeg
     /usr/lib/x86_64-linux-gnu
     /usr/local/lib
     /opt/local/lib
@@ -80,6 +78,7 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 	avcodec-57
   PATHS
     /usr/lib
+    /usr/lib/ffmpeg
     /usr/lib/x86_64-linux-gnu
     /usr/local/lib
     /opt/local/lib
@@ -97,6 +96,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 	avformat-57
   PATHS
     /usr/lib
+    /usr/lib/ffmpeg
     /usr/lib/x86_64-linux-gnu
     /usr/local/lib
     /opt/local/lib
@@ -109,7 +109,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 )
 
 SET(FFMPEG_INCLUDE_DIRS
-#  ${AVUTIL_INCLUDE_DIR}
+  ${AVUTIL_INCLUDE_DIR}
   ${AVCODEC_INCLUDE_DIR}
   ${AVFORMAT_INCLUDE_DIR}
 )
@@ -143,7 +143,7 @@ ENDIF(FFMPEG_INCLUDE_DIRS AND FFMPEG_LIBRARIES)
 
 IF(FFMPEG_FOUND)
   IF(NOT FFMPEG_FIND_QUIETLY)
-    MESSAGE(STATUS "Found FFmpeg: ${FFMPEG_LIBRARIES}")
+    MESSAGE(STATUS "Found FFmpeg includes[${FFMPEG_INCLUDE_DIRS}] libs[${FFMPEG_LIBRARIES}]")
   ENDIF(NOT FFMPEG_FIND_QUIETLY)
 ELSE(FFMPEG_FOUND)
   IF(FFMPEG_FIND_REQUIRED)
