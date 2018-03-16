@@ -1,5 +1,7 @@
 
 #include "kdsplus.h"
+#include <chrono>
+#include <thread>
 
 #define VERSION  "1.9"
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
@@ -23,32 +25,35 @@ char* result_name = 0;
 int StatLogging = 0;
 int leave_empty_games = 0;
 Server* server;
-																	       
-int xtInitApplication(void)
-{
-	SetConsoleTitle("Vangers Server ");
-	XCon < "Multiplayer VANGERS Server by K-D LAB\nRelease Version " VERSION " (c) 1998 All Rights Reserved\n";
-	XCon < "Compilation: DATE: " < __DATE__ < " TIME: " < __TIME__ < "\n\n";
 
-	//SetPriorityClass(GetCurrentProcess(),HIGH_PRIORITY_CLASS);
+int xtInitApplication(void) {
+#ifdef _WIN32
+	SetConsoleTitle("Vangers Server ");
+#else
+	std::cout << "\033]0;" << "Vangers Server " << "\007";
+#endif
+	std::cout << "Multiplayer VANGERS Server by K-D LAB\nRelease Version " VERSION " (c) 1998 All Rights Reserved\n";
+	std::cout << "Compilation: DATE: " <<  __DATE__ << " TIME: " << __TIME__ << "\n\n";
+
+	//SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	ComlineAnalyze(__argc,__argv);
-	ErrH.SetFlags(XERR_CTRLBRK);
+//	ErrH.SetFlags(XERR_CTRLBRK);
 
 	if(!XSocketInit())
 		ErrH.Abort("WinSock initialization failed, check Your TCP/IP settings");
 
-//	if(terminal_log){
+//	if(terminal_log) {
 //		terminal();
 //		return -1;
-//		}
+//	}
 
-	server = new Server(default_server_port,broadcast_port,time_to_live);
+	server = new Server(default_server_port, broadcast_port, time_to_live);
 
 #ifdef _DEBUG
-	if(result_name){
+	if(result_name) {
 		(server -> create_game()) -> load_result(server,result_name);
 		ErrH.Abort("Result loaded");
-		}
+	}
 #endif
 
 	KDsPlus* p = new KDsPlus;
@@ -59,22 +64,20 @@ int xtInitApplication(void)
 	return 1;
 }
 
-void xtDoneApplication(void)
-{
+void xtDoneApplication(void) {
 	delete server;
 }
-void Syncro()
-{
-	const dt_total = 1000/64;
-	static t_prev = 0;
+
+void Syncro() {
+	const int dt_total = 1000/64;
+	static int t_prev = 0;
 	int dt = dt_total - (clock() - t_prev);
 	if(dt > 0)
-		Sleep(dt);
+		std::this_thread::sleep_for(std::chrono::milliseconds(dt));
 	t_prev = clock();
 }
 
-int KDsPlus::Quant(void)
-{
+int KDsPlus::Quant(void) {
 	if(GlobalExit || XKey.Pressed(VK_ESCAPE)) return XT_TERMINATE_ID;
 	frame++;
 	Syncro();
@@ -83,8 +86,7 @@ int KDsPlus::Quant(void)
 	return 0;
 }
 
-void ComlineAnalyze(int argc,char** argv)
-{
+void ComlineAnalyze(int argc,char** argv) {
 	int i,j;
 	for(i = 1;i < argc;i++)
 		if(argv[i][0] == '/'){
@@ -102,22 +104,22 @@ void ComlineAnalyze(int argc,char** argv)
 						break;
 					case 't':
 						time_to_live = atoi(argv[i] + (j + 2));
-						XCon < "Time to Live: " <= time_to_live < " second\n";
+						std::cout << "Time to Live: " << time_to_live << " second\n";
 						break;
 					case 'i':
 						FreeConsole();
 						break;
 					case 's':
-						XCon < "Logging ON\n";
+						std::cout << "Logging ON\n";
 						StatLogging = 1;
 						break;
 					case 'l':
-						XCon < "Empty games will not be removed\n";
+						std::cout << "Empty games will not be removed\n";
 						leave_empty_games = 1;
 						break;
 					case 'h':
 					case '?':
-						XCon < "Switches: \n  /pxxxx  -  main TCP/IP port \n  /bxxxx  -  UDP broadcast port \n  /b-     -  supress UDP broadcast \n  /i      -  invisible mode \n  /txxx   -  time to live without clients, seconds\n  /s      -  creates log file (VangersServer.log)\n  /l      -  leave empty games\n\n";
+						std::cout << "Switches: \n  /pxxxx  -  main TCP/IP port \n  /bxxxx  -  UDP broadcast port \n  /b-     -  supress UDP broadcast \n  /i      -  invisible mode \n  /txxx   -  time to live without clients, seconds\n  /s      -  creates log file (VangersServer.log)\n  /l      -  leave empty games\n\n";
 						break;
 					}
 				j+=2;
