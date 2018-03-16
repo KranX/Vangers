@@ -115,6 +115,8 @@ void set_key_nadlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*));
 
 extern double XTCORE_FRAME_DELTA;
 extern double XTCORE_FRAME_NORMAL;
+extern int __argc;
+extern char **__argv;
 
 #endif /* __XTCORE_H */
 
