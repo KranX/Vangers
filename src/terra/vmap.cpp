@@ -1300,11 +1300,11 @@ void vrtMap::change(int up,int down)
 	du = getDistY(upLine, up);
 	dd = getDistY(downLine, down);
 		if (du < 0) {
-			delink(upLine, up - 1);
+//			delink(upLine, up - 1);
 			upLine = up;
 		}
 		if (dd > 0) {
-			delink(down + 1, downLine);
+//			delink(down + 1, downLine);
 			downLine = down;
 		}
 //	}
@@ -1339,9 +1339,7 @@ void vrtMap::request(int up,int down,int left, int right)
 #ifdef _SURMAP_
 	if(MAP_POWER_Y > 10)
 #endif
-	_debugTimerStorage.event_start("request");
-	change(up,down);
-	_debugTimerStorage.event_end("request");
+	_debugTimerStorage.event_start("request");	change(up,down);_debugTimerStorage.event_end("request");
 }
 
 void vrtMap::quant(void)
@@ -2348,7 +2346,7 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 //		}
 //	}
 	_debugTimerStorage.event_end("render");
-#endif	
+#endif
 #if defined OLD_TURNING
 	char* vp = (char*)XGR_VIDEOBUF + (yc - YDstSize)*XGR_MAXX + (xc - XDstSize);
 	char* vpp;

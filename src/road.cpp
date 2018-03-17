@@ -1791,6 +1791,7 @@ void iGameMap::reset(void)
 		GeneralLoadReleaseFlag = 1;
 	}
 	camera_reset();
+
 	vMap->accept(0, V_SIZE - 1);
 
 	renderer = std::unique_ptr<VMapRenderer>(new VMapRenderer(H_SIZE, V_SIZE, "shaders/heightmap"));
@@ -1821,8 +1822,6 @@ void iGameMap::reset(void)
 
 	renderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
 
-//	vMap->accept(0, V_SIZE - 1);
-//	renderer->init(vMap->lineT, vMap->lineTcolor);
 }
 
 void calc_view_factors()
@@ -1968,10 +1967,11 @@ void iGameMap::draw(int self)
 		float turn = -GTOR(TurnAngle);
 		float slope = GTOR(SlopeAngle);
 
+		_debugTimerStorage.event_start("render");
 		renderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
 		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
 		renderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, z, turn, slope);
-
+		_debugTimerStorage.event_end("render");
 		//Отрисовка 3д моделей
 		if(curGMap) {
 			GameD.DrawQuant();
