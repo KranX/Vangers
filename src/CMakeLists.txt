@@ -69,8 +69,10 @@ SET(vangers_SRCS
 	xsocket.cpp
 	zmod_client.cpp 
 	${WINDOWS_RES}
-		cli_options.cpp cli_options.h util/ring_buffer.h util/Timer.cpp util/Timer.h util/TimerStorage.cpp util/TimerStorage.h util/PerfWidget.cpp util/PerfWidget.h
-		cli_options.cpp cli_options.h terra/vmaprenderer.cpp terra/vmaprenderer.h ../lib/xgraph/gl.cpp ../lib/xgraph/gl.h)
+		cli_options.cpp cli_options.h
+        util/ring_buffer.h util/Timer.cpp util/Timer.h util/TimerStorage.cpp util/TimerStorage.h util/PerfWidget.cpp util/PerfWidget.h
+        terra/vmaprenderer.cpp terra/vmaprenderer.h
+)
 
 ADD_EXECUTABLE(vangers ${vangers_SRCS})
 

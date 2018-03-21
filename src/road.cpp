@@ -1808,11 +1808,11 @@ void iGameMap::reset(void)
 	auto paletteData = new uint32_t[256];
 	memset(paletteData, 0, sizeof(uint32_t) * 256);
 
-	auto heightMapTexture = Texture::createTexture(H_SIZE, V_SIZE, TextureFormat::Format8Bit, heightData);
-	auto colorTexture = Texture::createTexture(H_SIZE, V_SIZE, TextureFormat::Format8Bit, colorData);
-	auto metaTexture = Texture::createTexture(H_SIZE, V_SIZE, TextureFormat::Format8Bit, metaData);
+	auto heightMapTexture = gl::Texture::createTexture(H_SIZE, V_SIZE, gl::TextureFormat::Format8Bit, heightData);
+	auto colorTexture = gl::Texture::createTexture(H_SIZE, V_SIZE, gl::TextureFormat::Format8Bit, colorData);
+	auto metaTexture = gl::Texture::createTexture(H_SIZE, V_SIZE, gl::TextureFormat::Format8Bit, metaData);
 
-	auto paletteTexture = Texture::createPalette(256);
+	auto paletteTexture = gl::Texture::createPalette(256);
 	paletteTexture->bindData(paletteData);
 
 	delete colorData;
@@ -1960,7 +1960,7 @@ void iGameMap::draw(int self)
 //		vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
 //		vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
 		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
-		double height = XGR_MAXY;
+		double height = XGR_MAXY * ViewZ / 512;
 		double hz = height * 0.5 / tan(glm::radians(45.0) * 0.5);
 
 		float z = static_cast<float>(hz);

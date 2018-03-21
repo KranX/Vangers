@@ -269,16 +269,14 @@ int XGR_Screen::init(int x,int y,int flags_in)
 //	                               SDL_TEXTUREACCESS_STREAMING,
 //	                               x, y);
 
-	texture = Texture::createTexture(
+	texture = gl::Texture::createTexture(
 			x,
 			y,
-			TextureFormat::Format32bit
+			gl::TextureFormat::Format32bit
 	);
 	texture->bindData(static_cast<uint8_t *>(XGR32_ScreenSurface->pixels));
 
-	textureShader = std::unique_ptr<TextureShader>(new TextureShader(
-			texture
-	));
+	textureShader = std::make_unique<PlainTextureShader>(texture);
 
 //	SDL_SetTextureBlendMode(sdlTexture, SDL_BLENDMODE_NONE);
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);

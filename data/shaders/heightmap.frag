@@ -22,7 +22,7 @@ const uint c_DeltaShift = 0U, c_DeltaBits = 2U;
 
 #define TERRAIN_WATER	0U
 
-in vec2 UV;
+in vec2 Texcoord;
 out vec4 Target0;
 
 
@@ -175,19 +175,22 @@ CastPoint cast_ray_to_map(vec3 base, vec3 dir) {
 }
 
 void main() {
-	vec4 sp_ndc = vec4((gl_FragCoord.xy / u_ScreenSize.xy) * 2.0 - 1.0, 0.0, 1.0);
-	vec4 sp_world = u_InvViewProj * sp_ndc;
-	vec3 view = normalize(sp_world.xyz / sp_world.w - u_CamPos.xyz);
-	CastPoint pt = cast_ray_to_map(u_CamPos.xyz, view);
+//	vec4 sp_ndc = vec4((gl_FragCoord.xy / u_ScreenSize.xy) * 2.0 - 1.0, 0.0, 1.0);
+//	vec4 sp_world = u_InvViewProj * sp_ndc;
+//	vec3 view = normalize(sp_world.xyz / sp_world.w - u_CamPos.xyz);
+//	CastPoint pt = cast_ray_to_map(u_CamPos.xyz, view);
 
-	uint meta = texture(t_Meta, pt.tex_coord).x;
-	float metab = (meta & c_DoubleLevelMask) != 0U ? 0.0f : 0.0f;
+//	uint meta = texture(t_Meta, pt.tex_coord).x;
+//	float metab = (meta & c_DoubleLevelMask) != 0U ? 0.0f : 0.0f
 
-	vec4 metac = vec4(metab, metab, 0, 1.0f);
-	vec4 col = evaluate_color(pt.tex_coord);
-//	vec4 col = evaluate_color(UV);
+//	vec4 metac = vec4(metab, metab, 0, 1.0f);
+//	vec4 col = evaluate_color(pt.tex_coord);
+//	vec3 col;
+//	col = palColor(textureOffset(t_Color, Texcoord, ivec2(0, 0)));
+//	col = palColor(textureOffset(t_Color, Texcoord, ivec2(0, 0)));
+	vec4 col = evaluate_color(Texcoord);
 
-	col = mix(col, metac, metab);
+//	col = mix(col, metac, metab);
 
 //	vec4 col = vec4(
 //		view.x,
@@ -197,26 +200,26 @@ void main() {
 //	);
 	Target0 = vec4(col);
 
-	if (pt.type == TERRAIN_WATER) {
-		vec3 a = pt.pos;
-		vec2 variance = mod(a.xy, c_ReflectionVariance);
-		vec3 reflected = normalize(view * vec3(1.0 + variance, -1.0));
-		vec3 outside = cast_ray_to_plane(u_TextureScale.z, a, reflected);
-		vec3 b = outside;
-		Surface suf = cast_ray_impl(a, b, true, 4, 4);
-
-		if (b != outside) {
-			CastPoint other;
-			other.pos = b;
-			other.type = suf.high_type;
-			other.tex_coord = suf.tex_coord;
-//			other.is_shadowed = suf.is_shadowed;
-			Target0 += c_ReflectionPower * evaluate_color(other.tex_coord);
-//			Target0 = vec4(0.5, 0.5, 0, 1);
-		}else {
-//			Target0 = vec4(1.0, 0, 0, 1);
-		}
-	}
+//	if (pt.type == TERRAIN_WATER) {
+//		vec3 a = pt.pos;
+//		vec2 variance = mod(a.xy, c_ReflectionVariance);
+//		vec3 reflected = normalize(view * vec3(1.0 + variance, -1.0));
+//		vec3 outside = cast_ray_to_plane(u_TextureScale.z, a, reflected);
+//		vec3 b = outside;
+//		Surface suf = cast_ray_impl(a, b, true, 4, 4);
+//
+//		if (b != outside) {
+//			CastPoint other;
+//			other.pos = b;
+//			other.type = suf.high_type;
+//			other.tex_coord = suf.tex_coord;
+////			other.is_shadowed = suf.is_shadowed;
+//			Target0 += c_ReflectionPower * evaluate_color(other.tex_coord);
+////			Target0 = vec4(0.5, 0.5, 0, 1);
+//		}else {
+////			Target0 = vec4(1.0, 0, 0, 1);
+//		}
+//	}
 //	Target0 = frag_color;
 //
 //	vec4 target_ndc = u_ViewProj * vec4(pt.pos, 1.0);

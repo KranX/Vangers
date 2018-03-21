@@ -12,7 +12,8 @@
 #define __XGRAPH_H__
 
 #include <GL/glew.h>
-#include "gl.h"
+#include "gl/Texture.h"
+#include "gl/PlainTextureShader.h"
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
 #define XGR_64KR(c)		(((c) >> XGR_SHIFT_R) & XGR_COLOR_MASK_R)
@@ -106,8 +107,8 @@ struct XGR_Screen
 	//SDL_Surface *XGR32_ScreenSurface2D;
 	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
-	std::shared_ptr<Texture> texture;
-	std::unique_ptr<TextureShader> textureShader;
+	std::shared_ptr<gl::Texture> texture;
+	std::unique_ptr<PlainTextureShader> textureShader;
 //	SDL_Texture *sdlTexture;
 	//SDL_Texture *sdlTexture2D;
 //	SDL_Texture *HDBackgroundTexture;
