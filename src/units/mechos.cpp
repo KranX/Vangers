@@ -68,7 +68,7 @@ extern int multi_draw;
 extern int RAM16;
 extern int GameQuantReturnValue;
 
-int mechosCameraOffsetX = 0;
+int uiMarginRight = 0;
 extern int aciWorldIndex;
 
 extern int light_modulation;
@@ -3343,7 +3343,7 @@ void camera_quant(int X, int Y, int Turn, double V_abs) {
 
 	double turnf = 1.5 * M_PI - GTOR(TurnAngle);
 	double cdx, cdy;
-	auto offset = (TurnSecX / (double)curGMap->xsize) * mechosCameraOffsetX;
+	auto offset = (TurnSecX / (double)curGMap->xsize) * uiMarginRight / 2;
 	if (camera_rotate_enable) {
 		cdx = -offset * cos(M_PI / 2 - turnf);
 		cdy = offset * sin(M_PI / 2 - turnf);
@@ -8165,7 +8165,7 @@ void ActionDispatcher::DrawResource(void)
 	XGR_SetClip(UcutLeft,VcutUp,UcutRight,VcutDown);
 
 	y0 = VcutDown - RES_DRAW_DOWN;
-	x0 = UcutRight - RES_DRAW_LEFT;
+	x0 = UcutRight - RES_DRAW_LEFT - uiMarginRight;
 	x1 = UcutLeft + RES_DRAW_LEFT;
 	sx = x0 - x1;
 
@@ -8275,7 +8275,7 @@ int VangerUnit::CheckStartJump(void)
 	return 1;
 };
 
-const int COMPAS_RIGHT = 80;
+const int COMPAS_RIGHT = 90;
 const int COMPAS_LEFT = 60;
 const int COMPAS_UP = 60;
 const int COMPAS_DOWN = 80;
@@ -8657,8 +8657,9 @@ void CompasObject::Quant(void)
 		vMove.x = 0;
 	};
 
-	if(tx > UcutRight - COMPAS_RIGHT){
-		tx = UcutRight - COMPAS_RIGHT;
+	// TODO: do something with 150px constant
+	if(tx > UcutRight - COMPAS_RIGHT - uiMarginRight){
+		tx = UcutRight - COMPAS_RIGHT - uiMarginRight;
 		vMove.x = 0;
 	};
 

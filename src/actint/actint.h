@@ -1291,8 +1291,8 @@ const int 	AS_WORLDS_INIT		= 0x8000;
 
 /** actInt camera offsets
 **/
-const int AS_INF_CAMERA_OFFSET = 100;
-const int AS_INV_CAMERA_OFFSET = 250;  // ??
+const int AS_INF_CAMERA_OFFSET = 220;
+const int AS_INV_CAMERA_OFFSET = 500;  // ??
 
 const int SCREEN_INFO_ID = 1;
 const int SCREEN_INVENTORY_ID = 2;

@@ -72,7 +72,7 @@ extern int iScreenLog;
 extern int* AVI_index;
 
 extern actIntDispatcher* aScrDisp;
-extern int mechosCameraOffsetX;
+extern int uiMarginRight;
 extern int PalIterLock;
 extern int aciShopMenuLog;
 extern int ExclusiveLog;
@@ -1267,7 +1267,7 @@ actIntDispatcher::actIntDispatcher(void)
 	events = new actEventHeap;
 
 	curMode = AS_INFO_MODE;
-	mechosCameraOffsetX = 100;
+	uiMarginRight = AS_INF_CAMERA_OFFSET;
 
 	mapObj = new bmlObject;
 	mapObj -> flags |= BMP_FLAG;
@@ -5181,7 +5181,7 @@ void actIntDispatcher::EventQuant(void)
 					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
 					XGR_MouseHide();
 					XGR_MouseSetPromptData(NULL);
-                    mechosCameraOffsetX = 0;
+                    uiMarginRight = 0;
 				}
 				else {
 					flags &= ~AS_FULL_REDRAW;
@@ -5190,12 +5190,12 @@ void actIntDispatcher::EventQuant(void)
 //					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
 					XGR_MouseShow();
 					if(curMode == AS_INV_MODE){
-                        mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
+                        uiMarginRight = AS_INV_CAMERA_OFFSET;
 						XGR_MouseSetPromptData(invPrompt);
 					}
 					else {
 						if(curMode == AS_INFO_MODE){
-                            mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
+                            uiMarginRight = AS_INF_CAMERA_OFFSET;
 							XGR_MouseSetPromptData(infPrompt);
 						}
 					}
@@ -5445,7 +5445,7 @@ void actIntDispatcher::change_mode(void)
 			curScrMode = prevScrMode;
 
 			init_inds();
-			mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
+			uiMarginRight = AS_INF_CAMERA_OFFSET;
 			break;
 		case AS_INFO_MODE:
 			currentScreenId = SCREEN_INVENTORY_ID;
@@ -5455,7 +5455,7 @@ void actIntDispatcher::change_mode(void)
 			curScrMode = INVSCR_MODE;
 
 			init_inds();
-			mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
+			uiMarginRight = AS_INV_CAMERA_OFFSET;
 			break;
 	}
 	flags &= ~AS_CHANGE_MODE;
