@@ -70,6 +70,8 @@
 
 #include "palette.h"
 #include "sound/hsound.h"
+#include "util/ring_buffer.h"
+#include "util/PerfWidget.h"
 
 
 #ifndef DBGCHECK
@@ -201,6 +203,10 @@ int network_log = 0;
 const int FPS_PERIOD = 50;
 int fps_frame,fps_start;
 char fps_string[20];
+
+util::PerfWidget _debugPerfWidget(&XGR_Obj);
+util::RingBuffer<util::NamedValues> _debugPerfCounterStorage(200);
+util::TimerStorage _debugTimerStorage;
 
 int stop_all_except_me = 0;
 
@@ -1091,7 +1097,7 @@ int GameQuantRTO::Quant(void)
 //		DBGCHECK
 		frame++;
 		if(++fps_frame == FPS_PERIOD) {
-			sprintf(fps_string,"%.1f",(double)FPS_PERIOD/(SDL_GetTicks() - (int)fps_start)*1000);
+			sprintf(fps_string,"FPS: %.1f",(double)FPS_PERIOD/(SDL_GetTicks() - (int)fps_start)*1000);
 #ifdef _DEBUG
 			network_analysis(network_analysis_buffer,0);
 #else
@@ -1604,7 +1610,7 @@ void KeyCenter(int key)
 				GameTimerON_OFF();
 			}
 			break;
-		case 'F':
+		case SDL_SCANCODE_F:
 			mod = SDL_GetModState();
 			if (mod&KMOD_CTRL) {
 				curGMap -> prmFlag ^= PRM_FPS;
@@ -1876,6 +1882,7 @@ void iGameMap::flush()
 
 void iGameMap::draw(int self)
 {
+	_debugTimerStorage.event_start("draw");
 	static XBuffer status;
 	static int blink,clcnt;
 	
@@ -1973,20 +1980,7 @@ void iGameMap::draw(int self)
 			message_dispatcher.new_messages = zCount;
 		}
 
-		// All Debug Messages should be placed here
-		if(prmFlag & PRM_FPS) {
-			sysfont.draw(xc + xside - 150,yc - yside + 80,(unsigned char*)fps_string,224 + 15,-1);
-			status.init();
-			status <= ViewX < " " <= ViewY/* < ":" <= ActD.NumResolve*/;
-			sysfont.draw(xc + xside - 150,yc - yside + 96,(unsigned char*)status.GetBuf(),224 + 15,-1);
-			if(NetworkON)
-				sysfont.drawtext(xc - xside + 3,yc - yside + 32,network_analysis_buffer.address(),255,-1);
-			#ifdef SICHER_DEBUG
-				status.init();
-				status < "Speed_correction_factor: " <= speed_correction_factor < "\n";
-				sysfont.drawtext(xc - xside + 3,yc + yside - 60,status.address(),255,-1);
-			#endif
-		}
+
 
 		switch(message_mode % 3){
 			case 0:
@@ -2037,7 +2031,37 @@ void iGameMap::draw(int self)
 		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
 #endif
 	};
-	
+	_debugTimerStorage.event_end("draw");
+	_debugPerfCounterStorage.add(_debugTimerStorage.next());
+
+	// All Debug Messages should be placed here
+	if(prmFlag & PRM_FPS) {
+		sysfont.draw(xc - xside + 150,yc - yside + 80,(unsigned char*)fps_string,224 + 15,-1);
+		char msg[256];
+
+		sprintf(msg, "View(X, Y, Z): (%d, %d, %d)", ViewX, ViewY, ViewZ);
+		sysfont.draw(xc - xside + 150,yc - yside + 96,msg,224 + 15,-1);
+
+		sprintf(msg, "Angle(Turn, Slope): (%d, %d)", TurnAngle, SlopeAngle);
+		sysfont.draw(xc - xside + 150,yc - yside + 112,msg,224 + 15,-1);
+
+
+		_debugPerfWidget.draw_storage(_debugPerfCounterStorage, xc - xside + 150, yc - yside + 196);
+
+		int i = 0;
+		for(auto const& kv: _debugPerfWidget.get_colors()){
+			sprintf(msg, "* %s", kv.first.c_str());
+			sysfont.draw(xc - xside + 50, yc - yside + 160 + i * 16, msg, kv.second, -1);
+			i++;
+		}
+		if(NetworkON)
+			sysfont.drawtext(xc - xside + 3,yc - yside + 32,network_analysis_buffer.address(),255,-1);
+#ifdef SICHER_DEBUG
+		status.init();
+				status < "Speed_correction_factor: " <= speed_correction_factor < "\n";
+				sysfont.drawtext(xc - xside + 3,yc + yside - 60,status.address(),255,-1);
+#endif
+	}
 }
 
 void preCALC(void)
