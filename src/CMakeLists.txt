@@ -67,11 +67,19 @@ SET(vangers_SRCS
 	uvs/univang.cpp
 	xjoystick.cpp
 	xsocket.cpp
-	zmod_client.cpp 
+	zmod_client.cpp
+	cli_options.cpp
+	cli_options.h
+	util/ring_buffer.h
+	util/Timer.cpp
+	util/Timer.h
+	util/TimerStorage.cpp
+	util/TimerStorage.h
+	util/PerfWidget.cpp
+	util/PerfWidget.h
+	terra/vmaprenderer.cpp
+	terra/vmaprenderer.h
 	${WINDOWS_RES}
-		cli_options.cpp cli_options.h
-        util/ring_buffer.h util/Timer.cpp util/Timer.h util/TimerStorage.cpp util/TimerStorage.h util/PerfWidget.cpp util/PerfWidget.h
-        terra/vmaprenderer.cpp terra/vmaprenderer.h
 )
 
 ADD_EXECUTABLE(vangers ${vangers_SRCS})
