@@ -3,14 +3,15 @@
 #define _XSOCKET_H
 
 #include "../lib/xtool/xglobal.h"
+#include "SDL_net.h"
 
 int XSocketInit(int ErrHUsed = 1);
 int XSocketGetErrorStatus();
 char* XSocketGetLastError();
 
 extern char XSocketLocalHostName[257];
-extern int XSocketLocalHostADDR;
-extern int XSocketLocalHostExternADDR;
+extern IPaddress XSocketLocalHostADDR;
+extern IPaddress XSocketLocalHostExternADDR;
 extern int XSocketInitializationOK;
 
 char* get_name_by_addr(int IP);
