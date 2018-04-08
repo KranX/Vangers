@@ -24,67 +24,54 @@
 
 #include "xsocket.h"
 #define  KDWIN
-//#include "_xtool.h"
 #include "../lib/xtool/xtcore.h"
 
 
-//#define XSOCKET_ABORT(str,code) { if(ErrHUsed) ErrH.Abort(str,XERR_USER,code); else{ XSocketLastErrorString = str; XSocketLastErrorCode = code; }}
-#define XSOCKET_ABORT(str,code) { if(ErrHUsed) XCon < str < ", code: " <= code < "                               \n"; else{ XSocketLastErrorString = str; XSocketLastErrorCode = code; }}
+#define XSOCKET_ABORT(str, code) { \
+	if(ErrHUsed) {\
+		std::cout << str << ", code: " << code << "                               \n"; \
+	} else {\
+		XSocketLastErrorString = (char *)str;\
+		XSocketLastErrorCode = (char *)code;\
+	}\
+}
 #define XSOCKET_WARNING(str,code)
 #define	DEFAULT_NON_BLOCKING_OPTION() set_nonblocking_mode(1)
 
 char* XSocketLastErrorString = 0;
-int XSocketLastErrorCode = 0;
+char* XSocketLastErrorCode = 0;
 char XSocketLocalHostName[257];
-int XSocketLocalHostADDR;
-int XSocketLocalHostExternADDR = 0;
+IPaddress XSocketLocalHostADDR;
+IPaddress XSocketLocalHostExternADDR;
 int XSocketInitializationOK = 0;
 /*****************************************************************
 			Initialization
 *****************************************************************/
-int XSocketInit(int ErrHUsed)
-{
+int XSocketInit(int ErrHUsed) {
 	if(XSocketInitializationOK)
 		return 1;
-	
-	WORD wVersionRequested; 
-	WSADATA wsaData; 
-	wVersionRequested = MAKEWORD(1, 1); 
-													
-	 /* инициализация сокетов */
-	if(WSAStartup(wVersionRequested, &wsaData) !=  0){
-		XSOCKET_ABORT("Winsock failed",WSAGetLastError());
+
+	// SDL_Init() should have already been called before this.
+	if (SDLNet_Init() == -1) {
+		XSOCKET_ABORT("Network init failed", SDLNet_GetError());
 		return 0;
-		}
+	}
 
-	if(gethostname(XSocketLocalHostName,256) == SOCKET_ERROR){
-		XSOCKET_ABORT("Gethostname failed",WSAGetLastError());
+	if (gethostname(XSocketLocalHostName, HOST_NAME_MAX) == SOCKET_ERROR) {
+		XSOCKET_ABORT("gethostname failed", "");
 		return 0;
-		}
-	XSocketLocalHostName[256] = 0;
+	}
+	XSocketLocalHostName[HOST_NAME_MAX] = 0;
 
-	PHOSTENT phe = gethostbyname(XSocketLocalHostName);
-	if(phe == NULL){
-		XSOCKET_ABORT("Gethostbyname failed",WSAGetLastError());
+	if (SDLNet_ResolveHost(&XSocketLocalHostExternADDR, XSocketLocalHostName, 0) == -1) {
+		XSOCKET_ABORT("resolvehost failed", SDLNet_GetError());
 		return 0;
-		}
-	if(phe -> h_length != 4){
-		XSOCKET_ABORT("Not a 4-bytes IP address",phe -> h_length);
-		return 0;
-		}
-
-	in_addr addr;
-	addr.s_addr = *((int*)(phe -> h_addr));
-	XSocketLocalHostExternADDR =  XSocketLocalHostADDR = addr.s_addr;
-
-	if(phe -> h_addr_list[1]){
-		addr.s_addr = *((int*)(phe -> h_addr_list[1]));
-		XSocketLocalHostExternADDR = addr.s_addr;
-		}
-
+	}
+	XSocketLocalHostADDR = XSocketLocalHostExternADDR;
 	XSocketInitializationOK = 1;
 	return 1;
 }
+
 /*****************************************************************
 			Constructor
 *****************************************************************/
