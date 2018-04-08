@@ -18,7 +18,7 @@
 #undef SHOW_LOGOS
 #endif
 
-#include "../lib/xsound/_xsound.h"
+#include "_xsound.h"
 
 #include "runtime.h"
 

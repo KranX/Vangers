@@ -2,7 +2,7 @@
 
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
-#include "global.h"
+#include "xgraph.h"
 #include <assert.h>
 
 #ifdef __APPLE__

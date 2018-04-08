@@ -11,6 +11,8 @@
 #ifndef __XGRAPH_H__
 #define __XGRAPH_H__
 
+#include "xglobal.h"
+
 #ifdef WITH_OPENGL
 #include <GL/gl.h>
 #include <GL/glu.h>
