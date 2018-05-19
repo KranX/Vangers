@@ -1021,7 +1021,7 @@ char* dgMolecule::getVarPhrase(char* s)
 int dgMolecule::getHandledPhrase(char* s)
 {
 	static char mss[] = "Wrong VarPhrase format";
-	
+
 	char* var = strchr(s,'$');
 	if(!var) return 0;
 	char* p = var + 1;

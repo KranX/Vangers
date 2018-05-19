@@ -21,8 +21,8 @@
 //#include "../lib/xtool/xtcore.h"
 //#include "../lib/xtool/xerrhand.h"
 //#include "../lib/xtool/xstream.h"
-#include "../lib/xtool/xglobal.h"
-#include "xsocket.h"
+//#include "../lib/xtool/xglobal.h"
+//#include "xsocket.h"
 #include "server.h"
 
 extern int frame;

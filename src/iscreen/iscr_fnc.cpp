@@ -142,10 +142,10 @@ void iChatMouseQuant(int x,int y,int bt);
 void iSoundQuant(int value = 0);
 
 void iPrepareSaveNames(void);
-void iInitServersList(int inet = 0);
-void iUpdateServersList(int inet = 0);
-void iServersListUp(int inet = 0);
-void iServersListDown(int inet = 0);
+void iInitServersList();
+void iUpdateServersList();
+void iServersListUp();
+void iServersListDown();
 void iConnect2Server(void);
 void iInitControlKey(int id,int num);
 void iDeleteControl(int vkey,int id);
@@ -2246,31 +2246,31 @@ void iHandleExtEvent(int code,int data)
 		case iEXT_SET_SLOT:
 			iSlotNumber = data;
 			break;
-		case iEXT_INIT_SERVERS_LIST:
+//		case iEXT_INIT_SERVERS_LIST:
+//			iFirstServerPtr = avaible_servers.first();
+//			iInitServersList();
+//			break;
+		case iEXT_INIT_iSERVERS_LIST:
 			iFirstServerPtr = avaible_servers.first();
 			iInitServersList();
 			break;
-		case iEXT_INIT_iSERVERS_LIST:
-			iFirstServerPtr = avaible_servers.first();
-			iInitServersList(1);
-			break;
-		case iEXT_UPDATE_SERVERS_LIST:
+//		case iEXT_UPDATE_SERVERS_LIST:
+//			iUpdateServersList();
+//			break;
+		case iEXT_UPDATE_iSERVERS_LIST:
 			iUpdateServersList();
 			break;
-		case iEXT_UPDATE_iSERVERS_LIST:
-			iUpdateServersList(1);
-			break;
-		case iEXT_UP_SERVERS_LIST:
+//		case iEXT_UP_SERVERS_LIST:
+//			iServersListUp();
+//			break;
+		case iEXT_UP_iSERVERS_LIST:
 			iServersListUp();
 			break;
-		case iEXT_UP_iSERVERS_LIST:
-			iServersListUp(1);
-			break;
-		case iEXT_DN_SERVERS_LIST:
-			iServersListDown();
-			break;
+//		case iEXT_DN_SERVERS_LIST:
+//			iServersListDown();
+//			break;
 		case iEXT_DN_iSERVERS_LIST:
-			iServersListDown(1);
+			iServersListDown();
 			break;
 		case iEXT_SAVE_GAME:
 			if(actIntLog && !iPause && !NetworkON){
@@ -2473,18 +2473,14 @@ void iPrepareSaveNames(void)
 	}
 }
 
-void iUpdateServersList(int inet)
+void iUpdateServersList()
 {
-	if(!inet)
-		avaible_servers.find_servers();
-	else
-		avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME),iServerPort);
-
+	avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME), iServerPort);
 	iFirstServerPtr = avaible_servers.first();
-	iInitServersList(inet);
+	iInitServersList();
 }
 
-void iInitServersList(int inet)
+void iInitServersList()
 {
 	int i,sz;
 	iScreen* scr;
@@ -2493,10 +2489,7 @@ void iInitServersList(int inet)
 	XBuffer XBuf;
 	ServerFindChain* p;
 
-	if(!inet)
-		scr = (iScreen*)iScrDisp -> get_object("Search server screen");
-	else
-		scr = (iScreen*)iScrDisp -> get_object("iSearch server screen");
+	scr = (iScreen*)iScrDisp -> get_object("iSearch server screen");
 	if(!scr) return;
 
 	p = iFirstServerPtr;
@@ -2526,7 +2519,7 @@ void iInitServersList(int inet)
 	}
 }
 
-void iServersListUp(int inet)
+void iServersListUp()
 {
 	int i;
 	ServerFindChain* p = iFirstServerPtr;
@@ -2535,11 +2528,11 @@ void iServersListUp(int inet)
 	}
 	if(p){
 		iFirstServerPtr = p;
-		iInitServersList(inet);
+		iInitServersList();
 	}
 }
 
-void iServersListDown(int inet)
+void iServersListDown()
 {
 	int i;
 	ServerFindChain* p = iFirstServerPtr;
@@ -2548,7 +2541,7 @@ void iServersListDown(int inet)
 	}
 	if(p){
 		iFirstServerPtr = p;
-		iInitServersList(inet);
+		iInitServersList();
 	}
 }
 

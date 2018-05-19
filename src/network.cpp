@@ -334,48 +334,6 @@ int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_g
 	return n_games + 1;
 }
 
-int ServersList::find_servers(int bc_port)
-{
-	char buffer[300];
-	int IP,port, sent_size;
-	char* name;
-	ServerFindChain* p;
-	XSocket udp_sock;
-	udp_sock.openUDP(bc_port);
-	clear_states();
-	START_TIMER(5*CLOCKS_PER_SEC);
-	while(CHECK_TIMER()){
-		sent_size = udp_sock.receivefrom(buffer,256);
-		if(buffer[0] != 'K' || buffer[1] != 'D'){
-			continue;
-			}
-		IP = *((int*)(buffer + 2));
-		port = *((unsigned short*)(buffer + 6));
-		if(sent_size > 8){
-			buffer[sent_size] = 0;
-			name = strupr(buffer + 8);
-			}
-		else
-			name = 0;
-
-		p = first();
-		while(p){
-			if(p -> IP == IP && p -> port == port)
-				break;
-			p = p -> next;
-			}
-		if(!p)
-			talk_to_server(IP,port,name);
-		}
-
-#ifdef _DEBUG
-	if(host_name)
-		talk_to_server(0,host_port,host_name);
-#endif
-
-	return size();
-}
-
 int ServersList::find_servers_in_the_internet(char* host_name,int host_port)
 {
 	clear_states();

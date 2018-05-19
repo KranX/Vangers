@@ -1,4 +1,5 @@
-
+#include "../lib/xtool/xglobal.h"
+#include "xsocket.h"
 #include "multiplayer.h"
 
 #define DIRECT_SENDING_OBJECT	1
@@ -51,8 +52,8 @@ class InputEventBuffer : public XBuffer {
 	unsigned int filled_size;
 
 public:
-		InputEventBuffer(unsigned int size);
-		void reset();
+	InputEventBuffer(unsigned int size);
+	void reset();
 
 	int receive(XSocket& sock); 
 	int current_event(){ return event_ID; } 
@@ -272,13 +273,12 @@ struct Server {
 	int check_new_clients();
 	int clients_quant();
 	int games_quant();
-	void broadcast();
 	void get_games_list(OutputEventBuffer& out_buffer,int client_version);
 	void analyse_statistics(Game* g);
 	void report();
 
-	void load_rating_list(char* name);
-	void save_rating_list(char* name);
+	void load_rating_list(const char* name);
+	void save_rating_list(const char* name);
 	RatingData* search_rating_data(char* player_name, char* player_password, int MP_game);
 	void add_rating_data(Player* player, int MP_game);
 	void get_top_list(OutputEventBuffer& out_buffer,int MP_game);

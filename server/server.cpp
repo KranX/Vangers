@@ -1,10 +1,8 @@
-
 #include "kdsplus.h"
-#pragma hdrstop
+#include "xerrhand.h"
 
 #define LAG	-3000
 //#define EVENTS_LOG
-#define RUSSIAN_VERSION
 #define SERVER_VERSION	1
 
 #ifdef EVENTS_LOG
@@ -21,14 +19,14 @@ XStream fout("lst",XS_OUT);
 #endif
 
 #ifdef _DEBUG
-#define DOUT(str) { XCon < str < "                                       \n"; }
-#define DOUT1(str, code) { XCon < str < ", code: " <= code < "                                       \n"; }
+#define DOUT(str) { std::cout << str << "                                       \n"; }
+#define DOUT1(str, code) { std::cout << str << ", code: " << code << "                                       \n"; }
 #else
 #define DOUT(str)  
 #define DOUT1(str, code)  
 #endif
-#define MOUT(str) { XCon < str < "                                       \n"; }
-#define MOUT1(str, code) { XCon < str < ", code: " <= code < "                                       \n"; }
+#define MOUT(str) { std::cout << str << "                                       \n"; }
+#define MOUT1(str, code) { std::cout << str << ", code: " << code << "                                       \n"; }
 
 const char* MP_GAMES_NAMES[NUMBER_MP_GAMES] = { 
 	"VAN_WAR",
@@ -492,7 +490,7 @@ void Game::save_result()
 		return;
 	XBuffer name;
 	name <= time(0) < ".rs" <= data.GameType;
-	XStream out(name,XS_OUT);
+	XStream out(name.GetBuf(), XS_OUT);
 
 	out.write(&data,sizeof(ServerData));
 	int counter = 0;
@@ -805,7 +803,7 @@ void World::process_set_position(Player* player)
 				}
 			}
 		// Check for hide
-		for(y = hide_y0; y != hide_y1; y = (y + 1) & (number_of_y_lists - 1)){
+		for(int y = hide_y0; y != hide_y1; y = (y + 1) & (number_of_y_lists - 1)){
 			obj = y_lists[y].first();
 			while(obj){
 				if(obj -> visibility & mask && !check_visibility(player,obj)){
@@ -890,7 +888,7 @@ void World::process_set_position(Player* player)
 
 int World::check_visibility(Player* p1,Player* p2)
 {
-	if(abs(getDistY(p1 -> y,p2 -> y)) < max(p1 -> y_half_size_of_screen, p2 -> y_half_size_of_screen) + PLAYERS_RADIUS)
+	if(abs(getDistY(p1 -> y,p2 -> y)) < std::max(p1 -> y_half_size_of_screen, p2 -> y_half_size_of_screen) + PLAYERS_RADIUS)
 		return 1;
 	return 0;
 }
@@ -1271,7 +1269,7 @@ int Player::receive()
 			case REGISTER_NAME: {
 				if(name)
 					delete name;
-				int name_len = strlen(in_buffer + in_buffer.tell());
+				int name_len = strlen(in_buffer(in_buffer.tell()));
 				name = new char[name_len + 2];
 				in_buffer > name;
 				name[name_len + 1] = 0;
@@ -1287,7 +1285,7 @@ int Player::receive()
 					}
 				if(password)
 					delete password;
-				password = new char[strlen(in_buffer + in_buffer.tell()) + 1];
+				password = new char[strlen(in_buffer(in_buffer.tell())) + 1];
 				in_buffer > password;
 
 				game -> put_event_for_all(PLAYERS_NAME,this);
@@ -1727,22 +1725,13 @@ void OutputEventBuffer::end_event()
 ******************************************************************/
 Server::Server(int main_port,int broadcast_port,int time_to_live)
 {
-	if(!main_socket.listen(main_port)){
+	if(!main_socket.listen(main_port)) {
 		XBuffer err;
 		err < "Vangers Server is already running or TCP/IP port " <= main_port < " is used by another application";
-		ErrH.Abort(err);
+		ErrH.Abort(err.GetBuf());
 		//SERVER_ERROR("Unable to create Server",main_port);
-		}
-	XCon < "Main TCP/IP port: " <= main_port < "\n";
-
-	if(broadcast_port){
-		if(!broadcast_socket.open_broadcast(broadcast_port))
-			SERVER_ERROR("Unable to create broadcast port",broadcast_port);
-		XCon < "UDP Broadcast port: " <= broadcast_port < "\n";
-		}
-	else
-		XCon < "UDP BroadCast is supressed\n";
-
+	}
+	std::cout << "Main TCP/IP port: " << main_port << std::endl;
 
 	load_rating_list("Rating.lst");
 
@@ -1796,7 +1785,7 @@ Game* Server::create_game()
 int Server::check_new_clients()
 {
 	if(main_socket.check_readability()){
-		XSocket sock = main_socket.accept();
+		XSocket&& sock = main_socket.accept();
 		if(!sock) 
 			return 0;
 		Player* player = new Player(this, sock);
@@ -1835,23 +1824,23 @@ int Server::clients_quant()
 int Server::quant()
 {
 	//fout < "Quant: " <= frame < "\t" <= clock() < "\n";
-	if(next_broadcast < clock()){
+	if(next_broadcast < clock()) {
 		next_broadcast = clock() + 1000;
-		broadcast();
 		int n_players = 0;
 		Game* g = games.first();
-		while(g){
+		while(g) {
 			n_players += g -> players.size();
 			g = g -> next;
-			}
+		}
 		int t = clock()/1000;
 		int ts = t % 60; t /= 60;
-		int tm = t % 60; t /= 60;			
-		int th = t % 24; t /= 24;				 
-		if(t)
-			XCon <= t < ":";
-		XCon <= th < ":" <= tm < ":"  <= ts < " ";
-		XCon < "Transfer: " <= transferring < ", Games: " <= games.size()  < ", Players: " <= n_players < ", Clients: " <= clients.size() < "                \r";
+		int tm = t % 60; t /= 60;
+		int th = t % 24; t /= 24;
+		if(t) {
+			std::cout << t << ":";
+		}
+		std::cout << th << ":" << tm << ":" << ts << " ";
+		std::cout << "Transfer: " << transferring << ", Games: " << games.size() << ", Players: " << n_players << ", Clients: " << clients.size() << "                \r";
 		if(time_to_live && !(transferring | games.size() | n_players | clients.size())){
 			if(!time_to_destroy)
 				time_to_destroy = clock() + time_to_live*1000;
@@ -1862,7 +1851,7 @@ int Server::quant()
 			GlobalExit = 1;
 		transferring = 0;
 		//report();
-		}
+	}
 	int transf = check_new_clients() + clients_quant() + games_quant();
 	transferring += transf;
 	return transf;
@@ -1903,27 +1892,27 @@ void Server::analyse_statistics(Game* g)
 		playing_time_max[type] = playing_time;
 	playing_time_sum[type] += playing_time;
 
-	XCon < "\nGames' Statistics (maximum/average):\n";
-	 for(int i = 0;i < NUMBER_MP_GAMES;i++){
+	std::cout << "\nGames' Statistics (maximum/average):\n";
+	for(int i = 0;i < NUMBER_MP_GAMES;i++) {
 		if(!n_games[i])
 			continue;
-		XCon < (char*)MP_GAMES_NAMES[i] < ": " <= n_games[i] 
-		< "; Players: " <= n_players_max[i] < "/" <= round(double(n_players_sum[i])/n_games[i])
-		< "; Time of game: " <= playing_time_max[i] < "/" <= round(double(playing_time_sum[i])/n_games[i]) < " min.\n";
-		}
+		std::cout << (char*)MP_GAMES_NAMES[i] << ": " << n_games[i]
+		<< "; Players: " << n_players_max[i] << "/" << round(double(n_players_sum[i])/n_games[i])
+		<< "; Time of game: " << playing_time_max[i] << "/" << round(double(playing_time_sum[i])/n_games[i]) << " min.\n";
+	}
 	
-	XCon < "Last game: ";
+	std::cout << "Last game: ";
 	time_t aclock;
 	time(&aclock);
 	struct tm* newtime = localtime(&aclock);  
 	char* strtime = asctime(newtime);
 	strtime[strlen(strtime) - 1] = 0;
-	XCon < (char*)MP_GAMES_NAMES[type] < "; " < strtime < "; Players: " <= n_players < "; Time of game: " <= playing_time < " min.\n\n";
+	std::cout << (char*)MP_GAMES_NAMES[type] << "; " << strtime << "; Players: " << n_players << "; Time of game: " << playing_time << " min.\n\n";
 	if(StatLogging){
 		stat_log < strtime < "; " < (char*)MP_GAMES_NAMES[type] < "; Players: " <= n_players < "; Time of game: " <= playing_time < " min.\n";
 		Player* p  = g -> removed_players.first();
-		while(p){
-			int IP = p -> socket.IP;
+		while(p) {
+			int IP = p->socket.addr.host;
 			if(IP)
 				stat_log < "IP: " <= (IP & 0xff) < "." <= ((IP >> 8) & 0xff) < "." <= ((IP >> 16) & 0xff) < "." <= ((IP >> 24) & 0xff)
 				< "; Time of Existence: " <= round(double(TIME_INTERVAL(p -> birth_time))/(60*1000)) 
@@ -1932,17 +1921,6 @@ void Server::analyse_statistics(Game* g)
 			}
 		stat_log < "\n";
 		}
-}
-
-void Server::broadcast()
-{
-	if(!broadcast_socket.port)
-		return;
-	unsigned int sent;
-	XBuffer buffer(300);
-	buffer < 'K' < 'D' < XSocketLocalHostADDR < (unsigned short)(main_socket.port) < XSocketLocalHostName < char(0);
-	if((sent = broadcast_socket.sendto(buffer,buffer.tell())) != buffer.tell())
-		SERVER_ERROR("Unable to send broadcast packet",sent);
 }
 
 void Server::get_games_list(OutputEventBuffer& out_buffer,int client_version)
@@ -1978,30 +1956,30 @@ void Server::get_games_list(OutputEventBuffer& out_buffer,int client_version)
 
 void Server::report()
 {
-	XCon < "\n\nReport's time: " <= SECONDS() < "\n";
+	std::cout << "\n\nReport's time: " << SECONDS() << "\n";
 	Player* p;
 	World* w;
 	Game* s = games.first();
 	while(s){
-		XCon < "Game " <= (unsigned char)(s -> ID) < ": ";
+		std::cout << "Game " << (unsigned char)(s -> ID) << ": ";
 		if(!(s -> players.size() | s -> worlds.size())){
-			XCon < "Empty\n\n";
+			std::cout << "Empty\n\n";
 			s = s -> next;
 			continue;
 			}
-		XCon < "\nPlayers: " <= s -> players.size() < "\tWorlds: " <= s -> worlds.size() < "\tglobal objects: " <= s -> global_objects.size() < "\n";
+		std::cout << "\nPlayers: " << s -> players.size() << "\tWorlds: " << s -> worlds.size() << "\tglobal objects: " << s -> global_objects.size() << "\n";
 		p = s -> players.first();
-		while(p){
-			XCon < "Player: " <= p -> ID < "\tsocket: " <= p -> socket() < "\tworld: " <= (p -> world ? p -> world -> ID : 0) < "\tinventory: " <= p -> inventory.size() < "\t " < p -> name < "\n";
+		while(p) {
+			std::cout << "Player: " << p -> ID << "\tsocket: " << p -> socket() << "\tworld: " << (p -> world ? p -> world -> ID : 0) << "\tinventory: " << p -> inventory.size() << "\t " << p -> name << "\n";
 			p = p -> next;
-			}
+		}
 
 		w = s -> worlds.first();
 		while(w){
-			XCon < "World: " <= w -> ID < "\ttotal objects: " <= w -> number_of_objects < "\n";
+			std::cout << "World: " << w -> ID << "\ttotal objects: " << w -> number_of_objects << "\n";
 			w = w -> next;
 			}
-		XCon < "\n";
+		std::cout << "\n";
 		s = s -> next;
 		}
 }
@@ -2027,7 +2005,7 @@ RatingData::~RatingData()
 	delete password;
 }
 
-void Server::load_rating_list(char* fname)
+void Server::load_rating_list(const char* fname)
 {
 	XStream ff(0);
 	if(!ff.open(fname,XS_IN))
@@ -2041,19 +2019,19 @@ void Server::load_rating_list(char* fname)
 	RatingData* p;
 	int num_data;
 	buf > num_data;
-	for(int i = 0;i < num_data;i++){
+	for(int i = 0;i < num_data;i++) {
 		buf > name > password > MP_game > rating;
 		p = new RatingData(name,password,MP_game,rating);
 		rating_list.append(p);
-		}
+	}
 
-	for(i = 0;i < NUMBER_MP_GAMES;i++)
+	for(int i = 0;i < NUMBER_MP_GAMES;i++)
 		rating_threshoulds[i] = (float)-1e+10;
 }
 
-void Server::save_rating_list(char* name)
+void Server::save_rating_list(const char* name)
 {
-	XStream ff(name,XS_OUT);
+	XStream ff(name, XS_OUT);
 	ff < rating_list.size();
 	RatingData* p = rating_list.first();
 //	fout < "\n\nRating:\n";
