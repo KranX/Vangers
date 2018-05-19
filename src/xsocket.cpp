@@ -50,29 +50,25 @@ static char XSocketLocalHostName[HOST_NAME_MAX+1];
     Initialization
 *****************************************************************/
 
-int XSocketInit(int ErrHUsed)
-{
+int XSocketInit(int ErrHUsed) {
 	static int XSocketInitializationOK = 0;
 
 	if(XSocketInitializationOK)
 		return 1;
 
 	// SDL_Init() should have already been called before this.
-	if (SDLNet_Init() == -1)
-	{
+	if (SDLNet_Init() == -1) {
 		XSOCKET_ERROR("Network init failed", SDLNet_GetError());
 		return 0;
 	}
 
-	if (gethostname(XSocketLocalHostName, HOST_NAME_MAX) == SOCKET_ERROR)
-	{
+	if (gethostname(XSocketLocalHostName, HOST_NAME_MAX) == SOCKET_ERROR) {
 		XSOCKET_ERROR("gethostname failed", "");
 		return 0;
 	}
 	XSocketLocalHostName[HOST_NAME_MAX] = 0;
 
-	if (SDLNet_ResolveHost(&XSocketLocalHostExternADDR, XSocketLocalHostName, 0) == -1)
-	{
+	if (SDLNet_ResolveHost(&XSocketLocalHostExternADDR, XSocketLocalHostName, 0) == -1) {
 		XSOCKET_ERROR("resolvehost failed", SDLNet_GetError());
 		return 0;
 	}
@@ -88,42 +84,33 @@ int XSocketInit(int ErrHUsed)
     Constructor
 *****************************************************************/
 
-XSocket::XSocket()
-{
+XSocket::XSocket() {
 	tcpSock = INVALID_SOCKET;
-	udpSock = INVALID_SOCKET;
 	ErrHUsed = 1;
 	addr.host = 0;
 	addr.port = 0;
 	socketSet = NULL;
 }
 
-XSocket::~XSocket()
-{
-	if(tcpSock != INVALID_SOCKET || udpSock != INVALID_SOCKET)
+XSocket::~XSocket() {
+	if(tcpSock != INVALID_SOCKET)
 		close();
 }
 
-XSocket::XSocket(XSocket& donor)
-{
+XSocket::XSocket(XSocket& donor) {
 	tcpSock = donor.tcpSock;
-	udpSock = donor.udpSock;
 	ErrHUsed = donor.ErrHUsed;
 	addr = donor.addr;
 	donor.tcpSock = INVALID_SOCKET;
-	donor.udpSock = INVALID_SOCKET;
 	socketSet = NULL;
 }
 
-XSocket& XSocket::operator = (XSocket& donor)
-{
+XSocket& XSocket::operator = (XSocket& donor) {
 	tcpSock = donor.tcpSock;
-	udpSock = donor.udpSock;
 	ErrHUsed = donor.ErrHUsed;
 	addr = donor.addr;
 	socketSet = donor.socketSet;
 	donor.tcpSock = INVALID_SOCKET;
-	donor.udpSock = INVALID_SOCKET;
 	donor.socketSet = NULL;
 	return *this;
 }
@@ -132,8 +119,7 @@ XSocket& XSocket::operator = (XSocket& donor)
     Connect functions
 *****************************************************************/
 
-int XSocket::tcp_open()
-{
+int XSocket::tcp_open() {
 	tcpSock = SDLNet_TCP_Open(&addr);
 
 	if (!tcpSock) {
@@ -148,24 +134,21 @@ int XSocket::tcp_open()
 }
 
 /* Open TCP client socket */
-int XSocket::open(int IP, int port)
-{
+int XSocket::open(int IP, int port) {
 	addr.host = htonl(IP);
 	addr.port = htons(port);
 
 	return tcp_open();
 }
 
-int XSocket::open(char* name,int port)
-{
+int XSocket::open(char* name,int port) {
 #if _SERVER // FIXME: check actual define name
 	if (!name) ErrH.Exit();
 #else
 	if (!name) ErrH.Abort("NULL inet_addr() argument...");
 #endif
 
-	if (SDLNet_ResolveHost(&addr, name, port) == -1)
-	{
+	if (SDLNet_ResolveHost(&addr, name, port) == -1) {
 		XSOCKET_ERROR("TCP socket hostname resolution failed", SDLNet_GetError());
 		return 0;
 	}
@@ -177,62 +160,11 @@ int XSocket::open(char* name,int port)
     UDP connection function
 *****************************************************************/
 
-int XSocket::openUDP(int port)
-{
-	udpSock = SDLNet_UDP_Open(port);
-	if (udpSock == INVALID_SOCKET)
-	{
-		XSOCKET_ERROR("UDP socket open failed", SDLNet_GetError());
-		return 0;
-	}
-
-	addr.port = htons(port);
-	return 1;
-}
-
-// TODO (not needed, just send broadcast UDP?)
-int XSocket::open_broadcast(int port)
-{
-/*	sock = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	 if(sock == INVALID_SOCKET){
-		XSOCKET_ERROR("socket() failed",SDLNet_GetError());
-		return 0;
-		}
-
-/
-	SOCKADDR_IN sin;
-	sin.sin_family = AF_INET;
-	sin.sin_addr.s_addr = 0;
-	sin.sin_port = htons(port);
-	 if(bind(sock, (LPSOCKADDR)&sin, sizeof(sin))){
-		XSOCKET_ERROR("bind() failed",SDLNet_GetError());
-		return 0;
-		}
-/
-	int optval = 1;
-	if(setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (char*)&optval,sizeof(int)) == SOCKET_ERROR){
-		XSOCKET_ERROR("setsockopt(SO_BROADCAST) failed",SDLNet_GetError());
-		return 0;
-		}
-
-	DEFAULT_NON_BLOCKING_OPTION();
-	XSocket::port = port;
-	return 1;*/
-return 0;
-}
-
-void XSocket::close()
-{
-	if (tcpSock)
-	{
+void XSocket::close() {
+	if (tcpSock) {
 		SDLNet_TCP_Close(tcpSock);
 		tcpSock = INVALID_SOCKET;
 
-	}
-	if (udpSock)
-	{
-		SDLNet_UDP_Close(udpSock);
-		udpSock = INVALID_SOCKET;
 	}
 	if (socketSet) {
 		SDLNet_FreeSocketSet(socketSet);
@@ -246,14 +178,12 @@ void XSocket::close()
     Listen - Accept functions
 *****************************************************************/
 
-int XSocket::listen(int port)
-{
+int XSocket::listen(int port) {
 	addr.host = INADDR_ANY;
 	addr.port = htons(port);
 
 	tcpSock = SDLNet_TCP_Open(&addr);
-	if (tcpSock == INVALID_SOCKET)
-	{
+	if (tcpSock == INVALID_SOCKET) {
 		XSOCKET_ERROR("TCP listen failed", SDLNet_GetError());
 		return 0;
 	}
@@ -261,13 +191,11 @@ int XSocket::listen(int port)
 	return 1;
 }
 
-XSocket XSocket::accept()
-{
+XSocket XSocket::accept() {
 	TCPsocket newSock;
 
 	newSock = SDLNet_TCP_Accept(tcpSock);
-	if (!newSock)
-	{
+	if (!newSock) {
 		XSOCKET_ERROR("TCP accept failed", SDLNet_GetError());
 		// TODO: check possible error conditions and results
 	}
@@ -280,8 +208,7 @@ XSocket XSocket::accept()
 }
 
 // TODO
-int XSocket::set_nonblocking_mode(int enable_nonblocking)
-{
+int XSocket::set_nonblocking_mode(int enable_nonblocking) {
 /*	unsigned long arg = enable_nonblocking;
 	if(ioctlsocket(sock,FIONBIO,&arg)){
 		XSOCKET_ERROR("ioctlsocket() failed",SDLNet_GetError());
@@ -294,43 +221,24 @@ int XSocket::set_nonblocking_mode(int enable_nonblocking)
     Send and Receive functions
 *****************************************************************/
 
-int XSocket::send(const char* buffer, int size)
-{
+int XSocket::send(const char* buffer, int size) {
 	int status = 0;
-	if (tcpSock)
-	{
+	if (tcpSock) {
 		status = SDLNet_TCP_Send(tcpSock, buffer, size);
-		if (status < size)
-		{
+		if (status < size) {
 			XSOCKET_ERROR("TCP send failed", SDLNet_GetError());
 			// TODO: close socket?
 			return 0;
 		}
 		return status;
-	}
-	else if (udpSock)
-	{
-		UDPpacket *pkt = SDLNet_AllocPacket(size);
-		if (!pkt) // TODO: report oom
-			return 0;
-// 		pkt->data = buffer; // FIXME: FreePacket deletes this memory?
-		memcpy(pkt->data, buffer, size);
-		if (!SDLNet_UDP_Send(udpSock, -1, pkt))
-		{
-			SDLNet_FreePacket(pkt);
-			XSOCKET_ERROR("UDP send failed", SDLNet_GetError());
-			return 0;
-		}
-		SDLNet_FreePacket(pkt);
-	}
-	else
+	} else {
 		return 0;
+	}
 
 	return 1;
 }
 
-int XSocket::receive(char* buffer, int size_of_buffer, int ms_time)
-{
+int XSocket::receive(char* buffer, int size_of_buffer, int ms_time) {
 	int status = 0;
 
 	if (ms_time == 0) {
@@ -350,8 +258,7 @@ int XSocket::receive(char* buffer, int size_of_buffer, int ms_time)
 		}
 	}
 
-	if (tcpSock)
-	{
+	if (tcpSock) {
 		status = SDLNet_TCP_Recv(tcpSock, buffer, size_of_buffer);
 		if (status <= 0)
 		{
@@ -360,26 +267,9 @@ int XSocket::receive(char* buffer, int size_of_buffer, int ms_time)
 		}
 		return status;
 
-	}
-	else if (udpSock)
-	{
-
-		UDPpacket *pkt = SDLNet_AllocPacket(size_of_buffer);
-		if (!pkt) // TODO: report oom
-			return 0;
-// 		pkt->data = buffer; // FIXME: FreePacket deletes this memory?
-		if ((status = SDLNet_UDP_Recv(udpSock, pkt)) == -1)
-		{
-			SDLNet_FreePacket(pkt);
-			XSOCKET_ERROR("UDP recv failed", SDLNet_GetError());
-			return 0;
-		}
-		memcpy(buffer, pkt->data, size_of_buffer); //FIXME: use received size, not bufsize
-		SDLNet_FreePacket(pkt);
-		return status; // 1 - packet was received, 0 - packet was not received.
-	}
-	else
+	} else {
 		return 0;
+	}
 	
 	return 1;
 }

@@ -1,6 +1,10 @@
+INCLUDE_DIRECTORIES(AFTER
+	${PROJECT_SOURCE_DIR}/lib/xtool
+	${PROJECT_SOURCE_DIR}/src)
+
 SET(server_SRCS
 	kdsplus.cpp
-	xsocket.cpp
+	${PROJECT_SOURCE_DIR}/src/xsocket.cpp
 	server.cpp
 #win32f.cpp -- candidat to remove
 )
@@ -17,4 +21,5 @@ TARGET_LINK_LIBRARIES(vangers_server
 	${SDL2_LIBRARY}
 	${SDL2_NET_LIBRARY}
 	xtool
+	xgraph
 )

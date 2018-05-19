@@ -118,10 +118,13 @@ struct XBuffer
 	//operator char* (){ return buf; }
 	char* GetBuf() { return buf; }
 	char* operator ()(int offs){ return buf + offs; }
+	char* operator ()(unsigned int offs){ return buf + offs; }
 	XBuffer& operator++(){ offset++; return *this; }
 	XBuffer& operator--(){ offset--; return *this; }
 	XBuffer& operator+= (int v){ offset+=v; return *this; }
 	XBuffer& operator-= (int v){ offset-=v; return *this; }
+	XBuffer& operator+= (unsigned int v){ offset += v; return *this; }
+	XBuffer& operator-= (unsigned int v){ offset -= v; return *this; }
 
 	char operator[](int ind) const { return buf[ind]; }
 	char operator()() const { return buf[offset]; }

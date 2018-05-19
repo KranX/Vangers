@@ -36,7 +36,6 @@ struct ServersList : XTList<ServerFindChain> {
 
 	void clear_states();
 	int talk_to_server(int IP,int port,char* domain_name,int only_new_game = 0);
-	int find_servers(int bc_port = BROADCAST_PORT);
 	int find_servers_in_the_internet(char* host_name,int host_port = DEFAULT_SERVER_PORT);
 };
 

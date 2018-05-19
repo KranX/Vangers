@@ -25,11 +25,10 @@ class XSocket
 {
 	int ErrHUsed;
 	TCPsocket tcpSock;
-	UDPsocket udpSock;
 	SDLNet_SocketSet socketSet;
-	IPaddress addr;
-
 	public:
+		IPaddress addr;
+
 		XSocket();
 		~XSocket();
 
@@ -42,8 +41,6 @@ class XSocket
 		// socks4/5 operation is allowed by using FreeCap or tsocks wrappers.
 // 		int open_by_socks5(char* name,int port,char* proxy_name,int proxy_port = 1080);
 
-		int openUDP(int port);
-		int open_broadcast(int port);
 		void close();
 
 		int listen(int port);
@@ -52,7 +49,6 @@ class XSocket
 		void set_ErrHUsing(int enable_using);
 		int set_nonblocking_mode(int enable_nonblocking);
 
-		int check_socket(int ms_time = 0);
 		int check_readability(int ms_time = 0);
 		int check_writeability(int ms_time = 0);
 
@@ -62,8 +58,8 @@ class XSocket
 		int sendto(const char* buffer, int size, unsigned int IP = SEND_BROADCAST);
 		int receivefrom(char* buffer, int size_of_buffer, int ms_time = 0);
 
-		int operator! (){ return tcpSock == INVALID_SOCKET && udpSock == INVALID_SOCKET; }
-		int operator() (){ return tcpSock != INVALID_SOCKET || udpSock != INVALID_SOCKET; }
+		int operator! (){ return tcpSock == INVALID_SOCKET; }
+		int operator() (){ return tcpSock != INVALID_SOCKET; }
 
 	private:
 		int tcp_open();
