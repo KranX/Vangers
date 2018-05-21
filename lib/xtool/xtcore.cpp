@@ -135,48 +135,40 @@ int main(int argc, char *argv[])
 		xtRTO_Log.open("xt_rto_w.log",XS_OUT);
 #endif
 
-	
-	
 	while(XObj){
-		
 		XObj -> Init(prevID);
 		prevID = id;
-
 		id = 0;
 
 		clockCnt = clocki();
 		clockCntGlobal = clockCnt;
 		while(!id) {
 			if(XObj->Timer) {
-				clockNow = clocki();
-				clockDelta =  clockNow - clockCnt;
+				id = XObj -> Quant();
+				clockNow = clockNowGlobal = clocki();
+				clockDelta = clockNow - clockCnt;
+				XTCORE_FRAME_DELTA = (clockNowGlobal - clockCntGlobal) / 1000.0;
+				XTCORE_FRAME_NORMAL = XTCORE_FRAME_DELTA / 0.050; //20FPS
+				clockCntGlobal = clockNowGlobal;
+//				std::cout<<"XTCORE_FRAME_DELTA:"<<XTCORE_FRAME_DELTA
+//						 <<" XTCORE_FRAME_NORMAL:"<<XTCORE_FRAME_NORMAL
+//						 <<" clockDelta:"<<clockDelta<<std::endl;
+
 				if (clockDelta < XObj->Timer) {
 					SDL_Delay(XObj->Timer - clockDelta);
+				} else {
+					std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
 				}
-				clockNow = clocki();
-				clockDelta =  clockNow - clockCnt;
-				if(clockDelta >= XObj -> Timer) {
-					clockCnt = clockNow;// - (clockDelta - XObj -> Timer) % XObj -> Timer;
-					
-					clockNowGlobal = clocki();
-					XTCORE_FRAME_DELTA = (clockNowGlobal - clockCntGlobal)/1000.0;
-					XTCORE_FRAME_NORMAL = XTCORE_FRAME_DELTA/0.050; //20FPS
-					//std::cout<<"XTCORE_FRAME_DELTA:"<<XTCORE_FRAME_DELTA<<" XTCORE_FRAME_NORMAL:"<<XTCORE_FRAME_NORMAL<<std::endl;
-					clockCntGlobal = clockNowGlobal;
-					
-					id = XObj -> Quant();
-				}
+				clockCnt = clocki();
 			} else {
-				//std::cout<<"ELSE"<<std::endl;
 				id = XObj -> Quant();
 			}
 
 			if(!xtSysQuantDisabled)
 				XRec.Quant(); // впускает внешние события, записывает их или воспроизводит
 			XGR_Flip();
-//			if(xtNeedExit()) ErrH.Exit();
 		}
-		
+
 		XObj -> Finit();
 #ifdef _RTO_LOG_
 		xtRTO_Log < "\r\nChange RTO: " <= XObj -> ID < " -> " <= id < " frame -> " <= XRec.frameCount;
