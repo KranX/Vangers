@@ -193,8 +193,10 @@ XSocket XSocket::accept() {
 
 	newSock = SDLNet_TCP_Accept(tcpSock);
 	if (!newSock) {
-		XSOCKET_ERROR("TCP accept failed", SDLNet_GetError());
+		//XSOCKET_ERROR("TCP accept failed", SDLNet_GetError());
 		// TODO: check possible error conditions and results
+		SDL_Delay(100);
+		return NULL;
 	}
 
 	XSocket xsock;
@@ -278,6 +280,8 @@ int XSocket::receive(char* buffer, int size_of_buffer, int ms_time) {
 // TODO: MODIFY
 int XSocket::check_readability(int ms_time)
 {
+//	return SDLNet_SocketReady(tcpSock);
+	return 1;
 /*	if(sock == INVALID_SOCKET)
 		return 0;
 	int val;

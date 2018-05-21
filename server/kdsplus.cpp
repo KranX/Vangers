@@ -39,6 +39,12 @@ int xtInitApplication(void) {
 	ComlineAnalyze(__argc,__argv);
 //	ErrH.SetFlags(XERR_CTRLBRK);
 
+	/* initialize SDL */
+	if(SDL_Init(0)==-1) {
+		std::cout<<"SDL_Init: %s\n"<<SDL_GetError()<<std::endl;
+		exit(1);
+	}
+
 	if(!XSocketInit())
 		ErrH.Abort("WinSock initialization failed, check Your TCP/IP settings");
 
