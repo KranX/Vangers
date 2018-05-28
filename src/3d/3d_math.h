@@ -319,8 +319,8 @@ struct DBV {
 		DBV(const DBV& v);
 		DBV(const Vector& v);
 
-	double operator [](unsigned int i) const { return ((double*)this)[i % 3]; }					   
-	double& operator [](unsigned int i) { return ((double*)this)[i % 3]; }					      
+	double operator [](unsigned int i) const { return ((double*)this)[i % 3]; }
+	double& operator [](unsigned int i) { return ((double*)this)[i % 3]; }
 
 	DBV& operator = (const Vector& v);
 

@@ -1,6 +1,6 @@
 //TODO: stalkerg need timers kill!!!
 //const int  RTO_GAME_QUANT_TIMER	= 1000/20;
-const int  RTO_GAME_QUANT_TIMER	= 1000/20;
+const int  RTO_GAME_QUANT_TIMER	= 1000/60;
 const int  RTO_ISCREEN_TIMER 	= 1000/20;
 const int  RTO_PALETTE_TIMER 	= 1000/20;
 const int  RTO_ESCAVE_GATE_TIMER	= 1000/20;

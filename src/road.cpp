@@ -1805,15 +1805,17 @@ void calc_view_factors()
 
 	//if(!(XRec.flags & (XRC_RECORD_MODE | XRC_PLAY_MODE)) && prev_frame_time)
 	//Stalkerg
-	if((speed_correction_enabled | NetworkON) && prev_frame_time){
-		int dt = SDL_GetTicks() - prev_frame_time;
-		if(dt > 15 && dt < 200) {
-			speed_correction_factor = (double)dt*((double)STANDART_FRAME_RATE/1000.)*speed_correction_tau + speed_correction_factor*(1 - speed_correction_tau);
-		}
-	} else {
-		speed_correction_factor = 1;
-	}
-	//speed_correction_factor = 1;
+//	if((speed_correction_enabled | NetworkON) && prev_frame_time){
+//		int dt = SDL_GetTicks() - prev_frame_time;
+//		if(dt > 5 && dt < 200) {
+//			speed_correction_factor = (double)dt*((double)STANDART_FRAME_RATE/1000.)*speed_correction_tau + speed_correction_factor*(1 - speed_correction_tau);
+//		}
+//		std::cout<<"speed_correction_factor:"<<speed_correction_factor<<" dt:"<<dt<<std::endl;
+//	} else {
+//		speed_correction_factor = 1;
+//	}
+	speed_correction_factor = (double)50.*((double)STANDART_FRAME_RATE/1000.)*speed_correction_tau + speed_correction_factor*(1 - speed_correction_tau);
+
 	//std::cout<<"DT::"<<SDL_GetTicks() - prev_frame_time<<std::endl;
 
 	prev_frame_time = SDL_GetTicks();

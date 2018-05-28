@@ -2150,8 +2150,8 @@ void ActionDispatcher::Init(Parser& in)
 	for(i = 0;i < MAX_TOUCH_VECTOR;i++){
 //		SpeedLenTable[i] = (int)(pow((double)(i)/128.,1./3.) * 1024.);
 //		RudderLenTable[i] = (int)(pow((double)(i)/128.,3./5.) * 1024.);
-		SpeedLenTable[i] = (int)(pow((double)(i)/255.,1./3.) * 1024.);
-		RudderLenTable[i] = (int)(pow((double)(i)/255.,3./5.) * 1024.);
+		SpeedLenTable[i] = (int)(pow((double)(i)/255., 1./3.) * 1024.);
+		RudderLenTable[i] = (int)(pow((double)(i)/255., 3./5.) * 1024.);
 	};
 
 //	for(i = 0;i < PI;i++) SpeedAngleTable[i] = (int)(pow((double)(i)/(double)(PI),.5) * 1024.);
