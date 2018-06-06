@@ -18,6 +18,7 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 		/opt/local/include
 		/opt/include
 		/sw/include
+		/usr/include/libavutil
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavutil
 	PATH_SUFFIXES
@@ -37,6 +38,7 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
 		/mingw/include
 		/opt/include
 		/sw/include
+		/usr/include/libavcodec
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavcodec
 	PATH_SUFFIXES
@@ -56,6 +58,7 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 		/mingw/include
 		/opt/include
 		/sw/include
+		/usr/include/libavformat
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavformat
 	PATH_SUFFIXES
@@ -67,6 +70,7 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 	NAMES
 		avutil
 		avutil-55
+		avutil-56
 	PATHS
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
@@ -85,6 +89,7 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 	NAMES
 		avcodec
 		avcodec-57
+		avcodec-58
 	PATHS
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
@@ -102,6 +107,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 	NAMES
 		avformat
 		avformat-57
+		avformat-58
 	PATHS
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
