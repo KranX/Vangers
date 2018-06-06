@@ -93,7 +93,7 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 #ifndef _VTEST_
 	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
 	_debugTimerStorage.event_start("render");
-	//uchar** lt = vMap -> lineTcolor;
+	uchar** lt = vMap -> lineTcolor;
 #else
 	uchar** lt = lineTcolor;
 #endif
@@ -102,70 +102,70 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 	uchar** ht = HeightDataTable;
 #endif
 
-//	int z;
-//	z = F*Awz >> 16;
-//	if(!z) z = 1;
-//	int ky = ((ParaMapSkipFactor0 << 16) + abs(sinAlpha)*ParaMapSkipFactor)/100*CenterDistance/F;
-//	uchar** slt = SetSkipLineTable(lt,ky,Ymin,Ymax);
-//#ifdef TURN_TEST
-//	::MapSkipFactor = ky;
-//#endif
-//	int k_xscr_x,k_xscr_y;
-//	int i,fx,fy;
-//	i = 0;
-//	int i_float = 0;
-//	int ScreenSkipFactor;
-//	ScreenSkipFactor = (ParaScreenSkipFactor0 << 16)/100;
-//	ScreenSkipFactor += abs(sinAlpha)*ParaScreenSkipFactor/100;
-//#ifdef TURN_TEST
-//	::ScreenSkipFactor = ScreenSkipFactor;
-//#endif
-//	int DrawPrev = 0;
-//	while(i < YDstSize){
-//		char* vpp = vp + XGR_MAXX*i;
-//		int u = -XDstSize/2;
-//		int v = -YDstSize/2 + i;
-//		int z = v*Avz + F*Awz >> 16;
-//		if(!z) z = 1;
-//		fx = H*(u*Aux + v*Avx + F*Awx >> 4)/z << 4;
-//		fy = H*(u*Auy + v*Avy + F*Awy >> 4)/z << 4;
-//
-//		k_xscr_x = H*Aux/z;
-//		k_xscr_y = H*Auy/z;
-//
-//		fx += cx;
-//		fy += cy;
-//
-//		if(DrawPrev){
-//			k_xscr_x *= 2;
-//			k_xscr_y *= 2;
-//#ifdef LOWLEVEL_OUTPUT
-//			slope_line2(XDstSize,slt, vpp, fx, fy, k_xscr_x, k_xscr_y);
-//#else
-//			for(int j = 0;j < XDstSize;j += 2){
-//				int tmp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
-//				*vpp++ = tmp;
-//				*vpp++ = tmp;
-//				fx += k_xscr_x;
-//				fy += k_xscr_y;
-//				}
-//#endif
-//			}
-//		else{
-//#ifdef LOWLEVEL_OUTPUT
-//			slope_line(XDstSize,slt, vpp, fx, fy, k_xscr_x, k_xscr_y);
-//#else
-//			for(int j = 0;j < XDstSize;j++){
-//				*vpp++ = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
-//				fx += k_xscr_x;
-//				fy += k_xscr_y;
-//				}
-//#endif
-//			}
-//		int tmp_i = i_float >> 16;
-//		i_float += ScreenSkipFactor;
-//		DrawPrev = (i_float >> 16) > tmp_i + 1;
-//		i++;
-//		}
+	int z;
+	z = F*Awz >> 16;
+	if(!z) z = 1;
+	int ky = ((ParaMapSkipFactor0 << 16) + abs(sinAlpha)*ParaMapSkipFactor)/100*CenterDistance/F;
+	uchar** slt = SetSkipLineTable(lt,ky,Ymin,Ymax);
+#ifdef TURN_TEST
+	::MapSkipFactor = ky;
+#endif
+	int k_xscr_x,k_xscr_y;
+	int i,fx,fy;
+	i = 0;
+	int i_float = 0;
+	int ScreenSkipFactor;
+	ScreenSkipFactor = (ParaScreenSkipFactor0 << 16)/100;
+	ScreenSkipFactor += abs(sinAlpha)*ParaScreenSkipFactor/100;
+#ifdef TURN_TEST
+	::ScreenSkipFactor = ScreenSkipFactor;
+#endif
+	int DrawPrev = 0;
+	while(i < YDstSize){
+		char* vpp = vp + XGR_MAXX*i;
+		int u = -XDstSize/2;
+		int v = -YDstSize/2 + i;
+		int z = v*Avz + F*Awz >> 16;
+		if(!z) z = 1;
+		fx = H*(u*Aux + v*Avx + F*Awx >> 4)/z << 4;
+		fy = H*(u*Auy + v*Avy + F*Awy >> 4)/z << 4;
+
+		k_xscr_x = H*Aux/z;
+		k_xscr_y = H*Auy/z;
+
+		fx += cx;
+		fy += cy;
+
+		if(DrawPrev){
+			k_xscr_x *= 2;
+			k_xscr_y *= 2;
+#ifdef LOWLEVEL_OUTPUT
+			slope_line2(XDstSize,slt, vpp, fx, fy, k_xscr_x, k_xscr_y);
+#else
+			for(int j = 0;j < XDstSize;j += 2){
+				int tmp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
+				*vpp++ = tmp;
+				*vpp++ = tmp;
+				fx += k_xscr_x;
+				fy += k_xscr_y;
+				}
+#endif
+			}
+		else{
+#ifdef LOWLEVEL_OUTPUT
+			slope_line(XDstSize,slt, vpp, fx, fy, k_xscr_x, k_xscr_y);
+#else
+			for(int j = 0;j < XDstSize;j++){
+				*vpp++ = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
+				fx += k_xscr_x;
+				fy += k_xscr_y;
+				}
+#endif
+			}
+		int tmp_i = i_float >> 16;
+		i_float += ScreenSkipFactor;
+		DrawPrev = (i_float >> 16) > tmp_i + 1;
+		i++;
+		}
 	_debugTimerStorage.event_end("render");
 }

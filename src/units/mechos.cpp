@@ -3311,6 +3311,7 @@ void camera_quant(int X, int Y, int Turn, double V_abs) {
 	                                                     (-SLOPE_MAX - camera_slope_min) * V_abs / camera_vmax :
 	                               -SLOPE_MAX)
 	                            : camera_slope_min;
+	s = -SLOPE_MAX;
 	camera_vs += (double) (s - SlopeAngle) * camera_mis * XTCORE_FRAME_NORMAL;
 	camera_vs *= camera_drags * pow(0.97, camera_vs_min / (fabs(camera_vs) + 1e-10));
 	camera_s += camera_vs * XTCORE_FRAME_NORMAL;

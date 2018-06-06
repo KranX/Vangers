@@ -74,10 +74,10 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 	sinTetta = SI[rPI(Slop)];
 	cosTetta = CO[rPI(Slop)];
 
-	if(abs(sinAlpha) < abs(SI[SlopModeTriggerAngle*PIx2/360])){
-		SlopTurnSkip(Turn,-Slop,H,F,cx,cy,xc,yc,XDstSize,YDstSize);
-		return 0;
-		}
+//	if(abs(sinAlpha) < abs(SI[SlopModeTriggerAngle*PIx2/360])){
+//		SlopTurnSkip(Turn,-Slop,H,F,cx,cy,xc,yc,XDstSize,YDstSize);
+//		return 0;
+//		}
 
 #ifdef __ZORTECHC__
 	char* vp = _video + (yc - YDstSize)*XGR_MAXX + (xc - XDstSize);
@@ -118,111 +118,111 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 	Ymax += 30;
 #endif
 
-//#ifndef TURN_TEST
-//#ifndef _VTEST_
+#ifndef TURN_TEST
+#ifndef _VTEST_
 	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
-//	uchar** lt = vMap -> lineTcolor;
-//#else
-//	uchar** lt = lineTcolor;
-//#endif
-//#else
-//	uchar** lt = TextureDataTable;
-//	uchar** ht = HeightDataTable;
-//#endif
-//
-//	int z;
-//	z = F*Awz >> 16;
-//	if(!z) z = 1;
-//	int ky = ((PerpMapSkipFactor0 << 16) + abs(cosAlpha)*PerpMapSkipFactor)/100*CenterDistance/F;
-//#ifdef TURN_TEST
-//	::MapSkipFactor = ky;
-//#endif
-//	uchar** slt = SetSkipLineTable(lt,ky,Ymin,Ymax);
-//
-//	int i,j,fx,fy;
-//
-//	for(j = 0;j < YDstSize;j++){
-//		int u = -XDstSize/2;
-//		int v = -YDstSize/2 + j;
-//		int z = (v*Avz + F*Awz) >> 16;
-//		if(!z) z = 1;
-//		fx = H*((u*Aux + v*Avx + F*Awx) >> 4)/z << 4;
-//		fy = H*((u*Auy + v*Avy + F*Awy) >> 4)/z << 4;
-//
-//
-//		fx += cx;
-//		fy += cy;
-//
-//#ifdef LOWLEVEL_OUTPUT
-//		sTables[j*4 + 0] = ROY(fy);
-//		sTables[j*4 + 1] = ROY(H*Auy/z);
-//		sTables[j*4 + 2] = ROX(fx);
-//		sTables[j*4 + 3] = ROX(H*Aux/z);
-//#else
-//		sTables[j*4 + 0] = fx;
-//		sTables[j*4 + 1] = fy;
-//		sTables[j*4 + 2] = H*Aux/z;
-//		sTables[j*4 + 3] = H*Auy/z;
-//#endif
-//		}
-//	int i_float = 0;
-//	int ScreenSkipFactor;
-//	ScreenSkipFactor = (PerpScreenSkipFactor0 << 16)/100;
-//	ScreenSkipFactor += abs(cosAlpha)*PerpScreenSkipFactor/100;
-//#ifdef TURN_TEST
-//	::ScreenSkipFactor = ScreenSkipFactor;
-//#endif
-//	int J0,J1;
-//	J1 = 0;
-//	int i_clip;
-//	for(i_clip = 0;i_clip < Nclips;i_clip++){
-//		J0 = J1;
-//		J1 = YDstSize*(i_clip + 1)/Nclips;
-//		char* vppp = vp + J0*XGR_MAXX;
-//		i = 0;
-//		int DrawPrev = 0;
-//		while(i < XDstSize){
-//			char* vpp = vppp + i - DrawPrev;
-//			if(DrawPrev)
-//#ifdef LOWLEVEL_OUTPUT
-//				perp_slope_line1_2(sTables, slt, vpp, J0, J1, XGR_MAXX);
-//#else
-//				for(j = J0;j < J1;j++){
-//					fx = sTables[j*4 + 0];
-//					fy = sTables[j*4 + 1];
-//					int tmp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
-//					*vpp = tmp;
-//					vpp[1] = tmp;
-//					vpp += XGR_MAXX;
-//					fx += sTables[j*4 + 2] << 1;
-//					fy += sTables[j*4 + 3] << 1;
-//					sTables[j*4 + 0] = fx;
-//					sTables[j*4 + 1] = fy;
-//					}
-//#endif
-//			else
-//#ifdef LOWLEVEL_OUTPUT
-//				perp_slope_line(sTables, slt, vpp, J0, J1, XGR_MAXX);
-//#else
-//				for(j = J0;j < J1;j++){
-//					fx = sTables[j*4 + 0];
-//					fy = sTables[j*4 + 1];
-//					*vpp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
-//					vpp += XGR_MAXX;
-//					fx += sTables[j*4 + 2];
-//					fy += sTables[j*4 + 3];
-//					sTables[j*4 + 0] = fx;
-//					sTables[j*4 + 1] = fy;
-//					}
-//#endif
-//			int tmp_i = i_float >> 16;
-//			i_float += ScreenSkipFactor;
-//			DrawPrev = (i_float >> 16) > tmp_i + 1;
-//			i++;
-//			if(DrawPrev)
-//				i++;
-//			}
-//		}
+	uchar** lt = vMap -> lineTcolor;
+#else
+	uchar** lt = lineTcolor;
+#endif
+#else
+	uchar** lt = TextureDataTable;
+	uchar** ht = HeightDataTable;
+#endif
+	return 1;
+	int z;
+	z = F*Awz >> 16;
+	if(!z) z = 1;
+	int ky = ((PerpMapSkipFactor0 << 16) + abs(cosAlpha)*PerpMapSkipFactor)/100*CenterDistance/F;
+#ifdef TURN_TEST
+	::MapSkipFactor = ky;
+#endif
+	uchar** slt = SetSkipLineTable(lt,ky,Ymin,Ymax);
+
+	int i,j,fx,fy;
+
+	for(j = 0;j < YDstSize;j++){
+		int u = -XDstSize/2;
+		int v = -YDstSize/2 + j;
+		int z = (v*Avz + F*Awz) >> 16;
+		if(!z) z = 1;
+		fx = H*((u*Aux + v*Avx + F*Awx) >> 4)/z << 4;
+		fy = H*((u*Auy + v*Avy + F*Awy) >> 4)/z << 4;
+
+
+		fx += cx;
+		fy += cy;
+
+#ifdef LOWLEVEL_OUTPUT
+		sTables[j*4 + 0] = ROY(fy);
+		sTables[j*4 + 1] = ROY(H*Auy/z);
+		sTables[j*4 + 2] = ROX(fx);
+		sTables[j*4 + 3] = ROX(H*Aux/z);
+#else
+		sTables[j*4 + 0] = fx;
+		sTables[j*4 + 1] = fy;
+		sTables[j*4 + 2] = H*Aux/z;
+		sTables[j*4 + 3] = H*Auy/z;
+#endif
+		}
+	int i_float = 0;
+	int ScreenSkipFactor;
+	ScreenSkipFactor = (PerpScreenSkipFactor0 << 16)/100;
+	ScreenSkipFactor += abs(cosAlpha)*PerpScreenSkipFactor/100;
+#ifdef TURN_TEST
+	::ScreenSkipFactor = ScreenSkipFactor;
+#endif
+	int J0,J1;
+	J1 = 0;
+	int i_clip;
+	for(i_clip = 0;i_clip < Nclips;i_clip++){
+		J0 = J1;
+		J1 = YDstSize*(i_clip + 1)/Nclips;
+		char* vppp = vp + J0*XGR_MAXX;
+		i = 0;
+		int DrawPrev = 0;
+		while(i < XDstSize){
+			char* vpp = vppp + i - DrawPrev;
+			if(DrawPrev)
+#ifdef LOWLEVEL_OUTPUT
+				perp_slope_line1_2(sTables, slt, vpp, J0, J1, XGR_MAXX);
+#else
+				for(j = J0;j < J1;j++){
+					fx = sTables[j*4 + 0];
+					fy = sTables[j*4 + 1];
+					int tmp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
+					*vpp = tmp;
+					vpp[1] = tmp;
+					vpp += XGR_MAXX;
+					fx += sTables[j*4 + 2] << 1;
+					fy += sTables[j*4 + 3] << 1;
+					sTables[j*4 + 0] = fx;
+					sTables[j*4 + 1] = fy;
+					}
+#endif
+			else
+#ifdef LOWLEVEL_OUTPUT
+				perp_slope_line(sTables, slt, vpp, J0, J1, XGR_MAXX);
+#else
+				for(j = J0;j < J1;j++){
+					fx = sTables[j*4 + 0];
+					fy = sTables[j*4 + 1];
+					*vpp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
+					vpp += XGR_MAXX;
+					fx += sTables[j*4 + 2];
+					fy += sTables[j*4 + 3];
+					sTables[j*4 + 0] = fx;
+					sTables[j*4 + 1] = fy;
+					}
+#endif
+			int tmp_i = i_float >> 16;
+			i_float += ScreenSkipFactor;
+			DrawPrev = (i_float >> 16) > tmp_i + 1;
+			i++;
+			if(DrawPrev)
+				i++;
+			}
+		}
 	return 1;
 }
 

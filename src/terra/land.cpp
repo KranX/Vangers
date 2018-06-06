@@ -1022,8 +1022,11 @@ void LINE_render(int y)
 				*(pc - 1) = *pc = palCLR[type][256 + ((lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)) >> 1)];
 			else
 				*(pc - 1) = *pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
-			//std::cout<<(int)*(pa)<<" ";
+			if(y % 50 == 0 || x % 50 == 0){
+				*(pc - 1) = *pc = 255;
 			}
+			//std::cout<<(int)*(pa)<<" ";
+		}
 		else {
 			type = (*pf & TERRAIN_MASK) >> TERRAIN_OFFSET;
 			lxVal = *(pa0 + XCYCL(x - 1));
@@ -1032,7 +1035,10 @@ void LINE_render(int y)
 				*pc = palCLR[type][256 + ((lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)) >> 1)];
 			else
 				*pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
-			
+			if(y % 50 == 0 || x % 50 == 0){
+				 *pc = 255;
+			}
+
 			//std::cout<<(int)*pc<<" ";
 			lxVal = *pa;
 			x++; pa++; pc++; pf++;
@@ -1043,6 +1049,9 @@ void LINE_render(int y)
 				*pc = palCLR[type][256 + ((lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)) >> 1)];
 			else
 				*pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
+			}
+			if(y % 50 == 0 || x % 50 == 0){
+				*pc = 255;
 			}
 		
 		//std::cout<<std::endl;

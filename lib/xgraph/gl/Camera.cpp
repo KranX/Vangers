@@ -12,6 +12,8 @@ glm::mat4 gl::Camera::mvp() {
 			100.0f, 9000.0f
 	);
 
+//	auto proj = glm::ortho(0.0f, viewport.x, 0.0f, viewport.y);
+
 	auto view = glm::mat4_cast(glm::inverse(rotation)) * glm::translate(glm::mat4(), -position);
 	return proj * view;
 }

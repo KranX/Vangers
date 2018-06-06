@@ -1606,9 +1606,24 @@ void KeyCenter(SDL_Event *key)
 			break;
 #endif
 		case SDL_SCANCODE_T:
-			mod = SDL_GetModState();
-			if ((mod&KMOD_SHIFT)||(mod&KMOD_CTRL)) {
+			if (SDL_GetModState() & KMOD_CTRL) {
 				GameTimerON_OFF();
+			}
+			break;
+		case SDL_SCANCODE_P:
+			if(SDL_GetModState() & KMOD_CTRL) {
+				ActD.Active->R_curr.x = 1794;
+				ActD.Active->R_curr.y = 14267;
+			}
+			break;
+		case SDL_SCANCODE_Z:
+			if(SDL_GetModState() & KMOD_CTRL){
+				curGMap->_slopeFactor -= 0.01f;
+			}
+			break;
+		case SDL_SCANCODE_X:
+			if(SDL_GetModState() & KMOD_CTRL){
+				curGMap->_slopeFactor += 0.01f;
 			}
 			break;
 		case SDL_SCANCODE_F:
@@ -1959,15 +1974,16 @@ void iGameMap::draw(int self)
 //        vMap->request(0, V_SIZE - 1, 0, 0);
 //		vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
 //		vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
-		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
+		_debugTimerStorage.event_start("render");
+		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle * _slopeFactor,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
 		double height = XGR_MAXY * ViewZ / 512;
 		double hz = height * 0.5 / tan(glm::radians(45.0) * 0.5);
 
 		float z = static_cast<float>(hz);
 		float turn = -GTOR(TurnAngle);
-		float slope = GTOR(SlopeAngle);
+		float slope = GTOR(SlopeAngle) * _slopeFactor;
 
-		_debugTimerStorage.event_start("render");
+
 		renderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
 		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
 		renderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, z, turn, slope);
@@ -2091,6 +2107,9 @@ void iGameMap::draw(int self)
 
 		sprintf(msg, "Angle(Turn, Slope): (%d, %d)", TurnAngle, SlopeAngle);
 		sysfont.draw(xc - xside + 150,yc - yside + 112,msg,224 + 15,-1);
+
+		sprintf(msg, "_slopeFactor %f", _slopeFactor);
+		sysfont.draw(xc - xside + 150,yc - yside + 60,msg, 224 + 15,-1);
 
 
 		_debugPerfWidget.draw_storage(_debugPerfCounterStorage, xc - xside + 150, yc - yside + 196);
