@@ -20,18 +20,18 @@ void VMapRenderer::init(const std::shared_ptr<gl::Texture> &heightMapTexture,
 		          const std::shared_ptr<gl::Texture> &metaTexture,
 		          const std::shared_ptr<gl::Texture> &paletteTexture){
 	camera = std::make_shared<gl::Camera>();
-	shader = std::make_unique<BilinearFilteringShader>(
-			paletteTexture,
-			colorTexture,
-			camera,
-			shaderPath
-	);
-//	shader = std::make_unique<RayCastShader>(camera,
-//	                                      heightMapTexture,
-//	                                      colorTexture,
-//	                                      metaTexture,
-//	                                      paletteTexture,
-//	                                      shaderPath);
+//	shader = std::make_unique<BilinearFilteringShader>(
+//			paletteTexture,
+//			colorTexture,
+//			camera,
+//			shaderPath
+//	);
+	shader = std::make_unique<RayCastShader>(camera,
+	                                      heightMapTexture,
+	                                      colorTexture,
+	                                      metaTexture,
+	                                      paletteTexture,
+	                                      shaderPath);
 	this->colorTexture = colorTexture;
 	this->paletteTexture = paletteTexture;
 }

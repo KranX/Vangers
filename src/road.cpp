@@ -1809,7 +1809,7 @@ void iGameMap::reset(void)
 
 	vMap->accept(0, V_SIZE - 1);
 
-	renderer = std::unique_ptr<VMapRenderer>(new VMapRenderer(H_SIZE, V_SIZE, "shaders/heightmap"));
+	renderer = std::unique_ptr<VMapRenderer>(new VMapRenderer(H_SIZE, V_SIZE, "shaders/3dmap"));
 	auto colorData = new uint8_t[H_SIZE * V_SIZE];
 	auto heightData = new uint8_t[H_SIZE * V_SIZE];
 	auto metaData = new uint8_t[H_SIZE * V_SIZE];
