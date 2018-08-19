@@ -86,7 +86,8 @@ struct vrtMap {
 	void scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int yside);
 	//void scaling_old(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int yside);
 #ifndef _SURMAP_
-	void scaling_3D(DBM& A,int H,int focus,int cx,int cy,int xc,int yc,int xside,int yside,int Turn);
+	void scaling_3D(float slope, DBM &A, int H, int focus, int cx, int cy, int xc, int yc, int xside, int yside,
+						int Turn);
 	void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize);
 #endif
 	//void draw_voxel(int TurnAngle,int SlopeAngle,int TurnSecX,int CX,int CY,int xc,int yc,int xside,int yside);

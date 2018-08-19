@@ -17,7 +17,6 @@ struct iGameMap {
 	int dx,dy;
 	int _xI,_yI;
 	int prmFlag;
-	float _slopeFactor = 1;
 	glm::vec3 cameraOffset;
 	int sx,sy;
 	int x,y;

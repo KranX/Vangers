@@ -91,22 +91,25 @@ private:
 	int sizeX;
 	int sizeY;
 
-	std::string shaderPath;
-
-
 	std::shared_ptr<gl::Shader> shader;
 	std::shared_ptr<gl::Camera> camera;
 	std::shared_ptr<gl::Texture> paletteTexture;
 	std::shared_ptr<gl::Texture> colorTexture;
 public:
-	VMapRenderer(int sizeX, int sizeY, std::string shaderPath):
-			sizeX(sizeX),sizeY(sizeY),shaderPath(std::move(shaderPath)){}
+	enum ShaderType {
+		RayCast, BilinearFiltering
+	};
+
+	ShaderType shaderType;
+
+	VMapRenderer(ShaderType shaderType, int sizeX, int sizeY) :
+			sizeX(sizeX),sizeY(sizeY), shaderType(shaderType){}
 	void init(const std::shared_ptr<gl::Texture> &heightMapTexture,
 	          const std::shared_ptr<gl::Texture> &colorTexture,
 	          const std::shared_ptr<gl::Texture> &metaTexture,
 	          const std::shared_ptr<gl::Texture> &paletteTexture);
 	void setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format);
-	void render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope);
+	void render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope, float focus);
 	void updateColor(uint8_t **color, int lineUp, int lineDown);
 };
 

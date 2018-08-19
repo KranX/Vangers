@@ -6,13 +6,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 glm::mat4 gl::Camera::mvp() {
+	float FOV = atan(viewport.y / 2 / focus) * 2;
 	auto proj = glm::perspective(
-			glm::radians(45.0f),
+			FOV,
 			viewport.x / viewport.y,
 			100.0f, 9000.0f
 	);
-
-//	auto proj = glm::ortho(0.0f, viewport.x, 0.0f, viewport.y);
 
 	auto view = glm::mat4_cast(glm::inverse(rotation)) * glm::translate(glm::mat4(), -position);
 	return proj * view;

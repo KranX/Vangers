@@ -2638,9 +2638,18 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 }
 
 #ifndef _SURMAP_
-void vrtMap::scaling_3D(DBM& A,int H,int focus,int cx,int cy,int xc,int yc,int xside,int yside,int Turn)
+void vrtMap::scaling_3D(float slope, DBM &viewMatrix, int H, int focus, int cx, int cy, int xc, int yc, int xside, int yside,
+						int Turn)
 {
-	char* vp = (char*)XGR_VIDEOBUF + (yc - yside)*XGR_MAXX + (xc - xside);
+
+	double sinTetta = sin(slope);
+	double cosTetta = cos(slope);
+
+
+
+	int cy0 = cy;
+
+	char* vp = (char*)XGR_VIDEOBUF;// + (yc - yside)*XGR_MAXX + (xc - xside);
 	int xsize = 2*xside;
 	int ysize = 2*yside;
 	int XADD = XGR_MAXX - xsize;
@@ -2648,26 +2657,26 @@ void vrtMap::scaling_3D(DBM& A,int H,int focus,int cx,int cy,int xc,int yc,int x
 	cx = (cx & clip_mask_x) << 16;
 	cy = (cy & clip_mask_y) << 16;
 
-	double ai = Ha*xside;
-	double aj = Va*yside;
-	double bi = Hb*xside;
-	double bj = Vb*yside;
-	double ci = Hc*xside;
-	double cj = Vc*yside;
+	double ai = Ha*xside; //cos * focus_flt * H * xside
+	double aj = Va*yside; // 0
+	double bi = Hb*xside; // 0
+	double bj = Vb*yside; // 1 * focus_flt * H * ysize
+	double ci = Hc*xside; // 0
+	double cj = Vc*yside; // - 1 * focus_flt * sin * yside
 
 	int y0 = ((int)round((bi + bj)/(Oc + ci + cj)) + cy) >> 16;
 	int y1 = ((int)round((bi - bj)/(Oc + ci - cj)) + cy) >> 16;
 	int y2 = ((int)round((-bi + bj)/(Oc - ci + cj)) + cy) >> 16;
 	int y3 = ((int)round((-bi - bj)/(Oc - ci - cj)) + cy) >> 16;
 
-	request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
+	request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2 - 1024,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2 + 1024,0,0);
 	_debugTimerStorage.event_start("render");
-	double al = -ai - aj;
-	double bl = -bi - bj;
-	double cl = Oc - ci - cj;
+	double al = -ai - aj; // - cos * focus_flt * H * xsize/2
+	double bl = -bi - bj; // - 1 * focus_flt * H * ysize
+	double cl = Oc - ci - cj; // 1 * focus_flt * cos * focus_flt + 1 * focus_flt * sin * ysize/2
 
-	double ar = ai - aj;
-	double br = bi - bj;
+	double ar = ai - aj; // cos * focus_flt * H * xside
+	double br = bi - bj; // 1 * focus_flt * H * ysize
 
 	double xsize_inv = 1/(double)xsize;
 	double cl_inv;
@@ -2711,19 +2720,40 @@ void vrtMap::scaling_3D(DBM& A,int H,int focus,int cx,int cy,int xc,int yc,int x
 			k_xscr_x = round((ar - al)*cl_inv);
 			fx += cx;
 			fy += cy;
-			data = lt[(fy >> 16) & clip_mask_y];
+
+
+			double p = cy0 +  (double )ViewZ * (i - yside)/ ((double )ViewZ * cosTetta - (double )(i - yside)* sinTetta);
+
+			if(p < 0){
+				p = map_size_y + p;
+			}
+
+			p = (int)p % map_size_y;
+
+
+//			int pi = cy + H * (i - yside) / (focus_flt * cosTetta - (i - yside) * sinTetta);
+//			pi = (pi >> 16) & clip_mask_y;
+
+//			printf("i: %d, p: %f, pi: %d, fy[masked]: %d\n", i, p, pi, (fy >> 16) & clip_mask_y);
+//			data = lt[(fy >> 16) & clip_mask_y];
+			data = lt[(int)p];
 #ifdef LOWLEVEL_OUTPUT
 			pscale(xsize,fx,vp,k_xscr_x,data);
 			vp += xsize;
 #else
 			for(j = 0;j < xsize;j++){
-				*vp++ = *(data + ((fx >> 16) & clip_mask_x));
+				if(data == 0){
+					*vp++ = 0;
+				}else{
+					*vp++ = *(data + ((fx >> 16) & clip_mask_x));
+				}
+
 				fx += k_xscr_x;
 				}
 #endif
-			al += Va;
-			bl += Vb;
-			cl += Vc;
+			al += Va; // += 0
+			bl += Vb; // += 1 * focus_flt * H
+			cl += Vc; // += - 1 * focus_flt * sin
 
 			ar += Va;
 			br += Vb;

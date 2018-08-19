@@ -1011,7 +1011,10 @@ void LINE_render(int y)
 	pa0 = pa = vMap -> lineT[y];
 	pf0 = pf = pa0 + H_SIZE;
 	pc0 = pc = vMap -> lineTcolor[y];
-	
+
+	const int GRID_COLOR = 254;
+	const int GRID_STEP = 50;
+
 	for(int x = 0;x < map_size_x;x++,pa++,pc++,pf++){
 		if(*pf & DOUBLE_LEVEL){
 			x++; pc++; pf++; pa++;
@@ -1022,9 +1025,9 @@ void LINE_render(int y)
 				*(pc - 1) = *pc = palCLR[type][256 + ((lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)) >> 1)];
 			else
 				*(pc - 1) = *pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
-			if(y % 50 == 0 || x % 50 == 0){
-				*(pc - 1) = *pc = 255;
-			}
+//			if((y % GRID_STEP == 0 || x % GRID_STEP == 0)){
+//				*(pc - 1) = *pc = GRID_COLOR;
+//			}
 			//std::cout<<(int)*(pa)<<" ";
 		}
 		else {
@@ -1035,9 +1038,9 @@ void LINE_render(int y)
 				*pc = palCLR[type][256 + ((lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)) >> 1)];
 			else
 				*pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
-			if(y % 50 == 0 || x % 50 == 0){
-				 *pc = 255;
-			}
+//			if((y % GRID_STEP == 0 || x % GRID_STEP == 0)){
+//				 *pc = GRID_COLOR;
+//			}
 
 			//std::cout<<(int)*pc<<" ";
 			lxVal = *pa;
@@ -1050,9 +1053,9 @@ void LINE_render(int y)
 			else
 				*pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
 			}
-			if(y % 50 == 0 || x % 50 == 0){
-				*pc = 255;
-			}
+//			if((y % GRID_STEP == 0 || x % GRID_STEP == 0)){
+//				*pc = GRID_COLOR;
+//			}
 		
 		//std::cout<<std::endl;
 		}

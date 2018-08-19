@@ -1616,16 +1616,6 @@ void KeyCenter(SDL_Event *key)
 				ActD.Active->R_curr.y = 14267;
 			}
 			break;
-		case SDL_SCANCODE_Z:
-			if(SDL_GetModState() & KMOD_CTRL){
-				curGMap->_slopeFactor -= 0.01f;
-			}
-			break;
-		case SDL_SCANCODE_X:
-			if(SDL_GetModState() & KMOD_CTRL){
-				curGMap->_slopeFactor += 0.01f;
-			}
-			break;
 		case SDL_SCANCODE_F:
 			mod = SDL_GetModState();
 			if (mod&KMOD_CTRL) {
@@ -1896,23 +1886,23 @@ void calc_view_factors()
 	cosTurnInv = round(UNIT*cosTurnInvFlt);
 
 	// Inverse factors calculation
-	double M_x = A_g2s[0]*focus_flt;
-	double N_x = A_g2s[1]*focus_flt;
-	double M_y = A_g2s[3]*focus_flt;
-	double N_y = A_g2s[4]*focus_flt;
-	double M_z = A_g2s[6];
-	double N_z = A_g2s[7];
+	double M_x = A_g2s[0]*focus_flt; // 1 * focus_flt
+	double N_x = A_g2s[1]*focus_flt; // 0
+	double M_y = A_g2s[3]*focus_flt; // 0
+	double N_y = A_g2s[4]*focus_flt; // cos * focus_flt
+	double M_z = A_g2s[6]; // 0
+	double N_z = A_g2s[7]; // sin
 	double H = ViewZ << 16;
 
-	Ha = N_y*H;
-	Va = -N_x*H;
+	Ha = N_y*H; //cos * focus_flt * H
+	Va = -N_x*H; // 0
 
-	Hb = -M_y*H;
-	Vb = M_x*H;
+	Hb = -M_y*H; // 0
+	Vb = M_x*H; // 1 * focus_flt * H
 
-	Oc = M_x*N_y - M_y*N_x;
-	Hc = M_y*N_z - M_z*N_y;
-	Vc = M_z*N_x - M_x*N_z;
+	Oc = M_x*N_y - M_y*N_x; // 1 * focus_flt * cos * focus_flt - 0
+	Hc = M_y*N_z - M_z*N_y; // 0 - 0
+	Vc = M_z*N_x - M_x*N_z; // 0 - 1 * focus_flt * sin
 }
 
 void gameQuant(void)
@@ -1975,18 +1965,24 @@ void iGameMap::draw(int self)
 //		vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
 //		vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
 		_debugTimerStorage.event_start("render");
-		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle * _slopeFactor,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
-		double height = XGR_MAXY * ViewZ / 512;
-		double hz = height * 0.5 / tan(glm::radians(45.0) * 0.5);
+//		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle * _slopeFactor,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
+		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
+//		vMap->scaling_3D(GTOR(SlopeAngle), A_g2s, ViewZ, focus, ViewX, ViewY, xc, yc, xside, yside, TurnAngle);
 
-		float z = static_cast<float>(hz);
+//        char* vp = (char*)XGR_VIDEOBUF;
+//        for(int lineY = 0; lineY < XGR_MAXY; lineY++){
+//			memset(vp + lineY * XGR_MAXX, 255, XGR_MAXX/2);
+//        }
+
+
+
 		float turn = -GTOR(TurnAngle);
-		float slope = GTOR(SlopeAngle) * _slopeFactor;
+		float slope = GTOR(SlopeAngle);
 
 
 		renderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
 		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
-		renderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, z, turn, slope);
+		renderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
 		_debugTimerStorage.event_end("render");
 		//Отрисовка 3д моделей
 		if(curGMap) {
@@ -2108,9 +2104,10 @@ void iGameMap::draw(int self)
 		sprintf(msg, "Angle(Turn, Slope): (%d, %d)", TurnAngle, SlopeAngle);
 		sysfont.draw(xc - xside + 150,yc - yside + 112,msg,224 + 15,-1);
 
-		sprintf(msg, "_slopeFactor %f", _slopeFactor);
-		sysfont.draw(xc - xside + 150,yc - yside + 60,msg, 224 + 15,-1);
+		auto* vanger = ActD.Active;
 
+        sprintf(msg, "van.R(%f, %f, %f)", vanger->R.x, vanger->R.y, vanger->R.z);
+        sysfont.draw(xc - xside + 150,yc - yside + 40,msg, 224 + 15,-1);
 
 		_debugPerfWidget.draw_storage(_debugPerfCounterStorage, xc - xside + 150, yc - yside + 196);
 

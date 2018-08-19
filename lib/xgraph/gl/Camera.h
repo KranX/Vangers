@@ -15,6 +15,7 @@ namespace gl{
 		glm::vec2 viewport;
 		glm::vec3 position;
 		glm::quat rotation;
+		float focus;
 
 		void from_player(float x, float y, float z, float turn, float slope);
 		glm::mat4 mvp();
