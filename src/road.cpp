@@ -1813,17 +1813,20 @@ void iGameMap::reset(void)
 	auto paletteData = new uint32_t[256];
 	memset(paletteData, 0, sizeof(uint32_t) * 256);
 
-	auto heightMapTexture = gl::Texture::createTexture(H_SIZE, V_SIZE, gl::TextureFormat::Format8Bit, heightData);
-	auto colorTexture = gl::Texture::createTexture(H_SIZE, V_SIZE, gl::TextureFormat::Format8Bit, colorData);
-	auto metaTexture = gl::Texture::createTexture(H_SIZE, V_SIZE, gl::TextureFormat::Format8Bit, metaData);
+	int chunkHeight = 4096;
+	int numChunks = V_SIZE / chunkHeight;
+
+	auto heightMapTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, heightData);
+	auto colorTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, colorData);
+	auto metaTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, metaData);
 
 	auto paletteTexture = gl::Texture::createPalette(256);
 	paletteTexture->bindData(paletteData);
 
-	delete colorData;
-	delete heightData;
-	delete paletteData;
-	delete metaData;
+	delete[] colorData;
+	delete[] heightData;
+	delete[] paletteData;
+	delete[] metaData;
 
 	renderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
 

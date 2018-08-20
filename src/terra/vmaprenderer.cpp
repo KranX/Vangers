@@ -118,8 +118,10 @@ RayCastShader::RayCastShader(const std::shared_ptr<gl::Camera> &camera,
                              const std::shared_ptr<gl::Texture> &metaTexture,
                              const std::shared_ptr<gl::Texture> &paletteTexture,
                              const std::string &shadersPath) : Shader(shadersPath){
-	float w = heightMapTexture->width;
-	float h = heightMapTexture->height;
+	int heightMultiplier = heightMapTexture->numLayers == 0 ? 1 : heightMapTexture->numLayers;
+
+    float w = heightMapTexture->width;
+	float h = heightMapTexture->height * heightMultiplier;
 
 	GLfloat vertices[] = {
 //			  Position   , Texcoords
@@ -160,7 +162,7 @@ RayCastShader::RayCastShader(const std::shared_ptr<gl::Camera> &camera,
 
 void BilinearFilteringShader::render_impl() {
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, data.colorTexture->textureId);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, data.colorTexture->textureId);
 	glUniform1i(data.colorTextureAttrId, 0);
 
 	glActiveTexture(GL_TEXTURE1);
@@ -183,6 +185,7 @@ void BilinearFilteringShader::render_impl() {
 
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	gl::check_GL_error("glDrawElements");
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 }
@@ -191,8 +194,10 @@ BilinearFilteringShader::BilinearFilteringShader(const std::shared_ptr<gl::Textu
                                                  const std::shared_ptr<gl::Texture> &colorTexture,
                                                  const std::shared_ptr<gl::Camera> &camera,
                                                  const std::string &shadersPath): Shader(shadersPath) {
-	float w = colorTexture->width;
-	float h = colorTexture->height;
+    int heightMultiplier = colorTexture->numLayers == 0 ? 1 : colorTexture->numLayers;
+
+    float w = colorTexture->width;
+    float h = colorTexture->height * heightMultiplier;
 
 	GLfloat vertices[] = {
 //			  Position   , Texcoords

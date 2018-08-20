@@ -19,15 +19,19 @@ namespace gl {
 	public:
 		int width;
 		int height;
+		int numLayers = 0; // > 0 - texture array
 		GLuint textureId = 0;
 		TextureFormat format;
-		static std::shared_ptr<Texture> createTexture(int width, int height, TextureFormat format);
-		static std::shared_ptr<Texture> createTexture(int width, int height, TextureFormat format, void* data);
+		static std::shared_ptr<Texture> createTexture(int width, int height, int numLayers, TextureFormat format);
+		static std::shared_ptr<Texture>
+        createTexture(int width, int height, int numLayers, TextureFormat format, void *data);
+		static std::shared_ptr<Texture> createTexture(int width, int height, TextureFormat format, int numLayers, void* data);
 		static std::shared_ptr<Texture> createPalette(int width);
 		void bindData(void* data);
 		void update(int x, int y, int width, int height, void *data);
 	private:
-		Texture(int width, int height, TextureFormat format) : width(width), height(height), format(format) {}
+		Texture(int width, int height, int numLayers, TextureFormat format)
+                : width(width), height(height), format(format), numLayers(numLayers) {}
 
 	};
 }

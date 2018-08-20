@@ -270,10 +270,11 @@ int XGR_Screen::init(int x,int y,int flags_in)
 //	                               x, y);
 
 	texture = gl::Texture::createTexture(
-			x,
-			y,
-			gl::TextureFormat::Format32bit
-	);
+            x,
+            y,
+            0,
+            gl::TextureFormat::Format32bit
+    );
 	texture->bindData(static_cast<uint8_t *>(XGR32_ScreenSurface->pixels));
 
 	textureShader = std::make_unique<PlainTextureShader>(texture);

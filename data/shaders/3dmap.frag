@@ -4,7 +4,7 @@ uniform vec4 u_CamPos;
 uniform mat4 u_ViewProj;
 uniform mat4 u_InvViewProj;
 
-const vec4 u_ScreenSize = vec4(1280.0, 700.0, 0.0, 0.0);		// XY = size
+const vec4 u_ScreenSize = vec4(1280.0, 720.0, 0.0, 0.0);		// XY = size
 const vec4 u_TextureScale = vec4(2048.0, 16384.0, 96.0, 1.0);	// XY = size, Z = height scale, w = number of layers
 
 

@@ -23,7 +23,7 @@ namespace gl {
 	GLuint load_shaders(const std::string &vertex_file_path, const std::string &fragment_file_path);
 	GLuint load_shaders_str(const std::string &vertex_shader_code, const std::string &fragment_shader_code);
 	GLuint gen_palette(int width, uint32_t *data);
-	GLuint gen_texture(GLint internalFormat, GLenum format, GLenum type, GLint filter, int width, void *data, int height);
+	GLuint gen_texture(GLint internalFormat, GLenum format, GLenum type, GLint filter, int width, int height, int numLayers, void *data);
 
 
 }

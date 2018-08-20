@@ -20,6 +20,7 @@ namespace gl{
 	}
 
 	GLuint load_shaders(const std::string &vertex_file_path, const std::string &fragment_file_path){
+		std::cout<<"load_shaders: "<<vertex_file_path<<" "<<fragment_file_path<<std::endl;
 		std::string VertexShaderCode;
 		std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
 		if(VertexShaderStream.is_open()){
@@ -138,24 +139,48 @@ namespace gl{
 		});
 	}
 
-	GLuint gen_texture(GLint internalFormat, GLenum format, GLenum type, GLint filter, int width, void *data, int height) {
-		GLuint textureID;
+	GLuint gen_texture(GLint internalFormat, GLenum format, GLenum type, GLint filter, int width, int height, int numLayers, void *data) {
+		GLenum  target;
+		if(numLayers == 0){
+		    target = GL_TEXTURE_2D;
+		}else{
+		    target = GL_TEXTURE_2D_ARRAY;
+		}
+
+	    GLuint textureID;
 		glGenTextures(1, &textureID);
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				internalFormat, //GL_R8UI,
-				width,
-				height,
-				0,
-				format, //GL_RED_INTEGER,
-				type,
-				data
-		);
-		check_GL_error("glTexImage2D");
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+		glBindTexture(target, textureID);
+
+		if(numLayers == 0){
+            glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                internalFormat, //GL_R8UI,
+                width,
+                height,
+                0,
+                format, //GL_RED_INTEGER,
+                type,
+                data
+            );
+		}else{
+            glTexImage3D(
+                target,
+                0,
+                internalFormat, //GL_R8UI,
+                width,
+                height,
+                numLayers,
+                0,
+                format, //GL_RED_INTEGER,
+                type,
+                data
+            );
+		}
+
+		check_GL_error("glTexImage3D");
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter);
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filter);
 		check_GL_error("glTexParameteri");
 		return textureID;
 	}
