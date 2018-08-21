@@ -19,6 +19,8 @@ void VMapRenderer::init(const std::shared_ptr<gl::Texture> &heightMapTexture,
 		          const std::shared_ptr<gl::Texture> &colorTexture,
 		          const std::shared_ptr<gl::Texture> &metaTexture,
 		          const std::shared_ptr<gl::Texture> &paletteTexture){
+	resetDirty();
+
 	camera = std::make_shared<gl::Camera>();
 //	shader = std::make_unique<BilinearFilteringShader>(
 //			paletteTexture,
@@ -42,6 +44,7 @@ void VMapRenderer::render(int viewPortWidth, int viewPortHeight, int x, int y, i
 			x, y, z, turn, slope
 	);
 	shader->render();
+	resetDirty();
 }
 
 void VMapRenderer::setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format) {
@@ -56,29 +59,62 @@ void VMapRenderer::setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format) 
 
 void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 	if(lineUp <= lineDown){
-		int bufferLength = lineDown - lineUp + 1;
-		int bufferSize = bufferLength * sizeX;
-		uint8_t* buffer = new uint8_t[bufferSize];
-		for(int i = 0; i < bufferLength; i++){
-			uint8_t* lineBuffer = buffer + (i * sizeX);
-			memcpy(lineBuffer, color[i + lineUp], sizeX * sizeof(uint8_t));
-		}
-		colorTexture->update(0, lineUp, sizeX, bufferLength, buffer);
-		delete[] buffer;
+		setDirty(lineUp, lineDown);
 	}else{
-		updateColor(color, 0, lineDown);
-		updateColor(color, lineUp, sizeY - 1);
+		setDirty(0, lineDown);
+		setDirty(lineUp, sizeY - 1);
 	}
+
+	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
+	uint8_t* buffer = new uint8_t[bufferSize];
+
+	for(int nRegion = 0; nRegion < dirtyRegions.size(); nRegion++){
+		if(dirtyRegions[nRegion]){
+			int yStart = nRegion * DIRTY_REGION_CHUNK_SIZE;
+			int yEnd = (nRegion + 1) * DIRTY_REGION_CHUNK_SIZE;
+
+			for(int i = yStart; i < yEnd; i++){
+				uint8_t* lineBuffer = buffer + ((i - yStart) * sizeX);
+				if(color[i]){
+					memcpy(lineBuffer, color[i], sizeX * sizeof(uint8_t));
+				}else{
+					memset(lineBuffer, 0, sizeX * sizeof(uint8_t));
+				}
+			}
+
+			colorTexture->update(0, yStart, sizeX, DIRTY_REGION_CHUNK_SIZE, buffer);
+		}
+	}
+
+	delete[] buffer;
 }
 
+void VMapRenderer::resetDirty() {
+	int numRegions = sizeY / DIRTY_REGION_CHUNK_SIZE;
+	dirtyRegions = std::vector<bool>(numRegions, false);
+}
+
+void VMapRenderer::setDirty(int y) {
+	int nRegion = y / DIRTY_REGION_CHUNK_SIZE;
+	dirtyRegions[nRegion] = true;
+}
+
+void VMapRenderer::setDirty(int yStart, int yEnd) {
+	int nRegionStart = yStart / DIRTY_REGION_CHUNK_SIZE;
+	int nRegionEnd = yEnd / DIRTY_REGION_CHUNK_SIZE;
+	for(int nRegion = nRegionStart; nRegion <= nRegionEnd; nRegion++){
+		dirtyRegions[nRegion] = true;
+	}
+
+}
 
 void RayCastShader::render_impl() {
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, data.heightMapTexture->textureId);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, data.heightMapTexture->textureId);
 	glUniform1i(data.heightMapTextureAttrId, 0);
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, data.colorTexture->textureId);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, data.colorTexture->textureId);
 	glUniform1i(data.colorTextureAttrId, 1);
 
 	glActiveTexture(GL_TEXTURE2);
@@ -86,15 +122,26 @@ void RayCastShader::render_impl() {
 	glUniform1i(data.paletteTextureAttrId, 2);
 
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, data.metaTexture->textureId);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, data.metaTexture->textureId);
 	glUniform1i(data.metaTextureAttrId, 3);
 
 
 	auto mvp = data.camera->mvp();
 	auto invMvp = glm::inverse(mvp);
+	float numLayers = data.colorTexture->numLayers;
+	float width = data.colorTexture->width;
+	float height = data.colorTexture->height * numLayers;
+
+	scale = fmin(scale + 2.0f, maxScale);
+
+	auto textureScale = glm::vec4(width, height, scale, numLayers);
+	auto screenSize = glm::vec4(data.camera->viewport.x, data.camera->viewport.y, 0.0f, 0.0f);
+
 	glUniformMatrix4fv(data.mvpAtrrId, 1, GL_FALSE, &mvp[0][0]);
 	glUniformMatrix4fv(data.invMvpAttrId, 1, GL_FALSE, &invMvp[0][0]);
 	glUniform4fv(data.cameraPosAttrId, 1, &data.camera->position[0]);
+	glUniform4fv(data.textureScaleAttrId, 1, &textureScale[0]);
+	glUniform4fv(data.screenSizeAttrId, 1, &screenSize[0]);
 
 	glBindVertexArray(data.bufferData->vertexArrayObject);
 
@@ -102,9 +149,9 @@ void RayCastShader::render_impl() {
 	glBindBuffer(GL_ARRAY_BUFFER, data.bufferData->vertexBufferObject);
 	glVertexAttribPointer(data.positionAttrId, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 
-	glEnableVertexAttribArray(data.texcoordAttrId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.bufferData->elementBufferObject);
-	glVertexAttribPointer(data.texcoordAttrId, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+//	glEnableVertexAttribArray(data.texcoordAttrId);
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.bufferData->elementBufferObject);
+//	glVertexAttribPointer(data.texcoordAttrId, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
 
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -112,12 +159,13 @@ void RayCastShader::render_impl() {
 	glDisableVertexAttribArray(1);
 }
 
-RayCastShader::RayCastShader(const std::shared_ptr<gl::Camera> &camera,
+RayCastShader::RayCastShader(float maxScale,
+							 const std::shared_ptr<gl::Camera> &camera,
                              const std::shared_ptr<gl::Texture> &heightMapTexture,
                              const std::shared_ptr<gl::Texture> &colorTexture,
                              const std::shared_ptr<gl::Texture> &metaTexture,
                              const std::shared_ptr<gl::Texture> &paletteTexture,
-                             const std::string &shadersPath) : Shader(shadersPath){
+                             const std::string &shadersPath) : scale(1.0f), maxScale(maxScale), Shader(shadersPath){
 	int heightMultiplier = heightMapTexture->numLayers == 0 ? 1 : heightMapTexture->numLayers;
 
     float w = heightMapTexture->width;
@@ -153,9 +201,11 @@ RayCastShader::RayCastShader(const std::shared_ptr<gl::Camera> &camera,
 	data.mvpAtrrId = glGetUniformLocation(programId, "u_ViewProj");
 	data.invMvpAttrId  = glGetUniformLocation(programId, "u_InvViewProj");
 	data.cameraPosAttrId  = glGetUniformLocation(programId, "u_CamPos");
+	data.textureScaleAttrId  = glGetUniformLocation(programId, "u_TextureScale");
+	data.screenSizeAttrId  = glGetUniformLocation(programId, "u_ScreenSize");
 
 	data.positionAttrId = glGetAttribLocation(programId, "position");
-	data.texcoordAttrId = glGetAttribLocation(programId, "texcoord");
+//	data.texcoordAttrId = glGetAttribLocation(programId, "texcoord");
 }
 
 

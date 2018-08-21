@@ -4,14 +4,16 @@ uniform vec4 u_CamPos;
 uniform mat4 u_ViewProj;
 uniform mat4 u_InvViewProj;
 
-const vec4 u_ScreenSize = vec4(1280.0, 720.0, 0.0, 0.0);		// XY = size
-const vec4 u_TextureScale = vec4(2048.0, 16384.0, 96.0, 1.0);	// XY = size, Z = height scale, w = number of layers
+//const vec4 u_ScreenSize = vec4(1280.0, 720.0, 0.0, 0.0);		// XY = size
+uniform vec4 u_ScreenSize; 	// XY = size
+uniform vec4 u_TextureScale;	// XY = size, Z = height scale, w = number of layers
+//const vec4 u_TextureScale = vec4(2048.0, 16384.0, 96.0, 1.0);	// XY = size, Z = height scale, w = number of layers
 
 
-uniform usampler2D t_Height;
-uniform usampler2D t_Color;
+uniform usampler2DArray t_Height;
+uniform usampler2DArray t_Color;
 uniform sampler1D t_Palette;
-uniform usampler2D t_Meta;
+uniform usampler2DArray t_Meta;
 
 
 const float c_HorFactor = 0.5; //H_CORRECTION
@@ -22,16 +24,25 @@ const uint c_DeltaShift = 0U, c_DeltaBits = 2U;
 
 #define TERRAIN_WATER	0U
 
-in vec2 Texcoord;
+//in vec2 Texcoord;
 out vec4 Target0;
 
 
 struct Surface {
 	float low_alt, high_alt, delta;
 	uint low_type, high_type;
-	vec2 tex_coord;
+	vec3 tex_coord;
 //	bool is_shadowed;
 };
+
+struct CastPoint {
+	vec3 pos;
+	uint type;
+	vec3 tex_coord;
+//	bool is_underground;
+//	bool is_shadowed;
+};
+
 
 vec3 palColor(uvec4 color_id){
 	float c = color_id.x;
@@ -47,8 +58,14 @@ uint get_delta(uint meta) {
 }
 
 Surface get_surface(vec2 pos) {
-	vec2 tc = vec2(pos / u_TextureScale.xy);
+	float y = pos.y;
+	float chunkSize = u_TextureScale.y / u_TextureScale.w;
+
+	vec3 tc = vec3(pos / u_TextureScale.xy, 0.0f);
 	tc.x = 1 - tc.x;
+    tc.z = trunc(y / chunkSize);
+	tc.y = mod(y, chunkSize) / chunkSize;
+
 
 	Surface suf;
 	suf.tex_coord = tc;
@@ -86,6 +103,8 @@ Surface get_surface(vec2 pos) {
 		suf.high_type = suf.low_type;
 		suf.delta = 0.0;
 	}
+	suf.low_alt -= u_TextureScale.z/2;
+	suf.high_alt -= u_TextureScale.z/2;
 	return suf;
 }
 
@@ -105,7 +124,7 @@ Surface cast_ray_impl(
 	for (int i=0; i<num_forward; ++i) {
 		vec3 c = a + step;
 		Surface suf = get_surface(c.xy);
-//		float height = suf.alt;
+
 		float height = mix(suf.low_alt, suf.high_alt, high);
 		if (c.z < height) {
 			result = suf;
@@ -131,17 +150,10 @@ Surface cast_ray_impl(
 	return result;
 }
 
-struct CastPoint {
-	vec3 pos;
-	uint type;
-	vec2 tex_coord;
-//	bool is_underground;
-//	bool is_shadowed;
-};
 
 
 
-vec4 evaluate_color(vec2 tex_coord) {
+vec4 evaluate_color(vec3 tex_coord) {
 	vec3 tl = palColor(textureOffset(t_Color, tex_coord, ivec2(-1, 0)));
 	vec3 tr = palColor(textureOffset(t_Color, tex_coord, ivec2(0, 0)));
 	vec3 bl = palColor(textureOffset(t_Color, tex_coord, ivec2(-1, 1)));
@@ -156,8 +168,8 @@ vec4 evaluate_color(vec2 tex_coord) {
 }
 
 CastPoint cast_ray_to_map(vec3 base, vec3 dir) {
-	vec3 a = cast_ray_to_plane(u_TextureScale.z, base, dir);
-	vec3 c = cast_ray_to_plane(0.0, base, dir);
+	vec3 a = cast_ray_to_plane(u_TextureScale.z/2, base, dir);
+	vec3 c = cast_ray_to_plane(-u_TextureScale.z/2, base, dir);
 	vec3 b = c;
 	Surface suf = cast_ray_impl(a, b, true, 7, 7);
 	CastPoint result;
@@ -189,12 +201,7 @@ void main() {
 
 	col = mix(col, metac, metab);
 
-//	vec4 col = vec4(
-//		view.x,
-//		view.y,
-//		view.z,
-//		1.0f
-//	);
+
 	Target0 = vec4(col);
 
 	if (pt.type == TERRAIN_WATER) {
@@ -210,17 +217,10 @@ void main() {
 			other.pos = b;
 			other.type = suf.high_type;
 			other.tex_coord = suf.tex_coord;
-//			other.is_shadowed = suf.is_shadowed;
 			Target0 += c_ReflectionPower * evaluate_color(other.tex_coord);
-//			Target0 = vec4(0.5, 0.5, 0, 1);
 		}else {
-//			Target0 = vec4(1.0, 0, 0, 1);
 		}
 	}
-//	Target0 = frag_color;
-//
-//	vec4 target_ndc = u_ViewProj * vec4(pt.pos, 1.0);
-//	gl_FragDepth = target_ndc.z / target_ndc.w * 0.5 + 0.5;
 }
 
 

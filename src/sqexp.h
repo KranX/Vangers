@@ -10,7 +10,9 @@
 #define PRM_NETWORK	0x0008
 
 struct iGameMap {
-	std::unique_ptr<VMapRenderer> renderer;
+	std::shared_ptr<VMapRenderer> renderer;
+	std::shared_ptr<VMapRenderer> bilinearRenderer;
+	std::shared_ptr<VMapRenderer> rayCastRenderer;
 	int xc,yc;
 	int xside,yside;
 	int xsize,ysize;
@@ -28,4 +30,6 @@ struct iGameMap {
 	void quant(void);
 	void reset(void);
 	void change(int Dx,int Dy,int mode = 1,int xcenter = -1,int ycenter = -1);
+
+	void changeRenderer(int num);
 	};

@@ -90,7 +90,7 @@ namespace gl {
 	}
 
 	void Texture::update(int x, int y, int width, int height, void *data) {
-		if (format == TextureFormat::Format32bit) {
+        if (format == TextureFormat::Format32bit) {
 			if(numLayers == 0) {
 				glBindTexture(GL_TEXTURE_2D, textureId);
 				glTexSubImage2D(
@@ -133,35 +133,52 @@ namespace gl {
 				);
 				check_GL_error("glTextureSubImage2D");
 			}else{
-				int curY = y;
-				int startLayer = y / this->height;
-				int endLayer = (y + height) / this->height;
+                int nLayer = y / this->height;
+                y = y % this->height;
+                glBindTexture(GL_TEXTURE_2D_ARRAY, textureId);
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
+                                0,
+                                x,
+                                y,
+                                nLayer,
+                                width,
+                                height,
+                                1,
+                                GL_RED_INTEGER,
+                                GL_UNSIGNED_BYTE,
+                                (char*)data
+                );
+                check_GL_error("glTextureSubImage3D");
 
-				glBindTexture(GL_TEXTURE_2D_ARRAY, textureId);
-
-				for(int nLayer = startLayer; nLayer <= endLayer; nLayer ++){
-					int yOffset = curY % this->height;
-					int updatedHeight = this->height - yOffset;
-
-					if(nLayer == endLayer){
-						updatedHeight = (y + height) % this->height - yOffset;
-					}
-
-					glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
-									0,
-									x,
-									yOffset,
-									nLayer,
-									width,
-									updatedHeight,
-									1,
-									GL_RED_INTEGER,
-									GL_UNSIGNED_BYTE,
-									(char*)data + 3 * (curY - y)
-					);
+//				int curY = y;
+//				int startLayer = y / this->height;
+//				int endLayer = (y + height - 1) / this->height;
+//
+//				glBindTexture(GL_TEXTURE_2D_ARRAY, textureId);
+//
+//				for(int nLayer = startLayer; nLayer <= endLayer; nLayer ++){
+//					int yOffset = curY % this->height;
+//					int updatedHeight = this->height - yOffset;
+//
+//					if(nLayer == endLayer){
+//						updatedHeight = (y + height) % this->height;
+//					}
+//                    printf("glTexSubImage3D: x: %d, y: %d, z: %d, width: %d, height: %d\n", x, yOffset, nLayer, width, updatedHeight);
+//					glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
+//									0,
+//									x,
+//									y,
+//									nLayer,
+//									width,
+//									height,
+//									1,
+//									GL_RED_INTEGER,
+//									GL_UNSIGNED_BYTE,
+//									(char*)data + 3 * (curY - y)
+//					);
 					check_GL_error("glTextureSubImage3D");
-					curY += this->height;
-				}
+//					curY += this->height;
+//				}
 
 
 			}
