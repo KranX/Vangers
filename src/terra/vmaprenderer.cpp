@@ -9,6 +9,7 @@
 #include <string>
 #include <ios>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <vector>
 #include <hdf5_hl.h>

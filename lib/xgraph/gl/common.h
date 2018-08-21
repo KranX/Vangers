@@ -7,6 +7,7 @@
 
 #include <GL/glew.h>
 #include <string>
+#include <memory>
 
 namespace gl {
 	struct VertexBufferData {

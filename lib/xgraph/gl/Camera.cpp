@@ -4,6 +4,11 @@
 
 #include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
+#include <iostream>
+
 
 glm::mat4 gl::Camera::mvp() {
 	float FOV = atan(viewport.y / 2 / focus) * 2;
@@ -12,8 +17,7 @@ glm::mat4 gl::Camera::mvp() {
 			viewport.x / viewport.y,
 			100.0f, 9000.0f
 	);
-
-	auto view = glm::mat4_cast(glm::inverse(rotation)) * glm::translate(glm::mat4(), -position);
+	auto view = glm::mat4_cast(glm::inverse(rotation)) * glm::translate(glm::mat4(1.0f), -position);
 	return proj * view;
 }
 
