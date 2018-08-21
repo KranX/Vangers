@@ -1,3 +1,6 @@
+#ifndef __IKEYS_H__
+#define __IKEYS_H__
+#include <SDL.h>
 
 //#define _ISCREEN_GERMAN_
 
@@ -14,7 +17,7 @@ const int 	KBD_ENABLE		= 0x04;
 
 struct KeyBuffer
 {
-	int* table;
+	SDL_Event* table;
 	char* state_table;
 
 	int size;
@@ -25,17 +28,18 @@ struct KeyBuffer
 	int cur_state;
 
 	void clear(void);
-	void put(int key,int state);
-	int get(void);
+	void put(SDL_Event *key, int state);
+	SDL_Event *get(void);
 
 	KeyBuffer(void);
 };
 
-void key(int);
-void unpress_key(int);
+void key(SDL_Event *);
+void unpress_key(SDL_Event *);
 
 void KBD_init(void);
 
 extern KeyBuffer* KeyBuf;
 extern int KeyType;
 
+#endif

@@ -4,9 +4,9 @@
 #include <stdio.h>
 
 #include "_xsound.h"
-#include "../xtool/xglobal.h"
+#include "xglobal.h"
 #include "xcritical.h"
-#include "../xgraph/xgraph.h"
+#include "xgraph.h"
 #include "avi.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */

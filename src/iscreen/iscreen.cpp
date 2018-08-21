@@ -46,6 +46,7 @@ void aci_setMatrixBorder(void);
 void aci_setScMatrixBorder(void);
 void aciChangeLineID(void);
 int aciCheckCredits(void);
+int sdlEventToCode(SDL_Event *event);
 
 void put_level(int x,int y,int sx,int sy,int lev);
 void put_buf(int x,int y,int sx,int sy,unsigned char* buf,unsigned char* mask,int lev,int hide_mode);
@@ -3431,9 +3432,14 @@ void iScreenDispatcher::input_string_quant(void)
 			break;
 	}
 
-	while(KeyBuf -> size){
-		k = KeyBuf -> get();
-		if(!(k & 0x1000)){
+	while(KeyBuf -> size) {
+		SDL_Event *event = KeyBuf->get();
+		//TODO: UTF8 fix
+		if (event->type != SDL_KEYDOWN)
+			continue;
+		k = sdlEventToCode(event);
+
+		if(!(k & 0x1000)) {
 			if(!(ActiveEl -> flags & EL_KEY_NAME)){
 				switch(k){
 					case SDL_SCANCODE_RETURN:

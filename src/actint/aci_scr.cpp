@@ -9,6 +9,13 @@
 #include "a_consts.h"
 #include "acsconst.h"
 
+
+#include "../network.h"
+
+#ifndef _WIN32
+#include <arpa/inet.h> // ntohl() FIXME: remove
+#endif
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -804,7 +811,7 @@ void aciScreenDispatcher::alloc_mem(void)
 	flags |= ACS_FORCED_REDRAW;
 	flags |= ACS_FIRST_REDRAW;
 
-	KeyTrap(ACS_STARTUP_KEY);
+	KeyTrap(ACS_STARTUP_KEY, nullptr);
 
 	acsLoadFonts();
 }
@@ -831,12 +838,14 @@ void aciScreen::init_objects(void)
 	}
 }
 
-void aciScreenDispatcher::KeyTrap(int code)
+void aciScreenDispatcher::KeyTrap(int code, SDL_Event *event)
 {
 	if(activeInput) {
-		InputQuant(code);
+		InputQuant(event);
 	}
-	curScr->KeyTrap(code);
+	if (event == nullptr || event->type != SDL_TEXTINPUT) {
+		curScr->KeyTrap(code);
+	}
 }
 
 void aciScreen::KeyTrap(int code)
@@ -1491,7 +1500,7 @@ void aciScreenScroller::init(void)
 		acsGetResourceSize(sRes,x,y,sResSX,sResSY);
 }
 
-void aciScreenDispatcher::InputQuant(int code)
+void aciScreenDispatcher::InputQuant(SDL_Event *event)
 {
 	int sz;
 	unsigned char* ptr = NULL;
@@ -1502,85 +1511,80 @@ void aciScreenDispatcher::InputQuant(int code)
 		return;
 	}
 
+	if (!(event != nullptr && (event->type == SDL_KEYDOWN || event->type == SDL_TEXTINPUT)))
+		return;
+
 	ptr = (unsigned char*)activeInput -> string;
 	if(activeInput -> flags & ACS_ISCREEN_FONT) {
 		hfnt = acsFntTable[activeInput -> font];
 	}
-	
-	code = SDL_GetKeyFromScancode((SDL_Scancode)code);
-	if (code < 0) {
-		return;
-	}
-	if (code > 0 && code < 127) {
-		chr = code;
-	} else { 
-		return;
-	}
-	
-	//std::cout<<"aciScreenDispatcher::InputQuant:"<<code<<" chr:"<<chr<<std::endl;
-	switch(code) {
-		case SDLK_KP_0:
-			chr = '0';
-			break;
-		case SDLK_KP_1:
-			chr = '1';
-			break;
-		case SDLK_KP_2:
-			chr = '2';
-			break;
-		case SDLK_KP_3:
-			chr = '3';
-			break;
-		case SDLK_KP_4:
-			chr = '4';
-			break;
-		case SDLK_KP_5:
-			chr = '5';
-			break;
-		case SDLK_KP_6:
-			chr = '6';
-			break;
-		case SDLK_KP_7:
-			chr = '7';
-			break;
-		case SDLK_KP_8:
-			chr = '8';
-			break;
-		case SDLK_KP_9:
-			chr = '9';
-			break;
-	}
-	
-	switch(code) {
-		case SDLK_RETURN:
-			DoneInput();
-			break;
-		case SDLK_ESCAPE:
-			CancelInput();
-			break;
-		case SDLK_LEFT:
-		case SDLK_BACKSPACE:
-			sz = strlen((char*)ptr);
-			if(sz > 1) {
-				ptr[sz - 1] = 0;
-				ptr[sz - 2] = '_';
-				activeInput -> flags |= ACS_REDRAW_OBJECT;
-			}
-			break;
-		default:
-			if(chr > 0 && chr < 128) {
-				if(hfnt && chr < (hfnt->StartChar-hfnt->EndChar+1) && (hfnt->data[chr]->Flags & NULL_HCHAR) && chr != ' ')
-					break;
+
+	if (event != nullptr && event->type == SDL_KEYDOWN) {
+		if (event->key.keysym.sym > 0 && event->key.keysym.sym < 127) {
+			chr = event->key.keysym.sym;
+		} else {
+			return;
+		}
+
+		switch(event->key.keysym.sym) {
+			case SDLK_RETURN:
+				DoneInput();
+				break;
+			case SDLK_ESCAPE:
+				CancelInput();
+				break;
+			case SDLK_LEFT:
+			case SDLK_BACKSPACE:
 				sz = strlen((char*)ptr);
-				if(sz <= activeInput -> MaxStrLen) {
-					ptr[sz - 1] = chr;
-					ptr[sz] = '_';
-					ptr[sz + 1] = 0;
-					activeInput -> flags |= ACS_REDRAW_OBJECT;
+				if(sz > 1) {
+					ptr[sz - 1] = 0;
+					ptr[sz - 2] = '_';
+					activeInput->flags |= ACS_REDRAW_OBJECT;
 				}
+				break;
+		}
+	} else if (event != nullptr && event->type == SDL_TEXTINPUT) {
+		if ((unsigned char)event->text.text[0] < 128) {
+			chr = event->text.text[0];
+		} else {
+			unsigned short utf = ((unsigned short *)event->text.text)[0];
+			utf = ntohs(utf);
+			// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
+			if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
+				chr = UTF8toCP866(utf);
+			} else {
+				chr = ' ';
 			}
-			break;
+		}
+		if(hfnt && chr < (hfnt->StartChar-hfnt->EndChar+1) && (hfnt->data[chr]->Flags & NULL_HCHAR) && chr != ' ')
+			return;
+		sz = strlen((char*)ptr);
+		if(sz <= activeInput->MaxStrLen) {
+			ptr[sz - 1] = chr;
+			ptr[sz] = '_';
+			ptr[sz + 1] = 0;
+			activeInput -> flags |= ACS_REDRAW_OBJECT;
+		}
 	}
+
+}
+
+// Only for russian letters
+unsigned char UTF8toCP866(unsigned short utf) {
+	if (utf >= 0xd090 && utf <= 0xd0bf) {
+		return utf - 0xd010;
+	}
+
+	if (utf >= 0xd180 && utf <= 0xd18f) {
+		return utf - 0xd0a0;
+	}
+	switch(utf) {
+		case 0xd081: //Ё
+			return 0xf0;
+		case 0xd191: //ё
+			return 0xf1;
+	}
+	return 0xdb;
 }
 
 void aciScreenDispatcher::PrepareInput(int obj_id)
@@ -1601,6 +1605,7 @@ void aciScreenDispatcher::PrepareInput(int obj_id)
 		p -> string[sz] = 0;
 		p -> flags |= ACS_ACTIVE_STRING;
 		activeInput = p;
+		SDL_StartTextInput();
 	}
 }
 
@@ -1716,6 +1721,7 @@ void aciScreenDispatcher::CancelInput(void)
 	activeInput = NULL;
 	delete acsBackupStr;
 	acsBackupStr = NULL;
+	SDL_StopTextInput();
 }
 
 void aciScreenDispatcher::DoneInput(void)
@@ -1728,6 +1734,7 @@ void aciScreenDispatcher::DoneInput(void)
 	activeInput = NULL;
 	delete acsBackupStr;
 	acsBackupStr = NULL;
+	SDL_StopTextInput();
 }
 
 void aciScreenInputField::Quant(void)

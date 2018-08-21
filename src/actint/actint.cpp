@@ -8,6 +8,7 @@
 #include "../iscreen/iscreen.h"
 #include "item_api.h"
 #include "actint.h"
+#include "aci_scr.h"
 #include "aci_str.h"
 #include "aci_evnt.h"
 #include "a_consts.h"
@@ -149,7 +150,7 @@ void aciChangeWorld(int id);
 void iChatInit(void);
 void iChatQuant(int flush = 0);
 void iChatFinit(void);
-void iChatKeyQuant(int k);
+void iChatKeyQuant(SDL_Event *k);
 void iChatMouseQuant(int x,int y,int bt);
 
 void LoadResourceSOUND(const char *path_name, int surface);
@@ -4884,7 +4885,7 @@ void actIntDispatcher::KeyQuant(void)
 	}
 
 	while(KeyBuf -> size){
-		k = KeyBuf -> get();
+		k = sdlEventToCode(KeyBuf->get());
 		if(flags & AS_TEXT_MODE){
 			if(iCheckKeyID(iKEY_SKIP_TEXT,k)){
 				if(!ScrTextData -> NextPage()){
