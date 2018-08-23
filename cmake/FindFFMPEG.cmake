@@ -21,6 +21,7 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 		/usr/include/libavutil
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavutil
+        /mingw32/include
 	PATH_SUFFIXES
 		libavutil
 		ffmpeg
@@ -41,7 +42,9 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
 		/usr/include/libavcodec
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavcodec
-	PATH_SUFFIXES
+	/usr/include/libavcodec
+		/usr/include/ffmpeg
+		/usr/include/ffmpeg/libavcodecPATH_SUFFIXES
 		libavcodec
 		ffmpeg
 )
@@ -61,7 +64,9 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 		/usr/include/libavformat
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavformat
-	PATH_SUFFIXES
+	/usr/include/libavformat
+		/usr/include/ffmpeg
+		/usr/include/ffmpeg/libavformatPATH_SUFFIXES
 		libavformat
 		ffmpeg
 )
@@ -82,6 +87,7 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 		/mingw/lib
 		/local/bin
 		/mingw/bin
+        /mingw32/bin
 		/bin
 )
 
@@ -118,6 +124,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		/local/lib
 		/local/bin
 		/mingw/bin
+        /mingw32/bin
 		/mingw/lib
 		/bin
 )

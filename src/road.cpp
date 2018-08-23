@@ -1606,7 +1606,8 @@ void KeyCenter(SDL_Event *key)
 			break;
 #endif
 		case SDL_SCANCODE_T:
-			if (SDL_GetModState() & KMOD_CTRL) {
+			mod = SDL_GetModState();
+			if ((mod&KMOD_SHIFT)||(mod&KMOD_CTRL)) {
 				GameTimerON_OFF();
 			}
 			break;
