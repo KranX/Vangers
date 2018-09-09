@@ -188,4 +188,9 @@ namespace gl {
 		}
 
 	}
+
+    void Texture::release() {
+		glDeleteTextures(1, &textureId);
+		check_GL_error("glDeleteTextures");
+    }
 }

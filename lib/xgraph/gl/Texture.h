@@ -29,9 +29,12 @@ namespace gl {
 		static std::shared_ptr<Texture> createPalette(int width);
 		void bindData(void* data);
 		void update(int x, int y, int width, int height, void *data);
+		void release();
+		~Texture(){ release(); }
 	private:
 		Texture(int width, int height, int numLayers, TextureFormat format)
                 : width(width), height(height), format(format), numLayers(numLayers) {}
+
 
 	};
 }

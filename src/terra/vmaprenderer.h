@@ -78,6 +78,10 @@ public:
 	GLint mvpAtrrId;
 	GLint positionAttrId;
 	GLint texcoordAttrId;
+
+	GLint textureScaleAttrId;
+	GLint screenSizeAttrId;
+
 	std::shared_ptr<gl::VertexBufferData> bufferData;
 };
 
@@ -103,6 +107,7 @@ private:
 	std::shared_ptr<gl::Camera> camera;
 	std::shared_ptr<gl::Texture> paletteTexture;
 	std::shared_ptr<gl::Texture> colorTexture;
+	std::shared_ptr<gl::Texture> heightTexture;
 public:
 	enum ShaderType {
 		RayCast, BilinearFiltering
@@ -116,6 +121,7 @@ public:
 	          const std::shared_ptr<gl::Texture> &colorTexture,
 	          const std::shared_ptr<gl::Texture> &metaTexture,
 	          const std::shared_ptr<gl::Texture> &paletteTexture);
+	void deinit();
 	void setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format);
 	void render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope, float focus);
 	void resetDirty();

@@ -2,8 +2,11 @@
 
 uniform mat4 u_ViewProj;
 
-const vec4 u_ScreenSize = vec4(1280.0, 700.0, 0.0, 0.0);		// XY = size
-const vec4 u_TextureScale = vec4(2048.0, 16384.0, 96.0, 1.0);	// XY = size, Z = height scale, w = number of layers
+//const vec4 u_ScreenSize = vec4(1280.0, 700.0, 0.0, 0.0);		// XY = size
+//const vec4 u_TextureScale = vec4(2048.0, 16384.0, 96.0, 1.0);	// XY = size, Z = height scale, w = number of layers
+
+uniform vec4 u_ScreenSize; 	// XY = size
+uniform vec4 u_TextureScale;	// XY = size, Z = UNUSED, w = number of layers
 
 uniform usampler2DArray t_Color;
 uniform sampler1D t_Palette;
@@ -30,10 +33,16 @@ vec3 palColor(uvec4 color_id){
 
 vec4 evaluate_color(vec2 tex_coord) {
 	float x = tex_coord.x;
-	float y = int(tex_coord.y * u_TextureScale.y) % 4096 / 4096.0f;
-	float level = int(tex_coord.y * u_TextureScale.y / 4096);
+	float numChunks = u_TextureScale.w;
+//	float chunkSize = u_TextureScale.y / u_TextureScale.w;
+//	int chunkSize_i = int(chunkSize);
+
+//	float y = int(tex_coord.y * u_TextureScale.y) % chunkSize_i / chunkSize;
+//	float level = int(tex_coord.y * u_TextureScale.y) / chunkSize;
+//	float y = tex_coord.y* 8;
+	float y = mod(tex_coord.y, 1/numChunks) * numChunks;
+	float level = floor(tex_coord.y * numChunks);
 	vec3 tex_coord_layer = vec3(x, y, level);
-//	vec3 tex_coord_layer = vec3(0.5, 0.5, 0.0);
 
 	vec3 tl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 0)));
 	vec3 tr = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, 0)));
@@ -46,7 +55,6 @@ vec4 evaluate_color(vec2 tex_coord) {
 	vec3 color = mix(top_color, bottom_color, f.y);
 
 	return vec4(color, 1);
-//	return vec4(1, 0, 1, 1);
 }
 
 

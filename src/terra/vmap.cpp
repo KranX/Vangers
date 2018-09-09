@@ -447,7 +447,7 @@ void vrtMap::allocHeap(void)
 
 void vrtMap::release(void)
 {
-//	printf("vrtMap::release()\n");
+	printf("vrtMap::release()\n");
 #ifdef _ROAD_
 	if(ExclusiveLog && LockSuccess){
 		//WHAT is IT?
@@ -638,7 +638,7 @@ void vrtMap::closeMirror(void)
 
 void vrtMap::finit(void)
 {
-//	printf("vrtMap::finit\n");
+	printf("vrtMap::finit\n");
 #ifdef SESSION
 	if(!DirectLog){
 		if(sssUpdateLog){
@@ -829,7 +829,7 @@ void vrtMap::fileLoad(void)
 //Удалил не используемый код - смотреть старые версии
 void vrtMap::load(const char* name,int nWorld)
 {
-//	printf("vrtMap::load(name: %s, nWorld: %d)\n", name, nWorld);
+	printf("vrtMap::load(name: %s, nWorld: %d)\n", name, nWorld);
 	on = true;
 	pFile -> init(name);
 	maxWorld = atoi(pFile -> getAtom());
@@ -923,7 +923,7 @@ void vrtMap::load(const char* name,int nWorld)
 
 void vrtMap::reload(int nWorld)
 {
-//		printf("vrtMap::reload(nWorld: %d)\n", nWorld);
+	printf("vrtMap::reload(nWorld: %d)\n", nWorld);
 	on  = true;
 	if(nWorld >= maxWorld || nWorld < 0) ErrH.Abort("World Index out of range");
 #ifdef _SURMAP_

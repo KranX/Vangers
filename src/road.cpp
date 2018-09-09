@@ -1618,10 +1618,7 @@ void KeyCenter(SDL_Event *key)
 			}
 			break;
 		case SDL_SCANCODE_RIGHTBRACKET:
-			curGMap->changeRenderer(0);
-			break;
-		case SDL_SCANCODE_LEFTBRACKET:
-			curGMap->changeRenderer(1);
+			curGMap->change_renderer();
 			break;
 		case SDL_SCANCODE_F:
 			mod = SDL_GetModState();
@@ -1675,7 +1672,8 @@ void KeyCenter(SDL_Event *key)
 #endif
 }
 
-iGameMap::iGameMap(int _x,int _y,int _xside,int _yside)
+iGameMap::iGameMap(int _x,int _y,int _xside,int _yside):
+  renderers(0)
 {
 	xside = _xside;
 	yside = _yside;
@@ -1804,42 +1802,7 @@ void iGameMap::reset(void)
 	}
 	camera_reset();
 
-	vMap->accept(0, V_SIZE - 1);
-
-	rayCastRenderer = std::shared_ptr<VMapRenderer>(new VMapRenderer(VMapRenderer::RayCast, H_SIZE, V_SIZE));
-	bilinearRenderer= std::shared_ptr<VMapRenderer>(new VMapRenderer(VMapRenderer::BilinearFiltering, H_SIZE, V_SIZE));
-	renderer = bilinearRenderer;
-
-	auto colorData = new uint8_t[H_SIZE * V_SIZE];
-	auto heightData = new uint8_t[H_SIZE * V_SIZE];
-	auto metaData = new uint8_t[H_SIZE * V_SIZE];
-
-	for (int i = 0; i < V_SIZE; i++) {
-		memcpy(colorData + H_SIZE * i, vMap->lineTcolor[i], sizeof(uint8_t) * H_SIZE);
-		memcpy(heightData + H_SIZE * i, vMap->lineT[i], sizeof(uint8_t) * H_SIZE);
-		memcpy(metaData + H_SIZE * i, vMap->lineT[i] + H_SIZE, sizeof(uint8_t) * H_SIZE);
-	}
-
-	auto paletteData = new uint32_t[256];
-	memset(paletteData, 0, sizeof(uint32_t) * 256);
-
-	int chunkHeight = 4096;
-	int numChunks = V_SIZE / chunkHeight;
-
-	auto heightMapTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, heightData);
-	auto colorTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, colorData);
-	auto metaTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, metaData);
-
-	auto paletteTexture = gl::Texture::createPalette(256);
-	paletteTexture->bindData(paletteData);
-
-	delete[] colorData;
-	delete[] heightData;
-	delete[] paletteData;
-	delete[] metaData;
-
-	rayCastRenderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
-	bilinearRenderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
+	reset_renderers();
 }
 
 void calc_view_factors()
@@ -1992,10 +1955,10 @@ void iGameMap::draw(int self)
 		float turn = -GTOR(TurnAngle);
 		float slope = GTOR(SlopeAngle);
 
-
-		renderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
-		renderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
-		renderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
+		auto curRenderer = renderers[cur_renderer_index];
+		curRenderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
+		curRenderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
+		curRenderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
 		_debugTimerStorage.event_end("render");
 		//Отрисовка 3д моделей
 		if(curGMap) {
@@ -2118,9 +2081,10 @@ void iGameMap::draw(int self)
 		sysfont.draw(xc - xside + 150,yc - yside + 112,msg,224 + 15,-1);
 
 		auto* vanger = ActD.Active;
-
-        sprintf(msg, "van.R(%f, %f, %f)", vanger->R.x, vanger->R.y, vanger->R.z);
-        sysfont.draw(xc - xside + 150,yc - yside + 40,msg, 224 + 15,-1);
+		if(vanger != nullptr){
+      sprintf(msg, "van.R(%f, %f, %f)", vanger->R.x, vanger->R.y, vanger->R.z);
+      sysfont.draw(xc - xside + 150,yc - yside + 40,msg, 224 + 15,-1);
+		}
 
 		_debugPerfWidget.draw_storage(_debugPerfCounterStorage, xc - xside + 150, yc - yside + 196);
 
@@ -2140,13 +2104,52 @@ void iGameMap::draw(int self)
 	}
 }
 
-void iGameMap::changeRenderer(int num) {
-	if(num == 0){
-		renderer = bilinearRenderer;
-	}else{
-		renderer = rayCastRenderer;
+void iGameMap::change_renderer() {
+	cur_renderer_index = (cur_renderer_index + 1) % renderers.size();
+}
+
+void iGameMap::reset_renderers() {
+	vMap->accept(0, V_SIZE - 1);
+
+	for(auto const& renderer: renderers){
+		renderer->deinit();
+	}
+	renderers.clear();
+
+	renderers.push_back(std::make_shared<VMapRenderer>(VMapRenderer::BilinearFiltering, H_SIZE, V_SIZE));
+	renderers.push_back(std::make_shared<VMapRenderer>(VMapRenderer::RayCast, H_SIZE, V_SIZE));
+
+	auto colorData = new uint8_t[H_SIZE * V_SIZE];
+	auto heightData = new uint8_t[H_SIZE * V_SIZE];
+	auto metaData = new uint8_t[H_SIZE * V_SIZE];
+
+	for (int i = 0; i < V_SIZE; i++) {
+		memcpy(colorData + H_SIZE * i, vMap->lineTcolor[i], sizeof(uint8_t) * H_SIZE);
+		memcpy(heightData + H_SIZE * i, vMap->lineT[i], sizeof(uint8_t) * H_SIZE);
+		memcpy(metaData + H_SIZE * i, vMap->lineT[i] + H_SIZE, sizeof(uint8_t) * H_SIZE);
 	}
 
+	auto paletteData = new uint32_t[256];
+	memset(paletteData, 0, sizeof(uint32_t) * 256);
+
+	int chunkHeight = 2048;
+	int numChunks = V_SIZE / chunkHeight;
+
+	auto heightMapTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, heightData);
+	auto colorTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, colorData);
+	auto metaTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, metaData);
+
+	auto paletteTexture = gl::Texture::createPalette(256);
+	paletteTexture->bindData(paletteData);
+
+	delete[] colorData;
+	delete[] heightData;
+	delete[] paletteData;
+	delete[] metaData;
+
+	for(auto const& renderer: renderers){
+		renderer->init(heightMapTexture, colorTexture, metaTexture, paletteTexture);
+	}
 }
 
 void preCALC(void)

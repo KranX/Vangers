@@ -2666,7 +2666,8 @@ void ChangeWorld(int world,int flag)
 	LocalNetEnvironment  =  LocalStationID | (CurrentWorld << 22);
 
 	vMap->release();
-	vMap -> reload(CurrentWorld);
+	vMap->reload(CurrentWorld);
+	curGMap->reset_renderers();
 	LoadResourceSOUND(GetTargetName("sound"));
 
 	MLreload();
