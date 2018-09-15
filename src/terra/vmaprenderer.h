@@ -108,6 +108,8 @@ private:
 	std::shared_ptr<gl::Texture> paletteTexture;
 	std::shared_ptr<gl::Texture> colorTexture;
 	std::shared_ptr<gl::Texture> heightTexture;
+
+	uint8_t* buffer;
 public:
 	enum ShaderType {
 		RayCast, BilinearFiltering

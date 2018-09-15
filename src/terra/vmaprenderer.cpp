@@ -38,6 +38,8 @@ void VMapRenderer::init(const std::shared_ptr<gl::Texture> &heightMapTexture,
 	this->colorTexture = colorTexture;
 	this->paletteTexture = paletteTexture;
 	this->heightTexture = heightMapTexture;
+	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
+	buffer = new uint8_t[bufferSize];
 }
 
 void VMapRenderer::render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope) {
@@ -67,8 +69,8 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 		setDirty(lineUp, sizeY - 1);
 	}
 
-	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
-	uint8_t* buffer = new uint8_t[bufferSize];
+//	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
+//	uint8_t* buffer = new uint8_t[bufferSize];
 
 	for(int nRegion = 0; nRegion < dirtyRegions.size(); nRegion++){
 		if(dirtyRegions[nRegion]){
@@ -88,7 +90,7 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 		}
 	}
 
-	delete[] buffer;
+//	delete[] buffer;
 }
 
 void VMapRenderer::resetDirty() {
@@ -113,6 +115,7 @@ void VMapRenderer::setDirty(int yStart, int yEnd) {
 void VMapRenderer::deinit() {
 	colorTexture->release();
 	paletteTexture->release();
+	delete[] buffer;
 }
 
 void RayCastShader::render_impl() {
