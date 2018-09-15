@@ -34,26 +34,32 @@ vec3 palColor(uvec4 color_id){
 vec4 evaluate_color(vec2 tex_coord) {
 	float x = tex_coord.x;
 	float numChunks = u_TextureScale.w;
-//	float chunkSize = u_TextureScale.y / u_TextureScale.w;
-//	int chunkSize_i = int(chunkSize);
 
-//	float y = int(tex_coord.y * u_TextureScale.y) % chunkSize_i / chunkSize;
-//	float level = int(tex_coord.y * u_TextureScale.y) / chunkSize;
-//	float y = tex_coord.y* 8;
-	float y = mod(tex_coord.y, 1/numChunks) * numChunks;
-	float level = floor(tex_coord.y * numChunks);
+	float text_coord_y_norm = mod(tex_coord.y, 1.0f);
+
+	float y = mod(text_coord_y_norm, 1/numChunks) * numChunks;
+	float level = floor(text_coord_y_norm * numChunks);
 	vec3 tex_coord_layer = vec3(x, y, level);
 
-	vec3 tl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 0)));
-	vec3 tr = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, 0)));
-	vec3 bl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 1)));
-	vec3 br = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, 1)));
-	vec2 f = fract( vec2(tex_coord.x * u_TextureScale.x, tex_coord.y * u_TextureScale.y));
+	vec3 tl, tr, bl, br;
+	if(tex_coord_layer.y > 0.5){
+		bl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 0)));
+        br = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, 0)));
+        tl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, -1)));
+        tr = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, -1)));
+	}else{
+		tl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 0)));
+        tr = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, 0)));
+        bl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 1)));
+        br = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, 1)));
+	}
+
+	vec2 f = fract(vec2(tex_coord.x * u_TextureScale.x, text_coord_y_norm * u_TextureScale.y));
 
 	vec3 top_color = mix(tl, tr, f.x);
 	vec3 bottom_color = mix(bl, br, f.x);
 	vec3 color = mix(top_color, bottom_color, f.y);
-
+//	vec3 color = tl;
 	return vec4(color, 1);
 }
 
