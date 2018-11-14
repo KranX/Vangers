@@ -174,7 +174,7 @@ CastPoint cast_ray_to_map(vec3 base, vec3 dir) {
 	Surface suf = cast_ray_impl(a, b, true, 7, 7);
 	CastPoint result;
 	result.type = suf.high_type;
-	if (suf.low_alt <= b.z && b.z < suf.low_alt + suf.delta) {
+	if (suf.low_alt <= b.z && b.z < suf.high_alt - 2) {
 		// continue the cast underground
 		a = b; b = c;
 		suf = cast_ray_impl(a, b, false, 3, 3);
