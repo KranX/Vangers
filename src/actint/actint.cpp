@@ -954,7 +954,7 @@ void aciLocationInfo::init_map_data(void)
 			put_attr_fon(x,y,sx,sy,data + sx * sy);
 //			  iregRender(x,y,x + sx,y + sy);
 
-			delete data;
+			delete[] data;
 		}
 		p = p -> prev;
 	}

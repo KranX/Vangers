@@ -152,9 +152,9 @@ void aciCHTree::save(char* fname)
 	char* p,*p1;
 	XBuffer* XBuf = new XBuffer(64000);
 
-	rootEl -> save(XBuf);
-	p = XBuf -> address();
-	sz1= sz = XBuf -> tell();
+	rootEl->save(XBuf);
+	p = XBuf->address();
+	sz1= sz = XBuf->tell();
 	sz1+=12;
 	p1 = new char[sz];
 
@@ -172,18 +172,18 @@ void aciCHTree::save(char* fname)
 		case Z_BUF_ERROR: std::cout<<"not enough room in the output buffer."<<std::endl; break;
 	};
 
-	fh.open(fname,XS_OUT);
-	fh.write(p1,sz1);
+	fh.open(fname, XS_OUT);
+	fh.write(p1, sz1);
 	fh.close();
 
 	delete XBuf;
-	delete p1;
+	delete[] p1;
 }
 
 void aciCHTree::load(const char* fname)
 {
-	long sz,sz1;
-	char* p,*p1;
+	long sz, sz1;
+	char* p, *p1;
 	XBuffer* XBuf;
 
 	XStream fh(fname,XS_IN);
