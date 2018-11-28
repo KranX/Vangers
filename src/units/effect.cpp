@@ -1655,9 +1655,11 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
-						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)) {
+						global_to_screen_coords(vPos.x, vPos.y, vPos.z, tx, ty);
+						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+							XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						}
 					};
 				};
 			}else{
@@ -1666,10 +1668,11 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
-						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
-						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
-						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)) {
+						global_to_screen_coords(vPos.x, vPos.y, vPos.z, tx, ty);
+						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+							XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						}
 					};
 				};
 			};
@@ -1680,8 +1683,10 @@ void WaterParticleObject::DrawQuant(void)
 					vPos = p->vR;
 					vPos >>= 8;
 					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
-						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						global_to_screen_coords(vPos.x, vPos.y, vPos.z, tx, ty);
+						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+							XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						}
 					};
 				};
 			}else{
@@ -1690,10 +1695,10 @@ void WaterParticleObject::DrawQuant(void)
 					vPos = p->vR;
 					vPos >>= 8;
 					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
-						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
-
-						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						global_to_screen_coords(vPos.x, vPos.y, vPos.z, tx, ty);
+						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+							XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						}
 					};
 				};
 			};
@@ -1707,8 +1712,10 @@ void WaterParticleObject::DrawQuant(void)
 					vPos = p->vR;
 					vPos >>= 8;
 					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
-						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						global_to_screen_coords(vPos.x, vPos.y, vPos.z, tx, ty);
+						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+							XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						}
 					};
 				};
 			}else{
@@ -1718,10 +1725,10 @@ void WaterParticleObject::DrawQuant(void)
 					vPos = p->vR;
 					vPos >>= 8;
 					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
-						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
-						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
-
-						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						global_to_screen_coords(vPos.x, vPos.y, vPos.z, tx, ty);
+						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+							XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						}
 					};
 				};
 			};
@@ -1731,21 +1738,23 @@ void WaterParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
-						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
-					};
+					if(GetAltLevel(vPos.x,vPos.y,vPos.z)) {
+						global_to_screen_coords(vPos.x, vPos.y, vPos.z, tx, ty);
+						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+							XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						}
+					}
 				};
 			}else{
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
-						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
-
-						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+					if(GetAltLevel(vPos.x,vPos.y,vPos.z)) {
+						global_to_screen_coords(vPos.x, vPos.y, vPos.z, tx, ty);
+						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+							XGR_SetPixelFast(tx,ty,p->Color >> 8);
+						}
 					};
 				};
 			};
@@ -1787,7 +1796,7 @@ void WaterParticleObject::CreateParticle(int _LifeTime,int _SetLifeTime,int _Vel
 
 	vCenter.x = R_curr.x << 8;
 	vCenter.y = R_curr.y << 8;
-	vCenter.z = R_curr.z << 8;	
+	vCenter.z = R_curr.z << 8;
 
 /*	for(i = 0,p = Data;i < NumParticle;i++,p++){
 		p->Color = FirstColor;

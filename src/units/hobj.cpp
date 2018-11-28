@@ -2775,6 +2775,24 @@ int G2LF(int x,int y,int z,int& sx,int& sy)
 	return round(256.*z1);
 };
 
+int global_to_screen_coords(int x, int y, int z, int &sx, int &sy)
+{
+	int xx = getDistX(x,ViewX);
+	int yy = getDistY(y ,ViewY);
+
+	double offset = 1;
+	double x1 = A_g2s.a[0]*xx + A_g2s.a[1]*yy - A_g2s.a[2]*offset;
+	double y1 = A_g2s.a[3]*xx + A_g2s.a[4]*yy - A_g2s.a[5]*offset;
+	double z0 = A_g2s.a[6]*xx + A_g2s.a[7]*yy;
+	double qwe = focus_flt + z0 - (z >> 1);
+
+	qwe = z0 + ViewZ;
+	qwe = qwe > 0 ? focus_flt/qwe : 1;
+	sx = round(x1*qwe) + ScreenCX;
+	sy = round(y1*qwe) + ScreenCY;
+	return -1;
+};
+
 void S2G(int xs,int ys,int& xg,int& yg)
 {
 	xs -= ScreenCX;
