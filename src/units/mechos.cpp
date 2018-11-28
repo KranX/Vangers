@@ -3219,6 +3219,7 @@ void camera_reset() {
 	camera_rotate_enable = iGetOptionValue(iCAMERA_TURN);
 }
 
+int _slope_max = PI/8;
 void camera_quant(int X, int Y, int Turn, double V_abs) {
 	if (stop_camera)
 		return;
@@ -3312,15 +3313,16 @@ void camera_quant(int X, int Y, int Turn, double V_abs) {
 	                               -SLOPE_MAX)
 	                            : camera_slope_min;
 	if(camera_slope_enable){
-		s = -SLOPE_MAX;	
-	}	                            
-	
+		s = -SLOPE_MAX;
+	}
+//	int s = -_slope_max;
+
 	camera_vs += (double) (s - SlopeAngle) * camera_mis * XTCORE_FRAME_NORMAL;
 	camera_vs *= camera_drags * pow(0.97, camera_vs_min / (fabs(camera_vs) + 1e-10));
 	camera_s += camera_vs * XTCORE_FRAME_NORMAL;
 	SlopeAngle += (t = round(camera_s));
-	if (SlopeAngle < -SLOPE_MAX)
-		SlopeAngle = -SLOPE_MAX;
+	if (SlopeAngle < -_slope_max)
+		SlopeAngle = -_slope_max;
 	camera_s -= t;
 	if (RAM16 && (TurnSecX > curGMap->xsize || TurnAngle) && SlopeAngle)
 		SlopeAngle = 0;
