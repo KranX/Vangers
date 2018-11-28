@@ -36,4 +36,7 @@ struct iGameMap {
 
 	void reset_renderers();
 	void change_renderer();
+
+	void set_durty(int y);
+	void set_durty(int y_min, int y_max);
 	};

@@ -62,15 +62,15 @@ void VMapRenderer::setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format) 
 }
 
 void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
-	if(lineUp <= lineDown){
-		setDirty(lineUp, lineDown);
-	}else{
-		setDirty(0, lineDown);
-		setDirty(lineUp, sizeY - 1);
-	}
+//	if(lineUp <= lineDown){
+//		setDirty(lineUp, lineDown);
+//	}else{
+//		setDirty(0, lineDown);
+//		setDirty(lineUp, sizeY - 1);
+//	}
 
-//	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
-//	uint8_t* buffer = new uint8_t[bufferSize];
+	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
+	uint8_t* buffer = new uint8_t[bufferSize];
 
 	for(int nRegion = 0; nRegion < dirtyRegions.size(); nRegion++){
 		if(dirtyRegions[nRegion]){
@@ -90,7 +90,7 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 		}
 	}
 
-//	delete[] buffer;
+	delete[] buffer;
 }
 
 void VMapRenderer::resetDirty() {
@@ -109,7 +109,6 @@ void VMapRenderer::setDirty(int yStart, int yEnd) {
 	for(int nRegion = nRegionStart; nRegion <= nRegionEnd; nRegion++){
 		dirtyRegions[nRegion] = true;
 	}
-
 }
 
 void VMapRenderer::deinit() {
