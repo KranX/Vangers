@@ -41,7 +41,10 @@ vec4 evaluate_color(vec2 tex_coord) {
 	float level = floor(text_coord_y_norm * numChunks);
 	vec3 tex_coord_layer = vec3(x, y, level);
 
+//	vec3 col = texture(t_Color, tex_coord_layer).rgb/256.0;
 	vec3 tl, tr, bl, br;
+//	return vec4(col, 1);
+//	return vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	if(tex_coord_layer.y > 0.5){
 		bl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 0)));
         br = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, 0)));
@@ -53,7 +56,8 @@ vec4 evaluate_color(vec2 tex_coord) {
         bl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 1)));
         br = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(0, 1)));
 	}
-
+	tl = palColor(textureOffset(t_Color, tex_coord_layer, ivec2(-1, 0)));
+	return vec4(tl, 1);
 	vec2 f = fract(vec2(tex_coord.x * u_TextureScale.x, text_coord_y_norm * u_TextureScale.y));
 
 	vec3 top_color = mix(tl, tr, f.x);
@@ -66,7 +70,9 @@ vec4 evaluate_color(vec2 tex_coord) {
 
 void main() {
 	vec4 col = evaluate_color(Texcoord);
-	Target0 = vec4(col);
+//	vec4 col = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	Target0 = col;
 
 }
 

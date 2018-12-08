@@ -20,7 +20,7 @@
 #include "../../lib/xgraph/gl/common.h"
 
 const float MAX_SCALE = 96.0f;
-const int DIRTY_REGION_CHUNK_SIZE = 2048;
+const int DIRTY_REGION_CHUNK_SIZE = 1024;
 
 class RayCastShaderData {
 public:
@@ -101,6 +101,7 @@ class VMapRenderer {
 private:
 	int sizeX;
 	int sizeY;
+	uint8_t* buffer;
     std::vector<bool> dirtyRegions;
 
 	std::shared_ptr<gl::Shader> shader;
@@ -108,8 +109,6 @@ private:
 	std::shared_ptr<gl::Texture> paletteTexture;
 	std::shared_ptr<gl::Texture> colorTexture;
 	std::shared_ptr<gl::Texture> heightTexture;
-
-	uint8_t* buffer;
 public:
 	enum ShaderType {
 		RayCast, BilinearFiltering

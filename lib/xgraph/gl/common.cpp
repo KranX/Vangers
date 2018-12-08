@@ -113,7 +113,7 @@ namespace gl{
 
 
 	std::shared_ptr<VertexBufferData> gen_buffer(const GLfloat *vertices, const GLuint *elements,
-	                                                     GLsizeiptr verticesSize, GLsizeiptr elementsSize) {
+	                                             GLsizeiptr verticesSize, GLsizeiptr elementsSize) {
 		// Create Vertex Array Object
 		GLuint vao;
 		glGenVertexArrays(1, &vao);

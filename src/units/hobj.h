@@ -86,6 +86,7 @@ struct GameObjectDispatcher
 	int Num;
 	BaseObject* Tail;
 	BaseObject* ViewTail;
+	BaseObject* selected;
 	int GlobalTime;
 	char FirstQuant;
 	int cWorld;

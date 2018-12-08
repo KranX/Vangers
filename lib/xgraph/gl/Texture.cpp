@@ -150,37 +150,6 @@ namespace gl {
                 );
                 check_GL_error("glTextureSubImage3D");
 
-//				int curY = y;
-//				int startLayer = y / this->height;
-//				int endLayer = (y + height - 1) / this->height;
-//
-//				glBindTexture(GL_TEXTURE_2D_ARRAY, textureId);
-//
-//				for(int nLayer = startLayer; nLayer <= endLayer; nLayer ++){
-//					int yOffset = curY % this->height;
-//					int updatedHeight = this->height - yOffset;
-//
-//					if(nLayer == endLayer){
-//						updatedHeight = (y + height) % this->height;
-//					}
-//                    printf("glTexSubImage3D: x: %d, y: %d, z: %d, width: %d, height: %d\n", x, yOffset, nLayer, width, updatedHeight);
-//					glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
-//									0,
-//									x,
-//									y,
-//									nLayer,
-//									width,
-//									height,
-//									1,
-//									GL_RED_INTEGER,
-//									GL_UNSIGNED_BYTE,
-//									(char*)data + 3 * (curY - y)
-//					);
-					check_GL_error("glTextureSubImage3D");
-//					curY += this->height;
-//				}
-
-
 			}
 
 		} else {

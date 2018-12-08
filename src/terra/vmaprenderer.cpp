@@ -69,16 +69,17 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 //		setDirty(lineUp, sizeY - 1);
 //	}
 
-	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
-	uint8_t* buffer = new uint8_t[bufferSize];
+//	std::cout<<"VMapRenderer::updateColor"<<std::endl;
+	uint8_t* b = new uint8_t[sizeX * DIRTY_REGION_CHUNK_SIZE];
 
 	for(int nRegion = 0; nRegion < dirtyRegions.size(); nRegion++){
 		if(dirtyRegions[nRegion]){
+//			std::cout<<"dirtyRegion: "<<nRegion<<std::endl;
 			int yStart = nRegion * DIRTY_REGION_CHUNK_SIZE;
 			int yEnd = (nRegion + 1) * DIRTY_REGION_CHUNK_SIZE;
 
 			for(int i = yStart; i < yEnd; i++){
-				uint8_t* lineBuffer = buffer + ((i - yStart) * sizeX);
+				uint8_t* lineBuffer = b + ((i - yStart) * sizeX);
 				if(color[i]){
 					memcpy(lineBuffer, color[i], sizeX * sizeof(uint8_t));
 				}else{
@@ -86,11 +87,10 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 				}
 			}
 
-			colorTexture->update(0, yStart, sizeX, DIRTY_REGION_CHUNK_SIZE, buffer);
+			colorTexture->update(0, yStart, sizeX, DIRTY_REGION_CHUNK_SIZE, b);
 		}
 	}
-
-	delete[] buffer;
+	delete[] b;
 }
 
 void VMapRenderer::resetDirty() {
@@ -149,6 +149,7 @@ void RayCastShader::render_impl() {
 	glUniform4fv(data.cameraPosAttrId, 1, &data.camera->position[0]);
 
 	auto textureScale = glm::vec4(width, height, scale, numLayers);
+
 	auto screenSize = glm::vec4(data.camera->viewport.x, data.camera->viewport.y, 0.0f, 0.0f);
 	glUniform4fv(data.textureScaleAttrId, 1, &textureScale[0]);
 	glUniform4fv(data.screenSizeAttrId, 1, &screenSize[0]);

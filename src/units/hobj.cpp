@@ -1103,6 +1103,7 @@ void GameObjectDispatcher::Init(void)
 	Num = 0;
 	Tail = NULL;
 	ViewTail = NULL;
+	selected = nullptr;
 };
 
 void GameObjectDispatcher::Free(void)
@@ -1153,6 +1154,9 @@ void GameObjectDispatcher::DisconnectBaseList(BaseObject* p)
 		if(p->NextBaseList) p->NextBaseList->PrevBaseList = p->PrevBaseList;
 	};
 	Num--;
+	if(selected == p){
+		selected = nullptr;
+	}
 };
 
 /*void GameObjectDispatcher::Quant(void)
@@ -1299,6 +1303,7 @@ void GameObjectDispatcher::DrawQuant(void) {
 		p = p->NextViewList;
 	};
 
+
 //	ActD.CameraQuant();
 	ActD.DrawResource();
 
@@ -1307,7 +1312,56 @@ void GameObjectDispatcher::DrawQuant(void) {
 		CreatePhantomTarget();
 	}
 	CreateTabutaskTarget();
-	CompasObj.Quant();	
+	CompasObj.Quant();
+	if(XGR_MouseObj.lBt.Pressed){
+		auto globalX = ViewX + XGR_MouseObj.PosX - ScreenCX;
+		auto globalY = ViewY + XGR_MouseObj.PosY - ScreenCY;
+
+		std::cout<<"Mouse: "<<XGR_MouseObj.PosX<<" "<<XGR_MouseObj.PosY<<" "<<XGR_MouseObj.PosZ<<std::endl;
+		std::cout<<"Global coords: "<<globalX<<" "<<globalY<<std::endl;
+
+		selected = nullptr;
+		BaseObject* minSelected = nullptr;
+		float minDist = 99999999;
+		auto* t = Tail;
+		while(t){
+
+			auto dx = globalX - t->R_curr.x;
+			auto dy = globalY - t->R_curr.y;
+			auto dist = sqrt(dx * dx + dy * dy);
+
+			if(dist < t->radius){
+				if(minDist > dist){
+					minDist = dist;
+					minSelected = t;
+				}
+			}
+
+			t = t->NextBaseList;
+		}
+		if(minSelected != nullptr){
+			selected = minSelected;
+		}
+	}
+
+	if(selected != nullptr){
+		int center_x, center_y;
+		global_to_screen_coords(selected->R_curr.x, selected->R_curr.y, selected->R_curr.z, center_x, center_y);
+		char buf[256];
+		sprintf(buf, "x: %d, y: %d:, z: %d, radius: %d, id: %d",
+				selected->R_curr.x, selected->R_curr.y, selected->R_curr.z,
+				selected->radius, selected->ID
+				);
+		XGR_OutText(center_x + 10, center_y, 253, buf, XGR_FONT0_8x16);
+		for(int tx = center_x - 10; tx < center_x + 10; tx++){
+			for(int ty = center_y - 10; ty < center_y + 10; ty++){
+				if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown){
+					XGR_SetPixelFast(tx, ty, 253);
+				}
+			}
+		}
+
+	}
 };
 
 void setMapPixel(int px,int py,int col)

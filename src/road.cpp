@@ -1948,7 +1948,7 @@ void iGameMap::draw(int self)
 //        vMap->request(0, V_SIZE - 1, 0, 0);
 //		vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
 //		vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
-		_debugTimerStorage.event_start("render");
+
 //		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle * _slopeFactor,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
 		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
 //		vMap->scaling_3D(GTOR(SlopeAngle), A_g2s, ViewZ, focus, ViewX, ViewY, xc, yc, xside, yside, TurnAngle);
@@ -1965,9 +1965,15 @@ void iGameMap::draw(int self)
 
 		auto curRenderer = renderers[cur_renderer_index];
 		curRenderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
+
+//		_debugTimerStorage.event_start("updateColor");
 		curRenderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
+//		_debugTimerStorage.event_end("updateColor");
+
+		_debugTimerStorage.event_start("render");
 		curRenderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
 		_debugTimerStorage.event_end("render");
+
 		//Отрисовка 3д моделей
 		if(curGMap) {
 			GameD.DrawQuant();

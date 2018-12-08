@@ -28,6 +28,7 @@
 #endif
 
 #include "../global.h"
+#include "../sqexp.h"
 
 #include "../3d/3d_math.h"
 #include "vmap.h"
@@ -425,6 +426,8 @@ inline void MainStage2(BYTE* pa0,int& hC,BYTE* pc0,int SizeX,int& x,BYTE*& grid,
 		}
 }
 
+
+extern iGameMap* curGMap;
 //Surmap render
 void regRender(int LowX,int LowY,int HiX,int HiY,int changed)
 {
@@ -439,7 +442,7 @@ void regRender(int LowX,int LowY,int HiX,int HiY,int changed)
 	HiX = XCYCL(HiX);
 	LowY = YCYCL(LowY);
 	HiY = YCYCL(HiY);
-
+	curGMap->set_durty(LowY, HiY);
 	LowX &= ~1;
 	HiX |= 1;
 
