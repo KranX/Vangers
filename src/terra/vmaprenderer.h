@@ -14,101 +14,99 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <SDL2/SDL.h>
-#include "../../lib/xgraph/gl/Texture.h"
-#include "../../lib/xgraph/gl/Camera.h"
-#include "../../lib/xgraph/gl/Shader.h"
-#include "../../lib/xgraph/gl/common.h"
+#include "../../lib/vgl/texture_ext.h"
+#include "../../lib/vgl/shader.h"
+#include "../../lib/vgl/camera.h"
+#include "../../lib/vgl/buffer.h"
+#include "../../lib/vgl/uniform.h"
+#include "../../lib/vgl/uniform_ext.h"
+#include "../../lib/vgl/vertex_array.h"
+
 
 const float MAX_SCALE = 96.0f;
 const int DIRTY_REGION_CHUNK_SIZE = 1024;
 
-class RayCastShaderData {
+class RenderingProcess {
 public:
-	std::shared_ptr<gl::Texture> heightMapTexture;
-	std::shared_ptr<gl::Texture> paletteTexture;
-	std::shared_ptr<gl::Texture> colorTexture;
-	std::shared_ptr<gl::Texture> metaTexture;
-	std::shared_ptr<gl::Camera> camera;
-
-	GLint heightMapTextureAttrId;
-	GLint colorTextureAttrId;
-	GLint paletteTextureAttrId;
-	GLint metaTextureAttrId;
-	GLint textureScaleAttrId;
-	GLint screenSizeAttrId;
-
-	GLint mvpAtrrId;
-	GLint invMvpAttrId;
-	GLint cameraPosAttrId;
-	GLint positionAttrId;
-	GLint texcoordAttrId;
-	std::shared_ptr<gl::VertexBufferData> bufferData;
+	virtual void render(const vgl::Camera &camera) = 0;
 };
 
-class VMapRendererException {
+class RayCastProcess : public RenderingProcess {
+	struct Data : public vgl::UniformData {
+		UNIFORM(glm::mat4, u_ViewProj)
+		UNIFORM(glm::mat4, u_InvViewProj)
+		UNIFORM(glm::vec3, u_CamPos)
+		UNIFORM(glm::vec4, u_TextureScale)
+		UNIFORM(glm::vec4, u_ScreenSize)
+	};
 
-};
+	struct Vertex{
+		glm::vec2 pos;
+		glm::vec2 uv;
+	};
 
+	Data data;
+	std::shared_ptr<vgl::Shader> shader;
+	std::shared_ptr<vgl::VertexArray<Vertex, GLuint>> vertexArray;
+	glm::vec4 textureScale;
 
-class RayCastShader: public gl::Shader{
 public:
-	RayCastShaderData data;
-	RayCastShader(float maxScale, const std::shared_ptr<gl::Camera> &camera,
-	                       const std::shared_ptr<gl::Texture> &heightMapTexture,
-	                       const std::shared_ptr<gl::Texture> &colorTexture,
-	                       const std::shared_ptr<gl::Texture> &metaTexture,
-	                       const std::shared_ptr<gl::Texture> &paletteTexture,
+
+	RayCastProcess(float maxScale,
+					const std::shared_ptr<vgl::Texture2DArray> &heightMapTexture,
+                   const std::shared_ptr<vgl::Texture2DArray> &colorTexture,
+                   const std::shared_ptr<vgl::Texture2DArray> &metaTexture,
+                   const std::shared_ptr<vgl::Texture1D> &paletteTexture,
 	                       const std::string &shadersPath);
 
 
-	void render_impl() override;
+	void render(const vgl::Camera &camera);
 	float scale;
 	float maxScale;
 };
 
-class BilinearShaderData {
+
+class BilinearFilteringProcess : public RenderingProcess{
+	struct Vertex{
+		glm::vec2 pos;
+		glm::vec2 uv;
+	};
+
+	struct Data : public vgl::UniformData {
+		UNIFORM(glm::mat4, u_ViewProj)
+		UNIFORM(glm::vec4, u_TextureScale)
+		UNIFORM(glm::vec4, u_ScreenSize)
+	};
+
+
+	std::shared_ptr<vgl::Shader> shader;
+	std::shared_ptr<vgl::VertexArray<Vertex, GLuint>> vertexArray;
+	glm::vec4 textureScale;
+	Data data;
+
 public:
-	std::shared_ptr<gl::Texture> paletteTexture;
-	std::shared_ptr<gl::Texture> colorTexture;
-	std::shared_ptr<gl::Camera> camera;
-
-	GLint colorTextureAttrId;
-	GLint paletteTextureAttrId;
-
-	GLint mvpAtrrId;
-	GLint positionAttrId;
-	GLint texcoordAttrId;
-
-	GLint textureScaleAttrId;
-	GLint screenSizeAttrId;
-
-	std::shared_ptr<gl::VertexBufferData> bufferData;
-};
-
-class BilinearFilteringShader: public gl::Shader{
-	BilinearShaderData data;
-public:
-	BilinearFilteringShader(
-		const std::shared_ptr<gl::Texture>& paletteTexture,
-		const std::shared_ptr<gl::Texture>& colorTexture,
-		const std::shared_ptr<gl::Camera>& camera,
+	BilinearFilteringProcess(
+		const std::shared_ptr<vgl::Texture1D>& paletteTexture,
+		const std::shared_ptr<vgl::Texture2DArray>& colorTexture,
 		const std::string &shadersPath
 	);
-	void render_impl() override;
+	void render(const vgl::Camera &camera);
 };
 
 class VMapRenderer {
 private:
 	int sizeX;
 	int sizeY;
+	int currentUpdateBuffer = 0;
 	uint8_t* buffer;
     std::vector<bool> dirtyRegions;
 
-	std::shared_ptr<gl::Shader> shader;
-	std::shared_ptr<gl::Camera> camera;
-	std::shared_ptr<gl::Texture> paletteTexture;
-	std::shared_ptr<gl::Texture> colorTexture;
-	std::shared_ptr<gl::Texture> heightTexture;
+	std::shared_ptr<RenderingProcess> process;
+	std::shared_ptr<vgl::Camera> camera;
+	std::shared_ptr<vgl::Texture1D> paletteTexture;
+	std::shared_ptr<vgl::Texture2DArray> colorTexture;
+	std::shared_ptr<vgl::Texture2DArray> heightTexture;
+	std::shared_ptr<vgl::PixelUnpackBuffer> updateBuffers[2];
 public:
 	enum ShaderType {
 		RayCast, BilinearFiltering
@@ -118,10 +116,10 @@ public:
 
 	VMapRenderer(ShaderType shaderType, int sizeX, int sizeY) :
 			sizeX(sizeX),sizeY(sizeY), shaderType(shaderType){}
-	void init(const std::shared_ptr<gl::Texture> &heightMapTexture,
-	          const std::shared_ptr<gl::Texture> &colorTexture,
-	          const std::shared_ptr<gl::Texture> &metaTexture,
-	          const std::shared_ptr<gl::Texture> &paletteTexture);
+	void init(const std::shared_ptr<vgl::Texture2DArray> &heightMapTexture,
+	          const std::shared_ptr<vgl::Texture2DArray> &colorTexture,
+	          const std::shared_ptr<vgl::Texture2DArray> &metaTexture,
+	          const std::shared_ptr<vgl::Texture1D> &paletteTexture);
 	void deinit();
 	void setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format);
 	void render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope, float focus);

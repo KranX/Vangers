@@ -163,6 +163,30 @@ GLuint XGR_Screen::SurfToTexture(SDL_Surface *surf)
 }
 #endif
 
+static const std::string plainTextureShaderFragmentCode = "#version 150 core\n"
+                                         "in vec2 Texcoord;\n"
+                                         "\n"
+                                         "out vec4 outColor;\n"
+                                         "uniform sampler2D t_Texture;\n"
+                                         "\n"
+                                         "void main()\n"
+                                         "{\n"
+                                         "    outColor = texture(t_Texture, Texcoord);\n"
+                                         "}";
+
+static const std::string plainTextureShaderVertexCode = "#version 330 core\n"
+                                       "layout(location = 0) in vec2 position;\n"
+                                       "layout(location = 1) in vec2 texcoord;\n"
+                                       "\n"
+                                       "out vec2 Texcoord;\n"
+                                       "\n"
+                                       "void main()\n"
+                                       "{\n"
+                                       "    Texcoord = texcoord;\n"
+                                       "    gl_Position = vec4(position.x, -position.y, 0.0f, 1.0f);\n"
+                                       "}";
+
+
 int XGR_Screen::init(int x,int y,int flags_in)
 {
 	flags = flags_in;
@@ -268,16 +292,38 @@ int XGR_Screen::init(int x,int y,int flags_in)
 //								   SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
 //	                               SDL_TEXTUREACCESS_STREAMING,
 //	                               x, y);
+	buffer = vgl::PixelUnpackBuffer::create(sizeof(uint32) * x * y, vgl::BufferUsage::StreamDraw);
 
-	texture = gl::Texture::createTexture(
-            x,
-            y,
-            0,
-            gl::TextureFormat::Format32bit
-    );
-	texture->bindData(static_cast<uint8_t *>(XGR32_ScreenSurface->pixels));
+	texture = vgl::Texture2D::create(
+			{x, y},
+			vgl::TextureInternalFormat::RGBA8);
+	texture->subImage(
+			{0, 0},
+			{x, y},
+			vgl::TextureFormat::RGBA,
+			vgl::TextureDataType::UnsignedInt8888,
+			XGR32_ScreenSurface->pixels
+			);
+	std::vector<PlainTextureShaderVertex> vertices = {
+//		   Position   , Texcoords
+			{{-1.0f,  -1.0f}, {0.0f, 0.0f}}, // Top-left
+			{{1.0f,  -1.0f}, {1.0f, 0.0f}}, // Top-right
+			 {{1.0f, 1.0f}, {1.0f, 1.0f}}, // Bottom-right
+			 {{-1.0f, 1.0f}, {0.0f, 1.0f}}  // Bottom-left
+	};
 
-	textureShader = std::make_unique<PlainTextureShader>(texture);
+
+	std::vector<GLuint> elements = {
+			0, 1, 2,
+			3, 2, 0,
+	};
+
+	vertexArray = vgl::VertexArray<PlainTextureShaderVertex, GLuint>::create(vertices, elements);
+	vertexArray->addAttrib(0, 2, offsetof(PlainTextureShaderVertex, pos));
+	vertexArray->addAttrib(1, 2, offsetof(PlainTextureShaderVertex, uv));
+
+	textureShader = vgl::Shader::create(plainTextureShaderVertexCode, plainTextureShaderFragmentCode);
+	textureShader->addTexture(*texture, "t_Texture");
 
 //	SDL_SetTextureBlendMode(sdlTexture, SDL_BLENDMODE_NONE);
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
@@ -906,8 +952,17 @@ void XGR_Screen::flip()
 		blitScreen((uint32_t *)XGR32_ScreenSurface->pixels, (uint8_t *)XGR_ScreenSurface->pixels);
 		SDL_UnlockSurface(XGR32_ScreenSurface);
 
-		texture->update(0, 0, XGR_ScreenSurface->w, XGR_ScreenSurface->h, static_cast<uint8_t *>(XGR32_ScreenSurface->pixels));
-		textureShader->render();
+		buffer->bind();
+		buffer->update(static_cast<GLubyte*>(XGR32_ScreenSurface->pixels));
+		texture->subImage(
+				{0, 0},
+				{XGR_ScreenSurface->w, XGR_ScreenSurface->h},
+				vgl::TextureFormat::RGBA,
+				vgl::TextureDataType::UnsignedInt8888,
+				*buffer
+				);
+		buffer->unbind();
+		textureShader->render(data, vertexArray);
 
 		SDL_GL_SwapWindow(sdlWindow);
 		XGR_MouseObj.PutFon();

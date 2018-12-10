@@ -1966,9 +1966,9 @@ void iGameMap::draw(int self)
 		auto curRenderer = renderers[cur_renderer_index];
 		curRenderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
 
-//		_debugTimerStorage.event_start("updateColor");
+		_debugTimerStorage.event_start("updateColor");
 		curRenderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
-//		_debugTimerStorage.event_end("updateColor");
+		_debugTimerStorage.event_end("updateColor");
 
 		_debugTimerStorage.event_start("render");
 		curRenderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
@@ -2146,15 +2146,50 @@ void iGameMap::reset_renderers() {
 	auto paletteData = new uint32_t[256];
 	memset(paletteData, 0, sizeof(uint32_t) * 256);
 
-	int chunkHeight = 2048;
-	int numChunks = V_SIZE / chunkHeight;
+	int chunkHeight = DIRTY_REGION_CHUNK_SIZE;
+	int numChunks = V_SIZE / DIRTY_REGION_CHUNK_SIZE;
 
-	auto heightMapTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, heightData);
-	auto colorTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, colorData);
-	auto metaTexture = gl::Texture::createTexture(H_SIZE, chunkHeight, numChunks, gl::TextureFormat::Format8Bit, metaData);
+	auto heightMapTexture = vgl::Texture2DArray::create(
+			{H_SIZE, chunkHeight, numChunks},
+			vgl::TextureInternalFormat::R8ui);
+	heightMapTexture->subImage(
+			{0, 0, 0},
+			heightMapTexture->getDimensions(),
+			vgl::TextureFormat::RedInteger,
+			vgl::TextureDataType::UnsignedByte,
+			heightData
+			);
 
-	auto paletteTexture = gl::Texture::createPalette(256);
-	paletteTexture->bindData(paletteData);
+	auto colorTexture = vgl::Texture2DArray::create(
+			{H_SIZE, chunkHeight, numChunks},
+			vgl::TextureInternalFormat::R8ui);
+	colorTexture->subImage(
+			{0, 0, 0},
+			colorTexture->getDimensions(),
+			vgl::TextureFormat::RedInteger,
+			vgl::TextureDataType::UnsignedByte,
+			colorData
+	);
+
+	auto metaTexture = vgl::Texture2DArray::create(
+			{H_SIZE, chunkHeight, numChunks},
+			vgl::TextureInternalFormat::R8ui);
+	metaTexture->subImage(
+			{0, 0, 0},
+			metaTexture->getDimensions(),
+			vgl::TextureFormat::RedInteger,
+			vgl::TextureDataType::UnsignedByte,
+			metaData
+	);
+
+	auto paletteTexture = vgl::Texture1D::create(256, vgl::TextureInternalFormat::RGBA8);
+	paletteTexture->subImage(
+			0,
+			256,
+			vgl::TextureFormat::RGBA,
+			vgl::TextureDataType::UnsignedInt8888,
+			paletteData
+			);
 
 	delete[] colorData;
 	delete[] heightData;

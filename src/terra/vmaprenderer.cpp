@@ -16,38 +16,54 @@
 #include "vmaprenderer.h"
 
 
-void VMapRenderer::init(const std::shared_ptr<gl::Texture> &heightMapTexture,
-		          const std::shared_ptr<gl::Texture> &colorTexture,
-		          const std::shared_ptr<gl::Texture> &metaTexture,
-		          const std::shared_ptr<gl::Texture> &paletteTexture){
+void VMapRenderer::init(const std::shared_ptr<vgl::Texture2DArray> &heightMapTexture,
+                        const std::shared_ptr<vgl::Texture2DArray> &colorTexture,
+                        const std::shared_ptr<vgl::Texture2DArray> &metaTexture,
+                        const std::shared_ptr<vgl::Texture1D> &paletteTexture){
 	resetDirty();
 
-	camera = std::make_shared<gl::Camera>();
-//	shader = std::make_unique<BilinearFilteringShader>(
-//			paletteTexture,
-//			colorTexture,
-//			camera,
-//			shaderPath
-//	);
-	shader = std::make_unique<RayCastShader>(camera,
-	                                      heightMapTexture,
-	                                      colorTexture,
-	                                      metaTexture,
-	                                      paletteTexture,
-	                                      shaderPath);
+	camera = std::make_shared<vgl::Camera>();
+	switch (shaderType){
+		case RayCast:
+			process = std::make_shared<RayCastProcess>(
+									  MAX_SCALE,
+									  heightMapTexture,
+									  colorTexture,
+									  metaTexture,
+									  paletteTexture,
+									  "shaders/3dmap");
+			break;
+		case BilinearFiltering:
+			process = std::make_shared<BilinearFilteringProcess>(
+					paletteTexture,
+					colorTexture,
+					"shaders/heightmap"
+			);
+			break;
+	}
+
 	this->colorTexture = colorTexture;
 	this->paletteTexture = paletteTexture;
 	this->heightTexture = heightMapTexture;
+
 	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
+	updateBuffers[0] = vgl::PixelUnpackBuffer::create(bufferSize, vgl::BufferUsage::StreamDraw);
+	updateBuffers[0]->unbind();
+
+	updateBuffers[1] = vgl::PixelUnpackBuffer::create(bufferSize, vgl::BufferUsage::StreamDraw);
+	updateBuffers[1]->unbind();
+
 	buffer = new uint8_t[bufferSize];
 }
 
-void VMapRenderer::render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope) {
+void
+VMapRenderer::render(int viewPortWidth, int viewPortHeight, int x, int y, int z, float turn, float slope, float focus) {
+	camera->focus = focus;
 	camera->viewport = glm::vec2(viewPortWidth, viewPortHeight);
 	camera->from_player(
 			x, y, z, turn, slope
 	);
-	shader->render();
+	process->render(*camera);
 	resetDirty();
 }
 
@@ -58,18 +74,10 @@ void VMapRenderer::setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format) 
 		auto color = sdlPalette->colors[i];
 		data[i] = SDL_MapRGBA(format, color.r, color.g, color.b, 255);
 	}
-	paletteTexture->update(0, 0, 256, 0, data);
+	paletteTexture->subImage(0, 256, vgl::TextureFormat::RGBA, vgl::TextureDataType::UnsignedInt8888, (GLvoid*)data);
 }
 
 void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
-//	if(lineUp <= lineDown){
-//		setDirty(lineUp, lineDown);
-//	}else{
-//		setDirty(0, lineDown);
-//		setDirty(lineUp, sizeY - 1);
-//	}
-
-//	std::cout<<"VMapRenderer::updateColor"<<std::endl;
 	uint8_t* b = new uint8_t[sizeX * DIRTY_REGION_CHUNK_SIZE];
 
 	for(int nRegion = 0; nRegion < dirtyRegions.size(); nRegion++){
@@ -86,8 +94,40 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 					memset(lineBuffer, 0, sizeX * sizeof(uint8_t));
 				}
 			}
+			int nLayer = yStart / DIRTY_REGION_CHUNK_SIZE;
+			int y = yStart % DIRTY_REGION_CHUNK_SIZE;
 
-			colorTexture->update(0, yStart, sizeX, DIRTY_REGION_CHUNK_SIZE, b);
+//			currentUpdateBuffer = (currentUpdateBuffer + 1) % 2;
+//			auto nextIndex = (currentUpdateBuffer + 1) % 2;
+//
+//			updateBuffers[currentUpdateBuffer]->bind();
+//
+//			colorTexture->subImage(
+//					{0, y, nLayer},
+//					{sizeX, DIRTY_REGION_CHUNK_SIZE, 1},
+//					vgl::TextureFormat::RedInteger,
+//					vgl::TextureDataType::UnsignedByte,
+//					*(updateBuffers[currentUpdateBuffer])
+//					);
+//			updateBuffers[currentUpdateBuffer]->unbind();
+//
+//			updateBuffers[nextIndex]->bind();
+//			updateBuffers[nextIndex]->update(b);
+//			updateBuffers[nextIndex]->unbind();
+
+//			currentUpdateBuffer = (currentUpdateBuffer + 1) % 2;
+//			auto nextIndex = (currentUpdateBuffer + 1) % 2;
+
+			updateBuffers[0]->bind();
+			updateBuffers[0]->update(b);
+			colorTexture->subImage(
+					{0, y, nLayer},
+					{sizeX, DIRTY_REGION_CHUNK_SIZE, 1},
+					vgl::TextureFormat::RedInteger,
+					vgl::TextureDataType::UnsignedByte,
+					*(updateBuffers[currentUpdateBuffer])
+			);
+			updateBuffers[0]->unbind();
 		}
 	}
 	delete[] b;
@@ -112,192 +152,113 @@ void VMapRenderer::setDirty(int yStart, int yEnd) {
 }
 
 void VMapRenderer::deinit() {
-	colorTexture->release();
-	paletteTexture->release();
+	colorTexture->free();
+	paletteTexture->free();
+	updateBuffers[0]->free();
+	updateBuffers[1]->free();
 	delete[] buffer;
 }
 
-void RayCastShader::render_impl() {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, data.heightMapTexture->textureId);
-	glUniform1i(data.heightMapTextureAttrId, 0);
+RayCastProcess::RayCastProcess(float maxScale,
+                              const std::shared_ptr<vgl::Texture2DArray> &heightMapTexture,
+                              const std::shared_ptr<vgl::Texture2DArray> &colorTexture,
+                              const std::shared_ptr<vgl::Texture2DArray> &metaTexture,
+                              const std::shared_ptr<vgl::Texture1D> &paletteTexture,
+                              const std::string &shadersPath) :
+                              scale(1.0f), maxScale(maxScale) {
+	int heightMultiplier = colorTexture->getDimensions().z == 0 ? 1 : colorTexture->getDimensions().z;
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, data.colorTexture->textureId);
-	glUniform1i(data.colorTextureAttrId, 1);
+	float w = colorTexture->getDimensions().x;
+	float h = colorTexture->getDimensions().y * heightMultiplier;
 
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_1D, data.paletteTexture->textureId);
-	glUniform1i(data.paletteTextureAttrId, 2);
+	float numLayers = colorTexture->getDimensions().z;
+	float width = colorTexture->getDimensions().x;
+	float height = colorTexture->getDimensions().y * numLayers;
+	textureScale = glm::vec4(width, height, 0.0f, numLayers);
 
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, data.metaTexture->textureId);
-	glUniform1i(data.metaTextureAttrId, 3);
+	std::vector<Vertex> vertices = {
+			{{-w,  -h}, {-1.0f, -1.0f}}, // Top-left
+			{{2 * w,  -h}, {2.0f, -1.0f}}, // Top-right
+			{{2 * w, 2 * h},  {2.0f, 2.0f}}, // Bottom-right
+			{{-w, 2 * h},  {-1.0f, 2.0f}}  // Bottom-left
+	};
 
+	std::vector<GLuint> elements = {
+			0, 1, 2,
+			3, 2, 0,
+	};
 
-	auto mvp = data.camera->mvp();
+	vertexArray = vgl::VertexArray<Vertex, GLuint>::create(vertices, elements);
+	vertexArray->addAttrib(0, glm::vec2::length(), offsetof(Vertex, pos));
+	vertexArray->addAttrib(1, glm::vec2::length(), offsetof(Vertex, uv));
+
+	shader = vgl::Shader::createFromPath(
+			shadersPath+".vert",
+			shadersPath+".frag"
+	);
+	shader->bindUniformAttribs(data);
+	shader->addTexture(*heightMapTexture, "t_Height");
+	shader->addTexture(*colorTexture, "t_Color");
+	shader->addTexture(*paletteTexture, "t_Palette");
+	shader->addTexture(*metaTexture, "t_Meta");
+}
+
+void RayCastProcess::render(const vgl::Camera &camera) {
+	auto mvp = camera.mvp();
 	auto invMvp = glm::inverse(mvp);
-	float numLayers = data.colorTexture->numLayers;
-	float width = data.colorTexture->width;
-	float height = data.colorTexture->height * numLayers;
 
-	scale = fmin(scale + 2.0f, maxScale);
-
-
-	glUniformMatrix4fv(data.mvpAtrrId, 1, GL_FALSE, &mvp[0][0]);
-	glUniformMatrix4fv(data.invMvpAttrId, 1, GL_FALSE, &invMvp[0][0]);
-	glUniform4fv(data.cameraPosAttrId, 1, &data.camera->position[0]);
-
-	auto textureScale = glm::vec4(width, height, scale, numLayers);
-
-	auto screenSize = glm::vec4(data.camera->viewport.x, data.camera->viewport.y, 0.0f, 0.0f);
-	glUniform4fv(data.textureScaleAttrId, 1, &textureScale[0]);
-	glUniform4fv(data.screenSizeAttrId, 1, &screenSize[0]);
-
-	glBindVertexArray(data.bufferData->vertexArrayObject);
-
-	glEnableVertexAttribArray(data.positionAttrId);
-	glBindBuffer(GL_ARRAY_BUFFER, data.bufferData->vertexBufferObject);
-	glVertexAttribPointer(data.positionAttrId, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-
-//	glEnableVertexAttribArray(data.texcoordAttrId);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.bufferData->elementBufferObject);
-//	glVertexAttribPointer(data.texcoordAttrId, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
-
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-}
-
-RayCastShader::RayCastShader(float maxScale,
-							 const std::shared_ptr<gl::Camera> &camera,
-                             const std::shared_ptr<gl::Texture> &heightMapTexture,
-                             const std::shared_ptr<gl::Texture> &colorTexture,
-                             const std::shared_ptr<gl::Texture> &metaTexture,
-                             const std::shared_ptr<gl::Texture> &paletteTexture,
-                             const std::string &shadersPath) : scale(1.0f), maxScale(maxScale), Shader(shadersPath){
-	int heightMultiplier = heightMapTexture->numLayers == 0 ? 1 : heightMapTexture->numLayers;
-
-    float w = heightMapTexture->width;
-	float h = heightMapTexture->height * heightMultiplier;
-
-	GLfloat vertices[] = {
-//			  Position   , Texcoords
-			-w,  -h, -1.0f, -1.0f, // Top-left
-			2 * w,  -h, 2.0f, -1.0f, // Top-right
-			2 * w, 2 * h,  2.0f, 2.0f, // Bottom-right
-			-w, 2 * h,  -1.0f, 2.0f  // Bottom-left
-	};
-
-	GLuint elements[] = {
-			0, 1, 2,
-			3, 2, 0,
-	};
-
-	auto buffer = gl::gen_buffer(vertices, elements, sizeof(vertices), sizeof(elements));
-	glUseProgram(programId);
-
-	data.bufferData = buffer;
-	data.heightMapTexture = heightMapTexture;
-	data.colorTexture = colorTexture;
-	data.metaTexture = metaTexture;
-	data.paletteTexture = paletteTexture;
-	data.camera = camera;
-
-	data.heightMapTextureAttrId = glGetUniformLocation(programId, "t_Height");
-	data.colorTextureAttrId = glGetUniformLocation(programId, "t_Color");
-	data.paletteTextureAttrId = glGetUniformLocation(programId, "t_Palette");
-	data.metaTextureAttrId = glGetUniformLocation(programId, "t_Meta");
-	data.mvpAtrrId = glGetUniformLocation(programId, "u_ViewProj");
-	data.invMvpAttrId  = glGetUniformLocation(programId, "u_InvViewProj");
-	data.cameraPosAttrId  = glGetUniformLocation(programId, "u_CamPos");
-	data.textureScaleAttrId  = glGetUniformLocation(programId, "u_TextureScale");
-	data.screenSizeAttrId  = glGetUniformLocation(programId, "u_ScreenSize");
-
-	data.positionAttrId = glGetAttribLocation(programId, "position");
-//	data.texcoordAttrId = glGetAttribLocation(programId, "texcoord");
+	data.u_ViewProj = mvp;
+	data.u_InvViewProj = invMvp;
+	data.u_CamPos = camera.position;
+	data.u_TextureScale = textureScale;
+	data.u_ScreenSize = glm::vec4(camera.viewport.x, camera.viewport.y, 0.0f, 0.0f);
+	shader->render(data, vertexArray);
 }
 
 
+BilinearFilteringProcess::BilinearFilteringProcess(
+		const std::shared_ptr<vgl::Texture1D>& paletteTexture,
+		const std::shared_ptr<vgl::Texture2DArray>& colorTexture,
+		const std::string &shadersPath
+){
+    int heightMultiplier = colorTexture->getDimensions().z == 0 ? 1 : colorTexture->getDimensions().z;
 
-void BilinearFilteringShader::render_impl() {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, data.colorTexture->textureId);
-	glUniform1i(data.colorTextureAttrId, 0);
+    float w = colorTexture->getDimensions().x;
+    float h = colorTexture->getDimensions().y * heightMultiplier;
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_1D, data.paletteTexture->textureId);
-	glUniform1i(data.paletteTextureAttrId, 1);
+	float numLayers = colorTexture->getDimensions().z;
+	float width = colorTexture->getDimensions().x;
+	float height = colorTexture->getDimensions().y * numLayers;
+	textureScale = glm::vec4(width, height, 0.0f, numLayers);
 
+	std::vector<Vertex> vertices = {
+		{{-w,  -h}, {2.0f, -1.0f}}, // Top-left
+		{{2 * w,  -h}, {-1.0f, -1.0f}}, // Top-right
+		{{2 * w, 2 * h},  {-1.0f, 2.0f}}, // Bottom-right
+		{{-w, 2 * h},  {2.0f, 2.0f}}  // Bottom-left
+	};
 
-	auto mvp = data.camera->mvp();
-	glUniformMatrix4fv(data.mvpAtrrId, 1, GL_FALSE, &mvp[0][0]);
+	std::vector<GLuint> elements = {
+		0, 1, 2,
+		3, 2, 0,
+	};
 
-	float numLayers = data.colorTexture->numLayers;
-	float width = data.colorTexture->width;
-	float height = data.colorTexture->height * numLayers;
+	vertexArray = vgl::VertexArray<Vertex, GLuint>::create(vertices, elements);
+	vertexArray->addAttrib(0, glm::vec2::length(), offsetof(Vertex, pos));
+	vertexArray->addAttrib(1, glm::vec2::length(), offsetof(Vertex, uv));
 
-	auto textureScale = glm::vec4(width, height, 0.0f, numLayers);
-	auto screenSize = glm::vec4(data.camera->viewport.x, data.camera->viewport.y, 0.0f, 0.0f);
-	glUniform4fv(data.textureScaleAttrId, 1, &textureScale[0]);
-	glUniform4fv(data.screenSizeAttrId, 1, &screenSize[0]);
-
-	glBindVertexArray(data.bufferData->vertexArrayObject);
-
-	glEnableVertexAttribArray(data.positionAttrId);
-	glBindBuffer(GL_ARRAY_BUFFER, data.bufferData->vertexBufferObject);
-	glVertexAttribPointer(data.positionAttrId, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-
-	glEnableVertexAttribArray(data.texcoordAttrId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.bufferData->elementBufferObject);
-	glVertexAttribPointer(data.texcoordAttrId, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
-
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	gl::check_GL_error("glDrawElements");
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	shader = vgl::Shader::createFromPath(
+			shadersPath+".vert",
+			shadersPath+".frag"
+			);
+	shader->bindUniformAttribs(data);
+	shader->addTexture(*colorTexture, "t_Color");
+	shader->addTexture(*paletteTexture, "t_Palette");
 }
 
-BilinearFilteringShader::BilinearFilteringShader(const std::shared_ptr<gl::Texture> &paletteTexture,
-                                                 const std::shared_ptr<gl::Texture> &colorTexture,
-                                                 const std::shared_ptr<gl::Camera> &camera,
-                                                 const std::string &shadersPath): Shader(shadersPath) {
-    int heightMultiplier = colorTexture->numLayers == 0 ? 1 : colorTexture->numLayers;
-
-    float w = colorTexture->width;
-    float h = colorTexture->height * heightMultiplier;
-
-	GLfloat vertices[] = {
-//			  Position   , Texcoords
-			-w,  -h, 2.0f, -1.0f, // Top-left
-			2 * w,  -h, -1.0f, -1.0f, // Top-right
-			2 * w, 2 * h,  -1.0f, 2.0f, // Bottom-right
-			-w, 2 * h,  2.0f, 2.0f  // Bottom-left
-	};
-
-	GLuint elements[] = {
-			0, 1, 2,
-			3, 2, 0,
-	};
-
-	auto buffer = gl::gen_buffer(vertices, elements, sizeof(vertices), sizeof(elements));
-	glUseProgram(programId);
-
-	data.bufferData = buffer;
-	data.colorTexture = colorTexture;
-	data.paletteTexture = paletteTexture;
-	data.camera = camera;
-
-	data.colorTextureAttrId = glGetUniformLocation(programId, "t_Color");
-	data.paletteTextureAttrId = glGetUniformLocation(programId, "t_Palette");
-	data.mvpAtrrId = glGetUniformLocation(programId, "u_ViewProj");
-
-	data.positionAttrId = glGetAttribLocation(programId, "position");
-	data.texcoordAttrId = glGetAttribLocation(programId, "texcoord");
-
-	data.textureScaleAttrId  = glGetUniformLocation(programId, "u_TextureScale");
-	data.screenSizeAttrId  = glGetUniformLocation(programId, "u_ScreenSize");
-
+void BilinearFilteringProcess::render(const vgl::Camera &camera) {
+	data.u_ViewProj = camera.mvp();
+	data.u_TextureScale = textureScale;
+	data.u_ScreenSize = glm::vec4(camera.viewport.x, camera.viewport.y, 0.0f, 0.0f);
+	shader->render(data, vertexArray);
 }

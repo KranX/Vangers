@@ -13,8 +13,10 @@
 
 #include "xglobal.h"
 #include <GL/glew.h>
-#include "gl/Texture.h"
-#include "gl/PlainTextureShader.h"
+#include "../vgl/texture_ext.h"
+#include "../vgl/shader.h"
+#include "../vgl/vertex_array.h"
+#include "../vgl/uniform.h"
 
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
@@ -94,6 +96,12 @@ struct XGR_Pal64K
 
 struct XGR_Screen
 {
+	struct PlainTextureShaderData:public vgl::UniformData{};
+	struct PlainTextureShaderVertex{
+		glm::vec2 pos;
+		glm::vec2 uv;
+	};
+
 	int flags;
 
 	int ScreenX;
@@ -109,8 +117,13 @@ struct XGR_Screen
 	//SDL_Surface *XGR32_ScreenSurface2D;
 	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
-	std::shared_ptr<gl::Texture> texture;
-	std::unique_ptr<PlainTextureShader> textureShader;
+
+	PlainTextureShaderData data;
+	std::shared_ptr<vgl::Texture2D> texture;
+	std::shared_ptr<vgl::PixelUnpackBuffer> buffer;
+	std::shared_ptr<vgl::Shader> textureShader;
+	std::shared_ptr<vgl::VertexArray<PlainTextureShaderVertex, GLuint>> vertexArray;
+
 //	SDL_Texture *sdlTexture;
 	//SDL_Texture *sdlTexture2D;
 //	SDL_Texture *HDBackgroundTexture;

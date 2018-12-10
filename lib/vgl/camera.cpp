@@ -2,7 +2,7 @@
 // Created by nikita on 3/18/18.
 //
 
-#include "Camera.h"
+#include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/ext.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-glm::mat4 gl::Camera::mvp() {
+glm::mat4 vgl::Camera::mvp() const {
 	float FOV = atan(viewport.y / 2 / focus) * 2;
 	auto proj = glm::perspective(
 			FOV,
@@ -21,7 +21,7 @@ glm::mat4 gl::Camera::mvp() {
 	return proj * view;
 }
 
-void gl::Camera::from_player(float x, float y, float z, float turn, float slope) {
+void vgl::Camera::from_player(float x, float y, float z, float turn, float slope) {
 	auto playerPos = glm::vec3(2048.0f - x, y, 0);
 
 	auto turnRot = glm::angleAxis(-turn + glm::radians(180.0f), glm::vec3(0.0f, 0, 1.0f));

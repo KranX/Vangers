@@ -9,7 +9,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <memory>
 
-namespace gl{
+namespace vgl{
 	class Camera {
 	public:
 		glm::vec2 viewport;
@@ -18,7 +18,7 @@ namespace gl{
 		float focus;
 
 		void from_player(float x, float y, float z, float turn, float slope);
-		glm::mat4 mvp();
+		glm::mat4 mvp() const;
 
 	};
 }
