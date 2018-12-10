@@ -6,6 +6,7 @@ data/*
 !data/resource/iscreen/oftr2.scb
 !data/resource
 !data/vangers.bat
+!data/game.lst
 
 # CMake files
 CMakeFiles/
