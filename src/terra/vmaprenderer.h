@@ -24,7 +24,7 @@
 
 
 const float MAX_SCALE = 96.0f;
-const int DIRTY_REGION_CHUNK_SIZE = 1024;
+const int DIRTY_REGION_CHUNK_SIZE = 2048;
 
 class RenderingProcess {
 public:
@@ -35,7 +35,7 @@ class RayCastProcess : public RenderingProcess {
 	struct Data : public vgl::UniformData {
 		UNIFORM(glm::mat4, u_ViewProj)
 		UNIFORM(glm::mat4, u_InvViewProj)
-		UNIFORM(glm::vec3, u_CamPos)
+		UNIFORM(glm::vec4, u_CamPos)
 		UNIFORM(glm::vec4, u_TextureScale)
 		UNIFORM(glm::vec4, u_ScreenSize)
 	};

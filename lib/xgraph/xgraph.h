@@ -96,7 +96,11 @@ struct XGR_Pal64K
 
 struct XGR_Screen
 {
-	struct PlainTextureShaderData:public vgl::UniformData{};
+	struct PlainTextureShaderData : public vgl::UniformData{
+		UNIFORM(glm::vec4, u_Scale);
+		UNIFORM(glm::vec4, u_ScreenSize);
+	};
+
 	struct PlainTextureShaderVertex{
 		glm::vec2 pos;
 		glm::vec2 uv;

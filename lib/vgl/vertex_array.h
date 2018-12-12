@@ -42,10 +42,27 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 
 	};
 
+	class IVertexArray {
+	public:
+		virtual int getNumElements() const = 0 ;
+
+		virtual  void free() = 0;
+
+		virtual void enable() = 0;
+
+		virtual void bind() = 0;
+
+		virtual  void unbind() = 0;
+
+		virtual  void disable() = 0;
+
+		virtual void addAttrib(GLuint attribId, size_t size, size_t offset) = 0;
+
+	};
+
 
 	template<typename VertexType, typename ElementType>
-	class VertexArray : NamedObject<GLuint>{
-
+	class VertexArray : public IVertexArray, NamedObject<GLuint>{
 	private:
 		std::shared_ptr<ArrayBuffer> vertexBuffer;
 		std::shared_ptr<ElementArrayBuffer> elementBuffer;

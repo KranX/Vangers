@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "uniform.h"
 #include "util.h"
@@ -22,15 +23,15 @@ namespace vgl {
 
 	class TextureAttribute: public NamedObject<GLint>{
 	private:
-		TextureAttribute(const TextureAttribute& textureAttribute) = delete;
+//		TextureAttribute(const TextureAttribute& textureAttribute) = delete;
 	public:
-		ITexture& texture;
+		std::shared_ptr<ITexture> texture;
 
-		TextureAttribute(TextureAttribute&& other) noexcept :
-				NamedObject(other.objectId),
-			texture(other.texture) {}
+//		TextureAttribute(TextureAttribute&& other) noexcept :
+//				NamedObject(other.objectId),
+//			texture(other.texture) {}
 
-		TextureAttribute(GLint objectId, ITexture& texture):
+		TextureAttribute(GLint objectId, std::shared_ptr<ITexture>& texture):
 			NamedObject(objectId),
 			texture(texture){}
 	};
@@ -47,13 +48,14 @@ namespace vgl {
 	public:
 		void bindUniformAttribs(UniformData &data);
 
-		void addTexture(vgl::ITexture& texture, const std::string &name);
+		void addTexture(std::shared_ptr<ITexture> texture, const std::string &name);
 
 		Shader(GLuint objectId):NamedObject(objectId){}
 
 		Shader(Shader&& other) noexcept : NamedObject(other.objectId){}
 
 		Shader(const Shader&) = delete;
+
 		Shader& operator=(const Shader&) = delete;
 
 		Shader& operator=(Shader&& other) noexcept{
@@ -75,25 +77,7 @@ namespace vgl {
 		static std::shared_ptr<Shader> createFromPath(const std::string &vertexShaderPath,
 		                                      const std::string &fragmentShaderPath);
 
-		template<typename VertexType, typename ElementType>
-		void render(UniformData &data, const std::shared_ptr<VertexArray<VertexType, ElementType>>& vertexArray){
-			use();
-
-			for(auto* member: data.members){
-				member->assignData();
-			}
-
-			for(int i = 0; i < textureAttributes.size();i++){
-				glActiveTexture(GlTextures[i]);
-				textureAttributes[i].texture.bind();
-				glUniform1i(textureAttributes[i].getObjectId(), i);
-			}
-
-			vertexArray->enable();
-			glDrawElements(GL_TRIANGLES, vertexArray->getNumElements(), GL_UNSIGNED_INT, 0);
-			vgl::checkErrorAndThrow("glDrawElements");
-			vertexArray->disable();
-		}
+		void render(UniformData &data, const std::shared_ptr<IVertexArray>& vertexArray);
 
 		void free(){
 			glDeleteProgram(objectId);

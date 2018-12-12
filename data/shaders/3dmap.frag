@@ -178,6 +178,10 @@ CastPoint cast_ray_to_map(vec3 base, vec3 dir) {
 		// continue the cast underground
 		a = b; b = c;
 		suf = cast_ray_impl(a, b, false, 3, 3);
+		result.pos = b;
+		result.tex_coord = vec3(0,0,0);
+        return result;
+
 	}
 
 	//float t = a.z > a.w + 0.1 ? (b.w - a.w - b.z + a.z) / (a.z - a.w) : 0.5;

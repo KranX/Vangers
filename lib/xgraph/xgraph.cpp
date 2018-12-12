@@ -163,31 +163,24 @@ GLuint XGR_Screen::SurfToTexture(SDL_Surface *surf)
 }
 #endif
 
-static const std::string plainTextureShaderFragmentCode = "#version 150 core\n"
-                                         "in vec2 Texcoord;\n"
-                                         "\n"
-                                         "out vec4 outColor;\n"
-                                         "uniform sampler2D t_Texture;\n"
-                                         "\n"
-                                         "void main()\n"
-                                         "{\n"
-                                         "    outColor = texture(t_Texture, Texcoord);\n"
-                                         "}";
 
 static const std::string plainTextureShaderVertexCode = "#version 330 core\n"
                                        "layout(location = 0) in vec2 position;\n"
                                        "layout(location = 1) in vec2 texcoord;\n"
+									   "uniform vec4 scale; // w, h, 0, 0\n"
                                        "\n"
                                        "out vec2 Texcoord;\n"
                                        "\n"
                                        "void main()\n"
-                                       "{\n"
+                                       "{\n "
+										"   float offsetX = 1 - 1/scale.x;\n"
+		                                "   float offsetY = 1 - 1/scale.y;\n"
                                        "    Texcoord = texcoord;\n"
-                                       "    gl_Position = vec4(position.x, -position.y, 0.0f, 1.0f);\n"
+                                       "    gl_Position = vec4((position.x + offsetX) * scale.y, (-position.y - offsetY) * scale.y, 0.0f, 1.0f) ;\n"
                                        "}";
 
 
-int XGR_Screen::init(int x,int y,int flags_in)
+int XGR_Screen::init(int x, int y,int flags_in)
 {
 	flags = flags_in;
 	std::cout<<"XGR_Screen::init"<<std::endl;
@@ -262,9 +255,12 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");  // "linear" make the scaled rendering look smoother.
 
 	XGR_Palette = SDL_AllocPalette(256);
+	int internalWidth = x;
+	int internalHeight = y;
 
 	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
-	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
+//	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
+	XGR_ScreenSurface = SDL_CreateRGBSurface(0, internalWidth, internalHeight, 8, 0, 0, 0, 0);
 
 	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 
@@ -280,7 +276,8 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	);
 
 
-	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, bpp, Rmask, Gmask, Bmask, Amask);
+	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, internalWidth, internalHeight, bpp, Rmask, Gmask, Bmask, Amask);
+//	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, bpp, Rmask, Gmask, Bmask, Amask);
 //	XGR32_ScreenSurface = SDL_CreateRGBSurfaceWithFormat(0, x, y, 32, SDL_PIXELFORMAT_ARGB8888);
 
 	std::cout<<"SDL_SetSurfacePalette"<<std::endl;
@@ -292,14 +289,16 @@ int XGR_Screen::init(int x,int y,int flags_in)
 //								   SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
 //	                               SDL_TEXTUREACCESS_STREAMING,
 //	                               x, y);
-	buffer = vgl::PixelUnpackBuffer::create(sizeof(uint32) * x * y, vgl::BufferUsage::StreamDraw);
+
+	buffer = vgl::PixelUnpackBuffer::create(sizeof(uint32) * internalWidth * internalHeight, vgl::BufferUsage::StreamDraw);
 
 	texture = vgl::Texture2D::create(
-			{x, y},
-			vgl::TextureInternalFormat::RGBA8);
+			{internalWidth, internalHeight},
+			vgl::TextureInternalFormat::RGBA8,
+			vgl::TextureFilter::Linear);
 	texture->subImage(
 			{0, 0},
-			{x, y},
+			texture->getDimensions(),
 			vgl::TextureFormat::RGBA,
 			vgl::TextureDataType::UnsignedInt8888,
 			XGR32_ScreenSurface->pixels
@@ -322,9 +321,9 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	vertexArray->addAttrib(0, 2, offsetof(PlainTextureShaderVertex, pos));
 	vertexArray->addAttrib(1, 2, offsetof(PlainTextureShaderVertex, uv));
 
-	textureShader = vgl::Shader::create(plainTextureShaderVertexCode, plainTextureShaderFragmentCode);
-	textureShader->addTexture(*texture, "t_Texture");
-
+	textureShader = vgl::Shader::createFromPath("shaders/main.vert", "shaders/main.frag");
+	textureShader->addTexture(texture, "t_Texture");
+	textureShader->bindUniformAttribs(data);
 //	SDL_SetTextureBlendMode(sdlTexture, SDL_BLENDMODE_NONE);
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
 	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
@@ -962,6 +961,9 @@ void XGR_Screen::flip()
 				*buffer
 				);
 		buffer->unbind();
+//		data.scale = glm::vec4(XGR_ScreenSurface->w / 800.0f, XGR_ScreenSurface->h / 600.0f, 0, 0);
+//		data.u_Scale = glm::vec4(XGR_ScreenSurface->w / 800.0f, XGR_ScreenSurface->h / 600.0f, 0, 0);
+//		data.u_ScreenSize = glm::vec4(1920.0f, 1080.0f, 0, 0);
 		textureShader->render(data, vertexArray);
 
 		SDL_GL_SwapWindow(sdlWindow);

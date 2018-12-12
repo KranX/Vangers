@@ -174,7 +174,7 @@ RayCastProcess::RayCastProcess(float maxScale,
 	float numLayers = colorTexture->getDimensions().z;
 	float width = colorTexture->getDimensions().x;
 	float height = colorTexture->getDimensions().y * numLayers;
-	textureScale = glm::vec4(width, height, 0.0f, numLayers);
+	textureScale = glm::vec4(width, height, scale, numLayers);
 
 	std::vector<Vertex> vertices = {
 			{{-w,  -h}, {-1.0f, -1.0f}}, // Top-left
@@ -197,19 +197,21 @@ RayCastProcess::RayCastProcess(float maxScale,
 			shadersPath+".frag"
 	);
 	shader->bindUniformAttribs(data);
-	shader->addTexture(*heightMapTexture, "t_Height");
-	shader->addTexture(*colorTexture, "t_Color");
-	shader->addTexture(*paletteTexture, "t_Palette");
-	shader->addTexture(*metaTexture, "t_Meta");
+	shader->addTexture(heightMapTexture, "t_Height");
+	shader->addTexture(colorTexture, "t_Color");
+	shader->addTexture(paletteTexture, "t_Palette");
+	shader->addTexture(metaTexture, "t_Meta");
 }
 
 void RayCastProcess::render(const vgl::Camera &camera) {
 	auto mvp = camera.mvp();
 	auto invMvp = glm::inverse(mvp);
 
+	scale = std::fminf(scale + 1, maxScale);
+	textureScale.z = scale;
 	data.u_ViewProj = mvp;
 	data.u_InvViewProj = invMvp;
-	data.u_CamPos = camera.position;
+	data.u_CamPos = glm::vec4(camera.position, 0);
 	data.u_TextureScale = textureScale;
 	data.u_ScreenSize = glm::vec4(camera.viewport.x, camera.viewport.y, 0.0f, 0.0f);
 	shader->render(data, vertexArray);
@@ -252,8 +254,8 @@ BilinearFilteringProcess::BilinearFilteringProcess(
 			shadersPath+".frag"
 			);
 	shader->bindUniformAttribs(data);
-	shader->addTexture(*colorTexture, "t_Color");
-	shader->addTexture(*paletteTexture, "t_Palette");
+	shader->addTexture(colorTexture, "t_Color");
+	shader->addTexture(paletteTexture, "t_Palette");
 }
 
 void BilinearFilteringProcess::render(const vgl::Camera &camera) {
