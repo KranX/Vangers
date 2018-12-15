@@ -892,8 +892,8 @@ void vrtMap::load(const char* name,int nWorld)
 		for(uint i = 0;i < V_SIZE;i++) {
 			fmap > st_table[i];
 			fmap > sz_table[i];
-//			if(sz_table[i] >= H2_SIZE)
-//				ErrH.Abort("Wrong compression");
+			if(sz_table[i] > H2_SIZE)
+				ErrH.Abort("Wrong compression");
 		}
 		InitSplay(fmap);
 	}
@@ -1024,7 +1024,7 @@ void vrtMap::reload(int nWorld)
 		for(i = 0;i < (int)V_SIZE;i++){
 			fmap > st_table[i];
 			fmap > sz_table[i];
-			if(sz_table[i] >= H2_SIZE)
+			if(sz_table[i] > H2_SIZE)
 				ErrH.Abort("Wrong compression");
 			}
 		InitSplay(fmap);
