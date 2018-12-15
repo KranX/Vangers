@@ -10,7 +10,7 @@
 namespace vgl {
 	typedef Texture<glm::ivec2, GL_TEXTURE_2D> Texture2D;
 	typedef Texture<glm::ivec3, GL_TEXTURE_2D_ARRAY> Texture2DArray;
-	typedef Texture<uint, GL_TEXTURE_1D> Texture1D;
+	typedef Texture<glm::uint, GL_TEXTURE_1D> Texture1D;
 
 	template <>
 	void Texture<glm::ivec2, GL_TEXTURE_2D>::TexStorage(GLenum internalFormat, const glm::ivec2 &dimensions);
@@ -26,9 +26,9 @@ namespace vgl {
 			GLenum format, GLenum type, GLvoid *data);
 
 	template <>
-	void Texture<uint, GL_TEXTURE_1D>::TexStorage(GLenum internalFormat, const uint &dimensions) ;
+	void Texture<glm::uint, GL_TEXTURE_1D>::TexStorage(GLenum internalFormat, const glm::uint &dimensions) ;
 
 	template <>
-	void Texture<uint, GL_TEXTURE_1D>::TexSubImage(const uint &offset, const uint &dimensions, GLenum format, GLenum type, GLvoid *data);
+	void Texture<glm::uint, GL_TEXTURE_1D>::TexSubImage(const glm::uint &offset, const glm::uint &dimensions, GLenum format, GLenum type, GLvoid *data);
 }
 #endif //VANGERS_TEXTURE_EXT_H

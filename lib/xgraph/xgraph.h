@@ -16,7 +16,7 @@
 #include "../vgl/texture_ext.h"
 #include "../vgl/shader.h"
 #include "../vgl/vertex_array.h"
-#include "../vgl/uniform.h"
+#include "../vgl/uniform_ext.h"
 
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))

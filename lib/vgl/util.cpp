@@ -153,7 +153,9 @@ void vgl::checkErrorAndThrow(const char *name) {
 //	std::cout<<"gl: "<<name<<std::endl;
 	auto error = glGetError();
 	if(error != 0){
-		auto message = (std::stringstream() << name << " Gl error: " << error << " " << getErrorString(error)).str();
+		std::stringstream ss;
+		ss << name << " Gl error: " << error << " " << getErrorString(error);
+		auto message = ss.str();
 		std::cerr<<message<<std::endl;
 //		throw Exception{
 //				.code=error,

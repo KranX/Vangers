@@ -290,7 +290,7 @@ int XGR_Screen::init(int x, int y,int flags_in)
 //	                               SDL_TEXTUREACCESS_STREAMING,
 //	                               x, y);
 
-	buffer = vgl::PixelUnpackBuffer::create(sizeof(uint32) * internalWidth * internalHeight, vgl::BufferUsage::StreamDraw);
+	buffer = vgl::PixelUnpackBuffer::create(sizeof(glm::uint32) * internalWidth * internalHeight, vgl::BufferUsage::StreamDraw);
 
 	texture = vgl::Texture2D::create(
 			{internalWidth, internalHeight},

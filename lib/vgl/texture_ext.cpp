@@ -37,13 +37,13 @@ void vgl::Texture<glm::ivec3, GL_TEXTURE_2D_ARRAY>::TexSubImage(const glm::ivec3
 }
 
 template <>
-void vgl::Texture<uint, GL_TEXTURE_1D>::TexStorage(GLenum internalFormat, const uint &dimensions) {
+void vgl::Texture<glm::uint, GL_TEXTURE_1D>::TexStorage(GLenum internalFormat, const glm::uint &dimensions) {
 	glTexStorage1D(GL_TEXTURE_1D, 1, internalFormat, dimensions);
 	checkErrorAndThrow("GL_TEXTURE_1D");
 }
 
 template <>
-void vgl::Texture<uint, GL_TEXTURE_1D>::TexSubImage(const uint &offset, const uint &dimensions, GLenum format, GLenum type, GLvoid *data) {
+void vgl::Texture<glm::uint, GL_TEXTURE_1D>::TexSubImage(const glm::uint &offset, const glm::uint &dimensions, GLenum format, GLenum type, GLvoid *data) {
 	glTexSubImage1D(
 			GL_TEXTURE_1D, 0,
 			offset,
