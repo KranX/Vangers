@@ -674,6 +674,8 @@ extern int activeWTRACK;
 
 void MainMenuRTO::Init(int id)
 {
+	XGR_Obj.set_surface_size(800, 600);
+
 	Dead = 0;
 //	activeWTRACK = 0;
 _MEM_STATISTIC_("BEFORE MAIN MENU INIT -> ");
@@ -927,6 +929,7 @@ _MEM_STATISTIC_("AFTER FIRST ESCAVE FINIT -> ");
 
 void LoadingRTO2::Init(int id)
 {
+	XGR_Obj.set_surface_size(XGR_Obj.RealX, XGR_Obj.RealY);
 #ifdef ISCREEN
 	FinishFirstShopPrepare(aciLoadLog);
 	aciLoadLog = 0;
@@ -1084,6 +1087,7 @@ _MEM_STATISTIC_("AFTER FIRST ESCAVE FINIT -> ");
 
 void GameQuantRTO::Init(int id)
 {
+	XGR_Obj.set_surface_size(XGR_Obj.RealX, XGR_Obj.RealY);
 	vMap -> lockHeap();
 _MEM_STATISTIC_("AFTER GAME QUANT INIT -> ");
 }
@@ -1136,6 +1140,7 @@ int GameQuantRTO::Quant(void)
 
 void EscaveRTO::Init(int id)
 {
+	XGR_Obj.set_surface_size(800, 600);
 #ifdef ISCREEN
 	uvsPrepareQuant();
 	aci_LocationQuantPrepare();
@@ -1966,12 +1971,13 @@ void iGameMap::draw(int self)
 		auto curRenderer = renderers[cur_renderer_index];
 		curRenderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
 
+		curRenderer->setDirty(ViewY);
 		_debugTimerStorage.event_start("updateColor");
 		curRenderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
 		_debugTimerStorage.event_end("updateColor");
 
 		_debugTimerStorage.event_start("render");
-		curRenderer->render(XGR_MAXX, XGR_MAXY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
+		curRenderer->render(XGR_Obj.RealX, XGR_Obj.RealY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
 		_debugTimerStorage.event_end("render");
 
 		//Отрисовка 3д моделей
@@ -2073,9 +2079,10 @@ void iGameMap::draw(int self)
 		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
 		//XGR_Obj.fill(2);
 		if(GeneralSystemSkip) {
-			aScrDisp -> redraw();
+			std::cout<<"aScrDisp->redraw();"<<std::endl;
+			aScrDisp->redraw();
 		}
-		aScrDisp -> flush();
+		aScrDisp->flush();
 		//aScrDisp->pal_flush();
 		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
 #endif
@@ -2271,6 +2278,7 @@ void PaletteTransform::quant(void)
 
 void ShowImageRTO::Init(int id)
 {
+	XGR_Obj.set_surface_size(800, 600);
 #ifdef SHOW_IMAGES
 	int i;
 	short sx,sy;

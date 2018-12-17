@@ -3860,13 +3860,13 @@ void actIntDispatcher::init(void) {
 	aciCurColorScheme = aciColorSchemes[SCH_DEFAULT];
 	if (iP) {
 		iP->init();
-		iP->layout(XGR_MAXX, XGR_MAXY);
+		iP->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 	}
 
 	ip = (InfoPanel *) infoPanels->last;
 	while (ip) {
 		ip->init();
-		ip->layout(XGR_MAXX, XGR_MAXY);
+		ip->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		ip = (InfoPanel *) ip->prev;
 	}
 
@@ -3889,26 +3889,26 @@ void actIntDispatcher::init(void) {
 	cp = (CounterPanel *) intCounters->last;
 	while (cp) {
 		cp->init();
-		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		cp = (CounterPanel *) cp->prev;
 	}
 	cp = (CounterPanel *) infCounters->last;
 	while (cp) {
 		cp->init();
-		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		cp = (CounterPanel *) cp->prev;
 	}
 	cp = (CounterPanel *) invCounters->last;
 	while (cp) {
 		cp->init();
-		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		cp = (CounterPanel *) cp->prev;
 	}
 
 	p = (invMatrix *) matrixList->last;
 	while (p) {
 		p->init();
-		p->layout(XGR_MAXX, XGR_MAXY);
+		p->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		p = (invMatrix *) p->prev;
 	}
 
@@ -3943,27 +3943,27 @@ void actIntDispatcher::init(void) {
 	it = (fncMenu *) menuList->last;
 	while (it) {
 		it->init();
-		it->layout(XGR_MAXX, XGR_MAXY);
+		it->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		it = (fncMenu *) it->prev;
 	}
 
 	b = (aButton *) intButtons->last;
 	while (b) {
 		b->init();
-		b->layout(XGR_MAXX, XGR_MAXY);
+		b->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		b = (aButton *) b->prev;
 	}
 
 	b = (aButton *) invButtons->last;
 	while (b) {
 		b->init();
-		b->layout(XGR_MAXX, XGR_MAXY);
+		b->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		b = (aButton *) b->prev;
 	}
 	b = (aButton *) infButtons->last;
 	while (b) {
 		b->init();
-		b->layout(XGR_MAXX, XGR_MAXY);
+		b->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		b = (aButton *) b->prev;
 	}
 	init_menus();
@@ -3987,7 +3987,7 @@ void actIntDispatcher::init(void) {
 	aciPrevJumpCount = -1;
 
 	for (auto const &screen: screens) {
-		screen.second->layout(XGR_MAXX, XGR_MAXY);
+		screen.second->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 	}
 }
 

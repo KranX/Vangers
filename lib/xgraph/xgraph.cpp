@@ -179,6 +179,11 @@ static const std::string plainTextureShaderVertexCode = "#version 330 core\n"
                                        "    gl_Position = vec4((position.x + offsetX) * scale.y, (-position.y - offsetY) * scale.y, 0.0f, 1.0f) ;\n"
                                        "}";
 
+void XGR_Screen::set_surface_size(int sizeX, int sizeY){
+	std::cout<<"XGR_Screen::set_surface_size: "<<sizeX<<" "<<sizeY<<std::endl;
+	SurfaceSizeX = sizeX;
+	SurfaceSizeY = sizeY;
+}
 
 int XGR_Screen::init(int x, int y,int flags_in)
 {
@@ -258,9 +263,8 @@ int XGR_Screen::init(int x, int y,int flags_in)
 	int internalWidth = x;
 	int internalHeight = y;
 
-	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
-//	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
-	XGR_ScreenSurface = SDL_CreateRGBSurface(0, internalWidth, internalHeight, 8, 0, 0, 0, 0);
+	set_surface_size(x, y);
+	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
 
 	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 
@@ -276,33 +280,37 @@ int XGR_Screen::init(int x, int y,int flags_in)
 	);
 
 
-	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, internalWidth, internalHeight, bpp, Rmask, Gmask, Bmask, Amask);
-//	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, bpp, Rmask, Gmask, Bmask, Amask);
-//	XGR32_ScreenSurface = SDL_CreateRGBSurfaceWithFormat(0, x, y, 32, SDL_PIXELFORMAT_ARGB8888);
+	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, bpp, Rmask, Gmask, Bmask, Amask);
 
 	std::cout<<"SDL_SetSurfacePalette"<<std::endl;
 	SDL_SetSurfacePalette(XGR_ScreenSurface, XGR_Palette);
 
+	ScreenBuf = (unsigned char*)XGR_ScreenSurface->pixels;
 
-//	std::cout<<"SDL_CreateTexture sdlTexture"<<std::endl;
-//	sdlTexture = SDL_CreateTexture(sdlRenderer,
-//								   SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
-//	                               SDL_TEXTUREACCESS_STREAMING,
-//	                               x, y);
+	// Other initializations
+	ScreenX = xgrScreenSizeX = XGR_ScreenSurface->w;
+	ScreenY = xgrScreenSizeY = XGR_ScreenSurface->h;
 
-	buffer = vgl::PixelUnpackBuffer::create(sizeof(glm::uint32) * internalWidth * internalHeight, vgl::BufferUsage::StreamDraw);
+	if(yOffsTable) {
+		delete[] yOffsTable;
+	}
+	yOffsTable = new int[XGR_ScreenSurface->h + 1];
+	set_pitch(XGR_ScreenSurface->pitch);
+
+	palette = vgl::Texture1D::create(
+		256,
+		vgl::TextureInternalFormat::RGBA8,
+		vgl::TextureFilter::Nearest
+	);
 
 	texture = vgl::Texture2D::create(
 			{internalWidth, internalHeight},
-			vgl::TextureInternalFormat::RGBA8,
-			vgl::TextureFilter::Linear);
-	texture->subImage(
-			{0, 0},
-			texture->getDimensions(),
-			vgl::TextureFormat::RGBA,
-			vgl::TextureDataType::UnsignedInt8888,
-			XGR32_ScreenSurface->pixels
-			);
+			vgl::TextureInternalFormat::R8ui,
+			vgl::TextureFilter::Nearest);
+	
+	buffer = vgl::PixelUnpackBuffer::create(internalWidth * internalHeight, vgl::BufferUsage::StreamDraw);
+	buffer->unbind();
+
 	std::vector<PlainTextureShaderVertex> vertices = {
 //		   Position   , Texcoords
 			{{-1.0f,  -1.0f}, {0.0f, 0.0f}}, // Top-left
@@ -323,6 +331,8 @@ int XGR_Screen::init(int x, int y,int flags_in)
 
 	textureShader = vgl::Shader::createFromPath("shaders/main.vert", "shaders/main.frag");
 	textureShader->addTexture(texture, "t_Texture");
+	textureShader->addTexture(palette, "t_Palette");
+
 	textureShader->bindUniformAttribs(data);
 //	SDL_SetTextureBlendMode(sdlTexture, SDL_BLENDMODE_NONE);
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
@@ -341,17 +351,6 @@ int XGR_Screen::init(int x, int y,int flags_in)
 	std::cout<<"SDL_LockSurface"<<std::endl;
 	if (SDL_LockSurface(XGR_ScreenSurface) < 0)
 		ErrH.Abort(SDL_GetError(),XERR_USER, 0);
-
-	ScreenBuf = (unsigned char*)XGR_ScreenSurface->pixels;
-
-	// Other initializations
-	ScreenX = xgrScreenSizeX = XGR_ScreenSurface->w;
-	ScreenY = xgrScreenSizeY = XGR_ScreenSurface->h;
-
-	if(yOffsTable) delete[] yOffsTable;
-	yOffsTable = new int[y + 1];
-	set_pitch(XGR_ScreenSurface->pitch);
-
 
 	XFNT_Prepare();
 
@@ -935,41 +934,48 @@ void XGR_Screen::set_render_buffer(SDL_Surface *buf) {
 
 void XGR_Screen::flip()
 {
+	// std::cout<<"XGR_Screen::flip()"<<std::endl;
 	if(flags & XGR_INIT){
 		XGR_MouseObj.GetFon();
 		XGR_MouseObj.PutFrame();
-		//XGR_MouseObj.GetPromptFon();
-		//XGR_MouseObj.PutPrompt();
-		//std::cout<<"Flip"<<std::endl;
-
 
 //		glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
 //		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
-		blitScreen((uint32_t *)XGR32_ScreenSurface->pixels, (uint8_t *)XGR_ScreenSurface->pixels);
-		SDL_UnlockSurface(XGR32_ScreenSurface);
+		// blitScreen((uint32_t *)XGR32_ScreenSurface->pixels, (uint8_t *)XGR_ScreenSurface->pixels);
+		// SDL_UnlockSurface(XGR32_ScreenSurface);
+
+		uint32_t palData[256];
+
+		for(int i = 0; i < 255; i++){
+			auto color = XGR_Palette->colors[i];
+			palData[i] = SDL_MapRGBA(XGR32_ScreenSurface->format, color.r, color.g, color.b, 255);
+		}
+		palData[255] = 0x00000000;
+		// memset(palData, 0, sizeof(uint32_t) * 256);
+		palette->subImage(0, 256, vgl::TextureFormat::RGBA, vgl::TextureDataType::UnsignedInt8888, (GLvoid*)palData);
 
 		buffer->bind();
-		buffer->update(static_cast<GLubyte*>(XGR32_ScreenSurface->pixels));
+		buffer->update(static_cast<GLubyte*>(XGR_ScreenSurface->pixels));
 		texture->subImage(
 				{0, 0},
 				{XGR_ScreenSurface->w, XGR_ScreenSurface->h},
-				vgl::TextureFormat::RGBA,
-				vgl::TextureDataType::UnsignedInt8888,
+				vgl::TextureFormat::RedInteger,
+				vgl::TextureDataType::UnsignedByte,
 				*buffer
 				);
 		buffer->unbind();
-//		data.scale = glm::vec4(XGR_ScreenSurface->w / 800.0f, XGR_ScreenSurface->h / 600.0f, 0, 0);
-//		data.u_Scale = glm::vec4(XGR_ScreenSurface->w / 800.0f, XGR_ScreenSurface->h / 600.0f, 0, 0);
-//		data.u_ScreenSize = glm::vec4(1920.0f, 1080.0f, 0, 0);
-		textureShader->render(data, vertexArray);
+		data.u_SurfaceSize = glm::vec4(SurfaceSizeX, SurfaceSizeY, 0, 0);
+		data.u_ScreenSize = glm::vec4(RealX, RealY, 0, 0);
 
+		textureShader->render(data, vertexArray);
 		SDL_GL_SwapWindow(sdlWindow);
 		XGR_MouseObj.PutFon();
 		//XGR_MouseObj.PutPromptFon();
 	}
+	// std::cout<<"XGR_Screen::flip() END"<<std::endl;
 }
 
 void XGR_Screen::flush(int x,int y,int sx,int sy)

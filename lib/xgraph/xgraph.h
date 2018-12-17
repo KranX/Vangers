@@ -97,7 +97,7 @@ struct XGR_Pal64K
 struct XGR_Screen
 {
 	struct PlainTextureShaderData : public vgl::UniformData{
-		UNIFORM(glm::vec4, u_Scale);
+		UNIFORM(glm::vec4, u_SurfaceSize);
 		UNIFORM(glm::vec4, u_ScreenSize);
 	};
 
@@ -113,6 +113,13 @@ struct XGR_Screen
 	int RealX;
 	int RealY;
 
+	/// This parameters needed for internal surface scaling.
+	/// In menus and escaves this equals to (800, 600)
+	/// On the surface to (RealX, RealY)
+
+	int SurfaceSizeX;
+	int SurfaceSizeY;
+
 	unsigned char* ScreenBuf;
 
 	SDL_Surface *XGR_ScreenSurface;
@@ -124,6 +131,7 @@ struct XGR_Screen
 
 	PlainTextureShaderData data;
 	std::shared_ptr<vgl::Texture2D> texture;
+	std::shared_ptr<vgl::Texture1D> palette;
 	std::shared_ptr<vgl::PixelUnpackBuffer> buffer;
 	std::shared_ptr<vgl::Shader> textureShader;
 	std::shared_ptr<vgl::VertexArray<PlainTextureShaderVertex, GLuint>> vertexArray;
@@ -153,6 +161,7 @@ struct XGR_Screen
 	GLuint SurfToTexture(SDL_Surface *surf);
 #endif
 
+	void set_surface_size(int sizeX, int sizeY);
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
 	void get_clip(int& left,int& top,int& right,int& bottom);
