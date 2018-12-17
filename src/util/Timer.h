@@ -13,19 +13,13 @@
 namespace util{
 	class Timer {
 	private:
-		std::chrono::time_point<std::chrono::system_clock> event_start_time{};
+		long long int event_start_time;
 	public:
 		explicit Timer() = default;
 
-		void event_start(){
-			event_start_time = std::chrono::system_clock::now();
-		}
+		void event_start();
 
-		double event_end(){
-			auto now = std::chrono::system_clock::now();
-			return (now - event_start_time).count() / 1000.0;
-		}
-
+		double event_end();
 	};
 }
 
