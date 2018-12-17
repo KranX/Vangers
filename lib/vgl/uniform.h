@@ -16,10 +16,6 @@
 #include "base.h"
 
 namespace vgl {
-	enum class UniformType {
-		Float, Vec4, Mat4x4
-	};
-
 	class UniformBase;
 	class Shader;
 
@@ -31,11 +27,20 @@ namespace vgl {
 		void addUniform(UniformBase* uniform){
 			members.push_back(uniform);
 		}
+
+		std::vector<UniformBase*> getMembers(){
+			return members;
+		}
 	};
+
+	template<typename T>
+	std::vector<UniformBase*> _uniformCreator(){
+		return T().getMembers();
+	}
 
 	class UniformBase {
 	public:
-		UniformBase(std::string& name, UniformData* data):name(std::move(name)),attrId(0){
+		UniformBase(std::string& name, UniformData* data):attrId(0),name(std::move(name)){
 			data->addUniform(this);
 		}
 		GLint attrId;
@@ -55,7 +60,7 @@ namespace vgl {
 		Uniform(std::string name, UniformData* ownerData):UniformBase(name, ownerData){}
 		T data;
 
-		void assignData(){
+		void assignData() override{
 			_assign(attrId, data);
 		}
 

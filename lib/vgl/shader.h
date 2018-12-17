@@ -21,11 +21,20 @@ namespace vgl {
 		void free(){}
 	};
 
+	class UniformAttribute{
+	public:
+		GLuint attribId;
+		std::shared_ptr<vgl::UniformBase*> member;
+
+		UniformAttribute(GLuint attribId, std::shared_ptr<UniformBase *> member) : attribId(attribId),
+		                                                                        member(std::move(member)) {}
+	};
+
 	class TextureAttribute: public NamedObject<GLint>{
 	public:
 		std::shared_ptr<ITexture> texture;
 
-		TextureAttribute(GLint objectId, std::shared_ptr<ITexture>& texture):
+		TextureAttribute(GLint objectId, std::shared_ptr<ITexture> texture):
 			NamedObject(objectId),
 			texture(texture){}
 	};
@@ -38,11 +47,8 @@ namespace vgl {
 	};
 
 	class Shader : public NamedObject<GLuint> {
-		std::vector<TextureAttribute> textureAttributes; // TODO: move textureAttributes outside of Shader
 	public:
 		void bindUniformAttribs(UniformData &data);
-
-		void addTexture(std::shared_ptr<ITexture> texture, const std::string &name);
 
 		Shader(GLuint objectId):NamedObject(objectId){}
 
@@ -70,10 +76,10 @@ namespace vgl {
 		static std::shared_ptr<Shader> createFromPath(const std::string &vertexShaderPath,
 		                                      const std::string &fragmentShaderPath);
 
-		void render(UniformData &data, const std::shared_ptr<IVertexArray>& vertexArray);
-
-		void render(UniformData& data, const std::shared_ptr<IVertexArray>& vertexArray, 
-			const std::vector<TextureAttribute>& textureAttributes);
+		void render(
+				const UniformData& data,
+				const IVertexArray& vertexArray,
+				const std::vector<TextureAttribute>& textureAttributes);
 			
 		void free(){
 			glDeleteProgram(objectId);

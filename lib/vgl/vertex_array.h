@@ -6,8 +6,8 @@
 // Created by nikita on 2018-12-03.
 //
 
-#ifndef UPLOADBENCH_VERTEX_ARRAY_H
-#define UPLOADBENCH_VERTEX_ARRAY_H
+#ifndef VGLVERTEX_ARRAY_H
+#define VGLVERTEX_ARRAY_H
 
 #include <vector>
 #include <memory>
@@ -16,6 +16,7 @@
 #include "util.h"
 #include "base.h"
 #include "buffer.h"
+#include "ivertexarray.h"
 
 
 namespace vgl {
@@ -32,31 +33,13 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 			this->stride = stride;
 		}
 
-		void enable(){
+		void enable() const{
 			glEnableVertexAttribArray(objectId);
 			vgl::checkErrorAndThrow("glEnableVertexAttribArray");
 
 			glVertexAttribPointer(objectId, size, GL_FLOAT, GL_FALSE, stride, (void*)(offset));
 			vgl::checkErrorAndThrow("glVertexAttribPointer");
 		}
-
-	};
-
-	class IVertexArray {
-	public:
-		virtual int getNumElements() const = 0 ;
-
-		virtual  void free() = 0;
-
-		virtual void enable() = 0;
-
-		virtual void bind() = 0;
-
-		virtual  void unbind() = 0;
-
-		virtual  void disable() = 0;
-
-		virtual void addAttrib(GLuint attribId, size_t size, size_t offset) = 0;
 
 	};
 
@@ -115,16 +98,15 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 			);
 		}
 
-		int getNumElements() const {
+		int getNumElements() const override {
 			return numElements;
 		}
 
-		void free(){
+		void free() override {
 			vertexBuffer->free();
 			elementBuffer->free();
 		}
-		void enable(){
-			bind();
+		void enable() const override {
 			vertexBuffer->bind();
 			elementBuffer->bind();
 
@@ -133,30 +115,23 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 			}
 		}
 
-		void bind() {
+		void bind() const override {
 			glBindVertexArray(objectId);
 			vgl::checkErrorAndThrow("glBindVertexArray");
 		}
 
-		void unbind(){
+		void unbind() const override {
 			glBindVertexArray(0);
 		}
 
-		void disable(){
+		void disable() const override {
 			for(int i = 0; i < vertexArrayAttribs.size(); i++){
 				glDisableVertexAttribArray(i);
 				vgl::checkErrorAndThrow("glDisableVertexAttribArray");
 			}
 		}
 
-//		void defineData(std::vector<VertexType> &data, std::vector<ElementType>& elements){
-//			glBindVertexArray(objectId);
-//			vertexBuffer = Buffer::create(sizeof(VertexType) * data.size(), GL_STATIC_DRAW, &data[0]);
-//			elementBuffer = Buffer::create(sizeof(ElementType) * elements.size(), GL_STATIC_DRAW, &elements[0]);
-//			numElements = data.size();
-//		}
-
-		void addAttrib(GLuint attribId, size_t size, size_t offset) {
+		void addAttrib(GLuint attribId, size_t size, size_t offset) override {
 			VertexArrayAttrib vat(attribId, size, offset, sizeof(VertexType));
 			vertexArrayAttribs.push_back(vat);
 		}
@@ -165,4 +140,4 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 
 }
 
-#endif //UPLOADBENCH_VERTEX_ARRAY_H
+#endif //VGL_VERTEX_ARRAY_H

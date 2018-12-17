@@ -2079,7 +2079,6 @@ void iGameMap::draw(int self)
 		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
 		//XGR_Obj.fill(2);
 		if(GeneralSystemSkip) {
-			std::cout<<"aScrDisp->redraw();"<<std::endl;
 			aScrDisp->redraw();
 		}
 		aScrDisp->flush();

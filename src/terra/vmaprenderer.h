@@ -14,13 +14,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <SDL2/SDL.h>
-#include "../../lib/vgl/texture_ext.h"
-#include "../../lib/vgl/shader.h"
-#include "../../lib/vgl/camera.h"
-#include "../../lib/vgl/buffer.h"
-#include "../../lib/vgl/uniform.h"
-#include "../../lib/vgl/uniform_ext.h"
-#include "../../lib/vgl/vertex_array.h"
+#include "vgl/texture_ext.h"
+#include "vgl/uniform_ext.h"
+#include "vgl/vertex_array.h"
+#include "vgl/pipeline.h"
+#include "vgl/camera.h"
 
 
 const float MAX_SCALE = 96.0f;
@@ -46,8 +44,7 @@ class RayCastProcess : public RenderingProcess {
 	};
 
 	Data data;
-	std::shared_ptr<vgl::Shader> shader;
-	std::shared_ptr<vgl::VertexArray<Vertex, GLuint>> vertexArray;
+	std::shared_ptr<vgl::Pipeline> pipeline;
 	glm::vec4 textureScale;
 
 public:
@@ -79,8 +76,7 @@ class BilinearFilteringProcess : public RenderingProcess{
 	};
 
 
-	std::shared_ptr<vgl::Shader> shader;
-	std::shared_ptr<vgl::VertexArray<Vertex, GLuint>> vertexArray;
+	std::shared_ptr<vgl::Pipeline> pipeline;
 	glm::vec4 textureScale;
 	Data data;
 

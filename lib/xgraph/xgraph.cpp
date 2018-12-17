@@ -311,29 +311,39 @@ int XGR_Screen::init(int x, int y,int flags_in)
 	buffer = vgl::PixelUnpackBuffer::create(internalWidth * internalHeight, vgl::BufferUsage::StreamDraw);
 	buffer->unbind();
 
+	struct PlainTextureShaderVertex{
+		glm::vec2 pos;
+		glm::vec2 uv;
+	};
+
 	std::vector<PlainTextureShaderVertex> vertices = {
 //		   Position   , Texcoords
 			{{-1.0f,  -1.0f}, {0.0f, 0.0f}}, // Top-left
 			{{1.0f,  -1.0f}, {1.0f, 0.0f}}, // Top-right
-			 {{1.0f, 1.0f}, {1.0f, 1.0f}}, // Bottom-right
-			 {{-1.0f, 1.0f}, {0.0f, 1.0f}}  // Bottom-left
+			{{1.0f, 1.0f}, {1.0f, 1.0f}}, // Bottom-right
+			{{-1.0f, 1.0f}, {0.0f, 1.0f}}  // Bottom-left
 	};
-
 
 	std::vector<GLuint> elements = {
 			0, 1, 2,
 			3, 2, 0,
 	};
 
-	vertexArray = vgl::VertexArray<PlainTextureShaderVertex, GLuint>::create(vertices, elements);
+
+	auto vertexArray = vgl::VertexArray<PlainTextureShaderVertex, GLuint>::create(vertices, elements);
 	vertexArray->addAttrib(0, 2, offsetof(PlainTextureShaderVertex, pos));
 	vertexArray->addAttrib(1, 2, offsetof(PlainTextureShaderVertex, uv));
 
-	textureShader = vgl::Shader::createFromPath("shaders/main.vert", "shaders/main.frag");
-	textureShader->addTexture(texture, "t_Texture");
-	textureShader->addTexture(palette, "t_Palette");
-
+	auto textureShader = vgl::Shader::createFromPath("shaders/main.vert", "shaders/main.frag");
 	textureShader->bindUniformAttribs(data);
+
+	std::vector<vgl::TextureAttribute> textureAttibs {
+			vgl::TextureAttribute(textureShader->getAttribute("t_Texture"), texture),
+			vgl::TextureAttribute(textureShader->getAttribute("t_Palette"), palette)
+	};
+	texturePipeline = vgl::Pipeline::create(textureShader, vertexArray, textureAttibs);
+
+
 //	SDL_SetTextureBlendMode(sdlTexture, SDL_BLENDMODE_NONE);
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
 	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
@@ -970,7 +980,7 @@ void XGR_Screen::flip()
 		data.u_SurfaceSize = glm::vec4(SurfaceSizeX, SurfaceSizeY, 0, 0);
 		data.u_ScreenSize = glm::vec4(RealX, RealY, 0, 0);
 
-		textureShader->render(data, vertexArray);
+		texturePipeline->render(data);
 		SDL_GL_SwapWindow(sdlWindow);
 		XGR_MouseObj.PutFon();
 		//XGR_MouseObj.PutPromptFon();
