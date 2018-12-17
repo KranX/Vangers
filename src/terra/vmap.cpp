@@ -1068,20 +1068,7 @@ void vrtMap::reload(int nWorld)
 
 	LoadVPR();
 	RenderPrepare();
-
-#ifdef _ROAD_
-	if(MAP_POWER_Y <= 11 && !RAM16)
-		accept(0,V_SIZE - 1);
-	else
-		accept(ViewY,ViewY);
-#else
-	if(MAP_POWER_Y <= 11)
-		accept(0,V_SIZE - 1);
-	else {
-		upLine = 1;
-		downLine = 0;
-		}
-#endif
+	accept(0,V_SIZE - 1);
 }
 
 void vrtMap::increase(int up,int down)

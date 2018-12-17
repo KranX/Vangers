@@ -47,11 +47,8 @@ void VMapRenderer::init(const std::shared_ptr<vgl::Texture2DArray> &heightMapTex
 	this->heightTexture = heightMapTexture;
 
 	int bufferSize = DIRTY_REGION_CHUNK_SIZE * sizeX;
-	updateBuffers[0] = vgl::PixelUnpackBuffer::create(bufferSize, vgl::BufferUsage::StreamDraw);
-	updateBuffers[0]->unbind();
-
-	updateBuffers[1] = vgl::PixelUnpackBuffer::create(bufferSize, vgl::BufferUsage::StreamDraw);
-	updateBuffers[1]->unbind();
+	updateBuffer = vgl::PixelUnpackBuffer::create(bufferSize, vgl::BufferUsage::StreamDraw);
+	updateBuffer->unbind();
 
 	buffer = new uint8_t[bufferSize];
 }
@@ -78,7 +75,7 @@ void VMapRenderer::setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format) 
 }
 
 void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
-	uint8_t* b = new uint8_t[sizeX * DIRTY_REGION_CHUNK_SIZE];
+	// uint8_t* b = new uint8_t[sizeX * DIRTY_REGION_CHUNK_SIZE];
 
 	for(int nRegion = 0; nRegion < dirtyRegions.size(); nRegion++){
 		if(dirtyRegions[nRegion]){
@@ -87,7 +84,7 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 			int yEnd = (nRegion + 1) * DIRTY_REGION_CHUNK_SIZE;
 
 			for(int i = yStart; i < yEnd; i++){
-				uint8_t* lineBuffer = b + ((i - yStart) * sizeX);
+				uint8_t* lineBuffer = buffer + ((i - yStart) * sizeX);
 				if(color[i]){
 					memcpy(lineBuffer, color[i], sizeX * sizeof(uint8_t));
 				}else{
@@ -118,19 +115,19 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 //			currentUpdateBuffer = (currentUpdateBuffer + 1) % 2;
 //			auto nextIndex = (currentUpdateBuffer + 1) % 2;
 
-			updateBuffers[0]->bind();
-			updateBuffers[0]->update(b);
+			updateBuffer->bind();
+			updateBuffer->update(buffer);
 			colorTexture->subImage(
 					{0, y, nLayer},
 					{sizeX, DIRTY_REGION_CHUNK_SIZE, 1},
 					vgl::TextureFormat::RedInteger,
 					vgl::TextureDataType::UnsignedByte,
-					*(updateBuffers[currentUpdateBuffer])
+					// buffer
+					*(updateBuffer)
 			);
-			updateBuffers[0]->unbind();
+			updateBuffer->unbind();
 		}
 	}
-	delete[] b;
 }
 
 void VMapRenderer::resetDirty() {
@@ -154,8 +151,7 @@ void VMapRenderer::setDirty(int yStart, int yEnd) {
 void VMapRenderer::deinit() {
 	colorTexture->free();
 	paletteTexture->free();
-	updateBuffers[0]->free();
-	updateBuffers[1]->free();
+	updateBuffer->free();
 	delete[] buffer;
 }
 

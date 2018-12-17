@@ -106,7 +106,7 @@ private:
 	std::shared_ptr<vgl::Texture1D> paletteTexture;
 	std::shared_ptr<vgl::Texture2DArray> colorTexture;
 	std::shared_ptr<vgl::Texture2DArray> heightTexture;
-	std::shared_ptr<vgl::PixelUnpackBuffer> updateBuffers[2];
+	std::shared_ptr<vgl::PixelUnpackBuffer> updateBuffer;
 public:
 	enum ShaderType {
 		RayCast, BilinearFiltering
