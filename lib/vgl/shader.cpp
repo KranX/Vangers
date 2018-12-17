@@ -34,21 +34,26 @@ vgl::Shader::createFromPath(const std::string &vertexShaderPath, const std::stri
 	return std::make_shared<vgl::Shader>(objectId);
 }
 
+void vgl::Shader::render(vgl::UniformData &data, const std::shared_ptr<vgl::IVertexArray> &vertexArray, 
+	const std::vector<TextureAttribute>& textureAttributes){
+    use();
+
+    for(auto* member: data.members){
+        member->assignData();
+    }
+
+    for(int i = 0; i < textureAttributes.size();i++){
+        glActiveTexture(GlTextures[i]);
+        textureAttributes[i].texture->bind();
+        glUniform1i(textureAttributes[i].getObjectId(), i);
+    }
+
+    vertexArray->enable();
+    glDrawElements(GL_TRIANGLES, vertexArray->getNumElements(), GL_UNSIGNED_INT, 0);
+    vgl::checkErrorAndThrow("glDrawElements");
+    vertexArray->disable();
+}
+
 void vgl::Shader::render(vgl::UniformData &data, const std::shared_ptr<vgl::IVertexArray> &vertexArray) {
-	use();
-
-	for(auto* member: data.members){
-		member->assignData();
-	}
-
-	for(int i = 0; i < textureAttributes.size();i++){
-		glActiveTexture(GlTextures[i]);
-		textureAttributes[i].texture->bind();
-		glUniform1i(textureAttributes[i].getObjectId(), i);
-	}
-
-	vertexArray->enable();
-	glDrawElements(GL_TRIANGLES, vertexArray->getNumElements(), GL_UNSIGNED_INT, 0);
-	vgl::checkErrorAndThrow("glDrawElements");
-	vertexArray->disable();
+    render(data, vertexArray, textureAttributes);
 }

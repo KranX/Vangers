@@ -22,14 +22,8 @@ namespace vgl {
 	};
 
 	class TextureAttribute: public NamedObject<GLint>{
-	private:
-//		TextureAttribute(const TextureAttribute& textureAttribute) = delete;
 	public:
 		std::shared_ptr<ITexture> texture;
-
-//		TextureAttribute(TextureAttribute&& other) noexcept :
-//				NamedObject(other.objectId),
-//			texture(other.texture) {}
 
 		TextureAttribute(GLint objectId, std::shared_ptr<ITexture>& texture):
 			NamedObject(objectId),
@@ -44,7 +38,7 @@ namespace vgl {
 	};
 
 	class Shader : public NamedObject<GLuint> {
-		std::vector<TextureAttribute> textureAttributes;
+		std::vector<TextureAttribute> textureAttributes; // TODO: move textureAttributes outside of Shader
 	public:
 		void bindUniformAttribs(UniformData &data);
 
@@ -63,7 +57,6 @@ namespace vgl {
 			return *this;
 		}
 
-
 		GLint getAttribute(const std::string& name) const;
 
 		void use() const {
@@ -79,6 +72,9 @@ namespace vgl {
 
 		void render(UniformData &data, const std::shared_ptr<IVertexArray>& vertexArray);
 
+		void render(UniformData& data, const std::shared_ptr<IVertexArray>& vertexArray, 
+			const std::vector<TextureAttribute>& textureAttributes);
+			
 		void free(){
 			glDeleteProgram(objectId);
 		}
