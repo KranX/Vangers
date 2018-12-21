@@ -23,6 +23,8 @@ namespace vgl {
 		create(const std::shared_ptr<Shader> &shader,
 				const std::shared_ptr<IVertexArray> &vertexArray,
 		       const std::vector<TextureAttribute> &textureAttributes);
+
+		void free();
 	};
 }
 #endif //VANGERS_PIPELINE_H

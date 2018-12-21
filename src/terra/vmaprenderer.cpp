@@ -152,6 +152,8 @@ void VMapRenderer::deinit() {
 	colorTexture->free();
 	paletteTexture->free();
 	updateBuffer->free();
+	heightTexture->free();
+	process->free();
 	delete[] buffer;
 }
 
@@ -274,4 +276,12 @@ void BilinearFilteringProcess::render(const vgl::Camera &camera) {
 	data.u_TextureScale = textureScale;
 	data.u_ScreenSize = glm::vec4(camera.viewport.x, camera.viewport.y, 0.0f, 0.0f);
 	pipeline->render(data);
+}
+
+void BilinearFilteringProcess::free() {
+	pipeline->free();
+}
+
+void RayCastProcess::free(){
+	pipeline->free();
 }

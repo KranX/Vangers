@@ -21,3 +21,9 @@ std::shared_ptr<vgl::Pipeline> vgl::Pipeline::create(
 		const std::vector<vgl::TextureAttribute> &textureAttributes) {
 	return std::make_shared<vgl::Pipeline>(shader, vertexArray, textureAttributes);
 }
+
+void vgl::Pipeline::free() {
+	// TODO: decide what do we need to free
+	shader->free();
+	vertexArray->free();
+}

@@ -105,7 +105,9 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 		void free() override {
 			vertexBuffer->free();
 			elementBuffer->free();
+			glDeleteVertexArrays(1, &objectId);
 		}
+
 		void enable() const override {
 			vertexBuffer->bind();
 			elementBuffer->bind();

@@ -90,7 +90,7 @@ namespace vgl {
 		}
 
 		void free(){
-			glDeleteBuffers(glTarget, &objectId);
+			glDeleteBuffers(1, &objectId);
 			vgl::checkErrorAndThrow("glDeleteBuffers");
 		}
 

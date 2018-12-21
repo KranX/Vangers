@@ -27,6 +27,7 @@ const int DIRTY_REGION_CHUNK_SIZE = 2048;
 class RenderingProcess {
 public:
 	virtual void render(const vgl::Camera &camera) = 0;
+	virtual void free() = 0;
 };
 
 class RayCastProcess : public RenderingProcess {
@@ -57,7 +58,8 @@ public:
 	                       const std::string &shadersPath);
 
 
-	void render(const vgl::Camera &camera);
+	void render(const vgl::Camera &camera) override;
+	void free();
 	float scale;
 	float maxScale;
 };
@@ -86,7 +88,8 @@ public:
 		const std::shared_ptr<vgl::Texture2DArray>& colorTexture,
 		const std::string &shadersPath
 	);
-	void render(const vgl::Camera &camera);
+	void render(const vgl::Camera &camera) override;
+	void free();
 };
 
 class VMapRenderer {
