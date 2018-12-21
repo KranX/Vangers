@@ -12,25 +12,7 @@ vec4 palColor(uvec4 color_id){
 }
 
 vec4 evaluate_color(vec2 tex_coord) {
-    vec4 bl, br, tl, tr;
-	if(tex_coord.y > 0.5){
-		bl = palColor(textureOffset(t_Texture, tex_coord, ivec2(-1, 0)));
-        br = palColor(textureOffset(t_Texture, tex_coord, ivec2(0, 0)));
-        tl = palColor(textureOffset(t_Texture, tex_coord, ivec2(-1, -1)));
-        tr = palColor(textureOffset(t_Texture, tex_coord, ivec2(0, -1)));
-	}else{
-		tl = palColor(textureOffset(t_Texture, tex_coord, ivec2(-1, 0)));
-        tr = palColor(textureOffset(t_Texture, tex_coord, ivec2(0, 0)));
-        bl = palColor(textureOffset(t_Texture, tex_coord, ivec2(-1, 1)));
-        br = palColor(textureOffset(t_Texture, tex_coord, ivec2(0, 1)));
-	}
-	vec2 f = fract(vec2(tex_coord.x, tex_coord.y));
-
-	vec4 top_color = mix(tl, tr, f.x);
-	vec4 bottom_color = mix(bl, br, f.x);
-	vec4 color = mix(top_color, bottom_color, f.y);
-
-	return color;
+	return palColor(texture(t_Texture, tex_coord));;
 }
 
 
