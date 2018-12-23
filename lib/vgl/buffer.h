@@ -65,10 +65,6 @@ namespace vgl {
 			return std::make_shared<Buffer<target>>(objectId, size);
 		}
 
-		GLuint getBufferId() const {
-			return objectId;
-		}
-
 		GLsizeiptr getSize() const {
 			return size;
 		}

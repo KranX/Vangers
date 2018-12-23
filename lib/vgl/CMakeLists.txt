@@ -14,7 +14,7 @@ SET(vgl_SRCS
 		camera.h
 		texture_ext.cpp
 		texture_ext.h
-		uniform_ext.cpp pipeline.cpp pipeline.h uniform_attrib.h)
+		uniform_ext.cpp pipeline.cpp pipeline.h uniform_attrib.h vec.cpp)
 
 ADD_LIBRARY(vgl STATIC ${vgl_SRCS})
 

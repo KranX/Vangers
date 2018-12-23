@@ -1754,7 +1754,8 @@ void aciShowLocation(void)
 	for(i = 0; i < max_timer; i ++)
 		aScrDisp -> curLocData -> GateShutters[i] -> Redraw();
 
-	XGR_Flip();
+	XGR_Obj.draw_bg();
+	XGR_Obj.flip();
 	//XGR_Flush(0,0,XGR_MAXX,XGR_MAXY);
 	//i_evince_pal(iscrPal,8);
 
@@ -1781,8 +1782,11 @@ void aciShowLocation(void)
 
 		for(i = 0; i < max_timer; i ++)
 			aScrDisp -> curLocData -> GateShutters[i] -> Redraw();
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-		//XGR_Flush(0,0,XGR_MAXX,XGR_MAXY);
+		XGR_Obj.draw_bg();
+
 		XGR_Flip();
 		
 		xtClearMessageQueue();

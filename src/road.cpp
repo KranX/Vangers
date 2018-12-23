@@ -2157,10 +2157,8 @@ void iGameMap::reset_renderers() {
 
 	auto heightMapTexture = vgl::Texture2DArray::create(
 			{H_SIZE, chunkHeight, numChunks},
-			vgl::TextureInternalFormat::R8ui);
-	heightMapTexture->subImage(
-			{0, 0, 0},
-			heightMapTexture->getDimensions(),
+			vgl::TextureInternalFormat::R8ui,
+			vgl::TextureFilter::Nearest,
 			vgl::TextureFormat::RedInteger,
 			vgl::TextureDataType::UnsignedByte,
 			heightData
@@ -2168,10 +2166,8 @@ void iGameMap::reset_renderers() {
 
 	auto colorTexture = vgl::Texture2DArray::create(
 			{H_SIZE, chunkHeight, numChunks},
-			vgl::TextureInternalFormat::R8ui);
-	colorTexture->subImage(
-			{0, 0, 0},
-			colorTexture->getDimensions(),
+			vgl::TextureInternalFormat::R8ui,
+			vgl::TextureFilter::Nearest,
 			vgl::TextureFormat::RedInteger,
 			vgl::TextureDataType::UnsignedByte,
 			colorData
@@ -2179,19 +2175,17 @@ void iGameMap::reset_renderers() {
 
 	auto metaTexture = vgl::Texture2DArray::create(
 			{H_SIZE, chunkHeight, numChunks},
-			vgl::TextureInternalFormat::R8ui);
-	metaTexture->subImage(
-			{0, 0, 0},
-			metaTexture->getDimensions(),
+			vgl::TextureInternalFormat::R8ui,
+			vgl::TextureFilter::Nearest,
 			vgl::TextureFormat::RedInteger,
 			vgl::TextureDataType::UnsignedByte,
 			metaData
 	);
 
-	auto paletteTexture = vgl::Texture1D::create(256, vgl::TextureInternalFormat::RGBA8);
-	paletteTexture->subImage(
-			0,
-			256,
+	auto paletteTexture = vgl::Texture1D::create(
+			{256},
+			vgl::TextureInternalFormat::RGBA8,
+			vgl::TextureFilter::Nearest,
 			vgl::TextureFormat::RGBA,
 			vgl::TextureDataType::UnsignedInt8888,
 			paletteData

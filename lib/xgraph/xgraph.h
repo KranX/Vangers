@@ -99,6 +99,10 @@ struct XGR_Screen
 		UNIFORM(glm::vec4, u_ScreenSize);
 	};
 
+	struct BackgroundTextureShaderData : public vgl::UniformData{
+		UNIFORM(glm::vec4, u_AddColor);
+	};
+
 	int flags;
 
 	int ScreenX;
@@ -123,12 +127,15 @@ struct XGR_Screen
 	SDL_Surface *IconSurface;
 
 	PlainTextureShaderData data;
+	BackgroundTextureShaderData bgData;
 	std::shared_ptr<vgl::Texture2D> texture;
 	std::shared_ptr<vgl::Texture1D> palette;
 	std::shared_ptr<vgl::PixelUnpackBuffer> buffer;
 	std::shared_ptr<vgl::Pipeline> texturePipeline;
 
-//	SDL_Texture *sdlTexture;
+	std::shared_ptr<vgl::Texture2D> backgroundTexture;
+	std::shared_ptr<vgl::Pipeline> backgroundTexturePipeline;
+	//	SDL_Texture *sdlTexture;
 	//SDL_Texture *sdlTexture2D;
 //	SDL_Texture *HDBackgroundTexture;
 	SDL_Window *sdlWindow;
@@ -166,6 +173,7 @@ struct XGR_Screen
 
 	void flush(int x,int y,int sx,int sy);
 	void flip();
+	void draw_bg();
 
 	void fill(int col);
 	void erase(int x,int y,int sx,int sy,int col);

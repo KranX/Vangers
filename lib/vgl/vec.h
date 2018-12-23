@@ -2,48 +2,45 @@
 // Created by nikita on 2018-12-04.
 //
 
-#ifndef UPLOADBENCH_VEC_H
-#define UPLOADBENCH_VEC_H
+#ifndef VGL_VEC_H
+#define VGL_VEC_H
 
 #include <ostream>
 
 namespace vgl {
-	struct uiVec2 {
+	struct iVec1 {
+		int32_t x;
 
-		union {
-			struct {
-				unsigned int width, height;
-			};
+		static const int len = 1;
 
-			struct {
-				unsigned int x, y;
-			};
-
-		};
+		static const iVec1 zero;
 	};
 
-	std::ostream &operator<<(std::ostream &os, const uiVec2 &vec2) {
-		os << "uiVec2(" << vec2.width << ", " << vec2.height<<")";
-		return os;
-	}
+	std::ostream &operator<<(std::ostream &os, const iVec1 &vec1);
 
 
-	struct uiVec3 {
-		struct {
-			unsigned int width, height, depth;
-		};
+	struct iVec2 {
+		int32_t x, y;
 
-		struct {
-			unsigned int x, y, z;
-		};
+		static const int len = 2;
+
+		static const iVec2 zero;
 	};
 
-	std::ostream &operator<<(std::ostream &os, const uiVec3 &vec3) {
-		os << "uiVec3(" << vec3.width << ", " << vec3.height<<", "<<vec3.depth<<")";
-		return os;
-	}
+	std::ostream &operator<<(std::ostream &os, const iVec2 &vec2);
+
+
+	struct iVec3 {
+		int32_t x, y, z;
+
+		static const int len = 3;
+
+		static const iVec3 zero;
+	};
+
+	std::ostream &operator<<(std::ostream &os, const iVec3 &vec3);
 
 }
 
 
-#endif //UPLOADBENCH_VEC_H
+#endif //VGL_VEC_H

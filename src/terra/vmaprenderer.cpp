@@ -71,7 +71,7 @@ void VMapRenderer::setPalette(SDL_Palette *sdlPalette, SDL_PixelFormat *format) 
 		auto color = sdlPalette->colors[i];
 		data[i] = SDL_MapRGBA(format, color.r, color.g, color.b, 255);
 	}
-	paletteTexture->subImage(0, 256, vgl::TextureFormat::RGBA, vgl::TextureDataType::UnsignedInt8888, (GLvoid*)data);
+	paletteTexture->subImage(vgl::TextureFormat::RGBA, vgl::TextureDataType::UnsignedInt8888, (GLvoid*)data);
 }
 
 void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
@@ -93,27 +93,6 @@ void VMapRenderer::updateColor(uint8_t **color, int lineUp, int lineDown) {
 			}
 			int nLayer = yStart / DIRTY_REGION_CHUNK_SIZE;
 			int y = yStart % DIRTY_REGION_CHUNK_SIZE;
-
-//			currentUpdateBuffer = (currentUpdateBuffer + 1) % 2;
-//			auto nextIndex = (currentUpdateBuffer + 1) % 2;
-//
-//			updateBuffers[currentUpdateBuffer]->bind();
-//
-//			colorTexture->subImage(
-//					{0, y, nLayer},
-//					{sizeX, DIRTY_REGION_CHUNK_SIZE, 1},
-//					vgl::TextureFormat::RedInteger,
-//					vgl::TextureDataType::UnsignedByte,
-//					*(updateBuffers[currentUpdateBuffer])
-//					);
-//			updateBuffers[currentUpdateBuffer]->unbind();
-//
-//			updateBuffers[nextIndex]->bind();
-//			updateBuffers[nextIndex]->update(b);
-//			updateBuffers[nextIndex]->unbind();
-
-//			currentUpdateBuffer = (currentUpdateBuffer + 1) % 2;
-//			auto nextIndex = (currentUpdateBuffer + 1) % 2;
 
 			updateBuffer->bind();
 			updateBuffer->update(buffer);

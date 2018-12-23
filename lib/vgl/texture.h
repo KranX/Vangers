@@ -25,6 +25,8 @@ namespace vgl {
 	enum class TextureFormat : GLenum {
 		RedInteger = GL_RED_INTEGER,
 		BGRA = GL_BGRA,
+		BGR = GL_BGR,
+		RGB = GL_RGB,
 		RGBA = GL_RGBA
 	};
 
@@ -53,8 +55,6 @@ namespace vgl {
 		static void TexSubImage(const T &offset, const T &dimensions, GLenum format, GLenum type, GLvoid *data) {
 			throw "Unimplemented";
 		}
-
-
 	public:
 		Texture(GLuint textureId, TextureInternalFormat internalFormat, const T &dimensions)
 				: NamedObject(textureId), internalFormat(internalFormat), dimensions(dimensions) {}
@@ -87,9 +87,30 @@ namespace vgl {
 			return std::make_shared<Texture<T, textureType>>(textureId, internalFormat, dimensions);
 		}
 
-		void bind() override {
+		static std::shared_ptr<Texture<T, textureType>>
+		create(const T &dimensions,
+				TextureInternalFormat internalFormat,
+				TextureFilter filter,
+				TextureFormat format,
+				TextureDataType dataType,
+				GLvoid* data) {
+			GLuint objectId;
+
+			glGenTextures(1, &objectId);
+			checkErrorAndThrow("glGenTextures");
+
 			glBindTexture(textureType, objectId);
-			checkErrorAndThrow("glBindTexture");
+			checkErrorAndThrow("glGenTextures");
+
+			auto glFilter = static_cast<GLint>(filter);
+			glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, glFilter);
+			glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, glFilter);
+			checkErrorAndThrow("glTexParameteri");
+
+			auto texture = std::make_shared<Texture<T, textureType>>(objectId, internalFormat, dimensions);
+			texture->TexStorage(static_cast<GLenum>(internalFormat), dimensions);
+			texture->TexSubImage(T::zero, dimensions, static_cast<GLenum>(format), static_cast<GLenum>(dataType), data);
+			return texture;
 		}
 
 		void subImage(const T &offset, const T &dimensions, TextureFormat format, TextureDataType dataType, PixelUnpackBuffer &buffer) {
@@ -100,11 +121,31 @@ namespace vgl {
 			TexSubImage(offset, dimensions, glFormat, static_cast<GLenum>(dataType), 0);
 		}
 
+		void subImage(TextureFormat format, TextureDataType dataType, PixelUnpackBuffer &buffer) {
+			bind();
+			buffer.bind();
+
+			auto glFormat = static_cast<GLenum>(format);
+			TexSubImage(T::zero, dimensions, glFormat, static_cast<GLenum>(dataType), 0);
+		}
+
 		void subImage(const T &offset, const T &dimensions, TextureFormat format, TextureDataType dataType, GLvoid *data) {
 			bind();
 
 			auto glFormat = static_cast<GLenum>(format);
 			TexSubImage(offset, dimensions, glFormat, static_cast<GLenum>(dataType), data);
+		}
+
+		void subImage(TextureFormat format, TextureDataType dataType, GLvoid *data) {
+			bind();
+
+			auto glFormat = static_cast<GLenum>(format);
+			TexSubImage(T::zero, dimensions, glFormat, static_cast<GLenum>(dataType), data);
+		}
+
+		void bind() override {
+			glBindTexture(textureType, objectId);
+			checkErrorAndThrow("glBindTexture");
 		}
 
 		static void bindToZero() {

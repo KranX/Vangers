@@ -298,7 +298,7 @@ int XGR_Screen::init(int x, int y,int flags_in)
 	set_pitch(XGR_ScreenSurface->pitch);
 
 	palette = vgl::Texture1D::create(
-		256,
+		{256},
 		vgl::TextureInternalFormat::RGBA8,
 		vgl::TextureFilter::Nearest
 	);
@@ -344,11 +344,33 @@ int XGR_Screen::init(int x, int y,int flags_in)
 	texturePipeline = vgl::Pipeline::create(textureShader, vertexArray, textureAttibs);
 
 
-//	SDL_SetTextureBlendMode(sdlTexture, SDL_BLENDMODE_NONE);
+
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
 	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
 	SDL_SetSurfacePalette(HDBackgroundSurface, XGR_Palette);
-//	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
+
+	backgroundTexture = vgl::Texture2D::create(
+			{HDBackgroundSurface->w, HDBackgroundSurface->h},
+			vgl::TextureInternalFormat::RGBA8,
+			vgl::TextureFilter::Nearest,
+			vgl::TextureFormat::RGB,
+			vgl::TextureDataType::UnsignedByte,
+			HDBackgroundSurface->pixels
+			);
+
+	auto backgroundTextureShader = vgl::Shader::createFromPath("shaders/texture2d.vert", "shaders/texture2d.frag");
+	backgroundTextureShader->bindUniformAttribs(bgData);
+
+	std::vector<vgl::TextureAttribute> backgroundTextureAttribs {
+			vgl::TextureAttribute(backgroundTextureShader->getAttribute("t_Texture"), backgroundTexture),
+	};
+
+	auto backgroundTexVertexArray = vgl::VertexArray<PlainTextureShaderVertex, GLuint>::create(vertices, elements);
+	backgroundTexVertexArray->addAttrib(0, 2, offsetof(PlainTextureShaderVertex, pos));
+	backgroundTexVertexArray->addAttrib(1, 2, offsetof(PlainTextureShaderVertex, uv));
+
+	backgroundTexturePipeline = vgl::Pipeline::create(backgroundTextureShader, backgroundTexVertexArray, backgroundTextureAttribs);
+
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_ShowCursor(0);
@@ -941,6 +963,15 @@ void XGR_Screen::set_render_buffer(SDL_Surface *buf) {
 	ScreenBuf = (unsigned char*)buf->pixels;
 }
 
+void XGR_Screen::draw_bg(){
+	bgData.u_AddColor = {
+			averageColorPalette.r,
+			averageColorPalette.g,
+			averageColorPalette.b,
+			255.0f
+	};
+	backgroundTexturePipeline->render(bgData);
+}
 
 void XGR_Screen::flip()
 {
@@ -964,14 +995,12 @@ void XGR_Screen::flip()
 			palData[i] = SDL_MapRGBA(XGR32_ScreenSurface->format, color.r, color.g, color.b, 255);
 		}
 		palData[255] = 0x00000000;
-		// memset(palData, 0, sizeof(uint32_t) * 256);
-		palette->subImage(0, 256, vgl::TextureFormat::RGBA, vgl::TextureDataType::UnsignedInt8888, (GLvoid*)palData);
+
+		palette->subImage(vgl::TextureFormat::RGBA, vgl::TextureDataType::UnsignedInt8888, (GLvoid*)palData);
 
 		buffer->bind();
 		buffer->update(static_cast<GLubyte*>(XGR_ScreenSurface->pixels));
 		texture->subImage(
-				{0, 0},
-				{XGR_ScreenSurface->w, XGR_ScreenSurface->h},
 				vgl::TextureFormat::RedInteger,
 				vgl::TextureDataType::UnsignedByte,
 				*buffer

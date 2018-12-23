@@ -3,14 +3,33 @@
 //
 
 #include "texture_ext.h"
+
+
 template <>
-void vgl::Texture<glm::ivec2, GL_TEXTURE_2D>::TexStorage(GLenum internalFormat, const glm::ivec2 &dimensions) {
+void vgl::Texture<vgl::iVec1, GL_TEXTURE_1D>::TexStorage(GLenum internalFormat, const vgl::iVec1 &dimensions) {
+	glTexStorage1D(GL_TEXTURE_1D, 1, internalFormat, dimensions.x);
+	checkErrorAndThrow("GL_TEXTURE_1D");
+}
+
+template <>
+void vgl::Texture<vgl::iVec1, GL_TEXTURE_1D>::TexSubImage(const vgl::iVec1 &offset, const vgl::iVec1 &dimensions, GLenum format, GLenum type, GLvoid *data) {
+	glTexSubImage1D(
+			GL_TEXTURE_1D, 0,
+			offset.x,
+			dimensions.x,
+			format, type, data);
+	checkErrorAndThrow("glTexSubImage1D");
+}
+
+
+template <>
+void vgl::Texture<vgl::iVec2, GL_TEXTURE_2D>::TexStorage(GLenum internalFormat, const vgl::iVec2 &dimensions) {
 	glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, dimensions.x, dimensions.y);
 	checkErrorAndThrow("glTexStorage2D");
 }
 
 template <>
-void vgl::Texture<glm::ivec2, GL_TEXTURE_2D>::TexSubImage(const glm::ivec2 &offset, const glm::ivec2 &dimensions, GLenum format, GLenum type, GLvoid *data) {
+void vgl::Texture<vgl::iVec2, GL_TEXTURE_2D>::TexSubImage(const vgl::iVec2 &offset, const vgl::iVec2 &dimensions, GLenum format, GLenum type, GLvoid *data) {
 	glTexSubImage2D(
 			GL_TEXTURE_2D, 0,
 			offset.x, offset.y,
@@ -19,35 +38,20 @@ void vgl::Texture<glm::ivec2, GL_TEXTURE_2D>::TexSubImage(const glm::ivec2 &offs
 	checkErrorAndThrow("glTexSubImage2D");
 }
 
+
 template <>
-void vgl::Texture<glm::ivec3, GL_TEXTURE_2D_ARRAY>::TexStorage(GLenum internalFormat, const glm::ivec3 &dimensions) {
+void vgl::Texture<vgl::iVec3, GL_TEXTURE_2D_ARRAY>::TexStorage(GLenum internalFormat, const vgl::iVec3 &dimensions) {
 	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, internalFormat, dimensions.x, dimensions.y,
 	               dimensions.z);
 	checkErrorAndThrow("glTexStorage3D");
 }
 
 template <>
-void vgl::Texture<glm::ivec3, GL_TEXTURE_2D_ARRAY>::TexSubImage(const glm::ivec3 &offset, const glm::ivec3 &dimensions, GLenum format, GLenum type, GLvoid *data) {
+void vgl::Texture<vgl::iVec3, GL_TEXTURE_2D_ARRAY>::TexSubImage(const vgl::iVec3 &offset, const vgl::iVec3 &dimensions, GLenum format, GLenum type, GLvoid *data) {
 	glTexSubImage3D(
 			GL_TEXTURE_2D_ARRAY, 0,
 			offset.x, offset.y, offset.z,
 			dimensions.x, dimensions.y, dimensions.z,
 			format, type, data);
 	checkErrorAndThrow("glTexSubImage3D");
-}
-
-template <>
-void vgl::Texture<glm::uint, GL_TEXTURE_1D>::TexStorage(GLenum internalFormat, const glm::uint &dimensions) {
-	glTexStorage1D(GL_TEXTURE_1D, 1, internalFormat, dimensions);
-	checkErrorAndThrow("GL_TEXTURE_1D");
-}
-
-template <>
-void vgl::Texture<glm::uint, GL_TEXTURE_1D>::TexSubImage(const glm::uint &offset, const glm::uint &dimensions, GLenum format, GLenum type, GLvoid *data) {
-	glTexSubImage1D(
-			GL_TEXTURE_1D, 0,
-			offset,
-			dimensions,
-			format, type, data);
-	checkErrorAndThrow("glTexSubImage1D");
 }
