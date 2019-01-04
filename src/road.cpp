@@ -1136,7 +1136,9 @@ int GameQuantRTO::Quant(void) {
 			EffectsOn();
 		}
 	} else {
-		if (GameQuantReturnValue || acsQuant()) {
+		curGMap->draw();
+		auto acsRes = acsQuant();
+		if (GameQuantReturnValue || acsRes) {
 			Pause = 0;
 		}
 	}
