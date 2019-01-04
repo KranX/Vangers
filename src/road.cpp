@@ -1099,7 +1099,7 @@ int GameQuantRTO::Quant(void) {
 		if (Pause) {
 			Pause++;
 		}
-		curGMap->draw();
+
 		gameQuant();
 //		DBGCHECK
 		frame++;
@@ -1924,6 +1924,7 @@ void gameQuant(void)
 			MLquant();
 			GameD.Quant();
 			curGMap->quant();
+			curGMap->draw();
 			GameD.DrawQuant(); // 3D rendering
 			curGMap->draw_messages();
 		}
