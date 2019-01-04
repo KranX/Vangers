@@ -28,10 +28,11 @@ struct iGameMap {
 
 	iGameMap(int _x,int _y,int _xside,int _yside);
 
-	void draw(int self = 1);
-	void flush(void);
-	void quant(void);
-	void reset(void);
+	void draw();
+	void draw_messages();
+	void flush();
+	void quant();
+	void reset();
 	void change(int Dx,int Dy,int mode = 1,int xcenter = -1,int ycenter = -1);
 
 	void reset_renderers();

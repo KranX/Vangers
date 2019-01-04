@@ -44,7 +44,7 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 	};
 
 
-	template<typename VertexType, typename ElementType>
+	template<typename VertexType>
 	class VertexArray : public IVertexArray, NamedObject<GLuint>{
 	private:
 		std::shared_ptr<ArrayBuffer> vertexBuffer;
@@ -55,6 +55,8 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 		int numVerticies;
 
 	public:
+		typedef VertexType vertexType;
+
 		VertexArray(GLuint objectId,
 					int numElements,
 				    int numVerticies,
@@ -81,15 +83,15 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 		VertexArray(const VertexArray& ) = delete;
 		VertexArray& operator=(const VertexArray& ) = delete;
 
-		static std::shared_ptr<VertexArray> create(std::vector<VertexType> &verticies, std::vector<ElementType>& elements){
+		static std::shared_ptr<VertexArray> create(std::vector<VertexType> &verticies, std::vector<GLuint>& elements){
 			GLuint objectId;
 			glGenVertexArrays(1, &objectId);
 			vgl::checkErrorAndThrow("glGenVertexArrays");
 			glBindVertexArray(objectId);
 			vgl::checkErrorAndThrow("glBindVertexArray");
 			auto vertexBuffer = ArrayBuffer::create(sizeof(VertexType) * verticies.size(), BufferUsage::StaticDraw, &verticies[0]);
-			auto elementBuffer = ElementArrayBuffer::create(sizeof(ElementType) * elements.size(), BufferUsage::StaticDraw, &elements[0]);
-			return std::make_shared<VertexArray<VertexType, ElementType>>(
+			auto elementBuffer = ElementArrayBuffer::create(sizeof(GLuint) * elements.size(), BufferUsage::StaticDraw, &elements[0]);
+			return std::make_shared<VertexArray<VertexType>>(
 				objectId,
 				elements.size(),
 				verticies.size(),
@@ -112,7 +114,7 @@ class VertexArrayAttrib : public NamedObject<GLuint>{
 			vertexBuffer->bind();
 			elementBuffer->bind();
 
-			for(int i = 0; i < vertexArrayAttribs.size(); i++){
+			for(size_t i = 0; i < vertexArrayAttribs.size(); i++){
 				vertexArrayAttribs[i].enable();
 			}
 		}

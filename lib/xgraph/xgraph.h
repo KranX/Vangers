@@ -15,6 +15,7 @@
 #include <GL/glew.h>
 #include "../vgl/pipeline.h"
 #include "../vgl/texture_ext.h"
+#include "../vgl/vertexarray_ext.h"
 
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
@@ -94,15 +95,6 @@ struct XGR_Pal64K
 
 struct XGR_Screen
 {
-	struct PlainTextureShaderData : public vgl::UniformData{
-		UNIFORM(glm::vec4, u_SurfaceSize);
-		UNIFORM(glm::vec4, u_ScreenSize);
-	};
-
-	struct BackgroundTextureShaderData : public vgl::UniformData{
-		UNIFORM(glm::vec4, u_AddColor);
-	};
-
 	int flags;
 
 	int ScreenX;
@@ -110,12 +102,10 @@ struct XGR_Screen
 	int RealX;
 	int RealY;
 
-	/// This parameters needed for internal surface scaling.
-	/// In menus and escaves this equals to (800, 600)
-	/// On the surface to (RealX, RealY)
-
-	int SurfaceSizeX;
-	int SurfaceSizeY;
+	/// This parameter needed for internal surface scaling.
+	/// In menus and escaves this equals to `true`
+	/// On the surface to `false`
+	bool isScaled;
 
 	unsigned char* ScreenBuf;
 
@@ -126,12 +116,11 @@ struct XGR_Screen
 	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
 
-	PlainTextureShaderData data;
-	BackgroundTextureShaderData bgData;
 	std::shared_ptr<vgl::Texture2D> texture;
 	std::shared_ptr<vgl::Texture1D> palette;
 	std::shared_ptr<vgl::PixelUnpackBuffer> buffer;
-	std::shared_ptr<vgl::Pipeline> texturePipeline;
+	std::shared_ptr<vgl::Pipeline> mainPipeline;
+	std::shared_ptr<vgl::Pipeline> bilinearMainPipeline;
 
 	std::shared_ptr<vgl::Texture2D> backgroundTexture;
 	std::shared_ptr<vgl::Pipeline> backgroundTexturePipeline;
@@ -160,7 +149,7 @@ struct XGR_Screen
 	GLuint SurfToTexture(SDL_Surface *surf);
 #endif
 
-	void set_surface_size(int sizeX, int sizeY);
+	void set_is_scaled(bool isScaled);
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
 	void get_clip(int& left,int& top,int& right,int& bottom);

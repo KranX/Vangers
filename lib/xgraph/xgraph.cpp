@@ -164,25 +164,9 @@ GLuint XGR_Screen::SurfToTexture(SDL_Surface *surf)
 #endif
 
 
-static const std::string plainTextureShaderVertexCode = "#version 330 core\n"
-                                       "layout(location = 0) in vec2 position;\n"
-                                       "layout(location = 1) in vec2 texcoord;\n"
-									   "uniform vec4 scale; // w, h, 0, 0\n"
-                                       "\n"
-                                       "out vec2 Texcoord;\n"
-                                       "\n"
-                                       "void main()\n"
-                                       "{\n "
-										"   float offsetX = 1 - 1/scale.x;\n"
-		                                "   float offsetY = 1 - 1/scale.y;\n"
-                                       "    Texcoord = texcoord;\n"
-                                       "    gl_Position = vec4((position.x + offsetX) * scale.y, (-position.y - offsetY) * scale.y, 0.0f, 1.0f) ;\n"
-                                       "}";
-
-void XGR_Screen::set_surface_size(int sizeX, int sizeY){
-	std::cout<<"XGR_Screen::set_surface_size: "<<sizeX<<" "<<sizeY<<std::endl;
-	SurfaceSizeX = sizeX;
-	SurfaceSizeY = sizeY;
+void XGR_Screen::set_is_scaled(bool isScaled) {
+	std::cout<<"XGR_Screen::set_is_scaled: "<<isScaled<<std::endl;
+	this->isScaled = isScaled;
 }
 
 int XGR_Screen::init(int x, int y,int flags_in)
@@ -263,7 +247,7 @@ int XGR_Screen::init(int x, int y,int flags_in)
 	int internalWidth = x;
 	int internalHeight = y;
 
-	set_surface_size(x, y);
+	set_is_scaled(true);
 	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
 
 	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
@@ -311,39 +295,22 @@ int XGR_Screen::init(int x, int y,int flags_in)
 	buffer = vgl::PixelUnpackBuffer::create(internalWidth * internalHeight, vgl::BufferUsage::StreamDraw);
 	buffer->unbind();
 
-	struct PlainTextureShaderVertex{
-		glm::vec2 pos;
-		glm::vec2 uv;
-	};
 
-	std::vector<PlainTextureShaderVertex> vertices = {
-//		   Position   , Texcoords
-			{{-1.0f,  -1.0f}, {0.0f, 0.0f}}, // Top-left
-			{{1.0f,  -1.0f}, {1.0f, 0.0f}}, // Top-right
-			{{1.0f, 1.0f}, {1.0f, 1.0f}}, // Bottom-right
-			{{-1.0f, 1.0f}, {0.0f, 1.0f}}  // Bottom-left
-	};
+	mainPipeline = vgl::Pipeline::create(
+			"shaders/main",
+			vgl::createQuad<vgl::Pos2Tex2Vertex>(),
+			{
+				{"t_Texture", texture},
+				{"t_Palette", palette}
+			});
 
-	std::vector<GLuint> elements = {
-			0, 1, 2,
-			3, 2, 0,
-	};
-
-
-	auto vertexArray = vgl::VertexArray<PlainTextureShaderVertex, GLuint>::create(vertices, elements);
-	vertexArray->addAttrib(0, 2, offsetof(PlainTextureShaderVertex, pos));
-	vertexArray->addAttrib(1, 2, offsetof(PlainTextureShaderVertex, uv));
-
-	auto textureShader = vgl::Shader::createFromPath("shaders/main.vert", "shaders/main.frag");
-	textureShader->bindUniformAttribs(data);
-
-	std::vector<vgl::TextureAttribute> textureAttibs {
-			vgl::TextureAttribute(textureShader->getAttribute("t_Texture"), texture),
-			vgl::TextureAttribute(textureShader->getAttribute("t_Palette"), palette)
-	};
-	texturePipeline = vgl::Pipeline::create(textureShader, vertexArray, textureAttibs);
-
-
+	bilinearMainPipeline = vgl::Pipeline::create(
+			"shaders/main_bilinear",
+			vgl::createQuad<vgl::Pos2Tex2Vertex>(),
+			{
+				{"t_Texture", texture},
+				{"t_Palette", palette}
+			});
 
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
 	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
@@ -358,22 +325,16 @@ int XGR_Screen::init(int x, int y,int flags_in)
 			HDBackgroundSurface->pixels
 			);
 
-	auto backgroundTextureShader = vgl::Shader::createFromPath("shaders/texture2d.vert", "shaders/texture2d.frag");
-	backgroundTextureShader->bindUniformAttribs(bgData);
-
-	std::vector<vgl::TextureAttribute> backgroundTextureAttribs {
-			vgl::TextureAttribute(backgroundTextureShader->getAttribute("t_Texture"), backgroundTexture),
-	};
-
-	auto backgroundTexVertexArray = vgl::VertexArray<PlainTextureShaderVertex, GLuint>::create(vertices, elements);
-	backgroundTexVertexArray->addAttrib(0, 2, offsetof(PlainTextureShaderVertex, pos));
-	backgroundTexVertexArray->addAttrib(1, 2, offsetof(PlainTextureShaderVertex, uv));
-
-	backgroundTexturePipeline = vgl::Pipeline::create(backgroundTextureShader, backgroundTexVertexArray, backgroundTextureAttribs);
+	backgroundTexturePipeline = vgl::Pipeline::create(
+			"shaders/main_background",
+			vgl::createQuad<vgl::Pos2Tex2Vertex>(),
+			{
+				{"t_Texture", backgroundTexture},
+			});
 
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
-	SDL_ShowCursor(0);
+	SDL_ShowCursor(1);
 
 	if (XGR_FULL_SCREEN) {
 		std::cout<<"SDL_SetWindowPosition"<<std::endl;
@@ -420,7 +381,7 @@ void XGR_Screen::set_fullscreen(bool fullscreen) {
 	if (fullscreen!=XGR_FULL_SCREEN) {
 		SDL_SetWindowFullscreen(sdlWindow, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 		if (!fullscreen) {
-			SDL_SetWindowSize(sdlWindow, 800, 600);
+			SDL_SetWindowSize(sdlWindow, texture->getDimensions().x, texture->getDimensions().y);
 			SDL_SetWindowPosition(sdlWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 			
 		} else {
@@ -964,18 +925,19 @@ void XGR_Screen::set_render_buffer(SDL_Surface *buf) {
 }
 
 void XGR_Screen::draw_bg(){
-	bgData.u_AddColor = {
+	backgroundTexturePipeline->useShader();
+	backgroundTexturePipeline->setUniform<glm::vec4>("u_AddColor", {
 			averageColorPalette.r,
 			averageColorPalette.g,
 			averageColorPalette.b,
 			255.0f
-	};
-	backgroundTexturePipeline->render(bgData);
+	});
+	backgroundTexturePipeline->render();
 }
 
 void XGR_Screen::flip()
 {
-	// std::cout<<"XGR_Screen::flip()"<<std::endl;
+	// std::cout<<"XGR_Screen::flip()"  <<std::endl;
 	if(flags & XGR_INIT){
 		XGR_MouseObj.GetFon();
 		XGR_MouseObj.PutFrame();
@@ -1006,10 +968,25 @@ void XGR_Screen::flip()
 				*buffer
 				);
 		buffer->unbind();
-		data.u_SurfaceSize = glm::vec4(SurfaceSizeX, SurfaceSizeY, 0, 0);
-		data.u_ScreenSize = glm::vec4(RealX, RealY, 0, 0);
 
-		texturePipeline->render(data);
+		std::shared_ptr<vgl::Pipeline> pipeline;
+		glm::vec2 scale;
+		float wFactor;
+
+		if(isScaled){
+			pipeline = bilinearMainPipeline;
+			scale = glm::vec2(800, 600) / glm::vec2(RealX, RealY);
+			wFactor = 4.0f/3.0f / ((float)RealX / RealY);
+		}else{
+			pipeline = mainPipeline;
+		}
+		pipeline->useShader();
+		pipeline->setUniform("u_Scale", scale);
+		pipeline->setUniform("u_wFactor", wFactor);
+		pipeline->setUniform("u_TextureSize", texture->getDimensions().toGlm());
+		pipeline->render();
+
+
 		SDL_GL_SwapWindow(sdlWindow);
 		XGR_MouseObj.PutFon();
 		//XGR_MouseObj.PutPromptFon();
@@ -2434,8 +2411,9 @@ void XGR_MouseFnc(SDL_Event* p)
 			return;
 		}
 		//std::cout<<"x:"<<p->motion.x<<" y:"<<p->motion.y<<std::endl;
-		x = p->motion.x;
-		y = p->motion.y;
+		// TODO: move 800,600 to XGR_Screen constants
+		x = p->motion.x * (XGR_Obj.isScaled ? 800 / (float)XGR_Obj.RealX : 1.0f);
+		y = p->motion.y * (XGR_Obj.isScaled ? 600 / (float)XGR_Obj.RealY : 1.0f);
 
 		x1 = XGR_MouseObj.PosX;
 		y1 = XGR_MouseObj.PosY;

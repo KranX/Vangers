@@ -76,11 +76,24 @@ namespace vgl {
 		static std::shared_ptr<Shader> createFromPath(const std::string &vertexShaderPath,
 		                                      const std::string &fragmentShaderPath);
 
+		template<typename T>
+		void setUniform(const std::string& name, const T& value){
+			auto attrId = getAttribute(name);
+			if(attrId != -1){
+				Uniform<T>::assign(attrId, value);
+			}
+
+		}
+
 		void render(
 				const UniformData& data,
 				const IVertexArray& vertexArray,
 				const std::vector<TextureAttribute>& textureAttributes);
-			
+
+		void render(
+				const IVertexArray& vertexArray,
+				const std::vector<TextureAttribute>& textureAttributes);
+
 		void free(){
 			glDeleteProgram(objectId);
 		}

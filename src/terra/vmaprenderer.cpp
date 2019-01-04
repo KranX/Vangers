@@ -15,6 +15,7 @@
 #include <hdf5_hl.h>
 #include "vmaprenderer.h"
 
+#include "vgl/vertexarray_ext.h"
 
 void VMapRenderer::init(const std::shared_ptr<vgl::Texture2DArray> &heightMapTexture,
                         const std::shared_ptr<vgl::Texture2DArray> &colorTexture,
@@ -145,46 +146,21 @@ RayCastProcess::RayCastProcess(float maxScale,
                               scale(1.0f), maxScale(maxScale) {
 	int heightMultiplier = colorTexture->getDimensions().z == 0 ? 1 : colorTexture->getDimensions().z;
 
-	float w = colorTexture->getDimensions().x;
-	float h = colorTexture->getDimensions().y * heightMultiplier;
-
 	float numLayers = colorTexture->getDimensions().z;
 	float width = colorTexture->getDimensions().x;
 	float height = colorTexture->getDimensions().y * numLayers;
 	textureScale = glm::vec4(width, height, scale, numLayers);
 
-	std::vector<Vertex> vertices = {
-			{{-w,  -h}, {-1.0f, -1.0f}}, // Top-left
-			{{2 * w,  -h}, {2.0f, -1.0f}}, // Top-right
-			{{2 * w, 2 * h},  {2.0f, 2.0f}}, // Bottom-right
-			{{-w, 2 * h},  {-1.0f, 2.0f}}  // Bottom-left
-	};
-
-	std::vector<GLuint> elements = {
-			0, 1, 2,
-			3, 2, 0,
-	};
-
-	auto vertexArray = vgl::VertexArray<Vertex, GLuint>::create(vertices, elements);
-	vertexArray->addAttrib(0, glm::vec2::length(), offsetof(Vertex, pos));
-	vertexArray->addAttrib(1, glm::vec2::length(), offsetof(Vertex, uv));
-
-	auto shader = vgl::Shader::createFromPath(
-			shadersPath+".vert",
-			shadersPath+".frag"
-	);
-	shader->bindUniformAttribs(data);
 
 	pipeline = vgl::Pipeline::create(
-			shader,
-			vertexArray,
+			shadersPath,
+			vgl::createQuad<vgl::Pos2Tex2Vertex>(),
 			{
-				{shader->getAttribute("t_Height"), heightMapTexture},
-				{shader->getAttribute("t_Color"), colorTexture},
-				{shader->getAttribute("t_Palette"), paletteTexture},
-				{shader->getAttribute("t_Meta"), metaTexture},
-			}
-			);
+				{"t_Height", heightMapTexture},
+				{"t_Color", colorTexture},
+				{"t_Palette", paletteTexture},
+				{"t_Meta", metaTexture},
+			});
 }
 
 void RayCastProcess::render(const vgl::Camera &camera) {
@@ -193,12 +169,13 @@ void RayCastProcess::render(const vgl::Camera &camera) {
 
 	scale = std::fminf(scale + 1, maxScale);
 	textureScale.z = scale;
-	data.u_ViewProj = mvp;
-	data.u_InvViewProj = invMvp;
-	data.u_CamPos = glm::vec4(camera.position, 0);
-	data.u_TextureScale = textureScale;
-	data.u_ScreenSize = glm::vec4(camera.viewport.x, camera.viewport.y, 0.0f, 0.0f);
-	pipeline->render(data);
+	pipeline->useShader();
+	pipeline->setUniform<glm::mat4>("u_ViewProj", mvp);
+	pipeline->setUniform<glm::mat4>("u_InvViewProj", invMvp);
+	pipeline->setUniform<glm::vec4>("u_CamPos", glm::vec4(camera.position, 0));
+	pipeline->setUniform<glm::vec4>("u_TextureScale", textureScale);
+	pipeline->setUniform<glm::vec4>("u_ScreenSize", glm::vec4(camera.viewport.x, camera.viewport.y, 0.0f, 0.0f));
+	pipeline->render();
 }
 
 
@@ -217,44 +194,23 @@ BilinearFilteringProcess::BilinearFilteringProcess(
 	float height = colorTexture->getDimensions().y * numLayers;
 	textureScale = glm::vec4(width, height, 0.0f, numLayers);
 
-	std::vector<Vertex> vertices = {
-		{{-w,  -h}, {2.0f, -1.0f}}, // Top-left
-		{{2 * w,  -h}, {-1.0f, -1.0f}}, // Top-right
-		{{2 * w, 2 * h},  {-1.0f, 2.0f}}, // Bottom-right
-		{{-w, 2 * h},  {2.0f, 2.0f}}  // Bottom-left
-	};
-
-	std::vector<GLuint> elements = {
-		0, 1, 2,
-		3, 2, 0,
-	};
-
-	auto vertexArray = vgl::VertexArray<Vertex, GLuint>::create(vertices, elements);
-	vertexArray->addAttrib(0, glm::vec2::length(), offsetof(Vertex, pos));
-	vertexArray->addAttrib(1, glm::vec2::length(), offsetof(Vertex, uv));
-
-	auto shader = vgl::Shader::createFromPath(
-			shadersPath+".vert",
-			shadersPath+".frag"
-			);
-	shader->bindUniformAttribs(data);
-
 	pipeline = vgl::Pipeline::create(
-			shader,
-			vertexArray,
+			shadersPath,
+			vgl::createQuad<vgl::Pos2Tex2Vertex>(),
+//			vertexArray,
 			{
-				{shader->getAttribute("t_Color"), colorTexture},
-				{shader->getAttribute("t_Palette"), paletteTexture},
-			}
-	);
+				{"t_Color", colorTexture},
+				{"t_Palette", paletteTexture},
+			});
 
 }
 
 void BilinearFilteringProcess::render(const vgl::Camera &camera) {
-	data.u_ViewProj = camera.mvp();
-	data.u_TextureScale = textureScale;
-	data.u_ScreenSize = glm::vec4(camera.viewport.x, camera.viewport.y, 0.0f, 0.0f);
-	pipeline->render(data);
+	pipeline->useShader();
+	pipeline->setUniform("u_ViewProj", camera.mvp());
+	pipeline->setUniform("u_TextureScale", textureScale);
+
+	pipeline->render();
 }
 
 void BilinearFilteringProcess::free() {

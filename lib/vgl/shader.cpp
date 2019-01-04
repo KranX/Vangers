@@ -49,3 +49,8 @@ void vgl::Shader::render(const vgl::UniformData &data, const vgl::IVertexArray &
 	vgl::checkErrorAndThrow("glDrawElements");
 	vertexArray.disable();
 }
+
+void vgl::Shader::render(const vgl::IVertexArray &vertexArray,
+                         const std::vector<TextureAttribute> &textureAttributes) {
+	render(UniformData{}, vertexArray, textureAttributes);
+}

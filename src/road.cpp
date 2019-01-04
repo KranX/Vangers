@@ -674,8 +674,8 @@ extern int activeWTRACK;
 
 void MainMenuRTO::Init(int id)
 {
-	XGR_Obj.set_surface_size(800, 600);
-
+	XGR_Obj.set_is_scaled(true);
+	
 	Dead = 0;
 //	activeWTRACK = 0;
 _MEM_STATISTIC_("BEFORE MAIN MENU INIT -> ");
@@ -929,7 +929,7 @@ _MEM_STATISTIC_("AFTER FIRST ESCAVE FINIT -> ");
 
 void LoadingRTO2::Init(int id)
 {
-	XGR_Obj.set_surface_size(XGR_Obj.RealX, XGR_Obj.RealY);
+	XGR_Obj.set_is_scaled(false);
 #ifdef ISCREEN
 	FinishFirstShopPrepare(aciLoadLog);
 	aciLoadLog = 0;
@@ -1087,47 +1087,56 @@ _MEM_STATISTIC_("AFTER FIRST ESCAVE FINIT -> ");
 
 void GameQuantRTO::Init(int id)
 {
-	XGR_Obj.set_surface_size(XGR_Obj.RealX, XGR_Obj.RealY);
+	XGR_Obj.set_is_scaled(false);
 	vMap -> lockHeap();
 _MEM_STATISTIC_("AFTER GAME QUANT INIT -> ");
 }
 
-int GameQuantRTO::Quant(void)
-{
+int GameQuantRTO::Quant(void) {
 	int ret = 0;
-	if(Pause <= 1 || NetworkON){
-		if(Pause) Pause++;
 
+	if (Pause <= 1 || NetworkON) {
+		if (Pause) {
+			Pause++;
+		}
+		curGMap->draw();
 		gameQuant();
 //		DBGCHECK
 		frame++;
-		if(++fps_frame == FPS_PERIOD) {
-			sprintf(fps_string,"FPS: %.1f",(double)FPS_PERIOD/(SDL_GetTicks() - (int)fps_start)*1000);
+		if (++fps_frame == FPS_PERIOD) {
+			sprintf(fps_string, "FPS: %.1f", (double) FPS_PERIOD / (SDL_GetTicks() - (int) fps_start) * 1000);
 #ifdef _DEBUG
 			network_analysis(network_analysis_buffer,0);
 #else
-			if(curGMap -> prmFlag & PRM_FPS && NetworkON)
+			if (curGMap->prmFlag & PRM_FPS && NetworkON)
 				short_network_analysis(network_analysis_buffer);
 #endif
 			fps_frame = 0;
 			fps_start = SDL_GetTicks();
 
 
-			}
-		if(Redraw){
-			XGR_Flush(0,0,XGR_MAXX,XGR_MAXY);
+		}
+		if (Redraw) {
+			XGR_Flush(0, 0, XGR_MAXX, XGR_MAXY);
 			Redraw = 0;
 			frame = 0;
 			_Timer_ = SDL_GetTicks();
 			fps_start = SDL_GetTicks();
-			}
-//		if(!PalIterLock && !palTr -> quant()) pal_iter();
-		if(!PalIterLock) PalCD.Quant();
-		if(vSoundOFF){ vSoundOFF = 0; EffectsOff(); }
-		if(vSoundON){ vSoundON = 0; EffectsOn(); }
 		}
-	else {
-		if(GameQuantReturnValue || acsQuant()){
+//		if(!PalIterLock && !palTr -> quant()) pal_iter();
+		if (!PalIterLock) {
+			PalCD.Quant();
+		}
+		if (vSoundOFF) {
+			vSoundOFF = 0;
+			EffectsOff();
+		}
+		if (vSoundON) {
+			vSoundON = 0;
+			EffectsOn();
+		}
+	} else {
+		if (GameQuantReturnValue || acsQuant()) {
 			Pause = 0;
 		}
 	}
@@ -1140,7 +1149,7 @@ int GameQuantRTO::Quant(void)
 
 void EscaveRTO::Init(int id)
 {
-	XGR_Obj.set_surface_size(800, 600);
+	XGR_Obj.set_is_scaled(true);
 #ifdef ISCREEN
 	uvsPrepareQuant();
 	aci_LocationQuantPrepare();
@@ -1896,23 +1905,8 @@ void calc_view_factors()
 
 void gameQuant(void)
 {
-	curGMap -> draw(1);
-	if(loadingStatus) LoadingMessage();
-	curGMap -> flush();
-}
-
-void iGameMap::flush()
-{
-	XGR_Flush(xc - xside,yc - yside,xsize,ysize);
-}
-
-void iGameMap::draw(int self)
-{
-	_debugTimerStorage.event_start("draw");
 	XGR_Obj.fill(255);
-	static XBuffer status;
-	static int blink,clcnt;
-	
+
 	if(!MuteLog && ((ConTimer.counter&7) == 0)) {
 		SoundQuant();
 	}
@@ -1920,152 +1914,23 @@ void iGameMap::draw(int self)
 	if(GeneralSystemSkip) {
 		actIntQuant();
 	}
-	
+
 	uvsQuant();
 
 	if(GeneralSystemSkip && !ChangeWorldSkipQuant){
+		// TODO: move this to road.cpp::gameQuant
 		if(curGMap) {
 			BackD.restore();
 			MLquant();
-			//try {
-				GameD.Quant();
-			/*} catch (...) {
-				std::cout<<"ERROR:Some GameD.Quant is error."<<std::endl;
-			}*/
-			
+			GameD.Quant();
+			curGMap->quant();
+			GameD.DrawQuant(); // 3D rendering
+			curGMap->draw_messages();
 		}
 
-//		if(DepthShow) {
-//			if(SkipShow) {
-//				//Наклон изображения
-//				vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
-//			} else {
-//				vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
-//			}
-//		} else {
-//			if(TurnAngle) {
-//				//Вращение
-//				vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
-//			} else {
-//				vMap -> scaling(TurnSecX,ViewX,ViewY,xc,yc,xside,yside);
-//			}
-//		}
-//        vMap->request(0, V_SIZE - 1, 0, 0);
-//		vMap -> turning(TurnSecX,-TurnAngle,ViewX,ViewY,xc,yc,xside,yside);
-//		vMap -> scaling_3D(A_g2s,ViewZ,focus,ViewX,ViewY,xc,yc,xside,yside,TurnAngle);
-
-//		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle * _slopeFactor,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
-		vMap -> SlopTurnSkip(TurnAngle,SlopeAngle,ViewZ,focus,ViewX,ViewY,xc,yc,xsize/2,ysize/2);
-//		vMap->scaling_3D(GTOR(SlopeAngle), A_g2s, ViewZ, focus, ViewX, ViewY, xc, yc, xside, yside, TurnAngle);
-
-//        char* vp = (char*)XGR_VIDEOBUF;
-//        for(int lineY = 0; lineY < XGR_MAXY; lineY++){
-//			memset(vp + lineY * XGR_MAXX, 255, XGR_MAXX/2);
-//        }
-
-
-
-		float turn = -GTOR(TurnAngle);
-		float slope = GTOR(SlopeAngle);
-
-		auto curRenderer = renderers[cur_renderer_index];
-		curRenderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
-
-		curRenderer->setDirty(ViewY);
-		_debugTimerStorage.event_start("updateColor");
-		curRenderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
-		_debugTimerStorage.event_end("updateColor");
-
-		_debugTimerStorage.event_start("render");
-		curRenderer->render(XGR_Obj.RealX, XGR_Obj.RealY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
-		_debugTimerStorage.event_end("render");
-
-		//Отрисовка 3д моделей
-		if(curGMap) {
-			GameD.DrawQuant();
-		}
-
-	/*
-		if(recorder_mode){
-			if(blink){
-				c_rectangle(xc + xside - 80 - 2,yc - yside + 60 - 2,8 + 6,16 + 4,224 + 15,224 + 15,OUTLINED);
-				sysfont.draw(xc + xside - 80,yc - yside + 60,(unsigned char*)(recorder_mode == RECORDER_RECORD ? "W" : "R"),224 + 15,-1);
-				}
-			if(CLOCK() - clcnt > 10){
-				blink = 1 - blink;
-				clcnt = CLOCK();
-				}
-			}
-	*/
-
-
-	if(!FirstDraw) {
-		//zmod chat onscreen
-		if (message_dispatcher.ListSize>0 && message_dispatcher.new_messages) {
-			XBuffer zChat;
-			int zColor = zCOLOR_WHITE;
-			int zCount = 0;
-			MessageElement* msg = message_dispatcher.last();
-   			while (msg && zCount<zCHAT_ROWLIMIT && msg->time+zCHAT_TIMELIMIT>SDL_GetTicks()) {
-				zCount++;
-				switch(msg->color) {
-					case 0:	zColor = zCOLOR_GREEN;	break;
-					case 1:	zColor = zCOLOR_ORANGE;	break;
-					case 2:	zColor = zCOLOR_BLUE;	break;
-					case 3:	zColor = zCOLOR_YELLOW;	break;
-					default:zColor = zCOLOR_WHITE;
-				}
-				if (msg->message[0]=='$' && msg->message[1]==':')
-					zColor = zCOLOR_RED;
-
-				zChat.init();
-				zChat < msg->message;
-				zchatfont.draw(
-					xc-xside+80,
-					yc-yside+20+(zCHAT_ROWLIMIT*zCHAT_ROWHEIGHT)-(zCount*zCHAT_ROWHEIGHT),
-					(unsigned char*)(zChat.GetBuf()),
-					zColor, 
-					zCOLOR_TRANSPARENT
-				);
-
-				if(msg == message_dispatcher.first()) break;
-				msg = (MessageElement*)msg->prev;
-  			}
-
-			message_dispatcher.new_messages = zCount;
-		}
-
-
-
-		switch(message_mode % 3){
-			case 0:
-				break;
-
-			case 1:
-				status.init();
-				if(ActD.Active){
-					status <= ActD.Active->R_curr.x < "," <= ActD.Active->R_curr.y < "," <= ActD.Active->R_curr.z < ";" <= ActD.Active->radius;
-					sysfont.draw(xc - xside + 3,yc - yside + 3,(unsigned char*)status.GetBuf(),224 + 15,-1);
-					sysfont.draw(xc + xside - 80,yc - yside + 3,(unsigned char*)fps_string,224 + 15,-1);
-					status.init();
-					status <= (ActD.UnitStorage[ACTION_VANGER].Max - ActD.UnitStorage[ACTION_VANGER].ObjectPointer);
-					sysfont.draw(UcutRight - 200,VcutDown - 70,(unsigned char*)status.GetBuf(),224 + 15,-1);
-					}
-				sysfont.drawtext(xc - xside + 3,yc - yside + 32,msg_buf.address(),255,-1);
-				break;
-
-			case 2:
-				if(!NetworkON)
-					message_mode = 0;
-				status.init();
-				status.SetDigits(8);
-				status < "Frame: "      <= frame < "\n";
-				status < "Time: " <= (double)GLOBAL_CLOCK()/256. < " sec\n";
-				sysfont.drawtext(xc + xside - 120,yc - yside + 32,status.address(),255,-1);
-				sysfont.drawtext(xc - xside + 3,yc - yside + 32,network_analysis_buffer.address(),255,-1);
-				break;
-			}
-		}
+		// 2D rendering
+		aScrDisp->redraw();
+		aScrDisp->flush();
 
 		msg_buf.init();
 
@@ -2074,54 +1939,158 @@ void iGameMap::draw(int self)
 		}
 
 		FirstDraw = 0;
-//2D Rendring in game.
-#ifdef ACTINT
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
-		//XGR_Obj.fill(2);
-		if(GeneralSystemSkip) {
-			aScrDisp->redraw();
-		}
-		aScrDisp->flush();
-		//aScrDisp->pal_flush();
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
-#endif
-	};
-	_debugTimerStorage.event_end("draw");
-	_debugPerfCounterStorage.add(_debugTimerStorage.next());
 
+	}
+
+	if (loadingStatus) {
+		LoadingMessage();
+	}
+}
+
+
+void iGameMap::draw_messages(){
+	XBuffer status;
+	if (!FirstDraw) {
+		//zmod chat onscreen
+		if (message_dispatcher.ListSize > 0 && message_dispatcher.new_messages) {
+			XBuffer zChat;
+			int zColor = zCOLOR_WHITE;
+			int zCount = 0;
+			MessageElement *msg = message_dispatcher.last();
+			while (msg && zCount < zCHAT_ROWLIMIT && msg->time + zCHAT_TIMELIMIT > SDL_GetTicks()) {
+				zCount++;
+				switch (msg->color) {
+					case 0:
+						zColor = zCOLOR_GREEN;
+						break;
+					case 1:
+						zColor = zCOLOR_ORANGE;
+						break;
+					case 2:
+						zColor = zCOLOR_BLUE;
+						break;
+					case 3:
+						zColor = zCOLOR_YELLOW;
+						break;
+					default:
+						zColor = zCOLOR_WHITE;
+				}
+				if (msg->message[0] == '$' && msg->message[1] == ':')
+					zColor = zCOLOR_RED;
+
+				zChat.init();
+				zChat < msg->message;
+				zchatfont.draw(
+						xc - xside + 80,
+						yc - yside + 20 + (zCHAT_ROWLIMIT * zCHAT_ROWHEIGHT) - (zCount * zCHAT_ROWHEIGHT),
+						(unsigned char *) (zChat.GetBuf()),
+						zColor,
+						zCOLOR_TRANSPARENT
+				);
+
+				if (msg == message_dispatcher.first()) break;
+				msg = (MessageElement *) msg->prev;
+			}
+
+			message_dispatcher.new_messages = zCount;
+		}
+
+
+		switch (message_mode % 3) {
+			case 0:
+				break;
+
+			case 1:
+				status.init();
+				if (ActD.Active) {
+					status <= ActD.Active->R_curr.x < "," <= ActD.Active->R_curr.y < "," <= ActD.Active->R_curr.z <
+					";" <= ActD.Active->radius;
+					sysfont.draw(xc - xside + 3, yc - yside + 3, (unsigned char *) status.GetBuf(), 224 + 15, -1);
+					sysfont.draw(xc + xside - 80, yc - yside + 3, (unsigned char *) fps_string, 224 + 15, -1);
+					status.init();
+					status <= (ActD.UnitStorage[ACTION_VANGER].Max - ActD.UnitStorage[ACTION_VANGER].ObjectPointer);
+					sysfont.draw(UcutRight - 200, VcutDown - 70, (unsigned char *) status.GetBuf(), 224 + 15, -1);
+				}
+				sysfont.drawtext(xc - xside + 3, yc - yside + 32, msg_buf.address(), 255, -1);
+				break;
+
+			case 2:
+				if (!NetworkON)
+					message_mode = 0;
+				status.init();
+				status.SetDigits(8);
+				status < "Frame: " <= frame < "\n";
+				status < "Time: " <= (double) GLOBAL_CLOCK() / 256. < " sec\n";
+				sysfont.drawtext(xc + xside - 120, yc - yside + 32, status.address(), 255, -1);
+				sysfont.drawtext(xc - xside + 3, yc - yside + 32, network_analysis_buffer.address(), 255, -1);
+				break;
+		}
+	}
 	// All Debug Messages should be placed here
-	if(prmFlag & PRM_FPS) {
-		sysfont.draw(xc - xside + 150,yc - yside + 80,(unsigned char*)fps_string,224 + 15,-1);
+	if (prmFlag & PRM_FPS) {
+		sysfont.draw(xc - xside + 150, yc - yside + 80, (unsigned char *) fps_string, 224 + 15, -1);
 		char msg[256];
 
 		sprintf(msg, "View(X, Y, Z): (%d, %d, %d)", ViewX, ViewY, ViewZ);
-		sysfont.draw(xc - xside + 150,yc - yside + 96,msg,224 + 15,-1);
+		sysfont.draw(xc - xside + 150, yc - yside + 96, msg, 224 + 15, -1);
 
 		sprintf(msg, "Angle(Turn, Slope): (%d, %d)", TurnAngle, SlopeAngle);
-		sysfont.draw(xc - xside + 150,yc - yside + 112,msg,224 + 15,-1);
+		sysfont.draw(xc - xside + 150, yc - yside + 112, msg, 224 + 15, -1);
 
-		auto* vanger = ActD.Active;
-		if(vanger != nullptr){
-      sprintf(msg, "van.R(%f, %f, %f)", vanger->R.x, vanger->R.y, vanger->R.z);
-      sysfont.draw(xc - xside + 150,yc - yside + 40,msg, 224 + 15,-1);
+		auto *vanger = ActD.Active;
+		if (vanger != nullptr) {
+			sprintf(msg, "van.R(%f, %f, %f)", vanger->R.x, vanger->R.y, vanger->R.z);
+			sysfont.draw(xc - xside + 150, yc - yside + 40, msg, 224 + 15, -1);
 		}
 
 		_debugPerfWidget.draw_storage(_debugPerfCounterStorage, xc - xside + 150, yc - yside + 196);
 
 		int i = 0;
-		for(auto const& kv: _debugPerfWidget.get_colors()){
+		for (auto const &kv: _debugPerfWidget.get_colors()) {
 			sprintf(msg, "* %s", kv.first.c_str());
 			sysfont.draw(xc - xside + 50, yc - yside + 160 + i * 16, msg, kv.second, -1);
 			i++;
 		}
-		if(NetworkON)
-			sysfont.drawtext(xc - xside + 3,yc - yside + 32,network_analysis_buffer.address(),255,-1);
+		if (NetworkON)
+			sysfont.drawtext(xc - xside + 3, yc - yside + 32, network_analysis_buffer.address(), 255, -1);
 #ifdef SICHER_DEBUG
 		status.init();
 				status < "Speed_correction_factor: " <= speed_correction_factor < "\n";
 				sysfont.drawtext(xc - xside + 3,yc + yside - 60,status.address(),255,-1);
 #endif
 	}
+
+}
+void iGameMap::flush()
+{
+	XGR_Flush(xc - xside,yc - yside,xsize,ysize);
+}
+
+void iGameMap::quant(){
+	auto curRenderer = renderers[cur_renderer_index];
+	curRenderer->setPalette(XGR_Obj.XGR_Palette, XGR_Obj.XGR32_ScreenSurface->format);
+
+	curRenderer->setDirty(ViewY);
+	_debugTimerStorage.event_start("updateColor");
+	curRenderer->updateColor(vMap->lineTcolor, vMap->upLine, vMap->downLine);
+	_debugTimerStorage.event_end("updateColor");
+}
+
+void iGameMap::draw()
+{
+	_debugTimerStorage.event_start("draw");
+//	XGR_Obj.fill(255);
+	float turn = -GTOR(TurnAngle);
+	float slope = GTOR(SlopeAngle);
+
+	auto curRenderer = renderers[cur_renderer_index];
+	_debugTimerStorage.event_start("render");
+	curRenderer->render(XGR_Obj.RealX, XGR_Obj.RealY, ViewX, ViewY, ViewZ, turn, slope, focus_flt);
+	_debugTimerStorage.event_end("render");
+	_debugTimerStorage.event_end("draw");
+	_debugPerfCounterStorage.add(_debugTimerStorage.next());
+
+
 }
 
 void iGameMap::change_renderer() {
@@ -2271,7 +2240,7 @@ void PaletteTransform::quant(void)
 
 void ShowImageRTO::Init(int id)
 {
-	XGR_Obj.set_surface_size(800, 600);
+	XGR_Obj.set_is_scaled(true);
 #ifdef SHOW_IMAGES
 	int i;
 	short sx,sy;

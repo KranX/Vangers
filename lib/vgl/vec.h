@@ -6,6 +6,7 @@
 #define VGL_VEC_H
 
 #include <ostream>
+#include <glm/glm.hpp>
 
 namespace vgl {
 	struct iVec1 {
@@ -25,6 +26,8 @@ namespace vgl {
 		static const int len = 2;
 
 		static const iVec2 zero;
+
+		glm::vec2 toGlm() const;
 	};
 
 	std::ostream &operator<<(std::ostream &os, const iVec2 &vec2);
@@ -36,6 +39,8 @@ namespace vgl {
 		static const int len = 3;
 
 		static const iVec3 zero;
+
+		glm::vec3 toGlm() const;
 	};
 
 	std::ostream &operator<<(std::ostream &os, const iVec3 &vec3);

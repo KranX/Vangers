@@ -8,6 +8,14 @@ const vgl::iVec1 vgl::iVec1::zero = {0};
 
 const vgl::iVec2 vgl::iVec2::zero = {0,0};
 
+
+glm::vec2 vgl::iVec2::toGlm() const {
+	return {x, y};
+}
+
+glm::vec3 vgl::iVec3::toGlm() const {
+	return {x, y, z};
+}
 const vgl::iVec3 vgl::iVec3::zero = {0, 0, 0};
 
 

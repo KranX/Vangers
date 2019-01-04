@@ -52,16 +52,16 @@ namespace vgl {
 
 	template <class T>
 	class Uniform : public UniformBase {
-	private:
-		static void _assign(GLint attrId, const T& data){
-			std::cerr<<"Not implemented"<<std::endl;
-		}
 	public:
 		Uniform(std::string name, UniformData* ownerData):UniformBase(name, ownerData){}
 		T data;
 
+		static void assign(GLint attrId, const T &data){
+			std::cerr<<"Not implemented"<<std::endl;
+		}
+
 		void assignData() override{
-			_assign(attrId, data);
+			assign(attrId, data);
 		}
 
 		Uniform& operator=(const T& data){

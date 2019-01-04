@@ -2,10 +2,10 @@
 
 uniform mat4 u_ViewProj;
 
-//const vec4 u_ScreenSize = vec4(1280.0, 700.0, 0.0, 0.0);		// XY = size
+//const vec4 u_ScreenSize = vec4(1280.0, 720.0, 0.0, 0.0);		// XY = size
 //const vec4 u_TextureScale = vec4(2048.0, 16384.0, 96.0, 1.0);	// XY = size, Z = height scale, w = number of layers
 
-uniform vec4 u_ScreenSize; 	// XY = size
+//uniform vec4 u_ScreenSize; 	// XY = size
 uniform vec4 u_TextureScale;	// XY = size, Z = UNUSED, w = number of layers
 
 uniform usampler2DArray t_Color;

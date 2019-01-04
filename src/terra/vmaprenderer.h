@@ -31,20 +31,15 @@ public:
 };
 
 class RayCastProcess : public RenderingProcess {
-	struct Data : public vgl::UniformData {
-		UNIFORM(glm::mat4, u_ViewProj)
-		UNIFORM(glm::mat4, u_InvViewProj)
-		UNIFORM(glm::vec4, u_CamPos)
-		UNIFORM(glm::vec4, u_TextureScale)
-		UNIFORM(glm::vec4, u_ScreenSize)
-	};
+//	struct Data : public vgl::UniformData {
+//		UNIFORM(glm::mat4, u_ViewProj)
+//		UNIFORM(glm::mat4, u_InvViewProj)
+//		UNIFORM(glm::vec4, u_CamPos)
+//		UNIFORM(glm::vec4, u_TextureScale)
+//		UNIFORM(glm::vec4, u_ScreenSize)
+//	};
 
-	struct Vertex{
-		glm::vec2 pos;
-		glm::vec2 uv;
-	};
-
-	Data data;
+//	Data data;
 	std::shared_ptr<vgl::Pipeline> pipeline;
 	glm::vec4 textureScale;
 
@@ -66,21 +61,16 @@ public:
 
 
 class BilinearFilteringProcess : public RenderingProcess{
-	struct Vertex{
-		glm::vec2 pos;
-		glm::vec2 uv;
-	};
-
-	struct Data : public vgl::UniformData {
-		UNIFORM(glm::mat4, u_ViewProj)
-		UNIFORM(glm::vec4, u_TextureScale)
-		UNIFORM(glm::vec4, u_ScreenSize)
-	};
+//	struct Data : public vgl::UniformData {
+//		UNIFORM(glm::mat4, u_ViewProj)
+//		UNIFORM(glm::vec4, u_TextureScale)
+//		UNIFORM(glm::vec4, u_ScreenSize)
+//	};
 
 
 	std::shared_ptr<vgl::Pipeline> pipeline;
 	glm::vec4 textureScale;
-	Data data;
+//	Data data;
 
 public:
 	BilinearFilteringProcess(
