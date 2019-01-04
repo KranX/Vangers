@@ -978,7 +978,8 @@ _MEM_STATISTIC_("AFTER curGMap  -> ");
 	uvsAddStationaryObjs();
 
 	uvsRestoreVanger();
-	
+
+	curGMap->reset_renderers();
 #ifndef NEW_TNT
 	RestoreBarell();
 #endif
@@ -1825,8 +1826,6 @@ void iGameMap::reset(void)
 		GeneralLoadReleaseFlag = 1;
 	}
 	camera_reset();
-
-	reset_renderers();
 }
 
 void calc_view_factors()
@@ -2082,7 +2081,6 @@ void iGameMap::quant(){
 void iGameMap::draw()
 {
 	_debugTimerStorage.event_start("draw");
-//	XGR_Obj.fill(255);
 	float turn = -GTOR(TurnAngle);
 	float slope = GTOR(SlopeAngle);
 
@@ -2101,8 +2099,6 @@ void iGameMap::change_renderer() {
 }
 
 void iGameMap::reset_renderers() {
-	vMap->accept(0, V_SIZE - 1);
-
 	for(auto const& renderer: renderers){
 		renderer->deinit();
 	}
