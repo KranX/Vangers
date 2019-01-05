@@ -7275,7 +7275,6 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 //	if(x >= ix && x < isx && y >= iy && y < isy){
 	id = aciGetScreenItem(x,y);
 	if(id != -1){
-		printf("MouseEvent: got screen item, id: %d\n", id);
 		p = get_item(id);
 		if(iP){
 			if(p){
@@ -7295,7 +7294,6 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 			}
 		}
 	} else if(aciGetScreenMechos(x,y)){
-		printf("MouseEvent: got screen mechos\n");
 		if(iP -> items -> Size){
 			iP -> free_list();
 			iP -> set_redraw();
@@ -7305,9 +7303,7 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 		}
 
 	} else if(curMatrix && curMatrix -> check_xy(iMouseX,iMouseY)){
-		printf("MouseEvent: inside inv matrix\n");
 		if(flags & AS_INV_MOVE_ITEM){
-			printf("MouseEvent: inside inv matrix. AS_INV_MOVE_ITEM\n");
 			x = iMouseX - curMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
 			y = iMouseY - curMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
 
@@ -7325,12 +7321,9 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 			if(y & 0x01) x -= (aCellSize >> 1);
 			x /= aCellSize;
 		}
-		printf("MouseEvent(x: %d, y: %d)\n", x, y);
 		if(x >= 0 && x < curMatrix -> MatrixSizeX && y >= 0 && y < curMatrix -> MatrixSizeY){
 			if(flags & AS_INV_MOVE_ITEM){
-				printf("MouseEvent AS_INV_MOVE_ITEM\n");
 				if(curMatrix -> check_fit(x,y,curItem)){
-					printf("Item fit\n");
 					curMatrix -> put_item_shadow(x,y,curItem);
 					curMatrix -> flags |= IM_REDRAW_SHADOW;
 				}
@@ -7348,11 +7341,9 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 				}
 			}
 			else {
-				printf("MouseEvent not AS_INV_MOVE_ITEM\n");
 				if(iP){
 					p = curMatrix -> get_item(x,y);
 					if(p){
-						printf("MouseEvent got matrix item, id: %d\n", p->ID);
 						if(iP -> items -> Size){
 							iP -> free_list();
 							iP -> set_redraw();
@@ -7373,7 +7364,6 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 					}
 					else {
 						if(!(flags & AS_INV_MOVE_ITEM)){
-							printf("MouseEvent not matrix item, cleaning up\n");
 							if(iP -> items -> Size){
 								iP -> free_list();
 								iP -> set_redraw();
@@ -7383,11 +7373,9 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 				}
 			}
 		} else {
-			printf("MouseEvent: not inside inv matrix\n");
 			if(!(flags & AS_INV_MOVE_ITEM)){
 				if(iP){
 					if(iP -> items -> Size){
-						printf("MouseEvent: cleaning up\n");
 						iP -> free_list();
 						iP -> set_redraw();
 					}
