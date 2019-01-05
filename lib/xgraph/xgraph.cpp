@@ -334,7 +334,7 @@ int XGR_Screen::init(int x, int y,int flags_in)
 
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
-	SDL_ShowCursor(1);
+	SDL_ShowCursor(0);
 
 	if (XGR_FULL_SCREEN) {
 		std::cout<<"SDL_SetWindowPosition"<<std::endl;
