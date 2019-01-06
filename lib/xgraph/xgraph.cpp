@@ -5,6 +5,9 @@
 #include "xgraph.h"
 #include <assert.h>
 
+// TODO: fix VGL include paths
+#include "../vgl/vertexarray_ext.h"
+
 #ifdef __APPLE__
 #include "ApplicationServices/ApplicationServices.h"
 #endif

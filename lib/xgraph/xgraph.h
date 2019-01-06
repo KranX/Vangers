@@ -11,11 +11,13 @@
 #ifndef __XGRAPH_H__
 #define __XGRAPH_H__
 
-#include "xglobal.h"
 #include <GL/glew.h>
+
+#include "xglobal.h"
+
+// TODO: fix VGL include paths
 #include "../vgl/pipeline.h"
 #include "../vgl/texture_ext.h"
-#include "../vgl/vertexarray_ext.h"
 
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
