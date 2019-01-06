@@ -9,7 +9,7 @@
 #include <vector>
 #include <memory>
 
-#include "uniform.h"
+#include "uniform_ext.h"
 #include "util.h"
 #include "base.h"
 #include "vertex_array.h"
