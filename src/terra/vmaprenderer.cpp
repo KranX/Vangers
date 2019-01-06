@@ -12,7 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <hdf5_hl.h>
+// #include <hdf5_hl.h>
 #include "vmaprenderer.h"
 
 #include "vgl/vertexarray_ext.h"
