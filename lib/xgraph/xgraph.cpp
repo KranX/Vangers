@@ -929,12 +929,12 @@ void XGR_Screen::set_render_buffer(SDL_Surface *buf) {
 
 void XGR_Screen::draw_bg(){
 	backgroundTexturePipeline->useShader();
-	backgroundTexturePipeline->setUniform<glm::vec4>("u_AddColor", {
+	backgroundTexturePipeline->setUniform("u_AddColor", glm::vec4(
 			averageColorPalette.r,
 			averageColorPalette.g,
 			averageColorPalette.b,
 			255.0f
-	});
+	));
 	backgroundTexturePipeline->render();
 }
 
