@@ -12,7 +12,7 @@
 #include "uniform_ext.h"
 #include "util.h"
 #include "base.h"
-#include "vertex_array.h"
+#include "ivertexarray.h"
 #include "itexture.h"
 
 namespace vgl {
