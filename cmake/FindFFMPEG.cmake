@@ -7,9 +7,9 @@
 #
 
 FIND_PATH(AVUTIL_INCLUDE_DIR
-	NAMES
+		NAMES
 		avutil.h
-	PATHS
+		PATHS
 		/usr/include
 		/usr/include/x86_64-linux-gnu
 		/usr/local/include
@@ -21,16 +21,15 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 		/usr/include/libavutil
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavutil
-        /mingw32/include
-	PATH_SUFFIXES
+		PATH_SUFFIXES
 		libavutil
 		ffmpeg
-)
+		)
 
 FIND_PATH(AVCODEC_INCLUDE_DIR
-	NAMES
+		NAMES
 		avcodec.h
-	PATHS
+		PATHS
 		/usr/include
 		/usr/include/x86_64-linux-gnu
 		/usr/local/include
@@ -42,17 +41,15 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
 		/usr/include/libavcodec
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavcodec
-	/usr/include/libavcodec
-		/usr/include/ffmpeg
-		/usr/include/ffmpeg/libavcodecPATH_SUFFIXES
+		PATH_SUFFIXES
 		libavcodec
 		ffmpeg
-)
+		)
 
 FIND_PATH(AVFORMAT_INCLUDE_DIR
-	NAMES
+		NAMES
 		avformat.h
-	PATHS
+		PATHS
 		/usr/include
 		/usr/include/x86_64-linux-gnu
 		/usr/local/include
@@ -64,19 +61,17 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 		/usr/include/libavformat
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavformat
-	/usr/include/libavformat
-		/usr/include/ffmpeg
-		/usr/include/ffmpeg/libavformatPATH_SUFFIXES
+		PATH_SUFFIXES
 		libavformat
 		ffmpeg
-)
+		)
 
 FIND_LIBRARY(AVUTIL_LIBRARY
-	NAMES
+		NAMES
 		avutil
 		avutil-55
 		avutil-56
-	PATHS
+		PATHS
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/ffmpeg
@@ -87,16 +82,15 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 		/mingw/lib
 		/local/bin
 		/mingw/bin
-        /mingw32/bin
 		/bin
-)
+		)
 
 FIND_LIBRARY(AVCODEC_LIBRARY
-	NAMES
+		NAMES
 		avcodec
 		avcodec-57
 		avcodec-58
-	PATHS
+		PATHS
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/local/lib
@@ -107,14 +101,14 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 		/local/bin
 		/mingw/bin
 		/bin
-)
+		)
 
 FIND_LIBRARY(AVFORMAT_LIBRARY
-	NAMES
+		NAMES
 		avformat
 		avformat-57
 		avformat-58
-	PATHS
+		PATHS
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/ffmpeg
@@ -124,38 +118,37 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		/local/lib
 		/local/bin
 		/mingw/bin
-        /mingw32/bin
 		/mingw/lib
 		/bin
-)
+		)
 
 SET(FFMPEG_INCLUDE_DIRS
-	#${AVUTIL_INCLUDE_DIR}
-	${AVCODEC_INCLUDE_DIR}
-	${AVFORMAT_INCLUDE_DIR}
-)
+		#${AVUTIL_INCLUDE_DIR}
+		${AVCODEC_INCLUDE_DIR}
+		${AVFORMAT_INCLUDE_DIR}
+		)
 
 SET(FFMPEG_LIBRARIES)
 
 IF(AVUTIL_LIBRARY)
 	SET(FFMPEG_LIBRARIES
-		${FFMPEG_LIBRARIES}
-		${AVUTIL_LIBRARY}
-	)
+			${FFMPEG_LIBRARIES}
+			${AVUTIL_LIBRARY}
+			)
 ENDIF(AVUTIL_LIBRARY)
 
 IF(AVCODEC_LIBRARY)
 	SET(FFMPEG_LIBRARIES
-		${FFMPEG_LIBRARIES}
-		${AVCODEC_LIBRARY}
-	)
+			${FFMPEG_LIBRARIES}
+			${AVCODEC_LIBRARY}
+			)
 ENDIF(AVCODEC_LIBRARY)
 
 IF(AVFORMAT_LIBRARY)
 	SET(FFMPEG_LIBRARIES
-		${FFMPEG_LIBRARIES}
-		${AVFORMAT_LIBRARY}
-	)
+			${FFMPEG_LIBRARIES}
+			${AVFORMAT_LIBRARY}
+			)
 ENDIF(AVFORMAT_LIBRARY)
 
 IF(FFMPEG_INCLUDE_DIRS AND FFMPEG_LIBRARIES)
