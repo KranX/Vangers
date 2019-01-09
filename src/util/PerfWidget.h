@@ -6,7 +6,7 @@
 #define VANGERS_PERFWIDGET_H
 
 
-#include "../../lib/xgraph/global.h"
+#include <xgraph.h>
 #include "TimerStorage.h"
 
 namespace util{
