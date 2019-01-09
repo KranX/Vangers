@@ -1,3 +1,10 @@
+include_directories(
+	"${PROJECT_SOURCE_DIR}/lib/xtool"
+	"${PROJECT_SOURCE_DIR}/lib/xgraph"
+	"${PROJECT_SOURCE_DIR}/lib/xsound"
+	"${PROJECT_SOURCE_DIR}/lib/vgl"
+)
+
 SET(vangers_SRCS
 	3d/3d_math.cpp
 	3d/3dgraph.cpp
@@ -61,12 +68,27 @@ SET(vangers_SRCS
 	uvs/univang.cpp
 	xjoystick.cpp
 	xsocket.cpp
-	zmod_client.cpp 
+	zmod_client.cpp
+	cli_options.cpp
+	cli_options.h
+	util/ring_buffer.h
+	util/Timer.cpp
+	util/Timer.h
+	util/TimerStorage.cpp
+	util/TimerStorage.h
+	util/PerfWidget.cpp
+	util/PerfWidget.h
+	terra/vmaprenderer.cpp
+	terra/vmaprenderer.h
 	${WINDOWS_RES}
-		cli_options.cpp cli_options.h util/ring_buffer.h util/Timer.cpp util/Timer.h util/TimerStorage.cpp util/TimerStorage.h util/PerfWidget.cpp util/PerfWidget.h)
+)
 
-ADD_EXECUTABLE(vangers ${vangers_SRCS})
+SET(VANGERS_ICON vangers.icns)
+SET(VANGERS_ICON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../osx/Resource/${VANGERS_ICON})
 
+#ADD_EXECUTABLE(vangers MACOSX_BUNDLE ${vangers_SRCS} ${VANGERS_ICON_PATH})
+ADD_EXECUTABLE(vangers ${vangers_SRCS} ${VANGERS_ICON_PATH})
+TARGET_INCLUDE_DIRECTORIES(vangers PUBLIC ${PROJECT_SOURCE_DIR}/lib/)
 IF(WIN32)
 	SET(WIN_LIB 
 		wsock32
@@ -74,6 +96,16 @@ IF(WIN32)
 		#-Wl,-subsystem,windows
 	)
 ENDIF(WIN32)
+
+#IF(APPLE)
+#	SET(MACOSX_BUNDLE_ICON_FILE ${VANGERS_ICON})
+#	SET_SOURCE_FILES_PROPERTIES(${VANGERS_ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+#	ADD_CUSTOM_COMMAND(TARGET vangers POST_BUILD
+#			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../osx/third_party_libs_tool/third_party_libs_tool "$<TARGET_FILE_DIR:vangers>/../..")
+#	ADD_CUSTOM_COMMAND(TARGET vangers POST_BUILD
+#			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../osx/wrap_with_shell.sh "$<TARGET_FILE_DIR:vangers>/vangers" "${CMAKE_CURRENT_SOURCE_DIR}/../osx/MacOS/vangers")
+#
+#ENDIF(APPLE)
 
 TARGET_LINK_LIBRARIES(vangers
 	${SDL2_LIBRARY}
@@ -86,8 +118,11 @@ TARGET_LINK_LIBRARIES(vangers
 	${FFMPEG_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	${OPENGL_LIBRARIES}
+		${GLEW_LIBRARIES}
+		${GLM_LIBRARIES}
 	${WIN_LIB}
 	xtool
 	xgraph
 	xsound
+	vgl
 )

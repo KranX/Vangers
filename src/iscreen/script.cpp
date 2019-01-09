@@ -927,7 +927,7 @@ void ScriptFile::load_bscript(const char* fname)
 			memcpy(p1, p + 2 + 4,(unsigned)(sz - 2 - 4));
 		}
 		delete binConv;
-		delete buf;
+		delete[] buf;
 		binConv = new XBuffer(p1,out_sz);
 		binConvPtr = p1;
 	}

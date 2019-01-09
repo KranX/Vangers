@@ -8,6 +8,7 @@
 #include "../iscreen/iscreen.h"
 #include "item_api.h"
 #include "actint.h"
+#include "aci_scr.h"
 #include "aci_str.h"
 #include "aci_evnt.h"
 #include "a_consts.h"
@@ -149,7 +150,7 @@ void aciChangeWorld(int id);
 void iChatInit(void);
 void iChatQuant(int flush = 0);
 void iChatFinit(void);
-void iChatKeyQuant(int k);
+void iChatKeyQuant(SDL_Event *k);
 void iChatMouseQuant(int x,int y,int bt);
 
 void LoadResourceSOUND(const char *path_name, int surface);
@@ -953,7 +954,7 @@ void aciLocationInfo::init_map_data(void)
 			put_attr_fon(x,y,sx,sy,data + sx * sy);
 //			  iregRender(x,y,x + sx,y + sy);
 
-			delete data;
+			delete[] data;
 		}
 		p = p -> prev;
 	}
@@ -3859,13 +3860,13 @@ void actIntDispatcher::init(void) {
 	aciCurColorScheme = aciColorSchemes[SCH_DEFAULT];
 	if (iP) {
 		iP->init();
-		iP->layout(XGR_MAXX, XGR_MAXY);
+		iP->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 	}
 
 	ip = (InfoPanel *) infoPanels->last;
 	while (ip) {
 		ip->init();
-		ip->layout(XGR_MAXX, XGR_MAXY);
+		ip->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		ip = (InfoPanel *) ip->prev;
 	}
 
@@ -3888,26 +3889,26 @@ void actIntDispatcher::init(void) {
 	cp = (CounterPanel *) intCounters->last;
 	while (cp) {
 		cp->init();
-		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		cp = (CounterPanel *) cp->prev;
 	}
 	cp = (CounterPanel *) infCounters->last;
 	while (cp) {
 		cp->init();
-		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		cp = (CounterPanel *) cp->prev;
 	}
 	cp = (CounterPanel *) invCounters->last;
 	while (cp) {
 		cp->init();
-		cp->layout(XGR_MAXX, XGR_MAXY);
+		cp->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		cp = (CounterPanel *) cp->prev;
 	}
 
 	p = (invMatrix *) matrixList->last;
 	while (p) {
 		p->init();
-		p->layout(XGR_MAXX, XGR_MAXY);
+		p->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		p = (invMatrix *) p->prev;
 	}
 
@@ -3942,27 +3943,27 @@ void actIntDispatcher::init(void) {
 	it = (fncMenu *) menuList->last;
 	while (it) {
 		it->init();
-		it->layout(XGR_MAXX, XGR_MAXY);
+		it->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		it = (fncMenu *) it->prev;
 	}
 
 	b = (aButton *) intButtons->last;
 	while (b) {
 		b->init();
-		b->layout(XGR_MAXX, XGR_MAXY);
+		b->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		b = (aButton *) b->prev;
 	}
 
 	b = (aButton *) invButtons->last;
 	while (b) {
 		b->init();
-		b->layout(XGR_MAXX, XGR_MAXY);
+		b->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		b = (aButton *) b->prev;
 	}
 	b = (aButton *) infButtons->last;
 	while (b) {
 		b->init();
-		b->layout(XGR_MAXX, XGR_MAXY);
+		b->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 		b = (aButton *) b->prev;
 	}
 	init_menus();
@@ -3986,7 +3987,7 @@ void actIntDispatcher::init(void) {
 	aciPrevJumpCount = -1;
 
 	for (auto const &screen: screens) {
-		screen.second->layout(XGR_MAXX, XGR_MAXY);
+		screen.second->layout(XGR_Obj.RealX, XGR_Obj.RealY);
 	}
 }
 
@@ -4884,7 +4885,7 @@ void actIntDispatcher::KeyQuant(void)
 	}
 
 	while(KeyBuf -> size){
-		k = KeyBuf -> get();
+		k = sdlEventToCode(KeyBuf->get());
 		if(flags & AS_TEXT_MODE){
 			if(iCheckKeyID(iKEY_SKIP_TEXT,k)){
 				if(!ScrTextData -> NextPage()){
@@ -7274,7 +7275,6 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 //	if(x >= ix && x < isx && y >= iy && y < isy){
 	id = aciGetScreenItem(x,y);
 	if(id != -1){
-		printf("MouseEvent: got screen item, id: %d\n", id);
 		p = get_item(id);
 		if(iP){
 			if(p){
@@ -7294,7 +7294,6 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 			}
 		}
 	} else if(aciGetScreenMechos(x,y)){
-		printf("MouseEvent: got screen mechos\n");
 		if(iP -> items -> Size){
 			iP -> free_list();
 			iP -> set_redraw();
@@ -7304,9 +7303,7 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 		}
 
 	} else if(curMatrix && curMatrix -> check_xy(iMouseX,iMouseY)){
-		printf("MouseEvent: inside inv matrix\n");
 		if(flags & AS_INV_MOVE_ITEM){
-			printf("MouseEvent: inside inv matrix. AS_INV_MOVE_ITEM\n");
 			x = iMouseX - curMatrix -> PosX - (curItem -> ShapeSizeX >> 1) + curItem -> ShapeCenterX;
 			y = iMouseY - curMatrix -> PosY - (curItem -> ShapeSizeY >> 1) + curItem -> ShapeCenterY;
 
@@ -7324,12 +7321,9 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 			if(y & 0x01) x -= (aCellSize >> 1);
 			x /= aCellSize;
 		}
-		printf("MouseEvent(x: %d, y: %d)\n", x, y);
 		if(x >= 0 && x < curMatrix -> MatrixSizeX && y >= 0 && y < curMatrix -> MatrixSizeY){
 			if(flags & AS_INV_MOVE_ITEM){
-				printf("MouseEvent AS_INV_MOVE_ITEM\n");
 				if(curMatrix -> check_fit(x,y,curItem)){
-					printf("Item fit\n");
 					curMatrix -> put_item_shadow(x,y,curItem);
 					curMatrix -> flags |= IM_REDRAW_SHADOW;
 				}
@@ -7347,11 +7341,9 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 				}
 			}
 			else {
-				printf("MouseEvent not AS_INV_MOVE_ITEM\n");
 				if(iP){
 					p = curMatrix -> get_item(x,y);
 					if(p){
-						printf("MouseEvent got matrix item, id: %d\n", p->ID);
 						if(iP -> items -> Size){
 							iP -> free_list();
 							iP -> set_redraw();
@@ -7372,7 +7364,6 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 					}
 					else {
 						if(!(flags & AS_INV_MOVE_ITEM)){
-							printf("MouseEvent not matrix item, cleaning up\n");
 							if(iP -> items -> Size){
 								iP -> free_list();
 								iP -> set_redraw();
@@ -7382,11 +7373,9 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 				}
 			}
 		} else {
-			printf("MouseEvent: not inside inv matrix\n");
 			if(!(flags & AS_INV_MOVE_ITEM)){
 				if(iP){
 					if(iP -> items -> Size){
-						printf("MouseEvent: cleaning up\n");
 						iP -> free_list();
 						iP -> set_redraw();
 					}

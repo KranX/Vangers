@@ -23,6 +23,7 @@ XMessageBuffer::XMessageBuffer(void)
 
 void XMessageBuffer::put(SDL_Event* p)
 {
+//	std::cout<<"XMessageBuffer::put Size:"<<Size<<std::endl;
 	if(Size < XMSG_BUFFER_SIZE){
 		memcpy((char*)table[LastIndex],(char*)p,sizeof(SDL_Event));
 		LastIndex ++;

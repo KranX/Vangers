@@ -4,6 +4,10 @@
 #include "xt_list.h"
 #include "../xgraph/xgraph.h"
 
+#ifdef __HAIKU__
+#include <unistd.h>
+#endif
+
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
@@ -70,8 +74,8 @@ void* hXConInput = NULL;
 
 int XAppMode = 0;
 
-void (*press_handler)(int);
-void (*unpress_handler)(int);
+void (*press_handler)(SDL_Event* m);
+void (*unpress_handler)(SDL_Event* m);
 
 XList XSysQuantLst;
 XList XSysFinitLst;
@@ -94,6 +98,12 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 int main(int argc, char *argv[])
 #endif
 {
+#ifdef __HAIKU__
+	const char *data_dir = getenv("VANGERS_DATA");
+	if(data_dir != NULL){
+		chdir(data_dir);
+	}
+#endif
 	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
 	XRuntimeObject* XObj;
 	#ifdef _WIN32
@@ -117,7 +127,7 @@ int main(int argc, char *argv[])
 			XGR_FULL_SCREEN = true;
 		}
 #endif
-	
+
 	//Set handlers to null
 	press_handler = NULL;
 	unpress_handler = NULL;
@@ -135,48 +145,45 @@ int main(int argc, char *argv[])
 		xtRTO_Log.open("xt_rto_w.log",XS_OUT);
 #endif
 
-	
-	
 	while(XObj){
-		
 		XObj -> Init(prevID);
 		prevID = id;
-
 		id = 0;
 
 		clockCnt = clocki();
 		clockCntGlobal = clockCnt;
 		while(!id) {
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			XGR_Obj.draw_bg();
+
 			if(XObj->Timer) {
-				clockNow = clocki();
-				clockDelta =  clockNow - clockCnt;
+				id = XObj -> Quant();
+				clockNow = clockNowGlobal = clocki();
+				clockDelta = clockNow - clockCnt;
+				XTCORE_FRAME_DELTA = (clockNowGlobal - clockCntGlobal) / 1000.0;
+				XTCORE_FRAME_NORMAL = XTCORE_FRAME_DELTA / 0.050; //20FPS
+				clockCntGlobal = clockNowGlobal;
+//				std::cout<<"XTCORE_FRAME_DELTA:"<<XTCORE_FRAME_DELTA
+//						 <<" XTCORE_FRAME_NORMAL:"<<XTCORE_FRAME_NORMAL
+//						 <<" clockDelta:"<<clockDelta<<std::endl;
+
 				if (clockDelta < XObj->Timer) {
 					SDL_Delay(XObj->Timer - clockDelta);
+				} else {
+					std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
 				}
-				clockNow = clocki();
-				clockDelta =  clockNow - clockCnt;
-				if(clockDelta >= XObj -> Timer) {
-					clockCnt = clockNow;// - (clockDelta - XObj -> Timer) % XObj -> Timer;
-					
-					clockNowGlobal = clocki();
-					XTCORE_FRAME_DELTA = (clockNowGlobal - clockCntGlobal)/1000.0;
-					XTCORE_FRAME_NORMAL = XTCORE_FRAME_DELTA/0.050; //20FPS
-					//std::cout<<"XTCORE_FRAME_DELTA:"<<XTCORE_FRAME_DELTA<<" XTCORE_FRAME_NORMAL:"<<XTCORE_FRAME_NORMAL<<std::endl;
-					clockCntGlobal = clockNowGlobal;
-					
-					id = XObj -> Quant();
-				}
+				clockCnt = clocki();
 			} else {
-				//std::cout<<"ELSE"<<std::endl;
 				id = XObj -> Quant();
 			}
 
 			if(!xtSysQuantDisabled)
 				XRec.Quant(); // впускает внешние события, записывает их или воспроизводит
 			XGR_Flip();
-//			if(xtNeedExit()) ErrH.Exit();
 		}
-		
+
 		XObj -> Finit();
 #ifdef _RTO_LOG_
 		xtRTO_Log < "\r\nChange RTO: " <= XObj -> ID < " -> " <= id < " frame -> " <= XRec.frameCount;
@@ -226,45 +233,50 @@ void xtRegisterRuntimeObject(XRuntimeObject* p)
 }
 
 int xtCallXKey(SDL_Event* m) {
-	switch(m->type){
+	switch(m->type) {
 		case SDL_KEYDOWN:
 			if (press_handler) {
-				(*press_handler)(m->key.keysym.scancode);
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_KEYUP:
 			if (unpress_handler) {
-				(*unpress_handler)(m->key.keysym.scancode);
+				(*unpress_handler)(m);
+			}
+			break;
+		case SDL_TEXTINPUT:
+			if (press_handler) {
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_JOYBUTTONDOWN:
 			//std::cout<<"jevent down button:"<<(int)m->jbutton.button<<std::endl;
 			if (press_handler) {
-				(*press_handler)(m->jbutton.button | SDLK_JOYSTICK_BUTTON_MASK);
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_JOYBUTTONUP:
 			//std::cout<<"jevent up"<<std::endl;
 			if (unpress_handler) {
-				(*unpress_handler)(m->jbutton.button | SDLK_JOYSTICK_BUTTON_MASK);
+				(*unpress_handler)(m);
 			}
 			break;
 		case SDL_CONTROLLERBUTTONDOWN:
 			//std::cout<<"CONTROLLERBUTTONDOWN"<<std::endl;
 			if (press_handler) {
-				(*press_handler)(m->cbutton.button | SDLK_GAMECONTROLLER_BUTTON_MASK);
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_CONTROLLERBUTTONUP:
 			//std::cout<<"CONTROLLERBUTTONUP"<<std::endl;
 			if (unpress_handler) {
-				(*unpress_handler)(m->cbutton.button | SDLK_GAMECONTROLLER_BUTTON_MASK);
+				(*unpress_handler)(m);
 			}
 			break;
 		case SDL_JOYHATMOTION:
 			//std::cout<<"SDL_JOYHATMOTION:"<<(int)m->jhat.hat<<" value"<<(int)m->jhat.value<<" k:"<<std::endl;
 			if (press_handler) {
-				(*press_handler)((m->jhat.value + 10*m->jhat.hat) | SDLK_JOYSTICK_HAT_MASK);
+				(*press_handler)(m);
 			}
 			break;
 		case SDL_JOYBALLMOTION:
@@ -592,7 +604,7 @@ void xtSysQuantDisable(int v)
 }
 
 
-void set_key_nadlers(void (*pH)(int),void (*upH)(int)) {
+void set_key_nadlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*)) {
 	press_handler = pH;
 	unpress_handler = upH;
 }

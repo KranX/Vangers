@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+echo "This is a blank script." 1>&2
+cd "${0%/*}/../Resources/"
+../MacOS/vangers.bin --screen-width 1280 --screen-height 720

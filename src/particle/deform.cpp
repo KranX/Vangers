@@ -14,6 +14,10 @@
 //int* X_MAXX_TABLE = 0;
 //const X_MAXX_AMPL = 20;
 
+// For set dirty
+extern iGameMap* curGMap;
+
+
 void Mask::finit( void ){
 	if( offset ){
 		delete[] offset;
@@ -91,6 +95,7 @@ void Mask::deformBuff(int fr,int c_x,int c_y,unsigned char* buff){
 	int y1 = c_y + my;
 	uchar** ltc = vMap -> lineTcolor;
 	for(y = c_y;y < y1;y++){
+		curGMap->set_durty(y);
 		for(x = c_x;x < x1;x++){
 			cell = *moff++;
 			dx = (char)cell;
@@ -155,6 +160,7 @@ void DeformProcess::BackRestore(void){
 	DeformMask -> BackRestore(OrX,OrY,buffer);
 }
 
+
 void Mask::BackRestore(int c_x,int c_y,unsigned char* buff){
 	unsigned char* buffer_ptr = buff;
 	int y1 = c_y + my;
@@ -166,6 +172,7 @@ void Mask::BackRestore(int c_x,int c_y,unsigned char* buff){
 #endif
 		memcpy(boff,buffer_ptr,mx);
 		buffer_ptr += mx;
+		curGMap->set_durty(y);
 		}
 }
 

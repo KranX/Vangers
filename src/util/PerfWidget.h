@@ -6,13 +6,13 @@
 #define VANGERS_PERFWIDGET_H
 
 
-#include "../../lib/xgraph/global.h"
+#include <xgraph.h>
 #include "TimerStorage.h"
 
 namespace util{
 	const std::vector<int> PALETTE_COLORS = {
 //			109, 119,
-			159, 183, 220, 141
+			159, 183, 220, 253
 	};
 
 	class PerfWidget {

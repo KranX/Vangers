@@ -1990,7 +1990,7 @@ int aciGetScreenItem(int x,int y)
 	rz = -1;
 	S2G(x,y,tx,ty);
 
-	GeneralMousePoint = Vector(getDistX(tx,ViewX),getDistY(ty,ViewY),0);
+	GeneralMousePoint = Vector(getDistX(tx, ActD.Active->R_curr.x), getDistY(ty, ActD.Active->R_curr.y), 0);
 
 	p = (BaseObject*)(ItemD.Tail);
 	while(p){
@@ -2676,7 +2676,7 @@ void HordeObject::Init(void)
 
 void HordeObject::Free(void)
 {
-	delete Data;
+	delete[] Data;
 };
 
 void HordeObject::Quant(void)
@@ -2983,7 +2983,7 @@ void ClefList::FreeUnit(GeneralObject* p)
 void ClefList::Free(void)
 {
 	UnitBaseListType::Free();
-	if(Data) delete Data;
+	if(Data) delete[] Data;
 };
 
 void SkyFarmerList::Init(void)
@@ -3227,7 +3227,7 @@ void FishWarriorList::FreeUnit(GeneralObject* p)
 void FishWarriorList::Free(void)
 {
 	UnitBaseListType::Free();
-	if(Data) delete Data;
+	if(Data) delete[] Data;
 };
 
 DebrisObject* DebrisList::CreateDebris(void)

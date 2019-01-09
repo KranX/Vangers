@@ -74,10 +74,10 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 	sinTetta = SI[rPI(Slop)];
 	cosTetta = CO[rPI(Slop)];
 
-	if(abs(sinAlpha) < abs(SI[SlopModeTriggerAngle*PIx2/360])){
-		SlopTurnSkip(Turn,-Slop,H,F,cx,cy,xc,yc,XDstSize,YDstSize);
-		return 0;
-		}
+//	if(abs(sinAlpha) < abs(SI[SlopModeTriggerAngle*PIx2/360])){
+//		SlopTurnSkip(Turn,-Slop,H,F,cx,cy,xc,yc,XDstSize,YDstSize);
+//		return 0;
+//		}
 
 #ifdef __ZORTECHC__
 	char* vp = _video + (yc - YDstSize)*XGR_MAXX + (xc - XDstSize);
@@ -121,7 +121,6 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 #ifndef TURN_TEST
 #ifndef _VTEST_
 	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
-	_debugTimerStorage.event_start("render");
 	uchar** lt = vMap -> lineTcolor;
 #else
 	uchar** lt = lineTcolor;
@@ -130,7 +129,7 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 	uchar** lt = TextureDataTable;
 	uchar** ht = HeightDataTable;
 #endif
-
+	return 1;
 	int z;
 	z = F*Awz >> 16;
 	if(!z) z = 1;
@@ -224,7 +223,6 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 				i++;
 			}
 		}
-	_debugTimerStorage.event_end("render");
 	return 1;
 }
 

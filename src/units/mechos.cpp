@@ -3219,6 +3219,7 @@ void camera_reset() {
 	camera_rotate_enable = iGetOptionValue(iCAMERA_TURN);
 }
 
+int _slope_max = PI/8;
 void camera_quant(int X, int Y, int Turn, double V_abs) {
 	if (stop_camera)
 		return;
@@ -3311,12 +3312,17 @@ void camera_quant(int X, int Y, int Turn, double V_abs) {
 	                                                     (-SLOPE_MAX - camera_slope_min) * V_abs / camera_vmax :
 	                               -SLOPE_MAX)
 	                            : camera_slope_min;
+	if(camera_slope_enable){
+		s = -SLOPE_MAX;
+	}
+//	int s = -_slope_max;
+
 	camera_vs += (double) (s - SlopeAngle) * camera_mis * XTCORE_FRAME_NORMAL;
 	camera_vs *= camera_drags * pow(0.97, camera_vs_min / (fabs(camera_vs) + 1e-10));
 	camera_s += camera_vs * XTCORE_FRAME_NORMAL;
 	SlopeAngle += (t = round(camera_s));
-	if (SlopeAngle < -SLOPE_MAX)
-		SlopeAngle = -SLOPE_MAX;
+	if (SlopeAngle < -_slope_max)
+		SlopeAngle = -_slope_max;
 	camera_s -= t;
 	if (RAM16 && (TurnSecX > curGMap->xsize || TurnAngle) && SlopeAngle)
 		SlopeAngle = 0;
@@ -5870,7 +5876,7 @@ void VangerUnit::CreateVangerUnit(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	Go2World();
@@ -8649,8 +8655,8 @@ void CompasObject::Quant(void)
 	v = Vector(ActD.Active->Speed,0,0)*ActD.Active->RotMat;
 	x = XCYCL(x + vMove.x + v.x);
 	y = YCYCL(y + vMove.y + v.y);
-	if(AdvancedView) G2LQ(x,y,0,tx,ty);
-	else G2LS(x,y,0,tx,ty);
+
+	global_to_screen_coords(x, y, 0, tx, ty);
 
 	if(tx < UcutLeft + COMPAS_LEFT){
 		tx = UcutLeft + COMPAS_LEFT;
@@ -14027,7 +14033,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	

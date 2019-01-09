@@ -11,10 +11,14 @@
 #ifndef __XGRAPH_H__
 #define __XGRAPH_H__
 
-#ifdef WITH_OPENGL
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
+#include <GL/glew.h>
+
+#include "xglobal.h"
+
+// TODO: fix VGL include paths
+#include "../vgl/pipeline.h"
+#include "../vgl/texture_ext.h"
+
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
 #define XGR_64KR(c)		(((c) >> XGR_SHIFT_R) & XGR_COLOR_MASK_R)
@@ -77,18 +81,26 @@ struct XGR_Font
 #define XGR_CLIP_PUTSPR 	0x00
 #define XGR_CLIP_ALL		0x01
 
-struct XGR_Pal64K
-{
+struct XGR_Pal64K {
 	int ID;
 
 	unsigned* data;
 	void prepare(void* p);
 
-	unsigned operator[](int ind) const { return data[ind]; }
-	unsigned& operator[](int ind){ return data[ind]; }
+	unsigned operator[](int ind) const {
+		return data[ind];
+	}
+	unsigned& operator[](int ind) {
+		return data[ind];
+	}
 
-	XGR_Pal64K(void){ ID = 0; data = new unsigned[256]; }
-	~XGR_Pal64K(void){ delete data; }
+	XGR_Pal64K(void) {
+		ID = 0;
+		data = new unsigned[256];
+	}
+	~XGR_Pal64K(void) {
+		delete[] data;
+	}
 };
 
 struct XGR_Screen
@@ -100,6 +112,11 @@ struct XGR_Screen
 	int RealX;
 	int RealY;
 
+	/// This parameter needed for internal surface scaling.
+	/// In menus and escaves this equals to `true`
+	/// On the surface to `false`
+	bool isScaled;
+
 	unsigned char* ScreenBuf;
 
 	SDL_Surface *XGR_ScreenSurface;
@@ -108,16 +125,25 @@ struct XGR_Screen
 	//SDL_Surface *XGR32_ScreenSurface2D;
 	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
-	SDL_Texture *sdlTexture;
+
+	std::shared_ptr<vgl::Texture2D> texture;
+	std::shared_ptr<vgl::Texture1D> palette;
+	std::shared_ptr<vgl::PixelUnpackBuffer> buffer;
+	std::shared_ptr<vgl::Pipeline> mainPipeline;
+	std::shared_ptr<vgl::Pipeline> bilinearMainPipeline;
+
+	std::shared_ptr<vgl::Texture2D> backgroundTexture;
+	std::shared_ptr<vgl::Pipeline> backgroundTexturePipeline;
+	//	SDL_Texture *sdlTexture;
 	//SDL_Texture *sdlTexture2D;
-	SDL_Texture *HDBackgroundTexture;
+//	SDL_Texture *HDBackgroundTexture;
 	SDL_Window *sdlWindow;
-	SDL_Renderer *sdlRenderer;
+//	SDL_Renderer *sdlRenderer;
 	
 	//SDL_Color   XGR_Palette[256];
 	SDL_Palette *XGR_Palette;
 	SDL_Color averageColorPalette = {255,255,255,0};
-
+	SDL_GLContext glContext;
 	int ClipMode;
 
 	int clipLeft;
@@ -131,7 +157,9 @@ struct XGR_Screen
 #ifdef WITH_OPENGL
 	SDL_Surface *XGR_ScreenSurface_Real;
 	GLuint SurfToTexture(SDL_Surface *surf);
-#endif	
+#endif
+
+	void set_is_scaled(bool isScaled);
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
 	void get_clip(int& left,int& top,int& right,int& bottom);
@@ -144,6 +172,7 @@ struct XGR_Screen
 
 	void flush(int x,int y,int sx,int sy);
 	void flip();
+	void draw_bg();
 
 	void fill(int col);
 	void erase(int x,int y,int sx,int sy,int col);

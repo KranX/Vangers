@@ -419,7 +419,7 @@ aciML_Dispatcher::~aciML_Dispatcher(void)
 
 	for(i = 0; i < AML_MAX_SEQ_LINE_ID; i ++)
 		delete SeqList[i];
-	delete SeqList;
+	delete[] SeqList;
 
 	p = (aciML_DataSet*)ml_data_sets -> last;
 	while(p){

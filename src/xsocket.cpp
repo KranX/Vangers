@@ -13,6 +13,9 @@
 #else
 #include <unistd.h> // gethostname()
 #include <limits.h> // HOST_NAME_MAX
+#ifdef __HAIKU__
+#include <posix/sys/select.h> // fd_set
+#endif
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
 #endif
