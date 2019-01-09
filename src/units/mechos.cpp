@@ -5876,7 +5876,7 @@ void VangerUnit::CreateVangerUnit(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	Go2World();
@@ -14033,7 +14033,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	

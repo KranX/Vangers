@@ -2218,7 +2218,7 @@ void iScreen::CheckScanCode(int sc)
 			if(!mouse_sc || obj -> CheckXY(x,y)){
 				p = (iScreenEvent*)obj -> EventList -> last;
 				while(p){
-					if((!(obj -> flags & OBJ_LOCKED) && !(p -> flags & EV_IF_LOCKED)) || ((obj -> flags & OBJ_LOCKED) && (p -> flags & EV_IF_LOCKED))){
+					if (bool(obj->flags & OBJ_LOCKED) == bool(p->flags & EV_IF_LOCKED)) {
 						cd = p -> codes -> last;
 						while(cd){
 							if(((iScanCode*)cd) -> code == sc && (!(p -> flags & EV_IF_SELECTED) || obj -> flags & OBJ_SELECTED))

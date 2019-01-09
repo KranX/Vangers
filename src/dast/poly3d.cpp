@@ -158,18 +158,15 @@ int dastPoly3D::quant_make_sign(void){
 		case DAST_SIGN_TYPE::UP:
 		case DAST_SIGN_TYPE::DOWN:
 		{
-			uchar *data = new uchar[16];
-			if ( dastResSign -> type[n][count] == DAST_SIGN_TYPE::DOWN )
-				memset(data, 251, 16);
-			else
-				memset(data, 2, 16);
-
 			dx = (lp.x-p->x);
 			dy = (lp.y-p->y);
 
 			int max;
-			p->x <<= 16;	p->x += 1<<15;
-			p->y <<= 16;    p->y += 1<<15;
+			p->x <<= 16;
+			p->x += 1<<15;
+
+			p->y <<= 16;
+			p->y += 1<<15;
 
 			if ( abs(dx ) > abs(dy) ) max = abs(dx); else max = abs(dy);
 			int tt = (1<<16)/max;
@@ -186,7 +183,6 @@ int dastPoly3D::quant_make_sign(void){
 				p->x += dx;
 				p->y += dy;
 			}
-			delete[] data;
 			break;
 		}
 		case DAST_SIGN_TYPE::MOVE:	
@@ -958,7 +954,7 @@ dastResourcePoly3D::~dastResourcePoly3D(void){
 		for( i = 0; i < n; i++)
 			delete data[i];
 
-		delete data;
+		delete[] data;
 	}
 }
 

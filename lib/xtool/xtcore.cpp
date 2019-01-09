@@ -4,6 +4,10 @@
 #include "xt_list.h"
 #include "../xgraph/xgraph.h"
 
+#ifdef __HAIKU__
+#include <unistd.h>
+#endif
+
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
@@ -94,6 +98,12 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 int main(int argc, char *argv[])
 #endif
 {
+#ifdef __HAIKU__
+	const char *data_dir = getenv("VANGERS_DATA");
+	if(data_dir != NULL){
+		chdir(data_dir);
+	}
+#endif
 	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
 	XRuntimeObject* XObj;
 	#ifdef _WIN32
@@ -117,7 +127,7 @@ int main(int argc, char *argv[])
 			XGR_FULL_SCREEN = true;
 		}
 #endif
-	
+
 	//Set handlers to null
 	press_handler = NULL;
 	unpress_handler = NULL;

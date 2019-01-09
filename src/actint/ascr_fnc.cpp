@@ -4368,8 +4368,8 @@ void aciLoadData(void)
 
 void aciPackFile(char* fname)
 {
-	int sz,sz1;
-	char* p,*p1;
+	int sz, sz1;
+	char* p, *p1;
 
 	XStream fh(fname,XS_IN);
 
@@ -4398,8 +4398,8 @@ void aciPackFile(char* fname)
 	fh.write(p1,sz1);
 	fh.close();
 
-	delete p;
-	delete p1;
+	delete[] p;
+	delete[] p1;
 }
 
 void aciUnPackFile(char* fname)
@@ -4435,8 +4435,8 @@ void aciUnPackFile(char* fname)
 	fh.write(p1,sz1);
 	fh.close();
 
-	delete p;
-	delete p1;
+	delete[] p;
+	delete[] p1;
 }
 
 #ifdef _ACTINT_MEMSTAT_
