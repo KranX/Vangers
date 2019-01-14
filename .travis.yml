@@ -18,9 +18,6 @@ addons:
           - libavutil-dev
           - libglew-dev
           - libglm-dev
-before_install:
-  - git clone --depth 1 https://github.com/stalkerg/clunk.git /tmp/clunk
-  - cd /tmp/clunk && cmake -DCMAKE_INSTALL_PREFIX=/usr . && make && sudo make install
 script:
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir build && cd build && cmake .. && make
