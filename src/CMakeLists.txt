@@ -5,6 +5,11 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/vgl"
 )
 
+if (CLUNK_SUBMODULE)
+	include_directories("${PROJECT_SOURCE_DIR}")
+	include_directories("${PROJECT_SOURCE_DIR}/clunk")
+endif ()
+
 SET(vangers_SRCS
 	3d/3d_math.cpp
 	3d/3dgraph.cpp
@@ -112,7 +117,6 @@ TARGET_LINK_LIBRARIES(vangers
 	${OGG_LIBRARY}
 	${VORBIS_LIBRARY}
 	${VORBISFILE_LIBRARY}
-	${CLUNK_LIBRARY}
 	${SDL2_NET_LIBRARY}
 		${SDL2_IMAGE_LIBRARY}
 	${FFMPEG_LIBRARIES}
@@ -126,3 +130,10 @@ TARGET_LINK_LIBRARIES(vangers
 	xsound
 	vgl
 )
+
+if (CLUNK_SUBMODULE)
+	target_link_libraries(vangers clunk)
+else ()
+	target_link_libraries(vangers ${CLUNK_LIBRARY})
+endif ()
+

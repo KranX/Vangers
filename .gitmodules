@@ -1,0 +1,3 @@
+[submodule "clunk"]
+	path = clunk
+	url = git://github.com/stalkerg/clunk.git
