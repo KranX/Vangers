@@ -49,8 +49,11 @@ int AVIFile::open(char* aviname,int initFlags,int channel)
 	// Open video file
 	pFormatCtx = NULL;
 	
-	if(avformat_open_input(&pFormatCtx, aviname, NULL, NULL) != 0) {
-		std::cout<<"Couldn't open video file:"<<aviname<<std::endl;
+	int ret = avformat_open_input(&pFormatCtx, aviname, NULL, NULL);
+	if(ret != 0) {
+		char error_message[256];
+		av_strerror(ret, error_message, 256);
+		std::cout<<"Couldn't open video file:"<<aviname<<" "<<error_message<<std::endl;
 		return 0; // Couldn't open file
 	}
 	// Retrieve stream information
@@ -146,7 +149,8 @@ void AVIFile::draw(void) {
 				//av_close_input_file(pFormatCtx);
 				avformat_close_input(&pFormatCtx);
 				// Open video file
-				if(avformat_open_input(&pFormatCtx, filename.c_str(), NULL, NULL)!=0) {
+				int ret = avformat_open_input(&pFormatCtx, filename.c_str(), NULL, NULL);
+				if(ret != 0) {
 					std::cout<<"Couldn't open video file"<<std::endl;
 					return; // Couldn't open file
 				}
