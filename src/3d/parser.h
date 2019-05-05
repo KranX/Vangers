@@ -1,6 +1,6 @@
 struct Parser : XBuffer {
 
-		Parser(const char* name, const char* del_chars = 0);
+	Parser(const char* name, const char* del_chars = 0);
 
 	void search_name(const char* name);
 	int is_next_name(const char* name);

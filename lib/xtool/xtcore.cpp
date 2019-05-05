@@ -8,6 +8,9 @@
 #include <unistd.h>
 #endif
 
+#if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+#include <locale.h>
+#endif
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
@@ -127,7 +130,11 @@ int main(int argc, char *argv[])
 			XGR_FULL_SCREEN = true;
 		}
 #endif
-
+#if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+	std::cout<<"Set locale. ";
+	char* res = setlocale(LC_NUMERIC, "POSIX");
+	std::cout<<"Result:"<<res<<std::endl;
+#endif
 	//Set handlers to null
 	press_handler = NULL;
 	unpress_handler = NULL;
@@ -144,6 +151,7 @@ int main(int argc, char *argv[])
 	else
 		xtRTO_Log.open("xt_rto_w.log",XS_OUT);
 #endif
+
 
 	while(XObj){
 		XObj -> Init(prevID);

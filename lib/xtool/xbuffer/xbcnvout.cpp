@@ -51,7 +51,7 @@ XBuffer& XBuffer::operator>= (unsigned& var)
 XBuffer& XBuffer::operator>= (long& var)
 {
 	char* p = buf + offset;
-	var = strtol(p,&p,0);
+	var = strtol(p, &p, 0);
 	offset += p - (buf + offset);
 	return *this;
 }
@@ -59,7 +59,7 @@ XBuffer& XBuffer::operator>= (long& var)
 XBuffer& XBuffer::operator>= (unsigned long& var)
 {
 	char* p = buf + offset;
-	var = strtoul(p,&p,0);
+	var = strtoul(p, &p,0);
 	offset += p - (buf + offset);
 	return *this;
 }
@@ -67,15 +67,16 @@ XBuffer& XBuffer::operator>= (unsigned long& var)
 XBuffer& XBuffer::operator>= (double& var)
 {
 	char* p = buf + offset;
-	var = strtod(p,&p);
+	var = strtod(p, &p);
 	offset += p - (buf + offset);
+
 	return *this;
 }
 
 XBuffer& XBuffer::operator>= (long double& var)
 {
 	char* p = buf + offset;
-	var = strtod(p,&p);
+	var = strtod(p, &p);
 	offset += p - (buf + offset);
 	return *this;
 }
@@ -83,7 +84,7 @@ XBuffer& XBuffer::operator>= (long double& var)
 XBuffer& XBuffer::operator>= (float& var)
 {
 	char* p = buf + offset;
-	var = (float)strtod(p,&p);
+	var = (float)strtod(p, &p);
 	offset += p - (buf + offset);
 	return *this;
 }

@@ -391,7 +391,7 @@ int entry_scan_code;
 #ifndef ENTRIES_CONTROL
 
 #define ENTRY(val)	{ f.search_name(#val":"); f >= val; }
-#define COMMON_ENTRY(val) { fc.search_name(#val":"); fc >= val; }
+#define COMMON_ENTRY(val) { fc.search_name(#val":"); fc >= val;}
 #define entries_control()
 
 #else											    
@@ -2423,13 +2423,13 @@ void Object::jump()
 }
 int Object::get_max_jump_distance()
 {
-	DBV V = DBV(Sin(Pi/10),0,Cos(Pi/10))*(5*max_jump_power*k_distance_to_force*dt_impulse/pow(m,0.3));
+	DBV V = DBV(Sin(Pi/10), 0, Cos(Pi/10))*(5*max_jump_power*k_distance_to_force*dt_impulse/pow(m,0.3));
 	DBV R(0,0,0);
-	while(R.z >= 0){
+	while(R.z >= 0) {
 		V.z -= g*dt0;
 		R += V*dt0;
 		V *= V_drag_free*pow(V_drag_speed,V.vabs());
-		 }
+	}
 	return round(R.x);
 }
 
