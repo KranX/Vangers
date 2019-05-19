@@ -10,9 +10,9 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 	NAMES
 		avutil.h
 	PATHS
+		/usr/local/include
 		/usr/include
 		/usr/include/x86_64-linux-gnu
-		/usr/local/include
 		/local/include
 		/mingw/include
 		/opt/local/include
@@ -30,9 +30,9 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
 	NAMES
 		avcodec.h
 	PATHS
+		/usr/local/include
 		/usr/include
 		/usr/include/x86_64-linux-gnu
-		/usr/local/include
 		/opt/local/include
 		/local/include
 		/mingw/include
@@ -50,9 +50,9 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 	NAMES
 		avformat.h
 	PATHS
+		/usr/local/include
 		/usr/include
 		/usr/include/x86_64-linux-gnu
-		/usr/local/include
 		/opt/local/include
 		/local/include
 		/mingw/include
@@ -72,10 +72,10 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 		avutil-55
 		avutil-56
 	PATHS
+		/usr/local/lib
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/ffmpeg
-		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
 		/local/lib
@@ -91,9 +91,9 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 		avcodec-57
 		avcodec-58
 	PATHS
+		/usr/local/lib
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
-		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
 		/local/lib
@@ -109,10 +109,10 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		avformat-57
 		avformat-58
 	PATHS
+		/usr/local/lib
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/ffmpeg
-		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
 		/local/lib
