@@ -41,14 +41,14 @@ AVIFile::AVIFile(char* aviname,int initFlags,int channel)
 	open(aviname, initFlags, channel);
 }
 
-int AVIFile::open(char* aviname,int initFlags,int channel)
+int AVIFile::open(char* aviname, int initFlags, int channel)
 {
 	int i;
 	filename = aviname;
 	av_register_all();
 	// Open video file
 	pFormatCtx = NULL;
-	
+
 	int ret = avformat_open_input(&pFormatCtx, aviname, NULL, NULL);
 	if(ret != 0) {
 		char error_message[256];
