@@ -643,7 +643,7 @@ void dastPoly3D::make_dast( void ){
 			if ( *p0 > zzz ) {
 				h[j] += ((int)(*p0) - zzz)<<10;
 
-				//*pa = zzz;
+				// *pa = zzz;
 				if (zzz > 0 ) 
 					*p0 = zzz;
 				else
