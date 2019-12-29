@@ -13,9 +13,9 @@ Model::Model()
 {
 	memory_allocation_method = 0;
 	num_vert = num_norm = num_poly = 0;
-	vertices = 0;
-	normals = 0;
-	polygons = 0;
+	vertices = nullptr;
+	normals = nullptr;
+	polygons = nullptr;
 }
 void Model::free()
 {
@@ -24,17 +24,18 @@ void Model::free()
 	}
 	memory_allocation_method = 0;
 	num_vert = num_norm = num_poly = 0;
-	vertices = 0;
-	normals = 0;
-	polygons = 0;
+	vertices = nullptr;
+	normals = nullptr;
+	polygons = nullptr;
 }
+
 void Model::loadC3Dvariable(XBuffer& buf)
 {
 	int i,j,size;
-	int num_vert_total,version;
-	int num,vert_ind,norm_ind,sort_info;
-	unsigned color_id,color_shift;
-	int phi,psi,tetta;
+	int num_vert_total, version;
+	int num, vert_ind, norm_ind, sort_info;
+	unsigned color_id, color_shift;
+	int phi, psi, tetta;
 
 	buf > version;
 	if(version != C3D_VERSION_1 && version != C3D_VERSION_3)
@@ -55,21 +56,23 @@ void Model::loadC3Dvariable(XBuffer& buf)
 #endif
 
 #ifdef COMPACT_3D
-	size = num_vert*sizeof(Vertex) + num_norm*sizeof(Normal) + num_poly*sizeof(VariablePolygon);
+	size = num_vert*static_cast<int>(sizeof(Vertex)) +
+		   num_norm*static_cast<int>(sizeof(Normal)) +
+		   num_poly*static_cast<int>(sizeof(VariablePolygon));
 #else
 	size = num_vert*sizeof(Vertex) + num_norm*sizeof(Normal) +
 		   num_poly*(sizeof(VariablePolygon) + 3*sizeof(VariablePolygon*));
 #endif
-	size += num_vert_total*(sizeof(Vertex*) + sizeof(Normal*));
+	size += num_vert_total*static_cast<int>(sizeof(Vertex*) + sizeof(Normal*));
 
 	memory_allocation_method = 1;
 	HEAP_BEGIN(size);
-	vertices = HEAP_ALLOC(num_vert,Vertex);
-	normals = HEAP_ALLOC(num_norm,Normal);
-	variable_polygons = HEAP_ALLOC(num_poly,VariablePolygon);
+	vertices = HEAP_ALLOC(num_vert, Vertex);
+	normals = HEAP_ALLOC(num_norm, Normal);
+	variable_polygons = HEAP_ALLOC(num_poly, VariablePolygon);
 
-	if(phi == 83 && psi == 83 && tetta == 83){
-		for(i = 0;i < num_vert;i++){
+	if (phi == 83 && psi == 83 && tetta == 83) {
+		for(i = 0;i < num_vert;i++) {
 		#ifdef COMPACT_3D
 			float tf;
 			buf > tf > tf > tf;
@@ -79,10 +82,9 @@ void Model::loadC3Dvariable(XBuffer& buf)
 			buf > vertices[i].x_8 > vertices[i].y_8 > vertices[i].z_8
 			    > sort_info;
 			}
-		}
-	else{
+	} else {
 		int ti;
-		for(i = 0;i < num_vert;i++){
+		for(i = 0;i < num_vert;i++) {
 		#ifdef COMPACT_3D
 			buf > ti > ti > ti;
 		#else
@@ -95,29 +97,32 @@ void Model::loadC3Dvariable(XBuffer& buf)
 		#endif
 			buf > vertices[i].x_8 > vertices[i].y_8 > vertices[i].z_8
 			    > sort_info;
-			}
 		}
+	}
 
 	for(i = 0;i < num_norm;i++)
 		buf > normals[i].x > normals[i].y > normals[i].z
 		    > normals[i].n_power > sort_info;
 
-	for(i = 0;i < num_poly;i++){
+	for(i = 0;i < num_poly;i++) {
 		buf > num > sort_info
 		    > color_id > color_shift
 		    > variable_polygons[i].flat_normal.x > variable_polygons[i].flat_normal.y
 		    > variable_polygons[i].flat_normal.z > variable_polygons[i].flat_normal.n_power
 		    > variable_polygons[i].middle_x > variable_polygons[i].middle_y > variable_polygons[i].middle_z;
 		    
-		variable_polygons[i].color_id = color_id < COLORS_IDS::MAX_COLORS_IDS ? color_id : COLORS_IDS::BODY;
+		variable_polygons[i].color_id = static_cast<unsigned char>(
+			color_id < static_cast<unsigned int>(COLORS_IDS::MAX_COLORS_IDS) ?
+			color_id : static_cast<unsigned int>(COLORS_IDS::BODY)
+		);
 
 		variable_polygons[i].num_vert = num;
-		variable_polygons[i].vertices = HEAP_ALLOC(num,Vertex*);
-		variable_polygons[i].normals = HEAP_ALLOC(num,Normal*);
-		for(j = 0;j < num;j++){
-			buf > vert_ind > norm_ind;
-			variable_polygons[i].vertices[j] = &vertices[vert_ind];
-			variable_polygons[i].normals[j] = &normals[norm_ind];
+		variable_polygons[i].vertices = HEAP_ALLOC(num, Vertex*);
+		variable_polygons[i].normals = HEAP_ALLOC(num, Normal*);
+		for(j = 0;j < num;j++) {
+				buf > vert_ind > norm_ind;
+				variable_polygons[i].vertices[j] = &vertices[vert_ind];
+				variable_polygons[i].normals[j] = &normals[norm_ind];
 			}
 		}
 
@@ -170,8 +175,7 @@ void Model::loadC3D(XBuffer& buf)
 	else
 		ErrH.Abort("C3D - old version.You need to update all m3d & a3d");
 
-	size = num_vert*sizeof(Vertex) + num_norm*sizeof(Normal) + num_poly*sizeof(Polygon);
-
+	size = num_vert*static_cast<int>(sizeof(Vertex)) + num_norm*static_cast<int>(sizeof(Normal)) + num_poly*static_cast<int>(sizeof(Polygon));
 
 	memory_allocation_method = 1;
 	HEAP_BEGIN(size);
@@ -207,7 +211,10 @@ void Model::loadC3D(XBuffer& buf)
 		    > skip_char > skip_char 
 		    > polygons[i].middle_x > polygons[i].middle_y > polygons[i].middle_z;
 		
-		polygons[i].color_id = color_id < COLORS_IDS::MAX_COLORS_IDS ? color_id : COLORS_IDS::BODY;
+		polygons[i].color_id = static_cast<unsigned char>(
+			color_id < static_cast<unsigned int>(COLORS_IDS::MAX_COLORS_IDS) ?
+			color_id : static_cast<unsigned int>(COLORS_IDS::BODY)
+		);
 
 		if(num != 3)
 			ErrH.Abort("Non triangular 3D model");
@@ -268,19 +275,17 @@ Object& Object::operator = (Object& obj)
 #ifdef _ROAD_
 void Object::convert_to_beeb(Object* beeb)
 {
-	if(beeb){
+	if(beeb) {
 		old_appearance_storage = new Object;
 		*old_appearance_storage = *this;
 		memcpy(&n_models,&beeb -> n_models,(char*)&old_appearance_storage - (char*)&n_models);
 		memcpy(&m,&beeb -> m,(char*)&end_of_object_data - (char*)&m);
-		}
-	else
-		if(old_appearance_storage){
-			memcpy(&n_models,&old_appearance_storage -> n_models,(char*)&old_appearance_storage - (char*)&n_models);
-			memcpy(&m,&old_appearance_storage -> m,(char*)&end_of_object_data - (char*)&m);
-			delete old_appearance_storage;
-			old_appearance_storage = 0;
-			}
+	} else if(old_appearance_storage) {
+		memcpy(&n_models,&old_appearance_storage -> n_models,(char*)&old_appearance_storage - (char*)&n_models);
+		memcpy(&m,&old_appearance_storage -> m,(char*)&end_of_object_data - (char*)&m);
+		delete old_appearance_storage;
+		old_appearance_storage = 0;
+	}
 	update_coord();
 }
 #endif
@@ -290,41 +295,41 @@ void Object::free()
 	int i;
 	for(i = 0;i < n_models;i++)
 		models[i].free();
-	if (n_models<=1) {
+	if (n_models <= 1) {
 		delete models;
 	} else {
 		delete[] models;
 	}
-	if(bound){
+	if(bound) {
 		bound -> free();
 		delete bound;
-		}
-	if(n_wheels){
+	}
+	if(n_wheels) {
 		for(i = 0;i < n_wheels;i++)
 			if(wheels[i].steer)
 				wheels[i].model.free();
 		delete[] wheels;
-		}
-	if(n_debris){
-		for(i = 0;i < n_debris;i++){
+	}
+	if(n_debris) {
+		for(i = 0;i < n_debris;i++) {
 			debris[i].free();
 			bound_debris[i].free();
-			}
+		}
 		delete[] debris;
 		delete[] bound_debris;
-		}
+	}
 
 	i_model = n_models = 0;
-	models = 0;
-	model = 0;
-	bound = 0;
+	models = nullptr;
+	model = nullptr;
+	bound = nullptr;
 	n_wheels = 0;
-	wheels = 0;
+	wheels = nullptr;
 	n_debris = 0;
-	debris = 0;
-	bound_debris = 0;
+	debris = nullptr;
+	bound_debris = nullptr;
 	slots_existence = 0;
-	memset(data_in_slots,0,MAX_SLOTS*sizeof(Object*));
+	memset(data_in_slots, 0, MAX_SLOTS*sizeof(Object*));
 }
 void Object::loadM3D(char* name)
 {
