@@ -30,6 +30,8 @@ void xtUnRegisterSysFinitFnc(int id);
   #define AV_PACKET_UNREF av_packet_unref
 #endif
 
+#define AV_CODEC_PAR (LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 33, 100))
+
 static XList aviXList;
 
 AVIFile::AVIFile(void)
@@ -45,7 +47,9 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 {
 	int i;
 	filename = aviname;
-	av_register_all();
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
+		av_register_all();
+#endif
 	// Open video file
 	pFormatCtx = NULL;
 
@@ -63,8 +67,12 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 	}
 	// Find the first video stream
 	videoStream=-1;
-	for(i=0; i<pFormatCtx->nb_streams; i++)
+	for(i=0; i<static_cast<int>(pFormatCtx->nb_streams); i++)
+#if AV_CODEC_PAR
+		if(pFormatCtx->streams[i]->codecpar->codec_type==AVMEDIA_TYPE_VIDEO) {
+#else
 		if(pFormatCtx->streams[i]->codec->codec_type==AVMEDIA_TYPE_VIDEO) {
+#endif
 			videoStream=i;
 			break;
 		}
@@ -74,7 +82,20 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 	}
 
 	// Get a pointer to the codec context for the video stream
+#if AV_CODEC_PAR
+	pCodecCtx=avcodec_alloc_context3(NULL);
+	if (!pCodecCtx) {
+		std::cout<<"Unabled to allocate codec context";
+		return 0;
+	}
+	ret = avcodec_parameters_to_context(pCodecCtx, pFormatCtx->streams[videoStream]->codecpar);
+	if (ret != 0) {
+		std::cout<<"Couldn't get the codec context"<<std::endl;
+		return 0;
+	}
+#else
 	pCodecCtx=pFormatCtx->streams[videoStream]->codec;
+#endif
 
 	// Find the decoder for the video stream
 	pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
@@ -83,10 +104,10 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 		return 0; // Codec not found
 	}
 	// Open codec
-#if LIBAVCODEC_VERSION_MAJOR < 53 && LIBAVCODEC_VERSION_MINOR < 35
-	if(avcodec_open(pCodecCtx, pCodec)<0) {
-#else
+#if (LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53, 8, 0))
 	if(avcodec_open2(pCodecCtx, pCodec, NULL)<0) {
+#else
+	if(avcodec_open(pCodecCtx, pCodec)<0) {
 #endif
 		std::cout<<"Could not open codec file:"<<aviname<<std::endl;
 		return 0; // Could not open codec
@@ -121,7 +142,7 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 void AVIFile::draw(void) {
 	if(pause) 
 		return;
-	int i, frameFinished;
+	int i, frameFinished = 0;
 	if(!released) {
 		redraw = 1;
 		int frame=-1;
@@ -129,10 +150,24 @@ void AVIFile::draw(void) {
 			// Is this a packet from the video stream?
 			if(packet.stream_index==videoStream) {
 				// Decode video frame
-#if LIBAVCODEC_VERSION_MAJOR < 53 && LIBAVCODEC_VERSION_MINOR < 35
-				avcodec_decode_video(pCodecCtx, pFrame, &frameFinished, packet.data, packet.size);
-#else
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 106, 102)
+				int ret = avcodec_receive_frame(pCodecCtx, pFrame);
+				if (ret == 0) {
+					frameFinished = 1;
+				}
+				if (ret != AVERROR(EAGAIN)) {
+					std::cout<<"Can't receive the frame"<<std::endl;
+					return;
+				}
+				ret = avcodec_send_packet(pCodecCtx, &packet);
+				if (ret != 0) {
+					std::cout<<"Can't send packet"<<std::endl;
+					return;
+				}
+#elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 23, 0)
 				avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, &packet);
+#else
+				avcodec_decode_video(pCodecCtx, pFrame, &frameFinished, packet.data, packet.size);
 #endif
 				 // Did we get a video frame?
 				if(frameFinished) {
@@ -155,7 +190,20 @@ void AVIFile::draw(void) {
 					return; // Couldn't open file
 				}
 				// Get a pointer to the codec context for the video stream
+#if AV_CODEC_PAR
+				pCodecCtx=avcodec_alloc_context3(NULL);
+				if (!pCodecCtx) {
+					std::cout<<"Unabled to allocate codec context";
+					return;
+				}
+				ret = avcodec_parameters_to_context(pCodecCtx, pFormatCtx->streams[videoStream]->codecpar);
+				if (ret != 0) {
+					std::cout<<"Couldn't get the codec context"<<std::endl;
+					return;
+				}
+#else
 				pCodecCtx=pFormatCtx->streams[videoStream]->codec;
+#endif
 				// Find the decoder for the video stream
 				pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
 				if(pCodec==NULL) {
@@ -163,10 +211,10 @@ void AVIFile::draw(void) {
 					return; // Codec not found
 				}
 				// Open codec
-#if LIBAVCODEC_VERSION_MAJOR < 53 && LIBAVCODEC_VERSION_MINOR < 35
-				if(avcodec_open(pCodecCtx, pCodec)<0) {
-#else
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53, 8, 0)
 				if(avcodec_open2(pCodecCtx, pCodec, NULL)<0) {
+#else
+				if(avcodec_open(pCodecCtx, pCodec)<0) {
 #endif
 					std::cout<<"Could not open codec"<<std::endl;
 					return; // Could not open codec
