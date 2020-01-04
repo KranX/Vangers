@@ -151,18 +151,23 @@ void AVIFile::draw(void) {
 			if(packet.stream_index==videoStream) {
 				// Decode video frame
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 106, 102)
-				int ret = avcodec_receive_frame(pCodecCtx, pFrame);
-				if (ret == 0) {
-					frameFinished = 1;
-				}
-				if (ret != AVERROR(EAGAIN)) {
-					std::cout<<"Can't receive the frame"<<std::endl;
-					return;
-				}
-				ret = avcodec_send_packet(pCodecCtx, &packet);
-				if (ret != 0) {
-					std::cout<<"Can't send packet"<<std::endl;
-					return;
+				while (true) {
+					int ret = avcodec_send_packet(pCodecCtx, &packet);
+					if (ret != 0 && ret != AVERROR(EAGAIN)) {
+						std::cout<<"Can't send packet"<<std::endl;
+						return;
+					}
+					ret = avcodec_receive_frame(pCodecCtx, pFrame);
+					if (ret == 0 || ret == AVERROR_EOF) {
+						frameFinished = 1;
+					} else if (ret == AVERROR(EAGAIN)) {
+						std::cout<<"Can't receive the frame, try it again"<<std::endl;
+						continue;
+					} else {
+						std::cout<<"Can't receive the frame"<<std::endl;
+						return;
+					}
+					break;
 				}
 #elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 23, 0)
 				avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, &packet);
@@ -175,7 +180,7 @@ void AVIFile::draw(void) {
 					break;
 				}
 			}
-	        AV_PACKET_UNREF(&packet);
+			AV_PACKET_UNREF(&packet);
 		}
 		if(frame<0 && (flags & AVI_LOOPING)) {
 				// Close the codec
