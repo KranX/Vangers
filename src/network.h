@@ -270,7 +270,8 @@ struct NetRndType
 #endif
 #define GLOBAL_CLOCK()	(round(clock()*(256./1000)) - global_clock_tau)
 #define LOCAL_CLOCK()	(round(clock()*(256./1000)))
-#define age_of_current_game() (((int)GLOBAL_CLOCK() - (int)game_birth_time_offset) >> 8) 
+#define age_of_current_game() ((((int)GLOBAL_CLOCK() - (int)game_birth_time_offset) / 256) >> 8)
+//#define age_of_current_game() (((int)((clock()/1000.0) - global_clock_tau) - (int)game_birth_time_offset) >> 8)
 
 #define START_TIMER(interval)	unsigned int _end_time_ = clock() + interval;
 #define CHECK_TIMER()		((int)(clock() - _end_time_) < 0)

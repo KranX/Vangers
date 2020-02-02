@@ -136,7 +136,7 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 #endif
 	uchar** slt = SetSkipLineTable(lt,ky,Ymin,Ymax);
 
-	register int i,j,fx,fy;
+	int i,j,fx,fy;
 
 	for(j = 0;j < YDstSize;j++){
 		int u = -XDstSize/2;

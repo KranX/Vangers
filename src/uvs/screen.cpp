@@ -184,7 +184,7 @@ std::cout<<"WorldScreen::Quant"<<std::endl;
 	}
 	sysfont.draw(fx,fy,info.GetBuf());
 
-	register int i;
+	int i;
 	int xx,yy,len;
 	uvsEscave* pe;
 	char* s;
@@ -269,7 +269,7 @@ void WorldScreen::DollyQuant(uvsDolly* pd)
 	XGR_SetPixel(xx - 1,yy - 1,63); XGR_SetPixel(xx - 1,yy + 1,63);
 	XGR_SetPixel(xx + 1,yy - 1,63); XGR_SetPixel(xx + 1,yy + 1,63);
 
-	register int i,j = pd -> tail_cInd,c;
+	int i,j = pd -> tail_cInd,c;
 	j = (j - 1 < 0) ? DOLLY_TAIL_LEN - 1 : j - 1;
 	for(i = 0;i < DOLLY_TAIL_LEN;i++)
 		if(pd -> tail_x[j] != -1){

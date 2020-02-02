@@ -384,7 +384,7 @@ void showmap(void)
 	int sx = dgD -> currentR -> gridSX;
 	int sy = dgD -> currentR -> gridSY;
 	uchar* map = dgD -> currentR -> status;
-	register int i,j;
+	int i,j;
 	console_clear();
 	for(j = 0;j < sy;j++){
 		for(i = 0;i < sx;i++)
@@ -592,7 +592,7 @@ int getSpectorsTaskStatus(void)
 	memcpy(esS,es,7);
 	memcpy(wsS,ws,4);
 
-	register int i,j,res;
+	int i,j,res;
 	for(i = 0;i < 4;i++)
 		for(j = 0;j < 7;j++)
 			if(res = getPassangerStats(es[j],ws[i])){
@@ -1711,7 +1711,7 @@ int dgCell::doCMD(int startup)
 //#endif
 	dgf -> reset();
 	char* p = dgf -> getElement(DGF_NONE,1);
-	register int i;
+	int i;
 	int ret = 0;
 	while(p){
 		i = 0; do if(!strcmp(p,CmdData[i].name)) break;
@@ -2153,7 +2153,7 @@ void dgRoom::endSession(void)
 			}
 	currentM = NULL;
 	if(!checkStatus && !(aciEscaveEmpty || aciEscaveDead)){
-		register int i,j,ind = 0;
+		int i,j,ind = 0;
 		for(j = 0;j < gridSY;j++)
 			for(i = 0;i < gridSX;i++,ind++)
 				switch(getSTATUS(i,j)){
@@ -2836,6 +2836,7 @@ char* FileBox::get(char* fname,int& len)
 			return data[i];
 			}
 	}
+
 	ErrH.Abort("FileBox: entry not found",XERR_USER,-1,fname);
 	return NULL;
 }

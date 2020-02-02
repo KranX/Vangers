@@ -166,7 +166,7 @@ int GetKeepSpace(void)
 	pFile.init(mapFName);
 	int maxWorld = atoi(pFile.getAtom());
 	if(maxWorld < 1) ErrH.Abort("Empty world list");
-	register int i;
+	int i;
 	char* atom;
 	char* buf = new char[256];
 	XStream ff(0);
@@ -186,7 +186,7 @@ int GetKeepSpace(void)
 			ff.close();
 			}
 		}
-	delete buf;
+	delete[] buf;
 	pFile.finit();
 	GetTargetName(NULL);
 	return size/1024/1024;
@@ -197,7 +197,7 @@ void KeepCleanUp(void)
 	PrmFile pFile;
 	pFile.init(mapFName);
 	int maxWorld = atoi(pFile.getAtom());
-	register int i;
+	int i;
 	char* atom;
 	char* buf = new char[256];
 	XStream ff(0);
@@ -215,7 +215,7 @@ void KeepCleanUp(void)
 			remove(GetTargetName(buf));
 			}
 		}
-	delete buf;
+	delete[] buf;
 	pFile.finit();
 	GetTargetName(NULL);
 }
@@ -486,7 +486,7 @@ void vrtMap::init(void)
 	freeTail = freeTail_c = 0;
 
 	vrtNode* p;
-	register int i;
+	int i;
 	for(i = 0,p = freeNodes;i < MAX_LINE - 1;i++,p++) p -> next = p + 1;
 	p -> next = freeNodes;
 	for(i = 0,p = freeNodes_c;i < MAX_LINE - 1;i++,p++) p -> next = p + 1;
@@ -523,7 +523,7 @@ void vrtMap::sssUpdate(void)
 {
 	if(DirectLog) return;
 	if(Verbose) XCon < "\nSession updating...";
-	register uint i,j;
+	uint i,j;
 	int* p = sssT;
 	for(i = 0,j = 0;i < V_SIZE;i++,p++,j += H2_SIZE)
 		if(*p != -1){
@@ -546,7 +546,7 @@ void vrtMap::sssUpdate(void)
 void vrtMap::sssKill(void)
 {
 	if(DirectLog) return;
-	register uint i,j;
+	uint i,j;
 	int* p = sssT;
 	for(i = 0,j = 0;i < V_SIZE;i++) *p++ = -1;
 	if(!ROLog){
@@ -670,7 +670,7 @@ void ConvertProcedure(char* name)
 	uchar* buf = new uchar[xsize];
 
 	XCon < "\n";
-	register int i;
+	int i;
 	for(i = 0;i < ysize;i++){
 		fin.read(buf,xsize);
 		fout.write(buf,xsize);
@@ -732,7 +732,7 @@ void vrtMap::analyzeINI(const char* name)
 	int tmax = iniparser_getint(dict_name,"Rendering Parameters:Terrain Max", 0);
 	if((!tmax && TERRAIN_MAX != 8) || (tmax && tmax != TERRAIN_MAX)) ErrH.Abort("Incorrect Terrain Max");
 	
-	register int i;
+	int i;
 	{
 		char* p = iniparser_getstring(dict_name,"Rendering Parameters:Begin Colors", NULL);
 		XBuffer buf(p,128);
@@ -827,7 +827,7 @@ void vrtMap::load(const char* name,int nWorld)
 	if(maxWorld < 1) {
 		ErrH.Abort("Empty world list");
 	}
-	register int i;
+	int i;
 	char* atom;
 	wTable = new vrtWorld[maxWorld];
 	for(i = 0;i < maxWorld;i++) {
@@ -892,8 +892,8 @@ void vrtMap::load(const char* name,int nWorld)
 		for(uint i = 0;i < V_SIZE;i++) {
 			fmap > st_table[i];
 			fmap > sz_table[i];
-//			if(sz_table[i] >= H2_SIZE)
-//				ErrH.Abort("Wrong compression");
+			if(sz_table[i] > H2_SIZE)
+				ErrH.Abort("Wrong compression");
 		}
 		InitSplay(fmap);
 	}
@@ -957,7 +957,7 @@ void vrtMap::reload(int nWorld)
 		if(KeepON){ memset(keepT,0,V_SIZE); }
 		}
 
-	register int i;
+	int i;
 #ifdef _SURMAP_
 	int exist = 1;
 	if(!fmap.open(fname,XS_IN)) exist = 0;
@@ -1024,7 +1024,7 @@ void vrtMap::reload(int nWorld)
 		for(i = 0;i < (int)V_SIZE;i++){
 			fmap > st_table[i];
 			fmap > sz_table[i];
-			if(sz_table[i] >= H2_SIZE)
+			if(sz_table[i] > H2_SIZE)
 				ErrH.Abort("Wrong compression");
 			}
 		InitSplay(fmap);
@@ -1104,7 +1104,7 @@ void vrtMap::dump_terrain() {
 
 	SDL_Palette *gray_pal = SDL_AllocPalette(256);
 	for (i2 = 0; i2 < 256; i2++) {
-		SDL_Color color = {i2, i2, i2, 255};
+		SDL_Color color = {(Uint8)i2, (Uint8)i2, (Uint8)i2, 255};
 		SDL_SetPaletteColors(gray_pal, &color, i2, 1);
 	}
 
@@ -1176,7 +1176,7 @@ void vrtMap::accept(int up,int down)
 	down = YCYCL(down);
 
 	int max = YCYCL(down + 1);
-	register int i = up;
+	int i = up;
 	uchar* p;
 	int off;
 	//std::cout<<"i:"<<i<<" max:"<<max<<std::endl;
@@ -1309,7 +1309,7 @@ void vrtMap::change(int up,int down)
 void vrtMap::updownSetup(void)
 {
 	uchar** lt = isCompressed ? lineTcolor : lineT;
-	register int i = ViewY;
+	int i = ViewY;
 	while(lt[i]) i = YCYCL(i - 1);
 	upLine = YCYCL(i + 1);
 	i = ViewY;
@@ -1394,7 +1394,7 @@ void vrtMap::link(int up,int down,int d)
 
 	uchar* p;
 	int max = YCYCL(down + d),off;
-	register int i = up;
+	int i = up;
 	do {
 		if(!lineTcolor[i]){
 			if(freeMax <= 1){
@@ -1450,7 +1450,7 @@ void vrtMap::linkC(int up,int down,int d)
 
 	uchar* p;
 	int max = YCYCL(down + d);
-	register int i = up;
+	int i = up;
 	do {
 		if(!lineTcolor[i]){
 			if(freeMax <= 1){
@@ -1486,12 +1486,12 @@ if (NetworkON && zMod_flood_level_delta!=0) {
 	pf0 = pf = pa0 + H_SIZE;
 
 	if (zMod_flood_level_delta>0) { //если уровень повысился
-		for(register int x = 0;x < H_SIZE; x++, pa++, pf++)
+		for(int x = 0;x < H_SIZE; x++, pa++, pf++)
 			if (*(pa0 + x) <= FloodLEVEL) //заливаем все что ниже уровня
 				*pf &= ~TERRAIN_MASK & ~OBJSHADOW; 
 	
 	} else { //если уровень понизился
-		for(register int x = 0;x < H_SIZE; x++, pa++, pf++)
+		for(int x = 0;x < H_SIZE; x++, pa++, pf++)
 			if (*(pa0 + x) > FloodLEVEL) //осушаем все что выше уровня 
 				if(GET_TERRAIN(*pf) == WATER_TERRAIN_INDEX) //и только существующую воду
 					*pf |= MAIN_TERRAIN;
@@ -1502,7 +1502,7 @@ if (NetworkON && zMod_flood_level_delta!=0) {
 /*
 	//znfo ficha DRY (there is one more in upper)
 	uchar* pf = p + H_SIZE;
-	for (register int x=0;x<H_SIZE; x++,pf++) {
+	for (int x=0;x<H_SIZE; x++,pf++) {
 		if(GET_TERRAIN(*pf) == WATER_TERRAIN_INDEX) {
 			*pf |= MAIN_TERRAIN_INDEX << TERRAIN_OFFSET;
 			}
@@ -1526,7 +1526,7 @@ void vrtMap::delink(int up,int down)
 	down = YCYCL(down);
 
 	int max = YCYCL(down + 1);
-	register int i = up;
+	int i = up;
 	uchar* p;
 	do {
 		if(lineT[i]){
@@ -1590,7 +1590,7 @@ void vrtMap::refresh(void)
 
 	int off;
 	int max = YCYCL(downLine + 1);
-	register int i = upLine;
+	int i = upLine;
 	if(MAP_POWER_Y <= 11 && !RAM16) i = max = 0;
 	do {
 		if(lineT[i]){
@@ -1623,7 +1623,7 @@ void vrtMap::flush(void)
 {
 	int max = YCYCL(downLine + 1);
 	int m;
-	register int i = upLine;
+	int i = upLine;
 	if(MAP_POWER_Y <= 11 && !RAM16) i = max = 0;
 	do {
 		if(lineT[i] && changedT[i]){
@@ -1804,7 +1804,7 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 	
 	request(MIN(y0,y1) - MAX_RADIUS/2,MAX(y0,y1) + MAX_RADIUS/2,MIN(x0,x1) - 4,MAX(x0,x1) + 4);
 	
-	register int i,j,fx,fy;
+	int i,j,fx,fy;
 	
 	unsigned char *data, *data_color, *data2, *data_color2;
 	SDL_Color current_color;
@@ -1956,7 +1956,7 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 	if(!TotalDrawFlag) return;
 #endif
 
-	register int i,j,fx,fy;
+	int i,j,fx,fy;
 	uchar** lt = lineT;
 	uchar** ltc = lineTcolor;
 	int YSrc;
@@ -2632,7 +2632,7 @@ void vrtMap::scaling_3D(DBM& A,int H,int focus,int cx,int cy,int xc,int yc,int x
 	double cl_inv;
 
 	int k_xscr_x,k_xscr_y;
-	register int i,j,fx,fy;
+	int i,j,fx,fy;
 	uchar** lt = lineTcolor;
 	uchar* data;
 

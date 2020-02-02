@@ -13,6 +13,9 @@
 #else
 #include <unistd.h> // gethostname()
 #include <limits.h> // HOST_NAME_MAX
+#ifdef __HAIKU__
+#include <posix/sys/select.h> // fd_set
+#endif
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
 #endif
@@ -92,6 +95,7 @@ XSocket::XSocket()
 	ErrHUsed = 1;
 	addr.host = 0;
 	addr.port = 0;
+	socketSet = NULL;
 }
 
 XSocket::~XSocket()
@@ -108,6 +112,7 @@ XSocket::XSocket(XSocket& donor)
 	addr = donor.addr;
 	donor.tcpSock = INVALID_SOCKET;
 	donor.udpSock = INVALID_SOCKET;
+	socketSet = NULL;
 }
 
 XSocket& XSocket::operator = (XSocket& donor)
@@ -116,8 +121,10 @@ XSocket& XSocket::operator = (XSocket& donor)
 	udpSock = donor.udpSock;
 	ErrHUsed = donor.ErrHUsed;
 	addr = donor.addr;
+	socketSet = donor.socketSet;
 	donor.tcpSock = INVALID_SOCKET;
 	donor.udpSock = INVALID_SOCKET;
+	donor.socketSet = NULL;
 	return *this;
 }
 
@@ -128,10 +135,14 @@ XSocket& XSocket::operator = (XSocket& donor)
 int XSocket::tcp_open()
 {
 	tcpSock = SDLNet_TCP_Open(&addr);
+
 	if (!tcpSock) {
 		XSOCKET_ERROR("TCP socket open failed", SDLNet_GetError());
 		return 0;
 	}
+
+	socketSet = SDLNet_AllocSocketSet(16);
+	SDLNet_TCP_AddSocket(socketSet, tcpSock);
 
 	return 1;
 }
@@ -216,11 +227,16 @@ void XSocket::close()
 	{
 		SDLNet_TCP_Close(tcpSock);
 		tcpSock = INVALID_SOCKET;
+
 	}
 	if (udpSock)
 	{
 		SDLNet_UDP_Close(udpSock);
 		udpSock = INVALID_SOCKET;
+	}
+	if (socketSet) {
+		SDLNet_FreeSocketSet(socketSet);
+		socketSet = NULL;
 	}
 	addr.host = 0;
 	addr.port = 0;
@@ -280,8 +296,6 @@ int XSocket::set_nonblocking_mode(int enable_nonblocking)
 
 int XSocket::send(const char* buffer, int size)
 {
-	//Disable network
-	return 0;
 	int status = 0;
 	if (tcpSock)
 	{
@@ -319,6 +333,23 @@ int XSocket::receive(char* buffer, int size_of_buffer, int ms_time)
 {
 	int status = 0;
 
+	if (ms_time == 0) {
+		int numready;
+
+		numready = SDLNet_CheckSockets(socketSet, 0);
+		if(numready==-1) {
+			printf("SDLNet_CheckSockets: %s\n", SDLNet_GetError());
+			//most of the time this is a system error, where perror might help you.
+			perror("SDLNet_CheckSockets");
+		} else if (numready == 0) {
+			return 0;
+		}
+
+		if(!SDLNet_SocketReady(tcpSock)) {
+			return 0;
+		}
+	}
+
 	if (tcpSock)
 	{
 		status = SDLNet_TCP_Recv(tcpSock, buffer, size_of_buffer);
@@ -328,11 +359,11 @@ int XSocket::receive(char* buffer, int size_of_buffer, int ms_time)
 			return 0;
 		}
 		return status;
-		
+
 	}
 	else if (udpSock)
 	{
-		
+
 		UDPpacket *pkt = SDLNet_AllocPacket(size_of_buffer);
 		if (!pkt) // TODO: report oom
 			return 0;

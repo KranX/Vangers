@@ -122,7 +122,7 @@ void pal_iter0(void)
 	static int cnt = PRD;
 	static int add = 1;
 
-	register int i;
+	int i;
 	uchar* p = palbuf + 3*(BEG + 1);
 	uchar* po = palbufOrg + 3*(BEG + 1);
 	memcpy(p,po,3*SZ);
@@ -173,7 +173,7 @@ void pal_iter1(void)
 	static int cnt = PRD;
 	static int add = 1;
 
-	register int i;
+	int i;
 	uchar* p = palbuf + 3*(BEGCOLOR[PAL_WAVE_TERRAIN] + 1);
 	uchar* po = palbufOrg + 3*(BEGCOLOR[PAL_WAVE_TERRAIN] + 1);
 	memcpy(p,po,3*SZ);

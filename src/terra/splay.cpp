@@ -29,10 +29,10 @@ void InitSplay(XStream& fo){
 }
 
 void decompress_line1(int *decomp_tree, char** inBuf, char** outBuf){
-	register unsigned int	cindex = 1;
-	register char		curchar;
-	register char		lastchar = 0;
-	register int		bitshift;
+	unsigned int	cindex = 1;
+	char		curchar;
+	char		lastchar = 0;
+	int		bitshift;
 	unsigned int charcount = (1<<11);
 
 	char *in = *inBuf, *out = *outBuf;
@@ -61,10 +61,10 @@ void decompress_line1(int *decomp_tree, char** inBuf, char** outBuf){
 }
 
 void decompress_line2(int *decomp_tree, char** inBuf, char** outBuf){
-	register unsigned int	cindex = 1;
-	register char		curchar;
-	register char		lastchar = 0;
-	register int		bitshift;
+	unsigned int	cindex = 1;
+	char		curchar;
+	char		lastchar = 0;
+	int		bitshift;
 	unsigned int charcount = (1<<11);
 
 	char *in = *inBuf, *out = *outBuf;

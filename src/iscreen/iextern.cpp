@@ -42,6 +42,7 @@
 
 // PASSEMBLOSS...
 #define iMP_CHECKPOINTS_NUM	3
+#define iMP_ESCAVE	4
 
 // MUSTODONT...
 #define iMP_MECHOS_NAME 	4
@@ -362,7 +363,7 @@ iScreen* create_screen(void)
 
 	iScreen* p = iCreateScreen("ExtScreen01");
 
-/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iScreenEvent ------------------ */
+/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iScreenEvent ------------------ */
 	ev = iCreateScreenEvent();
 	ev -> time = 7;
 
@@ -374,7 +375,7 @@ iScreen* create_screen(void)
 	ev -> add_command(ec);
 
 	ec = iCreateEventCommand();
-	ec -> EvType = EV_RISE_SCREEN;		// ’ЁЇл Є®¬ ­¤ - enum EventTypes ў ISCREEN.H
+	ec -> EvType = EV_RISE_SCREEN;		// ’ЁЇл Є®¬ ­¤ - enum EventTypes ў ISCREEN.H
 	ec -> time = 3;
 	ec -> start_time = 4;
 
@@ -383,7 +384,7 @@ iScreen* create_screen(void)
 	ec = iCreateEventCommand();
 	ec -> EvType = EV_SCREEN_JUMP;
 	ec -> init_objID("Main Screen");
-	ec -> objType = I_SCREEN;		// ’ЁЇ ®ЎкҐЄв , б Є®в®ал¬ а Ў®в Ґв Є®¬ ­¤ :
+	ec -> objType = I_SCREEN;		// ’ЁЇ ®ЎкҐЄв , б Є®в®ал¬ а Ў®в Ґв Є®¬ ­¤ :
 						// enum EvObjTypes ў ISCREEN.H
 	ec -> start_time = 3;
 
@@ -396,7 +397,7 @@ iScreen* create_screen(void)
 	p -> add_event((iListElement*)ev);
 /* -------------------------------------------------------------------------- */
 
-/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iScreenObject ----------------- */
+/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iScreenObject ----------------- */
 	obj = iCreateScreenObject("Obj00");
 	obj -> align_x = ALIGN_R;		// ‘¬. enum AlignTypes ў ISCREEN.H
 	obj -> align_x_offs = 30;
@@ -404,7 +405,7 @@ iScreen* create_screen(void)
 
 	// ---------- iBitmapElement (begin) ----------
 	iBitmapElement* bt = (iBitmapElement*)iCreateScreenElement(I_BITMAP_ELEM);	// ’ЁЇл н«Ґ¬Ґ­в®ў - enum iElementTypes ў ISCREEN.H
-	bt -> init_name("bitmap/coin.bmp");    // €¬п BMP,§ ¤ ­ЁҐ Ё¬Ґ­Ё н«Ґ¬Ґ­в  - init_id(char* p)
+	bt -> init_name("bitmap/coin.bmp");    // €¬п BMP,§ ¤ ­ЁҐ Ё¬Ґ­Ё н«Ґ¬Ґ­в  - init_id(char* p)
 
 	bt -> align_x = ALIGN_CENTER;
 	bt -> align_y = ALIGN_CENTER;
@@ -447,14 +448,14 @@ iScreen* create_screen(void)
 
 	p -> add_object(obj);
 
-/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iTriggerObject ----------------- */
+/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iTriggerObject ----------------- */
 	iTriggerObject* trg = iCreateTriggerObject("Test trigger");
 	trg -> align_x = ALIGN_L;
 	trg -> align_x_offs = 30;
 
-	trg -> PosY = 250;		// ‡ ¤ ­ЁҐ Є®®а¤Ё­ вл ®ЎкҐЄв  ­ Їап¬го,
-					// Ґб«Ё гбв ­®ўЁвм ҐйҐ Ё align_y, в® Є®®а¤Ё­ в 
-					// Ё§¬Ґ­Ёвбп Ї®б«Ґ ўл§®ў  init() ў б®®вўҐвбвўЁЁ б align_y
+	trg -> PosY = 250;		// ‡ ¤ ­ЁҐ Є®®а¤Ё­ вл ®ЎкҐЄв  ­ Їап¬го,
+					// Ґб«Ё гбв ­®ўЁвм ҐйҐ Ё align_y, в® Є®®а¤Ё­ в 
+					// Ё§¬Ґ­Ёвбп Ї®б«Ґ ўл§®ў  init() ў б®®вўҐвбвўЁЁ б align_y
 	trg -> num_state = 3;
 	trg -> alloc_state();
 
@@ -513,7 +514,7 @@ iScreen* create_screen(void)
 	p -> add_object(trg);
 /* -------------------------------------------------------------------------- */
 
-/* ----- ‘®§¤ ­ЁҐ б¬ бив ЎЁа®ў ­­®© ®Ў« бвЁ (®ЎкҐЄв  б iTerrainElement) ----- */
+/* ----- ‘®§¤ ­ЁҐ б¬ бив ЎЁа®ў ­­®© ®Ў« бвЁ (®ЎкҐЄв  б iTerrainElement) ----- */
 
 	obj = iCreateScreenObject("TERRAIN_OBJECT");
 	obj -> PosY = 150;
@@ -535,7 +536,7 @@ iScreen* create_screen(void)
 	p -> add_terr_object(obj);		// !!!
 /* -------------------------------------------------------------------------- */
 
-/* ------------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп бЄа®««Ґа  ------------------- */
+/* ------------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп бЄа®««Ґа  ------------------- */
 
 	obj = iCreateScreenObject("Scroller object");
 
@@ -543,7 +544,7 @@ iScreen* create_screen(void)
 	obj -> align_x = ALIGN_L;
 	obj -> align_x_offs = 30;
 	// ---------- iScrollerElement (begin) ----------
-	iScrollerElement* scl = (iScrollerElement*)iCreateScreenElement(I_SCROLLER_ELEM,"Test scroller");       // ‡¤Ґбм Ё¬  н«Ґ¬Ґ­в  § ¤ Ґвбп, в.Є. ­  ­ҐЈ®
+	iScrollerElement* scl = (iScrollerElement*)iCreateScreenElement(I_SCROLLER_ELEM,"Test scroller");       // ‡¤Ґбм Ё¬  н«Ґ¬Ґ­в  § ¤ Ґвбп, в.Є. ­  ­ҐЈ®
 														// Ўг¤гв ббл«ЄЁ Ё§ б®ЎлвЁ©
 	scl -> init_name("bitmap/scroller.bmp");
 	scl -> bmp_null_level = 110;
@@ -577,7 +578,7 @@ iScreen* create_screen(void)
 
 /* -------------------------------------------------------------------------- */
 
-/* ------------------ ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп AVI ®ЎкҐЄв  ------------------ */
+/* ------------------ ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп AVI ®ЎкҐЄв  ------------------ */
 
 	obj = iCreateScreenObject("AVI object");
 	obj -> align_x = obj -> align_y = ALIGN_CENTER;
@@ -1330,7 +1331,7 @@ iMultiGameData::~iMultiGameData(void)
 	if(NumParams){
 		for(i = 0; i < NumParams; i ++)
 			delete pData[i];
-		delete pData;
+		delete[] pData;
 	}
 }
 
@@ -1496,7 +1497,7 @@ void iInitMultiGames(void)
 
 	scr = (iScreen*)iScrDisp -> get_object("Game Params 2");
 	if(!scr) ErrH.Abort("iMP_Screen not found...");
-	iMP_Games[iMP_PASSEMBLOSS] -> alloc_mem(4);
+	iMP_Games[iMP_PASSEMBLOSS] -> alloc_mem(5);
 
 	el = scr -> get_object("BeebosNumberID");
 	if(!el) ErrH.Abort("iObject not found...");
@@ -1519,6 +1520,12 @@ void iInitMultiGames(void)
 	if(!el) ErrH.Abort("iObject not found...");
 	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_CHECKPOINTS_NUM] -> alloc_mem(1);
 	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_CHECKPOINTS_NUM] -> add_obj(el);
+
+	el = scr -> get_object("EscaveTrig");
+	if(!el) ErrH.Abort("iObject not found...");
+	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_ESCAVE] -> type = iMP_TRIGGER_STATE;
+	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_ESCAVE] -> alloc_mem(1);
+	iMP_Games[iMP_PASSEMBLOSS] -> pData[iMP_ESCAVE] -> add_obj(el);
 
 	scr = (iScreen*)iScrDisp -> get_object("Game Params 3");
 	if(!scr) ErrH.Abort("iMP_Screen not found...");
@@ -1694,7 +1701,10 @@ void iGetMultiGameParameters(void)
 
 			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
 			my_server_data.Passembloss.CheckpointsNumber = value;
-			my_server_data.Passembloss.RandomEscave = tm % 3;
+
+			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ESCAVE);
+			my_server_data.Passembloss.RandomEscave = value - 1;
+//			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;
 		case iMP_HUNTAGE:
 			value = iGetMultiGameParameter(iMP_HUNTAGE,iMP_INITIAL_CASH);
@@ -1789,6 +1799,10 @@ void iSetMultiGameParameters(void)
 
 			value = my_server_data.Passembloss.CheckpointsNumber;
 			iSetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM,value);
+
+			value = my_server_data.Passembloss.RandomEscave + 1;
+			if(value > 3) value = 0;
+			iSetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ESCAVE,value);
 			break;
 		case iMP_HUNTAGE:
 			value = my_server_data.Huntage.InitialCash;
@@ -2347,7 +2361,7 @@ void iPreparePlayerResults(int id)
 }
 
 const char* STR_NONE1 = "NONE";
-const char STR_NONE2[] = {0x8D, 0x85, 0x92}; //cp866 - НЕТ
+const char STR_NONE2[] = {(char)0x8D, (char)0x85, (char)0x92}; //cp866 - НЕТ
 
 const char* STR_JOYSTICK_KEY_NAME[] = {
 	"jbutton_1",
@@ -2435,16 +2449,20 @@ const char* iGetJoyBtnNameText(int vkey,int lang)
 {
 	const char* ret;
 	if(vkey & VK_BUTTON){
-		if(vkey >= VK_BUTTON_1 && vkey <= VK_BUTTON_32){
-			ret = (lang) ? iJoystickButtons2[vkey - VK_BUTTON_1] : iJoystickButtons1[vkey - VK_BUTTON_1];
+		if(vkey >= VK_BUTTON_1 && vkey <= VK_BUTTON_32) {
+			ret = (lang)
+				? iJoystickButtons2[vkey - VK_BUTTON_1]
+				: iJoystickButtons1[vkey - VK_BUTTON_1];
 			return ret;
 		}
 		else
 			return NULL; //WARNING NEED VIEW!!!
 	}
 	if(vkey & VK_STICK_SWITCH){
-		if(vkey >= VK_STICK_SWITCH_1 && vkey <= VK_STICK_SWITCH_9){
-			ret = (lang) ? iJoystickStickSwitch2[vkey - VK_STICK_SWITCH_1] : iJoystickStickSwitch2[vkey - VK_STICK_SWITCH_1];
+		if(vkey >= VK_STICK_SWITCH_1 && vkey <= VK_STICK_SWITCH_9) {
+			ret = (lang)
+				? iJoystickStickSwitch2[vkey - VK_STICK_SWITCH_1]
+				: iJoystickStickSwitch1[vkey - VK_STICK_SWITCH_1];
 			return ret;
 		}
 		else

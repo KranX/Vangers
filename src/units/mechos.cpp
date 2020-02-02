@@ -197,7 +197,7 @@ char CheckAddLink(LinkType* l,BranchType* b,int s)
 /*	l += s;
 	if((int)(l) >= (int)(b->Link + b->NumLink)) return 0;
 	return 1;*/
-	if(((unsigned long)(l) + s*sizeof(LinkType)) >= (unsigned long)(b->Link + b->NumLink)) return 0;
+	if(((uintptr_t)(l) + s*sizeof(LinkType)) >= (uintptr_t)(b->Link + b->NumLink)) return 0;
 	return 1;
 };
 
@@ -207,7 +207,7 @@ char CheckDecLink(LinkType* l,BranchType* b,int s)
 /*	l -= s;
 	if(int(l) < (int)(b->Link)) return 0;
 	return 1;*/
-	if(((unsigned long)(l) - s*sizeof(LinkType)) < (unsigned long)(b->Link)) return 0;
+	if(((uintptr_t)(l) - s*sizeof(LinkType)) < (uintptr_t)(b->Link)) return 0;
 	return 1;
 };
 
@@ -2502,6 +2502,7 @@ void ActionDispatcher::Quant(void)
 							RaceTxtBuff <= n_position < "|" <= n_total;
 						};
 
+						//std::cout<<"age_of_current_game: "<<age_of_current_game()<<" Van_War.MaxTime:"<<my_server_data.Van_War.MaxTime*60<<std::endl;
 						if(age_of_current_game() >= my_server_data.Van_War.MaxTime*60 || drop_log){
 							GameOverID = GAME_OVER_NETWORK;
 							ActD.Active->Status |= SOBJ_DISCONNECT;
@@ -5824,7 +5825,7 @@ void VangerUnit::CreateVangerUnit(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	Go2World();
@@ -13963,7 +13964,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	

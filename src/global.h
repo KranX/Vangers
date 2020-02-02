@@ -29,8 +29,8 @@ namespace KDWIN
 
 typedef void* HANDLE;
 
-#include "../lib/xtool/xglobal.h"
-#include "../lib/xgraph/global.h"
+#include "xglobal.h"
+#include "xgraph.h"
 
 #include "common.h"
 

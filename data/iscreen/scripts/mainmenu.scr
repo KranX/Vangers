@@ -63,8 +63,11 @@
 #define MECHOS_TRG_X		430
 
 // PASSEMBLOSS --- Checkpoints Number
-#define NUM_CHECKS_STR_X	190
-#define NUM_CHECKS_IN_STR_X	540
+#define NUM_CHECKS_STR_X	220
+#define NUM_CHECKS_IN_STR_X	570
+
+// PASSEMBLOSS --- Escave
+#define ESCAVE_BIRTH_STR_X	240
 
 // MECHOSOMA --- One at a time
 #define ONE_AT_A_TIME_STR_X	250
@@ -119,17 +122,17 @@
 #define NEW_GAME_X		60
 #define NEW_GAME_Y		20
 
-#define MULTIPLAYER_X		230
-#define MULTIPLAYER_Y		340
-
 #define LOAD_GAME_X		60
-#define LOAD_GAME_Y		110
+#define LOAD_GAME_Y		90
 
 #define OPTIONS_X		160
-#define OPTIONS_Y		200
+#define OPTIONS_Y		160
 
 #define CREDITS_X		80
-#define CREDITS_Y		290
+#define CREDITS_Y		310
+
+#define MULTIPLAYER_X		230
+#define MULTIPLAYER_Y		240
 
 #define MAIN_FNT		1
 
@@ -395,7 +398,7 @@ Screen "Main Screen"
 		} 
 	}
 
-/*	Object "Multiplayer Option"
+Object "Multiplayer Option"
 	{
 		x	$MULTIPLAYER_X
 		y	$MULTIPLAYER_Y
@@ -525,7 +528,7 @@ Screen "Main Screen"
 			$EV_CHANGE_OBJ
 		}
 	}
-*/
+
 	Object "New Game Option"
 	{
 		x	$NEW_GAME_X
@@ -6866,6 +6869,91 @@ Screen "Game Params 2"  // PASSEMBLOSS
 			}
 		}
 	}
+
+	Object "EscaveStr"
+  {
+    x	$ESCAVE_BIRTH_STR_X
+    y	{ $PARAMS_START_Y + $PARAMS_DELTA_Y * 5 }
+
+    Element STRING {
+    	align_x center
+
+    	terrain_num	$TERRAIN2
+
+    	space		$PARAMS_SPACE
+    	font		$PARAM_FNT
+    	null_level	$DEFAULT_NULL
+    	string		$iSTR_Nascency
+    }
+  }
+  Trigger "EscaveTrig"
+  {
+  	x	$Game_Params_0_EscaveTrig_PosX
+  	y	{ $PARAMS_START_Y + $PARAMS_DELTA_Y * 5 }
+
+  	not_unlock
+
+  	num_state	4
+
+  	State 0 "STRING"{
+  		align_x center
+  		align_y center
+
+  		terrain_num	$TERRAIN4
+
+  		space		$PARAMS_SPACE
+  		font		$PARAM_FNT
+  		null_level	$DEFAULT_NULL
+
+  		string		$iSTR_Any_World
+  	}
+  	State 1 "STRING"{
+  		align_x center
+  		align_y center
+
+  		terrain_num	$TERRAIN4
+
+  		space		$PARAMS_SPACE
+  		font		$PARAM_FNT
+  		null_level	$DEFAULT_NULL
+
+  		string		$iSTR_Fostral
+  	}
+  	State 2 "STRING"{
+  		align_x center
+  		align_y center
+
+  		terrain_num	$TERRAIN4
+
+  		space		$PARAMS_SPACE
+  		font		$PARAM_FNT
+  		null_level	$DEFAULT_NULL
+
+  		string		$iSTR_Glorx
+  	}
+  	State 3 "STRING"{
+  		align_x center
+  		align_y center
+
+  		terrain_num	$TERRAIN4
+
+  		space		$PARAMS_SPACE
+  		font		$PARAM_FNT
+  		null_level	$DEFAULT_NULL
+
+  		string		$iSTR_Necross
+  	}
+  	Event {
+  		key $VK_LBUTTON
+  		key $VK_RBUTTON
+
+  		time { $TRIGGER_TIME + 1 }
+  		EvComm {
+  			change_trigger	"EscaveTrig"
+  			time $TRIGGER_TIME
+  		}
+  	}
+  }
 }
 
 Screen "Game Params 3"  // HUNTAGE

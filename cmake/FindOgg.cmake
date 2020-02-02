@@ -6,6 +6,7 @@
 # used in building OGG.
 
 SET(OGG_SEARCH_PATHS
+	${OGG_SEARCH_PATHS}
 	~/Library/Frameworks
 	/Library/Frameworks
 	/usr/local
@@ -40,7 +41,7 @@ FIND_PATH(OGG_INCLUDE_DIR
 )
 
 FIND_LIBRARY(OGG_LIBRARY 
-	NAMES ogg libogg
+	NAMES ogg libogg libogg-0
 	HINTS
 	$ENV{OGGDIR}
 	$ENV{OGG_PATH}
@@ -69,11 +70,6 @@ IF(NOT OGG_LIBRARY_DEBUG)
 		PATHS ${OGG_SEARCH_PATHS}
 	)
 ENDIF()
-
-if (MINGW)
-	set(OGG_INCLUDE_DIR "/local/include/vorbis")
-	set(OGG_LIBRARY "/local/lib/libogg.dll.a")
-endif (MINGW)
 
 IF(OGG_LIBRARY)
 	IF(OGG_LIBRARY_DEBUG)

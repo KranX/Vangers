@@ -4,9 +4,9 @@
 #include <stdio.h>
 
 #include "_xsound.h"
-#include "../xtool/xglobal.h"
+#include "xglobal.h"
 #include "xcritical.h"
-#include "../xgraph/xgraph.h"
+#include "xgraph.h"
 #include "avi.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
@@ -21,6 +21,14 @@ void xtUnRegisterSysFinitFnc(int id);
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
+// compatability with newer libavcodec
+#if LIBAVCODEC_VERSION_MAJOR < 57
+  #define AV_FRAME_ALLOC avcodec_alloc_frame
+  #define AV_PACKET_UNREF av_free_packet
+#else
+  #define AV_FRAME_ALLOC av_frame_alloc
+  #define AV_PACKET_UNREF av_packet_unref
+#endif
 
 static XList aviXList;
 
@@ -33,10 +41,6 @@ AVIFile::AVIFile(char* aviname,int initFlags,int channel)
 	open(aviname, initFlags, channel);
 }
 
-Uint32 AVITimerCallback(Uint32 interval, void *param) {
-	((AVIFile *)param)->draw();
-}
-
 int AVIFile::open(char* aviname,int initFlags,int channel)
 {
 	int i;
@@ -45,8 +49,11 @@ int AVIFile::open(char* aviname,int initFlags,int channel)
 	// Open video file
 	pFormatCtx = NULL;
 	
-	if(avformat_open_input(&pFormatCtx, aviname, NULL, NULL) != 0) {
-		std::cout<<"Couldn't open video file:"<<aviname<<std::endl;
+	int ret = avformat_open_input(&pFormatCtx, aviname, NULL, NULL);
+	if(ret != 0) {
+		char error_message[256];
+		av_strerror(ret, error_message, 256);
+		std::cout<<"Couldn't open video file:"<<aviname<<" "<<error_message<<std::endl;
 		return 0; // Couldn't open file
 	}
 	// Retrieve stream information
@@ -86,7 +93,7 @@ int AVIFile::open(char* aviname,int initFlags,int channel)
 	}
 
 	// Allocate video frame
-	pFrame=avcodec_alloc_frame();
+	pFrame=AV_FRAME_ALLOC();
 
 	width = pCodecCtx->width;
 	height = pCodecCtx->height;
@@ -129,11 +136,11 @@ void AVIFile::draw(void) {
 #endif
 				 // Did we get a video frame?
 				if(frameFinished) {
-					av_free_packet(&packet);
+					AV_PACKET_UNREF(&packet);
 					break;
 				}
 			}
-		av_free_packet(&packet);
+	        AV_PACKET_UNREF(&packet);
 		}
 		if(frame<0 && (flags & AVI_LOOPING)) {
 				// Close the codec
@@ -142,7 +149,8 @@ void AVIFile::draw(void) {
 				//av_close_input_file(pFormatCtx);
 				avformat_close_input(&pFormatCtx);
 				// Open video file
-				if(avformat_open_input(&pFormatCtx, filename.c_str(), NULL, NULL)!=0) {
+				int ret = avformat_open_input(&pFormatCtx, filename.c_str(), NULL, NULL);
+				if(ret != 0) {
 					std::cout<<"Couldn't open video file"<<std::endl;
 					return; // Couldn't open file
 				}

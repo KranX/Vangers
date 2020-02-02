@@ -7,6 +7,16 @@
 #include "controls.h"
 #include "i_chat.h"
 #include "i_str.h"
+#include "hfont.h"
+#include "iscreen.h"
+#include "../actint/item_api.h"
+#include "../actint/actint.h"
+
+#include "../network.h"
+
+#ifndef _WIN32
+#include <arpa/inet.h> // ntohl() FIXME: remove
+#endif
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -40,6 +50,8 @@ extern char* iSTR_Orange;
 extern char* iSTR_Blue;
 extern char* iSTR_Green;
 
+extern aciFont** aScrFonts32;
+
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
 int iGetKeyName(int vkey,int shift,int lng_flag);
@@ -51,13 +63,13 @@ int aTextHeight32(void* text,int font,int vspace);
 void iChatInit(void);
 void iChatQuant(int flush = 0);
 void iChatFinit(void);
-void iChatKeyQuant(int k);
+void iChatKeyQuant(SDL_Event *k);
 void iChatMouseQuant(int x,int y,int bt);
 
 void iInitChatButtons(void);
 void iInitChatScreen(void);
 
-void iChatInputChar(int code);
+void iChatInputChar(SDL_Event *code);
 void iChatInputFlush(void);
 void iChatInputBack(void);
 
@@ -69,6 +81,7 @@ iChatButton* iGetChatButton(int id);
 iChatButton* iGetChatPlayerButton(int id);
 
 void put_map(int x,int y,int sx,int sy);
+unsigned char UTF8toCP866(unsigned short utf);
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
@@ -617,6 +630,7 @@ void iChatInit(void)
 	XGR_MouseShow();
 
 	iInitChatScreen();
+	SDL_StartTextInput();
 }
 
 void iChatQuant(int flush)
@@ -686,12 +700,20 @@ void iChatFinit(void)
 	iChatHistory = NULL;
 	iChatInput = NULL;
 	iChatButtons = NULL;
+	SDL_StopTextInput();
 }
 
-void iChatKeyQuant(int k)
-{
-	if(iCheckKeyID(iKEY_CHAT,k)) iChatExit = 1;
-	switch(k){
+void iChatKeyQuant(SDL_Event *k) {
+	if (k->type == SDL_TEXTINPUT) {
+		return iChatInputChar(k);
+	}
+	if (k->type != SDL_KEYDOWN) {
+		iChatExit = 1;
+		return;
+	}
+	if(iCheckKeyID(iKEY_CHAT, k->key.keysym.scancode))
+		iChatExit = 1;
+	switch(k->key.keysym.scancode) {
 		case SDL_SCANCODE_ESCAPE:
 			iChatExit = 1;
 			break;
@@ -836,22 +858,43 @@ iChatButton* iGetChatPlayerButton(int id)
 	return 0;
 }
 
-void iChatInputChar(int code)
+void iChatInputChar(SDL_Event *event)
 {
-	char* ptr,*ptr0 = iChatInput -> string;
-	int x,sz;
+	char* ptr,*ptr0 = iChatInput->string;
+	int x, sz;
+	unsigned char chr;
 
-	iChatInput -> XConv -> init();
-	*iChatInput -> XConv < CurPlayerName < iChatInput -> string;
-	ptr = iChatInput -> XConv -> address();
+	iChatInput->XConv->init();
+	*iChatInput->XConv < CurPlayerName < iChatInput->string;
+	ptr = iChatInput->XConv->address();
 
-	x = aTextWidth32(ptr,iChatInput -> font,1);
+	x = aTextWidth32(ptr, iChatInput->font, 1);
 
 	sz = strlen(ptr0);
-	if(sz < ISC_MAX_STRING_LEN && x < iChatInput -> SizeX - 10){
-		ptr0[sz - 1] = code;
-		ptr0[sz] = '_';
-		ptr0[sz + 1] = 0;
+
+	if(sz >= ISC_MAX_STRING_LEN && x >= iChatInput->SizeX - 10)
+		return;
+
+	aciFont* hfnt = aScrFonts32[iChatInput->font];
+
+	if (event->type == SDL_TEXTINPUT) {
+		if ((unsigned char)event->text.text[0] < 128) {
+			chr = event->text.text[0];
+		} else {
+			unsigned short utf = ((unsigned short *)event->text.text)[0];
+			utf = ntohs(utf);
+			// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
+			if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
+				chr = UTF8toCP866(utf);
+			} else {
+				chr = ' ';
+			}
+		}
+		if(hfnt && chr < hfnt->Size) {
+			ptr0[sz - 1] = chr;
+			ptr0[sz] = '_';
+			ptr0[sz + 1] = 0;
+		}
 	}
 }
 

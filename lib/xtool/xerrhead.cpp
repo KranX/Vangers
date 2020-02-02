@@ -2,11 +2,20 @@
 #include "port.h"
 #include <stdlib.h>
 
+#ifdef __HAIKU__
+#include <SDL.h>
+#endif
+
 XErrorHandler ErrH;
 
 XErrorHandler::XErrorHandler(void)
 {
+#ifndef __HAIKU__
 	log_name = "logfile.txt";
+#else
+	log_name = SDL_GetPrefPath("KranX Productions", "Vangers");
+	log_name += "/logfile.txt";
+#endif
 	log_file.open(log_name.c_str(),std::ios::out|std::ios::trunc);
 	log_file.close();
 

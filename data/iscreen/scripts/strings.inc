@@ -499,7 +499,7 @@
 #define iSTR_VAN_WAR2			"‚€-‚€"
 
 #define iSTR_MECHOSOMA1 		"MECHOSOMA"
-#define iSTR_MECHOSOMA2 		"Œ…•€‘ŽŒ€"
+#define iSTR_MECHOSOMA2 		"Œ…•Ž‘ŽŒ€"
 
 #define iSTR_PASSEMBLOSS1		"PASSEMBLOSS"
 #define iSTR_PASSEMBLOSS2		"€‘‘…Œ‹Ž‘"

@@ -50,7 +50,7 @@ void LightPoint::load_color_line( void ){
 	for( i = 0; i < y_size; i++, dbuf += offset){
 		llt = lt[(y + i) & clip_mask_y];
 		llct = ltc[(y + i) & clip_mask_y];
-		register int _x = (x & clip_mask_x);
+		int _x = (x & clip_mask_x);
 
 		if ( llt  ){
 			if ( _x + x_size >=  map_size_x){
@@ -291,14 +291,14 @@ int LightPoint::quant(void) {
 	//*/
 	/*	for( i = 0; i < y_size; i++){
 			if ( bool_buf[i] ) {
-				register int _y = (y+i) & clip_mask_y;
+				int _y = (y+i) & clip_mask_y;
 				llct = ltc[ _y ];
 
 				int yr = R - i;
 				yr = yr*yr;
 
 				for( j = 0; j < x_size; j++){
-					register int _x = (x+j) & clip_mask_x; 
+					int _x = (x+j) & clip_mask_x; 
 					llt =  lt[_y] + _x;
 					if(*(llt + H_SIZE) & DOUBLE_LEVEL)
 						if(!(_x & 1)) (++llt);
@@ -307,7 +307,7 @@ int LightPoint::quant(void) {
 						int _dz = _z - (*llt);
 						int xr = R - j;
 						xr = xr*xr;
-						register int r = Sqrt( xr + yr );
+						int r = Sqrt( xr + yr );
 						if  (_dz < 127)
 							r = (r<<8)/(_dz + 128 );
 

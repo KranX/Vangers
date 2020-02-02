@@ -59,8 +59,8 @@ struct ParticleProcess;
 #define MIDDLE_LEVEL_PREFER 	       8
 
 
-#define LOW_LEVEL(p)	((unsigned char*)((long)p & ~1))
-#define HIGH_LEVEL(p)	((unsigned char*)((long)p | 1))
+#define LOW_LEVEL(p)	((unsigned char*)((uintptr_t)p & ~1))
+#define HIGH_LEVEL(p)	((unsigned char*)((uintptr_t)p | 1))
 #define GET_THICKNESS(p) ((GET_DELTA(*HIGH_LEVEL(p + H_SIZE)) + (GET_DELTA(*LOW_LEVEL(p + H_SIZE)) << 2) + 0) << DELTA_SHIFT)
 #define GET_THICKNESS_ATTR(la,ha) (GET_DELTA(ha) + (GET_DELTA(la) << 2) + 1 << DELTA_SHIFT)
 #define BREAKABLE_TERRAIN(prop)		(GET_DESTROY_TERRAIN(GET_TERRAIN(prop)) > 10)
@@ -391,7 +391,7 @@ int entry_scan_code;
 #ifndef ENTRIES_CONTROL
 
 #define ENTRY(val)	{ f.search_name(#val":"); f >= val; }
-#define COMMON_ENTRY(val) { fc.search_name(#val":"); fc >= val; }
+#define COMMON_ENTRY(val) { fc.search_name(#val":"); fc >= val;}
 #define entries_control()
 
 #else											    
@@ -949,12 +949,12 @@ inline int get_three_heights(int x,int y)
 	if(!p)
 		return 255;
 	p += x & clip_mask_x;
-	register unsigned char attr = *(p + H_SIZE);
+	unsigned char attr = *(p + H_SIZE);
 	if(!(attr & DOUBLE_LEVEL))
 		return *p;
 	//64 bit problem
-	long ll = *LOW_LEVEL(p);
-	return ll | (ll + (GET_THICKNESS(p) << 8)) | ((long)(*HIGH_LEVEL(p)) << 16) | 0xff000000;
+	uintptr_t ll = *LOW_LEVEL(p);
+	return ll | (ll + (GET_THICKNESS(p) << 8)) | ((uintptr_t)(*HIGH_LEVEL(p)) << 16) | 0xff000000;
 }
 inline int get_upper_height(int x,int y)
 {
@@ -993,7 +993,7 @@ int set_3D_adjust(int mode,int xx,int yy,int zz,int D)
 		if(!p0)
 			continue;
 		for(x = -D;x < D;x += 2){
-			p = (unsigned char *)((unsigned long int)p0 + ((x + xx) & clip_mask_x));
+			p = (unsigned char *)((uintptr_t)p0 + ((x + xx) & clip_mask_x));
 			if(!(*(p + H_SIZE) & DOUBLE_LEVEL)){
 				z_sum += *p;
 				z_sum += *(p + 1);
@@ -2423,13 +2423,13 @@ void Object::jump()
 }
 int Object::get_max_jump_distance()
 {
-	DBV V = DBV(Sin(Pi/10),0,Cos(Pi/10))*(5*max_jump_power*k_distance_to_force*dt_impulse/pow(m,0.3));
+	DBV V = DBV(Sin(Pi/10), 0, Cos(Pi/10))*(5*max_jump_power*k_distance_to_force*dt_impulse/pow(m,0.3));
 	DBV R(0,0,0);
-	while(R.z >= 0){
+	while(R.z >= 0) {
 		V.z -= g*dt0;
 		R += V*dt0;
 		V *= V_drag_free*pow(V_drag_speed,V.vabs());
-		 }
+	}
 	return round(R.x);
 }
 
@@ -4259,7 +4259,7 @@ models.
 int obb_disjoint(const DBM&  B, const DBV& T, double ax, double ay, double az, double bx, double by, double bz)
 {
   double t, s;
-  register int r;
+  int r;
   double Bf[9];
   const double reps = 1e-6;
 

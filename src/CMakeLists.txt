@@ -1,3 +1,9 @@
+include_directories(
+	"${PROJECT_SOURCE_DIR}/lib/xtool"
+	"${PROJECT_SOURCE_DIR}/lib/xgraph"
+	"${PROJECT_SOURCE_DIR}/lib/xsound"
+)
+
 SET(vangers_SRCS
 	3d/3d_math.cpp
 	3d/3dgraph.cpp
@@ -70,7 +76,8 @@ ADD_EXECUTABLE(vangers ${vangers_SRCS})
 IF(WIN32)
 	SET(WIN_LIB 
 		wsock32
-		-mwindows
+		#-mwindows
+		#-Wl,-subsystem,windows
 	)
 ENDIF(WIN32)
 
@@ -85,6 +92,7 @@ TARGET_LINK_LIBRARIES(vangers
 	${ZLIB_LIBRARIES}
 	${OPENGL_LIBRARIES}
 	${WIN_LIB}
+	${STEAM_LIBS}
 	xtool
 	xgraph
 	xsound

@@ -1,0 +1,18 @@
+# Data files
+data/*
+!data/iscreen
+!data/actint
+!data/resource/iscreen/oftr2.scb
+
+# CMake files
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CMakeCache.txt
+
+# Generated binaries
+*.a
+lib/utils/zip_convert
+src/vangers
+
+# TODO: VC stuff, windows binaries

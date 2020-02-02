@@ -181,12 +181,15 @@ ServerFindChain::ServerFindChain(int IP,int port,char* domain_name,int game_ID,c
 	prev = next = 0;
 	list = 0;
 	XBuffer str_buf;
-	if(!game_ID)
+	if(!game_ID) {
 #if defined(RUSSIAN_VERSION) && !defined(GERMAN_VERSION)
-		str_buf < "Ќ®ў п ЁЈа  ­  ";
+		//CP866 Новая игра на
+		const unsigned char new_game_on[] = {0x8D, 0xAE, 0xA2, 0xA0, 0xEF, 0x20, 0xA8, 0xA3, 0xE0, 0xA0, 0x20, 0xAD, 0xA0, 0x20};
+		str_buf < (const char *)new_game_on;
 #else
 		str_buf < "New Game on ";
 #endif
+	}
 	if(!game_name)
 		if(domain_name)
 			str_buf < domain_name;
@@ -194,7 +197,7 @@ ServerFindChain::ServerFindChain(int IP,int port,char* domain_name,int game_ID,c
 			str_buf <= (IP & 0xff) < "." <= ((IP >> 8) & 0xff) < "." <= ((IP >> 16) & 0xff) < "." <= ((IP >> 24) & 0xff);
 	else
 		str_buf < game_name;
-	strncpy(name,str_buf.GetBuf(),50);
+	strncpy(name, str_buf.GetBuf(), 50);
 	name[50] = 0;
 }
 ServerFindChain::~ServerFindChain()
@@ -222,22 +225,22 @@ int identification(XSocket& socket)
 	char string[256] = "";
 	memset(string,0,256);
 	unsigned int len,identificated = 0;
-	START_TIMER(60*1000);
+	START_TIMER(60*CLOCKS_PER_SEC);
 	const char* request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
 	strcpy(string, request_str);
 	string[strlen(string) + 1] = CLIENT_VERSION;
 	socket.send(string,strlen(string) + 2);
 	while(CHECK_TIMER())
-		if((len = socket.receive(string,255)) != 0 && !strcmp(string,"Enter, my son, please...")){
-			if(!SERVER_VERSION || len > strlen(string) + 1 && string[strlen(string) + 1] == SERVER_VERSION)
+		if((len = socket.receive(string, 255, 1000)) != 0 && !strcmp(string,"Enter, my son, please...")){
+			if(!SERVER_VERSION || (len > strlen(string) + 1 && string[strlen(string) + 1] == SERVER_VERSION))
 				identificated = 1;
 			break;
 			}
-	if(!identificated){
+	if(!identificated) {
 		std::cout<<"Network:identificated is wrong! SV:"<<SERVER_VERSION<<" SV2:"<<(int)string[strlen(string)+1]<<std::endl;
 		socket.close();
 		return 0;
-		}
+	}
 // zMod fixed ---------------------------------------------------------
 
     XBuffer zbuffer(10000);
@@ -247,7 +250,7 @@ int identification(XSocket& socket)
 
     unsigned int z_end_time_ = SDL_GetTicks() + 2*60*1000;
     while (((int)(SDL_GetTicks() - z_end_time_) < 0))
-	if (socket.receive(zbuffer.GetBuf(), zbuffer.length()))
+	if (socket.receive(zbuffer.GetBuf(), zbuffer.length(), 1000))
 	   break;
 
     unsigned char zevent_ID;
@@ -257,17 +260,18 @@ int identification(XSocket& socket)
     zbuffer.set(0);
     zbuffer > zevent_size > zevent_ID > zresponse;
 
-    if(zevent_ID == SERVER_TIME)
-	zserver_version = 1;
+	if(zevent_ID == SERVER_TIME)
+		zserver_version = 1;
 
     //std::cout<<"Client auth: "<<(int)zevent_ID<<" "<<zSERVER_VERSION_RESPONSE<<" "<<(int)zresponse<<" "<<zCLIENT_VERSION<<std::endl;
-    if (zevent_ID == zSERVER_VERSION_RESPONSE)
-	if (zCLIENT_VERSION == zresponse) {
-	    zserver_version = zresponse;
-	} else {
-	//NEED SEE!
-	//    ErrH.Abort(zSTR_WRONG_VERSION);
-	 //   return 0;
+	if (zevent_ID == zSERVER_VERSION_RESPONSE) {
+		if (zCLIENT_VERSION == zresponse) {
+			zserver_version = zresponse;
+		} else {
+		//NEED SEE!
+		//    ErrH.Abort(zSTR_WRONG_VERSION);
+		 //   return 0;
+		}
 	}
 
 // /zMod ---------------------------------------------------------
@@ -285,16 +289,16 @@ void ServersList::clear_states()
 int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_game)
 {
 	XSocket sock;
-	if(IP)
+	if(IP) {
 		sock.open(IP,port);
-	else{
+	} else {
 		if(!domain_name)
 			return 0;
 // 		if(!iProxyUsage || !iProxyServer)
 			sock.open(domain_name,port);
 // 		else
 // 			sock.open_by_socks5(domain_name,port,iProxyServer,iProxyPort);
-		}
+	}
 	if(!sock || !identification(sock))
 		return 0;
 
@@ -303,9 +307,9 @@ int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_g
 	if(!sock.send(servers_buffer.GetBuf(),servers_buffer.tell()))
 		return 0;
 
-	START_TIMER(2*60*1000);
+	START_TIMER(60*CLOCKS_PER_SEC);
 	while(CHECK_TIMER())
-		if(sock.receive(servers_buffer.GetBuf(), servers_buffer.length()))
+		if(sock.receive(servers_buffer.GetBuf(), servers_buffer.length(), 1000))
 			break;
 
 	ServerFindChain* p;
@@ -319,12 +323,12 @@ int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_g
 		return 0;
 	if(only_new_game)
 		n_games = 0;
-	for(int i = 0;i < n_games;i++){
+	for(int i = 0;i < n_games;i++) {
 		servers_buffer > game_ID > game_name;
-		p = new ServerFindChain(IP,port,domain_name,game_ID,game_name);
+		std::cout<<"game_ID:"<<game_ID<<" game_name:"<<game_name<<std::endl;
+		p = new ServerFindChain(IP, port, domain_name, game_ID, game_name);
 		append(p);
-		}
-	//std::cout<<"Network: new ServerFindChain "<<IP<<" "<<port<<" "<<domain_name<<std::endl;
+	}
 	p = new ServerFindChain(IP,port,domain_name,0,0);
 	append(p);
 	return n_games + 1;
@@ -339,7 +343,7 @@ int ServersList::find_servers(int bc_port)
 	XSocket udp_sock;
 	udp_sock.openUDP(bc_port);
 	clear_states();
-	START_TIMER(5*1000);
+	START_TIMER(5*CLOCKS_PER_SEC);
 	while(CHECK_TIMER()){
 		sent_size = udp_sock.receivefrom(buffer,256);
 		if(buffer[0] != 'K' || buffer[1] != 'D'){
@@ -375,8 +379,8 @@ int ServersList::find_servers(int bc_port)
 int ServersList::find_servers_in_the_internet(char* host_name,int host_port)
 {
 	clear_states();
-	strcpy(domain_name,host_name);
-	return talk_to_server(0,host_port,domain_name);
+	strcpy(domain_name, host_name);
+	return talk_to_server(0, host_port, domain_name);
 }
 
 /***********************************************************************
@@ -404,7 +408,7 @@ void OutputEventBuffer::create_permanent_object(int ID,int x,int y,int radius,in
 	n_event++;
 	pointer_to_size_of_event = tell();
 	*this < short(0) < (unsigned char)(CREATE_PERMANENT_OBJECT | flags);
-	*this < ID < GLOBAL_CLOCK() < (unsigned short)x < (unsigned short)y < (unsigned short)radius;
+	*this < ID < (unsigned int)GLOBAL_CLOCK() < (unsigned short)x < (unsigned short)y < (unsigned short)radius;
 	OUT_EVENTS_LOG1(CREATE_PERMANENT_OBJECT,ID);
 }
 void OutputEventBuffer::update_object(int ID,int x,int y,int flags)
@@ -412,14 +416,14 @@ void OutputEventBuffer::update_object(int ID,int x,int y,int flags)
 	n_event++;
 	pointer_to_size_of_event = tell();
 	*this < short(0) < (unsigned char)(UPDATE_OBJECT | flags);
-	*this < ID < GLOBAL_CLOCK() < (unsigned short)x < (unsigned short)y;
+	*this < ID < (unsigned int)GLOBAL_CLOCK() < (unsigned short)x < (unsigned short)y;
 	OUT_EVENTS_LOG1(UPDATE_OBJECT,ID);
 }
 void OutputEventBuffer::delete_object(int ID)
 {
 	n_event++;
 	pointer_to_size_of_event = tell();
-	*this < short(0) < (unsigned char)DELETE_OBJECT < ID < GLOBAL_CLOCK();
+	*this < short(0) < (unsigned char)DELETE_OBJECT < ID < (unsigned int)GLOBAL_CLOCK();
 	OUT_EVENTS_LOG1(DELETE_OBJECT,ID);
 }
 void OutputEventBuffer::begin_create_z_object(int Type, int ID)
@@ -486,15 +490,16 @@ void OutputEventBuffer::end_body()
 	if(pointer_to_size_of_event < 0)
 		ErrH.Abort("There wasn't a beginning of event");
 
+	//std::cout<<"OutputEventBuffer::end_body size:"<<tell() - pointer_to_size_of_event - sizeof(short int)<<std::endl;
 	*(short*)(address() + pointer_to_size_of_event) = tell() - pointer_to_size_of_event - sizeof(short int);
 
 	int ev_ID,event_ID = *(unsigned char*)(address() + pointer_to_size_of_event + 2);
-	if((event_ID & (~ECHO_EVENT)) == UPDATE_OBJECT){
+	if((event_ID & (~ECHO_EVENT)) == UPDATE_OBJECT) {
 		int object_ID = *(int*)(address() + pointer_to_size_of_event + 3);
-		for(i = pointer_to_the_first_event;i < pointer_to_the_last_event;i += full_event_size(i)){
+		for(i = pointer_to_the_first_event; i < pointer_to_the_last_event; i += full_event_size(i)) {
 			ev_ID = *((unsigned char*)(address() + i + 2));
-			if((ev_ID & (~ECHO_EVENT)) == UPDATE_OBJECT)
-				if(*((int*)(address() + i + 3)) == object_ID){
+			if((ev_ID & (~ECHO_EVENT)) == UPDATE_OBJECT) {
+				if(*((int*)(address() + i + 3)) == object_ID) {
 					int event_size = full_event_size(i);
 					memmove(address() + i, address() + i + event_size, tell() - (i + event_size));
 					*(unsigned char*)(address() + pointer_to_size_of_event + 2) |= ev_ID & ECHO_EVENT;
@@ -503,9 +508,10 @@ void OutputEventBuffer::end_body()
 					n_event--;
 					OUT_EVENTS_LOG1(Pack_update,object_ID);
 					break;
-					}
+				}
 			}
 		}
+	}
 	pointer_to_size_of_event = -1;
 }
 int OutputEventBuffer::send(int system_send, XSocket& sock)
@@ -590,29 +596,32 @@ InputEventBuffer::InputEventBuffer(unsigned int size)
 {
 	reset();
 }
+
 void InputEventBuffer::reset()
 {
 	next_event_pointer = 0;
 	filled_size = 0;
 	offset = 0;
 }
-int InputEventBuffer::receive(XSocket& sock,int dont_free)
-{
+
+int InputEventBuffer::receive(XSocket& sock,int dont_free) {
 	restore_connection();
 
-	if(next_event_pointer != tell()){
+	if(next_event_pointer != tell()) {
 		XBuffer str;
 		str < "Connection's problems: " <= event_ID < "  "  <= object_ID < "  "  <= next_event_pointer - tell();
-		ErrH.Abort(str.GetBuf(),XERR_USER);
+		ErrH.Abort(str.GetBuf(), XERR_USER);
+	}
+
+	if(next_event_pointer && !dont_free) {
+		if(filled_size != next_event_pointer) {
+			memmove(address(), address() + next_event_pointer, filled_size - next_event_pointer);
 		}
-	if(next_event_pointer && !dont_free){
-		if(filled_size != next_event_pointer)
-			memmove(address(),address() + next_event_pointer,filled_size - next_event_pointer);
 		filled_size -= next_event_pointer;
 		offset = next_event_pointer = 0;
-		}
+	}
 
-	int add_size = sock.receive(address() + filled_size,length() - filled_size);
+	int add_size = sock.receive(address() + filled_size, length() - filled_size);
 	filled_size += add_size;
 	n_received_bytes += add_size;
 	if(add_size)
@@ -624,32 +633,34 @@ int InputEventBuffer::receive(XSocket& sock,int dont_free)
 	//std::cout<<"InputEventBuffer::receive "<<add_size<<" "<<std::endl;
 	return next_event();
 }
+
 int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int skip_if_aint)
 {
 	//std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
 	receive(sock);
-	START_TIMER(100*1000);
-	while(current_event() || CHECK_TIMER()){
-		do{
-			//std::cout<<"current_event:"<<(int)current_event()<<std::endl;
-			if(current_event() == event){
+	START_TIMER(10*CLOCKS_PER_SEC);
+	while(current_event() || CHECK_TIMER()) {
+		do {
+			//std::cout<<"current_event:"<<(int)current_event()<<" clock:"<<clock()<<" _end_time_:"<<_end_time_<<std::endl;
+			if(current_event() == event) {
 				//std::cout<<"ok"<<std::endl;
 				int size = event_size + 2;
 				int prefix = next_event_pointer - size;
-				if(prefix > 0){
+				if(prefix > 0) {
 					memmove(buf + size,buf,filled_size);
 					memmove(buf,buf + size + prefix,size);
 					memmove(buf + size + prefix,buf + 2*size + prefix,filled_size - size - prefix);
 					//offset = next_event_pointer = size - body_size;
 					offset = next_event_pointer = 0;
 					return next_event();
-					}
-				return event;
 				}
+				return event;
+			}
 			ignore_event();
-			}while(next_event());
+		} while(next_event());
+
 		receive(sock,1);
-		}
+	}
 	if(!skip_if_aint)
 #if defined(RUSSIAN_VERSION) && !defined(GERMAN_VERSION)
 		ErrH.Abort("Сервер не отвечает", XERR_USER, event);
@@ -660,28 +671,31 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 	offset = next_event_pointer = 0;
 	return 0;
 }
-int InputEventBuffer::next_event()
-{
+
+int InputEventBuffer::next_event() {
 	int prev_event_ID = event_ID;
 	event_ID = 0;
 
-	if(next_event_pointer + 2 > filled_size)
+	//std::cout<<"InputEventBuffer::next_event event_ID:"<<(int)event_ID<<" client_ID:"<<(int)client_ID<<" next_event_pointer:"<<next_event_pointer
+	//		 <<" filled_size:"<<filled_size<<std::endl;
+	if(next_event_pointer + 2 > filled_size) {
 		return 0;
-	if(next_event_pointer != tell()){
+	}
+	if(next_event_pointer != tell()) {
 		XBuffer str;
 		str < "Connection's problems: " <= prev_event_ID < "  "  <= object_ID < "  "  <= next_event_pointer - tell();
-		ErrH.Abort(str.GetBuf(),XERR_USER);
-		}
+		ErrH.Abort(str.GetBuf(), XERR_USER);
+	}
 
 	*this > event_size;
 	//std::cout<<"event_size:"<<(int)event_size<<std::endl;
 	unsigned int new_pointer = next_event_pointer + event_size + 2;
-	if(new_pointer > filled_size){
+	if(new_pointer > filled_size) {
 		set(next_event_pointer);
 		return 0;
-		}
-	 next_event_pointer = new_pointer;
-	 if(!event_size)
+	}
+	next_event_pointer = new_pointer;
+	if(!event_size)
 		return next_event();
 
 	n_received_events++;
@@ -692,7 +706,7 @@ int InputEventBuffer::next_event()
 	unsigned char factory_number, ammo_count;
 	zCreateObjectQueue* temp;
 	if (event_ID == zCREATE_OBJECT_BY_SERVER) {
-		//std::cout<<"zCREATE_OBJECT_BY_SERVER"<<std::endl;
+		std::cout<<"zCREATE_OBJECT_BY_SERVER"<<std::endl;
 		//zmod - пакет "создай предмед"
 		*this > factory_number > ammo_count;
 		body_size = 0;
@@ -704,17 +718,16 @@ int InputEventBuffer::next_event()
 			}
 			z_create_object_queue = temp;
 		}
-
-	}else if(!(event_ID & AUXILIARY_EVENT)){
+	}else if(!(event_ID & AUXILIARY_EVENT)) {
 		*this > object_ID;
-		switch(event_ID){
+		switch(event_ID) {
 			case UPDATE_OBJECT:
 				*this  > client_ID > time > x  > y;
 				body_size = event_size - 14;
-				if(GET_OBJECT_TYPE(object_ID) == NID_VANGER){
+				if(GET_OBJECT_TYPE(object_ID) == NID_VANGER) {
 					PlayerData* p = players_list.find(client_ID);
 					p -> x = x; p -> y = y;
-					}
+				}
 				delay_time += GLOBAL_CLOCK() - time;
 				delay_time_counter++;
 				IN_EVENTS_LOG1(UPDATE_OBJECT,object_ID);
@@ -732,33 +745,34 @@ int InputEventBuffer::next_event()
 				break;
 			default:
 				ErrH.Abort("Received unknown event",XERR_USER,event_ID);
-			}
+		}
 
-		if(NON_GLOBAL_OBJECT(object_ID)){
-			if(!enable_transferring){
+		if(NON_GLOBAL_OBJECT(object_ID)) {
+			if(!enable_transferring) {
 				IN_EVENTS_LOG1(Disable_query,object_ID);
 				ignore_event();
-				}
-			if(GET_WORLD(object_ID) != CurrentWorld){
+			}
+			if(GET_WORLD(object_ID) != CurrentWorld) {
 				IN_EVENTS_LOG1(Receive_from_another_world,object_ID);
 				ignore_event();
-				}
 			}
-	}else{
+		}
+	} else {
 		IN_EVENTS_LOG1(AXILIARY_EVENT,event_ID);
 		switch(event_ID){
 			case SERVER_TIME:
 				//zmod
 				z_time_collect();
 				*this > time;
-				if(enable_transferring){
+				if(enable_transferring) {
 					ignore_event();
-					if(!lag_averaging_t0.empty()){
+					if(!lag_averaging_t0.empty()) {
 						int dt = (int)(SDL_GetTicks() - lag_averaging_t0.get());
-						if(dt > 100 && dt < 20000)
+						if(dt > 100 && dt < 20000) {
 							average_lag = (dt + average_lag*3) >> 2;
 						}
 					}
+				}
 				body_size = 0;
 				break;
 			case ATTACH_TO_GAME_RESPONSE:
@@ -786,27 +800,28 @@ int InputEventBuffer::next_event()
 
 			case DIRECT_RECEIVING:
 				*this > client_ID;
-				if(get_byte()){
+				if(get_byte()) {
 					--*this;
 					message_dispatcher.receive();
 					body_size = 0;
 					ignore_event();
-					}
-				else{
+				} else {
 					body_size = event_size - 2;
-					}
+				}
 				break;
 
 			default:
-				ErrH.Abort("Received unknown axiliary event",XERR_USER,event_ID);
-			}
+				ErrH.Abort("Received unknown axiliary event", XERR_USER, event_ID);
 		}
+	}
 	return event_ID ? event_ID : next_event();
 }
+
 void InputEventBuffer::ignore_event()
 {
 	event_ID = 0;
 	set(next_event_pointer);
+	//std::cout<<"InputEventBuffer::ignore_event next_event_pointer:"<<next_event_pointer<<std::endl;
 }
 /***********************************************************************
 				Some utilites
@@ -837,7 +852,7 @@ int connect_to_server(ServerFindChain* p)
 		events_in.ignore_event();
 
 		zGameBirthTime = 0;
-		if (zserver_version>1) {
+		if (zserver_version > 1) {
 			//std::cout<<"zTIME_RESPONSE"<<std::endl;
 			events_in.receive_waiting_for_event(zTIME_RESPONSE); //ZMOD second network packet
 			//std::cout<<"[ok]"<<std::endl;
@@ -868,7 +883,7 @@ int restore_connection()
 			ErrH.Abort("Unable to restore connection to Server");
 #endif
 		return 0;
-		}
+	}
 	number_of_reconnection_attempt = 5;
 	events_out.clear();
 	events_in.reset();
@@ -885,9 +900,9 @@ int restore_connection()
 void disconnect_from_server()
 {
 	events_out.send_simple_query(CLOSE_SOCKET);
-	delay(256);
+	delay(256*(CLOCKS_PER_SEC/1000));
 	main_socket.close();
-	delay(256);
+	delay(256*(CLOCKS_PER_SEC/1000));
 	events_out.clear();
 	events_in.reset();
 }
@@ -928,7 +943,7 @@ int set_world(int world,int world_y_size) //znfo - send set_world event
 	events_out.set_world(world,world_y_size);
 	events_out.send(1);
 	events_in.receive_waiting_for_event(SET_WORLD_RESPONSE);
-	int resp_world = events_in.get_byte();
+	events_in.get_byte(); //resp_world
 	int resp_status = events_in.get_byte();
 	events_in.ignore_event();
 	set_world_status = resp_status;
@@ -1205,10 +1220,10 @@ int send_server_data(char* name, ServerData* data, zServerData* zdata)
 void void_network_quant()
 {
 	events_in.receive();
-	while(events_in.current_event()){
+	while(events_in.current_event()) {
 		events_in.ignore_event();
 		events_in.next_event();
-		}
+	}
 }
 /*******************************************************************************
 				Player's List
@@ -1291,7 +1306,7 @@ unsigned int PlayersList::get_team_mask(int color)
 	PlayerData* p = first();
 	while(p){
 		if(p -> body.color == color && p -> status != FINISHED_STATUS)
-			mask |= 1 << p -> client_ID - 1;
+			mask |= 1 << (p -> client_ID - 1);
 		p = p -> next;
 		}
 	return mask;
@@ -1349,13 +1364,13 @@ void MessageDispatcher::send(char* message,int mode,int parameter)
 	unsigned int cors;
 	switch(mode){
 		case MESSAGE_FOR_ALL:
-			cors = 0xffffffff & ~(1 << GlobalStationID - 1);
+			cors = 0xffffffff & ~(1 << (GlobalStationID - 1));
 			break;
 		case MESSAGE_FOR_TEAM:
-			cors = players_list.get_team_mask(parameter) & ~(1 << GlobalStationID - 1);
+			cors = players_list.get_team_mask(parameter) & ~(1 << (GlobalStationID - 1));
 			break;
 		case MESSAGE_FOR_PLAYER:
-			cors = 1 << parameter - 1;
+			cors = 1 << (parameter - 1);
 			break;
 		}
 	events_out.begin_direct_send(cors);

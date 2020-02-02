@@ -599,7 +599,7 @@ const int PARTICLE_MAX_DELTA = 15 << 8;
 
 void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 {
-	register int tx,ty,px,py,d;
+	int tx,ty,px,py,d;
 
 	tx = v.x - vR.x;
 	ty = v.y - vR.y;
@@ -640,7 +640,7 @@ void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 
 void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 {
-	register int tx,ty,d;
+	int tx,ty,d;
 
 	vD = Vector(0,0,0);
 

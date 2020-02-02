@@ -91,7 +91,7 @@ inline unsigned crt(unsigned& VAL)
 
 	return VAL;
 }
-Parser::Parser(const char* name,const char* del_chars)
+Parser::Parser(const char* name, const char* del_chars)
 : XBuffer(0,0)
 {
 	int i;
@@ -100,14 +100,13 @@ Parser::Parser(const char* name,const char* del_chars)
 	XStream ff(name,XS_IN);
 	long len = ff.size();
 	ff > c;
-	if(c){
-		ff.seek(0,XS_BEG);
+	if(c) {
+		ff.seek(0, XS_BEG);
 		alloc(len + 1);
-		ff.read(buf,len);
+		ff.read(buf, len);
 		buf[len] = 0;
 		ff.close();
-		}
-	else{
+	} else {
 #ifdef _ROAD_
 		ff > _time_;
 		_time_ *= 6386891;
@@ -137,12 +136,12 @@ Parser::Parser(const char* name,const char* del_chars)
 		} else {
 			memcpy(address(),compressed_buff + 2 + 4,(unsigned)(compressed_size - 2 - 4));
 		}
-		delete compressed_buff;
+		delete[] compressed_buff;
 		buf[decompressed_size] = 0;
 #else
 		ErrH.Abort("Parser: unable to read coded file");
 #endif
-		}
+	}
 
 	if(del_chars)
 		for(i = 0;i < (int)length();i++)
@@ -152,7 +151,7 @@ Parser::Parser(const char* name,const char* del_chars)
 void Parser::search_name(const char* name)
 {
 	if(!search(name))
-		ErrH.Abort("Parser: Name not found",XERR_USER,0,name);
+		ErrH.Abort("Parser: Name not found", XERR_USER, 0, name);
 	//(*this) + (int)(strlen(name));
 	set(tell() + (int)(strlen(name)));
 }
@@ -398,8 +397,8 @@ void Normal::calc_intensity() // Metal
 {
 	int Intens;
 	if(n_power){
-		register int Ln = Vector(*this)*Refl;
-		register int RV = (Refl - (Vector(*this)*Ln >> 13))*View;
+		int Ln = Vector(*this)*Refl;
+		int RV = (Refl - (Vector(*this)*Ln >> 13))*View;
 		if(Ln < 0 || RV < 0){
 			I = 0;
 			I_8 = 0;
@@ -409,7 +408,7 @@ void Normal::calc_intensity() // Metal
 				      + (Ln >> 1);
 		}
 	else{
-		register int Ln = Vector(*this)*Refl;
+		int Ln = Vector(*this)*Refl;
 		if(Ln < 0){
 			I = 0;
 			I_8 = 0;

@@ -136,7 +136,7 @@ void iCreateServer(void);
 void iChatInit(void);
 void iChatQuant(int flush = 0);
 void iChatFinit(void);
-void iChatKeyQuant(int k);
+void iChatKeyQuant(SDL_Event *k);
 void iChatMouseQuant(int x,int y,int bt);
 
 void iSoundQuant(int value = 0);
@@ -235,7 +235,7 @@ void iregRender(int x0,int y0,int x1,int y1);
 void MS_init(void);
 
 void recorder_synchro(unsigned int frame);
-void KeyCenter(int key);
+void KeyCenter(SDL_Event *key);
 
 void i_getpal(unsigned char* p);
 
@@ -618,7 +618,7 @@ void iQuantFirst(void)
 #ifdef _ISCREEN_GERMAN_
 			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
 #else
-			iSetOptionValueCHR(iPLAYER_NAME2,"‚ ­ЈҐа");
+			iSetOptionValueCHR(iPLAYER_NAME2,"‚ ­ЈҐа");
 #endif
 		else
 			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
@@ -696,7 +696,7 @@ void iQuantPrepare(void)
 
 int iQuantSecond(void)
 {
-	int k;
+	SDL_Event *k;
 #ifdef _DEBUG
 	int cr;
 	int count = 0;
@@ -745,115 +745,29 @@ int iQuantSecond(void)
 				XGR_MouseHide();
 				return 1;
 			}
-			if(!(iScrDisp -> flags & SD_INPUT_STRING)){
-				while(KeyBuf -> size){
+			if(!(iScrDisp -> flags & SD_INPUT_STRING)) {
+				while(KeyBuf -> size) {
 					k = KeyBuf -> get();
-					//std::cout<<k<<" "<<actIntLog<<std::endl;
-					if(iChatON && !(k & 0x1000)) iChatKeyQuant(k);
-					if((k == SDL_SCANCODE_ESCAPE) && actIntLog){
+					if(iChatON)
+						iChatKeyQuant(k);
+					if((k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_ESCAPE) && actIntLog){
 						iPause ^= 1;
 						acsScreenID = 2;
 					}
-#ifdef iMOVE_MOUSE_OBJECTS
-					if(k == SDL_SCANCODE_TAB){
-						if(iScreenOffs){
-							iScrDisp -> move_screen(-800,20);
-							iScrDisp -> move_screen(800,20);
-						}
-						else {
-							iScrDisp -> move_screen(800,20);
-							iScrDisp -> move_screen(-800,20);
-						}
-					}
 
-					if(k == SDL_SCANCODE_LEFT) iMoveMouseObj(-1,0);
-					if(k == SDL_SCANCODE_UP) iMoveMouseObj(0,-1);
-					if(k == SDL_SCANCODE_RIGHT) iMoveMouseObj(1,0);
-					if(k == SDL_SCANCODE_DOWN) iMoveMouseObj(0,1);
-
-					if(k == SDL_SCANCODE_HOME) iMoveMouseObj(-10,0);
-					if(k == SDL_SCANCODE_PAGEDOWN) iMoveMouseObj(0,10);
-					if(k == SDL_SCANCODE_END) iMoveMouseObj(10,0);
-					if(k == SDL_SCANCODE_PAGEUP) iMoveMouseObj(0,-10);
-
-					if(k == 'S')
-						iWriteScreenSummary();
-#endif
-
-#ifdef _ACI_ESCAVE_DEBUG_
-					if(k == SDL_SCANCODE_1) aci_dgMoodNext = 0;
-					if(k == SDL_SCANCODE_2) aci_dgMoodNext = 1;
-					if(k == SDL_SCANCODE_3) aci_dgMoodNext = 2;
-					if(k == SDL_SCANCODE_4) aci_dgMoodNext = 3;
-					if(k == VK_ADD){
-						cr = aciGetCurCredits();
-						cr += 10000;
-						aciUpdateCurCredits(cr);
-					}
-#endif
-					if(k == SDL_SCANCODE_F11){
+					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
 						shotFlush();
 					}
 
-#ifdef _DEBUG
-					if(!NetworkON){
-						// TODO(amdmi3): EQUALS/PLUS UNDERSCORE/MINUS stuff
-						if(k == SDL_SCANCODE_EQUALS) aciResizeItem(1.05);
-						if(k == SDL_SCANCODE_MINUS) aciResizeItem(0.95);
-						if(k == 'I' && actIntLog) aScrDisp -> save_items();
-//						  if(k == SDL_SCANCODE_F11){
-//							  iMapShot();
-//						  }
-						if(k == 'B')
-							iBoundsLog ^= 1;
-						if(k == SDL_SCANCODE_F9){
-							XBufBMP = new XBuffer;
-							XBufPAL = new XBuffer;
-
-							if(actIntLog){
-								*XBufBMP < "escave";
-								*XBufPAL < "escave";
-								if(iScreenOffs){
-									*XBufBMP < "_shop";
-									*XBufPAL < "_shop";
-									count = iEscaveShopShotCount;
-									iEscaveShopShotCount ++;
-								}
-								else {
-									count = iEscaveShotCount;
-									iEscaveShotCount ++;
-								}
-							}
-							else {
-								*XBufBMP < "main_menu";
-								*XBufPAL < "main_menu";
-								count = iMainMenuShotCount;
-								iMainMenuShotCount ++;
-							}
-							if(count < 10){
-								*XBufBMP < "0";
-								*XBufPAL < "0";
-							}
-							if(count < 100){
-								*XBufBMP < "0";
-								*XBufPAL < "0";
-							}
-
-							*XBufBMP <= count < ".bmp";
-							*XBufPAL <= count < ".pal";
-
-							XGR_WriteScreen(XBufBMP -> address(),XBufPAL -> address());
-
-							delete XBufBMP;
-							delete XBufPAL;
-						}
+					if (k->type == SDL_KEYDOWN || k->type == SDL_KEYUP) {
+						iKeyTrap(k->key.keysym.scancode);
+					} else if (k->type == SDL_JOYBUTTONDOWN || k->type == SDL_JOYBUTTONUP) {
+						iKeyTrap(k->jbutton.button | SDLK_JOYSTICK_BUTTON_MASK);
+					} else if (k->type == SDL_CONTROLLERBUTTONDOWN || k->type == SDL_CONTROLLERBUTTONUP) {
+						iKeyTrap(k->cbutton.button | SDLK_GAMECONTROLLER_BUTTON_MASK);
+					} else if (k->type == SDL_JOYHATMOTION) {
+						iKeyTrap((k->jhat.value + 10*k->jhat.hat) | SDLK_JOYSTICK_HAT_MASK);
 					}
-					if(actIntLog && k == SDL_SCANCODE_F6){
-						aciChangeMouseItem();
-					}
-					if(k == 'T') iTimerLog ^= 1;
-#endif
-					iKeyTrap(k);
 				}
 			} /*else {
 				k = JoystickWhatsPressedNow();
@@ -1041,7 +955,7 @@ void iMS_LeftPress(int fl, int x, int y)
 	aciML_ToolzerON = 1;
 
 	if(actIntLog)
-		aMS_LeftPress(NULL,x,y);
+		aMS_LeftPress(0,x,y);
 
 	XGR_MouseSetSeq(0,1,XGM_PLAY_ONCE,1);
 }
@@ -1055,7 +969,7 @@ void iMS_LeftUnpress(int fl, int x, int y)
 	iMouseLPressFlag = 0;
 
 	if(actIntLog)
-		aMS_LeftUnpress(NULL,x,y);
+		aMS_LeftUnpress(0,x,y);
 
 	XGR_MouseSetSeq(XGR_MouseCurFrame,XGR_MouseNumFrames - 1,XGM_PLAY_ONCE,1);
 }
@@ -1069,7 +983,7 @@ void iMS_RightPress(int fl, int x, int y)
 	iMouseRPressFlag = 1;
 
 	if(actIntLog)
-		aMS_RightPress(NULL,x,y);
+		aMS_RightPress(0,x,y);
 
 	XGR_MouseSetSeq(0,1,XGM_PLAY_ONCE,1);
 }
@@ -1082,7 +996,7 @@ void iMS_RightUnpress(int fl, int x, int y)
 	iMouseRPressFlag = 0;
 
 	if(actIntLog)
-		aMS_RightUnpress(NULL,x,y);
+		aMS_RightUnpress(0,x,y);
 
 	XGR_MouseSetSeq(XGR_MouseCurFrame,XGR_MouseNumFrames - 1,XGM_PLAY_ONCE,1);
 }
@@ -1224,39 +1138,46 @@ iScreenEventCommand* iCreateEventCommand(iScreenEventCommand* tpl)
 	return p;
 }
 
-void iInitText(iScreenObject* obj,char* text,int text_len,int font,int space,int null_level)
+void iInitText(iScreenObject* obj, char* text, int text_len, int font, int space, int null_level)
 {
-	int i,y = 0,t_sz;
+	int i, y = 0, t_sz;
 	char* buf;
 	iStringElement* p;
 	buf = new char[text_len];
-	memcpy(buf,text,text_len);
+	memcpy(buf, text, text_len);
 
-	for(i = 0; i < text_len; i ++){
-		if(buf[i] == '\r' || buf[i] == '\n') buf[i] = 0;
-	}
-	i = 0;
-	while(i < text_len){
-		while(!buf[i]) i ++;
-		if(i < text_len){
-			p = new iStringElement;
-			t_sz = strlen(buf + i) + 1;
-			if(t_sz){
-				p -> string = new char[t_sz];
-				strcpy(p -> string,buf + i);
-				p -> flags |= EL_TEXT_STRING;
-
-				p -> font = font;
-				p -> null_level = null_level;
-				p -> space = space;
-
-				p -> lY = y;
-				y += HFntTable[p -> font] -> SizeY + p -> space;
-				obj -> add_element((iListElement*)p);
-			}
-			while(buf[i]) i ++;
+	for(i = 0; i < text_len; i ++) {
+		if(buf[i] == '\r' || buf[i] == '\n') {
+			buf[i] = 0;
 		}
 	}
+	i = 0;
+	while(i < text_len) {
+		while(!buf[i]) {
+			i++;
+		}
+		if(i < text_len) {
+			p = new iStringElement;
+			t_sz = strlen(buf + i) + 1;
+			if(t_sz) {
+				p->string = new char[t_sz];
+				strcpy(p->string, buf + i);
+				p->flags |= EL_TEXT_STRING;
+
+				p->font = font;
+				p->null_level = null_level;
+				p->space = space;
+
+				p->lY = y;
+				y += HFntTable[p->font]->SizeY + p->space;
+				obj->add_element((iListElement*)p);
+			}
+			while(buf[i]) {
+				i++;
+			}
+		}
+	}
+	delete[] buf;
 }
 
 void iInitS_Text(iScreenObject* obj,char* text,int text_len,int font,int space,int null_level)
@@ -1331,7 +1252,7 @@ void iScrQuantFinit(void)
 	static unsigned char pal_buf[768];
 	if(iScreenLog){
 		iFinitQuant();
-		set_key_nadlers(&KeyCenter,NULL);
+		set_key_nadlers(&KeyCenter, NULL);
 
 		i_slake_pal(iscrPal,16);
 
@@ -1585,7 +1506,7 @@ void aciSwapMatrices(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1686,7 +1607,7 @@ void aciCancelMatrix(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1780,7 +1701,7 @@ void aciShowScMatrix(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1940,7 +1861,7 @@ void aciOpenGate(void)
 	for(i = 0; i < max_timer; i ++){
 		aScrDisp -> curLocData -> GateShutters[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 
 	XGR_MouseShow();
 	iKeyClear();
@@ -2067,7 +1988,7 @@ void aciCloseGate(void)
 	for(i = 0; i < max_timer; i ++){
 		aScrDisp -> curLocData -> GateShutters[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 
 	_iRESTORE_OFFS_;
 }
@@ -3143,7 +3064,8 @@ void aciShowLocationPicture(void)
 
 void iGetIP(void)
 {
-	int IP = ntohl(XSocketLocalHostExternADDR.host);
+	//Should be BigEndian in anycase
+	int IP = XSocketLocalHostExternADDR.host;
 	XBuffer XBuf;
 
 	XBuf <= (IP & 0xff) < "." <= ((IP >> 8) & 0xff) < "." <= ((IP >> 16) & 0xff) < "." <= ((IP >> 24) & 0xff);

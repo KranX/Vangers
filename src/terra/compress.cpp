@@ -112,8 +112,8 @@ void CompressMap( char* name, int X_SHIFT, int Y_SHIFT ){
 	fo.close();
 	a.close();
 
-	delete Buffer;
-	delete Out;
-	delete LinePos;
-	delete LineSize;
+	delete[] Buffer;
+	delete[] Out;
+	delete[] LinePos;
+	delete[] LineSize;
 }

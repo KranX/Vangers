@@ -11,6 +11,8 @@
 #ifndef __XGRAPH_H__
 #define __XGRAPH_H__
 
+#include "xglobal.h"
+
 #ifdef WITH_OPENGL
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -77,18 +79,26 @@ struct XGR_Font
 #define XGR_CLIP_PUTSPR 	0x00
 #define XGR_CLIP_ALL		0x01
 
-struct XGR_Pal64K
-{
+struct XGR_Pal64K {
 	int ID;
 
 	unsigned* data;
 	void prepare(void* p);
 
-	unsigned operator[](int ind) const { return data[ind]; }
-	unsigned& operator[](int ind){ return data[ind]; }
+	unsigned operator[](int ind) const {
+		return data[ind];
+	}
+	unsigned& operator[](int ind) {
+		return data[ind];
+	}
 
-	XGR_Pal64K(void){ ID = 0; data = new unsigned[256]; }
-	~XGR_Pal64K(void){ delete data; }
+	XGR_Pal64K(void) {
+		ID = 0;
+		data = new unsigned[256];
+	}
+	~XGR_Pal64K(void) {
+		delete[] data;
+	}
 };
 
 struct XGR_Screen
