@@ -1,5 +1,5 @@
 #include "../global.h"
-
+#include "../runtime.h"
 #include "general.h"
 
 #include "../xjoystick.h"
@@ -830,6 +830,11 @@ void Object::load_parameters(const char* name)
 	COMMON_ENTRY(max_jump_power);
 	COMMON_ENTRY(side_impulse_delay);
 	COMMON_ENTRY(side_impulse_duration);
+
+	// 50 / RTO_GAME_QUANT_TIMER     получение коефициента относительно fps, при 20fps вернёт еденицу, при другом - подправит тайминги
+	f_spring_impulse /= (50 / RTO_GAME_QUANT_TIMER);
+	side_impulse_delay *= (50 / RTO_GAME_QUANT_TIMER);
+	side_impulse_duration *= (50 / RTO_GAME_QUANT_TIMER);
 
 	// Insect's params
 	COMMON_ENTRY(k_elastic_insect);
@@ -2381,16 +2386,16 @@ void Object::impulse(int side)
 		if(!(dynamic_state & (WHEELS_TOUCH | GROUND_COLLISION | TOUCH_OF_WATER)))
 			return;
 		//double df = f_spring_impulse*dt_impulse/pow(m,0.3);
-		double df = f_spring_impulse*dt_impulse;
-		V += A_g2l*DBV(0,0,df) * XTCORE_FRAME_NORMAL;
-		W += J_inv*DBV(0,side == LEFT_SIDE ? -df*xmax_real : df*xmax_real,0) * XTCORE_FRAME_NORMAL;
+		double df = f_spring_impulse * dt_impulse;
+		V += A_g2l*DBV(0,0,df);
+		W += J_inv*DBV(0,side == LEFT_SIDE ? -df*xmax_real : df*xmax_real,0);
 	} else {
 		DBV F_nitro(0,side == FRONT_SIDE ? 1 : -1,0);
 		F_nitro *= A_l2g;
 		F_nitro.z = sqrt(sqr(F_nitro.x) + sqr(F_nitro.y))/4;
 		F_nitro *= A_g2l;
 		F_nitro.norm(f_traction_impulse*dt_impulse);
-		V += F_nitro * XTCORE_FRAME_NORMAL;
+		V += F_nitro;
 	}
 }
 void Object::impulse(int angle,int distance,int slope,int lever_arm)
@@ -2935,6 +2940,7 @@ void Object::mechous_analysis(double dt)
 {
 	int i;
 	dt *= speed_correction_factor;
+	dt *= XTCORE_FRAME_NORMAL;
 	if(Status & SOBJ_AUTOMAT){
 		if(jump_power && ++jump_power > max_jump_power)
 			jump();
@@ -3095,7 +3101,7 @@ void Object::basic_mechous_analysis(double dt,int last)
 	V_drag = V_drag_free*pow(V_drag_speed, V.vabs());
 	W_drag = W_drag_free*pow(W_drag_speed, W.abs2());
 	if(dynamic_state & WHEELS_TOUCH) {
-		V.y *= pow(1 + log(V_drag_wheel_speed)*mobility_factor*global_speed_factor/speed_factor,speed_correction_factor);
+		V.y *= pow(1 + log(V_drag_wheel_speed)*mobility_factor * global_speed_factor / speed_factor * XTCORE_FRAME_NORMAL,speed_correction_factor);
 	}
 
 	DBV F,K;
@@ -3472,7 +3478,7 @@ wheel_continue:
 
 
 	V += (F + A_g2l * F_global) * dt;
-	W += (J_inv * (K + A_g2l * K_global)) * dt * XTCORE_FRAME_NORMAL;
+	W += (J_inv * (K + A_g2l * K_global)) * dt;
 
 	if(non_loaded_space) {
 		V *= A_l2g;
@@ -3522,7 +3528,7 @@ wheel_continue:
 			if(r_diff < 0)
 				Vs += (z_axis*(radius*rolling_scale)) % W;
 		//std::cout<<"dt:"<<dt<<" XT_FN:"<<XTCORE_FRAME_NORMAL<<" Vs.x:"<<Vs.x<<" Vs.y:"<<Vs.y<<" Vs.z:"<<Vs.z<<std::endl;
-		R += (A_l2g * Vs) * dt * XTCORE_FRAME_NORMAL;
+		R += (A_l2g * Vs) * dt;
 
 		/*
 		if(!r_diff)
