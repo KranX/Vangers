@@ -831,7 +831,7 @@ void Object::load_parameters(const char* name)
 	COMMON_ENTRY(side_impulse_delay);
 	COMMON_ENTRY(side_impulse_duration);
 
-	// 50 / RTO_GAME_QUANT_TIMER     получение коефициента относительно fps, при 20fps вернёт еденицу, при другом - подправит тайминги
+	// 50 / RTO_GAME_QUANT_TIMER get correct timings independently of FPS
 	f_spring_impulse /= (50 / RTO_GAME_QUANT_TIMER);
 	side_impulse_delay *= (50 / RTO_GAME_QUANT_TIMER);
 	side_impulse_duration *= (50 / RTO_GAME_QUANT_TIMER);
@@ -3583,6 +3583,7 @@ wheel_continue:
 *******************************************************************************/
 void Object::debris_analysis(double dt)
 {
+	dt *= XTCORE_FRAME_NORMAL;
 	A_g2l_old = A_g2l;
 	R_old = R;
 	for(int i = 0;i < num_calls_analysis_debris - 1;i++)
@@ -3845,7 +3846,7 @@ void Object::basic_debris_analysis(double dt)
 		DBV Vs = V;
 		if(spring_touch)
 			Vs -= (z_axis*(radius*rolling_scale)) % W;
-		R += (A_l2g * Vs ) * dt * XTCORE_FRAME_NORMAL;
+		R += (A_l2g * Vs ) * dt;
 
 		DBM A_rot_inv = DBM(W,W.vabs()*(-dt));
 		A_g2l = A_rot_inv*A_g2l;
@@ -3864,6 +3865,7 @@ void Object::set_ground_elastic(double k)
 
 void Object::fish_analysis(double dt)
 {
+	dt *= XTCORE_FRAME_NORMAL;
 	V_drag = V_drag_float;
 	W_drag = 0.85;
 
@@ -3938,7 +3940,7 @@ void Object::fish_analysis(double dt)
 	A_g2l_old = A_g2l;
 	R_old = R;
 
-	R += A_l2g * V * dt * XTCORE_FRAME_NORMAL;
+	R += A_l2g * V * dt;
 	DBM A_rot_inv = DBM(W,W.vabs()*(-dt));
 	A_g2l = A_rot_inv*A_g2l;
 	A_l2g = transpose(A_g2l);
@@ -4030,6 +4032,7 @@ void Object::skyfarmer_end()
 }
 void Object::skyfarmer_analysis(double dt)
 {
+	dt *= XTCORE_FRAME_NORMAL;
 	DBV F,K;
 	switch(skyfarmer_fly_direction){
 		case 1:
@@ -4138,6 +4141,7 @@ void Object::precise_impulse(Vector source_point,int x_dest,int y_dest)
 {
 	double k = V_drag_stuff;
 	double dt = ID & ID_VANGER ? dt0 : dt_debris;
+	dt *= XTCORE_FRAME_NORMAL;
 	double gdt2 = g*dt*dt;
 	double v0dt = 0;
 	double V0x,V0y,N;
