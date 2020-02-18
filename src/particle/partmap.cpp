@@ -288,8 +288,8 @@ void ParticleMapProcess::activate(int n_hot_spots,int hot_spot_area,int attackT,
 	NhotSpots = n_hot_spots;
 	HotSpotArea = hot_spot_area;
 	AttackTime = attackT;
-	LifeTime = lifeT;
-	FadeTime = fadeT;
+	LifeTime = lifeT / XTCORE_FRAME_NORMAL;
+	FadeTime = fadeT / XTCORE_FRAME_NORMAL;
 	FadePower = fadeP;
 	DeviationRadius = dR;
 	DeviationPeriod = dP;
