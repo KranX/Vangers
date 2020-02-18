@@ -2596,7 +2596,7 @@ void HordeSource::Quant(void)
 	if(Status & SOBJ_DISCONNECT) return;
 	GetVisible();
 	if(Visibility == VISIBLE) analysis();
-	Time = rPI(Time + PI / 8);
+	Time = rPI(Time + PI / (int)(8 * GAME_TIME_COEFF));
 };
 
 void HordeSource::DrawQuant(void)
