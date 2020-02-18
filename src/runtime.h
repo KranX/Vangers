@@ -6,6 +6,8 @@ const int  RTO_PALETTE_TIMER 	= 1000/20;
 const int  RTO_ESCAVE_GATE_TIMER	= 1000/20;
 const int  RTO_IMAGE_TIMER		= 1000/20;
 
+const double GAME_TIME_COEFF = 50 / RTO_GAME_QUANT_TIMER; // speed correction coefficient, use for static parameters only, like bullet speed, animation speed...
+
 // Runtime objects...
 enum RoadRuntimeObjID
 {

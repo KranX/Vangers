@@ -832,9 +832,9 @@ void Object::load_parameters(const char* name)
 	COMMON_ENTRY(side_impulse_duration);
 
 	// 50 / RTO_GAME_QUANT_TIMER get correct timings independently of FPS
-	f_spring_impulse /= (50 / RTO_GAME_QUANT_TIMER);
-	side_impulse_delay *= (50 / RTO_GAME_QUANT_TIMER);
-	side_impulse_duration *= (50 / RTO_GAME_QUANT_TIMER);
+	f_spring_impulse /= GAME_TIME_COEFF;
+	side_impulse_delay *= GAME_TIME_COEFF;
+	side_impulse_duration *= GAME_TIME_COEFF;
 
 	// Insect's params
 	COMMON_ENTRY(k_elastic_insect);

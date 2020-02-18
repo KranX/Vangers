@@ -118,7 +118,7 @@ int LightPoint::quant(void) {
 
 	x = xn;
 	y = yn;
-	int pulseChangeCount = (int)round(10 * (50 / RTO_GAME_QUANT_TIMER)); // get proper frame count for time pulsation
+	int pulseChangeCount = (int)round(10 * GAME_TIME_COEFF); // get proper frame count for time pulsation
 	if (pulseChangeCount % 2 != 0) {
 		pulseChangeCount++;
 	}
@@ -388,8 +388,7 @@ void LightPoint::CreateLight( int _r,int _e, int _t)
 		energy = (LIGHT_MAX_BRIGHTNESS-1)<<15;
 	else
 		energy = (_e)<<15;
-	d_energy = energy/5;
-	d_energy = (int)round(d_energy / (50 / RTO_GAME_QUANT_TIMER)); // recalculate dynamic energy for current FPS
+	d_energy = (int)round(energy / 5 / GAME_TIME_COEFF); // recalculate dynamic energy for current FPS
 	c_time  = 0;	
 };
 
