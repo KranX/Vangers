@@ -2291,8 +2291,7 @@ void WorldBulletTemplate::Init(Parser& in)
 
 	if(BulletID != BULLET_TYPE_ID::CHAIN_GUN){
 		in.search_name("Speed");
-		Speed = in.get_int();
-		Speed = (int)round(Speed / GAME_TIME_COEFF); // fps fix
+		Speed = (int)round(in.get_int() / GAME_TIME_COEFF); // fps fix
 		in.search_name("ShowID");
 		name = in.get_name();
 		ShowID = Name2Int(name,BULLET_SHOW_ID_NAME,MAX_BULLET_SHOW_ID_NAME);
@@ -2314,8 +2313,7 @@ void WorldBulletTemplate::Init(Parser& in)
 		in.search_name("TapeSize");
 		TapeSize = in.get_int();
 		in.search_name("WaitTime");
-		WaitTime = WeaponWaitTime * in.get_int() >> 8;
-		WaitTime = (int)round(WaitTime * GAME_TIME_COEFF); // fps fix
+		WaitTime = (int)round((WeaponWaitTime * in.get_int() >> 8) * GAME_TIME_COEFF); // fps fix
 	};
 	Time = 0;
 };
