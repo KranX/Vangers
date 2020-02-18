@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../runtime.h"
 
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
@@ -117,11 +118,15 @@ int LightPoint::quant(void) {
 
 	x = xn;
 	y = yn;
-
+	int pulseChangeCount = (int)round(10 * (50 / RTO_GAME_QUANT_TIMER)); // get proper frame count for time pulsation
+	if (pulseChangeCount % 2 != 0) {
+		pulseChangeCount++;
+	}
 	if (type & LIGHT_TYPE::STATIONARY) {
 		if ( c_time < LIGHT_FIRST_TIME) {
 			c_time++;
 			E = ((c_time*energy)/LIGHT_FIRST_TIME)>>15;
+		// std::cout<<"STATIONARY LIGHT:"<<c_time<<std::endl;
 		} else {
 			E = (energy -= (3<<15))>>15;
 			c_time += 3;
@@ -129,15 +134,17 @@ int LightPoint::quant(void) {
 
 		if( energy <= (5<<15) ) return 0;
 	} else if (type & LIGHT_TYPE::DYNAMIC) {
-		c_time++;
-		if (c_time <= 5 ){
+		// std::cout<<"DYNAMIC LIGHT:"<<c_time<<std::endl;
+		c_time ++;
+		if (c_time <= pulseChangeCount/2){
 			energy -= d_energy;
 		} else {
-			if ( c_time == 10 ) c_time = 0;
+			if ( c_time == pulseChangeCount) c_time = 0;
 			energy += d_energy;
 		};
 		E = energy>>15;
 	} else if (type & LIGHT_TYPE::STATIC) {
+		// std::cout<<"STATIC LIGHT:"<<c_time<<std::endl;
 		E = energy>>15;
 	}
 	
@@ -382,7 +389,7 @@ void LightPoint::CreateLight( int _r,int _e, int _t)
 	else
 		energy = (_e)<<15;
 	d_energy = energy/5;
-
+	d_energy = (int)round(d_energy / (50 / RTO_GAME_QUANT_TIMER)); // recalculate dynamic energy for current FPS
 	c_time  = 0;	
 };
 
