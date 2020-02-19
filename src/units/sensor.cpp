@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../runtime.h"
 
 //#include "..\win32f.h"
 
@@ -1857,7 +1858,7 @@ void DangerDataType::Quant(void)
 					break;
 			};
 			break;
-		case DangerTypeList::HOLE:
+		case DangerTypeList::HOLE: // Necross road animated hole
 
 //#ifdef _DEBUG
 //			fDanger < "\nHole : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <= R_curr.z;
@@ -1866,20 +1867,20 @@ void DangerDataType::Quant(void)
 			if(Enable){
 //zmod fixed 1.15
 				if (!NetworkON) {
-				Delay = 70 + RND(30);
+				Delay = (int)round((70 + RND(30)) * GAME_TIME_COEFF);
 				MapD.CreateMapHole(R_curr,radius,Delay,0,0);
 				} else {
 					vPos = Vector(realRND(30)-15,realRND(30)-15,0);
 					vPos += R_curr;
 					vPos.x = XCYCL(vPos.x);
 					vPos.y = YCYCL(vPos.y);
-					Delay = realRND(100);
+					Delay = (int)round((realRND(100)) * GAME_TIME_COEFF);
 					MapD.CreateMapHole(vPos,(radius*0.8+realRND(radius*0.4)),Delay,0,0);
 				}
 ///zmod
 				Enable = 0;
 				Time = 0;
-				Delay += radius*2;
+				Delay += (int)round(radius * 2 * GAME_TIME_COEFF);
 			}else{
 				if(Time > Delay)
 					Enable = 1;

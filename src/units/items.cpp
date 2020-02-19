@@ -1,5 +1,5 @@
 #include "../global.h"
-
+#include "../runtime.h"
 //#include "..\win32f.h"
 
 #include "../3d/3d_math.h"
@@ -2267,7 +2267,7 @@ void WorldBulletTemplate::Init(Parser& in)
 	BulletID = Name2Int(name,BULLET_ID_NAME,MAX_BULLET_ID);
 
 	in.search_name("LifeTime");
-	LifeTime = in.get_int();
+	LifeTime = (int)round(in.get_int() * GAME_TIME_COEFF);
 
 	in.search_name("FirstPower");
 	Power = (in.get_int() << 16) / 100;
@@ -2291,7 +2291,7 @@ void WorldBulletTemplate::Init(Parser& in)
 
 	if(BulletID != BULLET_TYPE_ID::CHAIN_GUN){
 		in.search_name("Speed");
-		Speed = in.get_int();
+		Speed = (int)round(in.get_int() / GAME_TIME_COEFF); // fps fix
 		in.search_name("ShowID");
 		name = in.get_name();
 		ShowID = Name2Int(name,BULLET_SHOW_ID_NAME,MAX_BULLET_SHOW_ID_NAME);
@@ -2313,7 +2313,7 @@ void WorldBulletTemplate::Init(Parser& in)
 		in.search_name("TapeSize");
 		TapeSize = in.get_int();
 		in.search_name("WaitTime");
-		WaitTime = WeaponWaitTime * in.get_int() >> 8;
+		WaitTime = (int)round((WeaponWaitTime * in.get_int() >> 8) * GAME_TIME_COEFF); // fps fix
 	};
 	Time = 0;
 };
@@ -2596,7 +2596,7 @@ void HordeSource::Quant(void)
 	if(Status & SOBJ_DISCONNECT) return;
 	GetVisible();
 	if(Visibility == VISIBLE) analysis();
-	Time = rPI(Time + PI / 8);
+	Time = rPI(Time + PI / (int)(8 * GAME_TIME_COEFF));
 };
 
 void HordeSource::DrawQuant(void)

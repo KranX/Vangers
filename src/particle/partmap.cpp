@@ -1,5 +1,5 @@
 #include "../global.h"
-
+#include "../runtime.h"
 #include "../3d/3d_math.h"
 
 #include "../common.h"
@@ -287,9 +287,9 @@ void ParticleMapProcess::activate(int n_hot_spots,int hot_spot_area,int attackT,
 {
 	NhotSpots = n_hot_spots;
 	HotSpotArea = hot_spot_area;
-	AttackTime = attackT;
-	LifeTime = lifeT;
-	FadeTime = fadeT;
+	AttackTime = attackT; // not added coefficient due buggy flash on explode start animation, possibly could be fixed in init_flame() function
+	LifeTime = (int)round(lifeT * GAME_TIME_COEFF);
+	FadeTime = (int)round(fadeT * GAME_TIME_COEFF);
 	FadePower = fadeP;
 	DeviationRadius = dR;
 	DeviationPeriod = dP;

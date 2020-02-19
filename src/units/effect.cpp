@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../runtime.h"
 
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
@@ -892,7 +893,7 @@ void ParticleObject::CreateParticle(ParticleInitDataType* n,const Vector& v1,con
 
 	Time = 0;
 
-	LifeTime = n->LifeTime;
+	LifeTime = (int)round(n->LifeTime * GAME_TIME_COEFF);
 
 	FirstColor = n->FirstColor << 8;
 	DeltaColor = ((n->EndColor << 8) - FirstColor) / LifeTime;
@@ -944,7 +945,7 @@ void ParticleObject::CreateParticle(ParticleInitDataType* n,const Vector& v1,con
 	Time = 0;
 	Mode = 0;
 
-	LifeTime = n->LifeTime;
+	LifeTime = (int)round(n->LifeTime * GAME_TIME_COEFF);
 
 	FirstColor = n->FirstColor << 8;
 	DeltaColor = ((n->EndColor << 8) - FirstColor) / LifeTime;
@@ -954,7 +955,6 @@ void ParticleObject::CreateParticle(ParticleInitDataType* n,const Vector& v1,con
 
 	Alpha = n->FirstAlpha;
 	StepAlpha = n->StepAlpha;
-
 	vDelta = Vector(getDistX(v2.x,v1.x),getDistY(v2.y,v1.y),(v2.z - v1.z));
 
 	R_curr.x = vDelta.x >> 1;
@@ -998,7 +998,7 @@ void ParticleObject::CreateParticle(int _LifeTime,int _Velocity,int _FirstRadius
 	Time = 0;
 	Mode = 0;
 
-	LifeTime = _LifeTime;
+	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);
 
 	FirstColor = _FirstColor << 8;
 	DeltaColor = ((_EndColor << 8) - FirstColor) / LifeTime;
@@ -1049,7 +1049,7 @@ void ParticleObject::CreateParticle(int _LifeTime,int _Velocity,int _FirstRadius
 	Time = 0;
 	Mode = 0;
 
-	LifeTime = _LifeTime;
+	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);
 
 	FirstColor = _FirstColor << 8;
 	DeltaColor = ((_EndColor << 8) - FirstColor) / LifeTime;
@@ -1099,7 +1099,7 @@ void ParticleObject::CreateParticle(ParticleInitDataType* n,const Vector& v)
 	int Alpha,StepAlpha;
 
 	Time = 0;
-	LifeTime = n->LifeTime;
+	LifeTime = (int)round(n->LifeTime * GAME_TIME_COEFF);
 
 	Mode = 0;
 
@@ -1139,7 +1139,7 @@ void ParticleObject::CreateRingOfLord(const Vector v1,int rad,int ltime,int fcol
 	Mode = 1;
 
 	Time = 0;
-	LifeTime = ltime;	
+	LifeTime = (int)round(ltime * GAME_TIME_COEFF);
 
 	FirstColor = fcol << 8;
 	DeltaColor = ((lcol << 8) - FirstColor) / LifeTime;
@@ -1177,7 +1177,7 @@ void ParticleObject::CreateDirectParticle(ParticleInitDataType* n,const Vector& 
 	Mode = 0;
 
 	Time = 0;
-	LifeTime = n->LifeTime;
+	LifeTime = (int)round(n->LifeTime * GAME_TIME_COEFF);
 
 	FirstColor = n->FirstColor << 8;
 	DeltaColor = ((n->EndColor << 8) - FirstColor) / LifeTime;
@@ -1225,7 +1225,7 @@ void TargetParticleObject::Init(StorageType* s)
 	ID = ID_EXPLOSION;
 };
 
-const int TARGET_PARTICLE_FADE_TIME = 30;
+const int TARGET_PARTICLE_FADE_TIME = 30 * GAME_TIME_COEFF;
 
 void TargetParticleObject::Quant(void)
 {
@@ -1422,7 +1422,7 @@ void TargetParticleObject::CreateParticle(const Vector& _vTarget,int _LifeTime,c
 {
 	Time = 0;
 	CurrParticle = 0;
-	LifeTime = _LifeTime;
+	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);
 	R_curr = _vTarget;
 	cycleTor(R_curr.x,R_curr.y);
 	vTarget.x = R_curr.x << 8;
@@ -1556,7 +1556,7 @@ void TargetParticleObject::AddVertex2(const Vector& _vR,const Vector& _vT, int _
 
 		p->Color = _Color;
 		p->type = _type;
-		p->LifeTime = LifeTime;
+		p->LifeTime = (int)round(LifeTime * GAME_TIME_COEFF);
 
 		if (_type){
 			p->vT.x = vCheck.x << 8;
@@ -1762,8 +1762,8 @@ void WaterParticleObject::CreateParticle(int _LifeTime,int _SetLifeTime,int _Vel
 
 	Time = 0;
 
-	LifeTime = _LifeTime;
-	SetLifeTime = _SetLifeTime;
+	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);;
+	SetLifeTime = (int)round(_SetLifeTime * GAME_TIME_COEFF);;
 
 	FirstColor = _FirstColor << 8;
 	SetColor = _SetColor << 8;

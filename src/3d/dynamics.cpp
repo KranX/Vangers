@@ -1,5 +1,5 @@
 #include "../global.h"
-
+#include "../runtime.h"
 #include "general.h"
 
 #include "../xjoystick.h"
@@ -830,6 +830,11 @@ void Object::load_parameters(const char* name)
 	COMMON_ENTRY(max_jump_power);
 	COMMON_ENTRY(side_impulse_delay);
 	COMMON_ENTRY(side_impulse_duration);
+
+	// 50 / RTO_GAME_QUANT_TIMER get correct timings independently of FPS
+	f_spring_impulse /= GAME_TIME_COEFF;
+	side_impulse_delay *= GAME_TIME_COEFF;
+	side_impulse_duration *= GAME_TIME_COEFF;
 
 	// Insect's params
 	COMMON_ENTRY(k_elastic_insect);
@@ -2381,16 +2386,16 @@ void Object::impulse(int side)
 		if(!(dynamic_state & (WHEELS_TOUCH | GROUND_COLLISION | TOUCH_OF_WATER)))
 			return;
 		//double df = f_spring_impulse*dt_impulse/pow(m,0.3);
-		double df = f_spring_impulse*dt_impulse;
-		V += A_g2l*DBV(0,0,df) * XTCORE_FRAME_NORMAL;
-		W += J_inv*DBV(0,side == LEFT_SIDE ? -df*xmax_real : df*xmax_real,0) * XTCORE_FRAME_NORMAL;
+		double df = f_spring_impulse * dt_impulse;
+		V += A_g2l*DBV(0,0,df);
+		W += J_inv*DBV(0,side == LEFT_SIDE ? -df*xmax_real : df*xmax_real,0);
 	} else {
 		DBV F_nitro(0,side == FRONT_SIDE ? 1 : -1,0);
 		F_nitro *= A_l2g;
 		F_nitro.z = sqrt(sqr(F_nitro.x) + sqr(F_nitro.y))/4;
 		F_nitro *= A_g2l;
 		F_nitro.norm(f_traction_impulse*dt_impulse);
-		V += F_nitro * XTCORE_FRAME_NORMAL;
+		V += F_nitro;
 	}
 }
 void Object::impulse(int angle,int distance,int slope,int lever_arm)
@@ -2935,6 +2940,7 @@ void Object::mechous_analysis(double dt)
 {
 	int i;
 	dt *= speed_correction_factor;
+	dt *= XTCORE_FRAME_NORMAL;
 	if(Status & SOBJ_AUTOMAT){
 		if(jump_power && ++jump_power > max_jump_power)
 			jump();
@@ -3095,7 +3101,7 @@ void Object::basic_mechous_analysis(double dt,int last)
 	V_drag = V_drag_free*pow(V_drag_speed, V.vabs());
 	W_drag = W_drag_free*pow(W_drag_speed, W.abs2());
 	if(dynamic_state & WHEELS_TOUCH) {
-		V.y *= pow(1 + log(V_drag_wheel_speed)*mobility_factor*global_speed_factor/speed_factor,speed_correction_factor);
+		V.y *= pow(1 + log(V_drag_wheel_speed)*mobility_factor * global_speed_factor / speed_factor * XTCORE_FRAME_NORMAL,speed_correction_factor);
 	}
 
 	DBV F,K;
@@ -3472,7 +3478,7 @@ wheel_continue:
 
 
 	V += (F + A_g2l * F_global) * dt;
-	W += (J_inv * (K + A_g2l * K_global)) * dt * XTCORE_FRAME_NORMAL;
+	W += (J_inv * (K + A_g2l * K_global)) * dt;
 
 	if(non_loaded_space) {
 		V *= A_l2g;
@@ -3522,7 +3528,7 @@ wheel_continue:
 			if(r_diff < 0)
 				Vs += (z_axis*(radius*rolling_scale)) % W;
 		//std::cout<<"dt:"<<dt<<" XT_FN:"<<XTCORE_FRAME_NORMAL<<" Vs.x:"<<Vs.x<<" Vs.y:"<<Vs.y<<" Vs.z:"<<Vs.z<<std::endl;
-		R += (A_l2g * Vs) * dt * XTCORE_FRAME_NORMAL;
+		R += (A_l2g * Vs) * dt;
 
 		/*
 		if(!r_diff)
@@ -3577,6 +3583,7 @@ wheel_continue:
 *******************************************************************************/
 void Object::debris_analysis(double dt)
 {
+	dt *= XTCORE_FRAME_NORMAL;
 	A_g2l_old = A_g2l;
 	R_old = R;
 	for(int i = 0;i < num_calls_analysis_debris - 1;i++)
@@ -3839,7 +3846,7 @@ void Object::basic_debris_analysis(double dt)
 		DBV Vs = V;
 		if(spring_touch)
 			Vs -= (z_axis*(radius*rolling_scale)) % W;
-		R += (A_l2g * Vs ) * dt * XTCORE_FRAME_NORMAL;
+		R += (A_l2g * Vs ) * dt;
 
 		DBM A_rot_inv = DBM(W,W.vabs()*(-dt));
 		A_g2l = A_rot_inv*A_g2l;
@@ -3858,6 +3865,7 @@ void Object::set_ground_elastic(double k)
 
 void Object::fish_analysis(double dt)
 {
+	dt *= XTCORE_FRAME_NORMAL;
 	V_drag = V_drag_float;
 	W_drag = 0.85;
 
@@ -3932,7 +3940,7 @@ void Object::fish_analysis(double dt)
 	A_g2l_old = A_g2l;
 	R_old = R;
 
-	R += A_l2g * V * dt * XTCORE_FRAME_NORMAL;
+	R += A_l2g * V * dt;
 	DBM A_rot_inv = DBM(W,W.vabs()*(-dt));
 	A_g2l = A_rot_inv*A_g2l;
 	A_l2g = transpose(A_g2l);
@@ -4024,6 +4032,7 @@ void Object::skyfarmer_end()
 }
 void Object::skyfarmer_analysis(double dt)
 {
+	dt *= XTCORE_FRAME_NORMAL;
 	DBV F,K;
 	switch(skyfarmer_fly_direction){
 		case 1:
@@ -4132,6 +4141,7 @@ void Object::precise_impulse(Vector source_point,int x_dest,int y_dest)
 {
 	double k = V_drag_stuff;
 	double dt = ID & ID_VANGER ? dt0 : dt_debris;
+	dt *= XTCORE_FRAME_NORMAL;
 	double gdt2 = g*dt*dt;
 	double v0dt = 0;
 	double V0x,V0y,N;

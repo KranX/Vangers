@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../runtime.h"
 
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
@@ -3755,9 +3756,10 @@ void LandSlideType::Quant(void)
 	if(Time-- <= 0) Status |= SOBJ_DISCONNECT;
 };
 
+// Necross road animated hole
 void MapLandHole::CreateLandHole(Vector v,int rMax,int l1,int l2,int l3)
 {
-	maxRadius = rMax;
+	maxRadius = rMax * GAME_TIME_COEFF;
 	Time = 0;
 	LifeTime = l1;
 	R_curr = v;
@@ -3767,13 +3769,14 @@ void MapLandHole::CreateLandHole(Vector v,int rMax,int l1,int l2,int l3)
 	Mode = 0;
 };
 
+// Necross road animated hole animation frame
 void MapLandHole::Quant(void)
 {
 	if(!vMap->lineT[R_curr.y]) Status |= SOBJ_DISCONNECT;
 	switch(Mode){
 		case 0:
-			MapCircleProcess(R_curr.x,R_curr.y,R_curr.z,cRadius,1,2);
-			RadialRender(R_curr.x,R_curr.y,cRadius + 1);
+			MapCircleProcess(R_curr.x,R_curr.y,R_curr.z,(int)round(cRadius / GAME_TIME_COEFF),1,2);
+			RadialRender(R_curr.x,R_curr.y,(int)round(cRadius / GAME_TIME_COEFF) + 1);
 			if(cRadius >= maxRadius) Mode = 1;
 			else cRadius++;
 			if(cRadius == 0 && ActD.Active)
@@ -3784,10 +3787,10 @@ void MapLandHole::Quant(void)
 			else Time++;
 			break;
 		case 2:
-			MapCircleProcess(R_curr.x,R_curr.y,R_curr.z,cRadius,0,2);
+			MapCircleProcess(R_curr.x,R_curr.y,R_curr.z,(int)round(cRadius / GAME_TIME_COEFF),0,2);
 			if(cRadius == maxRadius && ActD.Active)
 				SOUND_TEAR(getDistX(ActD.Active->R_curr.x,R_curr.x))
-			RadialRender(R_curr.x,R_curr.y,cRadius + 1);
+			RadialRender(R_curr.x,R_curr.y,(int)round(cRadius / GAME_TIME_COEFF) + 1);
 			if(cRadius <= 0) Status |= SOBJ_DISCONNECT;
 			else cRadius--;
 			break;
