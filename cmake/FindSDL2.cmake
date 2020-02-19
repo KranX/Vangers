@@ -126,7 +126,7 @@ IF(NOT SDL2_BUILDING_LIBRARY)
       /opt/local
       /opt/csw
       /opt
-	  C:/MinGW/
+      C:/MinGW/
     )
 	IF(MINGW)
 		SET(CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_FIND_LIBRARY_SUFFIXES})

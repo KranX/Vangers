@@ -16,3 +16,4 @@ lib/utils/zip_convert
 src/vangers
 
 # TODO: VC stuff, windows binaries
+.fuse_hidden*

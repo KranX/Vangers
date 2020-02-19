@@ -130,7 +130,11 @@ struct XBuffer
 	char& operator()(){ return buf[offset]; }
 
 	template<class T> XBuffer& write(const T& v){ while(offset + sizeof(T) >= size) handleOutOfSize(); (T&)buf[offset] = v; offset += sizeof(T); return *this; }
-	template<class T> XBuffer& read(T& v){ v = (T&)buf[offset]; offset += sizeof(T); return *this; }
+	template<class T> XBuffer& read(T& v) {
+		v = (T&)buf[offset];
+		offset += sizeof(T);
+		return *this;
+	}
 };
 
 #endif /* __XBUFFER_H */

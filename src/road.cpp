@@ -71,6 +71,10 @@
 #include "palette.h"
 #include "sound/hsound.h"
 
+#if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+#include <locale.h>
+#endif
+
 
 #ifndef DBGCHECK
 #define DBGCHECK
@@ -83,7 +87,6 @@
 #else
 #define MEMSTAT(a)
 #endif
-
 
 // !!! The same params are in the mechos.cpp
 #define SLOPE_MAX	Pi/6
@@ -490,6 +493,7 @@ int xtInitApplication(void)
 	
 	if(XGR_Init(w,h,emode)) ErrH.Abort(ErrorVideoMss);
 
+
 //WORK	sWinVideo::Init();
 //	::ShowCursor(0);
 
@@ -671,7 +675,11 @@ int xtInitApplication(void)
 	// with important UI in your game.
 	SteamUtils()->SetOverlayNotificationPosition( k_EPositionTopRight );
 #endif
-	
+#if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+	std::cout<<"Set locale. ";
+	char* res = setlocale(LC_NUMERIC, "POSIX");
+	std::cout<<"Result:"<<res<<std::endl;
+#endif
 	if(SkipIntro)
 		return RTO_MAIN_MENU_ID;
 	return RTO_MAIN_MENU_ID;

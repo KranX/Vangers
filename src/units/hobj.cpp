@@ -3434,8 +3434,8 @@ void StorageClusterType::Init(MemoryStorageType* p)
 
 void StorageClusterType::Free(void)
 {
-	delete PointData;
-	delete Data;
+	delete[] PointData;
+	delete[] Data;
 };
 
 char StorageClusterType::CheckSpace(void)

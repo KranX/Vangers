@@ -1138,39 +1138,46 @@ iScreenEventCommand* iCreateEventCommand(iScreenEventCommand* tpl)
 	return p;
 }
 
-void iInitText(iScreenObject* obj,char* text,int text_len,int font,int space,int null_level)
+void iInitText(iScreenObject* obj, char* text, int text_len, int font, int space, int null_level)
 {
-	int i,y = 0,t_sz;
+	int i, y = 0, t_sz;
 	char* buf;
 	iStringElement* p;
 	buf = new char[text_len];
-	memcpy(buf,text,text_len);
+	memcpy(buf, text, text_len);
 
-	for(i = 0; i < text_len; i ++){
-		if(buf[i] == '\r' || buf[i] == '\n') buf[i] = 0;
-	}
-	i = 0;
-	while(i < text_len){
-		while(!buf[i]) i ++;
-		if(i < text_len){
-			p = new iStringElement;
-			t_sz = strlen(buf + i) + 1;
-			if(t_sz){
-				p -> string = new char[t_sz];
-				strcpy(p -> string,buf + i);
-				p -> flags |= EL_TEXT_STRING;
-
-				p -> font = font;
-				p -> null_level = null_level;
-				p -> space = space;
-
-				p -> lY = y;
-				y += HFntTable[p -> font] -> SizeY + p -> space;
-				obj -> add_element((iListElement*)p);
-			}
-			while(buf[i]) i ++;
+	for(i = 0; i < text_len; i ++) {
+		if(buf[i] == '\r' || buf[i] == '\n') {
+			buf[i] = 0;
 		}
 	}
+	i = 0;
+	while(i < text_len) {
+		while(!buf[i]) {
+			i++;
+		}
+		if(i < text_len) {
+			p = new iStringElement;
+			t_sz = strlen(buf + i) + 1;
+			if(t_sz) {
+				p->string = new char[t_sz];
+				strcpy(p->string, buf + i);
+				p->flags |= EL_TEXT_STRING;
+
+				p->font = font;
+				p->null_level = null_level;
+				p->space = space;
+
+				p->lY = y;
+				y += HFntTable[p->font]->SizeY + p->space;
+				obj->add_element((iListElement*)p);
+			}
+			while(buf[i]) {
+				i++;
+			}
+		}
+	}
+	delete[] buf;
 }
 
 void iInitS_Text(iScreenObject* obj,char* text,int text_len,int font,int space,int null_level)
@@ -1499,7 +1506,7 @@ void aciSwapMatrices(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1600,7 +1607,7 @@ void aciCancelMatrix(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1694,7 +1701,7 @@ void aciShowScMatrix(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1854,7 +1861,7 @@ void aciOpenGate(void)
 	for(i = 0; i < max_timer; i ++){
 		aScrDisp -> curLocData -> GateShutters[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 
 	XGR_MouseShow();
 	iKeyClear();
@@ -1981,7 +1988,7 @@ void aciCloseGate(void)
 	for(i = 0; i < max_timer; i ++){
 		aScrDisp -> curLocData -> GateShutters[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 
 	_iRESTORE_OFFS_;
 }

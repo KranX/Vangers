@@ -5825,7 +5825,7 @@ void VangerUnit::CreateVangerUnit(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	Go2World();
@@ -9529,13 +9529,20 @@ void InsectList::Init(void)
 
 	if(CurrentWorld != WORLD_KHOX && CurrentWorld != WORLD_HMOK && CurrentWorld != WORLD_WEEXOW &&  !uvsCurrentWorldUnable){
 		Data = new InsectUnit[MAX_INSECT_UNIT];
-		for(i = 0;i < MAX_INSECT_UNIT;i++){
+		for(i = 0;i < MAX_INSECT_UNIT;i++) {
 			Data[i].Init();
-			Data[i].CreateActionUnit(ModelD.FindModel("Bug"),SOBJ_AUTOMAT,Vector(RND(clip_mask_x),RND(clip_mask_y),-1),0,SET_3D_CHOOSE_LEVEL);
+			Data[i].CreateActionUnit(
+				ModelD.FindModel("Bug"),
+				SOBJ_AUTOMAT, Vector(RND(clip_mask_x), RND(clip_mask_y), -1),
+				0,
+				SET_3D_CHOOSE_LEVEL
+			);
 			Data[i].CreateInsect();
 			ConnectTypeList(&Data[i]);
-		};
-	}else Data = NULL;
+		}
+	}else {
+		Data = nullptr;
+	}
 };
 
 void InsectList::FreeUnit(GeneralObject* p)
@@ -13964,7 +13971,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	

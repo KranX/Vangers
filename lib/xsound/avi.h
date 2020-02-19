@@ -12,7 +12,7 @@ extern "C" {
 #	define UINT64_C(c) (c ## ULL)
 #endif
 
-#include <libavformat/avformat.h>
+#include <avformat.h>
 #ifdef __cplusplus
 }
 #endif
