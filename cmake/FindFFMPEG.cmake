@@ -10,14 +10,15 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 	NAMES
 		avutil.h
 	PATHS
+		/usr/local/include
 		/usr/include
 		/usr/include/x86_64-linux-gnu
-		/usr/local/include
 		/local/include
 		/mingw/include
 		/opt/local/include
 		/opt/include
 		/sw/include
+		/usr/include/libavutil
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavutil
 	PATH_SUFFIXES
@@ -29,14 +30,15 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
 	NAMES
 		avcodec.h
 	PATHS
+		/usr/local/include
 		/usr/include
 		/usr/include/x86_64-linux-gnu
-		/usr/local/include
 		/opt/local/include
 		/local/include
 		/mingw/include
 		/opt/include
 		/sw/include
+		/usr/include/libavcodec
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavcodec
 	PATH_SUFFIXES
@@ -48,14 +50,15 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 	NAMES
 		avformat.h
 	PATHS
+		/usr/local/include
 		/usr/include
 		/usr/include/x86_64-linux-gnu
-		/usr/local/include
 		/opt/local/include
 		/local/include
 		/mingw/include
 		/opt/include
 		/sw/include
+		/usr/include/libavformat
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavformat
 	PATH_SUFFIXES
@@ -67,11 +70,12 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 	NAMES
 		avutil
 		avutil-55
+		avutil-56
 	PATHS
+		/usr/local/lib
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/ffmpeg
-		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
 		/local/lib
@@ -85,10 +89,11 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 	NAMES
 		avcodec
 		avcodec-57
+		avcodec-58
 	PATHS
+		/usr/local/lib
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
-		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
 		/local/lib
@@ -102,11 +107,12 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 	NAMES
 		avformat
 		avformat-57
+		avformat-58
 	PATHS
+		/usr/local/lib
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/ffmpeg
-		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
 		/local/lib
@@ -116,10 +122,13 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		/bin
 )
 
+get_filename_component(FFMPEG_PARENT_DIR ${AVCODEC_INCLUDE_DIR} DIRECTORY)
+
 SET(FFMPEG_INCLUDE_DIRS
 	#${AVUTIL_INCLUDE_DIR}
 	${AVCODEC_INCLUDE_DIR}
 	${AVFORMAT_INCLUDE_DIR}
+	${FFMPEG_PARENT_DIR}
 )
 
 SET(FFMPEG_LIBRARIES)

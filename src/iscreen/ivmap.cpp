@@ -12,9 +12,6 @@
 
 #include <iostream>
 
-#define YCYCL(y)	((y) & iclip_mask_y)
-
-
 /* ----------------------------- EXTERN SECTION ---------------------------- */
 extern int* SI;
 extern int* CO;
@@ -49,7 +46,7 @@ static uchar iENDCOLOR[TERRAIN_MAX];
 
 static uint iMAP_POWER_Y;
 static uint imap_size_y;
-static uint iclip_mask_y;
+uint iclip_mask_y;
 
 static uint iV_POWER;
 static uint iV_SIZE;
@@ -96,10 +93,6 @@ void iRenderPrepare(void)
 		for(j = 0;j < 256;j++)
 			ipalCLR[ind][256 + j] = iBEGCOLOR[ind] + round((double)j*(double)colnum/255.0);
 		}
-}
-
-int iYCYCL(int y) {
-	return YCYCL(y);
 }
 
 void iYSetup(void)

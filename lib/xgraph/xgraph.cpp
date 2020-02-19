@@ -240,7 +240,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
-	SDL_ShowCursor(0);
+	SDL_ShowCursor(SDL_DISABLE);
 	
 	if (XGR_FULL_SCREEN) {
 		std::cout<<"SDL_SetWindowPosition"<<std::endl;

@@ -4437,8 +4437,8 @@ void uvsVanger::break_harvest(void){
 	pg = Pworld -> escT[0] -> Pbunch -> cycleTable[Pworld -> escT[0] -> Pbunch -> currentStage].Pgame;
 
 	if (!pg) {
-		return;
 		ErrH.Abort("uvsVanger::break_harvest : don't now where go ");
+		return;
 	}
 
 	if (pg -> typeTownEnd == UVS_TOWN::SPOT){
@@ -10228,7 +10228,7 @@ int uvsgetDGdata(int code){
 			break;
 		case DG_EXTERNS::HERE_PIPKA:
 			return (uvsReturnTreasureStatus(UVS_ITEM_TYPE::PIPKA, uvsTreasureInShop) ||
-				uvsReturnTreasureStatus(UVS_ITEM_TYPE::PIPKA, uvsTreasureInShop));
+				uvsReturnTreasureStatus(UVS_ITEM_TYPE::PIPKA, 0));
 			break;
 		case DG_EXTERNS::HERE_PEREPONKA:
 			return (uvsReturnTreasureStatus(UVS_ITEM_TYPE::PEREPONKA, uvsTreasureInShop) ||

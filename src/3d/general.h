@@ -13,10 +13,10 @@
 
 
 extern MemoryHeap load_heap;
-#define HEAP_BEGIN(sz)	    load_heap.alloc(sz);
-#define HEAP_ALLOC(b,c)     ((c*)(load_heap.get((b)*sizeof(c))))
-#define HEAP_ALLOC1(c)	    ((c*)(load_heap.get(sizeof(c))))
-#define HEAP_END	    load_heap.end_alloc();
+#define HEAP_BEGIN(sz)    load_heap.alloc(static_cast<int>(sz))
+#define HEAP_ALLOC(b, c)  (static_cast<c*>(load_heap.get(static_cast<int>((b)*static_cast<int>(sizeof(c))))))
+#define HEAP_ALLOC1(c)    (static_cast<c*>(load_heap.get(static_cast<int>(sizeof(c)))))
+#define HEAP_END		  load_heap.end_alloc()
 
 
 #ifdef _DEBUG

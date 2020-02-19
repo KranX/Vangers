@@ -73,8 +73,7 @@ struct GeneralObject
 #endif
 };
 
-struct BaseObject : GeneralObject
-{      	
+struct BaseObject : GeneralObject {
 	Vector R_prev;
 
 	int x_of_last_update;
@@ -346,9 +345,13 @@ struct Object : BaseObject {
 	int end_of_object_data;
 
 
-		Object();
-		Object& operator = (Object& obj);
-		void free();
+	Object();
+	Object& operator = (Object& obj);
+	virtual ~Object() {
+		// stalkerg: memory leak
+		// free();
+	}
+	void free();
 
 	// Part of 3D graphical functions
 	void load(char* name,int scale = 256);
@@ -440,7 +443,7 @@ struct Object : BaseObject {
 
 	virtual void StartMoleProcess(void);
 	int MoleInProcess;
-							       
+
 	virtual int UsingCopterig(int decr_8);
 	virtual int UsingCrotrig(int decr_8);
 	virtual int UsingCutterig(int decr_8);

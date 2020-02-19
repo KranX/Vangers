@@ -18,13 +18,14 @@ const uint TOR_XSIZE = TOR_POWER*map_size_x;
 extern uint MAP_POWER_Y;
 extern uint map_size_y;
 extern uint clip_mask_y;
+extern uint iclip_mask_y;
 extern uint clip_mask;
 extern uint TOR_YSIZE;
 
 #define XCYCL(x)	((x) & clip_mask_x)
 #define YCYCL(y)	((y) & clip_mask_y)
 #define iXCYCL(x)	((x) & clip_mask_x)
-int iYCYCL(int y);
+#define iYCYCL(y)	((y) & iclip_mask_y)
 
 #ifdef _SURMAP_
 const int MAX_RADIUS = 175;
