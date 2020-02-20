@@ -202,8 +202,8 @@ int host_port = DEFAULT_SERVER_PORT;
 
 int network_log = 0;
 
-const int FPS_PERIOD = 50;
-int fps_frame,fps_start;
+const int FPS_PERIOD = 50 * GAME_TIME_COEFF;
+int fps_frame,fps_start,uvsQuantFrame,gameDQuantFrame,actQuantFrame,MLQuantFrame;
 char fps_string[20];
 
 int stop_all_except_me = 0;
@@ -1907,18 +1907,25 @@ void iGameMap::draw(int self)
 		SoundQuant();
 	}
 
-	if(GeneralSystemSkip) {
+	if(GeneralSystemSkip && ++actQuantFrame >= (int)round(GAME_TIME_COEFF)) {
 		actIntQuant();
+		actQuantFrame = 0;
 	}
-	
-	uvsQuant();
+	if (++uvsQuantFrame >= (int)round(GAME_TIME_COEFF)) {
+		uvsQuant();
+		uvsQuantFrame = 0;
+	}
 
 	if(GeneralSystemSkip && !ChangeWorldSkipQuant){
 		if(curGMap) {
 			BackD.restore();
-			MLquant();
+			if (++MLQuantFrame >= (int)round(GAME_TIME_COEFF)) {
+				MLquant();
+				MLQuantFrame = 0;
+			}
+			
 			//try {
-				GameD.Quant();
+			GameD.Quant();
 			/*} catch (...) {
 				std::cout<<"ERROR:Some GameD.Quant is error."<<std::endl;
 			}*/
