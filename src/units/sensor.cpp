@@ -1795,7 +1795,7 @@ void DangerDataType::Quant(void)
 					};
 				}else{
 					Time--;
-					if(!(Time & 3)){
+					if(!(Time & (int)round(3 * GAME_TIME_COEFF))){
 						w = (WaterParticleObject*)(EffD.GetObject(EFF_PARTICLE03));
 						if(w){
 							w->CreateParticle(30,5,1 << 7,radius,10,31,5,R_curr,1);
