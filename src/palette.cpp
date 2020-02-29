@@ -1,4 +1,5 @@
 #include "global.h"
+#include "runtime.h"
 
 #include "terra/world.h"
 #include "palette.h"
@@ -217,7 +218,7 @@ void pal_iter2(void)
 	int add,i,j;
 	uchar *p,*po;
 	for(int ind = 0;ind < PAL_MAX;ind++){
-		offset[ind] = rPI(offset[ind] + PAL_SPEED[ind]);
+		offset[ind] = rPI(offset[ind] + (int)round(PAL_SPEED[ind] / GAME_TIME_COEFF));
 		add = PAL_AMPL[ind]*SI[offset[ind]]/UNIT;
 		p = palbuf + 3*BEGCOLOR[PAL_TERRAIN[ind]];
 		po = palbufOrg + 3*BEGCOLOR[PAL_TERRAIN[ind]];
