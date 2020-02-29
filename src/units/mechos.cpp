@@ -11645,7 +11645,7 @@ void VangerUnit::InitAI(void)
 
 	aiMaxJumpRadius = max_jump_distance;
 
-	uvsMaxSpeed = round((double)(TotalVangerSpeed)*speed_factor);
+	uvsMaxSpeed = round((double)(TotalVangerSpeed)*speed_factor / GAME_TIME_COEFF);
 
 	MaxHideSpeed = uvsMaxSpeed;
 	MakeTrackDist();
