@@ -557,8 +557,8 @@ void MapLavaSpot::CreateSpot(Vector& v,int fRadius,int fDelta,int radius1,int de
 
 	Phase = 0;
 
-	MaxPhase1 = phase1;
-	MaxPhase2 = phase2;
+	MaxPhase1 = phase1 * GAME_TIME_COEFF;
+	MaxPhase2 = phase2 * GAME_TIME_COEFF;
 
 	LastRadius = Radius = fRadius << 8;
 	LastDelta = Delta = fDelta << 8;
@@ -570,7 +570,7 @@ void MapLavaSpot::CreateSpot(Vector& v,int fRadius,int fDelta,int radius1,int de
 	dDelta2 = ((delta2 - delta1) << 8) / MaxPhase2;
 
 	Delay = 0;
-	mDelay = md;
+	mDelay = md * GAME_TIME_COEFF;
 
 	Status = 0;
 	ID = ID_EXPLOSION;
@@ -579,10 +579,10 @@ void MapLavaSpot::CreateSpot(Vector& v,int fRadius,int fDelta,int radius1,int de
 	ClipTerrain = clip_t;
 };
 
-void MapLavaSpot::Quant(void)
+void MapLavaSpot::Quant(void) // Map Lava spot is underground terminator!
 {
 //	int i;
-	
+
 	if(ClipTerrain == 83)
 		memset(SmoothTerrainMask,1,TERRAIN_MAX);
 //		for(i = 0;i < TERRAIN_MAX;i++) SmoothTerrainMask[i] = 1;

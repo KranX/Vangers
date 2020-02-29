@@ -1919,10 +1919,7 @@ void iGameMap::draw(int self)
 	if(GeneralSystemSkip && !ChangeWorldSkipQuant){
 		if(curGMap) {
 			BackD.restore();
-			if (++MLQuantFrame >= (int)round(GAME_TIME_COEFF)) {
-				MLquant();
-				MLQuantFrame = 0;
-			}
+			MLquant(); // Moveland animation frame is here!!!
 			
 			//try {
 			GameD.Quant();
