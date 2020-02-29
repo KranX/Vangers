@@ -18,3 +18,4 @@ src/vangers
 # TODO: VC stuff, windows binaries
 build
 .fuse_hidden*
+.vscode/
