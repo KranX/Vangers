@@ -8199,12 +8199,10 @@ int CheckStartJump(Object* p)
 };
 
 int VangerUnit::CheckStartJump(void)
-{	
-	int st;
-	st = (MaxEnergy - ImpulsePower) / max_jump_power;
-	if(Energy >  ImpulsePower){
-		Energy -= st;
-		jump_power++;
+{
+	if(Energy > ImpulsePower){
+		Energy -= (int)round(((MaxEnergy - ImpulsePower) / max_jump_power) / GAME_TIME_COEFF);
+		jump_power += 1 / GAME_TIME_COEFF;
 		if(jump_power > max_jump_power)
 			return 1;
 		else
@@ -13821,7 +13819,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	uvsMaxSpeed = sc->MaxSpeed;
 	MaxArmor = sc->MaxArmor << 16;
 	MaxEnergy = sc->MaxEnergy << 16;
-	dEnergy = ((MaxEnergy / 10) * sc->DeltaEnergy) / (UnitGlobalTime * 100);
+	dEnergy = (int)round((((MaxEnergy / 10) * sc->DeltaEnergy) / (UnitGlobalTime * 100)) / GAME_TIME_COEFF);
 	DropEnergy = MaxEnergy * sc->DropEnergy / 100;
 	DelayDrop = sc->DropTime;
 	ImpulsePower = (MaxEnergy / 100) * sc->MaxFly;
