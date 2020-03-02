@@ -152,10 +152,10 @@ void pal_iter0(void)
 
 #ifdef _ROAD_
 	if(MuteLog) return;
-	static int timer = 10 + realRND(100);
+	static int timer = (10 + realRND(100)) * GAME_TIME_COEFF;
 	if(!--timer){
 		SOUND_GLOBAL();
-		timer = 20 + realRND(100);
+		timer = (20 + realRND(100)) * GAME_TIME_COEFF;
 		}
 	if(BackgroundSound) StartEFFECT(EFF_GLOBAL,1);
 #endif
