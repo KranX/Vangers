@@ -6727,7 +6727,8 @@ void VangerUnit::CreateParticleMechos(const Vector& v,int r, int _type)
 {
 	TargetParticleObject* p;
 	Vector vPos;
-	int i,a,da,dr;
+	int i,vi,a,da,dr,particleAmount;
+	particleAmount = 10; // defines how much particles will be created when mechos enters the world, better but that value to config
 	unsigned char color_offset,color_shift;
 	if(Visibility == VISIBLE){
 
@@ -6751,14 +6752,15 @@ void VangerUnit::CreateParticleMechos(const Vector& v,int r, int _type)
 
 				color_offset = COLORS_VALUE_TABLE[model->polygons[i].color_id*2];
 				color_shift = COLORS_VALUE_TABLE[model->polygons[i].color_id*2 + 1];
-
-				p->AddVertex2(vPos + Vector(RND(dr),RND(dr),0),
-						Vector(1 - RND(2),1- RND(2),0) + v + (A*Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)),
+				for (vi = 0; vi < particleAmount; vi++) {
+					p->AddVertex2(vPos + Vector(RND(dr),RND(dr),0),
+						Vector(1 - RND(particleAmount),1- RND(particleAmount),0) + v + (A*Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)),
 						color_offset + (((1 << (7 - color_shift)) - 1) & ~1), _type);
 
-				p->AddVertex2(vPos + Vector(RND(dr),RND(dr),0),
-						Vector(1 - RND(2),1- RND(2),0) + v + (A*Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)),
-						color_offset + (((1 << (7 - color_shift)) - 1) & ~1), _type);
+					// p->AddVertex2(vPos + Vector(RND(dr),RND(dr),0),
+					// 	Vector(1 - RND(8),1- RND(8),0) + v + (A*Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)),
+					// 	color_offset + (((1 << (7 - color_shift)) - 1) & ~1), _type);
+				}
 				a = rPI(a + da);
 			};
 			EffD.ConnectObject(p);
