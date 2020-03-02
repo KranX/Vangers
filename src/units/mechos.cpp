@@ -515,9 +515,9 @@ void ActionUnit::CreateActionUnit(int nmodel/*Object& _model*/,int _status,const
 	EnvirAngle = EnvirLen = 0;
 
 	SpeedDir = 1;
-	MaxHideSpeed = MaxSpeed = 50;
+	MaxHideSpeed = MaxSpeed = (int)round(50 / GAME_TIME_COEFF);
 
-	MaxVelocity = 200;
+	MaxVelocity = (int)round(200 / GAME_TIME_COEFF);
 	CurrSpeed = 0;
 
 	NumCalcUnit = 0;
