@@ -110,6 +110,10 @@ int acsEventActive(aciScreenEventCommand* p)
 				obj = acsScrD -> GetObject(ACS_TUTORIAL_MODE);
 				if(obj -> activeSeq) return 0;
 			}
+			if(p -> data[0] == ACS_CHANGE_FPS_MODE){
+				obj = acsScrD -> GetObject(ACS_FPS_MODE);
+				if(obj -> activeSeq) return 0;
+			}
 			break;
 	}
 	return 1;

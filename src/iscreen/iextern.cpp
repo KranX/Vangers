@@ -670,6 +670,7 @@ void iPrepareOptions(void)
 	iScrOpt[iMUSIC_VOLUME_MAX] = new iScreenOption(iSCROLLER,1,"Sound screen","MusVolumeScroller");
 
 	iScrOpt[iTUTORIAL_ON] = new iScreenOption(iTRIGGER,0,"Graphics screen","TutorialTrig");
+	iScrOpt[iFPS_20] = new iScreenOption(iTRIGGER,0,"Graphics screen","FpsTrig");
 	iScrOpt[iDETAIL_SETTING] = new iScreenOption(iTRIGGER,0,"Graphics screen","DetailTrig");
 
 	iScrOpt[iSCREEN_RESOLUTION] = new iScreenOption(iTRIGGER,0,"Graphics screen","ResTrig");

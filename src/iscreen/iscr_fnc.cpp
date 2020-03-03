@@ -2089,7 +2089,7 @@ void iLoadData(void)
 	iHandleExtEvent(iEXT_UPDATE_SOUND_VOLUME);
 	iHandleExtEvent(iEXT_UPDATE_MUSIC_VOLUME);
 
-	iHandleExtEvent(iEXT_UPDATE_TUTORIAL_MODE);
+	iHandleExtEvent(iEXT_UPDATE_FPS_MODE);
 
 	iHandleExtEvent(iEXT_INIT_KEEP_OPTIONS);
 
@@ -2208,6 +2208,12 @@ void iHandleExtEvent(int code,int data)
 			break;
 		case iEXT_UPDATE_TUTORIAL_MODE:
 			if(iGetOptionValue(iTUTORIAL_ON))
+				XGR_MouseObj.DisablePrompt();
+			else
+				XGR_MouseObj.EnablePrompt();
+			break;
+		case iEXT_UPDATE_FPS_MODE:
+			if(iGetOptionValue(iFPS_20))
 				XGR_MouseObj.DisablePrompt();
 			else
 				XGR_MouseObj.EnablePrompt();

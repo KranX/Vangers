@@ -72,6 +72,15 @@
 #define iSTR_OFF1			"OFF"
 #define iSTR_OFF2			"çÖí"
 
+#define iSTR_FPS1			"FPS:"
+#define iSTR_FPS2			"FPS:"
+
+#define iSTR_FPS_601			"60"
+#define iSTR_FPS_602			"60"
+
+#define iSTR_FPS_201			"20"
+#define iSTR_FPS_202			"20"
+
 #define iSTR_BACK1			"BACK"
 #define iSTR_BACK2			"çÄáÄÑ"
 
@@ -608,6 +617,9 @@
 #define iSTR_MEM16MB		$iSTR_MEM16MB2
 #define iSTR_MEM32MB		$iSTR_MEM32MB2
 #define iSTR_TIPS		$iSTR_TIPS2
+#define iSTR_FPS		$iSTR_FPS2
+#define iSTR_FPS_20		$iSTR_FPS_202
+#define iSTR_FPS_60		$iSTR_FPS_602
 
 #define iSTR_ON 			$iSTR_ON2
 #define iSTR_OFF			$iSTR_OFF2
@@ -3121,6 +3133,7 @@ Screen "TextScreen01"
 #define iEXT_CHECK_END_FLAG		46
 
 #define iEXT_INIT_SOCKETS		47
+#define iEXT_UPDATE_FPS_MODE	48
 
 #define OPTIONS_BACK_Y	400
 
@@ -3286,6 +3299,9 @@ Screen "TextScreen01"
 
 #define TUTORIAL_STR_X		220
 #define TUTORIAL_TRG_X		500
+
+#define FPS_STR_X		220
+#define FPS_TRG_X		500
 
 #define DETAIL_STR_X		200
 #define DETAIL_TRG_X		400
@@ -4768,6 +4784,67 @@ Screen "Graphics screen"
 			}
 			EvComm {
 				ext_event $iEXT_UPDATE_TUTORIAL_MODE 0
+				start_time 1
+			}
+		}
+	}
+	Object "FpsStr"
+	{
+		x	$FPS_STR_X
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y }
+
+		Element STRING {
+			align_x 	center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN2
+
+			null_level	$DEFAULT_NULL
+			string		$iSTR_FPS
+		}
+	}
+	Trigger "FpsTrig" {
+		x	$FPS_TRG_X
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y }
+
+		num_state	2
+
+		null_level	$DEFAULT_NULL
+
+		State 0 "STRING"{
+			align_x center
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_FPS_20
+			null_level	$DEFAULT_NULL
+		}
+		State 1 "STRING"{
+			align_x center
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_FPS_60
+			null_level	$DEFAULT_NULL
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RBUTTON
+
+			time { $TRIGGER_TIME + 1 }
+			EvComm {
+				change_trigger	"FpsTrig"
+				time $TRIGGER_TIME
+			}
+			EvComm {
+				ext_event $iEXT_UPDATE_FPS_MODE 0
 				start_time 1
 			}
 		}

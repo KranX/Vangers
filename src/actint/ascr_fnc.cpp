@@ -4999,6 +4999,7 @@ int acsQuant(void)
 		iScrDisp -> flags &= ~MS_RIGHT_PRESS;
 		iScrDisp -> flags &= ~MS_MOVED;
 		iHandleExtEvent(iEXT_UPDATE_TUTORIAL_MODE);
+		iHandleExtEvent(iEXT_UPDATE_FPS_MODE);
 		iHandleExtEvent(iEXT_UPDATE_SOUND_MODE);
 		iHandleExtEvent(iEXT_UPDATE_SOUND_VOLUME);
 
@@ -5035,6 +5036,13 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 		case ACS_SET_TUTORIAL_MODE:
 			iSetOptionValue(iTUTORIAL_ON,!acsGetStrState(ACS_TUTORIAL_MODE));
 			iHandleExtEvent(iEXT_UPDATE_TUTORIAL_MODE);
+			break;
+		case ACS_INIT_FPS_MODE:
+			acsSetStrState(ACS_FPS_MODE,!iGetOptionValue(iFPS_20));
+			break;
+		case ACS_SET_FPS_MODE:
+			iSetOptionValue(iFPS_20,!acsGetStrState(ACS_FPS_MODE));
+			iHandleExtEvent(iEXT_UPDATE_FPS_MODE);
 			break;
 		case ACS_SET_AUTORUN_MODE:
 			aciAutoRun = acsGetStrState(ACS_AUTORUN_MODE);
@@ -5096,6 +5104,11 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 			acsChangeStrState(ACS_TUTORIAL_MODE);
 			iSetOptionValue(iTUTORIAL_ON,!acsGetStrState(ACS_TUTORIAL_MODE));
 			iHandleExtEvent(iEXT_UPDATE_TUTORIAL_MODE);
+			break;
+		case ACS_CHANGE_FPS_MODE:
+			acsChangeStrState(ACS_FPS_MODE);
+			iSetOptionValue(iFPS_20,!acsGetStrState(ACS_FPS_MODE));
+			iHandleExtEvent(iEXT_UPDATE_FPS_MODE);
 			break;
 		case ACS_INIT_SLOT_NAME:
 			acsPrepareSlotName(data0,data1);

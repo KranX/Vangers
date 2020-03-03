@@ -165,6 +165,9 @@
 #define TUTORIAL_STR_X		220
 #define TUTORIAL_TRG_X		500
 
+#define FPS_STR_X		    220
+#define FPS_TRG_X		    500
+
 #define DETAIL_STR_X		200
 #define DETAIL_TRG_X		400
 
@@ -1646,6 +1649,67 @@ Screen "Graphics screen"
 			}
 			EvComm {
 				ext_event $iEXT_UPDATE_TUTORIAL_MODE 0
+				start_time 1
+			}
+		}
+	}
+	Object "FpsStr"
+	{
+		x	$FPS_STR_X
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y }
+
+		Element STRING {
+			align_x 	center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN2
+
+			null_level	$DEFAULT_NULL
+			string		$iSTR_FPS
+		}
+	}
+	Trigger "FpsTrig" {
+		x	$FPS_TRG_X
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y }
+
+		num_state	2
+
+		null_level	$DEFAULT_NULL
+
+		State 0 "STRING"{
+			align_x center
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_FPS_20
+			null_level	$DEFAULT_NULL
+		}
+		State 1 "STRING"{
+			align_x center
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_FPS_60
+			null_level	$DEFAULT_NULL
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RBUTTON
+
+			time { $TRIGGER_TIME + 1 }
+			EvComm {
+				change_trigger	"FpsTrig"
+				time $TRIGGER_TIME
+			}
+			EvComm {
+				ext_event $iEXT_UPDATE_FPS_MODE 0
 				start_time 1
 			}
 		}
