@@ -2213,7 +2213,7 @@ void iHandleExtEvent(int code,int data)
 				XGR_MouseObj.EnablePrompt();
 			break;
 		case iEXT_UPDATE_FPS_MODE:
-			if(iGetOptionValue(iFPS_20))
+			if(iGetOptionValue(iFPS_60))
 				XGR_MouseObj.DisablePrompt();
 			else
 				XGR_MouseObj.EnablePrompt();

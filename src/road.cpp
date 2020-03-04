@@ -20,6 +20,7 @@
 
 #include "_xsound.h"
 
+#define DEFINE_GAME_RTO_TIMERS
 #include "runtime.h"
 
 #include "sqexp.h"
@@ -552,7 +553,13 @@ int xtInitApplication(void)
 	// Runtime objects init...
 
 	xtCreateRuntimeObjectTable(RTO_MAX_ID);
-	GameQuantRTO* gqObj = new GameQuantRTO;
+	RTO_GAME_QUANT_TIMER = 1000 / 20;
+	GAME_TIME_COEFF = 1;
+	if (iGetOptionValue(iFPS_60)) {
+		RTO_GAME_QUANT_TIMER = 1000 / 60;
+		GAME_TIME_COEFF = 3;
+	}
+	gqObj = new GameQuantRTO(RTO_GAME_QUANT_TIMER);
 	MainMenuRTO* mmObj = new MainMenuRTO;
 	EscaveRTO* eObj = new EscaveRTO;
 	EscaveOutRTO* eoObj = new EscaveOutRTO;
@@ -2761,7 +2768,9 @@ void GameTimerON_OFF(void)
 {
 	GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
 	if(!p) return;
-	if(!p -> Timer) p -> SetTimer(RTO_GAME_QUANT_TIMER);
+	if(!p -> Timer) {
+		p -> SetTimer(RTO_GAME_QUANT_TIMER);
+	}
 	else p -> SetTimer(0);
 }
 
