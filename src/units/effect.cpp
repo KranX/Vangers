@@ -1225,7 +1225,7 @@ void TargetParticleObject::Init(StorageType* s)
 	ID = ID_EXPLOSION;
 };
 
-const int TARGET_PARTICLE_FADE_TIME = 30 * GAME_TIME_COEFF;
+const int TARGET_PARTICLE_FADE_TIME = 30;
 
 void TargetParticleObject::Quant(void)
 {
@@ -1243,8 +1243,8 @@ void TargetParticleObject::Quant(void)
 	};
 	if(TargetType){
 		if(Time == 0){
-			FadeTime = LifeTime - TARGET_PARTICLE_FADE_TIME;
-			FadeNum = CurrParticle / TARGET_PARTICLE_FADE_TIME;
+			FadeTime = LifeTime - (TARGET_PARTICLE_FADE_TIME * GAME_TIME_COEFF);
+			FadeNum = CurrParticle / (TARGET_PARTICLE_FADE_TIME * GAME_TIME_COEFF);
 		}else{
 			if(Time >= FadeTime) 
 				CurrParticle -= FadeNum;
