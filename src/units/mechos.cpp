@@ -879,16 +879,21 @@ void VangerUnit::Destroy(void)
 {
 	WaterParticleObject* wp;
 	int i;
+	if(DestroyFrame & (int)round(GAME_TIME_COEFF - 1)) {
+		DestroyFrame++;
+		return;
+	}
+	DestroyFrame++;
 	if(Visibility == VISIBLE){
 		if(!BeebonationFlag){
 			if(dynamic_state & TOUCH_OF_AIR){
-				switch(DestroyPhase * (int)round(10 / GAME_TIME_COEFF)){
+				switch(DestroyPhase){
 					case 0:
 						if(Status & SOBJ_ACTIVE)
 							camera_impulse(128);
 						EffD.CreateExplosion(R_curr + vUp,EFF_EXPLOSION01,this,1 << 15,0);
 						break;
-					case 30:
+					case 3:
 						if(ActD.Active)
 							SOUND_EXPLOSION(getDistX(ActD.Active->R_curr.x,R_curr.x))
 						else
@@ -896,13 +901,13 @@ void VangerUnit::Destroy(void)
 						if(DestroyClass > 1)
 							EffD.CreateExplosion(R_curr + vDown,EFF_EXPLOSION01,this,1 << 15,0);						
 						break;
-					case 40:
+					case 4:
 						if(ActD.Active)
 							SOUND_BACK_EXPLOSION(getDistX(ActD.Active->R_curr.x,R_curr.x))
 						else
 							SOUND_BACK_EXPLOSION(0)						
 						break;
-					case 50:
+					case 5:
 						switch(DestroyClass){
 							case 0:
 								EffD.CreateExplosion(R_curr,EFF_EXPLOSION03,this,1 << 15,0);
@@ -918,42 +923,42 @@ void VangerUnit::Destroy(void)
 								break;
 						};
 						break;
-					case 100:
+					case 10:
 						EffD.CreateExplosion(R_curr + vDown,EFF_EXPLOSION01,this,1 << 14,0);
 						DestroyEnvironment();
 						break;
-					case 110:
+					case 11:
 						if(DestroyClass > 1)
 							EffD.CreateExplosion(R_curr + vUp,EFF_EXPLOSION01,this,3 << 15,0);
 						Explosion(64,nModel);
 						break;
-					case 170:
+					case 17:
 						if(DestroyClass > 0)
 							EffD.CreateExplosion(R_curr + vDown,EFF_EXPLOSION01,this,1 << 14,0);
 						break;
-					case 180:						
+					case 18:						
 						if(DestroyClass > 2)
 							EffD.CreateExplosion(R_curr + vUp,EFF_EXPLOSION01,this,1 << 15,1 << 11);
 						break;
-					case 210:
+					case 21:
 						if(DestroyClass > 1)
 							EffD.CreateExplosion(R_curr + vUp,EFF_EXPLOSION01,this,1 << 14,0);
 						break;
-					case 220:
+					case 22:
 						if(DestroyClass > 0)
 							EffD.CreateExplosion(R_curr + vUp,EFF_EXPLOSION01,this,1 << 15,0);
 						break;
-					case 240:
+					case 24:
 						if(DestroyClass > 2)
 							EffD.CreateExplosion(R_curr,EFF_EXPLOSION03,this,1 << 13,3 << 10);
 						break;
 					default:
-						if(dynamic_state & (GROUND_COLLISION | WHEELS_TOUCH))
+						if((dynamic_state & (GROUND_COLLISION | WHEELS_TOUCH)))
 							MapD.CreateCrater(R_curr,MAP_POINT_CRATER09);
 						break;
 				};
 			} else {
-				if(DestroyPhase & (int)(3 * GAME_TIME_COEFF)) {
+				if(DestroyPhase & 3) {
 					wp = (WaterParticleObject*)(EffD.GetObject(EFF_PARTICLE04));
 					if(wp){
 						wp->CreateParticle(20,5,3 << 8,radius,5,28,5,Vector(R_curr.x + radius - RND(2*radius),R_curr.y + radius - RND(2*radius),R_curr.z));
@@ -961,7 +966,7 @@ void VangerUnit::Destroy(void)
 					};
 
 					EffD.CreateDeform(R_curr + Vector(PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),83),DEFORM_WATER_ONLY,PASSING_WAVE_PROCESS);
-					if(DestroyPhase == 11 * GAME_TIME_COEFF){
+					if(DestroyPhase == 11){
 						Explosion(64, nModel);
 						DestroyEnvironment();
 						if(ActD.Active)
@@ -975,7 +980,7 @@ void VangerUnit::Destroy(void)
 		};
 	};
 
-	if(DestroyPhase++ == (27 * GAME_TIME_COEFF)){
+	if(DestroyPhase++ == 27){
 		if(Status & SOBJ_ACTIVE){
 			if(NetworkON){
 				NetStatisticUpdate(NET_STATISTICS_DEATH);
@@ -1731,7 +1736,7 @@ void TrackUnit::CreateTrackUnit(void)
 	CheckPosition = MaxCheckPosition = 15;
 #endif
 
-	DestroyPhase = 0;
+	DestroyPhase = DestroyFrame = 0;
 
 	vTarget = Vector(0,0,0);
 
