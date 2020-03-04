@@ -203,7 +203,7 @@ int host_port = DEFAULT_SERVER_PORT;
 
 int network_log = 0;
 
-const int FPS_PERIOD = 50 * GAME_TIME_COEFF;
+const int FPS_PERIOD = 50;
 int fps_frame,fps_start,uvsQuantFrame,gameDQuantFrame,actQuantFrame,MLQuantFrame;
 char fps_string[20];
 
@@ -1119,8 +1119,8 @@ int GameQuantRTO::Quant(void)
 		gameQuant();
 //		DBGCHECK
 		frame++;
-		if(++fps_frame == FPS_PERIOD) {
-			sprintf(fps_string,"%.1f",(double)FPS_PERIOD/(SDL_GetTicks() - (int)fps_start)*1000);
+		if(++fps_frame == (FPS_PERIOD * GAME_TIME_COEFF)) {
+			sprintf(fps_string,"%.1f",(double)(FPS_PERIOD/GAME_TIME_COEFF)/(SDL_GetTicks() - (int)fps_start)*1000);
 #ifdef _DEBUG
 			network_analysis(network_analysis_buffer,0);
 #else
