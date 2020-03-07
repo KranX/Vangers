@@ -72,7 +72,7 @@ static SndParameters SndData[EFF_MAX] = {
 	{  4,2,255,0,0,"copterig",NULL },
 	{  4,2,255,0,0,"cutterig",NULL },
 	{  4,2,255,0,0,"crotrig",NULL },
-	{  1,1,255,0,0,"explode",NULL },
+	{  2,1,255,0,0,"explode",NULL },
 	{  1,1,128,DS_QUEUE,0,"explode2",NULL },
 	{  1,3,255,0,0,"crustest",NULL },
 	{  1,2,0,0,0,"collis",NULL },

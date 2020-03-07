@@ -274,6 +274,7 @@ struct TrackUnit : ActionUnit , TrackLinkType
 	int CheckWayCount,MaxWayCount;
 
 	int DestroyPhase;
+	int DestroyFrame;
 
 	int PrevWheelX[6];
 	int PrevWheelY[6];

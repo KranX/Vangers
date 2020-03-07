@@ -19,7 +19,10 @@
 #define iSTR_MEM16MB		$iSTR_MEM16MB2
 #define iSTR_MEM32MB		$iSTR_MEM32MB2
 #define iSTR_TIPS		$iSTR_TIPS2
+#define iSTR_FPS		$iSTR_FPS2
 
+#define iSTR_FPS_20		$iSTR_FPS_202
+#define iSTR_FPS_60		$iSTR_FPS_602
 #define iSTR_ON 			$iSTR_ON2
 #define iSTR_OFF			$iSTR_OFF2
 #define iSTR_BACK			$iSTR_BACK2

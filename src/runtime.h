@@ -1,12 +1,18 @@
+#ifdef DEFINE_GAME_RTO_TIMERS
+#define EXTERN /* nothing */
+#else
+#define EXTERN extern
+#endif /* DEFINE_GAME_RTO_TIMERS */
+EXTERN int RTO_GAME_QUANT_TIMER;
+EXTERN double GAME_TIME_COEFF; // speed correction coefficient, use for static parameters only, like bullet speed, animation speed...
+
 //TODO: stalkerg need timers kill!!!
 //const int  RTO_GAME_QUANT_TIMER	= 1000/20;
-const int  RTO_GAME_QUANT_TIMER	= 1000/60;
+
 const int  RTO_ISCREEN_TIMER 	= 1000/20;
 const int  RTO_PALETTE_TIMER 	= 1000/20;
 const int  RTO_ESCAVE_GATE_TIMER	= 1000/20;
 const int  RTO_IMAGE_TIMER		= 1000/20;
-
-const double GAME_TIME_COEFF = 50 / RTO_GAME_QUANT_TIMER; // speed correction coefficient, use for static parameters only, like bullet speed, animation speed...
 
 // Runtime objects...
 enum RoadRuntimeObjID
@@ -77,7 +83,7 @@ struct GameQuantRTO : BaseRTO
 	virtual void Init(int id);
 	virtual int Quant(void);
 
-	GameQuantRTO(void){ ID = RTO_GAME_QUANT_ID; Timer = RTO_GAME_QUANT_TIMER; }
+	GameQuantRTO(int timer){ ID = RTO_GAME_QUANT_ID; Timer = timer; }
 };
 
 struct MainMenuRTO : BaseRTO
@@ -184,4 +190,4 @@ void rtoSetNextID(int id,int next);
 void rtoSetFlag(int id,int fl);
 void rtoClearFlag(int id,int fl);
 
-
+EXTERN GameQuantRTO* gqObj;

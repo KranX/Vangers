@@ -2,6 +2,7 @@
 
 #include "../global.h"
 #include "../iscreen/hfont.h"
+#include "../runtime.h"
 
 #include "aci_evnt.h"
 #include "aci_scr.h"
@@ -109,7 +110,6 @@ int acsEventActive(aciScreenEventCommand* p)
 				obj = acsScrD -> GetObject(ACS_TUTORIAL_MODE);
 				if(obj -> activeSeq) return 0;
 			}
-			break;
 	}
 	return 1;
 }
@@ -317,7 +317,7 @@ aciScreenEvent::aciScreenEvent(void)
 {
 	flags = 0;
 	CurTimer = 0;
-	MaxTimer = 1;
+	MaxTimer = 1 * GAME_TIME_COEFF;
 
 	commSeq = new XList;
 	keyObj = new aciScreenKeyObject;
@@ -1134,7 +1134,7 @@ int aciScreenDispatcher::Quant(int flush_log)
 
 	if(activeInput){
 		acsInputTimer ++;
-		if(acsInputTimer >= ACS_INPUT_TIMER){
+		if(acsInputTimer >= ACS_INPUT_TIMER * GAME_TIME_COEFF){
 			acsInputTimer = 0;
 			acsInputFlag = 1;
 		}

@@ -557,8 +557,8 @@ void MapLavaSpot::CreateSpot(Vector& v,int fRadius,int fDelta,int radius1,int de
 
 	Phase = 0;
 
-	MaxPhase1 = phase1;
-	MaxPhase2 = phase2;
+	MaxPhase1 = phase1 * GAME_TIME_COEFF;
+	MaxPhase2 = phase2 * GAME_TIME_COEFF;
 
 	LastRadius = Radius = fRadius << 8;
 	LastDelta = Delta = fDelta << 8;
@@ -570,7 +570,7 @@ void MapLavaSpot::CreateSpot(Vector& v,int fRadius,int fDelta,int radius1,int de
 	dDelta2 = ((delta2 - delta1) << 8) / MaxPhase2;
 
 	Delay = 0;
-	mDelay = md;
+	mDelay = md * GAME_TIME_COEFF;
 
 	Status = 0;
 	ID = ID_EXPLOSION;
@@ -579,10 +579,10 @@ void MapLavaSpot::CreateSpot(Vector& v,int fRadius,int fDelta,int radius1,int de
 	ClipTerrain = clip_t;
 };
 
-void MapLavaSpot::Quant(void)
+void MapLavaSpot::Quant(void) // Map Lava spot is underground terminator!
 {
 //	int i;
-	
+
 	if(ClipTerrain == 83)
 		memset(SmoothTerrainMask,1,TERRAIN_MAX);
 //		for(i = 0;i < TERRAIN_MAX;i++) SmoothTerrainMask[i] = 1;
@@ -3624,7 +3624,7 @@ void LandSlideType::CreateLandSlide(int* _xx,int* _yy,int _Time)
 	};	
 	z = GetLandAlt(x,y,Radius);
 	//Time = _Time;
-	Time = 80;
+	Time = 80 * GAME_TIME_COEFF;
 	Status = 0;
 	ID = ID_MOBILE_LOCATION;	
 	sZ = z << 16;
@@ -3667,8 +3667,8 @@ static char Mask_for_crash[] = {
 };
 
 void LandSlideType::makeLittelNoise(void){
-	int firtst_time = 68;
-	int end_time = 55;
+	int firtst_time = 68 * GAME_TIME_COEFF;
+	int end_time = 55 * GAME_TIME_COEFF;
 	//int for_one = 12;
 	int for_one = 30;
 	int size = 6;
@@ -3680,8 +3680,6 @@ void LandSlideType::makeLittelNoise(void){
 
 	if (Time < firtst_time && Time > end_time) {
 		size = 30;
-		//for_one = 14;
-		for_one = 30;
 		rnd_quant = 8;
 	} else if (Time == end_time){
 		cX[0] += ((cX[2] - cX[0])>>4);
@@ -3736,7 +3734,7 @@ void LandSlideType::makeLittelNoise(void){
 			if ( dast ){
 				if (Time < firtst_time && Time > end_time && dast > (size<<2) && RND(2))
 						EffD.CreateFireBall(Vector(XCYCL(xc + (size>>1)),yc + (size>>1), 200),DT_FIRE_BALL05,NULL,3 << 6,0);//4 <<1
-				else if ( Time < 77 && Time > firtst_time && !RND(8))
+				else if ( Time < (77 * GAME_TIME_COEFF) && Time > firtst_time && !RND(8))
 						EffD.CreateFireBall(Vector(XCYCL(xc + (size>>1)),yc + (size>>1), 200),DT_FIRE_BALL05,NULL, 3 << 5,0);
 				//else
 				dastPutSpriteOnMapAlt( XCYCL(xc + (size>>1)), yc + (size>>1), dastResource->data[RND(dastResource->n)], dastResource->x_size, dastResource->y_size, 1<<14);

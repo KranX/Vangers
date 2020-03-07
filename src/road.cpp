@@ -20,6 +20,7 @@
 
 #include "_xsound.h"
 
+#define DEFINE_GAME_RTO_TIMERS
 #include "runtime.h"
 
 #include "sqexp.h"
@@ -203,7 +204,7 @@ int host_port = DEFAULT_SERVER_PORT;
 int network_log = 0;
 
 const int FPS_PERIOD = 50;
-int fps_frame,fps_start;
+int fps_frame,fps_start,uvsQuantFrame,gameDQuantFrame,actQuantFrame,MLQuantFrame;
 char fps_string[20];
 
 int stop_all_except_me = 0;
@@ -552,7 +553,13 @@ int xtInitApplication(void)
 	// Runtime objects init...
 
 	xtCreateRuntimeObjectTable(RTO_MAX_ID);
-	GameQuantRTO* gqObj = new GameQuantRTO;
+	RTO_GAME_QUANT_TIMER = 1000 / 20;
+	GAME_TIME_COEFF = 1;
+	if (iGetOptionValue(iFPS_60)) {
+		RTO_GAME_QUANT_TIMER = 1000 / 60;
+		GAME_TIME_COEFF = 3;
+	}
+	gqObj = new GameQuantRTO(RTO_GAME_QUANT_TIMER);
 	MainMenuRTO* mmObj = new MainMenuRTO;
 	EscaveRTO* eObj = new EscaveRTO;
 	EscaveOutRTO* eoObj = new EscaveOutRTO;
@@ -1112,8 +1119,8 @@ int GameQuantRTO::Quant(void)
 		gameQuant();
 //		DBGCHECK
 		frame++;
-		if(++fps_frame == FPS_PERIOD) {
-			sprintf(fps_string,"%.1f",(double)FPS_PERIOD/(SDL_GetTicks() - (int)fps_start)*1000);
+		if(++fps_frame == (FPS_PERIOD * GAME_TIME_COEFF)) {
+			sprintf(fps_string,"%.1f",(double)(FPS_PERIOD/GAME_TIME_COEFF)/(SDL_GetTicks() - (int)fps_start)*1000);
 #ifdef _DEBUG
 			network_analysis(network_analysis_buffer,0);
 #else
@@ -1907,18 +1914,22 @@ void iGameMap::draw(int self)
 		SoundQuant();
 	}
 
-	if(GeneralSystemSkip) {
+	if(GeneralSystemSkip && ++actQuantFrame >= (int)round(GAME_TIME_COEFF)) {
 		actIntQuant();
+		actQuantFrame = 0;
 	}
-	
-	uvsQuant();
+	if (++uvsQuantFrame >= (int)round(GAME_TIME_COEFF)) {
+		uvsQuant();
+		uvsQuantFrame = 0;
+	}
 
 	if(GeneralSystemSkip && !ChangeWorldSkipQuant){
 		if(curGMap) {
 			BackD.restore();
-			MLquant();
+			MLquant(); // Moveland animation frame is here!!!
+			
 			//try {
-				GameD.Quant();
+			GameD.Quant();
 			/*} catch (...) {
 				std::cout<<"ERROR:Some GameD.Quant is error."<<std::endl;
 			}*/
@@ -2757,7 +2768,9 @@ void GameTimerON_OFF(void)
 {
 	GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
 	if(!p) return;
-	if(!p -> Timer) p -> SetTimer(RTO_GAME_QUANT_TIMER);
+	if(!p -> Timer) {
+		p -> SetTimer(RTO_GAME_QUANT_TIMER);
+	}
 	else p -> SetTimer(0);
 }
 

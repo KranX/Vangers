@@ -515,9 +515,9 @@ void ActionUnit::CreateActionUnit(int nmodel/*Object& _model*/,int _status,const
 	EnvirAngle = EnvirLen = 0;
 
 	SpeedDir = 1;
-	MaxHideSpeed = MaxSpeed = 50;
+	MaxHideSpeed = MaxSpeed = (int)round(50 / GAME_TIME_COEFF);
 
-	MaxVelocity = 200;
+	MaxVelocity = (int)round(200 / GAME_TIME_COEFF);
 	CurrSpeed = 0;
 
 	NumCalcUnit = 0;
@@ -879,6 +879,11 @@ void VangerUnit::Destroy(void)
 {
 	WaterParticleObject* wp;
 	int i;
+	if(DestroyFrame & (int)round(GAME_TIME_COEFF - 1)) {
+		DestroyFrame++;
+		return;
+	}
+	DestroyFrame++;
 	if(Visibility == VISIBLE){
 		if(!BeebonationFlag){
 			if(dynamic_state & TOUCH_OF_AIR){
@@ -897,6 +902,12 @@ void VangerUnit::Destroy(void)
 							EffD.CreateExplosion(R_curr + vDown,EFF_EXPLOSION01,this,1 << 15,0);						
 						break;
 					case 4:
+						if(ActD.Active)
+							SOUND_BACK_EXPLOSION(getDistX(ActD.Active->R_curr.x,R_curr.x))
+						else
+							SOUND_BACK_EXPLOSION(0)						
+						break;
+					case 5:
 						switch(DestroyClass){
 							case 0:
 								EffD.CreateExplosion(R_curr,EFF_EXPLOSION03,this,1 << 15,0);
@@ -942,12 +953,12 @@ void VangerUnit::Destroy(void)
 							EffD.CreateExplosion(R_curr,EFF_EXPLOSION03,this,1 << 13,3 << 10);
 						break;
 					default:
-						if(dynamic_state & (GROUND_COLLISION | WHEELS_TOUCH))
+						if((dynamic_state & (GROUND_COLLISION | WHEELS_TOUCH)))
 							MapD.CreateCrater(R_curr,MAP_POINT_CRATER09);
 						break;
 				};
-			}else{
-				if(DestroyPhase & 3){
+			} else {
+				if(DestroyPhase & 3) {
 					wp = (WaterParticleObject*)(EffD.GetObject(EFF_PARTICLE04));
 					if(wp){
 						wp->CreateParticle(20,5,3 << 8,radius,5,28,5,Vector(R_curr.x + radius - RND(2*radius),R_curr.y + radius - RND(2*radius),R_curr.z));
@@ -1725,7 +1736,7 @@ void TrackUnit::CreateTrackUnit(void)
 	CheckPosition = MaxCheckPosition = 15;
 #endif
 
-	DestroyPhase = 0;
+	DestroyPhase = DestroyFrame = 0;
 
 	vTarget = Vector(0,0,0);
 
@@ -6727,7 +6738,8 @@ void VangerUnit::CreateParticleMechos(const Vector& v,int r, int _type)
 {
 	TargetParticleObject* p;
 	Vector vPos;
-	int i,a,da,dr;
+	int i,vi,a,da,dr,particleAmount;
+	particleAmount = 10; // defines how much particles will be created when mechos enters the world, better but that value to config
 	unsigned char color_offset,color_shift;
 	if(Visibility == VISIBLE){
 
@@ -6751,14 +6763,15 @@ void VangerUnit::CreateParticleMechos(const Vector& v,int r, int _type)
 
 				color_offset = COLORS_VALUE_TABLE[model->polygons[i].color_id*2];
 				color_shift = COLORS_VALUE_TABLE[model->polygons[i].color_id*2 + 1];
-
-				p->AddVertex2(vPos + Vector(RND(dr),RND(dr),0),
-						Vector(1 - RND(2),1- RND(2),0) + v + (A*Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)),
+				for (vi = 0; vi < particleAmount; vi++) {
+					p->AddVertex2(vPos + Vector(RND(dr),RND(dr),0),
+						Vector(1 - RND(particleAmount),1- RND(particleAmount),0) + v + (A*Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)),
 						color_offset + (((1 << (7 - color_shift)) - 1) & ~1), _type);
 
-				p->AddVertex2(vPos + Vector(RND(dr),RND(dr),0),
-						Vector(1 - RND(2),1- RND(2),0) + v + (A*Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)),
-						color_offset + (((1 << (7 - color_shift)) - 1) & ~1), _type);
+					// p->AddVertex2(vPos + Vector(RND(dr),RND(dr),0),
+					// 	Vector(1 - RND(8),1- RND(8),0) + v + (A*Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)),
+					// 	color_offset + (((1 << (7 - color_shift)) - 1) & ~1), _type);
+				}
 				a = rPI(a + da);
 			};
 			EffD.ConnectObject(p);
@@ -8199,12 +8212,10 @@ int CheckStartJump(Object* p)
 };
 
 int VangerUnit::CheckStartJump(void)
-{	
-	int st;
-	st = (MaxEnergy - ImpulsePower) / max_jump_power;
-	if(Energy >  ImpulsePower){
-		Energy -= st;
-		jump_power++;
+{
+	if(Energy > ImpulsePower){
+		Energy -= (int)round(((MaxEnergy - ImpulsePower) / max_jump_power) / GAME_TIME_COEFF);
+		jump_power += 1 / GAME_TIME_COEFF;
 		if(jump_power > max_jump_power)
 			return 1;
 		else
@@ -11645,7 +11656,7 @@ void VangerUnit::InitAI(void)
 
 	aiMaxJumpRadius = max_jump_distance;
 
-	uvsMaxSpeed = round((double)(TotalVangerSpeed)*speed_factor);
+	uvsMaxSpeed = round((double)(TotalVangerSpeed)*speed_factor / GAME_TIME_COEFF);
 
 	MaxHideSpeed = uvsMaxSpeed;
 	MakeTrackDist();
@@ -13821,7 +13832,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	uvsMaxSpeed = sc->MaxSpeed;
 	MaxArmor = sc->MaxArmor << 16;
 	MaxEnergy = sc->MaxEnergy << 16;
-	dEnergy = ((MaxEnergy / 10) * sc->DeltaEnergy) / (UnitGlobalTime * 100);
+	dEnergy = (int)round((((MaxEnergy / 10) * sc->DeltaEnergy) / (UnitGlobalTime * 100)) / GAME_TIME_COEFF);
 	DropEnergy = MaxEnergy * sc->DropEnergy / 100;
 	DelayDrop = sc->DropTime;
 	ImpulsePower = (MaxEnergy / 100) * sc->MaxFly;

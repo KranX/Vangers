@@ -275,7 +275,7 @@ struct Object : BaseObject {
 	int nitro;
 	int turbo;
 	int archimedean;
-	int jump_power;
+	double jump_power;
 	int stuff_phase;
 	int side_impulse_enable;
 	int mole_on;

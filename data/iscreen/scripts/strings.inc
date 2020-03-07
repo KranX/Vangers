@@ -71,6 +71,15 @@
 #define iSTR_OFF1			"OFF"
 #define iSTR_OFF2			"çÖí"
 
+#define iSTR_FPS1			"FPS:"
+#define iSTR_FPS2			"FPS:"
+
+#define iSTR_FPS_201			"20"
+#define iSTR_FPS_202			"20"
+
+#define iSTR_FPS_601			"60"
+#define iSTR_FPS_602			"60"
+
 #define iSTR_BACK1			"BACK"
 #define iSTR_BACK2			"çÄáÄÑ"
 
