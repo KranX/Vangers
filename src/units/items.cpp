@@ -2300,7 +2300,7 @@ void WorldBulletTemplate::Init(Parser& in)
 		in.search_name("ExtentionShowType");
 		ExtShowType = in.get_int();
 		in.search_name("Precision");
-		Precision = in.get_int();
+		Precision = (int)round(in.get_int() / GAME_TIME_COEFF); // fps fix
 		in.search_name("TargetMode");
 		name = in.get_name();
 		TargetMode = Name2Int(name,BULLET_TARGET_MODE_NAME,MAX_BULLET_TARGET_MODE_NAME);
@@ -2915,8 +2915,8 @@ void HordeObject::DrawQuant(void)
 void HordeObject::CreateHorde(Vector v,int r,int z,int cZ,VangerUnit* own)
 {
 	ID = ID_HORDE;
-	Speed = 10;
-	Precision = 7;
+	Speed = 10 / GAME_TIME_COEFF;
+	Precision = 7 / GAME_TIME_COEFF;
 	Power = (50 << 16) / UnitGlobalTime;
 	Mode = HORDE_RESTORE_MODE;
 	NumParticle = HORDE_PARTICLE_NUM;

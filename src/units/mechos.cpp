@@ -905,7 +905,7 @@ void VangerUnit::Destroy(void)
 						if(ActD.Active)
 							SOUND_BACK_EXPLOSION(getDistX(ActD.Active->R_curr.x,R_curr.x))
 						else
-							SOUND_BACK_EXPLOSION(0)						
+							SOUND_BACK_EXPLOSION(0)
 						break;
 					case 5:
 						switch(DestroyClass){
