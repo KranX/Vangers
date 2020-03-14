@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../runtime.h"
 
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
@@ -4368,19 +4369,19 @@ void aiMessageList::Quant(void)
 				switch(p->Index){
 					case AI_MESSAGE_INDEX_LUCK:
 						aiPromptLuckMessage(p->Luck);
-						Time = 70;
+						Time = 70 * GAME_TIME_COEFF;
 						break;
 					case AI_MESSAGE_INDEX_DOMINANCE:
 						aiPromptDominanceMessage(p->Dominance);
-						Time = 50;
+						Time = 50 * GAME_TIME_COEFF;
 						break;
 					case AI_MESSAGE_INDEX_TABUTASK:
 						aiPromptTaskMessage(p->TabuTask);
-						Time = 50;
+						Time = 50 * GAME_TIME_COEFF;
 						break;
 					default:
 						aiMessageData[p->Index].Send(p->Speed,p->Mask,0);
-						Time = aiMessageData[p->Index].GetTime(p->Mask) / 2 + 10;
+						Time = (aiMessageData[p->Index].GetTime(p->Mask) / 2 + 10) * GAME_TIME_COEFF;
 						break;
 				};
 			};
@@ -4392,19 +4393,19 @@ void aiMessageList::Quant(void)
 			switch(View->Index){
 				case AI_MESSAGE_INDEX_LUCK:
 					aiPromptLuckMessage(View->Luck);
-					Time = 70;
+					Time = 70 * GAME_TIME_COEFF;
 					break;
 				case AI_MESSAGE_INDEX_DOMINANCE:
 					aiPromptDominanceMessage(View->Dominance);
-					Time = 50;
+					Time = 50 * GAME_TIME_COEFF;
 					break;
 				case AI_MESSAGE_INDEX_TABUTASK:
 					aiPromptTaskMessage(View->TabuTask);
-					Time = 50;
+					Time = 50 * GAME_TIME_COEFF;
 					break;
 				default:
 					aiMessageData[View->Index].Send(View->Speed,View->Mask,0);
-					Time = aiMessageData[View->Index].GetTime(View->Mask) / 2 + 10;
+					Time = (aiMessageData[View->Index].GetTime(View->Mask) / 2 + 10) * GAME_TIME_COEFF;
 					break;
 			};
 		};		
