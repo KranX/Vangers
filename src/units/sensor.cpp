@@ -100,6 +100,7 @@ int TimeSecretType[2][MAX_TIME_SECRET] = {{UVS_ITEM_TYPE::PEELOT,UVS_ITEM_TYPE::
 
 int ThreallMessageProcess;
 extern uvsVanger *Gamer;
+int sensorStaticFrame = 0; // animation speed control frame, required to skip animation frames on high fps
 void StaticOpen(void)
 {
 	int i,j;
@@ -368,37 +369,45 @@ void StaticClose(void)
 #endif
 };
 
-void StaticQuant(void)
+void StaticQuant(void) //world animation quant
 {
 	int y0,y1,i;
 	StaticObject* st;
 	uchar** lt;
 		
 	lt = vMap->lineT;
-
+	if (sensorStaticFrame >= GAME_TIME_COEFF) {
+		sensorStaticFrame = 1;
+	} else {
+		sensorStaticFrame++;
+	}
 	if(NetworkON){
 		for(i = 0;i < TntTableSize;i++)
 		{
-			if(lt[TntObjectData[i]->R_curr.y])
+			if(lt[TntObjectData[i]->R_curr.y]) {
 				TntObjectData[i]->NetQuant();
-			else
+			} else
 				TntObjectData[i]->NetHideEvent();
-		};
+		}
 	}else{
 		for(i = 0;i < TntTableSize;i++)
 		{		
-			if(lt[TntObjectData[i]->R_curr.y])
-				TntObjectData[i]->Quant();
-			else
+			if(lt[TntObjectData[i]->R_curr.y]) {
+				if (sensorStaticFrame == 1)
+					TntObjectData[i]->Quant(); //animate mushroom grow
+			} else
 				TntObjectData[i]->HideEvent();
 
-		};	
-	};
-
-	for(i = 0;i < NumLocation;i++)
-		if(LocationData[i]->Enable)
-			LocationData[i]->Quant(); // Sensor animation frame is here
-
+		}
+	}
+	if (sensorStaticFrame == 1) {
+		for(i = 0;i < NumLocation;i++) {
+			if(LocationData[i]->Enable) {
+				LocationData[i]->Quant(); // Sensor animation frame is here
+			}
+		}
+	}
+	
 	int dy0;
 	y0 = ViewY -  TurnSideY;
 	y1 = ViewY + TurnSideY;
