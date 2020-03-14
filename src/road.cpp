@@ -1926,8 +1926,11 @@ void iGameMap::draw(int self)
 	if(GeneralSystemSkip && !ChangeWorldSkipQuant){
 		if(curGMap) {
 			BackD.restore();
-			MLquant(); // Moveland animation frame is here!!!
 			
+			if (++MLQuantFrame >= (int)round(GAME_TIME_COEFF)) {
+				MLquant(); // Moveland animation frame is here!!!
+				MLQuantFrame = 0;
+			}
 			//try {
 			GameD.Quant();
 			/*} catch (...) {
