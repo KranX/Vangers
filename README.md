@@ -2,6 +2,7 @@
 
 ![Vangers](http://cdn.akamai.steamstatic.com/steam/apps/264080/header.jpg?t=1447359431)
 
+![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20CI/badge.svg)
 [![Build Status](https://travis-ci.org/KranX/Vangers.svg?branch=master)](https://travis-ci.org/KranX/Vangers)
 [![Join the chat at https://gitter.im/KranX/vangers](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/KranX/vangers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
