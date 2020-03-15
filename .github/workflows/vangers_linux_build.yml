@@ -1,10 +1,10 @@
-name: Vangers CI
+name: Vangers Linux Build
 
 on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, 60fps ]
 
 jobs:
   build:
