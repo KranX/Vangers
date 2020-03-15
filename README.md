@@ -4,7 +4,7 @@
 
 ![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Linux%20Build/badge.svg)
 [![Build Status](https://travis-ci.org/KranX/Vangers.svg?branch=master)](https://travis-ci.org/KranX/Vangers)
-[![Join the chat at https://gitter.im/KranX/vangers](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/KranX/vangers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+![Join the chat at https://t.me/vangers](https://patrolavia.github.io/telegram-badge/chat.svg)
 
 
 Video game that combines elements of the racing and role-playing genres.
@@ -16,8 +16,6 @@ The necessary resources for the game (maps, sounds, textures, etc.) you can take
 http://store.steampowered.com/app/264080
 
 http://www.gog.com/game/vangers
-
-Developers chat: https://t.me/vangers
 
 ## Required libraries ##
 
