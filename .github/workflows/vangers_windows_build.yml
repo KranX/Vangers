@@ -1,0 +1,28 @@
+name: Vangers Windows Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master, 60fps ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: numworks/setup-msys2@v1
+    
+    - name: install libs
+      run: sudo apt-get install cmake libsdl2-dev libsdl2-net-dev libogg-dev libvorbis-dev libavcodec-dev libavformat-dev libavutil-dev
+    - uses: actions/checkout@v1
+    - name: clunk download lib
+      run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
+      working-directory: /tmp
+    - name: clunk build and install
+      run: cmake -DCMAKE_INSTALL_PREFIX=/usr . && make && sudo make install
+      working-directory: /tmp/clunk
+    - name: configure
+      run: mkdir build && cd build && cmake ..
+    - name: make
+      run: make
+      working-directory: build
