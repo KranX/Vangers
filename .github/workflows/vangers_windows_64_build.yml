@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: clunk -- download
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
-    - name: create build dir for clunk
+    - name: clunk -- create build dir
       run: msys2do mkdir clunk/build
     - name: clunk -- build and install
       run: |
@@ -27,10 +27,7 @@ jobs:
         msys2do ninja install
       working-directory: clunk/build
     - name: ffmpeg -- download
-      run: |
-        git clone --depth 1 https://git.ffmpeg.org/ffmpeg.git ffmpeg
-        cd ffmpeg
-        git checkout n4.2.2
+      run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
       run: msys2do ./configure --enable-shared --prefix=/mingw64 \n
         --disable-everything \n
