@@ -24,6 +24,7 @@ jobs:
         mingw-w64-x86_64-libvorbis
         mingw-w64-x86_64-nasm
         mingw-w64-x86_64-yasm
+        mingw-w64-x86_64-make
     - uses: actions/checkout@v1
     - name: clunk -- download
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
@@ -51,16 +52,16 @@ jobs:
         --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
         --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
       working-directory: ffmpeg
-    - name: clunk -- build and install
+    - name: ffmpeg -- build and install
       run: |
         msys2do make
         msys2do make install
       working-directory: ffmpeg
-    - name: create build dir
+    - name: vangers -- create build dir
       run: msys2do mkdir build
-    - name: configure
+    - name: vangers -- configure
       run: msys2do cmake -G Ninja ..
       working-directory: build
-    - name: make
+    - name: vangers -- make
       run: msys2do ninja
       working-directory: build
