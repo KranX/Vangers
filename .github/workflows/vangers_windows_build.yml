@@ -32,5 +32,5 @@ jobs:
       run: msys2do cmake -G Ninja ..
       working-directory: build
     - name: make
-      run: ninja
+      run: msys2do ninja
       working-directory: build
