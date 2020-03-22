@@ -18,19 +18,18 @@ jobs:
     - uses: actions/checkout@v1
     - name: clunk download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
+    - name: create build dir for clunk
+      run: msys2do mkdir clunk/build
     - name: clunk build and install
       run: |
-        msys2do mkdir build
-        msys2do cd build
         msys2do cmake -DCMAKE_INSTALL_PREFIX=/mingw64 -G Ninja ..
         msys2do ninja
         msys2do ninja install
-      working-directory: clunk
+      working-directory: clunk/build
+    - name: create build dir
+      run: msys2do mkdir build
     - name: configure
-      run: |
-        msys2do mkdir build
-        msys2do cd build
-        msys2do cmake -G Ninja ..
+      run: msys2do cmake -G Ninja ..
     - name: make
       run: ninja
       working-directory: build
