@@ -29,17 +29,17 @@ jobs:
     - name: ffmpeg -- download
       run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
-      run: msys2do ./configure --enable-shared --prefix=/mingw64 \n
-        --disable-everything \n
-        --enable-swscale \n
-        --enable-zlib \n
-        --enable-demuxer=avi,rawvideo \n
-        --enable-decoder=png,rawvideo \n
-        --enable-parser=png \n
-        --enable-protocol=file \n
-        --disable-d3d11va \n
-        --disable-dxva2 \n
-        --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg \n
+      run: msys2do ./configure --enable-shared --prefix=/mingw64
+        --disable-everything
+        --enable-swscale
+        --enable-zlib
+        --enable-demuxer=avi,rawvideo
+        --enable-decoder=png,rawvideo
+        --enable-parser=png
+        --enable-protocol=file
+        --disable-d3d11va
+        --disable-dxva2
+        --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
         --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
       working-directory: ffmpeg
     - name: clunk -- build and install
