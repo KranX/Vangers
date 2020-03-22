@@ -68,6 +68,7 @@ jobs:
     - name: vangers -- prepare release folder
       run: |
         msys2do mkdir -p vangers-ru/bin
+        msys2do mkdir -p vangers-en/bin
         msys2do cp /mingw64/bin/SDL2.dll vangers-ru/bin/
         msys2do cp /mingw64/bin/SDL2_net.dll vangers-ru/bin/
         msys2do cp /mingw64/bin/avcodec-58.dll vangers-ru/bin/
@@ -82,8 +83,21 @@ jobs:
         msys2do cp /mingw64/bin/libstdc++-6.dll vangers-ru/bin/
         msys2do cp /mingw64/bin/libwinpthread-1.dll vangers-ru/bin/
         cp clunk/build/libclunk.dll vangers-ru/bin/
+        cp vangers-ru/bin/* vangers-en/bin/
         cp build/src/vangers.exe vangers-ru/bin/
     - uses: actions/upload-artifact@v1
       with:
         name: Vangers-Russian-Release
         path: vangers-ru
+    - name: vangers -- configure English version
+      run: msys2do cmake -G Ninja .. -DRUSSIAN_VERSION=off
+      working-directory: build
+    - name: vangers -- make English version
+      run: msys2do ninja
+      working-directory: build
+    - name: vangers -- prepare English release folder
+      run: cp build/src/vangers.exe vangers-en/bin/
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Vangers-English-Release
+        path: vangers-en
