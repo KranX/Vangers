@@ -14,7 +14,7 @@ jobs:
       with:
         msystem: MINGW64
     - name: install libs
-      run: msys2do pacman -Sy mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_net cmake mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-ffmpeg
+      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_net cmake mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-ffmpeg
     - uses: actions/checkout@v1
     - name: clunk download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
