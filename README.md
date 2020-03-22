@@ -3,6 +3,8 @@
 ![Vangers](http://cdn.akamai.steamstatic.com/steam/apps/264080/header.jpg?t=1447359431)
 
 ![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Linux%20Build/badge.svg)
+![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Windows%2064bit%20Build/badge.svg)
+![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Windows%2032bit%20Build/badge.svg)
 [![Build Status](https://travis-ci.org/KranX/Vangers.svg?branch=master)](https://travis-ci.org/KranX/Vangers)
 [![Join the chat at https://t.me/vangers](https://patrolavia.github.io/telegram-badge/chat.svg)](https://t.me/vangers)
 
