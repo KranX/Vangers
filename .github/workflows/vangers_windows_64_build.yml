@@ -14,18 +14,42 @@ jobs:
       with:
         msystem: MINGW64
     - name: install libs
-      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-ninja mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-cmake mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-ffmpeg
+      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-ninja mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-cmake mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis
     - uses: actions/checkout@v1
-    - name: clunk download lib
+    - name: clunk -- download
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
     - name: create build dir for clunk
       run: msys2do mkdir clunk/build
-    - name: clunk build and install
+    - name: clunk -- build and install
       run: |
         msys2do cmake -DCMAKE_INSTALL_PREFIX=/mingw64 -G Ninja ..
         msys2do ninja
         msys2do ninja install
       working-directory: clunk/build
+    - name: ffmpeg -- download
+      run: |
+        git clone --depth 1 https://git.ffmpeg.org/ffmpeg.git ffmpeg
+        cd ffmpeg
+        git checkout n4.2.2
+    - name: ffmpeg -- configure
+      run: msys2do ./configure --enable-shared --prefix=/mingw64 \n
+        --disable-everything \n
+        --enable-swscale \n
+        --enable-zlib \n
+        --enable-demuxer=avi,rawvideo \n
+        --enable-decoder=png,rawvideo \n
+        --enable-parser=png \n
+        --enable-protocol=file \n
+        --disable-d3d11va \n
+        --disable-dxva2 \n
+        --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg \n
+        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
+      working-directory: ffmpeg
+    - name: clunk -- build and install
+      run: |
+        msys2do make
+        msys2do make install
+      working-directory: ffmpeg
     - name: create build dir
       run: msys2do mkdir build
     - name: configure
