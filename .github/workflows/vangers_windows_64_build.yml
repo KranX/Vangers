@@ -54,8 +54,8 @@ jobs:
       working-directory: ffmpeg
     - name: ffmpeg -- build and install
       run: |
-        msys2do make
-        msys2do make install
+        msys2do mingw64-make
+        msys2do mingw64-make install
       working-directory: ffmpeg
     - name: vangers -- create build dir
       run: msys2do mkdir build
@@ -65,3 +65,24 @@ jobs:
     - name: vangers -- make
       run: msys2do ninja
       working-directory: build
+    - name: vangers -- prepare release folder
+      run: |
+        msys2do mkdir -p vangers-ru/bin
+        msys2do cp /mingw64/bin/SDL2.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/SDL2_net.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/avcodec-58.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/avformat-58.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/avutil-56.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/libclunk.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/libogg-0.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/libvorbis-0.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/libvorbisfile-3.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/zlib1.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/libgcc_s_dw2-1.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/libstdc++-6.dll vangers-ru/bin/
+        msys2do cp /mingw64/bin/libwinpthread-1.dll vangers-ru/bin/
+        cp build/src/vangers.exe vangers-ru/bin/
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Vangers-Russian-Release
+        path: vangers-ru
