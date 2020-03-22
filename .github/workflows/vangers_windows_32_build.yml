@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: numworks/setup-msys2@v1
       with:
-        msystem: MINGW64
+        msystem: MINGW32
     - name: install libs
       run: msys2do pacman --noconfirm -S mingw-w64-i686-ninja mingw-w64-i686-gcc mingw-w64-i686-SDL2 mingw-w64-i686-SDL2_net mingw-w64-i686-cmake mingw-w64-i686-libogg mingw-w64-i686-libvorbis mingw-w64-i686-ffmpeg
     - uses: actions/checkout@v1
