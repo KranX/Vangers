@@ -87,3 +87,15 @@ jobs:
       with:
         name: Vangers-Russian-Release
         path: vangers-ru
+    - name: vangers -- configure English version
+      run: msys2do cmake -G Ninja .. -DRUSSIAN_VERSION=off
+      working-directory: build
+    - name: vangers -- make English version
+      run: msys2do ninja
+      working-directory: build
+    - name: vangers -- prepare English release folder
+      run: cp build/src/vangers.exe vangers-en/bin/
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Vangers-English-Release
+        path: vangers-en
