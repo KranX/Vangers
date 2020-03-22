@@ -1,4 +1,4 @@
-name: Vangers Windows Build
+name: Vangers Windows 64bit Build
 
 on:
   push:
