@@ -18,10 +18,13 @@ jobs:
     - uses: actions/checkout@v1
     - name: clunk download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
-      working-directory: /tmp
+      working-directory: clunk
     - name: clunk build and install
-      run: cmake -DCMAKE_INSTALL_PREFIX=/usr . && make && sudo make install
-      working-directory: /tmp/clunk
+      run: |
+        msys2do cmake -DCMAKE_INSTALL_PREFIX=/mingw64 .
+        msys2do make
+        msys2do make install
+      working-directory: clunk
     - name: configure
       run: mkdir build && cd build && cmake ..
     - name: make
