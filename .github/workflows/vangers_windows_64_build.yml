@@ -54,8 +54,8 @@ jobs:
       working-directory: ffmpeg
     - name: ffmpeg -- build and install
       run: |
-        msys2do mingw64-make
-        msys2do mingw64-make install
+        msys2do mingw32-make
+        msys2do mingw32-make install
       working-directory: ffmpeg
     - name: vangers -- create build dir
       run: msys2do mkdir build
