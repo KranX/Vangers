@@ -68,6 +68,7 @@ jobs:
     - name: vangers -- prepare release folder
       run: |
         msys2do mkdir -p vangers-ru/bin
+        msys2do mkdir -p vangers-en/bin
         msys2do cp /mingw32/bin/SDL2.dll vangers-ru/bin/
         msys2do cp /mingw32/bin/SDL2_net.dll vangers-ru/bin/
         msys2do cp /mingw32/bin/avcodec-58.dll vangers-ru/bin/
