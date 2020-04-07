@@ -58,7 +58,7 @@ static const char* SndMotorFileName[7*2] = {
 	"raffa",  "raffa2",
 	"light",   "light2", 
 	"microbus", "microbus2",
-	"ATW", "ATW2",
+	"atw", "atw2",
 	"truck",  "truck2",
 	"special",  "special2",
 	"copter",  "copter2"
