@@ -130,7 +130,7 @@ extern iScreenDispatcher* iScrDisp;
 extern int aci_SecondMatrixID;
 extern int aciCurMechosID;
 
-extern int iRussian;
+
 extern int iCurHall;
 
 extern int actIntLog;
@@ -1148,12 +1148,12 @@ void iInitControlObjects(void)
 				key = iGetControlCode(i, j);
 				//NEED Full Rewrite
 				/*if(!(key & iJOYSTICK_MASK)){
-					str = iGetKeyNameText(key,iRussian);
+					str = iGetKeyNameText(key,lang());
 				}
 				else {
-					str = iGetJoyBtnNameText(key,iRussian);
+					str = iGetJoyBtnNameText(key,lang());
 				}*/
-				str = iGetKeyNameText(key, iRussian);
+				str = iGetKeyNameText(key, lang());
 				
 				if (str) {
 					if(strcasecmp(iControlsStr[index]->string,str)) {
@@ -2412,7 +2412,7 @@ const char* get_joystick_hat_name(int key) {
 	return "jhat_unknow";
 }
 
-const char* iGetKeyNameText(int vkey,int lang)
+const char* iGetKeyNameText(int vkey, Language lang)
 {
 	//std::cout<<"iGetKeyNameText:"<<vkey<<" lang:"<<lang<<std::endl;
 	/*char* ret = NULL;
@@ -2423,7 +2423,7 @@ const char* iGetKeyNameText(int vkey,int lang)
 		ret = iKeyNamesSDL[vkey-256];
 	return ret;*/
 	if (vkey == 0) {
-		if (lang) {
+		if (lang == RUSSIAN) {
 			return STR_NONE2;
 		} else {
 			return STR_NONE1;
@@ -2445,12 +2445,12 @@ const char* iGetKeyNameText(int vkey,int lang)
 	}
 }
 
-const char* iGetJoyBtnNameText(int vkey,int lang)
+const char* iGetJoyBtnNameText(int vkey, Language lang)
 {
 	const char* ret;
 	if(vkey & VK_BUTTON){
 		if(vkey >= VK_BUTTON_1 && vkey <= VK_BUTTON_32) {
-			ret = (lang)
+			ret = (lang == RUSSIAN)
 				? iJoystickButtons2[vkey - VK_BUTTON_1]
 				: iJoystickButtons1[vkey - VK_BUTTON_1];
 			return ret;
@@ -2460,7 +2460,7 @@ const char* iGetJoyBtnNameText(int vkey,int lang)
 	}
 	if(vkey & VK_STICK_SWITCH){
 		if(vkey >= VK_STICK_SWITCH_1 && vkey <= VK_STICK_SWITCH_9) {
-			ret = (lang)
+			ret = (lang == RUSSIAN)
 				? iJoystickStickSwitch2[vkey - VK_STICK_SWITCH_1]
 				: iJoystickStickSwitch1[vkey - VK_STICK_SWITCH_1];
 			return ret;

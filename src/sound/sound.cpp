@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../lang.h"
 
 #include "hmusic.h"
 #include "hsound.h"
@@ -45,14 +46,7 @@ struct SndParameters {
 	void* lpDSB;
 	};
 
-static int TrackCDTime[11] = {
-#ifdef RUSSIAN_VERSION
-	0, 1, 174, 108, 128, 238, 130, 181, 120, 151, 200
-#else
-	0, 1, 174, 108, 128, 238, 130, 181, 120, 151, 60
-#endif
-//	0, 1, 173, 108, 128, 240, 126, 182, 120, 148
-};
+static int *TrackCDTime = 0;
 
 static const char* SndMotorFileName[7*2] = {
 	"raffa",  "raffa2",
@@ -200,6 +194,12 @@ static time_t lastTimeCD = 0;
 
 void InstallSOUND(void)
 {
+    if (lang() == RUSSIAN) {
+        TrackCDTime = new int[11] { 0, 1, 174, 108, 128, 238, 130, 181, 120, 151, 200 };
+    } else {
+        TrackCDTime = new int[11] { 0, 1, 174, 108, 128, 238, 130, 181, 120, 151, 60 };
+    }
+
 	if(!SoundInit(EFFECT_KHZ, 16)){
 		std::cout<<"\nInitialization of sound failed, mute mode accepted...\n";
 		MuteLog = 1;
@@ -213,6 +213,7 @@ void InstallSOUND(void)
 
 void RestoreSOUND(void)
 {
+    delete[] TrackCDTime;
 #ifndef _NO_CDAUDIO_
 #ifndef _DEMO_
 	if(!MusicON) return;
