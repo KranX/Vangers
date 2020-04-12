@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: update repos
+      run: sudo apt-get update
     - name: install libs
       run: sudo apt-get install cmake libsdl2-dev libsdl2-net-dev libogg-dev libvorbis-dev libavcodec-dev libavformat-dev libavutil-dev
     - name: clunk download lib
