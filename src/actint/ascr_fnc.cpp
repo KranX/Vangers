@@ -7158,5 +7158,5 @@ int sdlEventToCode(SDL_Event *event) {
 			else
 				return iMOUSE_MOVE_CODE;
 	}
+	return -1;
 }
-
