@@ -1,5 +1,6 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
+#include "../../src/lang.h"
 #include "xglobal.h"
 #include "xt_list.h"
 #include "../xgraph/xgraph.h"
@@ -125,10 +126,12 @@ int main(int argc, char *argv[])
 #else
 	int i;
 	for(i=1;i<argc;i++) {
-		std::string cmd_key = argv[i];
-		if (cmd_key=="-fullscreen")
-			XGR_FULL_SCREEN = true;
-		}
+        std::string cmd_key = argv[i];
+        if (cmd_key == "-fullscreen")
+            XGR_FULL_SCREEN = true;
+        else if (cmd_key == "-russian")
+            setLang(RUSSIAN);
+    }
 #endif
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 	std::cout<<"Set locale. ";

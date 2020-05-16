@@ -345,12 +345,6 @@ int iAbortGameMode = 1;
 int iMouseLPressFlag = 0;
 int iMouseRPressFlag = 0;
 
-#ifdef RUSSIAN_VERSION
-int iRussian = 1;
-#else
-int iRussian = 0;
-#endif
-
 int iSlotNumber = 0;
 int iCDTrackLog = 0;
 
@@ -469,14 +463,14 @@ void iInit(void)
 
 #ifdef _BINARY_SCRIPT_
 	if(!iFirstInit){
-		if(iRussian)
+		if(lang() == RUSSIAN)
 			ParseScript("resource/iscreen/oftr2.scb");
 		else
 			ParseScript("resource/iscreen/oftr.scb");
 	}
 #else
 	if(!iFirstInit){
-		if(iRussian)
+		if(lang() == RUSSIAN)
 			ParseScript("iscreen/oftr2.scr","resource/iscreen/oftr2.scb");
 		else
 			ParseScript("iscreen/oftr.scr","resource/iscreen/oftr.scb");
@@ -614,22 +608,16 @@ void iQuantFirst(void)
 		RegisterValues();
 		iPrepareOptions();
 #ifndef _ACI_SKIP_MAINMENU_
-		if(iRussian)
-#ifdef _ISCREEN_GERMAN_
-			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
-#else
+		if(lang() == RUSSIAN)
 			iSetOptionValueCHR(iPLAYER_NAME2,"‚ ­ЈҐа");
-#endif
 		else
 			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
 		iSetOptionValueCHR(iPLAYER_PASSWORD,iSTR_DefaultPassword);
-		if(iRussian){
-#ifdef _ISCREEN_GERMAN_
-            iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
+		if(lang() == RUSSIAN) {
+            iSetOptionValueCHR(iHOST_NAME, "vangers.pp.ru");
+        } else if (lang() == GERMAN) {
 //			iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.de");
-#else
             iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
-#endif
 		}
 		else
             iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
@@ -2752,7 +2740,7 @@ void iCreateServer(void)
 
 void iInitStrings(void)
 {
-	if(iRussian){
+	if(lang() == RUSSIAN){
 		iSTR_WORLD_NONE_CHAR = iSTR_WORLD_NONE_CHAR2;
 		iSTR_WORLD_FOSTRAL_CHAR = iSTR_WORLD_FOSTRAL_CHAR2;
 		iSTR_WORLD_GLORX_CHAR = iSTR_WORLD_GLORX_CHAR2;

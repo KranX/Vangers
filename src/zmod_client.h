@@ -2,22 +2,7 @@
 #define _ZMOD_CLIENT_
 
 #include "zmod_common.h"
-
-#ifdef RUSSIAN_VERSION
-
-#	define zSTR_LOADING_800	"(C)1997-2014. Все права защищены. Бета версия. Идет загрузка..."
-#	define zSTR_ZMOD_BY		"KranX Productions"
-#	define zSTR_RELEASE		"Beta Release Version"
-#	define zSTR_WRONG_VERSION	"Жив еще? Иди к Механикам, авось обрадуешься."
-
-#else
-
-#	define zSTR_LOADING_800	"(C)1997-2014. All rights reserved. Beta version. Loading..."
-#	define zSTR_ZMOD_BY		"KranX Productions"
-#	define zSTR_RELEASE		"Beta Release Version"
-#	define zSTR_WRONG_VERSION	"zMod version was updated."
-
-#endif
+#define zSTR_LOADING_800_RU	"(C)1997-2014. Все права защищены. Бета версия. Идет загрузка..."
 
 #define zCHAT_TIMELIMIT	30000
 #define zCHAT_ROWLIMIT	5

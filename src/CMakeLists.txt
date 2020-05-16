@@ -67,7 +67,8 @@ SET(vangers_SRCS
 	uvs/univang.cpp
 	xjoystick.cpp
 	xsocket.cpp
-	zmod_client.cpp 
+	zmod_client.cpp
+	lang.cpp
 	${WINDOWS_RES}
 )
 
