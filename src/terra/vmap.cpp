@@ -2145,8 +2145,8 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 	tfx = (cx << 16) - (XSrcSize*cosTurn - YSrcSize*sinTurn)/2 + (1 << 15);
 	int vv0 = XSrcSize*sinTurn;
 	int vv1 = YSrcSize*cosTurn;
-	int v0 = vv0 + vv1 >> 1;
-	int v1 = vv0 - vv1 >> 1;
+	int v0 = (vv0 + vv1) >> 1;
+	int v1 = (vv0 - vv1) >> 1;
 	int vcy = cy << 16;
 	
 	tfy = vcy - v0 + (1 << 15);
@@ -2254,8 +2254,8 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 	tfx = (cx << 16) - (XSrcSize*cosTurn - YSrcSize*sinTurn)/2 + (1 << 15);
 	int vv0 = XSrcSize*sinTurn;
 	int vv1 = YSrcSize*cosTurn;
-	int v0 = vv0 + vv1 >> 1;
-	int v1 = vv0 - vv1 >> 1;
+	int v0 = (vv0 + vv1) >> 1;
+	int v1 = (vv0 - vv1) >> 1;
 	int vcy = cy << 16;
 	
 	tfy = vcy - v0 + (1 << 15);

@@ -12059,7 +12059,7 @@ void NetStatisticUpdate(int id)
 			switch(id){
 				case NET_STATISTICS_KILL:
 					my_player_body.kills++;
-					d = abs((long)(t - PrevKillTime));
+					d = labs((long)(t - PrevKillTime));
 					if(MinKillTime == 0 || MinKillTime > d) MinKillTime = d;
 					if(MaxKillTime == 0 || MaxKillTime < d) MaxKillTime = d;
 					PrevKillTime = t;
@@ -12068,7 +12068,7 @@ void NetStatisticUpdate(int id)
 					break;
 				case NET_STATISTICS_DEATH:
 					my_player_body.deaths++;
-					d = abs((long)(t - PrevLifeTime));
+					d = labs((long)(t - PrevLifeTime));
 					if(MinLifeTime == 0 || MinLifeTime > d) MinLifeTime = d;
 					if(MaxLifeTime == 0 || MaxLifeTime < d) MaxLifeTime = d;
 					PrevLifeTime = t;
@@ -12087,11 +12087,12 @@ void NetStatisticUpdate(int id)
 					break;
 				case NET_STATISTICS_CHECKPOINT:
 					my_player_body.PassemblossStat.CheckpointLighting = UsedCheckNum;
-					my_player_body.PassemblossStat.MaxTime = abs((long)(t - StartGameTime));
+					my_player_body.PassemblossStat.MaxTime = labs((long)(t - StartGameTime));
 					break;
 				case NET_STATISTICS_END_RACE:
 					my_player_body.PassemblossStat.CheckpointLighting = UsedCheckNum;
-					my_player_body.PassemblossStat.TotalTime = my_player_body.PassemblossStat.MaxTime = abs((long)(t - StartGameTime));					
+					my_player_body.PassemblossStat.TotalTime =
+						my_player_body.PassemblossStat.MaxTime = labs((long)(t - StartGameTime));
 					break;
 			};
 			break;
@@ -12105,7 +12106,7 @@ void NetStatisticUpdate(int id)
 					break;
 				case NET_STATISTICS_CHECKPOINT:
 				case NET_STATISTICS_END_RACE:
-					my_player_body.MechosomaStat.MinTransitTime = abs((long)(t - StartGameTime));
+					my_player_body.MechosomaStat.MinTransitTime = labs((long)(t - StartGameTime));
 					break;
 			};
 			break;
