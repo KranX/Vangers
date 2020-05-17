@@ -83,7 +83,8 @@ jobs:
         msys2do cp /mingw32/bin/libwinpthread-1.dll vangers/bin/
         cp clunk/build/libclunk.dll vangers/bin/
         cp build/src/vangers.exe vangers/bin/
+        msys2do strip vangers/bin/vangers.exe
     - uses: actions/upload-artifact@v1
       with:
-        name: Vangers-Release
+        name: Vangers-Release-32
         path: vangers
