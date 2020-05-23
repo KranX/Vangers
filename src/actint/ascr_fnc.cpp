@@ -7180,6 +7180,8 @@ int sdlEventToCode(SDL_Event *event) {
 					return iMOUSE_LEFT_PRESS_CODE;
 				case SDL_BUTTON_RIGHT:
 					return iMOUSE_RIGHT_PRESS_CODE;
+				default:
+		            return 0; // FIXME ignore?
 			}
 		case SDL_MOUSEMOTION:
 			if (event->motion.state & SDL_BUTTON_LMASK)
@@ -7188,6 +7190,10 @@ int sdlEventToCode(SDL_Event *event) {
 				return iMOUSE_RIGHT_MOVE;
 			else
 				return iMOUSE_MOVE_CODE;
+		default:
+		    std::cerr << "internal error: unhandled SDL event type " << event->type;
+		    return 0;
+
 	}
 	return -1;
 }

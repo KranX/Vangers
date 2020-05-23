@@ -132,6 +132,8 @@ struct LocationEngine
 
 	int TabuUse;
 
+	virtual ~LocationEngine() = default;
+
 	virtual void Open(Parser& in);
 	virtual void Close(void);
 

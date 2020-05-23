@@ -9,6 +9,8 @@
 	Scalar constant and function part
 ******************************************************************************/
 
+#pragma once
+
 #undef PI
 
 #undef M_PI
@@ -19,7 +21,6 @@
 #define INT_INF 0x7FFFFFFF
 
 #define SWAP(a,b)	{ *(int*)&a ^= int(b); *(int*)&b ^= int(a); *(int*)&a ^= int(b); }
-#define SIGN(x) (x ? (x > 0 ? 1 : -1 ) : 0)
 #define GOOD_SHR(x,n)	((x) < 0 ? -((-(x) + (1 << ((n) - 1))) >> (n)) : (((x) + (1 << ((n) - 1))) >> (n)))
 #define DIV16(a,b)	  (a = ((a) << 16)/(b))
 #define DIV16T(x,y)	((int)div_table_short[((x) & 0xFF) | (((y) << 8) & 0xFF00)] << 8)

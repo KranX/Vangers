@@ -63,6 +63,31 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wextra")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-source-encoding -O2 -msse2 -ftree-vectorize -ffast-math")
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=return-type -Werror=delete-non-virtual-dtor")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=parentheses")
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=class-memaccess")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=writable-strings")
+endif()
+
+if(SUPPRESS_DEPRECATED_COPY_WARNING)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-copy")
+endif()
+
+if(ENABLE_ADDITIONAL_CHECKS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=tautological-compare -Werror=misleading-indentation")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=implicit-fallthrough -Werror=int-in-bool-context")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=sequence-point -Werror=unused-value")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=unused-but-set-variable")
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=unsequenced -Werror=unused-comparison")
+    endif()
+endif()
+
 # For modern gcc
 add_definitions(-D_USE_MATH_DEFINES)
 

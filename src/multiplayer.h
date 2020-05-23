@@ -106,7 +106,7 @@ const int NID_TERRAIN = (15 << 16) | (1 << 31);
 #define GET_OBJECT_TYPE(id)	((id) & (63 << 16))
 
 #define NON_STATIC(ID)		(!(ID & (1 << 31)))
-#define PLAYERS_OBJECT(ID)		(!(ID & (7 << 16 + 3)))
+#define PLAYERS_OBJECT(ID)		(!(ID & (7 << (16 + 3)))) // FIXME (7 << 16) + 3 ?
 #define PRIVATE_OBJECT(ID)	 (((ID >> 16) & 63) >= 8 && ((ID >> 16) & 63) <= 10)
 #define NON_GLOBAL_OBJECT(ID)		(((ID >> 16) & 63))
 
@@ -203,7 +203,17 @@ struct ServerData {
 		MUSTODONT_PRM	    Mustodont;
 		};
 
-	ServerData();
+    static ServerData create(int gameType, int initialSeed)
+    {
+        ServerData result;
+        ::memset(&result, 0, sizeof(ServerData));
+        result.InitialRND = initialSeed;
+        result.GameType = gameType;
+        return result;
+    }
+
+private:
+    ServerData() = default;
 };
 
 //zmod fixed.
@@ -283,7 +293,15 @@ struct PlayerBody {
 		MustodontStatistic MustodontStat;
 	};
 
-	void clear(){ memset(this,0,sizeof(PlayerBody));CarIndex = 255; }
-	PlayerBody(){ clear(); }
-	};
+    static PlayerBody create()
+    {
+        PlayerBody result;
+        ::memset(&result, 0, sizeof(PlayerBody));
+        result.CarIndex = 255;
+        return result;
+    }
+
+private:
+    PlayerBody() = default;
+};
 

@@ -207,7 +207,7 @@ char* Convert(const char* s,int back = 0) {
 		for (i=0;i<len;i++) {
 			if ((unsigned char)s[i]>=192&&(unsigned char)s[i]<=239)
 				buffer[i]=(char)((unsigned char)s[i]-64);
-			else if ((unsigned char)s[i]>=240&&(unsigned char)s[i]<=255)
+			else if ((unsigned char)s[i]>=240)
 				buffer[i]=(char)((unsigned char)s[i]-16);
 			else if ((unsigned char)s[i]==184)
 				buffer[i]=(char)((unsigned char)241); //маленькое ё
@@ -591,7 +591,7 @@ int getSpectorsTaskStatus(void)
 	int i,j,res;
 	for(i = 0;i < 4;i++)
 		for(j = 0;j < 7;j++)
-			if(res = getPassangerStats(es[j],ws[i])){
+			if((res = getPassangerStats(es[j],ws[i]))){
 				esS[j] = '\0';
 				wsS[i] = '\0';
 				}

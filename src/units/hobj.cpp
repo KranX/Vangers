@@ -1322,9 +1322,9 @@ void setMapPixel(int px,int py,int col)
 	int xx,yy;
 	G2L(px,py,xx,yy);
 	if(xx < UcutLeft + 1 || xx > UcutRight - 1 || yy < VcutUp + 1 || yy > VcutDown - 1) return;
-	uchar c = *(vMap->lineTcolor[py] + px) + col;
-	if(c > 255) c = 255;
-	*(XGR_GetVideoLine(0) + yy*XGR_MAXX + xx) = c;
+	unsigned value = *(vMap->lineTcolor[py] + px) + col;
+	if(value > 255) value = 255;
+	*(XGR_GetVideoLine(0) + yy*XGR_MAXX + xx) = static_cast<uchar>(value);
 };
 
 void putMapPixel(int px,int py,int col)
@@ -3754,7 +3754,7 @@ int NetInit(ServerFindChain* p)
 
 	set_time_by_server(10);
 	std::cout<<"NetInit - [1.5]"<<std::endl;
-	my_player_body.clear();
+	my_player_body = PlayerBody::create();
 	
 	NETWORK_OUT_STREAM.register_name((char*)(aciGetPlayerName() ? aciGetPlayerName() : "Finger"), (char*)(aciGetPlayerPassword() ? aciGetPlayerPassword() : "Password"));
 	std::cout<<"NetInit - [2]"<<std::endl;

@@ -60,7 +60,7 @@ struct PlayerData {
 	int SlotStuffNetID[MAX_ACTIVE_SLOT];
 	int SlotFireCount[MAX_ACTIVE_SLOT];
 
-	PlayerBody body;
+	PlayerBody body = PlayerBody::create();
 
 		PlayerData(int client_id);
 		~PlayerData(){ if(name) delete[] name; }

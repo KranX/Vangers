@@ -93,14 +93,14 @@ XBuffer network_analysis_buffer(10000);
 InputEventBuffer events_in(IN_BUFFER_SIZE);
 OutputEventBuffer events_out(OUT_BUFFER_SIZE);
 
-ServerData my_server_data;
+ServerData my_server_data = ServerData::create(UNCONFIGURED, 0);
 ServersList avaible_servers;
 
 //zmod
 zServerData z_my_server_data;
 zCreateObjectQueue* z_create_object_queue;
 
-PlayerBody my_player_body;
+PlayerBody my_player_body = PlayerBody::create();
 PlayerData* my_player_data = 0;
 PlayersList players_list;
 
@@ -172,6 +172,7 @@ void destroy_server()
 				ServerFindChain
 *****************************************************************/
 ServerFindChain::ServerFindChain(int IP,int port,char* domain_name,int game_ID,char* game_name)
+    : data(ServerData::create(UNCONFIGURED, 0))
 {
 	ServerFindChain::domain_name = domain_name;
 	ServerFindChain::IP = IP;
@@ -621,11 +622,13 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 		receive(sock,1);
 	}
 	if(!skip_if_aint)
+	{
 	    if (lang() == RUSSIAN) {
             ErrH.Abort("Сервер не отвечает", XERR_USER, event);
         } else {
             ErrH.Abort("Time out of Server's response receiving", XERR_USER, event);
         }
+	}
 	event_ID = 0;
 	offset = next_event_pointer = 0;
 	return 0;
@@ -836,11 +839,13 @@ int restore_connection()
 	current_server_addr.connect(main_socket);
 	if(!main_socket){
 		if(number_of_reconnection_attempt-- <= 0)
+		{
 		    if (lang() == RUSSIAN) {
                 ErrH.Abort("Не могу восстановить соединение с Сервером");
             } else {
                 ErrH.Abort("Unable to restore connection to Server");
             }
+		}
 		return 0;
 	}
 	number_of_reconnection_attempt = 5;
@@ -1076,16 +1081,6 @@ void delay(int msec)
 	while(CHECK_TIMER());
 }
 
-/***********************************************************************
-				Server's Data
-***********************************************************************/
-ServerData::ServerData()
-{
-	time_t _time_;
-	InitialRND = (time(&_time_) | 1)*6386891;
-///	InitialRND = 83838383;
-	GameType = PASSEMBLOSS; //VAN_WAR; //zmod beta
-}
 //zmod
 int is_current_server_configured(char* name, ServerData* data, zServerData* zdata)
 {
@@ -1158,7 +1153,7 @@ int send_server_data(char* name, ServerData* data, zServerData* zdata)
 	if(!events_in.receive_waiting_for_event(GAME_DATA_RESPONSE) || !events_in.current_body_size())
 		ErrH.Abort("Network error: unable to configure server");
 	char name_tmp[256];
-	ServerData data_tmp;
+	ServerData data_tmp(ServerData::create(UNCONFIGURED, 0));
 	events_in > name_tmp;
 	events_in.read(&data_tmp,sizeof(ServerData));
 	events_in.ignore_event();

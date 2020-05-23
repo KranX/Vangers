@@ -746,6 +746,7 @@ void VangerUnit::BulletCollision(int pow,GeneralObject* p)
 				if(PowerFlag & VANGER_POWER_RUFFA_GUN)
 					s |= UVS_KRON_FLAG::RAFFA;
 
+				// FIXME с чем здесь должно быть сравнение?
 				if(uvsPoint->Pmechos->color != uvsPoint->Pmechos->color)
 					s |= UVS_KRON_FLAG::ALIEN;
 

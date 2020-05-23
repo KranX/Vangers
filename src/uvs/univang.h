@@ -504,6 +504,7 @@ struct listElem {
 	listElem* prev;
 
 	listElem(void){ next = prev = NULL;};
+	virtual ~listElem() = default;
 
 	void link(listElem*& tail);		// добавляет объект (this) в список с хвостом на tail (обычно глобальный указатель) в конец
 	listElem* seekName(const char* name);  // ищет по списку (this как хвост) name, сравнивая его со значением виртуального метода GetName()
@@ -1024,6 +1025,7 @@ struct uvsElement {
 	UvsObjectType type;				// UVS_OBJECT::?, тип объекта
 
 	uvsElement(void){ enext = eprev = NULL; type = 0;}
+	virtual ~uvsElement() = default;
 
 	void elink(uvsElement*& tail);		// добавляет объект (this) в список с хвостом на tail (обычно глобальный указатель) в конец
 	void eunlink(uvsElement*& tail);	// исключает из списка
@@ -1055,6 +1057,7 @@ struct uvsFlyFarmer : uvsTarget, uvsElement {
 				pos_y = RND( pw -> y_size );  setSpeed();
 	};
 	uvsFlyFarmer( XStream& );
+	virtual ~uvsFlyFarmer() = default;
 
 	virtual void Quant(void);
 	virtual void emuQuant(void){};
