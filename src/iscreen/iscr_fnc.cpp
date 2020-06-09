@@ -2291,7 +2291,7 @@ void iHandleExtEvent(int code,int data)
 				iEvLineID = 4;
 			}
 //#ifdef ZMOD_BETA
-//			NetRnd.Init(my_server_data.InitialRND);
+			NetRnd.Init(my_server_data.InitialRND);
 //#endif
 			break;
 		case iEXT_CHECK_END_FLAG:
@@ -2343,7 +2343,7 @@ void iHandleExtEvent(int code,int data)
 				iEvLineID = 4;
 			}
 //#ifdef ZMOD_BETA
-//			NetRnd.Init(my_server_data.InitialRND);
+			NetRnd.Init(my_server_data.InitialRND);
 //#endif
 			break;
 		case iEXT_CHOOSE_PARAMS_SCREEN:
