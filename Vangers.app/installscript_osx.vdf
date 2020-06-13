@@ -1,0 +1,67 @@
+"Installscript"
+{
+	"version"	"3"
+	"symlink"
+	{
+		
+	}
+	"chmod"
+	{
+		"0"
+		{
+			"file"	"Vangers.app/Contents/MacOS/start"
+			"mode"	"777"
+		}
+		"1"
+		{
+			"file"	"Vangers.app/Contents/MacOS/Vangers"
+			"mode"	"755"
+		}
+		"2"
+		{
+			"file"	"Vangers.app/Contents/Libs/libavcodec.58.35.100.dylib"
+			"mode"	"755"
+		}
+		"3"
+		{
+			"file"	"Vangers.app/Contents/Libs/libavformat.58.20.100.dylib"
+			"mode"	"755"
+		}
+		"4"
+		{
+			"file"	"Vangers.app/Contents/Libs/libavutil.56.22.100.dylib"
+			"mode"	"755"
+		}
+		"5"
+		{
+			"file"	"Vangers.app/Contents/Libs/libclunk.dylib"
+			"mode"	"755"
+		}
+		"6"
+		{
+			"file"	"Vangers.app/Contents/Libs/libogg.0.dylib"
+			"mode"	"755"
+		}
+		"7"
+		{
+			"file"	"Vangers.app/Contents/Libs/libvorbis.0.dylib"
+			"mode"	"755"
+		}
+		"8"
+		{
+			"file"	"Vangers.app/Contents/Libs/libvorbisfile.3.dylib"
+			"mode"	"755"
+		}
+		"9"
+		{
+			"file"	"Vangers.app/Contents/Libs/libSDL2-2.0.0.dylib"
+			"mode"	"755"
+		}
+		"10"
+		{
+			"file"	"Vangers.app/Contents/Libs/libSDL2_net-2.0.0.dylib"
+			"mode"	"755"
+		}
+	}
+}
+
