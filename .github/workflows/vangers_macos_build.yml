@@ -17,10 +17,11 @@ jobs:
       run: brew install git ninja cmake sdl2 sdl2_net libogg libvorbis nasm yasm dylibbundler
     - name: clunk -- download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
-      working-directory: /tmp
+    - name: clunk -- create build dir
+      run: msys2do mkdir clunk/build
     - name: clunk -- build and install
       run: cmake -DCMAKE_INSTALL_PREFIX=/usr/local -G Ninja . && ninja && sudo ninja install
-      working-directory: /tmp/clunk
+      working-directory: clunk/build
     - name: ffmpeg -- download
       run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
@@ -47,3 +48,21 @@ jobs:
     - name: make
       run: ninja
       working-directory: build
+    - name: vangers -- prepare release folder
+      run: |
+        cp -L /usr/local/lib/libSDL2-2.0.0.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libSDL2_net-2.0.0.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libavcodec.58.54.100.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libavformat.58.29.100.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libavutil.56.31.100.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libogg.0.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libvorbis.0.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libvorbisfile.3.dylib Vangers.app/Contents/Libs/
+        cp clunk/build/libclunk.dylib Vangers.app/Contents/Libs/
+        cp build/src/vangers Vangers.app/Contents/MacOS/Vangers
+        dylibbundler -x Vangers.app/Contents/MacOS/Vangers
+        strip Vangers.app/Contents/MacOS/Vangers
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Vangers
+        path: Vangers.app
