@@ -19,17 +19,17 @@
 		}
 		"2"
 		{
-			"file"	"Vangers.app/Contents/Libs/libavcodec.58.35.100.dylib"
+			"file"	"Vangers.app/Contents/Libs/libavcodec.58.54.100.dylib"
 			"mode"	"755"
 		}
 		"3"
 		{
-			"file"	"Vangers.app/Contents/Libs/libavformat.58.20.100.dylib"
+			"file"	"Vangers.app/Contents/Libs/libavformat.58.29.100.dylib"
 			"mode"	"755"
 		}
 		"4"
 		{
-			"file"	"Vangers.app/Contents/Libs/libavutil.56.22.100.dylib"
+			"file"	"Vangers.app/Contents/Libs/libavutil.56.32.100.dylib"
 			"mode"	"755"
 		}
 		"5"
