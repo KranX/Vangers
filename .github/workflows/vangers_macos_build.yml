@@ -64,7 +64,20 @@ jobs:
         cp build/src/vangers Vangers.app/Contents/MacOS/Vangers
         dylibbundler -x Vangers.app/Contents/MacOS/Vangers
         strip Vangers.app/Contents/MacOS/Vangers
-    - uses: actions/upload-artifact@v1
+        install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib "@executable_path/../Libs/libogg.0.dylib" Vangers.app/Contents/Libs/libvorbis.0.dylib
+        install_name_tool -change /usr/local/Cellar/libvorbis/1.3.6/lib/libvorbis.0.dylib "@executable_path/../Libs/libvorbis.0.dylib" Vangers.app/Contents/Libs/libvorbisfile.3.dylib
+        install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib "@executable_path/../Libs/libogg.0.dylib" Vangers.app/Contents/Libs/libvorbisfile.3.dylib
+        mv Vangers.app/Contents/Libs/libavcodec.58.54.100.dylib Vangers.app/Contents/Libs/libavcodec.58.dylib
+        mv Vangers.app/Contents/Libs/libavformat.58.29.100.dylib Vangers.app/Contents/Libs/libavformat.58.dylib
+        mv Vangers.app/Contents/Libs/libavutil.56.31.100.dylib Vangers.app/Contents/Libs/libavutil.56.dylib
+        install_name_tool -change "@executable_path/../Libs/libavcodec.58.54.100.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "@executable_path/../Libs/libavformat.58.29.100.dylib" "@executable_path/../Libs/libavformat.58.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "@executable_path/../Libs/libavutil.56.31.100.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "/usr/local/lib/libavutil.56.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/Libs/libavcodec.58.dylib
+        install_name_tool -change "/usr/local/lib/libavutil.56.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
+        install_name_tool -change "/usr/local/lib/libavcodec.58.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
+        install_name_tool -change "/usr/local/opt/sdl2/lib/libSDL2-2.0.0.dylib" "@executable_path/../Libs/libSDL2-2.0.0.dylib" Vangers.app/Contents/Libs/libSDL2_net-2.0.0.dylib
+    - uses: actions/upload-artifact@v2
       with:
-        name: Vangers
+        name: Vangers.app
         path: Vangers.app
