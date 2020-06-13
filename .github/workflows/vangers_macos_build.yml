@@ -14,7 +14,7 @@ jobs:
     - name: update repos
       run: brew update
     - name: install libs
-      run: brew install git cmake sdl2 sdl2-net libogg libvorbis ffmpeg
+      run: sudo brew install git cmake sdl2 sdl2_net libogg libvorbis ffmpeg
     - name: clunk download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
       working-directory: /tmp
