@@ -50,6 +50,8 @@ jobs:
       working-directory: build
     - name: vangers -- prepare release folder
       run: |
+        mkdir Vangers.app/Contents/Frameworks
+        mkdir Vangers.app/Contents/Libs
         cp -L /usr/local/lib/libSDL2-2.0.0.dylib Vangers.app/Contents/Libs/
         cp -L /usr/local/lib/libSDL2_net-2.0.0.dylib Vangers.app/Contents/Libs/
         cp -L /usr/local/lib/libavcodec.58.54.100.dylib Vangers.app/Contents/Libs/
