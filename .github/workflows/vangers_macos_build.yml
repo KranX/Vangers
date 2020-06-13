@@ -14,15 +14,15 @@ jobs:
     - name: update repos
       run: brew update
     - name: install libs
-      run: brew install git cmake sdl2 sdl2_net libogg libvorbis ffmpeg
+      run: brew install git ninja cmake sdl2 sdl2_net libogg libvorbis ffmpeg
     - name: clunk download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
       working-directory: /tmp
     - name: clunk build and install
-      run: cmake -DCMAKE_INSTALL_PREFIX=/usr/local . && make && sudo make install
+      run: cmake -DCMAKE_INSTALL_PREFIX=/usr/local -G Ninja . && ninja && sudo ninja install
       working-directory: /tmp/clunk
     - name: configure
-      run: mkdir build && cd build && cmake ..
+      run: mkdir build && cd build && cmake -G Ninja ..
     - name: make
-      run: make
+      run: ninja
       working-directory: build
