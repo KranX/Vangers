@@ -64,6 +64,7 @@ jobs:
         cp build/src/vangers Vangers.app/Contents/MacOS/Vangers
         dylibbundler -x Vangers.app/Contents/MacOS/Vangers
         strip Vangers.app/Contents/MacOS/Vangers
+        sudo chmod 777 Vangers.app/Contents/Libs/*
         install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib "@executable_path/../Libs/libogg.0.dylib" Vangers.app/Contents/Libs/libvorbis.0.dylib
         install_name_tool -change /usr/local/Cellar/libvorbis/1.3.6/lib/libvorbis.0.dylib "@executable_path/../Libs/libvorbis.0.dylib" Vangers.app/Contents/Libs/libvorbisfile.3.dylib
         install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib "@executable_path/../Libs/libogg.0.dylib" Vangers.app/Contents/Libs/libvorbisfile.3.dylib
