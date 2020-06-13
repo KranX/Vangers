@@ -71,14 +71,15 @@ jobs:
         mv Vangers.app/Contents/Libs/libavcodec.58.54.100.dylib Vangers.app/Contents/Libs/libavcodec.58.dylib
         mv Vangers.app/Contents/Libs/libavformat.58.29.100.dylib Vangers.app/Contents/Libs/libavformat.58.dylib
         mv Vangers.app/Contents/Libs/libavutil.56.31.100.dylib Vangers.app/Contents/Libs/libavutil.56.dylib
-        install_name_tool -change "@executable_path/../Libs/libavcodec.58.54.100.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/MacOS/Vangers
-        install_name_tool -change "@executable_path/../Libs/libavformat.58.29.100.dylib" "@executable_path/../Libs/libavformat.58.dylib" Vangers.app/Contents/MacOS/Vangers
-        install_name_tool -change "@executable_path/../Libs/libavutil.56.31.100.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "@executable_path/../libs/libavcodec.58.54.100.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "@executable_path/../libs/libavformat.58.29.100.dylib" "@executable_path/../Libs/libavformat.58.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "@executable_path/../libs/libavutil.56.31.100.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/MacOS/Vangers
         install_name_tool -change "/usr/local/lib/libavutil.56.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/Libs/libavcodec.58.dylib
         install_name_tool -change "/usr/local/lib/libavutil.56.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
         install_name_tool -change "/usr/local/lib/libavcodec.58.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
         install_name_tool -change "/usr/local/opt/sdl2/lib/libSDL2-2.0.0.dylib" "@executable_path/../Libs/libSDL2-2.0.0.dylib" Vangers.app/Contents/Libs/libSDL2_net-2.0.0.dylib
+        tar -cvf Vangers.app.tar Vangers.app
     - uses: actions/upload-artifact@v2
       with:
-        name: Vangers.app
-        path: Vangers.app
+        name: Vangers.app.tar
+        path: Vangers.app.tar
