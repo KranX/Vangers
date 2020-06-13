@@ -20,7 +20,7 @@ jobs:
     - name: clunk -- create build dir
       run: mkdir clunk/build
     - name: clunk -- build and install
-      run: cmake -DCMAKE_INSTALL_PREFIX=/usr/local -G Ninja . && ninja && sudo ninja install
+      run: cmake -DCMAKE_INSTALL_PREFIX=/usr/local -G Ninja .. && ninja && sudo ninja install
       working-directory: clunk/build
     - name: ffmpeg -- download
       run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
