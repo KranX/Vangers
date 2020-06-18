@@ -14,7 +14,10 @@ jobs:
     - name: update repos
       run: brew update
     - name: install libs
-      run: brew install git ninja cmake sdl2 sdl2_net libogg libvorbis nasm yasm dylibbundler
+      run: |
+        brew install git ninja cmake libogg libvorbis nasm yasm dylibbundler
+        brew install -s ./sdl2.rb
+        brew install -s ./sdl2_net.rb
     - name: clunk -- download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
     - name: clunk -- create build dir
@@ -38,16 +41,24 @@ jobs:
         --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
         --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
       working-directory: ffmpeg
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: ffmpeg -- build and install
       run: |
         make -j4
         sudo make install
       working-directory: ffmpeg
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: configure
       run: mkdir build && cd build && cmake -G Ninja ..
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: make
       run: ninja
       working-directory: build
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: vangers -- prepare release folder
       run: |
         mkdir Vangers.app/Contents/Frameworks

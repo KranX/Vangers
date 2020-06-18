@@ -24,6 +24,6 @@
   <key>IFMinorVersion</key>
   <integer>1</integer>
   <key>LSMinimumSystemVersion</key>
-  <string>10.10.0</string>
+  <string>10.12.0</string>
 </dict>
 </plist>
