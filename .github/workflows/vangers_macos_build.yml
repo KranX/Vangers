@@ -16,8 +16,8 @@ jobs:
     - name: install libs
       run: |
         brew install git ninja cmake nasm yasm dylibbundler
-        brew install -s /formulas/libogg.rb
-        brew install -s /formulas/libvorbis.rb
+        brew install -s ./formulas/libogg.rb
+        brew install -s ./formulas/libvorbis.rb
         brew install -s ./formulas/sdl2.rb
         brew install -s ./formulas/sdl2_net.rb
     - name: clunk -- download lib
