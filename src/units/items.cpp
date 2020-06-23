@@ -512,6 +512,7 @@ void StuffObject::Init(StorageType* s)
 	ID = ID_STUFF;
 	Status = SOBJ_DISCONNECT;
 	Owner = NULL;
+	CreateMode = STUFF_CREATE_NONE;
 };
 
 void aciPrepareWorldsMenu(void);

@@ -1671,6 +1671,7 @@ void KeyCenter(SDL_Event *key)
 
 iGameMap::iGameMap(int _x,int _y,int _xside,int _yside)
 {
+	std::cout<<"iGameMap::iGameMap"<<std::endl;
 	xside = _xside;
 	yside = _yside;
 	xsize = 2*xside/* + 1*/;

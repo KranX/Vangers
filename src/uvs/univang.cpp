@@ -307,8 +307,8 @@ uvsElement* deleteETail = NULL; // список всех удаляемых ди
 
 uvsVanger* Gamer;
 
-void PrmFile::init(const char* name){
-	Parser* prs = new Parser(name);
+void PrmFile::init(const char* name) {
+	Parser* prs = new Parser(name); // TODO memory leak
 	len = prs -> length();
 	buf = prs -> address();
 
@@ -525,10 +525,13 @@ void uniVangPrepare(void){
 	pw = (uvsWorld*)WorldTail;
 	int __t = 1;
 	int _t = 1;
-	while(pw){
+	while(pw) {
 		i = 0;
-		if (pw -> escTmax){
-			pw -> escT = new uvsEscave*[pw -> escTmax];
+		if (pw->escTmax) {
+			if (pw->escT != NULL) {
+				delete[] pw->escT;
+			}
+			pw->escT = new uvsEscave*[pw->escTmax];
 			pe = (uvsEscave*)EscaveTail;
 			while(pe){
 				if (__t)

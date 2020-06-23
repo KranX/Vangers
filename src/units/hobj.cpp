@@ -1133,10 +1133,10 @@ void GameObjectDispatcher::Close(void)
 
 void GameObjectDispatcher::ConnectBaseList(BaseObject* p)
 {
-	if(!Tail){
+	if (!Tail) {
 		p->NextBaseList = p->PrevBaseList = NULL;
 		Tail = p;
-	}else{
+	} else {
 		Tail -> PrevBaseList = p;
 		p -> NextBaseList = Tail;
 		p -> PrevBaseList = NULL;
@@ -1147,11 +1147,17 @@ void GameObjectDispatcher::ConnectBaseList(BaseObject* p)
 
 void GameObjectDispatcher::DisconnectBaseList(BaseObject* p)
 {
-	if((!p->PrevBaseList) && (!p->NextBaseList)) Tail = NULL;
-	else{
-		if(p->PrevBaseList) p->PrevBaseList->NextBaseList = p->NextBaseList;
-		else Tail = p->NextBaseList;
-		if(p->NextBaseList) p->NextBaseList->PrevBaseList = p->PrevBaseList;
+	if ((!p->PrevBaseList) && (!p->NextBaseList)) {
+		Tail = NULL;
+	} else {
+		if(p->PrevBaseList) {
+			p->PrevBaseList->NextBaseList = p->NextBaseList;
+		} else {
+			Tail = p->NextBaseList;
+		}
+		if (p->NextBaseList) {
+			p->NextBaseList->PrevBaseList = p->PrevBaseList;
+		}
 	};
 	Num--;
 };

@@ -1984,13 +1984,15 @@ void dgRoom::acceptTEXT(void)
 			(pa = new dgAtom) -> link(pm -> tail);
 			p = pa -> read(dgf,p);
 		}
-		if(!pm -> tail){
+		if(!pm -> tail) {
+			delete dgf;
 			XBuffer m;
 			m < "Empty molecule: " < pm -> name;
-			ErrH.Abort(m.GetBuf(),XERR_USER,-1,roomName);
-			}
+			ErrH.Abort(m.GetBuf(), XERR_USER, -1, roomName);
+		}
 		if(!p) break;
 	}
+	delete dgf;
 }
 
 void dgRoom::acceptDIL(void)
@@ -2429,11 +2431,11 @@ void DiagenDispatcher::init(void)
 	dgRoom* pr;
 	int i,j;
 	int max  = oldVersion ? 8 : DG_ESCAVE_MAX;
-	for(i = 0;i < max;i++){
+	for (i = 0;i < max;i++) {
 		(pr = new dgRoom(this)) -> link(rtail);
 		pr -> read(pf);
-		}
-	if(!oldVersion){
+	}
+	if(!oldVersion) {
 		for(j = 0;j < 3;j++){
 			for(i = 0;i < 3;i++) CycleName[0][j][i] = getSubj(pf -> getElement(DGF_NONE));
 //#if defined(RUSSIAN_VERSION) || defined(DIAGEN_TEST)
@@ -2444,8 +2446,8 @@ void DiagenDispatcher::init(void)
 //#if defined(RUSSIAN_VERSION) || defined(DIAGEN_TEST)
 		for(i = 0;i < DG_SECRETW_MAX;i++) SecretWname[1][i] = pf -> getElement(DGF_NONE);
 //#endif
-		}
-
+	}
+	delete pf;
 //stalkerg Тест диалогов и скриптов, нужно отключить для большого теста
 /*#ifdef DIAGEN_TEST
 	pr = rtail;
