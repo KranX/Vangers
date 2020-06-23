@@ -3320,27 +3320,30 @@ void camera_impulse(int amplitude_8)
 }
 void camera_quant()
 {
-	int t;
-	camera_x += camera_vx * XTCORE_FRAME_NORMAL;
-	ViewX += (t = round(camera_x));
+	int t, t2;
+	camera_x += camera_vx;
+	ViewX += (t = round(camera_x)) * XTCORE_FRAME_NORMAL;
 	camera_x -= t;
 
-	camera_y += camera_vy * XTCORE_FRAME_NORMAL;
-	ViewY += (t = round(camera_y));
+	camera_y += camera_vy;
+	ViewY += (t = round(camera_y)) * XTCORE_FRAME_NORMAL;
 	camera_y -= t;
 
-	camera_z += camera_vz * XTCORE_FRAME_NORMAL;
-	TurnSecX += (t = round(camera_z));
+	camera_z += camera_vz;
+	TurnSecX += (t = round(camera_z)) * XTCORE_FRAME_NORMAL;
+	if (TurnSecX < MIN_ZOOM) {
+		TurnSecX = MIN_ZOOM;
+	}
 	camera_z -= t;
 
-	camera_s += camera_vs * XTCORE_FRAME_NORMAL;
-	SlopeAngle += (t = round(camera_s));
+	camera_s += camera_vs;
+	SlopeAngle += (t = round(camera_s)) * XTCORE_FRAME_NORMAL;
 	if(SlopeAngle < -SLOPE_MAX)
 		SlopeAngle = -SLOPE_MAX;
 	camera_s -= t;
 
-	camera_t += camera_vt * XTCORE_FRAME_NORMAL;
-	TurnAngle += (t = round(camera_t));
+	camera_t += camera_vt;
+	TurnAngle += (t = round(camera_t)) * XTCORE_FRAME_NORMAL;
 	camera_t -= t;
 
 	calc_view_factors();
@@ -3349,15 +3352,16 @@ void camera_quant()
 void camera_direct(int X,int Y,int zoom,int Turn,int Slope,int num_frames)
 {
 	// Where zoom is between  MIN_ZOOM and MAX_ZOOM
+	double time = (double)num_frames * XTCORE_FRAME_NORMAL;
 	camera_moving_log = num_frames;
-	camera_vx = (double)getDistX(X,ViewX)/num_frames;
-	camera_vy = (double)getDistY(Y,ViewY)/num_frames;
+	camera_vx = (double)getDistX(X, ViewX) / time;
+	camera_vy = (double)getDistY(Y, ViewY) / time;
 
-	camera_vz = (double)((curGMap -> xsize*zoom >> 8) - TurnSecX)/num_frames;
+	camera_vz = (double)((curGMap -> xsize*zoom >> 8) - TurnSecX)/time;
 
-	camera_vs = (double)(-Slope - SlopeAngle)/num_frames;
+	camera_vs = (double)(-Slope - SlopeAngle) / time;
 
-	camera_vt += (double)DistPi(Turn,TurnAngle)/num_frames * XTCORE_FRAME_NORMAL;
+	camera_vt += (double)DistPi(Turn,TurnAngle) / time;
 }
 
 extern int NewWorldX;
@@ -5480,8 +5484,20 @@ void VangerUnit::SensorQuant(void)
 		case EXTERNAL_MODE_PASS_IN:
 			ExternalTime--;
 
-			if(Visibility == VISIBLE && ActD.Active) SOUND_PASSAGE(getDistX(ActD.Active->R_curr.x,R_curr.x));
-			if(ExternalTime & 3) EffD.CreateDeform(ExternalObject->R_curr + Vector(PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),83),1,PASSING_WAVE_PROCESS);
+			if(Visibility == VISIBLE && ActD.Active) {
+				SOUND_PASSAGE(getDistX(ActD.Active->R_curr.x,R_curr.x));
+			}
+			if(ExternalTime & 3) {
+				EffD.CreateDeform(
+					ExternalObject->R_curr + Vector(
+						PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),
+						PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),
+						83
+					),
+					1,
+					PASSING_WAVE_PROCESS
+				);
+			}
 
 			if(!(Status & SOBJ_ACTIVE)){
 				if(ExternalTime <= 0){
