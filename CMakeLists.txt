@@ -76,7 +76,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 	${STEAM_INCLUDE_DIR}
 )
 
-SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wextra")
+SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wextra")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-source-encoding -msse2")
 # For modern gcc
 add_definitions(-D_USE_MATH_DEFINES)
