@@ -1716,152 +1716,7 @@ void LoadVPR(int ind)
 }
 #endif
 
-#ifdef WITH_OPENGL
-void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int yside)
-{
-	int xsize = 2*xside;
-	int ysize = 2*yside;
-	
-	cx = XCYCL(cx);
-	cy = YCYCL(cy);
-	
-	int YSrcSize = ysize*XSrcSize/xsize;
-	
-	int k_xscr_x = (XSrcSize << 16)/xsize;
-	int k_yscr_y = (YSrcSize << 16)/ysize;
-	
-	int tfx = (cx << 16) - (XSrcSize << 15) + (1 << 15);
-	int x0 = tfx >> 16;
-	int x1 = x0 + XSrcSize;
-	int tfy = (cy << 16) - (YSrcSize << 15) + (1 << 15);
-	int y0 = tfy >> 16;
-	int y1 = y0 + YSrcSize;
-	
-	request(MIN(y0,y1) - MAX_RADIUS/2,MAX(y0,y1) + MAX_RADIUS/2,MIN(x0,x1) - 4,MAX(x0,x1) + 4);
-	
-	int i,j,fx,fy;
-	
-	unsigned char *data, *data_color, *data2, *data_color2;
-	SDL_Color current_color;
-	unsigned char *p, *p_color, current_level, current_level2, double_level;
-	
-	
-	glClearColor(0,0,0,0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColorMaterial(GL_FRONT,GL_DIFFUSE);  
-	glEnable(GL_COLOR_MATERIAL);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective (60, (float)xside / yside, 0.001, 10000);	
-	gluLookAt(0, -200, -400,
-		  0, 0, 0,
-		  0, -1.0, 0);
-	glPushMatrix();
-	glRotatef(45, 0.0, 0, 1.0);
-	glTranslatef(-xside, -yside, 0);
-	//glRotatef(180, 0.0, 0.0, 1.0);
-	
-	for(i = 0;i < ysize-1;i++) {
-		fx = tfx;
-		fy = tfy;
-		data = lineT[YCYCL(fy >> 16)];
-		data2 = lineT[YCYCL((fy + k_yscr_y) >> 16)]; //На одну строку ниже
-		
-		data_color = lineTcolor[YCYCL(fy >> 16)];
-		data_color2 = lineTcolor[YCYCL((fy + k_yscr_y) >> 16)]; //На одну строку ниже
-		glBegin( GL_TRIANGLE_STRIP );
-		for(j = 0; j < xsize; j++) {
-			p = data + XCYCL(fx >> 16);
-			double_level = *(p + H_SIZE) & DOUBLE_LEVEL;
-			current_level = *p >> 2;
-			if (!double_level) {
-				//std::cout<<(int)current_level<<std::endl;
-				//current_level += 128;
-			} else {
-				fx += k_xscr_x;
-				continue;
-			}
-			p = data2 + XCYCL(fx >> 16);
-			double_level = *(p + H_SIZE) & DOUBLE_LEVEL;
-			current_level2 = *p >> 2;
-			if (!double_level) {
-				//current_level2 += 128;
-			} else {
-				fx += k_xscr_x;
-				continue;
-			}
-			p_color = data_color + XCYCL(fx >> 16);
-			current_color = XGR_Obj.XGR_Palette->colors[*p_color];
-			glColor3ub(current_color.r, current_color.g, current_color.b);
-			glVertex3i( j, i, current_level);
-			
-			p_color = data_color2 + XCYCL(fx >> 16);
-			current_color = XGR_Obj.XGR_Palette->colors[*p_color];
-			glColor3ub(current_color.r, current_color.g, current_color.b);
-			glVertex3i( j, i+1, current_level2);
-			
-			fx += k_xscr_x;
-		}
-		glEnd();
-		tfy += k_yscr_y;
-	}
-	
-	tfx = (cx << 16) - (XSrcSize << 15) + (1 << 15);
-	tfy = (cy << 16) - (YSrcSize << 15) + (1 << 15);
-	//Double layer
-	for(i = 0;i < ysize-1;i++) {
-		fx = tfx;
-		fy = tfy;
-		data = lineT[YCYCL(fy >> 16)];
-		data2 = lineT[YCYCL((fy + k_yscr_y) >> 16)]; //На одну строку ниже
-		
-		data_color = lineTcolor[YCYCL(fy >> 16)];
-		data_color2 = lineTcolor[YCYCL((fy + k_yscr_y) >> 16)]; //На одну строку ниже
-		glBegin( GL_TRIANGLE_STRIP );
-		for(j = 0; j < xsize; j++) {
-			p = data + XCYCL(fx >> 16);
-			double_level = *(p + H_SIZE) & DOUBLE_LEVEL;
-			current_level = *p >> 2;
-			if (double_level) {
-				//std::cout<<(int)current_level<<std::endl;
-				//current_level += 128;
-			} else {
-				fx += k_xscr_x;
-				glEnd();
-				glBegin( GL_TRIANGLE_STRIP );
-				continue;
-			}
-			p = data2 + XCYCL(fx >> 16);
-			double_level = *(p + H_SIZE) & DOUBLE_LEVEL;
-			current_level2 = *p >> 2;
-			if (double_level) {
-				//current_level2 += 128;
-			} else {
-				fx += k_xscr_x;
-				glEnd();
-				glBegin( GL_TRIANGLE_STRIP );
-				continue;
-			}
-			p_color = data_color + XCYCL(fx >> 16);
-			current_color = XGR_Obj.XGR_Palette->colors[*p_color];
-			glColor3ub(current_color.r, current_color.g, current_color.b);
-			glVertex3i( j, i, current_level);
-			
-			p_color = data_color2 + XCYCL(fx >> 16);
-			current_color = XGR_Obj.XGR_Palette->colors[*p_color];
-			glColor3ub(current_color.r, current_color.g, current_color.b);
-			glVertex3i( j, i+1, current_level2);
-			
-			fx += k_xscr_x;
-		}
-		glEnd();
-		tfy += k_yscr_y;
-	}
-	
-	glPopMatrix();
-	
-}
-#else
+
 //Посути первичная и основная функция рендринга
 void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int yside)
 {
@@ -2019,7 +1874,6 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 			}
 #endif
 }
-#endif
 
 static int* LineTable = 0;
 static int LineTableLenght;
@@ -2061,82 +1915,7 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 {
 	// std::cout<<"vrtMap::turning XSrcSize:"<<XSrcSize<<" Turn:"<<Turn<<" cx:"<<cx<<" cy:"<<cy<<" xc:"<<xc<<" yc:"<<yc<<" XDstSize:"<<XDstSize<<" YDstSize:"<<YDstSize<<std::endl;
 
-#ifdef WITH_OPENGL
-	float d_size = ((float)XSrcSize)/((float)XDstSize*2);
-	float gip_size=sqrt(XDstSize*XDstSize+YDstSize*YDstSize);
-	float kxy = gip_size-(float)YDstSize;
-	//YDstSize += kxy;
-	//XDstSize += kxy;
-	int YSrcSize = (float)YDstSize*2*d_size;
-	XSrcSize = (float)XDstSize*2*d_size;
-	//XSrcSize += kxy*2;
-	//XDstSize=YDstSize=gip_size;
-	//int YSrcSize = (YSrcSize)*XSrcSize/(XSrcSize);
-	
-	std::cout<<XSrcSize<<" "<<XDstSize*2<<" "<<YSrcSize<<" "<<YDstSize*2<<std::endl;
-	
-	
-	int sina = sinTurn = SI[rPI(Turn)];
-	int cosa = cosTurn = CO[rPI(Turn)];
-	int fx,tfx,tfy;
-	tfx = (cx << 16) - (XSrcSize*cosTurn - YSrcSize*sinTurn)/2 + (1 << 15);
-	int vv0 = XSrcSize*sinTurn;
-	int vv1 = YSrcSize*cosTurn;
-	int v0 = (vv0 + vv1) >> 1;
-	int v1 = (vv0 - vv1) >> 1;
-	int vcy = cy << 16;
-	
-	tfy = vcy - v0 + (1 << 15);
-	int y0 = tfy >> 16;
-	int y1 = (vcy + v0) >> 16;
-	int y2 = (vcy - v1) >> 16;
-	int y3 = (vcy + v1) >> 16;
-	
-	int m_x = MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2, m_y = MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2;
-	request(m_x, m_y,0,0);
-	SDL_Surface *tmp_surf = SDL_CreateRGBSurface(0, XSrcSize, YSrcSize, 8, 0,0, 0, 0);
-	SDL_SetSurfacePalette(tmp_surf, XGR_Obj.XGR_Palette);
-	int x, y;
-	char *dst;
-	uchar *srcline, *src;
-	for (y = -YSrcSize/2; y < YSrcSize/2; ++y) {
-		for (x = -XSrcSize/2; x < XSrcSize/2; ++x) {
-			dst = (char*)tmp_surf->pixels + (y+YSrcSize/2)*XSrcSize + (x+XSrcSize/2);
-			srcline = vMap->lineTcolor[(y+cy) & clip_mask_y];
-			src = &srcline[(x+cx) & clip_mask_x];
-			*dst = *src;
-		}
-	}
-	SDL_Surface *tmp_surf2 = SDL_ConvertSurface(tmp_surf,XGR_Obj.XGR_ScreenSurface_Real->format, 0);
-	GLuint screen_tex=XGR_Obj.SurfToTexture(tmp_surf2);
-	glBindTexture( GL_TEXTURE_2D, screen_tex );
-	
-	glPushMatrix();
-	glTranslatef(XDstSize, YDstSize, 0);
-	glRotatef( ((float)Turn/(float)PI)*180, 0, 0, -1);
-	//std::cout<<XDstSize<<" "<<YDstSize<<std::endl;
-	glBegin( GL_QUADS );
-	//Top-left vertex (corner)
-	glTexCoord2i( 0, 0 );
-	glVertex3f( -XDstSize-kxy, -YDstSize-kxy, 0.0f );
-	//Bottom-left vertex (corner)
-	glTexCoord2i( 1, 0 );
-	glVertex3f( XDstSize+kxy, -YDstSize-kxy, 0.0f );
-	//Bottom-right vertex (corner)
-	glTexCoord2i( 1, 1 );
-	glVertex3f( XDstSize+kxy, YDstSize+kxy, 0.0f );
-	//Top-right vertex (corner)
-	glTexCoord2i( 0, 1 );
-	glVertex3f( -XDstSize-kxy, YDstSize+kxy, 0.0f );
-	glEnd();
-	glPopMatrix();
-	
-	SDL_FreeSurface(tmp_surf);
-	SDL_FreeSurface(tmp_surf2);
-	glDeleteTextures(1, &screen_tex);
-	
-//XGR_Obj.
-#else
+
 //#define SLOW_FLOAT_TURNING
 #define SLOW_INT_TURNING
 //#define OLD_TURNING
@@ -2242,7 +2021,7 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 			}
 		}
 	}
-#endif	
+#endif
 #if defined OLD_TURNING
 	char* vp = (char*)XGR_VIDEOBUF + (yc - YDstSize)*XGR_MAXX + (xc - XDstSize);
 	char* vpp;
@@ -2530,7 +2309,6 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 			}
 		}
 #endif
-#endif //WITH_OPENGL
 }
 
 #ifndef _SURMAP_
