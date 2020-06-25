@@ -48,15 +48,6 @@ IF(DIAGEN_TEST)
 	ADD_DEFINITIONS(-DDIAGEN_TEST)
 ENDIF(DIAGEN_TEST)
 
-IF(STEAM)
-	ADD_DEFINITIONS(-D_STEAM_API_)
-	SET(STEAM_INCLUDE_DIR /c/projects/sdk/public)
-	SET(STEAM_LIBS
-		/c/projects/sdk/redistributable_bin/steam_api.dll
-
-	)
-ENDIF(STEAM)
-
 # globals
 INCLUDE_DIRECTORIES(SYSTEM
 	${ZLIB_INCLUDE_DIR}
@@ -71,13 +62,9 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wextra")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-source-encoding -msse2")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-source-encoding -O2 -msse2 -ftree-vectorize -ffast-math")
 # For modern gcc
 add_definitions(-D_USE_MATH_DEFINES)
-
-IF (NOT MINGW)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftree-vectorize -ffast-math")
-ENDIF (NOT MINGW)
 
 # subdirs
 ADD_SUBDIRECTORY("src")
