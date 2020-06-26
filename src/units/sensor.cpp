@@ -400,11 +400,9 @@ void StaticQuant(void) //world animation quant
 
 		}
 	}
-	if (sensorStaticFrame == 1) {
-		for(i = 0;i < NumLocation;i++) {
-			if(LocationData[i]->Enable) {
-				LocationData[i]->Quant(); // Sensor animation frame is here
-			}
+	for(i = 0;i < NumLocation;i++) {
+		if(LocationData[i]->Enable) {
+			LocationData[i]->Quant(); // Sensor animation frame is here
 		}
 	}
 	
