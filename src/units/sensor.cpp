@@ -2211,7 +2211,7 @@ void TntCreature::Quant(void)
 			}else{
 				switch(CurrentWorld){
 					case 0:
-						if(RND(300) < 5){
+						if(RND(300 * GAME_TIME_COEFF) < 5){
 							p = BulletD.CreateBullet();
 							vCheck = Vector(radius,0,0) * DBM((int)(RND(2*PI)),Z_AXIS);
 							p->CreateBullet(R_curr,
