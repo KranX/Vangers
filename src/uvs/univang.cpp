@@ -4384,8 +4384,8 @@ void uvsFlyFarmer::save(XStream& fout){
 void uvsFlyFarmer::setSpeed(void){
 	x_speed = y_speed = 0;
 	while(!x_speed && !y_speed){
-		x_speed = V_SPEED_DOLLY - RND(V_SPEED_DOLLY*2+1);
-		y_speed = V_SPEED_DOLLY - RND(V_SPEED_DOLLY*2+1);
+		x_speed = (V_SPEED_DOLLY - RND(V_SPEED_DOLLY*2+1)) * GAME_TIME_COEFF;
+		y_speed = (V_SPEED_DOLLY - RND(V_SPEED_DOLLY*2+1)) * GAME_TIME_COEFF;
 	}
 }
 
