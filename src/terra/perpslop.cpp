@@ -32,18 +32,6 @@ int PerpScreenSkipFactor0 = 100;
 int PerpScreenSkipFactor = 100;
 extern int ParaMapSkipFactor;
 
-//#define LOWLEVEL_OUTPUT
-
-#ifdef __HIGHC__
-#define perp_slope_line _perp_slope_line
-#define perp_slope_line2 _perp_slope_line2
-#define perp_slope_line3 _perp_slope_line3
-#define perp_slope_line1_2 _perp_slope_line1_2
-#endif
-
-void (*perp_slope_line)(void*,void*,void*,int,int,int);
-void (*perp_slope_line1_2)(void*,void*,void*,int,int,int);
-
 uchar** SetSkipLineTable(uchar** lt,int ky,int Ymin,int Ymax);
 void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize);
 #ifndef TURN_TEST
@@ -52,7 +40,7 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 //Наклон изображения
 int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize)
 {
-	//std::cout<<"PerpSlopTurn"<<std::endl;
+	// std::cout<<"PerpSlopTurn Turn:"<<Turn<<" Slop:"<<Slop<<" H:"<<H<<" cx:"<<cx<<" cy:"<<cy<<" xc:"<<xc<<" yc:"<<yc<<" XDstSize:"<<XDstSize<<" YDstSize:"<<YDstSize<<std::endl;
 	ParaMapSkipFactor =PerpScreenSkipFactor = PerpMapSkipFactor = SlopeQualityFactor;
 
 	static int initialisation = 1;
@@ -87,15 +75,21 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 	int CenterDistance = H;
 	H = H*cosTetta >> 16;
 
-	int XADD = 1 - XGR_MAXX*YDstSize;
-
 	int Aux,Avx,Awx;
 	int Auy,Avy,Awy;
 	int Auz,Avz,Awz;
 
-	Aux = cosAlpha; Avx = (sinAlpha >> 1)*(cosTetta >> 1) >> 14;	Awx = (sinAlpha >> 1)*(sinTetta >> 1) >> 14;
-	Auy = -sinAlpha;Avy = (cosAlpha >> 1)*(cosTetta >> 1) >> 14;	Awy = (cosAlpha >> 1)*(sinTetta >> 1) >> 14;
-	Auz = 0;	Avz = -sinTetta;				Awz = cosTetta;
+	Aux = cosAlpha;
+	Avx = (sinAlpha >> 1)*(cosTetta >> 1) >> 14;
+	Awx = (sinAlpha >> 1)*(sinTetta >> 1) >> 14;
+
+	Auy = -sinAlpha;
+	Avy = (cosAlpha >> 1)*(cosTetta >> 1) >> 14;
+	Awy = (cosAlpha >> 1)*(sinTetta >> 1) >> 14;
+
+	Auz = 0;
+	Avz = -sinTetta;
+	Awz = cosTetta;
 
 	cx -= Awx*H/Awz;
 	cy -= Awy*H/Awz;
@@ -108,24 +102,18 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 	y1 = uv2y(-XDstSize/2,YDstSize/2) + (cy >> 16);
 	y2 = uv2y(XDstSize/2,-YDstSize/2) + (cy >> 16);
 	y3 = uv2y(-XDstSize/2,-YDstSize/2) + (cy >> 16);
-	int Ymin = MIN(MIN(MIN(y0,y1),y2),y3);
-	int Ymax = MAX(MAX(MAX(y0,y1),y2),y3);
-#ifndef TURN_TEST
-	Ymin -= 30;
-	Ymax += 30;
-#endif
 
-#ifndef TURN_TEST
-#ifndef _VTEST_
-	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
-	uchar** lt = vMap -> lineTcolor;
-#else
-	uchar** lt = lineTcolor;
-#endif
-#else
-	uchar** lt = TextureDataTable;
-	uchar** ht = HeightDataTable;
-#endif
+// #ifndef TURN_TEST
+// #ifndef _VTEST_
+// 	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2, MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
+// 	uchar** lt = vMap -> lineTcolor;
+// #else
+// 	uchar** lt = lineTcolor;
+// #endif
+// #else
+// 	uchar** lt = TextureDataTable;
+// 	uchar** ht = HeightDataTable;
+// #endif
 
 	int z;
 	z = F*Awz >> 16;
@@ -134,11 +122,10 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 #ifdef TURN_TEST
 	::MapSkipFactor = ky;
 #endif
-	uchar** slt = SetSkipLineTable(lt,ky,Ymin,Ymax);
 
 	int i,j,fx,fy;
 
-	for(j = 0;j < YDstSize;j++){
+	for (j = 0; j < YDstSize; j++) {
 		int u = -XDstSize/2;
 		int v = -YDstSize/2 + j;
 		int z = (v*Avz + F*Awz) >> 16;
@@ -161,7 +148,24 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 		sTables[j*4 + 2] = H*Aux/z;
 		sTables[j*4 + 3] = H*Auy/z;
 #endif
-		}
+	}
+
+	int first_line = sTables[1] >> 16;
+	int last_line = sTables[(YDstSize-1)*4 + 1] >> 16;
+	int Ymin = MIN(MIN(MIN(MIN(MIN(y0,y1),y2),y3), first_line), last_line);
+	int Ymax = MAX(MAX(MAX(MAX(MAX(y0,y1),y2),y3), first_line), last_line);
+#ifndef TURN_TEST
+	Ymin -= 30;
+	Ymax += 30;
+#endif
+	vMap->request(
+		Ymin - MAX_RADIUS/2,
+		Ymax + MAX_RADIUS/2,
+		0,
+		0
+	);
+	uchar** lt = vMap -> lineTcolor;
+	uchar** slt = SetSkipLineTable(lt, ky, Ymin - MAX_RADIUS/2, Ymax + MAX_RADIUS/2);
 	int i_float = 0;
 	int ScreenSkipFactor;
 	ScreenSkipFactor = (PerpScreenSkipFactor0 << 16)/100;
@@ -172,19 +176,16 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 	int J0,J1;
 	J1 = 0;
 	int i_clip;
-	for(i_clip = 0;i_clip < Nclips;i_clip++){
+	for (i_clip = 0; i_clip < Nclips; i_clip++){
 		J0 = J1;
-		J1 = YDstSize*(i_clip + 1)/Nclips;
+		J1 = YDstSize*(i_clip + 1) / Nclips;
 		char* vppp = vp + J0*XGR_MAXX;
 		i = 0;
 		int DrawPrev = 0;
 		while(i < XDstSize){
 			char* vpp = vppp + i - DrawPrev;
-			if(DrawPrev)
-#ifdef LOWLEVEL_OUTPUT
-				perp_slope_line1_2(sTables, slt, vpp, J0, J1, XGR_MAXX);
-#else
-				for(j = J0;j < J1;j++){
+			if (DrawPrev) {
+				for(j = J0; j < J1; j++){
 					fx = sTables[j*4 + 0];
 					fy = sTables[j*4 + 1];
 					int tmp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
@@ -196,12 +197,8 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 					sTables[j*4 + 0] = fx;
 					sTables[j*4 + 1] = fy;
 					}
-#endif
-			else
-#ifdef LOWLEVEL_OUTPUT
-				perp_slope_line(sTables, slt, vpp, J0, J1, XGR_MAXX);
-#else
-				for(j = J0;j < J1;j++){
+			} else {
+				for (j = J0; j < J1; j++) {
 					fx = sTables[j*4 + 0];
 					fy = sTables[j*4 + 1];
 					*vpp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
@@ -210,8 +207,8 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 					fy += sTables[j*4 + 3];
 					sTables[j*4 + 0] = fx;
 					sTables[j*4 + 1] = fy;
-					}
-#endif
+				}
+			}
 			int tmp_i = i_float >> 16;
 			i_float += ScreenSkipFactor;
 			DrawPrev = (i_float >> 16) > tmp_i + 1;
@@ -232,32 +229,32 @@ uchar** SetSkipLineTable(uchar** lt,int ky,int Ymin,int Ymax)
 	Ymin = 0;
 	Ymax = V_SIZE;
 #endif
-	if(ky <= 1 << 16)
+	if (ky <= 1 << 16)
 		return lt;
 	unsigned int tmpy;
 	tmpy = Ymin << 16;
 	tmpy = tmpy - tmpy%ky;
-	unsigned i,y;
-	if(Ymin < Ymax) {
-		for(i = Ymin;(int)i < Ymax;i = YCYCL(i + 1)) {
+	unsigned i, y;
+	if (Ymin < Ymax) {
+		for (i = Ymin; (int)i < Ymax; i = YCYCL(i + 1)) {
 			y = YCYCL(tmpy >> 16);
 			SkipLineTable[i] = lt[y];
-			if(y < i) {
+			if (y < i) {
 				tmpy += ky;
 			}
 		}
 	} else {
-		for(i = Ymin;i < V_SIZE;i++){
+		for (i = Ymin; i < V_SIZE; i++) {
 			y = YCYCL(tmpy >> 16);
 			SkipLineTable[i] = lt[y];
-			if(y - i) {
+			if (y - i) {
 				tmpy += ky;
 			}
 		}
-		for(i = 0;(int)i <= Ymax;i++){
+		for (i = 0; (int)i <= Ymax; i++) {
 			y = YCYCL(tmpy >> 16);
 			SkipLineTable[i] = lt[y];
-			if(y - i) {
+			if (y - i) {
 				tmpy += ky;
 			}
 		}

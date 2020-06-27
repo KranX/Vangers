@@ -145,7 +145,6 @@ struct DiagenDispatcher;
 struct dgRoom;
 
 extern DiagenDispatcher* dgD;
-extern int dgRUSSIAN;
 //extern  int* dgLevel;
 
 struct dgFile {

@@ -13,10 +13,6 @@
 
 #include "xglobal.h"
 
-#ifdef WITH_OPENGL
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
 #define XGR_64KR(c)		(((c) >> XGR_SHIFT_R) & XGR_COLOR_MASK_R)
@@ -138,10 +134,6 @@ struct XGR_Screen
 	int yStrOffs;
 	int* yOffsTable;
 
-#ifdef WITH_OPENGL
-	SDL_Surface *XGR_ScreenSurface_Real;
-	GLuint SurfToTexture(SDL_Surface *surf);
-#endif	
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
 	void get_clip(int& left,int& top,int& right,int& bottom);

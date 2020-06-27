@@ -1,5 +1,7 @@
 #include "../global.h"
 #include "../runtime.h"
+#include "../lang.h"
+
 //#include "..\win32f.h"
 
 #include "../3d/3d_math.h"
@@ -511,6 +513,7 @@ void StuffObject::Init(StorageType* s)
 	ID = ID_STUFF;
 	Status = SOBJ_DISCONNECT;
 	Owner = NULL;
+	CreateMode = STUFF_CREATE_NONE;
 };
 
 void aciPrepareWorldsMenu(void);
@@ -3748,17 +3751,17 @@ void GloryPlace::Quant(void)
 
 extern aciPromptData aiMessageBuffer;
 extern uvsTabuTaskType **TabuTable;
-extern int iRussian;
+
 
 void aiPromptTaskMessage(int l)
 {
 //	if(!uvsKronActive) return;
 	aiMessageBuffer.align_type = 0;
 	if(l >= 0){
-		if(iRussian) aiMessageBuffer.add_str(0,(unsigned char*)rSuccessTaskMessageData);
+		if(lang() == RUSSIAN) aiMessageBuffer.add_str(0,(unsigned char*)rSuccessTaskMessageData);
 		else aiMessageBuffer.add_str(0,(unsigned char*)SuccessTaskMessageData);
 	}else{
-		if(iRussian) aiMessageBuffer.add_str(0,(unsigned char*)rFailedTaskMessageData);
+		if(lang() == RUSSIAN) aiMessageBuffer.add_str(0,(unsigned char*)rFailedTaskMessageData);
 		else aiMessageBuffer.add_str(0,(unsigned char*)FailedTaskMessageData);
 	};
 
@@ -3767,7 +3770,7 @@ void aiPromptTaskMessage(int l)
 	aiMessageBuffer.ColBuf[0] = 143;
 
 	RaceTxtBuff.init();
-	if(iRussian) RaceTxtBuff < rTaskMessageLuck;
+	if(lang() == RUSSIAN) RaceTxtBuff < rTaskMessageLuck;
 	else RaceTxtBuff < TaskMessageLuck;
 	if(l > 0) RaceTxtBuff < " +";
 	else RaceTxtBuff < " -";
@@ -3787,7 +3790,7 @@ void aiPromptDominanceMessage(int d)
 {
 //	if(!uvsKronActive) return;
 	RaceTxtBuff.init();
-	if(iRussian) RaceTxtBuff < rDominanceMessageData;
+	if(lang() == RUSSIAN) RaceTxtBuff < rDominanceMessageData;
 	else RaceTxtBuff < DominanceMessageData;
 	if(d > 0) RaceTxtBuff < " +";
 	else RaceTxtBuff < " -";
@@ -3806,7 +3809,7 @@ void aiPromptLuckMessage(int d)
 //	if(!uvsKronActive) return;
 	RaceTxtBuff.init();
 
-	if(iRussian) RaceTxtBuff < rTaskMessageLuck;
+	if(lang() == RUSSIAN) RaceTxtBuff < rTaskMessageLuck;
 	else RaceTxtBuff < TaskMessageLuck;
 
 	if(d > 0) RaceTxtBuff < " +";

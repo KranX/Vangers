@@ -1,5 +1,6 @@
 #include "../global.h"
 #include "../runtime.h"
+#include "../lang.h"
 
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
@@ -531,7 +532,7 @@ uchar** WorldPalData;
 int WorldPalNum;
 int WorldPalCurrent;
 
-extern int iRussian;
+
 void aciPrepareMenus(void);
 
 void GeneralSystemOpen(void)
@@ -590,7 +591,7 @@ void GeneralSystemOpen(void)
 
 		ResortEnter();
 
-		if(iRussian){
+		if(lang() == RUSSIAN){
 			switch(CurrentWorld){
 				case WORLD_FOSTRAL:
 //zNfo - add target 2 compass
@@ -1133,10 +1134,10 @@ void GameObjectDispatcher::Close(void)
 
 void GameObjectDispatcher::ConnectBaseList(BaseObject* p)
 {
-	if(!Tail){
+	if (!Tail) {
 		p->NextBaseList = p->PrevBaseList = NULL;
 		Tail = p;
-	}else{
+	} else {
 		Tail -> PrevBaseList = p;
 		p -> NextBaseList = Tail;
 		p -> PrevBaseList = NULL;
@@ -1147,11 +1148,17 @@ void GameObjectDispatcher::ConnectBaseList(BaseObject* p)
 
 void GameObjectDispatcher::DisconnectBaseList(BaseObject* p)
 {
-	if((!p->PrevBaseList) && (!p->NextBaseList)) Tail = NULL;
-	else{
-		if(p->PrevBaseList) p->PrevBaseList->NextBaseList = p->NextBaseList;
-		else Tail = p->NextBaseList;
-		if(p->NextBaseList) p->NextBaseList->PrevBaseList = p->PrevBaseList;
+	if ((!p->PrevBaseList) && (!p->NextBaseList)) {
+		Tail = NULL;
+	} else {
+		if(p->PrevBaseList) {
+			p->PrevBaseList->NextBaseList = p->NextBaseList;
+		} else {
+			Tail = p->NextBaseList;
+		}
+		if (p->NextBaseList) {
+			p->NextBaseList->PrevBaseList = p->PrevBaseList;
+		}
 	};
 	Num--;
 };
@@ -3888,7 +3895,7 @@ void aiMessageType::Load(Parser& in)
 
 	in.search_name("TypeString");
 	Type = in.get_int();
-	if(iRussian) in.search_name("rNumString");
+	if(lang() == RUSSIAN) in.search_name("rNumString");
 	else in.search_name("NumString");
 	Num = in.get_int();
 
@@ -3901,7 +3908,7 @@ void aiMessageType::Load(Parser& in)
 		in.search_name("Color:");
 		Color[i] = in.get_int();
 
-		if(iRussian) in.search_name("rString:");
+		if(lang() == RUSSIAN) in.search_name("rString:");
 		else in.search_name("String:");
 		n = in.get_name();
 

@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../lang.h"
 
 #define LOWLEVEL_OUTPUT
 //#define SAVE_ABILITY
@@ -19,7 +20,7 @@ extern unsigned storeRNDVAL,storerealRNDVAL;
 extern int RestoreLog,CGenLog,MobilityLog,InitLog,SSSLog,ROLog,EncodeLog,DirectLog;
 extern char* aci_ivMapName;
 extern int actIntLog;
-extern int iRussian;
+
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
 void iWORLD_colcalc(int y0,int y1);
 void iLINE_render(int y);
@@ -107,7 +108,7 @@ void ivMapPrepare(void)
 {
 	if(!ivMap) ivMap = new ivrtMap;
 	if(!actIntLog){
-		if(!iRussian)
+		if(lang() != RUSSIAN)
 			ivMap -> load("resource/iscreen/mainmenu.ini");
 		else
 			ivMap -> load("resource/iscreen/mainmenu2.ini");

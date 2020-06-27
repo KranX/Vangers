@@ -406,6 +406,7 @@ int XSocket::check_socket(int ms_time)
 	if(val)
 		sock = INVALID_SOCKET;
 	return !val;*/
+    return 0;
 }
 
 // TODO: MODIFY
@@ -422,6 +423,7 @@ int XSocket::check_readability(int ms_time)
 		return 0;
 		}
 	return val;*/
+    return 0;
 }
 
 // TODO: MODIFY
@@ -438,6 +440,7 @@ int XSocket::check_writeability(int ms_time)
 		return 0;
 		}
 	return val;*/
+    return 0;
 }
 
 /*****************************************************************
@@ -460,6 +463,7 @@ int XSocket::sendto(const char* buffer, int size, unsigned int IP)
 		return 0;
 		}
 	return status;*/
+    return 0;
 }
 
 // DO NOT USE
@@ -475,6 +479,7 @@ int XSocket::receivefrom(char* buffer, int size_of_buffer, int ms_time)
 			}
 		}
 	return status;*/
+    return 0;
 }
 
 // WTF?

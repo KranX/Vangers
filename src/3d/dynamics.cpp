@@ -3082,7 +3082,7 @@ void Object::mechous_analysis(double dt)
 	side_impulse_enable++;
 	hand_brake = turbo = brake = 0;
 	if(rudder && dynamic_state & WHEELS_TOUCH)
-		rudder -= SIGN(rudder)*(abs(round(rudder*V.y*dt*num_calls_analysis*rudder_k_decr) + 1));
+		rudder -= SIGN(rudder) * fabs(round(rudder*V.y*dt*num_calls_analysis*rudder_k_decr) + 1);
 	speed = round(V.vabs()*dt*num_calls_analysis);
 }
 

@@ -1,5 +1,6 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
+#include "../../src/lang.h"
 #include "xglobal.h"
 #include "xt_list.h"
 #include "../xgraph/xgraph.h"
@@ -125,10 +126,12 @@ int main(int argc, char *argv[])
 #else
 	int i;
 	for(i=1;i<argc;i++) {
-		std::string cmd_key = argv[i];
-		if (cmd_key=="-fullscreen")
-			XGR_FULL_SCREEN = true;
-		}
+        std::string cmd_key = argv[i];
+        if (cmd_key == "-fullscreen")
+            XGR_FULL_SCREEN = true;
+        else if (cmd_key == "-russian")
+            setLang(RUSSIAN);
+    }
 #endif
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 	std::cout<<"Set locale. ";
@@ -174,9 +177,13 @@ int main(int argc, char *argv[])
 
 				if (clockDelta < XObj->Timer) {
 					SDL_Delay(XObj->Timer - clockDelta);
-				}// else {
-				// 	std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
-				// }
+				} else {
+					std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
+					if (clockDelta > 300) {
+						// something wrong and for preventing abnormal physics set something neutral
+						XTCORE_FRAME_NORMAL = 1.0;
+					}
+				}
 				clockCnt = clocki();
 			} else {
 				id = XObj -> Quant();
