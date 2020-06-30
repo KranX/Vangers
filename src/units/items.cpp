@@ -1825,22 +1825,19 @@ void JumpBallObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	CraterType = n->CraterType;
 
 	Owner = p->Owner;
-
 	archimedean = 0;
 
 	if(Mode == BULLET_TARGET_MODE::CONTROL){
 		vCheck = Vector(-(n->Speed),0,0)*DBM((int)(PI/4 - RND(PI/2)),Z_AXIS);
 		vCheck *= p->mFire;
-		vCheck *= n->LifeTime + Owner->Speed;
-		vCheck /= n->Speed;
-		precise_impulse(R_curr,XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y));
 		set_body_color(COLORS_IDS::MATERIAL_5);
 	}else{
 		vCheck = Vector(n->Speed,0,0)*p->mFire;
-		vCheck *= n->LifeTime + Owner->Speed;
-		vCheck /= n->Speed;
-		precise_impulse(R_curr,XCYCL(R_curr.x + vCheck.x),YCYCL(R_curr.y + vCheck.y));
 	};
+	vCheck *= n->LifeTime + Owner->Speed;
+	vCheck /= n->Speed;
+	vCheck /= (int)GAME_TIME_COEFF;
+	precise_impulse(R_curr,XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y));
 };
 
 void JumpBallObject::Quant(void)

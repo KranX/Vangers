@@ -3583,7 +3583,6 @@ wheel_continue:
 *******************************************************************************/
 void Object::debris_analysis(double dt)
 {
-	dt *= XTCORE_FRAME_NORMAL;
 	A_g2l_old = A_g2l;
 	R_old = R;
 	for(int i = 0;i < num_calls_analysis_debris - 1;i++)
@@ -3846,7 +3845,7 @@ void Object::basic_debris_analysis(double dt)
 		DBV Vs = V;
 		if(spring_touch)
 			Vs -= (z_axis*(radius*rolling_scale)) % W;
-		R += (A_l2g * Vs ) * dt;
+		R += (A_l2g * Vs ) * dt * XTCORE_FRAME_NORMAL;
 
 		DBM A_rot_inv = DBM(W,W.vabs()*(-dt));
 		A_g2l = A_rot_inv*A_g2l;
