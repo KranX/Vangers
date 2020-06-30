@@ -1318,7 +1318,7 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = n->Speed;
-	if(BulletMode & BULLET_CONTROL_MODE::SPEED) Speed += p->RealSpeed;
+	if(BulletMode & BULLET_CONTROL_MODE::SPEED) Speed += (int)round(p->RealSpeed / GAME_TIME_COEFF);
 
 	if(BulletID == BULLET_TYPE_ID::LASER)
 		vDelta = Vector(Speed,3 - RND(6),0)*p->mFire;
