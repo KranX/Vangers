@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../lang.h"
 #include <zlib.h>
 
 #include "../runtime.h"
@@ -77,7 +78,7 @@ extern uvsActInt* GCharItem;
 
 extern unsigned char* iscrPal;
 
-extern int iRussian;
+
 extern int iScreenActive;
 extern int iSlotNumber;
 
@@ -432,7 +433,6 @@ aciScreenText* aciImgText = NULL;
 
 int aciCurAviIndex = 0;
 int aciCurAviIndexDelta = 0;
-int aciRussian = 0;
 int aciLoadLog = 0;
 int aciShopMenuLog = 0;
 int aciWorldIndex = -1;
@@ -518,7 +518,6 @@ extern iScreenOption** iScrOpt;
 void aInit(void)
 {
 	GameOverID = 0;
-	aciRussian = iRussian;
 	aciInitStrings();
 
 	if(!aIndArrowBML){
@@ -563,7 +562,7 @@ void aInit(void)
 
 #ifdef _BINARY_SCRIPT_
 	if(actintLowResFlag){
-		if(iRussian){
+		if(lang() == RUSSIAN){
 			aParseScript("resource/actint/aci_low2.scb");
 			acsParseScript("resource/actint/acs_low2.scb");
 		}
@@ -573,7 +572,7 @@ void aInit(void)
 		}
 	}
 	else {
-		if(iRussian){
+		if(lang() == RUSSIAN){
 			aParseScript("resource/actint/aci_hi2.scb");
 			acsParseScript("resource/actint/acs_low2.scb");
 		}
@@ -584,7 +583,7 @@ void aInit(void)
 	}
 #else
 	if(actintLowResFlag){
-		if(iRussian){
+		if(lang() == RUSSIAN){
 			aParseScript("actint/aci_low2.scr","resource/actint/aci_low2.scb");
 			acsParseScript("actint/acs_low2.scr","resource/actint/acs_low2.scb");
 		}
@@ -594,7 +593,7 @@ void aInit(void)
 		}
 	}
 	else {
-		if(iRussian){
+		if(lang() == RUSSIAN){
 			aParseScript("actint/aci_hi2.scr","resource/actint/aci_hi2.scb");
 			acsParseScript("actint/acs_low2.scr","resource/actint/acs_low2.scb");
 		}
@@ -4175,7 +4174,7 @@ void aciChangeAviIndex(void)
 {
 	switch(aciCurAviIndex){
 		case ACI_PICTURE_AVI_ENG:
-			aciCurAviIndex = (aciRussian) ? ACI_TEXT_AVI_RUS : ACI_TEXT_AVI_ENG;
+			aciCurAviIndex = (lang() == RUSSIAN) ? ACI_TEXT_AVI_RUS : ACI_TEXT_AVI_ENG;
 			break;
 		case ACI_TEXT_AVI_RUS:
 		case ACI_TEXT_AVI_ENG:
@@ -6677,7 +6676,7 @@ void aciSetRedraw(void)
 
 void aciInitStrings(void)
 {
-	if(!iRussian){
+	if(lang() != RUSSIAN){
 		aciSTR_ON = aciSTR_ON1;
 		aciSTR_OFF = aciSTR_OFF1;
 		aciSTR_DAY = aciSTR_DAY1;
@@ -6909,13 +6908,8 @@ void aciInitEndGame(int id)
 	}
 	switch(GameOverID){
 		case GAME_OVER_EXPLOSION:
-			if(iRussian){
-#ifdef _ISCREEN_GERMAN_
-				p -> SetName("img/img0.bmp");
-#else
+			if(lang() == RUSSIAN)
 				p -> SetName("img/img7.bmp");
-#endif
-			}
 			else
 				p -> SetName("img/img0.bmp");
 
@@ -7081,12 +7075,8 @@ void aciPrepareEndImage(void)
 
 	p = (ShowImageRTO*)xtGetRuntimeObject(RTO_SHOW_IMAGE_ID);
 	p -> SetNumFiles(1);
-	if(iRussian)
-#ifdef _ISCREEN_GERMAN_
-		p -> SetName("img/img6.bmp",0);
-#else
+	if(lang() == RUSSIAN)
 		p -> SetName("img/img8.bmp",0);
-#endif
 	else
 		p -> SetName("img/img6.bmp",0);
 	p -> SetFlag(0,IMG_RTO_CD_IMAGE);
@@ -7158,5 +7148,5 @@ int sdlEventToCode(SDL_Event *event) {
 			else
 				return iMOUSE_MOVE_CODE;
 	}
+	return -1;
 }
-

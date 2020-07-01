@@ -2347,10 +2347,10 @@ void Object::motor_control(int dir)
 {
 	int sign = SIGN(traction);
 	if(dir == ADD_POWER)
-		if((traction += traction_increment) > 256)
+		if((traction += (int)round(traction_increment / GAME_TIME_COEFF)) > 256)
 			traction = 256;
 	if(dir == DEL_POWER)
-		if((traction -= traction_increment) < -256)
+		if((traction -= (int)round(traction_increment / GAME_TIME_COEFF)) < -256)
 			traction = -256;
 	if(!(sign + SIGN(traction)))
 		traction = 0;
@@ -3082,7 +3082,7 @@ void Object::mechous_analysis(double dt)
 	side_impulse_enable++;
 	hand_brake = turbo = brake = 0;
 	if(rudder && dynamic_state & WHEELS_TOUCH)
-		rudder -= SIGN(rudder)*(abs(round(rudder*V.y*dt*num_calls_analysis*rudder_k_decr) + 1));
+		rudder -= SIGN(rudder) * fabs(round(rudder*V.y*dt*num_calls_analysis*rudder_k_decr) + 1);
 	speed = round(V.vabs()*dt*num_calls_analysis);
 }
 
@@ -3583,7 +3583,6 @@ wheel_continue:
 *******************************************************************************/
 void Object::debris_analysis(double dt)
 {
-	dt *= XTCORE_FRAME_NORMAL;
 	A_g2l_old = A_g2l;
 	R_old = R;
 	for(int i = 0;i < num_calls_analysis_debris - 1;i++)
@@ -3846,7 +3845,7 @@ void Object::basic_debris_analysis(double dt)
 		DBV Vs = V;
 		if(spring_touch)
 			Vs -= (z_axis*(radius*rolling_scale)) % W;
-		R += (A_l2g * Vs ) * dt;
+		R += (A_l2g * Vs ) * dt * XTCORE_FRAME_NORMAL;
 
 		DBM A_rot_inv = DBM(W,W.vabs()*(-dt));
 		A_g2l = A_rot_inv*A_g2l;

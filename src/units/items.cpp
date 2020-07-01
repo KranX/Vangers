@@ -1,5 +1,7 @@
 #include "../global.h"
 #include "../runtime.h"
+#include "../lang.h"
+
 //#include "..\win32f.h"
 
 #include "../3d/3d_math.h"
@@ -511,6 +513,7 @@ void StuffObject::Init(StorageType* s)
 	ID = ID_STUFF;
 	Status = SOBJ_DISCONNECT;
 	Owner = NULL;
+	CreateMode = STUFF_CREATE_NONE;
 };
 
 void aciPrepareWorldsMenu(void);
@@ -1315,7 +1318,7 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = n->Speed;
-	if(BulletMode & BULLET_CONTROL_MODE::SPEED) Speed += p->RealSpeed;
+	if(BulletMode & BULLET_CONTROL_MODE::SPEED) Speed += (int)round(p->RealSpeed / GAME_TIME_COEFF);
 
 	if(BulletID == BULLET_TYPE_ID::LASER)
 		vDelta = Vector(Speed,3 - RND(6),0)*p->mFire;
@@ -1822,22 +1825,19 @@ void JumpBallObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	CraterType = n->CraterType;
 
 	Owner = p->Owner;
-
 	archimedean = 0;
 
 	if(Mode == BULLET_TARGET_MODE::CONTROL){
 		vCheck = Vector(-(n->Speed),0,0)*DBM((int)(PI/4 - RND(PI/2)),Z_AXIS);
 		vCheck *= p->mFire;
-		vCheck *= n->LifeTime + Owner->Speed;
-		vCheck /= n->Speed;
-		precise_impulse(R_curr,XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y));
 		set_body_color(COLORS_IDS::MATERIAL_5);
 	}else{
 		vCheck = Vector(n->Speed,0,0)*p->mFire;
-		vCheck *= n->LifeTime + Owner->Speed;
-		vCheck /= n->Speed;
-		precise_impulse(R_curr,XCYCL(R_curr.x + vCheck.x),YCYCL(R_curr.y + vCheck.y));
 	};
+	vCheck *= n->LifeTime + Owner->Speed;
+	vCheck /= n->Speed;
+	vCheck /= (int)GAME_TIME_COEFF;
+	precise_impulse(R_curr,XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y));
 };
 
 void JumpBallObject::Quant(void)
@@ -2300,7 +2300,7 @@ void WorldBulletTemplate::Init(Parser& in)
 		in.search_name("ExtentionShowType");
 		ExtShowType = in.get_int();
 		in.search_name("Precision");
-		Precision = in.get_int();
+		Precision = (int)round(in.get_int() / GAME_TIME_COEFF); // fps fix
 		in.search_name("TargetMode");
 		name = in.get_name();
 		TargetMode = Name2Int(name,BULLET_TARGET_MODE_NAME,MAX_BULLET_TARGET_MODE_NAME);
@@ -2915,8 +2915,8 @@ void HordeObject::DrawQuant(void)
 void HordeObject::CreateHorde(Vector v,int r,int z,int cZ,VangerUnit* own)
 {
 	ID = ID_HORDE;
-	Speed = 10;
-	Precision = 7;
+	Speed = 10 / GAME_TIME_COEFF;
+	Precision = 7 / GAME_TIME_COEFF;
 	Power = (50 << 16) / UnitGlobalTime;
 	Mode = HORDE_RESTORE_MODE;
 	NumParticle = HORDE_PARTICLE_NUM;
@@ -3748,17 +3748,17 @@ void GloryPlace::Quant(void)
 
 extern aciPromptData aiMessageBuffer;
 extern uvsTabuTaskType **TabuTable;
-extern int iRussian;
+
 
 void aiPromptTaskMessage(int l)
 {
 //	if(!uvsKronActive) return;
 	aiMessageBuffer.align_type = 0;
 	if(l >= 0){
-		if(iRussian) aiMessageBuffer.add_str(0,(unsigned char*)rSuccessTaskMessageData);
+		if(lang() == RUSSIAN) aiMessageBuffer.add_str(0,(unsigned char*)rSuccessTaskMessageData);
 		else aiMessageBuffer.add_str(0,(unsigned char*)SuccessTaskMessageData);
 	}else{
-		if(iRussian) aiMessageBuffer.add_str(0,(unsigned char*)rFailedTaskMessageData);
+		if(lang() == RUSSIAN) aiMessageBuffer.add_str(0,(unsigned char*)rFailedTaskMessageData);
 		else aiMessageBuffer.add_str(0,(unsigned char*)FailedTaskMessageData);
 	};
 
@@ -3767,7 +3767,7 @@ void aiPromptTaskMessage(int l)
 	aiMessageBuffer.ColBuf[0] = 143;
 
 	RaceTxtBuff.init();
-	if(iRussian) RaceTxtBuff < rTaskMessageLuck;
+	if(lang() == RUSSIAN) RaceTxtBuff < rTaskMessageLuck;
 	else RaceTxtBuff < TaskMessageLuck;
 	if(l > 0) RaceTxtBuff < " +";
 	else RaceTxtBuff < " -";
@@ -3787,7 +3787,7 @@ void aiPromptDominanceMessage(int d)
 {
 //	if(!uvsKronActive) return;
 	RaceTxtBuff.init();
-	if(iRussian) RaceTxtBuff < rDominanceMessageData;
+	if(lang() == RUSSIAN) RaceTxtBuff < rDominanceMessageData;
 	else RaceTxtBuff < DominanceMessageData;
 	if(d > 0) RaceTxtBuff < " +";
 	else RaceTxtBuff < " -";
@@ -3806,7 +3806,7 @@ void aiPromptLuckMessage(int d)
 //	if(!uvsKronActive) return;
 	RaceTxtBuff.init();
 
-	if(iRussian) RaceTxtBuff < rTaskMessageLuck;
+	if(lang() == RUSSIAN) RaceTxtBuff < rTaskMessageLuck;
 	else RaceTxtBuff < TaskMessageLuck;
 
 	if(d > 0) RaceTxtBuff < " +";

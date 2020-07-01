@@ -307,8 +307,8 @@ uvsElement* deleteETail = NULL; // список всех удаляемых ди
 
 uvsVanger* Gamer;
 
-void PrmFile::init(const char* name){
-	Parser* prs = new Parser(name);
+void PrmFile::init(const char* name) {
+	Parser* prs = new Parser(name); // TODO memory leak
 	len = prs -> length();
 	buf = prs -> address();
 
@@ -525,10 +525,13 @@ void uniVangPrepare(void){
 	pw = (uvsWorld*)WorldTail;
 	int __t = 1;
 	int _t = 1;
-	while(pw){
+	while(pw) {
 		i = 0;
-		if (pw -> escTmax){
-			pw -> escT = new uvsEscave*[pw -> escTmax];
+		if (pw->escTmax) {
+			if (pw->escT != NULL) {
+				delete[] pw->escT;
+			}
+			pw->escT = new uvsEscave*[pw->escTmax];
 			pe = (uvsEscave*)EscaveTail;
 			while(pe){
 				if (__t)
@@ -1455,10 +1458,10 @@ void uvsEscave::link_good(void){
 	uvsSpot* ps;
 
 	while( pt ){
-		if ( ps = (uvsSpot*)SpotTail -> seekName(((uvsTradeItem*)pt ) -> town_name) ){
+		if (( ps = (uvsSpot*)SpotTail -> seekName(((uvsTradeItem*)pt ) -> town_name) )) {
 			(pl = new uvsTradeItem) -> link( ps -> Pgood );
 			pl -> type = ((uvsTradeItem*)pt) -> type;
-		} else if ( pe = (uvsEscave*)EscaveTail -> seekName(((uvsTradeItem*)pt ) -> town_name) ){
+		} else if (( pe = (uvsEscave*)EscaveTail -> seekName(((uvsTradeItem*)pt ) -> town_name) )) {
 			(pl = new uvsTradeItem) -> link( pe -> Pgood );
 			pl -> type = ((uvsTradeItem*)pt) -> type;
 		} else
@@ -1514,10 +1517,10 @@ void uvsSpot::link_good(void){
 	uvsSpot* ps;
 
 	while( pt ){
-		if ( ps = (uvsSpot*)SpotTail -> seekName(((uvsTradeItem*)pt ) -> town_name) ){
+		if (( ps = (uvsSpot*)SpotTail -> seekName(((uvsTradeItem*)pt ) -> town_name) )) {
 			(pl = new uvsTradeItem) -> link( ps -> Pgood );
 			pl -> type = ((uvsTradeItem*)pt) -> type;
-		} else if ( pe = (uvsEscave*)EscaveTail -> seekName(((uvsTradeItem*)pt ) -> town_name) ){
+		} else if (( pe = (uvsEscave*)EscaveTail -> seekName(((uvsTradeItem*)pt ) -> town_name) )) {
 			(pl = new uvsTradeItem) -> link( pe -> Pgood );
 			pl -> type = ((uvsTradeItem*)pt) -> type;
 		} else
@@ -4384,8 +4387,8 @@ void uvsFlyFarmer::save(XStream& fout){
 void uvsFlyFarmer::setSpeed(void){
 	x_speed = y_speed = 0;
 	while(!x_speed && !y_speed){
-		x_speed = V_SPEED_DOLLY - RND(V_SPEED_DOLLY*2+1);
-		y_speed = V_SPEED_DOLLY - RND(V_SPEED_DOLLY*2+1);
+		x_speed = (V_SPEED_DOLLY - RND(V_SPEED_DOLLY*2+1)) * GAME_TIME_COEFF;
+		y_speed = (V_SPEED_DOLLY - RND(V_SPEED_DOLLY*2+1)) * GAME_TIME_COEFF;
 	}
 }
 
@@ -6039,14 +6042,14 @@ void uvsVanger::go_from_escave(void){
 		ord -> target = UVS_TARGET::SPOT;
 		ord -> Ptarget = (uvsTarget*)ps;
 		Pspot = ps;
-	} else	if ( ps = (uvsSpot*)SpotTail -> seekName(name) ){
+	} else	if (( ps = (uvsSpot*)SpotTail -> seekName(name) )){
 		uvsOrder* ord = orderT; 		// первый элемент
 		ord -> type = UVS_ORDER::MOVING;
 		ord -> event = UVS_EVENT::GO_SPOT;
 		ord -> target = UVS_TARGET::SPOT;
 		ord -> Ptarget = (uvsTarget*)ps;
 		Pspot = ps;
-	} else if ( pe = (uvsEscave*)EscaveTail -> seekName(name) ){
+	} else if (( pe = (uvsEscave*)EscaveTail -> seekName(name) )){
 		uvsOrder* ord = orderT; 		// первый элемент
 		ord -> type = UVS_ORDER::MOVING;
 		ord -> event = UVS_EVENT::GO_ESCAVE;
@@ -6162,13 +6165,13 @@ void uvsVanger::go_from_spot(void){
 		ord -> target = UVS_TARGET::ESCAVE;
 		ord -> Ptarget = (uvsTarget*)pe;
 		Pescave = pe;
-	} else	if ( ps = (uvsSpot*)SpotTail -> seekName(name) ){
+	} else	if (( ps = (uvsSpot*)SpotTail -> seekName(name) )){
 		uvsOrder* ord = orderT; 		// первый элемент
 		ord -> type = UVS_ORDER::MOVING;
 		ord -> event = UVS_EVENT::GO_SPOT;
 		ord -> target = UVS_TARGET::SPOT;
 		ord -> Ptarget = (uvsTarget*)ps;
-	} else if ( pe = (uvsEscave*)EscaveTail -> seekName(name) ){
+	} else if (( pe = (uvsEscave*)EscaveTail -> seekName(name) )){
 		uvsOrder* ord = orderT; 		// первый элемент
 		ord -> type = UVS_ORDER::MOVING;
 		ord -> event = UVS_EVENT::GO_ESCAVE;
@@ -10721,7 +10724,7 @@ int uvsTabuTaskType::is_able(void){
 	if ((work_on_target == UVS_TABUTASK_WORK::DELIVER_OR) && (uvsMechosTable[20] -> constractor == 3) )
 		return 0;
 
-	if ((target == UVS_TARGET::RACE) ){
+	if (target == UVS_TARGET::RACE) {
 		for( i = 0; i < item_number; i++ )
 			if (!uvsCheckItem(item[i]))
 				return 0;

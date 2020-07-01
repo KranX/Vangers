@@ -100,6 +100,7 @@ int TimeSecretType[2][MAX_TIME_SECRET] = {{UVS_ITEM_TYPE::PEELOT,UVS_ITEM_TYPE::
 
 int ThreallMessageProcess;
 extern uvsVanger *Gamer;
+int sensorStaticFrame = 0; // animation speed control frame, required to skip animation frames on high fps
 void StaticOpen(void)
 {
 	int i,j;
@@ -368,37 +369,43 @@ void StaticClose(void)
 #endif
 };
 
-void StaticQuant(void)
+void StaticQuant(void) //world animation quant
 {
 	int y0,y1,i;
 	StaticObject* st;
 	uchar** lt;
 		
 	lt = vMap->lineT;
-
+	if (sensorStaticFrame >= GAME_TIME_COEFF) {
+		sensorStaticFrame = 1;
+	} else {
+		sensorStaticFrame++;
+	}
 	if(NetworkON){
 		for(i = 0;i < TntTableSize;i++)
 		{
-			if(lt[TntObjectData[i]->R_curr.y])
+			if(lt[TntObjectData[i]->R_curr.y]) {
 				TntObjectData[i]->NetQuant();
-			else
+			} else
 				TntObjectData[i]->NetHideEvent();
-		};
+		}
 	}else{
 		for(i = 0;i < TntTableSize;i++)
 		{		
-			if(lt[TntObjectData[i]->R_curr.y])
-				TntObjectData[i]->Quant();
-			else
+			if(lt[TntObjectData[i]->R_curr.y]) {
+				if (sensorStaticFrame == 1)
+					TntObjectData[i]->Quant(); //animate mushroom grow
+			} else
 				TntObjectData[i]->HideEvent();
 
-		};	
-	};
-
-	for(i = 0;i < NumLocation;i++)
-		if(LocationData[i]->Enable)
+		}
+	}
+	for(i = 0;i < NumLocation;i++) {
+		if(LocationData[i]->Enable) {
 			LocationData[i]->Quant(); // Sensor animation frame is here
-
+		}
+	}
+	
 	int dy0;
 	y0 = ViewY -  TurnSideY;
 	y1 = ViewY + TurnSideY;
@@ -2202,7 +2209,7 @@ void TntCreature::Quant(void)
 			}else{
 				switch(CurrentWorld){
 					case 0:
-						if(RND(300) < 5){
+						if(RND(300 * GAME_TIME_COEFF) < 5){
 							p = BulletD.CreateBullet();
 							vCheck = Vector(radius,0,0) * DBM((int)(RND(2*PI)),Z_AXIS);
 							p->CreateBullet(R_curr,
@@ -2211,8 +2218,8 @@ void TntCreature::Quant(void)
 						};
 						break;
 					case 1:
-						if(RND(1000) < 5 && abs(getDistY(R_curr.y,ViewY)) - (radius << 1) < TurnSideY && abs(getDistX(R_curr.x,ViewX)) - (radius << 1) < TurnSideX)
-							TouchTime = TntLinkDelay;
+						if(RND(1000 * GAME_TIME_COEFF) < 5 && abs(getDistY(R_curr.y,ViewY)) - (radius << 1) < TurnSideY && abs(getDistX(R_curr.x,ViewX)) - (radius << 1) < TurnSideX)
+							TouchTime = TntLinkDelay * GAME_TIME_COEFF;
 						break;
 				};
 			};

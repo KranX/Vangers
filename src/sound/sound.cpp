@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../lang.h"
 
 #include "hmusic.h"
 #include "hsound.h"
@@ -45,20 +46,13 @@ struct SndParameters {
 	void* lpDSB;
 	};
 
-static int TrackCDTime[11] = {
-#ifdef RUSSIAN_VERSION
-	0, 1, 174, 108, 128, 238, 130, 181, 120, 151, 200
-#else
-	0, 1, 174, 108, 128, 238, 130, 181, 120, 151, 60
-#endif
-//	0, 1, 173, 108, 128, 240, 126, 182, 120, 148
-};
+static int *TrackCDTime = 0;
 
 static const char* SndMotorFileName[7*2] = {
 	"raffa",  "raffa2",
 	"light",   "light2", 
 	"microbus", "microbus2",
-	"ATW", "ATW2",
+	"atw", "atw2",
 	"truck",  "truck2",
 	"special",  "special2",
 	"copter",  "copter2"
@@ -200,6 +194,12 @@ static time_t lastTimeCD = 0;
 
 void InstallSOUND(void)
 {
+    if (lang() == RUSSIAN) {
+        TrackCDTime = new int[11] { 0, 1, 174, 108, 128, 238, 130, 181, 120, 151, 200 };
+    } else {
+        TrackCDTime = new int[11] { 0, 1, 174, 108, 128, 238, 130, 181, 120, 151, 60 };
+    }
+
 	if(!SoundInit(EFFECT_KHZ, 16)){
 		std::cout<<"\nInitialization of sound failed, mute mode accepted...\n";
 		MuteLog = 1;
@@ -213,6 +213,7 @@ void InstallSOUND(void)
 
 void RestoreSOUND(void)
 {
+    delete[] TrackCDTime;
 #ifndef _NO_CDAUDIO_
 #ifndef _DEMO_
 	if(!MusicON) return;
@@ -444,40 +445,45 @@ void SoundQuant(void)
 	int DiffSound = SoundFlag ^ lastSoundFlag;
 	
 	if (DiffSound){
-		if (DiffSound & SoundCopterig)
-			if (SoundFlag & SoundCopterig){
+		if (DiffSound & SoundCopterig) {
+			if (SoundFlag & SoundCopterig) {
 				SOUND_COPTERIG_START()
-			}else{
+			} else {
 				SOUND_COPTERIG_STOP()
 			}
+		}
 
-		if (DiffSound & SoundCrotrig)
-			if (SoundFlag & SoundCrotrig){
+		if (DiffSound & SoundCrotrig) {
+			if (SoundFlag & SoundCrotrig) {
 				SOUND_CROTRIG_START()
-			}else {
+			} else {
 				SOUND_CROTRIG_STOP()
 			}
+		}
 
-		if (DiffSound & SoundCutterig)
-			if (SoundFlag & SoundCutterig){
+		if (DiffSound & SoundCutterig) {
+			if (SoundFlag & SoundCutterig) {
 				SOUND_CUTTERIG_START()
-			}else{
+			} else {
 				SOUND_CUTTERIG_STOP()
 			}
+		}
 
-		if (DiffSound & SoundUnderWater)
-			if (SoundFlag & SoundUnderWater){
+		if (DiffSound & SoundUnderWater) {
+			if (SoundFlag & SoundUnderWater) {
 				SOUND_UNDERWATER_START()
-			}else{
+			} else {
 				SOUND_UNDERWATER_STOP()
 			}
+		}
 
-		if (DiffSound & SoundMotor)
-			if (SoundFlag & SoundMotor){
+		if (DiffSound & SoundMotor) {
+			if (SoundFlag & SoundMotor) {
 				SOUND_START_MOTOR()
-			}else {
+			} else {
 				SOUND_STOP_MOTOR()
 			}
+		}
 	}
 		
 	lastSoundFlag = SoundFlag;

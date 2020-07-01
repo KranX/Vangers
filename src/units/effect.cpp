@@ -590,9 +590,12 @@ void ParticleObject::Quant(void)
 
 void SimpleParticleType::Quant(void)
 {
-	vR += vD;
-	vR.x &= PTrack_mask_x;
-	vR.y &= PTrack_mask_y;
+	vR.x += (int)round(vD.x / GAME_TIME_COEFF);
+	vR.y += (int)round(vD.y / GAME_TIME_COEFF);
+	vR.z += (int)round(vD.z / GAME_TIME_COEFF);
+
+	vR.x &= (int)round(PTrack_mask_x * GAME_TIME_COEFF);
+	vR.y &= (int)round(PTrack_mask_y * GAME_TIME_COEFF);
 	Color += dColor;
 };
 
@@ -1139,7 +1142,7 @@ void ParticleObject::CreateRingOfLord(const Vector v1,int rad,int ltime,int fcol
 	Mode = 1;
 
 	Time = 0;
-	LifeTime = (int)round(ltime * GAME_TIME_COEFF);
+	LifeTime = (int)round(ltime );
 
 	FirstColor = fcol << 8;
 	DeltaColor = ((lcol << 8) - FirstColor) / LifeTime;
@@ -1177,7 +1180,7 @@ void ParticleObject::CreateDirectParticle(ParticleInitDataType* n,const Vector& 
 	Mode = 0;
 
 	Time = 0;
-	LifeTime = (int)round(n->LifeTime * GAME_TIME_COEFF);
+	LifeTime = (int)round(n->LifeTime );
 
 	FirstColor = n->FirstColor << 8;
 	DeltaColor = ((n->EndColor << 8) - FirstColor) / LifeTime;
@@ -1465,15 +1468,15 @@ void TargetParticleObject::AddVertex(const Vector& _vR,int _Color,int _Speed1,in
 
 		d = vCheck.vabs();
 		if(d){
-			vCheck.x = _Speed1 * vCheck.x / d;
-			vCheck.y = _Speed1 * vCheck.y / d;
+			vCheck.x = (int)round(_Speed1 / GAME_TIME_COEFF) * vCheck.x / d;
+			vCheck.y = (int)round(_Speed1 / GAME_TIME_COEFF) * vCheck.y / d;
 			p->vD.x = vCheck.x + vCheck.y;
 			p->vD.y = vCheck.y - vCheck.x;
 		}else p->vD = Vector(0,0,0);
 
 		p->vD.z = (vCheck.z << 8) / LifeTime;
 
-		p->s = _Speed2;
+		p->s = (int)round(_Speed2 / GAME_TIME_COEFF);
 		p->vT = vTarget;
 		p->pDist = d;
 		CurrParticle++;
@@ -1556,7 +1559,7 @@ void TargetParticleObject::AddVertex2(const Vector& _vR,const Vector& _vT, int _
 
 		p->Color = _Color;
 		p->type = _type;
-		p->LifeTime = (int)round(LifeTime * GAME_TIME_COEFF);
+		p->LifeTime = (int)round(LifeTime );
 
 		if (_type){
 			p->vT.x = vCheck.x << 8;
@@ -1762,8 +1765,8 @@ void WaterParticleObject::CreateParticle(int _LifeTime,int _SetLifeTime,int _Vel
 
 	Time = 0;
 
-	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);;
-	SetLifeTime = (int)round(_SetLifeTime * GAME_TIME_COEFF);;
+	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);
+	SetLifeTime = (int)round(_SetLifeTime * GAME_TIME_COEFF);
 
 	FirstColor = _FirstColor << 8;
 	SetColor = _SetColor << 8;

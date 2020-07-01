@@ -22,7 +22,7 @@
 
 extern XBuffer* iResBuf;
 extern int aciKeyboardLocked;
-extern int iRussian;
+
 extern int iScreenOffs;
 
 extern char* iSTR_WORLD_NONE_CHAR;

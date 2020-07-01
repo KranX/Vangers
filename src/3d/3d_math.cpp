@@ -42,7 +42,7 @@ void make_tables()
 
 	mul_table = new char[256*256]; 
 	memset(mul_table, 0, 256*256);
-	div_table_short = ALLOC(256*256,short);
+	div_table_short = ALLOC(256*256,short);  // TODO uninitialised value(s)
 	power_table = ALLOC(256*(N_POWER_MAX - 1),char);
 #endif
 

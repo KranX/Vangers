@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../lang.h"
 #include "../iscreen/hfont.h"
 #include "../runtime.h"
 
@@ -28,7 +29,7 @@ extern int NetworkON;
 extern char* aciSTR_ON;
 extern char* aciSTR_OFF;
 
-extern int iRussian;
+
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
