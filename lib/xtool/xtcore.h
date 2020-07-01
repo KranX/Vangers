@@ -59,7 +59,7 @@ struct XRuntimeObject
 		return XT_TERMINATE_ID;
 	}
 
-	void SetTimer(int t){ Timer = t*10; }
+	void SetTimer(int t){ Timer = t; }
 
 	XRuntimeObject(void){ ID = 1; next = NULL; Timer = 0; }
 	XRuntimeObject(int id){ ID = id; next = NULL; Timer = 0; }

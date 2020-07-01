@@ -547,10 +547,6 @@ int xtInitApplication(void) {
 	xtCreateRuntimeObjectTable(RTO_MAX_ID);
 	RTO_GAME_QUANT_TIMER = 1000 / 20;
 	GAME_TIME_COEFF = 1;
-	if (iGetOptionValue(iFPS_60)) {
-		RTO_GAME_QUANT_TIMER = 1000 / 60;
-		GAME_TIME_COEFF = 3;
-	}
 	GameQuantRTO* gqObj = new GameQuantRTO(RTO_GAME_QUANT_TIMER);
 	MainMenuRTO* mmObj = new MainMenuRTO;
 	EscaveRTO* eObj = new EscaveRTO;
@@ -717,6 +713,14 @@ _MEM_STATISTIC_("AFTER IQUANTFIRST INIT -> ");
 #else
 	aLoadFonts32();
 #endif
+	// initialize proper FPS setting here, cuz earlier stored settings not available
+	// and initially wrong config value could be set
+	if (iGetOptionValue(iFPS_60)) {
+		RTO_GAME_QUANT_TIMER = 1000 / 60;
+		GAME_TIME_COEFF = 3;
+	}
+	GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
+	p -> SetTimer(RTO_GAME_QUANT_TIMER);
 	
 	XGR_Obj.set_fullscreen(iGetOptionValue(iFULLSCREEN));
 _MEM_STATISTIC_("AFTER MAIN MENU INIT -> ");
