@@ -649,15 +649,15 @@ void iSetFullscreen(int state) {
 }
 
 void iSetFPS(int state) {
-	int f;
-	if (iGetOptionValue(iFPS_60)) {
-		f = 1000 / 60;
+	if (state) {
+		RTO_GAME_QUANT_TIMER = 1000 / 60;
 		GAME_TIME_COEFF = 3;
 	} else {
-		f = 1000 / 20;
+		RTO_GAME_QUANT_TIMER = 1000 / 20;
 		GAME_TIME_COEFF = 1;
 	}
-	gqObj->Timer = f;
+	GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
+	p -> SetTimer(RTO_GAME_QUANT_TIMER);
 }
 
 void iPrepareOptions(void)

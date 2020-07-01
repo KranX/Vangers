@@ -176,6 +176,7 @@ int main(int argc, char *argv[])
 				// 		 <<" clockDelta:"<<clockDelta<<std::endl;
 
 				if (clockDelta < XObj->Timer) {
+					// std::cout<<"clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
 					SDL_Delay(XObj->Timer - clockDelta);
 				} else {
 					std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
