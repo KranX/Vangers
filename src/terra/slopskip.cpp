@@ -12,20 +12,6 @@ extern uint V_SIZE;
 #define ROX(x) (x << (16 - H_POWER))
 #define ROY(y) (y << (16 - V_POWER))
 
-//#define LOWLEVEL_OUTPUT
-
-#ifdef LOWLEVEL_OUTPUT
-
-#ifdef __HIGHC__
-#define slope_line _slope_line
-#define slope_line2 _slope_line2
-#endif
-
-#endif
-
-void (*slope_line)(int,void*,void*,int,int,int,int);
-void (*slope_line2)(int,void*,void*,int,int,int,int);
-
 uchar** SetSkipLineTable(uchar** lt,int ky,int Ymin,int Ymax);
 int ParaMapSkipFactor0 = 100;
 int ParaMapSkipFactor = 100;
@@ -40,6 +26,19 @@ int ParaScreenSkipFactor = 0;
 #ifndef TURN_TEST
 #define BitMap vrtMap
 #endif
+
+inline int pre_calc_fy(int i, int XDstSize, int YDstSize, int Awy, int Awz, int Auy, int Avy, int Avz, int F, int H, int cy) {
+	int u = -XDstSize/2;
+	int v = -YDstSize/2 + i;
+	int z = (v*Avz + F*Awz) >> 16;
+	if(!z) z = 1;
+	int fy = H*((u*Auy + v*Avy + F*Awy) >> 4)/z << 4;
+	int k_xscr_y = H*Auy/z;
+
+	fy += cy;
+	return (fy + k_xscr_y*i) >> 16;
+}
+
 void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize)
 {
 	Slop = -Slop;
@@ -65,9 +64,15 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 	int Auy,Avy,Awy;
 	int Auz,Avz,Awz;
 
-	Aux = cosAlpha; Avx = (sinAlpha >> 1)*(cosTetta >> 1) >> 14;	Awx = (sinAlpha >> 1)*(sinTetta >> 1) >> 14;
-	Auy = -sinAlpha;Avy = (cosAlpha >> 1)*(cosTetta >> 1) >> 14;	Awy = (cosAlpha >> 1)*(sinTetta >> 1) >> 14;
-	Auz = 0;	Avz = -sinTetta;				Awz = cosTetta;
+	Aux = cosAlpha;
+	Avx = (sinAlpha >> 1)*(cosTetta >> 1) >> 14;
+	Awx = (sinAlpha >> 1)*(sinTetta >> 1) >> 14;
+	Auy = -sinAlpha;
+	Avy = (cosAlpha >> 1)*(cosTetta >> 1) >> 14;
+	Awy = (cosAlpha >> 1)*(sinTetta >> 1) >> 14;
+	Auz = 0;
+	Avz = -sinTetta;
+	Awz = cosTetta;
 
 	cx -= Awx*H/Awz;
 	cy -= Awy*H/Awz;
@@ -80,30 +85,39 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 	y1 = uv2y(-XDstSize/2,YDstSize/2) + (cy >> 16);
 	y2 = uv2y(XDstSize/2,-YDstSize/2) + (cy >> 16);
 	y3 = uv2y(-XDstSize/2,-YDstSize/2) + (cy >> 16);
-	int Ymin = MIN(MIN(MIN(y0,y1),y2),y3);
-	int Ymax = MAX(MAX(MAX(y0,y1),y2),y3);
-#ifndef TURN_TEST
-	Ymin -= 30;
-	Ymax += 30;
-#endif
-#ifndef TURN_TEST
 
-#ifndef _VTEST_
-	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
+//#ifndef TURN_TEST
+// #ifndef _VTEST_
+// 	vMap -> request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2, MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2, 0, 0);
+// 	uchar** lt = vMap -> lineTcolor;
+// #else
+// 	uchar** lt = lineTcolor;
+// #endif
+// #else
+// 	uchar** lt = TextureDataTable;
+// 	uchar** ht = HeightDataTable;
+// #endif
+	int first_line = pre_calc_fy(0, XDstSize, YDstSize, Awy, Awz, Auy, Avy, Avz, F, H, cy);
+	int last_line = pre_calc_fy(YDstSize - 1, XDstSize, YDstSize, Awy, Awz, Auy, Avy, Avz, F, H, cy);
+	int Ymin = MIN(MIN(MIN(MIN(MIN(y0,y1),y2),y3), first_line), last_line);
+	int Ymax = MAX(MAX(MAX(MAX(MAX(y0,y1),y2),y3), first_line), last_line);
+	#ifndef TURN_TEST
+		Ymin -= 30;
+		Ymax += 30;
+	#endif
+	vMap->request(
+		Ymin - MAX_RADIUS/2,
+		Ymax + MAX_RADIUS/2,
+		0,
+		0
+	);
 	uchar** lt = vMap -> lineTcolor;
-#else
-	uchar** lt = lineTcolor;
-#endif
-#else
-	uchar** lt = TextureDataTable;
-	uchar** ht = HeightDataTable;
-#endif
 
 	int z;
 	z = F*Awz >> 16;
 	if(!z) z = 1;
 	int ky = ((ParaMapSkipFactor0 << 16) + abs(sinAlpha)*ParaMapSkipFactor)/100*CenterDistance/F;
-	uchar** slt = SetSkipLineTable(lt,ky,Ymin,Ymax);
+	uchar** slt = SetSkipLineTable(lt, ky, Ymin - MAX_RADIUS/2, Ymax + MAX_RADIUS/2);
 #ifdef TURN_TEST
 	::MapSkipFactor = ky;
 #endif
@@ -118,14 +132,14 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 	::ScreenSkipFactor = ScreenSkipFactor;
 #endif
 	int DrawPrev = 0;
-	while(i < YDstSize){
+	while (i < YDstSize) {
 		char* vpp = vp + XGR_MAXX*i;
 		int u = -XDstSize/2;
 		int v = -YDstSize/2 + i;
-		int z = v*Avz + F*Awz >> 16;
+		int z = (v*Avz + F*Awz) >> 16;
 		if(!z) z = 1;
-		fx = H*(u*Aux + v*Avx + F*Awx >> 4)/z << 4;
-		fy = H*(u*Auy + v*Avy + F*Awy >> 4)/z << 4;
+		fx = H*((u*Aux + v*Avx + F*Awx) >> 4)/z << 4;
+		fy = H*((u*Auy + v*Avy + F*Awy) >> 4)/z << 4;
 
 		k_xscr_x = H*Aux/z;
 		k_xscr_y = H*Auy/z;
@@ -133,35 +147,26 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 		fx += cx;
 		fy += cy;
 
-		if(DrawPrev){
+		if (DrawPrev) {
 			k_xscr_x *= 2;
 			k_xscr_y *= 2;
-#ifdef LOWLEVEL_OUTPUT
-			slope_line2(XDstSize,slt, vpp, fx, fy, k_xscr_x, k_xscr_y);
-#else
-			for(int j = 0;j < XDstSize;j += 2){
+			for (int j = 0; j < XDstSize; j += 2) {
 				int tmp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
 				*vpp++ = tmp;
 				*vpp++ = tmp;
 				fx += k_xscr_x;
 				fy += k_xscr_y;
-				}
-#endif
 			}
-		else{
-#ifdef LOWLEVEL_OUTPUT
-			slope_line(XDstSize,slt, vpp, fx, fy, k_xscr_x, k_xscr_y);
-#else
-			for(int j = 0;j < XDstSize;j++){
+		} else {
+			for (int j = 0; j < XDstSize; j++) {
 				*vpp++ = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
 				fx += k_xscr_x;
 				fy += k_xscr_y;
-				}
-#endif
 			}
+		}
 		int tmp_i = i_float >> 16;
 		i_float += ScreenSkipFactor;
 		DrawPrev = (i_float >> 16) > tmp_i + 1;
 		i++;
-		}
+	}
 }

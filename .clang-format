@@ -1,0 +1,24 @@
+---
+BasedOnStyle: LLVM
+#IndentWidth: 4
+#UseTab: ForIndentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Always
+ColumnLimit: 100
+BreakBeforeBraces: Attach
+IndentPPDirectives: AfterHash
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+PointerAlignment: Right
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeCtorInitializerColon: false
+SpaceBeforeInheritanceColon: false
+SpaceBeforeParens: ControlStatements
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: AlwaysBreak
+---
