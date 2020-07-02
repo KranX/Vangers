@@ -21,4 +21,5 @@ SpaceBeforeParens: ControlStatements
 BinPackArguments: false
 BinPackParameters: false
 AlignAfterOpenBracket: AlwaysBreak
+AlignEscapedNewlines: Left
 ---
