@@ -4951,6 +4951,9 @@ int acsQuant(void)
 		}
 		if (e->type == SDL_KEYDOWN || e->type == SDL_TEXTINPUT) {
 			acsScrD->KeyTrap(0, e);
+			if (e->key.keysym.scancode == SDL_SCANCODE_ESCAPE && !acsScrD -> QuantCode) {
+				acsScrD -> QuantCode = 1;
+			}
 		}
 
 	}
@@ -5024,7 +5027,7 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 				iAbortGameFlag = 1;
 			}
 			if(NetworkON) iMultiFlag = 1;
-			acsScrD -> QuantCode = 1;
+			acsScrD -> QuantCode = 1; // resume game pause
 			if(!GameOverID)
 				GameOverID = GAME_OVER_ABORT;
 			break;

@@ -1597,8 +1597,10 @@ void KeyCenter(SDL_Event *key)
 			ErrH.Exit();
 #endif
 			std::cout<<"road.KeyCenter:"<<key<<std::endl;
-			if(!Pause)
+			if(!Pause) {
 				Pause = 1;
+			}
+				
 //				  GameQuantReturnValue = RTO_LOADING3_ID;
 			break;
 #ifndef ACTINT

@@ -1013,7 +1013,7 @@ void aciScreenDispatcher::FlushEvents(void)
 		ev = eventLine -> get();
 		switch(ev -> code){
 			case ACS_EXIT:
-				QuantCode = ev -> data[0];
+				QuantCode = ev -> data[0]; // resume game pause
 				flags |= ACS_NEED_EXIT;
 				break;
 			case ACS_SET_RESOURCE:
