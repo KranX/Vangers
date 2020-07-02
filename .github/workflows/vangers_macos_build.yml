@@ -15,7 +15,7 @@ jobs:
       run: brew update
     - name: install libs
       run: |
-        brew install git ninja cmake nasm yasm dylibbundler
+        brew install git ninja cmake yasm dylibbundler
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb
         brew install -s ./formulas/sdl2.rb
@@ -33,6 +33,9 @@ jobs:
       run: git clone --depth 1 --branch n4.2.3 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
       run: ./configure --enable-shared --prefix=/usr/local
+        --cc=clang
+        --arch=x86_64
+        --cpu=ivybridge
         --disable-everything
         --enable-swscale
         --enable-zlib
