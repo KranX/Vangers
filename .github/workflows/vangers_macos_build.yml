@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
     - name: update repos
@@ -30,7 +30,7 @@ jobs:
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: ffmpeg -- download
-      run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
+      run: git clone --depth 1 --branch n4.2.3 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
       run: ./configure --enable-shared --prefix=/usr/local
         --disable-everything
