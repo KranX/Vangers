@@ -2,10 +2,9 @@
 #define __NETWORK_H__
 #include "zmod_client.h"
 
-#include "xsocket.h"
-#include "multiplayer.h"
+#include "../multiplayer/xsocket.h"
+#include "../multiplayer/multiplayer.h"
 
-#define BROADCAST_PORT		1992
 #define DEFAULT_SERVER_PORT	2197
 
 extern double zMod_cycle;

@@ -614,13 +614,13 @@ void iQuantFirst(void)
 			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
 		iSetOptionValueCHR(iPLAYER_PASSWORD,iSTR_DefaultPassword);
 		if(lang() == RUSSIAN) {
-            iSetOptionValueCHR(iHOST_NAME, "vangers.pp.ru");
+            iSetOptionValueCHR(iHOST_NAME, "vangers.net");
         } else if (lang() == GERMAN) {
 //			iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.de");
-            iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
+            iSetOptionValueCHR(iHOST_NAME,"vangers.net");
 		}
 		else
-            iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
+            iSetOptionValueCHR(iHOST_NAME,"vangers.net");
 //            iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.com");
 		iSetOptionValueCHR(iSERVER_NAME,iSTR_NONE);
 		iSetOptionValueCHR(iPROXY_SERVER,"192.1.1.1");

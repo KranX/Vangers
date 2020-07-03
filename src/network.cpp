@@ -10,7 +10,6 @@
 #include "sound/hsound.h"
 #endif
 
-#include "xsocket.h"
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
 #endif

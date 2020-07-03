@@ -133,12 +133,13 @@ int main(int argc, char *argv[])
 	}
 #else
 	int i;
-	for(i = 1; i < argc; i++) {
-		std::string cmd_key = argv[i];
-		if (cmd_key == "-fullscreen") {
-			XGR_FULL_SCREEN = true;
-		} else if (cmd_key == "-russian") {
-            setLang(RUSSIAN);
+    for (i = 1; i < argc; i++) {
+        std::string cmd_key = argv[i];
+        if (cmd_key == "-fullscreen") {
+            XGR_FULL_SCREEN = true;
+        // Bad place for this shit. Das ist CORE!!! Server has no idea about setLang()
+        // } else if (cmd_key == "-russian") {
+        //     setLang(RUSSIAN);
         }
 	}
         
