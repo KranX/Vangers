@@ -641,28 +641,27 @@ void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 	Color += dColor;
 };
 
-
+//Angry horde animation quant
 void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 {
 	int tx,ty,d;
-
 	vD = Vector(0,0,0);
 
 	tx = -(vR.x - _c.x);
 	ty = -(vR.y - _c.y);
 
-	int SPX_100 = SPTorXSize - (300<<8);
-	int SPY_100 = SPTorYSize - (300<<8);
+	int SPX_100 = (int)round((SPTorXSize - (300<<8))*XTCORE_FRAME_NORMAL);
+	int SPY_100 = (int)round((SPTorYSize - (300<<8))*XTCORE_FRAME_NORMAL);
 
 	if(tx > (SPX_100))
-		tx -= SPTorXSize;
+		tx -= (int)round(SPTorXSize*XTCORE_FRAME_NORMAL);
 	else if((tx) < (-SPX_100)) 
-		tx += SPTorXSize;
+		tx += (int)round(SPTorXSize*XTCORE_FRAME_NORMAL);
 
 	if(ty > (SPY_100) )
-		ty -= SPTorYSize;
+		ty -= (int)round(SPTorYSize*XTCORE_FRAME_NORMAL);
 	else if((ty) < (-SPY_100)) 
-		ty += SPTorYSize;
+		ty += (int)round(SPTorYSize*XTCORE_FRAME_NORMAL);
 
 	/*px = ty*c;
 	py = -tx*c;
@@ -693,12 +692,14 @@ void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 		vD.y += ty * s / d;
 		vD.z += (_n.z - _c.z) * s / d;
 	};*/
-	
 	vR += vD;
-	vR.z = _c.z;
-	
+
 	vR.x &= PTrack_mask_x;
 	vR.y &= PTrack_mask_y;
+	vR.z = _c.z;
+	
+	// vR.x &= PTrack_mask_x;
+	// vR.y &= PTrack_mask_y;
 };
 
 void SimpleParticleType::QuantT(int x,int y,int s)
