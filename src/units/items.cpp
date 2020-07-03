@@ -669,7 +669,8 @@ void StuffObject::DrawQuant(void)
 {
 	if(Status & SOBJ_WAIT_CONFIRMATION) return;
 	if(ActIntBuffer.type != ACI_CONLARVER && ActIntBuffer.type != ACI_EMPTY_CONLARVER){
-		CycleTime = rPI(CycleTime + PI / 12);
+		// dropped item size pulsation is handled here
+		CycleTime = rPI(CycleTime + PI / (12*(int)GAME_TIME_COEFF));
 		scale_size = original_scale_size + original_scale_size*Sin(CycleTime) / 8.;
 	};
 	draw();
