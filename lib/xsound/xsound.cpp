@@ -1,18 +1,11 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <iostream>
-#include <sstream>
-
-
 //#include "dsound.h"
 //#include <SDL_mixer.h>
 #include <clunk.h>
 
-#include "../xtool/xglobal.h"
-#include "../xgraph/xgraph.h"
+#include "xglobal.h"
+#include "xgraph.h"
 #include "_xsound.h"
 //#include "XCritical.h"
 

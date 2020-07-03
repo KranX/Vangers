@@ -109,7 +109,7 @@ int MAX_LINE = V_SIZE + 8;
 int MAX_LINE = 3000;
 #endif
 #else
-int MAX_LINE = 2050;
+int MAX_LINE = 3000; // 2050;
 #endif
 
 #ifdef SESSION
@@ -142,6 +142,7 @@ std::string path_to_world;
 char* GetTargetName(const char* name)
 {
 	static int first = 1;
+	static char namebuf[256];
 	//std::cout<<"name:"<<name<<" mapFName:"<<mapFName<<std::endl;
 	if(!name) { 
 		first = 1;
@@ -157,7 +158,8 @@ char* GetTargetName(const char* name)
 	
 	std::string path;
 	path = path_to_world + name;
-	return strdup(path.c_str());
+	strcpy(namebuf, path.c_str());
+	return namebuf;
 }
 
 int GetKeepSpace(void)
@@ -244,89 +246,6 @@ void YSetup(void)
 #ifdef _SURMAP_
 	worldPrepare();
 #endif
-
-	switch(MAP_POWER_Y){
-		case 10:
-			//invturn = invturn_10;
-			//scale = mmx_scale_10;//mmxUse ? mmx_scale_10 : scale_10;
-			//pscale = pscale_10;
-#ifdef _ROAD_
-			/*slope_line = slope_line_10;
-			slope_line2 = slope_line2_10;
-			perp_slope_line = perp_slope_line_10;
-			perp_slope_line1_2 = perp_slope_line1_2_10;*/
-			//low_shadow_line = low_shadow_line_10;
-			//low_image_line = low_image_line_10;
-#endif
-			break;
-		case 11:
-			//invturn = invturn_11;
-			//scale = mmx_scale_11;//mmxUse ? mmx_scale_11 : scale_11;
-			//pscale = pscale_11;
-#ifdef _ROAD_
-			/*slope_line = slope_line_11;
-			slope_line2 = slope_line2_11;
-			perp_slope_line = perp_slope_line_11;
-			perp_slope_line1_2 = perp_slope_line1_2_11;*/
-			//low_shadow_line = low_shadow_line_11;
-			//low_image_line = low_image_line_11;
-#endif
-			break;
-		case 12:
-			//invturn = invturn_12;
-			//scale = mmx_scale_12;//mmxUse ? mmx_scale_12 : scale_12;
-			//pscale = pscale_12;
-#ifdef _ROAD_
-			/*slope_line = slope_line_12;
-			slope_line2 = slope_line2_12;
-			perp_slope_line = perp_slope_line_12;
-			perp_slope_line1_2 = perp_slope_line1_2_12;*/
-			//low_shadow_line = low_shadow_line_12;
-			//low_image_line = low_image_line_12;
-#endif
-			break;
-		case 13:
-			//invturn = invturn_13;
-			//scale = mmx_scale_13;//mmxUse ? mmx_scale_13 : scale_13;
-			//pscale = pscale_13;
-#ifdef _ROAD_
-			/*slope_line = slope_line_13;
-			slope_line2 = slope_line2_13;
-			perp_slope_line = perp_slope_line_13;
-			perp_slope_line1_2 = perp_slope_line1_2_13;*/
-			//low_shadow_line = low_shadow_line_13;
-			//low_image_line = low_image_line_13;
-#endif
-			break;
-		case 14:
-			//invturn = invturn_14;
-			//scale = mmx_scale_14;//mmxUse ? mmx_scale_14 : scale_14;
-			//pscale = pscale_14;
-#ifdef _ROAD_
-			/*slope_line = slope_line_14;
-			slope_line2 = slope_line2_14;
-			perp_slope_line = perp_slope_line_14;
-			perp_slope_line1_2 = perp_slope_line1_2_14;*/
-			//low_shadow_line = low_shadow_line_14;
-			//low_image_line = low_image_line_14;
-#endif
-			break;
-		case 15:
-			//invturn = invturn_15;
-			//scale = mmx_scale_15;//mmxUse ? mmx_scale_15 : scale_15;
-			//pscale = pscale_15;
-#ifdef _ROAD_
-			/*slope_line = slope_line_15;
-			slope_line2 = slope_line2_15;
-			perp_slope_line = perp_slope_line_15;
-			perp_slope_line1_2 = perp_slope_line1_2_15;*/
-			//low_shadow_line = low_shadow_line_15;
-			//low_image_line = low_image_line_15;
-#endif
-			break;
-//		default:
-//			ErrH.Abort("MAP POWER Y is out of range");
-		}
 }
 
 void vMapInit(void)
@@ -359,8 +278,10 @@ void vMapPrepare(const char* name,int nWorld)
 vrtMap::~vrtMap(void)
 {
 	delete[] FloodLvl; FloodLvl = NULL;
-	free(fileName); free(paletteName);
-	free(fname); free(pname[0]);
+	free(fileName);
+	free(paletteName);
+	free(fname);
+	free(pname[0]);
 	if(KeepON) free(kname);
 	GetTargetName(NULL);
 
@@ -805,7 +726,7 @@ void vrtMap::fileLoad(void)
 	XBuffer buf;
 	buf < fileName < (isCompressed ? ".vmc" : ".vmp");
 	
-	fname = GetTargetName(buf.GetBuf());
+	fname = strdup(GetTargetName(buf.GetBuf()));
 	pname[0] = strdup(fname);
 	memcpy(pname[0] + strlen(pname[0]) - 3,"vpr",3);
 	if(KeepON) {
@@ -892,8 +813,8 @@ void vrtMap::load(const char* name,int nWorld)
 		for(uint i = 0;i < V_SIZE;i++) {
 			fmap > st_table[i];
 			fmap > sz_table[i];
-//			if(sz_table[i] >= H2_SIZE)
-//				ErrH.Abort("Wrong compression");
+			if(sz_table[i] > H2_SIZE)
+				ErrH.Abort("Wrong compression");
 		}
 		InitSplay(fmap);
 	}
@@ -925,9 +846,12 @@ void vrtMap::reload(int nWorld)
 #ifdef _SURMAP_
 	worldFree();
 #endif
-	delete[] FloodLvl; FloodLvl = NULL;
-	free(fileName); free(paletteName);
-	free(fname); free(pname[0]);
+	delete[] FloodLvl;
+	FloodLvl = NULL;
+	free(fileName);
+	free(paletteName);
+	free(fname);
+	free(pname[0]);
 	GetTargetName(NULL);
 
 	fileLoad();
@@ -1024,7 +948,7 @@ void vrtMap::reload(int nWorld)
 		for(i = 0;i < (int)V_SIZE;i++){
 			fmap > st_table[i];
 			fmap > sz_table[i];
-			if(sz_table[i] >= H2_SIZE)
+			if(sz_table[i] > H2_SIZE)
 				ErrH.Abort("Wrong compression");
 			}
 		InitSplay(fmap);
@@ -1281,29 +1205,36 @@ void vrtMap::change(int up,int down)
 		return;
 		}
 #endif
-	du = getDistY(upLine,up);
-	dd = getDistY(downLine,down);
-	req = MAX(du,-dd);
-	if(req > 0 && freeMax <= req + 1){
-		if(du < 0){
-			delink(upLine,upLine + req - 1);
+	du = getDistY(upLine, up);
+	dd = getDistY(downLine, down);
+	req = MAX(du, -dd);
+	// std::cout<<"vrtMap::change du:"<<du<<" dd:"<<dd<<" req:"<<req<<" up:"<<up<<" down:"<<down<<" upLine:"<<upLine<<" downLine:"<<downLine<<std::endl;
+	if (req > 0 && freeMax <= req + 1) {
+		if (du < 0) {
+			delink(upLine, upLine + req - 1);
 			upLine = YCYCL(upLine + req);
-			}
-		if(dd > 0){
-			delink(downLine - req + 1,downLine);
+		}
+		if (dd > 0) {
+			delink(downLine - req + 1, downLine);
 			downLine = YCYCL(downLine - req);
-			}
 		}
-	if(du > 0){
-		if(isCompressed) linkC(up,upLine - 1,1);
-		else link(up,upLine - 1,1);
+	}
+	if (du > 0) {
+		if (isCompressed) {
+			linkC(up, upLine - 1, 1);
+		} else {
+			link(up, upLine - 1, 1);
+		}
 		upLine = up;
+	}
+	if (dd < 0) {
+		if (isCompressed) {
+			linkC(downLine + 1, down, 1);
+		} else {
+			link(downLine + 1, down, 1);
 		}
-	if(dd < 0){
-		if(isCompressed) linkC(downLine + 1,down,1);
-		else link(downLine + 1,down,1);
 		downLine = down;
-		}
+	}
 }
 
 void vrtMap::updownSetup(void)
@@ -1384,7 +1315,7 @@ inline void vrtMap::unuse_c(int i)
 	freeTail_c = m;
 }
 
-void vrtMap::link(int up,int down,int d)
+void vrtMap::link(int up, int down, int d)
 {
 	//std::cout<<"vrtMap::link"<<std::endl;
 	if(MAP_POWER_Y <= 11 && !RAM16) return;
@@ -1393,16 +1324,17 @@ void vrtMap::link(int up,int down,int d)
 	down = YCYCL(down);
 
 	uchar* p;
-	int max = YCYCL(down + d),off;
+	int max = YCYCL(down + d), off;
 	int i = up;
 	do {
-		if(!lineTcolor[i]){
-			if(freeMax <= 1){
+		if (!lineTcolor[i]) {
+			if(freeMax <= 1) {
+				std::cout<<"We have no more free space in terrain buffer"<<std::endl;
 				return;
 //				XBuffer buf;
 //				buf < "up: " <= upLine < " down: " <= downLine < " size: " <= getDelta(downLine,upLine);
 //				ErrH.Abort("Line Buffer overflow",XERR_USER,-1,buf.GetBuf());
-				}
+			}
 			freeMax--;
 			lineTcolor[i] = (p = use());
 #ifdef SESSION
@@ -1417,19 +1349,18 @@ void vrtMap::link(int up,int down,int d)
 				else {
 #endif
 					off = i*H2_SIZE;
-					if(KeepON && keepT[i]){
-						kmap.seek(off,XS_BEG);
-						kmap.read(p,H2_SIZE);
-						}
-					else {
-						if(off != offset){
+					if (KeepON && keepT[i]) {
+						kmap.seek(off, XS_BEG);
+						kmap.read(p, H2_SIZE);
+					} else {
+						if (off != offset) {
 							offset = off + H2_SIZE;
 							fmap.seek(foffset + off,XS_BEG);
-							}
-						else
+						} else {
 							offset += H2_SIZE;
-						fmap.read(p,H2_SIZE);
 						}
+						fmap.read(p, H2_SIZE);
+					}
 					lineT[i] = p; //znfo lineT plain //догрузка
 					lineTcolor[i] = use_c();
 					LINE_render(i);
@@ -1443,22 +1374,26 @@ void vrtMap::link(int up,int down,int d)
 
 void vrtMap::linkC(int up,int down,int d)
 {
-//std::cout<<"vrtMap::linkC"<<std::endl;
-	if(MAP_POWER_Y <= 11 && !RAM16) return;
+	if(MAP_POWER_Y <= 11 && !RAM16) {
+		std::cout<<"vrtMap::linkC MAP_POWER_Y <= 11"<<std::endl;
+		return;
+	}
 	up = YCYCL(up);
 	down = YCYCL(down);
+
 
 	uchar* p;
 	int max = YCYCL(down + d);
 	int i = up;
 	do {
-		if(!lineTcolor[i]){
-			if(freeMax <= 1){
+		if(!lineTcolor[i]) {
+			if(freeMax <= 1) {
+				std::cout<<"We have no more free space in terrain buffer"<<std::endl;
 				return;
 //				XBuffer buf;
 //				buf < "up: " <= upLine < " down: " <= downLine < " size: " <= getDelta(downLine,upLine);
 //				ErrH.Abort("Line Buffer overflow",XERR_USER,-1,buf.GetBuf());
-				}
+			}
 			freeMax--;
 #ifdef FILEMAPPING
 			lineT[i] = p = use();
@@ -1467,15 +1402,14 @@ void vrtMap::linkC(int up,int down,int d)
 			LINE_render(i);
 #else
 			p = use();
-			if(KeepON && keepT[i]){
+			if(KeepON && keepT[i]) {
 				kmap.seek(i*H2_SIZE,XS_BEG);
 				kmap.read(p,H2_SIZE);
-				}
-			else {
+			} else {
 				fmap.seek(st_table[i],XS_BEG);
 				fmap.read(inbuf,sz_table[i]);
 				ExpandBuffer(inbuf,p);
-				}
+			}
 
 //ZMOD 1.18 DYNAMIC WATER (there is one more in upper)
 //ZMOD 1.20 fix
@@ -1518,12 +1452,13 @@ if (NetworkON && zMod_flood_level_delta!=0) {
 	} while(i != max);
 }
 
-void vrtMap::delink(int up,int down)
+void vrtMap::delink(int up, int down)
 {
 	static int keeped = 0;
 	if(MAP_POWER_Y <= 11 && !RAM16) return;
 	up = YCYCL(up);
 	down = YCYCL(down);
+	// std::cout<<"vrtMap::delink up:"<<up<<" down:"<<down<<std::endl;
 
 	int max = YCYCL(down + 1);
 	int i = up;
@@ -1781,152 +1716,7 @@ void LoadVPR(int ind)
 }
 #endif
 
-#ifdef WITH_OPENGL
-void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int yside)
-{
-	int xsize = 2*xside;
-	int ysize = 2*yside;
-	
-	cx = XCYCL(cx);
-	cy = YCYCL(cy);
-	
-	int YSrcSize = ysize*XSrcSize/xsize;
-	
-	int k_xscr_x = (XSrcSize << 16)/xsize;
-	int k_yscr_y = (YSrcSize << 16)/ysize;
-	
-	int tfx = (cx << 16) - (XSrcSize << 15) + (1 << 15);
-	int x0 = tfx >> 16;
-	int x1 = x0 + XSrcSize;
-	int tfy = (cy << 16) - (YSrcSize << 15) + (1 << 15);
-	int y0 = tfy >> 16;
-	int y1 = y0 + YSrcSize;
-	
-	request(MIN(y0,y1) - MAX_RADIUS/2,MAX(y0,y1) + MAX_RADIUS/2,MIN(x0,x1) - 4,MAX(x0,x1) + 4);
-	
-	int i,j,fx,fy;
-	
-	unsigned char *data, *data_color, *data2, *data_color2;
-	SDL_Color current_color;
-	unsigned char *p, *p_color, current_level, current_level2, double_level;
-	
-	
-	glClearColor(0,0,0,0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColorMaterial(GL_FRONT,GL_DIFFUSE);  
-	glEnable(GL_COLOR_MATERIAL);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective (60, (float)xside / yside, 0.001, 10000);	
-	gluLookAt(0, -200, -400,
-		  0, 0, 0,
-		  0, -1.0, 0);
-	glPushMatrix();
-	glRotatef(45, 0.0, 0, 1.0);
-	glTranslatef(-xside, -yside, 0);
-	//glRotatef(180, 0.0, 0.0, 1.0);
-	
-	for(i = 0;i < ysize-1;i++) {
-		fx = tfx;
-		fy = tfy;
-		data = lineT[YCYCL(fy >> 16)];
-		data2 = lineT[YCYCL((fy + k_yscr_y) >> 16)]; //На одну строку ниже
-		
-		data_color = lineTcolor[YCYCL(fy >> 16)];
-		data_color2 = lineTcolor[YCYCL((fy + k_yscr_y) >> 16)]; //На одну строку ниже
-		glBegin( GL_TRIANGLE_STRIP );
-		for(j = 0; j < xsize; j++) {
-			p = data + XCYCL(fx >> 16);
-			double_level = *(p + H_SIZE) & DOUBLE_LEVEL;
-			current_level = *p >> 2;
-			if (!double_level) {
-				//std::cout<<(int)current_level<<std::endl;
-				//current_level += 128;
-			} else {
-				fx += k_xscr_x;
-				continue;
-			}
-			p = data2 + XCYCL(fx >> 16);
-			double_level = *(p + H_SIZE) & DOUBLE_LEVEL;
-			current_level2 = *p >> 2;
-			if (!double_level) {
-				//current_level2 += 128;
-			} else {
-				fx += k_xscr_x;
-				continue;
-			}
-			p_color = data_color + XCYCL(fx >> 16);
-			current_color = XGR_Obj.XGR_Palette->colors[*p_color];
-			glColor3ub(current_color.r, current_color.g, current_color.b);
-			glVertex3i( j, i, current_level);
-			
-			p_color = data_color2 + XCYCL(fx >> 16);
-			current_color = XGR_Obj.XGR_Palette->colors[*p_color];
-			glColor3ub(current_color.r, current_color.g, current_color.b);
-			glVertex3i( j, i+1, current_level2);
-			
-			fx += k_xscr_x;
-		}
-		glEnd();
-		tfy += k_yscr_y;
-	}
-	
-	tfx = (cx << 16) - (XSrcSize << 15) + (1 << 15);
-	tfy = (cy << 16) - (YSrcSize << 15) + (1 << 15);
-	//Double layer
-	for(i = 0;i < ysize-1;i++) {
-		fx = tfx;
-		fy = tfy;
-		data = lineT[YCYCL(fy >> 16)];
-		data2 = lineT[YCYCL((fy + k_yscr_y) >> 16)]; //На одну строку ниже
-		
-		data_color = lineTcolor[YCYCL(fy >> 16)];
-		data_color2 = lineTcolor[YCYCL((fy + k_yscr_y) >> 16)]; //На одну строку ниже
-		glBegin( GL_TRIANGLE_STRIP );
-		for(j = 0; j < xsize; j++) {
-			p = data + XCYCL(fx >> 16);
-			double_level = *(p + H_SIZE) & DOUBLE_LEVEL;
-			current_level = *p >> 2;
-			if (double_level) {
-				//std::cout<<(int)current_level<<std::endl;
-				//current_level += 128;
-			} else {
-				fx += k_xscr_x;
-				glEnd();
-				glBegin( GL_TRIANGLE_STRIP );
-				continue;
-			}
-			p = data2 + XCYCL(fx >> 16);
-			double_level = *(p + H_SIZE) & DOUBLE_LEVEL;
-			current_level2 = *p >> 2;
-			if (double_level) {
-				//current_level2 += 128;
-			} else {
-				fx += k_xscr_x;
-				glEnd();
-				glBegin( GL_TRIANGLE_STRIP );
-				continue;
-			}
-			p_color = data_color + XCYCL(fx >> 16);
-			current_color = XGR_Obj.XGR_Palette->colors[*p_color];
-			glColor3ub(current_color.r, current_color.g, current_color.b);
-			glVertex3i( j, i, current_level);
-			
-			p_color = data_color2 + XCYCL(fx >> 16);
-			current_color = XGR_Obj.XGR_Palette->colors[*p_color];
-			glColor3ub(current_color.r, current_color.g, current_color.b);
-			glVertex3i( j, i+1, current_level2);
-			
-			fx += k_xscr_x;
-		}
-		glEnd();
-		tfy += k_yscr_y;
-	}
-	
-	glPopMatrix();
-	
-}
-#else
+
 //Посути первичная и основная функция рендринга
 void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int yside)
 {
@@ -2084,7 +1874,6 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 			}
 #endif
 }
-#endif
 
 static int* LineTable = 0;
 static int LineTableLenght;
@@ -2124,82 +1913,9 @@ void calcLineTable(int curr_lenght,int k_vu,int base_step,int up_step)
 
 void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize)
 {
-#ifdef WITH_OPENGL
-	float d_size = ((float)XSrcSize)/((float)XDstSize*2);
-	float gip_size=sqrt(XDstSize*XDstSize+YDstSize*YDstSize);
-	float kxy = gip_size-(float)YDstSize;
-	//YDstSize += kxy;
-	//XDstSize += kxy;
-	int YSrcSize = (float)YDstSize*2*d_size;
-	XSrcSize = (float)XDstSize*2*d_size;
-	//XSrcSize += kxy*2;
-	//XDstSize=YDstSize=gip_size;
-	//int YSrcSize = (YSrcSize)*XSrcSize/(XSrcSize);
-	
-	std::cout<<XSrcSize<<" "<<XDstSize*2<<" "<<YSrcSize<<" "<<YDstSize*2<<std::endl;
-	
-	
-	int sina = sinTurn = SI[rPI(Turn)];
-	int cosa = cosTurn = CO[rPI(Turn)];
-	int fx,tfx,tfy;
-	tfx = (cx << 16) - (XSrcSize*cosTurn - YSrcSize*sinTurn)/2 + (1 << 15);
-	int vv0 = XSrcSize*sinTurn;
-	int vv1 = YSrcSize*cosTurn;
-	int v0 = vv0 + vv1 >> 1;
-	int v1 = vv0 - vv1 >> 1;
-	int vcy = cy << 16;
-	
-	tfy = vcy - v0 + (1 << 15);
-	int y0 = tfy >> 16;
-	int y1 = (vcy + v0) >> 16;
-	int y2 = (vcy - v1) >> 16;
-	int y3 = (vcy + v1) >> 16;
-	
-	int m_x = MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2, m_y = MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2;
-	request(m_x, m_y,0,0);
-	SDL_Surface *tmp_surf = SDL_CreateRGBSurface(0, XSrcSize, YSrcSize, 8, 0,0, 0, 0);
-	SDL_SetSurfacePalette(tmp_surf, XGR_Obj.XGR_Palette);
-	int x, y;
-	char *dst;
-	uchar *srcline, *src;
-	for (y = -YSrcSize/2; y < YSrcSize/2; ++y) {
-		for (x = -XSrcSize/2; x < XSrcSize/2; ++x) {
-			dst = (char*)tmp_surf->pixels + (y+YSrcSize/2)*XSrcSize + (x+XSrcSize/2);
-			srcline = vMap->lineTcolor[(y+cy) & clip_mask_y];
-			src = &srcline[(x+cx) & clip_mask_x];
-			*dst = *src;
-		}
-	}
-	SDL_Surface *tmp_surf2 = SDL_ConvertSurface(tmp_surf,XGR_Obj.XGR_ScreenSurface_Real->format, 0);
-	GLuint screen_tex=XGR_Obj.SurfToTexture(tmp_surf2);
-	glBindTexture( GL_TEXTURE_2D, screen_tex );
-	
-	glPushMatrix();
-	glTranslatef(XDstSize, YDstSize, 0);
-	glRotatef( ((float)Turn/(float)PI)*180, 0, 0, -1);
-	//std::cout<<XDstSize<<" "<<YDstSize<<std::endl;
-	glBegin( GL_QUADS );
-	//Top-left vertex (corner)
-	glTexCoord2i( 0, 0 );
-	glVertex3f( -XDstSize-kxy, -YDstSize-kxy, 0.0f );
-	//Bottom-left vertex (corner)
-	glTexCoord2i( 1, 0 );
-	glVertex3f( XDstSize+kxy, -YDstSize-kxy, 0.0f );
-	//Bottom-right vertex (corner)
-	glTexCoord2i( 1, 1 );
-	glVertex3f( XDstSize+kxy, YDstSize+kxy, 0.0f );
-	//Top-right vertex (corner)
-	glTexCoord2i( 0, 1 );
-	glVertex3f( -XDstSize-kxy, YDstSize+kxy, 0.0f );
-	glEnd();
-	glPopMatrix();
-	
-	SDL_FreeSurface(tmp_surf);
-	SDL_FreeSurface(tmp_surf2);
-	glDeleteTextures(1, &screen_tex);
-	
-//XGR_Obj.
-#else
+	// std::cout<<"vrtMap::turning XSrcSize:"<<XSrcSize<<" Turn:"<<Turn<<" cx:"<<cx<<" cy:"<<cy<<" xc:"<<xc<<" yc:"<<yc<<" XDstSize:"<<XDstSize<<" YDstSize:"<<YDstSize<<std::endl;
+
+
 //#define SLOW_FLOAT_TURNING
 #define SLOW_INT_TURNING
 //#define OLD_TURNING
@@ -2254,8 +1970,8 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 	tfx = (cx << 16) - (XSrcSize*cosTurn - YSrcSize*sinTurn)/2 + (1 << 15);
 	int vv0 = XSrcSize*sinTurn;
 	int vv1 = YSrcSize*cosTurn;
-	int v0 = vv0 + vv1 >> 1;
-	int v1 = vv0 - vv1 >> 1;
+	int v0 = (vv0 + vv1) >> 1;
+	int v1 = (vv0 - vv1) >> 1;
 	int vcy = cy << 16;
 	
 	tfy = vcy - v0 + (1 << 15);
@@ -2305,7 +2021,7 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 			}
 		}
 	}
-#endif	
+#endif
 #if defined OLD_TURNING
 	char* vp = (char*)XGR_VIDEOBUF + (yc - YDstSize)*XGR_MAXX + (xc - XDstSize);
 	char* vpp;
@@ -2593,7 +2309,6 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 			}
 		}
 #endif
-#endif //WITH_OPENGL
 }
 
 #ifndef _SURMAP_

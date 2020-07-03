@@ -2516,7 +2516,7 @@ void TntCreature::NetDestroy(int fl)
 
 		TouchTime = 0;
 		Time = 0;
-		NetTime = NetGlobalTime + DestroyDelay*256 / 15;
+		NetTime = NetGlobalTime + (DestroyDelay*256 / 15)*1000;
 		if(ActD.Active)
 			SOUND_BARREL_DESTROY(getDistX(ActD.Active->R_curr.x,R_curr.x));
 	

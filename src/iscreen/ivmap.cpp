@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../lang.h"
 
 #define LOWLEVEL_OUTPUT
 //#define SAVE_ABILITY
@@ -12,9 +13,6 @@
 
 #include <iostream>
 
-#define YCYCL(y)	((y) & iclip_mask_y)
-
-
 /* ----------------------------- EXTERN SECTION ---------------------------- */
 extern int* SI;
 extern int* CO;
@@ -22,7 +20,7 @@ extern unsigned storeRNDVAL,storerealRNDVAL;
 extern int RestoreLog,CGenLog,MobilityLog,InitLog,SSSLog,ROLog,EncodeLog,DirectLog;
 extern char* aci_ivMapName;
 extern int actIntLog;
-extern int iRussian;
+
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
 void iWORLD_colcalc(int y0,int y1);
 void iLINE_render(int y);
@@ -49,7 +47,7 @@ static uchar iENDCOLOR[TERRAIN_MAX];
 
 static uint iMAP_POWER_Y;
 static uint imap_size_y;
-static uint iclip_mask_y;
+uint iclip_mask_y;
 
 static uint iV_POWER;
 static uint iV_SIZE;
@@ -98,10 +96,6 @@ void iRenderPrepare(void)
 		}
 }
 
-int iYCYCL(int y) {
-	return YCYCL(y);
-}
-
 void iYSetup(void)
 {
 	imap_size_y = 1 << iMAP_POWER_Y;
@@ -114,7 +108,7 @@ void ivMapPrepare(void)
 {
 	if(!ivMap) ivMap = new ivrtMap;
 	if(!actIntLog){
-		if(!iRussian)
+		if(lang() != RUSSIAN)
 			ivMap -> load("resource/iscreen/mainmenu.ini");
 		else
 			ivMap -> load("resource/iscreen/mainmenu2.ini");

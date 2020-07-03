@@ -345,12 +345,6 @@ int iAbortGameMode = 1;
 int iMouseLPressFlag = 0;
 int iMouseRPressFlag = 0;
 
-#ifdef RUSSIAN_VERSION
-int iRussian = 1;
-#else
-int iRussian = 0;
-#endif
-
 int iSlotNumber = 0;
 int iCDTrackLog = 0;
 
@@ -469,14 +463,14 @@ void iInit(void)
 
 #ifdef _BINARY_SCRIPT_
 	if(!iFirstInit){
-		if(iRussian)
+		if(lang() == RUSSIAN)
 			ParseScript("resource/iscreen/oftr2.scb");
 		else
 			ParseScript("resource/iscreen/oftr.scb");
 	}
 #else
 	if(!iFirstInit){
-		if(iRussian)
+		if(lang() == RUSSIAN)
 			ParseScript("iscreen/oftr2.scr","resource/iscreen/oftr2.scb");
 		else
 			ParseScript("iscreen/oftr.scr","resource/iscreen/oftr.scb");
@@ -614,22 +608,16 @@ void iQuantFirst(void)
 		RegisterValues();
 		iPrepareOptions();
 #ifndef _ACI_SKIP_MAINMENU_
-		if(iRussian)
-#ifdef _ISCREEN_GERMAN_
-			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
-#else
+		if(lang() == RUSSIAN)
 			iSetOptionValueCHR(iPLAYER_NAME2,"‚ ­ЈҐа");
-#endif
 		else
 			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
 		iSetOptionValueCHR(iPLAYER_PASSWORD,iSTR_DefaultPassword);
-		if(iRussian){
-#ifdef _ISCREEN_GERMAN_
-            iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
+		if(lang() == RUSSIAN) {
+            iSetOptionValueCHR(iHOST_NAME, "vangers.pp.ru");
+        } else if (lang() == GERMAN) {
 //			iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.de");
-#else
             iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
-#endif
 		}
 		else
             iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
@@ -1138,39 +1126,46 @@ iScreenEventCommand* iCreateEventCommand(iScreenEventCommand* tpl)
 	return p;
 }
 
-void iInitText(iScreenObject* obj,char* text,int text_len,int font,int space,int null_level)
+void iInitText(iScreenObject* obj, char* text, int text_len, int font, int space, int null_level)
 {
-	int i,y = 0,t_sz;
+	int i, y = 0, t_sz;
 	char* buf;
 	iStringElement* p;
 	buf = new char[text_len];
-	memcpy(buf,text,text_len);
+	memcpy(buf, text, text_len);
 
-	for(i = 0; i < text_len; i ++){
-		if(buf[i] == '\r' || buf[i] == '\n') buf[i] = 0;
-	}
-	i = 0;
-	while(i < text_len){
-		while(!buf[i]) i ++;
-		if(i < text_len){
-			p = new iStringElement;
-			t_sz = strlen(buf + i) + 1;
-			if(t_sz){
-				p -> string = new char[t_sz];
-				strcpy(p -> string,buf + i);
-				p -> flags |= EL_TEXT_STRING;
-
-				p -> font = font;
-				p -> null_level = null_level;
-				p -> space = space;
-
-				p -> lY = y;
-				y += HFntTable[p -> font] -> SizeY + p -> space;
-				obj -> add_element((iListElement*)p);
-			}
-			while(buf[i]) i ++;
+	for(i = 0; i < text_len; i ++) {
+		if(buf[i] == '\r' || buf[i] == '\n') {
+			buf[i] = 0;
 		}
 	}
+	i = 0;
+	while(i < text_len) {
+		while(!buf[i]) {
+			i++;
+		}
+		if(i < text_len) {
+			p = new iStringElement;
+			t_sz = strlen(buf + i) + 1;
+			if(t_sz) {
+				p->string = new char[t_sz];
+				strcpy(p->string, buf + i);
+				p->flags |= EL_TEXT_STRING;
+
+				p->font = font;
+				p->null_level = null_level;
+				p->space = space;
+
+				p->lY = y;
+				y += HFntTable[p->font]->SizeY + p->space;
+				obj->add_element((iListElement*)p);
+			}
+			while(buf[i]) {
+				i++;
+			}
+		}
+	}
+	delete[] buf;
 }
 
 void iInitS_Text(iScreenObject* obj,char* text,int text_len,int font,int space,int null_level)
@@ -1499,7 +1494,7 @@ void aciSwapMatrices(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1600,7 +1595,7 @@ void aciCancelMatrix(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1694,7 +1689,7 @@ void aciShowScMatrix(void)
 	for(i = 0; i < num2; i ++){
 		aScrDisp -> curLocData -> MatrixShutters2[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 #endif
 
 	if(v_flag)
@@ -1854,7 +1849,7 @@ void aciOpenGate(void)
 	for(i = 0; i < max_timer; i ++){
 		aScrDisp -> curLocData -> GateShutters[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 
 	XGR_MouseShow();
 	iKeyClear();
@@ -1981,7 +1976,7 @@ void aciCloseGate(void)
 	for(i = 0; i < max_timer; i ++){
 		aScrDisp -> curLocData -> GateShutters[i] -> freeData();
 	}
-	delete fon_buf;
+	delete[] fon_buf;
 
 	_iRESTORE_OFFS_;
 }
@@ -2296,7 +2291,7 @@ void iHandleExtEvent(int code,int data)
 				iEvLineID = 4;
 			}
 //#ifdef ZMOD_BETA
-//			NetRnd.Init(my_server_data.InitialRND);
+			NetRnd.Init(my_server_data.InitialRND);
 //#endif
 			break;
 		case iEXT_CHECK_END_FLAG:
@@ -2348,7 +2343,7 @@ void iHandleExtEvent(int code,int data)
 				iEvLineID = 4;
 			}
 //#ifdef ZMOD_BETA
-//			NetRnd.Init(my_server_data.InitialRND);
+			NetRnd.Init(my_server_data.InitialRND);
 //#endif
 			break;
 		case iEXT_CHOOSE_PARAMS_SCREEN:
@@ -2738,7 +2733,7 @@ void iCreateServer(void)
 
 void iInitStrings(void)
 {
-	if(iRussian){
+	if(lang() == RUSSIAN){
 		iSTR_WORLD_NONE_CHAR = iSTR_WORLD_NONE_CHAR2;
 		iSTR_WORLD_FOSTRAL_CHAR = iSTR_WORLD_FOSTRAL_CHAR2;
 		iSTR_WORLD_GLORX_CHAR = iSTR_WORLD_GLORX_CHAR2;

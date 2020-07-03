@@ -11,10 +11,8 @@
 #ifndef __XGRAPH_H__
 #define __XGRAPH_H__
 
-#ifdef WITH_OPENGL
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
+#include "xglobal.h"
+
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
 #define XGR_64KR(c)		(((c) >> XGR_SHIFT_R) & XGR_COLOR_MASK_R)
@@ -77,18 +75,26 @@ struct XGR_Font
 #define XGR_CLIP_PUTSPR 	0x00
 #define XGR_CLIP_ALL		0x01
 
-struct XGR_Pal64K
-{
+struct XGR_Pal64K {
 	int ID;
 
 	unsigned* data;
 	void prepare(void* p);
 
-	unsigned operator[](int ind) const { return data[ind]; }
-	unsigned& operator[](int ind){ return data[ind]; }
+	unsigned operator[](int ind) const {
+		return data[ind];
+	}
+	unsigned& operator[](int ind) {
+		return data[ind];
+	}
 
-	XGR_Pal64K(void){ ID = 0; data = new unsigned[256]; }
-	~XGR_Pal64K(void){ delete data; }
+	XGR_Pal64K(void) {
+		ID = 0;
+		data = new unsigned[256];
+	}
+	~XGR_Pal64K(void) {
+		delete[] data;
+	}
 };
 
 struct XGR_Screen
@@ -128,10 +134,6 @@ struct XGR_Screen
 	int yStrOffs;
 	int* yOffsTable;
 
-#ifdef WITH_OPENGL
-	SDL_Surface *XGR_ScreenSurface_Real;
-	GLuint SurfToTexture(SDL_Surface *surf);
-#endif	
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
 	void get_clip(int& left,int& top,int& right,int& bottom);

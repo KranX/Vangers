@@ -2,7 +2,11 @@
 
 ![Vangers](http://cdn.akamai.steamstatic.com/steam/apps/264080/header.jpg?t=1447359431)
 
-[![Build Status](https://travis-ci.org/KranX/Vangers.svg?branch=master)](https://travis-ci.org/KranX/Vangers)
+![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Linux%20Build/badge.svg)
+![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Windows%2064bit%20Build/badge.svg)
+![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Windows%2032bit%20Build/badge.svg)
+![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20MacOS%20Build/badge.svg)
+[![Join the chat at https://t.me/vangers](https://patrolavia.github.io/telegram-badge/chat.svg)](https://t.me/vangers)
 
 
 Video game that combines elements of the racing and role-playing genres.
@@ -14,8 +18,6 @@ The necessary resources for the game (maps, sounds, textures, etc.) you can take
 http://store.steampowered.com/app/264080
 
 http://www.gog.com/game/vangers
-
-Developers chat: https://t.me/vangers
 
 ## Required libraries ##
 

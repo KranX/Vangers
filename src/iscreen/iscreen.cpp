@@ -29,7 +29,7 @@ extern int actIntLog;
 extern actIntDispatcher* aScrDisp;
 extern unsigned char* aciCurColorScheme;
 
-extern int iRussian;
+
 extern char* AVInotFound;
 
 extern int iFrameFlag;
@@ -2218,7 +2218,7 @@ void iScreen::CheckScanCode(int sc)
 			if(!mouse_sc || obj -> CheckXY(x,y)){
 				p = (iScreenEvent*)obj -> EventList -> last;
 				while(p){
-					if((!(obj -> flags & OBJ_LOCKED) && !(p -> flags & EV_IF_LOCKED)) || ((obj -> flags & OBJ_LOCKED) && (p -> flags & EV_IF_LOCKED))){
+					if (bool(obj->flags & OBJ_LOCKED) == bool(p->flags & EV_IF_LOCKED)) {
 						cd = p -> codes -> last;
 						while(cd){
 							if(((iScanCode*)cd) -> code == sc && (!(p -> flags & EV_IF_SELECTED) || obj -> flags & OBJ_SELECTED))
@@ -3518,11 +3518,11 @@ void iScreenDispatcher::input_string_quant(void)
 					default:
 						//NEED rewrite
 						/*if(!(k & iJOYSTICK_MASK))
-							key_name = iGetKeyNameText(k,iRussian);
+							key_name = iGetKeyNameText(k,lang());
 						else
-							key_name = iGetJoyBtnNameText(k,iRussian);
+							key_name = iGetJoyBtnNameText(k,lang());
 						*/
-						key_name = iGetKeyNameText(k,iRussian);
+						key_name = iGetKeyNameText(k,lang());
 						if(flags & SD_INPUT_STRING && key_name){
 							if(!(ActiveEl -> flags & EL_JOYSTICK_KEY) || (k & iJOYSTICK_MASK)){
 								strcpy((char*)ptr,key_name);
@@ -4109,7 +4109,7 @@ void iScreenDispatcher::next_text(void)
 	int id = 0;
 
 	if(curText) id = curText -> ID + 1;
-	if(!iRussian){
+	if(lang() != RUSSIAN){
 		if(!id || id > iTEXT_ENG_MAX)
 			id = iTEXT_ENG1_ID;
 	}
@@ -4127,7 +4127,7 @@ void iScreenDispatcher::prev_text(void)
 	int id = 0;
 
 	if(curText) id = curText -> ID - 1;
-	if(!iRussian){
+	if(lang() != RUSSIAN){
 		if(id <= 0)
 			return;
 	}
@@ -4167,7 +4167,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 
 				end_code = (mode) ? iTEXT_END_EVENT_CODE1 : iTEXT_END_EVENT_CODE0;
 				next_code = (mode) ? iTEXT_NEXT_EVENT_CODE1 : iTEXT_NEXT_EVENT_CODE0;
-				if(!iRussian){
+				if(lang() != RUSSIAN){
 					if(id > iTEXT_ENG_MAX){
 						key_trap(end_code);
 					}
@@ -4227,7 +4227,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 				ActiveEv = NULL;
 
 				prev_code = (mode) ? iTEXT_PREV_EVENT_CODE1 : iTEXT_PREV_EVENT_CODE0;
-				if((!iRussian && id > 0) || id > iTEXT_RUS1_ID - 1){
+				if((lang() != RUSSIAN && id > 0) || id > iTEXT_RUS1_ID - 1){
 					prev_text();
 					if(title_obj){
 						strcpy(title_obj -> string,curText -> objName);

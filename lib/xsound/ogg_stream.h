@@ -11,8 +11,6 @@
 #include <vorbis/vorbisenc.h>
 #include <vorbis/vorbisfile.h>
 
-
-
 namespace clunk {
 	class Sample;
 	class Buffer;

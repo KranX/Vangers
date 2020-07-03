@@ -87,7 +87,6 @@ XBuffer& XBuffer::operator< (const char* v)
 
 XBuffer& XBuffer::operator> (char* v) 
 { 
-	//std::cout<<"DD:"<<strlen(buf + offset) + 1<<std::endl;
 	if(v) 
 		read(v, strlen(buf + offset) + 1); 
 	return *this; 

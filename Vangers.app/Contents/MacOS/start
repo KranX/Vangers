@@ -1,0 +1,4 @@
+#!/bin/bash
+cd "${0%/*}"
+cd ../../../../data
+../bin/Vangers.app/Contents/MacOS/Vangers

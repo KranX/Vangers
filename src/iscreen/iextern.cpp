@@ -130,7 +130,7 @@ extern iScreenDispatcher* iScrDisp;
 extern int aci_SecondMatrixID;
 extern int aciCurMechosID;
 
-extern int iRussian;
+
 extern int iCurHall;
 
 extern int actIntLog;
@@ -363,7 +363,7 @@ iScreen* create_screen(void)
 
 	iScreen* p = iCreateScreen("ExtScreen01");
 
-/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iScreenEvent ------------------ */
+/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iScreenEvent ------------------ */
 	ev = iCreateScreenEvent();
 	ev -> time = 7;
 
@@ -375,7 +375,7 @@ iScreen* create_screen(void)
 	ev -> add_command(ec);
 
 	ec = iCreateEventCommand();
-	ec -> EvType = EV_RISE_SCREEN;		// ’ЁЇл Є®¬ ­¤ - enum EventTypes ў ISCREEN.H
+	ec -> EvType = EV_RISE_SCREEN;		// ’ЁЇл Є®¬ ­¤ - enum EventTypes ў ISCREEN.H
 	ec -> time = 3;
 	ec -> start_time = 4;
 
@@ -384,7 +384,7 @@ iScreen* create_screen(void)
 	ec = iCreateEventCommand();
 	ec -> EvType = EV_SCREEN_JUMP;
 	ec -> init_objID("Main Screen");
-	ec -> objType = I_SCREEN;		// ’ЁЇ ®ЎкҐЄв , б Є®в®ал¬ а Ў®в Ґв Є®¬ ­¤ :
+	ec -> objType = I_SCREEN;		// ’ЁЇ ®ЎкҐЄв , б Є®в®ал¬ а Ў®в Ґв Є®¬ ­¤ :
 						// enum EvObjTypes ў ISCREEN.H
 	ec -> start_time = 3;
 
@@ -397,7 +397,7 @@ iScreen* create_screen(void)
 	p -> add_event((iListElement*)ev);
 /* -------------------------------------------------------------------------- */
 
-/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iScreenObject ----------------- */
+/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iScreenObject ----------------- */
 	obj = iCreateScreenObject("Obj00");
 	obj -> align_x = ALIGN_R;		// ‘¬. enum AlignTypes ў ISCREEN.H
 	obj -> align_x_offs = 30;
@@ -405,7 +405,7 @@ iScreen* create_screen(void)
 
 	// ---------- iBitmapElement (begin) ----------
 	iBitmapElement* bt = (iBitmapElement*)iCreateScreenElement(I_BITMAP_ELEM);	// ’ЁЇл н«Ґ¬Ґ­в®ў - enum iElementTypes ў ISCREEN.H
-	bt -> init_name("bitmap/coin.bmp");    // €¬п BMP,§ ¤ ­ЁҐ Ё¬Ґ­Ё н«Ґ¬Ґ­в  - init_id(char* p)
+	bt -> init_name("bitmap/coin.bmp");    // €¬п BMP,§ ¤ ­ЁҐ Ё¬Ґ­Ё н«Ґ¬Ґ­в  - init_id(char* p)
 
 	bt -> align_x = ALIGN_CENTER;
 	bt -> align_y = ALIGN_CENTER;
@@ -448,14 +448,14 @@ iScreen* create_screen(void)
 
 	p -> add_object(obj);
 
-/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iTriggerObject ----------------- */
+/* ----------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп iTriggerObject ----------------- */
 	iTriggerObject* trg = iCreateTriggerObject("Test trigger");
 	trg -> align_x = ALIGN_L;
 	trg -> align_x_offs = 30;
 
-	trg -> PosY = 250;		// ‡ ¤ ­ЁҐ Є®®а¤Ё­ вл ®ЎкҐЄв  ­ Їап¬го,
-					// Ґб«Ё гбв ­®ўЁвм ҐйҐ Ё align_y, в® Є®®а¤Ё­ в 
-					// Ё§¬Ґ­Ёвбп Ї®б«Ґ ўл§®ў  init() ў б®®вўҐвбвўЁЁ б align_y
+	trg -> PosY = 250;		// ‡ ¤ ­ЁҐ Є®®а¤Ё­ вл ®ЎкҐЄв  ­ Їап¬го,
+					// Ґб«Ё гбв ­®ўЁвм ҐйҐ Ё align_y, в® Є®®а¤Ё­ в 
+					// Ё§¬Ґ­Ёвбп Ї®б«Ґ ўл§®ў  init() ў б®®вўҐвбвўЁЁ б align_y
 	trg -> num_state = 3;
 	trg -> alloc_state();
 
@@ -514,7 +514,7 @@ iScreen* create_screen(void)
 	p -> add_object(trg);
 /* -------------------------------------------------------------------------- */
 
-/* ----- ‘®§¤ ­ЁҐ б¬ бив ЎЁа®ў ­­®© ®Ў« бвЁ (®ЎкҐЄв  б iTerrainElement) ----- */
+/* ----- ‘®§¤ ­ЁҐ б¬ бив ЎЁа®ў ­­®© ®Ў« бвЁ (®ЎкҐЄв  б iTerrainElement) ----- */
 
 	obj = iCreateScreenObject("TERRAIN_OBJECT");
 	obj -> PosY = 150;
@@ -536,7 +536,7 @@ iScreen* create_screen(void)
 	p -> add_terr_object(obj);		// !!!
 /* -------------------------------------------------------------------------- */
 
-/* ------------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп бЄа®««Ґа  ------------------- */
+/* ------------------- ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп бЄа®««Ґа  ------------------- */
 
 	obj = iCreateScreenObject("Scroller object");
 
@@ -544,7 +544,7 @@ iScreen* create_screen(void)
 	obj -> align_x = ALIGN_L;
 	obj -> align_x_offs = 30;
 	// ---------- iScrollerElement (begin) ----------
-	iScrollerElement* scl = (iScrollerElement*)iCreateScreenElement(I_SCROLLER_ELEM,"Test scroller");       // ‡¤Ґбм Ё¬  н«Ґ¬Ґ­в  § ¤ Ґвбп, в.Є. ­  ­ҐЈ®
+	iScrollerElement* scl = (iScrollerElement*)iCreateScreenElement(I_SCROLLER_ELEM,"Test scroller");       // ‡¤Ґбм Ё¬  н«Ґ¬Ґ­в  § ¤ Ґвбп, в.Є. ­  ­ҐЈ®
 														// Ўг¤гв ббл«ЄЁ Ё§ б®ЎлвЁ©
 	scl -> init_name("bitmap/scroller.bmp");
 	scl -> bmp_null_level = 110;
@@ -578,7 +578,7 @@ iScreen* create_screen(void)
 
 /* -------------------------------------------------------------------------- */
 
-/* ------------------ ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп AVI ®ЎкҐЄв  ------------------ */
+/* ------------------ ‘®§¤ ­ЁҐ Ё Ё­ЁжЁ «Ё§ жЁп AVI ®ЎкҐЄв  ------------------ */
 
 	obj = iCreateScreenObject("AVI object");
 	obj -> align_x = obj -> align_y = ALIGN_CENTER;
@@ -1148,12 +1148,12 @@ void iInitControlObjects(void)
 				key = iGetControlCode(i, j);
 				//NEED Full Rewrite
 				/*if(!(key & iJOYSTICK_MASK)){
-					str = iGetKeyNameText(key,iRussian);
+					str = iGetKeyNameText(key,lang());
 				}
 				else {
-					str = iGetJoyBtnNameText(key,iRussian);
+					str = iGetJoyBtnNameText(key,lang());
 				}*/
-				str = iGetKeyNameText(key, iRussian);
+				str = iGetKeyNameText(key, lang());
 				
 				if (str) {
 					if(strcasecmp(iControlsStr[index]->string,str)) {
@@ -1331,7 +1331,7 @@ iMultiGameData::~iMultiGameData(void)
 	if(NumParams){
 		for(i = 0; i < NumParams; i ++)
 			delete pData[i];
-		delete pData;
+		delete[] pData;
 	}
 }
 
@@ -2412,7 +2412,7 @@ const char* get_joystick_hat_name(int key) {
 	return "jhat_unknow";
 }
 
-const char* iGetKeyNameText(int vkey,int lang)
+const char* iGetKeyNameText(int vkey, Language lang)
 {
 	//std::cout<<"iGetKeyNameText:"<<vkey<<" lang:"<<lang<<std::endl;
 	/*char* ret = NULL;
@@ -2423,7 +2423,7 @@ const char* iGetKeyNameText(int vkey,int lang)
 		ret = iKeyNamesSDL[vkey-256];
 	return ret;*/
 	if (vkey == 0) {
-		if (lang) {
+		if (lang == RUSSIAN) {
 			return STR_NONE2;
 		} else {
 			return STR_NONE1;
@@ -2445,20 +2445,24 @@ const char* iGetKeyNameText(int vkey,int lang)
 	}
 }
 
-const char* iGetJoyBtnNameText(int vkey,int lang)
+const char* iGetJoyBtnNameText(int vkey, Language lang)
 {
 	const char* ret;
 	if(vkey & VK_BUTTON){
-		if(vkey >= VK_BUTTON_1 && vkey <= VK_BUTTON_32){
-			ret = (lang) ? iJoystickButtons2[vkey - VK_BUTTON_1] : iJoystickButtons1[vkey - VK_BUTTON_1];
+		if(vkey >= VK_BUTTON_1 && vkey <= VK_BUTTON_32) {
+			ret = (lang == RUSSIAN)
+				? iJoystickButtons2[vkey - VK_BUTTON_1]
+				: iJoystickButtons1[vkey - VK_BUTTON_1];
 			return ret;
 		}
 		else
 			return NULL; //WARNING NEED VIEW!!!
 	}
 	if(vkey & VK_STICK_SWITCH){
-		if(vkey >= VK_STICK_SWITCH_1 && vkey <= VK_STICK_SWITCH_9){
-			ret = (lang) ? iJoystickStickSwitch2[vkey - VK_STICK_SWITCH_1] : iJoystickStickSwitch2[vkey - VK_STICK_SWITCH_1];
+		if(vkey >= VK_STICK_SWITCH_1 && vkey <= VK_STICK_SWITCH_9) {
+			ret = (lang == RUSSIAN)
+				? iJoystickStickSwitch2[vkey - VK_STICK_SWITCH_1]
+				: iJoystickStickSwitch1[vkey - VK_STICK_SWITCH_1];
 			return ret;
 		}
 		else

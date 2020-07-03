@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
-#include "../lib/xtool/xglobal.h"
+#include "xglobal.h"
 #include "xjoystick.h"
 
 SDL_GameController *ctrl = NULL;

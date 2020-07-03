@@ -2,6 +2,7 @@
 #include "zmod_client.h"
 
 #include "global.h"
+#include "lang.h"
 
 
 #define SCREENSHOT
@@ -18,7 +19,7 @@
 #undef SHOW_LOGOS
 #endif
 
-#include "../lib/xsound/_xsound.h"
+#include "_xsound.h"
 
 #include "runtime.h"
 
@@ -71,6 +72,10 @@
 #include "palette.h"
 #include "sound/hsound.h"
 
+#if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+#include <locale.h>
+#endif
+
 
 #ifndef DBGCHECK
 #define DBGCHECK
@@ -83,7 +88,6 @@
 #else
 #define MEMSTAT(a)
 #endif
-
 
 // !!! The same params are in the mechos.cpp
 #define SLOPE_MAX	Pi/6
@@ -121,8 +125,7 @@ extern actIntDispatcher* aScrDisp;
 #endif
 
 extern int NumHumanModel;
-extern int dgRUSSIAN;
-extern int iRussian;
+
 extern int EffectInUsePriory,EffectInUse;
 
 extern bool XGR_FULL_SCREEN;
@@ -312,15 +315,9 @@ int aciCompleteGameFlag = 0;
 int ShowImageMouseFlag = 0;
 int ShowImageKeyFlag = 0;
 
-#if defined(RUSSIAN_VERSION) && !defined(GERMAN_VERSION)
-const char* ErrorVideoMss    = "";
-const char* AVInotFound      = "";
-const char* AVInotFoundMSS   = "";
-#else
 const char* ErrorVideoMss = "Error video initialization";
 const char* AVInotFound   = "Error video initialization";
 const char* AVInotFoundMSS = "Please ensure that the VANGERS CD-ROM is in the drive!";
-#endif
 
 const char* nVER = "Patch 4.20";
 
@@ -370,139 +367,138 @@ void showModal(char* fname, float reelW, float reelH, float screenW, float scree
 
 
 
-int xtInitApplication(void)
-{
-	XGraphWndID = "VANGERS";
-	char* tmp;
+int xtInitApplication(void) {
+    XGraphWndID = "VANGERS";
+    char *tmp;
 
 #ifdef _DEMO_
-	std::cout<<"\""<<XGraphWndID<<": One For The Road\" Cover Demo by K-D Lab (SDL Version)\n";
+    std::cout<<"\""<<XGraphWndID<<": One For The Road\" Cover Demo by K-D Lab (SDL Version)\n";
 #else
-#ifdef RUSSIAN_VERSION
-	std::cout<<"\""<<XGraphWndID<<"\" by K-D Lab (SDL Version)\n";
-#ifdef GERMAN_VERSION
-	std::cout<<"Release (DE\n";
-#else
-	std::cout<<"Release (RUS)\n";
-#endif
-#else
-	std::cout<<"\""<<XGraphWndID<<": One For The Road\" by K-D Lab (SDL Version)\n";
-	std::cout<<"Release (ENG)\n";
-#endif
+    if (lang() == GERMAN) {
+        std::cout << "\"" << XGraphWndID << "\" by K-D Lab (SDL Version)\n";
+        std::cout << "Release (DE)\n";
+    } else if (lang() == RUSSIAN) {
+        std::cout << "\"" << XGraphWndID << "\" by K-D Lab (SDL Version)\n";
+        std::cout << "Release (RUS)\n";
+    } else {
+        std::cout << "\"" << XGraphWndID << ": One For The Road\" by K-D Lab (SDL Version)\n";
+        std::cout << "Release (ENG)\n";
+    }
 #ifdef BETA_TESTING
-	std::cout<<nVER<<"\n";
+    std::cout<<nVER<<"\n";
 #endif
 #endif
 
-	_MEM_STATISTIC_("BEGIN WORK WITH MEMORY -> ");
+    _MEM_STATISTIC_("BEGIN WORK WITH MEMORY -> ");
 
 #ifdef MEMORY_STATISTICS
-	memstatInit();
+    memstatInit();
 #endif
 
 //zmod
 #ifdef _ZMOD_DEBUG_
-	ZLog = ZLogOpen();
+    ZLog = ZLogOpen();
 #endif
 
-	//stalkerg:NEED SEE!!!
-	//ComlineAnalyze(__argc,__argv);
+    //stalkerg:NEED SEE!!!
+    //ComlineAnalyze(__argc,__argv);
 
 //	ErrH.SetRestore(restore); #not implement
 //	ErrH.SetFlags(XERR_CTRLBRK);
 
 
-	RNDVAL = 83;
-	realRNDVAL = SDL_GetTicks();
+    RNDVAL = 83;
+    realRNDVAL = SDL_GetTicks();
 
-	costab();
+    costab();
 
-	_MEM_STATISTIC_("COS TAB -> ");
+    _MEM_STATISTIC_("COS TAB -> ");
 
-	preCALC();
+    preCALC();
 
-	_MEM_STATISTIC_("PRE CALC -> ");
+    _MEM_STATISTIC_("PRE CALC -> ");
 
-	ilandPrepare();
+    ilandPrepare();
 
-	_MEM_STATISTIC_("ILANDPREPARE -> ");
+    _MEM_STATISTIC_("ILANDPREPARE -> ");
 
 //	vMapPrepare(mapFName,WorldPrm);
 
-	XStream ffo(roadFNTname,XS_IN);
-	void* fo = new char[ffo.size()];
-	ffo.read(fo,ffo.size());
-	ffo.close();
-	sysfont.init(fo);
+    XStream ffo(roadFNTname, XS_IN);
+    void *fo = new char[ffo.size()];
+    ffo.read(fo, ffo.size());
+    ffo.close();
+    sysfont.init(fo);
 
     //zmod
-    XStream zch_ffo(zchatFNTname,XS_IN);
-    void* zch_fo = new char[zch_ffo.size()];
-    zch_ffo.read(zch_fo,zch_ffo.size());
+    XStream zch_ffo(zchatFNTname, XS_IN);
+    void *zch_fo = new char[zch_ffo.size()];
+    zch_ffo.read(zch_fo, zch_ffo.size());
     zch_ffo.close();
     zchatfont.init(zch_fo);
 
-	palTr = new PaletteTransform;
+    palTr = new PaletteTransform;
 
 #ifdef CDCHECK
-	int getCDdrives(void);
-	int isCDok(int);
-	int d = getCDdrives();
-	int mask = 1;
-	int res = 0;
-	for(int ii = 0;ii < 26;ii++,mask <<= 1)
-		if(d & mask) res += isCDok(ii);
-	if(!res) ErrH.Abort(AVInotFoundMSS);
+    int getCDdrives(void);
+    int isCDok(int);
+    int d = getCDdrives();
+    int mask = 1;
+    int res = 0;
+    for(int ii = 0;ii < 26;ii++,mask <<= 1)
+        if(d & mask) res += isCDok(ii);
+    if(!res) ErrH.Abort(AVInotFoundMSS);
 #endif
 
-	SetupPath();
+    SetupPath();
 
-	_MEM_STATISTIC_("FONT -> ");
+    _MEM_STATISTIC_("FONT -> ");
 
 
-	emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
-	//emode |= XGR_HICOLOR;
-	
+    emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
+    //emode |= XGR_HICOLOR;
 
-	if(!videoMode){
-		actintLowResFlag = 1;
+
+    if (!videoMode) {
+        actintLowResFlag = 1;
 #ifdef ISCREEN
-		videoMode = 2;
+        videoMode = 2;
 #endif
-	}
-	videoMode = 1;
-	float w = 800;
-	float h = 600;
+    }
+    videoMode = 1;
+    float w = 800;
+    float h = 600;
 
-	switch(videoMode){
-		case 1:
-			w = 800;
-			h = 600;
-			break;
-		case 2:
-			w = 1024;
-			h = 768;
-			break;
-		case 3:
-			w = 1280;
-			h = 720;
-	}
-	
-	if(XGR_Init(w,h,emode)) ErrH.Abort(ErrorVideoMss);
+    switch (videoMode) {
+        case 1:
+            w = 800;
+            h = 600;
+            break;
+        case 2:
+            w = 1024;
+            h = 768;
+            break;
+        case 3:
+            w = 1280;
+            h = 720;
+    }
+
+    if (XGR_Init(w, h, emode)) ErrH.Abort(ErrorVideoMss);
+
 
 //WORK	sWinVideo::Init();
 //	::ShowCursor(0);
 
-	//zmod
-	if(!SkipIntro) {
+    //zmod
+    if (!SkipIntro) {
 //		showModal( "resource\\video\\intro\\logo1.avi", 512, 384, w, h );
 //		showModal( "resource\\video\\intro\\logo2.avi", 512, 384, w, h );
 //		showModal( "resource\\video\\intro\\intro.avi", 512, 380, w, h );
-	}
+    }
 
 //WORK	sWinVideo::Done();
 
-	emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
+    emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
 
 /*	switch(videoMode){
 		case 0:
@@ -520,73 +516,73 @@ int xtInitApplication(void)
 	if(XGR_GetVideoLine(1) - XGR_GetVideoLine(0) != XGR_MAXX)
 		ErrH.Abort("Bad maxx",XGR_GetVideoLine(1) - XGR_GetVideoLine(0));
 */
-	XGR_Fill(0);
-	LoadingMessage(1);
+    XGR_Fill(0);
+    LoadingMessage(1);
 
-	_MEM_STATISTIC_("INIT VIDEO -> ");
+    _MEM_STATISTIC_("INIT VIDEO -> ");
 
-	InstallSOUND();
-	LoadResourceSOUND("resource/sound/effects/", 0);
-	SetSoundVolume(256);
+    InstallSOUND();
+    LoadResourceSOUND("resource/sound/effects/", 0);
+    SetSoundVolume(256);
 
-	if(XJoystickInit()){
-		std::cout<<"Joystick found\n";
-		JoystickMode = JOYSTICK_Joystick;
-	} else {
-		std::cout<<"Joystick not found"<<std::endl;
-	}
+    if (XJoystickInit()) {
+        std::cout << "Joystick found\n";
+        JoystickMode = JOYSTICK_Joystick;
+    } else {
+        std::cout << "Joystick not found" << std::endl;
+    }
 
-	//XSocketInit();
+    //XSocketInit();
 #ifdef _DEBUG
-	if(host_name && avaible_servers.talk_to_server(0,host_port,host_name))
-		NetInit(avaible_servers.first());
+    if(host_name && avaible_servers.talk_to_server(0,host_port,host_name))
+        NetInit(avaible_servers.first());
 #endif
 
 
-	_MEM_STATISTIC_("INIT SOUND -> ");
+    _MEM_STATISTIC_("INIT SOUND -> ");
 
-	// Runtime objects init...
+    // Runtime objects init...
 
-	xtCreateRuntimeObjectTable(RTO_MAX_ID);
-	GameQuantRTO* gqObj = new GameQuantRTO;
-	MainMenuRTO* mmObj = new MainMenuRTO;
-	EscaveRTO* eObj = new EscaveRTO;
-	EscaveOutRTO* eoObj = new EscaveOutRTO;
-	FirstEscaveRTO* fObj = new FirstEscaveRTO;
-	FirstEscaveOutRTO* foObj = new FirstEscaveOutRTO;
-	PaletteTransformRTO* pObj = new PaletteTransformRTO;
-	LoadingRTO1* lObj1 = new LoadingRTO1;
-	LoadingRTO2* lObj2 = new LoadingRTO2;
-	LoadingRTO3* lObj3 = new LoadingRTO3;
-	ShowImageRTO* siObj = new ShowImageRTO;
-	ShowAviRTO* saObj = new ShowAviRTO;
+    xtCreateRuntimeObjectTable(RTO_MAX_ID);
+    GameQuantRTO *gqObj = new GameQuantRTO;
+    MainMenuRTO *mmObj = new MainMenuRTO;
+    EscaveRTO *eObj = new EscaveRTO;
+    EscaveOutRTO *eoObj = new EscaveOutRTO;
+    FirstEscaveRTO *fObj = new FirstEscaveRTO;
+    FirstEscaveOutRTO *foObj = new FirstEscaveOutRTO;
+    PaletteTransformRTO *pObj = new PaletteTransformRTO;
+    LoadingRTO1 *lObj1 = new LoadingRTO1;
+    LoadingRTO2 *lObj2 = new LoadingRTO2;
+    LoadingRTO3 *lObj3 = new LoadingRTO3;
+    ShowImageRTO *siObj = new ShowImageRTO;
+    ShowAviRTO *saObj = new ShowAviRTO;
 
 //	  siObj -> SetNumFiles(1);
 //	  siObj -> SetName("resource\\iscreen\\bitmap\\kdlogo.bmp",0);
 //	  siObj -> SetNext(RTO_MAIN_MENU_ID);
 
-#if defined(RUSSIAN_VERSION) && !defined(GERMAN_VERSION)
-	saObj -> SetNumFiles(3);
-	//saObj -> SetName("resource\\video\\intro\\logo1.avi",0);
-	//saObj -> SetName("resource\\video\\intro\\logo2.avi",1);
-	//saObj -> SetName("resource\\video\\intro\\intro.avi",2);
+    if (lang() == RUSSIAN) {
+        saObj->SetNumFiles(3);
+        //saObj -> SetName("resource\\video\\intro\\logo1.avi",0);
+        //saObj -> SetName("resource\\video\\intro\\logo2.avi",1);
+        //saObj -> SetName("resource\\video\\intro\\intro.avi",2);
 
-	//	saObj -> SetFlag(0,AVI_RTO_HICOLOR);
+        //	saObj -> SetFlag(0,AVI_RTO_HICOLOR);
 //	saObj -> SetFlag(1,AVI_RTO_HICOLOR);
 //	saObj -> SetFlag(2,AVI_RTO_HICOLOR);
-#else
-	saObj -> SetNumFiles(4);
-	saObj -> SetName("resource/video/intro/logo0.avi",0);
-	saObj -> SetName("resource/video/intro/logo1.avi",1);
-	saObj -> SetName("resource/video/intro/logo2.avi",2);
-	saObj -> SetName("resource/video/intro/intro.avi",3);
-//znfo commented in zmod
-//	saObj -> SetFlag(0,AVI_RTO_HICOLOR);
-//	saObj -> SetFlag(1,AVI_RTO_HICOLOR);
-//	saObj -> SetFlag(2,AVI_RTO_HICOLOR);
-//	saObj -> SetFlag(3,AVI_RTO_HICOLOR);
-//znfo
-#endif
+    } else {
+        saObj->SetNumFiles(4);
+        saObj->SetName("resource/video/intro/logo0.avi", 0);
+        saObj->SetName("resource/video/intro/logo1.avi", 1);
+        saObj->SetName("resource/video/intro/logo2.avi", 2);
+        saObj->SetName("resource/video/intro/intro.avi", 3);
+    //znfo commented in zmod
+    //	saObj -> SetFlag(0,AVI_RTO_HICOLOR);
+    //	saObj -> SetFlag(1,AVI_RTO_HICOLOR);
+    //	saObj -> SetFlag(2,AVI_RTO_HICOLOR);
+    //	saObj -> SetFlag(3,AVI_RTO_HICOLOR);
+    //znfo
+    }
 	saObj -> SetNext(RTO_MAIN_MENU_ID);
 
 	xtRegisterRuntimeObject(gqObj);
@@ -671,7 +667,11 @@ int xtInitApplication(void)
 	// with important UI in your game.
 	SteamUtils()->SetOverlayNotificationPosition( k_EPositionTopRight );
 #endif
-	
+#if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+	std::cout<<"Set locale. ";
+	char* res = setlocale(LC_NUMERIC, "POSIX");
+	std::cout<<"Result:"<<res<<std::endl;
+#endif
 	if(SkipIntro)
 		return RTO_MAIN_MENU_ID;
 	return RTO_MAIN_MENU_ID;
@@ -1434,8 +1434,7 @@ void ComlineAnalyze(int argc,char** argv)
 					case 'R':
 					case 'r':
 						if(!strcmp(argv[i] + 1,"RUSSIAN") || !strcmp(argv[i] + 1,"russian")){
-							dgRUSSIAN = 1;
-							iRussian = 1;
+						    setLang(RUSSIAN);
 						}
 						break;
 					case '&':
@@ -1587,8 +1586,10 @@ void KeyCenter(SDL_Event *key)
 			ErrH.Exit();
 #endif
 			std::cout<<"road.KeyCenter:"<<key<<std::endl;
-			if(!Pause)
+			if(!Pause) {
 				Pause = 1;
+			}
+				
 //				  GameQuantReturnValue = RTO_LOADING3_ID;
 			break;
 #ifndef ACTINT
@@ -1672,6 +1673,7 @@ void KeyCenter(SDL_Event *key)
 
 iGameMap::iGameMap(int _x,int _y,int _xside,int _yside)
 {
+	std::cout<<"iGameMap::iGameMap"<<std::endl;
 	xside = _xside;
 	yside = _yside;
 	xsize = 2*xside/* + 1*/;
@@ -2558,19 +2560,16 @@ void LoadingMessage(int flush)
 	char* str = getRC();
 	sysfont.draw(8,XGR_MAXY - 35,(unsigned char*)str,255,-1);
 	XBuffer buf;
-#ifdef RUSSIAN_VERSION
-#	ifdef _ISCREEN_GERMAN_
-	if(XGR_MAXX == 800)
-		buf < "(C)1997-2014. Alle Rechte vorbehalten. Release Version 1.3. Gleich geht's weiter...";
-	else
-		buf < "Spiel wird geladen. Gleich geht's weiter...";
-#	else
-	buf < Convert(zSTR_LOADING_800);
-
-#	endif
-#else
-	buf < "(C)1997-2014 All Rights Reserved. Release Version 1.3 Loading. Please wait...";
-#endif
+	if (lang() == RUSSIAN) {
+        buf < Convert(zSTR_LOADING_800_RU);
+	} else if (lang() == GERMAN) {
+        if(XGR_MAXX == 800)
+            buf < "(C)1997-2014. Alle Rechte vorbehalten. Release Version 1.3. Gleich geht's weiter...";
+        else
+            buf < "Spiel wird geladen. Gleich geht's weiter...";
+	} else {
+        buf < "(C)1997-2014 All Rights Reserved. Release Version 1.3 Loading. Please wait...";
+	}
 	int len = MAX(strlen(str),strlen(buf.GetBuf()));
 	sysfont.draw(8,XGR_MAXY - 20,(unsigned char*)(buf.GetBuf()),255,-1);
 	XGR_LineTo(8,XGR_MAXY - 45,len*8 + 5 + 16,2,255);
@@ -2693,11 +2692,7 @@ void SetupPath(void)
 {
 #if defined(BETA_TESTING) || defined(CDCHECK)
 	char* path = getVideoPath();
-#if defined(RUSSIAN_VERSION) && !defined(GERMAN_VERSION)
-	if(!path) ErrH.Abort("");
-#else
 	if(!path) ErrH.Abort("Software is NOT properly installed. Please, reinstall the Game!");
-#endif
 	extern char* iVideoPath;
 	strcat(path,"\\");
 	iVideoPath = path;
@@ -2714,31 +2709,23 @@ char* getRC(void)
 	if(!str) ErrH.Abort("Software is NOT properly registered. Please, address to developers!");
 	return str;
 #else
-		static XBuffer b(128);
-		b.init();
-#ifdef RUSSIAN_VERSION
-		const char* sub[6] = { "The Vandals and the Heroes of the Bouillon of Spawn...",
-					    "The Fitters of the Emmet Cults...",
-					     "The Mechanix of Own Fate...",
-					     "The Hearse-Riders of the Cursed Crossroads...",
-					     "Exodus to Otherworld...",
-					     "One for the Road..."
-					};
-		b < ConvertUTF8("Vangers: ");
-		b < ConvertUTF8(sub[realRND(5)]);
-#else
-		const char* sub[6] = { "The Vandals and the Heroes of the Bouillon of Spawn...",
-					    "The Fitters of the Emmet Cults...",
-					     "The Mechanix of Own Fate...",
-					     "The Hearse-Riders of the Cursed Crossroads...",
-					     "Exodus to Otherworld...",
-					     "One for the Road..."
-					};
-		b < "VANGERS: ";
-		b < sub[realRND(6)];
-#endif
-		return b.GetBuf();
-
+    static XBuffer b(128);
+    b.init();
+    const char* sub[6] = { "The Vandals and the Heroes of the Bouillon of Spawn...",
+                           "The Fitters of the Emmet Cults...",
+                           "The Mechanix of Own Fate...",
+                           "The Hearse-Riders of the Cursed Crossroads...",
+                           "Exodus to Otherworld...",
+                           "One for the Road..."
+    };
+    if (lang() == RUSSIAN) {
+        b < ConvertUTF8("Vangers: ");
+        b < ConvertUTF8(sub[realRND(5)]);
+    } else {
+        b < "VANGERS: ";
+        b < sub[realRND(6)];
+    }
+    return b.GetBuf();
 #endif
 #endif
 }

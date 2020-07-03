@@ -1941,7 +1941,7 @@ void Server::get_games_list(OutputEventBuffer& out_buffer,int client_version)
 			#ifndef RUSSIAN_VERSION
 				 < (g -> data.GameType == VAN_WAR ? "V" : (g -> data.GameType == MECHOSOMA ? "M" : "P"));
 			#else
-				 < (g -> data.GameType == VAN_WAR ? "Ç" : (g -> data.GameType == MECHOSOMA ? "å" : "è"));
+				 < (g -> data.GameType == VAN_WAR ? "ÔøΩ" : (g -> data.GameType == MECHOSOMA ? "ÔøΩ" : "ÔøΩ"));
 			#endif
 			int t = (clock() - g -> birth_time)/1000;
 			int ts = t % 60; t /= 60;

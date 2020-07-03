@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../lang.h"
 
 #include "../zmod_client.h"
 
@@ -3319,27 +3320,30 @@ void camera_impulse(int amplitude_8)
 }
 void camera_quant()
 {
-	int t;
-	camera_x += camera_vx * XTCORE_FRAME_NORMAL;
-	ViewX += (t = round(camera_x));
+	int t, t2;
+	camera_x += camera_vx;
+	ViewX += (t = round(camera_x)) * XTCORE_FRAME_NORMAL;
 	camera_x -= t;
 
-	camera_y += camera_vy * XTCORE_FRAME_NORMAL;
-	ViewY += (t = round(camera_y));
+	camera_y += camera_vy;
+	ViewY += (t = round(camera_y)) * XTCORE_FRAME_NORMAL;
 	camera_y -= t;
 
-	camera_z += camera_vz * XTCORE_FRAME_NORMAL;
-	TurnSecX += (t = round(camera_z));
+	camera_z += camera_vz;
+	TurnSecX += (t = round(camera_z)) * XTCORE_FRAME_NORMAL;
+	if (TurnSecX < MIN_ZOOM) {
+		TurnSecX = MIN_ZOOM;
+	}
 	camera_z -= t;
 
-	camera_s += camera_vs * XTCORE_FRAME_NORMAL;
-	SlopeAngle += (t = round(camera_s));
+	camera_s += camera_vs;
+	SlopeAngle += (t = round(camera_s)) * XTCORE_FRAME_NORMAL;
 	if(SlopeAngle < -SLOPE_MAX)
 		SlopeAngle = -SLOPE_MAX;
 	camera_s -= t;
 
-	camera_t += camera_vt * XTCORE_FRAME_NORMAL;
-	TurnAngle += (t = round(camera_t));
+	camera_t += camera_vt;
+	TurnAngle += (t = round(camera_t)) * XTCORE_FRAME_NORMAL;
 	camera_t -= t;
 
 	calc_view_factors();
@@ -3348,15 +3352,16 @@ void camera_quant()
 void camera_direct(int X,int Y,int zoom,int Turn,int Slope,int num_frames)
 {
 	// Where zoom is between  MIN_ZOOM and MAX_ZOOM
+	double time = (double)num_frames * XTCORE_FRAME_NORMAL;
 	camera_moving_log = num_frames;
-	camera_vx = (double)getDistX(X,ViewX)/num_frames;
-	camera_vy = (double)getDistY(Y,ViewY)/num_frames;
+	camera_vx = (double)getDistX(X, ViewX) / time;
+	camera_vy = (double)getDistY(Y, ViewY) / time;
 
-	camera_vz = (double)((curGMap -> xsize*zoom >> 8) - TurnSecX)/num_frames;
+	camera_vz = (double)((curGMap -> xsize*zoom >> 8) - TurnSecX)/time;
 
-	camera_vs = (double)(-Slope - SlopeAngle)/num_frames;
+	camera_vs = (double)(-Slope - SlopeAngle) / time;
 
-	camera_vt += (double)DistPi(Turn,TurnAngle)/num_frames * XTCORE_FRAME_NORMAL;
+	camera_vt += (double)DistPi(Turn,TurnAngle) / time;
 }
 
 extern int NewWorldX;
@@ -5479,8 +5484,20 @@ void VangerUnit::SensorQuant(void)
 		case EXTERNAL_MODE_PASS_IN:
 			ExternalTime--;
 
-			if(Visibility == VISIBLE && ActD.Active) SOUND_PASSAGE(getDistX(ActD.Active->R_curr.x,R_curr.x));
-			if(ExternalTime & 3) EffD.CreateDeform(ExternalObject->R_curr + Vector(PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),83),1,PASSING_WAVE_PROCESS);
+			if(Visibility == VISIBLE && ActD.Active) {
+				SOUND_PASSAGE(getDistX(ActD.Active->R_curr.x,R_curr.x));
+			}
+			if(ExternalTime & 3) {
+				EffD.CreateDeform(
+					ExternalObject->R_curr + Vector(
+						PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),
+						PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),
+						83
+					),
+					1,
+					PASSING_WAVE_PROCESS
+				);
+			}
 
 			if(!(Status & SOBJ_ACTIVE)){
 				if(ExternalTime <= 0){
@@ -5825,7 +5842,7 @@ void VangerUnit::CreateVangerUnit(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	Go2World();
@@ -6207,7 +6224,7 @@ void ActionDispatcher::PromptInit(int ind)
 	PromptPrevY = Active->R_curr.y;
 	PromptPrevTime = 0;
 };
-extern int iRussian;
+
 
 //Пишем подсказки на экране для миров
 void ActionDispatcher::PromptQuant(void)
@@ -6257,7 +6274,7 @@ void ActionDispatcher::PromptQuant(void)
 									PromptPrevTime = 0;
 									aiMessageQueue.Send(AI_MESSAGE_INCUBATOR_WAY,0,0xff,0);//aiMessageData[AI_MESSAGE_INCUBATOR_WAY].Send(0,0xff,0);
 									if(!GetCompasTarget()){
-										if(iRussian) SelectCompasTarget(rCmpIncubator);
+										if(lang() == RUSSIAN) SelectCompasTarget(rCmpIncubator);
 										else SelectCompasTarget(eCmpIncubator);
 										aciRefreshTargetsMenu();
 									};					
@@ -6291,7 +6308,7 @@ void ActionDispatcher::PromptQuant(void)
 									PromptPrevTime = 0;
 									aiMessageQueue.Send(AI_MESSAGE_PODISH_WAY,0,0xff,0);//aiMessageData[AI_MESSAGE_PODISH_WAY].Send(0,0xff,0);
 									if(!GetCompasTarget()){
-										if(iRussian) SelectCompasTarget(rCmpPodish);
+										if(lang() == RUSSIAN) SelectCompasTarget(rCmpPodish);
 										else SelectCompasTarget(eCmpPodish);
 										aciRefreshTargetsMenu();
 									};
@@ -6305,7 +6322,7 @@ void ActionDispatcher::PromptQuant(void)
 						if(aciWorldLinkExist(WORLD_FOSTRAL,WORLD_GLORX)){
 							aiMessageQueue.Send(AI_MESSAGE_GLORX_WAY,0,0xff,0);//aiMessageData[AI_MESSAGE_GLORX_WAY].Send(0,0xff,0);
 							if(!GetCompasTarget()){
-								if(iRussian) SelectCompasTarget(rCmpPassGlorx);
+								if(lang() == RUSSIAN) SelectCompasTarget(rCmpPassGlorx);
 								else SelectCompasTarget(eCmpPassGlorx);
 								aciRefreshTargetsMenu();
 							};
@@ -6314,7 +6331,7 @@ void ActionDispatcher::PromptQuant(void)
 								if(GamerResult.game_elr_result < 150){
 									aiMessageQueue.Send(AI_MESSAGE_ELR_LOW,0,0xff,0);//aiMessageData[AI_MESSAGE_ELR_LOW].Send(0,0xff,0);
 									if(!GetCompasTarget()){
-										if(iRussian) SelectCompasTarget(rCmpIncubator);
+										if(lang() == RUSSIAN) SelectCompasTarget(rCmpIncubator);
 										else SelectCompasTarget(eCmpIncubator);
 										aciRefreshTargetsMenu();
 									};
@@ -6322,7 +6339,7 @@ void ActionDispatcher::PromptQuant(void)
 									if(GamerResult.game_elr_result < 250){
 										aiMessageQueue.Send(AI_MESSAGE_ELR_HI,0,0xff,0);//aiMessageData[AI_MESSAGE_ELR_HI].Send(0,0xff,0);
 										if(!GetCompasTarget()){
-											if(iRussian) SelectCompasTarget(rCmpIncubator);
+											if(lang() == RUSSIAN) SelectCompasTarget(rCmpIncubator);
 											else SelectCompasTarget(eCmpIncubator);
 											aciRefreshTargetsMenu();
 										};
@@ -7946,7 +7963,7 @@ void aciSendEvent2itmdsp(int code,actintItemData* p,int data)
 			case ACI_SHOW_ITEM_TEXT:
 				if(p->type == ACI_TABUTASK_SUCCESSFUL){
 					RaceTxtBuff.init();
-					if(iRussian){
+					if(lang() == RUSSIAN){
 //GERMAN
 						RaceTxtBuff < uvsGetNameByID(p->data1 & 0xffff,i);
 						RaceTxtBuff < rFirstTabuTaskMessage;
@@ -8371,7 +8388,7 @@ void CreateArtefactTarget(StuffObject* n)
 	};
 
 	if(!p){
-		if(iRussian){
+		if(lang() == RUSSIAN){
 			switch(n->ActIntBuffer.type){
 				case ACI_PROTRACTOR:
 					CompasObj.AddTarget(CMP_OBJECT_ITEM,UnitOrderType(n),NULL,rProtractorCompasTarget);
@@ -8441,7 +8458,7 @@ void CreateTabutaskTarget(void)
 					};
 					if(!n){		
 						RaceTxtBuff.init();
-						if(iRussian) RaceTxtBuff < rTaskCompasTarget <= i;
+						if(lang() == RUSSIAN) RaceTxtBuff < rTaskCompasTarget <= i;
 						else RaceTxtBuff < TaskCompasTarget <= i;
 
 						CompasObj.AddTarget(CMP_OBJECT_VANGER,UnitOrderType(c),NULL,RaceTxtBuff.GetBuf());
@@ -8481,7 +8498,7 @@ void CreatePhantomTarget(void)
 		};
 
 		if(!n){
-			if(iRussian){
+			if(lang() == RUSSIAN){
 				CompasObj.AddTarget(CMP_OBJECT_VECTOR,UnitOrderType(GloryPlaceData[UsedCheckNum].R_curr.x,GloryPlaceData[UsedCheckNum].R_curr.y,GloryPlaceData[UsedCheckNum].R_curr.z),NULL,rCheckPointCompasTarget);
 				SelectCompasTarget(rCheckPointCompasTarget);
 			}else{
@@ -9529,13 +9546,20 @@ void InsectList::Init(void)
 
 	if(CurrentWorld != WORLD_KHOX && CurrentWorld != WORLD_HMOK && CurrentWorld != WORLD_WEEXOW &&  !uvsCurrentWorldUnable){
 		Data = new InsectUnit[MAX_INSECT_UNIT];
-		for(i = 0;i < MAX_INSECT_UNIT;i++){
+		for(i = 0;i < MAX_INSECT_UNIT;i++) {
 			Data[i].Init();
-			Data[i].CreateActionUnit(ModelD.FindModel("Bug"),SOBJ_AUTOMAT,Vector(RND(clip_mask_x),RND(clip_mask_y),-1),0,SET_3D_CHOOSE_LEVEL);
+			Data[i].CreateActionUnit(
+				ModelD.FindModel("Bug"),
+				SOBJ_AUTOMAT, Vector(RND(clip_mask_x), RND(clip_mask_y), -1),
+				0,
+				SET_3D_CHOOSE_LEVEL
+			);
 			Data[i].CreateInsect();
 			ConnectTypeList(&Data[i]);
-		};
-	}else Data = NULL;
+		}
+	}else {
+		Data = nullptr;
+	}
 };
 
 void InsectList::FreeUnit(GeneralObject* p)
@@ -12052,7 +12076,7 @@ void NetStatisticUpdate(int id)
 			switch(id){
 				case NET_STATISTICS_KILL:
 					my_player_body.kills++;
-					d = abs((long)(t - PrevKillTime));
+					d = labs((long)(t - PrevKillTime));
 					if(MinKillTime == 0 || MinKillTime > d) MinKillTime = d;
 					if(MaxKillTime == 0 || MaxKillTime < d) MaxKillTime = d;
 					PrevKillTime = t;
@@ -12061,7 +12085,7 @@ void NetStatisticUpdate(int id)
 					break;
 				case NET_STATISTICS_DEATH:
 					my_player_body.deaths++;
-					d = abs((long)(t - PrevLifeTime));
+					d = labs((long)(t - PrevLifeTime));
 					if(MinLifeTime == 0 || MinLifeTime > d) MinLifeTime = d;
 					if(MaxLifeTime == 0 || MaxLifeTime < d) MaxLifeTime = d;
 					PrevLifeTime = t;
@@ -12080,11 +12104,12 @@ void NetStatisticUpdate(int id)
 					break;
 				case NET_STATISTICS_CHECKPOINT:
 					my_player_body.PassemblossStat.CheckpointLighting = UsedCheckNum;
-					my_player_body.PassemblossStat.MaxTime = abs((long)(t - StartGameTime));
+					my_player_body.PassemblossStat.MaxTime = labs((long)(t - StartGameTime));
 					break;
 				case NET_STATISTICS_END_RACE:
 					my_player_body.PassemblossStat.CheckpointLighting = UsedCheckNum;
-					my_player_body.PassemblossStat.TotalTime = my_player_body.PassemblossStat.MaxTime = abs((long)(t - StartGameTime));					
+					my_player_body.PassemblossStat.TotalTime =
+						my_player_body.PassemblossStat.MaxTime = labs((long)(t - StartGameTime));
 					break;
 			};
 			break;
@@ -12098,7 +12123,7 @@ void NetStatisticUpdate(int id)
 					break;
 				case NET_STATISTICS_CHECKPOINT:
 				case NET_STATISTICS_END_RACE:
-					my_player_body.MechosomaStat.MinTransitTime = abs((long)(t - StartGameTime));
+					my_player_body.MechosomaStat.MinTransitTime = labs((long)(t - StartGameTime));
 					break;
 			};
 			break;
@@ -13964,7 +13989,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	ExternalTime = 0;
 	ExternalLock = 0;
 	ExternalDraw = 1;
-	ExternalObject = ExternalSensor = ExternalSensor = NULL;
+	ExternalObject = ExternalLastSensor = ExternalSensor = NULL;
 	ExternalTime2 = 0;
 	ExternalAngle = 0;
 	
@@ -14047,7 +14072,7 @@ void NetCheckRemovePlayer(PlayerData* p)
 			case MECHOSOMA:
 				if((p->body.MechosomaStat.ItemCount1 + p->body.MechosomaStat.ItemCount2) >= (my_server_data.Mechosoma.ProductQuantity1 + my_server_data.Mechosoma.ProductQuantity2)){
 					RaceTxtBuff < p->name;
-					if(iRussian) RaceTxtBuff < rPlayerWinnerSecondMessage;
+					if(lang() == RUSSIAN) RaceTxtBuff < rPlayerWinnerSecondMessage;
 					else RaceTxtBuff < PlayerWinnerSecondMessage;
 					aiMessageBuffer.align_type = 0;
 					aiMessageBuffer.TimeBuf[0] = 200;
@@ -14057,7 +14082,7 @@ void NetCheckRemovePlayer(PlayerData* p)
 					aiMessageBuffer.TimeBuf[2] = 200;
 					aiMessageBuffer.ColBuf[2] = 143;
 					aiMessageBuffer.NumStr = 3;
-					if(iRussian){
+					if(lang() == RUSSIAN){
 						aiMessageBuffer.add_str(0,(uchar*)(rPlayerWinnerFirstMessage));
 						aiMessageBuffer.add_str(2,(uchar*)(rPlayerWinnerOtherMessage));
 					}else{
@@ -14068,7 +14093,7 @@ void NetCheckRemovePlayer(PlayerData* p)
 					aciSendPrompt(&aiMessageBuffer);
 				}else{
 					RaceTxtBuff < p->name;
-					if(iRussian) RaceTxtBuff < rPlayerFirstDropedMessage;
+					if(lang() == RUSSIAN) RaceTxtBuff < rPlayerFirstDropedMessage;
 					else RaceTxtBuff < PlayerFirstDropedMessage;
 					aiMessageBuffer.align_type = 0;
 					aiMessageBuffer.TimeBuf[0] = 200;
@@ -14077,7 +14102,7 @@ void NetCheckRemovePlayer(PlayerData* p)
 					aiMessageBuffer.ColBuf[1] = 143;
 					aiMessageBuffer.NumStr = 2;
 					aiMessageBuffer.add_str(0,(uchar*)(RaceTxtBuff.GetBuf()));
-					if(iRussian) aiMessageBuffer.add_str(1,(uchar*)(rPlayerSecondDropedMessage));
+					if(lang() == RUSSIAN) aiMessageBuffer.add_str(1,(uchar*)(rPlayerSecondDropedMessage));
 					else aiMessageBuffer.add_str(1,(uchar*)(PlayerSecondDropedMessage));
 					aciSendPrompt(&aiMessageBuffer);
 				};
@@ -14085,7 +14110,7 @@ void NetCheckRemovePlayer(PlayerData* p)
 			case PASSEMBLOSS:
 				if(p->body.PassemblossStat.CheckpointLighting >= my_server_data.Passembloss.CheckpointsNumber){
 					RaceTxtBuff < p->name;
-					if(iRussian) RaceTxtBuff < rPlayerWinnerSecondMessage;
+					if(lang() == RUSSIAN) RaceTxtBuff < rPlayerWinnerSecondMessage;
 					else RaceTxtBuff < PlayerWinnerSecondMessage;
 					aiMessageBuffer.align_type = 0;
 					aiMessageBuffer.TimeBuf[0] = 200;
@@ -14095,7 +14120,7 @@ void NetCheckRemovePlayer(PlayerData* p)
 					aiMessageBuffer.TimeBuf[2] = 200;
 					aiMessageBuffer.ColBuf[2] = 143;
 					aiMessageBuffer.NumStr = 3;					
-					if(iRussian){
+					if(lang() == RUSSIAN){
 						aiMessageBuffer.add_str(0,(uchar*)(rPlayerWinnerFirstMessage));
 						aiMessageBuffer.add_str(2,(uchar*)(rPlayerWinnerOtherMessage));
 					}else{
@@ -14106,7 +14131,7 @@ void NetCheckRemovePlayer(PlayerData* p)
 					aciSendPrompt(&aiMessageBuffer);
 				}else{
 					RaceTxtBuff < p->name;
-					if(iRussian) RaceTxtBuff < rPlayerFirstDropedMessage;
+					if(lang() == RUSSIAN) RaceTxtBuff < rPlayerFirstDropedMessage;
 					else RaceTxtBuff < PlayerFirstDropedMessage;
 					aiMessageBuffer.align_type = 0;
 					aiMessageBuffer.TimeBuf[0] = 200;
@@ -14115,14 +14140,14 @@ void NetCheckRemovePlayer(PlayerData* p)
 					aiMessageBuffer.ColBuf[1] = 143;
 					aiMessageBuffer.NumStr = 2;
 					aiMessageBuffer.add_str(0,(uchar*)(RaceTxtBuff.GetBuf()));
-					if(iRussian) aiMessageBuffer.add_str(1,(uchar*)(rPlayerSecondDropedMessage));
+					if(lang() == RUSSIAN) aiMessageBuffer.add_str(1,(uchar*)(rPlayerSecondDropedMessage));
 					else aiMessageBuffer.add_str(1,(uchar*)(PlayerSecondDropedMessage));
 					aciSendPrompt(&aiMessageBuffer);
 				};
 				break;
 			case VAN_WAR:
 				RaceTxtBuff < p->name;
-				if(iRussian) RaceTxtBuff < rPlayerFirstDropedMessage;
+				if(lang() == RUSSIAN) RaceTxtBuff < rPlayerFirstDropedMessage;
 				else RaceTxtBuff < PlayerFirstDropedMessage;
 				aiMessageBuffer.align_type = 0;
 				aiMessageBuffer.TimeBuf[0] = 200;
@@ -14131,7 +14156,7 @@ void NetCheckRemovePlayer(PlayerData* p)
 				aiMessageBuffer.ColBuf[1] = 143;
 				aiMessageBuffer.NumStr = 2;
 				aiMessageBuffer.add_str(0,(uchar*)(RaceTxtBuff.GetBuf()));
-				if(iRussian) aiMessageBuffer.add_str(1,(uchar*)(rPlayerSecondDropedMessage));
+				if(lang() == RUSSIAN) aiMessageBuffer.add_str(1,(uchar*)(rPlayerSecondDropedMessage));
 				else aiMessageBuffer.add_str(1,(uchar*)(PlayerSecondDropedMessage));
 				aciSendPrompt(&aiMessageBuffer);
 				break;

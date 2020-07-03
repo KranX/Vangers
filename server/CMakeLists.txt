@@ -1,10 +1,13 @@
 INCLUDE_DIRECTORIES(AFTER
-	${PROJECT_SOURCE_DIR}/lib/xtool
-	${PROJECT_SOURCE_DIR}/src)
-
+	"${PROJECT_SOURCE_DIR}/lib/xtool"
+	"${PROJECT_SOURCE_DIR}/lib/xgraph"
+	"${PROJECT_SOURCE_DIR}/src"
+)
+	
 SET(server_SRCS
 	kdsplus.cpp
 	${PROJECT_SOURCE_DIR}/src/xsocket.cpp
+	${PROJECT_SOURCE_DIR}/src/lang.cpp
 	server.cpp
 #win32f.cpp -- candidat to remove
 )

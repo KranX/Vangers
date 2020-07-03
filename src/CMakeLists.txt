@@ -1,3 +1,9 @@
+include_directories(
+	"${PROJECT_SOURCE_DIR}/lib/xtool"
+	"${PROJECT_SOURCE_DIR}/lib/xgraph"
+	"${PROJECT_SOURCE_DIR}/lib/xsound"
+)
+
 SET(vangers_SRCS
 	3d/3d_math.cpp
 	3d/3dgraph.cpp
@@ -61,7 +67,8 @@ SET(vangers_SRCS
 	uvs/univang.cpp
 	xjoystick.cpp
 	xsocket.cpp
-	zmod_client.cpp 
+	zmod_client.cpp
+	lang.cpp
 	${WINDOWS_RES}
 )
 
@@ -86,6 +93,7 @@ TARGET_LINK_LIBRARIES(vangers
 	${ZLIB_LIBRARIES}
 	${OPENGL_LIBRARIES}
 	${WIN_LIB}
+	${STEAM_LIBS}
 	xtool
 	xgraph
 	xsound

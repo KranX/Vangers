@@ -1,0 +1,103 @@
+name: Vangers MacOS Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master, 60fps, hd_v2 ]
+
+jobs:
+  build:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: update repos
+      run: brew update
+    - name: install libs
+      run: |
+        brew install git ninja cmake yasm dylibbundler
+        brew reinstall -s ./formulas/libogg.rb
+        brew reinstall -s ./formulas/libvorbis.rb
+        brew install -s ./formulas/sdl2.rb
+        brew install -s ./formulas/sdl2_net.rb
+    - name: clunk -- download lib
+      run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
+    - name: clunk -- create build dir
+      run: mkdir clunk/build
+    - name: clunk -- build and install
+      run: cmake -DCMAKE_INSTALL_PREFIX=/usr/local -G Ninja .. && ninja && sudo ninja install
+      working-directory: clunk/build
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
+    - name: ffmpeg -- download
+      run: git clone --depth 1 --branch n4.2.3 https://git.ffmpeg.org/ffmpeg.git ffmpeg
+    - name: ffmpeg -- configure
+      run: ./configure --enable-shared --prefix=/usr/local
+        --cc=clang
+        --arch=x86_64
+        --cpu=ivybridge
+        --disable-everything
+        --enable-swscale
+        --enable-zlib
+        --enable-demuxer=avi,rawvideo
+        --enable-decoder=png,rawvideo
+        --enable-parser=png
+        --enable-protocol=file
+        --disable-d3d11va
+        --disable-dxva2
+        --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
+        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
+      working-directory: ffmpeg
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
+    - name: ffmpeg -- build and install
+      run: |
+        make -j4
+        sudo make install
+      working-directory: ffmpeg
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
+    - name: configure
+      run: mkdir build && cd build && cmake -G Ninja ..
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
+    - name: make
+      run: ninja
+      working-directory: build
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.12
+    - name: vangers -- prepare release folder
+      run: |
+        mkdir Vangers.app/Contents/Frameworks
+        mkdir Vangers.app/Contents/Libs
+        cp -L /usr/local/lib/libSDL2-2.0.0.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libSDL2_net-2.0.0.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libavcodec.58.54.100.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libavformat.58.29.100.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libavutil.56.31.100.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libogg.0.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libvorbis.0.dylib Vangers.app/Contents/Libs/
+        cp -L /usr/local/lib/libvorbisfile.3.dylib Vangers.app/Contents/Libs/
+        cp clunk/build/libclunk.dylib Vangers.app/Contents/Libs/
+        cp build/src/vangers Vangers.app/Contents/MacOS/Vangers
+        dylibbundler -x Vangers.app/Contents/MacOS/Vangers
+        strip Vangers.app/Contents/MacOS/Vangers
+        sudo chmod 777 Vangers.app/Contents/Libs/*
+        install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib "@executable_path/../Libs/libogg.0.dylib" Vangers.app/Contents/Libs/libvorbis.0.dylib
+        install_name_tool -change /usr/local/Cellar/libvorbis/1.3.6/lib/libvorbis.0.dylib "@executable_path/../Libs/libvorbis.0.dylib" Vangers.app/Contents/Libs/libvorbisfile.3.dylib
+        install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib "@executable_path/../Libs/libogg.0.dylib" Vangers.app/Contents/Libs/libvorbisfile.3.dylib
+        mv Vangers.app/Contents/Libs/libavcodec.58.54.100.dylib Vangers.app/Contents/Libs/libavcodec.58.dylib
+        mv Vangers.app/Contents/Libs/libavformat.58.29.100.dylib Vangers.app/Contents/Libs/libavformat.58.dylib
+        mv Vangers.app/Contents/Libs/libavutil.56.31.100.dylib Vangers.app/Contents/Libs/libavutil.56.dylib
+        install_name_tool -change "@executable_path/../libs/libavcodec.58.54.100.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "@executable_path/../libs/libavformat.58.29.100.dylib" "@executable_path/../Libs/libavformat.58.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "@executable_path/../libs/libavutil.56.31.100.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/MacOS/Vangers
+        install_name_tool -change "/usr/local/lib/libavutil.56.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/Libs/libavcodec.58.dylib
+        install_name_tool -change "/usr/local/lib/libavutil.56.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
+        install_name_tool -change "/usr/local/lib/libavcodec.58.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
+        install_name_tool -change "/usr/local/opt/sdl2/lib/libSDL2-2.0.0.dylib" "@executable_path/../Libs/libSDL2-2.0.0.dylib" Vangers.app/Contents/Libs/libSDL2_net-2.0.0.dylib
+        tar -cvf Vangers.app.tar Vangers.app
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Vangers.app.tar
+        path: Vangers.app.tar

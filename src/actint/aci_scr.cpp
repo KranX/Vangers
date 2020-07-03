@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../lang.h"
 #include "../iscreen/hfont.h"
 
 #include "aci_evnt.h"
@@ -27,7 +28,7 @@ extern int NetworkON;
 extern char* aciSTR_ON;
 extern char* aciSTR_OFF;
 
-extern int iRussian;
+
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
@@ -1012,7 +1013,7 @@ void aciScreenDispatcher::FlushEvents(void)
 		ev = eventLine -> get();
 		switch(ev -> code){
 			case ACS_EXIT:
-				QuantCode = ev -> data[0];
+				QuantCode = ev -> data[0]; // resume game pause
 				flags |= ACS_NEED_EXIT;
 				break;
 			case ACS_SET_RESOURCE:

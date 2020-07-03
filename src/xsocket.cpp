@@ -13,6 +13,9 @@
 #else
 #include <unistd.h> // gethostname()
 #include <limits.h> // HOST_NAME_MAX
+#ifdef __HAIKU__
+#include <posix/sys/select.h> // fd_set
+#endif
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
 #endif
@@ -193,10 +196,9 @@ XSocket XSocket::accept() {
 
 	newSock = SDLNet_TCP_Accept(tcpSock);
 	if (!newSock) {
-		//XSOCKET_ERROR("TCP accept failed", SDLNet_GetError());
+		XSOCKET_ERROR("TCP accept failed", SDLNet_GetError());
 		// TODO: check possible error conditions and results
 		SDL_Delay(100);
-		return NULL;
 	}
 
 	XSocket xsock;
@@ -293,6 +295,7 @@ int XSocket::check_readability(int ms_time)
 		return 0;
 		}
 	return val;*/
+    return 0;
 }
 
 // TODO: MODIFY
@@ -309,6 +312,7 @@ int XSocket::check_writeability(int ms_time)
 		return 0;
 		}
 	return val;*/
+    return 0;
 }
 
 /*****************************************************************
@@ -331,6 +335,7 @@ int XSocket::sendto(const char* buffer, int size, unsigned int IP)
 		return 0;
 		}
 	return status;*/
+    return 0;
 }
 
 // DO NOT USE
@@ -346,6 +351,7 @@ int XSocket::receivefrom(char* buffer, int size_of_buffer, int ms_time)
 			}
 		}
 	return status;*/
+    return 0;
 }
 
 // WTF?

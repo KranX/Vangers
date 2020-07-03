@@ -2,7 +2,7 @@
 
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
-#include "global.h"
+#include "xgraph.h"
 #include <assert.h>
 
 #ifdef __APPLE__
@@ -112,57 +112,6 @@ XGR_Screen::XGR_Screen(void)
 	sdlTexture = NULL;
 }
 
-#ifdef WITH_OPENGL
-GLuint XGR_Screen::SurfToTexture(SDL_Surface *surf)
-{
-	GLuint texture;			// This is a handle to our texture object
-	GLenum texture_format;
-	GLint  nOfColors;
-	// Check that the image's width is a power of 2
-	if ( (surf->w & (surf->w - 1)) != 0 ) {
-		//std::cout<<"XGR_Screen::SurfToTexture warning surf width is not a power of 2"<<std::endl;
-	}
-	
-	// Also check if the height is a power of 2
-	if ( (surf->h & (surf->h - 1)) != 0 ) {
-		//std::cout<<"XGR_Screen::SurfToTexture warning surf height is not a power of 2"<<std::endl;
-	}
-	        // get the number of channels in the SDL surface
-        nOfColors = surf->format->BytesPerPixel;
-        if (nOfColors == 4)     // contains an alpha channel
-        {
-                if (surf->format->Rmask == 0x000000ff)
-                        texture_format = GL_RGBA;
-                else
-                        texture_format = GL_BGRA;
-        } else if (nOfColors == 3)     // no alpha channel
-        {
-                if (surf->format->Rmask == 0x000000ff)
-                        texture_format = GL_RGB;
-                else
-                        texture_format = GL_BGR;
-        } else {
-                std::cout<<"XGR_Screen::SurfToTexture warning: the image is not truecolor..  this will probably break"<<std::endl;
-                // this error should not go unhandled
-        }
-        
-	// Have OpenGL generate a texture object handle for us
-	glGenTextures( 1, &texture );
- 
-	// Bind the texture object
-	glBindTexture( GL_TEXTURE_2D, texture );
- 
-	// Set the texture's stretching properties
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
- 
-	// Edit the texture object's image data using the information SDL_Surface gives us
-	glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surf->w, surf->h, 0,
-                      texture_format, GL_UNSIGNED_BYTE, surf->pixels );
-	return texture;
-}
-#endif
-
 int XGR_Screen::init(int x,int y,int flags_in)
 {
 	flags = flags_in;
@@ -240,7 +189,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
-	SDL_ShowCursor(0);
+	SDL_ShowCursor(SDL_DISABLE);
 	
 	if (XGR_FULL_SCREEN) {
 		std::cout<<"SDL_SetWindowPosition"<<std::endl;
@@ -846,40 +795,6 @@ void XGR_Screen::flip()
 		//XGR_MouseObj.PutPrompt();
 		//std::cout<<"Flip"<<std::endl;
 		assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
-#ifdef WITH_OPENGL
-		//SDL_GL_SwapBuffers();
-		SDL_RenderPresent(sdlRenderer);
-		if (UI_OR_GAME) {
-			//Texture realisation
-			/*SDL_Surface *tmp_surf = SDL_ConvertSurface(XGR_ScreenSurface,XGR_ScreenSurface_Real->format, 0);
-			GLuint screen_tex=SurfToTexture(tmp_surf);
-			glBindTexture( GL_TEXTURE_2D, screen_tex );
- 
-			glBegin( GL_QUADS );
-			//Top-left vertex (corner)
-			glTexCoord2i( 0, 0 );
-			glVertex3f( 0, 0, 0.0f );
-	
-			//Bottom-left vertex (corner)
-			glTexCoord2i( 1, 0 );
-			glVertex3f( tmp_surf->w, 0, 0.0f );
-	
-			//Bottom-right vertex (corner)
-			glTexCoord2i( 1, 1 );
-			glVertex3f( tmp_surf->w, tmp_surf->h, 0.0f );
-	
-			//Top-right vertex (corner)
-			glTexCoord2i( 0, 1 );
-			glVertex3f( 0, tmp_surf->h, 0.0f );
-			glEnd();
-		
-		
-			SDL_FreeSurface(tmp_surf);
-			glDeleteTextures(1, &screen_tex);*/
-		} else {
-			
-		}
-#else
 		SDL_LockTexture(sdlTexture, NULL, &XGR32_ScreenSurface->pixels, &XGR32_ScreenSurface->pitch);
 		blitScreen((uint32_t *)XGR32_ScreenSurface->pixels, (uint8_t *)XGR_ScreenSurface->pixels);
 		SDL_UnlockTexture(sdlTexture);
@@ -896,7 +811,6 @@ void XGR_Screen::flip()
 		SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
 		
 		SDL_RenderPresent(sdlRenderer);
-#endif
 		SDL_UnlockSurface(XGR_ScreenSurface);
 		XGR_MouseObj.PutFon();
 		//XGR_MouseObj.PutPromptFon();

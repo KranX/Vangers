@@ -954,7 +954,7 @@ void aciLocationInfo::init_map_data(void)
 			put_attr_fon(x,y,sx,sy,data + sx * sy);
 //			  iregRender(x,y,x + sx,y + sy);
 
-			delete data;
+			delete[] data;
 		}
 		p = p -> prev;
 	}
@@ -8647,14 +8647,16 @@ fncMenuSet::~fncMenuSet(void)
 	iListElement* p,*p1;
 	iScreenElement* el = (iScreenElement*)redraw_data;
 	fncMenu* m;
-	items = new iList;
-
-	p = items -> last;
-	while(p){
-		p1 = p -> prev;
-		m = (fncMenu*)p;
-		delete m;
-		p = p1;
+	if (items) {
+		p = items -> last;
+		while(p) {
+			p1 = p -> prev;
+			m = (fncMenu*)p;
+			delete m;
+			p = p1;
+		}
+		delete items;
+		items = NULL;
 	}
 	if(el) delete el;
 }

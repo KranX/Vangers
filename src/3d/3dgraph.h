@@ -36,7 +36,7 @@ enum {
 	DRAW_GOURAUD
 };
 
-struct COLORS_IDS{
+struct COLORS_IDS {
 	enum {
 		ZERO_RESERVED,
 		
@@ -152,23 +152,21 @@ extern int x_prec;
 extern int z_buffer_log;
 
 
-
-
 extern unsigned char COLORS_VALUE_TABLE[2*COLORS_IDS::MAX_COLORS_IDS];
 void register_color(unsigned int id,int first,int last);
 
 /*******************************************************************************
 			Vertex -> Polygon link
-	Vertex:    <ÄÄÄÄÄÄÄÄÄ¿	   ÚÄÄÄÄÄÄÄÄÄÄ> Polygon:
-	num_poly	     ÀÄÄÄÄÄÅÄÄÄÄÄ¿	num_vert
-	polygons[0]  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ	 ÀÄÄÄÄ	vertices[indices_in_poly[0]]
+	Vertex:    <â”€â”€â”€â”€â”€â”€â”€â”€â”€â”	   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€> Polygon:
+	num_poly	         â””â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”	num_vert
+	polygons[0]  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜	 â””â”€â”€â”€â”€	vertices[indices_in_poly[0]]
 	indices_in_poly[0]
 
 			Polygon -> Vertex link
-	Vertex:   <ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿  ÚÄ> Polygon:
-	num_poly		      ÚÄÄÅÄÄÙ	num_vert
-	polygons[indices_in_vert[0]] ÄÙ  ÀÄÄÄÄ	vertices[0]
-						indices_in_vert[0]
+	Vertex:   <â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€> Polygon:
+	num_poly		              â”Œâ”€â”€â”¼â”€â”€â”˜	num_vert
+	polygons[indices_in_vert[0]] â”€â”˜  â””â”€â”€â”€â”€	vertices[0]
+			 indices_in_vert[0]
 *******************************************************************************/
 
 #define Polygon SimplePolygonType
