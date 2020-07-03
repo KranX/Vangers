@@ -7551,7 +7551,7 @@ void VangerUnit::ItemQuant(void)
 				Destroy();
 			}else{
 				if(Energy < MaxEnergy){
-					Energy += dEnergy;
+					Energy += (int)round(dEnergy*XTCORE_FRAME_NORMAL);
 					if(Energy >= MaxEnergy) Energy = MaxEnergy;
 					else{
 						DropTime--;
@@ -13850,7 +13850,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	uvsMaxSpeed = sc->MaxSpeed;
 	MaxArmor = sc->MaxArmor << 16;
 	MaxEnergy = sc->MaxEnergy << 16;
-	dEnergy = (int)round((((MaxEnergy / 10) * sc->DeltaEnergy) / (UnitGlobalTime * 100)) / GAME_TIME_COEFF);
+	dEnergy = ((MaxEnergy / 10) * sc->DeltaEnergy) / (UnitGlobalTime * 100);
 	DropEnergy = MaxEnergy * sc->DropEnergy / 100;
 	DelayDrop = sc->DropTime;
 	ImpulsePower = (MaxEnergy / 100) * sc->MaxFly;

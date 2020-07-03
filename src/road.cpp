@@ -202,8 +202,6 @@ char* host_name = 0;
 int host_port = DEFAULT_SERVER_PORT;
 
 int network_log = 0;
-
-const int FPS_PERIOD = 50;
 int fps_frame,fps_start,uvsQuantFrame,gameDQuantFrame,actQuantFrame,MLQuantFrame;
 char fps_string[20];
 
@@ -1115,8 +1113,8 @@ int GameQuantRTO::Quant(void)
 		gameQuant();
 //		DBGCHECK
 		frame++;
-		if(++fps_frame == (FPS_PERIOD * GAME_TIME_COEFF)) {
-			sprintf(fps_string,"%.1f",(double)(FPS_PERIOD/GAME_TIME_COEFF)/(SDL_GetTicks() - (int)fps_start)*1000);
+		if(++fps_frame == RTO_GAME_QUANT_TIMER) {
+			sprintf(fps_string,"%.1f",(double)(RTO_GAME_QUANT_TIMER)/(SDL_GetTicks() - (int)fps_start)*1000);
 #ifdef _DEBUG
 			network_analysis(network_analysis_buffer,0);
 #else
@@ -1597,8 +1595,10 @@ void KeyCenter(SDL_Event *key)
 			ErrH.Exit();
 #endif
 			std::cout<<"road.KeyCenter:"<<key<<std::endl;
-			if(!Pause)
+			if(!Pause) {
 				Pause = 1;
+			}
+				
 //				  GameQuantReturnValue = RTO_LOADING3_ID;
 			break;
 #ifndef ACTINT
@@ -1637,6 +1637,21 @@ void KeyCenter(SDL_Event *key)
 			else
 				message_mode++;
 #endif
+			break;
+		case SDL_SCANCODE_G:
+			mod = SDL_GetModState();
+			if (mod&KMOD_CTRL) {
+				if (GAME_TIME_COEFF == 1) {
+					RTO_GAME_QUANT_TIMER = 1000 / 60;
+					GAME_TIME_COEFF = 3;
+				} else {
+					RTO_GAME_QUANT_TIMER = 1000 / 20;
+					GAME_TIME_COEFF = 1;
+				}
+				GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
+				p -> SetTimer(RTO_GAME_QUANT_TIMER);
+				//Toggle FPS
+			}
 			break;
 		case SDL_SCANCODE_F5:
 			if(!Pause){

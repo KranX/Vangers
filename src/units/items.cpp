@@ -669,7 +669,8 @@ void StuffObject::DrawQuant(void)
 {
 	if(Status & SOBJ_WAIT_CONFIRMATION) return;
 	if(ActIntBuffer.type != ACI_CONLARVER && ActIntBuffer.type != ACI_EMPTY_CONLARVER){
-		CycleTime = rPI(CycleTime + PI / 12);
+		// dropped item size pulsation is handled here
+		CycleTime = rPI(CycleTime + PI / (12*(int)GAME_TIME_COEFF));
 		scale_size = original_scale_size + original_scale_size*Sin(CycleTime) / 8.;
 	};
 	draw();
@@ -2917,7 +2918,7 @@ void HordeObject::CreateHorde(Vector v,int r,int z,int cZ,VangerUnit* own)
 	ID = ID_HORDE;
 	Speed = 10 / GAME_TIME_COEFF;
 	Precision = 7 / GAME_TIME_COEFF;
-	Power = (50 << 16) / UnitGlobalTime;
+	Power = (int)round(((50 << 16) / UnitGlobalTime) / GAME_TIME_COEFF);
 	Mode = HORDE_RESTORE_MODE;
 	NumParticle = HORDE_PARTICLE_NUM;
 	vDelta = Vector(0,0,0);
@@ -2932,7 +2933,7 @@ void HordeObject::CreateHorde(Vector v,int r,int z,int cZ,VangerUnit* own)
 	Owner = own;
 	zCruiser = cZ + radius;
 	vZone = R_curr;
-	Time = 150;
+	Time = 150 * GAME_TIME_COEFF;
 };
 
 void HordeObject::Touch(GeneralObject* p)
