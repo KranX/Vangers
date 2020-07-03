@@ -2347,10 +2347,10 @@ void Object::motor_control(int dir)
 {
 	int sign = SIGN(traction);
 	if(dir == ADD_POWER)
-		if((traction += (int)round(traction_increment / GAME_TIME_COEFF)) > 256)
+		if((traction += traction_increment) > 256)
 			traction = 256;
 	if(dir == DEL_POWER)
-		if((traction -= (int)round(traction_increment / GAME_TIME_COEFF)) < -256)
+		if((traction -= traction_increment) < -256)
 			traction = -256;
 	if(!(sign + SIGN(traction)))
 		traction = 0;
