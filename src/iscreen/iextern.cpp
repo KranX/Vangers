@@ -298,6 +298,9 @@ void iUnlockMultiGameParameters(void);
 
 void iUpdateMultiGameName(void);
 
+
+void put_map(int x, int y, int sizeX, int sizeY);
+
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
 int* AVI_index;
@@ -648,6 +651,19 @@ void iSetFullscreen(int state) {
 	XGR_Obj.set_fullscreen(state);
 }
 
+void iSetResolution(int state) {
+	switch(state){
+		case 0:
+			XGR_Obj.set_resolution(800, 600);
+			break;
+		case 1:
+			XGR_Obj.set_resolution(1280, 720);
+			break;
+
+	}
+	put_map(iScreenOffs,0,I_RES_X,I_RES_Y);
+}
+
 void iPrepareOptions(void)
 {
 	int i;
@@ -764,7 +780,8 @@ void iPrepareOptions(void)
 	
 	iScrOpt[iFULLSCREEN] = new iScreenOption(iTRIGGER,0,"Graphics screen","FullScreenTrig");
 	((iTriggerObject *)iScrOpt[iFULLSCREEN]->objPtr)->callback = &iSetFullscreen;
-	
+	((iTriggerObject *)iScrOpt[iSCREEN_RESOLUTION]->objPtr)->callback = &iSetResolution;
+
 	iPrepareControls();
 }
 

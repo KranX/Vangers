@@ -140,7 +140,7 @@ struct XGR_Screen
 	void set_clip_mode(int mode){ ClipMode = mode; }
 
 	void set_fullscreen(bool fullscreen); 
-	
+	void set_resolution(int width, int height);
 	void setpixel(int x,int y,int col);
 	int getpixel(int x,int y);
 
@@ -189,6 +189,10 @@ struct XGR_Screen
 	void set_render_buffer(SDL_Surface *buf);
 	
 	XGR_Screen(void);
+
+private:
+	void create_surfaces(int width, int height);
+	void destroy_surfaces();
 };
 
 // XGR_MousePromptData::flags...

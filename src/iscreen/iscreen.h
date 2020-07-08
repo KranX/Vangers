@@ -956,6 +956,7 @@ extern iScreenDispatcher* iScrDisp;
 
 void iInit(void);
 void iQuantFirst(void);
+void iSetResolution(int state);
 void iQuantPrepare(void);
 int iQuantSecond(void);
 void iFinitQuant(void);

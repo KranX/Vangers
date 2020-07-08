@@ -166,50 +166,12 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");  // "linear" make the scaled rendering look smoother.
 	
 	XGR_Palette = SDL_AllocPalette(256);
-	
-	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
-	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
-	
-	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
-	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 32, 0, 0, 0, 0);
-	
-	std::cout<<"SDL_SetSurfacePalette"<<std::endl;
-	SDL_SetSurfacePalette(XGR_ScreenSurface, XGR_Palette);
-	
-	
-	std::cout<<"SDL_CreateTexture sdlTexture"<<std::endl;
-	sdlTexture = SDL_CreateTexture(sdlRenderer,
-		SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
-		SDL_TEXTUREACCESS_STREAMING,
-		x, y);
-	
-	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
-	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
-	SDL_SetSurfacePalette(HDBackgroundSurface, XGR_Palette);
-	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
+
+	create_surfaces(x, y);
+
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_ShowCursor(SDL_DISABLE);
-	
-	if (XGR_FULL_SCREEN) {
-		std::cout<<"SDL_SetWindowPosition"<<std::endl;
-		SDL_SetWindowPosition(sdlWindow, 0, 0);
-	}
-	// TODO(amdmi3): assuming safe locking; otherwise, use additional surface + SDL_MapRGB
-	std::cout<<"SDL_LockSurface"<<std::endl;
-	if (SDL_LockSurface(XGR_ScreenSurface) < 0)
-		ErrH.Abort(SDL_GetError(),XERR_USER, 0);
-
-	ScreenBuf = (unsigned char*)XGR_ScreenSurface->pixels;
-
-	// Other initializations
-	ScreenX = xgrScreenSizeX = XGR_ScreenSurface->w;
-	ScreenY = xgrScreenSizeY = XGR_ScreenSurface->h;
-
-	if(yOffsTable) delete[] yOffsTable;
-		yOffsTable = new int[y + 1];
-	set_pitch(XGR_ScreenSurface->pitch);
-
 
 	XFNT_Prepare();
 
@@ -219,9 +181,6 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	flags &= ~XGR_REINIT;
 
 	//XRec.hWnd = XGR_hWnd;
-
-	set_clip(0,0,x,y);
-	set_clip_mode(XGR_CLIP_PUTSPR);
 
 	if(XGR_MouseObj.flags & XGM_INIT){
 		if(XGR_MouseObj.flags & XGM_AUTOCLIP){
@@ -239,8 +198,78 @@ int XGR_Screen::init(int x,int y,int flags_in)
 // 		SDL_FreeSurface(old_surface_1);
 // 		SDL_FreeSurface(old_surface_2);
 // 	}
-	
+
 	return false;
+}
+
+void XGR_Screen::create_surfaces(int width, int height) {
+	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
+	XGR_ScreenSurface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+
+	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
+	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+	std::cout<<"SDL_SetSurfacePalette"<<std::endl;
+	SDL_SetSurfacePalette(XGR_ScreenSurface, XGR_Palette);
+
+
+	std::cout<<"SDL_CreateTexture sdlTexture"<<std::endl;
+	sdlTexture = SDL_CreateTexture(sdlRenderer,
+								   SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
+								   SDL_TEXTUREACCESS_STREAMING,
+								   width, height);
+
+	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
+	SDL_SetSurfacePalette(HDBackgroundSurface, XGR_Palette);
+	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
+
+	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
+
+	if (!XGR_FULL_SCREEN) {
+		SDL_SetWindowPosition(sdlWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	} else {
+		SDL_SetWindowPosition(sdlWindow, 0, 0);
+	}
+
+	// TODO(amdmi3): assuming safe locking; otherwise, use additional surface + SDL_MapRGB
+	std::cout<<"SDL_LockSurface"<<std::endl;
+	if (SDL_LockSurface(XGR_ScreenSurface) < 0)
+		ErrH.Abort(SDL_GetError(),XERR_USER, 0);
+
+	ScreenBuf = (unsigned char*)XGR_ScreenSurface->pixels;
+
+	// Other initializations
+	ScreenX = xgrScreenSizeX = XGR_ScreenSurface->w;
+	ScreenY = xgrScreenSizeY = XGR_ScreenSurface->h;
+
+	if(yOffsTable) delete[] yOffsTable;
+	yOffsTable = new int[ScreenY + 1];
+	set_pitch(XGR_ScreenSurface->pitch);
+	set_clip(0,0, width, height);
+	set_clip_mode(XGR_CLIP_PUTSPR);
+}
+
+void XGR_Screen::set_resolution(int width, int height){
+	// TODO: do not change resolution, is new res is the same
+	std::cout<<"XGR_Screen::set_resolution: "<<width<<", "<<height<<std::endl;
+	if(width == ScreenX && height == ScreenY){
+		std::cout<<"Resolution didn't change"<<std::endl;
+		return;
+	}
+
+	destroy_surfaces();
+	SDL_SetWindowSize(sdlWindow, width, height);
+	create_surfaces(width, height);
+}
+
+void XGR_Screen::destroy_surfaces() {
+	SDL_DestroyTexture(sdlTexture);
+	SDL_DestroyTexture(HDBackgroundTexture);
+
+	SDL_UnlockSurface(XGR_ScreenSurface);
+	SDL_UnlockSurface(XGR32_ScreenSurface);
+	SDL_FreeSurface(XGR32_ScreenSurface);
+	SDL_FreeSurface(XGR_ScreenSurface);
+	SDL_FreeSurface(HDBackgroundSurface);
 }
 
 void XGR_Screen::set_fullscreen(bool fullscreen) {
@@ -657,7 +686,7 @@ void XGR_Screen::finit(void)
 
 //		if(XGR_hWnd) KillTimer((HWND)XGR_hWnd,1);
 
-		SDL_UnlockSurface(XGR_ScreenSurface);
+		destroy_surfaces();
 		SDL_Quit();
 
 		// TODO(AMDmi3): uncomment/rewrite more stuff to free used resources
@@ -699,8 +728,8 @@ void XGR_Screen::finit(void)
 
 //		XGR_PalHandle = NULL;
 //		XGR_Pal = NULL;
-		XGR_hWnd = NULL;
 
+		XGR_hWnd = NULL;
 		if(yOffsTable) delete[] yOffsTable;
 		yOffsTable = NULL;
 		XGR_InitFlag = 0;
