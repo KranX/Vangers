@@ -366,7 +366,6 @@ void showModal(char* fname, float reelW, float reelH, float screenW, float scree
 }
 
 
-
 int xtInitApplication(void) {
     XGraphWndID = "VANGERS";
     char *tmp;
@@ -712,6 +711,7 @@ _MEM_STATISTIC_("AFTER IQUANTFIRST INIT -> ");
 #endif
 	
 	XGR_Obj.set_fullscreen(iGetOptionValue(iFULLSCREEN));
+	iSetResolution(iGetOptionValue(iSCREEN_RESOLUTION));
 _MEM_STATISTIC_("AFTER MAIN MENU INIT -> ");
 }
 
