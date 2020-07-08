@@ -16,4 +16,10 @@ lib/utils/zip_convert
 src/vangers
 
 # TODO: VC stuff, windows binaries
+build/src/vangers.exe
+build/src/logfile.txt
+build/src/libclunk.dll
+build/lib/utils/zip_convert.exe
 .fuse_hidden*
+.vscode/
+*.code-workspace
