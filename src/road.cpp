@@ -1755,7 +1755,9 @@ void iGameMap::change(int Dx,int Dy,int mode,int xcenter,int ycenter)
 	VcutUp = yc - yside;
 	VcutDown = yc + yside;
 
-	camera_zmin = TurnSecX = TurnSecX*xsize/xsize_old;
+	TurnSecX = TurnSecX*xsize/xsize_old;
+	camera_zmin = camera_zmin*xsize/xsize_old;
+
 	calc_view_factors();
 
 /*
