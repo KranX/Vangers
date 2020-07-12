@@ -1796,9 +1796,9 @@ void iGameMap::reset(void)
 	if(ViewX == 0 && ViewY == 0) {
 		ViewX = XCYCL(1517);
 		ViewY = YCYCL(15879);
-		vMap -> accept(ViewY,ViewY);
+		vMap -> accept(ViewY - 100, ViewY + 100);
 	} else {
-		vMap -> accept(ViewY,ViewY);
+		vMap -> accept(ViewY - 100, ViewY + 100);
 		GeneralLoadReleaseFlag = 1;
 	}
 	camera_reset();

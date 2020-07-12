@@ -984,10 +984,10 @@ void vrtMap::reload(int nWorld)
 	RenderPrepare();
 
 #ifdef _ROAD_
-	if(MAP_POWER_Y <= 11 && !RAM16)
-		accept(0,V_SIZE - 1);
+	if(MAP_POWER_Y <= 11)
+		accept(0, V_SIZE - 1);
 	else
-		accept(ViewY,ViewY);
+		accept(ViewY - 100, ViewY + 100);
 #else
 	if(MAP_POWER_Y <= 11)
 		accept(0,V_SIZE - 1);
@@ -1089,6 +1089,7 @@ void vrtMap::dump_terrain() {
 Удалил закомментированный код, смотреть в svn.*/
 void vrtMap::accept(int up,int down) 
 {
+	// std::cout<<"vrtMap::accept up:"<<up<<" down:"<<down<<std::endl;
 	up = YCYCL(up);
 	down = YCYCL(down);
 
@@ -1096,7 +1097,7 @@ void vrtMap::accept(int up,int down)
 	int i = up;
 	uchar* p;
 	int off;
-	//std::cout<<"i:"<<i<<" max:"<<max<<std::endl;
+
 	if(!isCompressed)
 		do {
 			freeMax--;
