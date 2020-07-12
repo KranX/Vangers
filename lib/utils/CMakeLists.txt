@@ -16,6 +16,7 @@ TARGET_LINK_LIBRARIES(zip_convert
 	xtool
 	xgraph
 	${SDL2_LIBRARY}
+	${MINGW_SDL2_LDF}
 )
 
 

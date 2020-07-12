@@ -26,26 +26,6 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 		ffmpeg
 )
 
-FIND_PATH(AVCODEC_INCLUDE_DIR
-	NAMES
-		avcodec.h
-	PATHS
-		/usr/local/include
-		/usr/include
-		/usr/include/x86_64-linux-gnu
-		/opt/local/include
-		/local/include
-		/mingw/include
-		/opt/include
-		/sw/include
-		/usr/include/libavcodec
-		/usr/include/ffmpeg
-		/usr/include/ffmpeg/libavcodec
-	PATH_SUFFIXES
-		libavcodec
-		ffmpeg
-)
-
 FIND_PATH(AVFORMAT_INCLUDE_DIR
 	NAMES
 		avformat.h
@@ -66,11 +46,32 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 		ffmpeg
 )
 
+FIND_PATH(AVCODEC_INCLUDE_DIR
+	NAMES
+		avcodec.h
+	PATHS
+		/usr/local/include
+		/usr/include
+		/usr/include/x86_64-linux-gnu
+		/opt/local/include
+		/local/include
+		/mingw/include
+		/opt/include
+		/sw/include
+		/usr/include/libavcodec
+		/usr/include/ffmpeg
+		/usr/include/ffmpeg/libavcodec
+	PATH_SUFFIXES
+		libavcodec
+		ffmpeg
+)
+
 FIND_LIBRARY(AVUTIL_LIBRARY
 	NAMES
 		avutil
 		avutil-55
 		avutil-56
+	PATH_SUFFIXES lib64 lib
 	PATHS
 		/usr/local/lib
 		/usr/lib
@@ -90,6 +91,7 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 		avcodec
 		avcodec-57
 		avcodec-58
+	PATH_SUFFIXES lib64 lib
 	PATHS
 		/usr/local/lib
 		/usr/lib
@@ -108,6 +110,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		avformat
 		avformat-57
 		avformat-58
+	PATH_SUFFIXES lib64 lib
 	PATHS
 		/usr/local/lib
 		/usr/lib
@@ -133,12 +136,12 @@ SET(FFMPEG_INCLUDE_DIRS
 
 SET(FFMPEG_LIBRARIES)
 
-IF(AVUTIL_LIBRARY)
+IF(AVFORMAT_LIBRARY)
 	SET(FFMPEG_LIBRARIES
 		${FFMPEG_LIBRARIES}
-		${AVUTIL_LIBRARY}
+		${AVFORMAT_LIBRARY}
 	)
-ENDIF(AVUTIL_LIBRARY)
+ENDIF(AVFORMAT_LIBRARY)
 
 IF(AVCODEC_LIBRARY)
 	SET(FFMPEG_LIBRARIES
@@ -147,12 +150,12 @@ IF(AVCODEC_LIBRARY)
 	)
 ENDIF(AVCODEC_LIBRARY)
 
-IF(AVFORMAT_LIBRARY)
+IF(AVUTIL_LIBRARY)
 	SET(FFMPEG_LIBRARIES
 		${FFMPEG_LIBRARIES}
-		${AVFORMAT_LIBRARY}
+		${AVUTIL_LIBRARY}
 	)
-ENDIF(AVFORMAT_LIBRARY)
+ENDIF(AVUTIL_LIBRARY)
 
 IF(FFMPEG_INCLUDE_DIRS AND FFMPEG_LIBRARIES)
 	SET(FFMPEG_FOUND TRUE)
