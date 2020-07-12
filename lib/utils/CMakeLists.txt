@@ -12,10 +12,10 @@ ADD_EXECUTABLE(zip_convert
 #ADD_DEFINITIONS(-e SDL_main )
 
 TARGET_LINK_LIBRARIES(zip_convert
-	${ZLIB_LIBRARIES}
 	xtool
 	xgraph
 	${SDL2_LIBRARY}
+	${ZLIB_LIBRARIES}
 	${MINGW_SDL2_LDF}
 )
 

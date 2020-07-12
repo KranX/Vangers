@@ -17,11 +17,11 @@ OPTION(ACTINT "Actint user interface in road game" ON)
 SET(CMAKE_CONFIGURATION_TYPES "Release;Debug;MinSizeRel;RelWithDebInfo")
 IF(MINGW)
 		set(MINGW_LDF "-static" CACHE STRING "Mingw linker flags")
-		SET(MINGW_SDL2_LDF "-lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 \
-		-lole32 -loleaut32 -lshell32 -lversion -luuid -lsetupapi -ladvapi32" CACHE STRING "Mingw SDL2 linker flags")
+		# Some libs required by sdl are lost, these are taken from sdl-config 
+		SET(MINGW_SDL2_LDF m dinput8 dxguid dxerr8 user32 gdi32 winmm imm32 ole32 oleaut32 shell32 version uuid setupapi advapi32 CACHE STRING "Mingw SDL2 linker flags")
 
 		SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-		SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MINGW_LDF}" CACHE INTERNAL "")
+		SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MINGW_LDF}")
 ENDIF()
 
 set(CMAKE_CXX_STANDARD 14)
