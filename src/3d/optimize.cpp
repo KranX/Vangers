@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../runtime.h"
 
 #include "general.h"
 
@@ -131,7 +132,7 @@ void Object::draw()
 {
 	int i;
 	if(n_models > 1)
-		model = &models[((i_model += traction) >> 8) % n_models];
+		model = &models[((i_model += (int)round(traction / GAME_TIME_COEFF)) >> 8) % n_models];
 	COLORS_VALUE_TABLE[2*COLORS_IDS::BODY] = body_color_offset;
 	COLORS_VALUE_TABLE[2*COLORS_IDS::BODY + 1] = body_color_shift;
 
