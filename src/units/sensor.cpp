@@ -1699,7 +1699,7 @@ void DangerDataType::CreateDanger(Vector v,int r,int tp)
 			break;	
 		case DangerTypeList::FASTSAND:
 		case DangerTypeList::SWAMP:
-			dActive = 3 * GAME_TIME_COEFF;
+			dActive = (int)round(3 / GAME_TIME_COEFF);
 			break;
 	};
 	Time = 0;
@@ -1737,7 +1737,7 @@ void DangerDataType::CreateDanger(XStream& in)
 			break;	
 		case DangerTypeList::FASTSAND:
 		case DangerTypeList::SWAMP:
-			dActive = 3 * GAME_TIME_COEFF;
+			dActive = (int)round(3 / GAME_TIME_COEFF);
 			break;
 //zmod fixed 1.14
 		case DangerTypeList::FIRE:
@@ -1786,9 +1786,9 @@ void DangerDataType::Quant(void)
 					MapD.CreateLavaSpot(vPos,0,0,r,h,r,0,n,n*2,83,0,0,0,83);
 	//			};
 				RadialRender(R_curr.x,R_curr.y,radius + d1 * 2);
-				if(!RND(100)) Enable = 0;
+				if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
 			}else{
-				if(!RND(100)) Enable = 1;				
+				if(!RND(100*GAME_TIME_COEFF)) Enable = 1;				
 			};
 			break;
 		case DangerTypeList::WHIRLPOOL:
@@ -1798,7 +1798,7 @@ void DangerDataType::Quant(void)
 
 			if(Enable){
 				if(Time <= 0){
-					if(!RND(100)) Enable = 0;
+					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
 					else{
 						EffD.CreateDeform(R_curr,DEFORM_WATER_ONLY,0);
 						Time = (EffD.DeformData[1].NumFrame * GAME_TIME_COEFF) - 1;
@@ -1815,7 +1815,7 @@ void DangerDataType::Quant(void)
 					};
 				};
 			}else{
-				if(!RND(100)){
+				if(!RND(100*GAME_TIME_COEFF)){
 					EffD.CreateDeform(R_curr,DEFORM_WATER_ONLY,0);
 					Time = (EffD.DeformData[1].NumFrame * GAME_TIME_COEFF) - 1;
 //					Time = 1 + RND(3);
@@ -1848,9 +1848,9 @@ void DangerDataType::Quant(void)
 					MapD.CreateLavaSpot(vPos,0,0,r,h,r,0,n,n*2,83,0,0,0,83);
 	//			};
 				RadialRender(R_curr.x,R_curr.y,radius + d1 * 2);
-				if(!RND(100)) Enable = 0;
+				if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
 			}else{
-				if(!RND(100)) Enable = 1;
+				if(!RND(100*GAME_TIME_COEFF)) Enable = 1;
 			};
 			break;
 		case DangerTypeList::FIRE:
