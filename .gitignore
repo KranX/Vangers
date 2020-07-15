@@ -19,4 +19,4 @@ src/vangers
 build
 .fuse_hidden*
 .vscode/
-v.code-workspace
+*.code-workspace

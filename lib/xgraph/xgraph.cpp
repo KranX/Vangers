@@ -795,8 +795,10 @@ void XGR_Screen::flip()
 		//XGR_MouseObj.PutPrompt();
 		//std::cout<<"Flip"<<std::endl;
 		assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
-		SDL_LockTexture(sdlTexture, NULL, &XGR32_ScreenSurface->pixels, &XGR32_ScreenSurface->pitch);
-		blitScreen((uint32_t *)XGR32_ScreenSurface->pixels, (uint8_t *)XGR_ScreenSurface->pixels);
+		void *pixels;
+		int pitch;
+		SDL_LockTexture(sdlTexture, NULL, &pixels, &pitch);
+		blitScreen((uint32_t*)pixels, (uint8_t *)XGR_ScreenSurface->pixels);
 		SDL_UnlockTexture(sdlTexture);
 		
 		SDL_RenderClear(sdlRenderer);

@@ -984,10 +984,10 @@ void vrtMap::reload(int nWorld)
 	RenderPrepare();
 
 #ifdef _ROAD_
-	if(MAP_POWER_Y <= 11 && !RAM16)
-		accept(0,V_SIZE - 1);
+	if(MAP_POWER_Y <= 11)
+		accept(0, V_SIZE - 1);
 	else
-		accept(ViewY,ViewY);
+		accept(ViewY - 100, ViewY + 100);
 #else
 	if(MAP_POWER_Y <= 11)
 		accept(0,V_SIZE - 1);
@@ -1089,13 +1089,7 @@ void vrtMap::dump_terrain() {
 Удалил закомментированный код, смотреть в svn.*/
 void vrtMap::accept(int up,int down) 
 {
-#ifdef _ROAD_
-	if(!(V_POWER <= 11 && !RAM16)){
-		up -= MAX_LINE/2 - 4;
-		down += MAX_LINE/2 - 4;
-		}
-#endif
-
+	// std::cout<<"vrtMap::accept up:"<<up<<" down:"<<down<<std::endl;
 	up = YCYCL(up);
 	down = YCYCL(down);
 
@@ -1103,7 +1097,7 @@ void vrtMap::accept(int up,int down)
 	int i = up;
 	uchar* p;
 	int off;
-	//std::cout<<"i:"<<i<<" max:"<<max<<std::endl;
+
 	if(!isCompressed)
 		do {
 			freeMax--;
@@ -1209,6 +1203,9 @@ void vrtMap::change(int up,int down)
 	dd = getDistY(downLine, down);
 	req = MAX(du, -dd);
 	// std::cout<<"vrtMap::change du:"<<du<<" dd:"<<dd<<" req:"<<req<<" up:"<<up<<" down:"<<down<<" upLine:"<<upLine<<" downLine:"<<downLine<<std::endl;
+	if (up > down) {
+		std::cout<<"vrtMap::change oposite order for request terrain"<<std::endl;
+	}
 	if (req > 0 && freeMax <= req + 1) {
 		if (du < 0) {
 			delink(upLine, upLine + req - 1);
@@ -1218,6 +1215,14 @@ void vrtMap::change(int up,int down)
 			delink(downLine - req + 1, downLine);
 			downLine = YCYCL(downLine - req);
 		}
+	}
+	if (req < 0 && du < 0 && freeMax <= abs(du) + 1) {
+		delink(upLine, up - 1);
+		upLine = YCYCL(up);
+	}
+	if (req < 0 && dd > 0 && freeMax <= abs(dd) + 1) {
+		delink(down + 1, downLine);
+		downLine = YCYCL(down);
 	}
 	if (du > 0) {
 		if (isCompressed) {
@@ -1322,6 +1327,7 @@ void vrtMap::link(int up, int down, int d)
 
 	up = YCYCL(up);
 	down = YCYCL(down);
+	std::cout<<"vrtMap::link up:"<<up<<" down:"<<down<<std::endl;
 
 	uchar* p;
 	int max = YCYCL(down + d), off;
@@ -1380,6 +1386,10 @@ void vrtMap::linkC(int up,int down,int d)
 	}
 	up = YCYCL(up);
 	down = YCYCL(down);
+	if (up > down) {
+		std::cout<<"vrtMap::change Wrong order for request terrain"<<std::endl;
+	}
+	// std::cout<<"vrtMap::linkC up:"<<up<<" down:"<<down<<std::endl;
 
 
 	uchar* p;

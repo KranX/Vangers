@@ -1360,8 +1360,13 @@ void show_map(int x,int y,int sx,int sy)
 			_y = y0;
 			index = 0;
 			m_index = y0 * p -> SizeX + cx - sx2;
+			int max_frames_size = p->SizeX * p->SizeY * p->Size;
 			for(i = 0; i < sy; i ++){
-				memcpy(ptr + index,p -> frames + m_index,sx);
+				if (m_index + sx >= max_frames_size) {
+					memcpy(ptr + index, p -> frames + m_index, max_frames_size - m_index);
+				} else {
+					memcpy(ptr + index, p -> frames + m_index, sx);
+				}
 
 				index += sx;
 				m_index += p -> SizeX;
