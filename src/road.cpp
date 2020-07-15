@@ -1779,7 +1779,9 @@ void iGameMap::change(int Dx,int Dy,int mode,int xcenter,int ycenter)
 	VcutUp = yc - yside;
 	VcutDown = yc + yside;
 
-	camera_zmin = TurnSecX = TurnSecX*xsize/xsize_old;
+	TurnSecX = TurnSecX*xsize/xsize_old;
+	camera_zmin = camera_zmin*xsize/xsize_old;
+
 	calc_view_factors();
 
 /*
@@ -1818,9 +1820,9 @@ void iGameMap::reset(void)
 	if(ViewX == 0 && ViewY == 0) {
 		ViewX = XCYCL(1517);
 		ViewY = YCYCL(15879);
-		vMap -> accept(ViewY,ViewY);
+		vMap -> accept(ViewY - 100, ViewY + 100);
 	} else {
-		vMap -> accept(ViewY,ViewY);
+		vMap -> accept(ViewY - 100, ViewY + 100);
 		GeneralLoadReleaseFlag = 1;
 	}
 	camera_reset();

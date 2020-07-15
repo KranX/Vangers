@@ -746,9 +746,9 @@ void LocationEngine::Open(Parser& in)
 
 	in.search_name("ActiveTime");
 
-	ActiveTime = in.get_int() * GAME_TIME_COEFF;
+	ActiveTime = in.get_int();
 	in.search_name("DeactiveTime");
-	DeactiveTime = in.get_int() * GAME_TIME_COEFF;
+	DeactiveTime = in.get_int();
 
 	in.search_name("SoundID");
 	SoundID =  in.get_int();
@@ -948,7 +948,7 @@ void DoorEngine::Touch(GeneralObject* obj,SensorDataType* p)
 		TouchFlag++;
 };
 
-void DoorEngine::Quant(void) // Animation frame for threall connection point
+void DoorEngine::Quant(void) // Animation frame for threall connection point and all doors/elevators
 {
 	char* ThreallText;
 	if(!MLLink) return;
@@ -1020,7 +1020,8 @@ void DoorEngine::Quant(void) // Animation frame for threall connection point
 void DoorEngine::OpenDoor(void)
 {
 	if(!Enable || !MLLink) return;
-	Time = ActiveTime * GAME_TIME_COEFF;
+	Time = ActiveTime;
+	if (Time <= 0) { Time = GAME_TIME_COEFF; }
 	Mode = EngineModeList::OPEN;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1038,8 +1039,9 @@ void DoorEngine::OpenDoor(void)
 
 void DoorEngine::CloseDoor(void)
 {
-	if(!Enable || !MLLink) return;
-	Time = DeactiveTime * GAME_TIME_COEFF;
+	if(!Enable || !MLLink || Time) return;
+	Time = DeactiveTime;
+	if (Time <= 0) { Time = GAME_TIME_COEFF; }
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1057,8 +1059,9 @@ void DoorEngine::CloseDoor(void)
 
 void DoorEngine::OpenDoor(int t)
 {
-	if(!Enable || !MLLink) return;
-	Time = t * GAME_TIME_COEFF;
+	if(!Enable || !MLLink || Time) return;
+	Time = t;
+	if (Time <= 0) { Time = GAME_TIME_COEFF; }
 	Mode = EngineModeList::OPEN;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1076,8 +1079,9 @@ void DoorEngine::OpenDoor(int t)
 
 void DoorEngine::CloseDoor(int t)
 {
-	if(!Enable || !MLLink) return;
-	Time = t * GAME_TIME_COEFF;
+	if(!Enable || !MLLink || Time) return;
+	Time = t;
+	if (Time <= 0) { Time = GAME_TIME_COEFF; }
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1622,8 +1626,8 @@ void TrainEngine::CreateTrain(SensorDataType* p1,SensorDataType* p2,int time)
 	TrainLink[1]->Enable = 1;
 	TrainLink[1]->Index = 1;
 
-	ActiveTime = time * GAME_TIME_COEFF;
-	DeactiveTime = 10 * GAME_TIME_COEFF;
+	ActiveTime = time;
+	DeactiveTime = 10;
 	LockFlag = DOOR_CLOSE_LOCK;	
 };
 
@@ -1695,7 +1699,7 @@ void DangerDataType::CreateDanger(Vector v,int r,int tp)
 			break;	
 		case DangerTypeList::FASTSAND:
 		case DangerTypeList::SWAMP:
-			dActive = 3 * GAME_TIME_COEFF;
+			dActive = (int)round(3 / GAME_TIME_COEFF);
 			break;
 	};
 	Time = 0;
@@ -1733,7 +1737,7 @@ void DangerDataType::CreateDanger(XStream& in)
 			break;	
 		case DangerTypeList::FASTSAND:
 		case DangerTypeList::SWAMP:
-			dActive = 3 * GAME_TIME_COEFF;
+			dActive = (int)round(3 / GAME_TIME_COEFF);
 			break;
 //zmod fixed 1.14
 		case DangerTypeList::FIRE:
@@ -1782,9 +1786,9 @@ void DangerDataType::Quant(void)
 					MapD.CreateLavaSpot(vPos,0,0,r,h,r,0,n,n*2,83,0,0,0,83);
 	//			};
 				RadialRender(R_curr.x,R_curr.y,radius + d1 * 2);
-				if(!RND(100)) Enable = 0;
+				if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
 			}else{
-				if(!RND(100)) Enable = 1;				
+				if(!RND(100*GAME_TIME_COEFF)) Enable = 1;				
 			};
 			break;
 		case DangerTypeList::WHIRLPOOL:
@@ -1794,7 +1798,7 @@ void DangerDataType::Quant(void)
 
 			if(Enable){
 				if(Time <= 0){
-					if(!RND(100)) Enable = 0;
+					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
 					else{
 						EffD.CreateDeform(R_curr,DEFORM_WATER_ONLY,0);
 						Time = (EffD.DeformData[1].NumFrame * GAME_TIME_COEFF) - 1;
@@ -1811,7 +1815,7 @@ void DangerDataType::Quant(void)
 					};
 				};
 			}else{
-				if(!RND(100)){
+				if(!RND(100*GAME_TIME_COEFF)){
 					EffD.CreateDeform(R_curr,DEFORM_WATER_ONLY,0);
 					Time = (EffD.DeformData[1].NumFrame * GAME_TIME_COEFF) - 1;
 //					Time = 1 + RND(3);
@@ -1844,9 +1848,9 @@ void DangerDataType::Quant(void)
 					MapD.CreateLavaSpot(vPos,0,0,r,h,r,0,n,n*2,83,0,0,0,83);
 	//			};
 				RadialRender(R_curr.x,R_curr.y,radius + d1 * 2);
-				if(!RND(100)) Enable = 0;
+				if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
 			}else{
-				if(!RND(100)) Enable = 1;
+				if(!RND(100*GAME_TIME_COEFF)) Enable = 1;
 			};
 			break;
 		case DangerTypeList::FIRE:

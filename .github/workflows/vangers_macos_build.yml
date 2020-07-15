@@ -8,14 +8,14 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
     - name: update repos
       run: brew update
     - name: install libs
       run: |
-        brew install git ninja cmake nasm yasm dylibbundler
+        brew install git ninja cmake yasm dylibbundler
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb
         brew install -s ./formulas/sdl2.rb
@@ -30,9 +30,12 @@ jobs:
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: ffmpeg -- download
-      run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
+      run: git clone --depth 1 --branch n4.2.3 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
       run: ./configure --enable-shared --prefix=/usr/local
+        --cc=clang
+        --arch=x86_64
+        --cpu=ivybridge
         --disable-everything
         --enable-swscale
         --enable-zlib
