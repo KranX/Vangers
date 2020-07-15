@@ -4821,11 +4821,11 @@ void VangerUnit::AutomaticTouchSensor(SensorDataType* p) //znfo !!!
 										case EngineTypeList::IMPULSE_ESCAVE:
 										case EngineTypeList::ELEVATOR:
 											if(d->Mode == EngineModeList::WAIT && !d->ProcessFlag)
-												d->OpenDoor();
+												d->OpenDoor(10);
 											break;
 										case EngineTypeList::ESCAVE:
 											if(TouchKeyObject && TouchKeyObject->SensorType == SensorTypeList::ESCAVE && d->Mode == EngineModeList::OPEN && !d->ProcessFlag)
-												d->CloseDoor();
+												d->CloseDoor(10);
 											break;
 									};
 								};
@@ -5034,9 +5034,9 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 							if((int)(RND(d->Luck)) <= aiCutLuck){
 								DoorFlag = 0;
 								if(d->Mode == EngineModeList::OPEN)
-									d->CloseDoor();
+									d->CloseDoor(10);
 								else
-									d->OpenDoor();
+									d->OpenDoor(10);
 							}else{
 								if(d->Luck > 0){
 									for(i = 0;i < d->NumSensor;i++)
@@ -5047,9 +5047,9 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 							if(d->Luck >= -aiCutLuck){
 								DoorFlag = 0;
 								if(d->Mode == EngineModeList::OPEN)
-									d->CloseDoor();
+									d->CloseDoor(10);
 								else
-									d->OpenDoor();
+									d->OpenDoor(10);
 							};
 						};
 					}else{

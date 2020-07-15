@@ -746,9 +746,9 @@ void LocationEngine::Open(Parser& in)
 
 	in.search_name("ActiveTime");
 
-	ActiveTime = in.get_int() * GAME_TIME_COEFF;
+	ActiveTime = in.get_int();
 	in.search_name("DeactiveTime");
-	DeactiveTime = in.get_int() * GAME_TIME_COEFF;
+	DeactiveTime = in.get_int();
 
 	in.search_name("SoundID");
 	SoundID =  in.get_int();
@@ -948,7 +948,7 @@ void DoorEngine::Touch(GeneralObject* obj,SensorDataType* p)
 		TouchFlag++;
 };
 
-void DoorEngine::Quant(void) // Animation frame for threall connection point
+void DoorEngine::Quant(void) // Animation frame for threall connection point and all doors/elevators
 {
 	char* ThreallText;
 	if(!MLLink) return;
@@ -1020,7 +1020,8 @@ void DoorEngine::Quant(void) // Animation frame for threall connection point
 void DoorEngine::OpenDoor(void)
 {
 	if(!Enable || !MLLink) return;
-	Time = ActiveTime * GAME_TIME_COEFF;
+	Time = ActiveTime;
+	if (Time <= 0) { Time = GAME_TIME_COEFF; }
 	Mode = EngineModeList::OPEN;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1038,8 +1039,9 @@ void DoorEngine::OpenDoor(void)
 
 void DoorEngine::CloseDoor(void)
 {
-	if(!Enable || !MLLink) return;
-	Time = DeactiveTime * GAME_TIME_COEFF;
+	if(!Enable || !MLLink || Time) return;
+	Time = DeactiveTime;
+	if (Time <= 0) { Time = GAME_TIME_COEFF; }
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1057,8 +1059,9 @@ void DoorEngine::CloseDoor(void)
 
 void DoorEngine::OpenDoor(int t)
 {
-	if(!Enable || !MLLink) return;
-	Time = t * GAME_TIME_COEFF;
+	if(!Enable || !MLLink || Time) return;
+	Time = t;
+	if (Time <= 0) { Time = GAME_TIME_COEFF; }
 	Mode = EngineModeList::OPEN;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1076,8 +1079,9 @@ void DoorEngine::OpenDoor(int t)
 
 void DoorEngine::CloseDoor(int t)
 {
-	if(!Enable || !MLLink) return;
-	Time = t * GAME_TIME_COEFF;
+	if(!Enable || !MLLink || Time) return;
+	Time = t;
+	if (Time <= 0) { Time = GAME_TIME_COEFF; }
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1622,8 +1626,8 @@ void TrainEngine::CreateTrain(SensorDataType* p1,SensorDataType* p2,int time)
 	TrainLink[1]->Enable = 1;
 	TrainLink[1]->Index = 1;
 
-	ActiveTime = time * GAME_TIME_COEFF;
-	DeactiveTime = 10 * GAME_TIME_COEFF;
+	ActiveTime = time;
+	DeactiveTime = 10;
 	LockFlag = DOOR_CLOSE_LOCK;	
 };
 
