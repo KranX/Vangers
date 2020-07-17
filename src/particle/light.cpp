@@ -482,7 +482,7 @@ int  LandQuake::quant(int shiftparam){
 		}
 	}//  while
 
-	Rcur += dx;
+	Rcur += dx*XTCORE_FRAME_NORMAL;
 	return 1;
 }
 

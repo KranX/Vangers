@@ -8873,7 +8873,7 @@ void VangerFunctionType::Init(int _ID,Vector _vR,int _Time,int _External)
 {
 	ID = _ID;
 	vR = _vR;
-	LifeTime = Time = _Time;
+	LifeTime = Time = _Time * GAME_TIME_COEFF;
 	Next = Prev =NULL;	
 
 	if(_External){
@@ -8884,11 +8884,11 @@ void VangerFunctionType::Init(int _ID,Vector _vR,int _Time,int _External)
 			case PROTRACTOR_MOLERIZATOR:						
 			case PROTRACTOR_PALLADIUM:
 			case PROTRACTOR_JESTEROID:
-				Time = LifeTime - SIGNATOR_DELAY + 1;
+				Time = LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF) + 1;
 				break;
 			case MECHANIC_BEEB_NATION:
 			case MECHANIC_UNVISIBLE:			
-				Time = LifeTime - SKY_QUAKE_DELAY + 1;
+				Time = LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF) + 1;
 				break;
 		};
 	}else{
@@ -9018,7 +9018,7 @@ int ActionDispatcher::NewFunction(int id,int tp)
 void VangerFunctionType::SoundQuant(void)
 {
 	if(ID <= PROTRACTOR_PREPASSAGE) {
-		if(Time <= LifeTime - SIGNATOR_DELAY) {
+		if(Time <= LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)) {
 			SOUND_PROCTRACTOR_STOP();
 		}
 	};
@@ -9124,7 +9124,7 @@ void VangerFunctionType::Quant(void)
 	}else{
 		switch(ID){
 			case PROTRACTOR_JESTEROID:
-				if(ActD.pfActive && Time < LifeTime - SIGNATOR_DELAY){
+				if(ActD.pfActive && Time < LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 					if(ActD.pfActive->R_curr.z < 400) ActD.pfActive->impulse(Vector(0,0,64),RND(25),0);
 					else ActD.pfActive->impulse(Vector(0,0,0),1,RND(50));
 					SoundFlag |= SoundCopterig;
@@ -9132,7 +9132,7 @@ void VangerFunctionType::Quant(void)
 				break;
 			case PROTRACTOR_MOLERIZATOR:
 				if(ActD.pfActive){
-					if(Time < LifeTime - SIGNATOR_DELAY){
+					if(Time < LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 						if(!(ActD.pfActive->mole_on)){
 							ActD.pfActive->Molerizator = 1;
 							if(Time < LifeTime - 2){
@@ -9141,7 +9141,7 @@ void VangerFunctionType::Quant(void)
 							};
 						};
 					}else{
-						if(Time == LifeTime - SIGNATOR_DELAY){
+						if(Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 							ActD.pfActive->set_3D(SET_3D_DIRECT_PLACE,vR.x,vR.y,-32,0,-((VangerUnit*)(ActD.pfActive))->Angle,0);
 							for(i = 0;i < MOLERIZATOR_NUM;i++)
 								MapD.CreateDust(Vector(XCYCL(vR.x + MOLERIZATOR_RADIUS - RND(2*MOLERIZATOR_RADIUS)),YCYCL(vR.y + MOLERIZATOR_RADIUS - RND(2*MOLERIZATOR_RADIUS)),0),MAP_DUST_PROCESS);
@@ -9152,31 +9152,31 @@ void VangerFunctionType::Quant(void)
 				};
 				break;
 			case PROTRACTOR_SCALE_UP:
-				if(ActD.pfActive && Time == LifeTime - SIGNATOR_DELAY){
+				if(ActD.pfActive && Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 					ActD.pfActive->scale_size = ActD.pfActive->original_scale_size * 2;
 					SOUND_PR_RESIZE();
 				};
 				break;
 			case PROTRACTOR_SCALE_DOWN:
-				if(ActD.pfActive && Time == LifeTime - SIGNATOR_DELAY){
+				if(ActD.pfActive && Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 					ActD.pfActive->scale_size = ActD.pfActive->original_scale_size / 2;
 					SOUND_PR_RESIZE();
 				};
 				break;		
 			case PROTRACTOR_BEEBOS_DANCE:
-				if(ActD.pfActive && Time == LifeTime - SIGNATOR_DELAY)
+				if(ActD.pfActive && Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF))
 					vInsectTarget = vR;
 				break;
 			case PROTRACTOR_PREPASSAGE:
-				if(ActD.pfActive && Time == LifeTime - SIGNATOR_DELAY){
+				if(ActD.pfActive && Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 					SOUND_PR_FUNCTION_START();
 					((VangerUnit*)(ActD.pfActive))->ExternalDraw = 0;
 					ActD.pfActive->switch_analysis(1);
-					ActD.pfActive->CreateParticleMechos(ActD.pfActive->R_curr,300,LifeTime - SIGNATOR_DELAY);
+					ActD.pfActive->CreateParticleMechos(ActD.pfActive->R_curr,300,LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF));
 				};
 				break;
 			case MECHANIC_ITEM_FALL:
-				if(ActD.mfActive && Time == LifeTime - SKY_QUAKE_TIME){
+				if(ActD.mfActive && Time == LifeTime - (SKY_QUAKE_TIME * GAME_TIME_COEFF)){
 					if(ActD.mfActive == ActD.Active){
 						SkyQuake2.set(ScreenCX,ScreenCY,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 						SkyQuakeEnable2 = 1;
@@ -9185,13 +9185,13 @@ void VangerFunctionType::Quant(void)
 				break;
 			case MECHANIC_BEEB_NATION:
 				if(ActD.mfActive){
-					if(Time == LifeTime - SKY_QUAKE_TIME){
+					if(Time == LifeTime - (SKY_QUAKE_TIME * GAME_TIME_COEFF)){
 						if(ActD.mfActive == ActD.Active){
 							SkyQuake2.set(ScreenCX,ScreenCY,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 							SkyQuakeEnable2 = 1;
 						};
 					}else{
-						if(Time == LifeTime - SKY_QUAKE_DELAY){
+						if(Time == LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF)){
 							SOUND_MES_BEEBSOSPY();
 							ActD.mfActive->BeebonationFlag = 1;
 							((VangerUnit*)(ActD.mfActive))->convert_to_beeb(&(ModelD.ActiveModel(ModelD.FindModel("Bug"))));
@@ -9215,13 +9215,13 @@ void VangerFunctionType::Quant(void)
 				break;
 			case MECHANIC_UNVISIBLE:
 				if(ActD.mfActive){
-					if(Time == LifeTime - SKY_QUAKE_TIME){
+					if(Time == LifeTime - (SKY_QUAKE_TIME * GAME_TIME_COEFF)){
 						if(ActD.mfActive == ActD.Active){
 							SkyQuake2.set(ScreenCX,ScreenCY,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 							SkyQuakeEnable2 = 1;
 						};
 					}else{
-						if(Time == LifeTime - SKY_QUAKE_DELAY){
+						if(Time == LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF)){
 							SOUND_MES_CLOAK();
 							((VangerUnit*)(ActD.mfActive))->set_draw_mode(TRANSPARENCY_DRAW_MODE);
 							ObjectDestroy(ActD.mfActive,0);
@@ -9231,8 +9231,8 @@ void VangerFunctionType::Quant(void)
 				break;
 			case MECHANIC_FIRE_GARDEN:
 				if(ActD.mfActive){
-					if(Time > LifeTime - SKY_QUAKE_DELAY){
-						if(Time == LifeTime - SKY_QUAKE_TIME){
+					if(Time > LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF)){
+						if(Time == LifeTime - (SKY_QUAKE_TIME * GAME_TIME_COEFF)){
 							if(ActD.mfActive == ActD.Active){
 								SkyQuake2.set(ScreenCX,ScreenCY,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 								SkyQuakeEnable2 = 1;
@@ -9240,7 +9240,7 @@ void VangerFunctionType::Quant(void)
 						};
 					}else{
 						SOUND_MES_FIRE();
-						a = 2*PI * Time / (LifeTime - SKY_QUAKE_DELAY);
+						a = 2*PI * Time / (LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF));
 						n = BulletD.CreateBullet();
 						vCheck = Vector(ActD.mfActive->radius*4,0,0) * DBM(a,Z_AXIS);
 						vCheck += ActD.mfActive->R_curr;
@@ -9324,7 +9324,7 @@ void ActionDispatcher::FunctionQuant(void)
 			if(NetFunctionMessiah != ch){
 				if(ch & 128){
 					aciMechMessiahEvent = ((ch >> 3) & 7) + 1;					
-					if(GetDistTime(NetGlobalTime,mfActive->NetMessiahFunctionTime) > 256*SKY_QUAKE_DELAY / 20)
+					if(GetDistTime(NetGlobalTime,mfActive->NetMessiahFunctionTime) > 256*(SKY_QUAKE_DELAY * GAME_TIME_COEFF) / 20)
 						m_flag = 1;
 				}else
 					NewFunction(MECHANIC_BEEB_NATION,((ch >> 3) & 7) + 1);
