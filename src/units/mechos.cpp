@@ -988,7 +988,7 @@ void VangerUnit::Destroy(void)
 				send_player_body(my_player_body);
 				
 				ExternalMode = EXTERNAL_MODE_EARTH_PREPARE;
-				ExternalTime = 10;
+				ExternalTime = 10 * GAME_TIME_COEFF;
 				PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
 
 				switch(my_server_data.GameType){
@@ -1024,7 +1024,7 @@ void VangerUnit::Destroy(void)
 						ChangeWorldConstraction = WORLD_FOSTRAL;
 
 					ExternalMode = EXTERNAL_MODE_LIGHT;
-					ExternalTime = 3;
+					ExternalTime = 3 * GAME_TIME_COEFF;
 		//			StartHidePassage(ExternalTime);
 					PalCD.Set(CPAL_PASSAGE_TO,ExternalTime);
 					ExternalLock = 1;
@@ -4040,7 +4040,7 @@ void VangerUnit::Quant(void)
 					ExternalObject = NULL;
 
 					ExternalMode = EXTERNAL_MODE_FREE_IN;
-					ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+					ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 					CreateParticleRotor(R_curr,83);
 					PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
 					ExternalDraw = 0;
@@ -4152,7 +4152,7 @@ void VangerUnit::Quant(void)
 			ExternalObject = NULL;
 
 			ExternalMode = EXTERNAL_MODE_FREE_IN;
-			ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+			ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 			CreateParticleRotor(R_curr,83);
 			PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
 			ExternalDraw = 0;
@@ -4596,16 +4596,16 @@ void VangerUnit::InitEnvironment(void)
 
 						if(ActD.SpobsEntrance){
 							if(!ActD.CameraModifier){
-								camera_direct(1650,820,1 << 8,0,0,20);
+								camera_direct(1650,820,1 << 8,0,0,20*GAME_TIME_COEFF);
 								ActD.CameraModifier = 20;
 							}else{								
 								if(ActD.CameraModifier == 1){
-									camera_direct(1650,820,1 << 8,0,0,1);
+									camera_direct(1650,820,1 << 8,0,0,1*GAME_TIME_COEFF);
 								}else ActD.CameraModifier--;
 							};
 						}else{
 							if(ActD.CameraModifier){
-								camera_direct(R_curr.x,R_curr.y,1 << 8,0,0,20);
+								camera_direct(R_curr.x,R_curr.y,1 << 8,0,0,20*GAME_TIME_COEFF);
 								ActD.CameraModifier = 0;
 							};
 						};
@@ -5155,7 +5155,7 @@ void VangerUnit::SensorQuant(void)
 
 							ExternalMode = EXTERNAL_MODE_PASS_IN;
 							if(Visibility == VISIBLE){
-								ExternalTime = ExternalSensor->Owner->DeactiveTime;
+								ExternalTime = ExternalSensor->Owner->DeactiveTime * GAME_TIME_COEFF;
 								CreateParticleRotor(ExternalSensor->R_curr,ExternalSensor->radius);
 								if(Status & SOBJ_ACTIVE){
 									camera_direct(ExternalSensor->R_curr.x,ExternalSensor->R_curr.y,1 << 7,0,0,ExternalTime + 1);
@@ -5176,7 +5176,7 @@ void VangerUnit::SensorQuant(void)
 								aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL);
 								ExternalMode = EXTERNAL_MODE_PASS_IN;
 								if(Visibility == VISIBLE){
-									ExternalTime = ExternalSensor->Owner->DeactiveTime;
+									ExternalTime = ExternalSensor->Owner->DeactiveTime * GAME_TIME_COEFF;
 									CreateParticleRotor(ExternalSensor->R_curr,ExternalSensor->radius);
 									if(Status & SOBJ_ACTIVE){
 										camera_direct(ExternalSensor->R_curr.x,ExternalSensor->R_curr.y,1 << 7,0,0,ExternalTime + 1);
@@ -5221,7 +5221,7 @@ void VangerUnit::SensorQuant(void)
 						ExternalMode = EXTERNAL_MODE_EARTH_IN;
 						aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL);
 						if(Visibility == VISIBLE){
-							ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+							ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 							CreateParticleRotor(ExternalSensor->R_curr,ExternalSensor->radius);
 							if(Status & SOBJ_ACTIVE){
 								camera_direct(ExternalSensor->R_curr.x,ExternalSensor->R_curr.y,1 << 7,0,0,ExternalTime + 1);
@@ -5549,7 +5549,7 @@ void VangerUnit::SensorQuant(void)
 			ExternalTime--;
 			if(ExternalTime <= 0){
 				ExternalMode = EXTERNAL_MODE_FREE_IN;
-				ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+				ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 				CreateParticleRotor(R_curr,83);
 //				StartHidePassage(ExternalTime);
 				PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
@@ -5943,7 +5943,7 @@ void VangerUnit::AddFree(void)
 		}else{
 			ExternalMode = EXTERNAL_MODE_PASS_OUT;
 			ExternalObject = NULL;
-			ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+			ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 			ExternalLock = 1;
 			ExternalDraw = 0;
 			switch_analysis(1);
@@ -5956,10 +5956,10 @@ void VangerUnit::AddFree(void)
 			set_3D(SET_3D_DIRECT_PLACE,R_curr.x,R_curr.y,255,0,-Angle,0);
 		};
 	}else{
-		if(NetworkON && Visibility == VISIBLE && pNetPlayer && GetDistTime(NetGlobalTime,pNetPlayer->body.BirthTime) < 256*5 + 256*ROTOR_PROCESS_LIFE_TIME / 20){
+		if(NetworkON && Visibility == VISIBLE && pNetPlayer && GetDistTime(NetGlobalTime,pNetPlayer->body.BirthTime) < 256*5 + 256*(ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF) / 20){
 			ExternalMode = EXTERNAL_MODE_PASS_OUT;
 			ExternalObject = NULL;
-			ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+			ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 			ExternalLock = 1;
 			ExternalDraw = 0;
 			switch_analysis(1);
@@ -5981,12 +5981,12 @@ void VangerUnit::AddPassage(SensorDataType* p)
 	if(Status & SOBJ_ACTIVE){
 		ExternalMode = EXTERNAL_MODE_PASS_OUT;
 		ExternalObject = p;
-		ExternalTime = p->Owner->ActiveTime;
+		ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
 		ExternalLock = 1;
 		ExternalDraw = 0;
 		switch_analysis(1);
 		CreateParticleMechos(ExternalObject->R_curr,500);
-		ActD.PassageTouchEnable = MAX_PASSAGE_DELAY;
+		ActD.PassageTouchEnable = MAX_PASSAGE_DELAY * GAME_TIME_COEFF;
 		PalCD.Set(CPAL_SHOW_PASSAGE,ExternalTime);
 		camera_direct(R_curr.x,R_curr.y,1 << 8,0,0,ExternalTime + 1);
 		if(ChangeArmor != -1 && ChangeEnergy != -1){
@@ -5995,10 +5995,10 @@ void VangerUnit::AddPassage(SensorDataType* p)
 		};
 	}else{
 		if(NetworkON){
-			if(Visibility == VISIBLE && pNetPlayer && GetDistTime(NetGlobalTime,pNetPlayer->body.BirthTime) < 256*5 + 256*ROTOR_PROCESS_LIFE_TIME/20){
+			if(Visibility == VISIBLE && pNetPlayer && GetDistTime(NetGlobalTime,pNetPlayer->body.BirthTime) < 256*5 + 256*(ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF)/20){
 				ExternalMode = EXTERNAL_MODE_PASS_OUT;
 				ExternalObject = p;
-				ExternalTime = p->Owner->ActiveTime;
+				ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
 				ExternalLock = 1;
 				ExternalDraw = 0;
 				switch_analysis(1);
@@ -6015,7 +6015,7 @@ void VangerUnit::AddPassage(SensorDataType* p)
 			if(Visibility == VISIBLE){
 				ExternalMode = EXTERNAL_MODE_PASS_OUT;
 				ExternalObject = p;
-				ExternalTime = p->Owner->ActiveTime;
+				ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
 				ExternalLock = 1;
 				ExternalDraw = 0;
 				switch_analysis(1);
@@ -6798,8 +6798,10 @@ void VangerUnit::CreateParticleMechos(const Vector& v,int r, int _type)
 
 void VangerUnit::CreateParticleRotor(const Vector& v,int r)
 {
+	// r *= GAME_TIME_COEFF;
 	TargetParticleObject* p;
-	int i;
+	int i,ii, spd1, spd2;
+	Vector vertexTarget;
 	unsigned char color_offset,color_shift;
 	if(Visibility == VISIBLE){
 		COLORS_VALUE_TABLE[COLORS_IDS::BODY*2] = body_color_offset;
@@ -6813,20 +6815,26 @@ void VangerUnit::CreateParticleRotor(const Vector& v,int r)
 
 				color_offset = COLORS_VALUE_TABLE[model->polygons[i].color_id*2];
 				color_shift = COLORS_VALUE_TABLE[model->polygons[i].color_id*2 + 1];
-
-				p->AddVertex(R_curr + (Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)*(A_scl)),
+				vertexTarget = R_curr + (Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)*(A_scl));
+				// vertexTarget *= GAME_TIME_COEFF;
+				for (ii = 0; ii < 2; ii++) {
+					spd1 = (2 << 8) + realRND(1 << 8);
+					spd2 = (3 << 7) + realRND(1 << 7);
+					p->AddVertex(vertexTarget,
 						color_offset + (((1 << (7 - color_shift)) - 1) & ~1),
-						(2 << 8) + realRND(1 << 8),(3 << 7) + realRND(1 << 7));
-				p->AddVertex(R_curr + (Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)*(A_scl)),
-						color_offset + (((1 << (7 - color_shift)) - 1) & ~1),
-						(2 << 8) + realRND(1 << 8),(3 << 7) + realRND(1 << 7));
+						spd1, spd2);
+				}
 			};
 
-
-			for(i = 0;i < (p->NumParticle - model->num_poly*2);i++)
-				p->AddVertex(v + Vector(r - realRND(r << 1),r - realRND(r << 1),r - realRND(r << 1)),
+			spd2 = 1 << 8;
+			for(i = 0;i < (p->NumParticle - model->num_poly*2);i++) {
+				vertexTarget = v + (Vector(r - realRND(r << 1),r - realRND(r << 1),r - realRND(r << 1)));
+				// vertexTarget *= GAME_TIME_COEFF;
+				spd1 = (15 << 8) + realRND(20 << 8);
+				p->AddVertex(vertexTarget,
 						FIRE_COLOR_FIRST + realRND(FIRE_PROCESS_COLOR_MAX),
-						(15 << 8) + realRND(20 << 8),1 << 8);
+						spd1,spd2);
+			}
 
 			EffD.ConnectObject(p);
 		};
@@ -13647,15 +13655,15 @@ void FakeOfMight(void)
 	};
 };
 
-void XpeditionOFF(int type)
+void XpeditionOFF(int type) //Finish the game!
 {
 	if(uvsKronActive && ActD.Active){
 		ActD.Active->ExternalMode = EXTERNAL_MODE_EARTH_IN;
 		aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL);	
-		ActD.Active->ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+		ActD.Active->ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 		ActD.Active->CreateParticleRotor(ActD.Active->R_curr,ActD.Active->radius);		
-		camera_direct(ActD.Active->R_curr.x,ActD.Active->R_curr.y,1 << 7,0,0,ROTOR_PROCESS_LIFE_TIME + 1);
-		PalCD.Set(CPAL_HIDE_PASSAGE,ROTOR_PROCESS_LIFE_TIME);			
+		camera_direct(ActD.Active->R_curr.x,ActD.Active->R_curr.y,1 << 7,0,0,(ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF) + 1);
+		PalCD.Set(CPAL_HIDE_PASSAGE,ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF);			
 		ActD.Active->ExternalLock = 1;
 		ActD.Active->ExternalDraw = 0;
 		ActD.Active->ExternalObject = NULL;
