@@ -458,7 +458,7 @@ void EffectDispatcher::CreateParticle(char _init,const Vector& v1,const Vector& 
 		GameD.ConnectBaseList(p);
 	};
 };
-
+// 83+ red lines effect
 void EffectDispatcher::CreateRingOfLord(int type,const Vector v1,int rad,int ltime,int fcol,int lcol,int vel)
 {
 	ParticleObject* p;
@@ -604,7 +604,7 @@ const int PARTICLE_MAX_DELTA = 15 << 8;
 void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 {
 	int tx,ty,px,py,d;
-
+	c *= XTCORE_FRAME_NORMAL;
 	tx = v.x - vR.x;
 	ty = v.y - vR.y;
 
@@ -1143,7 +1143,7 @@ void ParticleObject::CreateRingOfLord(const Vector v1,int rad,int ltime,int fcol
 	Mode = 1;
 
 	Time = 0;
-	LifeTime = (int)round(ltime );
+	LifeTime = ltime;
 
 	FirstColor = fcol << 8;
 	DeltaColor = ((lcol << 8) - FirstColor) / LifeTime;
@@ -1262,13 +1262,10 @@ void TargetParticleObject::DrawQuant(void)
 {
 	int i;
 	TargetParticleType* p;
-
 	if(TargetType){
-		if(AdvancedView) for(i = 0,p = Data;i < CurrParticle;i++,p++) p->aQuant();
-		else for(i = 0,p = Data;i < CurrParticle;i++,p++) p->sQuant();
+		for(i = 0,p = Data;i < CurrParticle;i++,p++) p->aQuant();
 	}else{
-		if(AdvancedView) for(i = 0,p = Data;i < CurrParticle;i++,p++) p->aQuant2();
-		else for(i = 0,p = Data;i < CurrParticle;i++,p++) p->sQuant2();
+		for(i = 0,p = Data;i < CurrParticle;i++,p++) p->aQuant2();
 	};
 };
 
@@ -1351,53 +1348,12 @@ void TargetParticleType::aQuant(void)
 
 		tx = tx * s / d;
 		ty = ty * s / d;
-
-//		vD.x += tx*s / d;
-//		vD.y += ty*s / d;
-		vD.x += tx + (ty >> TARGET_PARTICLE_NORMAL_SHIFT);
-		vD.y += ty - (tx >> TARGET_PARTICLE_NORMAL_SHIFT);
-
-		if(pDist < d){
-			vD.x -= vD.x >> 4;
-			vD.y -= vD.y >> 4;
-		};
-
-		vR.x += vD.x;
-		vR.y += vD.y;
-		vR.z += vD.z;
-
-		vR.x &= PTrack_mask_x;
-//		vR.y &= PTrack_mask_y;
-		pDist = d;
-
-		G2LQ(vR.x >> 8,vR.y >> 8,vR.z,tx,ty);
-		if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
-	};
-};
-
-
-void TargetParticleType::sQuant(void)
-{
-	int tx,ty,d;
-	tx = SPGetDistX(vT.x,vR.x);
-	ty = vT.y - vR.y;
-	if(tx || ty){
-//		d = (int)(sqrt(tx*(double)tx + ty*(double)ty));
-		if(tx > 0){
-			if(ty > 0) d = tx + ty;
-			else d = tx - ty;
-		}else{
-			if(ty > 0) d = ty - tx;
-			else d = -tx - ty;
-		};
-
-		tx = tx * s / d;
-		ty = ty * s / d;
-
-//		vD.x += tx*s / d;
-//		vD.y += ty*s / d;
-		vD.x += tx + (ty >> TARGET_PARTICLE_NORMAL_SHIFT);
-		vD.y += ty - (tx >> TARGET_PARTICLE_NORMAL_SHIFT);
+		tx += (ty >> TARGET_PARTICLE_NORMAL_SHIFT);
+		ty -= (tx >> TARGET_PARTICLE_NORMAL_SHIFT);
+		tx /= GAME_TIME_COEFF;
+		ty /= GAME_TIME_COEFF;
+		vD.x += tx;
+		vD.y += ty;
 
 		if(pDist < d){
 			vD.x -= vD.x >> 4;
@@ -1411,13 +1367,13 @@ void TargetParticleType::sQuant(void)
 		vR.x &= PTrack_mask_x;
 //		vR.y &= PTrack_mask_y;
 		pDist = d;
-
-//		tx = round(SPGetDistX(vR.x,SPViewX) * ScaleMapInvFlt) + ScreenCX;
-//		ty = round((vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
-
-		tx = ((int)round(SPGetDistX(vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
-		ty = ((int)round((vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
-
+		if (AdvancedView) {
+			G2LQ(vR.x >> 8,vR.y >> 8,vR.z,tx,ty);
+		} else {
+			tx = ((int)round(SPGetDistX(vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
+			ty = ((int)round((vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
+		}
+		
 		if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
 	};
 };
@@ -1469,15 +1425,15 @@ void TargetParticleObject::AddVertex(const Vector& _vR,int _Color,int _Speed1,in
 
 		d = vCheck.vabs();
 		if(d){
-			vCheck.x = (int)round(_Speed1 / GAME_TIME_COEFF) * vCheck.x / d;
-			vCheck.y = (int)round(_Speed1 / GAME_TIME_COEFF) * vCheck.y / d;
+			vCheck.x = (int)round(_Speed1) * vCheck.x / d;
+			vCheck.y = (int)round(_Speed1) * vCheck.y / d;
 			p->vD.x = vCheck.x + vCheck.y;
 			p->vD.y = vCheck.y - vCheck.x;
 		}else p->vD = Vector(0,0,0);
 
 		p->vD.z = (vCheck.z << 8) / LifeTime;
 
-		p->s = (int)round(_Speed2 / GAME_TIME_COEFF);
+		p->s = (int)round(_Speed2);
 		p->vT = vTarget;
 		p->pDist = d;
 		CurrParticle++;
@@ -1506,38 +1462,13 @@ void TargetParticleType::aQuant2(void)
 		vT = vD;
 	}
 
-	G2LQ(vR.x >> 8,vR.y >> 8,vR.z,tx,ty);
-	if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
-};     
-
-
-void TargetParticleType::sQuant2(void)
-{
-	int tx,ty;
-
-	tx = SPGetDistX(vT.x,vR.x);
-	ty = vT.y - vR.y;
-
-	vR.x += tx / pDist;
-	vR.y += ty / pDist;
-	vR.z += s;
-
-	vR.x &= PTrack_mask_x;
-//	vR.y &= PTrack_mask_y;
-	pDist--;
-
-	if (!pDist && type){
-		pDist = LifeTime;
-
-		vT = vD;
+	if (AdvancedView) {
+		G2LQ(vR.x >> 8,vR.y >> 8,vR.z,tx,ty);
+	} else {
+		tx = ((int)round(SPGetDistX(vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
+		ty = ((int)round((vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 	}
-
-//	tx = round(SPGetDistX(vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
-//	ty = round((vR.y - SPViewY)*ScaleMapInvFlt) + ScreenCY;
-
-	tx = ((int)round(SPGetDistX(vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
-	ty = ((int)round((vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
-
+	
 	if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
 };     
 

@@ -23,7 +23,7 @@ struct DAST_SIGN_TYPE{
 struct dastPoly3D{
 	Vector *p, *p_array;
 	int n;
-	int count;
+	int count, quant;
 
 	dastPoly3D( Vector lp, Vector rp, Vector dv );
 	dastPoly3D(  Vector, int );

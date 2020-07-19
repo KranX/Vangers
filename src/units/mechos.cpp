@@ -988,7 +988,7 @@ void VangerUnit::Destroy(void)
 				send_player_body(my_player_body);
 				
 				ExternalMode = EXTERNAL_MODE_EARTH_PREPARE;
-				ExternalTime = 10;
+				ExternalTime = 10 * GAME_TIME_COEFF;
 				PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
 
 				switch(my_server_data.GameType){
@@ -1024,7 +1024,7 @@ void VangerUnit::Destroy(void)
 						ChangeWorldConstraction = WORLD_FOSTRAL;
 
 					ExternalMode = EXTERNAL_MODE_LIGHT;
-					ExternalTime = 3;
+					ExternalTime = 3 * GAME_TIME_COEFF;
 		//			StartHidePassage(ExternalTime);
 					PalCD.Set(CPAL_PASSAGE_TO,ExternalTime);
 					ExternalLock = 1;
@@ -3300,7 +3300,7 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 					: camera_slope_min;
 	camera_vs += (double)(s - SlopeAngle)*camera_mis * XTCORE_FRAME_NORMAL;
 	camera_vs *= camera_drags*pow(0.97,camera_vs_min/(fabs(camera_vs) + 1e-10));
-	camera_s += camera_vs * XTCORE_FRAME_NORMAL;
+	camera_s += camera_vs;
 	SlopeAngle += (t = round(camera_s));
 	if(SlopeAngle < -SLOPE_MAX)
 		SlopeAngle = -SLOPE_MAX;
@@ -3314,7 +3314,7 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	camera_vt += (double)DistPi(camera_rotate_enable ? Turn : 0,TurnAngle)*camera_mit * XTCORE_FRAME_NORMAL;
 	camera_vt *= camera_dragt*pow(0.97,camera_vt_min/(fabs(camera_vt) + 1e-10));
 	camera_vi *= camera_dragi*pow(0.97,camera_vt_min/(fabs(camera_vi) + 1e-10));
-	camera_t += camera_vt*XTCORE_FRAME_NORMAL + camera_vi;
+	camera_t += camera_vt + camera_vi;
 	TurnAngle += (t = round(camera_t));
 	camera_t -= t;
 	if(RAM16 && (TurnSecX > curGMap -> xsize || SlopeAngle) && TurnAngle)
@@ -3348,13 +3348,13 @@ void camera_quant()
 	camera_z -= t;
 
 	camera_s += camera_vs;
-	SlopeAngle += (t = round(camera_s)) * XTCORE_FRAME_NORMAL;
+	SlopeAngle += t = round(camera_s);
 	if(SlopeAngle < -SLOPE_MAX)
 		SlopeAngle = -SLOPE_MAX;
 	camera_s -= t;
 
 	camera_t += camera_vt;
-	TurnAngle += (t = round(camera_t)) * XTCORE_FRAME_NORMAL;
+	TurnAngle += t = round(camera_t);
 	camera_t -= t;
 
 	calc_view_factors();
@@ -4040,7 +4040,7 @@ void VangerUnit::Quant(void)
 					ExternalObject = NULL;
 
 					ExternalMode = EXTERNAL_MODE_FREE_IN;
-					ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+					ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 					CreateParticleRotor(R_curr,83);
 					PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
 					ExternalDraw = 0;
@@ -4152,7 +4152,7 @@ void VangerUnit::Quant(void)
 			ExternalObject = NULL;
 
 			ExternalMode = EXTERNAL_MODE_FREE_IN;
-			ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+			ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 			CreateParticleRotor(R_curr,83);
 			PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
 			ExternalDraw = 0;
@@ -4596,16 +4596,16 @@ void VangerUnit::InitEnvironment(void)
 
 						if(ActD.SpobsEntrance){
 							if(!ActD.CameraModifier){
-								camera_direct(1650,820,1 << 8,0,0,20);
+								camera_direct(1650,820,1 << 8,0,0,20*GAME_TIME_COEFF);
 								ActD.CameraModifier = 20;
 							}else{								
 								if(ActD.CameraModifier == 1){
-									camera_direct(1650,820,1 << 8,0,0,1);
+									camera_direct(1650,820,1 << 8,0,0,1*GAME_TIME_COEFF);
 								}else ActD.CameraModifier--;
 							};
 						}else{
 							if(ActD.CameraModifier){
-								camera_direct(R_curr.x,R_curr.y,1 << 8,0,0,20);
+								camera_direct(R_curr.x,R_curr.y,1 << 8,0,0,20*GAME_TIME_COEFF);
 								ActD.CameraModifier = 0;
 							};
 						};
@@ -5155,7 +5155,7 @@ void VangerUnit::SensorQuant(void)
 
 							ExternalMode = EXTERNAL_MODE_PASS_IN;
 							if(Visibility == VISIBLE){
-								ExternalTime = ExternalSensor->Owner->DeactiveTime;
+								ExternalTime = ExternalSensor->Owner->DeactiveTime * GAME_TIME_COEFF;
 								CreateParticleRotor(ExternalSensor->R_curr,ExternalSensor->radius);
 								if(Status & SOBJ_ACTIVE){
 									camera_direct(ExternalSensor->R_curr.x,ExternalSensor->R_curr.y,1 << 7,0,0,ExternalTime + 1);
@@ -5176,7 +5176,7 @@ void VangerUnit::SensorQuant(void)
 								aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL);
 								ExternalMode = EXTERNAL_MODE_PASS_IN;
 								if(Visibility == VISIBLE){
-									ExternalTime = ExternalSensor->Owner->DeactiveTime;
+									ExternalTime = ExternalSensor->Owner->DeactiveTime * GAME_TIME_COEFF;
 									CreateParticleRotor(ExternalSensor->R_curr,ExternalSensor->radius);
 									if(Status & SOBJ_ACTIVE){
 										camera_direct(ExternalSensor->R_curr.x,ExternalSensor->R_curr.y,1 << 7,0,0,ExternalTime + 1);
@@ -5221,7 +5221,7 @@ void VangerUnit::SensorQuant(void)
 						ExternalMode = EXTERNAL_MODE_EARTH_IN;
 						aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL);
 						if(Visibility == VISIBLE){
-							ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+							ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 							CreateParticleRotor(ExternalSensor->R_curr,ExternalSensor->radius);
 							if(Status & SOBJ_ACTIVE){
 								camera_direct(ExternalSensor->R_curr.x,ExternalSensor->R_curr.y,1 << 7,0,0,ExternalTime + 1);
@@ -5549,7 +5549,7 @@ void VangerUnit::SensorQuant(void)
 			ExternalTime--;
 			if(ExternalTime <= 0){
 				ExternalMode = EXTERNAL_MODE_FREE_IN;
-				ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+				ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 				CreateParticleRotor(R_curr,83);
 //				StartHidePassage(ExternalTime);
 				PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
@@ -5943,7 +5943,7 @@ void VangerUnit::AddFree(void)
 		}else{
 			ExternalMode = EXTERNAL_MODE_PASS_OUT;
 			ExternalObject = NULL;
-			ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+			ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 			ExternalLock = 1;
 			ExternalDraw = 0;
 			switch_analysis(1);
@@ -5956,10 +5956,10 @@ void VangerUnit::AddFree(void)
 			set_3D(SET_3D_DIRECT_PLACE,R_curr.x,R_curr.y,255,0,-Angle,0);
 		};
 	}else{
-		if(NetworkON && Visibility == VISIBLE && pNetPlayer && GetDistTime(NetGlobalTime,pNetPlayer->body.BirthTime) < 256*5 + 256*ROTOR_PROCESS_LIFE_TIME / 20){
+		if(NetworkON && Visibility == VISIBLE && pNetPlayer && GetDistTime(NetGlobalTime,pNetPlayer->body.BirthTime) < 256*5 + 256*(ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF) / 20){
 			ExternalMode = EXTERNAL_MODE_PASS_OUT;
 			ExternalObject = NULL;
-			ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+			ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 			ExternalLock = 1;
 			ExternalDraw = 0;
 			switch_analysis(1);
@@ -5981,12 +5981,12 @@ void VangerUnit::AddPassage(SensorDataType* p)
 	if(Status & SOBJ_ACTIVE){
 		ExternalMode = EXTERNAL_MODE_PASS_OUT;
 		ExternalObject = p;
-		ExternalTime = p->Owner->ActiveTime;
+		ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
 		ExternalLock = 1;
 		ExternalDraw = 0;
 		switch_analysis(1);
 		CreateParticleMechos(ExternalObject->R_curr,500);
-		ActD.PassageTouchEnable = MAX_PASSAGE_DELAY;
+		ActD.PassageTouchEnable = MAX_PASSAGE_DELAY * GAME_TIME_COEFF;
 		PalCD.Set(CPAL_SHOW_PASSAGE,ExternalTime);
 		camera_direct(R_curr.x,R_curr.y,1 << 8,0,0,ExternalTime + 1);
 		if(ChangeArmor != -1 && ChangeEnergy != -1){
@@ -5995,10 +5995,10 @@ void VangerUnit::AddPassage(SensorDataType* p)
 		};
 	}else{
 		if(NetworkON){
-			if(Visibility == VISIBLE && pNetPlayer && GetDistTime(NetGlobalTime,pNetPlayer->body.BirthTime) < 256*5 + 256*ROTOR_PROCESS_LIFE_TIME/20){
+			if(Visibility == VISIBLE && pNetPlayer && GetDistTime(NetGlobalTime,pNetPlayer->body.BirthTime) < 256*5 + 256*(ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF)/20){
 				ExternalMode = EXTERNAL_MODE_PASS_OUT;
 				ExternalObject = p;
-				ExternalTime = p->Owner->ActiveTime;
+				ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
 				ExternalLock = 1;
 				ExternalDraw = 0;
 				switch_analysis(1);
@@ -6015,7 +6015,7 @@ void VangerUnit::AddPassage(SensorDataType* p)
 			if(Visibility == VISIBLE){
 				ExternalMode = EXTERNAL_MODE_PASS_OUT;
 				ExternalObject = p;
-				ExternalTime = p->Owner->ActiveTime;
+				ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
 				ExternalLock = 1;
 				ExternalDraw = 0;
 				switch_analysis(1);
@@ -6798,8 +6798,10 @@ void VangerUnit::CreateParticleMechos(const Vector& v,int r, int _type)
 
 void VangerUnit::CreateParticleRotor(const Vector& v,int r)
 {
+	// r *= GAME_TIME_COEFF;
 	TargetParticleObject* p;
-	int i;
+	int i,ii, spd1, spd2;
+	Vector vertexTarget;
 	unsigned char color_offset,color_shift;
 	if(Visibility == VISIBLE){
 		COLORS_VALUE_TABLE[COLORS_IDS::BODY*2] = body_color_offset;
@@ -6813,20 +6815,26 @@ void VangerUnit::CreateParticleRotor(const Vector& v,int r)
 
 				color_offset = COLORS_VALUE_TABLE[model->polygons[i].color_id*2];
 				color_shift = COLORS_VALUE_TABLE[model->polygons[i].color_id*2 + 1];
-
-				p->AddVertex(R_curr + (Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)*(A_scl)),
+				vertexTarget = R_curr + (Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)*(A_scl));
+				// vertexTarget *= GAME_TIME_COEFF;
+				for (ii = 0; ii < 2; ii++) {
+					spd1 = (2 << 8) + realRND(1 << 8);
+					spd2 = (3 << 7) + realRND(1 << 7);
+					p->AddVertex(vertexTarget,
 						color_offset + (((1 << (7 - color_shift)) - 1) & ~1),
-						(2 << 8) + realRND(1 << 8),(3 << 7) + realRND(1 << 7));
-				p->AddVertex(R_curr + (Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)*(A_scl)),
-						color_offset + (((1 << (7 - color_shift)) - 1) & ~1),
-						(2 << 8) + realRND(1 << 8),(3 << 7) + realRND(1 << 7));
+						spd1, spd2);
+				}
 			};
 
-
-			for(i = 0;i < (p->NumParticle - model->num_poly*2);i++)
-				p->AddVertex(v + Vector(r - realRND(r << 1),r - realRND(r << 1),r - realRND(r << 1)),
+			spd2 = 1 << 8;
+			for(i = 0;i < (p->NumParticle - model->num_poly*2);i++) {
+				vertexTarget = v + (Vector(r - realRND(r << 1),r - realRND(r << 1),r - realRND(r << 1)));
+				// vertexTarget *= GAME_TIME_COEFF;
+				spd1 = (15 << 8) + realRND(20 << 8);
+				p->AddVertex(vertexTarget,
 						FIRE_COLOR_FIRST + realRND(FIRE_PROCESS_COLOR_MAX),
-						(15 << 8) + realRND(20 << 8),1 << 8);
+						spd1,spd2);
+			}
 
 			EffD.ConnectObject(p);
 		};
@@ -8865,7 +8873,7 @@ void VangerFunctionType::Init(int _ID,Vector _vR,int _Time,int _External)
 {
 	ID = _ID;
 	vR = _vR;
-	LifeTime = Time = _Time;
+	LifeTime = Time = _Time * GAME_TIME_COEFF;
 	Next = Prev =NULL;	
 
 	if(_External){
@@ -8876,11 +8884,11 @@ void VangerFunctionType::Init(int _ID,Vector _vR,int _Time,int _External)
 			case PROTRACTOR_MOLERIZATOR:						
 			case PROTRACTOR_PALLADIUM:
 			case PROTRACTOR_JESTEROID:
-				Time = LifeTime - SIGNATOR_DELAY + 1;
+				Time = LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF) + 1;
 				break;
 			case MECHANIC_BEEB_NATION:
 			case MECHANIC_UNVISIBLE:			
-				Time = LifeTime - SKY_QUAKE_DELAY + 1;
+				Time = LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF) + 1;
 				break;
 		};
 	}else{
@@ -9010,7 +9018,7 @@ int ActionDispatcher::NewFunction(int id,int tp)
 void VangerFunctionType::SoundQuant(void)
 {
 	if(ID <= PROTRACTOR_PREPASSAGE) {
-		if(Time <= LifeTime - SIGNATOR_DELAY) {
+		if(Time <= LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)) {
 			SOUND_PROCTRACTOR_STOP();
 		}
 	};
@@ -9116,7 +9124,7 @@ void VangerFunctionType::Quant(void)
 	}else{
 		switch(ID){
 			case PROTRACTOR_JESTEROID:
-				if(ActD.pfActive && Time < LifeTime - SIGNATOR_DELAY){
+				if(ActD.pfActive && Time < LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 					if(ActD.pfActive->R_curr.z < 400) ActD.pfActive->impulse(Vector(0,0,64),RND(25),0);
 					else ActD.pfActive->impulse(Vector(0,0,0),1,RND(50));
 					SoundFlag |= SoundCopterig;
@@ -9124,7 +9132,7 @@ void VangerFunctionType::Quant(void)
 				break;
 			case PROTRACTOR_MOLERIZATOR:
 				if(ActD.pfActive){
-					if(Time < LifeTime - SIGNATOR_DELAY){
+					if(Time < LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 						if(!(ActD.pfActive->mole_on)){
 							ActD.pfActive->Molerizator = 1;
 							if(Time < LifeTime - 2){
@@ -9133,7 +9141,7 @@ void VangerFunctionType::Quant(void)
 							};
 						};
 					}else{
-						if(Time == LifeTime - SIGNATOR_DELAY){
+						if(Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 							ActD.pfActive->set_3D(SET_3D_DIRECT_PLACE,vR.x,vR.y,-32,0,-((VangerUnit*)(ActD.pfActive))->Angle,0);
 							for(i = 0;i < MOLERIZATOR_NUM;i++)
 								MapD.CreateDust(Vector(XCYCL(vR.x + MOLERIZATOR_RADIUS - RND(2*MOLERIZATOR_RADIUS)),YCYCL(vR.y + MOLERIZATOR_RADIUS - RND(2*MOLERIZATOR_RADIUS)),0),MAP_DUST_PROCESS);
@@ -9144,31 +9152,31 @@ void VangerFunctionType::Quant(void)
 				};
 				break;
 			case PROTRACTOR_SCALE_UP:
-				if(ActD.pfActive && Time == LifeTime - SIGNATOR_DELAY){
+				if(ActD.pfActive && Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 					ActD.pfActive->scale_size = ActD.pfActive->original_scale_size * 2;
 					SOUND_PR_RESIZE();
 				};
 				break;
 			case PROTRACTOR_SCALE_DOWN:
-				if(ActD.pfActive && Time == LifeTime - SIGNATOR_DELAY){
+				if(ActD.pfActive && Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 					ActD.pfActive->scale_size = ActD.pfActive->original_scale_size / 2;
 					SOUND_PR_RESIZE();
 				};
 				break;		
 			case PROTRACTOR_BEEBOS_DANCE:
-				if(ActD.pfActive && Time == LifeTime - SIGNATOR_DELAY)
+				if(ActD.pfActive && Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF))
 					vInsectTarget = vR;
 				break;
 			case PROTRACTOR_PREPASSAGE:
-				if(ActD.pfActive && Time == LifeTime - SIGNATOR_DELAY){
+				if(ActD.pfActive && Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 					SOUND_PR_FUNCTION_START();
 					((VangerUnit*)(ActD.pfActive))->ExternalDraw = 0;
 					ActD.pfActive->switch_analysis(1);
-					ActD.pfActive->CreateParticleMechos(ActD.pfActive->R_curr,300,LifeTime - SIGNATOR_DELAY);
+					ActD.pfActive->CreateParticleMechos(ActD.pfActive->R_curr,300,LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF));
 				};
 				break;
 			case MECHANIC_ITEM_FALL:
-				if(ActD.mfActive && Time == LifeTime - SKY_QUAKE_TIME){
+				if(ActD.mfActive && Time == LifeTime - (SKY_QUAKE_TIME * GAME_TIME_COEFF)){
 					if(ActD.mfActive == ActD.Active){
 						SkyQuake2.set(ScreenCX,ScreenCY,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 						SkyQuakeEnable2 = 1;
@@ -9177,13 +9185,13 @@ void VangerFunctionType::Quant(void)
 				break;
 			case MECHANIC_BEEB_NATION:
 				if(ActD.mfActive){
-					if(Time == LifeTime - SKY_QUAKE_TIME){
+					if(Time == LifeTime - (SKY_QUAKE_TIME * GAME_TIME_COEFF)){
 						if(ActD.mfActive == ActD.Active){
 							SkyQuake2.set(ScreenCX,ScreenCY,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 							SkyQuakeEnable2 = 1;
 						};
 					}else{
-						if(Time == LifeTime - SKY_QUAKE_DELAY){
+						if(Time == LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF)){
 							SOUND_MES_BEEBSOSPY();
 							ActD.mfActive->BeebonationFlag = 1;
 							((VangerUnit*)(ActD.mfActive))->convert_to_beeb(&(ModelD.ActiveModel(ModelD.FindModel("Bug"))));
@@ -9207,13 +9215,13 @@ void VangerFunctionType::Quant(void)
 				break;
 			case MECHANIC_UNVISIBLE:
 				if(ActD.mfActive){
-					if(Time == LifeTime - SKY_QUAKE_TIME){
+					if(Time == LifeTime - (SKY_QUAKE_TIME * GAME_TIME_COEFF)){
 						if(ActD.mfActive == ActD.Active){
 							SkyQuake2.set(ScreenCX,ScreenCY,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 							SkyQuakeEnable2 = 1;
 						};
 					}else{
-						if(Time == LifeTime - SKY_QUAKE_DELAY){
+						if(Time == LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF)){
 							SOUND_MES_CLOAK();
 							((VangerUnit*)(ActD.mfActive))->set_draw_mode(TRANSPARENCY_DRAW_MODE);
 							ObjectDestroy(ActD.mfActive,0);
@@ -9223,8 +9231,8 @@ void VangerFunctionType::Quant(void)
 				break;
 			case MECHANIC_FIRE_GARDEN:
 				if(ActD.mfActive){
-					if(Time > LifeTime - SKY_QUAKE_DELAY){
-						if(Time == LifeTime - SKY_QUAKE_TIME){
+					if(Time > LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF)){
+						if(Time == LifeTime - (SKY_QUAKE_TIME * GAME_TIME_COEFF)){
 							if(ActD.mfActive == ActD.Active){
 								SkyQuake2.set(ScreenCX,ScreenCY,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 								SkyQuakeEnable2 = 1;
@@ -9232,7 +9240,7 @@ void VangerFunctionType::Quant(void)
 						};
 					}else{
 						SOUND_MES_FIRE();
-						a = 2*PI * Time / (LifeTime - SKY_QUAKE_DELAY);
+						a = 2*PI * Time / (LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF));
 						n = BulletD.CreateBullet();
 						vCheck = Vector(ActD.mfActive->radius*4,0,0) * DBM(a,Z_AXIS);
 						vCheck += ActD.mfActive->R_curr;
@@ -9316,7 +9324,7 @@ void ActionDispatcher::FunctionQuant(void)
 			if(NetFunctionMessiah != ch){
 				if(ch & 128){
 					aciMechMessiahEvent = ((ch >> 3) & 7) + 1;					
-					if(GetDistTime(NetGlobalTime,mfActive->NetMessiahFunctionTime) > 256*SKY_QUAKE_DELAY / 20)
+					if(GetDistTime(NetGlobalTime,mfActive->NetMessiahFunctionTime) > 256*(SKY_QUAKE_DELAY * GAME_TIME_COEFF) / 20)
 						m_flag = 1;
 				}else
 					NewFunction(MECHANIC_BEEB_NATION,((ch >> 3) & 7) + 1);
@@ -13647,15 +13655,15 @@ void FakeOfMight(void)
 	};
 };
 
-void XpeditionOFF(int type)
+void XpeditionOFF(int type) //Finish the game!
 {
 	if(uvsKronActive && ActD.Active){
 		ActD.Active->ExternalMode = EXTERNAL_MODE_EARTH_IN;
 		aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL);	
-		ActD.Active->ExternalTime = ROTOR_PROCESS_LIFE_TIME;
+		ActD.Active->ExternalTime = ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF;
 		ActD.Active->CreateParticleRotor(ActD.Active->R_curr,ActD.Active->radius);		
-		camera_direct(ActD.Active->R_curr.x,ActD.Active->R_curr.y,1 << 7,0,0,ROTOR_PROCESS_LIFE_TIME + 1);
-		PalCD.Set(CPAL_HIDE_PASSAGE,ROTOR_PROCESS_LIFE_TIME);			
+		camera_direct(ActD.Active->R_curr.x,ActD.Active->R_curr.y,1 << 7,0,0,(ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF) + 1);
+		PalCD.Set(CPAL_HIDE_PASSAGE,ROTOR_PROCESS_LIFE_TIME * GAME_TIME_COEFF);			
 		ActD.Active->ExternalLock = 1;
 		ActD.Active->ExternalDraw = 0;
 		ActD.Active->ExternalObject = NULL;

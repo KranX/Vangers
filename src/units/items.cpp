@@ -1322,7 +1322,7 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	if(BulletMode & BULLET_CONTROL_MODE::SPEED) Speed += (int)round(p->RealSpeed / GAME_TIME_COEFF);
 
 	if(BulletID == BULLET_TYPE_ID::LASER)
-		vDelta = Vector(Speed,3 - RND(6),0)*p->mFire;
+		vDelta = Vector(Speed,(3 - RND(6))/GAME_TIME_COEFF,0)*p->mFire; //machotine bullet dispersion
 	else 
 		vDelta = Vector(Speed,0,0)*p->mFire;
 
