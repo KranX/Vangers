@@ -4736,7 +4736,7 @@ Screen "Configuration screen"
 		align_x center
 		y	{ $CFG_START_Y + $CFG_DELTA_Y * 3 }
 
-		num_state	4
+		num_state	10
 
 		null_level	$DEFAULT_NULL
 
@@ -4774,6 +4774,60 @@ Screen "Configuration screen"
 			terrain_num	$TERRAIN3
 
 			string		$iSTR_GREEN
+			null_level	$DEFAULT_NULL
+		}
+		State 4 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_RED
+			null_level	$DEFAULT_NULL
+		}
+		State 5 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_WHITE
+			null_level	$DEFAULT_NULL
+		}
+		State 6 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_GRAY
+			null_level	$DEFAULT_NULL
+		}
+		State 7 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_BLACK
+			null_level	$DEFAULT_NULL
+		}
+		State 8 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_CAMOUFLAGE
+			null_level	$DEFAULT_NULL
+		}
+		State 9 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_PATROL
 			null_level	$DEFAULT_NULL
 		}
 		Event {
@@ -7265,7 +7319,7 @@ Screen "Identification screen"
 		align_x center
 		y	{ $CFG_START_Y + $CFG_DELTA_Y * 3 }
 
-		num_state	4
+		num_state	10
 
 		null_level	$DEFAULT_NULL
 
@@ -7311,6 +7365,72 @@ Screen "Identification screen"
 			font		3
 			space		2
 			string		$iSTR_GREEN
+			null_level	$DEFAULT_NULL
+		}
+		State 4 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_RED
+			null_level	$DEFAULT_NULL
+		}
+		State 5 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_WHITE
+			null_level	$DEFAULT_NULL
+		}
+		State 6 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_GRAY
+			null_level	$DEFAULT_NULL
+		}
+		State 7 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_BLACK
+			null_level	$DEFAULT_NULL
+		}
+		State 8 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_CAMOUFLAGE
+			null_level	$DEFAULT_NULL
+		}
+		State 9 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_PATROL
 			null_level	$DEFAULT_NULL
 		}
 		Event {
@@ -9703,7 +9823,7 @@ Screen "Configuration screen 2"
 		align_x center
 		y	{ $CFG_START_Y + $CFG_DELTA_Y * 3 }
 
-		num_state	4
+		num_state	10
 
 		null_level	$DEFAULT_NULL
 
@@ -9749,6 +9869,72 @@ Screen "Configuration screen 2"
 			font		3
 			space		2
 			string		$iSTR_GREEN
+			null_level	$DEFAULT_NULL
+		}
+		State 4 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_RED
+			null_level	$DEFAULT_NULL
+		}
+		State 5 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_WHITE
+			null_level	$DEFAULT_NULL
+		}
+		State 6 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_GRAY
+			null_level	$DEFAULT_NULL
+		}
+		State 7 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_BLACK
+			null_level	$DEFAULT_NULL
+		}
+		State 8 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_CAMOUFLAGE
+			null_level	$DEFAULT_NULL
+		}
+		State 9 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_PATROL
 			null_level	$DEFAULT_NULL
 		}
 		Event {
@@ -11440,7 +11626,7 @@ Screen "Identification screen2"
 		align_x center
 		y	{ $CFG_START_Y + $CFG_DELTA_Y * 3 }
 
-		num_state	4
+		num_state	10
 
 		null_level	$DEFAULT_NULL
 
@@ -11486,6 +11672,72 @@ Screen "Identification screen2"
 			font		3
 			space		2
 			string		$iSTR_GREEN
+			null_level	$DEFAULT_NULL
+		}
+		State 4 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_RED
+			null_level	$DEFAULT_NULL
+		}
+		State 5 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_WHITE
+			null_level	$DEFAULT_NULL
+		}
+		State 6 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_GRAY
+			null_level	$DEFAULT_NULL
+		}
+		State 7 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_BLACK
+			null_level	$DEFAULT_NULL
+		}
+		State 8 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_CAMOUFLAGE
+			null_level	$DEFAULT_NULL
+		}
+		State 9 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_PATROL
 			null_level	$DEFAULT_NULL
 		}
 		Event {

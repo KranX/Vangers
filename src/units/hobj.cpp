@@ -2962,6 +2962,27 @@ char getObjectPosition(int& x,int& y)
 					case 2:
 						c = 6;
 						break;
+					case 3:
+						c = 7;
+						break;
+					case 4:
+						c = 11;
+						break;
+					case 5:
+						c = 12;
+						break;
+					case 6:
+						c = 13;
+						break;
+					case 7:
+						c = 14;
+						break;
+					case 8:
+						c = 15;
+						break;
+					case 9:
+						c = 16;
+						break;
 					default:
 						c = 7;
 						break;

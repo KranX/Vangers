@@ -1260,7 +1260,7 @@ void aMS_RightUnpress(int fl, int x, int y)
 #define MAP_VANGER	1
 #define MAP_INSECT	2
 
-static int aciMapVngColors[5] = { 254, 143, 156, 175, 200 };
+static int aciMapVngColors[11] = { 254, 143, 156, 175, 200, 200, 239, 230, 224, 244, 148 };
 
 void show_map(int x,int y,int sx,int sy)
 {
@@ -1515,6 +1515,24 @@ void show_map(int x,int y,int sx,int sy)
 					case 10:
 						if(scr_x > MAP_PTR_XL && scr_x < sx - MAP_PTR_XL && scr_y > MAP_PTR_XL && scr_y < sy - MAP_PTR_XL)
 							XGR_Rectangle(x + scr_x - MAP_PTR_XL2,y + scr_y - MAP_PTR_XL2,MAP_PTR_XL,MAP_PTR_XL,aciMapVngColors[3],aciMapVngColors[2],XGR_FILLED);
+						break;
+					case 11:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[5],aciMapVngColors[5],XGR_FILLED);
+						break;
+					case 12:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[6],aciMapVngColors[6],XGR_FILLED);
+						break;
+					case 13:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[7],aciMapVngColors[7],XGR_FILLED);
+						break;
+					case 14:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[8],aciMapVngColors[8],XGR_FILLED);
+						break;
+					case 15:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[9],aciMapVngColors[9],XGR_FILLED);
+						break;
+					case 16:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[10],aciMapVngColors[10],XGR_FILLED);
 						break;
 				}
 			}
@@ -5641,6 +5659,12 @@ const unsigned ACI_FRAG_COL0	 = (252 | (246 << 8));
 const unsigned ACI_FRAG_COL1	 = (143 | (135 << 8));
 const unsigned ACI_FRAG_COL2	 = (156 | (151 << 8));
 const unsigned ACI_FRAG_COL3	 = (173 | (166 << 8));
+const unsigned ACI_FRAG_COL4	 = (200 | (195 << 8));
+const unsigned ACI_FRAG_COL5	 = (238 | (233 << 8));
+const unsigned ACI_FRAG_COL6	 = (232 | (228 << 8));
+const unsigned ACI_FRAG_COL7	 = (226 | (224 << 8));
+const unsigned ACI_FRAG_COL8	 = (247 | (243 << 8));
+const unsigned ACI_FRAG_COL9	 = (152 | (148 << 8));
 
 void aciShowFrags(void)
 {
@@ -5649,7 +5673,7 @@ void aciShowFrags(void)
 	PlayerData* p;
 	char* world_name;
 
-	static int fragColors[4] = { ACI_FRAG_COL0, ACI_FRAG_COL1, ACI_FRAG_COL2, ACI_FRAG_COL3 };
+	static int fragColors[10] = { ACI_FRAG_COL0, ACI_FRAG_COL1, ACI_FRAG_COL2, ACI_FRAG_COL3, ACI_FRAG_COL4, ACI_FRAG_COL5, ACI_FRAG_COL6, ACI_FRAG_COL7, ACI_FRAG_COL8, ACI_FRAG_COL9 };
 
 	if(!NetworkON || !players_list.size()) return;
 	if(aScrDisp -> curPrompt -> NumStr){

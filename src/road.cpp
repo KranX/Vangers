@@ -1969,6 +1969,12 @@ void iGameMap::draw(int self)
 					case 1:	zColor = zCOLOR_ORANGE;	break;
 					case 2:	zColor = zCOLOR_BLUE;	break;
 					case 3:	zColor = zCOLOR_YELLOW;	break;
+					case 4:	zColor = zCOLOR_RED;	break;
+					case 5:	zColor = zCOLOR_WHITE;	break;
+					case 6:	zColor = zCOLOR_GRAY;	break;
+					case 7:	zColor = zCOLOR_BLACK;	break;
+					case 8:	zColor = zCOLOR_CAMOUFLAGE;	break;
+					case 9:	zColor = zCOLOR_PATROL;	break;
 					default:zColor = zCOLOR_WHITE;
 				}
 				if (msg->message[0]=='$' && msg->message[1]==':')

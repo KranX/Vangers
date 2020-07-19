@@ -201,6 +201,24 @@
 #define iSTR_GREEN1			"GREEN"
 #define iSTR_GREEN2			"‡…‹…›‰"
 
+#define iSTR_RED1			"RED"
+#define iSTR_RED2			"€‘›‰"
+
+#define iSTR_WHITE1			"WHITE"
+#define iSTR_WHITE2			"…‹›‰"
+
+#define iSTR_GRAY1			"GRAY"
+#define iSTR_GRAY2			"‘…›‰"
+
+#define iSTR_BLACK1			"BLACK"
+#define iSTR_BLACK2			"—π›‰"
+
+#define iSTR_CAMOUFLAGE1			"CAMOUFLAGE"
+#define iSTR_CAMOUFLAGE2			"€“”‹†"
+
+#define iSTR_PATROL1			"PATROL"
+#define iSTR_PATROL2			"€’“‹›‰"
+
 
 #define iSTR_Connection_failed1 	"Connection failed"
 #define iSTR_Connection_failed2 	"‘΅®© ―®¤ª«ξη¥­¨ο"

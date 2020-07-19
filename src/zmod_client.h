@@ -20,6 +20,8 @@
 #define zCOLOR_SILVER	236
 #define zCOLOR_GRAY		231
 #define zCOLOR_TRANSPARENT -1
+#define zCOLOR_CAMOUFLAGE		244
+#define zCOLOR_PATROL		148
 
 extern int z_time;
 extern int z_time_tic;
