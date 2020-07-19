@@ -1006,7 +1006,9 @@ void iScreenOption::SetValueCHR(const char* p)
 		switch(ObjectType){
 			case iSTRING:
 				if(ValueType == iOPTION_VALUE_CUR){
-					strcpy(((iStringElement*)objPtr) -> string,p);
+					if (((iStringElement*)objPtr)->string != p) {
+						strcpy(((iStringElement*)objPtr) -> string, p);
+					}
 					((iStringElement*)objPtr) -> init_size();
 					((iStringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iStringElement*)objPtr) -> owner;
@@ -1016,7 +1018,9 @@ void iScreenOption::SetValueCHR(const char* p)
 				break;
 			case iS_STRING:
 				if(ValueType == iOPTION_VALUE_CUR){
-					strcpy(((iS_StringElement*)objPtr) -> string,p);
+					if (((iS_StringElement*)objPtr)->string != p) {
+						strcpy(((iS_StringElement*)objPtr) -> string, p);
+					}
 					((iS_StringElement*)objPtr) -> init_size();
 					((iS_StringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iS_StringElement*)objPtr) -> owner;
