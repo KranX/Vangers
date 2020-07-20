@@ -5865,7 +5865,7 @@ void VangerUnit::CreateVangerUnit(void)
 
 	CheckPointCount = 0;
 
-	MaxKhoxPoison = KhoxPoison = 300 << 8;
+	MaxKhoxPoison = KhoxPoison = (300 << 8) * GAME_TIME_COEFF;
 
 	VangerChanger = NULL;
 	VangerChangerCount = 0;
@@ -6971,6 +6971,7 @@ void uvsUnitType::CreateUnitType(uvsVanger* p)
 	Armor = MaxArmor;
 	DropTime = 0;
 	OxigenResource = MaxOxigenResource = sc->MaxOxigen;
+	OxigenQuant = 0;
 
 	PowerFlag = sc->MaxFire;
 //	PowerFlag = VANGER_POWER_RUFFA_GUN;
@@ -8130,6 +8131,11 @@ void ActionDispatcher::AddFireResource(void)
 
 void uvsUnitType::AddOxigenResource(void)
 {
+	OxigenQuant++;
+	if (OxigenQuant < GAME_TIME_COEFF) {
+		return;
+	}
+	OxigenQuant = 0;
 	if(OxigenResource < MaxOxigenResource - 10){
 		OxigenResource += 10;
 		if(ActD.Active->Status & SOBJ_ACTIVE) ActD.DrawResourceValue = OxigenResource;
@@ -8222,12 +8228,20 @@ void ActionDispatcher::DrawResource(void)
 
 void uvsUnitType::UseOxigenResource(void)
 {
+	OxigenQuant++;
+	if (OxigenQuant < GAME_TIME_COEFF) {
+		return;
+	}
+	OxigenQuant = 0;
 	if(OxigenResource > 0){
 		OxigenResource--;
 		if(ActD.Active && ActD.Active->Status & SOBJ_ACTIVE) ActD.DrawResourceValue = OxigenResource;
 	}else{
-		Armor = 0;
-		Energy = 0;
+		if (Energy > 0) {
+			Energy-= MaxEnergy / 10;
+		} else if (Armor > 0) {
+			Armor-= MaxArmor / 10;
+		}
 	};
 };
 
