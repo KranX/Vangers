@@ -167,7 +167,7 @@ struct uvsUnitType : uvsKernel
 	int dEnergy,DropEnergy;
 	int DelayDrop,DropTime;
 	int uvsMaxSpeed;	
-	int MaxOxigenResource,OxigenResource;
+	int MaxOxigenResource,OxigenResource, OxigenQuant;
 	int MaxPassageCount,PassageCount;
 
 	int DestroyClass;
