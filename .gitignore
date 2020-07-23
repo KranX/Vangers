@@ -23,3 +23,8 @@ build/lib/utils/zip_convert.exe
 .fuse_hidden*
 .vscode/
 *.code-workspace
+
+# VS cmake
+.vs/
+[Oo]ut/
+CMakeSettings.json
