@@ -63,7 +63,7 @@ jobs:
       run: msys2do cmake -G Ninja ..
       working-directory: build
     - name: vangers -- make
-      run: msys2do cmake --build . --target vangers
+      run: msys2do ninja
       working-directory: build
     - name: vangers -- prepare release folder
       run: |
@@ -77,6 +77,9 @@ jobs:
         msys2do cp /mingw32/bin/libvorbis-0.dll vangers/bin/
         msys2do cp /mingw32/bin/libvorbisfile-3.dll vangers/bin/
         msys2do cp /mingw32/bin/zlib1.dll vangers/bin/
+        msys2do cp /mingw32/bin/libgcc_s_dw2-1.dll vangers/bin/
+        msys2do cp /mingw32/bin/libgcc_s_seh-1.dll vangers/bin/
+        msys2do cp /mingw32/bin/libstdc++-6.dll vangers/bin/
         msys2do cp /mingw32/bin/libwinpthread-1.dll vangers/bin/
         cp clunk/build/libclunk.dll vangers/bin/
         cp build/src/vangers.exe vangers/bin/
