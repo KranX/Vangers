@@ -1,6 +1,4 @@
 
-#include "../xsocket.h"
-
 const char TG_NO_TOUCH = 1;
 const char TG_POINT_TOUCH = 2;
 const char TG_SPHERICAL_TOUCH = 3;

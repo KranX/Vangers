@@ -5,7 +5,6 @@
 #include "xsocket.h"
 #include "multiplayer.h"
 
-#define BROADCAST_PORT		1992
 #define DEFAULT_SERVER_PORT	2197
 
 extern double zMod_cycle;

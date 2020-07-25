@@ -1,59 +1,51 @@
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <math.h>
-#include <time.h>
+#include <string.h>
 
 #ifdef _WINDOWS_
-#define WIN32_EXTRA_LEAN
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <winsock.h>
+#	define WIN32_EXTRA_LEAN
+#	define WIN32_LEAN_AND_MEAN
+#	include <windows.h>
+#	include <winsock.h>
 #else
-#include <unistd.h> // gethostname()
-#include <limits.h> // HOST_NAME_MAX
-#ifdef __HAIKU__
-#include <posix/sys/select.h> // fd_set
-#endif
-#ifndef _WIN32
-#include <arpa/inet.h> // ntohl() FIXME: remove
-#endif
+#	include <limits.h> // HOST_NAME_MAX
+#	include <unistd.h> // gethostname()
+#	ifdef __HAIKU__
+#		include <posix/sys/select.h> // fd_set
+#	endif
+#	ifndef _WIN32
+#		include <arpa/inet.h> // ntohl() FIXME: remove
+#	endif
 #endif
 
 #include "xsocket.h"
-#define  KDWIN
-#include "global.h"
 
-#define XSOCKET_ERROR(str, code) do { \
-	if (ErrHUsed) { \
-		std::cout<<str<<": "<<code<<"\n"; \
-	} else { \
-		XSocketLastErrorString = (char *)str; \
-		XSocketLastErrorCode = (char *)code; \
-		} \
-} while(0)
+#define XSOCKET_ERROR(str, code)                      \
+	do {                                              \
+		if (ErrHUsed) {                               \
+			std::cout << str << ": " << code << "\n"; \
+		} else {                                      \
+			XSocketLastErrorString = (char *)str;     \
+			XSocketLastErrorCode = (char *)code;      \
+		}                                             \
+	} while (0)
 
 // HOST_NAME_MAX is deprecated; use conservative value
 #ifndef HOST_NAME_MAX
-#define HOST_NAME_MAX 255
+#	define HOST_NAME_MAX 255
 #endif
 
-static char* XSocketLastErrorString = 0;
-static char* XSocketLastErrorCode = 0;
+static char *XSocketLastErrorString = 0;
+static char *XSocketLastErrorCode = 0;
 IPaddress XSocketLocalHostADDR;
 IPaddress XSocketLocalHostExternADDR;
 // HOST_NAME_MAX is POSIX.1-2001
-static char XSocketLocalHostName[HOST_NAME_MAX+1];
-
-/*****************************************************************
-    Initialization
-*****************************************************************/
+static char XSocketLocalHostName[HOST_NAME_MAX + 1];
 
 int XSocketInit(int ErrHUsed) {
 	static int XSocketInitializationOK = 0;
 
-	if(XSocketInitializationOK)
+	if (XSocketInitializationOK)
 		return 1;
 
 	// SDL_Init() should have already been called before this.
@@ -80,10 +72,6 @@ int XSocketInit(int ErrHUsed) {
 	return 1;
 }
 
-/*****************************************************************
-    Constructor
-*****************************************************************/
-
 XSocket::XSocket() {
 	tcpSock = INVALID_SOCKET;
 	ErrHUsed = 1;
@@ -93,11 +81,11 @@ XSocket::XSocket() {
 }
 
 XSocket::~XSocket() {
-	if(tcpSock != INVALID_SOCKET)
+	if (tcpSock != INVALID_SOCKET)
 		close();
 }
 
-XSocket::XSocket(XSocket& donor) {
+XSocket::XSocket(XSocket &donor) {
 	tcpSock = donor.tcpSock;
 	ErrHUsed = donor.ErrHUsed;
 	addr = donor.addr;
@@ -105,7 +93,7 @@ XSocket::XSocket(XSocket& donor) {
 	socketSet = NULL;
 }
 
-XSocket& XSocket::operator = (XSocket& donor) {
+XSocket &XSocket::operator=(XSocket &donor) {
 	tcpSock = donor.tcpSock;
 	ErrHUsed = donor.ErrHUsed;
 	addr = donor.addr;
@@ -114,10 +102,6 @@ XSocket& XSocket::operator = (XSocket& donor) {
 	donor.socketSet = NULL;
 	return *this;
 }
-
-/*****************************************************************
-    Connect functions
-*****************************************************************/
 
 int XSocket::tcp_open() {
 	tcpSock = SDLNet_TCP_Open(&addr);
@@ -141,12 +125,9 @@ int XSocket::open(int IP, int port) {
 	return tcp_open();
 }
 
-int XSocket::open(char* name,int port) {
-#if _SERVER // FIXME: check actual define name
-	if (!name) ErrH.Exit();
-#else
-	if (!name) ErrH.Abort("NULL inet_addr() argument...");
-#endif
+int XSocket::open(char *name, int port) {
+	if (!name)
+		ErrH.Abort("NULL inet_addr() argument...");
 
 	if (SDLNet_ResolveHost(&addr, name, port) == -1) {
 		XSOCKET_ERROR("TCP socket hostname resolution failed", SDLNet_GetError());
@@ -156,15 +137,10 @@ int XSocket::open(char* name,int port) {
 	return tcp_open();
 }
 
-/*****************************************************************
-    UDP connection function
-*****************************************************************/
-
 void XSocket::close() {
 	if (tcpSock) {
 		SDLNet_TCP_Close(tcpSock);
 		tcpSock = INVALID_SOCKET;
-
 	}
 	if (socketSet) {
 		SDLNet_FreeSocketSet(socketSet);
@@ -173,10 +149,6 @@ void XSocket::close() {
 	addr.host = 0;
 	addr.port = 0;
 }
-
-/*****************************************************************
-    Listen - Accept functions
-*****************************************************************/
 
 int XSocket::listen(int port) {
 	addr.host = INADDR_ANY;
@@ -192,172 +164,59 @@ int XSocket::listen(int port) {
 }
 
 XSocket XSocket::accept() {
+	XSocket xsock;
 	TCPsocket newSock;
 
 	newSock = SDLNet_TCP_Accept(tcpSock);
-	if (!newSock) {
-		XSOCKET_ERROR("TCP accept failed", SDLNet_GetError());
-		// TODO: check possible error conditions and results
-		SDL_Delay(100);
-	}
+	if (!newSock) // TODO: Should emit error here
+		return xsock;
 
-	XSocket xsock;
 	xsock.tcpSock = newSock;
 	xsock.ErrHUsed = ErrHUsed;
 	xsock.addr.port = addr.port;
+	xsock.socketSet = SDLNet_AllocSocketSet(16);
+	SDLNet_TCP_AddSocket(xsock.socketSet, newSock);
+
 	return xsock;
 }
 
-// TODO
-int XSocket::set_nonblocking_mode(int enable_nonblocking) {
-/*	unsigned long arg = enable_nonblocking;
-	if(ioctlsocket(sock,FIONBIO,&arg)){
-		XSOCKET_ERROR("ioctlsocket() failed",SDLNet_GetError());
+int XSocket::send(const char *buffer, int size) {
+	if (!tcpSock)
 		return 0;
-}*/
-	return 1;
-}
 
-/*****************************************************************
-    Send and Receive functions
-*****************************************************************/
-
-int XSocket::send(const char* buffer, int size) {
-	int status = 0;
-	if (tcpSock) {
-		status = SDLNet_TCP_Send(tcpSock, buffer, size);
-		if (status < size) {
-			XSOCKET_ERROR("TCP send failed", SDLNet_GetError());
-			// TODO: close socket?
-			return 0;
-		}
-		return status;
-	} else {
+	int status = SDLNet_TCP_Send(tcpSock, buffer, size);
+	if (status < size) {
+		XSOCKET_ERROR("TCP send failed", SDLNet_GetError()); // TODO: close socket?
 		return 0;
 	}
-
-	return 1;
+	return status;
 }
 
-int XSocket::receive(char* buffer, int size_of_buffer, int ms_time) {
-	int status = 0;
-
+int XSocket::receive(char *buffer, int size_of_buffer, int ms_time) {
 	if (ms_time == 0) {
-		int numready;
+		int n;
 
-		numready = SDLNet_CheckSockets(socketSet, 0);
-		if(numready==-1) {
+		n = SDLNet_CheckSockets(socketSet, 0);
+		if (n == -1) {
 			printf("SDLNet_CheckSockets: %s\n", SDLNet_GetError());
-			//most of the time this is a system error, where perror might help you.
+			// most of the time this is a system error, where perror might help you.
 			perror("SDLNet_CheckSockets");
-		} else if (numready == 0) {
+		} else if (n == 0) {
 			return 0;
 		}
 
-		if(!SDLNet_SocketReady(tcpSock)) {
+		if (!SDLNet_SocketReady(tcpSock)) {
 			return 0;
 		}
 	}
 
-	if (tcpSock) {
-		status = SDLNet_TCP_Recv(tcpSock, buffer, size_of_buffer);
-		if (status <= 0)
-		{
-			XSOCKET_ERROR("TCP recv failed", SDLNet_GetError());
-			return 0;
-		}
-		return status;
+	if (!tcpSock)
+		return 0;
 
-	} else {
+	int status = SDLNet_TCP_Recv(tcpSock, buffer, size_of_buffer);
+	if (status <= 0) {
+		close();
 		return 0;
 	}
-	
-	return 1;
-}
-
-/*****************************************************************
-    Select functions
-*****************************************************************/
-
-// TODO: MODIFY
-int XSocket::check_readability(int ms_time)
-{
-//	return SDLNet_SocketReady(tcpSock);
-	return 1;
-/*	if(sock == INVALID_SOCKET)
-		return 0;
-	int val;
-	FD_ZERO(&XSocketSet);
-	FD_SET(sock,&XSocketSet);
-	timeval timeout = { ms_time/1000, ms_time % 1000 };
-	if((val = select(0, &XSocketSet, 0, 0, &timeout)) == SOCKET_ERROR){
-		XSOCKET_ERROR("select() failed",SDLNet_GetError());
-		return 0;
-		}
-	return val;*/
-    return 0;
-}
-
-// TODO: MODIFY
-int XSocket::check_writeability(int ms_time)
-{
-/*	if(sock == INVALID_SOCKET)
-		return 0;
-	int val;
-	FD_ZERO(&XSocketSet);
-	FD_SET(sock,&XSocketSet);
-	timeval timeout = { ms_time/1000, ms_time % 1000 };
-	if((val = select(0, 0, &XSocketSet, 0, &timeout)) == SOCKET_ERROR){
-		XSOCKET_ERROR("select() failed",SDLNet_GetError());
-		return 0;
-		}
-	return val;*/
-    return 0;
-}
-
-/*****************************************************************
-			Send To and Receive From functions
-*****************************************************************/
-// DO NOT USE?
-int XSocket::sendto(const char* buffer, int size, unsigned int IP)
-{
-/*	SOCKADDR_IN addr;
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = IP;
-	addr.sin_port = htons(port);
-	int status = ::sendto(sock, buffer, size, 0, (LPSOCKADDR)&addr, sizeof(SOCKADDR_IN));
-	if(status == SOCKET_ERROR){
-		int err_code;
-		if((err_code = SDLNet_GetError()) == WSAEWOULDBLOCK)
-			return 0;
-// 		XSOCKET_ERROR("sendto() failed",err_code);
-		sock = INVALID_SOCKET;
-		return 0;
-		}
-	return status;*/
-    return 0;
-}
-
-// DO NOT USE
-int XSocket::receivefrom(char* buffer, int size_of_buffer, int ms_time)
-{
-/*	int status = 0;
-	if(check_readability(ms_time)){
-		status = recvfrom(sock, buffer, size_of_buffer, 0,0,0);
-		if(status == SOCKET_ERROR){
-			XSOCKET_ERROR("recvfrom() failed",SDLNet_GetError());
-			sock = INVALID_SOCKET;
-			return 0;
-			}
-		}
-	return status;*/
-    return 0;
-}
-
-// WTF?
-char* get_name_by_addr(int IP)
-{
-	IPaddress addr;
-	addr.host = htonl(IP);
-	return (char *)SDLNet_ResolveIP(&addr); // TODO: erm, check if code that calls this function does anything nasty to the returned buffer...
+	return status;
 }
