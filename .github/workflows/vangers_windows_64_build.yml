@@ -84,6 +84,8 @@ jobs:
         cp clunk/build/libclunk.dll vangers/bin/
         cp build/src/vangers.exe vangers/bin/
         msys2do strip vangers/bin/vangers.exe
+        cp build/server/vangers_server.exe vangers/bin/
+        msys2do strip vangers/bin/vangers_server.exe
     - uses: actions/upload-artifact@v1
       with:
         name: Vangers-Release-64
