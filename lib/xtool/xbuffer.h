@@ -98,6 +98,7 @@ struct XBuffer
 	XBuffer& operator<= (unsigned int);
 	XBuffer& operator<= (long);
 	XBuffer& operator<= (unsigned long);
+	XBuffer& operator<= (long long int);
 	XBuffer& operator<= (float);
 	XBuffer& operator<= (double);
 	XBuffer& operator<= (long double);

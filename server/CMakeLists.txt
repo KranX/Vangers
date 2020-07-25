@@ -16,7 +16,8 @@ ADD_EXECUTABLE(vangers_server ${server_SRCS})
 
 IF(WIN32)
 	SET(WIN_LIB 
-		wsock32
+		# wsock32
+		ws2_32
 	)
 ENDIF(WIN32)
 
