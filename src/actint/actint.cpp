@@ -2539,6 +2539,7 @@ fncMenu::fncMenu(void)
 	SizeX = SizeY = 0;
 
 	firstItem = NULL;
+	curItem = NULL;
 }
 
 fncMenu::~fncMenu(void)

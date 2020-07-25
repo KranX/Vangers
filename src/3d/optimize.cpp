@@ -97,7 +97,9 @@ unsigned char COLORS_VALUE_TABLE[2*COLORS_IDS::MAX_COLORS_IDS] =
 
 	136,	4,				// 22 - SKYFARMER_KERNOBOO
 	128,    4,				// 23 - SKYFARMER_PIPETKA
-	224, 	4			        // 24 - ROTTEN_ITEM
+	224, 	4,			        // 24 - ROTTEN_ITEM
+
+	192, 	3			        // 25 - BODY_CRIMSON
 };
 
 // Visualization adjust params loaded in dynamics.cpp
