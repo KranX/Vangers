@@ -12,8 +12,10 @@ int XSocketInit(int ErrHUsed = 1);
 extern IPaddress XSocketLocalHostADDR; // used in network.cpp
 extern IPaddress XSocketLocalHostExternADDR; // used in iscreen/iscr_fnc.cpp
 
-#define INVALID_SOCKET  NULL
-#define SOCKET_ERROR    (-1)
+#ifndef _WINDOWS_
+#	define INVALID_SOCKET  NULL
+#	define SOCKET_ERROR    (-1)
+#endif
 
 class XSocket
 {
