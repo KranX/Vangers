@@ -54,7 +54,7 @@ int XSocketInit(int ErrHUsed) {
 		return 0;
 	}
 
-	if (gethostname(XSocketLocalHostName, HOST_NAME_MAX) == SOCKET_ERROR) {
+	if (gethostname(XSocketLocalHostName, HOST_NAME_MAX) == -1) {
 		XSOCKET_ERROR("gethostname failed", "");
 		return 0;
 	}
@@ -73,7 +73,7 @@ int XSocketInit(int ErrHUsed) {
 }
 
 XSocket::XSocket() {
-	tcpSock = INVALID_SOCKET;
+	tcpSock = NULL;
 	ErrHUsed = 1;
 	addr.host = 0;
 	addr.port = 0;
@@ -81,7 +81,7 @@ XSocket::XSocket() {
 }
 
 XSocket::~XSocket() {
-	if (tcpSock != INVALID_SOCKET)
+	if (tcpSock != NULL)
 		close();
 }
 
@@ -89,7 +89,7 @@ XSocket::XSocket(XSocket &donor) {
 	tcpSock = donor.tcpSock;
 	ErrHUsed = donor.ErrHUsed;
 	addr = donor.addr;
-	donor.tcpSock = INVALID_SOCKET;
+	donor.tcpSock = NULL;
 	socketSet = NULL;
 }
 
@@ -98,7 +98,7 @@ XSocket &XSocket::operator=(XSocket &donor) {
 	ErrHUsed = donor.ErrHUsed;
 	addr = donor.addr;
 	socketSet = donor.socketSet;
-	donor.tcpSock = INVALID_SOCKET;
+	donor.tcpSock = NULL;
 	donor.socketSet = NULL;
 	return *this;
 }
@@ -140,7 +140,7 @@ int XSocket::open(char *name, int port) {
 void XSocket::close() {
 	if (tcpSock) {
 		SDLNet_TCP_Close(tcpSock);
-		tcpSock = INVALID_SOCKET;
+		tcpSock = NULL;
 	}
 	if (socketSet) {
 		SDLNet_FreeSocketSet(socketSet);
@@ -155,7 +155,7 @@ int XSocket::listen(int port) {
 	addr.port = htons(port);
 
 	tcpSock = SDLNet_TCP_Open(&addr);
-	if (tcpSock == INVALID_SOCKET) {
+	if (tcpSock == NULL) {
 		XSOCKET_ERROR("TCP listen failed", SDLNet_GetError());
 		return 0;
 	}

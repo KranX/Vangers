@@ -12,11 +12,6 @@ int XSocketInit(int ErrHUsed = 1);
 extern IPaddress XSocketLocalHostADDR; // used in network.cpp
 extern IPaddress XSocketLocalHostExternADDR; // used in iscreen/iscr_fnc.cpp
 
-#ifndef _WINDOWS_
-#	define INVALID_SOCKET  NULL
-#	define SOCKET_ERROR    (-1)
-#endif
-
 class XSocket
 {
 	int ErrHUsed;
@@ -41,8 +36,8 @@ class XSocket
 		int send(const char* buffer, int size);
 		int receive(char* buffer, int size_of_buffer, int ms_time = 0);
 
-		int operator! (){ return tcpSock == INVALID_SOCKET; }
-		int operator() (){ return tcpSock != INVALID_SOCKET; }
+		int operator! (){ return tcpSock == NULL; }
+		int operator() (){ return tcpSock != NULL; }
 
 	private:
 		int tcp_open();
