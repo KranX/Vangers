@@ -15,7 +15,7 @@ jobs:
       run: brew update
     - name: install libs
       run: |
-        brew install git ninja cmake yasm dylibbundler
+        brew install git ninja yasm dylibbundler
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb
         brew install -s ./formulas/sdl2.rb
