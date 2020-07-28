@@ -24,6 +24,9 @@ int StatLogging = 0;
 int leave_empty_games = 0;
 Server *server;
 
+extern int __argc;
+extern char **__argv;
+
 int xtInitApplication(void) {
 #ifdef _WIN32
 	SetConsoleTitle("Vangers Server ");
