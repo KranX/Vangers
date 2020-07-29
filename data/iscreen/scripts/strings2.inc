@@ -217,6 +217,11 @@
 #define AVI_TEXT	$AVI_TEXT2
 
 #define iSTR_Controls		$iSTR_Controls2
+#define iSTR_Movement		$iSTR_Movement2
+#define iSTR_Utility		$iSTR_Utility2
+#define iSTR_Combat		$iSTR_Combat2
+#define iSTR_Camera		$iSTR_Camera2
+#define iSTR_MultiplayerAndMisc		$iSTR_MultiplayerAndMisc2
 
 #define iSTR_JOYSTICK_SETUP		$iSTR_JOYSTICK_SETUP2
 #define iSTR_CUSTOMIZE			$iSTR_CUSTOMIZE2

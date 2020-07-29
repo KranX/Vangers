@@ -247,8 +247,8 @@
 
 /* ----------------------- Controls Screen 0 Defines ------------------------ */
 
-#define KEYS0_START_Y		90
-#define KEYS0_DELTA_Y		50
+#define KEYS0_START_Y		100
+#define KEYS0_DELTA_Y		40
 
 #define KEYS0_X 		445
 
@@ -5161,6 +5161,22 @@ Screen "Controls screen"
 		}
 	}
 
+	Object "TitleStr2"
+	{
+		align_x center
+		y	{ $TITLE_STR_Y + 30 }
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN4
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Movement
+		}
+	}
+
 	Object "Defaults Option"
 	{
 		x	$Controls_screen_Defaults_Option_PosX
@@ -5231,41 +5247,11 @@ Screen "Controls screen"
 	$MORE_OBJ
 
 	#define KEY_Y		0
-	#define KEY_NUM 	1
-	#define KEY_STR_NAME	"KeyStr1"
-	#define KEY_STRING	$iSTR_Turn_wheels_left
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName1"
-	#define KEY_STRING	"Left"
-	#define KEY_ID		"KeyID1"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName1_1"
-	#define KEY_STRING	"Left"
-	#define KEY_ID		"KeyID1_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
-	#define KEY_NUM 	2
-	#define KEY_STR_NAME	"KeyStr2"
-	#define KEY_STRING	$iSTR_Turn_wheels_right
-	$KEY_STR_OBJECT
-	#define KEY_Y		1
-	#define KEY_STR_NAME	"KeyName2"
-	#define KEY_STRING	"Right"
-	#define KEY_ID		"KeyID2"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName2_1"
-	#define KEY_STRING	"Right"
-	#define KEY_ID		"KeyID2_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
 	#define KEY_NUM 	3
 	#define KEY_STR_NAME	"KeyStr3"
 	#define KEY_STRING	$iSTR_Move_forward
 	$KEY_STR_OBJECT
-	#define KEY_Y		2
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName3"
 	#define KEY_STRING	"Up"
 	#define KEY_ID		"KeyID3"
@@ -5275,12 +5261,12 @@ Screen "Controls screen"
 	#define KEY_ID		"KeyID3_1"
 	$KEY_ID_OBJECT2
 
-	#define KEY_Y		3
+	#define KEY_Y		1
 	#define KEY_NUM 	4
 	#define KEY_STR_NAME	"KeyStr4"
 	#define KEY_STRING	$iSTR_Move_backward
 	$KEY_STR_OBJECT
-	#define KEY_Y		3
+	#define KEY_Y		1
 	#define KEY_STR_NAME	"KeyName4"
 	#define KEY_STRING	"Down"
 	#define KEY_ID		"KeyID4"
@@ -5288,6 +5274,36 @@ Screen "Controls screen"
 	#define KEY_STR_NAME	"KeyName4_1"
 	#define KEY_STRING	"Down"
 	#define KEY_ID		"KeyID4_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		2
+	#define KEY_NUM 	1
+	#define KEY_STR_NAME	"KeyStr1"
+	#define KEY_STRING	$iSTR_Turn_wheels_left
+	$KEY_STR_OBJECT
+	#define KEY_Y		2
+	#define KEY_STR_NAME	"KeyName1"
+	#define KEY_STRING	"Left"
+	#define KEY_ID		"KeyID1"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName1_1"
+	#define KEY_STRING	"Left"
+	#define KEY_ID		"KeyID1_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		3
+	#define KEY_NUM 	2
+	#define KEY_STR_NAME	"KeyStr2"
+	#define KEY_STRING	$iSTR_Turn_wheels_right
+	$KEY_STR_OBJECT
+	#define KEY_Y		3
+	#define KEY_STR_NAME	"KeyName2"
+	#define KEY_STRING	"Right"
+	#define KEY_ID		"KeyID2"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName2_1"
+	#define KEY_STRING	"Right"
+	#define KEY_ID		"KeyID2_1"
 	$KEY_ID_OBJECT2
 
 	#define KEY_Y		4
@@ -5303,6 +5319,36 @@ Screen "Controls screen"
 	#define KEY_STR_NAME	"KeyName10_1"
 	#define KEY_STRING	"Shift"
 	#define KEY_ID		"KeyID10_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		5
+	#define KEY_NUM 	9
+	#define KEY_STR_NAME	"KeyStr9"
+	#define KEY_STRING	$iSTR_Activate_KiD
+	$KEY_STR_OBJECT
+	#define KEY_Y		5
+	#define KEY_STR_NAME	"KeyName9"
+	#define KEY_STRING	"Ins"
+	#define KEY_ID		"KeyID9"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName9_1"
+	#define KEY_STRING	"Ins"
+	#define KEY_ID		"KeyID9_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		6
+	#define KEY_NUM 	29
+	#define KEY_STR_NAME	"KeyStr29"
+	#define KEY_STRING	$iSTR_Handbrake
+	$KEY_STR_OBJECT
+	#define KEY_Y		6
+	#define KEY_STR_NAME	"KeyName29"
+	#define KEY_STRING	"C"
+	#define KEY_ID		"KeyID29"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName29_1"
+	#define KEY_STRING	"C"
+	#define KEY_ID		"KeyID29_1"
 	$KEY_ID_OBJECT2
 }
 
@@ -5338,77 +5384,33 @@ Screen "Controls screen 2"
 		}
 	}
 
+	Object "TitleStr2"
+	{
+		align_x center
+		y	{ $TITLE_STR_Y + 30 }
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN4
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Utility
+		}
+	}
+
 	#define PREV_SCR	"Controls screen"
 	#define NEXT_SCR	"Controls screen 3"
 	$BACK_OBJ
 	$MORE_OBJ
 
 	#define KEY_Y		0
-	#define KEY_NUM 	5
-	#define KEY_STR_NAME	"KeyStr5"
-	#define KEY_STRING	$iSTR_Turn_over_left
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName5"
-	#define KEY_STRING	"End"
-	#define KEY_ID		"KeyID5"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName5_1"
-	#define KEY_STRING	"End"
-	#define KEY_ID		"KeyID5_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
-	#define KEY_NUM 	6
-	#define KEY_STR_NAME	"KeyStr6"
-	#define KEY_STRING	$iSTR_Turn_over_right
-	$KEY_STR_OBJECT
-	#define KEY_Y		1
-	#define KEY_STR_NAME	"KeyName6"
-	#define KEY_STRING	"Pg Dn"
-	#define KEY_ID		"KeyID6"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName6_1"
-	#define KEY_STRING	"Pg Dn"
-	#define KEY_ID		"KeyID6_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
-	#define KEY_NUM 	9
-	#define KEY_STR_NAME	"KeyStr9"
-	#define KEY_STRING	$iSTR_Activate_KiD
-	$KEY_STR_OBJECT
-	#define KEY_Y		2
-	#define KEY_STR_NAME	"KeyName9"
-	#define KEY_STRING	"Ins"
-	#define KEY_ID		"KeyID9"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName9_1"
-	#define KEY_STRING	"Ins"
-	#define KEY_ID		"KeyID9_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		3
-	#define KEY_NUM 	33
-	#define KEY_STR_NAME	"KeyStr33"
-	#define KEY_STRING	$iSTR_UseVector
-	$KEY_STR_OBJECT
-	#define KEY_Y		3
-	#define KEY_STR_NAME	"KeyName33"
-	#define KEY_STRING	"~"
-	#define KEY_ID		"KeyID33"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName33_1"
-	#define KEY_STRING	"~"
-	#define KEY_ID		"KeyID33_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		4
 	#define KEY_NUM 	13
 	#define KEY_STR_NAME	"KeyStr13"
 	#define KEY_STRING	$iSTR_Open
 	$KEY_STR_OBJECT
-	#define KEY_Y		4
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName13"
 	#define KEY_STRING	"Space"
 	#define KEY_ID		"KeyID13"
@@ -5418,19 +5420,79 @@ Screen "Controls screen 2"
 	#define KEY_ID		"KeyID13_1"
 	$KEY_ID_OBJECT2
 
+	#define KEY_Y		1
+	#define KEY_NUM 	12
+	#define KEY_STR_NAME	"KeyStr12"
+	#define KEY_STRING	$iSTR_Inventory_ON_OFF
+	$KEY_STR_OBJECT
+	#define KEY_Y		1
+	#define KEY_STR_NAME	"KeyName12"
+	#define KEY_STRING	"Enter"
+	#define KEY_ID		"KeyID12"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName12_1"
+	#define KEY_STRING	"Enter"
+	#define KEY_ID		"KeyID12_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		2
+	#define KEY_NUM 	5
+	#define KEY_STR_NAME	"KeyStr5"
+	#define KEY_STRING	$iSTR_Turn_over_left
+	$KEY_STR_OBJECT
+	#define KEY_Y		2
+	#define KEY_STR_NAME	"KeyName5"
+	#define KEY_STRING	"End"
+	#define KEY_ID		"KeyID5"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName5_1"
+	#define KEY_STRING	"End"
+	#define KEY_ID		"KeyID5_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		3
+	#define KEY_NUM 	6
+	#define KEY_STR_NAME	"KeyStr6"
+	#define KEY_STRING	$iSTR_Turn_over_right
+	$KEY_STR_OBJECT
+	#define KEY_Y		3
+	#define KEY_STR_NAME	"KeyName6"
+	#define KEY_STRING	"Pg Dn"
+	#define KEY_ID		"KeyID6"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName6_1"
+	#define KEY_STRING	"Pg Dn"
+	#define KEY_ID		"KeyID6_1"
+	$KEY_ID_OBJECT2
+
 	#define KEY_Y		5
-	#define KEY_NUM 	29
-	#define KEY_STR_NAME	"KeyStr29"
-	#define KEY_STRING	$iSTR_Handbrake
+	#define KEY_NUM 	7
+	#define KEY_STR_NAME	"KeyStr7"
+	#define KEY_STRING	$iSTR_Turn_device_ON
 	$KEY_STR_OBJECT
 	#define KEY_Y		5
-	#define KEY_STR_NAME	"KeyName29"
-	#define KEY_STRING	"C"
-	#define KEY_ID		"KeyID29"
+	#define KEY_STR_NAME	"KeyName7"
+	#define KEY_STRING	"Home"
+	#define KEY_ID		"KeyID7"
 	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName29_1"
-	#define KEY_STRING	"C"
-	#define KEY_ID		"KeyID29_1"
+	#define KEY_STR_NAME	"KeyName7_1"
+	#define KEY_STRING	"Home"
+	#define KEY_ID		"KeyID7_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		6
+	#define KEY_NUM 	8
+	#define KEY_STR_NAME	"KeyStr8"
+	#define KEY_STRING	$iSTR_Turn_device_OFF
+	$KEY_STR_OBJECT
+	#define KEY_Y		6
+	#define KEY_STR_NAME	"KeyName8"
+	#define KEY_STRING	"Pg Up"
+	#define KEY_ID		"KeyID8"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName8_1"
+	#define KEY_STRING	"Pg Up"
+	#define KEY_ID		"KeyID8_1"
 	$KEY_ID_OBJECT2
 }
 
@@ -5466,77 +5528,33 @@ Screen "Controls screen 3"
 		}
 	}
 
+	Object "TitleStr2"
+		{
+		align_x center
+		y	{ $TITLE_STR_Y + 30 }
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN4
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Combat
+		}
+	}
+
 	#define PREV_SCR	"Controls screen 2"
 	#define NEXT_SCR	"Controls screen 4"
 	$BACK_OBJ
 	$MORE_OBJ
 
 	#define KEY_Y		0
-	#define KEY_NUM 	7
-	#define KEY_STR_NAME	"KeyStr7"
-	#define KEY_STRING	$iSTR_Turn_device_ON
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName7"
-	#define KEY_STRING	"Home"
-	#define KEY_ID		"KeyID7"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName7_1"
-	#define KEY_STRING	"Home"
-	#define KEY_ID		"KeyID7_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
-	#define KEY_NUM 	8
-	#define KEY_STR_NAME	"KeyStr8"
-	#define KEY_STRING	$iSTR_Turn_device_OFF
-	$KEY_STR_OBJECT
-	#define KEY_Y		1
-	#define KEY_STR_NAME	"KeyName8"
-	#define KEY_STRING	"Pg Up"
-	#define KEY_ID		"KeyID8"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName8_1"
-	#define KEY_STRING	"Pg Up"
-	#define KEY_ID		"KeyID8_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
-	#define KEY_NUM 	12
-	#define KEY_STR_NAME	"KeyStr12"
-	#define KEY_STRING	$iSTR_Inventory_ON_OFF
-	$KEY_STR_OBJECT
-	#define KEY_Y		2
-	#define KEY_STR_NAME	"KeyName12"
-	#define KEY_STRING	"Enter"
-	#define KEY_ID		"KeyID12"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName12_1"
-	#define KEY_STRING	"Enter"
-	#define KEY_ID		"KeyID12_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		3
-	#define KEY_NUM 	19
-	#define KEY_STR_NAME	"KeyStr19"
-	#define KEY_STRING	$iSTR_Change_target
-	$KEY_STR_OBJECT
-	#define KEY_Y		3
-	#define KEY_STR_NAME	"KeyName19"
-	#define KEY_STRING	"Tab"
-	#define KEY_ID		"KeyID19"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName19_1"
-	#define KEY_STRING	"Tab"
-	#define KEY_ID		"KeyID19_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		4
 	#define KEY_NUM 	18
 	#define KEY_STR_NAME	"KeyStr18"
 	#define KEY_STRING	$iSTR_Fire_all_weapons
 	$KEY_STR_OBJECT
-	#define KEY_Y		4
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName18"
 	#define KEY_STRING	"Ctrl"
 	#define KEY_ID		"KeyID18"
@@ -5544,6 +5562,111 @@ Screen "Controls screen 3"
 	#define KEY_STR_NAME	"KeyName18_1"
 	#define KEY_STRING	"Ctrl"
 	#define KEY_ID		"KeyID18_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		1
+	#define KEY_NUM 	17
+	#define KEY_STR_NAME	"KeyStr17"
+	#define KEY_STRING	$iSTR_Fire_weapon_4
+	$KEY_STR_OBJECT
+	#define KEY_Y		1
+	#define KEY_STR_NAME	"KeyName17"
+	#define KEY_STRING	"4"
+	#define KEY_ID		"KeyID17"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName17_1"
+	#define KEY_STRING	"4"
+	#define KEY_ID		"KeyID17_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		2
+	#define KEY_NUM 	30
+	#define KEY_STR_NAME	"KeyStr30"
+	#define KEY_STRING	$iSTR_Use_Gluek
+	$KEY_STR_OBJECT
+	#define KEY_Y		2
+	#define KEY_STR_NAME	"KeyName30"
+	#define KEY_STRING	"5"
+	#define KEY_ID		"KeyID30"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName30_1"
+	#define KEY_STRING	"5"
+	#define KEY_ID		"KeyID30_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		3
+	#define KEY_NUM 	14
+	#define KEY_STR_NAME	"KeyStr14"
+	#define KEY_STRING	$iSTR_Fire_weapon_1
+	$KEY_STR_OBJECT
+	#define KEY_Y		3
+	#define KEY_STR_NAME	"KeyName14"
+	#define KEY_STRING	"1"
+	#define KEY_ID		"KeyID14"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName14_1"
+	#define KEY_STRING	"1"
+	#define KEY_ID		"KeyID14_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		4
+	#define KEY_NUM 	15
+	#define KEY_STR_NAME	"KeyStr15"
+	#define KEY_STRING	$iSTR_Fire_weapon_2
+	$KEY_STR_OBJECT
+	#define KEY_Y		4
+	#define KEY_STR_NAME	"KeyName15"
+	#define KEY_STRING	"2"
+	#define KEY_ID		"KeyID15"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName15_1"
+	#define KEY_STRING	"2"
+	#define KEY_ID		"KeyID15_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		5
+	#define KEY_NUM 	16
+	#define KEY_STR_NAME	"KeyStr16"
+	#define KEY_STRING	$iSTR_Fire_weapon_3
+	$KEY_STR_OBJECT
+	#define KEY_Y		5
+	#define KEY_STR_NAME	"KeyName16"
+	#define KEY_STRING	"3"
+	#define KEY_ID		"KeyID16"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName16_1"
+	#define KEY_STRING	"3"
+	#define KEY_ID		"KeyID16_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y    6
+	#define KEY_NUM   33
+	#define KEY_STR_NAME  "KeyStr33"
+	#define KEY_STRING  $iSTR_UseVector
+	$KEY_STR_OBJECT
+	#define KEY_Y    6
+	#define KEY_STR_NAME  "KeyName33"
+	#define KEY_STRING  "~"
+	#define KEY_ID    "KeyID33"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME  "KeyName33_1"
+	#define KEY_STRING  "~"
+	#define KEY_ID    "KeyID33_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		7
+	#define KEY_NUM 	19
+	#define KEY_STR_NAME	"KeyStr19"
+	#define KEY_STRING	$iSTR_Change_target
+	$KEY_STR_OBJECT
+	#define KEY_Y		7
+	#define KEY_STR_NAME	"KeyName19"
+	#define KEY_STRING	"Tab"
+	#define KEY_ID		"KeyID19"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName19_1"
+	#define KEY_STRING	"Tab"
+	#define KEY_ID		"KeyID19_1"
 	$KEY_ID_OBJECT2
 }
 
@@ -5579,107 +5702,10 @@ Screen "Controls screen 4"
 		}
 	}
 
-	#define PREV_SCR	"Controls screen 3"
-	#define NEXT_SCR	"Controls screen 5"
-	$BACK_OBJ
-	$MORE_OBJ
-
-	#define KEY_Y		0
-	#define KEY_NUM 	14
-	#define KEY_STR_NAME	"KeyStr14"
-	#define KEY_STRING	$iSTR_Fire_weapon_1
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName14"
-	#define KEY_STRING	"1"
-	#define KEY_ID		"KeyID14"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName14_1"
-	#define KEY_STRING	"1"
-	#define KEY_ID		"KeyID14_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
-	#define KEY_NUM 	15
-	#define KEY_STR_NAME	"KeyStr15"
-	#define KEY_STRING	$iSTR_Fire_weapon_2
-	$KEY_STR_OBJECT
-	#define KEY_Y		1
-	#define KEY_STR_NAME	"KeyName15"
-	#define KEY_STRING	"2"
-	#define KEY_ID		"KeyID15"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName15_1"
-	#define KEY_STRING	"2"
-	#define KEY_ID		"KeyID15_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
-	#define KEY_NUM 	16
-	#define KEY_STR_NAME	"KeyStr16"
-	#define KEY_STRING	$iSTR_Fire_weapon_3
-	$KEY_STR_OBJECT
-	#define KEY_Y		2
-	#define KEY_STR_NAME	"KeyName16"
-	#define KEY_STRING	"3"
-	#define KEY_ID		"KeyID16"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName16_1"
-	#define KEY_STRING	"3"
-	#define KEY_ID		"KeyID16_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		3
-	#define KEY_NUM 	17
-	#define KEY_STR_NAME	"KeyStr17"
-	#define KEY_STRING	$iSTR_Fire_weapon_4
-	$KEY_STR_OBJECT
-	#define KEY_Y		3
-	#define KEY_STR_NAME	"KeyName17"
-	#define KEY_STRING	"4"
-	#define KEY_ID		"KeyID17"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName17_1"
-	#define KEY_STRING	"4"
-	#define KEY_ID		"KeyID17_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		4
-	#define KEY_NUM 	30
-	#define KEY_STR_NAME	"KeyStr30"
-	#define KEY_STRING	$iSTR_Use_Gluek
-	$KEY_STR_OBJECT
-	#define KEY_Y		4
-	#define KEY_STR_NAME	"KeyName30"
-	#define KEY_STRING	"5"
-	#define KEY_ID		"KeyID30"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName30_1"
-	#define KEY_STRING	"5"
-	#define KEY_ID		"KeyID30_1"
-	$KEY_ID_OBJECT2
-}
-
-Screen "Controls screen 5"
-{
-	screen_offs	800
-
-	default_obj "Back Option"
-
-	Event {
-		key	$VK_ESCAPE
-
-		time { $MOVE2SCREEN_TIME + 1 }
-		EvComm {
-			move2screen	"Controls screen2"
-			time		$MOVE2SCREEN_TIME
-		}
-	}
-
-	Object "TitleStr"
-	{
+	Object "TitleStr2"
+		{
 		align_x center
-		y	{ $TITLE_STR_Y - 10 }
+		y	{ $TITLE_STR_Y + 30 }
 
 		Element STRING {
 			align_x center
@@ -5688,36 +5714,21 @@ Screen "Controls screen 5"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_Camera
 		}
 	}
 
-	#define PREV_SCR	"Controls screen 4"
-	#define NEXT_SCR	"Controls screen 6"
+	#define PREV_SCR	"Controls screen 3"
+	#define NEXT_SCR	"Controls screen 5"
 	$BACK_OBJ
 	$MORE_OBJ
 
 	#define KEY_Y		0
-	#define KEY_NUM 	36
-	#define KEY_STR_NAME	"KeyStr36"
-	#define KEY_STRING	$iSTR_ExitGame
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName36"
-	#define KEY_STRING	"Left"
-	#define KEY_ID		"KeyID36"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName36_1"
-	#define KEY_STRING	"Left"
-	#define KEY_ID		"KeyID36_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
 	#define KEY_NUM 	20
 	#define KEY_STR_NAME	"KeyStr20"
 	#define KEY_STRING	$iSTR_Full_screen
 	$KEY_STR_OBJECT
-	#define KEY_Y		1
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName20"
 	#define KEY_STRING	"F1"
 	#define KEY_ID		"KeyID20"
@@ -5725,119 +5736,6 @@ Screen "Controls screen 5"
 	#define KEY_STR_NAME	"KeyName20_1"
 	#define KEY_STRING	"F1"
 	#define KEY_ID		"KeyID20_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
-	#define KEY_NUM 	21
-	#define KEY_STR_NAME	"KeyStr21"
-	#define KEY_STRING	$iSTR_Reduce_view
-	$KEY_STR_OBJECT
-	#define KEY_Y		2
-	#define KEY_STR_NAME	"KeyName21"
-	#define KEY_STRING	"F2"
-	#define KEY_ID		"KeyID21"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName21_1"
-	#define KEY_STRING	"F2"
-	#define KEY_ID		"KeyID21_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		3
-	#define KEY_NUM 	22
-	#define KEY_STR_NAME	"KeyStr22"
-	#define KEY_STRING	$iSTR_Enlarge_view
-	$KEY_STR_OBJECT
-	#define KEY_Y		3
-	#define KEY_STR_NAME	"KeyName22"
-	#define KEY_STRING	"F3"
-	#define KEY_ID		"KeyID22"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName22_1"
-	#define KEY_STRING	"F3"
-	#define KEY_ID		"KeyID22_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		4
-	#define KEY_NUM 	23
-	#define KEY_STR_NAME	"KeyStr23"
-	#define KEY_STRING	$iSTR_Rotation
-	$KEY_STR_OBJECT
-	#define KEY_Y		4
-	#define KEY_STR_NAME	"KeyName23"
-	#define KEY_STRING	"F5"
-	#define KEY_ID		"KeyID23"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName23_1"
-	#define KEY_STRING	"F5"
-	#define KEY_ID		"KeyID23_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		5
-	#define KEY_NUM 	25
-	#define KEY_STR_NAME	"KeyStr25"
-	#define KEY_STRING	$iSTR_Auto_tilt
-	$KEY_STR_OBJECT
-	#define KEY_Y		5
-	#define KEY_STR_NAME	"KeyName25"
-	#define KEY_STRING	"F7"
-	#define KEY_ID		"KeyID25"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName25_1"
-	#define KEY_STRING	"F7"
-	#define KEY_ID		"KeyID25_1"
-	$KEY_ID_OBJECT2
-}
-
-Screen "Controls screen 6"
-{
-	screen_offs	800
-
-	default_obj "Back Option"
-
-	Event {
-		key	$VK_ESCAPE
-
-		time { $MOVE2SCREEN_TIME + 1 }
-		EvComm {
-			move2screen	"Controls screen2"
-			time		$MOVE2SCREEN_TIME
-		}
-	}
-
-	Object "TitleStr"
-	{
-		align_x center
-		y	{ $TITLE_STR_Y - 10 }
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
-		}
-	}
-
-	#define NEXT_SCR	"Controls screen 7"
-	#define PREV_SCR	"Controls screen 5"
-	$BACK_OBJ
-	$MORE_OBJ
-
-	#define KEY_Y		0
-	#define KEY_NUM 	24
-	#define KEY_STR_NAME	"KeyStr24"
-	#define KEY_STRING	$iSTR_Auto_zoom
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName24"
-	#define KEY_STRING	"F6"
-	#define KEY_ID		"KeyID24"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName24_1"
-	#define KEY_STRING	"F6"
-	#define KEY_ID		"KeyID24_1"
 	$KEY_ID_OBJECT2
 
 	#define KEY_Y		1
@@ -5885,23 +5783,53 @@ Screen "Controls screen 6"
 	#define KEY_ID		"KeyID28_1"
 	$KEY_ID_OBJECT2
 
-	#define KEY_Y		4
-	#define KEY_NUM 	32
-	#define KEY_STR_NAME	"KeyStr32"
-	#define KEY_STRING	$iSTR_SkipText
+	#define KEY_Y		5
+	#define KEY_NUM 	23
+	#define KEY_STR_NAME	"KeyStr23"
+	#define KEY_STRING	$iSTR_Rotation
 	$KEY_STR_OBJECT
-	#define KEY_Y		4
-	#define KEY_STR_NAME	"KeyName32"
-	#define KEY_STRING	"Tab"
-	#define KEY_ID		"KeyID32"
+	#define KEY_Y		5
+	#define KEY_STR_NAME	"KeyName23"
+	#define KEY_STRING	"F5"
+	#define KEY_ID		"KeyID23"
 	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName32_1"
-	#define KEY_STRING	"Tab"
-	#define KEY_ID		"KeyID32_1"
+	#define KEY_STR_NAME	"KeyName23_1"
+	#define KEY_STRING	"F5"
+	#define KEY_ID		"KeyID23_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		6
+	#define KEY_NUM 	25
+	#define KEY_STR_NAME	"KeyStr25"
+	#define KEY_STRING	$iSTR_Auto_tilt
+	$KEY_STR_OBJECT
+	#define KEY_Y		6
+	#define KEY_STR_NAME	"KeyName25"
+	#define KEY_STRING	"F7"
+	#define KEY_ID		"KeyID25"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName25_1"
+	#define KEY_STRING	"F7"
+	#define KEY_ID		"KeyID25_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		7
+	#define KEY_NUM 	24
+	#define KEY_STR_NAME	"KeyStr24"
+	#define KEY_STRING	$iSTR_Auto_zoom
+	$KEY_STR_OBJECT
+	#define KEY_Y		7
+	#define KEY_STR_NAME	"KeyName24"
+	#define KEY_STRING	"F6"
+	#define KEY_ID		"KeyID24"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName24_1"
+	#define KEY_STRING	"F6"
+	#define KEY_ID		"KeyID24_1"
 	$KEY_ID_OBJECT2
 }
 
-Screen "Controls screen 7"
+Screen "Controls screen 5"
 {
 	screen_offs	800
 
@@ -5936,7 +5864,7 @@ Screen "Controls screen 7"
 	Object "TitleStr2"
 	{
 		align_x center
-		y	{ $TITLE_STR_Y + 40 }
+		y	{ $TITLE_STR_Y + 30 }
 
 		Element STRING {
 			align_x center
@@ -5945,21 +5873,21 @@ Screen "Controls screen 7"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_MULTIPLAYER
+			string		$iSTR_MultiplayerAndMisc
 		}
 	}
 
+	#define PREV_SCR	"Controls screen 4"
 	#define NEXT_SCR	"Controls screen"
-	#define PREV_SCR	"Controls screen 6"
 	$BACK_OBJ
 	$MORE_OBJ
 
-	#define KEY_Y		1
+	#define KEY_Y		0
 	#define KEY_NUM 	35
 	#define KEY_STR_NAME	"KeyStr35"
 	#define KEY_STRING	$iSTR_ChatON
 	$KEY_STR_OBJECT
-	#define KEY_Y		1
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName35"
 	#define KEY_STRING	"F6"
 	#define KEY_ID		"KeyID35"
@@ -5969,12 +5897,12 @@ Screen "Controls screen 7"
 	#define KEY_ID		"KeyID35_1"
 	$KEY_ID_OBJECT2
 
-	#define KEY_Y		2
+	#define KEY_Y		1
 	#define KEY_NUM 	34
 	#define KEY_STR_NAME	"KeyStr34"
 	#define KEY_STRING	$iSTR_Statistics
 	$KEY_STR_OBJECT
-	#define KEY_Y		2
+	#define KEY_Y		1
 	#define KEY_STR_NAME	"KeyName34"
 	#define KEY_STRING	"Plus"
 	#define KEY_ID		"KeyID34"
@@ -5997,6 +5925,66 @@ Screen "Controls screen 7"
 	#define KEY_STR_NAME	"KeyName37_1"
 	#define KEY_STRING	"Plus"
 	#define KEY_ID		"KeyID37_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		4
+	#define KEY_NUM 	32
+	#define KEY_STR_NAME	"KeyStr32"
+	#define KEY_STRING	$iSTR_SkipText
+	$KEY_STR_OBJECT
+	#define KEY_Y		4
+	#define KEY_STR_NAME	"KeyName32"
+	#define KEY_STRING	"Tab"
+	#define KEY_ID		"KeyID32"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName32_1"
+	#define KEY_STRING	"Tab"
+	#define KEY_ID		"KeyID32_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		5
+	#define KEY_NUM 	36
+	#define KEY_STR_NAME	"KeyStr36"
+	#define KEY_STRING	$iSTR_ExitGame
+	$KEY_STR_OBJECT
+	#define KEY_Y		5
+	#define KEY_STR_NAME	"KeyName36"
+	#define KEY_STRING	"Left"
+	#define KEY_ID		"KeyID36"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName36_1"
+	#define KEY_STRING	"Left"
+	#define KEY_ID		"KeyID36_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		6
+	#define KEY_NUM 	21
+	#define KEY_STR_NAME	"KeyStr21"
+	#define KEY_STRING	$iSTR_Reduce_view
+	$KEY_STR_OBJECT
+	#define KEY_Y		6
+	#define KEY_STR_NAME	"KeyName21"
+	#define KEY_STRING	"F2"
+	#define KEY_ID		"KeyID21"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName21_1"
+	#define KEY_STRING	"F2"
+	#define KEY_ID		"KeyID21_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		7
+	#define KEY_NUM 	22
+	#define KEY_STR_NAME	"KeyStr22"
+	#define KEY_STRING	$iSTR_Enlarge_view
+	$KEY_STR_OBJECT
+	#define KEY_Y		7
+	#define KEY_STR_NAME	"KeyName22"
+	#define KEY_STRING	"F3"
+	#define KEY_ID		"KeyID22"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName22_1"
+	#define KEY_STRING	"F3"
+	#define KEY_ID		"KeyID22_1"
 	$KEY_ID_OBJECT2
 }
 

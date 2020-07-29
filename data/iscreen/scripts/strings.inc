@@ -126,6 +126,21 @@
 #define iSTR_Controls1			"Controls"
 #define iSTR_Controls2			"Управление"
 
+#define iSTR_Movement1			"Movement"
+#define iSTR_Movement2			"Езда I"
+
+#define iSTR_Utility1			"Utility"
+#define iSTR_Utility2			"Езда II"
+
+#define iSTR_Combat1			"Combat"
+#define iSTR_Combat2			"Бой"
+
+#define iSTR_Camera1			"Camera"
+#define iSTR_Camera2			"Камера"
+
+#define iSTR_MultiplayerAndMisc1			"Multiplayer and misc."
+#define iSTR_MultiplayerAndMisc2			"Сетевая игра и другое"
+
 #define iSTR_Multiplayer1		"Multiplayer"
 #define iSTR_Multiplayer2		"Сетевая игра"
 
@@ -235,7 +250,7 @@
 #define iSTR_Customize_keyboard1	"Customize keyboard"
 #define iSTR_Customize_keyboard2	"Подстройка клавиш"
 
-#define iSTR_RESTORE_ALL1		"RESTORE ALL"
+#define iSTR_RESTORE_ALL1		"RESTORE"
 #define iSTR_RESTORE_ALL2		"ВОССТАНОВИТЬ ВСЕ"
 
 
@@ -426,8 +441,8 @@
 #define iSTR_Move_backward1		"Move backward"
 #define iSTR_Move_backward2		"Назад"
 
-#define iSTR_Acceleration1		"Acceleration"
-#define iSTR_Acceleration2		"Ускорение"
+#define iSTR_Acceleration1		"Toggle acceleration"
+#define iSTR_Acceleration2		"Переключить ускорение"
 
 #define iSTR_Handbrake1 		"Handbrake"
 #define iSTR_Handbrake2 		"Ручной тормоз"
@@ -438,7 +453,7 @@
 #define iSTR_Turn_over_right1		"Turn over right"
 #define iSTR_Turn_over_right2		"Переворот вправо"
 
-#define iSTR_Activate_KiD1		"Activate KiD"
+#define iSTR_Activate_KiD1		"Activate spring"
 #define iSTR_Activate_KiD2		"Активация пружины"
 
 #define iSTR_Open1			"Open"
@@ -471,8 +486,8 @@
 #define iSTR_Fire_weapon_41		"Terminator release"
 #define iSTR_Fire_weapon_42		"Запуск терминатора"
 
-#define iSTR_Full_screen1		"Full screen"
-#define iSTR_Full_screen2		"Полный экран"
+#define iSTR_Full_screen1		"Hide interface"
+#define iSTR_Full_screen2		"Скрыть интерфейс"
 
 #define iSTR_Reduce_view1		"Reduce view"
 #define iSTR_Reduce_view2		"Уменьшить обзор"

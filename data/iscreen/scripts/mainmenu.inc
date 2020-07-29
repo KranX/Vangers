@@ -50,25 +50,25 @@
 
 // ------------ Screen: "Controls screen" ENG ------------
 
-#define Controls_screen_More_Option_PosX1	532
-#define Controls_screen_More_Option_PosY1	395
+#define Controls_screen_More_Option_PosX1	457
+#define Controls_screen_More_Option_PosY1	435
 
-#define Controls_screen_Back_Option_PosX1	90
-#define Controls_screen_Back_Option_PosY1	395
+#define Controls_screen_Back_Option_PosX1	60
+#define Controls_screen_Back_Option_PosY1	435
 
-#define Controls_screen_Defaults_Option_PosX1	219
-#define Controls_screen_Defaults_Option_PosY1	443
+#define Controls_screen_Defaults_Option_PosX1	210
+#define Controls_screen_Defaults_Option_PosY1	435
 
 // ------------ Screen: "Controls screen" LOC ------------
 
-#define Controls_screen_More_Option_PosX2	425
-#define Controls_screen_More_Option_PosY2	400
+#define Controls_screen_More_Option_PosX2	382
+#define Controls_screen_More_Option_PosY2	435
 
-#define Controls_screen_Back_Option_PosX2	188
-#define Controls_screen_Back_Option_PosY2	400
+#define Controls_screen_Back_Option_PosX2	130
+#define Controls_screen_Back_Option_PosY2	435
 
-#define Controls_screen_Defaults_Option_PosX2	98
-#define Controls_screen_Defaults_Option_PosY2	452
+#define Controls_screen_Defaults_Option_PosX2	119
+#define Controls_screen_Defaults_Option_PosY2	483
 
 // ------------ Screen: "Sound screen" ENG ------------
 
