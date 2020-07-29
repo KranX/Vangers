@@ -971,7 +971,7 @@ void iKeyClear(void);
 
 void iHandleExtEvent(int code,int data = 0);
 
-const char* iGetKeyNameText(int vkey, Language lang = ENGLISH);
+const char* iGetKeyNameText(int vkey, Language lang = ENGLISH, bool scan = false);
 const char* iGetJoyBtnNameText(int vkey, Language lang = ENGLISH);
 
 void i_slake_pal(unsigned char* p,int delta);
