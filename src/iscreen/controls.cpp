@@ -139,6 +139,8 @@ void iKeyControls::init(void)
 
 	addDefaultCode(iKEY_EXIT,SDL_SCANCODE_F10);
 
+	addDefaultCode(iKEY_SCREENSHOT,SDL_SCANCODE_F9);
+
 	setFlag(iKEY_JOYSTICK_SWITCH,iKEY_NO_RESET);
 
 	reset();

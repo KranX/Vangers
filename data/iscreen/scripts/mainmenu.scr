@@ -5983,6 +5983,21 @@ Screen "Controls screen 7"
 	#define KEY_STRING	"Plus"
 	#define KEY_ID		"KeyID34_1"
 	$KEY_ID_OBJECT2
+
+	#define KEY_Y		3
+	#define KEY_NUM 	37
+	#define KEY_STR_NAME	"KeyStr37"
+	#define KEY_STRING	$iSTR_Screenshot
+	$KEY_STR_OBJECT
+	#define KEY_Y		3
+	#define KEY_STR_NAME	"KeyName37"
+	#define KEY_STRING	"Plus"
+	#define KEY_ID		"KeyID37"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName37_1"
+	#define KEY_STRING	"Plus"
+	#define KEY_ID		"KeyID37_1"
+	$KEY_ID_OBJECT2
 }
 
 #define GAME_OBJECT		align_x 	center												\

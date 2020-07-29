@@ -1609,9 +1609,9 @@ void KeyCenter(SDL_Event *key)
 //  		case SDL_SCANCODE_F4:
 //  			creat_poster();
 //  			break;
-		case SDL_SCANCODE_F11:
-			shotFlush();
-			break;
+//		case SDL_SCANCODE_F11:
+//			shotFlush();
+//			break;
 #endif
 		case SDL_SCANCODE_T:
 			mod = SDL_GetModState();
@@ -1666,6 +1666,11 @@ void KeyCenter(SDL_Event *key)
 		if(!Pause)
 			camera_zmin = curGMap -> xsize;
 	}
+    if (iKeyPressed(iKEY_SCREENSHOT)) {
+        if(!Pause){
+            shotFlush();
+        }
+    }
 #ifdef ACTINT
 	aKeyTrap(key);
 #endif

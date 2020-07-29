@@ -513,6 +513,9 @@
 #define iSTR_Statistics1		"Game statistics"
 #define iSTR_Statistics2		"Статистика игры"
 
+#define iSTR_Screenshot1			"Screenshot"
+#define iSTR_Screenshot2			"Сделать скриншот"
+
 #define iSTR_VAN_WAR1			"VAN-WAR"
 #define iSTR_VAN_WAR2			"ВАН-ВАР"
 

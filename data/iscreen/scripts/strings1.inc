@@ -190,6 +190,7 @@
 #define iSTR_ChatON			$iSTR_ChatON1
 #define iSTR_Statistics 		$iSTR_Statistics1
 #define iSTR_ExitGame			$iSTR_ExitGame1
+#define iSTR_Screenshot			$iSTR_Screenshot1
 
 #define iSTR_VAN_WAR			$iSTR_VAN_WAR1
 #define iSTR_MECHOSOMA			$iSTR_MECHOSOMA1
