@@ -25,7 +25,7 @@
 #include "../uvs/diagen.h"
 
 #include "../sound/hsound.h"
-
+#include "layout.h"
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -2375,6 +2375,8 @@ void aButton::load_frames(void)
 		fh.close();
 
 		flags |= B_FRAMES_LOADED;
+
+		layout(this, XGR_MAXX, XGR_MAXY);
 	}
 }
 
@@ -3878,9 +3880,14 @@ void actIntDispatcher::init(void)
 	bmlObject* bml;
 
 	aciCurColorScheme = aciColorSchemes[SCH_DEFAULT];
-	if(iP) iP -> init();
+	if(iP) {
+		layout(iP, XGR_MAXX, XGR_MAXY);
+		iP -> init();
+	}
+
 	ip = (InfoPanel*)infoPanels -> last;
 	while(ip){
+		layout(ip, XGR_MAXX, XGR_MAXY);
 		ip -> init();
 		ip = (InfoPanel*)ip -> prev;
 	}
@@ -3903,16 +3910,19 @@ void actIntDispatcher::init(void)
 
 	cp = (CounterPanel*)intCounters -> last;
 	while(cp){
+        layout(cp, XGR_MAXX, XGR_MAXY);
 		cp -> init();
 		cp = (CounterPanel*)cp -> prev;
 	}
 	cp = (CounterPanel*)infCounters -> last;
 	while(cp){
+        layout(cp, XGR_MAXX, XGR_MAXY);
 		cp -> init();
 		cp = (CounterPanel*)cp -> prev;
 	}
 	cp = (CounterPanel*)invCounters -> last;
 	while(cp){
+        layout(cp, XGR_MAXX, XGR_MAXY);
 		cp -> init();
 		cp = (CounterPanel*)cp -> prev;
 	}
@@ -3955,22 +3965,26 @@ void actIntDispatcher::init(void)
 	it = (fncMenu*)menuList -> last;
 	while(it){
 		it -> init();
+		layout(it, XGR_MAXX, XGR_MAXY);
 		it = (fncMenu*)it -> prev;
 	}
 
 	b = (aButton*)intButtons -> last;
 	while(b){
 		b -> init();
+		layout(b, XGR_MAXX, XGR_MAXY);
 		b = (aButton*)b -> prev;
 	}
 	b = (aButton*)invButtons -> last;
 	while(b){
 		b -> init();
+		layout(b, XGR_MAXX, XGR_MAXY);
 		b = (aButton*)b -> prev;
 	}
 	b = (aButton*)infButtons -> last;
 	while(b){
 		b -> init();
+		layout(b, XGR_MAXX, XGR_MAXY);
 		b = (aButton*)b -> prev;
 	}
 	init_menus();
@@ -4318,14 +4332,26 @@ void fncMenuItem::init(void)
 
 void InfoPanel::init(void)
 {
-	if(bml_name){
-		if(!bml) bml = new bmlObject;
-		bml -> load(bml_name);
-	}
-	if(ibs_name){
-		if(!ibs) ibs = new ibsObject;
-		ibs -> load(ibs_name);
-	}
+    if(bml_name){
+        if(!bml) bml = new bmlObject;
+        bml -> load(bml_name);
+        bml -> OffsX = (short)PosX;
+        bml -> OffsX = (short)PosY;
+
+    }
+    if(ibs_name){
+        if(!ibs) ibs = new ibsObject;
+        ibs -> load(ibs_name);
+        ibs -> PosX = (short)PosX;
+        ibs -> PosY = (short)PosY;
+        // TODO:
+//        ibs -> recalc_geometry();
+//        SideX = SizeX / 2;
+//        SideY = SizeY / 2;
+//
+//        CenterX = PosX + SideX;
+//        CenterY = PosY + SideY;
+    }
 }
 
 void InfoPanel::finit(void)
@@ -4356,11 +4382,17 @@ void fncMenu::init(void)
 		if(bml_name){
 			if(!bml) bml = new bmlObject;
 			bml -> load(bml_name);
-			bml -> change_color(0,aciCurColorScheme[ACI_BACK_COL]);
+			bml -> OffsX = (short)PosX;
+			bml -> OffsY = (short)PosY;
+			bml -> change_color(0, aciCurColorScheme[ACI_BACK_COL]);
 		}
 		if(ibs_name){
 			if(!ibs) ibs = new ibsObject;
 			ibs -> load(ibs_name);
+			ibs -> PosX = (short)PosX;
+			ibs -> PosY = (short)PosY;
+			ibs -> CenterX = ibs -> PosX + ibs -> SideX;
+			ibs -> CenterY = ibs -> PosY + ibs -> SideY;
 		}
 	}
 	init_objects();
@@ -6829,11 +6861,11 @@ void actIntDispatcher::init_inds(void)
 	ibsObject* ibs = curIbs;
 	XGR_MousePromptData* pr;
 
-	lx = ibs -> PosX;
-	ly = ibs -> PosY;
+	lx = 0;
+	ly = 0;
 
-	rx = lx + ibs -> SizeX;
-	ry = ly + ibs -> SizeY;
+	rx = XGR_MAXX;
+	ry = XGR_MAXY;
 
 	aIndData* p = (aIndData*)indList -> last;
 	while(p){
@@ -7730,6 +7762,8 @@ void CounterPanel::init(void)
 	if(ibs_name){
 		if(!ibs) ibs = new ibsObject;
 		ibs -> load(ibs_name);
+		ibs -> PosX = this->PosX;
+		ibs -> PosY = this->PosY;
 	}
 	SizeX = MaxLen * (aCellSize + 1);
 	SizeY = aCellSize + 1;

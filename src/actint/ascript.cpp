@@ -12,7 +12,7 @@
 #include "../iscreen/iscript.h"
 
 #include "mlstruct.h"
-
+#include "layout.h"
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -318,6 +318,8 @@ enum aOptions
 	SET_ESCAVE_FLAG,		// 153
 
 	ADD_MAP_INFO_FILE,		// 154
+	ANCHOR_RIGHT,			//155
+	ANCHOR_BOTTOM,			//156
 
 	MAX_OPTION
 };
@@ -547,7 +549,9 @@ static const char* aOptIDs[MAX_OPTION] =
 	"prm_template",         // 152
 	"show_escave",          // 153
 
-	"map_data"              // 154
+	"map_data",             // 154
+	"anchor_right",         // 155
+	"anchor_bottom"         // 156
 };
 
 int curMode = AS_NONE;
@@ -2123,6 +2127,43 @@ void aParseScript(const char* fname,char* bname)
 					}
 					else {
 						handle_error("Misplaced option",aOptIDs[id]);
+					}
+					break;
+				case ANCHOR_RIGHT:
+					switch (curMode) {
+						case AS_INIT_MENU:
+							fnMnu->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						case AS_INIT_INFO_PANEL:
+							iPl->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						case AS_INIT_BUTTON:
+							aBt->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						case AS_INIT_COUNTER:
+							cP->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
+					}
+
+					break;
+				case ANCHOR_BOTTOM:
+					switch (curMode) {
+						case AS_INIT_MENU:
+							fnMnu->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						case AS_INIT_INFO_PANEL:
+							iPl->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						case AS_INIT_BUTTON:
+							aBt->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						case AS_INIT_COUNTER:
+							cP->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						default:
+							handle_error("Misplaced option", aOptIDs[id]);
 					}
 					break;
 			}

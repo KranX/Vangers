@@ -409,17 +409,21 @@ invItem $ITM78_NAME
 /* -------------------------------------------------------------------------- */
 
 ibs_obj $IBS1 { 	// Info window 600x600
-	offs_x		0	13
-	offs_y		0	1
+	// IND_UP_LEFT
+	offs_x		0	17
+	offs_y		0	8
 
-	offs_x		1	-6
-	offs_y		1	-3
+	// IND_UP_RIGHT
+	offs_x		1	200
+	offs_y		1	5
 
-	offs_x		2	14
-	offs_y		2	-1
+	// IND_DN_LEFT
+	offs_x		2	17
+	offs_y		2	5
 
-	offs_x		3	-6
-	offs_y		3	-2
+	// IND_DN_RIGHT
+	offs_x		3	199
+	offs_y		3	5
 
 	font		7
 
@@ -428,17 +432,22 @@ ibs_obj $IBS1 { 	// Info window 600x600
 }
 
 ibs_obj $IBS2 { 	// Inventory window 400x600
-	offs_x		0	13
-	offs_y		0	1
+	// IND_UP_LEFT
+	offs_x		0	17
+	offs_y		0	8
 
-	offs_x		1	-1
-	offs_y		1	-1
+	// IND_UP_RIGHT
+	offs_x		1	403
+	// 403
+	offs_y		1	3
 
-	offs_x		2	14
-	offs_y		2	0
+	// IND_DN_LEFT
+	offs_x		2	17
+	offs_y		2	5
 
-	offs_x		3	-4
-	offs_y		3	-2
+	// IND_DN_RIGHT
+	offs_x		3	398
+	offs_y		3	5
 
 	font		0
 
@@ -492,8 +501,10 @@ Button INT_BUTTON
 
 	id	$B_INT1
 
-	x	726
-	y	533
+	x	0
+	y	0
+	anchor_right
+	anchor_bottom
 
 	key	$VK_RETURN
 	control_id	12	       // iKEY_INVENTORY
@@ -511,8 +522,10 @@ Button INF_BUTTON
 
 	id	$B_INF0
 
-	x	620
-	y	530
+	x	102
+	y	3
+	anchor_right
+	anchor_bottom
 
 	key	$VK_SPACE
 	control_id	13	       // iKEY_OPEN
@@ -528,8 +541,9 @@ Button INV_BUTTON
 {
 	id	$ACI_WPN_PICKUP_BUTTON
 
-	x	413
+	x	334
 	y	4
+    anchor_right
 
 	event	$EV_SET_WPN_PICKUP	0
 
@@ -542,8 +556,9 @@ Button INV_BUTTON
 {
 	id	$ACI_ITM_PICKUP_BUTTON
 
-	x	706
+	x	38
 	y	18
+    anchor_right
 
 	event	$EV_SET_ITM_PICKUP	0
 
@@ -555,7 +570,7 @@ Button INV_BUTTON
 fncMenu {
 	menu_type	$MENU1
 
-	x	607
+	x	15
 	y	64
 
 	size_x	179
@@ -581,9 +596,10 @@ fncMenu {
 fncMenu {
 	menu_type	$MENU2
 
-	x	618
-	y	310
-
+	x	6
+	y	68
+	anchor_right
+	anchor_bottom
 	size_x	177
 	size_y	222
 
@@ -609,8 +625,9 @@ fncMenu {
 
 	visible_items	5
 
-	x	607
+	x	15
 	y	64
+	anchor_right
 
 	size_x	179
 	size_y	234
@@ -658,8 +675,10 @@ ind_data $IND_NRG {
 }
 
 info_panel {	// Inventory info panel...
-	x	465
-	y	464
+	x	60
+	y	42
+	anchor_right
+	anchor_bottom
 
 	size_x	275
 	size_y	94
@@ -689,8 +708,9 @@ info_panel {	// Time info panel...
 
 	ibs_name	"resource/actint/800x600/time_pl"
 
-	x	624
+	x	32
 	y	7
+	anchor_right
 	size_x	146
 	size_y	45
 }
@@ -699,8 +719,9 @@ counter INV_COUNTER {
 	font	2
 	range_font
 
-	x	484
+	x	103
 	y	21
+	anchor_right
 	size_x	213
 	size_y	38
 

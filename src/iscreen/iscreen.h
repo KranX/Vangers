@@ -148,8 +148,8 @@ struct ibsObject : public iListElement
 
 	int fontID;
 
-	char indPosX[4];
-	char indPosY[4];
+	int indPosX[4];
+	int indPosY[4];
 
 	bmlObject* back;
 	int backObjID;
