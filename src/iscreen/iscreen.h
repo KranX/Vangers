@@ -4,7 +4,7 @@
 #include "../lang.h"
 #include "hfont.h"
 #include "iscreen_options.h"
-
+#include <vector>
 //#define iMOVE_MOUSE_OBJECTS
 
 const int  iJOYSTICK_MASK		= ~0xFF;
@@ -103,6 +103,7 @@ struct bmlObject : public iListElement
 	int ID;
 
 	int flags;
+	unsigned int anchor;
 
 	short SizeX;
 	short SizeY;
@@ -148,11 +149,11 @@ struct ibsObject : public iListElement
 
 	int fontID;
 
-	char indPosX[4];
-	char indPosY[4];
+	int indPosX[4];
+	int indPosY[4];
 
-	bmlObject* back;
-	int backObjID;
+	std::vector<bmlObject*> backs;
+	std::vector<int> backObjIDs;
 
 	char* name;
 	int ImageSize;

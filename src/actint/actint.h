@@ -503,6 +503,8 @@ struct invMatrix : public iListElement
 	int ScreenX;
 	int ScreenY;
 
+	unsigned int anchor = 0;
+
 	int ScreenSizeX;
 	int ScreenSizeY;
 
@@ -673,6 +675,8 @@ struct aButton : public iListElement
 	int PosX;
 	int PosY;
 
+	unsigned int anchor = 0;
+
 	int type;
 	int flags;
 
@@ -789,6 +793,7 @@ struct fncMenu : public iListElement
 
 	int PosX;
 	int PosY;
+	unsigned int anchor = 0;
 
 	int SizeX;
 	int SizeY;
@@ -962,6 +967,8 @@ struct CounterPanel : public iListElement
 	int PosX;
 	int PosY;
 
+	unsigned int anchor = 0;
+
 	int SizeX;
 	int SizeY;
 
@@ -1017,6 +1024,8 @@ struct InfoPanel : public iListElement
 
 	int PosX;
 	int PosY;
+
+	unsigned int anchor = 0;
 
 	int OffsX;
 	int OffsY;
