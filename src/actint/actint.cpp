@@ -29,6 +29,25 @@
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
+template <> void layout(invMatrix* view, int width, int height){
+	unsigned int anchor = view->anchor;
+
+	if(anchor & WIDGET_ANCHOR_INITIALIZED){
+		std::cout<<"  WARNING: layout is already done"<<std::endl;
+		return;
+	}
+
+	view->anchor |= WIDGET_ANCHOR_INITIALIZED;
+
+	if(anchor & WIDGET_ANCHOR_RIGHT){
+		view->ScreenX = width - view->ScreenX - view->ScreenSizeX;
+	}
+
+	if(anchor & WIDGET_ANCHOR_BOTTOM){
+		view->ScreenY = height - view->ScreenY - view->ScreenSizeY;
+	}
+}
+
 extern int uvsTabuTaskFlag;
 
 extern bmlObject* aIndArrowBML;
@@ -3266,9 +3285,7 @@ void actIntDispatcher::redraw(void)
 		curIbs -> back -> load(NULL, 1);
 		curIbs -> back -> show(0);
 		if(curMode == AS_INV_MODE && curMatrix && curMatrix -> back){
-			curMatrix -> back -> load();
-			XGR_PutSpr(curMatrix -> back -> OffsX,curMatrix -> back -> OffsY,curMatrix -> back -> SizeX,curMatrix -> back -> SizeY,curMatrix -> back -> frames,XGR_BLACK_FON);
-			curMatrix -> back -> free();
+			curMatrix -> back -> show();
 		}
 		flags |= AS_FULL_FLUSH;
 		cp = (CounterPanel*)intCounters -> last;
@@ -3930,6 +3947,13 @@ void actIntDispatcher::init(void)
 	p = (invMatrix*)matrixList -> last;
 	while(p){
 		p -> init();
+		layout(p, XGR_MAXX, XGR_MAXY);
+		p -> back -> load();
+		// TODO: move to resource file
+		p -> back -> OffsX = 10;
+		p -> back -> anchor = WIDGET_ANCHOR_RIGHT;
+
+		layout(p -> back, XGR_MAXX, XGR_MAXY);
 		p = (invMatrix*)p -> prev;
 	}
 

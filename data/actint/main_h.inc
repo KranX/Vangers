@@ -572,7 +572,7 @@ fncMenu {
 
 	x	15
 	y	64
-
+    anchor_right
 	size_x	179
 	size_y	234
 

@@ -503,6 +503,8 @@ struct invMatrix : public iListElement
 	int ScreenX;
 	int ScreenY;
 
+	unsigned int anchor = 0;
+
 	int ScreenSizeX;
 	int ScreenSizeY;
 
