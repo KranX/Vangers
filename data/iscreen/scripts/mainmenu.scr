@@ -5199,7 +5199,7 @@ Screen "Controls screen"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Defaults Option"       2
+				smooth_obj	"Defaults Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5213,7 +5213,7 @@ Screen "Controls screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Defaults Option"       0
+				smooth_obj	"Defaults Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5263,7 +5263,7 @@ Screen "Controls screen"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Menu Option"       2
+				smooth_obj	"Menu Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5277,7 +5277,7 @@ Screen "Controls screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Menu Option"       0
+				smooth_obj	"Menu Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5470,7 +5470,7 @@ Screen "Controls screen 2"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Defaults Option"       2
+				smooth_obj	"Defaults Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5484,7 +5484,7 @@ Screen "Controls screen 2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Defaults Option"       0
+				smooth_obj	"Defaults Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5534,7 +5534,7 @@ Screen "Controls screen 2"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Menu Option"       2
+				smooth_obj	"Menu Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5548,7 +5548,7 @@ Screen "Controls screen 2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Menu Option"       0
+				smooth_obj	"Menu Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5726,7 +5726,7 @@ Screen "Controls screen 3"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Defaults Option"       2
+				smooth_obj	"Defaults Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5740,7 +5740,7 @@ Screen "Controls screen 3"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Defaults Option"       0
+				smooth_obj	"Defaults Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5790,7 +5790,7 @@ Screen "Controls screen 3"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Menu Option"       2
+				smooth_obj	"Menu Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5804,7 +5804,7 @@ Screen "Controls screen 3"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Menu Option"       0
+				smooth_obj	"Menu Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5911,19 +5911,19 @@ Screen "Controls screen 3"
 	#define KEY_ID		"KeyID16_1"
 	$KEY_ID_OBJECT2
 
-	#define KEY_Y    6
-	#define KEY_NUM   33
-	#define KEY_STR_NAME  "KeyStr33"
-	#define KEY_STRING  $iSTR_UseVector
+	#define KEY_Y			6
+	#define KEY_NUM			33
+	#define KEY_STR_NAME	"KeyStr33"
+	#define KEY_STRING		$iSTR_UseVector
 	$KEY_STR_OBJECT
-	#define KEY_Y    6
-	#define KEY_STR_NAME  "KeyName33"
-	#define KEY_STRING  "~"
-	#define KEY_ID    "KeyID33"
+	#define KEY_Y			6
+	#define KEY_STR_NAME	"KeyName33"
+	#define KEY_STRING		"~"
+	#define KEY_ID			"KeyID33"
 	$KEY_ID_OBJECT
-	#define KEY_STR_NAME  "KeyName33_1"
-	#define KEY_STRING  "~"
-	#define KEY_ID    "KeyID33_1"
+	#define KEY_STR_NAME	"KeyName33_1"
+	#define KEY_STRING		"~"
+	#define KEY_ID			"KeyID33_1"
 	$KEY_ID_OBJECT2
 
 	#define KEY_Y		7
@@ -6012,7 +6012,7 @@ Screen "Controls screen 4"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Defaults Option"       2
+				smooth_obj	"Defaults Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -6026,7 +6026,7 @@ Screen "Controls screen 4"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Defaults Option"       0
+				smooth_obj	"Defaults Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -6076,7 +6076,7 @@ Screen "Controls screen 4"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Menu Option"       2
+				smooth_obj	"Menu Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -6090,7 +6090,7 @@ Screen "Controls screen 4"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Menu Option"       0
+				smooth_obj	"Menu Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -6283,7 +6283,7 @@ Screen "Controls screen 5"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Defaults Option"       2
+				smooth_obj	"Defaults Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -6297,7 +6297,7 @@ Screen "Controls screen 5"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Defaults Option"       0
+				smooth_obj	"Defaults Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -6347,7 +6347,7 @@ Screen "Controls screen 5"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Menu Option"       2
+				smooth_obj	"Menu Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -6361,7 +6361,7 @@ Screen "Controls screen 5"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Menu Option"       0
+				smooth_obj	"Menu Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
