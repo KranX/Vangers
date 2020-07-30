@@ -1667,9 +1667,7 @@ void KeyCenter(SDL_Event *key)
 			camera_zmin = curGMap -> xsize;
 	}
     if (iKeyPressed(iKEY_SCREENSHOT)) {
-        if(!Pause){
-            shotFlush();
-        }
+		shotFlush();
     }
 #ifdef ACTINT
 	aKeyTrap(key);
