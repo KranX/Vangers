@@ -48,6 +48,25 @@ template <> void layout(invMatrix* view, int width, int height){
 	}
 }
 
+template <> void layout(bmlObject* view, int width, int height){
+	unsigned int anchor = view->anchor;
+
+	if(anchor & WIDGET_ANCHOR_INITIALIZED){
+		std::cout<<"  WARNING: layout is already done"<<std::endl;
+		return;
+	}
+
+	view->anchor |= WIDGET_ANCHOR_INITIALIZED;
+
+	if(anchor & WIDGET_ANCHOR_RIGHT){
+		view->OffsX = width - view->OffsX - view->SizeX;
+	}
+
+	if(anchor & WIDGET_ANCHOR_BOTTOM){
+		view->OffsY = height - view->OffsY - view->SizeY;
+	}
+}
+
 extern int uvsTabuTaskFlag;
 
 extern bmlObject* aIndArrowBML;
@@ -1039,7 +1058,7 @@ aIndData::~aIndData(void)
 bmlObject::bmlObject(void)
 {
 	ID = 0;
-
+	anchor = 0;
 	flags = 0;
 	SizeX = SizeY = Size = 0;
 	OffsX = OffsY = 0;

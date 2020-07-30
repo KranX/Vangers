@@ -2146,6 +2146,9 @@ void aParseScript(const char* fname,char* bname)
 						case AS_INIT_MATRIX:
 							invMat->anchor |= WIDGET_ANCHOR_RIGHT;
 							break;
+						case AS_INIT_BML:
+							bmlObj->anchor |= WIDGET_ANCHOR_RIGHT;
+							break;
 						default:
 							handle_error("Misplaced option", aOptIDs[id]);
 					}
@@ -2167,6 +2170,9 @@ void aParseScript(const char* fname,char* bname)
 							break;
 						case AS_INIT_MATRIX:
 							invMat->anchor |= WIDGET_ANCHOR_BOTTOM;
+							break;
+						case AS_INIT_BML:
+							bmlObj->anchor |= WIDGET_ANCHOR_BOTTOM;
 							break;
 						default:
 							handle_error("Misplaced option", aOptIDs[id]);

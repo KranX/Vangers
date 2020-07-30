@@ -103,6 +103,7 @@ struct bmlObject : public iListElement
 	int ID;
 
 	int flags;
+	unsigned int anchor;
 
 	short SizeX;
 	short SizeY;
