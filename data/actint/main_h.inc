@@ -740,145 +740,145 @@ counter INV_COUNTER {
 invMatrix $MECH00_ID {
 	$MATRIX_HIRES
 	$MATRIX00_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix00.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix00.bmo"
 }
 
 invMatrix $MECH01_ID {
 	$MATRIX_HIRES
 	$MATRIX01_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix01.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix01.bmo"
 }
 
 invMatrix $MECH02_ID {
 	$MATRIX_HIRES
 	$MATRIX02_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix02.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix02.bmo"
 }
 
 invMatrix $MECH03_ID {
 	$MATRIX_HIRES
 	$MATRIX03_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix03.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix03.bmo"
 }
 
 invMatrix $MECH04_ID {
 	$MATRIX_HIRES
 	$MATRIX04_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix04.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix04.bmo"
 }
 
 invMatrix $MECH05_ID {
 	$MATRIX_HIRES
 	$MATRIX05_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix05.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix05.bmo"
 }
 
 invMatrix $MECH06_ID {
 	$MATRIX_HIRES
 	$MATRIX06_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix06.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix06.bmo"
 }
 
 invMatrix $MECH07_ID {
 	$MATRIX_HIRES
 	$MATRIX07_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix07.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix07.bmo"
 }
 
 invMatrix $MECH08_ID {
 	$MATRIX_HIRES
 	$MATRIX08_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix08.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix08.bmo"
 }
 
 invMatrix $MECH09_ID {
 	$MATRIX_HIRES
 	$MATRIX09_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix09.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix09.bmo"
 }
 
 invMatrix $MECH10_ID {
 	$MATRIX_HIRES
 	$MATRIX10_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix10.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix10.bmo"
 }
 
 invMatrix $MECH11_ID {
 	$MATRIX_HIRES
 	$MATRIX11_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix11.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix11.bmo"
 }
 
 invMatrix $MECH12_ID {
 	$MATRIX_HIRES
 	$MATRIX12_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix12.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix12.bmo"
 }
 
 invMatrix $MECH13_ID {
 	$MATRIX_HIRES
 	$MATRIX13_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix13.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix13.bmo"
 }
 
 invMatrix $MECH14_ID {
 	$MATRIX_HIRES
 	$MATRIX14_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix14.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix14.bmo"
 }
 
 invMatrix $MECH15_ID {
 	$MATRIX_HIRES
 	$MATRIX15_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix15.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix15.bmo"
 }
 
 invMatrix $MECH16_ID {
 	$MATRIX_HIRES
 	$MATRIX16_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix16.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix16.bmo"
 }
 
 invMatrix $MECH17_ID {
 	$MATRIX_HIRES
 	$MATRIX17_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix17.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix17.bmo"
 }
 
 invMatrix $MECH18_ID {
 	$MATRIX_HIRES
 	$MATRIX18_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix18.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix18.bmo"
 }
 
 invMatrix $MECH19_ID {
 	$MATRIX_HIRES
 	$MATRIX19_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix18.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix18.bmo"
 }
 
 invMatrix $MECH20_ID {
 	$MATRIX_HIRES
 	$MATRIX20_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix18.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix18.bmo"
 }
 
 invMatrix $MECH21_ID {
 	$MATRIX_HIRES
 	$MATRIX21_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix18.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix18.bmo"
 }
 
 invMatrix $MECH22_ID {
 	$MATRIX_HIRES
 	$MATRIX22_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix18.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix18.bmo"
 }
 
 invMatrix $MECH35_ID {
 	$MATRIX_HIRES
 	$MATRIX35_BODY
-	back_bml	"resource/actint/800x600/matrix/matrix35.bmo"
+	back_bml	"resource/actint/hd/matrix/matrix35.bmo"
 }
 
 world_map {
