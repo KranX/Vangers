@@ -5249,12 +5249,12 @@ Screen "Controls screen"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Controls screen2"
+				hide_obj	"Menu Option"
 				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
 			}
 			EvComm {
-				rise_obj	"Menu Option"
-				time		$PRESS_OBJ_TIME
+				move2screen	"Controls screen2"
 				start_time	$PRESS_OBJ_TIME
 			}
 		}
@@ -5275,16 +5275,6 @@ Screen "Controls screen"
 			EvComm {
 				move2screen	"Controls screen2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-			}
-			EvComm {
-				smooth_obj	"Menu Option"	0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Menu Option"
-				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
 			}
 		}
 	}
@@ -5520,12 +5510,12 @@ Screen "Controls screen 2"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Controls screen2"
+				hide_obj	"Menu Option"
 				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
 			}
 			EvComm {
-				rise_obj	"Menu Option"
-				time		$PRESS_OBJ_TIME
+				move2screen	"Controls screen2"
 				start_time	$PRESS_OBJ_TIME
 			}
 		}
@@ -5546,16 +5536,6 @@ Screen "Controls screen 2"
 			EvComm {
 				move2screen	"Controls screen2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-			}
-			EvComm {
-				smooth_obj	"Menu Option"	0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Menu Option"
-				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
 			}
 		}
 	}
@@ -5776,12 +5756,12 @@ Screen "Controls screen 3"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Controls screen2"
+				hide_obj	"Menu Option"
 				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
 			}
 			EvComm {
-				rise_obj	"Menu Option"
-				time		$PRESS_OBJ_TIME
+				move2screen	"Controls screen2"
 				start_time	$PRESS_OBJ_TIME
 			}
 		}
@@ -5802,16 +5782,6 @@ Screen "Controls screen 3"
 			EvComm {
 				move2screen	"Controls screen2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-			}
-			EvComm {
-				smooth_obj	"Menu Option"	0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Menu Option"
-				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
 			}
 		}
 	}
@@ -6062,12 +6032,12 @@ Screen "Controls screen 4"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Controls screen2"
+				hide_obj	"Menu Option"
 				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
 			}
 			EvComm {
-				rise_obj	"Menu Option"
-				time		$PRESS_OBJ_TIME
+				move2screen	"Controls screen2"
 				start_time	$PRESS_OBJ_TIME
 			}
 		}
@@ -6088,16 +6058,6 @@ Screen "Controls screen 4"
 			EvComm {
 				move2screen	"Controls screen2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-			}
-			EvComm {
-				smooth_obj	"Menu Option"	0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Menu Option"
-				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
 			}
 		}
 	}
@@ -6333,12 +6293,12 @@ Screen "Controls screen 5"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Controls screen2"
+				hide_obj	"Menu Option"
 				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
 			}
 			EvComm {
-				rise_obj	"Menu Option"
-				time		$PRESS_OBJ_TIME
+				move2screen	"Controls screen2"
 				start_time	$PRESS_OBJ_TIME
 			}
 		}
@@ -6359,16 +6319,6 @@ Screen "Controls screen 5"
 			EvComm {
 				move2screen	"Controls screen2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-			}
-			EvComm {
-				smooth_obj	"Menu Option"	0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Menu Option"
-				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
 			}
 		}
 	}
