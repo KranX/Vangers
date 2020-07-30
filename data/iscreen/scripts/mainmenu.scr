@@ -23,8 +23,8 @@
 
 /* ------------------------ Controls screen2 Defines ------------------------ */
 
-#define CONTROLS2_START_Y	180
-#define CONTROLS2_DELTA_Y	70
+#define CONTROLS2_START_Y	40
+#define CONTROLS2_DELTA_Y	55
 
 /* ------------------------- Results Screen Defines ------------------------- */
 
@@ -247,7 +247,7 @@
 
 /* ----------------------- Controls Screen 0 Defines ------------------------ */
 
-#define KEYS0_START_Y		100
+#define KEYS0_START_Y		60
 #define KEYS0_DELTA_Y		40
 
 #define KEYS0_X 		445
@@ -5145,26 +5145,10 @@ Screen "Controls screen"
 		}
 	}
 
-	Object "TitleStr"
-	{
-		align_x center
-		y	{ $TITLE_STR_Y - 10 }
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
-		}
-	}
-
 	Object "TitleStr2"
 	{
 		align_x center
-		y	{ $TITLE_STR_Y + 30 }
+		y	{ $TITLE_STR_Y - 10 }
 
 		Element STRING {
 			align_x center
@@ -5241,7 +5225,71 @@ Screen "Controls screen"
 		}
 	}
 
-	#define PREV_SCR	"Controls screen2"
+	Object "Menu Option"
+	{
+		x	$Controls_screen_Menu_Option_PosX
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_CONTROLS
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Menu Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
+		}
+	}
+
+	#define PREV_SCR	"Controls screen 5"
 	#define NEXT_SCR	"Controls screen 2"
 	$BACK_OBJ
 	$MORE_OBJ
@@ -5368,7 +5416,7 @@ Screen "Controls screen 2"
 		}
 	}
 
-	Object "TitleStr"
+	Object "TitleStr2"
 	{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
@@ -5380,14 +5428,14 @@ Screen "Controls screen 2"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_Utility
 		}
 	}
 
-	Object "TitleStr2"
+	Object "Defaults Option"
 	{
-		align_x center
-		y	{ $TITLE_STR_Y + 30 }
+		x	$Controls_screen_Defaults_Option_PosX
+		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -5396,7 +5444,119 @@ Screen "Controls screen 2"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Utility
+			string		$iSTR_RESTORE_ALL
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Defaults Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Defaults Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Defaults Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
+		}
+	}
+
+	Object "Menu Option"
+	{
+		x	$Controls_screen_Menu_Option_PosX
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_CONTROLS
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Menu Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
 		}
 	}
 
@@ -5512,8 +5672,8 @@ Screen "Controls screen 3"
 		}
 	}
 
-	Object "TitleStr"
-	{
+	Object "TitleStr2"
+		{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
 
@@ -5524,14 +5684,14 @@ Screen "Controls screen 3"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_Combat
 		}
 	}
 
-	Object "TitleStr2"
-		{
-		align_x center
-		y	{ $TITLE_STR_Y + 30 }
+	Object "Defaults Option"
+	{
+		x	$Controls_screen_Defaults_Option_PosX
+		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -5540,7 +5700,119 @@ Screen "Controls screen 3"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Combat
+			string		$iSTR_RESTORE_ALL
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Defaults Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Defaults Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Defaults Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
+		}
+	}
+
+	Object "Menu Option"
+	{
+		x	$Controls_screen_Menu_Option_PosX
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_CONTROLS
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Menu Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
 		}
 	}
 
@@ -5686,8 +5958,8 @@ Screen "Controls screen 4"
 		}
 	}
 
-	Object "TitleStr"
-	{
+	Object "TitleStr2"
+		{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
 
@@ -5698,14 +5970,14 @@ Screen "Controls screen 4"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_Camera
 		}
 	}
 
-	Object "TitleStr2"
-		{
-		align_x center
-		y	{ $TITLE_STR_Y + 30 }
+	Object "Defaults Option"
+	{
+		x	$Controls_screen_Defaults_Option_PosX
+		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -5714,7 +5986,119 @@ Screen "Controls screen 4"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Camera
+			string		$iSTR_RESTORE_ALL
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Defaults Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Defaults Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Defaults Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
+		}
+	}
+
+	Object "Menu Option"
+	{
+		x	$Controls_screen_Menu_Option_PosX
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_CONTROLS
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Menu Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
 		}
 	}
 
@@ -5845,7 +6229,7 @@ Screen "Controls screen 5"
 		}
 	}
 
-	Object "TitleStr"
+	Object "TitleStr2"
 	{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
@@ -5857,14 +6241,14 @@ Screen "Controls screen 5"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_MultiplayerAndMisc
 		}
 	}
 
-	Object "TitleStr2"
+	Object "Defaults Option"
 	{
-		align_x center
-		y	{ $TITLE_STR_Y + 30 }
+		x	$Controls_screen_Defaults_Option_PosX
+		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -5873,7 +6257,119 @@ Screen "Controls screen 5"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_MultiplayerAndMisc
+			string		$iSTR_RESTORE_ALL
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Defaults Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Defaults Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Defaults Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
+		}
+	}
+
+	Object "Menu Option"
+	{
+		x	$Controls_screen_Menu_Option_PosX
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_CONTROLS
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"       2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Menu Option"       0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Menu Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
 		}
 	}
 
@@ -5955,36 +6451,6 @@ Screen "Controls screen 5"
 	#define KEY_STR_NAME	"KeyName36_1"
 	#define KEY_STRING	"Left"
 	#define KEY_ID		"KeyID36_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		6
-	#define KEY_NUM 	21
-	#define KEY_STR_NAME	"KeyStr21"
-	#define KEY_STRING	$iSTR_Reduce_view
-	$KEY_STR_OBJECT
-	#define KEY_Y		6
-	#define KEY_STR_NAME	"KeyName21"
-	#define KEY_STRING	"F2"
-	#define KEY_ID		"KeyID21"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName21_1"
-	#define KEY_STRING	"F2"
-	#define KEY_ID		"KeyID21_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		7
-	#define KEY_NUM 	22
-	#define KEY_STR_NAME	"KeyStr22"
-	#define KEY_STRING	$iSTR_Enlarge_view
-	$KEY_STR_OBJECT
-	#define KEY_Y		7
-	#define KEY_STR_NAME	"KeyName22"
-	#define KEY_STRING	"F3"
-	#define KEY_ID		"KeyID22"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName22_1"
-	#define KEY_STRING	"F3"
-	#define KEY_ID		"KeyID22_1"
 	$KEY_ID_OBJECT2
 }
 
@@ -9961,7 +10427,7 @@ Screen "Controls screen2"
 {
 	screen_offs	0
 
-	default_obj "Customize Option"
+	default_obj "Go to Controls Screen 1"
 
 	Object "TitleStr"
 	{
@@ -10154,7 +10620,7 @@ Screen "Controls screen2"
 		}
 	}*/
 
-	Object "Customize Option"
+	/*Object "Customize Option"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 1 }
@@ -10254,7 +10720,7 @@ Screen "Controls screen2"
 			key $VK_MOVE
 
 			$EV_CHANGE_OBJ
-		}
+		}*/
 
 		/*#define OBJ1	"Customize Option"
 		#define OBJ2	"Joystick Option"
@@ -10274,6 +10740,276 @@ Screen "Controls screen2"
 
 			$EV_CHANGE_OBJ
 		}*/
+	//}
+
+	Object "Go to Controls Screen 1"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 1 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Movement
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 1"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 1" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 1"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+
+	Object "Go to Controls Screen 2"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 2 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Utility
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 2"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 2"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 2" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 2"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+
+	Object "Go to Controls Screen 3"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 3 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Combat
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 3"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 3"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 3" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 3"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 3"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+
+	Object "Go to Controls Screen 4"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 4 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Camera
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 4"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 4"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 4" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 4"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 4"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+
+	Object "Go to Controls Screen 5"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 5 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_MultiplayerAndMisc
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 5"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 5"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 5" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 5"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 5"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
 	}
 }
 

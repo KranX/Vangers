@@ -126,16 +126,16 @@
 #define iSTR_Controls1			"Controls"
 #define iSTR_Controls2			"Управление"
 
-#define iSTR_Movement1			"Movement"
-#define iSTR_Movement2			"Езда I"
+#define iSTR_Movement1			"Basic Controls"
+#define iSTR_Movement2			"Базовое управление"
 
-#define iSTR_Utility1			"Utility"
-#define iSTR_Utility2			"Езда II"
+#define iSTR_Utility1			"Extended Movement"
+#define iSTR_Utility2			"Расширенное управление"
 
 #define iSTR_Combat1			"Combat"
 #define iSTR_Combat2			"Бой"
 
-#define iSTR_Camera1			"Camera"
+#define iSTR_Camera1			"Camera Controls"
 #define iSTR_Camera2			"Камера"
 
 #define iSTR_MultiplayerAndMisc1			"Multiplayer and misc."
