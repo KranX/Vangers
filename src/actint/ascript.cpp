@@ -1649,7 +1649,7 @@ void aParseScript(const char* fname,char* bname)
 					break;
 				case INIT_BGROUND:
 					if(curMode == AS_INIT_IBS){
-						ibsObj -> backObjID = script -> read_idata();
+						ibsObj -> backObjIDs.push_back(script -> read_idata());
 					}
 					else
 						handle_error("Misplaced option",aOptIDs[id]);

@@ -1164,8 +1164,6 @@ void bmlObject::offs_show(int x,int y,int frame)
 ibsObject::ibsObject(void)
 {
 	ID = 0;
-	backObjID = -1;
-	back = NULL;
 	image = NULL;
 	name = NULL;
 
@@ -1231,8 +1229,8 @@ void ibsObject::show(void)
 
 void ibsObject::show_bground(void)
 {
-	if(back){
-		back -> show();
+	for(int i = 0; i < backs.size(); i++){
+		backs[i] -> show();
 	}
 }
 
@@ -3293,16 +3291,12 @@ void actIntDispatcher::redraw(void)
 	}
 	if(!(flags & AS_FULL_REDRAW)){
 		XGR_MouseObj.flags &= ~XGM_PROMPT_ACTIVE;
-		// Original background loads (draws) into the video buffer assuming that video
-		// buffer size and background size are equal. T
-		// hat's not true for 800x600 background and 1280x720 resolution,
-		// which gives noise at the empty parts
-		//
-		// This would be overridden anyway in the following commits where
-		// there's no fixed background image, but 4 different parts.
-
-		curIbs -> back -> load(NULL, 1);
-		curIbs -> back -> show(0);
+		XGR_Obj.fill(0);
+		for(int i = 0; i < curIbs -> backs.size(); i++) {
+			curIbs -> backs[i] -> load(NULL, 1);
+			layout(curIbs -> backs[i], XGR_MAXX, XGR_MAXY);
+			curIbs -> backs[i] -> show(0);
+		}
 		if(curMode == AS_INV_MODE && curMatrix && curMatrix -> back){
 			curMatrix -> back -> show();
 		}
@@ -3984,8 +3978,9 @@ void actIntDispatcher::init(void)
 
 	ibs = (ibsObject*)ibsList -> last;
 	while(ibs){
-		bml = get_back_bml(ibs -> backObjID);
-		ibs -> back = bml;
+		for(int i = 0; i < ibs -> backObjIDs.size(); i++) {
+			ibs -> backs.push_back(get_back_bml(ibs -> backObjIDs[i]));
+		}
 		ibs = (ibsObject*)ibs -> prev;
 	}
 	curIbs = get_ibs(curIbsID);
@@ -6456,7 +6451,9 @@ void actIntDispatcher::next_ibs(void)
 {
 	if(curIbs){
 		curIbs -> free();
-		if(curIbs -> back) curIbs -> back -> free();
+		for(int i = 0; i < curIbs -> backs.size(); i++){
+			curIbs -> backs[i] -> free();
+		}
 	}
 	curIbs = (ibsObject*)curIbs -> next;
 	if(!curIbs) ErrH.Abort("IBS object not present");

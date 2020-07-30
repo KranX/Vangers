@@ -428,7 +428,11 @@ ibs_obj $IBS1 { 	// Info window 600x600
 	font		7
 
 	file	"resource/actint/800x600/screens/s600"
-	bground $BG1
+
+	bground $BG_INF_TOP_LEFT
+	bground $BG_INF_TOP_RIGHT
+	bground $BG_INF_BOTTOM_LEFT
+	bground $BG_INF_BOTTOM_RIGHT
 }
 
 ibs_obj $IBS2 { 	// Inventory window 400x600
@@ -452,47 +456,52 @@ ibs_obj $IBS2 { 	// Inventory window 400x600
 	font		0
 
 	file	"resource/actint/800x600/screens/s400v"
-	bground $BG3
+
+	bground $BG_INV_TOP_LEFT
+	bground $BG_INV_TOP_RIGHT
+	bground $BG_INV_BOTTOM_LEFT
+	bground $BG_INV_BOTTOM_RIGHT
 }
 
-ibs_obj $IBS3 { 	// Info window 400x600
-	offs_x		0	13
-	offs_y		0	8
 
-	offs_x		1	-4
-	offs_y		1	3
-
-	offs_x		2	14
-	offs_y		2	7
-
-	offs_x		3	-4
-	offs_y		3	5
-
-	font		0
-
-	file	"resource/actint/800x600/screens/s400f"
-	bground $BG2
+bml_obj $BG_INF_TOP_LEFT {
+	file	"resource/actint/hd/screens/info/top-left.bmp"
 }
 
-bml_obj $BG1 {
-	file	"resource/actint/800x600/screens/b600.bmp"
-
-	size_x	640
-	size_y	480
+bml_obj $BG_INF_TOP_RIGHT {
+	file	"resource/actint/hd/screens/info/top-right.bmp"
+	anchor_right
 }
 
-bml_obj $BG2 {
-	file	"resource/actint/800x600/screens/b400f.bmp"
-
-	size_x	640
-	size_y	480
+bml_obj $BG_INF_BOTTOM_LEFT {
+	file	"resource/actint/hd/screens/info/bottom-left.bmp"
+	anchor_bottom
 }
 
-bml_obj $BG3 {
-	file	"resource/actint/800x600/screens/b400v.bmp"
+bml_obj $BG_INF_BOTTOM_RIGHT {
+	file	"resource/actint/hd/screens/info/bottom-right.bmp"
+	anchor_right
+	anchor_bottom
+}
 
-	size_x	640
-	size_y	480
+bml_obj $BG_INV_TOP_LEFT {
+	file	"resource/actint/hd/screens/inventory/top-left.bmp"
+}
+
+bml_obj $BG_INV_TOP_RIGHT {
+	file	"resource/actint/hd/screens/inventory/top-right.bmp"
+	anchor_right
+}
+
+bml_obj $BG_INV_BOTTOM_LEFT {
+	file	"resource/actint/hd/screens/inventory/bottom-left.bmp"
+	anchor_bottom
+}
+
+bml_obj $BG_INV_BOTTOM_RIGHT {
+	file	"resource/actint/hd/screens/inventory/bottom-right.bmp"
+	anchor_right
+	anchor_bottom
 }
 
 Button INT_BUTTON
