@@ -2,14 +2,6 @@
 data/*
 !data/iscreen
 !data/actint
-!data/resource/iscreen/oftr2.scb
-!data/resource/iscreen/oftr.scb
-!data/resource/actint/aci_hi.scb
-!data/resource/actint/aci_low.scb
-!data/resource/actint/acs_low.scb
-!data/resource/actint/aci_hi2.scb
-!data/resource/actint/aci_low2.scb
-!data/resource/actint/acs_low2.scb
 
 # CMake files
 CMakeFiles/
