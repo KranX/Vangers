@@ -141,6 +141,9 @@
 #define iSTR_MultiplayerAndMisc1			"Multiplayer and misc."
 #define iSTR_MultiplayerAndMisc2			"Сетевая игра и другое"
 
+#define iSTR_TO_MENU1			"TO MENU"
+#define iSTR_TO_MENU2			"В МЕНЮ"
+
 #define iSTR_Multiplayer1		"Multiplayer"
 #define iSTR_Multiplayer2		"Сетевая игра"
 

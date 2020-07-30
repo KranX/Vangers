@@ -5237,7 +5237,7 @@ Screen "Controls screen"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_CONTROLS
+			string		$iSTR_TO_MENU
 		}
 		Event {
 			key $VK_LBUTTON
@@ -5508,7 +5508,7 @@ Screen "Controls screen 2"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_CONTROLS
+			string		$iSTR_TO_MENU
 		}
 		Event {
 			key $VK_LBUTTON
@@ -5764,7 +5764,7 @@ Screen "Controls screen 3"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_CONTROLS
+			string		$iSTR_TO_MENU
 		}
 		Event {
 			key $VK_LBUTTON
@@ -6050,7 +6050,7 @@ Screen "Controls screen 4"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_CONTROLS
+			string		$iSTR_TO_MENU
 		}
 		Event {
 			key $VK_LBUTTON
@@ -6321,7 +6321,7 @@ Screen "Controls screen 5"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_CONTROLS
+			string		$iSTR_TO_MENU
 		}
 		Event {
 			key $VK_LBUTTON

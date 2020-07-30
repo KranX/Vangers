@@ -222,6 +222,7 @@
 #define iSTR_Combat		$iSTR_Combat2
 #define iSTR_Camera		$iSTR_Camera2
 #define iSTR_MultiplayerAndMisc		$iSTR_MultiplayerAndMisc2
+#define iSTR_TO_MENU		$iSTR_TO_MENU2
 
 #define iSTR_JOYSTICK_SETUP		$iSTR_JOYSTICK_SETUP2
 #define iSTR_CUSTOMIZE			$iSTR_CUSTOMIZE2

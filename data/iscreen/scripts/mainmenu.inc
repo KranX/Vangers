@@ -59,7 +59,7 @@
 #define Controls_screen_Defaults_Option_PosX1	210
 #define Controls_screen_Defaults_Option_PosY1	395
 
-#define Controls_screen_Menu_Option_PosX1	200
+#define Controls_screen_Menu_Option_PosX1	215
 #define Controls_screen_Menu_Option_PosY1	445
 
 // ------------ Screen: "Controls screen" LOC ------------
@@ -73,7 +73,7 @@
 #define Controls_screen_Defaults_Option_PosX2	119
 #define Controls_screen_Defaults_Option_PosY2	443
 
-#define Controls_screen_Menu_Option_PosX2	189
+#define Controls_screen_Menu_Option_PosX2	249
 #define Controls_screen_Menu_Option_PosY2	493
 
 // ------------ Screen: "Sound screen" ENG ------------
