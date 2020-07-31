@@ -190,6 +190,7 @@
 #define iSTR_ChatON			$iSTR_ChatON1
 #define iSTR_Statistics 		$iSTR_Statistics1
 #define iSTR_ExitGame			$iSTR_ExitGame1
+#define iSTR_Screenshot			$iSTR_Screenshot1
 
 #define iSTR_VAN_WAR			$iSTR_VAN_WAR1
 #define iSTR_MECHOSOMA			$iSTR_MECHOSOMA1
@@ -216,6 +217,12 @@
 #define AVI_TEXT	$AVI_TEXT1
 
 #define iSTR_Controls		$iSTR_Controls1
+#define iSTR_Movement		$iSTR_Movement1
+#define iSTR_Utility		$iSTR_Utility1
+#define iSTR_Combat		$iSTR_Combat1
+#define iSTR_Camera		$iSTR_Camera1
+#define iSTR_MultiplayerAndMisc		$iSTR_MultiplayerAndMisc1
+#define iSTR_TO_MENU		$iSTR_TO_MENU1
 
 #define iSTR_JOYSTICK_SETUP		$iSTR_JOYSTICK_SETUP1
 #define iSTR_CUSTOMIZE			$iSTR_CUSTOMIZE1
