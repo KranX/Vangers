@@ -9,14 +9,14 @@
 #define AUXILIARY_EVENT 0x80 
 #define ECHO_EVENT 0x20
 
-// Отправляемые и получаемые 
+// РћС‚РїСЂР°РІР»СЏРµРјС‹Рµ Рё РїРѕР»СѓС‡Р°РµРјС‹Рµ 
 const int  CREATE_OBJECT 			= 0x02; //znfo 8-| CREATE_OBJECT eq CREATE_PERMANENT_OBJECT
 const int  CREATE_PERMANENT_OBJECT 	= 0x02;
 const int  DELETE_OBJECT			= 0x04;
 const int  UPDATE_OBJECT			= 0x08;
 const int  HIDE_OBJECT				= 0x0C;
 
-// Служебные отправляемые
+// РЎР»СѓР¶РµР±РЅС‹Рµ РѕС‚РїСЂР°РІР»СЏРµРјС‹Рµ
 const int  GAMES_LIST_QUERY			= 0x81; 
 const int  TOP_LIST_QUERY			= 0x82; // MP_game(1)
 
@@ -40,7 +40,7 @@ const int  SET_PLAYER_DATA 			= 0x94; //  PlayerData
 const int  DIRECT_SENDING			= 0x95; //  Mask(4), SendData
 
 
-// Служебные получаемые
+// РЎР»СѓР¶РµР±РЅС‹Рµ РїРѕР»СѓС‡Р°РµРјС‹Рµ
 const int  GAMES_LIST_RESPONSE			= 0xC1; // Number(1),{ game_ID(1), game_Name(str) } 
 const int  TOP_LIST_RESPONSE 			= 0xC2; // MP_game(1), Number(1),{ Name(str), rating(float) } 
 const int  TOTAL_LIST_OF_PLAYERS_DATA	= 0xCC; // Number(1),{ client_ID(1), BodySize(2) , Body, Name(str) } 
@@ -66,7 +66,7 @@ const int  PLAYERS_RATING				= 0xD4; // Client(1),rating(float), for me
 
 
 //zmod fixed
-//модовые константы
+//РјРѕРґРѕРІС‹Рµ РєРѕРЅСЃС‚Р°РЅС‚С‹
 const int  zSERVER_VERSION_RESPONSE		= 0xE1; // version(4)
 const int  zGAME_DATA_RESPONSE			= 0xE2; // mod_id(4)
 const int  zTIME_RESPONSE				= 0xE3; // time(4)
@@ -74,17 +74,17 @@ const int  zTIME_RESPONSE				= 0xE3; // time(4)
 const int  zCREATE_OBJECT_BY_CLIENT		= 0xE4; // GLOBAL_CLOCK(4),Type(1),ID(1),BodySize(1),Body(array)
 const int  zCREATE_OBJECT_BY_SERVER		= 0xE5; // NOT KNOWN YET
 
-// кароче эти айди используются (или по крайней мере должны) только в трех... уже двух, вышеперечисленных евентах
-// а поэтому все на йух
+// РєР°СЂРѕС‡Рµ СЌС‚Рё Р°Р№РґРё РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ (РёР»Рё РїРѕ РєСЂР°Р№РЅРµР№ РјРµСЂРµ РґРѕР»Р¶РЅС‹) С‚РѕР»СЊРєРѕ РІ С‚СЂРµС…... СѓР¶Рµ РґРІСѓС…, РІС‹С€РµРїРµСЂРµС‡РёСЃР»РµРЅРЅС‹С… РµРІРµРЅС‚Р°С…
+// Р° РїРѕСЌС‚РѕРјСѓ РІСЃРµ РЅР° Р№СѓС…
 const int  zOBJ_ID_DOLLY				= 0x01;
 
 /*****************************************************************
- Структура идентификатора объекта:
- [признак глобальности - 1][station - 5][world - 4][тип объекта - 6][counter - 16]
- первые восемь типов - личные вещи игрока
- [1 - 10] - автоматически удаляемые типы
-station = 00000 - объект, не имеющий создателя
-всего может быть 31 игрок, [1 - 31]
+ РЎС‚СЂСѓРєС‚СѓСЂР° РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° РѕР±СЉРµРєС‚Р°:
+ [РїСЂРёР·РЅР°Рє РіР»РѕР±Р°Р»СЊРЅРѕСЃС‚Рё - 1][station - 5][world - 4][С‚РёРї РѕР±СЉРµРєС‚Р° - 6][counter - 16]
+ РїРµСЂРІС‹Рµ РІРѕСЃРµРјСЊ С‚РёРїРѕРІ - Р»РёС‡РЅС‹Рµ РІРµС‰Рё РёРіСЂРѕРєР°
+ [1 - 10] - Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё СѓРґР°Р»СЏРµРјС‹Рµ С‚РёРїС‹
+station = 00000 - РѕР±СЉРµРєС‚, РЅРµ РёРјРµСЋС‰РёР№ СЃРѕР·РґР°С‚РµР»СЏ
+РІСЃРµРіРѕ РјРѕР¶РµС‚ Р±С‹С‚СЊ 31 РёРіСЂРѕРє, [1 - 31]
 *****************************************************************/
 const int MAX_NID_OBJECT = 15;
 
@@ -234,17 +234,17 @@ struct VanVarStatistic
 {
 	int MaxLiveTime;//None
 	int MinLiveTime;//None
-	int KillFreq;//hh:mm:ss - Средний период убийств
-	int DeathFreq;//hh:mm:ss - Средний период смертей
+	int KillFreq;//hh:mm:ss - РЎСЂРµРґРЅРёР№ РїРµСЂРёРѕРґ СѓР±РёР№СЃС‚РІ
+	int DeathFreq;//hh:mm:ss - РЎСЂРµРґРЅРёР№ РїРµСЂРёРѕРґ СЃРјРµСЂС‚РµР№
 };
 
 struct MechosomaStatistic
 {
 	int ItemCount1,ItemCount2;
-	int MaxTransitTime;//hh:mm:ss - Время окончания гонки
+	int MaxTransitTime;//hh:mm:ss - Р’СЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ РіРѕРЅРєРё
 	int MinTransitTime;//None
-	int SneakCount;//Кол-во украденного товара
-	int LostCount;//Кол-во потерянного товара
+	int SneakCount;//РљРѕР»-РІРѕ СѓРєСЂР°РґРµРЅРЅРѕРіРѕ С‚РѕРІР°СЂР°
+	int LostCount;//РљРѕР»-РІРѕ РїРѕС‚РµСЂСЏРЅРЅРѕРіРѕ С‚РѕРІР°СЂР°
 };
 
 struct PassemblossStatistic

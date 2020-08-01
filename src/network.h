@@ -5,7 +5,6 @@
 #include "xsocket.h"
 #include "multiplayer.h"
 
-#define BROADCAST_PORT		1992
 #define DEFAULT_SERVER_PORT	2197
 
 extern double zMod_cycle;
@@ -36,7 +35,6 @@ struct ServersList : XTList<ServerFindChain> {
 
 	void clear_states();
 	int talk_to_server(int IP,int port,char* domain_name,int only_new_game = 0);
-	int find_servers(int bc_port = BROADCAST_PORT);
 	int find_servers_in_the_internet(char* host_name,int host_port = DEFAULT_SERVER_PORT);
 };
 
@@ -97,7 +95,13 @@ enum {
 	TEAM_GREEN,
 	TEAM_ORANGE,
 	TEAM_BLUE,
-	TEAM_YELLOW
+	TEAM_YELLOW,
+	TEAM_RED,
+	TEAM_WHITE,
+	TEAM_GRAY,
+	TEAM_BLACK,
+	TEAM_CAMOUFLAGE,
+	TEAM_PATROL
 	};
 
 struct MessageElement : XListElement {

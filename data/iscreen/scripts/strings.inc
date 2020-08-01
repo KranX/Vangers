@@ -126,6 +126,24 @@
 #define iSTR_Controls1			"Controls"
 #define iSTR_Controls2			"Управление"
 
+#define iSTR_Movement1			"Basic Controls"
+#define iSTR_Movement2			"Базовое управление"
+
+#define iSTR_Utility1			"Extended Movement"
+#define iSTR_Utility2			"Расширенное управление"
+
+#define iSTR_Combat1			"Combat"
+#define iSTR_Combat2			"Бой"
+
+#define iSTR_Camera1			"Camera Controls"
+#define iSTR_Camera2			"Камера"
+
+#define iSTR_MultiplayerAndMisc1			"Multiplayer and misc."
+#define iSTR_MultiplayerAndMisc2			"Сетевая игра и другое"
+
+#define iSTR_TO_MENU1			"TO MENU"
+#define iSTR_TO_MENU2			"В МЕНЮ"
+
 #define iSTR_Multiplayer1		"Multiplayer"
 #define iSTR_Multiplayer2		"Сетевая игра"
 
@@ -201,6 +219,24 @@
 #define iSTR_GREEN1			"GREEN"
 #define iSTR_GREEN2			"ЗЕЛЕНЫЙ"
 
+#define iSTR_RED1			"RED"
+#define iSTR_RED2			"КРАСНЫЙ"
+
+#define iSTR_WHITE1			"WHITE"
+#define iSTR_WHITE2			"БЕЛЫЙ"
+
+#define iSTR_GRAY1			"GRAY"
+#define iSTR_GRAY2			"СЕРЫЙ"
+
+#define iSTR_BLACK1			"BLACK"
+#define iSTR_BLACK2			"ЧЁРНЫЙ"
+
+#define iSTR_CAMOUFLAGE1			"CAMOUFLAGE"
+#define iSTR_CAMOUFLAGE2			"КАМУФЛЯЖ"
+
+#define iSTR_PATROL1			"PATROL"
+#define iSTR_PATROL2			"ПАТРУЛЬНЫЙ"
+
 
 #define iSTR_Connection_failed1 	"Connection failed"
 #define iSTR_Connection_failed2 	"Сбой подключения"
@@ -218,7 +254,7 @@
 #define iSTR_Customize_keyboard2	"Подстройка клавиш"
 
 #define iSTR_RESTORE_ALL1		"RESTORE ALL"
-#define iSTR_RESTORE_ALL2		"ВОССТАНОВИТЬ ВСЕ"
+#define iSTR_RESTORE_ALL2		"СБРОСИТЬ ВСЁ"
 
 
 #define iSTR_SELECT_GAME1		"SELECT GAME"
@@ -396,104 +432,107 @@
 #define iSTR_Present2			"Настоящее"
 
 
-#define iSTR_Turn_wheels_left1		"Turn wheels left"
+#define iSTR_Turn_wheels_left1		"Steer Left"
 #define iSTR_Turn_wheels_left2		"Поворот колёс влево"
 
-#define iSTR_Turn_wheels_right1 	"Turn wheels right"
+#define iSTR_Turn_wheels_right1 	"Steer Right"
 #define iSTR_Turn_wheels_right2 	"Поворот колёс вправо"
 
-#define iSTR_Move_forward1		"Move forward"
+#define iSTR_Move_forward1		"Drive Forward"
 #define iSTR_Move_forward2		"Вперёд"
 
-#define iSTR_Move_backward1		"Move backward"
+#define iSTR_Move_backward1		"Reverse"
 #define iSTR_Move_backward2		"Назад"
 
-#define iSTR_Acceleration1		"Acceleration"
-#define iSTR_Acceleration2		"Ускорение"
+#define iSTR_Acceleration1		"Accelerate/Decelerate"
+#define iSTR_Acceleration2		"Ускорение/Замедление"
 
 #define iSTR_Handbrake1 		"Handbrake"
 #define iSTR_Handbrake2 		"Ручной тормоз"
 
-#define iSTR_Turn_over_left1		"Turn over left"
+#define iSTR_Turn_over_left1		"Roll Left"
 #define iSTR_Turn_over_left2		"Переворот влево"
 
-#define iSTR_Turn_over_right1		"Turn over right"
+#define iSTR_Turn_over_right1		"Roll Right"
 #define iSTR_Turn_over_right2		"Переворот вправо"
 
-#define iSTR_Activate_KiD1		"Activate KiD"
+#define iSTR_Activate_KiD1		"Spring Jump"
 #define iSTR_Activate_KiD2		"Активация пружины"
 
 #define iSTR_Open1			"Open"
 #define iSTR_Open2			"Открыть"
 
-#define iSTR_Turn_device_ON1		"Turn device UP"
-#define iSTR_Turn_device_ON2		"Прибор ВВЕРХ"
+#define iSTR_Turn_device_ON1		"RIG-device UP"
+#define iSTR_Turn_device_ON2		"Риг-Прибор ВВЕРХ"
 
-#define iSTR_Turn_device_OFF1		"Turn device DOWN"
-#define iSTR_Turn_device_OFF2		"Прибор ВНИЗ"
+#define iSTR_Turn_device_OFF1		"RIG-device DOWN"
+#define iSTR_Turn_device_OFF2		"Риг-Прибор ВНИЗ"
 
-#define iSTR_Inventory_ON_OFF1		"Inventory"
+#define iSTR_Inventory_ON_OFF1		"View Inventory"
 #define iSTR_Inventory_ON_OFF2		"Показать трюм"
 
-#define iSTR_Change_target1		"Change target"
+#define iSTR_Change_target1		"Switch Target"
 #define iSTR_Change_target2		"Переключить цель"
 
-#define iSTR_Fire_all_weapons1		"Fire all weapons"
+#define iSTR_Fire_all_weapons1		"Fire all Weapons"
 #define iSTR_Fire_all_weapons2		"Огонь из всего оружия"
 
-#define iSTR_Fire_weapon_11		"Fire weapon 1"
+#define iSTR_Fire_weapon_11		"Fire Weapon 1"
 #define iSTR_Fire_weapon_12		"Огонь из оружия 1"
 
-#define iSTR_Fire_weapon_21		"Fire weapon 2"
+#define iSTR_Fire_weapon_21		"Fire Weapon 2"
 #define iSTR_Fire_weapon_22		"Огонь из оружия 2"
 
-#define iSTR_Fire_weapon_31		"Fire weapon 3"
+#define iSTR_Fire_weapon_31		"Fire Weapon 3"
 #define iSTR_Fire_weapon_32		"Огонь из оружия 3"
 
-#define iSTR_Fire_weapon_41		"Terminator release"
+#define iSTR_Fire_weapon_41		"Launch Terminator"
 #define iSTR_Fire_weapon_42		"Запуск терминатора"
 
-#define iSTR_Full_screen1		"Full screen"
-#define iSTR_Full_screen2		"Полный экран"
+#define iSTR_Full_screen1		"Toggle UI"
+#define iSTR_Full_screen2		"Откл./выкл. интерфейс"
 
-#define iSTR_Reduce_view1		"Reduce view"
+#define iSTR_Reduce_view1		"Reduce View"
 #define iSTR_Reduce_view2		"Уменьшить обзор"
 
-#define iSTR_Enlarge_view1		"Enlarge view"
+#define iSTR_Enlarge_view1		"Enlarge View"
 #define iSTR_Enlarge_view2		"Увеличить обзор"
 
 #define iSTR_Rotation1			"Rotation"
 #define iSTR_Rotation2			"Вращение"
 
-#define iSTR_Auto_tilt1 		"Auto tilt"
-#define iSTR_Auto_tilt2 		"Авто наклон"
+#define iSTR_Auto_tilt1 		"Auto Tilt"
+#define iSTR_Auto_tilt2 		"Автонаклон"
 
-#define iSTR_Auto_zoom1 		"Auto zoom"
-#define iSTR_Auto_zoom2 		"Авто маштаб"
+#define iSTR_Auto_zoom1 		"Auto Zoom"
+#define iSTR_Auto_zoom2 		"Автомаштаб"
 
-#define iSTR_Zoom_in1			"Zoom in"
+#define iSTR_Zoom_in1			"Zoom In"
 #define iSTR_Zoom_in2			"Приблизить камеру"
 
-#define iSTR_Zoom_out1			"Zoom out"
+#define iSTR_Zoom_out1			"Zoom Out"
 #define iSTR_Zoom_out2			"Отодвинуть камеру"
 
-#define iSTR_Standard_zoom1		"Standard zoom"
+#define iSTR_Standard_zoom1		"Reset Zoom"
 #define iSTR_Standard_zoom2		"Маштаб 1:1"
 
-#define iSTR_SkipText1			"Next text part"
-#define iSTR_SkipText2			"Следующая часть"
+#define iSTR_SkipText1			"Next Text Page"
+#define iSTR_SkipText2			"Следующая часть текста"
 
-#define iSTR_UseVector1 		"Activate Vector"
-#define iSTR_UseVector2 		"Включить Вектор"
+#define iSTR_UseVector1 		"Equip Vector"
+#define iSTR_UseVector2 		"Вставить Вектор"
 
-#define iSTR_ExitGame1			"Exit game"
+#define iSTR_ExitGame1			"Exit Game"
 #define iSTR_ExitGame2			"Выход из игры"
 
 #define iSTR_ChatON1			"Chat"
 #define iSTR_ChatON2			"Чат"
 
-#define iSTR_Statistics1		"Game statistics"
+#define iSTR_Statistics1		"Scoreboard"
 #define iSTR_Statistics2		"Статистика игры"
+
+#define iSTR_Screenshot1			"Screenshot"
+#define iSTR_Screenshot2			"Скриншот экрана"
 
 #define iSTR_VAN_WAR1			"VAN-WAR"
 #define iSTR_VAN_WAR2			"ВАН-ВАР"

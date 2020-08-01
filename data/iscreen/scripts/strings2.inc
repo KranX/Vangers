@@ -69,6 +69,12 @@
 #define iSTR_ORANGE			$iSTR_ORANGE2
 #define iSTR_BLUE			$iSTR_BLUE2
 #define iSTR_GREEN			$iSTR_GREEN2
+#define iSTR_RED			$iSTR_RED2
+#define iSTR_WHITE			$iSTR_WHITE2
+#define iSTR_GRAY			$iSTR_GRAY2
+#define iSTR_BLACK			$iSTR_BLACK2
+#define iSTR_CAMOUFLAGE			$iSTR_CAMOUFLAGE2
+#define iSTR_PATROL			$iSTR_PATROL2
 
 #define iSTR_Connection_failed		$iSTR_Connection_failed2
 
@@ -184,6 +190,7 @@
 #define iSTR_ChatON			$iSTR_ChatON2
 #define iSTR_Statistics 		$iSTR_Statistics2
 #define iSTR_ExitGame			$iSTR_ExitGame2
+#define iSTR_Screenshot			$iSTR_Screenshot2
 
 #define iSTR_VAN_WAR			$iSTR_VAN_WAR2
 #define iSTR_MECHOSOMA			$iSTR_MECHOSOMA2
@@ -210,6 +217,12 @@
 #define AVI_TEXT	$AVI_TEXT2
 
 #define iSTR_Controls		$iSTR_Controls2
+#define iSTR_Movement		$iSTR_Movement2
+#define iSTR_Utility		$iSTR_Utility2
+#define iSTR_Combat		$iSTR_Combat2
+#define iSTR_Camera		$iSTR_Camera2
+#define iSTR_MultiplayerAndMisc		$iSTR_MultiplayerAndMisc2
+#define iSTR_TO_MENU		$iSTR_TO_MENU2
 
 #define iSTR_JOYSTICK_SETUP		$iSTR_JOYSTICK_SETUP2
 #define iSTR_CUSTOMIZE			$iSTR_CUSTOMIZE2

@@ -44,6 +44,8 @@ enum iControlID {
 
 	iKEY_EXIT,			// 36
 
+	iKEY_SCREENSHOT,			// 37
+
 	iKEY_MAX_ID
 };
 

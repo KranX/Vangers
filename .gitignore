@@ -2,7 +2,6 @@
 data/*
 !data/iscreen
 !data/actint
-!data/resource/iscreen/oftr2.scb
 
 # CMake files
 CMakeFiles/
@@ -23,3 +22,8 @@ build/lib/utils/zip_convert.exe
 .fuse_hidden*
 .vscode/
 *.code-workspace
+
+# VS cmake
+.vs/
+[Oo]ut/
+CMakeSettings.json

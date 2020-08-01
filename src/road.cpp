@@ -400,7 +400,7 @@ int xtInitApplication(void) {
 #endif
 
     //stalkerg:NEED SEE!!!
-    //ComlineAnalyze(__argc,__argv);
+    //ComlineAnalyze(__internal_argc,__internal_argv);
 
 //	ErrH.SetRestore(restore); #not implement
 //	ErrH.SetFlags(XERR_CTRLBRK);
@@ -1609,9 +1609,9 @@ void KeyCenter(SDL_Event *key)
 //  		case SDL_SCANCODE_F4:
 //  			creat_poster();
 //  			break;
-		case SDL_SCANCODE_F11:
-			shotFlush();
-			break;
+//		case SDL_SCANCODE_F11:
+//			shotFlush();
+//			break;
 #endif
 		case SDL_SCANCODE_T:
 			mod = SDL_GetModState();
@@ -1665,6 +1665,9 @@ void KeyCenter(SDL_Event *key)
 	if (iKeyPressed(iKEY_ZOOM_STANDART)) {
 		if(!Pause)
 			camera_zmin = curGMap -> xsize;
+	}
+	if (iKeyPressed(iKEY_SCREENSHOT)) {
+		shotFlush();
 	}
 #ifdef ACTINT
 	aKeyTrap(key);
@@ -1755,7 +1758,9 @@ void iGameMap::change(int Dx,int Dy,int mode,int xcenter,int ycenter)
 	VcutUp = yc - yside;
 	VcutDown = yc + yside;
 
-	camera_zmin = TurnSecX = TurnSecX*xsize/xsize_old;
+	TurnSecX = TurnSecX*xsize/xsize_old;
+	camera_zmin = camera_zmin*xsize/xsize_old;
+
 	calc_view_factors();
 
 /*
@@ -1794,9 +1799,9 @@ void iGameMap::reset(void)
 	if(ViewX == 0 && ViewY == 0) {
 		ViewX = XCYCL(1517);
 		ViewY = YCYCL(15879);
-		vMap -> accept(ViewY,ViewY);
+		vMap -> accept(ViewY - 100, ViewY + 100);
 	} else {
-		vMap -> accept(ViewY,ViewY);
+		vMap -> accept(ViewY - 100, ViewY + 100);
 		GeneralLoadReleaseFlag = 1;
 	}
 	camera_reset();
@@ -1967,6 +1972,12 @@ void iGameMap::draw(int self)
 					case 1:	zColor = zCOLOR_ORANGE;	break;
 					case 2:	zColor = zCOLOR_BLUE;	break;
 					case 3:	zColor = zCOLOR_YELLOW;	break;
+					case 4:	zColor = zCOLOR_RED;	break;
+					case 5:	zColor = zCOLOR_WHITE;	break;
+					case 6:	zColor = zCOLOR_GRAY;	break;
+					case 7:	zColor = zCOLOR_BLACK;	break;
+					case 8:	zColor = zCOLOR_CAMOUFLAGE;	break;
+					case 9:	zColor = zCOLOR_PATROL;	break;
 					default:zColor = zCOLOR_WHITE;
 				}
 				if (msg->message[0]=='$' && msg->message[1]==':')

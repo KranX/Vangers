@@ -142,10 +142,10 @@ void iChatMouseQuant(int x,int y,int bt);
 void iSoundQuant(int value = 0);
 
 void iPrepareSaveNames(void);
-void iInitServersList(int inet = 0);
-void iUpdateServersList(int inet = 0);
-void iServersListUp(int inet = 0);
-void iServersListDown(int inet = 0);
+void iInitServersList();
+void iUpdateServersList();
+void iServersListUp();
+void iServersListDown();
 void iConnect2Server(void);
 void iInitControlKey(int id,int num);
 void iDeleteControl(int vkey,int id);
@@ -371,6 +371,12 @@ const char* iSTR_COLOR_GREEN_CHAR = iSTR_COLOR_GREEN_CHAR1;
 const char* iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR1;
 const char* iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR1;
 const char* iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR1;
+const char* iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR1;
+const char* iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR1;
+const char* iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR1;
+const char* iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR1;
+const char* iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR1;
+const char* iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR1;
 const char* iSTR_MUTE_ALL = iSTR_MUTE_ALL1;
 const char* iSTR_CLEAR_LOG = iSTR_CLEAR_LOG1;
 const char* iSTR_BACKGROUND = iSTR_BACKGROUND1;
@@ -380,6 +386,12 @@ const char* iSTR_Yellow = iSTR_Yellow1;
 const char* iSTR_Orange = iSTR_Orange1;
 const char* iSTR_Blue = iSTR_Blue1;
 const char* iSTR_Green = iSTR_Green1;
+const char* iSTR_Red = iSTR_Red1;
+const char* iSTR_White = iSTR_White1;
+const char* iSTR_Gray = iSTR_Gray1;
+const char* iSTR_Black = iSTR_Black1;
+const char* iSTR_Camouflage = iSTR_Camouflage1;
+const char* iSTR_Patrol = iSTR_Patrol1;
 const char* iSTR_CleanUp = iSTR_CleanUp1;
 const char* iSTR_SpaceInUse = iSTR_SpaceInUse1;
 const char* iSTR_MBytes = iSTR_MBytes1;
@@ -614,13 +626,13 @@ void iQuantFirst(void)
 			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
 		iSetOptionValueCHR(iPLAYER_PASSWORD,iSTR_DefaultPassword);
 		if(lang() == RUSSIAN) {
-            iSetOptionValueCHR(iHOST_NAME, "vangers.pp.ru");
+            iSetOptionValueCHR(iHOST_NAME, "vangers.net");
         } else if (lang() == GERMAN) {
 //			iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.de");
-            iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
+            iSetOptionValueCHR(iHOST_NAME,"vangers.net");
 		}
 		else
-            iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
+            iSetOptionValueCHR(iHOST_NAME,"vangers.net");
 //            iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.com");
 		iSetOptionValueCHR(iSERVER_NAME,iSTR_NONE);
 		iSetOptionValueCHR(iPROXY_SERVER,"192.1.1.1");
@@ -2241,31 +2253,31 @@ void iHandleExtEvent(int code,int data)
 		case iEXT_SET_SLOT:
 			iSlotNumber = data;
 			break;
-		case iEXT_INIT_SERVERS_LIST:
+//		case iEXT_INIT_SERVERS_LIST:
+//			iFirstServerPtr = avaible_servers.first();
+//			iInitServersList();
+//			break;
+		case iEXT_INIT_iSERVERS_LIST:
 			iFirstServerPtr = avaible_servers.first();
 			iInitServersList();
 			break;
-		case iEXT_INIT_iSERVERS_LIST:
-			iFirstServerPtr = avaible_servers.first();
-			iInitServersList(1);
-			break;
-		case iEXT_UPDATE_SERVERS_LIST:
+//		case iEXT_UPDATE_SERVERS_LIST:
+//			iUpdateServersList();
+//			break;
+		case iEXT_UPDATE_iSERVERS_LIST:
 			iUpdateServersList();
 			break;
-		case iEXT_UPDATE_iSERVERS_LIST:
-			iUpdateServersList(1);
-			break;
-		case iEXT_UP_SERVERS_LIST:
+//		case iEXT_UP_SERVERS_LIST:
+//			iServersListUp();
+//			break;
+		case iEXT_UP_iSERVERS_LIST:
 			iServersListUp();
 			break;
-		case iEXT_UP_iSERVERS_LIST:
-			iServersListUp(1);
-			break;
-		case iEXT_DN_SERVERS_LIST:
-			iServersListDown();
-			break;
+//		case iEXT_DN_SERVERS_LIST:
+//			iServersListDown();
+//			break;
 		case iEXT_DN_iSERVERS_LIST:
-			iServersListDown(1);
+			iServersListDown();
 			break;
 		case iEXT_SAVE_GAME:
 			if(actIntLog && !iPause && !NetworkON){
@@ -2468,18 +2480,14 @@ void iPrepareSaveNames(void)
 	}
 }
 
-void iUpdateServersList(int inet)
+void iUpdateServersList()
 {
-	if(!inet)
-		avaible_servers.find_servers();
-	else
-		avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME),iServerPort);
-
+	avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME), iServerPort);
 	iFirstServerPtr = avaible_servers.first();
-	iInitServersList(inet);
+	iInitServersList();
 }
 
-void iInitServersList(int inet)
+void iInitServersList()
 {
 	int i,sz;
 	iScreen* scr;
@@ -2488,10 +2496,7 @@ void iInitServersList(int inet)
 	XBuffer XBuf;
 	ServerFindChain* p;
 
-	if(!inet)
-		scr = (iScreen*)iScrDisp -> get_object("Search server screen");
-	else
-		scr = (iScreen*)iScrDisp -> get_object("iSearch server screen");
+	scr = (iScreen*)iScrDisp -> get_object("iSearch server screen");
 	if(!scr) return;
 
 	p = iFirstServerPtr;
@@ -2521,7 +2526,7 @@ void iInitServersList(int inet)
 	}
 }
 
-void iServersListUp(int inet)
+void iServersListUp()
 {
 	int i;
 	ServerFindChain* p = iFirstServerPtr;
@@ -2530,11 +2535,11 @@ void iServersListUp(int inet)
 	}
 	if(p){
 		iFirstServerPtr = p;
-		iInitServersList(inet);
+		iInitServersList();
 	}
 }
 
-void iServersListDown(int inet)
+void iServersListDown()
 {
 	int i;
 	ServerFindChain* p = iFirstServerPtr;
@@ -2543,7 +2548,7 @@ void iServersListDown(int inet)
 	}
 	if(p){
 		iFirstServerPtr = p;
-		iInitServersList(inet);
+		iInitServersList();
 	}
 }
 
@@ -2756,6 +2761,12 @@ void iInitStrings(void)
 		iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR2;
 		iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR2;
 		iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR2;
+		iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR2;
+		iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR2;
+		iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR2;
+		iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR2;
+		iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR2;
+		iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR2;
 		iSTR_MUTE_ALL = iSTR_MUTE_ALL2;
 		iSTR_CLEAR_LOG = iSTR_CLEAR_LOG2;
 		iSTR_BACKGROUND = iSTR_BACKGROUND2;
@@ -2765,6 +2776,12 @@ void iInitStrings(void)
 		iSTR_Orange = iSTR_Orange2;
 		iSTR_Blue = iSTR_Blue2;
 		iSTR_Green = iSTR_Green2;
+		iSTR_Red = iSTR_Red2;
+		iSTR_White = iSTR_White2;
+		iSTR_Gray = iSTR_Gray2;
+		iSTR_Black = iSTR_Black2;
+		iSTR_Camouflage = iSTR_Camouflage2;
+		iSTR_Patrol = iSTR_Patrol2;
 		iSTR_CleanUp = iSTR_CleanUp2;
 		iSTR_SpaceInUse = iSTR_SpaceInUse2;
 		iSTR_MBytes = iSTR_MBytes2;
@@ -2809,6 +2826,12 @@ void iInitStrings(void)
 		iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR1;
 		iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR1;
 		iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR1;
+		iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR1;
+		iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR1;
+		iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR1;
+		iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR1;
+		iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR1;
+		iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR1;
 		iSTR_MUTE_ALL = iSTR_MUTE_ALL1;
 		iSTR_CLEAR_LOG = iSTR_CLEAR_LOG1;
 		iSTR_BACKGROUND = iSTR_BACKGROUND1;
@@ -2818,6 +2841,12 @@ void iInitStrings(void)
 		iSTR_Orange = iSTR_Orange1;
 		iSTR_Blue = iSTR_Blue1;
 		iSTR_Green = iSTR_Green1;
+		iSTR_Red = iSTR_Red1;
+		iSTR_White = iSTR_White1;
+		iSTR_Gray = iSTR_Gray1;
+		iSTR_Black = iSTR_Black1;
+		iSTR_Camouflage = iSTR_Camouflage1;
+		iSTR_Patrol = iSTR_Patrol1;
 		iSTR_CleanUp = iSTR_CleanUp1;
 		iSTR_SpaceInUse = iSTR_SpaceInUse1;
 		iSTR_MBytes = iSTR_MBytes1;

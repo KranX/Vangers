@@ -13,6 +13,9 @@
 #include <locale.h>
 #endif
 
+int __internal_argc;
+char **__internal_argv;
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
 struct xtMsgHandlerObject
@@ -96,6 +99,7 @@ int xtSysQuantDisabled = 0;
 extern bool XGR_FULL_SCREEN;
 
 
+//win_arg not working no
 #ifdef win_arg
 int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 #else
@@ -110,6 +114,8 @@ int main(int argc, char *argv[])
 #endif
 	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
 	XRuntimeObject* XObj;
+	__internal_argc = argc;
+	__internal_argv = argv;
 	#ifdef _WIN32
 		std::cout<<"Load backtrace"<<std::endl;
 		LoadLibraryA("backtrace.dll");
@@ -117,21 +123,21 @@ int main(int argc, char *argv[])
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 		putenv("SDL_AUDIODRIVER=DirectSound");
 	#endif
+//win_arg not working no
 #ifdef win_arg
 	std::string cmd_line = szCmdLine;
-	if(cmd_line.find("-fullscreen")!=std::string::npos) {
+	if(cmd_line.find("-fullscreen") != std::string::npos) {
 		XGR_FULL_SCREEN = true;
 	}
-	
 #else
 	int i;
-	for(i=1;i<argc;i++) {
-        std::string cmd_key = argv[i];
-        if (cmd_key == "-fullscreen")
-            XGR_FULL_SCREEN = true;
-        else if (cmd_key == "-russian")
-            setLang(RUSSIAN);
-    }
+	for(i=1; i < argc; i++) {
+		std::string cmd_key = argv[i];
+		if (cmd_key == "-fullscreen")
+			XGR_FULL_SCREEN = true;
+		else if (cmd_key == "-russian")
+			setLang(RUSSIAN);
+	}
 #endif
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 	std::cout<<"Set locale. ";

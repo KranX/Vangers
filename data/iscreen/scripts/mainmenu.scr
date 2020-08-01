@@ -23,8 +23,8 @@
 
 /* ------------------------ Controls screen2 Defines ------------------------ */
 
-#define CONTROLS2_START_Y	180
-#define CONTROLS2_DELTA_Y	70
+#define CONTROLS2_START_Y	40
+#define CONTROLS2_DELTA_Y	55
 
 /* ------------------------- Results Screen Defines ------------------------- */
 
@@ -247,8 +247,8 @@
 
 /* ----------------------- Controls Screen 0 Defines ------------------------ */
 
-#define KEYS0_START_Y		90
-#define KEYS0_DELTA_Y		50
+#define KEYS0_START_Y		60
+#define KEYS0_DELTA_Y		40
 
 #define KEYS0_X 		445
 
@@ -4736,7 +4736,7 @@ Screen "Configuration screen"
 		align_x center
 		y	{ $CFG_START_Y + $CFG_DELTA_Y * 3 }
 
-		num_state	4
+		num_state	10
 
 		null_level	$DEFAULT_NULL
 
@@ -4774,6 +4774,60 @@ Screen "Configuration screen"
 			terrain_num	$TERRAIN3
 
 			string		$iSTR_GREEN
+			null_level	$DEFAULT_NULL
+		}
+		State 4 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_RED
+			null_level	$DEFAULT_NULL
+		}
+		State 5 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_WHITE
+			null_level	$DEFAULT_NULL
+		}
+		State 6 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_GRAY
+			null_level	$DEFAULT_NULL
+		}
+		State 7 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_BLACK
+			null_level	$DEFAULT_NULL
+		}
+		State 8 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_CAMOUFLAGE
+			null_level	$DEFAULT_NULL
+		}
+		State 9 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			string		$iSTR_PATROL
 			null_level	$DEFAULT_NULL
 		}
 		Event {
@@ -5091,7 +5145,7 @@ Screen "Controls screen"
 		}
 	}
 
-	Object "TitleStr"
+	Object "TitleStr2"
 	{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
@@ -5103,13 +5157,13 @@ Screen "Controls screen"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_Movement
 		}
 	}
 
 	Object "Defaults Option"
 	{
-		x	$Controls_screen_Defaults_Option_PosX
+		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
@@ -5145,7 +5199,7 @@ Screen "Controls screen"
 
 			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
 			EvComm {
-				smooth_obj	"Defaults Option"       2
+				smooth_obj	"Defaults Option"	2
 				start_time	0
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5159,7 +5213,7 @@ Screen "Controls screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 			}
 			EvComm {
-				smooth_obj	"Defaults Option"       0
+				smooth_obj	"Defaults Option"	0
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$SMOOTH_OBJ_TIME
 			}
@@ -5171,47 +5225,71 @@ Screen "Controls screen"
 		}
 	}
 
-	#define PREV_SCR	"Controls screen2"
+	Object "Menu Option"
+	{
+		align_x center
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_TO_MENU
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+		}
+	}
+
+	#define PREV_SCR	"Controls screen 5"
 	#define NEXT_SCR	"Controls screen 2"
 	$BACK_OBJ
 	$MORE_OBJ
 
 	#define KEY_Y		0
-	#define KEY_NUM 	1
-	#define KEY_STR_NAME	"KeyStr1"
-	#define KEY_STRING	$iSTR_Turn_wheels_left
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName1"
-	#define KEY_STRING	"Left"
-	#define KEY_ID		"KeyID1"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName1_1"
-	#define KEY_STRING	"Left"
-	#define KEY_ID		"KeyID1_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
-	#define KEY_NUM 	2
-	#define KEY_STR_NAME	"KeyStr2"
-	#define KEY_STRING	$iSTR_Turn_wheels_right
-	$KEY_STR_OBJECT
-	#define KEY_Y		1
-	#define KEY_STR_NAME	"KeyName2"
-	#define KEY_STRING	"Right"
-	#define KEY_ID		"KeyID2"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName2_1"
-	#define KEY_STRING	"Right"
-	#define KEY_ID		"KeyID2_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
 	#define KEY_NUM 	3
 	#define KEY_STR_NAME	"KeyStr3"
 	#define KEY_STRING	$iSTR_Move_forward
 	$KEY_STR_OBJECT
-	#define KEY_Y		2
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName3"
 	#define KEY_STRING	"Up"
 	#define KEY_ID		"KeyID3"
@@ -5221,12 +5299,12 @@ Screen "Controls screen"
 	#define KEY_ID		"KeyID3_1"
 	$KEY_ID_OBJECT2
 
-	#define KEY_Y		3
+	#define KEY_Y		1
 	#define KEY_NUM 	4
 	#define KEY_STR_NAME	"KeyStr4"
 	#define KEY_STRING	$iSTR_Move_backward
 	$KEY_STR_OBJECT
-	#define KEY_Y		3
+	#define KEY_Y		1
 	#define KEY_STR_NAME	"KeyName4"
 	#define KEY_STRING	"Down"
 	#define KEY_ID		"KeyID4"
@@ -5234,6 +5312,36 @@ Screen "Controls screen"
 	#define KEY_STR_NAME	"KeyName4_1"
 	#define KEY_STRING	"Down"
 	#define KEY_ID		"KeyID4_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		2
+	#define KEY_NUM 	1
+	#define KEY_STR_NAME	"KeyStr1"
+	#define KEY_STRING	$iSTR_Turn_wheels_left
+	$KEY_STR_OBJECT
+	#define KEY_Y		2
+	#define KEY_STR_NAME	"KeyName1"
+	#define KEY_STRING	"Left"
+	#define KEY_ID		"KeyID1"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName1_1"
+	#define KEY_STRING	"Left"
+	#define KEY_ID		"KeyID1_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		3
+	#define KEY_NUM 	2
+	#define KEY_STR_NAME	"KeyStr2"
+	#define KEY_STRING	$iSTR_Turn_wheels_right
+	$KEY_STR_OBJECT
+	#define KEY_Y		3
+	#define KEY_STR_NAME	"KeyName2"
+	#define KEY_STRING	"Right"
+	#define KEY_ID		"KeyID2"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName2_1"
+	#define KEY_STRING	"Right"
+	#define KEY_ID		"KeyID2_1"
 	$KEY_ID_OBJECT2
 
 	#define KEY_Y		4
@@ -5249,6 +5357,36 @@ Screen "Controls screen"
 	#define KEY_STR_NAME	"KeyName10_1"
 	#define KEY_STRING	"Shift"
 	#define KEY_ID		"KeyID10_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		5
+	#define KEY_NUM 	9
+	#define KEY_STR_NAME	"KeyStr9"
+	#define KEY_STRING	$iSTR_Activate_KiD
+	$KEY_STR_OBJECT
+	#define KEY_Y		5
+	#define KEY_STR_NAME	"KeyName9"
+	#define KEY_STRING	"Ins"
+	#define KEY_ID		"KeyID9"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName9_1"
+	#define KEY_STRING	"Ins"
+	#define KEY_ID		"KeyID9_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		6
+	#define KEY_NUM 	29
+	#define KEY_STR_NAME	"KeyStr29"
+	#define KEY_STRING	$iSTR_Handbrake
+	$KEY_STR_OBJECT
+	#define KEY_Y		6
+	#define KEY_STR_NAME	"KeyName29"
+	#define KEY_STRING	"C"
+	#define KEY_ID		"KeyID29"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName29_1"
+	#define KEY_STRING	"C"
+	#define KEY_ID		"KeyID29_1"
 	$KEY_ID_OBJECT2
 }
 
@@ -5268,7 +5406,7 @@ Screen "Controls screen 2"
 		}
 	}
 
-	Object "TitleStr"
+	Object "TitleStr2"
 	{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
@@ -5280,7 +5418,125 @@ Screen "Controls screen 2"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_Utility
+		}
+	}
+
+	Object "Defaults Option"
+	{
+		align_x center
+		y	$Controls_screen_Defaults_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN4
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_RESTORE_ALL
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Defaults Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Defaults Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Defaults Option"	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
+		}
+	}
+
+	Object "Menu Option"
+	{
+		align_x center
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_TO_MENU
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
 		}
 	}
 
@@ -5290,71 +5546,11 @@ Screen "Controls screen 2"
 	$MORE_OBJ
 
 	#define KEY_Y		0
-	#define KEY_NUM 	5
-	#define KEY_STR_NAME	"KeyStr5"
-	#define KEY_STRING	$iSTR_Turn_over_left
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName5"
-	#define KEY_STRING	"End"
-	#define KEY_ID		"KeyID5"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName5_1"
-	#define KEY_STRING	"End"
-	#define KEY_ID		"KeyID5_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
-	#define KEY_NUM 	6
-	#define KEY_STR_NAME	"KeyStr6"
-	#define KEY_STRING	$iSTR_Turn_over_right
-	$KEY_STR_OBJECT
-	#define KEY_Y		1
-	#define KEY_STR_NAME	"KeyName6"
-	#define KEY_STRING	"Pg Dn"
-	#define KEY_ID		"KeyID6"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName6_1"
-	#define KEY_STRING	"Pg Dn"
-	#define KEY_ID		"KeyID6_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
-	#define KEY_NUM 	9
-	#define KEY_STR_NAME	"KeyStr9"
-	#define KEY_STRING	$iSTR_Activate_KiD
-	$KEY_STR_OBJECT
-	#define KEY_Y		2
-	#define KEY_STR_NAME	"KeyName9"
-	#define KEY_STRING	"Ins"
-	#define KEY_ID		"KeyID9"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName9_1"
-	#define KEY_STRING	"Ins"
-	#define KEY_ID		"KeyID9_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		3
-	#define KEY_NUM 	33
-	#define KEY_STR_NAME	"KeyStr33"
-	#define KEY_STRING	$iSTR_UseVector
-	$KEY_STR_OBJECT
-	#define KEY_Y		3
-	#define KEY_STR_NAME	"KeyName33"
-	#define KEY_STRING	"~"
-	#define KEY_ID		"KeyID33"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName33_1"
-	#define KEY_STRING	"~"
-	#define KEY_ID		"KeyID33_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		4
 	#define KEY_NUM 	13
 	#define KEY_STR_NAME	"KeyStr13"
 	#define KEY_STRING	$iSTR_Open
 	$KEY_STR_OBJECT
-	#define KEY_Y		4
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName13"
 	#define KEY_STRING	"Space"
 	#define KEY_ID		"KeyID13"
@@ -5364,19 +5560,79 @@ Screen "Controls screen 2"
 	#define KEY_ID		"KeyID13_1"
 	$KEY_ID_OBJECT2
 
+	#define KEY_Y		1
+	#define KEY_NUM 	12
+	#define KEY_STR_NAME	"KeyStr12"
+	#define KEY_STRING	$iSTR_Inventory_ON_OFF
+	$KEY_STR_OBJECT
+	#define KEY_Y		1
+	#define KEY_STR_NAME	"KeyName12"
+	#define KEY_STRING	"Enter"
+	#define KEY_ID		"KeyID12"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName12_1"
+	#define KEY_STRING	"Enter"
+	#define KEY_ID		"KeyID12_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		2
+	#define KEY_NUM 	5
+	#define KEY_STR_NAME	"KeyStr5"
+	#define KEY_STRING	$iSTR_Turn_over_left
+	$KEY_STR_OBJECT
+	#define KEY_Y		2
+	#define KEY_STR_NAME	"KeyName5"
+	#define KEY_STRING	"End"
+	#define KEY_ID		"KeyID5"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName5_1"
+	#define KEY_STRING	"End"
+	#define KEY_ID		"KeyID5_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		3
+	#define KEY_NUM 	6
+	#define KEY_STR_NAME	"KeyStr6"
+	#define KEY_STRING	$iSTR_Turn_over_right
+	$KEY_STR_OBJECT
+	#define KEY_Y		3
+	#define KEY_STR_NAME	"KeyName6"
+	#define KEY_STRING	"Pg Dn"
+	#define KEY_ID		"KeyID6"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName6_1"
+	#define KEY_STRING	"Pg Dn"
+	#define KEY_ID		"KeyID6_1"
+	$KEY_ID_OBJECT2
+
 	#define KEY_Y		5
-	#define KEY_NUM 	29
-	#define KEY_STR_NAME	"KeyStr29"
-	#define KEY_STRING	$iSTR_Handbrake
+	#define KEY_NUM 	7
+	#define KEY_STR_NAME	"KeyStr7"
+	#define KEY_STRING	$iSTR_Turn_device_ON
 	$KEY_STR_OBJECT
 	#define KEY_Y		5
-	#define KEY_STR_NAME	"KeyName29"
-	#define KEY_STRING	"C"
-	#define KEY_ID		"KeyID29"
+	#define KEY_STR_NAME	"KeyName7"
+	#define KEY_STRING	"Home"
+	#define KEY_ID		"KeyID7"
 	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName29_1"
-	#define KEY_STRING	"C"
-	#define KEY_ID		"KeyID29_1"
+	#define KEY_STR_NAME	"KeyName7_1"
+	#define KEY_STRING	"Home"
+	#define KEY_ID		"KeyID7_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		6
+	#define KEY_NUM 	8
+	#define KEY_STR_NAME	"KeyStr8"
+	#define KEY_STRING	$iSTR_Turn_device_OFF
+	$KEY_STR_OBJECT
+	#define KEY_Y		6
+	#define KEY_STR_NAME	"KeyName8"
+	#define KEY_STRING	"Pg Up"
+	#define KEY_ID		"KeyID8"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName8_1"
+	#define KEY_STRING	"Pg Up"
+	#define KEY_ID		"KeyID8_1"
 	$KEY_ID_OBJECT2
 }
 
@@ -5396,8 +5652,8 @@ Screen "Controls screen 3"
 		}
 	}
 
-	Object "TitleStr"
-	{
+	Object "TitleStr2"
+		{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
 
@@ -5408,7 +5664,125 @@ Screen "Controls screen 3"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_Combat
+		}
+	}
+
+	Object "Defaults Option"
+	{
+		align_x center
+		y	$Controls_screen_Defaults_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN4
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_RESTORE_ALL
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Defaults Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Defaults Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Defaults Option"	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
+		}
+	}
+
+	Object "Menu Option"
+	{
+		align_x center
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_TO_MENU
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
 		}
 	}
 
@@ -5418,71 +5792,11 @@ Screen "Controls screen 3"
 	$MORE_OBJ
 
 	#define KEY_Y		0
-	#define KEY_NUM 	7
-	#define KEY_STR_NAME	"KeyStr7"
-	#define KEY_STRING	$iSTR_Turn_device_ON
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName7"
-	#define KEY_STRING	"Home"
-	#define KEY_ID		"KeyID7"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName7_1"
-	#define KEY_STRING	"Home"
-	#define KEY_ID		"KeyID7_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
-	#define KEY_NUM 	8
-	#define KEY_STR_NAME	"KeyStr8"
-	#define KEY_STRING	$iSTR_Turn_device_OFF
-	$KEY_STR_OBJECT
-	#define KEY_Y		1
-	#define KEY_STR_NAME	"KeyName8"
-	#define KEY_STRING	"Pg Up"
-	#define KEY_ID		"KeyID8"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName8_1"
-	#define KEY_STRING	"Pg Up"
-	#define KEY_ID		"KeyID8_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
-	#define KEY_NUM 	12
-	#define KEY_STR_NAME	"KeyStr12"
-	#define KEY_STRING	$iSTR_Inventory_ON_OFF
-	$KEY_STR_OBJECT
-	#define KEY_Y		2
-	#define KEY_STR_NAME	"KeyName12"
-	#define KEY_STRING	"Enter"
-	#define KEY_ID		"KeyID12"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName12_1"
-	#define KEY_STRING	"Enter"
-	#define KEY_ID		"KeyID12_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		3
-	#define KEY_NUM 	19
-	#define KEY_STR_NAME	"KeyStr19"
-	#define KEY_STRING	$iSTR_Change_target
-	$KEY_STR_OBJECT
-	#define KEY_Y		3
-	#define KEY_STR_NAME	"KeyName19"
-	#define KEY_STRING	"Tab"
-	#define KEY_ID		"KeyID19"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName19_1"
-	#define KEY_STRING	"Tab"
-	#define KEY_ID		"KeyID19_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		4
 	#define KEY_NUM 	18
 	#define KEY_STR_NAME	"KeyStr18"
 	#define KEY_STRING	$iSTR_Fire_all_weapons
 	$KEY_STR_OBJECT
-	#define KEY_Y		4
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName18"
 	#define KEY_STRING	"Ctrl"
 	#define KEY_ID		"KeyID18"
@@ -5490,6 +5804,111 @@ Screen "Controls screen 3"
 	#define KEY_STR_NAME	"KeyName18_1"
 	#define KEY_STRING	"Ctrl"
 	#define KEY_ID		"KeyID18_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		1
+	#define KEY_NUM 	17
+	#define KEY_STR_NAME	"KeyStr17"
+	#define KEY_STRING	$iSTR_Fire_weapon_4
+	$KEY_STR_OBJECT
+	#define KEY_Y		1
+	#define KEY_STR_NAME	"KeyName17"
+	#define KEY_STRING	"4"
+	#define KEY_ID		"KeyID17"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName17_1"
+	#define KEY_STRING	"4"
+	#define KEY_ID		"KeyID17_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		2
+	#define KEY_NUM 	30
+	#define KEY_STR_NAME	"KeyStr30"
+	#define KEY_STRING	$iSTR_Use_Gluek
+	$KEY_STR_OBJECT
+	#define KEY_Y		2
+	#define KEY_STR_NAME	"KeyName30"
+	#define KEY_STRING	"5"
+	#define KEY_ID		"KeyID30"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName30_1"
+	#define KEY_STRING	"5"
+	#define KEY_ID		"KeyID30_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		3
+	#define KEY_NUM 	14
+	#define KEY_STR_NAME	"KeyStr14"
+	#define KEY_STRING	$iSTR_Fire_weapon_1
+	$KEY_STR_OBJECT
+	#define KEY_Y		3
+	#define KEY_STR_NAME	"KeyName14"
+	#define KEY_STRING	"1"
+	#define KEY_ID		"KeyID14"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName14_1"
+	#define KEY_STRING	"1"
+	#define KEY_ID		"KeyID14_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		4
+	#define KEY_NUM 	15
+	#define KEY_STR_NAME	"KeyStr15"
+	#define KEY_STRING	$iSTR_Fire_weapon_2
+	$KEY_STR_OBJECT
+	#define KEY_Y		4
+	#define KEY_STR_NAME	"KeyName15"
+	#define KEY_STRING	"2"
+	#define KEY_ID		"KeyID15"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName15_1"
+	#define KEY_STRING	"2"
+	#define KEY_ID		"KeyID15_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		5
+	#define KEY_NUM 	16
+	#define KEY_STR_NAME	"KeyStr16"
+	#define KEY_STRING	$iSTR_Fire_weapon_3
+	$KEY_STR_OBJECT
+	#define KEY_Y		5
+	#define KEY_STR_NAME	"KeyName16"
+	#define KEY_STRING	"3"
+	#define KEY_ID		"KeyID16"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName16_1"
+	#define KEY_STRING	"3"
+	#define KEY_ID		"KeyID16_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y			6
+	#define KEY_NUM			33
+	#define KEY_STR_NAME	"KeyStr33"
+	#define KEY_STRING		$iSTR_UseVector
+	$KEY_STR_OBJECT
+	#define KEY_Y			6
+	#define KEY_STR_NAME	"KeyName33"
+	#define KEY_STRING		"~"
+	#define KEY_ID			"KeyID33"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName33_1"
+	#define KEY_STRING		"~"
+	#define KEY_ID			"KeyID33_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		7
+	#define KEY_NUM 	19
+	#define KEY_STR_NAME	"KeyStr19"
+	#define KEY_STRING	$iSTR_Change_target
+	$KEY_STR_OBJECT
+	#define KEY_Y		7
+	#define KEY_STR_NAME	"KeyName19"
+	#define KEY_STRING	"Tab"
+	#define KEY_ID		"KeyID19"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName19_1"
+	#define KEY_STRING	"Tab"
+	#define KEY_ID		"KeyID19_1"
 	$KEY_ID_OBJECT2
 }
 
@@ -5509,8 +5928,8 @@ Screen "Controls screen 4"
 		}
 	}
 
-	Object "TitleStr"
-	{
+	Object "TitleStr2"
+		{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
 
@@ -5521,7 +5940,125 @@ Screen "Controls screen 4"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_Camera
+		}
+	}
+
+	Object "Defaults Option"
+	{
+		align_x center
+		y	$Controls_screen_Defaults_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN4
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_RESTORE_ALL
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Defaults Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Defaults Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Defaults Option"	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
+		}
+	}
+
+	Object "Menu Option"
+	{
+		align_x center
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_TO_MENU
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
 		}
 	}
 
@@ -5531,139 +6068,11 @@ Screen "Controls screen 4"
 	$MORE_OBJ
 
 	#define KEY_Y		0
-	#define KEY_NUM 	14
-	#define KEY_STR_NAME	"KeyStr14"
-	#define KEY_STRING	$iSTR_Fire_weapon_1
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName14"
-	#define KEY_STRING	"1"
-	#define KEY_ID		"KeyID14"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName14_1"
-	#define KEY_STRING	"1"
-	#define KEY_ID		"KeyID14_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
-	#define KEY_NUM 	15
-	#define KEY_STR_NAME	"KeyStr15"
-	#define KEY_STRING	$iSTR_Fire_weapon_2
-	$KEY_STR_OBJECT
-	#define KEY_Y		1
-	#define KEY_STR_NAME	"KeyName15"
-	#define KEY_STRING	"2"
-	#define KEY_ID		"KeyID15"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName15_1"
-	#define KEY_STRING	"2"
-	#define KEY_ID		"KeyID15_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
-	#define KEY_NUM 	16
-	#define KEY_STR_NAME	"KeyStr16"
-	#define KEY_STRING	$iSTR_Fire_weapon_3
-	$KEY_STR_OBJECT
-	#define KEY_Y		2
-	#define KEY_STR_NAME	"KeyName16"
-	#define KEY_STRING	"3"
-	#define KEY_ID		"KeyID16"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName16_1"
-	#define KEY_STRING	"3"
-	#define KEY_ID		"KeyID16_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		3
-	#define KEY_NUM 	17
-	#define KEY_STR_NAME	"KeyStr17"
-	#define KEY_STRING	$iSTR_Fire_weapon_4
-	$KEY_STR_OBJECT
-	#define KEY_Y		3
-	#define KEY_STR_NAME	"KeyName17"
-	#define KEY_STRING	"4"
-	#define KEY_ID		"KeyID17"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName17_1"
-	#define KEY_STRING	"4"
-	#define KEY_ID		"KeyID17_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		4
-	#define KEY_NUM 	30
-	#define KEY_STR_NAME	"KeyStr30"
-	#define KEY_STRING	$iSTR_Use_Gluek
-	$KEY_STR_OBJECT
-	#define KEY_Y		4
-	#define KEY_STR_NAME	"KeyName30"
-	#define KEY_STRING	"5"
-	#define KEY_ID		"KeyID30"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName30_1"
-	#define KEY_STRING	"5"
-	#define KEY_ID		"KeyID30_1"
-	$KEY_ID_OBJECT2
-}
-
-Screen "Controls screen 5"
-{
-	screen_offs	800
-
-	default_obj "Back Option"
-
-	Event {
-		key	$VK_ESCAPE
-
-		time { $MOVE2SCREEN_TIME + 1 }
-		EvComm {
-			move2screen	"Controls screen2"
-			time		$MOVE2SCREEN_TIME
-		}
-	}
-
-	Object "TitleStr"
-	{
-		align_x center
-		y	{ $TITLE_STR_Y - 10 }
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
-		}
-	}
-
-	#define PREV_SCR	"Controls screen 4"
-	#define NEXT_SCR	"Controls screen 6"
-	$BACK_OBJ
-	$MORE_OBJ
-
-	#define KEY_Y		0
-	#define KEY_NUM 	36
-	#define KEY_STR_NAME	"KeyStr36"
-	#define KEY_STRING	$iSTR_ExitGame
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName36"
-	#define KEY_STRING	"Left"
-	#define KEY_ID		"KeyID36"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName36_1"
-	#define KEY_STRING	"Left"
-	#define KEY_ID		"KeyID36_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		1
 	#define KEY_NUM 	20
 	#define KEY_STR_NAME	"KeyStr20"
 	#define KEY_STRING	$iSTR_Full_screen
 	$KEY_STR_OBJECT
-	#define KEY_Y		1
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName20"
 	#define KEY_STRING	"F1"
 	#define KEY_ID		"KeyID20"
@@ -5671,119 +6080,6 @@ Screen "Controls screen 5"
 	#define KEY_STR_NAME	"KeyName20_1"
 	#define KEY_STRING	"F1"
 	#define KEY_ID		"KeyID20_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		2
-	#define KEY_NUM 	21
-	#define KEY_STR_NAME	"KeyStr21"
-	#define KEY_STRING	$iSTR_Reduce_view
-	$KEY_STR_OBJECT
-	#define KEY_Y		2
-	#define KEY_STR_NAME	"KeyName21"
-	#define KEY_STRING	"F2"
-	#define KEY_ID		"KeyID21"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName21_1"
-	#define KEY_STRING	"F2"
-	#define KEY_ID		"KeyID21_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		3
-	#define KEY_NUM 	22
-	#define KEY_STR_NAME	"KeyStr22"
-	#define KEY_STRING	$iSTR_Enlarge_view
-	$KEY_STR_OBJECT
-	#define KEY_Y		3
-	#define KEY_STR_NAME	"KeyName22"
-	#define KEY_STRING	"F3"
-	#define KEY_ID		"KeyID22"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName22_1"
-	#define KEY_STRING	"F3"
-	#define KEY_ID		"KeyID22_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		4
-	#define KEY_NUM 	23
-	#define KEY_STR_NAME	"KeyStr23"
-	#define KEY_STRING	$iSTR_Rotation
-	$KEY_STR_OBJECT
-	#define KEY_Y		4
-	#define KEY_STR_NAME	"KeyName23"
-	#define KEY_STRING	"F5"
-	#define KEY_ID		"KeyID23"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName23_1"
-	#define KEY_STRING	"F5"
-	#define KEY_ID		"KeyID23_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		5
-	#define KEY_NUM 	25
-	#define KEY_STR_NAME	"KeyStr25"
-	#define KEY_STRING	$iSTR_Auto_tilt
-	$KEY_STR_OBJECT
-	#define KEY_Y		5
-	#define KEY_STR_NAME	"KeyName25"
-	#define KEY_STRING	"F7"
-	#define KEY_ID		"KeyID25"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName25_1"
-	#define KEY_STRING	"F7"
-	#define KEY_ID		"KeyID25_1"
-	$KEY_ID_OBJECT2
-}
-
-Screen "Controls screen 6"
-{
-	screen_offs	800
-
-	default_obj "Back Option"
-
-	Event {
-		key	$VK_ESCAPE
-
-		time { $MOVE2SCREEN_TIME + 1 }
-		EvComm {
-			move2screen	"Controls screen2"
-			time		$MOVE2SCREEN_TIME
-		}
-	}
-
-	Object "TitleStr"
-	{
-		align_x center
-		y	{ $TITLE_STR_Y - 10 }
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
-		}
-	}
-
-	#define NEXT_SCR	"Controls screen 7"
-	#define PREV_SCR	"Controls screen 5"
-	$BACK_OBJ
-	$MORE_OBJ
-
-	#define KEY_Y		0
-	#define KEY_NUM 	24
-	#define KEY_STR_NAME	"KeyStr24"
-	#define KEY_STRING	$iSTR_Auto_zoom
-	$KEY_STR_OBJECT
-	#define KEY_Y		0
-	#define KEY_STR_NAME	"KeyName24"
-	#define KEY_STRING	"F6"
-	#define KEY_ID		"KeyID24"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName24_1"
-	#define KEY_STRING	"F6"
-	#define KEY_ID		"KeyID24_1"
 	$KEY_ID_OBJECT2
 
 	#define KEY_Y		1
@@ -5831,23 +6127,53 @@ Screen "Controls screen 6"
 	#define KEY_ID		"KeyID28_1"
 	$KEY_ID_OBJECT2
 
-	#define KEY_Y		4
-	#define KEY_NUM 	32
-	#define KEY_STR_NAME	"KeyStr32"
-	#define KEY_STRING	$iSTR_SkipText
+	#define KEY_Y		5
+	#define KEY_NUM 	23
+	#define KEY_STR_NAME	"KeyStr23"
+	#define KEY_STRING	$iSTR_Rotation
 	$KEY_STR_OBJECT
-	#define KEY_Y		4
-	#define KEY_STR_NAME	"KeyName32"
-	#define KEY_STRING	"Tab"
-	#define KEY_ID		"KeyID32"
+	#define KEY_Y		5
+	#define KEY_STR_NAME	"KeyName23"
+	#define KEY_STRING	"F5"
+	#define KEY_ID		"KeyID23"
 	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName32_1"
-	#define KEY_STRING	"Tab"
-	#define KEY_ID		"KeyID32_1"
+	#define KEY_STR_NAME	"KeyName23_1"
+	#define KEY_STRING	"F5"
+	#define KEY_ID		"KeyID23_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		6
+	#define KEY_NUM 	25
+	#define KEY_STR_NAME	"KeyStr25"
+	#define KEY_STRING	$iSTR_Auto_tilt
+	$KEY_STR_OBJECT
+	#define KEY_Y		6
+	#define KEY_STR_NAME	"KeyName25"
+	#define KEY_STRING	"F7"
+	#define KEY_ID		"KeyID25"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName25_1"
+	#define KEY_STRING	"F7"
+	#define KEY_ID		"KeyID25_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		7
+	#define KEY_NUM 	24
+	#define KEY_STR_NAME	"KeyStr24"
+	#define KEY_STRING	$iSTR_Auto_zoom
+	$KEY_STR_OBJECT
+	#define KEY_Y		7
+	#define KEY_STR_NAME	"KeyName24"
+	#define KEY_STRING	"F6"
+	#define KEY_ID		"KeyID24"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName24_1"
+	#define KEY_STRING	"F6"
+	#define KEY_ID		"KeyID24_1"
 	$KEY_ID_OBJECT2
 }
 
-Screen "Controls screen 7"
+Screen "Controls screen 5"
 {
 	screen_offs	800
 
@@ -5863,7 +6189,7 @@ Screen "Controls screen 7"
 		}
 	}
 
-	Object "TitleStr"
+	Object "TitleStr2"
 	{
 		align_x center
 		y	{ $TITLE_STR_Y - 10 }
@@ -5875,14 +6201,14 @@ Screen "Controls screen 7"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_Customize_keyboard
+			string		$iSTR_MultiplayerAndMisc
 		}
 	}
 
-	Object "TitleStr2"
+	Object "Defaults Option"
 	{
 		align_x center
-		y	{ $TITLE_STR_Y + 40 }
+		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -5891,21 +6217,123 @@ Screen "Controls screen 7"
 
 			font		0
 			null_level	$DEFAULT_NULL
-			string		$iSTR_MULTIPLAYER
+			string		$iSTR_RESTORE_ALL
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Defaults Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Defaults Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESET_CONTROLS	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				smooth_obj	"Defaults Option"	0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Defaults Option"
+				start_time	{ $SMOOTH_OBJ_TIME * 2 + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
+			}
 		}
 	}
 
+	Object "Menu Option"
+	{
+		align_x center
+		y	$Controls_screen_Menu_Option_PosY
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_TO_MENU
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Menu Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $HIDE_OBJ_TIME * 2 + $SMOOTH_OBJ_TIME * 2 }
+			EvComm {
+				smooth_obj	"Menu Option"	2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Menu Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+		}
+	}
+
+	#define PREV_SCR	"Controls screen 4"
 	#define NEXT_SCR	"Controls screen"
-	#define PREV_SCR	"Controls screen 6"
 	$BACK_OBJ
 	$MORE_OBJ
 
-	#define KEY_Y		1
+	#define KEY_Y		0
 	#define KEY_NUM 	35
 	#define KEY_STR_NAME	"KeyStr35"
 	#define KEY_STRING	$iSTR_ChatON
 	$KEY_STR_OBJECT
-	#define KEY_Y		1
+	#define KEY_Y		0
 	#define KEY_STR_NAME	"KeyName35"
 	#define KEY_STRING	"F6"
 	#define KEY_ID		"KeyID35"
@@ -5915,12 +6343,12 @@ Screen "Controls screen 7"
 	#define KEY_ID		"KeyID35_1"
 	$KEY_ID_OBJECT2
 
-	#define KEY_Y		2
+	#define KEY_Y		1
 	#define KEY_NUM 	34
 	#define KEY_STR_NAME	"KeyStr34"
 	#define KEY_STRING	$iSTR_Statistics
 	$KEY_STR_OBJECT
-	#define KEY_Y		2
+	#define KEY_Y		1
 	#define KEY_STR_NAME	"KeyName34"
 	#define KEY_STRING	"Plus"
 	#define KEY_ID		"KeyID34"
@@ -5928,6 +6356,51 @@ Screen "Controls screen 7"
 	#define KEY_STR_NAME	"KeyName34_1"
 	#define KEY_STRING	"Plus"
 	#define KEY_ID		"KeyID34_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		3
+	#define KEY_NUM 	37
+	#define KEY_STR_NAME	"KeyStr37"
+	#define KEY_STRING	$iSTR_Screenshot
+	$KEY_STR_OBJECT
+	#define KEY_Y		3
+	#define KEY_STR_NAME	"KeyName37"
+	#define KEY_STRING	"Plus"
+	#define KEY_ID		"KeyID37"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName37_1"
+	#define KEY_STRING	"Plus"
+	#define KEY_ID		"KeyID37_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		4
+	#define KEY_NUM 	32
+	#define KEY_STR_NAME	"KeyStr32"
+	#define KEY_STRING	$iSTR_SkipText
+	$KEY_STR_OBJECT
+	#define KEY_Y		4
+	#define KEY_STR_NAME	"KeyName32"
+	#define KEY_STRING	"Tab"
+	#define KEY_ID		"KeyID32"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName32_1"
+	#define KEY_STRING	"Tab"
+	#define KEY_ID		"KeyID32_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		5
+	#define KEY_NUM 	36
+	#define KEY_STR_NAME	"KeyStr36"
+	#define KEY_STRING	$iSTR_ExitGame
+	$KEY_STR_OBJECT
+	#define KEY_Y		5
+	#define KEY_STR_NAME	"KeyName36"
+	#define KEY_STRING	"Left"
+	#define KEY_ID		"KeyID36"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName36_1"
+	#define KEY_STRING	"Left"
+	#define KEY_ID		"KeyID36_1"
 	$KEY_ID_OBJECT2
 }
 
@@ -7265,7 +7738,7 @@ Screen "Identification screen"
 		align_x center
 		y	{ $CFG_START_Y + $CFG_DELTA_Y * 3 }
 
-		num_state	4
+		num_state	10
 
 		null_level	$DEFAULT_NULL
 
@@ -7311,6 +7784,72 @@ Screen "Identification screen"
 			font		3
 			space		2
 			string		$iSTR_GREEN
+			null_level	$DEFAULT_NULL
+		}
+		State 4 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_RED
+			null_level	$DEFAULT_NULL
+		}
+		State 5 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_WHITE
+			null_level	$DEFAULT_NULL
+		}
+		State 6 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_GRAY
+			null_level	$DEFAULT_NULL
+		}
+		State 7 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_BLACK
+			null_level	$DEFAULT_NULL
+		}
+		State 8 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_CAMOUFLAGE
+			null_level	$DEFAULT_NULL
+		}
+		State 9 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_PATROL
 			null_level	$DEFAULT_NULL
 		}
 		Event {
@@ -9703,7 +10242,7 @@ Screen "Configuration screen 2"
 		align_x center
 		y	{ $CFG_START_Y + $CFG_DELTA_Y * 3 }
 
-		num_state	4
+		num_state	10
 
 		null_level	$DEFAULT_NULL
 
@@ -9751,6 +10290,72 @@ Screen "Configuration screen 2"
 			string		$iSTR_GREEN
 			null_level	$DEFAULT_NULL
 		}
+		State 4 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_RED
+			null_level	$DEFAULT_NULL
+		}
+		State 5 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_WHITE
+			null_level	$DEFAULT_NULL
+		}
+		State 6 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_GRAY
+			null_level	$DEFAULT_NULL
+		}
+		State 7 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_BLACK
+			null_level	$DEFAULT_NULL
+		}
+		State 8 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_CAMOUFLAGE
+			null_level	$DEFAULT_NULL
+		}
+		State 9 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_PATROL
+			null_level	$DEFAULT_NULL
+		}
 		Event {
 			key $VK_LBUTTON
 			key $VK_RBUTTON
@@ -9772,7 +10377,7 @@ Screen "Controls screen2"
 {
 	screen_offs	0
 
-	default_obj "Customize Option"
+	default_obj "Go to Controls Screen 1"
 
 	Object "TitleStr"
 	{
@@ -9965,7 +10570,7 @@ Screen "Controls screen2"
 		}
 	}*/
 
-	Object "Customize Option"
+	/*Object "Customize Option"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 1 }
@@ -10065,7 +10670,7 @@ Screen "Controls screen2"
 			key $VK_MOVE
 
 			$EV_CHANGE_OBJ
-		}
+		}*/
 
 		/*#define OBJ1	"Customize Option"
 		#define OBJ2	"Joystick Option"
@@ -10085,6 +10690,276 @@ Screen "Controls screen2"
 
 			$EV_CHANGE_OBJ
 		}*/
+	//}
+
+	Object "Go to Controls Screen 1"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 1 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Movement
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 1"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 1" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 1"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+
+	Object "Go to Controls Screen 2"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 2 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Utility
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 2"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 2"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 2" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 2"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 2"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+
+	Object "Go to Controls Screen 3"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 3 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Combat
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 3"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 3"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 3" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 3"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 3"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+
+	Object "Go to Controls Screen 4"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 4 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Camera
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 4"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 4"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 4" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 4"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 4"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+
+	Object "Go to Controls Screen 5"
+	{
+		align_x 	center
+		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 5 }
+
+		Element STRING {
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		0
+			null_level	$DEFAULT_NULL
+			string		$iSTR_MultiplayerAndMisc
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+			key $VK_SPACE
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				low_obj 	"Go to Controls Screen 5"
+
+				start_time	0
+				time		$PRESS_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 5"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			EvComm {
+				smooth_obj	"Go to Controls Screen 5" 4
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Go to Controls Screen 5"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Controls screen 5"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
 	}
 }
 
@@ -11440,7 +12315,7 @@ Screen "Identification screen2"
 		align_x center
 		y	{ $CFG_START_Y + $CFG_DELTA_Y * 3 }
 
-		num_state	4
+		num_state	10
 
 		null_level	$DEFAULT_NULL
 
@@ -11486,6 +12361,72 @@ Screen "Identification screen2"
 			font		3
 			space		2
 			string		$iSTR_GREEN
+			null_level	$DEFAULT_NULL
+		}
+		State 4 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_RED
+			null_level	$DEFAULT_NULL
+		}
+		State 5 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_WHITE
+			null_level	$DEFAULT_NULL
+		}
+		State 6 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_GRAY
+			null_level	$DEFAULT_NULL
+		}
+		State 7 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_BLACK
+			null_level	$DEFAULT_NULL
+		}
+		State 8 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_CAMOUFLAGE
+			null_level	$DEFAULT_NULL
+		}
+		State 9 "STRING"{
+			align_x center
+			align_y center
+
+			terrain_num	$TERRAIN3
+
+			font		3
+			space		2
+			string		$iSTR_PATROL
 			null_level	$DEFAULT_NULL
 		}
 		Event {
