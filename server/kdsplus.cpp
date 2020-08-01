@@ -24,8 +24,8 @@ int StatLogging = 0;
 int leave_empty_games = 0;
 Server *server;
 
-extern int __argc;
-extern char **__argv;
+extern int __internal_argc;
+extern char **__internal_argv;
 
 int xtInitApplication(void) {
 #ifdef _WIN32
@@ -40,7 +40,7 @@ int xtInitApplication(void) {
 	std::cout << "Compilation: DATE: " << __DATE__ << " TIME: " << __TIME__ << "\n\n";
 
 	// SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
-	ComlineAnalyze(__argc, __argv);
+	ComlineAnalyze(__internal_argc, __internal_argv);
 	//	ErrH.SetFlags(XERR_CTRLBRK);
 
 	/* initialize SDL */

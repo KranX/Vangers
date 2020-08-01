@@ -401,7 +401,7 @@ int xtInitApplication(void) {
 #endif
 
     //stalkerg:NEED SEE!!!
-    //ComlineAnalyze(__argc,__argv);
+    //ComlineAnalyze(__internal_argc,__internal_argv);
 
 //	ErrH.SetRestore(restore); #not implement
 //	ErrH.SetFlags(XERR_CTRLBRK);

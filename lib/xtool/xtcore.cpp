@@ -13,8 +13,8 @@
 #include <locale.h>
 #endif
 
-int __argc;
-char **__argv;
+int __internal_argc;
+char **__internal_argv;
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
@@ -114,8 +114,8 @@ int main(int argc, char *argv[])
 #endif
 	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
 	XRuntimeObject* XObj;
-	__argc = argc;
-	__argv = argv;
+	__internal_argc = argc;
+	__internal_argv = argv;
 	#ifdef _WIN32
 		std::cout<<"Load backtrace"<<std::endl;
 		LoadLibraryA("backtrace.dll");
