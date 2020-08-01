@@ -253,8 +253,8 @@
 #define iSTR_Customize_keyboard1	"Customize keyboard"
 #define iSTR_Customize_keyboard2	"®¤αβΰ®©ª  ª« Ά¨θ"
 
-#define iSTR_RESTORE_ALL1		"RESTORE"
-#define iSTR_RESTORE_ALL2		"‚‘‘’€‚’ ‚‘…"
+#define iSTR_RESTORE_ALL1		"RESTORE ALL"
+#define iSTR_RESTORE_ALL2		"‘‘’ ‚‘π"
 
 
 #define iSTR_SELECT_GAME1		"SELECT GAME"

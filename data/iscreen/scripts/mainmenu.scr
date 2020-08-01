@@ -5163,7 +5163,7 @@ Screen "Controls screen"
 
 	Object "Defaults Option"
 	{
-		x	$Controls_screen_Defaults_Option_PosX
+		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
@@ -5227,7 +5227,7 @@ Screen "Controls screen"
 
 	Object "Menu Option"
 	{
-		x	$Controls_screen_Menu_Option_PosX
+		align_x center
 		y	$Controls_screen_Menu_Option_PosY
 
 		Element STRING {
@@ -5424,7 +5424,7 @@ Screen "Controls screen 2"
 
 	Object "Defaults Option"
 	{
-		x	$Controls_screen_Defaults_Option_PosX
+		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
@@ -5488,7 +5488,7 @@ Screen "Controls screen 2"
 
 	Object "Menu Option"
 	{
-		x	$Controls_screen_Menu_Option_PosX
+		align_x center
 		y	$Controls_screen_Menu_Option_PosY
 
 		Element STRING {
@@ -5670,7 +5670,7 @@ Screen "Controls screen 3"
 
 	Object "Defaults Option"
 	{
-		x	$Controls_screen_Defaults_Option_PosX
+		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
@@ -5734,7 +5734,7 @@ Screen "Controls screen 3"
 
 	Object "Menu Option"
 	{
-		x	$Controls_screen_Menu_Option_PosX
+		align_x center
 		y	$Controls_screen_Menu_Option_PosY
 
 		Element STRING {
@@ -5946,7 +5946,7 @@ Screen "Controls screen 4"
 
 	Object "Defaults Option"
 	{
-		x	$Controls_screen_Defaults_Option_PosX
+		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
@@ -6010,7 +6010,7 @@ Screen "Controls screen 4"
 
 	Object "Menu Option"
 	{
-		x	$Controls_screen_Menu_Option_PosX
+		align_x center
 		y	$Controls_screen_Menu_Option_PosY
 
 		Element STRING {
@@ -6207,7 +6207,7 @@ Screen "Controls screen 5"
 
 	Object "Defaults Option"
 	{
-		x	$Controls_screen_Defaults_Option_PosX
+		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
 
 		Element STRING {
@@ -6271,7 +6271,7 @@ Screen "Controls screen 5"
 
 	Object "Menu Option"
 	{
-		x	$Controls_screen_Menu_Option_PosX
+		align_x center
 		y	$Controls_screen_Menu_Option_PosY
 
 		Element STRING {

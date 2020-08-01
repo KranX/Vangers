@@ -2843,10 +2843,10 @@ void iInitStrings(void)
 		iSTR_Green = iSTR_Green1;
 		iSTR_Red = iSTR_Red1;
 		iSTR_White = iSTR_White1;
-		iSTR_Gray = iSTR_Gray2;
-		iSTR_Black = iSTR_Black2;
-		iSTR_Camouflage = iSTR_Camouflage2;
-		iSTR_Patrol = iSTR_Patrol2;
+		iSTR_Gray = iSTR_Gray1;
+		iSTR_Black = iSTR_Black1;
+		iSTR_Camouflage = iSTR_Camouflage1;
+		iSTR_Patrol = iSTR_Patrol1;
 		iSTR_CleanUp = iSTR_CleanUp1;
 		iSTR_SpaceInUse = iSTR_SpaceInUse1;
 		iSTR_MBytes = iSTR_MBytes1;
