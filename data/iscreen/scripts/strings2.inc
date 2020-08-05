@@ -22,6 +22,8 @@
 
 #define iSTR_ON 			$iSTR_ON2
 #define iSTR_OFF			$iSTR_OFF2
+#define iSTR_ENABLED 			$iSTR_ENABLED2
+#define iSTR_DISABLED			$iSTR_DISABLED2
 #define iSTR_BACK			$iSTR_BACK2
 #define iSTR_SCREEN			$iSTR_SCREEN2
 #define iSTR_800x600			$iSTR_800x6002
@@ -161,6 +163,7 @@
 #define iSTR_Move_forward		$iSTR_Move_forward2
 #define iSTR_Move_backward		$iSTR_Move_backward2
 #define iSTR_Acceleration		$iSTR_Acceleration2
+#define iSTR_Auto_acceleration		$iSTR_Auto_acceleration2
 #define iSTR_Handbrake			$iSTR_Handbrake2
 #define iSTR_Turn_over_left		$iSTR_Turn_over_left2
 #define iSTR_Turn_over_right		$iSTR_Turn_over_right2

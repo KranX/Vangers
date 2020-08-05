@@ -2065,7 +2065,8 @@ void iSaveData(void)
 	if(!RecorderMode){
 		XStream fh("options.dat",XS_OUT);
 		iScrDisp -> save_data(&fh);
-		fh < aciAutoRun;
+//		fh < aciAutoRun;
+		fh < iGetOptionValue(iAUTO_ACCELERATION);
 		fh.close();
 	}
 #endif
@@ -2082,6 +2083,8 @@ void iLoadData(void)
 			fh.close();
 		}
 	}
+
+	aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);
 
 	iHandleExtEvent(iEXT_UPDATE_SOUND_MODE);
 	iHandleExtEvent(iEXT_UPDATE_MUSIC_MODE);
