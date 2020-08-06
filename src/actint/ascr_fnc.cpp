@@ -1853,6 +1853,7 @@ void aci_LocationQuantFinit(void)
 	aScrDisp -> i_finit();
 	aciKillLinks();
 	aScrDisp -> flags &= ~AS_FULL_REDRAW;
+	aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);
 }
 
 void loadMouseFrames(void)
@@ -5063,6 +5064,7 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 			break;
 		case ACS_SET_AUTORUN_MODE:
 			aciAutoRun = acsGetStrState(ACS_AUTORUN_MODE);
+			iScrOpt[iAUTO_ACCELERATION]->SetValueINT(acsGetStrState(ACS_AUTORUN_MODE));
 			break;
 		case ACS_SET_SOUND_MODE:
 			iSetOptionValue(iSOUND_ON,!acsGetStrState(ACS_SOUND_MODE));
@@ -5073,7 +5075,9 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 			iHandleExtEvent(iEXT_UPDATE_MUSIC_MODE);
 			break;
 		case ACS_INIT_AUTORUN_MODE:
-			acsSetStrState(ACS_AUTORUN_MODE,aciAutoRun);
+//			acsSetStrState(ACS_AUTORUN_MODE,aciAutoRun);
+			aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);
+			acsSetStrState(ACS_AUTORUN_MODE,iGetOptionValue(iAUTO_ACCELERATION));
 			break;
 		case ACS_INIT_SOUND_MODE:
 			acsSetStrState(ACS_SOUND_MODE,!iGetOptionValue(iSOUND_ON));
@@ -5111,6 +5115,7 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 		case ACS_CHANGE_AUTORUN_MODE:
 			acsChangeStrState(ACS_AUTORUN_MODE);
 			aciAutoRun = acsGetStrState(ACS_AUTORUN_MODE);
+			iScrOpt[iAUTO_ACCELERATION]->SetValueINT(acsGetStrState(ACS_AUTORUN_MODE));
 			break;
 		case ACS_CHANGE_SOUND_MODE:
 			acsChangeStrState(ACS_SOUND_MODE);

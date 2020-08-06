@@ -5279,6 +5279,72 @@ Screen "Controls screen"
 		}
 	}
 
+	Object "AutoAccelerationObj"
+	{
+		x	$KEEP_STR_X
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 7 }
+
+		align_x right
+		align_x_offs	$KEYS0_X
+		y	{ $KEYS0_START_Y + $KEYS0_DELTA_Y * 7 }
+
+		Element STRING {
+			space		$OPTION_SPACE
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		$GRAPHICS_FONT
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Auto_acceleration
+		}
+	}
+	Trigger "AutoAccelerationTrig" {
+		x	{ 830 - $KEYS0_X }
+		y	{ $KEYS0_START_Y + $KEYS0_DELTA_Y * 7 }
+
+		num_state	2
+
+		null_level	$DEFAULT_NULL
+
+		State 1 "STRING"{
+			align_x center
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_ENABLED
+			null_level	$DEFAULT_NULL
+		}
+		State 0 "STRING"{
+			align_x center
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_DISABLED
+			null_level	$DEFAULT_NULL
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RBUTTON
+
+			time { $TRIGGER_TIME + 1 }
+			EvComm {
+				change_trigger	"AutoAccelerationTrig"
+				time $TRIGGER_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_INIT_KEEP_OPTIONS 0
+				start_time	{ $TRIGGER_TIME / 2 }
+			}
+		}
+	}
+
 	#define PREV_SCR	"Controls screen 5"
 	#define NEXT_SCR	"Controls screen 2"
 	$BACK_OBJ
@@ -5345,26 +5411,11 @@ Screen "Controls screen"
 	$KEY_ID_OBJECT2
 
 	#define KEY_Y		4
-	#define KEY_NUM 	10
-	#define KEY_STR_NAME	"KeyStr10"
-	#define KEY_STRING	$iSTR_Acceleration
-	$KEY_STR_OBJECT
-	#define KEY_Y		4
-	#define KEY_STR_NAME	"KeyName10"
-	#define KEY_STRING	"Shift"
-	#define KEY_ID		"KeyID10"
-	$KEY_ID_OBJECT
-	#define KEY_STR_NAME	"KeyName10_1"
-	#define KEY_STRING	"Shift"
-	#define KEY_ID		"KeyID10_1"
-	$KEY_ID_OBJECT2
-
-	#define KEY_Y		5
 	#define KEY_NUM 	9
 	#define KEY_STR_NAME	"KeyStr9"
 	#define KEY_STRING	$iSTR_Activate_KiD
 	$KEY_STR_OBJECT
-	#define KEY_Y		5
+	#define KEY_Y		4
 	#define KEY_STR_NAME	"KeyName9"
 	#define KEY_STRING	"Ins"
 	#define KEY_ID		"KeyID9"
@@ -5374,12 +5425,12 @@ Screen "Controls screen"
 	#define KEY_ID		"KeyID9_1"
 	$KEY_ID_OBJECT2
 
-	#define KEY_Y		6
+	#define KEY_Y		5
 	#define KEY_NUM 	29
 	#define KEY_STR_NAME	"KeyStr29"
 	#define KEY_STRING	$iSTR_Handbrake
 	$KEY_STR_OBJECT
-	#define KEY_Y		6
+	#define KEY_Y		5
 	#define KEY_STR_NAME	"KeyName29"
 	#define KEY_STRING	"C"
 	#define KEY_ID		"KeyID29"
@@ -5387,6 +5438,21 @@ Screen "Controls screen"
 	#define KEY_STR_NAME	"KeyName29_1"
 	#define KEY_STRING	"C"
 	#define KEY_ID		"KeyID29_1"
+	$KEY_ID_OBJECT2
+
+	#define KEY_Y		6
+	#define KEY_NUM 	10
+	#define KEY_STR_NAME	"KeyStr10"
+	#define KEY_STRING	$iSTR_Acceleration
+	$KEY_STR_OBJECT
+	#define KEY_Y		6
+	#define KEY_STR_NAME	"KeyName10"
+	#define KEY_STRING	"Shift"
+	#define KEY_ID		"KeyID10"
+	$KEY_ID_OBJECT
+	#define KEY_STR_NAME	"KeyName10_1"
+	#define KEY_STRING	"Shift"
+	#define KEY_ID		"KeyID10_1"
 	$KEY_ID_OBJECT2
 }
 
