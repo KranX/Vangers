@@ -755,7 +755,8 @@ int iQuantSecond(void)
 						acsScreenID = 2;
 					}
 
-					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
+//					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
+					if(iKeyPressed(iKEY_SCREENSHOT)) {
 						shotFlush();
 					}
 
