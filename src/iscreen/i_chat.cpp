@@ -1052,8 +1052,8 @@ void iChatInputChar(SDL_Event *event)
 	x = aTextWidth32(ptr, iChatInput->font, 1);
 
 	sz = strlen(ptr0);
-
-	if(sz >= ISC_MAX_STRING_LEN && x >= iChatInput->SizeX - 10)
+//	if(sz >= ISC_MAX_STRING_LEN && x >= iChatInput->SizeX - 10) {
+	if((sz >= ISC_MAX_STRING_LEN) || (x >= iChatInput->SizeX - 10))
 		return;
 
 	aciFont* hfnt = aScrFonts32[iChatInput->font];
