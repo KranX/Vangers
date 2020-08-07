@@ -1260,7 +1260,7 @@ void aMS_RightUnpress(int fl, int x, int y)
 #define MAP_VANGER	1
 #define MAP_INSECT	2
 
-static int aciMapVngColors[11] = { 254, 143, 156, 175, 200, 200, 239, 230, 224, 244, 148 };
+static int aciMapVngColors[11] = { 254, 143, 156, 175, 200, 200, 239, 230, 224, 254, 156 };
 
 void show_map(int x,int y,int sx,int sy)
 {
@@ -4898,7 +4898,11 @@ void aciPromptData::quant(void)
 
 	if(!NumStr) return;
 
-	CurTimer ++;
+	if (NetworkON) {
+		CurTimer += 2;
+	} else {
+		CurTimer ++;
+	}
 	for(i = 0; i < NumStr; i ++){
 		if(StrBuf[i]){
 			if(CurTimer > TimeBuf[i]){
@@ -5666,10 +5670,10 @@ const unsigned ACI_FRAG_COL2	 = (156 | (151 << 8));
 const unsigned ACI_FRAG_COL3	 = (173 | (166 << 8));
 const unsigned ACI_FRAG_COL4	 = (200 | (195 << 8));
 const unsigned ACI_FRAG_COL5	 = (238 | (233 << 8));
-const unsigned ACI_FRAG_COL6	 = (232 | (228 << 8));
-const unsigned ACI_FRAG_COL7	 = (226 | (224 << 8));
-const unsigned ACI_FRAG_COL8	 = (247 | (243 << 8));
-const unsigned ACI_FRAG_COL9	 = (152 | (148 << 8));
+const unsigned ACI_FRAG_COL6	 = (238 | (233 << 8));
+const unsigned ACI_FRAG_COL7	 = (238 | (233 << 8));
+const unsigned ACI_FRAG_COL8	 = (252 | (246 << 8));
+const unsigned ACI_FRAG_COL9	 = (156 | (151 << 8));
 
 void aciShowFrags(void)
 {

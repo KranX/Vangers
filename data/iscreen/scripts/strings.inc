@@ -514,7 +514,7 @@
 #define iSTR_Auto_tilt2 		"Автонаклон"
 
 #define iSTR_Auto_zoom1 		"Auto Zoom"
-#define iSTR_Auto_zoom2 		"Автомаштаб"
+#define iSTR_Auto_zoom2 		"Автомасштаб"
 
 #define iSTR_Zoom_in1			"Zoom In"
 #define iSTR_Zoom_in2			"Приблизить камеру"
@@ -523,7 +523,7 @@
 #define iSTR_Zoom_out2			"Отодвинуть камеру"
 
 #define iSTR_Standard_zoom1		"Reset Zoom"
-#define iSTR_Standard_zoom2		"Маштаб 1:1"
+#define iSTR_Standard_zoom2		"Масштаб 1:1"
 
 #define iSTR_SkipText1			"Next Text Page"
 #define iSTR_SkipText2			"Следующая часть текста"
