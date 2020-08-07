@@ -4898,7 +4898,11 @@ void aciPromptData::quant(void)
 
 	if(!NumStr) return;
 
-	CurTimer ++;
+	if (NetworkON) {
+		CurTimer += 2;
+	} else {
+		CurTimer ++;
+	}
 	for(i = 0; i < NumStr; i ++){
 		if(StrBuf[i]){
 			if(CurTimer > TimeBuf[i]){
