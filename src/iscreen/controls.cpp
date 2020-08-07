@@ -127,7 +127,7 @@ void iKeyControls::init(void)
 	addDefaultCode(iKEY_AUTO_ZOOM,SDL_SCANCODE_F7);
 
 	// Multiplayer and misc.
-	addDefaultCode(iKEY_CHAT,SDL_SCANCODE_GRAVE);
+	addDefaultCode(iKEY_CHAT,SDL_SCANCODE_F3);
 	addDefaultCode(iKEY_FRAG_INFO,SDL_SCANCODE_S);
 	addDefaultCode(iKEY_SCREENSHOT,SDL_SCANCODE_F9);
 	addDefaultCode(iKEY_SKIP_TEXT,SDL_SCANCODE_TAB);
