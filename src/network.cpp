@@ -1232,7 +1232,7 @@ void PlayersList::single_parsing(int event_ID)
 				}
 			else{
 				if(strcmp(p -> name,name)){
-					delete p -> name;
+					delete[] p -> name;
 					p -> name = new char[strlen(name) + 1];
 					strcpy(p -> name, name);
 					}

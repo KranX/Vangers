@@ -63,7 +63,7 @@ struct PlayerData {
 	PlayerBody body;
 
 		PlayerData(int client_id);
-		~PlayerData(){ if(name) delete name; }
+		~PlayerData(){ if(name) delete[] name; }
 	};
 
 struct PlayersList : XTList<PlayerData> {
@@ -109,7 +109,7 @@ struct MessageElement : XListElement {
 	int color;
 	int time; //zmod
 	MessageElement(const char* player_name, char* msg,int color = 0);
-	~MessageElement(){ delete message; }
+	~MessageElement(){ delete[] message; }
 	};
 
 struct MessageDispatcher : XList {
