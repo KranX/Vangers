@@ -3981,6 +3981,8 @@ void actIntDispatcher::init(void)
 	while(ibs){
 		for(int i = 0; i < ibs -> backObjIDs.size(); i++) {
 			ibs -> backs.push_back(get_back_bml(ibs -> backObjIDs[i]));
+			ibs -> backs[i] -> load(NULL, 1);
+			layout(ibs -> backs[i], XGR_MAXX, XGR_MAXY);
 		}
 		ibs = (ibsObject*)ibs -> prev;
 	}
