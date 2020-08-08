@@ -5242,14 +5242,14 @@ void actIntDispatcher::EventQuant(void)
 			case EV_FULLSCR_CHANGE:
 				flags ^= AS_FULLSCR;
 				if(flags & AS_FULLSCR){
-					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+					set_screen(XGR_MAXX/2, XGR_MAXY/2,0, XGR_MAXX/2, XGR_MAXY/2);
 					XGR_MouseHide();
 					XGR_MouseSetPromptData(NULL);
 				}
 				else {
 					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+					set_screen(XGR_MAXX/2, XGR_MAXY/2,0, XGR_MAXX/2, XGR_MAXY/2);
 					XGR_MouseShow();
 					if(curMode == AS_INV_MODE){
 						XGR_MouseSetPromptData(invPrompt);
@@ -5407,7 +5407,7 @@ void actIntDispatcher::EventQuant(void)
 				if(flags & AS_FULLSCR){
 					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+					set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
 					XGR_MouseShow();
 					if(curMode == AS_INV_MODE)
 						XGR_MouseSetPromptData(invPrompt);
@@ -5421,7 +5421,7 @@ void actIntDispatcher::EventQuant(void)
 				if(!(flags & AS_FULLSCR)){
 					flags |= AS_FULLSCR;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+					set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
 					XGR_MouseHide();
 					XGR_MouseSetPromptData(NULL);
 				}
@@ -5431,7 +5431,7 @@ void actIntDispatcher::EventQuant(void)
 				if(flags & AS_FULLSCR){
 					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+					set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
 					if(curMode == AS_INV_MODE)
 						XGR_MouseSetPromptData(invPrompt);
 					if(curMode == AS_INFO_MODE)
@@ -5471,7 +5471,7 @@ void actIntDispatcher::EventQuant(void)
 				if(flags & AS_FULLSCR){
 					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+					set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
 					XGR_MouseShow();
 					if(curMode == AS_INV_MODE)
 						XGR_MouseSetPromptData(invPrompt);
