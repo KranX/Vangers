@@ -58,7 +58,7 @@ jobs:
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: configure
-      run: mkdir build && cd build && cmake -G Ninja ..
+      run: mkdir build && cd build && cmake -G Ninja -DBINARY_SCRIPT=OFF ..
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: make
