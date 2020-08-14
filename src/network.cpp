@@ -723,7 +723,6 @@ int InputEventBuffer::next_event() {
 				//zmod
 				z_time_collect();
 				*this > time;
-				std::cout<<"server time:"<<time<<std::endl;
 				if(enable_transferring) {
 					ignore_event();
 					if(!lag_averaging_t0.empty()) {
