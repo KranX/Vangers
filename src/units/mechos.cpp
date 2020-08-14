@@ -3625,7 +3625,8 @@ void VangerUnit::DrawQuant(void)
 				XGR_SetClip(UcutLeft,VcutUp,UcutRight,VcutDown);
 				aOutText32clip(R_scr.x,R_scr.y,165 | (2 << 16),pl->name,0,0,0);
 				XGR_SetClip(cclx,ccly,ccrx,ccry);
-				XGR_SetClipMode(ccm);				
+				XGR_SetClipMode(ccm);
+				break;
 			};
 			pl = (PlayerData*)pl -> next;
 		};
