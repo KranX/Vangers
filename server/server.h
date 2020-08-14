@@ -325,12 +325,12 @@ struct Server {
 /*******************************************************************************
 			Defines
 *******************************************************************************/
-#define GLOBAL_CLOCK() (round(clock() * (256. / CLOCKS_PER_SEC)))
-#define SECONDS() (round(clock() * (1. / CLOCKS_PER_SEC)))
+#define GLOBAL_CLOCK() (round(SDL_GetTicks() * (256. / 1000)))
+#define SECONDS() (round(SDL_GetTicks() * (1. / 1000)))
 #define SERVER_ERROR(str, code) ErrH.Abort(str, XERR_USER, code)
 
-#define START_TIMER(interval) unsigned int _end_time_ = clock() + interval;
-#define CHECK_TIMER() ((int)(clock() - _end_time_) < 0)
-#define IS_FUTURE(time) ((int)((time)-clock()) > 0)
-#define IS_PAST(time) ((int)(clock() - (time)) > 0)
-#define TIME_INTERVAL(time) ((int)(clock() - (time)))
+#define START_TIMER(interval) unsigned int _end_time_ = SDL_GetTicks() + interval;
+#define CHECK_TIMER() ((int)(SDL_GetTicks() - _end_time_) < 0)
+#define IS_FUTURE(time) ((int)((time)-SDL_GetTicks()) > 0)
+#define IS_PAST(time) ((int)(SDL_GetTicks() - (time)) > 0)
+#define TIME_INTERVAL(time) ((int)(SDL_GetTicks() - (time)))

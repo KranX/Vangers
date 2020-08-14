@@ -76,10 +76,10 @@ void xtDoneApplication(void) {
 void Syncro() {
 	const int dt_total = 1000 / 64;
 	static int t_prev = 0;
-	int dt = dt_total - (clock() - t_prev);
+	int dt = dt_total - (SDL_GetTicks() - t_prev);
 	if (dt > 0)
 		std::this_thread::sleep_for(std::chrono::milliseconds(dt));
-	t_prev = clock();
+	t_prev = SDL_GetTicks();
 }
 
 int KDsPlus::Quant(void) {
