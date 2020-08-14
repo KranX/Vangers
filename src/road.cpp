@@ -2054,14 +2054,15 @@ void iGameMap::draw(int self)
 		FirstDraw = 0;
 //2D Rendring in game.
 #ifdef ACTINT
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
+		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
 		//XGR_Obj.fill(2);
 		if(GeneralSystemSkip) {
 			aScrDisp -> redraw();
 		}
 		aScrDisp -> flush();
 		//aScrDisp->pal_flush();
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		aScrDisp -> text_redraw();
 #endif
 	};
 	

@@ -689,8 +689,6 @@ void actIntQuant(void)
 	actintActiveFlag = 1;
 	aScrDisp -> KeyQuant();
 	aScrDisp -> EventQuant();
-	/*Нужно что бы не было мерцания когда подгружаются полноэкранные картинки прям в видео буфер.*/
-	aScrDisp -> redraw(); 
 }
 
 void aLoadFonts(void)

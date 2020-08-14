@@ -3294,8 +3294,6 @@ void actIntDispatcher::redraw(void)
 		XGR_MouseObj.flags &= ~XGM_PROMPT_ACTIVE;
 		XGR_Obj.fill(0);
 		for(int i = 0; i < curIbs -> backs.size(); i++) {
-			curIbs -> backs[i] -> load(NULL, 1);
-			layout(curIbs -> backs[i], XGR_MAXX, XGR_MAXY);
 			curIbs -> backs[i] -> show(0);
 		}
 		if(curMode == AS_INV_MODE && curMatrix && curMatrix -> back){
@@ -3448,6 +3446,39 @@ void actIntDispatcher::redraw(void)
 	}
 }
 
+void actIntDispatcher::text_redraw(){
+	if(Pause > 1 && NetworkON){
+		if(GameQuantReturnValue || acsQuant()){
+			Pause = 0;
+		}
+		flags |= AS_FULL_FLUSH;
+	}
+
+	if(flags & AS_TEXT_MODE){
+		ScrTextData -> redraw();
+		ScrTextData -> Quant();
+	}
+	if(curPrompt -> NumStr){
+		curPrompt -> redraw(0,0,XGR_MAXX,XGR_MAXY);
+		curPrompt -> quant();
+	}
+	if(flags & AS_CHAT_MODE){
+		iChatQuant();
+	}
+	else {
+		if(aciRacingFlag){
+			aciShowRacingPlace();
+		}
+	}
+	if(Pause > 1 && NetworkON){
+		if(GameQuantReturnValue || acsQuant()){
+			Pause = 0;
+		}
+	}
+
+
+}
+
 void actIntDispatcher::i_redraw(void)
 {
 	fncMenu* p;
@@ -3595,34 +3626,9 @@ void actIntDispatcher::flush(void)
 			PalIterLock = 0;
 			flags ^= AS_EVINCE_PALETTE;
 		}
-		if(flags & AS_TEXT_MODE){
-			ScrTextData -> redraw();
-			ScrTextData -> Quant();
-		}
-		if(curPrompt -> NumStr){
-			curPrompt -> redraw(0,0,XGR_MAXX,XGR_MAXY);
-			curPrompt -> quant();
-		}
-		if(flags & AS_CHAT_MODE){
-			iChatQuant();
-		}
-		else {
-			if(aciRacingFlag){
-				aciShowRacingPlace();
-			}
-		}
-		if(Pause > 1 && NetworkON){
-			if(GameQuantReturnValue || acsQuant()){
-				Pause = 0;
-			}
-		}
 		return;
 	}
-	if(curPrompt -> NumStr){
-		curPrompt -> redraw(curIbs -> PosX,curIbs -> PosY,curIbs -> SizeX,curIbs -> SizeY);
-		curPrompt -> quant();
-	}
-	curIbs -> show();
+
 	ind = (aIndData*)indList -> last;
 	while(ind){
 		ind -> redraw();
@@ -3630,16 +3636,6 @@ void actIntDispatcher::flush(void)
 		ind = (aIndData*)ind -> prev;
 	}
 
-	if(aciRacingFlag){
-		aciShowRacingPlace();
-	}
-
-	if(Pause > 1 && NetworkON){
-		if(GameQuantReturnValue || acsQuant()){
-			Pause = 0;
-		}
-		flags |= AS_FULL_FLUSH;
-	}
 
 	if(flags & AS_FULL_FLUSH){
 		flags &= ~AS_FULL_FLUSH;
