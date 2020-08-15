@@ -251,6 +251,14 @@ void XGR_Screen::create_surfaces(int width, int height) {
 	set_render_buffer(XGR_ScreenSurface);
 }
 
+void XGR_Screen::lock_current_surface() {
+	assert(SDL_LockSurface(currentSurface) == 0);
+}
+
+void XGR_Screen::unlock_current_surface() {
+	SDL_UnlockSurface(currentSurface);
+}
+
 void XGR_Screen::set_resolution(int width, int height){
 	// TODO: do not change resolution, is new res is the same
 	std::cout<<"XGR_Screen::set_resolution: "<<width<<", "<<height<<std::endl;
