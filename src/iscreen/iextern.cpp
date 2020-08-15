@@ -661,7 +661,9 @@ void iSetResolution(int state) {
 			break;
 
 	}
+	XGR_Obj.lock_current_surface();
 	put_map(iScreenOffs,0,I_RES_X,I_RES_Y);
+	XGR_Obj.unlock_current_surface();
 }
 
 void iPrepareOptions(void)
