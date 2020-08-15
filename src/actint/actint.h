@@ -1383,6 +1383,7 @@ struct actIntDispatcher
 
 	void redraw(void);
 	void ind_redraw(void);
+	void text_redraw();
 	void flush(void);
 	void pal_flush();
 

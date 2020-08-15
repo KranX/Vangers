@@ -109,7 +109,7 @@ struct XGR_Screen
 	unsigned char* ScreenBuf;
 
 	SDL_Surface *XGR_ScreenSurface;
-	//SDL_Surface *XGR_ScreenSurface2D;
+	SDL_Surface *XGR_ScreenSurface2D;
 	SDL_Surface *XGR32_ScreenSurface;
 	//SDL_Surface *XGR32_ScreenSurface2D;
 	SDL_Surface *HDBackgroundSurface;
@@ -193,6 +193,7 @@ struct XGR_Screen
 private:
 	void create_surfaces(int width, int height);
 	void destroy_surfaces();
+	SDL_Surface* currentSurface;
 };
 
 // XGR_MousePromptData::flags...

@@ -798,8 +798,8 @@ void LoadingRTO1::Init(int id)
 #endif
 
 #ifdef ACTINT
-	XSIDE = aScrDisp -> curIbs -> SideX;
-	YSIDE = aScrDisp -> curIbs -> SideY;
+	XSIDE = XGR_MAXX / 2;
+	YSIDE = XGR_MAXY / 2;
 	XSIZE = 2*XSIDE;
 	YSIZE = 2*YSIDE;
 #else
@@ -968,7 +968,7 @@ _MEM_STATISTIC_("AFTER TABLE GENERAL  -> ");
 _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 
 #ifdef ACTINT
-	curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
+	curGMap = new iGameMap(XGR_MAXX / 2, XGR_MAXY / 2, XGR_MAXX / 2, XGR_MAXY / 2);
 #else
 	curGMap = new iGameMap(XGR_MAXX/2,XGR_MAXY/2,XSIDE,YSIDE);
 #endif
@@ -2054,14 +2054,15 @@ void iGameMap::draw(int self)
 		FirstDraw = 0;
 //2D Rendring in game.
 #ifdef ACTINT
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
+		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
 		//XGR_Obj.fill(2);
 		if(GeneralSystemSkip) {
 			aScrDisp -> redraw();
 		}
 		aScrDisp -> flush();
 		//aScrDisp->pal_flush();
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		aScrDisp -> text_redraw();
 #endif
 	};
 	
