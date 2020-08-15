@@ -239,11 +239,6 @@ void XGR_Screen::create_surfaces(int width, int height) {
 		SDL_SetWindowPosition(sdlWindow, 0, 0);
 	}
 
-	// TODO(amdmi3): assuming safe locking; otherwise, use additional surface + SDL_MapRGB
-	std::cout<<"SDL_LockSurface"<<std::endl;
-	if (SDL_LockSurface(XGR_ScreenSurface) < 0)
-		ErrH.Abort(SDL_GetError(),XERR_USER, 0);
-
 	// Other initializations
 	ScreenX = xgrScreenSizeX = XGR_ScreenSurface->w;
 	ScreenY = xgrScreenSizeY = XGR_ScreenSurface->h;
@@ -254,6 +249,14 @@ void XGR_Screen::create_surfaces(int width, int height) {
 	set_clip(0,0, width, height);
 	set_clip_mode(XGR_CLIP_PUTSPR);
 	set_render_buffer(XGR_ScreenSurface);
+}
+
+void XGR_Screen::lock_current_surface() {
+	assert(SDL_LockSurface(currentSurface) == 0);
+}
+
+void XGR_Screen::unlock_current_surface() {
+	SDL_UnlockSurface(currentSurface);
 }
 
 void XGR_Screen::set_resolution(int width, int height){

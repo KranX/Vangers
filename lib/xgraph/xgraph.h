@@ -187,6 +187,8 @@ struct XGR_Screen
 	void blitScreen(uint32_t *dst, uint8_t *src);
 
 	void set_render_buffer(SDL_Surface *buf);
+	void lock_current_surface();
+	void unlock_current_surface();
 	
 	XGR_Screen(void);
 
