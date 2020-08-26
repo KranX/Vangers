@@ -7392,11 +7392,11 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 	x = iMouseX;
 	y = iMouseY;
 
-	ix = curIbs -> PosX;
-	iy = curIbs -> PosY;
+	ix = 0;
+	iy = 0;
 
-	isx = ix + curIbs -> SizeX;
-	isy = iy + curIbs -> SizeY;
+	isx = ix + XGR_MAXX;
+	isy = iy + XGR_MAXY;
 
 	if(x >= ix && x < isx && y >= iy && y < isy){
 		id = aciGetScreenItem(x,y);
