@@ -1,7 +1,7 @@
 #ifndef __XSOUND_H
 #define __XSOUND_H
 
-#include <clunk.h>
+#include <clunk/clunk.h>
 
 
 #define DS_LOOPING			0x00000001

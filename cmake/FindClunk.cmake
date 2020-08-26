@@ -1,7 +1,8 @@
 FIND_PATH(CLUNK_INCLUDE_DIR
   NAMES
-    clunk.h
+    clunk/clunk.h
   PATHS
+    ${CLUNK_ROOT}/include
 	/usr/include
     /usr/include/x86_64-linux-gnu
     /usr/local/include
@@ -10,14 +11,13 @@ FIND_PATH(CLUNK_INCLUDE_DIR
     /opt/local/include
     /opt/include
     /sw/include
-  PATH_SUFFIXES
-    clunk
 )
 
 FIND_LIBRARY(CLUNK_LIBRARY
   NAMES
     clunk
   PATHS
+    ${CLUNK_ROOT}/lib
     /usr/lib
     /usr/local/lib
     /opt/local/lib
