@@ -73,6 +73,7 @@ struct LoadingRTO3 : BaseRTO
 struct GameQuantRTO : BaseRTO
 {
 	virtual void Init(int id);
+	virtual void Finit();
 	virtual int Quant(void);
 
 	GameQuantRTO(void){ ID = RTO_GAME_QUANT_ID; Timer = RTO_GAME_QUANT_TIMER; }
