@@ -2757,9 +2757,8 @@ void G2LQ(int x,int y,int z,int& sx,int& sy)
 	int yy = getDistY(y,ViewY);
 	double x1 = A_g2s.a[0]*xx + A_g2s.a[1]*yy - A_g2s.a[2]*z;
 	double y1 = A_g2s.a[3]*xx + A_g2s.a[4]*yy - A_g2s.a[5]*z;
-	double z1 = ViewZ + (A_g2s.a[6]*xx + A_g2s.a[7]*yy -A_g2s.a[7]*z)*0.5;
-	if(z1 <= 0) 
-		z1 = 1;
+	double z1 = ViewZ + (A_g2s.a[6]*xx + A_g2s.a[7]*yy -A_g2s.a[7]*z);
+
 	z1 = focus_flt/z1;
 	sx = round(x1*z1) + ScreenCX;
 	sy = round(y1*z1) + ScreenCY;
