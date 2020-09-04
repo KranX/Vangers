@@ -1991,8 +1991,7 @@ int aciGetScreenItem(int x,int y)
 	mp = NULL;
 	rz = -1;
 	S2G(x,y,tx,ty);
-
-	GeneralMousePoint = Vector(getDistX(tx,ViewX),getDistY(ty,ViewY),0);
+	GeneralMousePoint = Vector(getDistX(tx, ActD.Active->R_curr.x), getDistY(ty, ActD.Active->R_curr.y), 0);
 
 	p = (BaseObject*)(ItemD.Tail);
 	while(p){
