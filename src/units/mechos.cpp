@@ -8641,16 +8641,15 @@ void CompasObject::Quant(void)
 	v = Vector(ActD.Active->Speed,0,0)*ActD.Active->RotMat;
 	x = XCYCL(x + vMove.x + v.x);
 	y = YCYCL(y + vMove.y + v.y);
-	if(AdvancedView) G2LQ(x,y,0,tx,ty);
-	else G2LS(x,y,0,tx,ty);
 
+	global_to_screen(x, y, 0, tx, ty);
 	if(tx < UcutLeft + COMPAS_LEFT){
 		tx = UcutLeft + COMPAS_LEFT;
 		vMove.x = 0;
 	};
 
-	if(tx > UcutRight - COMPAS_RIGHT){
-		tx = UcutRight - COMPAS_RIGHT;
+	if(tx > UcutRight - COMPAS_RIGHT - mechosCameraOffsetX * 2){
+		tx = UcutRight - COMPAS_RIGHT - mechosCameraOffsetX * 2;
 		vMove.x = 0;
 	};
 

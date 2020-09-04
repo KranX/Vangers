@@ -2781,6 +2781,23 @@ int G2LF(int x,int y,int z,int& sx,int& sy)
 	return round(256.*z1);
 };
 
+void global_to_screen(int x, int y, int z, int &sx, int &sy)
+{
+	// The code is from Object::update_coord
+
+	int xx = getDistX(x, ViewX);
+	int yy = getDistY(y ,ViewY);
+
+	double x1 = A_g2s.a[0]*xx + A_g2s.a[1]*yy - A_g2s.a[2]*z;
+	double y1 = A_g2s.a[3]*xx + A_g2s.a[4]*yy - A_g2s.a[5]*z;
+	double z0 = A_g2s.a[6]*xx + A_g2s.a[7]*yy;
+	double z1 = z0 + ViewZ;
+
+	z1 = z1 > 0 ? focus_flt / z1 : 1;
+	sx = round(x1 * z1) + ScreenCX;
+	sy = round(y1 * z1) + ScreenCY;
+};
+
 void S2G(int xs,int ys,int& xg,int& yg)
 {
 	xs -= ScreenCX;
