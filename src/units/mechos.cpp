@@ -8173,7 +8173,7 @@ void ActionDispatcher::DrawResource(void)
 	XGR_SetClip(UcutLeft,VcutUp,UcutRight,VcutDown);
 
 	y0 = VcutDown - RES_DRAW_DOWN;
-	x0 = UcutRight - RES_DRAW_LEFT;
+	x0 = UcutRight - RES_DRAW_LEFT - mechosCameraOffsetX;
 	x1 = UcutLeft + RES_DRAW_LEFT;
 	sx = x0 - x1;
 
