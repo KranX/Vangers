@@ -96,6 +96,11 @@ void xsStopMusic(void) {
 
 }
 
+void xsStopMusic(int &track) {
+	track = curTrack;
+	xsStopMusic();
+}
+
 void xsPauseMusic(void) {
 	//music->Pause();
 	//Mix_PausedMusic();
