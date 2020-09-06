@@ -690,7 +690,7 @@ void actIntQuant(void)
 	aScrDisp -> KeyQuant();
 	aScrDisp -> EventQuant();
 	/*Нужно что бы не было мерцания когда подгружаются полноэкранные картинки прям в видео буфер.*/
-	aScrDisp -> redraw(); 
+	aScrDisp -> redraw();
 }
 
 void aLoadFonts(void)
@@ -1975,7 +1975,7 @@ void aciSetMechName(void)
 uvsActInt* aciGetMechos(int id)
 {
 	uvsActInt* p = GMechos;
-	
+
 	while(p){
 		if(p -> type == id)
 			return p;
@@ -3535,7 +3535,7 @@ void aciInitPanel(InfoPanel* p,unsigned char* str)
 
 	while(!quit_log){
 		strcpy((char*)dest_str,(char*)tmp_ptr);
-		
+
 		if(p -> flags & IP_RANGE_FONT)
 			len = aStrLen32(dest_str,ACI_PHRASE_FONT,p->hSpace);
 		else
@@ -4264,7 +4264,7 @@ void aciHandleCameraEvent(int code,int data)
 		}
 	}
 	iSaveData();
-	
+
 }
 
 void aciSetCameraMenu(void)
@@ -4697,10 +4697,10 @@ int aciPutItem(int id,int x,int y)
 
 	if(!p1) ErrH.Abort("Bad aciPutItem() argument...");
 	p = aScrDisp -> alloc_item();
-	
+
 	p1 -> clone(p);
 	p -> item_ptr = NULL;
-	
+
 	if(aScrDisp -> curMatrix){
 		if(x != -1){
 			if(!aScrDisp -> put_item_xy(p,x,y,0)){
@@ -5271,14 +5271,14 @@ void acsSaveData(void)
 		time_len = aciXConv -> tell();
 
 		fh < (len | (time_len << 16));
-		
+
 		fh.write(ptr,len);
-		
+
 		fh.write(aciXConv -> address(),time_len);
-		
-		
+
+
 		CurrentWorld = prevWorld;
-		
+
 		uniVangSave(fh);
 
 		aciSaveUVSList(fh,GItem);
@@ -5410,10 +5410,10 @@ void acsLoadData(void)
 				next:
 				iter_gamer = (uvsActInt*)iter_gamer->next;
 			}
-			
+
 			aciFreeUVSList(GGamer);
 			GGamer = (uvsActInt*)el;
-			
+
 		}
 		GeneralSystemLoad(fh);
 		dgD -> load(fh);
@@ -7132,7 +7132,7 @@ char* aciLoadPackedFile(XStream& fh,int& out_sz) //Text decompress
 	sz = fh.size();
 	p = new char[sz];
 	fh.read(p,sz);
-	
+
 	out_sz = *(unsigned int*)(p + 2);
 	long long_out_sz = out_sz;
 	ptr = new char[out_sz];
@@ -7151,9 +7151,9 @@ char* aciLoadPackedFile(XStream& fh,int& out_sz) //Text decompress
 	} else {
 		memcpy(ptr, p + 2 + 4,(unsigned)(sz - 2 - 4));
 	}
-	
+
 	delete[] p;
-	
+
 	return ptr;
 }
 
