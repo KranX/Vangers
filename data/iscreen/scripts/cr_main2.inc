@@ -125,12 +125,28 @@ Screen "Credits screen"
 		}
 	}
 
+    Object "SiteLink" {
+     	align_x center
+     	align_y center
+     	align_y_offs	{ -10 + $LOGO_DY }
+
+     	Element STRING {
+     		align_x center
+
+     		terrain_num	$TERRAIN4
+
+     		font		0
+     		null_level	$DEFAULT_NULL
+     		string		"kranx.com"
+     	}
+     }
+
 	#define LOGO_OBJ_ID	"Logo0"
-	#define CREDITS_SCR_ID	"Credits0"
+	#define CREDITS_SCR_ID	"Credits2"
 	Object "Logo0" {
 		align_x 	center
 		align_y 	center
-		align_y_offs	{ 50 - $LOGO_DY }
+		align_y_offs	{ -50 - $LOGO_DY }
 
 		Element BITMAP {
 			align_x 	center
@@ -141,30 +157,11 @@ Screen "Credits screen"
 			bmp_null_level	148
 			null_level	128
 
-			bmp_file	"resource/iscreen/bitmap/logo0.bmp"
+			bmp_file	"resource/iscreen/bitmap/kranx_logo.bmp"
 		}
 		$LOGO_EV
 	}
-	#define LOGO_OBJ_ID	"Logo1"
-	#define CREDITS_SCR_ID	"Credits1"
-	Object "Logo1" {
-		align_x 	center
-		align_y 	center
-		align_y_offs	{ -60 - $LOGO_DY }
 
-		Element BITMAP {
-			align_x 	center
-			align_y 	center
-
-			terrain_num	$TERRAIN4
-
-			bmp_null_level	148
-			null_level	128
-
-			bmp_file	"resource/iscreen/bitmap/logo1.bmp"
-		}
-		$LOGO_EV
-	}
 }
 
 #define LOGO_EV     Event {							\
@@ -208,6 +205,6 @@ Screen "Credits screen"
 				}						\
 			}
 
-#include "iscreen/scripts/cr1.inc"
+#include "iscreen/scripts/cr2.inc"
 #include "iscreen/scripts/cr0.inc"
 
