@@ -395,7 +395,7 @@ Screen "Main Screen"
 			key $VK_UP
 
 			$EV_CHANGE_OBJ
-		} 
+		}
 	}
 
 Object "Multiplayer Option"
@@ -510,7 +510,7 @@ Object "Multiplayer Option"
 		}
 
 		#define OBJ1	"Multiplayer Option"
-		#define OBJ2	"Load Game Option"
+		#define OBJ2	"Credits Option"
 		Event {
 			if_selected
 			key $VK_DOWN
@@ -520,7 +520,7 @@ Object "Multiplayer Option"
 		}
 
 		#define OBJ1	"Multiplayer Option"
-		#define OBJ2	"New Game Option"
+		#define OBJ2	"Options Option"
 		Event {
 			if_selected
 			key $VK_UP
@@ -778,7 +778,7 @@ Object "Multiplayer Option"
 		}
 
 		#define OBJ1	"Options Option"
-		#define OBJ2	"Credits Option"
+		#define OBJ2	"Multiplayer Option"
 		Event {
 			if_selected
 			key $VK_DOWN
@@ -911,7 +911,7 @@ Object "Multiplayer Option"
 		}
 
 		#define OBJ1	"Credits Option"
-		#define OBJ2	"Options Option"
+		#define OBJ2	"Multiplayer Option"
 		Event {
 			if_selected
 			key $VK_UP
