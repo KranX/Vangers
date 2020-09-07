@@ -1,7 +1,7 @@
 #include "lang.h"
 
 namespace {
-    Language _lang = RUSSIAN;
+    Language _lang = ENGLISH;
 }
 
 Language lang() {
