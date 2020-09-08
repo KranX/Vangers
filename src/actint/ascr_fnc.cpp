@@ -3,6 +3,7 @@
 #include "../global.h"
 #include "../lang.h"
 #include <zlib.h>
+#include <sys/stat.h>
 
 #include "../runtime.h"
 
@@ -191,6 +192,8 @@ void EffectsOff(void);
 
 void iSaveData(void);
 void iLoadData(void);
+
+void createDirIfNotExist(const char* dirName);
 
 void acsSaveData(void);
 void acsLoadData(void);
@@ -5212,6 +5215,28 @@ void acsPrepareSlotNameInput(int id,int slot_num)
 	acsCurrentSlotNum = slot_num;
 }
 
+void createDirIfNotExist(const char* dirName)
+{
+	struct stat info;
+	if (stat(dirName, &info) != 0)
+	{
+		std::cout << "Directory " << dirName << " not found. Created it..." << std::endl;
+#if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+		const int dirr_err = mkdir(dirName, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+#else
+		const int dirr_err = mkdir(dirName);
+#endif
+
+		if (dirr_err == -1)
+		{
+			std::string subj = "Dir name: ";
+			subj += dirName;
+			ErrH.Abort("Can't create directory", XERR_USER, 0, subj.c_str());
+			return;
+		}
+	}
+}
+
 void acsSaveData(void)
 {
 	int i,null_flag = 1;
@@ -5236,7 +5261,7 @@ void acsSaveData(void)
 		p = (aciScreenInputField*)acsScrD -> GetObject(acsCurrentSlotID);
 		ptr = p -> string;
 	}
-
+	createDirIfNotExist("savegame");
 	if(slot != -1 && ptr){
 		XBuf < "savegame/save";
 		if(slot < 10) XBuf < "0";
