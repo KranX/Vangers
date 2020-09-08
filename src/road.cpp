@@ -1604,15 +1604,6 @@ void KeyCenter(SDL_Event *key)
 		case SDL_SCANCODE_F12:
 			DBGCHECK
 			break;
-#endif
-#ifdef SCREENSHOT
-//  		case SDL_SCANCODE_F4:
-//  			creat_poster();
-//  			break;
-//		case SDL_SCANCODE_F11:
-//			shotFlush();
-//			break;
-#endif
 		case SDL_SCANCODE_T:
 			mod = SDL_GetModState();
 			if ((mod&KMOD_SHIFT)||(mod&KMOD_CTRL)) {
@@ -1624,6 +1615,15 @@ void KeyCenter(SDL_Event *key)
 			if (mod&KMOD_CTRL) {
 				curGMap -> prmFlag ^= PRM_FPS;
 			}
+#endif
+#ifdef SCREENSHOT
+//  		case SDL_SCANCODE_F4:
+//  			creat_poster();
+//  			break;
+//		case SDL_SCANCODE_F11:
+//			shotFlush();
+//			break;
+#endif
 #ifdef _DEBUG
 			else
 				message_mode++;
