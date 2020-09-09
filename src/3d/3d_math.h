@@ -1,4 +1,5 @@
-
+#ifndef __3D_MATH_H__
+#define __3D_MATH_H__
 /******************************************************************************
 			 3D MATHEMATICS FUNCTION.
 			 KD_Lab::Alexander "Sicher" Kotliar (C) 1995 - 1997
@@ -1345,3 +1346,5 @@ inline DBM DBM::operator- (double w) const
 		m.a[i] = a[i] - w;
 	return m;
 }
+
+#endif

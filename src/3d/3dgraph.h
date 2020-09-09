@@ -1,6 +1,6 @@
 
-#ifndef __3D_GRAPH_H
-#define __3D_GRAPH_H
+#ifndef __3D_GRAPH_H__
+#define __3D_GRAPH_H__
 
 /*******************************************************************************
 		3D graphical structs and constants
