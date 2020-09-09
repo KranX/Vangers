@@ -9,7 +9,6 @@ SET(xtool_SRCS
 	xbuffer/xbsearch.cpp
 	#xkey/xkey.cpp
 	xkey/xnames.cpp
-	xmath/xmath.cpp
 	xmsgbuffer/xmsgbuf.cpp
 	xresource/zip_resource.cpp
 	xstream/xscnvin.cpp
