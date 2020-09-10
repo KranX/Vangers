@@ -3,7 +3,7 @@
 #include "../global.h"
 #include "../lang.h"
 #include <zlib.h>
-#include <sys/stat.h>
+#include <filesystem>
 
 #include "../runtime.h"
 
@@ -42,6 +42,8 @@
 #include "acsconst.h"
 #include "aci_scr.h"
 #include "chtree.h"
+
+namespace fs = std::filesystem;
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -193,7 +195,7 @@ void EffectsOff(void);
 void iSaveData(void);
 void iLoadData(void);
 
-void createDirIfNotExist(const char* dirName);
+void createDirIfNotExist(const fs::path& dirName);
 
 void acsSaveData(void);
 void acsLoadData(void);
@@ -5215,26 +5217,15 @@ void acsPrepareSlotNameInput(int id,int slot_num)
 	acsCurrentSlotNum = slot_num;
 }
 
-void createDirIfNotExist(const char* dirName)
+void createDirIfNotExist(const fs::path& dirName)
 {
-	struct stat info;
-	if (stat(dirName, &info) != 0)
+	if (fs::exists(dirName))
 	{
-		std::cout << "Directory " << dirName << " not found. Created it..." << std::endl;
-#if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
-		const int dirr_err = mkdir(dirName, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-#else
-		const int dirr_err = mkdir(dirName);
-#endif
-
-		if (dirr_err == -1)
-		{
-			std::string subj = "Dir name: ";
-			subj += dirName;
-			ErrH.Abort("Can't create directory", XERR_USER, 0, subj.c_str());
-			return;
-		}
+		return;
 	}
+
+	std::cout << "Directory " << dirName << " not found. Created it..." << std::endl;
+	fs::create_directory(dirName);
 }
 
 void acsSaveData(void)
