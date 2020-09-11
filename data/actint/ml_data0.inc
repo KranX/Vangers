@@ -705,24 +705,20 @@ ml_data {
 		active_time	2
 
 		ml_ev_comm {
-			code	$AML_PUT_IN_CH_QUEUE $AML0_CHANNEL0 $AML0_R1
+			code	$AML_PUT_IN_CH_QUEUE $AML0_CHANNEL0 $AML0_C1
 			start_time	0
 		}
 		ml_ev_comm {
-			code	$AML_START_SOUND $ACI_L0_SWARM_SOUND 0
+			code	$AML_START_SOUND $ACI_L0_OUTIN_SOUND 0
 			start_time	1
 		}
 		ml_ev_comm {
-			code	$AML_GO_PHASE $AML0_R1 0
+			code	$AML_GO_PHASE $AML0_C1 $AML0_C1_END
 			start_time	1
 		}
 		ml_ev_comm {
-			code	$AML_PUT_IN_CH_QUEUE $AML0_CHANNEL0 $AML0_N0
+			code	$AML_REWIND $AML0_C1 0
 			start_time	2
-		}
-		ml_ev_comm {
-			code	$AML_GO_INFINITE $AML0_N0 0
-			start_time	3
 		}
 	}
 	ml_event {

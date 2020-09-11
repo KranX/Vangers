@@ -96,6 +96,16 @@ char* aciML_logFileNameR = "iml_pl.log";
 char* aciML_logFileName = NULL;
 #endif
 
+unsigned XRndVal;
+inline unsigned XRnd(unsigned m)
+{
+	XRndVal ^= XRndVal >> 3;
+	XRndVal ^= XRndVal << 28;
+	XRndVal &= 0x7FFFFFFF;
+	if(!m) return 0;
+	return XRndVal % m;
+}
+
 void aciML_KeyTrap(int key,int mode)
 {
 	aciML_D -> key_trap(key,mode);
@@ -881,7 +891,7 @@ void aciML_DataSet::put_item(int id)
 
 	while(!flag){
 		p = (aciML_ItemData*)items -> first;
-		num = rand()%items -> Size;
+		num = XRnd(items -> Size);
 		for(i = 0; i < num; i ++)
 			p = (aciML_ItemData*)p -> next;
 		if(p -> ItemID == id){
@@ -1020,7 +1030,7 @@ void aciML_Data::rnd_event_quant(void)
 			else {
 				ev -> cur_timer --;
 				if(ev -> cur_timer <= 0){
-					if(!rand()%ev -> rndValue){
+					if(!XRnd(ev -> rndValue)){
 						code = ((iScanCode*)ev -> keys -> codes -> last) -> code;
 						aciML_KeyTrap(code,ev -> startupType);
 						if(ev -> flags & AML_ACTIVE_EVENT)
