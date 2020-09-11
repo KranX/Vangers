@@ -90,6 +90,7 @@ Uint32 CursorAnim(Uint32 interval, void *param)
 {
 	int result = 0;
 	result += XGR_MouseObj.NextFrame();
+	result += XGR_MouseObj.NextPromptFrame();
 	
 	return interval;
 }
@@ -825,6 +826,19 @@ void XGR_Screen::flush(int x,int y,int sx,int sy)
 //For fix trash nums...
 //if (sx>800)
 //	ScreenBuf[666666666666]++;
+
+if(true || flags & XGR_INIT){
+		if (sx <= 0 || sy <= 0)
+			return;
+		if(true){
+			XGR_MouseObj.GetFon();
+			XGR_MouseObj.PutFrame();
+		}
+		if(true){
+			XGR_MouseObj.GetPromptFon();
+			XGR_MouseObj.PutPrompt();
+		}
+}
 
 /*	int mouseFlag = 0;
 	int pmouseFlag = 0;
@@ -1759,8 +1773,8 @@ void XGR_Mouse::Redraw(void)
 		if(y1 >= XGR_MAXY) y1 = XGR_MAXY;
 
 		XGR_Flush(x,y,x1 - x,y1 - y);
-		//std::cout<<"XGR_Mouse::Redraw "<<x<<" "<<x1<<" "<<y<<" "<<y1<<std::endl;
-		if(flags & XGM_PROMPT_ACTIVE)
+		std::cout<<"XGR_Mouse::Redraw "<<x<<" "<<x1<<" "<<y<<" "<<y1<<std::endl;
+		if(true)
 			XGR_Flush(PromptX,PromptY,PromptSizeX,PromptSizeY);
 	}
 }
@@ -1848,6 +1862,10 @@ int XGR_Mouse::NextFrame(void)
 
 int XGR_Mouse::NextPromptFrame(void)
 {
+	if (promptData) {
+		InitPrompt();
+		return 1;
+	}
 	if(!(flags & XGM_DISABLE_PROMPT)){
 		if(Visible() && promptData && !(flags & XGM_PROMPT_ACTIVE)){
 			promptData -> Timer ++;
@@ -2142,7 +2160,10 @@ void XGR_Mouse::InitPrompt(void)
 
 void XGR_Mouse::PutPrompt(void)
 {
+	std::cout << "prompt1" << "\n";
 	if(promptData && promptData -> curText){
+		std::cout << "prompt2" << "\n";
+		std::cout << (promptData -> curText) << "\n";
 		if(XGR_TextOutFnc)
 			(*(XGR_TextOutFnc))(PromptX,PromptY,PromptColor,promptData -> curText,promptData -> curFont,1,1);
 		else

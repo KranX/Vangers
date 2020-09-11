@@ -3083,6 +3083,7 @@ void iScreen::init_prompt(void)
 	obj = (iScreenObject*)objList -> last;
 	while(obj){
 		if(obj -> promptData){
+			std::cout << "PromptText" << obj -> promptData << "\n";
 			pr = new XGR_MousePromptData(obj -> PosX,obj -> PosY,obj -> SizeX,obj -> SizeY,0);
 			pr -> set_text(obj -> promptData);
 			if(obj -> promptID)
