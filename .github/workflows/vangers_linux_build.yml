@@ -22,7 +22,7 @@ jobs:
       run: cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_COMPILER=/usr/bin/gcc-9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 . && make && sudo make install
       working-directory: /tmp/clunk
     - name: configure
-      run: mkdir build && cd build && cmake ..
+      run: mkdir build && cd build && cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 ..
     - name: make
       run: make
       working-directory: build
