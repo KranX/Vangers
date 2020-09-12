@@ -8642,7 +8642,7 @@ void CompasObject::Quant(void)
 	x = XCYCL(x + vMove.x + v.x);
 	y = YCYCL(y + vMove.y + v.y);
 
-	global_to_screen(x, y, 0, tx, ty);
+	G2LQ(x, y, 0, tx, ty);
 	if(tx < UcutLeft + COMPAS_LEFT){
 		tx = UcutLeft + COMPAS_LEFT;
 		vMove.x = 0;

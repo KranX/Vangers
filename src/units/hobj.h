@@ -198,7 +198,6 @@ int G2LF(int x,int y,int z,int& sx,int& sy);
 void G2LQ(int x,int y,int z,int& sx,int& sy);
 void G2LP(int x,int y,int z,int& sx,int& sy);
 void S2G(int xs,int ys,int& xg,int& yg);
-void global_to_screen(int x, int y, int z, int &sx, int &sy);
 
 //void SetMapBuff(int x,int y,int x_size,int y_size,uchar* MapBuf);
 
