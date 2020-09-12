@@ -10,9 +10,10 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: numworks/setup-msys2@v1
+    - uses: stalkerg/setup-msys2@v2
       with:
         msystem: MINGW64
+        update: true
     - name: install libs
       run: msys2do pacman --noconfirm -S
         mingw-w64-x86_64-ninja

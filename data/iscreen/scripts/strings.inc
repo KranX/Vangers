@@ -71,6 +71,12 @@
 #define iSTR_OFF1			"OFF"
 #define iSTR_OFF2			"НЕТ"
 
+#define iSTR_ENABLED1			"ON"
+#define iSTR_ENABLED2			"ВКЛ."
+
+#define iSTR_DISABLED1			"OFF"
+#define iSTR_DISABLED2			"ВЫКЛ."
+
 #define iSTR_BACK1			"BACK"
 #define iSTR_BACK2			"НАЗАД"
 
@@ -447,6 +453,9 @@
 #define iSTR_Acceleration1		"Accelerate/Decelerate"
 #define iSTR_Acceleration2		"Ускорение/Замедление"
 
+#define iSTR_Auto_acceleration1		"Auto acceleration"
+#define iSTR_Auto_acceleration2		"Автоускорение"
+
 #define iSTR_Handbrake1 		"Handbrake"
 #define iSTR_Handbrake2 		"Ручной тормоз"
 
@@ -490,7 +499,7 @@
 #define iSTR_Fire_weapon_42		"Запуск терминатора"
 
 #define iSTR_Full_screen1		"Toggle UI"
-#define iSTR_Full_screen2		"Откл./выкл. интерфейс"
+#define iSTR_Full_screen2		"Откл./вкл. интерфейс"
 
 #define iSTR_Reduce_view1		"Reduce View"
 #define iSTR_Reduce_view2		"Уменьшить обзор"
@@ -505,7 +514,7 @@
 #define iSTR_Auto_tilt2 		"Автонаклон"
 
 #define iSTR_Auto_zoom1 		"Auto Zoom"
-#define iSTR_Auto_zoom2 		"Автомаштаб"
+#define iSTR_Auto_zoom2 		"Автомасштаб"
 
 #define iSTR_Zoom_in1			"Zoom In"
 #define iSTR_Zoom_in2			"Приблизить камеру"
@@ -514,7 +523,7 @@
 #define iSTR_Zoom_out2			"Отодвинуть камеру"
 
 #define iSTR_Standard_zoom1		"Reset Zoom"
-#define iSTR_Standard_zoom2		"Маштаб 1:1"
+#define iSTR_Standard_zoom2		"Масштаб 1:1"
 
 #define iSTR_SkipText1			"Next Text Page"
 #define iSTR_SkipText2			"Следующая часть текста"

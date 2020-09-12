@@ -63,7 +63,7 @@ struct PlayerData {
 	PlayerBody body;
 
 		PlayerData(int client_id);
-		~PlayerData(){ if(name) delete name; }
+		~PlayerData(){ if(name) delete[] name; }
 	};
 
 struct PlayersList : XTList<PlayerData> {
@@ -109,7 +109,7 @@ struct MessageElement : XListElement {
 	int color;
 	int time; //zmod
 	MessageElement(const char* player_name, char* msg,int color = 0);
-	~MessageElement(){ delete message; }
+	~MessageElement(){ delete[] message; }
 	};
 
 struct MessageDispatcher : XList {
@@ -270,17 +270,17 @@ struct NetRndType
 	};	
 };
 #ifndef CLOCK
-#define CLOCK() 	(clock()*18/1000)
+#define CLOCK() 	(SDL_GetTicks()*18/1000)
 #endif
-#define GLOBAL_CLOCK()	(round(clock()*(256./1000)) - global_clock_tau)
-#define LOCAL_CLOCK()	(round(clock()*(256./1000)))
-#define age_of_current_game() ((((int)GLOBAL_CLOCK() - (int)game_birth_time_offset) / 256) >> 8)
-//#define age_of_current_game() (((int)((clock()/1000.0) - global_clock_tau) - (int)game_birth_time_offset) >> 8)
+#define GLOBAL_CLOCK()	(round(SDL_GetTicks()*(256./1000)) - global_clock_tau)
+#define LOCAL_CLOCK()	(round(SDL_GetTicks()*(256./1000)))
+#define age_of_current_game() (((int)GLOBAL_CLOCK() - (int)game_birth_time_offset) >> 8)
+//#define age_of_current_game() (((int)((SDL_GetTicks()/1000.0) - global_clock_tau) - (int)game_birth_time_offset) >> 8)
 
-#define START_TIMER(interval)	unsigned int _end_time_ = clock() + interval;
-#define CHECK_TIMER()		((int)(clock() - _end_time_) < 0)
-#define IS_FUTURE(time)		((int)((time) - clock()) > 0)
-#define IS_PAST(time)		((int)(clock() - (time)) > 0)
+#define START_TIMER(interval)	unsigned int _end_time_ = SDL_GetTicks() + interval;
+#define CHECK_TIMER()		((int)(SDL_GetTicks() - _end_time_) < 0)
+#define IS_FUTURE(time)		((int)((time) - SDL_GetTicks()) > 0)
+#define IS_PAST(time)		((int)(SDL_GetTicks() - (time)) > 0)
 
 /*****************************************************************
 				Externs

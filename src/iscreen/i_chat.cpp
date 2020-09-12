@@ -178,10 +178,10 @@ static int aciChatColors0[10] =
 	(150 | (2 << 16)),
 	(177 | (2 << 16)),
 	(6 | (2 << 16)),
-	(3 | (2 << 16)),
-	(0 | (2 << 16)),
-	(201 | (2 << 16)),
-	(241 | (2 << 16))
+	(6 | (2 << 16)),
+	(6 | (2 << 16)),
+	(214 | (2 << 16)),
+	(244 | (2 << 16))
 };
 
 static int aciChatColors1[10] =
@@ -192,10 +192,10 @@ static int aciChatColors1[10] =
 	(176 | (2 << 16)),
 	(196 | (2 << 16)),
 	(230 | (2 << 16)),
-	(226 | (2 << 16)),
-	(224 | (2 << 16)),
-	(240 | (2 << 16)),
-	(144 | (2 << 16))
+	(230 | (2 << 16)),
+	(230 | (2 << 16)),
+	(244 | (2 << 16)),
+	(150 | (2 << 16))
 };
 
 static char* iChatWorlds[] = {
@@ -1052,8 +1052,8 @@ void iChatInputChar(SDL_Event *event)
 	x = aTextWidth32(ptr, iChatInput->font, 1);
 
 	sz = strlen(ptr0);
-
-	if(sz >= ISC_MAX_STRING_LEN && x >= iChatInput->SizeX - 10)
+//	if(sz >= ISC_MAX_STRING_LEN && x >= iChatInput->SizeX - 10) {
+	if((sz >= ISC_MAX_STRING_LEN) || (x >= iChatInput->SizeX - 10))
 		return;
 
 	aciFont* hfnt = aScrFonts32[iChatInput->font];

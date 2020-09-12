@@ -13,6 +13,7 @@ CMakeCache.txt
 *.a
 lib/utils/zip_convert
 src/vangers
+data/iscreen/temp.scr
 
 # TODO: VC stuff, windows binaries
 build/src/vangers.exe

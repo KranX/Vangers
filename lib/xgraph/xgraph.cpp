@@ -90,7 +90,11 @@ Uint32 CursorAnim(Uint32 interval, void *param)
 {
 	int result = 0;
 	result += XGR_MouseObj.NextFrame();
-	
+	result += XGR_MouseObj.NextPromptFrame();
+	if(result) {
+		XGR_MouseObj.Redraw();
+	}
+
 	return interval;
 }
 
@@ -853,19 +857,19 @@ void XGR_Screen::set_render_buffer(SDL_Surface *buf) {
 
 void XGR_Screen::flip()
 {
-	if(flags & XGR_INIT){
-		
-		//XGR_MouseObj.GetPromptFon();
-		//XGR_MouseObj.PutPrompt();
-		//std::cout<<"Flip"<<std::endl;
-		if(SDL_BlitSurface(XGR_ScreenSurface2D, NULL, XGR_ScreenSurface, NULL) != 0){
+	if(flags & XGR_INIT) {
+		if(SDL_BlitSurface(XGR_ScreenSurface2D, NULL, XGR_ScreenSurface, NULL) != 0) {
 			std::cout<<__FILE__<<":"<<__LINE__<<" "<<SDL_GetError()<<std::endl;
 			std::cout<<"XGR_ScreenSurface2D->locked: "<<XGR_ScreenSurface2D->locked<<std::endl;
 			std::cout<<"XGR_ScreenSurface->locked: "<<XGR_ScreenSurface->locked<<std::endl;
 		}
+		if(XGR_MouseObj.flags & XGM_PROMPT_ACTIVE) {
+			XGR_MouseObj.GetPromptFon();
+			XGR_MouseObj.PutPrompt();
+		}
 		XGR_MouseObj.GetFon();
 		XGR_MouseObj.PutFrame();
-
+		// std::cout<<"Flip"<<std::endl;
 		assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 		void *pixels;
 		int pitch;
@@ -887,7 +891,9 @@ void XGR_Screen::flip()
 		SDL_RenderPresent(sdlRenderer);
 		SDL_UnlockSurface(XGR_ScreenSurface);
 		XGR_MouseObj.PutFon();
-		//XGR_MouseObj.PutPromptFon();
+		if(XGR_MouseObj.flags & XGM_PROMPT_ACTIVE) {
+			XGR_MouseObj.PutPromptFon();
+		}
 	}
 }
 
@@ -1843,7 +1849,6 @@ void XGR_Mouse::Redraw(void)
 		if(y1 >= XGR_MAXY) y1 = XGR_MAXY;
 
 		XGR_Flush(x,y,x1 - x,y1 - y);
-		//std::cout<<"XGR_Mouse::Redraw "<<x<<" "<<x1<<" "<<y<<" "<<y1<<std::endl;
 		if(flags & XGM_PROMPT_ACTIVE)
 			XGR_Flush(PromptX,PromptY,PromptSizeX,PromptSizeY);
 	}
@@ -2044,10 +2049,9 @@ void XGR_Mouse::SetDblHandler(int bt,XGR_MOUSE_HANDLER p)
 
 void XGR_Mouse::Move(int fl,int x,int y)
 {
-	
-	if(flags & XGM_PROMPT_ACTIVE){
+	if(flags & XGM_PROMPT_ACTIVE) {
 		flags &= ~XGM_PROMPT_ACTIVE;
-		XGR_Flush(PromptX,PromptY,PromptSizeX,PromptSizeY);
+		XGR_Flush(PromptX, PromptY, PromptSizeX, PromptSizeY);
 	}
 	if(promptData)
 		promptData -> Timer = 0;

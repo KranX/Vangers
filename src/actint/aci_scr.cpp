@@ -12,6 +12,7 @@
 
 
 #include "../network.h"
+#include "../iscreen/iscreen.h"
 
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
@@ -28,7 +29,7 @@ extern int NetworkON;
 extern char* aciSTR_ON;
 extern char* aciSTR_OFF;
 
-
+extern iScreenOption** iScrOpt;
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 

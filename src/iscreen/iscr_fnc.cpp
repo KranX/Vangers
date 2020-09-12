@@ -95,6 +95,8 @@ extern int iScreenLastInput;
 extern int iScreenChat;
 extern int iChatON;
 
+extern int IsMainMenu;
+
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
 int iGetEscaveTime(void);
@@ -755,7 +757,8 @@ int iQuantSecond(void)
 						acsScreenID = 2;
 					}
 
-					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
+//					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
+					if(iKeyPressed(iKEY_SCREENSHOT)) {
 						shotFlush();
 					}
 
@@ -2065,7 +2068,8 @@ void iSaveData(void)
 	if(!RecorderMode){
 		XStream fh("options.dat",XS_OUT);
 		iScrDisp -> save_data(&fh);
-		fh < aciAutoRun;
+//		fh < aciAutoRun;
+		fh < iGetOptionValue(iAUTO_ACCELERATION);
 		fh.close();
 	}
 #endif
@@ -2082,6 +2086,8 @@ void iLoadData(void)
 			fh.close();
 		}
 	}
+
+	aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);
 
 	iHandleExtEvent(iEXT_UPDATE_SOUND_MODE);
 	iHandleExtEvent(iEXT_UPDATE_MUSIC_MODE);
@@ -2218,8 +2224,10 @@ void iHandleExtEvent(int code,int data)
 			mode = xsGetStatusMusic();
 			if(!iGetOptionValue(iMUSIC_ON)){
 				MusicON = 1;
-				if(mode != XCD_PLAYING){
-					StartCDTRACK();
+				if (CurrentWorld != -1) {
+					if (mode != XCD_PLAYING) {
+						IsMainMenu ? StartCDTRACK() : StartWTRACK();
+					}
 				}
 			}
 			else {

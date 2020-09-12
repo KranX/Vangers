@@ -1,4 +1,5 @@
-
+#ifndef __3D_MATH_H__
+#define __3D_MATH_H__
 /******************************************************************************
 			 3D MATHEMATICS FUNCTION.
 			 KD_Lab::Alexander "Sicher" Kotliar (C) 1995 - 1997
@@ -19,7 +20,6 @@
 #define INT_INF 0x7FFFFFFF
 
 #define SWAP(a,b)	{ *(int*)&a ^= int(b); *(int*)&b ^= int(a); *(int*)&a ^= int(b); }
-#define SIGN(x) (x ? (x > 0 ? 1 : -1 ) : 0)
 #define GOOD_SHR(x,n)	((x) < 0 ? -((-(x) + (1 << ((n) - 1))) >> (n)) : (((x) + (1 << ((n) - 1))) >> (n)))
 #define DIV16(a,b)	  (a = ((a) << 16)/(b))
 #define DIV16T(x,y)	((int)div_table_short[((x) & 0xFF) | (((y) << 8) & 0xFF00)] << 8)
@@ -1345,3 +1345,5 @@ inline DBM DBM::operator- (double w) const
 		m.a[i] = a[i] - w;
 	return m;
 }
+
+#endif

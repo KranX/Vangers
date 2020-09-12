@@ -61,7 +61,7 @@ Game::Game(int ID) {
 	Game::ID = ID;
 	name[0] = 0;
 	client_version = 0;
-	birth_time = clock();
+	birth_time = SDL_GetTicks();
 	next = prev = 0;
 	list = 0;
 	used_players_IDs = 0;
@@ -862,7 +862,7 @@ void World::process_set_position(Player *player) {
 		p = p->next_alt;
 	}
 	if (send_position == 2)
-		player->last_sent_position = clock();
+		player->last_sent_position = SDL_GetTicks();
 }
 
 int World::check_visibility(Player *p1, Player *p2) {
@@ -925,9 +925,9 @@ Player::Player(Server *serv, XSocket &sock)
 	world = 0;
 	x = y = y_half_size_of_screen = 0;
 	x_prev = y_prev = y_half_size_of_screen_prev = 0;
-	last_IO_operation = clock() + 20 * 1000;
-	last_sent_position = clock();
-	birth_time = clock();
+	last_IO_operation = SDL_GetTicks() + 20 * 1000;
+	last_sent_position = SDL_GetTicks();
+	birth_time = SDL_GetTicks();
 	//	current_sent_object = 0;
 	time_to_remove = 0;
 	next = prev = 0;
@@ -967,21 +967,21 @@ void Player::identification() {
 
 int Player::is_alive() {
 	if (socket()) {
-		if ((int)(clock() - last_IO_operation) > 3000) {
+		if ((int)(SDL_GetTicks() - last_IO_operation) > 3000) {
 			short size = 0;
 			socket.send((const char *)&size, 2);
-			last_IO_operation = clock();
+			last_IO_operation = SDL_GetTicks();
 		}
 		return 1;
 	}
 	if (!game)
 		return 0;
 	if (!time_to_remove) {
-		time_to_remove = clock() + WAITING_TO_REMOVE;
+		time_to_remove = SDL_GetTicks() + WAITING_TO_REMOVE;
 		MOUT1("Connection have been lost", ID);
 		return 1;
 	}
-	return (int)(clock() - time_to_remove) < 0 ? 1 : 0;
+	return (int)(SDL_GetTicks() - time_to_remove) < 0 ? 1 : 0;
 }
 
 void Player::clear_object_queue(int keep_globals) {
@@ -1012,7 +1012,7 @@ int Player::receive() {
 		return 0;
 	int recv_size = in_buffer.receive(socket);
 	if (recv_size) {
-		last_IO_operation = clock();
+		last_IO_operation = SDL_GetTicks();
 		//		IN_EVENTS_LOG1(Receive_Block,recv_size);
 	}
 	int code;
@@ -1296,7 +1296,7 @@ int Player::receive() {
 
 		case SERVER_TIME_QUERY:
 			out_buffer.begin_event(SERVER_TIME);
-			out_buffer < GLOBAL_CLOCK();
+			out_buffer < (unsigned int)GLOBAL_CLOCK();
 			out_buffer.end_event();
 			IN_EVENTS_LOG(SERVER_TIME_QUERY);
 			OUT_EVENTS_LOG(SERVER_TIME);
@@ -1375,7 +1375,7 @@ int Player::receive() {
 
 		case CLOSE_SOCKET:
 			socket.close();
-			time_to_remove = clock();
+			time_to_remove = SDL_GetTicks();
 			break;
 
 		default:
@@ -1395,7 +1395,7 @@ int Player::send() {
 		if (out_buffer.tell()) {
 			int sent;
 			total_sent += sent = out_buffer.send(socket);
-			last_IO_operation = clock();
+			last_IO_operation = SDL_GetTicks();
 			//			OUT_EVENTS_LOG1(Send_Block,sent);
 			if (out_buffer.tell())
 				return total_sent;
@@ -1778,9 +1778,9 @@ void Server::consoleReport(int players) {
 }
 
 int Server::quant() {
-	// fout < "Quant: " <= frame < "\t" <= clock() < "\n";
-	if (next_broadcast < clock()) {
-		next_broadcast = clock() + 1000;
+	// fout < "Quant: " <= frame < "\t" <= SDL_GetTicks() < "\n";
+	if (next_broadcast < SDL_GetTicks()) {
+		next_broadcast = SDL_GetTicks() + 1000;
 		int n_players = 0;
 		Game *g = games.first();
 		while (g) {
@@ -1790,7 +1790,7 @@ int Server::quant() {
 		consoleReport(n_players);
 		if (time_to_live && !(transferring | games.size() | n_players | clients.size())) {
 			if (!time_to_destroy)
-				time_to_destroy = clock() + time_to_live * 1000;
+				time_to_destroy = SDL_GetTicks() + time_to_live * 1000;
 		} else
 			time_to_destroy = 0;
 		if (time_to_destroy && IS_PAST(time_to_destroy))
@@ -1890,7 +1890,7 @@ void Server::get_games_list(OutputEventBuffer &out_buffer, int client_version) {
 			out_buffer < g->ID < g->name < ": " <= g->players.size() < " " <
 				(g->data.GameType == VAN_WAR ? "V" : (g->data.GameType == MECHOSOMA ? "M" : "P"));
 
-			int t = (clock() - g->birth_time) / 1000;
+			int t = (SDL_GetTicks() - g->birth_time) / 1000;
 			int ts = t % 60;
 			t /= 60;
 			int tm = t % 60;

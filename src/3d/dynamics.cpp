@@ -4746,8 +4746,12 @@ void Object::NetEvent(int type,int id,int creator,int time,int x,int y,int radiu
 	Q_real.x = unpack_short(events_in.get_word(),Q_pack_min,Q_pack_max);
 	Q_real.y = unpack_short(events_in.get_word(),Q_pack_min,Q_pack_max);
 	Q_real.z = unpack_short(events_in.get_word(),Q_pack_min,Q_pack_max);
-	Q_real.w = sqrt(1 - sqr(Q_real.x) - sqr(Q_real.y) - sqr(Q_real.z));
-
+	double preW = 1 - sqr(Q_real.x) - sqr(Q_real.y) - sqr(Q_real.z);
+	if (preW < 0.0) {
+		Q_real.w = 0;
+	} else {
+		Q_real.w = sqrt(preW);
+	}
 	//GetVisible();
 	if(!interpolation_on || Visibility == UNVISIBLE){
 		interpolation_on = 1;

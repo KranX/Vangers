@@ -296,6 +296,7 @@ int MMXsuppress;
 int SkipCD;
 
 int CurrentWorld = 0;
+int IsMainMenu = 0;
 
 int inTRall;
 int TimerMode = 1;
