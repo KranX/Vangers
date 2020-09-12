@@ -13,7 +13,13 @@ jobs:
     - uses: numworks/setup-msys2@v1
       with:
         msystem: MINGW32
-        update: true
+    - name: update libs
+      run: |
+        msys2do curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz
+        msys2do curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig
+        msys2do pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig
+        msys2do pacman -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz
+        msys2do pacman -Syu
     - name: install libs
       run: msys2do pacman --noconfirm -S
         mingw-w64-i686-ninja
