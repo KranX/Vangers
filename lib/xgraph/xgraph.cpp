@@ -1469,6 +1469,13 @@ void XGR_Screen::rectangle16(int x,int y,int sx,int sy,int outcol,int incol,int 
 	}
 }
 
+void XGR_Screen::clear_2d_surface() {
+	SDL_Surface* orig = currentSurface;
+	set_render_buffer(XGR_ScreenSurface2D);
+	fill(0);
+	set_render_buffer(orig);
+}
+
 
 XGR_Mouse::XGR_Mouse(void)
 {
