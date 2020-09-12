@@ -4,6 +4,8 @@
 #include "../lang.h"
 #include <zlib.h>
 
+#include <filesystem>
+
 #include "../runtime.h"
 
 #include "../network.h"
@@ -41,6 +43,8 @@
 #include "acsconst.h"
 #include "aci_scr.h"
 #include "chtree.h"
+
+namespace fs = std::filesystem;
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -191,6 +195,8 @@ void EffectsOff(void);
 
 void iSaveData(void);
 void iLoadData(void);
+
+void createDirIfNotExist(const fs::path& dirName);
 
 void acsSaveData(void);
 void acsLoadData(void);
@@ -5212,6 +5218,17 @@ void acsPrepareSlotNameInput(int id,int slot_num)
 	acsCurrentSlotNum = slot_num;
 }
 
+void createDirIfNotExist(const fs::path& dirName)
+{
+	if (fs::exists(dirName))
+	{
+		return;
+	}
+
+	std::cout << "Directory " << dirName << " not found. Created it..." << std::endl;
+	fs::create_directory(dirName);
+}
+
 void acsSaveData(void)
 {
 	int i,null_flag = 1;
@@ -5236,7 +5253,7 @@ void acsSaveData(void)
 		p = (aciScreenInputField*)acsScrD -> GetObject(acsCurrentSlotID);
 		ptr = p -> string;
 	}
-
+	createDirIfNotExist("savegame");
 	if(slot != -1 && ptr){
 		XBuf < "savegame/save";
 		if(slot < 10) XBuf < "0";
