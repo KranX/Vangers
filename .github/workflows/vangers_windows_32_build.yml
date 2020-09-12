@@ -12,9 +12,8 @@ jobs:
     steps:
     - uses: numworks/setup-msys2@v1
       with:
-        msystem: MINGW64
-    - name: update libs
-      run: msys2do pacman -Syu
+        msystem: MINGW32
+        update: true
     - name: install libs
       run: msys2do pacman --noconfirm -S
         mingw-w64-i686-ninja
