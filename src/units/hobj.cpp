@@ -3770,8 +3770,10 @@ int NetInit(ServerFindChain* p)
 	GloryPlaceData = NULL;
 	UsedCheckNum = 0;
 
-	if(object_ID_offsets[NID_DEVICE >> 16] > object_ID_offsets[NID_STUFF >> 16]) stuff_ID_offsets = object_ID_offsets[(NID_DEVICE & (~(1 << 31))) >> 16];
-	else stuff_ID_offsets = object_ID_offsets[(NID_STUFF & (~(1 << 31))) >> 16];
+	if(object_ID_offsets[NID_DEVICE >> 16] > object_ID_offsets[NID_STUFF >> 16]) 
+		stuff_ID_offsets = object_ID_offsets[(NID_DEVICE & (~(1 << 31))) >> 16];
+	else
+		stuff_ID_offsets = object_ID_offsets[(NID_STUFF & (~(1 << 31))) >> 16];
 
 	std::cout<<"NetInit - [ok]"<<std::endl;
 	return 1;
