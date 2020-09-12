@@ -1097,9 +1097,7 @@ _MEM_STATISTIC_("AFTER GAME QUANT INIT -> ");
 }
 
 void GameQuantRTO::Finit() {
-	XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
-	XGR_Obj.fill(0);
-	XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+	XGR_Obj.clear_2d_surface();
 }
 
 int GameQuantRTO::Quant(void)
