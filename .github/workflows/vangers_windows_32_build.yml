@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master, 60fps, hd_v2 ]
+
 jobs:
   build:
     runs-on: windows-latest
