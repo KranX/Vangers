@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: numworks/setup-msys2@v1
       with:
-        msystem: MINGW32
+        msystem: MINGW64
     - name: update libs
       run: msys2do pacman -Syu
     - name: install libs
