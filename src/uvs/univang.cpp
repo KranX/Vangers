@@ -4442,7 +4442,7 @@ void uvsVanger::break_harvest(void){
 	pg = Pworld -> escT[0] -> Pbunch -> cycleTable[Pworld -> escT[0] -> Pbunch -> currentStage].Pgame;
 
 	if (!pg) {
-		ErrH.Abort("uvsVanger::break_harvest : don't now where go ");
+		ErrH.Log("uvsVanger::break_harvest : don't now where go ");
 		return;
 	}
 
