@@ -1,0 +1,475 @@
+"А что иль кто есть"		"советник?"
+"What is"			"counselor?"
+
+[мехос] 	[mechos]
+"Ой, да это куча ужасно пахнущих железяк. На них еще какие-то вангеры ездят. Слышал про таких? Но настоящие софти, не имели к ним отношения. Софти выбрасывали на помойку мусор, а из него вангеры ваяли мехосы."
+{вангеры} {софти} 
+"Heaps of junk! Some vangers drive those things around. Have you heard about them before? Well, the historical Softie had nothing to do with them. The Softie used to throw away waste which the vangers later used to made mechos."
+{vangers} {The Softie} 
+
+[Фострал] 	[Fostral]
+"Фострал был раньше огромной свалкой, которую устроили софти. Они этот мир и открыли для этой цели. Мусора было так много, что он высыпался из Коридоров на другие миры! Ну, пришлось тогда мусорщикам вводить пароли на Коридор."
+{софти} {элиподы} {Коридор} 
+"Fostral used to be a huge garbage dump the Softie once made. In fact, they opened this world for that reason. There used to be so much garbage that it was spilling through the Passages into other worlds! This made the scavengers lock the Passages with secret passwords."
+{The Softie} {Eleepods} {Passage} 
+
+[элиподы] 	[Eleepods]
+"Ну, Фострал был раньше огромной свалкой. Как-то софти выкинули туда очень ядовитую гадость. И копавшиеся в помойке червяки стали пухнуть, у них отрастали чесалки, и, наконец, появились элиподы. Но самое ужасное последствие отравления - тяга к сочинительству у этих тварей."
+{софти} {Фострал} 
+"Well, Fostral used to be a huge dump. The Softie had discarded some terribly poisonous muck there. The worms rooting about in the rubbish heap began swelling and developed the scratchers, and so, after much time had passed, the Eleepods appeared. The beasts' lust for scribbling is the worst side effect of their being poisoned."
+{The Softie} {Fostral} 
+
+[Липкий] 	[Leepky]
+"Слушай историю, как Липкий стал советником. Как-то другие элиподы захотели вздуть его за обзывательства, да он от страха забился в пещеру советника и сожрал запасы флегмы. Вылезти уже не смог. С тех пор его довольная морда примелькалась всем вангерам."
+"Listen to the story of how Leepky became counselor. Once, the other Eleepods decided to give him a beating for calling them names. Fear drove him into the counselor's cave, where he ate up all the phlegma stored there and so was doomed to stay there forever. Since then, all of the vangers have become sick of his conceited snout."
+
+[Подиш] 	[Podish]
+"Из Подиша выходят самые нескладные вангеры, это точно. Там все мнят себя великими поэтами, поэтому никто не убирается, и никто не ухаживает за маленькими вангерами. А какой шум там стоит! Каждый хочет перекричать другого и хлопает чесалками, плюется флегмой."
+"Podish produces the worst of the vangers, no doubt. With everyone claiming to be a great poet, there's no one to clean the place up or watch the offspring. And what a ruckus! Just imagine it, everyone trying to outshout one another, flapping their scratchers and spitting phlegma everywhere..."
+
+[эскейв] 	[escave]
+"Эх, эскейв. Как он мне надоел, если честно. Гораздо приятнее кататься с красивыми вангерами по мирам и глазеть по сторонам. А эскейвы раньше были домами для умалишенных, понастроенными софти. Там содержались особо буйные, потому их прятали поглубже, в грунт, за стены..."
+{софти} 
+"The escave? Well, to tell the truth, I'm sick and tired of it. Going off and seeing the world with beautiful vangers is a much more pleasant thing to do. Escaves used to be madhouses, built by the Softie. The most violent inmates were kept in there, so they tried to put them as deep underground as possible."
+{The Softie} 
+
+[стручок] 	[pod]
+"Нет страшнее стручка в этой вселенной. Это стая одичавших элиподов. Они роют подземные ходы и ловушки. Представь, едешь ты, никого не трогаешь - вдруг, бац, земля проваливается, тебя уже глодают слюнявые пасти. Но ты не дрожи, стручкам сюда не добраться."
+"In this universe, there's nothing more scary than a pod - a flock of Eleepods that have gone wild. They spend their time digging underground corridors and traps. You're walking along, minding your own business, then, all of a sudden - bang! The ground disintegrates beneath you, and before you can say Jack Robinson you're being gnawed on by their dribbling jaws. Hey, stop trembling. The pods can't get you here."
+
+[банч] 		[bunch]
+"Банч - это жители эскейва, чтоб ему пусто было. У них одна забава - драки, нюха да Кукла, когда особо повезет. Другое дело - вольные вангеры. Плюют на банчи, и правильно делают."
+{эскейв} {Куклы} {нюха} 
+"A Bunch are a group of those darned escave dwellers. The only fun they ever have is fighting, cirt and, if they're lucky, Larva. But free vangers are another kettle of fish. They don't give a beeb about bunches, and rightly so."
+{escave} {Larvae} {cirt} 
+
+[Цепь] 		[The Chain]
+"О, Цепь Миров огромна как глупость Цыфры. Фострал, Глоркс, Некросс - еще цветочки. Есть такие местечки, где оставишь свою шкуру, не заметив этого. Но всё равно, кататься там гораздо интереснее, чем сидеть в эскейве... Хоть сейчас забирайся в твой мехос и езжай, куда глаз глядит."
+{Цыфра} {Фострал} {Глоркс} {Некросс} 
+"The Chain of Worlds is as vast as Zeephra's stupidity. Fostral, Glorx, and Necross aren't even the half of it. There are places where you can get robbed of your own skin before you even notice! But it's much more fun to travel around than to sit in the escave. I'd get in a mechos right now and go wherever it took me if I could!"
+{Zeephra} {Fostral} {Glorx} {Necross} 
+
+[Куклы] 	[Larvae]
+"Куклы? Ну, это очень замечательные твари. Ты даже представить не можешь, насколько. Хотя вангеры и ловят нам Кукол... Видишь ли, Куклы дают нам нюху. Как им это удается, не знаю. Но предположения немного неприличны..."
+{нюха} 
+"Larvae? They're wonderful creatures. So wonderful! The vangers catch Larvae for us. The Larvae produce cirt for us, you know. I have no idea how they do it, and my best guess is a bit inappropriate."
+{cirt} 
+
+[бибураты] 	[Beeboorats]
+"Ты не знаешь про бибуратов? Бибураты - это бибы! Они рождаются большими и толстыми. Но на Глорксе совершенно нечего жрать. И вот бибурат с голоду усыхает, съеживается, пока не становится размером с биба. Он убегает на волю, к другим, его можно смело давить."
+{бибы} 
+"You don't know about Beeboorats? Beeboorats are, well, beebs. They're born big and fat, but on Glorx they've got nothing to eat, so they just get thinner and thinner from hunger, shrinking smaller and smaller, until they reach the size of a beeb. Then they run away to join the others, so you can squash them there."
+{beebs} 
+
+[Глоркс] 	[Glorx]
+"Глоркс раньше был сливной ямой софти. Уж очень много они гадили, понадобился целый мир под их отходы. Потом какие-то криспо забили сливные дыры - и все, софти начало заливать. Уж как они бились с криспо, ничего не помогало. Вот софти и свалили, подмоченные."
+{криспо} {софти} 
+"Glorx was once the Softie's sewage collector. They made so much waste that a whole world had to be allocated to its disposal! Later some Cryspo blocked in the sewage holes and the Softie got flooded with dung. Boy, they fought viciously against the Cryspo then! But it didn't help, and in the end there was little left for them to do but retreat."
+{The Cryspo} {The Softie} 
+
+[раффа] 	[raffa]
+"Ты туп. Есть большие биосы, есть большие вангеры. Есть бибы - есть... правильно, раффа! Их нанимают эти насекомые. Расплачиваются, выходит, своей натурой. Тяжело быть маленьким, да. Почему, ты думаешь, бибураты вас на раффа сажают? Чтоб бибам удобней было."
+{бибы} {бибураты} {биос} 
+"You're so dense. There are big bios, and there are big vangers. There are beebs, and there are... that's right, raffas! They're hired by the insects. It's hard to be small, you know. Why d'you think Beeboorats make you drive the raffa? To please the beebs, that's why!"
+{beebs} {Beeboorats} {bios} 
+
+[Инкубатор] 	[Incubator]
+"Инкубатор - обитель склочных элиподов. Они страшно завидуют подишевскому банчу, мечтают согнать их с теплого местечка, устраивают разные подлости. Инкубаторские прохвосты ловят зубатых пиявок, эЛиков, и шлют в Подиш. Там терпят и сочиняют сатиру на Инкубатор."
+{Подиш} {эЛик} {банч} 
+"Incubator is the home of the quarrelsome Eleepod. They're awfully envious of the Podish and are obsessed with the idea of driving them away from their cozy spot, so they're always playing dirty tricks on Podishers. Those Incubator scoundrels catch large-toothed leeches, eLeeches, and send them to Podish. The Podishers put up with this and compose works of satire about Incubator."
+{Podish} {eLeech} {bunch} 
+
+[биос] 		[bios]
+"Если бы софти видели, чем окончатся их опыты по разведению цирковых монстров и несвоевременная очистка свалок. Ведь биосы есть результат этой недостойной деятельности. Только у цикс другая родословная. Криспо числятся в наших предках."
+{софти} {криспо} 
+"If only the Softie could have seen where their dumps and breeding mutation experiments would end up! The bios are just the result of their unwise actions. But Zeexen are of a different genealogy. Our ancestors include the Cryspo!"
+{The Softie} {The Cryspo} 
+        	
+[нюха] 		[cirt]
+"Нюха - нужная вещь. Скрашивает наше серое существование. Если Кукла поелозила каким-то местом по грунту, оттуда уже можно соскребать нюху и тащить дрожащим от нетерпения банчам. Занюхнешь нюхи - и уже готов заниматься всякой ерундой, пока другую не завезут."
+{Куклы} 
+"Cirt is essential. It adds a silver lining to the gray clouds of our lives. Once a Larva has rubbed a certain part of her body against the ground, you can collect the cirt left behind and bring it to the bunches who sniff it. Then we just pass the time until the next batch of cirt arrives!"
+{Larvae} 
+ 
+[Палец] 	[Feenger]
+"Советник элиподов обычно получается нелепым и глупым образом. эЛик, который должен был убыть в Подиш, закатился в щель. Он рос, потихоньку отгрызая от старого советника кусочки. Он так ничего и не заметил... А эЛик вырос, и пришлось Инкубатору его принять советником."
+{эЛик} 
+"Eleepod counselors usually end up as counselors in the most absurd and silly ways you can imagine. An eLeech that was supposed to be sent to Podish hid himself away in a crack. He was growing bigger and bigger, nibbling the old counselor bit by bit. The oaf never noticed it, and the eLeech grew, so eventually Incubator couldn't keep from taking him on as a counselor."
+{eLeech} 
+
+[Коридор] 	[Passage]
+"Ты же знаешь, что Цепь Миров раньше была огромной свалкой. Ну, Коридоры, соответственно, были дырами, через которые высыпался мусор. Их нарочно делали такими большими, чтобы слипшиеся куски отходов проходили свободно, без распиливания..."
+"You do know that the Chain of Worlds used to be a huge dump, don't you? Well, the Passages served as holes to let rubbish out. They were made large on purpose so that there wouldn't be any need to saw up the huge lumps of waste into pieces."
+
+[циксы] 	[Zeexen]
+"Циксы - единственные, кто расскажет тебе всю правду, не обобрав попутно до нитки и не забрызгав флегмой. Верь мне, самой правильной циксе. Ты видал, какие у меня махалки? Ни у одного биоса нет таких. Это значит, что криспо - наши предки."
+{криспо} 
+"Zeexen are the only ones who will tell you the whole truth without fleecing you or splashing you with phlegma. I'm the most righteous of all the Zeexen, so you can trust me! See my wings? No other bios have wings this big! They're proof that the Cryspo are our ancestors!"
+{The Cryspo} 
+
+[эЛик] 		[eLeech]
+"Все, что ты слышал о эЛике ранее - бред. Вот научная правда. Это особая разновидность Пиявки Болотной Кривоползающей обыкновенной. Живет в канавах. Жрет старых элиподов. Я потрошила эЛика в лаборатории. Их Инкубатор шлет в Подиш, как знак дружбы, хе-хе."
+"All you've heard about eLeeches so far is gibberish. Here's the scientific truth: the eLeech is a species of Crooked Crawling Leech Vulgare that inhabits ditches and feeds on old Eleepods. I once dissected an eLeech in the lab. Incubator sends them in swarms to Podish, as a symbol of friendship, haha."
+
+[нимбос] 	[nymbos]
+"Его я препарировала в своей лаборатории. И что же выяснилось? Нимбос - плоды особой водоплавающей плесени. Оказавшись в темноте, они лопаются и дают вонючий газ. Элиподы от него облезают, бедняги. Банч Подиша шлет его в Инкубатор из самых теплых чувств."
+"I once prepared a specimen in the lab. And what do you think I found out? Nymbos are the fruit of a certain water mold. Once placed in darkness, they burst, producing a stinky gas. Eleepods start craving for it, poor things. The Podish bunch sends them to Incubator along with their best regards."
+
+[Элирекция] [Eleection]
+"Это пора, когда роятся эЛики, зубатые пиявки. Тут их и гребут в мешки элиподы Инкубатора. Быстро пакуют, всучивают вангерам для отправки в Подиш. Это главное событие у червяков. Они представляют, какой переполох начнется в Подише, и млеют, злорадно чавкая."
+"Now's the time when the large-toothed eLeeches begin to swarm, and the Incubator Eleepods grab them and put them into sacks. They are then packed and given to vangers to be taken to Podish. This is the most exciting event of the worms' lives. Imagining what a stir the eLeeches will cause in Podish delights the Eleepods and inspires them to start their malicious munching."
+
+[вангеры] 	[vangers]
+"Вангеры - очень полезные животные. Они одни могут управится с мехосом. Личинки вангеров живут только в ржавом металлоломе, в лужах машинного масла. Лучшее место - разбитый мехос. Найти вангера - большая удача. Ну, пока все, расскажу потом."
+{софти} {криспо} 
+"После того, как личинку вангера приносят в эскейв, за дело принимается советник банча. Он кормит, воспитывает юного вангера. Когда он вырастает, его сажают в мехос и дают пинка для ускорения. Я воспитала много вангеров и знаю их как облупленных."
+"Vangers are very useful animals, able to cope with a mechos all by themselves. Vangers' grubs live only in rusted scrap metal in pools of machine oil, so the best place for them is a destroyed mechos. It's a pretty lucky day for you if you find a vanger! That's enough for now; I'll tell you more later."
+{The Softie} {The Cryspo} 
+"After a vanger's grub is brought into an escave, it's the bunch counselor's turn to be in charge of it. He feeds the young vanger and raises it. When the youngster grows up, it is put into a mechos and kicked into action. I've raised quite a few vangers, so I've seen them every step of the way."
+
+[флегма] 	[phlegma]
+"Флегма не такая жестокая вещь как эЛик. Банч Инкубатора шлет слизь для того, чтобы элиподы Подиша не ней поскальзывались и подворачивали свои чесалки. А элипод с больной чесалкой - невыносимое зрелище. После завоза флегмы Подиш трясется от стенаний и нытья."
+{эЛик} 
+"A Phlegma is not as cruel as an eLeech. The Incubator bunch sends slime for the Podish Eleepods to slip on and sprain their scratchers. An Eleepod with a sprained scratcher is an unbearable sight, believe me. Every time phlegma is delivered, all of Podish shakes with the Eleepods' whining and moaning!"
+{eLeech} 
+
+[софти] 	[The Softie]
+"Было такое огромное дикое племя. Прожорливое и неряшливое. Когда оно сожрало у себя все, что можно, даже гнилую тину, оно стало понемногу объедать другое племя, криспо. Терпели те сначала, но лишившись однажды своих яиц, схватилось с софти. Вышел Конфликт."
+{криспо} {Конфликт} 
+"There once lived an enormous wild tribe, greedy and untidy. After they had eaten all they could, including the rotten mire, they began eating another tribe, the Cryspo, out of house and home. The Cryspo put up with this for a while, but once their eggs became the latest victims, they clashed with the Softie. Hence 'the Clash.'"
+{The Cryspo} {The Clash} 
+
+[криспо] 	[The Cryspo]
+"Древнее племя, жило рядом софти. Не такое большое, как они, но культурное и приличное. Им не повезло. Часть криспо сожрало софти, часть завалило мусором, а остальных потом затоптали в Конфликте. Только циксы и остались в память о криспо."
+{софти} {Конфликт} 
+"An ancient tribe that lived next to the Softie. It wasn't as big as the Softie, but it was decent and cultured. However, the Cryspo were the victims of bad luck. They were partly eaten by the Softie and partly buried under rubbish, and the rest were trampled down in the Clash. The Zeexen are all that is left of the Cryspo."
+{The Softie} {The Clash} 
+
+[Некросс] 	[Necross]
+"Некросс это мир, где завязли софти. Проникнув на новое место, они по привычке стали сливать туда свои отходы. Но то ли климат был не тот, то ли криспо постарались, но все начало прокисать и густеть. Вот софти и сгинули в болотах мутной жижи. Мы гордимся этим фактом своей истории."
+{софти} {криспо} 
+"Necross is the world where the Softie were stuck. In their new home, they began dumping their waste, as usual. But this time either the climate was wrong or the Cryspo had done their bit, and the stuff went sour and began to thicken. And so the Softie perished in pools of mud and slurry. One of the prouder moments in our history."
+{The Softie} {The Cryspo} 
+
+[Линза] 	[P-beam]
+"При изучении пойманного элипода я обнаружила в боку у него загадочное отверстие с левой резьбой. Феномен! Видимо, элиподы могут сцепляются друг с другом, на манер деталей от мехоса. Подобная элиподская конструкция может называться Линзой."
+"While studying an Eleepod, I discovered an enigmatic hole with a counterclockwise thread in its side. What a strange phenomenon! It looks like Eleepods can fasten to each other like mechos parts. I'll call this Eleepod structure the P-beam!"
+
+[Икспло] 	[Xplo]
+"Открыв этот мир, софти сочли его слишком малым для своего мусора и перестали им интересоваться. Там сделали особо прочный эскейв-психушку для сошедших с ума во время освоения миров."
+{софти} 
+"When they discovered this world, the Softie found it too small for their waste, and their interest in it soon flagged. There they set up a strong escave, a nuthouse for those who had gone bananas during world exploration."
+{The Softie} 
+
+[Ушедший Биос] [Departed Bios]
+"О, это редкостные глупцы. Иногда все поголовно в биосе начинают думать, что на миру они смогут собрать гораздо больше нюхи, чем им привозят вангеры. Несчастные толпами валят из эскейва и разбредаются в округе. Там ими обедают бибы. А их место занимают другие."   
+"Oh, they're real nutcakes! Every single one in the bios eventually comes up with the idea that they can collect more cirt from the world than the vangers bring in. The poor morons pour out of their escave and wander around the world until the beebs turn them into dinner. Then their place is later taken by others."
+
+[Жирогон] 	[Plump-up]
+"Кажется, в Жирогон элиподы Подиша добывают нимбос. Они выползают на берега канав, опускают в воду чесалки и ловят его. Всем места не хватает, и они пыхтят и толкаются. Ты посмотри на это зрелище, может, удастся спихнуть червяка в воду, увидишь что выйдет..."
+"It looks like the Podish Eleepods in Plump-up go for the nymbos. They crawl out by a ditch, set their scratchers in the water, and start fishing for nymbos. They're all puffing and pushing since there's not quite enough room. It's quite a sight! Go and see what happens if you push one of the worms into water."
+
+[Чавка] 	[Gulp-down]
+"Чавка наступает, когда эЛики приезжают в Подиш. Тогда червяки паникуют. Они хватают самого толстого и старого элипода и затыкают им проход в эскейв. эЛики начинают пожирать его, громко чавкая. Самое веселье начинается, когда элипода проедают насквозь..."
+"The Gulp-down starts when the eLeeches come to Podish. The worms start panicking. They use the oldest, fattest Eleepod to block the entrance to the escave, and the eLeeches start chomping him. The real fun begins once that Eleepod has been eaten through!"
+
+[бибы] 		[beebs]
+"Бибы - выродившиеся бибураты. Но им неплохо на мирах жить. Мелкому-то легче прокормиться. Роют себе эскейвы, даже раффа себе нанимают. А то, что вангер может прихлопнуть, не беда, бибураты помогут пополнением."
+"Beebs are degenerated Beeboorats. Their life isn't so bad, though, since it's easier for small creatures to find food. They dig out escaves for themselves and can even hire raffa to do the job for them. A vanger might do some of them in now and then, but that's not a big deal: the Beeboorats make up for it."
+
+[Суп Существ] [The Creature Soup]
+"Ну, понимаешь, когда на Некроссе начали густеть болота, там увязли все. И криспо, и софти вперемешку. Тут лапа софти торчит, а рядом голова криспо, то наоборот. Целые болота были завалены слипшимися органами... Вот это все и прозвали Супом Существ."
+"Well, you see, when the bogs began to thicken on Necross, everyone got stuck in them. The Cryspo, the Softie - everyone got all mixed up, with a Softie's paw or a Cryspo's head sticking out here and there or there and here. Whole bogs were packed with body parts jammed together. They called it Creature Soup!"
+
+[Конфликт] 	[The Clash]
+"Это было очень давно. В Конфликте сцепились софти и криспо. Софти старались завалить мусором, криспо орудовали жалами. У всех получалось очень хорошо, поэтому в живых осталось мало. Но и те угодили в Суп Существ. В общем, все умерли..."
+{софти} {криспо} {Суп Существ} 
+"A long, long time ago, the Softie and the Cryspo fought in the Clash: the former were trying to bury the latter under their rubbish, and the latter were jabbing the former with their stingers. Both the parties succeeded in nearly destroying the other. And the survivors ended up in the Creature Soup, so even they died, too."
+{The Softie} {The Cryspo} {The Creature Soup} 
+
+[Спираль] 	[Spiral]
+"Спиралями софти раньше запирали Коридоры, чтобы не шлялись всякие обормоты. Биосы потом их разломали и раздали своим вангерам, чтобы они могли провозить нюху."
+"The Softie used spirals to lock Passages and keep others from hanging around. The bios put spirals in mechos so that the vangers could make their cirt deliveries."
+
+/*******************   Beeboorat's terms   *******************************/
+
+[раБикация] [ruBeecation]
+"Неприятная процедура, согласись. Но таковы бибураты, чтоб им пусто было. Он раБицируют даже случайно заползающих к ним бибов. Это тяжелое наследство извращенных софти. У бибуратов наблюдаются все их привычки и обычаи."
+"An unpleasant procedure, to say the least! But that's what the Beeboorats are like, darn them. They ruBeecate even stray beebs. That's the terrible legacy of the perverted Softie. Beeboorats exhibit all kinds of Softie habits and customs."
+
+[Раббокс] [Rubbox]
+"У тебя тоже есть эта штучка? Когда я первый раз приехала к бибуратам, меня, представь, раБицировали, отобрали токсик и навесили этот ужасный Раббокс. Ходила с ним как дура по ВигБу. Кажется, софти этой жестянкой отмечали механизмы, отправленные в металлолом."
+{раБикация} 
+"You've got one of those things on you, too? When I came to the Beeboorats for the first time I was ruBeecated, too. Robbed of my toxick and got this awful Rubbox hung on me. I had to wear it around VigBoo like a fool! I'm pretty sure the Softie marked mechanisms meant for waste with this piece of scrap metal."
+{ruBeecation} 
+
+[ВигБу] [VigBoo]
+"Это столица бибуратского царства. Я была там внутри и пришла к единственно верному выводу, что у софти на этом месте располагался пункт наблюдения за канализацией."
+"The capital of the Beeboorat kingdom. I was inside and came to the ultimate conclusion that the Softie once had a sewage system observation post in that spot."
+
+[Лампассы] [Lampasso]
+"О, однажды я провела в Лампассах шесть циклов напролет. Я изучала поведение бибуратов. Там я собрала богатый материал по этой теме. На местных стадионах толпы бибуратов совершают странные и опасные для здоровья действия..."
+"Oh, I once spent six cycles in Lampasso studying Beeboorat behavior. There I collected lots and lots of information. Crowds of Beeboorats gather together in the local stadiums to act in a way that's both strange and harmful to their health..."
+
+[Огород] [Ogorod]
+"Любопытное местечко. Самые большие плантации пипеток на всей Цепи Миров. Сплошное благоухание, бибы чирикают. Эх, надоест сидеть в БиЗоне, уеду в Огород советником."
+{пипетка} {БиЗона} 
+"A curious place. It's got the largest peeperette plantations in the whole Chain of Worlds. The place is full of sweet smells and the chirping of beebs! And if I ever get sick of B-Zone, I'll move to Ogorod and become a counselor."
+{peeperette} {B-Zone} 
+
+[Героин] [Valorin]
+"Лопушок мой, героин есть бибурат. Ты знаешь, что бибураты со временем уменьшаются в размерах до биба. Тех, у кого это не получается, или кто не хочет, кормить невыгодно. Их хватают, пакуют и везут в Лампассы на принудительное уменьшение и утилизацию."
+"Remember, nitwit, that Valorin is a Beeboorat. You know that Beeboorats shrink with time until they ultimately become as small as beebs. Those failing or unwilling to do so are not worth feeding. They are caught, packed, and taken to Lampasso to be reduced and exploited by force."
+
+[куст] [shrub]
+"Сажать кусты - красивый обычай. Я хочу его ввести у себя в БиЗоне. Некоторые бибураты вдруг начинают воображать себя растениями, требуют, чтобы их поливали и окучивали. Их бережно пакуют и со слезами отправляют в Огород, где прибывших кустов ожидают пипетки."
+"Planting shrubs is a beautiful custom that I'd like to introduce here in B-Zone! Sometimes Beeboorats all of a sudden start to imagine they're plants and require watering and tending. Then, they're tearfully and carefully packed and sent to Ogorod, where they are 'welcomed' by the peeperettes."
+
+[пипетка] [peeperette]
+"Ты знаешь, что у бибуратов сохранились многие привычки софти. В том числе обычай сажать различные растения во всех подходящих и неподходящих, особенно, местах. Вот они и собирают разные семена и окучивают их. А самое популярное бибуратское растение - пипетка, которое растет вместе с кустами."
+"As you know, Beeboorats have inherited many of the Softie habits, such as planting all sorts of plants in all sorts of places. Sometimes the right places, but usually the wrong ones. They like to plant various kinds of seeds, but the most popular Beeboorat plant is the peeperette, which grows alongside shrubs."
+
+[Ядробус] [Nucleoboom]
+"Ядробус это популярное средство принудительной миниатюризации у бибуратов. Его очень широко используют в Лампассах. Обработанный Ядробусами бибурат очень хорошо поддается отрыванию конечностей, сминанию, сворачиванию. Гиря знает много применений Ядробусам."
+{Гиря} {Лампассы} 
+"Nucleoboom is a popular means of forced miniaturization of Beeboorats, especially in Lampasso. A Beeboorat treated with Nucleoboom may tear its limbs off, crumple, and fold. Geer'ah is very knowledgeable about the ways of using Nucleobooms."
+{Geer'ah} {Lampasso}
+
+[Жабли] [Jablees]
+"Жабли - загадочные предметы. Я думаю, что это проращенный в Огороде бибурат. Видимо, за ним плохо присматривали, или поливали слишком часто. От этого он портится, раздувается и улетает, прихватив охапку пипеток. Беглец от избытка чувств разбрасывает их по Глорксу."
+{Огород} {пипетка} 
+"The Jablees are enigmatic thingies. I think they're Beeboorats germinated in Ogorod. They must have been either improperly looked after or overwatered, which makes them spoil, swell, and fly away with an armful of peeperettes, scattering them around Glorx."
+{Ogorod} {peeperette} 
+
+[Прогресс] [Progress]
+"К Буравчику в это время лучше не подходить. Нарвешься на грубость. В это время решается, кого подвергнуть принудительной миниатюризации."
+{Буравчик} 
+"You'd better keep away from Boorawchick for a while, or you're asking for trouble. It's time for him to pick subjects for forced miniaturization."
+{Boorawchick} 
+
+[Героизм] [Heroism]
+"Этого цикла особенно сильно дожидается Гиря Лампасский. У него на стадионах скапливаются толпы приговоренных, назойливо требующих Ядробусов."
+{Гиря} {Лампассы} {Ядробус} 
+"This is the rotation that Geer'ah from Lampasso has been wanting to come so badly. Oodles of convicts thirsty for Nucleobooms have been gathering in his stadiums."
+{Geer'ah} {Lampasso}{Nucleoboom} 
+
+[Выборы Неприкаянных] [Election of the Castaways]
+"Я точно не помню. Но пипетки доходят до кондиции именно в это время."
+"I don't remember, exactly. But that's when the peeperettes reach maturity."
+
+[неприкаянный] [castaway]
+"Неприкаянный - бибурат, возомнивший себя растением. Такие достают свой банч до такой степени, что от них приходится избавляться. Вангеры везут его в виде куста в Огород, слушая по пути их вздохи и нытье."
+"A castaway is a Beeboorat who has started to think he's a plant. He bugs the bunch to such an extent that they have no choice but to get rid of him. Vangers take these specimens to Ogorod as shrubs, having to listen to their nagging and sighing the whole way."
+
+[ПипШоу] [PeepShow]
+"ПипШоу это ритуальная гонка на Глорксе, поясняю. Я участвовала один раз в ней. Вот это было веселье! Мой водила носился как безумный за Жаблями, а я принимала в трюме пипетки и складывала. В Огороде нас признали лучшим экипажем!"
+{пипетка} {Жабли} {Огород} 
+"The PeepShow is a ritual race on Glorx. I once took part in it, and boy was it fun! My driver followed the Jablees, speeding like mad, while I was busy grabbing peeperettes and tossing them in. They said we were the best crew in Ogorod!"
+{peeperette} {Jablees} {Ogorod} 
+
+[Ядерная Война] [Nuclear War]
+"Ядерная Война это излюбленная тактика софти против криспо. Собиралась груда самого ядовитого и вонючего мусора и сбрасывалась на головы противника. Живых не оставалось..."
+{софти} {криспо} 
+"Nuclear War was the Softie's favorite tactic to use against the Cryspo. They would collect the worst of harmful, smelly rubbish and dump it on their enemies' heads. There were never any survivors..."
+{The Softie} {The Cryspo} 
+
+[Гиря] [Geer'ah]
+"Гиря - самый образованный и любознательный бибурат. Мы с ним быстро столковались. Этот достойный исследователь на своих стадионах в Лампассах изучает возможности физической терапии."
+{Лампассы} 
+"Geer'ah is the most inquisitive, educated Beeboorat, and we came to an agreement with him quite quickly. The noble researcher studies the possibilities of physical therapy in his stadiums in Lampasso."
+{Lampasso}
+
+[Буравчик] [Boorawchick]
+"У бедняги несчастная судьба. Как любой взрослый бибурат, он начал уменьшаться в размерах, когда пришел срок. Когда он съежился наполовину, его зажал в дверях невнимательный вангер. Естественный процесс был нарушен, и Буравчик сейчас то ли биб, то ли бибурат."
+"This poor thing has had the worst luck! Like every adult Beeboorat, he began to shrink when the time came. Once he had shrunk to half-size, an absent-minded vanger slammed him in a door, interrupting the natural process so that now Boorawchick is neither a beeb nor a Beeboorat."
+
+[Обурец] [Oboorez]
+"Скажу по секрету, Обурец - бывший куст! Ну, привезли его в Огород, посадили на грядку, полили, вставили пипетку. Я пролила рядом токсик, только ради эксперимента. И представь, пипетка не взошла! Делать нечего, размотали Обурца и оставили при Огороде."
+"Let me tell you something confidential: Oboorez used to be a shrub! He was brought here to Ogorod, planted and watered, and had a peeperette inserted. I spilled some toxick nearby, just for the sake of an experiment, and the peeperette failed to sprout! Oboorez's wrappings had to be removed, and he was left in Ogorod."
+
+[Бюро] [The Buro]
+"Бюро - изобретение Буравчика. Представь себе большую железную бочку, ярко размалеванную и увешанную водорослями. Внутрь забирается Буравчик и орет оттуда дурным голосом всякие бредовые распоряжения. Глупые бибураты от ужаса падают и повинуются бесприкословно."
+{Буравчик} 
+"The Buro is Boorawchick's invention. It's a big iron barrel, painted brightly and decorated with seaweed. Boorawchick gets inside and starts yelling crazy orders everywhere, and the silly Beeboorats prostrate themselves in terror and obey!"
+{Boorawchick} 
+
+[раб] [Slave]
+"Спроси у того, кто рисует Раббоксы и раздает их."
+{Раббокс} 
+"Ask the one who paints and gives out the Rubboxes."
+{Rubbox} 
+
+[прораб] [Commissar]
+"По-моему, софти так называли главных смотрителей помоек. А бибураты, видимо, отрыли где-то древние записи и решили показать свои познания..."
+"I think the Softie used to use this name for their chief dump investigators. The Beeboorats must have discovered some ancient scribbling and decided to show off their knowledge..."
+
+[агент] [Agent]
+"Известно мне, что это вангер, попробовавший Ядробус и ничем его не закусивший. Бибураты его сразу примечают, выдают особую метку и поручают самые безумные задания."
+"As far as I know, an agent is a vanger who once tried Nucleoboom without any snacks to go with it. The Beeboorats notice him immediately, give him a special label, and start assigning him the craziest tasks."
+
+[Устав] [Manual]
+"Все, что наорет Буравчик из бочки, изображая суровое Бюро, потом записывают, пририсовывают красивые картинки, и объявляют обязательным к исполнению. Это самая ловкая афера на Цепи Миров, если не считать попонки и Маленького Цыка..."
+{Бюро} {Буравчик} {попонка} {Маленький Цык} 
+"Everything that Boorawchick yells from his barrel, as the stern Buro, is written down, decorated with beautiful pictures, and proclaimed as compulsory. It's the smartest hoax in the Chain of Worlds, other than the popons and ProtoZeek."
+{The Buro} {Boorawchick} {popon} {ProtoZeek} 
+
+/*******************   Zeexen's terms   *******************************/
+
+[ЦыПа] [ZeePa]
+"ЦыПа - эскейв придурковатых циппо. Они все вместе со своей мамкой Цыфрой помешаны на софти. Пытаясь выяснить причину такой аномалии, я добыла пробы грунта у въезда в ЦыПу. И что ты думаешь? В тамошней почве повышенное содержание болотных газов!"
+{Цыфра} {софти} {Маленький Цык} 
+"ZeePa is the escave of the stupid zeepo. All of them, including their mommy Zeephra, are just crazy about the Softie. While I was trying to find out the reason for this disorder, I picked up a specimen of earth at the entrance to ZeePa, and you know what? It's got a high concentration of bog gasses!"
+{Zeephra} {The Softie} {ProtoZeek} 
+
+[БиЗона] [B-Zone]
+"Если ты внимательно оглядишься вокруг, то обнаружишь БиЗону, блуждающий тупица. Наш эскейв можно издалека узнать по запаху свежего токсика. Здесь самое веселое место на Цепи Миров. Между прочим, здесь долго прятались последние криспо..."
+{криспо} 
+"If you take a careful look around, you'll realize you're B-Zone, you wandering dimwit. You can tell our escave by the smell of fresh toxick. It's the happiest place in the Chain of Worlds! By the way, the last of the Cryspo hid out here for quite a while, towards the end..."
+{The Cryspo} 
+
+[Цыфра] [Zeephra]
+"Чем нравится тебе эта свихнувшаяся зануда? Хвасталась, что она софти, или пыталась нарядить тебя Маленьким Цыком?.. В одной поездке Цыфра так надоела вангеру верещанием, что он выкинул ее. Поплутав в болотах, она вернулась немного не в себе, бормоча о софти, почесываясь и хихикая."
+{софти} {Маленький Цык} 
+"What do you see in that deranged nag? Has she been boasting of her Softie origin or trying to dress you up as ProtoZeek? Once, on a trip, Zeephra made a vanger so sick with her squeaking that he threw her out in the end. She strayed into the bogs and came back completely crazy, scratching herself, giggling, and murmuring something about the Softie."
+{The Softie} {ProtoZeek} 
+
+[Цыкатуха] [Zeekatrix]
+"Цыкатуха-веселуха, жеваное ухо это я. Лучший друг вангеров и прочего колесного сброда. В моем эскейве вы всегда получите добрый совет, истину в последней инстанции или отборный токсик. Слушай свою Цыкатуху и не пропадешь!"
+"Zeekatrix, a vanger's best friend and a friend to anyone silly and carefree! In my escave, you can find a good piece of advice, ultimate truth, or the perfect toxick. Follow my advice and you'll be safe!"
+
+[токсик] [toxick]
+"Ну, в ЦыПе беспокойная Цыфра всех свела с ума байками о софти и прочим бредом. Бедняги циклы напролет месят глину, лепят попонки, не видя света. Я хочу им помочь и варю для них токсик, рискуя здоровьем. Это лекарство я шлю в ЦыПу даром, лишь бы там не болели!"
+{ЦыПа} {Цыфра} {софти} 
+"Рецепт токсика я сама придумала. В него столько всего входит, что даже забываю иногда доложить чего-нибудь. Но без элиподской флегмы токсик не выйдет, это точно."
+"Well, in ZeePa, the anxious Zeephra has driven everyone mad with her tales about the Softie and such nonsense. The zeepo spend all day kneading clay and making popons, the poor things. I want to help them with toxick, so I keep boiling it for them, putting my health at risk. I send the medicine to ZeePa for free. I just hope they don't get sick!"
+{ZeePa} {Zeephra} {The Softie} 
+"It was me who invented the recipe for toxick. It has so many ingredients that now and then I forget to put something into the mixture. But I can't make it without phlegma, that's for sure."
+
+[попонка] [popon]
+"ЦыПа, этот сумасшедший дом в болотах, снабжает нас этими штуками в огромном количестве. Цыфра думает, что закорючками на попонках записаны байки про Маленького Цыка. Бред какой-то. Но ничего, дороги мостить годятся, или дыру там заткнуть. Полезная вещь попонка!"
+{ЦыПа} {Цыфра} {Маленький Цык} 
+"ZeePa, the nuthouse in the bogs, provides us with oodles of the thingies. Zeephra thinks that the scribblings on the popons tell tales about ProtoZeek. That's a load of rubbish, but the things are actually quite useful. You can use them to pave roads or plug holes!"
+{Zeephra} {ZeePa} {ProtoZeek} 
+
+[Маленький Цык] [ProtoZeek]
+"Заехав в ЦыПу, вангер с изумлением узнает, что Маленький Цык это он сам. Увы, таково сумасшествие Цыфры. Она верит, что она софти помойная. А этот Цык идол идеального софти. Делается так: берется вангер и облепляется глиной. А отправляют их нам, наверно, из хвастовства. Очень смешно!"
+"Arriving in ZeePa, a vanger is astonished to learn that ProtoZeek is none other than himself! Alas, that's the gist of Zeephra's madness. She believes herself to be Softie refuse, and that ProtoZeek is the idol of the ideal Softie. So as a boast they take the vanger, coat him with clay, and send him off to us. It's hilarious!"
+
+[Весна] [Spring]
+"Люблю этот веселый цикл. Наступает Весна - жди Маленького Цыка. Большое удовольствие смотреть, как вангера очищают от глины, а он ничего не понимает, только щурится и икает. Тогда вся БиЗона славит Цыфру за эту забаву и готовит ей благодарственный токсик."
+{Маленький Цык} {БиЗона} {Цыфра} {токсик} 
+"I love this merry cycle. Spring comes, and ProtoZeek is sure to follow soon. It's great fun watching the clay being removed from a vanger. The poor thing doesn't understand anything, just blinks and hiccups. Then all of B-Zone praises Zeephra for the treat and prepares a thanksgiving toxick for her."
+{ProtoZeek} {B-Zone} {Zeephra} {toxick} 
+
+[Декабрь] [December]
+"Ну, это ты спроси у Цыфры. Она все тут обзывает словечками якобы софти, которые сама же и выдумывает. Но мне все равно, как цикл назовут, лишь бы нюху возили."
+{Цыфра} {софти} 
+"Well, ask Zeephra about it. She's the one who calls everything here by words she imagines to be Softie words. She thinks them up, no doubt. But I don't care what they call the cycles as long as regular cirt deliveries continue."
+{Zeephra} {The Softie} 
+
+[Суббота] [Saturday]
+"Побывала я как-то в ЦыПе во время Субботы. Ужасное зрелище. Все сидят по углам и бубнят под нос хвалы Маленькому Цыку. Посреди скачет Цыфра и большой дубиной охаживает не очень активных. Вспоминая это зрелище, я варю токсик еще усердней. Да, ЦыПа больна..."
+{ЦыПа} {Цыфра} {токсик}  {Маленький Цык} 
+"I once happened to be in ZeePa on Saturday. What a disgusting sight. Everyone is sitting still, mumbling praise to ProtoZeek. Zeephra, hopping around among them, punishes those lacking enthusiasm with a huge club. Remembering that picture makes me work twice as hard at boiling toxick. Zeephra is really sick in the head!"
+{ZeePa} {Zeephra} {toxick} {ProtoZeek} 
+
+[Цыклоп] [Zeeklope]
+"Это самая большая глупость на Некроссе. Представь толпу вангеров, отнимающих друг у друга кособокую статую Маленького Цыка. Глупая Цыфра не может даже обеспечить каждого вангера нужным предметом. Цыклоп нас очень забавляет несуразностью."
+{Маленький Цык} {БиЗона} {Цыфра} {ЦыПа} 
+"Я хочу устроить нечто подобное Цыклопу и отвезти в ЦыПу Всеисцеляющий Токсик. Эту гонку назову Токсикоз. Ты станешь первым Токсикоманом, поэтому тренируйся в Цыклопе! Моя гонка прогремит на всех мирах, и вангеры будут толпиться у БиЗоны, ожидая Токсикоз."
+"This is the greatest nonsense on Necross! Just imagine a mob of vangers trying to snatch a lopsided statue of ProtoZeek away from each other. That idiot Zeephra can't give every vanger what they need. Zeeklope's so senseless it's hilarious!"
+{ProtoZeek} {B-Zone} {Zeephra} {ZeePa} 
+"I would like to organize something similar to take some All-Healing Toxick to ZeePa. The race will be called ToxickoZ. You'll become the first Toxickman, so start practicing in Zeeklope! My race will reach all of the worlds, and the vangers will flood into B-Zone in anticipation of ToxickoZ!"
+
+/********* Advanced terms *****************/
+
+[Виксов] [Weexow]
+"Я там устроила эксперимент, выпустила полмехоса ручных бибов. Они от чего-то вымахали и стали страшненькими. Но маму Цыкатуху не забыли. Теперь они встречают каждый мехос, думая, что в нем еду я. Будешь на Виксове, передай им привет."
+"I performed an experiment by releasing half a mechos of beebs there. For one reason or another, they grew up ugly. But they still remember their mommy Zeekatrix! Now whenever they see a mechos, they hope to find me inside. Whenever you're on Weexow, please give them my love."
+
+[Бузина] [Boozeena]
+"Кажется, Бузина это мир, где размножаются вангеры. Я наблюдала там занятную картину. Куча вангеров толклась в кругу из бредовых символов. Колесники терлись друг о друга, катаясь на двух колесах. Как только меня заметили, вся компания бросилась врассыпную."
+"It looks like Boozeena is the world where the vangers breed. I witnessed a funny scene there, oodles of vangers jostling around inside a circle of idiotic symbols. The wheelers were rubbing against each other as they drove on two wheels. The moment they noticed me, the whole crowd scattered in all directions."
+
+[Трилл] [Threall]
+"Нехороший мир. Цыфра говорит, что там живут некие инферналы, которые сводят вангеров с ума, завлекают в ловушку и съедают. Но я никого не видела, в лаве только безумная Цыфра может сидеть. А инферналы - плод ее воображения. Так ей легче охмуривать вангеров."
+{софти} {инферналы} 
+"A terrible world. Zeephra says some Infernals live there and drive the vangers mad, tricking them into getting themselves trapped, then eating them up. But I didn't see anybody. Only the crazy Zeephra can sit in the middle of the lava, and the Infernals are just another fruit of her fantasy, her way to fool the vangers."
+{The Softie} {The Infernals} 
+
+[хМок] [hMok]
+"хМок это прибежище умерших вангеров. Их душа переселяется на мрачный мир и стенает. Если ты в жизни задавил слишком много невинных бибов, разбавлял нюху плесенью или грубил советникам, тебя начинает мучить Спумия. С хМока спасаются только приличные вангеры."
+{Спумия} 
+"hMok is the final refuge of the dead vangers. Their souls migrate to the gloomy world, and there they groan and moan. There, if you've run over too many innocent beebs, added mold to the cirt, or were rude to the counselors, you'll be tormented by the Chomper. Only decent vangers can escape hMok."
+{Chomper} 
+
+[Кокс] [Khox]
+"Меня один вангер уговаривал прокатиться на хМок. Но я не дура! Мне не хочется попасться местным жителям на обед. Если мехос забарахлит, то тебе конец. Мне кажется, что на Коксе остались одичавшие софти. Если так, мне туда вообще соваться нельзя. Я же криспо!"
+{софти} {криспо} 
+"A vanger once begged me to accompany him on his voyage to hMok, but I'm no fool! I don't feel like feeding the dwellers of that place with my own flesh. If your mechos starts playing pranks, you're done for. They say that only the Softie who have gone wild are still on Khox, and if that's true, there's no place for me there! I'm a Cryspo!"
+{The Softie} {The Cryspo} 
+
+[Арк-а-Зной] [Ark-a-Noi]
+"Эх, люблю прогуляться на Арк-а-Зное с лихим вангером. Забываешь о всем на свете, даже о Цыфре. Я уговариваю местных обитателей переехать на Некросс. Надо бы завалить попонками пару болот, чтобы получилось сухое место. На Некроссе сразу станет веселей..."
+"Eh, I love taking rides around Ark-a-Noi on a jaunty vanger. You forget everything there, even Zeephra. I'm trying to persuade the local dwellers to move to Necross. It would just take strewing some popons over a couple of bogs to make a dry spot. Necross would become a happier place right away!"
+
+[Начертатель] [Protractor]
+"Раньше с Начертателем Ушедшие Биосы устраивали ритуальные гонки. Со странными правилами. Вангеру кладут в трюм Начертатель, и он должен ехать задом наперед до финиша, собирая бибов. Вот такой нелепый обычай..."
+"The Departed Bios used to organize ritual races. The rules were very strange. A protractor is put into a vanger's cargo hold, and the vanger has to drive backwards to the finish, collecting beebs along the way. What a silly custom..."
+
+[Механический Мессия] [Mechanical Messiah]
+"Механический Мессия это, по-моему, сушеный софти, который остался со времен Конфликта. Он, видимо свалился в лаву Трилла и спекся. Эта штука ничего кроме тошноты у меня не вызывает. Можешь у него попросить сделать какую-нибудь гадость своим дружкам-вангерам."
+{Конфликт} {Трилл} 
+"I think the Mechanical Messiah is a dried-up Softie left over from the time of the Clash. He must have fallen into the lava of Threall and gotten baked to a crisp. This whole thing just makes me sick. You can ask him to play some dirty trick on your fellow vangers, if you want."
+{The Clash} {Threall} 
+
+[Способ-83+] [Function-83+]
+"Это замечательная штуковина. С помощью Способа-83+ наблюдатели проделывали Коридоры и открывали новые миры. Хитрые софти пообещали им, что будут хорошо вести на новых землях. Естественно, они обманывали. Тогда наблюдатели ушли от софти, забрав Способ-83+."
+{наблюдатели} 
+"This is a great gadget! The Spectators used Function-83+ to tunnel Passages and open new worlds, and the cunning Softie promised them that they would behave themselves in the new lands. But they were lying, of course, so the Spectators left the Softie behind, taking Function-83+ with them."
+{The Spectators} 
+
+[Спумия] [Chomper]
+"О, Спумия это загадочный объект. Околачивается на хМоке, где пытает плохих вангеров. Иногда выбирается на другие миры, где творит безобразия. Наверное, это мифическое животное, живущее само по себе. Не вздумай его притащить ко мне!"
+{хМок} 
+"Oh, Chomper is a very enigmatic creature. It hangs around on hMok, where it tortures bad vangers. Sometimes it gets onto other worlds, where it wreaks its mischievous havoc. It's probably a mythical creature that lives on its own. Don't you even think of bringing it here!"
+{hMok} 
+
+[Бут Сектор] [Boot Sector]
+"Загадочная вещь. Кажется сначала, что вангер в одном мехосе, потом - бац, он уже на другом мире в новом катафалке. Один раз меня напугали таким образом, оставив одну в пустом мехосе. Вангеры ведь такие прохвосты, думала, домой не вернусь."
+"Another enigmatic object. First you think that a vanger is in one mechos, then suddenly it's on a different world, in a new hearse! Once I was so frightened when they left me alone in an empty mechos. Vangers are such scoundrels I thought I'd never get back home!"
+
+[Пилот] [Flymatic]
+"Пилот, касатик, я сама когда-то смастерила! Я вижу по твоей морде, что не веришь ты Цыкатухе. Да я вангеров знаю как облупленных. Их вполне могут заменить водоросль подлинней, хвост элипода и прокисший токсик. Из этого хлама я и собрала Пилот."
+"Flymatic, sweetie, I made you with my very own hands, ages ago. Hmm, I can see by your face that you don't believe Zeekatrix. Don't I know Vangers! Worth about as much as a length of seaweed, an Eleepod's tail, and some sour toxick, the stuff I used to make Flymatic."
+
+[наблюдатели] [The Spectators]
+"То были довольно толковые ребята. Они могли делать Коридоры на другие миры. Но хитрые софти обманули их, заставили работать на себя. Но потом они смылись на Икспло незадолго до Конфликта и никого к себе не пускали. Да можешь заехать в Спобс и сам все увидеть!"
+{софти} {Икспло} {Конфликт} {Спобс} 
+"Those were pretty smart guys. They were able to build Passages to other worlds, but the tricky Softie cheated and exploited them. The Spectators fled to Xplo, though, shortly before the Clash, and wouldn't let anybody in. You can go to Spobs and see everything for yourself!"
+{The Softie} {Xplo} {The Clash} {Spobs} 
+
+[Спобс] [Spobs]
+"Ну, Спобс это убежище наблюдателей. Раньше софти там устроили дом для умалишенных, поэтому там толстые стены и странные порядки. А чтобы туда попасть, надо, кажется, привезти три банки токсика. Спекторы его обожают, особенно Парафин."
+{наблюдатели} {Парафин} 
+"Spobs is the refuge of the Spectators. The Softie set up a nuthouse there before, which is why it has such thick walls and odd customs. It looks like you have to carry three cans of toxick with you if you want to get in there. Spectators adore toxick, especially Parapheen."
+{The Spectators} {Parapheen} 
+
+[инферналы] [The Infernals]
+"Теорию о инферналах выдумала Цыфра, чтобы охмурять вангеров. Побывает такой бедняга на Трилле, искупается в лаве, натерпится страху и едет сам не свой. И тут Цыфра с фальшивым сочувствием заливает байки... А на самом деле нет никаких инферналов, наверное..."
+{Трилл} 
+"The story of the Infernals was devised by Zeephra to fool the vangers. An unfortunate creature goes to Threall, takes a bath in the lava, and goes home beside himself with fear. And Zeephra is there like a shot, with her false sympathy and old tales. Personally, I don't think the Infernals exist at all!"
+{Threall} 
+
+[Парафин] [Parapheen]
+"Парафин, милок, это главный наблюдатель. Я с ним разговаривала через окошко эскейва. После того, как софти надули его сородичей, он всего боится и никому не доверяет. Но ему есть что рассказать."
+{наблюдатели} {Спобс} 
+"Parapheen, my dear, is the main Spectator. I've talked to him through the escave window before. Since the Softie duped his kinsmen, he's been scared stiff and won't trust anybody. But he has a story to tell."
+{The Spectators} {Spobs} 
+
+[Карман] [Carmane]
+"Такой примерно звук возникает при бульканье лавы. Это явление в темных головах породило веру в неведомых инферналов, заправляющих на Цепи Миров. А Цыфра этим очень ловко пользуется..."
+{инферналы} 
+"It's the kind of sound lava produces when it gurgles. For some especially dumb brains, the phenomenon has bred belief in mysterious Infernals who rule the Chain of Worlds. And Zeephra uses this belief to her advantage..."
+{The Infernals} 
+

@@ -1,0 +1,765 @@
+"А что иль кто есть"		"советник?"
+"What is"			"counselor?"
+
+[мехос] 	[mechos]
+/*----1----*/
+"Ты, наконец, обратил внимание на банку, в которой пребываешь? Поздновато. Но я тебе скажу так: мехосы - это жалкие обломки былого могущества софти. Вангеры ими пока пользуются, но когда вернутся настоящие софти - все заберут..."
+{софти} {вангеры} 
+"So, you've finally noticed the can you are sitting in? You should have noticed it earlier. Mechos are the miserable tatters of the Softie's former might. The vangers do still use them, but when the real Softie return, they'll demand all that's theirs back..."
+{The Softie} {vangers}
+/*----2----*/
+"Маленький Цык, создав биосы, огорчился их непрочностью. Решил он собрать тогда им железных слуг из обломков софти - мехосы то есть. Но сталь не обладала духом и мехосы вышли неживыми. Тогда он пошёл на сделку с инферналами и получил от них вангеров..."
+{инферналы} {вангеры} 
+"After creating the bios, ProtoZeek was disappointed that they were so fragile. So he decided to build metal servants - mechos - for them, from the Softie's ruins. But the steel was spiritless, and the mechos were inanimate. At last he decided to deal with the Infernals, and from them he received the vangers..."
+{The Infernals} {vangers} 
+
+[Фострал] 	[Fostral]
+/*----1----*/
+"На Фострале вылупляются все вангеры, не помнишь разве? Легенда гласит, что на Фострале Маленький Цык страдал 83 цикла, терзаемый элиподскими стихотворениями. Очень зловещее место..."
+{вангеры} {элиподы} 
+"All vangers hatch on Fostral - don't you remember? Legend says that ProtoZeek suffered for 83 cycles on Fostral, tormented by Eleepod poetry. It's a very evil place..."
+{vangers} {Eleepods} 
+/*----2----*/
+"А что, Фострал он и есть Фострал. Скоро он весь провалится сам в себя. Потому как элиподы весь его изрыли своими ходами. Остерегайся там ездить тяжело нагруженным. Есть даже пророчество Маленького Цыка на этот счёт..."
+{элиподы} 
+"Well, Fostral is Fostral. It will soon fold itself inside out, since the Eleepods have pierced it with their underground passages. Beware of riding around there with a heavy load! There's even a ProtoZeek prophecy about that..."
+{Eleepods} 
+
+[элиподы] 	[Eleepods]
+/*----1----*/
+"Ну, если я твоя жена, то элиподы - твои родители. Всё в Цепи Миров устроено по-семейному. Даже свой урод имеется... То и есть ты, вопросник."
+"Well, if I am your wife, then the Eleepods are your parents. Everything has a family arrangement in the Chain of Worlds. There is even an overly-curious family freak - you!"
+/*----2----*/
+"Вся подноготная элиподов у нас как на ладони. Слушай, как они произошли. Шёл Маленький Цык по берегу реки и поскользнулся на куче слизи. Разгневался он и оживил эту слизь, чтобы она сама отползала с его дороги. Вот так и получились эти зазнайки-элиподы!"
+"We know all there is to know about the Eleepods. Hear how they emerged: Once, ProtoZeek was walking along the riverbank when he suddenly slipped on a blob of slime. This made him very angry, and he gave life to the slime so that it would crawl aside, out of his way. And that's how those stuck-up Eleepods appeared!"
+
+[Липкий] 	[Leepky]
+/*----1----*/
+"Это я тебя должна про Липкого спрашивать. Вы с ним, наверное, большие друзья. Могу только сказать, что когда его везли в виде эЛика из Инкубатора, мехос обстреляла банда раффа, а потом он чуть не утонул. Эти детские переживания отпечатались на его характере..."
+{эЛик} {Инкубатор} {раффа} 
+"It's me who should ask you about Leepky. You must be good friends with him. I can only say, that when he was driven, in the form of an eLeech, from Incubator, the mechos was bombarded by a raffa gang and then it was hardly prevented from drowning. These childish tribulations reflect much on his temper..."  
+{eLeech} {Incubator} {raffa} 
+/*----2----*/
+"Я с Липким как-то переписывалась попонками. Под своими посланиями он подписывался ПОДИШЕВСКИЙ СТРАДАЛЕЦ. Пижон невероятный! В Маленького Цыка не верит, толстая морда..."
+{Подиш} 
+"I once corresponded with Leepky, using popons. He signed his messages 'The Podish Martyr'. What a stuck-up loser! That fat mug doesn't even believe in ProtoZeek..."
+{Podish}
+
+[Подиш] 	[Podish]
+/*----1----*/
+"Подиш - это так элиподы прозвали свою главную нору. На этом месте во времена Конфликта был склад стручков, которыми софти травили криспо. Позже Маленький Цык туда направил жить трусливых элиподов..."
+{Конфликт} {софти} {криспо} 
+"Podish is the name of the Eleepod's main hole. At the time of the Clash, a store of pods was kept there which the Softie used to poison the Cryspo. Later on, ProtoZeek sent the cowardly Eleepods to live there..."
+{The Clash} {The Softie} {The Cryspo} 
+/*----2----*/
+"Если бы ты знал, как элиподы заполучили себе Подиш, то расплакался! Ведь в этом эскейве раньше счастливо жили маленькие весёлые бибы. Но злые элиподы захотели прогнать их и вылили туда море флегмы. С тех пор и бомжуют несчастные бибы по мирам..."
+{элиподы} {бибы} {эскейв} 
+"If only you knew how the Eleepods gained Podish for themselves, you would cry and sob! Merry little beebs once lived happily in that escave. But the evil Eleepods decided to drive them out of it and filled it with a sea of phlegma. Since those times the poor beebs have been homeless, roaming the worlds..."
+{Eleepods} {beebs} {escave} 
+
+[эскейв] 	[escave]
+/*----1----*/
+"Эскейвы возникли очень интересным образом. Решили как-то софти узнать, что находится с другой стороны мира. И начали копать глубокие ямы. Они получились до того глубокими и извилистыми, что софти позабыли дорогу на поверхность и остались жить в этих норах..."
+{софти} 
+"The escaves appeared in a very unusual way. The Softie decided to find out what was on the other side of the world. They began to dig deep holes, but the holes became so deep and winding that the Softie couldn't find the way back to the surface and lived in the holes instead..."
+{The Softie} 
+/*----2----*/
+"Эскейвы остались нам со времён Конфликта. Маленький Цык очень страдал от его ужасов, воинственные крики мешали сосредоточению. И вырыл он тогда для себя множество убежищ на всех мирах. А после Конфликта завещал их разным биосам на проживание..."
+{Конфликт} {биос} 
+"We've been living in the escaves since the Clash. WeeZyk suffered a lot from nightmares - warlike cries kept breaking his concentration. Then he dug up many shelters for himslef in all the worlds and after the Clash he granted them all to different bios to lodge in..." 
+{The Clash} {bios} 
+
+[стручок] 	[pod]
+/*----1----*/
+"Вот истинная правда про стручки. Ты видел, что у элиподов есть хвост? Так вот, у себя в норах, в тесноте, червяки сцепляются хвостами друг с другом, а расцепиться уже не могут. Эту связку элиподов и называют стручками. Я тебе расскажу ещё про это чудо, подрасти немного..."
+{элиподы} 
+"Here is the true story of the pods. Have you ever noticed that the Eleepods have tails? Listen to this: sitting in their dark holes, the worms cling to one another by their tails, and after that they can't split apart. This bunch of Eleepods is called a pod. I'll tell you more about this wonder later, once you've grown up a little..."
+{Eleepods} 
+/*----2----*/
+"Ты хочешь слышать продолжение истории про стручки? Хорошо. После того, как элиподы сцепляются хвостами в стручки, каждый начинает дёргаться, стремясь вырваться. Те, кому это удаётся, становятся элиподскими советниками. Вот такая история. Не нравится - не слушай..."
+"Do you want to listen to the rest of the story about the pods? Good. After the Eleepods bind themselves in pods by their tails, each of them starts twitching, trying to break off the pod. Those who succeed become the Eleepod's counselors. That's how the story goes. If you don't like it, you can just go away..."
+
+[банч] 		[bunch]
+/*----1----*/
+"Все биосы состоят из банчей, а банчи живут в эскейвах. В ЦыПе, например, один банч, правильный, в БиЗоне - другой, неправильный. На других мирах тоже есть всякие банчи, но те уж совсем неправильные. У каждого банча свои странности..."
+{биос} 
+"All the bios consist of bunches, and the bunches live in escaves. In ZeePa, for example, there is one bunch, a right one, and in B-Zone is another, a wrong one. Other worlds also have various bunches, but those are completely wrong. Each of the bunches has its own idiosyncrasies..."
+{bios} 
+/*----2----*/
+"Когда-то жители эскейвов любили ходить в гости. У них тогда была очень короткая память. Поэтому гости, забыв обратный путь, оставались у хозяев. Наконец все смешались и от испуга передрались. Маленький Цык повелел тогда всем разобраться по банчам и в гости больше не ходить!"
+{биос} 
+"Long ago, the escave inhabitants used to visit each other. At that time, they had a very short memory. So the guests, having forgotten their way back, stayed with the hosts. In the end, they all got mixed and scuffled in fright. Then ProtoZeek ordered everyone to go back to their own bunches and never to arrange any parties!"
+{bios} 
+
+[Цепь] 		[The Chain]
+/*----1----*/
+"Цепь Миров когда-то создали софти, чтобы заселить её бибами, которых они очень любили давить. Делали они Цепь, делали, пока не наткнулись на криспо, которые стали жрать их бибов. Тогда софти начали сражаться с криспо, забыв, что нужно строить Цепь..."
+{бибы} {криспо} {софти} 
+"The Chain of Worlds was created by the Softie to be inhabited by beebs, which they loved to squash. They toiled on and on creating the Chain, until they suddenly met the Cryspo, who started devouring their beebs. The Softie set about fighting the Cryspo and forgot to finish the Chain..."
+{beebs} {The Cryspo} {The Softie} 
+/*----2----*/
+"Маленький Цык когда-то вместе с софти строил Цепь Миров. Он был Самым Главным Конструктором. Вообще, это он всё придумал и создал. Коридоры - главное его изобретение. Но потом ему всё надоело, и он решил обзавестись Семьёй, то есть нами, циксами..."
+{софти} {Коридор} {циксы} 
+"Ages and ages ago, together with the Softie, ProtoZeek built the Chain of Worlds. He was the Chief Designer. Basically, it was he who invented and then created it all. The Passages are his most important invention. But then he got tired and made up his mind to start a family - that is to live with us, the Zeexen..."
+{The Softie} {Passage} {Zeexen} 
+
+[Куклы] 	[Larvae]
+/*----1----*/
+"Эх, Куклы... Каждый примерный муж-вангер должен добыть жене-советнице Куклу - хоть ты тресни. Все биосы благословляют Матерей Нюхи. Для нас они проводники к софти, в лучший из миров - на Землю!"
+{нюха} {софти} 
+"Oh, Larvae! Any well brought-up vanger-husband must catch a Larva for his wife-counselor! All of these bios worship these Mothers of Cirt. They are our guides to the Softie, who live on the best of the worlds - Earth!"
+{cirt} {The Softie} 
+/*----2----*/
+"Когда Маленький Цык устал жить, его тело распалось на множество кусков, которые превратились в Кукол. Даже после своего исхода он продолжает через них управлять биосами. Но только благочестивые циксы помнят про это. Остальные прозябают в невежестве..."
+{циксы} 
+"Once ProtoZeek grew weary of life, his body fell apart into multiple bits, which then turned into the Larvae. So even after his demise, he continues controlling the bios. Only the pious Zeexen remember this; the others grow dumb in their ignorance..."
+{Zeexen} 
+
+[бибураты] 	[Beeboorats]
+/*----1----*/
+"Вангер, судя по твоему забитому и испуганному виду, ты побывал у грубых созданий в плену. У этих бибов-переростков мозговое вещество постоянно портится от сырости Глоркса, что и является причиной их грубости. Но радуйся, самое страшное уже позади. Цыфра спасёт тебя!"
+{бибы} {Цыфра} 
+"Vanger! Judging by your miserable, scared look, you've been captured by vulgar types. Those overgrown beebs of encephaloid matter are constantly spoiled by Glorx's moisture. That's why they are so rude. But you can relax - the worst is past. Zeephra will save you!"
+{beebs} {Zeephra} 
+/*----2----*/
+"Как-то Маленький Цык решил научить бибов письму и ритуалам. Но у тех были столь маленькие головки, что они не могли запомнить ничего путного. Тогда Цык решил увеличить биба и тут же сделал это. Так появились бибураты. Вскоре Маленький Цык ужаснулся содеянному..."
+"Once, ProtoZeek decided to teach the beebs to write and to conduct the rituals, but their heads were so tiny that they couldn't get anything of worth into them. Then ProtoZeek thought a bit and enlarged the beebs, right on the spot. That's how the Beeboorats appeared. Before long, ProtoZeek became horrified at what he had done..."
+
+[Глоркс] 	[Glorx]
+/*----1----*/
+"Глоркс был бы неплохим миром, если выгнать оттуда всех бибуратов. Маленький Цык любил медитировать над водами Глоркса и мыть в них свои ухи. Там же была сочинена Самая Первая Попонка. Когда вернутся софти, они подарят нам Глоркс за терпение и благочестие!"
+{бибураты} 
+"Glorx would have been a good world, if all the Beeboorats had been ousted from there. WeeZyk liked to brood over the waters of Glorx and to wash his ears there. The Very First Poponka was composed on Glorx. When the Softie come back, they'll grant us Glorx for all our patience and piousness!" 
+{Beeboorats} 
+/*----2----*/
+"На этом мире сошлись в последней битве софти и криспо. Весь Глоркс был завален оторванными лапами и горелыми мехосами. Увидел это Маленький Цык и решил скрыть от глаз своих. Долго лилась вода сверху, пока не залила всё. Когда Глоркс высохнет, наступит конец Цепи!"
+{софти} {криспо} 
+"On this world, the Softie and the Cryspo clashed in battle. The whole of Glorx was covered in heaps of torn-off paws and burnt mechos. ProtoZeek saw this and resolved to remove it from his sight. Then a heap of water began to pour from the skies until everything was flooded. And once Glorx dries out, the Chain will end!"
+{The Softie} {The Cryspo} 
+
+[раффа] 	[raffa]
+/*----1----*/
+"Раффа - все как один бывшие мужья Цыфры. После развода они уезжают на Глоркс, чтобы прокормиться у бибуратов. А те их в грош не ставят."
+{Глоркс} {бибураты} 
+"The raffas are all Zeephra's former husbands, without exception. After divorce, they go to Glorx to hang around the Beeboorats, but the latter don't give a fig about them."
+{Glorx} {Beeboorats} 
+/*----2----*/
+"Маленький Цык завещал вангерам не обижать раффа. Они спасли его как-то от Большого Бу, пряча в своих трюмах и передавая друг другу, пока монстр бросался, воя от злости, то на одного храбреца, то на другого."
+"ProtoZeek willed that the vangers would not upset the raffa. Once, they saved him from the Big Boo, hiding him in their cargo holds and passing him from one to another, while the monster in his fury pounced on the brave heroes."
+
+[Инкубатор] 	[Incubator]
+/*----1----*/
+"Инкубатор - сокровенное местечко элиподов. Там из нимбоса получают эЛиков. Неизвестно, как это происходит. Мне никак не удаётся повторить процесс."
+{нимбос} {эЛик} 
+"Incubator is a sacred place to the Eleepods. There they make eLeeches from nymbos. Nobody knows how they do it. I myself have never been successful at repeating the process."
+{nymbos} {eLeech} 
+/*----2----*/
+"Про Инкубатор мне мало чего известно. Знаю только, что Маленький Цык один раз сильно замёрз. И сотворил на ровном месте источник тепла. А позже там возник Инкубатор."
+"I know very little about Incubator. The only thing I am aware of is that ProtoZeek once became badly frozen there and created a heat source right on the spot. Later, Incubator was built there."
+
+[биос] 		[bios]
+/*----1----*/
+"Биосы это наследие Конфликта. После него не осталось никого в живых, кроме Маленького Цыка, который во время битв пас бибов. Ему было скучно одному. И он решил заново создать софти и криспо... Но ты ещё молод для этого знания. Наберись опыта и приезжай."
+{Конфликт} {софти} {криспо} 
+"The bios are by-products of the Clash. After the Clash, no one was left alive, except for ProtoZeek, who was shepherding beebs during the battle. He felt lonely and so decided to create the Softie and the Cryspo anew... But you are too young for this knowledge. Return once your skills have improved."
+{The Clash} {The Softie} {The Cryspo} 
+/*----2----*/
+"Биосы?.. Мы остановились на воссоздании софти и криспо Маленьким Цыком. Стал он собирать остатки тел и лепить из них новых друзей. Ногу от софти, голову от криспо, от биба глаз куда воткнёт. Трудился долго. Так появились биосы. Вид не очень красивый, зато всех много."
+{софти} {криспо} {Суп Существ} 
+"The bios?.. We stopped when ProtoZeek decided to recreate the Softie and the Cryspo. He started collecting bits and bobs from the dead bodies and composed new friends from them. A Softie's leg here, a Cryspo's head there, the eye of a beeb - he stuck them together. He toiled on and on, and that's how the bios were created. Perhaps they are not too attractive, but at least they are quite numerous."
+{The Softie} {The Cryspo} {Creature Soup} 
+
+[нюха] 		[cirt]
+/*----1----*/
+"Нюха это святая земля, в которой частица духа Маленького Цыка, что питает наши помыслы и чаяния. Собирать мы нюху доверяем только особо надёжным и чистым вангерам, как правило - моим мужьям. Только они могут рассчитывать на встречу с Куклой - Царицей Нюхи."
+{Куклы} 
+"Cirt is holy soil which retains a spark of ProtoZeek's spirit and nourishes our minds and hopes. Only the most reliable, decent vangers - my husbands, that is - are entrusted to collect cirt. And it is only they who can aspire to meeting an actual Larva, one of the Queens of Cirt."
+{Larvae} 
+/*----2----*/
+"Когда уходил Маленький Цык, то он не захотел бросать своих чад на произвол судьбы и решил оставить след везде, на любом клочке мира. И оставил! Ведь нюху можно найти везде. Ещё он завещал каждому свою Куклу, даже тем биосам, что забыли его."
+"As ProtoZeek was departing, he decided not to leave his offspring to fate and left his footprints everywhere, on every bit of the world. And so he did! Now cirt can be found everywhere. Also, he bequeathed his Larva to everyone, even to the bios who have now forgotten him."
+        	
+[Палец] 	[Feenger]
+/*----1----*/
+"Палец это советник Инкубатора. Я завидую Липкому, что у него такой толковый наместник, который слушается его во всём. Цыкатуха же моя - одно сплошное наказание. Я даже не удивлюсь, что она попонки через одну прочитывает и хранит в беспорядке."
+{Липкий} {Цыкатуха} 
+"Feenger is the counselor of Incubator. I envy Leepky such a smart assistant who obeys him without a single complaint! My Zeekatrix is quite another thing: she's such a trouble-maker! I wouldn't be surprised if I found out she reads only every other popon and keeps them all in one big messy pile!"
+{Leepky} {Zeekatrix} 
+/*----2----*/
+"Палец не такой простой, как кажется. Я специально приезжала к нему, чтобы получше разузнать про Инкубатор, место, связанное с Маленьким Цыком. Но тот ничего мне не показал и не рассказал. Уехала я расстроенной."
+"Feenger is not as simple as he may seem. I visited him to learn more about Incubator, the place once visited by ProtoZeek. But he neither showed nor told me anything, and I left disappointed."
+
+[Коридор] 	[Passage]
+/*----1----*/
+"Коридор это задумка Маленького Цыка, не сомневайся. Он был лучшим из софти и умел многое. Если ты не доверяешь мне, найди хоть одного, кто смог бы построить Коридор. Про это я многое могу рассказать..."
+"The Passages are ProtoZeek's invention, no doubt. He was the best of the Softie and had many skills. If you don't believe me, try to find someone nowadays who can build a Passage! Oh, I could tell you so much more..."
+/*----2----*/
+"Как-то раз Маленький Цык ковырял палочкой в земле, и она вдруг провалилась. В дырку начали лезть бибы, которых пас Цык, а назад они возвращались упитанными и весёлыми. Понял он, что не простая это дырка и позвал других софти. Так был открыт Первый Коридор."
+"Once ProtoZeek was picking at the ground with a stick when suddenly it slipped under the ground. The beebs shepherded by ProtoZeek started squeezing into the hole, and when they came back up, they were all well-fed and happy. ProtoZeek realized that it wasn't a mere hole, and he called the rest of the Softie. That's how the first Passage was opened."
+
+[циксы] 	[Zeexen]
+/*----1----*/
+"Циксы единственные, кто помнит и чтит Маленького Цыка, создателя Цепи и всех биосов. Он создал нас по своему образу и подобию, а значит мы являемся истинными софти. Во всяком случае, ты не найдёшь никого, кто был бы на них ещё более похож."
+{софти} 
+"Zeexen are the only creatures who remember and worship WeeZyk, the creator of the Chain and all the bios. He made us in his own likeness, which means we are the genuine Softie. At least, you won't find anyone who resembles them more." 
+{The Softie} 
+/*----2----*/
+"При исправлении последствий Конфликта Маленький Цык использовал тела погибших. Он заканчивал очередное тело, и ураган унёс все оставшиеся ноги. Тогда Маленький Цык в творческом запале оторвал свою ногу и приставил первой циксе. И появились мы, иначе - Святые Ноги."
+{Конфликт} 
+"In fixing the post-Clash problems, ProtoZeek utilized the bodies of the dead. He was just finishing with one of the bodies when a hurricane swept away all the remaining legs. So ProtoZeek tore off his own leg in the ecstasy of creation and joined it to the first Zeex. That's how we, the Holy Legs, appeared."
+{The Clash} 
+
+[эЛик] 		[eLeech]
+/*----1----*/
+"эЛик - это зародыш элипода. Его они изготавливают из нимбоса в глубинах Инкубатора. Потом вангеры везут малявку на воспитание в Подиш. Там его ожидает угощение... Ты езжай, учись разуму, а я тебе ещё расскажу про это."
+{нимбос} {Инкубатор} 
+"An eLeech is an Eleepod embryo. They are made from nymbos in the depths of Incubator. Then vangers take the little sprats to Podish for nursing. In Podish, a real treat awaits them... Go boost your intelligence, and then I'll tell you more about it."
+{nymbos} {Incubator} 
+/*----2----*/
+"эЛики - настоящие чудовища, держат в страхе весь Подиш. Когда эЛик туда прибывает, он начинает на всех бросаться и пожирать червяков живьём! Насытившись, требует, чтобы ему читали вслух стихи для лучшего пищеварения. Вот такие обычаи у непросветлённых биосов."
+"eLeeches are real monsters. They terrify all of Podish! When an eLeech arrives there, it starts pouncing at and hogging down the worms alive! After it's satiated, it demands they read him poetry to improve his digestion. These are the sort of ridiculous customs the uneducated bios have!"
+
+[нимбос] 	[nymbos]
+/*----1----*/
+"Нимбос элиподы производят из самих себя. Наверное, очень занятное зрелище. Потом его отвозят в Инкубатор, где за дело принимаются переработчики нимбоса. Их назначают из провинившихся элиподов."
+{Инкубатор} 
+"The Eleepods produce nymbos by squeezing them out of themselves. That must be very exciting. After that, the nymbos is taken to Incubator, where it is processed by faulty Eleepods specially appointed to this sort of job."
+{Incubator} 
+/*----2----*/
+"Есть у меня предположение на этот счёт. Элиподы очень плотно сидят в стручках и постоянно трутся друг о друга. От этого у них облезает шкура. Червяки её скатывают и отправляют в Инкубатор. Вот это и называется нимбосом."
+{Инкубатор} 
+"I've got an idea about that. I think that the Eleepods are tightly set in their pods, rubbing constantly against one another. So their skin peels off, and the worms roll it up and send it to Incubator. Those are what end up being called nymbos."
+{Incubator} 
+
+[Элирекция] [Eleection]
+/*----1----*/
+"Элирекция - массовый извоз эЛиков из Инкубатора. Раз в три цикла они настолько заполняют эскейв, что не остаётся места. На помощь зовут вангеров, чтобы они вывозили это добро в Подиш. А если их бросить на мире, то эЛики приползут обратно и устроят погром."
+{эЛик} {Подиш} {Инкубатор} 
+"The Eleection is a mass export of eLeeches from Incubator. Once every three cycles, they fill up the escave until there is no space left. Then the vangers are summoned to help to take the treasure away to Podish. But if you leave them on that world, the eLeeches crawl back and smash everything!"
+{eLeech} {Podish} {Incubator} 
+/*----2----*/
+"Ты, милый, забудь про Элирекцию. Маленький Цык благословил только Цыклоп. Остальные гонки - суета и тщета."
+{Цыклоп} 
+"Forget about Eleection, honey! Only Zeeklope has been blessed by ProtoZeek. The other races are all dross and vanity!"
+{Zeeklope} 
+
+[вангеры] 	[vangers]
+/*----1----*/
+"Вангеры - любимцы Маленького Цыка. Он придал их жёнам-советникам в услужение навеки, точно соблюдая требования софти. А у диких биосов и вангеры дикие, знают только, что разбойничать и бездельничать. Цыфра по мере сил возвращает бродяг к честной жизни."
+"The vangers are ProtoZeek's favorites. He sent them to serve the wife-counselors for the rest of their lives, strictly observing the Softie's requirements. Wild bios have wild vangers who do nothing but plunder or loaf around aimlessly. Zeephra tries as hard as she can to get the tramps back to a righteous way of living!"
+/*----2----*/
+"Когда Маленький Цык создал мехосы, они были безжизненны, как любая железка.  Обратился тогда он к инферналам. Они вдохнули жизнь в мехосы, создав вангеров. За это они попросили у Маленького Цыка часть власти над ними. Он согласился. И бескорыстно отдал вангеров биосам."
+{инферналы} 
+"When ProtoZeek created the mechos, they were still and lifeless like other ordinary iron stuff. Then he asked the Infernals for help, and they breathed life into the mechos and created vangers. In exchange, the Infernals asked ProtoZeek to grant them power over the vangers. ProtoZeek agreed and selflessly sacrificed the vangers to the bios."
+{The Infernals} 
+
+[флегма] 	[phlegma]
+/*----1----*/
+"Элиподы довольно толсты телами, как ты правильно заметил. К тому же они ленивы до безобразия. Они не стали рыть в эскейвах ходы достаточного размера. Чтобы протиснуться в них, они мажутся флегмой. Не будь её, толстяки не сделали бы и шага."
+"Eleepods are rather fat in build, as you might have noticed. Besides, they are terribly lazy. They neglected to dig holes of the right size in their escaves and now they have to rub themselves with phlegma to squeeze through those narrow holes. But for that phlegma, these fat pigs would never make a single move." 
+/*----2----*/
+"Маленький Цык сотворил элиподов из слизи. А это вещество непрочное и расползающееся само по себе. Элиподы унаследовали эти качества своей праматерии. Чтобы совсем не расплескаться, они выливают на себя моря флегмы для восполнения естественной убыли слизи."
+"ProtoZeek made the Eleepods out of slime, an unstable material. The Eleepods have inherited this trait from their ancestors. To keep from spilling all over the place, they pour seas of phlegma onto themselves to replace their slime skin, which vanishes naturally over time."
+
+[софти] 	[The Softie]
+/*----1----*/
+"Это было древнее могучее племя. Их погубила собственная доброта. Желая расширить свои владения, чтобы растить больше славных бибов, чтобы им было больше простора и света, софти стали делать Коридоры... Ты слишком юн и не воспримешь всю истину. Заедь попозже."
+{Коридор} {бибы} 
+"They were an ancient, mighty tribe. But they suffered from their own generosity. In their haste to expand their domain and then to breed more lovely beebs in their vast new territories, the Softie started digging Passages... But I can see you are still too young to comprehend this truth. Come back later."
+{Passage} {beebs} 
+/*----2----*/
+"Продолжу рассказ о софти... Софти, наделав Коридоров, столкнулись со злобными криспо, которым тоже понравились бибы, но только с гастрономической позиции. Благородные Софти стали защищать бибов и все погибли вместе с криспо. Остался только Маленький Цык."
+{Коридор} {криспо} 
+"I'll tell you the rest of the story about the Softie... The Softie, after building the passages, bumped into the wicked Cryspo, who liked the beebs too, but from a diner's point of view. The honorable Softie decided to defend the beebs, but they all died together with the Cryspo in a great battle. Only ProtoZeek survived."
+{Passage} {The Cryspo} 
+
+[криспо] 	[The Cryspo]
+/*----1----*/
+"О, это было древнее и злое племя. Неизвестно, откуда они взялись, известно только, что разума при создании им не досталось. Они променяли его на животы немыслимых размеров. Эти выродки и погубили во время Конфликта софти заодно с собой..."
+{софти} {Конфликт} 
+"Oh, that was an old and wicked tribe. Nobody knows where they came from. It's only known that there was a shortage of wits when they were under the creation. They had enormous stomachs. Those morons ruined the Softie together with themselves during the Clash..." 
+{The Softie} {The Clash} 
+/*----2----*/
+"О, не говори мне о них. Некоторые невежественные биосы считают, что они произошли от криспо! Это чёрная ложь. Известно точно, что Маленький Цык при создании биосов использовал только части тел софти! А если и брал криспоидные потроха, то только случайно."
+"Please don't ask me about them! Some ignorant bios think that they descended from the Cryspo! That's a terrible lie. It's very well-known that, when creating the bios, ProtoZeek only made use of the Softie's body parts! If he ever used Cryspo offal, I'm sure it was purely by mistake."
+
+[Некросс] 	[Necross]
+/*----1----*/
+"Некросс циксам даровал Маленький Цык. Он немного болотистый, зато обетованный. Именно трясины Некросса несут свет истинного знания на все миры."
+"ProtoZeek granted Necross to the Zeexen. It's a little boggy, but it's sacred. It is the swamps of Necross which radiate the light of true knowledge onto all other worlds."
+/*----2----*/
+"Некросс нам потому достался, что Маленький Цык сотворил нас последними. Поэтому циксы стоят на вершине всех творений. Правда, более сухие миры под шумок достались менее совершенным, но мы воспринимаем это со смирением."
+"We were granted Necross since ProtoZeek created us last. That's why the Zeexen are the crown of his labors! Although the drier worlds were given to the less perfect creations, we humbly accept that."
+
+[Линза] 	[P-beam]
+/*----1----*/
+"Линза? Это элиподское собрание, где они обсуждают последние события. Ничего интересного."
+"P-beam is a gathering of Eleepods, where they discuss the lastest events. Nothing interesting." 
+/*----2----*/
+"Маленький Цык, сжалившись над излишней слизеподобностью элиподов сделал им дар. С тех пор червяки могут, собравшись вместе, обнаружить любую опасность, откуда бы она не исходила. Лиши их этого дара, элиподы вымрут. Только они забыли, кого славить за спасение."
+"ProtoZeek forgave the Eleepods for their excessive sliminess and bestowed a special talent upon them. Since then, whenever they're gathered together, the worms are able to foresee any hazard, wherever it may come from. Once they are deprived of this gift, they'll die out. Still, they have forgotten whom to praise for their salvation."
+
+[Икспло] 	[Xplo]
+/*----1----*/
+"Загадочный мир. Единственный, где никогда не жили никакие биосы. Там есть эскейв, только Маленький Цык его не строил, хроники ничего не говорят об этом. Недружелюбное место."
+"A mysterious world, the only one on which no bios have ever lived. There is an escave there, but it was not built by ProtoZeek, and the chronicles don't mention anything about it. It's a hostile place."
+/*----2----*/
+"Это страшная тайна. У Маленького Цыка были недруги среди софти, завидовавшие его дару делать Коридоры. Когда зависть их совсем заела, они удалились на Икспло и построили себе берлогу. Звали их спекторами-наблюдателями. Они только наблюдали, а работать не хотели."
+"It's a terrible secret. Among the Softie there were WeeZyk's foes who were envious of his talent to build the Passages. They finally became heated and possessed by their envy, they moved to Xplo and built a lair for themselves. They were called Spectors-Observers. They only observed and didn't want to work." 
+
+[Ушедший Биос] [Departed Bios]
+/*----1----*/
+"Ушедший биос чтил Маленького Цыка, поэтому вангеры его были самыми лучшими, эскейвы всегда были наполнены нюхой, и Куклы благоволили ему. Наконец, Матери Нюхи в награду показали дорогу праведникам в страну Маленького Цыка, где он и встретил своих чад."
+"The Departed Bios revered ProtoZeek, and that's why their vangers were the best and their escaves were always full of cirt - the Larvae favored them. Finally, as a token of their gratitude, the Mothers of Cirt showed the righteous ones the way to the land of ProtoZeek, where he rejoined his offspring."
+/*----2----*/
+"Для нас, цикс, Ушедший Биос является примером благочестия и хорошего поведения. Когда-нибудь Маленький Цык даст нам знак, и мы тоже станем Ушедшим Биосом, Ушедшим в Страну Нюхи."
+"For us Zeexen, the Departed Bios are an example of piousness and good manners. Some day ProtoZeek will give us a sign and we will become a Departed Bios too, departed to Cirtland."
+
+[Жирогон] 	[Plump-up]
+/*----1----*/
+"Жирогон - цикл элиподов. Они в это время до того толстеют, что не могу двинутся с места, сидят и производят свой нимбос горами. В это время к ним лучше не подходить, до того они раздражённые."
+{нимбос} 
+"The Plump-up is an Eleepod cycle. During this they grow so incredibly fat, that they can neither move nor stir, but sit on and on immovably generating loads of nymbos. You'd better not disturb them during this time, for they are very short-tempered." 
+{nymbos} 
+/*----2----*/
+"Всё самое интересное я тебе уже сказала."
+"The most interesting things about this have already been said."
+
+[Чавка] 	[Gulp-down]
+/*----1----*/
+"Чавка? О, если ты спросишь про это элипода, он задрожит и забьётся в угол. Приход Чавки червяки ожидают с ужасом, потому что в это время прибывает в Подиш эЛик, и начинается кровопролитие. Но такова судьба отвернувшихся от Маленького Цыка."
+{эЛик} {Подиш} 
+"Gulp-down? If you ask an Eleepod about that, it will start trembling from head to toe and huddle up in a corner! The worms are always scared to death at the thought of Gulp-down beginning, for during this time an eLeech arrives in Podish and the great slaughter begins. But such is the fate of those who deny ProtoZeek."
+{eLeech} {Podish} 
+/*----2----*/
+"Во время Чавки элиподам невесело. эЛик успокаивается только насытившись мясом червяков. Потом жертвы приходят в себя и начинают воспитывать нового элипода из эЛика."
+"A terrible time comes for the Eleepods when the Gulp-down starts. The eLeech calms down only once it's stuffed itself with the worms' flesh. Then the victims return to normal and start training the eLeech to be an Eleepod."
+
+[бибы] 		[beebs]
+/*----1----*/
+"Бибы были любимцами софти, этакими милыми зверушками, совсем без мозгов.. Из-за любви к ним, собственно, и погибло это могучее племя. Зато они пережили Конфликт вместе с Маленьким Цыком." 
+{софти} {Конфликт} 
+"The beebs used to be the Softie's favorites, sweet, brainless little beasts... This love for them brought that powerful tribe to its downfall! However, the beebs survived the Clash, along with ProtoZeek."
+{The Softie} {The Clash} 
+/*----2----*/
+"Маленький Цык использовал бибов, этих безмозглых созданий, при создании некоторых биосов, не буду говорить каких. Поэтому ты должен с почтением относиться к этим мелким тварям и давить их только чистыми колёсами."
+"ProtoZeek made use of the beebs - those witless beings - to create some bios. I won't tell you which bios. That's why you should respect those little creatures. Squash them only when your wheels are clean!"
+
+[Суп Существ] [Creature Soup]
+/*----1----*/
+"После Конфликта не осталось никого в живых, только множество частей тел валялось на полях. Их них то и начал Маленький Цык создавать новое население. Он приносил конечности, головы, хвосты и складывал в кучу. Но прожорливые бибы... Нет, больше не скажу."
+{Конфликт} {биос} 
+"No one remained alive after the Clash - limbs and body parts were scattered around the battlefields. ProtoZeek used them as building material to form a new population. He brought stumps, heads and tails together and piled them up in one heap. But the greedy gluttonous beebs... No, I won't tell you the rest of the story."
+{The Clash} {bios} 
+/*----2----*/
+"Ну ладно, слушай, настырный. Голодные бибы начали таскать части тел, собранные Маленьким Цыком для сборки биосов. Он не мог убить неразумного биба, поэтому спрятал всё в большой котёл. Получился как бы суп, еда софти. Вот и вышли, получается, все биосы из Супа Существ."
+"Alright, pushy one, listen. The hungry beebs began to pilfer the body remains that ProtoZeek had collected to construct the bios. ProtoZeek dared not kill the unreasonable beings, so he hid all the bits away from them in a big pot. It turned into a kind of soup... uh... soup was a common Softie food. Anyway, that's how all the bios happened to emerge, out of that Creature Soup."
+
+[Конфликт] 	[The Clash]
+/*----1----*/
+"Конфликт это гибель софти и криспо, встретившихся на Цепи Миров, в огромном сражении. Софти были мудры и сильны, а криспо злобны и многочисленны. Истребляли они друг друга весьма прилежно и с выдумкой. Никто не уцелел, кроме Маленького Цыка."
+{софти} {криспо} 
+"The Clash was the doom of the Softie and the Cryspo, who collided in a desperate battle in the Chain of the Worlds. The Softie were clever and strong, but the Cryspo were furious and countless. They killed one another other so inventively and with such an aggression, that no one endured except for WeeZyk." 
+{The Softie} {The Cryspo} 
+/*----2----*/
+"Говорят, что Конфликт не уничтожил всех софти и криспо. Некоторые заперлись на своих мирах и ждут часа, копя силы, чтобы сойтись в Самом Последнем Конфликте. После него разрушится Цепь Миров, погибнут биосы, останется одна пустота."
+"Some say that not all the Softie and Cryspo died in the Clash. Some of them holed up in their worlds and are gathering their forces, waiting for the Very Last Clash. After that, the Chain of the Worlds will implode, all bios will perish, and there will be nothing but emptiness."
+
+[Спираль] 	[Spiral]
+/*----1----*/
+"Когда Маленький Цык создавал мехосы, он разломал свою чудесную палку, которой он пас бибов, а потом проткнул первый Коридор, на много частей. Эти части он вставил мехосам в укромное место. И наложил заклятие... Поезди, наберись опыта, и я расскажу главное."
+"When ProtoZeek was creating the mechos, he broke his wonderful stick which he used to shepherd the beebs into several parts. He inserted these parts into the mechos' secret slots and cast a spell on them... Once you have more experience, I'll tell you the most important part!"
+/*----2----*/
+"Слушай продолжение. Собрал он после самых толковых представителей биосов и даровал им мехосы. И каждому шепнул заветное слово, которое его именем открывает Коридор. С тех пор советники передают друг другу слово-ключ, но только циксы помнят всю правду."
+"Here is the continuation of the story. After that WeeZyk collected the smartest bios and gave them the mechos. He whispered a magic word to each of the bios, which would open the Passage. Since then the key-word has passed from one counselor to another, yet only the Zeexen remember the whole truth." 
+
+/*******************   Beeboorat's terms   *******************************/
+
+[раБикация] [ruBeecation]
+/*----1----*/
+"Бибураты не помнят Маленького Цыка и не выполняют его заветов любить и беречь вангеров. Вы для них ничто. Потому и обирают вас разбойники водоплавающие. Но это для них ничем хорошим не кончится."
+"The Beeboorats neither revere ProtoZeek nor follow his behests to love and care for the vangers. You mean nothing to them, which is why you are only robbed by those web-footed brigands. Their end will not be a good one!"
+/*----2----*/
+"Это гнусная процедура. Как то давно жил один бибуратский советник. Вангеры его постоянно обсмеивали за тупость, и он решил расквитаться с ними и вдолбить к себе уважение. И придумал старый пень раБикацию. Вангеры ведь беззащитные, и приходится вам терпеть."
+"A loathsome procedure. Once there lived a Beeboorat counselor. The vangers were always mocking him for his foolishness, so he decided to pay them back and to drum respect for himself into their heads. So, the old swag invented ruBeecation. The vangers were helpless and had to endure it."
+
+[Раббокс] [Rubbox]
+/*----1----*/
+"Маленький Цык учил, что вангер ценен сам по себе. А бибураты впали в ересь и ценят вангера только по Раббоксу, и очень просто. Есть Раббокс - есть вангер, нет Раббокса - нет вангера. Имей это в виду и постарайся не терять эту жестянку."
+"ProtoZeek taught that a vanger is valuable in and of itself. The Beeboorats, however, have descended into heresy, and consider a vanger a vanger only in the presence of a Rubbox - if there is a Rubbox, there is a vanger, if there is no Rubbox, there is no vanger. Keep this in mind and try not to lose that collar!"
+/*----2----*/
+"Знаю, что Раббокс был сначала простой меткой. Когда-то глупые бибураты не умели даже верно сосчитать вангеров, возящих им нюху, постоянно путаясь. И слёзно попросили их делать на мехосах крестики. Пожалели вангеры тупиц и согласились. Если бы они знали, чем это кончится!.."
+"I know that at first the Rubbox was merely a mark. In days gone by, those doltish Beeboorats couldn't even count the vangers who delivered cirt to them properly and got them confused all the time. So they begged the vangers to mark their mechos with crosses. The vangers relented to those dummies and agreed. If only they had known how that would end up!"
+
+[ВигБу] [VigBoo]
+/*----1----*/
+"ВигБу? Я была там когда-то. Видела Буравчика. Этот эскейв весь в решётках, цепях, баррикадах. Я об них поцарапала свои крылья. Ноги моей единственной там больше не будет!"
+"VigBoo? I've been there once. I saw Boorawchick there. That escave is all railed up, chained up, and barricaded. I beat my wings against the barricades! I'll never ever step into that land again!"
+/*----2----*/
+"В ВигБу живут сумасшедшие. Постоянно носятся во всех направлениях, друг друга сбивая, переносят камни, водоросли. Сначала один завал сделают, разобрав старый, потом снова начинают его насыпать, разбирая стену. Ужас! Говорят, к войне готовятся."
+"Crazy creatures live in VigBoo. They are always scurrying around in different directions, knocking one another down and carrying stones and seaweed from one place to another. They make one slag heap by clearing out an old one, then they start all over again. It's a nightmare! It's said they're preparing for war."
+
+[Лампассы] [Lampasso]
+/*----1----*/
+"О, в Лампассах находится ещё один пример одичания забывших Маленького Цыка. Там находятся некие стадионы, где толпы сумасшедших калечат себя самым разнообразным и жутким образом. Я там грохнулась в обморок, попав впервые."
+"Lampasso serves as another example of those who go crazy by abandoning belief in ProtoZeek. There are some stadiums there where the crazy hordes maim themselves in various awful ways. I passed out when I first saw it!"
+/*----2----*/
+"Попади сейчас Маленький Цык в Лампассы, он пожалел бы о решении создать биосы, воистину. Лампассы - позор Цепи Миров."
+"Were ProtoZeek to see Lampasso now, he would deeply regret that he had created that bios. Lampasso is a blot on the Chain of Worlds!"
+
+[Огород] [Ogorod]
+/*----1----*/
+"Огород - пристанище кустов и убогих. Бурная энергия Буравчика почти не достигает этого места, и там спокойнее всего на Глорксе."
+"Ogorod is the refuge for the shrubs and the crippled. This place is almost out of reach of the frantic energy of Boorawchick, and as such is the calmest site on Glorx."
+/*----2----*/
+"Бывая в Огороде, я всегда настраиваюсь на меланхолию. Там спрашиваешь себя 'Зачем всё это?' и как нигде более сознаёшь всю тщетность мироздания..."
+"I always drift into melancholy in Ogorod. There, you ask yourself, 'What is it all for?' and realize all the vanity of the universe like nowhere else in the Chain..."
+
+[Героин] [Valorin]
+/*----1----*/
+"О, Героин это своеобразный предмет. Не что иное, как бибурат, спешащий на игрища, устроенные Гирей. Он мне показывал всё это и хвастался, брызгая слюной. Не приложу ума, откуда такие идиоты берутся."
+"Oh, Valorin is a peculiar object. It's nothing else, but a Beeboorat hastening to a competition set up by Geer'AH. He showed me all that and boasted, spattering and sputtering. I can't think where such idiots come from." 
+/*----2----*/
+"Историки ломают головы в догадках о происхождении Героина. Это одно из немногих тёмных мест в истории Цепи Миров. По основной гипотезе, в один прекрасный день бибурата осеняет мысль о своём происхождении. Не в силах совладать с ужасом, он едет на стадион..."
+"Historians are always racking their brains to try and uncover the origin of the Valorin. It's one of the few unknowns in the history of the Chain of Worlds. The main theory is that a Beeboorat was one day struck by the idea of its ancestry. Terror overwhelmed him, and he rushed to the stadium..."
+
+[куст] [shrub]
+/*----1----*/
+"Куст, оказывается, разновидность бибуратов. Живёт, значит один такой, живёт, к войне готовится, потом раз - в момент дичает. Что ему говорят, не понимает, только в щелях прячется и кусается. Атавизм, понимаешь... Тебе, кажется, неинтересно, езжай тогда!"
+"A shrub, as it turns out, is a type of Beeboorat. It lives on and on and on, preparing for war, and then all of a sudden goes wild and no longer understands any words. Then it just hides out in cracks and bites! Hmm, you don't seem to be interested. You can leave, then!"
+/*----2----*/
+"Ладно, слушай про кустов ещё. После того, как бибурат дичает, его обматывают ремнями, втыкают шипы, что б не буянил и везут в Огород на лечение. Там Обурец его оприходует и заставит сажать пипетки. Странное только дело, из Огорода, кажется, никого не везут..."
+"OK, here are some more stories about the shrubs. After a Beeboorat has grown wild, they wrap it in belts and pierce it with barbs so that it won't fight. Then they take it for treatment, to Ogorod. In Ogorod, Oboorez takes care of it and makes it plant peeperettes. What's strange, though, is that nobody ever leaves Ogorod..."
+
+[пипетка] [peeperette]
+/*----1----*/
+"Пипетка - это лекарство для буйных. Очень ценный предмет для бибуратов. Они ведь все склонны к разным формам помешательств. Только ухаживание за пипетками приводит придурков в чувство."
+"A peeperette is a medicine for raving lunatics and is very much appreciated by the Beeboorats, since they are inclined to various types of lunacy. Peeperettes bring the lunatics back to their normal senses."
+/*----2----*/
+"Я пробовала пипетку на вкус - страшная гадость, скажу тебе. Токсик вспоминается с тёплым чувством. Но говорят, что пипетками Маленький Цык лечил свою головную боль... Неисповедимы пути его."
+"Once I tasted a peeperette - disgusting, I tell you! After that stuff, toxick seems like a real treat! But they say ProtoZeek soothed his headaches with peeperettes. Hmm. The ways of ProtoZeek truly are inscrutable!"
+
+[Ядробус] [Nucleoboom]
+/*----1----*/
+"Ядробус - неспелая пипетка. Глупые бибураты собирают их, не давая поспеть, и тащат на стадионы. Если спелые пипетки успокаивают, то неспелые возбуждают и без того надломленный рассудок. Под действием Ядробусов бибураты совершают ужасные глупости."
+"A Nucleoboom is an unripe peeperette. Stupid Beeboorats pick them up without letting them mature and then bring them to the stadiums. Ripe peeperettes may calm you, but unripe ones do nothing but agitate an already-cracked mind. Thus affected by Nucleoboom, the Beeboorats do terribly stupid things!"
+/*----2----*/
+"А чего это ты заинтересовался Ядробусами? Хочешь обожраться ими и побуянить? Смотри, рискуешь разводом с последующим окунанием в болото!"
+"Why are you so interested in Nucleobooms? Are you going to gobble some down and then start a fight? Be careful, or you risk divorce, followed by a dip in a bog!"
+
+[Жабли] [Jablees]
+/*----1----*/
+"Жабли это водоросли, летающие иногда по Глорксу. Это сорняки на грядках с пипетками. Обурец с ними борется, с корнями рвёт, да всё без толку. На это очень забавно смотреть."
+"Jablee is a seaweed, which sometimes flies around Glorx and grows in plots together with pipetkas. Oboorez tries hard to get rid of them, he pulls them up by the roots, but in vain. It's funny to observe that." 
+/*----2----*/
+"Внимай мне. Сидел как-то Маленький Цык в водах Глоркса, отпаривал мозоль и пускал пузыри. Пускал и лопал. Это было очень красиво. Но некоторые пузыри не лопнули, а улетели и превратились в Жабли. Понял Маленький Цык тогда - всегда надо лопать свои пузыри, не пропуская ни одного."
+"Lo and behold! Once ProtoZeek was sitting in the waters of Glorx, steaming a blister off and blowing bubbles. He would blow and then pop them. It was very beautiful. But some of the bubbles, he missed, and they floated away and turned into Jablees. Then ProtoZeek realized that one must always burst all of one's bubbles!"
+
+[Прогресс] [Progress]
+/*----1----*/
+"Прогресс это время, когда в ВигБу становится относительно тихо. Все ходят на цыпочках вокруг большой пещеры и дрожат. Меня туда не пустили, противные. Но, наверное, в это время Буравчик производит на свет единственную мысль за три цикла."
+"Progress is a time when everything becomes quiet in VigBoo. All tiptoe round the big cave and tremble. They didn't let me in there, the meanies! Evidently, at this time, Boorawchick generates the one and only thought that shows up during all three cycles!"
+/*----2----*/
+"Отстань от Цыфры, езжай к бибуратам, а мне сказать нечего."
+"Stop driving Zeephra up the wall and go back to the Beeboorats. I've got nothing to say to you."
+
+[Героизм] [Heroism]
+/*----1----*/
+"Горячая пора для обладателей Раббоксов. В это время на Глорксе творится натуральное столпотворение, один раз мехос с моей персоной даже столкнули в воду."
+"That's a crazy time for Rubbox wearers! There's real turmoil in Glorx then. Once, they even toppled my mechos over into the water, with My Preciousness inside!"
+/*----2----*/
+"Ты что, ещё помнишь об этой глупости? Да, бибураты умеют вдолбить нужные им понятия в наивных юношей."
+"Why, do you still remember that nonsense? Well, the Beeboorats sure know how to drum their ideas into the naive brains of the young!"
+
+[Выборы Неприкаянных] [Election of the Castaways]
+/*----1----*/
+"Чем отличаются Выборы Неприкаянных от Героизма, я не уловила. Тогда происходит или ПипШоу, или Ядерная Война."
+"I never quite understood what the difference is between the Election of the Castaways and the Heroism. It's when the PeepShow or the Nuclear War happen, one of those."
+/*----2----*/
+"Кажется, к началу этого цикла все подвинувшиеся рассудком точно выявляются, и банч начинает их гурьбой ловить. Надо поглядеть свои путевые заметки."
+"It seems to me that at the beginning of this cycle all the crazy ones are easy to pick out, and the bunch starts capturing them in loads. But I need to look that up in my travel notes."
+
+[неприкаянный] [castaway]
+/*----1----*/
+"Неприкаянный это сошедший с ума бибурат, разве ты ещё не догадался?"
+"A castaway is a crazy Beeboorat. Haven't you guessed that yet?"
+/*----2----*/
+"Сказать точнее, это неприкаянные, а не кусты, лечатся пипетками. А куст это неприкаянный в смирительной рубашке. Да, запутаться легко."
+"To be more precise, it's the castaways that treat themselves with peeperettes rather than shrubs. A shrub is a castaway in a straitjacket. Oh yes, it's really easy to get confused!"
+
+[ПипШоу] [PeepShow]
+/*----1----*/
+"ПипШоу это сбор пипеток вангерами, которых поймали для этой цели бибураты. В принципе, это хорошее дело, ведь пипетки помогают излечиться несчастным."
+"A PipShow is a harvest of pipetkas by the vangers, who the Beeboorats captured for this purpose. Basically, it's a good idea, 'cos pipetkas help the poor things to recover." 
+/*----2----*/
+"Знай вангер, что ПипШоу это не только дурацкая гонка, но и сокровенное слово софти. Когда-то до Конфликта оно означало великое собрание, где участвовали избранные. А глупые бибураты не верят в софти, хотя используют их названия..."
+"Remember, vanger: PeepShow is not only a wacky race but also a sacred Softie sacred word, as well. In ancient days before the Clash, it meant a great gathering in which only a chosen few took part. The silly Beeboorats don't believe in the Softie, despite their use of their words..."
+
+[Ядерная Война] [Nuclear War]
+/*----1----*/
+"Ядерная Война это другая ритуальная гонка бибуратов. Нет, гонка только название. Стоит вангер и ждёт, когда ему на голову свалится Ядробус. Очень захватывающе, право..."
+"Nuclear War is another ritual race of the Beeboorats. No, 'race' is the wrong word for it. A vanger waits for a Nucleoboom to drop on his head. It's really exciting!"
+/*----2----*/
+"Нам точно известно, что Ядерная Война была любимым развлечением софти. Они выходили на открытые пространства и собирали падающие им на головы дары. Глупые бибураты переняли этот обычай, не догадываясь о его сути."
+"The Nuclear War was the Softie's favorite amusement. They used to go to open spaces and gather the bonuses falling onto their heads. The foolish Beeboorats have continued this tradition without knowing anything of its real meaning."
+
+[Гиря] [Geer'ah]
+/*----1----*/
+"Гиря очень грубый и некультурный тип. Чуть не убил меня своей железкой, когда я попыталась его усовестить, приводя в пример жизнь Маленького Цыка. Его голова занята исключительно придумыванием новых истязаний для соплеменников."
+"Geer'ah is a very rude, ill-mannered blockhead. He nearly killed me with his piece of metal when I tried to direct him to take ProtoZeek's life as an example for his own. His head is stuffed with mad ideas of how to torture his fellow tribesmen!"
+/*----2----*/
+"Я не хочу даже вспоминать о нём. Когда он обожрётся Ядробусов, он начинает орать песни и размахивать тяжёлыми предметами. А то, что он делает с несчастными бибуратами... Говорить не хочется."
+"I don't even want to think of him. When he's stuffed with Kernoboos he starts wailing songs and swinging heavy things to and fro. If you knew what he does to the poor Beeboorats!.. I'd better keep it back." 
+
+[Буравчик] [Boorawchick]
+/*----1----*/
+"Любопытное создание. Энергии у него хоть отбавляй. Другие бибураты его очень боятся, потому что он постоянно всем грозит карами Бюро. Буравчик постоянно провозглашает какие-то законы, постановления и тут же их отменяет."
+"A curious creature, full of energy. Other Beeboorats dread him to death, since he's always threatening them with the Buro's punishment. Boorawchick regularly proclaims laws and by-laws and then immediately revokes them afterwards."
+/*----2----*/
+"Это единственный бибурат, которого видели вне Глоркса. Это наводит на размышления. Он ведь по природе довольно труслив. Я как-то перед визитом в ВигБу намазала когти токсиком, так он чуть не умер от страха. Забился в щель, орал. Его долго оттуда извлекали..."
+"He's the only Beeboorat ever seen outside Glorx. Quite thought-provoking. Actually, he's very cowardly by nature. Once before visiting VigBoo I smeared my claws with toxick, and he almost died of fright! He just huddled in a crack and screamed. It took an arm and a leg to talk him out of there..."
+
+[Обурец] [Oboorez]
+/*----1----*/
+"Старый облезлый хрыч. Много повидал, многое помнит. Он незлой, только Буравчиком запуган и заморочен. С ним можно даже поговорить спокойно."
+"An old scabby fogey. He has seen a lot and remembers loads of things. He's harmless, just scared and confused by Boorawchick. You can have a pretty normal conversation with him."
+/*----2----*/
+"С него я решила начать просвещение бибуратов учением Маленького Цыка. Оставила ему попонку для изучения. Он поначалу боялся, не брал, но я его уговорила. Ты бы съездил к нему, проведал, привет передал."
+"I made up my mind to start the enlightment of the Beeboorats with him by teaching him WeeZyk's doctrine. I left a poponka for him to study. At first he didn't want to take it, but I managed to pursuade him. It would be nice if you went and saw him and greeted him from me." 
+
+[Бюро] [The Buro]
+/*----1----*/
+"А, Бюро... Загадочное явление. Бибураты его боятся, но никогда не видели. Только Буравчик постоянно сообщает его решения. Странные эти бибураты. Бюро не видели, а верят в него, а когда я им показала образ Маленького Цыка - не поверили..."
+"Ah, the Buro... That's a mysterious thing. The Beeboorats are very much afraid of it, although they've never seen it. Its decisions are regularly announced, by Boorawchick exclusively. These Beeboorats are very weird. They've never seen the Buro, but they believe in it. But when I showed them an icon of ProtoZeek, they wouldn't believe..."
+/*----2----*/
+"У меня есть мысль на этот счёт. Бюро - это совет бибов, который управляет бибуратами. Бибы маленькие, потому их никто не замечает. А Буравчик это замаскированный биб. Это объяснение хорошо согласуется с фактами."
+"I've got an idea about that. The Buro is a Board of beebs which governs the Beeboorats. The beebs are tiny, and that's why nobody notices them. And Boorawchick is a disguised beeb. This explanation fits all the facts perfectly!"
+
+[раб] [Slave]
+/*----1----*/
+"Раб - вангер, недавно пойманный бибуратами. Несчастное создание. Он помнит ещё вольную жизнь, не омрачённую Раббоксом."
+"A Slave is a vanger recently caught by the Beeboorats. It's a forlorn creature that still remembers its free life, before it was darkened by the Rubbox."
+/*----2----*/
+"Я не вникала в бибуратские дела так сильно..."
+"I don't delve into the Beeboorats' affairs that much..."
+
+[прораб] [Commissar]
+/*----1----*/
+"Гм, прораб... Кажется, это биб, которого переехал раб на мехосе. Точно не помню..."
+"Hmm, a Commissar... It seems to me that's a beeb who's been run over by a Slave in a mechos. I can't quite remember, though..."
+/*----2----*/
+"Вспомнила! Прорабы у софти ведали прорубанием Коридоров. У Маленького Цыка было двенадцать прорабов. Но они Конфликт не пережили..."
+"I just remembered! The Softie ordered the Commissars to dig the Passages. ProtoZeek had twelve Commissars, but they didn't survive the Clash..."
+
+[агент] [Agent]
+/*----1----*/
+"Агент это вангер, которого бибураты выгоняют на волю за ненадобностью. Или за воровство Ядробусов."
+"An Agent is a vanger banished by the Beeboorats into the wilderness, once it's no longer needed or has been caught filching Nucleobooms."
+/*----2----*/
+"Отстань со своими глупыми вопросами... Учи попонки!"
+"Stop asking silly questions! Go study the popons!"
+
+[Устав] [Manual]
+/*----1----*/
+"Маленький Цык завещал всем биосам сочинять попонки, чтобы не забывать его. Глупые бибураты всё перепутали, и вместо этого сочиняют Уставы. Ужасное невежество это..."
+"ProtoZeek willed all the bios to compose popons so they wouldn't forget him. The stupid Beeboorats got it all wrong, and instead they write manuals. What crass ignorance!"
+/*----2----*/
+"Извращённые попонки это. Толку нет от Уставов, потому как бибураты читать не могут."
+"Distorted popons! These manuals are good-for-nothing, especially since the Beeboorats can't read!"
+
+/*******************   Zeexen's terms   *******************************/
+
+[ЦыПа] [ZeePa]
+/*----1----*/
+"ЦыПа - это главный эскейв на Цепи Миров. Его создал Маленький Цык последним и даровал нам, циксам. Он написал здесь последние попонки. И с тех пор ЦыПа - главный источник попонок."
+"ZeePa is the main escave in the Chain of Worlds. ProtoZeek built it last and then bequeathed it to us, the Zeexen. Here he wrote his last popons. Since then, ZeePa has been the main source of popons."
+/*----2----*/
+"Я открою ужасную тайну. ЦыПа находится на месте дыры, через которую проклятые криспо залезли на Цепь Миров. Маленький Цык запечатал эскейвом этот проход и наказал нам быть на страже и не пускать криспо обратно. В последнее время я ощущаю странные колебания стен ЦыПы..."
+"I'll tell you an awful secret: ZeePa is situated over a former Passage through which the cursed Cryspo came to the Chain of Worlds. ProtoZeek sealed it with an escave and warned us to be cautious and let no Cryspo back through. But recently I've sensed strange vibrations in ZeePa's walls..."
+
+[БиЗона] [B-Zone]
+/*----1----*/
+"Хм.. Однажды Маленький Цык шлёпал по болотам Некросса на своей единственной ноге. Жидкая грязь и тина мгновенно затягивали любой след, что печалило Цыка. Он думал, что после его ухода все забудут он нём... Я не могу продолжить, я плачу... Заедь поже..."
+"Hmm.. Once, ProtoZeek was splashing about in the Necross bogs on his single leg. His every footprint was submerged instantly in slosh, which upset ProtoZeek. He feared that after his departure, he would be forgotten by everyone... No, I can't go on, I'm crying... Come back later..."
+/*----2----*/
+"Наконец, на краю мира, Маленькому Цыку удалось оставить отпечаток. Он удивился и возрадовался, потом вырыл на этом месте эскейв. И нарёк он его БиЗона, что означает Место Памяти... Сейчас этот славный эскейв переживает не лучшие времена..."
+"Finally, on the edge of the world, ProtoZeek managed to leave a footprint which stayed. ProtoZeek was surprised and rejoiced, then dug an escave on that spot. ProtoZeek named that place 'B-Zone', which means 'Place of Remebrance'. Now this once-glorious escave is going through some hard times..."
+
+[Цыфра] [Zeephra]
+/*----1----*/
+"Гм, колесник. Ты подвинулся рассудком, работа у бибуратов не прошла бесследно... Цыфра - это я, твоя жена и советник. Нельзя забывать это. Между прочим вангеры были даны циксам Маленьким Цыком в услужении навеки..."
+"Hey, wheeler! You must have gone crazy! I see the Beeboorats's efforts have not been wasted. I am Zeephra, your wife and counselor! You mustn't ever forget that. Also, remember that ProtoZeek directed the vangers to serve the Zeexen for eternity..."
+/*----2----*/
+"Я, Цыфра - мягчайшая из софти, старшая дочь и жена Маленького Цыка. Я хранитель веры и покровитель БиЗоны. На нас, советников ЦыПы, возложена миссия готовить возвращении софти. Ещё при жизни Маленький Цык был осмеян глупцами. Только у нас он искал утешения..."
+{ЦыПа} {БиЗона} 
+"I, Zeephra, I am the gentlest of the Softie, the eldest daughter and WeeZyk's wife. I am the guardian of the faith and the protector of B-Zoners. It's us, the counselors of ZeePa, who are charged with the mission to prepare for the return of the Softie. When WeeZyk was alive he was laughed at by the fools. Only with us did he find comfort..." 
+{ZeePa} {B-Zone} 
+
+[Цыкатуха] [Zeekatrix]
+/*----1----*/
+"Что, Цыкатуха? Мы должны терпеливо относится к ней и всем обитателям БиЗоны. Это ведь урождённые циксы, хоть и погрязшие в невежестве. Цыкатуха, уверена, читает попонки и мечтает возвратиться под крыло Маленького Цыка. Но ей мешает гордыня."
+{попонка} {БиЗона} 
+"What? Zeekatrix? We should be gentle with it, as well as with the other B-Zoners. They are Zeexen by birth, and their only fault is ignorance. I'm sure that Zeekatrix reads the popons and dreams of coming back under ProtoZeek's wing. It is only her pride that prevents her."
+{popon} {B-Zone} 
+/*----2----*/
+"Издавна советники БиЗоны завидовали нашей особой близости с Маленьким Цыком и страшно ревновали. Маленький Цык писал нам, своим дочерям и жёнам попонки с мудрыми и тёплыми словами. Позже мы тоже начали их сочинять и слать в БиЗону, только пока тщетно..."
+"Since ancient times, the B-Zone counselors have envied our special closeness to ProtoZeek and been terribly jealous of it. ProtoZeek wrote to us - his daughters and wives - popons full of wise, warm words. Later, we started writing them too and sending them to B-Zone, but all in vain..."
+
+[токсик] [toxick]
+/*----1----*/
+"Токсик очень полезная вещь на сыроватом Некроссе. Глупая Цыкатуха думает нас уморить им, а не знает, что жёны софти всегда травили друг друга, и ничего, мужьям это только нравилось. Поэтому мы не препятствуем этому и рады, что обычаи софти ещё живы!"
+{Цыкатуха} 
+"Toxick is a very useful thing on that moist Necross. The feeble-minded Zeekatrix dreams of poisoning us with it, but she doesn't know that the Softie were always intoxicating one another and nothing terrible ever happened. It only boosted their image in their husbands' eyes! That's why we don't interfere. We're just happy that the Softie are still alive!"
+{Zeekatrix} 
+/*----2----*/
+"Ты не знаешь, что Маленький Цык научил цикс делать токсик? Болотная грязь очень прилипчива и забивает ухи очень быстро. Чтобы его жёны всегда были чистыми, он и придумал чудесный состав. А потом оказалось, что этот токсик и как отрава хорош. Знай теперь."
+"Don't you know that ProtoZeek taught the Zeexen how to make toxick? The swamp mud is very sticky and can stuff up your ears in the wink of an eye. So his wives would always keep clean and neat, he created this wonderful mixture. Later, it turned out that toxick was also a good poison. So now you know!"
+
+[попонка] [popon]
+/*----1----*/
+"Написание попонок это основное занятие советников ЦыПы с давних пор. Ему обучил нас Маленький Цык. Он все биосы хотел просветить, даже бибов, но самыми умными и способными оказались мы. Теперь я их пишу, чтобы напомнить БиЗоне всё то, что они забыли."
+{ЦыПа} 
+"Composing popons has been the main occupation of the ZeePa counselors since ages ago. ProtoZeek trained us to write them properly. He wanted to enlighten all the bios and the beebs, but we turned out to be the most capable and the cleverest of all. Now I write them to remind the B-Zoners of what they have lost."
+{ZeePa} 
+/*----2----*/
+"После создания биосы обладали слабыми мозгами и забывали, что надо делать. Маленький Цык решил им помочь и вылепил глиняные таблички с советами. Но глупцы ленились их читать, и всё у них с тех пор делается наперекосяк. Только циксы прилежно учили попонки."
+"After their creation, the bios were slow-witted and forgot what they had to do. ProtoZeek decided to help them and made clay plates with advice for them. But the dummies were too lazy to read them, so everything has been done haphazardly ever since. Only the Zeexen studied them diligently."
+
+[Маленький Цык] [ProtoZeek]
+/*----1----*/
+"Маленький Цык был великий софти и творец биосов. Его деяния были столь многочисленны, что попонками с их описанием можно вымостить путь из ЦыПы в БиЗону в два слоя. Он один смог пережить Конфликт. Криспо, поражённые его величием, не посмели тронуть его."
+{попонка} {ЦыПа} {БиЗона} 
+"ProtoZeek was a great Softie and a bios creator. His deeds were so numerous that one could pave a double-layer road from ZeePa to B-Zone with popons describing them and still not run out! He was the only one who could survive the Clash. The Cryspo, impressed by his magnitude, dared not touch him."
+{popon} {ZeePa} {B-Zone} 
+/*----2----*/
+"Маленький Цык, сотворив биосы, долго ещё скитался по Цепи Миров, просвещая свои творения. Но, видимо, материал пошедший на биосы был слегка протухшим, и они не понимали своего творца. Только мы, циксы, его любимцы, помним Цыка. Он ушёл, но обещал вернуться."
+"After he had created the bios, ProtoZeek wandered around the Chain of Worlds for quite a long time, bringing knowledge to his creations. But obviously the material he used for creating the bios had gone bad, and the bios didn't understand their creator. Only we, the Zeexen, his favorites, remember ProtoZeek. He's gone, but he has promised to return."
+
+[Весна] [Spring]
+/*----1----*/
+"Весна - время ритуальной гонки, посвящённой Маленькому Цыку. Только достойный участвует в ней, и только достойнейший побеждает. В это время дух Маленького Цыка нисходит на Некросс и радуется своим верным почитателям."
+"Spring is the time for a ritual race dedicated to ProtoZeek. Only the worthy may participate in it, and only the most worthy wins. At this time, ProtoZeek's spirit descends to Necross and is gladdened by his faithful worshipers."
+/*----2----*/
+"Весна - пора свершений у софти. Если они нетерпеливо спрашивали у Маленького Цыка, когда же он проковыряет новый Коридор, он говорил: 'Двинем по весне, ребята!'. С тех пор Весна означает - Маленький Цык идёт!"
+"Spring was the time for the Softie to act. They asked ProtoZeek impatiently when he was going to scoop up a new Passage, and he replied: 'We'll start in Spring, guys!' Since then, Spring means 'ProtoZeek is coming!'"
+
+[Декабрь] [December]
+/*----1----*/
+"Ты заинтересовался циклами? Слушай. Первые биосы были настолько тупы, что если и удавалось их заставить что-то делать, то они это делали, покуда не падали замертво. Маленькому Цыку постоянно приходилось возвращаться и пинками прекращать работу... Хватит пока."
+"Want to find out about the cycles? Listen here, then. The first of the bios were so utterly thick-headed that when you were lucky enough to make them do anything, they would do it until they fell dead. Because of that, ProtoZeek always had to return to them and give them a good kick to get them to stop working. Well, that's enough for now."
+/*----2----*/
+"Слушай продолжение. К сожалению, другого способа сменить труд на отдых, кроме как пинок, Маленький Цык не открыл. Носился он постоянно по мирам от биоса к биосу, раздавая оплеухи и регламентируя работы. После его ухода нюха продолжила это дело. Что ж, только софти были совершенны."
+"Now listen to the rest of the story. To his regret, apart from the kicks, WeeZyk couldn't find any other way to make them change from work to rest. And so, he hacked around the worlds from one bios to another, spanking the bios and regulating their work. After his departure the cirt maintained his doings. Still, only the Softie were flawless." 
+
+[Суббота] [Saturday]
+/*----1----*/
+"О, после торжественного прибытия Маленького Цыка в БиЗону мы отдыхаем и готовимся к написанию попонок. Месим глину, травим бибов токсиком. Попонки должны писаться без суеты и в чистоте."
+{БиЗона} 
+"Oh, after ProtoZeek's solemn arrival in B-Zone, we normally rest and get ready to write the popons. We knead clay and kill the beebs with toxick. Popons must be composed in a clean atmosphere, without any fuss or ado."
+{B-Zone} 
+/*----2----*/
+"Софти когда-то избрали Субботу для отдыха и приготовлений, и мы ни в чём не хотим отступать от традиции. Кстати, Маленький Цык ужасно не любил, когда его отвлекали в Субботу."
+"Long ago, the Softie made Saturday for rest and preparations, and we don't want to break that tradition. By the way, ProtoZeek hated being distracted on Saturday!"
+
+[Цыклоп] [Zeeklope]
+/*----1----*/
+"Цыклоп - великий просветительский исход Маленького Цыка в БиЗону. Послушай предысторию. Задумали как-то Большой Бу и Маленький Цык померяться жалами. Глупый Бу сразу высунул своё, огромных размеров. Маленький Цык подумал и впился в него своим... Интересно, да?"
+{БиЗона} 
+"Zeeklope was a great educational trip by ProtoZeek to B-Zone. Here's what happened: Once Big Boo and ProtoZeek decided to cross stings. The stupid Boo took his out immediately, and it was huge! ProtoZeek was more nimble, though, and managed to stab Boo. Interesting, isn't it?"
+{B-Zone} 
+/*----2----*/
+"Слушай далее. Укусил Маленький Цык за жало Большого Бу и бросился наутёк от разъярённого рогача. По дороге ехали раффа. Они спрятали Цыка в трюмах, передавая друг другу, пока Бу всех обыскивал. В честь чудесного спасения Маленького Цыка мы и проводим Цыклоп."
+"Listen further. WeeZyk snapped at BigBoo's sting and took off as fast as possible from that mad-horn. Meantime the raffa were driving down the road. They sheltered WeeZyk in their bays, passing it from one to another whilst Boo was ransacking all of them. In honour of this heavenly rescue of WeeZyk we arrange Zyklope."  
+
+/********* Advanced terms *****************/
+
+[Виксов] [Weexow]
+"Слушай одну легенду. Когда Маленький Цык заснул, утомившись делать Коридоры, некоторые завистливые софти украли у него чудесную палку и сами решили сделать Коридор. Но поскольку воры были маленькими и страдали водянкой головного мозга, открывшийся мир был крохотным и залитым водой."
+"Here is one legend. When WeeZyk once got tired while digging Passages and took a nap, some envious Softie pinched his magic stick and decided to build a Passage themselves. But as the jostlers were small and suffered from hydrophobia, the world they opened was tiny and all submerged in water." 
+
+[Бузина] [Boozeena]
+"После Конфликта Маленький Цык решил спрятать свой чудесный жезл, чтобы никто больше не смог сделать Коридор и выпустить тварей вроде криспо. Он открыл мир и в центре его закопал свой инструмент и заколдовал своим словом. Ещё он поставил статуи для устрашения праздношатающихся."                      
+"After the Clash, ProtoZeek decided to hide his wonderful stick, lest anyone dig a Passage and let some wild beasts like the Cryspo out. He opened a new world and, in the very middle of it, he buried his tool and cast a spell on it. Then, he built some statues to scare any wanderers away."
+
+[Трилл] [Threall]
+"Когда Маленький Цык делал Цепь Миров, он наткнулся на загадочный мир инферналов. Это были таинственные создания. На Трилле Цык обжёг свою ногу, поэтому велел всем не шляться там по пустякам и беречь рассудок..."
+{инферналы} 
+"While he was creating the Chain of Worlds, ProtoZeek bumped into a mysterious world of the Infernals. These were very strange creatures. ProtoZeek scorched his leg on Threall, so he told everyone to be careful there..."
+{The Infernals} 
+
+[хМок] [hMok]
+"хМок очень плохое место. Один софти нарушил запрет Маленького Цыка появляться на Трилле и там сошёл с ума. Он принял от инферналов силу, с которой не совладал. Маленький Цык открыл для него особый мир, где и заключил безумца. Там он нашёл свою погибель."
+{Трилл} {инферналы} 
+"hMok is a very bad place. A Softie once violated ProtoZeek's prohibition to go to Threall and lost his mind there! He gained a power from the Infernals which he couldn't manage. ProtoZeek opened a special world and imprisoned the maniac there, where he later died."
+{Threall} {The Infernals} 
+
+[Кокс] [Khox]
+"При создании Цепи Миров Маленький Цык неожиданно наткнулся на мир софти, ему не ведомых. Он был без жителей, одни странные конструкции. Испугавшись, Цык запечатал Коридор на этот мир, погрузив его в темноту, чтобы отвадить праздношатающихся..."
+"While creating the Chain of Worlds, ProtoZeek came across a world of Softie who were unknown to him. There were no inhabitants, only some strange structures. This scared ProtoZeek, and he sealed the Passage to this world, thus plunging it into darkness and making all wanderers steer clear of it..."
+
+[Арк-а-Зной] [Ark-a-Noi]
+"Некоторые бибы, обожравшись после Конфликта останками криспо начали расти и озверели. Они стали кидаться на всех без исключения. Маленький Цык решил их выгнать на отдельный мир, в один прекрасный день лишившись пальца на ноге. Этот мир и есть Арк-а-Зной."
+"After the Clash, some of the beebs stuffed themselves with Cryspo parts and started growing and going berserk. They began to pounce on everyone, without exception. So, ProtoZeek decided to drive them out into a separate world, after losing a toe in the process. This world is called Ark-a-Noi."
+
+[Начертатель] [Protractor]
+"Софти-завистники решили сделать свой чудесный жезл для открытия Коридоров. Они отломали кусок палки Маленького Цыка и сунули в свой прибор. Но она не могла открыть Коридор. Выбросили тогда завистники негодный инструмент-Начертатель и спрятались от насмешек на Икспло."
+"The envious Softie made their own stick to open Passages. They broke off a bit of ProtoZeek's magic stick and placed it into their device. But their stick couldn't open the Passage. So the envious Softie threw away the no-good tool - which we call the Protractor - and fled to Xplo to escape derision."
+
+[Механический Мессия] [Mechanical Messiah]
+"Ты знаешь, что после сделки с Маленьким Цыком и инферналами они получили половину власти над вангерами. И используют это в своих тёмных и страшных делах. Инферналы создали Механического Мессию как знак идущего по их тропе. Дорогой, не ходи к инферналам, прошу!" 
+{инферналы} 
+"You know, after the bargain between ProtoZeek and the Infernals, the latter got half of the power over the vangers and now use it for their own dark, horrible business. The Infernals invented the Mechanical Messiah as a symbol of one who treads their path. Don't go to the Infernals, my dear, I beg you!"
+{The Infernals} 
+
+[Способ-83+] [Function-83+]
+"Один хитрый софти смастерил прибор, переносящий на мир, минуя Коридор. Он использовал кусочек чудесного жезла Маленького Цыка. Всё бы ничего, только решил софти вытащить сидящего на хМоке безумца. Но провалились его планы. А этот прибор забрал Маленький Цык и приберёг вангерам."
+{хМок} 
+"One smart Softie invented a tool which could get you to another world, bypassing the Passage! He used a bit of ProtoZeek's magic stick. His plan would have worked, if not for his idea to free a crazy prisoner from hMok. He failed, and the tool was recovered by ProtoZeek and preserved for the vangers."
+{hMok} 
+
+[Спумия] [Chomper]
+"Когда сдох заключённый на хМоке безумец, сила инферналов покинула труп и стала рыскать по мирам, ища другое тело. Маленький Цык слепил из глины куклу софти и поймал туда страшный дух. С тех пор обещает Спумия показать мир софти тому, кто её освободит. Но это коварная ложь!"
+{хМок} {инферналы} 
+"When the lunatic imprisoned on hMok dropped dead, the Infernals' force left his body and started flying around the worlds searching for another. ProtoZeek made a figurine from clay resembling a Softie and entrapped the evil spirit in it. Ever since then, the Chomper promises to show the Softie world to the one who sets it free. But it's a treacherous liar!"
+{hMok} {The Infernals} 
+
+[Бут Сектор] [Boot Sector]
+"Инферналы, как одни из создателей вангеров, помогают им. Бут Сектор их рук дело. Но ты не опасайся, прибор безвреден, его проверило множество моих мужей и все они померли не от него, точно."
+{инферналы} 
+"The Infernals help the vangers, as their co-creators. The Boot Sector is their creation. Don't you be scared - the tool is harmless and has been tested by many of my hubbies. They all died, but certainly not because of it."
+{The Infernals} 
+
+[Пилот] [Flymatic]
+"Что Пилот, что Бут Сектор - подарок вангерам от инферналов, их родителей. Они-то знают, из какой глины слеплены колесники, и как им угодить."
+{Бут Сектор} {инферналы} 
+"Flymatic and Boot Sector are the vangers' gifts from the Infernals, from whom they originate. They know what sort of clay they are made of and how to use them."
+{Boot Sector} {The Infernals} 
+
+[наблюдатели] [The Spectators]
+"Это затворники Икспло, софти-отщепенцы. Завистники Маленького Цыка, которые не хотели с ним колупать Коридоры. По слухам, до них не добрались криспо во время Конфликта. Но мы верим, что Маленький Цык был единственным уцелевшим софти. Он так говорил всегда!"
+{Икспло} 
+"These are the Softie-renegades, the prisoners of Xplo. They are ProtoZeek's competitors, those who didn't want to help him dig the Passages. The rumors say that the Cryspo failed to get at them during the Clash. But we believe that ProtoZeek was the only Softie who survived. He always said that!"
+{Xplo} 
+
+[инферналы] [The Infernals]
+"Загадочные существа. И могучие, коли их не сожрали криспо. Они помогли Маленькому Цыку сделать вангеров. Поэтому мы вроде их должны славить. Но все биосы их боятся... Разве тебе не нравится твоя жена Цыфра? Прошу тебя, забудь о инферналах, хочешь, ухи вымою?"
+"They are mysterious creatures and must be very mighty, since the Cryspo didn't gulp them down. They helped WeeZyk to create vangers, that's why we glorify them. But all the bios fear them... Why, don't you like your wife Zeephra? For WeeZyk's sake, forget about the Infernals, if you wish I'll wash my ears..." 
+
+[Парафин] [Parapheen]
+"Парафин - нечестивое имя. Так звали главного наблюдателя - завистника Маленького Цыка. Он сделал Начертатель, надеясь затмить его славу. Некоторые говорят, что его можно найти в Спобсе. Опасайся, если это правда, наблюдатель тебя погубит, как любимца Цыка!"
+{Начертатель} {Спобс} {наблюдатели} 
+"Parapheen is the name of an apostate. That's what the main Spectator, the one most envious of ProtoZeek, was called. He made the Protractor in the hopes of outshining ProtoZeek. Some say he can be found on Spobs. But beware! It all of this is true, the Spectator will destroy you since you are ProtoZeek's favored one!"
+{Protractor} {Spobs} {The Spectators} 
+
+[Спобс] [Spobs]
+"Проклятый эскейв на Икспло. По легендам, там спрятались наблюдатели. Там никогда не жил не один биос, хотя обитатели Цепи Миров стремятся занять любую подходящую дыру... Если тебе дорога память Маленького Цыка - не появляйся там!"
+{наблюдатели} {Икспло} 
+"A cursed escave on Xplo. The legends say the Spectators hid there. No bios has ever lived there, even though the inhabitants of the Chain of Worlds never pass up a chance to occupy a suitable hole... For ProtoZeek's sake, don't go there!"
+{The Spectators} {Xplo} 
+
+[Карман] [Carmane]
+"Маленький Цык в ранних попонках говорил, что это имя инфернала. Хорошенькое имечко, биб меня задери. Но думаю, моему послушному мужу это имя не понадобится..."
+{инферналы} 
+"In his early popons, ProtoZeek mentioned that this was the name of an Infernal. Quite a nice name! But I hope my dutiful hubby won't ever need to say it again..."
+{The Infernals} 
+

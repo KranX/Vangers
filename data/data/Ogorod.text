@@ -1,0 +1,472 @@
+[quotha]
+"Обурец тут служит. Чаво нада, водоросль?"
+"Oboorez is here. What do you want, algoid?"
+{Обурец}
+{Oboorez}
+
+[Empty Question]
+"Что, кочерыжка, лопочешь? Чего хочешь-то?"
+"What are you mumblin' there, want somethin'?"
+
+[Empty Molecule]
+"Некогда мне языком чесать. Свободен, потрох рыхлый!"
+"No time for blabbing. You're dismissed, doughy meatloaf!"
+
+[Block Molecule:B]
+"Ты куда это все ломишься? Дослушай-ка меня, авось обрадуешься..."
+"Where are you always hurrying to? Hear me out, maybe I'll make you happy..."
+
+[Out Molecule:B]
+"Пошел отсюда, недотепа!"
+"Get out of here!"
+
+[Dead Molecule]
+"Все ушли на фронт..."
+"Dead Escave"
+
+[empty]
+"п"
+"e"
+
+[Order to Go ViGBoo:B]
+"Э-э-э-э, да ты ж отбившаяся скотинка! Давай-ка лети в ВигБу к Буравчику проходить оформление, зеленка!"
+"Hey, you're a stray dog! Fly to VigBoo to Boorawchick for registration, greenhorn!"
+{ВигБу} {Буравчик}
+{VigBoo} {Boorawchick}
+"Неоформленным здесь появляться не предписано! Еще раз увижу - вызову патруль, узнаешь, где бибы ночуют. Выполняй!"
+"You're not allowed to come here unregistered! Next time I'll call a patrol, they'll give you what for. Now go!"
+
+[Transition to ViGBoo:B]
+"Это опять ты, слизь подмостовая??? А где ж твой Раббокс, вонючка? Не уразумел ты значит меня, старого дядьку Обурца. Что ж, будем действовать согласно Уставу."
+"It's you again, muddy mucus??? Where's your Rubbox? Stinker! You didn't listen to what old Oboorez told you. Well, we'll act according to the Manual."
+{Раббокс} {Обурец} {Устав}
+{Rubbox} {Oboorez} {Manual}
+"Сейчас мы тебя аккуратненько в горшок-то посадим и прямехонько к товарищу Буравчику и отправим с оказией. Для того он и посажен, чтоб таких как ты к делу приобщать!"
+"We'll gently put you in a pot and send you straight to comrade Boorawchick with the next dispatch. That's why he sits there: to file away midges like you!"
+{Буравчик}
+{Boorawchick}
+
+[Pipiska Win (Boond):B]
+"Экий ты бравый сейчас, колесник! Уж не первый ли среди пипетковозов нынче? А на Раббокс-то ты свой с какой стороны смотришь, козявка? По чину ты - раб бибуратского Бюро!"
+"How brave you are, wheeler! Came in first in the PeepShow, huh? What side are you looking at your Rubbox from, midge? Your rank is Slave and you're a slave of the Beeboorats' Buro!"
+{пипетка} {Раббокс} {раб} {Бюро}
+{peeperette} {Rubbox} {Slave} {The Buro}
+"А по уставам Бюро рабам никак не можно пипетки возить. ПонЯл, нет? Так что еще раз покажи, как ты умеешь быстро ездить, пока я не разозлился не на шутку!"
+"The Manual forbids Slaves to ship peeperettes, got it? Now show me again how fast you can drive before I get really upset!"
+
+[Pipiska Participation (Boond):B]
+"Ты что, кукурузник, очумел совсем? Обурение свое придержи, да Уставы поучи - вот заповедь раба! Где это видано, чтобы салаги с пипетками ездили по миру?"
+"Hey, fitter, have you completely lost your marbles? Get a grip and study the Manual - that's the slave's precept! Whoever heard of Slaves riding around the world with peeperettes?"
+{Устав} {раб} {пипетка}
+{Manual} {Slave} {peeperette}
+"Кто же героев славных на подвиги повезет, не Буравчик ли? А ежели я тебя сейчас заместо куста в горшок за это посажу? Да в такой слизи ни одна пипетка не прорастет!"
+"Who will bring the brave Heroes to the stadium? Boorawchick? What if I put YOU instead of a shrub in a pot for that bit of mischief? I imagine no peeperette will sprout in this mucus!"
+{Буравчик} {куст}
+{Boorawchick} {shrub}
+"Ну-ка катись отседова и чтоб я духу твоего не видел тута!"
+"Get out of here and don't show your face again!"
+
+[Pipiska Win (Commissar):G]
+"Экий бравый мОлодец. ПипШоу-то не на шутку разыгралось, но ты первый поспел. Не зря на тебя я кричал, Уставам учил. Как говорят: на раба покричали - бибураты окрепчали!"
+"What a brave guy! The PeepShow was hot this time, but you came in first. My strict lessons weren't a waste of time. As the proverb says, a slave's pain is the Beeboorats' gain."
+{ПипШоу} {Устав} {раб}
+{PeepShow} {Manual} {Slave}
+"В ВигБу шифровка уже ушла, готовь Раббокс для новой записи, раб-ботничек..."
+"Cipher went to VigBoo already, so prepare your Rubbox for a new record, pattern worker..."
+{ВигБу} {Раббокс}
+{VigBoo} {Rubbox}
+
+[Pipiska Participation (Commissar):G]
+"Ну что, служивый, пипеток привез Обурцу? Тут мы их и приладим как нада. У меня ничего не пропадет!"
+"Oh, you brought some peeperettes to Oboorez, soldier? I'll find a use for them here. I don't waste anything!"
+{Обурец} {пипетка}
+{Oboorez} {peeperette}
+"А ты езжай, не пускай пузыри. Бери больше, вези дальше, тогда, может, и выйдет из тебя толк. Еще пипеток привези, короче!"
+"Off you go, don't blow bubbles. Pick more, go further, and maybe that way something will come of you. Bring me more peeperettes, in other words!"
+
+[Pipiska Win (Agent)]
+"ПипШоу-то для агента выиграть - невелика честь, так ты салагам выслужиться не даешь. Езжай, служивый, проявляй смекалку!"
+"A win in the PeepShow isn't a great honor for an Agent. Besides, you're stopping other slaves from climbing up the ladder. Now go, soldier, use your savvy!"
+{ПипШоу} {агент}
+{PeepShow} {Agent}
+
+[Pipiska Participation (Agent)]
+"За пипетки, конечно, спасибо, но ты ж не прораб какой, а? Зачем Бюро тебя воспитывало, уму учило?"
+"I'm always glad to get peeperettes, but you aren't some wretched Commissar, are you? Is that why the Buro raised you and taught you about life?"
+{пипетка} {прораб} {Бюро}
+{peeperette} {Commissar} {The Buro}
+"Или я плохо вижу нынче? Раббокс свой давно чистил? Может ты все же прораб? Стар я стал, ослеп совсем..."
+"Or is my vision letting me down? When did you clean your Rubbox last? Maybe you're a Commissar? I'm old, my eyes don't work that well anymore..."
+{Раббокс}
+{Rubbox}
+
+[Boond Arrival]
+"А вот и брюхоног прибыл. Обурец приглядывает за тобой, малец!"
+"A midge has arrived. Oboorez does a good job keeping an eye on you, midge!"
+{Обурец}
+{Oboorez}
+
+[Commissar Arrival]
+"Меня, Обурца, видишь, прораб? Честь отдай!"
+"Commissar, do you see Oboorez, your mentor? Salute!"
+{прораб} {Обурец}
+{Commissar} {Oboorez}
+
+[Agent Arrival]
+"Ишь ты, ахгентура в Огород пожаловала. Старика Обурца навестить не иначе как..."
+"Hey, an Agent's honoring me! You came to visit old Oboorez, huh?"
+{агент} {Огород} {Обурец}
+{Agent} {Ogorod} {Oboorez}
+
+[Shrub in Inventory (Boond):G]
+"Сгружай кусты и бегом назад, раб-ботничек. Быстрота раба украшает!"
+"Unload the shrubs and get back there quickly, Slave. A good slave is a nimble slave!"
+{куст} {раб}
+{shrub} {Slave}
+
+[Heroin in Inventory (Boond):B]
+"Эй, запах водный, ты это с чем ко мне приперся? С Героином внутре ты ко мне приперся, рабское рыло! Славный герой готов на подвиги, а ты его в Огород!?"
+"Hey you, algoid smell, what's that in your bay? That's a Valorin, you abject slave! The brave Hero is ready for feats, and you bring him to Ogorod!"
+{раб} {Героин} {Огород}
+{Slave} {Valorin} {Ogorod}
+"Убирайся, пока цел. Тебя ждет в другом конце Глоркса модный Гиря. И не задерживайся нигде, или худо будет!"
+"Get out of here while you're still alive! The stylish Geer'ah is waiting for you on the other end of Glorx. Don't linger, or else..."
+{Гиря}
+{Geer'ah}
+
+[+Heroin in Inventory (Boond):B]
+"Ах ты мокропуз пятиногий! Совсем не уважаешь бибуратское племя, что воспитывает таких недоносков на свою голову! Пора тебе самому взглянуть, куда герои требуются и что они там делают."
+"Может и пособишь какому-нибудь храбрецу подвиг свершить. Ты, наверное, и мечтать об этом не смел, хе-хе... С ближайшим вангером с ветерком прокатишься в Лампассы!"
+"Ну что, очнулся? Видно, не судьба тебе помереть. Ни один вангер не хочет брать тебя в Лампассы, говорят грязный и мокрый. Ты ведь и вправду такой... О, пока я поливал кусты, твой мехос и пожитки украли раффа. Ну ладно, зато живой остался. Теперь крепко Устав запомнишь!"
+"You five-legged clot! You don't show respect for the race of Beeboorats that raised you, abject freak. It's time for you to find out where the Heroes go and what they do there. "
+"Maybe you'll help some brave guy accomplish some feat. Guess you could never have dreamed of that, hehe... The next vanger's going to give you a ride to Lampasso! "
+"Wake up! I guess your fate hasn't yet come. No vanger is willing to take you to Lampasso, since they say you're all wet and dirty. Guess they're right... And while I was watering the shrubs some raffas filched your mechos and stuff. Well, keep your chin up: at least you're still alive. Now you'll remember the Manual better!"
+
+[Kernoboo in Inventory (Boond):B]
+"И откуда эта мокрота канавная на мою голову!? Как же тебя, раба тщедушного, занесло ко мне со спелыми Ядробусами? На первый раз прощу, а по второму пойдешь по Пятой Статье с отягчающими!"
+"Where did you come from, swamp mucus!? What the hell made an abject slave like you come here with fresh Nucleoboom? I'll forgive you the first time, but if you do that again, I will impose the penalty prescribed by law!"
+{Ядробус}
+{Nucleoboom}
+
+[+Kernoboo in Inventory (Boond):B]
+"Что же ты, мразь водянистая, героев без Ядробусов оставляешь? Да тебе к ним вообще прикасаться не положено. Более достойные есть для этого!"
+"How dare you, swamp pulp, steal Nucleoboom from Heroes! You're not even allowed to touch it. We have more worthy vangers for that!"
+{Ядробус}
+{Nucleoboom}
+"Эх доброта моя... Учение должно быть кратким и понятным! Короче, вытряхивайся из теплого местечка, садись в другое!"
+"I sort of knew my forgiveness wouldn't do any good... The lesson must be brief and clear. Get yourself out of that warm place and find somewhere else!"
+
+[Shrub in Inventory (Commissar):G]
+"Что, прораб, подрабатываешь на кустах? Что ж, Уставу не противоречит, но пипетки для тебя важней!"
+"Turning a beeb on shrubs, Commissar? Well, the Manual doesn't forbid that, but peeperettes are more important for you!"
+{прораб} {Устав} {пипетка}
+{Commissar} {Manual} {peeperette}
+
+[Heroin in Inventory (Commissar)]
+"Прораб умом ослаб - слыхал такое? Это про тебя! Героин-то как к тебе попал? Надо б в Бюро сигнализировать, там сумеют разобраться со свихнувшимся прорабом..."
+"A Commissar lost his wits, ever heard of something like that? It's about you! Where the hell did you get the Valorin? I ought to send a signal to the Buro - they'd take care of you, you cracked Commissar..."
+{прораб} {Героин} {Бюро}
+{Commissar} {Valorin} {The Buro}
+
+[+Heroin in Inventory (Commissar):B]
+"Да, тяжелая работка видать у прорабов. Свихнуться в два счета можно. Но мудрое Бюро всегда знает что делать, на том и стоят бибураты!"
+"Как говорится, лучше раб здоровый, чем прораб дубовый. Согласно уставу разжалываю тебя в рабы!"
+"Yeah, seems like a Commissar's job is a real struggle. The kind of job that make you go crazy. But the wise Buro always knows what to do, and that's where the Beeboorats' power lies! "
+"As we say, better a Slave of use than a Commissar obtuse. According to the Manual, you are demoted to Slave!"
+
+[Kernoboo in Inventory (Commissar):B]
+"Ну ты и заплутал, прораб. Ядробусы привез. Мне. Обурцу. Однако... Что ж делать-то с тобой, ополоумевшим от страха? Катись отсюда, попробуй успеть в Лампассы. Не успеешь - тебе каюк..."
+"You're lost, Commissar! You brought Nucleoboom? To me, Oboorez? Well... What shall I do with you, you dazed freak? Get out and try to get to Lampasso in time. If you're late, you're finished..."
+{прораб} {Ядробус} {Обурец} {Лампассы}
+{Commissar} {Nucleoboom} {Oboorez} {Lampasso}
+
+[+Kernoboo in Inventory (Commissar):B]
+"Опять ты приперся ко мне с Ядробусами. Хвастаешься ими, что ли. Да только тупостью своей негодно хвалиться. Это называется вредительство!"
+"Видимо места у тебя в катафалке много, вот ты и тянешь туда все, что видишь. Словно элипод обуреваемый какой. Покатайся пока на другом мехосе - авось пройдет наваждение!"
+"Again with the Nucleoboom!? Boasting about it, huh? Your stupidity isn't something to boast of. It's called sabotage! "
+"Guess you've got extra space in your crate, so you pick up everything you see like some crazy Eleepod. Try another mechos, maybe it will cure your bad habits!"
+
+[Shrub in Inventory (Agent)]
+"Ахгент и куст в нем. Хмм... Раффа тебя ограбил, видно. Дохлый пошел вангер нынче, не то что раньше. За кусты спасибо, конечно, но... какой-то ты снулый, солдатик. Нет?"
+"An Agent with a shrub. Hum... Guess a raffa robbed you. Vangers are feeble nowadays, not like in the good old days. Well, thanks for the shrubs, but... you're kind of wimpy for a soldier, huh?"
+{агент} {куст}
+{Agent} {shrub}
+
+[Heroin in Inventory (Agent):B]
+"А вот ежели я тебя, контра кривоколесная, за насмешки надо мной, старым Обурцом, в кусты произведу! Зараз вспомнишь где Героин надобен! Сам модный Гиря меня уважает, а этот гнус издевается. Стручок хренов..."
+"Cursed saboteur! What if I convert you into a shrub for mocking me, old Oboorez? You'll remember at once where to ship Valorin! Even the stylish Geer'ah respects me, while you, worm, dare to play tricks. Damn pod..."
+{Обурец} {куст} {Героин} {Гиря}
+{Oboorez} {shrub} {Valorin} {Geer'ah}
+
+[+Heroin in Inventory (Agent):B]
+"Все шутки шутишь, агент-клиент. Что ж, и Обурец пошутить сумеет, не зря он здесь сидит. Согласно инструкции Бюро, твои бибы как добровольное пожертвование передаются на постройку новой теплицы для кустиков!"
+"Поздравляю тебя, щедрый ты наш!"
+"Still making fun of me, Agent? Well, I can crack a joke too. Oboorez isn't just here to eat cirt. According to the Buro's instructions, all your beebs are given as a charitable donation toward a new greenhouse for shrubs! "
+"My congratulations, generous patron!"
+
+[Kernoboo in Inventory (Agent):B]
+"Похоже Буравчик зря нюху получает... Надо бы на него рапорт составить в Бюро. Это ж надо, агенты его совсем распустились! Святые Ядробусы таскают по всем дырам, и ничего не боятся! Дожил я!"
+"Seems like Boorawchick gets his cirt for nothing... Ought to report this to the Buro. His Agents went on the loose, who ever heard of something like that!? They bring the holy Nucleoboom to the boondocks and don't even give a damn! Never thought I'd see this day!"
+{Буравчик} {Бюро} {агент} {Ядробус}
+{Boorawchick} {The Buro} {Agent} {Nucleoboom}
+"Эй, служивый, ты не обожрался ли от счастья Ядробусов тех самых? НЕ СЛЫШУ! Сгинь, отброс зловонный..."
+"Hey soldier, you've glutted yourself on that Nucleoboom, huh? I CAN'T HEAR YOU! Get lost, stinking filth..."
+
+[+Kernoboo in Inventory (Agent):B]
+"Много я видал на службе, а с таким охламоном говорю впервые. Устав для него что поделки циксовы, а Раббоксом он, верно, чешется!"
+"Но тем и сильны бибураты, что смогли всякую сволочь к делу приобщить. Согласно постановлению Бюро, ты теряешь высокое звание агента! В прорабах у тебя будет время подучить Устав!"
+"I've been here a long time, but I've never seen a sad sack like you. The Manual is like Zeexen's doodles for you and your Rubbox is a widget for scratching! "
+"But the Beeboorats' power is in our ability to settle every scoundrel's hash. By the Buro's decree we are depriving you of the sonorous title of Agent! As a Commissar you'll have a lot of time to study the Manual!"
+
+[Pipiska Waiting?]
+"Ну что, прораб ретивый, пипетки скоро поспеют! Мы можем тут пока залечь до начала операции ПипШоу, подождать значет. Согласен, клюква?"
+"So, eager Commissar, peeperette season is coming up. You can lie here in the meantime and wait for operation PeepShow. Agreed, fitter?"
+{прораб} {пипетка} {ПипШоу}
+{Commissar} {peeperette} {PeepShow}
+@? 2		6 0
+"Давайте, папаша. Пипетки мне нужны чтоб выбраться из ваших цепких лап."
+"Ну вот, тебе пора, чем больше соберешь - тем лучше Обурцу и Бюро. Брысь наверх!"
+"All right, Dad. I need those peeperettes to get out of your clutches. It's time for you to go. The more you pick, the better for Oboorez and the Buro. Get up there now!"
+{Обурец} {Бюро}
+{Oboorez} {The Buro}
+"Спасибо, старый пень. Иди к своим горшкам, а я найду себе занятие получше!"
+"Ладно, сосунок. Иди, покопошись на Глорксе. Может, передумаешь - а то в горшки сажать уже нечего. Поспеши!"
+"Thanks, old stub. Get to your pots and I'll find myself something better to do! "
+"All right, sucker. Go and grub around on Glorx. Maybe you'll change your mind - we're short on peeperettes, you know. Hurry up!"
+
+[Nymbos in Inventory:G]
+"Чем так пахнет?... Нимбосом? Служивый не так прост... Правильной дорогой идешь, колесник. Короче, развивай успех!"
+"Smells like... Nymbos? Hey, the soldier's an artful dodger... You went the right way, wheeler. Struggle on!"
+
+[Phlegma in Inventory:G]
+"Ну что ж, а слизи взял зачем? Героев-то получше возить! Ну да ладно, пригодится и это пойло..."
+"Hmm, decided to ship mucus? Aren't the Heroes a better load? All right, we'll find a use for this stuff... "
+
+[Poponka in Inventory:B]
+"Что я вижу? Солдатик всякий хлам гребет к себе? Стыдись, ведь ты бибуратам служишь. Согласно инструкциям, твои бибы пойдут на очистку Глоркса от мусора! А попонки свои выкинь - не дело это..."
+"What's that!? The soldier has become a garbage collector? Shame on you, you're in the Beeboorats' service. According to the instructions, your beebs are confiscated in favor of Glorx Sanitation Service. And throw away those popons, conduct like that is unbecoming for a soldier of the Beeboorats!"
+{попонка}
+{popon}
+
+[Toxick in Inventory:B]
+"Что это мне глаза так режет? Токсик в Огороде! Тревога! Ах ты пузырь рваный! Уморить меня решил? Тебе это даром не пройдет, сырость гнилая! Отравитель циксовый!"
+"What's irritating my eyes? Toxick in Ogorod! Alarm! You ragged bladder! Decided to poison me? You won't get away with it, you rotten mucus! Zeexen poisoner!"
+{токсик}
+{toxick}
+
+[eLeech in Inventory:G]
+"ЭЛик! Вот это да! Не зря с тобой Бюро возилось, неразумным! Экий молодец! Порадовал, порадовал старика. Бюро такие нужны! Срочно даю шифровку в штаб! Пока они приедут - я добычу-то твою обжую как надо..."
+"Wow, you brought an eLeech! The Buro's lessons weren't in vain. What a brave guy! Yeah, this is a real joy for old Oboorez. The Buro needs soldiers like you! I'm sending an urgent cipher to headquarters. And I've got some time to grab a bite before they come..."
+{Бюро} {Обурец}
+{The Buro} {Oboorez}
+
+[WeeZyk in Inventory:B]
+"Тьфу ты, лупоглазое уродство! Когда последний раз смотрел к себе трюм, мусорщик? Я что тебе, элипод, что ты ко мне всю дрянь свозишь?"
+"Phew, full-eyed ugliness! When did you last look in your bay,  garbage collector? Do I look like an Eleepod? No? So why do you bring me junk!?"
+{Маленький Цык}
+{ProtoZeek}
+"Короче сваливай весь свой хлам и проветривай мехос, побиратель!"
+"Unload the bay and air out the mechos, sanitation engineer!"
+
+[MP0 Start]
+"Вангер! На Глорксе стартовал ВАН-ВАР. Наверху в нетерпении разъезжают многочисленные желающие выбить из тебя дух. Выйди им навстречу и подороже продай свою беспутную жизнь. Бибураты очень любят наблюдать всякие заварушки и перестрелки. Не обмани их ожиданий..."
+"Vanger! The VAN-WAR has started on Glorx! The pluckiest ones have started getting into it up there, and they're anxious to take your life. Go up and meet them, and try to take more than you give. Beeboorats like watching rumbles and gun fights, so don't disappoint us..."
+
+[MP1 Start]
+"Эй, извозчик хлама, Вангеры устроили МЕХОСОМУ. Ты должен перевезти условленное количество кустов или Героина. Набивай скорее трюм, смотри только, чтоб мехос не развалился от тяжести. На Глорксе сейчас время торгашей и перевозчиков. Потряси всех их своей грузоподъёмностью!"
+"Hey you, scavenger, the vangers have started the MECHOSOMA! You must deliver the predetermined amount of shrubs and Valorins. Load the cargo quickly, but take care that your crate doesn't collapse under the weight. The time of merchants and traffickers has come on Glorx; rock us with your carrying capacity."
+
+[MP2 Start]
+"Держись за руль крепче, колесник. ПАССЕМБЛОСС стартовал! Покажи, как ты умеешь быстро ездить и сталкивать соперника в канавы. Чтобы тупые вангеры не сбивались с дороги и видели, куда им ехать, гонка проходит по контрольным пунктам. Это мерцающие круги на дорогах. Не перепутай с водоворотами!"
+"Hold the wheel tight, vanger! The PASSEMBLOSS has started! Show us how you can drive fast and throw your competitors into ditches. To help the dumb vangers, the route goes through checkpoints that are seen as glowing circles on the road. Don't mix them up with whirlpools!"
+
+[MP3 Start]
+"ОХОТРОН стартовал!"
+"HUNTAGE started!"
+
+[MP4 Start]
+"МАСТОДОНТ стартовал!"
+"MUSTODONT started!"
+
+[MP0 Comment]
+"Ну, пугливый, ВАН-ВАР ещё идёт! Вооружись получше, сразу почувствуешь себя уверенней. У тебя ещё есть возможность догнать того невежу, который посмел подъехать к тебе на кривом мехосе. Влепи ему так, чтоб в округе обвалились мосты и попадали кверху брюхом бибы!"
+"Okay, yellow belly, the VAN-WAR is in full swing! Get yourself a big gun, maybe you'll feel more confident then. You can still get at the jackanapes who dared take you on in his craggy buggy. Blow the scab up so that nearby bridges collapse and beebs fall legs up!"
+
+[MP1 Comment]
+"МЕХОСОМА продолжается... Не устал ещё катать Героин и кусты? Ничего страшного, зато на мехос заработать можно. Покажи другим, кто главный торгаш на Глорксе! А если пара олухов окажется в воде, то не беда. Возить товар могут только крутые вангеры!"
+"The MECHOSOMA is going full blast... Tired of shipping shrubs and Valorins, huh? That's all right, but isn't it a good way to save up for a new mechos? Show the others who's the best merchant on Glorx! And if a couple of oafs end up in the water, never mind. Only tough vangers can ship goods!"
+
+[MP2 Comment]
+"Выиграть ПАССЕМБЛОСС нелегко, знаю. Тут главное не заблудиться и не пролететь контрольный пункт сгоряча. Это такой мерцающий круг на пути, запомни. А увидишь зазевавшегося вангера, спихивай его в канаву, не стесняйся. В ПАССЕМБЛОССЕ главное скорость!"
+"I know it isn't that easy to win the PASSEMBLOSS. The main thing here is to not go astray or skip a checkpoint in the heat of the moment. Remember, they are those glowing circles. If an oaf lingers in front of you, throw him into a ditch without hesitating. Speed is the name of the game!"
+
+[MP3 Comment]
+"ОХОТРОН продолжается..."
+"HUNTAGE in progress..."
+
+[MP4 Comment]
+"МАСТОДОНТ продолжается..."
+"MUSTODONT in progress..."
+
+[Cirt in Inventory]
+"Ох, служивый, раздобыл ты нюхи. Экий мОлодец. Наконец-то вышел из пустоколесного потроха толк! ПонЯл теперь, зачем Бюро тебя не жалея сил воспитывало? Дуй к Буравчику отчитываться, шалопай!"
+"Oh, soldier, you brought cirt! What a brave guy! At last something came of a dummy meatloaf on wheels. Now you know why the Buro put so much effort into your upbringing. Go to Boorawchick and report on the mission."
+
+[BadCirt in Inventory:B]
+"Погоди-ка, служивый. Что-то у меня пипетки вянуть начали. Только что их полил, до твоего приезда. Сам знаешь, хозяйство у меня капризное, ему условия подавай. Однако, не к добру это..."
+"Wait, soldier... My peeperettes started fading somehow, even though I recently watered them. You know, my vegetation is sensitive, it needs a good environment. But something is definitely wrong here..."
+
+[GoodCirt in Inventory:G]
+"Ты погляди-ка! Пипетки раньше времени ростки дали. А кусты были так себе, второй сорт четвертой категории. Радость-то какая! Я уж и не чаял на этой грядке урожая дождаться. Ты, солдатик, нынче удачу привез в Огород!"
+"Watch this! Peeperettes shot up before they should have, and the shrubs were so-so: second sort, fourth category. What joy! I gave up all hopes of getting a harvest from this bed. You brought luck to Ogorod today, soldier!"
+
+[Larva in Inventory]
+"О, мои гляделки меня не обманывают! Вижу Куккиш с Куклой! Давненько вангеры не привозили для бибуратов Царицу Нюхи. Ты, служивый, видать поймал в свой Куккиш большую удачу! Или свою погибель... Это смотря как ты выучил Уставы и предписания Бюро!"
+"Да, хорошую операцию провернули бибураты. Утерли нос сухим мирам. Езжай срочно в ВигБу и сдай Куклу приемной комиссии по протоколу формы КД-83"
+"Если твое дело выгорит, замолви словечко за старика. Дескать, Обурец всячески помогал мне и самолично руководил моими действиями в ходе всей операции - во как. Чего моргаешь? Не помнишь разве как дело было, шиповник? То-то..."
+"Oh, my peepers aren't cheating! I see a conlarver with a Larva! It's been a long time since vangers last brought the queen of cirt here. Guess you caught some good fortune in your conlarver, soldier! Or your doom... Depends on how diligently you've been studying the Manual and the instructions of the Buro. "
+"Yeah, the Beeboorats pulled off a great coup and whipped those carcasses from the sapless worlds. Go to VigBoo quickly and check the Larva into the reception committee according to protocol KD-83. "
+"If you pull it off, put in a word for the old chap. For example: 'Oboorez helped me in all possible ways and personally guided my actions throughout the whole campaign.' Why are you blinking? Don't you remember what happened, pupa? There you go."
+
+[Protractor in Inventory]
+"Что же ты, солдатик, привез? Похоже на Начертатель... Сказывают, что если он в трюме, то Трилл на тебя гневается. Хоть Бюро и запрещает эти старорежимные суеверия, все равно страшновато. Не нравятся мне эти икспловские штучки..."
+"So, what did you bring, soldier? Looks like the Protractor... They say when you have this thing in your bay, Threall rages at you. Although the Buro prohibits these relics of superstition, it's kinda scary anyway. I definitely don't like these Xplo doodads..."
+{Начертатель}
+{Protractor}
+
+[Mechanic Messiah in Inventory:B]
+"Ты что ж, гаденыш, решил Огород по камешку разнести? С Механическим Мессией шутки плохи! До многих это дошло, да слишком поздно... А ты езжай, езжай, побыстрее отседова. И лучше выброси эту дрянь подальше от Огорода, желательно у элиподов!"
+"You scab! You decided to wipe Ogorod out? Don't mess around with the Mechanical Messiah! Many have only understood that after it was too late... You go, go, go quickly. And throw this fiendish doodad away far from Ogorod, somewhere by the Eleepods!"
+{Механический Мессия}
+{Mechanical Messiah}
+
+[Function-83 in Inventory]
+"Экая занятная вещица. Когда-то Бюро присылало шифровку с описанием недозволенных вложений в трюм вангера..."
+"Твоя находка проходит по этой бумаге как Способ-83+. Я вроде как должен его конфисковать... Ну да ладно, в Бюро уже позабыли про эту инструкцию, живи..."
+"That's a funny widget you've got there. I remember the Buro once sent a cipher with a list of all the items that are illegal for vangers to carry in their bays... "
+"Your find is listed as 'Function-83+.' I really ought to confiscate it... All right, I guess the Buro guys have forgotten about this cipher, so carry on..."
+{Способ-83+}
+{Function-83+}
+
+[Spummy in Inventory:B]
+"Ай, Спумия!.. Не губи старика, ирод. Мне до пенсии немного осталось. В конце службы увидеть этот ужас - за что?! Если меня не жалко, то хоть кустики пожалей. Смотри как они ворочаются и скулят. А что творится с пипетками!"
+"Как же ты додумался до такого? Видать, служба была нелегкой, вот и подвинулся рассудком, бедолага. Езжай-ка ты себе потихоньку из Огорода, не серчай на старика..."
+"Ouch, the Chomper!.. Don't ruin an old chap, you rude martinet! I'm about to retire, and what have I spent an entire life of service for, to see this horror at the end?! If you don't have mercy on me, have mercy on the shrubs. Look at how they're groaning and tumbling around. And look what's happening to the peeperettes! "
+"What ever got into you? Guess you've lost your marbles because of your heavy duty, poor thing. You'd better be leaving, don't be angry with an old chap..."
+{Спумия}
+{Chomper}
+
+[Boot Sector in Inventory]
+"Кажись, Бут Сектор. Помню, помню. Был он когда-то у одного агента, который добыл его в драке, а вот Раббокс свой в пылу проворонил."
+"Буравчик, понятное дело, его к делу пристроил по приезду, отобрал пожитки и мехос. А Бут Сектор, значит, мне прислал в хозяйство."
+"А у того растяпы-вангера остались в заначке еще целых три мехоса - один краше другого! Но ведь без этой ерунды их никак и не получить взад..."
+"Приезжал, родимый, ко мне на раффа, умолял вернуть, рыдал. А инструкция-то не велит! Сговорились, что два своих мехоса он мне в пользование отгонит втихаря... Обманул, конечно. Но потом его таки словили мои орлы, уговорили..."
+"Well, it looks like Boot Sector. Yeah, I remember, an Agent had it once. He grabbed it in a fight, but lost his Rubbox. "
+"Boorawchick, as expected, stripped the brave Agent on his arrival and sent Boot Sector to my farm. "
+"Just imagine, that sad sack had three mechos in a cache and all in good condition, but without this thing he couldn't get them back... "
+"So the fellow came on a raffa and started weeping and begging me to give the widget back to him. But the instructions forbid this, you know. So we made a deal: I gave him Boot Sector and he gave me two of the three mechos on the down low. That rascal cheated the old chap, but my guys caught the bamboozler later and settled his hash good."
+{Бут Сектор}
+{Boot Sector}
+
+[Peelot in Inventory]
+"Пилот, Пилот... Что-то я про него слышал такое странное. Вспомнил! Это какой-то упакованный вангер в коробочке, которого ты сажаешь вместо себя - а он и рулит... Говорят, правда, туповат он. Видать, тесно ему там..."
+"Flymatic, Flymatic... Seems like I've heard something about it. Oh, yes! It's a vanger buried in a box that you put in your place to drive for you. They say he's kinda slow, however. Guess that's because the box is kinda narrow."
+{Пилот}
+{Flymatic}
+
+[Fake Pipetka found]
+"Стоп, подделка! Эх, малец. У старого Обурца глаз наметан. Он столько пипеток перевидал, сколько ты бибов не видел. А эти пипки-фальшивки по данным Бюро, лепят у себя циксы, чтоб подорвать, значит, бибуратскую экономику."
+"Вот я тебя как фальшивопипеточника освобожу и от остального твоего жалкого груза!"
+"Wait, that's a sham! This old chap knows his peeperettes, fella, seeing as how he's seen so many of them. You haven't even seen that many beebs. These fake peeperettes, according to information from the Buro, are produced by the Zeexen to shake the Beeboorat economy. "
+"I'll strip you of all your plunder for this forgery!"
+{пипетка}
+{peeperette}
+
+[Boorawchick in Inventory]
+"Равняйсь, смирно. Ваше Высокообурение товарищ Буравчик! Уполномоченный по Огороду, старший советник кустоводства Обурец, докладывает."
+"За время моего дежурства происшествий не случилось. Пипетки не вянут, кусты не преют. Нюхой доволен. Жду дальнейших распоряжений!"
+"Dress ranks, attention! Your pushy comrade Boorawchick! Ogorod farming officer and senior shrub-growing expert Oboorez reporting! "
+"During my watch nothing suspicious happened. The peeperettes aren't fading, the shrubs aren't rotting. I'm content with the cirt. Awaiting further orders. Boorawchick out!"
+
+[Queen Frog part note]
+"Вижу, механик, как ты стараешься, прям душа радуется. Но на такой колымаге много не наработаешь. Я много мехосов повидал и могу кое-что поведать на этот счет."
+"Трещетку когда-то оторвали от мехоса Жаба. Это я проделал самолично, была такая инструкция от Бюро по утилизации металлолома..."
+"I see your diligence, fitter! But on a crate like yours you won't do much. I've seen a lot of mechos and I can share something with you. "
+"Rattle was once taken out of Queen Frog. I did that personally. There were instructions from the Buro on scrap utilization..."
+
+[Lawn Mower part note]
+"Гляжу я на твой мехос и кое-что припоминаю. Ты хороший вангер, Обурца не обижаешь и Уставы вроде как изучаешь. Могу тебе помочь."
+"Звездочка - часть от Винтокрыла. А вот откуда это знаю - хоть убей, забыл старый пень..."
+"Your mechos reminds me of something. You are a decent vanger: you don't spite this old chap and you study the Manual. I can help you. "
+"Star is a part of the Lawn Mower, but what it's for, I don't know. I'm old, you know."
+
+[Weexow visit]
+"Надо же. Твари с Виксова не отобедали этим молодцем. Знай наших! Только Бюро может воспитать таких агентов..."
+"Gee! The beasts of Weexow didn't eat you, brave vanger! Good for you! Only the Buro could raise Agents like you..."
+{Виксов}
+{Weexow}
+
+[Boozeena visit]
+"Что, солдатик, видал ли ты на Бузине люк с крутящейся крышкой? На одной стороне одна закорючка, на обратной - другая. Или мне наплели шутники-агенты? Говорят, нужная в хозяйстве вещь..."
+"Hi soldier! Did you see a hatch with a whirling lid over there on Boozeena? It has a widget on one side and a gadget on the other. Either that or it's a crock of funster Agents. They say it's a useful doodad..."
+{Бузина}
+{Boozeena}
+
+[Ark-a-Znoy visit]
+"Говорят, кто выехал с Арк-а-Зноя, обратно ни за что не полезет. Неужто так страшно? Я бы вмиг разобрался что там к чему!"
+"They say that if someone's been to Ark-a-Noi once, he'll never venture there again. Is it really so scary? I would enforce discipline there in a trice!"
+{Арк-а-Зной}
+{Ark-a-Noi}
+
+[Khox visit]
+"Ты с Кокса, служивый? Когда-то давно Бюро, захотев избавиться от слишком шустрых агентов, подозреваемых в связях с циксами, отправляло их на Кокс. Якобы в дозор. Возвращались очень немногие..."
+"You've been to Khox, soldier? The Buro once decided to get rid of a few dodgy Agents who were suspected of having relations with the Zeexen. They sent the Agents to Khox on 'patrol.' Few came back..."
+{Кокс}
+{Khox}
+
+[hMok visit]
+"Эко тебя, бродяга, занесло. У меня от одной мысли о хМоке поджилки трясутся. Все-таки есть на мирах такое, что и самому Бюро не по зубам, хоть Буравчик и грозится направо и налево..."
+"You've been to hell, I should say. I tremble in fear just thinking of hMok. Yes, there is something in the worlds that even the Buro can't control, no matter how many threats Boorawchick utters..."
+{хМок}
+{hMok}
+
+[Threall visit]
+"Говорят, на Трилле сидит кто-то страшный и непонятный, с которым Бюро совсем не хочет связываться. Держи порох сухим, парень, а мехос смазанным. Начинаются совсем другие игры..."
+"They say a weird and wicked creature dwells on Threall, and even the Buro doesn't want to deal with it. Keep your powder dry and your mechos oiled, soldier. A different game is underway..."
+{Трилл}
+{Threall}
+
+[Eleepod in Inventory]
+"Хе-хе, червячок-с с Фострала. Добро пожаловать в Огород к Обурцу. Да не дрожи ты так, старик тебя не обидит. Я хочу устроить торжественный ужин и пригласить тебя на него. Будешь украшением стола..."
+"Hehe, a worm from Fostral paying a visit to old Oboorez. Welcome to Ogorod! Don't you tremble, this old chap won't bother you. I just want to put together a banquet and invite you to it. You'll be a table decoration..."
+
+[Beeboorat in Inventory]
+"Ох, пожаловала в нашу глушь важная шишка. Что, земляк, какая нелегкая тебя принесла? Ко мне ведь бибураты все больше как кусты прибывают. Али ты с грузом каким? Молчу-молчу..."
+"Что нового в столице? Буравчик все еще председательствует? Гирю еще не сняли за нескромность?"
+"Oh, a big guy visiting our boondocks. Hello, brother, what has brought you this way? You know, I receive Beeboorats in the form of shrubs, mostly. Are you here with a message? Okay, okay I'll shut up... "
+"What's new in the metropolis? Is Boorawchick still chairman? Has Geer'ah been demoted for his indiscretion?"
+
+[Zeex in Inventory]
+"Эй, уродливая цикса! Все ездишь, рыщешь, софти разыскиваешь? Ужо в Огороде ты на них насмотришься, ручаюсь. Если хочешь знать, мне этих софти вангеры десятками свозят! Уже класть некуда - там софти, сям софти..."
+"А скажи, правду говорят, что циксы перетравили друг друга полностью и за нас принялись? Ты случаем ни диверсантка какая? Смотри, враз пипетки проращу в обоих глазищах!"
+"Ugh, you ugly Zeex! Gadding around looking for the Softie? Well, you'll find plenty of them in Ogorod, I promise. Vangers bring dozens of these Softies here, if that interests you. Got no room to store them; Softies here, Softies there... "
+"Tell me, is it true that the Zeexen have poisoned each other already and have now switched over to our side? You aren't a saboteur, are you? You'd better be calm or else I'll plant peeperettes in your popped eyes in a trice!"
+
+[Zyklope warning]
+"Ну, солдатик, скоро тебе придет повестка на Некросс ехать. Хочу тебе помочь, приглянулся ты мне. В ЦыПу сразу не езжай, а рули напрямик в БиЗону. Будут тебя оттуда в шею гнать, а ты дурачком прикинься и все равно при в наглую."
+"Три раза тебя прогонят, а потом примут и расскажут что к чему. После этого езжай уже спокойно к другим дармоедкам."
+"Well, soldier, the time is coming for you to get to Necross. I kind of like you, so I'm going to help you. When you are there, don't peek into ZeePa, go straight to B-Zone."
+"They'll turn you away three times, but then they'll let you in and tell you what you need to know. After that you can visit other hornets without fear."
+{ЦыПа} {БиЗона} {Цыфра}
+{ZeePa} {B-Zone} {Zeephra}
+
+[Boozeena Code]
+"Слушай, солдатик. На пропуске твоего пассажира в углу нацарапано какое-то словечко, вроде как $(Boozeena Secret Code)... Ты, случайно, не знаешь, что оно означает? Может, это отметка Наиглавнейшего Инспектора? Вроде не похоже..."
+"Listen, soldier. There's something inscribed on your passenger's pass, it reads $(Boozeena Secret Code)... Do you know what that means, by any chance? Maybe it's the mark of the Ultimate Top Inspector? Well, actually, it doesn't look like that..."
+
+[Larvae Vision note:G]
+"Твоя служба идет в гору, авторитет уже вырос как пипетка политая. Ну что, теперь ты можешь нюху грести обеими заборниками, потому как Кукла в твоем мехосе показывается подобно другим вангерам. Не зевай только!"
+"You're climbing the ladder, and your Dominance has risen like a watered peeperette. Now you can scoop cirt with both, since Larvae are now seen in your mechos like other vangers. Keep your eyes peeled!"
+{Куклы}
+{Larvae}
+

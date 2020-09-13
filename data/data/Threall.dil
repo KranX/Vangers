@@ -1,0 +1,11 @@
+9
+9
+7
+7
+1 0 "empty" "0" "0" "0" "true" " " " " 
+3 1 "Thunders!" "2" "0" "1" "threall_alive == 0" " " " " 
+2 1 "Spobs Killing Waiting" "2" "0" "1" "spobs_alive > 0 threall_alive > 0" " " " " 
+1 1 "Add Messiah SpectorsKill Function" "1" "1" "0" "infernals_task > 0" " " "addMessiahKill" 
+0 2 "Infernals Task Waiting" "2" "0" "1" "infernals_task == 0" " " " " 
+0 1 "Introduction and Infernals Task" "1" "1" "0" "true" " " " " 
+0 0 "Messiah is Absent" "3" "0" "1" "data INV_MESSIAH == 0" " " "clear" 

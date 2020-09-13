@@ -2,6 +2,7 @@
 data/*
 !data/iscreen
 !data/actint
+!data/data
 
 # CMake files
 CMakeFiles/
