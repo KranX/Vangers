@@ -1554,7 +1554,7 @@ void change_screen(int mode)
 {
 	aScrDisp -> change_ibs(mode);
 	aScrDisp -> flags &= ~AS_FULL_REDRAW;
-	set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
+//	set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
 }
 
 void aciSendEvent2actint(int code,actintItemData* p,int data)
