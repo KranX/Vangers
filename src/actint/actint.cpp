@@ -5239,26 +5239,11 @@ void actIntDispatcher::EventQuant(void)
 			case EV_FULLSCR_CHANGE:
 				flags ^= AS_FULLSCR;
 				if(flags & AS_FULLSCR){
-					set_screen(XGR_MAXX/2, XGR_MAXY/2,0, XGR_MAXX/2, XGR_MAXY/2);
-					XGR_MouseHide();
-					XGR_MouseSetPromptData(NULL);
-					mechosCameraOffsetX = 0;
+					set_fullscreen(true);
 				}
 				else {
-					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(XGR_MAXX/2, XGR_MAXY/2,0, XGR_MAXX/2, XGR_MAXY/2);
-					XGR_MouseShow();
-					if(curMode == AS_INV_MODE){
- 						mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
-						XGR_MouseSetPromptData(invPrompt);
-					}
-					else {
-						if(curMode == AS_INFO_MODE){
-							mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
-							XGR_MouseSetPromptData(infPrompt);
-						}
-					}
+					set_fullscreen(false);
 				}
 				break;
 			case EV_ACTIVATE_IINV:
@@ -5379,11 +5364,8 @@ void actIntDispatcher::EventQuant(void)
 					aciWorldIndex = wMap -> world_ptr[p -> data] -> uvsID;
 					aciPrevJumpCount = -1;
 					if(!(flags & AS_FULLSCR)){
-						flags |= AS_FULLSCR;
 						flags &= ~AS_TEXT_MODE;
-						set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
-						XGR_MouseSetPromptData(NULL);
-						XGR_MouseHide();
+						set_fullscreen(true);
 					}
 					lock();
 				}
@@ -5394,10 +5376,7 @@ void actIntDispatcher::EventQuant(void)
 			case EV_ENTER_TEXT_MODE:
 			case ACI_SHOW_TEXT:
 				if(!(flags & AS_FULLSCR)){
-					flags |= AS_FULLSCR;
-					XGR_MouseSetPromptData(NULL);
-					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
-					XGR_MouseHide();
+					set_fullscreen(true);
 				}
 				ScrTextData -> color = aciTEXT_COLOR;
 				flags |= AS_TEXT_MODE;
@@ -5405,38 +5384,21 @@ void actIntDispatcher::EventQuant(void)
 			case EV_LEAVE_TEXT_MODE:
 			case ACI_HIDE_TEXT:
 				if(flags & AS_FULLSCR){
-					flags &= ~AS_FULL_REDRAW;
-					flags &= ~AS_FULLSCR;
-					set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
-					XGR_MouseShow();
-					if(curMode == AS_INV_MODE)
-						XGR_MouseSetPromptData(invPrompt);
-					if(curMode == AS_INFO_MODE)
-						XGR_MouseSetPromptData(infPrompt);
+					set_fullscreen(false);
 				}
 				ScrTextData -> clear();
 				flags &= ~AS_TEXT_MODE;
 				break;
 			case ACI_LOCK_INTERFACE:
 				if(!(flags & AS_FULLSCR)){
-					flags |= AS_FULLSCR;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
-					XGR_MouseHide();
-					XGR_MouseSetPromptData(NULL);
+					set_fullscreen(true);
 				}
 				lock();
 				break;
 			case ACI_UNLOCK_INTERFACE:
 				if(flags & AS_FULLSCR){
-					flags &= ~AS_FULL_REDRAW;
-					flags &= ~AS_FULLSCR;
-					set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
-					if(curMode == AS_INV_MODE)
-						XGR_MouseSetPromptData(invPrompt);
-					if(curMode == AS_INFO_MODE)
-						XGR_MouseSetPromptData(infPrompt);
-					XGR_MouseShow();
+					set_fullscreen(false);
 				}
 				unlock();
 				break;
@@ -5454,11 +5416,8 @@ void actIntDispatcher::EventQuant(void)
 				break;
 			case EV_ENTER_CHAT:
 				if(!(flags & AS_FULLSCR)){
-					flags |= AS_FULLSCR;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
-					XGR_MouseSetPromptData(NULL);
-					XGR_MouseHide();
+					set_fullscreen(true);
 				}
 				lock();
 				iChatInit();
@@ -5469,14 +5428,7 @@ void actIntDispatcher::EventQuant(void)
 				break;
 			case EV_LEAVE_CHAT:
 				if(flags & AS_FULLSCR){
-					flags &= ~AS_FULL_REDRAW;
-					flags &= ~AS_FULLSCR;
-					set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
-					XGR_MouseShow();
-					if(curMode == AS_INV_MODE)
-						XGR_MouseSetPromptData(invPrompt);
-					if(curMode == AS_INFO_MODE)
-						XGR_MouseSetPromptData(infPrompt);
+					set_fullscreen(false);
 				}
 				unlock();
 				iChatFinit();
@@ -5485,6 +5437,31 @@ void actIntDispatcher::EventQuant(void)
 			case EV_INIT_AVI_OBJECT:
 				aciInitAviObject();
 				break;
+		}
+	}
+}
+
+void actIntDispatcher::set_fullscreen(bool isEnabled) {
+	if(isEnabled){
+		flags |= AS_FULLSCR;
+		set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+		XGR_Obj.clear_2d_surface();
+		XGR_MouseSetPromptData(NULL);
+		XGR_MouseHide();
+	} else {
+		flags &= ~AS_FULL_REDRAW;
+		flags &= ~AS_FULLSCR;
+		set_screen(XGR_MAXX/2, XGR_MAXY/2,0, XGR_MAXX/2, XGR_MAXY/2);
+		XGR_MouseShow();
+		if(curMode == AS_INV_MODE){
+			mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
+			XGR_MouseSetPromptData(invPrompt);
+		}
+		else {
+			if(curMode == AS_INFO_MODE){
+				mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
+				XGR_MouseSetPromptData(infPrompt);
+			}
 		}
 	}
 }

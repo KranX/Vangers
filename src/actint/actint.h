@@ -1427,6 +1427,7 @@ struct actIntDispatcher
 	void free_matrix(invMatrix* p);
 
 	void change_mode(void);
+	void set_fullscreen(bool isEnabled);
 	void inv_mouse_move_quant(void);
 	void inv_mouse_imove_quant(void);
 	void inv_mouse_quant_l(void);
