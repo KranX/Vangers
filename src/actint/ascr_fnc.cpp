@@ -4,7 +4,11 @@
 #include "../lang.h"
 #include <zlib.h>
 
+#if defined(__APPLE__)
+#include <sys/stat.h>
+#else
 #include <filesystem>
+#endif
 
 #include "../runtime.h"
 
@@ -195,8 +199,6 @@ void EffectsOff(void);
 
 void iSaveData(void);
 void iLoadData(void);
-
-void createDirIfNotExist(const fs::path& dirName);
 
 void acsSaveData(void);
 void acsLoadData(void);
@@ -5218,16 +5220,31 @@ void acsPrepareSlotNameInput(int id,int slot_num)
 	acsCurrentSlotNum = slot_num;
 }
 
-void createDirIfNotExist(const fs::path& dirName)
-{
-	if (fs::exists(dirName))
-	{
+#if defined(__APPLE__)
+void createDirIfNotExist(const char* dirName) {
+	struct stat info;
+	if (stat(dirName, &info) != 0) {
+		std::cout<<"Directory "<<dirName<<" not found. Created it..."<< std::endl;
+		const int dirr_err = mkdir(dirName, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+		if (dirr_err == -1) {
+			std::string subj = "Dir name: ";
+			subj += dirName;
+			ErrH.Abort("Can't create directory", XERR_USER, 0, subj.c_str());
+			return;
+		}
+	}
+}
+#else
+void createDirIfNotExist(const fs::path& dirName) {
+	if (fs::exists(dirName)) {
 		return;
 	}
 
-	std::cout << "Directory " << dirName << " not found. Created it..." << std::endl;
+	std::cout<<"Directory "<<dirName<<" not found. Created it..."<<std::endl;
 	fs::create_directory(dirName);
 }
+#endif
 
 void acsSaveData(void)
 {
