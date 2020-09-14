@@ -1611,11 +1611,6 @@ void KeyCenter(SDL_Event *key)
 				GameTimerON_OFF();
 			}
 			break;
-		case SDL_SCANCODE_F:
-			mod = SDL_GetModState();
-			if (mod&KMOD_CTRL) {
-				curGMap -> prmFlag ^= PRM_FPS;
-			}
 #endif
 #ifdef SCREENSHOT
 //  		case SDL_SCANCODE_F4:
@@ -1630,6 +1625,11 @@ void KeyCenter(SDL_Event *key)
 				message_mode++;
 #endif
 			break;
+		case SDL_SCANCODE_F:
+			mod = SDL_GetModState();
+			if (mod&KMOD_CTRL) {
+				curGMap -> prmFlag ^= PRM_FPS;
+			}
 		case SDL_SCANCODE_F5:
 			if(!Pause){
 				camera_rotate_enable = 1 - camera_rotate_enable;
