@@ -3271,8 +3271,16 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	camera_Y_prev = Y;
 
 	int TurnSecX_old = TurnSecX;
-	int z = camera_moving_z_enable ? (V_abs < camera_vmax ? camera_zmin + ((curGMap -> xsize*MAX_ZOOM >> 8) - camera_zmin)*V_abs/camera_vmax : camera_zmax)
-					: camera_zmin;
+	int z;
+	if (camera_moving_z_enable) {
+		auto v = V_abs < camera_vmax ? V_abs : camera_vmax;
+		auto z_max = curGMap->xsize * 1.38;
+
+		z = camera_zmin + (z_max - camera_zmin) * v / camera_vmax;
+	} else {
+		z = camera_zmin;
+	}
+
 	camera_vz += (double)(z - TurnSecX)*camera_miz * XTCORE_FRAME_NORMAL;
 	//camera_vz -= camera_vz*camera_dragz;
 	camera_vz *= camera_dragz*pow(0.97,camera_vz_min/(fabs(camera_vz) + 1e-10));
