@@ -31,7 +31,6 @@ build/lib/utils/zip_convert.exe
 CMakeSettings.json
 
 # compile stuff
-
 /ffmpeg
 /build
 /clunk
