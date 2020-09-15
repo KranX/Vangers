@@ -29,3 +29,6 @@ build/lib/utils/zip_convert.exe
 .vs/
 [Oo]ut/
 CMakeSettings.json
+
+/rundata
+/build
