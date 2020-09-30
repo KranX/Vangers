@@ -97,6 +97,12 @@ extern int iChatON;
 
 extern int IsMainMenu;
 
+extern bool autoconnect;
+extern char *autoconnect_Host;
+extern int  autoconnect_Port;
+extern int  autoconnect_JoinGame;
+extern int  autoconnect_GameID;
+
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
 int iGetEscaveTime(void);
@@ -527,7 +533,7 @@ void iPreInitFirst() {
 		aScrDisp->i_init();
 	}
 	iSecondInit();
-	
+
 	iScreen* p;
 	if(actIntLog){
 		p = (iScreen*)iScrDisp -> get_object(aci_iScreenID);
@@ -577,6 +583,28 @@ void iPreInitFirst() {
 
 void iQuantFirst(void)
 {
+    init_hfonts();
+
+    if (!iFirstInit) {
+        RegisterValues();
+        iPrepareOptions();
+
+#ifndef _ACI_SKIP_MAINMENU_
+        iSetOptionValueCHR(iPLAYER_NAME2, (lang() == RUSSIAN ? "‚ ­ЈҐа" : "Vanger"));
+        iSetOptionValueCHR(iPLAYER_PASSWORD, iSTR_DefaultPassword);
+        iSetOptionValueCHR(iHOST_NAME, "vangers.net");
+        iSetOptionValueCHR(iSERVER_NAME, iSTR_NONE);
+        iSetOptionValueCHR(iPROXY_SERVER, "192.1.1.1");
+        iSetOptionValueCHR(iPROXY_PORT, "1080");
+        iSetOptionValueCHR(iSERVER_PORT, "2197");
+        iGetIP();
+#endif
+        iInitMultiGames();
+
+        CurServerName = iGetOptionValueCHR(iSERVER_NAME);
+        CurPlayerName = iGetOptionValueCHR(iPLAYER_NAME2);
+    }
+
 	iScreen* p;
 	if(actIntLog){
 		p = (iScreen*)iScrDisp -> get_object(aci_iScreenID);
@@ -597,6 +625,41 @@ void iQuantFirst(void)
 			iMultiFlag = 0;
 			iEndGameFlag = 1;
 		}
+        else if (autoconnect) {
+            iScrDisp->curScr = (iScreen *) iScrDisp->get_object("iSearch server screen");
+            avaible_servers.find_servers_in_the_internet(autoconnect_Host, autoconnect_Port);
+            if (avaible_servers.size() > 0) {
+                iFirstServerPtr = avaible_servers.first();
+                iCurServer      = 0;
+                iInitServersList();
+                if (autoconnect_JoinGame) {
+                    auto serverPtr = iFirstServerPtr;
+                    int  serverId  = 0;
+                    while (serverPtr) {
+                        if (serverPtr->game_ID == autoconnect_GameID) break;     // game match or new game
+                        if (serverPtr->game_ID && autoconnect_GameID < 0) break; // first existent game
+                        serverPtr = serverPtr->next;
+                        serverId++;
+                    }
+                    if (serverPtr) {
+                        iScrDisp->curScr = (iScreen *) iScrDisp->get_object("Identification screen");
+                        iLoadData();
+                        iHandleExtEvent(iEXT_CHOOSE_SERVER, serverId);
+                        iHandleExtEvent(iEXT_CONNECT, 0);
+                        if (iEvLineID == 1) {
+                            iScrDisp->curScr = (iScreen *) iScrDisp->get_object("Failed screen");
+                        } else if (iEvLineID == 2) {
+                            iHandleExtEvent(iEXT_CHECK_SERVER_CONFIG, 0);
+                            if (iEvLineID == 3) {
+                                iScrDisp->curScr = (iScreen *) iScrDisp->get_object("Server Info screen");
+                            } else if (iEvLineID == 4) {
+                                iScrDisp->curScr = (iScreen *) iScrDisp->get_object("Server Config screen");
+                            }
+                        }
+                    }
+                }
+            }
+        }
 		else
 			iScrDisp -> curScr = (iScreen*)iScrDisp -> get_object(iScrDisp -> t_scrID);
 #endif
@@ -608,7 +671,6 @@ void iQuantFirst(void)
 #ifdef _ACI_SKIP_MAINMENU_
 	if(actIntLog){
 #endif
-	init_hfonts();
 	if(!actIntLog)
 		iScrDisp -> prepare();
 	iScrDisp -> curScr -> prepare();
@@ -618,35 +680,6 @@ void iQuantFirst(void)
 	}
 #endif
 
-	if(!iFirstInit){
-		RegisterValues();
-		iPrepareOptions();
-#ifndef _ACI_SKIP_MAINMENU_
-		if(lang() == RUSSIAN)
-			iSetOptionValueCHR(iPLAYER_NAME2,"‚ ­ЈҐа");
-		else
-			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
-		iSetOptionValueCHR(iPLAYER_PASSWORD,iSTR_DefaultPassword);
-		if(lang() == RUSSIAN) {
-            iSetOptionValueCHR(iHOST_NAME, "vangers.net");
-        } else if (lang() == GERMAN) {
-//			iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.de");
-            iSetOptionValueCHR(iHOST_NAME,"vangers.net");
-		}
-		else
-            iSetOptionValueCHR(iHOST_NAME,"vangers.net");
-//            iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.com");
-		iSetOptionValueCHR(iSERVER_NAME,iSTR_NONE);
-		iSetOptionValueCHR(iPROXY_SERVER,"192.1.1.1");
-		iSetOptionValueCHR(iPROXY_PORT,"1080");
-		iSetOptionValueCHR(iSERVER_PORT,"2197");
-		iGetIP();
-#endif
-		iInitMultiGames();
-
-		CurServerName = iGetOptionValueCHR(iSERVER_NAME);
-		CurPlayerName = iGetOptionValueCHR(iPLAYER_NAME2);
-	}
 	aciSet_iMouse();
 
 	KBD_init();
@@ -1794,7 +1827,7 @@ void aciShowLocation(void)
 
 		//XGR_Flush(0,0,XGR_MAXX,XGR_MAXY);
 		XGR_Flip();
-		
+
 		xtClearMessageQueue();
 	}
 
