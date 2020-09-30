@@ -49,7 +49,7 @@ void XErrorHandler::RTC(const char *file, unsigned int line, const char *expr)
 void XErrorHandler::Abort(const char* message, int code, int val, const char* subj)
 {
 	log_file.open(log_name.c_str(),std::ios::out|std::ios::app);
-	log_file<<"Abbort: "<<message<<" code:"<<code<<" val:"<<val
+	log_file<<"Abort: "<<message<<" code:"<<code<<" val:"<<val
 		<<std::endl<<"Subj:"<<subj<<std::endl;
 	log_file.close();
 	std::ostringstream stream;
