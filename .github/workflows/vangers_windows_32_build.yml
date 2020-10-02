@@ -2,7 +2,7 @@ name: Vangers Windows 32bit Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, EnaB_MoDe ]
   pull_request:
     branches: [ master, 60fps, hd_v2 ]
 
