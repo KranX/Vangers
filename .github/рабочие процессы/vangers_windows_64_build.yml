@@ -1,0 +1,96 @@
+name: Vangers Windows 64bit Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+<<<<<<< HEAD:.github/workflows/vangers_windows_64_build.yml
+    branches: [ master, 60fps, hd_v2, EnaB_MoDe]
+=======
+    branches: [ master, 60fps, hd_v2 , EnaB_MoDe]
+>>>>>>> 2467b404276260c32322841ecc22269c73c53ea6:.github/рабочие процессы/vangers_windows_64_build.yml
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: stalkerg/setup-msys2@v2
+      with:
+        msystem: MINGW64
+    - name: install libs
+      run: msys2do pacman --noconfirm -S
+        mingw-w64-x86_64-ninja
+        mingw-w64-x86_64-gcc
+        mingw-w64-x86_64-SDL2
+        mingw-w64-x86_64-SDL2_net
+        mingw-w64-x86_64-cmake
+        mingw-w64-x86_64-libogg
+        mingw-w64-x86_64-libvorbis
+        mingw-w64-x86_64-nasm
+        mingw-w64-x86_64-yasm
+        mingw-w64-x86_64-make
+    - uses: actions/checkout@v1
+    - name: clunk -- download
+      run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
+    - name: clunk -- create build dir
+      run: msys2do mkdir clunk/build
+    - name: clunk -- build and install
+      run: |
+        msys2do cmake -DCMAKE_INSTALL_PREFIX=/mingw64 -G Ninja ..
+        msys2do ninja
+        msys2do ninja install
+      working-directory: clunk/build
+    - name: ffmpeg -- download
+      run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
+    - name: ffmpeg -- configure
+      run: msys2do ./configure --enable-shared --prefix=/mingw64
+        --disable-everything
+        --enable-swscale
+        --enable-zlib
+        --enable-demuxer=avi,rawvideo
+        --enable-decoder=png,rawvideo
+        --enable-parser=png
+        --enable-protocol=file
+        --disable-d3d11va
+        --disable-dxva2
+        --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
+        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
+      working-directory: ffmpeg
+    - name: ffmpeg -- build and install
+      run: |
+        msys2do mingw32-make -j4
+        msys2do mingw32-make install
+      working-directory: ffmpeg
+    - name: vangers -- create build dir
+      run: msys2do mkdir build
+    - name: vangers -- configure
+      run: msys2do cmake -G Ninja ..
+      working-directory: build
+    - name: vangers -- make
+      run: msys2do ninja
+      working-directory: build
+    - name: vangers -- prepare release folder
+      run: |
+        msys2do mkdir -p vangers/bin
+        msys2do cp /mingw64/bin/SDL2.dll vangers/bin/
+        msys2do cp /mingw64/bin/SDL2_net.dll vangers/bin/
+        msys2do cp /mingw64/bin/avcodec-58.dll vangers/bin/
+        msys2do cp /mingw64/bin/avformat-58.dll vangers/bin/
+        msys2do cp /mingw64/bin/avutil-56.dll vangers/bin/
+        msys2do cp /mingw64/bin/libogg-0.dll vangers/bin/
+        msys2do cp /mingw64/bin/libvorbis-0.dll vangers/bin/
+        msys2do cp /mingw64/bin/libvorbisfile-3.dll vangers/bin/
+        msys2do cp /mingw64/bin/zlib1.dll vangers/bin/
+        msys2do cp /mingw64/bin/libgcc_s_dw2-1.dll vangers/bin/
+        msys2do cp /mingw64/bin/libgcc_s_seh-1.dll vangers/bin/
+        msys2do cp /mingw64/bin/libstdc++-6.dll vangers/bin/
+        msys2do cp /mingw64/bin/libwinpthread-1.dll vangers/bin/
+        cp clunk/build/libclunk.dll vangers/bin/
+        cp build/src/vangers.exe vangers/bin/
+        msys2do strip vangers/bin/vangers.exe
+        cp build/server/vangers_server.exe vangers/bin/
+        msys2do strip vangers/bin/vangers_server.exe
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Vangers-Release-64
+        path: vangers
