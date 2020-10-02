@@ -58,7 +58,6 @@ void XErrorHandler::Abort(const char* message, int code, int val, const char* su
 	std::ostringstream stream;
 	std::string log_path = "";
 	log_path = fs::canonical(log_name).string();
-	std::replace( log_path.begin(), log_path.end(), '\\', '\\' );
 	stream << "Error: "<< message << " code:" << code << " val:" << val << std::endl <<
 	"Subj:" << subj << std::endl <<
 	"Please send:" << std::endl <<
