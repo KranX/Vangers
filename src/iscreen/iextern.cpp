@@ -1694,22 +1694,37 @@ void iGetMultiGameParameters(void)
 			my_server_data.Mechosoma.One_at_a_time = value;
 			break;
 		case iMP_PASSEMBLOSS:
-			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_INITIAL_CASH);
-			my_server_data.Passembloss.InitialCash = value;
+            value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_INITIAL_CASH);
+            if(strcmp(game_name,"travel")==0) value = 999999;
+            if(strcmp(game_name,"aveslom")==0) value = 999999;
+            if(strcmp(game_name,"necrally")==0) value = 999999;
+            my_server_data.Passembloss.InitialCash = value;
 
-			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
-			my_server_data.Passembloss.ArtefactsUsing = value;
+            value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
+            if(strcmp(game_name,"travel")==0) value = 0;
+            if(strcmp(game_name,"aveslom")==0) value = 0;
+            if(strcmp(game_name,"necrally")==0) value = 0;
+            my_server_data.Passembloss.ArtefactsUsing = value;
 
-			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
-			my_server_data.Passembloss.InEscaveTime = value;
+            value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
+            if(strcmp(game_name,"travel")==0) value = 2;
+            if(strcmp(game_name,"aveslom")==0) value = 2;
+            if(strcmp(game_name,"necrally")==0) value = 2;
+            my_server_data.Passembloss.InEscaveTime = value;
+      
+            value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
+            if(strcmp(game_name,"travel")==0) value = 17;
+            if(strcmp(game_name,"necrally")==0) value = 51;
+            if(strcmp(game_name,"aveslom")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*10) + 1;
+            my_server_data.Passembloss.CheckpointsNumber = value;
 
-			time(&tm);
+            time(&tm);
 
-			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
-			my_server_data.Passembloss.CheckpointsNumber = value;
-
-			value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ESCAVE);
-			my_server_data.Passembloss.RandomEscave = value - 1;
+            value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ESCAVE);
+            if(strcmp(game_name,"travel")==0) value = 1;
+            if(strcmp(game_name,"aveslom")==0) value = 2;
+            if(strcmp(game_name,"necrally")==0) value = 3;
+            my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;
 		case iMP_HUNTAGE:
