@@ -3656,26 +3656,111 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
-	//khoxrun
-	if (z_my_server_data.mod_id == Z_MODS_KHOXRUN_ID) {
-		World = WORLD_KHOX;
-		switch (ind) {
-		case  0:	R_curr.x = 1358;	R_curr.y = 7036;	World = WORLD_GLORX;	break; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
-		case  1:	R_curr.x =  390;	R_curr.y = 1266;	break;
-		case  2:	R_curr.x = 1858;	R_curr.y = 1849;	break;
-		case  3:	R_curr.x = 1869;	R_curr.y =  232;	break;
-		case  4:	R_curr.x =  696;	R_curr.y =   86;	break;
-		case  5:	R_curr.x = 1145;	R_curr.y = 1210;	break;
-		case  6:	R_curr.x = 1987;	R_curr.y = 1043;	break;
-		case  7:	R_curr.x = 2021;	R_curr.y =    8;	break;
-		case  8:	R_curr.x =  150;	R_curr.y =  378;	break;
-		case  9:	R_curr.x =  910;	R_curr.y = 2014;	break;
-		case 10:	R_curr.x = 1232;	R_curr.y =  717;	break;
-		case 11:	R_curr.x =  307;	R_curr.y =  385;	break;
-		}
-		return;
-	}
-
+	//travel
+  if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "travel") == 0) {
+    World = WORLD_FOSTRAL;
+    switch (ind) {
+    case  0:  R_curr.x =  257;  R_curr.y = 1227;  break;
+    case  1:  R_curr.x = 1640;  R_curr.y = 9128;  World = WORLD_GLORX;  break;
+    case  2:  R_curr.x = 1579;  R_curr.y = 2233;  World = WORLD_GLORX;  break;
+    case  3:  R_curr.x =  813;  R_curr.y =14586;  World = WORLD_GLORX;  break;
+    case  4:  R_curr.x = 1889;  R_curr.y = 1504;  World = WORLD_NECROSS;  break;
+    case  5:  R_curr.x = 1706;  R_curr.y =15548;  World = WORLD_NECROSS;  break;
+    case  6:  R_curr.x = 1312;  R_curr.y =15227;  World = WORLD_NECROSS;  break;
+    case  7:  R_curr.x = 1653;  R_curr.y =  802;  World = WORLD_XPLO;      break;
+    case  8:  R_curr.x =  245;  R_curr.y =  330;  World = WORLD_KHOX;      break;
+    case  9:  R_curr.x = 1873;  R_curr.y = 1062;  World = WORLD_WEEXOW;  break;
+    case 10:  R_curr.x =  659;  R_curr.y = 1685;  World = WORLD_BOOZEENA; break;
+    case 11:  R_curr.x = 1693;  R_curr.y =  391;  World = WORLD_ARKONOY;  break;
+    case 12:  R_curr.x = 1653;  R_curr.y =  802;  World = WORLD_XPLO;      break;
+    case 13:  R_curr.x =  283;  R_curr.y = 1186;  World = WORLD_THREALL;  break;
+    case 14:  R_curr.x = 2008;  R_curr.y =15592;  break;
+    case 15:  R_curr.x = 1469;  R_curr.y = 7886;  break;
+    case 16:  R_curr.x =  382;  R_curr.y = 7333;  break;
+    }
+    return;
+  }
+  
+  //necrally
+  if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "necrally") == 0) {
+    World = WORLD_NECROSS;
+    switch (ind) {
+    case  0:  R_curr.x =  316;  R_curr.y =  840;  break;
+    case  1:  R_curr.x =  632;  R_curr.y = 1161;  break;
+    case  2:  R_curr.x =  143;  R_curr.y = 1467;  break;
+    case  3:  R_curr.x =  837;  R_curr.y = 1648;  break;
+    case  4:  R_curr.x =  971;  R_curr.y = 2015;  break;
+    case  5:  R_curr.x =   77;  R_curr.y = 2330;  break;
+    case  6:  R_curr.x =  821;  R_curr.y = 2519;  break;
+    case  7:  R_curr.x =  824;  R_curr.y = 2984;  break;
+    case  8:  R_curr.x = 1578;  R_curr.y = 3060;  break;
+    case  9:  R_curr.x = 1604;  R_curr.y = 3517;  break;
+    case 10:  R_curr.x =  342;  R_curr.y = 3696;  break;
+    case 11:  R_curr.x =   70;  R_curr.y = 3973;  break;
+    case 12:  R_curr.x = 1429;  R_curr.y = 4246;  break;
+    case 13:  R_curr.x = 1220;  R_curr.y = 4834;  break;
+    case 14:  R_curr.x = 2016;  R_curr.y = 5078;  break;
+    case 15:  R_curr.x =  141;  R_curr.y = 5545;  break;
+    case 16:  R_curr.x = 1721;  R_curr.y = 5580;  break;
+    case 17:  R_curr.x = 1715;  R_curr.y = 6127;  break;
+    case 18:  R_curr.x =  159;  R_curr.y = 6171;  break;
+    case 19:  R_curr.x =  477;  R_curr.y = 6612;  break;
+    case 20:  R_curr.x = 1847;  R_curr.y = 6719;  break;
+    case 21:  R_curr.x = 1153;  R_curr.y = 6944;  break;
+    case 22:  R_curr.x =  755;  R_curr.y = 7181;  break;
+    case 23:  R_curr.x = 1441;  R_curr.y = 7406;  break;
+    case 24:  R_curr.x = 1773;  R_curr.y = 7910;  break;
+    case 25:  R_curr.x = 1145;  R_curr.y = 7972;  break;
+    case 26:  R_curr.x = 1697;  R_curr.y = 8493;  break;
+    case 27:  R_curr.x = 1186;  R_curr.y = 8954;  break;
+    case 28:  R_curr.x =  872;  R_curr.y = 9335;  break;
+    case 29:  R_curr.x = 1046;  R_curr.y = 9476;  break;
+    case 30:  R_curr.x = 1935;  R_curr.y = 9611;  break;
+    case 31:  R_curr.x = 1613;  R_curr.y =10023;  break;
+    case 32:  R_curr.x =  902;  R_curr.y =10084;  break;
+    case 33:  R_curr.x =  410;  R_curr.y =10147;  break;
+    case 34:  R_curr.x =  134;  R_curr.y =10444;  break;
+    case 35:  R_curr.x =  717;  R_curr.y =10693;  break;
+    case 36:  R_curr.x =  564;  R_curr.y =11244;  break;
+    case 37:  R_curr.x =   62;  R_curr.y =11626;  break;
+    case 38:  R_curr.x =  841;  R_curr.y =11843;  break;
+    case 39:  R_curr.x = 1260;  R_curr.y =12078;  break;
+    case 40:  R_curr.x =  493;  R_curr.y =12812;  break;
+    case 41:  R_curr.x =  684;  R_curr.y =12907;  break;
+    case 42:  R_curr.x = 1891;  R_curr.y =13208;  break;
+    case 43:  R_curr.x = 1463;  R_curr.y =13513;  break;
+    case 44:  R_curr.x =  923;  R_curr.y =13664;  break;
+    case 45:  R_curr.x =  424;  R_curr.y =14038;  break;
+    case 46:  R_curr.x = 1062;  R_curr.y =14220;  break;
+    case 47:  R_curr.x = 1162;  R_curr.y =14701;  break;
+    case 48:  R_curr.x =   40;  R_curr.y =14904;  break;
+    case 49:  R_curr.x =  249;  R_curr.y =15421;  break;
+    case 50:  R_curr.x =  991;  R_curr.y =15737;  break;
+    }
+    return;
+  }
+  
+  //aveslom
+      if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {
+      if(ind == 0) {
+        R_curr.x =  228;    R_curr.y =15335; World = WORLD_GLORX;
+      } else {
+        World = WORLD_THREALL;
+        switch ((ind - 1) % 10) {
+          case  0:    R_curr.x = 1534;    R_curr.y =  591;    break;
+          case  1:    R_curr.x =  282;    R_curr.y = 1189;    break;
+          case  2:    R_curr.x = 1860;    R_curr.y =    0;    break;
+          case  3:    R_curr.x =  688;    R_curr.y =  300;    break;
+          case  4:    R_curr.x =  290;    R_curr.y = 1788;    break;
+          case  5:    R_curr.x = 1648;    R_curr.y = 1510;    break;
+          case  6:    R_curr.x =  958;    R_curr.y =  480;    break;
+          case  7:    R_curr.x = 1232;    R_curr.y =  139;    break;
+          case  8:    R_curr.x =  566;    R_curr.y =  692;    break;
+          case  9:    R_curr.x = 1482;    R_curr.y = 1637;    break;
+        }
+      }
+        return;
+    }
 	//classic
 	if(ind == 0) {
 		World = GloryRnd.aiRnd(3); // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
