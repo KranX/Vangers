@@ -56,13 +56,11 @@ void XErrorHandler::Abort(const char* message, int code, int val, const char* su
 		<<std::endl<<"Subj:"<<subj<<std::endl;
 	log_file.close();
 	std::ostringstream stream;
-	std::string log_path = "";
-	log_path = fs::canonical(log_name).string();
 	stream << "Error: "<< message << " code:" << code << " val:" << val << std::endl <<
 	"Subj:" << subj << std::endl <<
 	"Please send:" << std::endl <<
 	" - this message," << std::endl <<
-	" - logfile from " << log_path << "," << std::endl <<
+	" - logfile from " << fs::absolute(log_name) << "," << std::endl <<
 	" - your savegame" << std::endl <<
 	"to https://t.me/vangers or https://github.com/KranX/Vangers";
 	std::string str =  stream.str();
