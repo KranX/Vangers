@@ -20,6 +20,8 @@
 #include "i_mem.h"
 #include "ikeys.h"
 
+#include "../iscreen/iscreen_options.h"
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
 // MP Game Parameters...
@@ -126,6 +128,7 @@ struct iMultiResultString
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
+extern iScreenOption** iScrOpt;
 extern iScreenDispatcher* iScrDisp;
 extern int aci_SecondMatrixID;
 extern int aciCurMechosID;
