@@ -98,10 +98,10 @@ extern int iChatON;
 extern int IsMainMenu;
 
 extern bool autoconnect;
-extern char *autoconnect_Host;
-extern int  autoconnect_Port;
-extern int  autoconnect_JoinGame;
-extern int  autoconnect_GameID;
+extern char *autoconnectHost;
+extern int  autoconnectPort;
+extern int  autoconnectJoinGame;
+extern int  autoconnectGameID;
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
@@ -627,17 +627,17 @@ void iQuantFirst(void)
 		}
         else if (autoconnect) {
             iScrDisp->curScr = (iScreen *) iScrDisp->get_object("iSearch server screen");
-            avaible_servers.find_servers_in_the_internet(autoconnect_Host, autoconnect_Port);
+            avaible_servers.find_servers_in_the_internet(autoconnectHost, autoconnectPort);
             if (avaible_servers.size() > 0) {
                 iFirstServerPtr = avaible_servers.first();
                 iCurServer      = 0;
                 iInitServersList();
-                if (autoconnect_JoinGame) {
+                if (autoconnectJoinGame) {
                     auto serverPtr = iFirstServerPtr;
                     int  serverId  = 0;
                     while (serverPtr) {
-                        if (serverPtr->game_ID == autoconnect_GameID) break;     // game match or new game
-                        if (serverPtr->game_ID && autoconnect_GameID < 0) break; // first existent game
+                        if (serverPtr->game_ID == autoconnectGameID) break;     // game match or new game
+                        if (serverPtr->game_ID && autoconnectGameID < 0) break; // first existent game
                         serverPtr = serverPtr->next;
                         serverId++;
                     }

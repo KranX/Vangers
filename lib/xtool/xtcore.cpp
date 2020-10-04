@@ -99,10 +99,10 @@ int xtSysQuantDisabled = 0;
 extern bool XGR_FULL_SCREEN;
 
 bool autoconnect = false;
-char *autoconnect_Host;
-int  autoconnect_Port = 2197;
-bool autoconnect_JoinGame = false;
-int  autoconnect_GameID;
+char *autoconnectHost;
+int  autoconnectPort = 2197;
+bool autoconnectJoinGame = false;
+int  autoconnectGameID;
 
 int main(int argc, char *argv[])
 {
@@ -135,14 +135,14 @@ int main(int argc, char *argv[])
             if (argc > i) {
                 i++;
                 autoconnect      = true;
-                autoconnect_Host = argv[i];
+                autoconnectHost = argv[i];
             } else {
                 std::cout << "Invalid parameter usage: '-server hostname' expected" << std::endl;
             }
         } else if (cmd_key == "-port") {
             if (argc > i) {
                 i++;
-                autoconnect_Port = strtol(argv[i], &argv[i], 0);
+                autoconnectPort = strtol(argv[i], &argv[i], 0);
             } else {
                 std::cout << "Invalid parameter usage: '-port value' expected" << std::endl;
             }
@@ -150,13 +150,13 @@ int main(int argc, char *argv[])
             if (argc > i) {
                 i++;
                 std::string value = argv[i];
-                autoconnect_JoinGame = true;
+                autoconnectJoinGame = true;
                 if (value == "new") {
-                    autoconnect_GameID = 0;
+                    autoconnectGameID = 0;
                 } else if (value == "any") {
-                    autoconnect_GameID = -1;
+                    autoconnectGameID = -1;
                 } else {
-                    autoconnect_GameID = strtol(argv[i], &argv[i], 0);
+                    autoconnectGameID = strtol(argv[i], &argv[i], 0);
                 }
             } else {
                 std::cout << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
