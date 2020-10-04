@@ -13,15 +13,14 @@
 #include "iscreen.h"
 #include "controls.h"
 
+#include "iscreen_options.h"
+
 #include "../actint/item_api.h"
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
 
 #include "i_mem.h"
 #include "ikeys.h"
-
-#include "../iscreen/iscreen.h"
-#include "../iscreen/iscreen_options.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
