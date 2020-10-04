@@ -4,7 +4,6 @@ on:
   push:
     branches: [ master, EnaB_MoDe ]
   pull_request:
-<<<<<<< HEAD:.github/рабочие процессы/vangers_windows_64_build.yml
 <<<<<<< HEAD:.github/workflows/vangers_windows_64_build.yml
     branches: [ master, 60fps, hd_v2, EnaB_MoDe]
 =======
