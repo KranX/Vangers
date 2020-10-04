@@ -98,6 +98,12 @@ XStream xtRTO_Log;
 int xtSysQuantDisabled = 0;
 extern bool XGR_FULL_SCREEN;
 
+bool autoconnect = false;
+char *autoconnect_Host;
+int  autoconnect_Port = 2197;
+bool autoconnect_JoinGame = false;
+int  autoconnect_GameID;
+
 int main(int argc, char *argv[])
 {
 #ifdef __HAIKU__
@@ -119,23 +125,54 @@ int main(int argc, char *argv[])
 		putenv("SDL_AUDIODRIVER=DirectSound");
 	#endif
 
-	for (int i = 1; i < argc; i++) {
-		std::string cmd_key = argv[i];
-		if (cmd_key == "-fullscreen")
-			XGR_FULL_SCREEN = true;
-		else if (cmd_key == "-russian")
-			setLang(RUSSIAN);
-	}
+    for (int i = 1; i < argc; i++) {
+        std::string cmd_key = argv[i];
+        if (cmd_key == "-fullscreen") {
+            XGR_FULL_SCREEN = true;
+        } else if (cmd_key == "-russian") {
+            setLang(RUSSIAN);
+        } else if (cmd_key == "-server") {
+            if (argc > i) {
+                i++;
+                autoconnect      = true;
+                autoconnect_Host = argv[i];
+            } else {
+                std::cout << "Invalid parameter usage: '-server hostname' expected" << std::endl;
+            }
+        } else if (cmd_key == "-port") {
+            if (argc > i) {
+                i++;
+                autoconnect_Port = strtol(argv[i], &argv[i], 0);
+            } else {
+                std::cout << "Invalid parameter usage: '-port value' expected" << std::endl;
+            }
+        } else if (cmd_key == "-game") {
+            if (argc > i) {
+                i++;
+                std::string value = argv[i];
+                autoconnect_JoinGame = true;
+                if (value == "new") {
+                    autoconnect_GameID = 0;
+                } else if (value == "any") {
+                    autoconnect_GameID = -1;
+                } else {
+                    autoconnect_GameID = strtol(argv[i], &argv[i], 0);
+                }
+            } else {
+                std::cout << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
+            }
+        } else {
+            std::cout << "Unknown parameter: '" << cmd_key << "'" << std::endl;
+        }
+    }
 
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
-	std::cout<<"Set locale. ";
 	char* res = setlocale(LC_NUMERIC, "POSIX");
-	std::cout<<"Result:"<<res<<std::endl;
 #endif
 	//Set handlers to null
 	press_handler = NULL;
 	unpress_handler = NULL;
-	
+
 	XMsgBuf = new XMessageBuffer;
 
 	initclock();
