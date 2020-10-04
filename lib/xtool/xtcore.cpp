@@ -167,7 +167,9 @@ int main(int argc, char *argv[])
     }
 
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+	std::cout<<"Set locale. ";
 	char* res = setlocale(LC_NUMERIC, "POSIX");
+	std::cout<<"Result:"<<res<<std::endl;
 #endif
 	//Set handlers to null
 	press_handler = NULL;
