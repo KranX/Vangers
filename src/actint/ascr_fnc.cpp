@@ -5220,7 +5220,7 @@ void acsPrepareSlotNameInput(int id,int slot_num)
 	acsCurrentSlotNum = slot_num;
 }
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || __GNUC__ < 9
 void createDirIfNotExist(const char* dirName) {
 	struct stat info;
 	if (stat(dirName, &info) != 0) {
