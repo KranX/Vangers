@@ -29,3 +29,9 @@ build/lib/utils/zip_convert.exe
 .vs/
 [Oo]ut/
 CMakeSettings.json
+
+# compile stuff
+/ffmpeg
+/build
+/clunk
+/vangers
