@@ -772,7 +772,7 @@ void dgFile::load(char* fname,int _len)
 		if(!skip){
 			p2 = detect_text(p);
 			if(!(*p2 == SUBJ_SYMBOL || *p2 == COMMAND_SYMBOL || *p2 == '<' || *p2 == '#')) {
-				if(!((lang() !== RUSSIAN && ISEALPHA(*p2)) || (lang() == RUSSIAN && !ISEALPHA(*p2)))) continue;
+				if(!((lang() != RUSSIAN && ISEALPHA(*p2)) || (lang() == RUSSIAN && !ISEALPHA(*p2)))) continue;
 			}
 			
 		}
