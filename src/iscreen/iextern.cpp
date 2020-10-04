@@ -20,6 +20,7 @@
 #include "i_mem.h"
 #include "ikeys.h"
 
+#include "../iscreen/iscreen.h"
 #include "../iscreen/iscreen_options.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
