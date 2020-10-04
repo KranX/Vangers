@@ -1641,6 +1641,7 @@ void iGetMultiGameParameters(void)
 	time_t tm;
 
 	my_server_data.GameType = iCurMultiGame;
+	char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 
 	switch(iCurMultiGame){
 		case iMP_VAN_WAR:
