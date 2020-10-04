@@ -166,7 +166,8 @@
 /*----2----*/
 "Биосы?.. Мы остановились на воссоздании софти и криспо Маленьким Цыком. Стал он собирать остатки тел и лепить из них новых друзей. Ногу от софти, голову от криспо, от биба глаз куда воткнёт. Трудился долго. Так появились биосы. Вид не очень красивый, зато всех много."
 {софти} {криспо} {Суп Существ} 
-"The bios?.. We stopped when ProtoZeek decided to recreate the Softie and the Cryspo. He started collecting bits and bobs from the dead bodies and composed new friends from them. A Softie's leg here, a Cryspo's head there, the eye of a beeb - he stuck them together. He toiled on and on, and that's how the bios were created. Perhaps they are not too attractive, but at least they are quite numerous."
+"The bios?.. We stopped when ProtoZeek decided to recreate the Softie and the Cryspo. He started collecting bits and bobs from the dead bodies and composed new friends from them."
+"A Softie's leg here, a Cryspo's head there, the eye of a beeb - he stuck them together. He toiled on and on, and that's how the bios were created. Perhaps they are not too attractive, but at least they are quite numerous."
 {The Softie} {The Cryspo} {Creature Soup} 
 
 [нюха] 		[cirt]
@@ -195,7 +196,8 @@
 "The Passages are ProtoZeek's invention, no doubt. He was the best of the Softie and had many skills. If you don't believe me, try to find someone nowadays who can build a Passage! Oh, I could tell you so much more..."
 /*----2----*/
 "Как-то раз Маленький Цык ковырял палочкой в земле, и она вдруг провалилась. В дырку начали лезть бибы, которых пас Цык, а назад они возвращались упитанными и весёлыми. Понял он, что не простая это дырка и позвал других софти. Так был открыт Первый Коридор."
-"Once ProtoZeek was picking at the ground with a stick when suddenly it slipped under the ground. The beebs shepherded by ProtoZeek started squeezing into the hole, and when they came back up, they were all well-fed and happy. ProtoZeek realized that it wasn't a mere hole, and he called the rest of the Softie. That's how the first Passage was opened."
+"Once ProtoZeek was picking at the ground with a stick when suddenly it slipped under the ground. The beebs shepherded by ProtoZeek started squeezing into the hole, and when they came back up, they were all well-fed and happy."
+"ProtoZeek realized that it wasn't a mere hole, and he called the rest of the Softie. That's how the first Passage was opened."
 
 [циксы] 	[Zeexen]
 /*----1----*/
@@ -250,7 +252,8 @@
 /*----2----*/
 "Когда Маленький Цык создал мехосы, они были безжизненны, как любая железка.  Обратился тогда он к инферналам. Они вдохнули жизнь в мехосы, создав вангеров. За это они попросили у Маленького Цыка часть власти над ними. Он согласился. И бескорыстно отдал вангеров биосам."
 {инферналы} 
-"When ProtoZeek created the mechos, they were still and lifeless like other ordinary iron stuff. Then he asked the Infernals for help, and they breathed life into the mechos and created vangers. In exchange, the Infernals asked ProtoZeek to grant them power over the vangers. ProtoZeek agreed and selflessly sacrificed the vangers to the bios."
+"When ProtoZeek created the mechos, they were still and lifeless like other ordinary iron stuff. Then he asked the Infernals for help, and they breathed life into the mechos and created vangers."
+"In exchange, the Infernals asked ProtoZeek to grant them power over the vangers. ProtoZeek agreed and selflessly sacrificed the vangers to the bios."
 {The Infernals} 
 
 [флегма] 	[phlegma]
@@ -353,7 +356,8 @@
 {The Clash} {bios} 
 /*----2----*/
 "Ну ладно, слушай, настырный. Голодные бибы начали таскать части тел, собранные Маленьким Цыком для сборки биосов. Он не мог убить неразумного биба, поэтому спрятал всё в большой котёл. Получился как бы суп, еда софти. Вот и вышли, получается, все биосы из Супа Существ."
-"Alright, pushy one, listen. The hungry beebs began to pilfer the body remains that ProtoZeek had collected to construct the bios. ProtoZeek dared not kill the unreasonable beings, so he hid all the bits away from them in a big pot. It turned into a kind of soup... uh... soup was a common Softie food. Anyway, that's how all the bios happened to emerge, out of that Creature Soup."
+"Alright, pushy one, listen. The hungry beebs began to pilfer the body remains that ProtoZeek had collected to construct the bios. ProtoZeek dared not kill the unreasonable beings, so he hid all the bits away from them in a big pot."
+"It turned into a kind of soup... uh... soup was a common Softie food. Anyway, that's how all the bios happened to emerge, out of that Creature Soup."
 
 [Конфликт] 	[The Clash]
 /*----1----*/
@@ -389,7 +393,8 @@
 "ProtoZeek taught that a vanger is valuable in and of itself. The Beeboorats, however, have descended into heresy, and consider a vanger a vanger only in the presence of a Rubbox - if there is a Rubbox, there is a vanger, if there is no Rubbox, there is no vanger. Keep this in mind and try not to lose that collar!"
 /*----2----*/
 "Знаю, что Раббокс был сначала простой меткой. Когда-то глупые бибураты не умели даже верно сосчитать вангеров, возящих им нюху, постоянно путаясь. И слёзно попросили их делать на мехосах крестики. Пожалели вангеры тупиц и согласились. Если бы они знали, чем это кончится!.."
-"I know that at first the Rubbox was merely a mark. In days gone by, those doltish Beeboorats couldn't even count the vangers who delivered cirt to them properly and got them confused all the time. So they begged the vangers to mark their mechos with crosses. The vangers relented to those dummies and agreed. If only they had known how that would end up!"
+"I know that at first the Rubbox was merely a mark. In days gone by, those doltish Beeboorats couldn't even count the vangers who delivered cirt to them properly and got them confused all the time."
+"So they begged the vangers to mark their mechos with crosses. The vangers relented to those dummies and agreed. If only they had known how that would end up!"
 
 [ВигБу] [VigBoo]
 /*----1----*/
@@ -592,7 +597,8 @@
 /*----2----*/
 "Я, Цыфра - мягчайшая из софти, старшая дочь и жена Маленького Цыка. Я хранитель веры и покровитель БиЗоны. На нас, советников ЦыПы, возложена миссия готовить возвращении софти. Ещё при жизни Маленький Цык был осмеян глупцами. Только у нас он искал утешения..."
 {ЦыПа} {БиЗона} 
-"I, Zeephra, I am the gentlest of the Softie, the eldest daughter and WeeZyk's wife. I am the guardian of the faith and the protector of B-Zoners. It's us, the counselors of ZeePa, who are charged with the mission to prepare for the return of the Softie. When WeeZyk was alive he was laughed at by the fools. Only with us did he find comfort..." 
+"I, Zeephra, I am the gentlest of the Softie, the eldest daughter and WeeZyk's wife. I am the guardian of the faith and the protector of B-Zoners."
+"It's us, the counselors of ZeePa, who are charged with the mission to prepare for the return of the Softie. When WeeZyk was alive he was laughed at by the fools. Only with us did he find comfort..." 
 {ZeePa} {B-Zone} 
 
 [Цыкатуха] [Zeekatrix]
@@ -609,7 +615,8 @@
 /*----1----*/
 "Токсик очень полезная вещь на сыроватом Некроссе. Глупая Цыкатуха думает нас уморить им, а не знает, что жёны софти всегда травили друг друга, и ничего, мужьям это только нравилось. Поэтому мы не препятствуем этому и рады, что обычаи софти ещё живы!"
 {Цыкатуха} 
-"Toxick is a very useful thing on that moist Necross. The feeble-minded Zeekatrix dreams of poisoning us with it, but she doesn't know that the Softie were always intoxicating one another and nothing terrible ever happened. It only boosted their image in their husbands' eyes! That's why we don't interfere. We're just happy that the Softie are still alive!"
+"Toxick is a very useful thing on that moist Necross. The feeble-minded Zeekatrix dreams of poisoning us with it, but she doesn't know that the Softie were always intoxicating one another and nothing terrible ever happened."
+"It only boosted their image in their husbands' eyes! That's why we don't interfere. We're just happy that the Softie are still alive!"
 {Zeekatrix} 
 /*----2----*/
 "Ты не знаешь, что Маленький Цык научил цикс делать токсик? Болотная грязь очень прилипчива и забивает ухи очень быстро. Чтобы его жёны всегда были чистыми, он и придумал чудесный состав. А потом оказалось, что этот токсик и как отрава хорош. Знай теперь."
@@ -633,7 +640,8 @@
 {popon} {ZeePa} {B-Zone} 
 /*----2----*/
 "Маленький Цык, сотворив биосы, долго ещё скитался по Цепи Миров, просвещая свои творения. Но, видимо, материал пошедший на биосы был слегка протухшим, и они не понимали своего творца. Только мы, циксы, его любимцы, помним Цыка. Он ушёл, но обещал вернуться."
-"After he had created the bios, ProtoZeek wandered around the Chain of Worlds for quite a long time, bringing knowledge to his creations. But obviously the material he used for creating the bios had gone bad, and the bios didn't understand their creator. Only we, the Zeexen, his favorites, remember ProtoZeek. He's gone, but he has promised to return."
+"After he had created the bios, ProtoZeek wandered around the Chain of Worlds for quite a long time, bringing knowledge to his creations. But obviously the material he used for creating the bios had gone bad, and the bios didn't understand their creator."
+"Only we, the Zeexen, his favorites, remember ProtoZeek. He's gone, but he has promised to return."
 
 [Весна] [Spring]
 /*----1----*/
@@ -646,10 +654,12 @@
 [Декабрь] [December]
 /*----1----*/
 "Ты заинтересовался циклами? Слушай. Первые биосы были настолько тупы, что если и удавалось их заставить что-то делать, то они это делали, покуда не падали замертво. Маленькому Цыку постоянно приходилось возвращаться и пинками прекращать работу... Хватит пока."
-"Want to find out about the cycles? Listen here, then. The first of the bios were so utterly thick-headed that when you were lucky enough to make them do anything, they would do it until they fell dead. Because of that, ProtoZeek always had to return to them and give them a good kick to get them to stop working. Well, that's enough for now."
+"Want to find out about the cycles? Listen here, then. The first of the bios were so utterly thick-headed that when you were lucky enough to make them do anything, they would do it until they fell dead."
+"Because of that, ProtoZeek always had to return to them and give them a good kick to get them to stop working. Well, that's enough for now."
 /*----2----*/
 "Слушай продолжение. К сожалению, другого способа сменить труд на отдых, кроме как пинок, Маленький Цык не открыл. Носился он постоянно по мирам от биоса к биосу, раздавая оплеухи и регламентируя работы. После его ухода нюха продолжила это дело. Что ж, только софти были совершенны."
-"Now listen to the rest of the story. To his regret, apart from the kicks, WeeZyk couldn't find any other way to make them change from work to rest. And so, he hacked around the worlds from one bios to another, spanking the bios and regulating their work. After his departure the cirt maintained his doings. Still, only the Softie were flawless." 
+"Now listen to the rest of the story. To his regret, apart from the kicks, WeeZyk couldn't find any other way to make them change from work to rest. And so, he hacked around the worlds from one bios to another, spanking the bios and regulating their work."
+"After his departure the cirt maintained his doings. Still, only the Softie were flawless." 
 
 [Суббота] [Saturday]
 /*----1----*/
@@ -720,7 +730,8 @@
 [Спумия] [Chomper]
 "Когда сдох заключённый на хМоке безумец, сила инферналов покинула труп и стала рыскать по мирам, ища другое тело. Маленький Цык слепил из глины куклу софти и поймал туда страшный дух. С тех пор обещает Спумия показать мир софти тому, кто её освободит. Но это коварная ложь!"
 {хМок} {инферналы} 
-"When the lunatic imprisoned on hMok dropped dead, the Infernals' force left his body and started flying around the worlds searching for another. ProtoZeek made a figurine from clay resembling a Softie and entrapped the evil spirit in it. Ever since then, the Chomper promises to show the Softie world to the one who sets it free. But it's a treacherous liar!"
+"When the lunatic imprisoned on hMok dropped dead, the Infernals force left his body and started flying around the worlds searching for another."
+"ProtoZeek made a figurine from clay resembling a Softie and entrapped the evil spirit in it. Ever since then, the Chomper promises to show the Softie world to the one who sets it free. But it's a treacherous liar!"
 {hMok} {The Infernals} 
 
 [Бут Сектор] [Boot Sector]

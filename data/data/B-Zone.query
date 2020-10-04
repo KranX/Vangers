@@ -35,7 +35,8 @@
 
 [стручок] 	[pod]
 "Нет страшнее стручка в этой вселенной. Это стая одичавших элиподов. Они роют подземные ходы и ловушки. Представь, едешь ты, никого не трогаешь - вдруг, бац, земля проваливается, тебя уже глодают слюнявые пасти. Но ты не дрожи, стручкам сюда не добраться."
-"In this universe, there's nothing more scary than a pod - a flock of Eleepods that have gone wild. They spend their time digging underground corridors and traps. You're walking along, minding your own business, then, all of a sudden - bang! The ground disintegrates beneath you, and before you can say Jack Robinson you're being gnawed on by their dribbling jaws. Hey, stop trembling. The pods can't get you here."
+"In this universe, there's nothing more scary than a pod - a flock of Eleepods that have gone wild. They spend their time digging underground corridors and traps. You're walking along, minding your own business, then, all of a sudden - bang!"
+"The ground disintegrates beneath you, and before you can say Jack Robinson you're being gnawed on by their dribbling jaws. Hey, stop trembling. The pods can't get you here."
 
 [банч] 		[bunch]
 "Банч - это жители эскейва, чтоб ему пусто было. У них одна забава - драки, нюха да Кукла, когда особо повезет. Другое дело - вольные вангеры. Плюют на банчи, и правильно делают."
@@ -64,7 +65,8 @@
 [Глоркс] 	[Glorx]
 "Глоркс раньше был сливной ямой софти. Уж очень много они гадили, понадобился целый мир под их отходы. Потом какие-то криспо забили сливные дыры - и все, софти начало заливать. Уж как они бились с криспо, ничего не помогало. Вот софти и свалили, подмоченные."
 {криспо} {софти} 
-"Glorx was once the Softie's sewage collector. They made so much waste that a whole world had to be allocated to its disposal! Later some Cryspo blocked in the sewage holes and the Softie got flooded with dung. Boy, they fought viciously against the Cryspo then! But it didn't help, and in the end there was little left for them to do but retreat."
+"Glorx was once the Softie's sewage collector. They made so much waste that a whole world had to be allocated to its disposal!"
+"Later some Cryspo blocked in the sewage holes and the Softie got flooded with dung. Boy, they fought viciously against the Cryspo then! But it didn't help, and in the end there was little left for them to do but retreat."
 {The Cryspo} {The Softie} 
 
 [раффа] 	[raffa]
@@ -76,7 +78,8 @@
 [Инкубатор] 	[Incubator]
 "Инкубатор - обитель склочных элиподов. Они страшно завидуют подишевскому банчу, мечтают согнать их с теплого местечка, устраивают разные подлости. Инкубаторские прохвосты ловят зубатых пиявок, эЛиков, и шлют в Подиш. Там терпят и сочиняют сатиру на Инкубатор."
 {Подиш} {эЛик} {банч} 
-"Incubator is the home of the quarrelsome Eleepod. They're awfully envious of the Podish and are obsessed with the idea of driving them away from their cozy spot, so they're always playing dirty tricks on Podishers. Those Incubator scoundrels catch large-toothed leeches, eLeeches, and send them to Podish. The Podishers put up with this and compose works of satire about Incubator."
+"Incubator is the home of the quarrelsome Eleepod. They're awfully envious of the Podish and are obsessed with the idea of driving them away from their cozy spot, so they're always playing dirty tricks on Podishers."
+"Those Incubator scoundrels catch large-toothed leeches, eLeeches, and send them to Podish. The Podishers put up with this and compose works of satire about Incubator."
 {Podish} {eLeech} {bunch} 
 
 [биос] 		[bios]
@@ -94,7 +97,8 @@
 [Палец] 	[Feenger]
 "Советник элиподов обычно получается нелепым и глупым образом. эЛик, который должен был убыть в Подиш, закатился в щель. Он рос, потихоньку отгрызая от старого советника кусочки. Он так ничего и не заметил... А эЛик вырос, и пришлось Инкубатору его принять советником."
 {эЛик} 
-"Eleepod counselors usually end up as counselors in the most absurd and silly ways you can imagine. An eLeech that was supposed to be sent to Podish hid himself away in a crack. He was growing bigger and bigger, nibbling the old counselor bit by bit. The oaf never noticed it, and the eLeech grew, so eventually Incubator couldn't keep from taking him on as a counselor."
+"Eleepod counselors usually end up as counselors in the most absurd and silly ways you can imagine. An eLeech that was supposed to be sent to Podish hid himself away in a crack."
+"He was growing bigger and bigger, nibbling the old counselor bit by bit. The oaf never noticed it, and the eLeech grew, so eventually Incubator couldn't keep from taking him on as a counselor."
 {eLeech} 
 
 [Коридор] 	[Passage]
@@ -117,7 +121,8 @@
 
 [Элирекция] [Eleection]
 "Это пора, когда роятся эЛики, зубатые пиявки. Тут их и гребут в мешки элиподы Инкубатора. Быстро пакуют, всучивают вангерам для отправки в Подиш. Это главное событие у червяков. Они представляют, какой переполох начнется в Подише, и млеют, злорадно чавкая."
-"Now's the time when the large-toothed eLeeches begin to swarm, and the Incubator Eleepods grab them and put them into sacks. They are then packed and given to vangers to be taken to Podish. This is the most exciting event of the worms' lives. Imagining what a stir the eLeeches will cause in Podish delights the Eleepods and inspires them to start their malicious munching."
+"Now's the time when the large-toothed eLeeches begin to swarm, and the Incubator Eleepods grab them and put them into sacks. They are then packed and given to vangers to be taken to Podish."
+"This is the most exciting event of the worms' lives. Imagining what a stir the eLeeches will cause in Podish delights the Eleepods and inspires them to start their malicious munching."
 
 [вангеры] 	[vangers]
 "Вангеры - очень полезные животные. Они одни могут управится с мехосом. Личинки вангеров живут только в ржавом металлоломе, в лужах машинного масла. Лучшее место - разбитый мехос. Найти вангера - большая удача. Ну, пока все, расскажу потом."
@@ -330,7 +335,8 @@
 [Цыфра] [Zeephra]
 "Чем нравится тебе эта свихнувшаяся зануда? Хвасталась, что она софти, или пыталась нарядить тебя Маленьким Цыком?.. В одной поездке Цыфра так надоела вангеру верещанием, что он выкинул ее. Поплутав в болотах, она вернулась немного не в себе, бормоча о софти, почесываясь и хихикая."
 {софти} {Маленький Цык} 
-"What do you see in that deranged nag? Has she been boasting of her Softie origin or trying to dress you up as ProtoZeek? Once, on a trip, Zeephra made a vanger so sick with her squeaking that he threw her out in the end. She strayed into the bogs and came back completely crazy, scratching herself, giggling, and murmuring something about the Softie."
+"What do you see in that deranged nag? Has she been boasting of her Softie origin or trying to dress you up as ProtoZeek? Once, on a trip, Zeephra made a vanger so sick with her squeaking that he threw her out in the end."
+"She strayed into the bogs and came back completely crazy, scratching herself, giggling, and murmuring something about the Softie."
 {The Softie} {ProtoZeek} 
 
 [Цыкатуха] [Zeekatrix]
@@ -341,7 +347,8 @@
 "Ну, в ЦыПе беспокойная Цыфра всех свела с ума байками о софти и прочим бредом. Бедняги циклы напролет месят глину, лепят попонки, не видя света. Я хочу им помочь и варю для них токсик, рискуя здоровьем. Это лекарство я шлю в ЦыПу даром, лишь бы там не болели!"
 {ЦыПа} {Цыфра} {софти} 
 "Рецепт токсика я сама придумала. В него столько всего входит, что даже забываю иногда доложить чего-нибудь. Но без элиподской флегмы токсик не выйдет, это точно."
-"Well, in ZeePa, the anxious Zeephra has driven everyone mad with her tales about the Softie and such nonsense. The zeepo spend all day kneading clay and making popons, the poor things. I want to help them with toxick, so I keep boiling it for them, putting my health at risk. I send the medicine to ZeePa for free. I just hope they don't get sick!"
+"Well, in ZeePa, the anxious Zeephra has driven everyone mad with her tales about the Softie and such nonsense. The zeepo spend all day kneading clay and making popons, the poor things."
+"I want to help them with toxick, so I keep boiling it for them, putting my health at risk. I send the medicine to ZeePa for free. I just hope they don't get sick!"
 {ZeePa} {Zeephra} {The Softie} 
 "It was me who invented the recipe for toxick. It has so many ingredients that now and then I forget to put something into the mixture. But I can't make it without phlegma, that's for sure."
 

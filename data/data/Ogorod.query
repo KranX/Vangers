@@ -640,7 +640,8 @@
 /* Commissar */
 "Я вроде как главный за ПипШоу. Когда наступят Выборы Неприкаянных, Жабли начнут сыпать на Глоркс пипетки. А их собирают прорабы. Я принимаю и описываю их по акту. Кто больше привез, тот и выиграл ПипШоу. Запомни, что надо уложиться до начала Прогресса."
 {Выборы Неприкаянных} {Жабли} {пипетка} {Прогресс}
-"I am kind of responsible for PeepShow. When the Election of Castaways comes, the Jablees start pouring peeperettes out on Glorx. The Commissars are supposed to collect them. I receive and register them according to protocol. The one who brings the most wins the PeepShow. Remember, though, we have to be done with this before Progress begins."
+"I am kind of responsible for PeepShow. When the Election of Castaways comes, the Jablees start pouring peeperettes out on Glorx. The Commissars are supposed to collect them."
+"I receive and register them according to protocol. The one who brings the most wins the PeepShow. Remember, though, we have to be done with this before Progress begins."
 {Election of the Castaways} {Jablees} {peeperette} {Progress} 
 /* Agent */
 "Не мешай ПипШоу, агент."
