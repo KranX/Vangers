@@ -177,7 +177,8 @@ struct ShowAviRTO : ShowImageRTO
 struct PaletteTransformRTO : BaseRTO
 {
 	virtual int Quant(void);
-
+	void Init(int);
+	void Finit();
 	PaletteTransformRTO(void){ ID = RTO_PALETTE_TRANSFORM_ID; Timer = RTO_PALETTE_TIMER; }
 };
 

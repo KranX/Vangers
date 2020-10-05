@@ -141,6 +141,8 @@ struct XGR_Screen
 
 	void set_fullscreen(bool fullscreen); 
 	void set_resolution(int width, int height);
+	void set_is_scaled(bool is_scaled);
+
 	void setpixel(int x,int y,int col);
 	int getpixel(int x,int y);
 
@@ -192,13 +194,14 @@ struct XGR_Screen
 	void set_render_buffer(SDL_Surface *buf);
 	void lock_current_surface();
 	void unlock_current_surface();
-	
+
 	XGR_Screen(void);
 
 private:
 	void create_surfaces(int width, int height);
 	void destroy_surfaces();
 	SDL_Surface* currentSurface;
+	bool is_scaled;
 };
 
 // XGR_MousePromptData::flags...
