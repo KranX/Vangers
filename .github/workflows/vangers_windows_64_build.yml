@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master, EnaB_MoDe ]
   pull_request:
-    branches: [ master, 60fps, hd_v2, EnaB_MoDe]
+    branches: [ master, 60fps, hd_v2, EnaB_MoDe ]
 
 jobs:
   build:
