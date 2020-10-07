@@ -1671,26 +1671,26 @@ void iGetMultiGameParameters(void)
 			break;
 		case iMP_MECHOSOMA:
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_INITIAL_CASH);
-			if(strcmp(game_name,"bath eleepod")==0) value = 999999;
+			if(strcmp(game_name,"eleepod bath")==0) value = 999999;
 			my_server_data.Mechosoma.InitialCash = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_ARTEFACTS_USING);
-			if(strcmp(game_name,"bath eleepod")==0) value = 0;
+			if(strcmp(game_name,"eleepod bath")==0) value = 0;
 			my_server_data.Mechosoma.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_IN_ESCAVE_TIME);
-			if(strcmp(game_name,"bath eleepod")==0) value = 1;
+			if(strcmp(game_name,"eleepod bath")==0) value = 1;
 			my_server_data.Mechosoma.InEscaveTime = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_TEAM_MODE);
 			my_server_data.Mechosoma.TeamMode = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_WORLD);
-			if(strcmp(game_name,"bath eleepod")==0) value = 1;
+			if(strcmp(game_name,"eleepod bath")==0) value = 1;
 			my_server_data.Mechosoma.World = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_QUANTITY1);
-			if(strcmp(game_name,"bath eleepod")==0) value = 0;
+			if(strcmp(game_name,"eleepod bath")==0) value = 0;
 			my_server_data.Mechosoma.ProductQuantity1 = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_QUANTITY2);
@@ -1704,18 +1704,21 @@ void iGetMultiGameParameters(void)
             if(strcmp(game_name,"travel")==0) value = 999999;
             if(strcmp(game_name,"aveslom")==0) value = 999999;
             if(strcmp(game_name,"necrally")==0) value = 999999;
+			if(strcmp(game_name,"traincross")==0) value = 999999;
             my_server_data.Passembloss.InitialCash = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
             if(strcmp(game_name,"travel")==0) value = 0;
             if(strcmp(game_name,"aveslom")==0) value = 0;
             if(strcmp(game_name,"necrally")==0) value = 0;
+			if(strcmp(game_name,"traincross")==0) value = 0;
             my_server_data.Passembloss.ArtefactsUsing = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
             if(strcmp(game_name,"travel")==0) value = 2;
             if(strcmp(game_name,"aveslom")==0) value = 2;
             if(strcmp(game_name,"necrally")==0) value = 2;
+			if(strcmp(game_name,"traincross")==0) value = 2;
             my_server_data.Passembloss.InEscaveTime = value;
       
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
@@ -1730,6 +1733,7 @@ void iGetMultiGameParameters(void)
             if(strcmp(game_name,"travel")==0) value = 1;
             if(strcmp(game_name,"aveslom")==0) value = 2;
             if(strcmp(game_name,"necrally")==0) value = 3;
+			if(strcmp(game_name,"traincross")==0) value = 3;
             my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;

@@ -3745,6 +3745,14 @@ void GloryPlace::Init(int ind)
     return;
   }
   
+  if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "traincross") == 0) {
+		    World = WORLD_NECROSS;
+			R_curr.x = GloryRnd.aiRnd(WorldTable[World]->x_size);
+			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
+		}
+		return;
+	}
+  
   //aveslom
       if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {
       if(ind == 0) {
@@ -3766,6 +3774,7 @@ void GloryPlace::Init(int ind)
       }
         return;
     }
+	
 	//classic
 	if(ind == 0) {
 		World = GloryRnd.aiRnd(3); // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
