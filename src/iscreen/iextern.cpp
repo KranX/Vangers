@@ -13,8 +13,6 @@
 #include "iscreen.h"
 #include "controls.h"
 
-#include "iscreen_options.h"
-
 #include "../actint/item_api.h"
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
@@ -128,7 +126,6 @@ struct iMultiResultString
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
-extern iScreenOption** iScrOpt;
 extern iScreenDispatcher* iScrDisp;
 extern int aci_SecondMatrixID;
 extern int aciCurMechosID;
