@@ -3780,14 +3780,14 @@ void GloryPlace::Init(int ind)
 		World = WORLD_XPLO;
 		switch (ind) {
 		case  0:	R_curr.x =  228;	R_curr.y = 15335;	World = WORLD_GLORX;	break; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если первый чек не на трех мирах.
-		case  1:	R_curr.x = 1650;    R_curr.y =  815;	break;
 		default:
-			switch(GloryRnd.aiRnd(5)) {
-			case  0:	R_curr.x = 1650;	R_curr.y =  310;	break;
-			case  1:	R_curr.x = 1705;	R_curr.y =  390;	break;
-			case  2:	R_curr.x =  170;	R_curr.y =  965;	break;
-			case  3:	R_curr.x = 1230;	R_curr.y = 1175;	break;
-			case  4:	R_curr.x = 1020;	R_curr.y =  600;	break;
+			switch(GloryRnd.aiRnd(6)) {
+			case  0:	R_curr.x = 1650;    R_curr.y =  815;	break;
+			case  1:	R_curr.x = 1650;	R_curr.y =  310;	break;
+			case  2:	R_curr.x = 1705;	R_curr.y =  390;	break;
+			case  3:	R_curr.x =  170;	R_curr.y =  965;	break;
+			case  4:	R_curr.x = 1230;	R_curr.y = 1175;	break;
+			case  5:	R_curr.x = 1020;	R_curr.y =  600;	break;
 			}
 		}
 		return;
