@@ -3687,13 +3687,12 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//necrally
-	//не доделано!
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "necrally") == 0) {
 		World = WORLD_NECROSS;
 		switch (ind) {
 		case  0:	R_curr.x =  316;	R_curr.y =  840;	break; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
 		case  1:	R_curr.x =  632;	R_curr.y = 1161;	break;
-		case  2:	R_curr.x =  143;	R_curr.y = 1467;	break; //
+		case  2:	R_curr.x =  143;	R_curr.y = 1467;	break;
 		case  3:	R_curr.x =  837;	R_curr.y = 1648;	break;
 		case  4:	R_curr.x =  971;	R_curr.y = 2015;	break;
 		case  5:	R_curr.x =   77;	R_curr.y = 2330;	break;
@@ -3742,6 +3741,18 @@ void GloryPlace::Init(int ind)
 		case 48:	R_curr.x =   40;	R_curr.y =14904;	break;
 		case 49:	R_curr.x =  249;	R_curr.y =15421;	break;
 		case 50:	R_curr.x =  991;	R_curr.y =15737;	break;
+		}
+		return;
+	}
+	
+	//traincross
+		if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "traincross") == 0) {
+		if(ind == 0) {
+			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_NECROSS; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
+		} else {
+			World = WORLD_NECROSS;
+			R_curr.x = GloryRnd.aiRnd(WorldTable[World]->x_size);
+			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
 		}
 		return;
 	}
