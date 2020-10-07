@@ -3769,7 +3769,7 @@ void GloryPlace::Init(int ind)
 					case  1:	R_curr.x = 1705;	R_curr.y =  390;	break;
 					case  2:	R_curr.x =  170;	R_curr.y =  965;	break;
 					case  3:	R_curr.x = 1230;	R_curr.y = 1175;	break;
-					case  4:	R_curr.x = 1020;	R_curr.y =  600;	break;
+					case  4:	R_curr.x = 1018;	R_curr.y =  606;	break;
 				}
 		}
 		return;
