@@ -3757,6 +3757,15 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
+	//raffa run 2.0
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "raffa run 2.0") == 0) {
+		if(ind == 0) {
+		World = GloryRnd.aiRnd(3);
+
+		while (World==WORLD_HMOK || World==WORLD_THREALL)
+			World = GloryRnd.aiRnd(WORLD_MAX);
+	}
+	
 	//aveslom
 	    if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {
 			if(ind == 0) {
