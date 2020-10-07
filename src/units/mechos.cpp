@@ -5601,16 +5601,16 @@ void VangerUnit::SensorQuant(void)
 				GameQuantReturnValue = RTO_LOADING3_ID;
 			};
 			break;
-		case EXTERNAL_MODE_IN_VANGER:
+		case EXTERNAL_MODE_IN_VANGER:  // teleport from mehos 
 			ExternalTime--;
-			aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL);
+			aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL); // disable right menu and full screen
 			if(ExternalTime <= 0){
 				SOUND_BOOT_STOP();
 				Go2Universe();
 				Status |= SOBJ_DISCONNECT;
 			};			
 			break;
-		case EXTERNAL_MODE_OUT_VANGER:
+		case EXTERNAL_MODE_OUT_VANGER:  // loading into mechos
 			ExternalTime--;
 			if(ExternalTime <= 0){
 				SOUND_BOOT_STOP();
@@ -5619,7 +5619,7 @@ void VangerUnit::SensorQuant(void)
 				ExternalDraw = 1;
 				switch_analysis(0);
 				ExternalSensor = ExternalObject;
-				aciSendEvent2actint(ACI_UNLOCK_INTERFACE,NULL);
+				aciSendEvent2actint(ACI_UNLOCK_INTERFACE,NULL); // enable right menu 
 			};
 			break;
 	};
