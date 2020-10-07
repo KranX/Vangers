@@ -3757,8 +3757,9 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
-	//zeefick
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"1+1 mission")==0) {
+	//pmission
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "pmission")==0) {
+			if(ind == 0) {
 		World = WORLD_XPLO;
 		switch (ind) {
 		case  0:	R_curr.x =  228;    R_curr.y =15335; World = WORLD_GLORX;	break; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если первый чек не на трех мирах.
