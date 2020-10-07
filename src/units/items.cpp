@@ -3754,10 +3754,10 @@ void GloryPlace::Init(int ind)
 	}
   
   //aveslom
-      if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {
-      if(ind == 0) {
+    if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {
+    if(ind == 0) {
         R_curr.x =  228;    R_curr.y =15335; World = WORLD_GLORX;
-      } else {
+    } else {
         World = WORLD_THREALL;
         switch ((ind - 1) % 10) {
           case  0:    R_curr.x = 1534;    R_curr.y =  591;    break;
