@@ -3757,22 +3757,23 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
-	//raffa run 2.0
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "raffa run 2.0") == 0) {
-		if(ind == 0) {
-		World = GloryRnd.aiRnd(3);
-	} else {
-		World = GloryRnd.aiRnd(WORLD_MAX);
-		
-			while (World==WORLD_HMOK, World==WORLD_THREALL)
-		World = GloryRnd.aiRnd(WORLD_MAX);
-	};
-	R_curr.x = GloryRnd.aiRnd(WorldTable[World]->x_size);
-	if(World < MAIN_WORLD_MAX - 1)
-		R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
-	else	
-		R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
-};
+	//zeefick
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"1+1 mission")==0) {
+		World = WORLD_XPLO;
+		switch (ind) {
+		case  0:	R_curr.x =  228;    R_curr.y =15335; World = WORLD_GLORX;	break; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если первый чек не на трех мирах.
+		case  1:	R_curr.x = 1650;    R_curr.y =  815;
+		default:
+			switch(RND(5)) {
+			case  0:	R_curr.x = 1650;	R_curr.y =  310;	break;
+			case  1:	R_curr.x = 1705;	R_curr.y =  390;	break;
+			case  2:	R_curr.x =  170;	R_curr.y =  965;	break;
+			case  3:	R_curr.x = 1230;	R_curr.y = 1175;	break;
+			case  4:	R_curr.x = 1020;	R_curr.y =  600;	break;
+			}
+		}
+		return;
+	}
 	
 	//aveslom
 	    if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {
