@@ -5603,6 +5603,7 @@ void VangerUnit::SensorQuant(void)
 			break;
 		case EXTERNAL_MODE_IN_VANGER:
 			ExternalTime--;
+			aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL);
 			if(ExternalTime <= 0){
 				SOUND_BOOT_STOP();
 				Go2Universe();
@@ -5618,6 +5619,7 @@ void VangerUnit::SensorQuant(void)
 				ExternalDraw = 1;
 				switch_analysis(0);
 				ExternalSensor = ExternalObject;
+				aciSendEvent2actint(ACI_UNLOCK_INTERFACE,NULL);
 			};
 			break;
 	};
