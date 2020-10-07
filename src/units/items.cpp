@@ -40,6 +40,11 @@
 #include "../sound/hsound.h"
 #include "magnum.h"
 
+#include "../iscreen/iscreen_options.h"
+#include "../iscreen/iscreen.h"
+
+
+extern iScreenOption** iScrOpt;
 
 extern int RAM16;
 extern iGameMap* curGMap;
