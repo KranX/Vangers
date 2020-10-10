@@ -4238,7 +4238,7 @@ void actIntDispatcher::i_finit(void)
 	aciPrepareWorldsMenu();
 	
 char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-	if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 3 && strcmp(game_name,"satina")==0) {
+	if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 3 && strcmp(game_name,"satinan")==0) {
     aScrDisp->send_event(EV_TELEPORT, 3);
 }
 	flags &= ~AS_ISCREEN;
