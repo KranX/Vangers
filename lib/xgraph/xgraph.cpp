@@ -102,6 +102,7 @@ Uint32 CursorAnim(Uint32 interval, void *param)
 XGR_Screen::XGR_Screen(void)
 {
 	flags = 0;
+	is_scaled = false;
 
 	ClipMode = XGR_CLIP_PUTSPR;
 
@@ -170,7 +171,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	
 	std::cout<<"SDL_SetHint"<<std::endl;
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");  // "linear" make the scaled rendering look smoother.
-	
+
 	XGR_Palette = SDL_AllocPalette(256);
 
 	create_surfaces(x, y);
@@ -313,6 +314,11 @@ void XGR_Screen::set_fullscreen(bool fullscreen) {
 		CGDisplayHideCursor(kCGDirectMainDisplay);
 #endif
 	} 
+}
+
+void XGR_Screen::set_is_scaled(bool is_scaled)
+{
+	this->is_scaled = is_scaled;
 }
 
 void XGR_Screen::setpixel(int x,int y,int col)
@@ -886,8 +892,31 @@ void XGR_Screen::flip()
 			SDL_RenderCopy(sdlRenderer, HDBackgroundTexture, NULL, NULL);
 		}
 		SDL_RenderSetLogicalSize(sdlRenderer, XGR_ScreenSurface->w, XGR_ScreenSurface->h);
-		SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
-		
+
+		if(is_scaled){
+			SDL_SetTextureColorMod(HDBackgroundTexture, averageColorPalette.r, averageColorPalette.g, averageColorPalette.b);
+			SDL_RenderCopy(sdlRenderer, HDBackgroundTexture, NULL, NULL);
+
+			SDL_Rect src_rect {
+					.x = 0,
+					.y = 0,
+					.w = 800,
+					.h = 600,
+			};
+
+			int new_width = 800 / 600.0f * (float)XGR_ScreenSurface->h;
+			SDL_Rect dst_rect {
+					.x = (XGR_ScreenSurface->w - new_width)/2,
+					.y = 0,
+					.w = new_width,
+					.h = XGR_ScreenSurface->h,
+			};
+			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0);
+			SDL_RenderCopy(sdlRenderer, sdlTexture, &src_rect, &dst_rect);
+		}else{
+			SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+		}
+
 		SDL_RenderPresent(sdlRenderer);
 		SDL_UnlockSurface(XGR_ScreenSurface);
 		XGR_MouseObj.PutFon();
