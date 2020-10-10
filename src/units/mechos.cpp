@@ -13739,6 +13739,11 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			y = 815;
 			return;
 }
+		if (NetworkON && strcmp(game_name,"necrally")==0 && my_server_data.GameType == 2) {
+			x = 1795;
+			y = 515;
+			return;
+}
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
 		if(!strcmp(name,NetworkEscaveName[i])){
 			t = -1;

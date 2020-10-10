@@ -10348,7 +10348,7 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				}
 
 				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-					if (strcmp(game_name,"travel")==0) pm -> type = 00;
+					if (strcmp(game_name,"travel")==0) pm -> type = 0;
 					else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
 					if (!Gamer -> Pmechos)
