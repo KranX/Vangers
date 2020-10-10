@@ -794,12 +794,16 @@ void uniVangPrepare(void){
 	//zNfo  DEFAULT MECHOS 
 	// 16 = моток
 	int MechosID = 0;
-	if (NetworkON) switch (z_my_server_data.mod_id) {
-		case Z_MODS_RAFARUN_ID:		{ MechosID = 16; break; } // моток
-		case Z_MODS_TRAKTRIAL_ID:	{ MechosID =  7; break; } // аттрактор
-		case Z_MODS_NEPTUN_ID:		{ MechosID = 21; break; } // жаба
-		case Z_MODS_TEST_ID:		{ MechosID =  5; break; } // дряхлый душегуб
-		default: MechosID = 5; // дряхлый душегуб
+	if (NetworkON) {
+		switch (z_my_server_data.mod_id) {
+			case Z_MODS_RAFARUN_ID:		{ MechosID = 16; break; } // моток
+			case Z_MODS_TRAKTRIAL_ID:	{ MechosID =  7; break; } // аттрактор
+			case Z_MODS_NEPTUN_ID:		{ MechosID = 21; break; } // жаба
+			case Z_MODS_TEST_ID:		{ MechosID =  5; break; } // дряхлый душегуб
+			default: MechosID = 5; // дряхлый душегуб
+		}
+		if (my_server_data.GameType == PASSEMBLOSS && strcmp(game_name,"travel")==0) MechosID = 0;
+		if (customMechousUsage) MechosID = customMechousId;
 	}
 	v -> Pescave -> Pshop -> sellMechos(v -> Pmechos, MechosID);
 	v -> Pmechos -> type = MechosID;
