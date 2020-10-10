@@ -13733,11 +13733,11 @@ void NetworkGetStart(char* name,int& x,int& y)
 	SensorSortedData = new SensorDataType*[SnsTableSize];
 	StaticSort(SnsTableSize,(StaticObject**)SensorObjectData,(StaticObject**)SensorSortedData);
 	
-char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR(); 
-if (NetworkON && strcmp(game_name,"satina")==0 && my_server_data.GameType == 2) {
-  x = 1650;
-  y = 815;
-  return;
+char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+		if (NetworkON && strcmp(game_name,"satina")==0 && my_server_data.GameType == 2) {
+			x = 1650;
+			y = 815;
+			return;
 }
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
 		if(!strcmp(name,NetworkEscaveName[i])){

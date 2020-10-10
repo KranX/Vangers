@@ -10348,10 +10348,10 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				}
 
 				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-				if (strcmp(game_name,"satina")==0) pm -> type = 0;
-				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
+					if (strcmp(game_name,"satina")==0) pm -> type = 0;
+					else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
-				if (!Gamer -> Pmechos)
+					if (!Gamer -> Pmechos)
 					ErrH.Abort("uvsMakeNewGamer :: dont have any mechos in shop");
 
 //				aciCurCredits -= uvsMechosTable[pm -> type] -> price;
