@@ -1,6 +1,12 @@
 #include "../global.h"
 #include "../lang.h"
 
+#include "../iscreen/iscreen_options.h"
+#include "../iscreen/iscreen.h"
+#include "../network.h"
+
+extern iScreenOption** iScrOpt;
+
 #include "../zmod_client.h"
 
 //#include "..\win32f.h"
@@ -13726,7 +13732,13 @@ void NetworkGetStart(char* name,int& x,int& y)
 	int i,j,t;
 	SensorSortedData = new SensorDataType*[SnsTableSize];
 	StaticSort(SnsTableSize,(StaticObject**)SensorObjectData,(StaticObject**)SensorSortedData);
-
+	
+char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR(); 
+if (NetworkON && strcmp(game_name,"satina")==0 && my_server_data.GameType == 2) {
+  x = 1650;
+  y = 815;
+  return;
+}
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
 		if(!strcmp(name,NetworkEscaveName[i])){
 			t = -1;
