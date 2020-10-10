@@ -4,7 +4,7 @@
 #include "../lang.h"
 #include <zlib.h>
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || __GNUC__ < 9
 #include <sys/stat.h>
 #else
 #include <filesystem>
@@ -48,7 +48,10 @@
 #include "aci_scr.h"
 #include "chtree.h"
 
+#if defined(__APPLE__) || __GNUC__ < 9
+#else
 namespace fs = std::filesystem;
+#endif
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
