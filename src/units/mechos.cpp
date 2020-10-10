@@ -6312,8 +6312,9 @@ void ActionDispatcher::PromptQuant(void)
 						
 						if (PromptIncubatorFreeVisit < 2
 							&& (PromptIncubatorCount > 2 || GetStuffObject(Active,ACI_NYMBOS))
-							&& !(ConTimer.min % 11)
-							&& ConTimer.sec == 0) {
+							&& !(ConTimer.min % 30) //  show every 30 minutes (1.5 min real)
+							&& ConTimer.sec == 0
+							&& ConTimer.counter < 36000 ) {  //do not show message if an 10 game hour(30 min real) has passed 
 							aiMessageQueue.Send(AI_MESSAGE_CAMERA_HELP, 0, 0xff, 0);
 							return;
 						}
