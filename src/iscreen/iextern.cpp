@@ -1691,7 +1691,7 @@ void iGetMultiGameParameters(void)
 			my_server_data.Mechosoma.TeamMode = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_WORLD);
-			if(strcmp(game_name,"eleepod bath")==0) value = 1;
+			if(strcmp(game_name,"eleepod bath")==0) value = 0;
 			my_server_data.Mechosoma.World = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_QUANTITY1);

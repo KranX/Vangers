@@ -804,8 +804,8 @@ void uniVangPrepare(void){
 		}
 		char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 		if (my_server_data.GameType == 2 && strcmp(game_name,"travel")==0) MechosID = 0;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"aibatr")==0) MechosID = 17;
-		else if (my_server_data.GameType == 1 && strcmp(game_name,"eleepod bath")==0) MechosID = 0;
+		else if (my_server_data.GameType == 0 && strcmp(game_name,"aibatr")==0) MechosID = 13;
+		else if (my_server_data.GameType == 1 && strcmp(game_name,"eleepod bath")==0) MechosID = 6;
 		else MechosID = 5;
 	}
 	v -> Pescave -> Pshop -> sellMechos(v -> Pmechos, MechosID);
@@ -10356,8 +10356,8 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 
 				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 				if (strcmp(game_name,"travel")==0) pm -> type = 0;
-				else if (strcmp(game_name,"aibatr")==0) pm -> type = 17;
-				else if (strcmp(game_name,"eleepod bath")==0) pm -> type = 6;
+				else if (strcmp(game_name,"aibatr")==0) pm -> type = 13;
+				else if (strcmp(game_name,"eleepod bath")==0) pm -> type = 0;
 				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
 				if (!Gamer -> Pmechos)
