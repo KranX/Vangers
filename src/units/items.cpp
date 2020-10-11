@@ -3773,6 +3773,21 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
+	//satinan
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "stad3la")==0) {
+		World = WORLD_GLORX;
+		switch (ind) {
+			case  0:	R_curr.x = 1223;    R_curr.y = 2948;	break;
+			default:
+				switch(ind % 2) {
+					case  0:	R_curr.x = 1103;	R_curr.y = 2480;	break;
+					case  1:	R_curr.x = 1451;	R_curr.y = 2149;	break;
+					case  2:	R_curr.x = 1527;	R_curr.y = 2577;	break;
+				}
+		}
+		return;
+	}
+	
 	//aveslom
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {
 		if(ind == 0) {

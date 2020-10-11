@@ -1711,6 +1711,8 @@ void iGetMultiGameParameters(void)
             if(strcmp(game_name,"necrally")==0) value = 999999;
 			if(strcmp(game_name,"traincross")==0) value = 999999;
 			if(strcmp(game_name,"satinan")==0) value = 500000;
+			if(strcmp(game_name,"stad3la")==0) value = 999999;
+			if(strcmp(game_name,"ultra pass")==0) value = 999999;
             my_server_data.Passembloss.InitialCash = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
@@ -1719,6 +1721,8 @@ void iGetMultiGameParameters(void)
             if(strcmp(game_name,"necrally")==0) value = 0;
 			if(strcmp(game_name,"traincross")==0) value = 0;
 			if(strcmp(game_name,"satinan")==0) value = 0;
+			if(strcmp(game_name,"stad3la")==0) value = 0;
+			if(strcmp(game_name,"ultra pass")==0) value = 0;
             my_server_data.Passembloss.ArtefactsUsing = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
@@ -1727,6 +1731,8 @@ void iGetMultiGameParameters(void)
             if(strcmp(game_name,"necrally")==0) value = 2;
 			if(strcmp(game_name,"traincross")==0) value = 2;
 			if(strcmp(game_name,"satinan")==0) value = 1;
+			if(strcmp(game_name,"stad3la")==0) value = 1;
+			if(strcmp(game_name,"ultra pass")==0) value = 3;
             my_server_data.Passembloss.InEscaveTime = value;
       
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
@@ -1734,6 +1740,8 @@ void iGetMultiGameParameters(void)
             if(strcmp(game_name,"necrally")==0) value = 51;
             if(strcmp(game_name,"aveslom")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*10) + 1;
 			if(strcmp(game_name,"satinan")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
+			if(strcmp(game_name,"stad3la")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*3) + 1;
+			if(strcmp(game_name,"ultra pass")==0) value = 999;
             my_server_data.Passembloss.CheckpointsNumber = value;
 
             time(&tm);
@@ -1744,6 +1752,8 @@ void iGetMultiGameParameters(void)
             if(strcmp(game_name,"necrally")==0) value = 3;
 			if(strcmp(game_name,"traincross")==0) value = 3;
 			if(strcmp(game_name,"satinan")==0) value = 2;
+			if(strcmp(game_name,"stad3la")==0) value = 2;
+			if(strcmp(game_name,"ultra pass")==0) value = 2;
             my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;

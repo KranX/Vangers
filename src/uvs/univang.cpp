@@ -10358,6 +10358,7 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				if (strcmp(game_name,"travel")==0) pm -> type = 0;
 				else if (strcmp(game_name,"aibatr")==0) pm -> type = 22;
 				else if (strcmp(game_name,"eleepod bath")==0) pm -> type = 0;
+				else if (strcmp(game_name,"ultra pass")==0) pm -> type = 5;
 				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
 				if (!Gamer -> Pmechos)

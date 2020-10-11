@@ -13745,8 +13745,13 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			return;
 }
 		if (NetworkON && strcmp(game_name,"aibatr")==0 && my_server_data.GameType == 0) {
-			x = 933;
-			y = 322;
+			x = 485;
+			y = 1310;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"stad3la")==0 && my_server_data.GameType == 2) {
+			x = 1410;
+			y = 3255;
 			return;
 }
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
