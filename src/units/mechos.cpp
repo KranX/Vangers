@@ -13744,7 +13744,7 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			y = 515;
 			return;
 }
-		if (NetworkON && strcmp(game_name,"aibat")==0 && my_server_data.GameType == 0) {
+		if (NetworkON && strcmp(game_name,"aibatr")==0 && my_server_data.GameType == 0) {
 			x = 933;
 			y = 322;
 			return;
