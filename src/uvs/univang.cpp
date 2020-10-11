@@ -10357,8 +10357,7 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 					else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
 					if (!Gamer -> Pmechos)
-					ErrH.Abort("uvsMakeNewGamer :: dont have any mechos in shop");
-					if (strcmp(game_name,"aibat")==0) pm -> type = 17;
+					else if (strcmp(game_name,"aibat")==0) pm -> type = 17;
 					else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
 					if (!Gamer -> Pmechos)
