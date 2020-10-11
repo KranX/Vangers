@@ -802,10 +802,11 @@ void uniVangPrepare(void){
 			case Z_MODS_TEST_ID:		{ MechosID =  5; break; } // дряхлый душегуб
 			default: MechosID = 5; // дряхлый душегуб
 		}
-		if (my_server_data.GameType == PASSEMBLOSS && strcmp(game_name,"travel")==0) MechosID = 0;
-		if (my_server_data.GameType == VAN_WAR && strcmp(game_name,"aibatr")==0) MechosID = 17;
-		if (my_server_data.GameType == MECHOSOMA && strcmp(game_name,"eleepod bath")==0) MechosID = 0;
-		if (customMechousUsage) MechosID = customMechousId;
+		char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+		if (my_server_data.GameType == 2 && strcmp(game_name,"travel")==0) MechosID = 0;
+		else if (my_server_data.GameType == 0 && strcmp(game_name,"aibatr")==0) MechosID = 17;
+		else if (my_server_data.GameType == 1 && strcmp(game_name,"eleepod bath")==0) MechosID = 0;
+		else MechosID = 5;
 	}
 	v -> Pescave -> Pshop -> sellMechos(v -> Pmechos, MechosID);
 	v -> Pmechos -> type = MechosID;
@@ -10354,12 +10355,12 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				}
 
 				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-					if (strcmp(game_name,"travel")==0) pm -> type = 0;
-					else if (strcmp(game_name,"aibatr")==0) pm -> type = 17;
-					else if (strcmp(game_name,"eleepod bath")==0) pm -> type = 6;
-					else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
+				if (strcmp(game_name,"travel")==0) pm -> type = 0;
+				else if (strcmp(game_name,"aibatr")==0) pm -> type = 17;
+				else if (strcmp(game_name,"eleepod bath")==0) pm -> type = 6;
+				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
-					if (!Gamer -> Pmechos)
+				if (!Gamer -> Pmechos)
 					ErrH.Abort("uvsMakeNewGamer :: dont have any mechos in shop");
 
 //				aciCurCredits -= uvsMechosTable[pm -> type] -> price;
