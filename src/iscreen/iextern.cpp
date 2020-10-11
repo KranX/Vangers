@@ -1647,14 +1647,17 @@ void iGetMultiGameParameters(void)
 		case iMP_VAN_WAR:
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_INITIAL_CASH);
 			if(strcmp(game_name,"aibatr")==0) value = 999999;
+			if(strcmp(game_name,"super van-war")==0) value = -20000;
 			my_server_data.Van_War.InitialCash = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ARTEFACTS_USING);
 			if(strcmp(game_name,"aibatr")==0) value = 0;
+			if(strcmp(game_name,"super van-war")==0) value = 0;
 			my_server_data.Van_War.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_IN_ESCAVE_TIME);
 			if(strcmp(game_name,"aibatr")==0) value = 2;
+			if(strcmp(game_name,"super van-war")==0) value = 2;
 			my_server_data.Van_War.InEscaveTime = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_TEAM_MODE);
@@ -1666,6 +1669,7 @@ void iGetMultiGameParameters(void)
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ACCESS);
 			if(strcmp(game_name,"aibatr")==0) value = 0;
+			if(strcmp(game_name,"super van-war")==0) value = 1;
 			my_server_data.Van_War.WorldAccess = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_MAX_KILLS);
