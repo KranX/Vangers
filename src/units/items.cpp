@@ -3816,7 +3816,7 @@ void GloryPlace::Init(int ind)
 	//xivepass
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "xivepass") == 0) {
 		switch (ind) {
-			World = WORLD_THREALL;
+		World = WORLD_THREALL;
 			case  0:	R_curr.x = 1558;	R_curr.y = 8299;	World = WORLD_NECROSS;	break;
 			case  1:	R_curr.x = 1213;	R_curr.y =   46;	World = WORLD_XPLO;	break;
 			case  2:	R_curr.x = 1511;	R_curr.y =  835;	break;
@@ -3832,7 +3832,7 @@ void GloryPlace::Init(int ind)
 	//razminka
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "razminka") == 0) {
 		switch (ind) {
-			World = WORLD_GLORX;
+		World = WORLD_GLORX;
 			case  0:	R_curr.x =  625;	R_curr.y = 4386;	break;
 			case  1:	R_curr.x =  907;	R_curr.y = 2039;	World = WORLD_KHOX;	break;
 			case  2:	R_curr.x =  819;	R_curr.y = 3573;	World = WORLD_XPLO;	break;
@@ -3881,7 +3881,7 @@ void GloryPlace::Init(int ind)
 	//huntage-sim
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "huntage-sim")==0) {
 		if(ind == 0) {
-			R_curr.x = 150;	R_curr.y = 5435; World = WORLD_NECROSS;
+			R_curr.x = 150;	R_curr.y = 5435; World = WORLD_GLORX;
 		} else {
 		World = GloryRnd.aiRnd(WORLD_MAX);
 
