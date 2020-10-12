@@ -1703,7 +1703,7 @@ Server::~Server() {
 
 void Server::clear() {
 	Game *g;
-	while ((g = games.first()) != 0) {
+	while ((g = games.first()) != -1) {
 		games.remove(g);
 		delete g;
 	}
