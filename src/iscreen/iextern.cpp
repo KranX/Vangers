@@ -1770,7 +1770,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"xivepass")==0) value = 8;
 			if(strcmp(game_name,"razminka")==0) value = 10;
 			if(strcmp(game_name,"huntage-sim")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
-			if(strcmp(game_name,"shutle fostral")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*24) + 0;
+			if(strcmp(game_name,"shutle fostral")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*22) + 0;
             my_server_data.Passembloss.CheckpointsNumber = value;
 
             time(&tm);
