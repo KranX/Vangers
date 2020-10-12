@@ -807,7 +807,7 @@ void uniVangPrepare(void){
 		else if (my_server_data.GameType == 0 && strcmp(game_name,"aibatr")==0) MechosID = 22;
 		else if (my_server_data.GameType == 1 && strcmp(game_name,"eleepod bath")==0) MechosID = 6;
 		else if (my_server_data.GameType == 1 && strcmp(game_name,"mega mechosoma")==0) MechosID = 20;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"super van-war")==0) MechosID = 14;
+		else if (my_server_data.GameType == 0 && strcmp(game_name,"super van-war")==0) MechosID = 13;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"shutle fostral")==0) MechosID = 0;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"progress")==0) MechosID = 17;
 		else MechosID = 5;
