@@ -3879,20 +3879,20 @@ void GloryPlace::Init(int ind)
 		if(ind == 0) {
 			R_curr.x =  150;    R_curr.y = 5435; World = WORLD_GLORX;
 		} else {
-		World = GloryRnd.aiRnd(WORLD_MAX);
-
-		while (World == WORLD_HMOK)
 			World = GloryRnd.aiRnd(WORLD_MAX);
 
-		if(z_my_server_data.mod_id == Z_MODS_RAFARUN_ID ) //tarakan'i bega/ excludes hmok && threall
-			while (World==WORLD_HMOK || World==WORLD_THREALL)
-		World = GloryRnd.aiRnd(WORLD_MAX);
+			while (World == WORLD_HMOK)
+				World = GloryRnd.aiRnd(WORLD_MAX);
+
+			if(z_my_server_data.mod_id == Z_MODS_RAFARUN_ID )
+				while (World==WORLD_HMOK || World==WORLD_THREALL)
+			World = GloryRnd.aiRnd(WORLD_MAX);
 	};
-	R_curr.x = GloryRnd.aiRnd(WorldTable[World]->x_size);
-	if(World < MAIN_WORLD_MAX - 1)
-		R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
-	else	
-		R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
+		R_curr.x = GloryRnd.aiRnd(WorldTable[World]->x_size);
+		if(World < MAIN_WORLD_MAX - 1)
+			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
+		else	
+			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
 };
 	
 	//aveslom
