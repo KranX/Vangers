@@ -13754,6 +13754,11 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			y = 3255;
 			return;
 }
+		if (NetworkON && strcmp(game_name,"shutle fostral")==0 && my_server_data.GameType == 2) {
+			x = 1835;
+			y = 1365;
+			return;
+}
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
 		if(!strcmp(name,NetworkEscaveName[i])){
 			t = -1;

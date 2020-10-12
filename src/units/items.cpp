@@ -3745,14 +3745,104 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
+	//shutle fostral
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "shutle fostral") == 0) {
+		World = WORLD_FOSTRAL;
+		switch (ind) {
+		case  0:	R_curr.x =  180;	R_curr.y = 1616;	break;
+		case  1:	R_curr.x =  550;	R_curr.y = 2260;	break;
+		case  2:	R_curr.x =   55;	R_curr.y = 3235;	break;
+		case  3:	R_curr.x =  610;	R_curr.y = 3835;	break;
+		case  4:	R_curr.x = 1370;	R_curr.y = 4475;	break;
+		case  5:	R_curr.x = 1045;	R_curr.y = 5420;	break;
+		case  6:	R_curr.x =  530;	R_curr.y = 6085;	break;
+		case  7:	R_curr.x =  855;	R_curr.y = 6363;	break;
+		case  8:	R_curr.x =  827;	R_curr.y = 7505;	break;
+		case  9:	R_curr.x =  664;	R_curr.y = 8486;	break;
+		case 10:	R_curr.x =  566;	R_curr.y = 9071;	break;
+		case 11:	R_curr.x = 1590;	R_curr.y = 9577;	break;
+		case 12:	R_curr.x = 1104;	R_curr.y = 9721;	break;
+		case 13:	R_curr.x =  534;	R_curr.y =10176;	break;
+		case 14:	R_curr.x = 1749;	R_curr.y =10593;	break;
+		case 15:	R_curr.x =  843;	R_curr.y =10808;	break;
+		case 16:	R_curr.x =  223;	R_curr.y =11736;	break;
+		case 17:	R_curr.x = 1760;	R_curr.y =12515;	break;
+		case 18:	R_curr.x =  858;	R_curr.y =12743;	break;
+		case 19:	R_curr.x =   50;	R_curr.y =13348;	break;
+		case 20:	R_curr.x = 1447;	R_curr.y =13779;	break;
+		case 21:	R_curr.x =  751;	R_curr.y =14351;	break;
+		case 22:	R_curr.x =  855;	R_curr.y =14820;	break;
+		case 23:	R_curr.x = 1469;	R_curr.y =14808;	break;
+		case 24:	R_curr.x =   90;	R_curr.y =13949;	break;
+		case 25:	R_curr.x =  435;	R_curr.y =13513;	break;
+		case 26:	R_curr.x = 1740;	R_curr.y =12796;	break;
+		case 27:	R_curr.x = 1713;	R_curr.y =12250;	break;
+		case 28:	R_curr.x = 1404;	R_curr.y =11835;	break;
+		case 29:	R_curr.x = 1682;	R_curr.y =11093;	break;
+		case 30:	R_curr.x =  582;	R_curr.y =10517;	break;
+		case 31:	R_curr.x = 1010;	R_curr.y =10266;	break;
+		case 32:	R_curr.x = 1588;	R_curr.y = 9955;	break;
+		case 33:	R_curr.x =  192;	R_curr.y = 9136;	break;
+		case 34:	R_curr.x = 1200;	R_curr.y = 7635;	break;
+		case 35:	R_curr.x =  215;	R_curr.y = 7010;	break;
+		case 36:	R_curr.x = 1051;	R_curr.y = 6428;	break;
+		case 37:	R_curr.x = 1962;	R_curr.y = 6021;	break;
+		case 38:	R_curr.x =  522;	R_curr.y = 5474;	break;
+		case 39:	R_curr.x =  549;	R_curr.y = 4610;	break;
+		case 40:	R_curr.x =  379;	R_curr.y = 3898;	break;
+		case 41:	R_curr.x =  263;	R_curr.y = 3277;	break;
+		case 42:	R_curr.x = 1675;	R_curr.y = 2890;	break;
+		case 43:	R_curr.x = 1550;	R_curr.y = 2572;	break;
+		case 44:	R_curr.x =   66;	R_curr.y = 2336;	break;
+		case 45:	R_curr.x = 1646;	R_curr.y = 1815;	break;
+		case 46:	R_curr.x =  866;	R_curr.y = 1692;	break;
+		case 47:	R_curr.x = 1960;	R_curr.y = 1505;	break;	
+		}
+		return;
+	}
+	
 	//traincross
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "traincross") == 0) {
 		if(ind == 0) {
-			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_NECROSS; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
+			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_NECROSS;
 		} else {
 			World = WORLD_NECROSS;
 			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
 			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
+		}
+		return;
+	}
+	
+	//xivepass
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "xivepass") == 0) {
+		switch (ind) {
+			World = WORLD_THREALL;
+			case  0:	R_curr.x = 1558;	R_curr.y = 8299;	World = WORLD_NECROSS;	break;
+			case  1:	R_curr.x = 1213;	R_curr.y =   46;	World = WORLD_XPLO;	break;
+			case  2:	R_curr.x = 1511;	R_curr.y =  835;	break;
+			case  3:	R_curr.x =  228;	R_curr.y = 1374;	break;
+			case  4:	R_curr.x = 1821;	R_curr.y = 1882;	World = WORLD_BOOZEENA;	break;
+			case  5:	R_curr.x = 1280;	R_curr.y = 1559;	World = WORLD_BOOZEENA;	break;
+			case  6:	R_curr.x =  177;	R_curr.y = 1995;	break;
+			case  7:	R_curr.x = 1517;	R_curr.y = 3339;	World = WORLD_XPLO;	break;
+		}
+		return;
+	}
+	
+	//razminka
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "razminka") == 0) {
+		switch (ind) {
+			World = WORLD_GLORX;
+			case  0:	R_curr.x =  625;	R_curr.y = 4386;	break;
+			case  1:	R_curr.x =  907;	R_curr.y = 2039;	World = WORLD_KHOX;	break;
+			case  2:	R_curr.x =  819;	R_curr.y = 3573;	World = WORLD_XPLO;	break;
+			case  3:	R_curr.x = 1433;	R_curr.y = 4036;	World = WORLD_NECROSS;	break;
+			case  4:	R_curr.x =  709;	R_curr.y = 7249;	World = WORLD_FOSTRAL;	break;
+			case  5:	R_curr.x =  657;	R_curr.y = 1049;	World = WORLD_WEEXOW;	break;
+			case  6:	R_curr.x = 1875;	R_curr.y = 1055;	World = WORLD_WEEXOW;	break;
+			case  7:	R_curr.x = 1919;	R_curr.y = 1063;	World = WORLD_KHOX;	break;
+			case  8:	R_curr.x =  207;	R_curr.y =14676;	World = WORLD_NECROSS;	break;
+			case  9:	R_curr.x = 1915;	R_curr.y =  1510;	World = WORLD_BOOZEENA;	break;
 		}
 		return;
 	}
@@ -3787,6 +3877,26 @@ void GloryPlace::Init(int ind)
 		}
 		return;
 	}
+	
+	//huntage-sim
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "huntage-sim")==0) {
+		case  0:	R_curr.x =  150;    R_curr.y = 5435;	break;
+	} else {
+		World = GloryRnd.aiRnd(WORLD_MAX);
+
+		while (World == WORLD_HMOK)
+			World = GloryRnd.aiRnd(WORLD_MAX);
+
+		if(z_my_server_data.mod_id == Z_MODS_RAFARUN_ID ) //tarakan'i bega/ excludes hmok && threall
+			while (World==WORLD_HMOK || World==WORLD_THREALL)
+		World = GloryRnd.aiRnd(WORLD_MAX);
+	};
+	R_curr.x = GloryRnd.aiRnd(WorldTable[World]->x_size);
+	if(World < MAIN_WORLD_MAX - 1)
+		R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
+	else	
+		R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
+};
 	
 	//aveslom
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {

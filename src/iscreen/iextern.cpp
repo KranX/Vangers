@@ -1682,16 +1682,19 @@ void iGetMultiGameParameters(void)
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_INITIAL_CASH);
 			if(strcmp(game_name,"eleepod bath")==0) value = 999999;
 			if(strcmp(game_name,"mega mechosoma")==0) value = 999999;
+			if(strcmp(game_name,"progress")==0) value = 400;
 			my_server_data.Mechosoma.InitialCash = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_ARTEFACTS_USING);
 			if(strcmp(game_name,"eleepod bath")==0) value = 0;
 			if(strcmp(game_name,"mega mechosoma")==0) value = 0;
+			if(strcmp(game_name,"progress")==0) value = 0;
 			my_server_data.Mechosoma.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_IN_ESCAVE_TIME);
 			if(strcmp(game_name,"eleepod bath")==0) value = 1;
 			if(strcmp(game_name,"mega mechosoma")==0) value = 3;
+			if(strcmp(game_name,"progress")==0) value = 0;
 			my_server_data.Mechosoma.InEscaveTime = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_TEAM_MODE);
@@ -1699,6 +1702,7 @@ void iGetMultiGameParameters(void)
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_WORLD);
 			if(strcmp(game_name,"eleepod bath")==0) value = 0;
+			if(strcmp(game_name,"progress")==0) value = 1;
 			my_server_data.Mechosoma.World = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_QUANTITY1);
@@ -1710,6 +1714,7 @@ void iGetMultiGameParameters(void)
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_ONE_AT_A_TIME);
 			if(strcmp(game_name,"mega mechosoma")==0) value = 17;
+			if(strcmp(game_name,"progress")==0) value = 1;
 			my_server_data.Mechosoma.One_at_a_time = value;
 			break;
 		case iMP_PASSEMBLOSS:
@@ -1721,6 +1726,10 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"satinan")==0) value = 500000;
 			if(strcmp(game_name,"stad3la")==0) value = 999999;
 			if(strcmp(game_name,"ultra pass")==0) value = 999999;
+			if(strcmp(game_name,"xivepass")==0) value = 999999;
+			if(strcmp(game_name,"razminka")==0) value = 999999;
+			if(strcmp(game_name,"huntage-sim")==0) value = 999999;
+			if(strcmp(game_name,"shutle fostral")==0) value = 999999;
             my_server_data.Passembloss.InitialCash = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
@@ -1731,6 +1740,10 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"satinan")==0) value = 0;
 			if(strcmp(game_name,"stad3la")==0) value = 0;
 			if(strcmp(game_name,"ultra pass")==0) value = 0;
+			if(strcmp(game_name,"xivepass")==0) value = 0;
+			if(strcmp(game_name,"razminka")==0) value = 0;
+			if(strcmp(game_name,"huntage-sim")==0) value = 0;
+			if(strcmp(game_name,"shutle fostral")==0) value = 0;
             my_server_data.Passembloss.ArtefactsUsing = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
@@ -1741,6 +1754,10 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"satinan")==0) value = 1;
 			if(strcmp(game_name,"stad3la")==0) value = 1;
 			if(strcmp(game_name,"ultra pass")==0) value = 3;
+			if(strcmp(game_name,"xivepass")==0) value = 2;
+			if(strcmp(game_name,"razminka")==0) value = 3;
+			if(strcmp(game_name,"huntage-sim")==0) value = 3;
+			if(strcmp(game_name,"shutle fostral")==0) value = 2;
             my_server_data.Passembloss.InEscaveTime = value;
       
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
@@ -1750,6 +1767,10 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"satinan")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
 			if(strcmp(game_name,"stad3la")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*3) + 1;
 			if(strcmp(game_name,"ultra pass")==0) value = 999;
+			if(strcmp(game_name,"xivepass")==0) value = 8;
+			if(strcmp(game_name,"razminka")==0) value = 10;
+			if(strcmp(game_name,"huntage-sim")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
+			if(strcmp(game_name,"shutle fostral")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*24) + 0;
             my_server_data.Passembloss.CheckpointsNumber = value;
 
             time(&tm);
@@ -1762,6 +1783,10 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"satinan")==0) value = 2;
 			if(strcmp(game_name,"stad3la")==0) value = 2;
 			if(strcmp(game_name,"ultra pass")==0) value = 2;
+			if(strcmp(game_name,"xivepass")==0) value = 2;
+			if(strcmp(game_name,"razminka")==0) value = 2;
+			if(strcmp(game_name,"huntage-sim")==0) value = 2;
+			if(strcmp(game_name,"shutle fostral")==0) value = 1;
             my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;
