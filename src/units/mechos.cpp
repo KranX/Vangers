@@ -5607,15 +5607,16 @@ void VangerUnit::SensorQuant(void)
 				GameQuantReturnValue = RTO_LOADING3_ID;
 			};
 			break;
-		case EXTERNAL_MODE_IN_VANGER:
+		case EXTERNAL_MODE_IN_VANGER:  // teleport from mehos 
 			ExternalTime--;
+			aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL); // disable right menu and full screen
 			if(ExternalTime <= 0){
 				SOUND_BOOT_STOP();
 				Go2Universe();
 				Status |= SOBJ_DISCONNECT;
 			};			
 			break;
-		case EXTERNAL_MODE_OUT_VANGER:
+		case EXTERNAL_MODE_OUT_VANGER:  // loading into mechos
 			ExternalTime--;
 			if(ExternalTime <= 0){
 				SOUND_BOOT_STOP();
@@ -5624,6 +5625,7 @@ void VangerUnit::SensorQuant(void)
 				ExternalDraw = 1;
 				switch_analysis(0);
 				ExternalSensor = ExternalObject;
+				aciSendEvent2actint(ACI_UNLOCK_INTERFACE,NULL); // enable right menu 
 			};
 			break;
 	};
@@ -6318,8 +6320,9 @@ void ActionDispatcher::PromptQuant(void)
 						
 						if (PromptIncubatorFreeVisit < 2
 							&& (PromptIncubatorCount > 2 || GetStuffObject(Active,ACI_NYMBOS))
-							&& !(ConTimer.min % 11)
-							&& ConTimer.sec == 0) {
+							&& !(ConTimer.min % 30) //  show every 30 minutes (1.5 min real)
+							&& ConTimer.sec == 0
+							&& ConTimer.counter < 36000 ) {  //do not show message if an 10 game hour(30 min real) has passed 
 							aiMessageQueue.Send(AI_MESSAGE_CAMERA_HELP, 0, 0xff, 0);
 							return;
 						}

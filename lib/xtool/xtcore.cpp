@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
         } else if (cmd_key == "-server") {
             if (argc > i) {
                 i++;
-                autoconnect      = true;
+                autoconnect = true;
                 autoconnectHost = argv[i];
             } else {
                 std::cout << "Invalid parameter usage: '-server hostname' expected" << std::endl;
