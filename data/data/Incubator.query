@@ -1,0 +1,521 @@
+"А что иль кто есть"		"советник?"
+"What is"							"counselor?"
+
+[мехос] [mechos]
+"Ты раб его отныне. Мехос - твой слуга, разберись с ним сам..."
+"Машина жизни-смерти. Ты можешь в ней пересекать миры - по суше или под водой, летать на ней и ползать под землей..."
+"You are its slave from now on. The mechos is your servant - subdue it!"
+"The machine of life and death. It can be ridden across worlds, on land or under water, or flown, or ridden underground..."
+
+[Фострал] [Fostral]
+"Мы на нем, на Фострале ныне - это наш мир. Ты не поймешь его не увидав в чем суть Цепи. Иди наверх и ощути Фострал - твой мехос ждет тебя..."
+{мехос} {Цепь} 
+"Фострал - мир элиподов. Здесь пять поясов - на первом, самом нижнем, наш эскейв - тот самый Подиш, на верхнем - пятом - Инкубатор, второй же и четвертый пояса содержат Коридоры... Их ты должен был заметить сам..."
+{элиподы} {эскейв} {Коридор} {Подиш} {Инкубатор}
+"We are on Fostral now, on our world. You won't understand what I mean until you learn the nature of the Chain. Now go up and touch Fostral - your mechos is waiting."
+{mechos}
+"Fostral is the world of the Eleepods and consists of five belts. Our escave, Podish, is on the first, bottommost belt. Incubator is on fifth, topmost belt. The second and fourth belts contain Passages, which you may have already noticed."
+{Eleepods} {escave} {Passage} {Podish} {Incubator}
+
+[элиподы] [Eleepods]
+"Элиподы - благодетели твои, навозник. А Палец, то есть я, один из них..."
+{Палец}
+"Элиподы - главный биос. Мы обитаем на Фострале - Подиш наш эскейв. Остальные скоро вымрут, мы же будем вечно здесь..."
+{биос} {Фострал} {Подиш} {эскейв}
+"The Eleepods are your benefactors, you dung beetle. And I, Feenger, am one of them."
+{Feenger}
+"Eleepods are the head bios. We live on Fostral, and Podish is our escave. All the others will die out soon, but we will be here forever..."
+{bios} {Fostral} {Podish} {escave}
+
+[Липкий] [Leepky]
+"Катафальщик, нельзя иметь столь ржавое мышление. Липкий пестовал тебя..."
+"Липкий - звонкая струна в моем стручке, он хозяин мне. А что - ты и впрямь забыл кто это? Хммм, наверное в бою ты был - совсем отшибло память..."
+{стручок}
+"You can't go wheeling around with a rusted mind like that, hearse rider. Leepky took good care of you..."
+"Leepky is the big chord in my pod, my master. You've forgotten who Leepky is? You must have been in a fight and gotten your brains smashed in or something..."
+{pod}
+
+[Подиш] [Podish]
+"Эскейв подземный элиподов добрых это - Подиш. Нижний пояс на Фострале даст путь к нему тебе, колесник..."
+{эскейв} {элиподы} {Фострал}
+"Ты потерялся, бедный воин. Скорее продавай свой мехос, покупай коляску и наверх - найдешь ты быстро все: и Подиш и себе могилку..."
+{мехос}
+"An escave of gracious Eleepods which lies underground. It's located on the bottom belt of Fostral..."
+{escave} {Eleepods} {Fostral}
+"You're lost, poor soldier. Go sell your mechos, then buy a wheelchair and go up. There you'll find Podish... and your grave."
+{mechos}
+
+[эскейв] [escave]
+"Эскейв - подземное жилище банчей, где прячем мы свои богатства. На Фострале есть эскейвы, к счастью, - то Подиш сокровенный, Инкубатор дальний..."
+{банч} {Фострал} {Подиш}
+"Все банчи, что в Цепи, живут в эскейвах - скрытых городах миров. Там ты найдешь приют недолгий, там ты купишь и продашь товар иль мехос..."
+{банч} {Цепь} {мехос}
+"An escave is one of the bunches' underground nests, where we hide our treasure. Fortunately, Fostral has some escaves: the magnificent Podish and Incubator..."
+{bunch} {Fostral} {Podish}
+"All of the bunches in the Chain live in escaves, the worlds' hidden cities. It's there you'll find the store where you can buy or sell goods or mechos..."
+{The Chain} {bunch} {mechos}
+
+[стручок] [pod]
+"Ты слишком туп для этого, сынок. Забудь про стручки, они не для тебя..."
+"Мы, элиподы, живем стручками - это все, что нужно знать тебе пока..."
+{элиподы}
+"You're too dumb for that, son. Forget about them, they're not for you..."
+"We Eleepods live in pods. That's all you need to know for now..."
+{Eleepods}
+
+[банч] [bunch]
+"Банч? Ты вне любого банча. Ты бибов пожиратель..."
+{бибы}
+"Все биосы имеют банчи - общины жизни. Все и вся решают банчи - в них смысл жизни..."
+{биос}
+"What bunch? You're not from any bunch. You're a beeb eater."
+{beebs}
+"All bios have bunches, the communities we live in. For us, the bunches are everything, the meaning of life itself..."
+{bios}
+
+[Цепь] [The Chain]
+"Потерянная Цепь Миров..."
+"Фострал - не единственный мир. Есть и другие. Через Коридоры ты можешь выйти в них. Соседи наши - Глоркс и... достаточно с тебя..."
+{Фострал} {Коридор} {Глоркс}
+"The Lost Chain of Worlds..."
+"Fostral is not the only world. There are others, too, and you can get to them through Passages. Our neighbors are Glorx and... no, that's enough for now."
+{Fostral} {Passage} {Glorx}
+
+[Куклы] [Larvae]
+"Тебе об этом рано знать. Ты ранняя букашка для них, для вечных Кукол..."
+"Что такое Кукла? Я тоже бы хотел об этом знать побольше. Куклы - это боги Цепи. При их упоминании я весь горю и таю... Дай нам Куклу! Иль привези хотя бы нюхи от нее..."
+{Цепь} {нюха}
+"You are not ready for this. You are much too young for the Eternal Larvae."
+"What's a Larva? I wish I knew more about them. They are the Lords of the Chain, and I get excited whenever I hear about them. Bring us a Larva! Or at least get us some cirt from one..."
+{The Chain} {cirt}
+
+[бибураты] [Beeboorats]
+"Мерзкие создания. Они похуже циксов во сто крат. Тупые твари Глоркса, мы еще покажем им урок. Они едят эЛиков наших на обед и приправляют нимбосом, подонки. Не вздумай ехать к ним - они сожрут любого элипода лишь завидев его чесалки мокрые. Вандалы жуткие..."
+{циксы} {Глоркс} {элиподы} {эЛик} {нимбос}
+"Глоркс - мир бибуратов, недостойных жить нигде... Ты лучше бойся их..."
+{Глоркс}
+"Arrogant creatures, a hundred times worse than Zeexen. They gobble our eLeeches and season them with nymbos, the vandals! Don't even think of visiting them. They'll wolf down any Eleepod if they get even a glimpse of his wet scratchers. But we'll teach them a lesson sometime!"
+{Zeexen} {Glorx} {Eleepods} {eLeech} {nymbos}
+"Glorx is the world of the Beeboorats, creatures who don't deserve to live anywhere. You'd better stay away from them..."
+{Glorx}
+
+[Глоркс] [Glorx]
+"Зачем тебе знать что-либо про Глоркс? Считай, что это просто слово, ругательное к тому же..."
+"Коридор на Глоркс есть на Фострале. Это водный мир, опасный для прогулок... К несчастью Глоркс есть перекресток всех миров, будь прокляты строители Цепи... А с ними бибураты, порождения ада..."
+{Коридор} {Фострал} {Цепь} {бибураты}
+"Why do you want to know about Glorx? To you, it's nothing but a foul word!"
+"There's a Passage on Fostral leading to Glorx. It's a world of water, dangerous for travelers, but unfortunately Glorx is the crossroads between all worlds, curse the builders of this Chain! And curse the Beeboorats with them, those hellspawn!"
+{Passage} {Fostral} {The Chain} {Beeboorats}
+
+[раффа] [raffa]
+"Ты это слово придержи в себе покуда, зелень... Еще увидишь их полно на воле, бедный воин..."
+"Не говори про раффа много - эти твари повсюду роют яму элиподам. Ты видел их наверняка - как и они тебя..."
+{элиподы}
+"You better hold your tongue, spring chicken. You'll see them soon enough - there are a lot of them up there..."
+"Can't say much about the raffa. The beasts are everywhere, setting traps for the Eleepods. I bet that you've noticed them. And that they've noticed you..."
+{Eleepods}
+
+[Инкубатор] [Incubator]
+"Еще один механик заплутал, да, Фострал велик. Что есть Инкубатор? Где он? Он вокруг тебя, колесная козявка, а я и есть тот самый Палец..."
+{Фострал} {Палец}
+"Ты ныне в нем. Инкубатор - ключевое место элиподов... Отсюда берут начало эЛики сквозные..."
+{элиподы} {эЛик}
+"Another lost fitter! Yeah, Fostral is a big place. What's Incubator? Where is it? It's around you, you wheeled shrimp, and I'm Feenger himself!"
+{Fostral} {Feenger}
+"You are inside Incubator right now. Incubator is a crucial place for Eleepods, the place where eLeeches first come into the world."
+{Eleepods} {eLeech}
+
+[биос] [bios]
+"Биос? Наш биос - самый главный, остальные пыль..."
+"Сейчас в Цепи три биоса - мы, элиподы, циксы и обжоры бибураты..."
+{Цепь} {элиподы} {циксы} {бибураты}
+"Bios? Our bios is the greatest, and all the others are nothing but dust..."
+"There are currently three bios in the Chain: the Eleepods, Zeexen, and Beeboorats, those darn gluttons..."
+{The Chain} {Eleepods} {Zeexen} {Beeboorats}
+
+[нюха] [cirt]
+"Нюха - все, что нужно нам..."
+"Ищи ее - мы купим, но не ошибись - лишь Наших Кукол нюха нам нужна..."
+{Куклы}
+"Cirt is all we need..."
+"Find some and we'll buy it. But you've got to get one thing right: we will only take cirt from OUR Larvae..."
+{Larvae}
+
+[Палец] [Feenger]
+"Палец - это я..."
+"Feenger is me..."
+
+[Коридор] [Passage]
+"Коридор? Где ты набрался слов таких?"
+"Через Коридоры ты в миры иные попадаешь, путник... На Фострале много Коридоров - например на Глоркс..."
+{Фострал} {Глоркс}
+"Passage? Where did you hear that word?"
+"A Passage is how you get to other worlds. Fostral has many Passages, one into Glorx, for instance."
+{Fostral} {Glorx}
+
+[циксы] [Zeexen]
+"Циксы? Фу какое слово - ты никак желаешь меня позлить им, катафальщик..."
+"Циксы, циксы... странные создания... Мы их не любим... Опасайся циксов..."
+"Zeexen? Ugh, what a terrible word! Looks like you're just here to annoy me, hearse rider..."
+"Zeexen, Zeexen... strange creatures... We don't like them... Stay away from the Zeexen..."
+
+[эЛик] [eLeech]
+"эЛик - лучезарное создание, ты тоже был им, но недолго впрочем..."
+"эЛики возникают наверху, в Инкубаторе - и каждый вангер покусившийся на них или обрекший на погибель при Элирекции достоин смерти..."
+{вангеры} {Инкубатор} {Элирекция}
+"An eLeech is a wonderful creature. You used to be an eLeech too, but not for very long."
+"eLeeches come into the world in Incubator. Any vanger who attempts to take an eLeech's life or ruins him during Eleection, deserves death himself..."
+{vangers} {Incubator} {Eleection}
+
+[нимбос] [nymbos]
+"Твой нимбос никогда не оживет, колесник..."
+"За его доставку в Инкубатор с Подиша тебе заплатят элиподы..."
+{Подиш} {Инкубатор} {элиподы}
+"Your nymbos will never wake, rambler."
+"The Eleepods will pay you for shipping it from Podish to Incubator..."
+{Eleepods} {Podish} {Incubator}
+
+[Элирекция] [Eleection]
+"Сей процесс - основа элиподной жизни! Изучай его законы..."
+"Ты можешь в ней участвовать и победить - за это мы тебя вознаградим. Лишь убереги своего эЛика, иначе..."
+{эЛик}
+"This ritual is a foundation of Eleepod life! Study its rules..."
+"You can take part in it, and if you win, you'll be rewarded. But take care of your eLeech, or else..."
+{eLeech}
+
+[вангеры] [vangers]
+"Кто это такие? Ты это спрашиваешь у меня, советника? Хммм... Ну и идиотов приходится мне принимать..."
+"Вангер - ты и есть, недотепа. Презренные рабы наружных механизмов. Вы нам служите..."
+"Who are vangers? And you're asking me, the counselor? Ugh, the kind of idiots I have to put up with!"
+"YOU are a vanger, dolt. One of the contemptible slaves of the outside machines. You are all our servants!"
+
+[флегма] [phlegma]
+"Кровь Инкубатора..."
+{Инкубатор}
+"Слизь для блага элиподов. Мы ей любим натираться и полнеть в тиши подземной..."
+{элиподы}
+"The blood of Incubator..."
+{Incubator}
+"Mucus for the good of the Eleepods. We love to smear ourselves with it and plump ourselves up in the peace and quiet of our burrows..."
+{Eleepods}
+
+[софти] [The Softie]
+"Спроси у циксов-болтунов, кто это - мы не любим байки..."
+{циксы}
+"Ask the Zeexen, the tale-tellers. We don't like tales..."
+{Zeexen}
+
+[криспо] [The Cryspo]
+"Ты вангер или собиратель небылиц про тех, кого уж нет давно? Тебе пора наверх - там быстро выбьют дурь..."
+{вангеры}
+"Are you a vanger? Or a collector of tales about those who are long gone? Time for you to head up. They'll set you straight, the hard way!"
+{vangers}
+
+[Некросс] [Necross]
+"Мы там не бывали. Спроси у вангеров-друзей, коль те найдутся. Или доберись дотуда сам..."
+{вангеры}
+"We've never been there. Ask your vanger friends, if you have any. Or go there yourself!"
+{vangers}
+
+[Линза] [P-beam]
+"Это наша тайна - посредством Линзы мы воспринимаем мир как есть без расстояний... Трепещи, козявка, перед нами - мы знаем все на свете..."
+"That's our secret - with it we can perceive the whole world as it is, regardless of distance. Fear us, scum, for we know all there is to know..."
+
+[Икспло] [Xplo]
+"Икспло... Ты слишком любознателен, приятель. Икспло для тебя пока лишь слово..."
+"Xplo... You're too curious, my friend. For now, it's nothing more than a word."
+
+[Ушедший Биос] [Departed Bios]
+"Хммм... Загадка для Цепи. Мы не очень верим в них..."
+{Цепь}
+"Humph... One of the mysteries of the Chain. We don't really believe in them."
+{The Chain}
+
+[Жирогон] [Plump-up]
+"Начало Круга циклов элиподов... Экстаз для стручков и ожидание для старших струн... Нимбоса река..."
+{элиподы} {стручок} {нимбос}
+"The beginning of the Eleepod rotation. Ecstasy for the pods, and abeyance for the elder chords. Floods of nymbos..."
+{Eleepods} {pod} {nymbos}
+
+[Чавка] [Gulp-down]
+"Заключительный этап для элиподов в их сакральном Круге циклов. эЛики достигают Подиша и сладострастно чавкать начинают, постепенно принимая в себя струну избранника, прождавшего себе эЛика тело в подсознании стручка..."
+{элиподы} {эЛик} {Подиш} {стручок}
+"The final stage of our sacral rotation. The eLeeches reach Podish and start to gobble sweetly, slowly absorbing the chord of the chosen one, who has been waiting for his eLeech while staying in the mind of the pod..."
+{Eleepods} {eLeech} {Podish} {pod}
+
+[бибы] [beebs]
+"Ты бибов раб, торгаш-колесник. За бибы ты убьешь любого, продажный вангер, такова твоя судьба..."
+{вангеры}
+"You are a slave to the beebs, you wheeled huckster. You'll kill anyone for the beebs! That's just your fate as a mercenary vanger."
+{vangers}
+
+[Суп Существ] [The Creature Soup]
+"Не ругайся..."
+"Don't swear!"
+
+[Конфликт] [The Clash]
+"Сказка циксов - к ним ступай..."
+{циксы}
+"That's a Zeexen tale. Go ask them!"
+{Zeexen}
+
+[Спираль] [Spiral]
+"Часть мехоса любого - позволяет проходить сквозь Коридор к другим мирам. Не забудь, колесник, что Спираль не вечна - наверху ты должен перед входом зарядить ее в специальном месте..."
+{мехос} {Коридор}
+"A mechos part, used to travel to other worlds through Passages. But remember: the Spiral doesn't last forever, so you must recharge it at a special station before you can enter a Passage..."
+{mechos} {Passage}
+
+/*******************   Beeboorat's terms   *******************************/
+
+[раБикация] [ruBeecation]
+"О-о-о. Ужасный бибуратский ритуал, который испытает любой колесник, попавший в лапы к мерзким тварям."
+"Ooh, that's a horrible Beeboorat rite. Every wheeler that falls into the claws of those filthy beasts has to go through it."
+
+[Раббокс] [Rubbox]
+"Без Раббокса не суйся к бибуратам. В момент лишишься мехосов и бибов. Однако Липкий собирает эти знаки глупости вселенской..."
+"Don't peek into the Beeboorat escaves without a Rubbox. You'll lose your beebs and mechos in a flash! But Leepky collects those marks of universal stupidity..."
+
+[ВигБу] [VigBoo]
+"Ты посетил проклятый ВигБу, вертеп разбойничий, зловещий каземат? Остался жив? Судьба твоя, колесник, балует тебя... Там место, где исчезают элиподы без следа."
+"You've visited the cursed VigBoo, the evil casemate and nest of the bandits? And you're still alive? Fate favors you, wheeler... That's where Eleepods go and disappear without a trace!"
+
+[Лампассы] [Lampasso]
+"Эскэйв на Глорксе. Столица игрищ глупых. Увидишь там, на что способны бибураты..."
+{Глоркс} 
+"An escave on Glorx. The capital of stupid games. There you'll see what the Beeboorat are like."
+{Glorx} 
+
+[Огород] [Ogorod]
+"Эскейв среди воды и тины. Стоит там жизнь в раздумье, стремясь понять пределы сумасшествий. Но тщетно..."
+"An escave among water and silence. Life stands there in deep thought, trying to comprehend the extremes of dementia, but all in vain..."
+
+[Героин] [Valorin]
+"Не вздумай привезти его сюда, ты, тупое тело. Уж если ты у бибуратов в рабстве, забудь сюда дорогу..."
+"Don't you dare bring it here, you stupid carcass. Once you're a slave of Beeboorats, you'd better forget the way to Fostral!"
+
+[куст] [shrub]
+"Внутри куста найдешь ты бибурата, притихшего и вялого. Уже он неопасен, участи покорный..."
+"You can find calm, plump Beeboorats inside shrubs. They're no longer dangerous after eating their fill of humble pie!"
+
+[пипетка] [peeperette]
+"Пипетки - мусор Глоркса, гниль, пришедшая с небес. Они нужны лишь бибуратам, погрязшим в хламе бытия..."
+{Глоркс} 
+"Peeperettes are rubbish from the Glorx, the rot that came down from the sky. Only the Beeboorats and their grungy existence need them."
+{Glorx} 
+
+[Ядробус] [Nucleoboom]
+"Ядробусом потешить можно бибурата, а здесь они никчемны."
+"A Nucleoboom can cheer up a Beeboorat, but around here it's nothing but garbage."
+
+[Жабли] [Jablees]
+"Жабли - порожденье Глоркса, источник мусора и гнили."
+{Глоркс} 
+"Jablees are the spawn of the Glorx, the source of all rubbish and rot."
+{Glorx} 
+
+[Прогресс] [Progress]
+"Странных звуков сочетанье, не более..."
+"Just a set of weird sounds, nothing more."
+
+[Героизм] [Heroism]
+"Нам все равно. Путь мудрости лежит вне Глоркса."
+{Глоркс} 
+"We don't care. The way of wisdom is beyond the Glorx."
+{Glorx} 
+
+[Выборы Неприкаянных] [Election of the Castaways]
+"Мы знаем только, это бибуратов цикл."
+"The only thing we know is that it's one of the Beeboorats' cycles."
+
+[неприкаянный] [castaway]
+"Неприкаянные заканчивают свой путь в Огороде, среди пипеток затхлых..."
+{Огород} 
+"The journey of a castaway ends in Ogorod, among the moldy peeperettes..."
+{Ogorod} 
+
+[ПипШоу] [PeepShow]
+"Ты должен посмотреть ПипШоу, если хочешь поскорей забыть о бибуратах..."
+"You should see the PeepShow if you want to see how worthless the Beeboorats really are..."
+
+[Ядерная Война] [Nuclear War]
+"Толпы олухов на Глорксе следуют за Жаблем, стремясь плоды его похитить..."
+{Глоркс} {Жабли} 
+"Hoards of dolts run after a Jablee, trying to steal its fruits..."
+{Glorx} {Jablees} 
+
+[Гиря] [Geer'ah]
+"Сидит в Лампассах некий бибурат. Набит соломой, разукрашен срамно. Напыщен и криклив."
+{Лампассы}
+"A Beeboorat who sits in Lampasso. Stuffed with straw and given a very ugly paint job. Bombastic and loud-mouthed."
+{Lampasso}
+
+[Буравчик] [Boorawchick]
+"Наверно, ты познакомится успел с надутой тварью. И знакомству был не рад. Он главный бибуратский босс, источник ужаса."
+"I guess you've met the pudgy beast, and I also guess it wasn't fun. He's the Beeboorats' top boss, the source of all that horror."
+
+[Обурец] [Oboorez]
+"Его найдешь ты в Огороде, не очень злобен, туп безмерно. Он много видел, только мудрость не нашел..."
+{Огород} 
+"You'll find him in Ogorod. He's not that mean, but he's terribly dull-he has seen a lot but learned very little."
+{Ogorod} 
+
+[Бюро] [The Buro]
+"Бюро стремится элиподов сжить со свету..."
+"The Buro strives to exterminate all Eleepods."
+
+[раб] [Slave]
+"Не побывав рабом, не выйдешь с Глоркса. Увы..."
+{Глоркс} 
+"Unfortunately, you can't get out of Glorx without serving as a Slave first."
+{Glorx} 
+
+[прораб] [Commissar]
+"Спроси про это лучше в ВигБу. Все это там придумали, себе на радость, а вангерам на гибель."
+{ВигБу} 
+"You'd better ask that in VigBoo. They invented all that for their gain and the vangers' pain."
+{VigBoo} 
+
+[агент] [Agent]
+"Раз называют бибураты тебя агентом, что ж, ты близок к избавленью. Но только Раббокс свой храни на всякий случай..."
+{Раббокс} 
+"Once the Beeboorats start calling you an Agent, your deliverance is on its way. But you should keep your Rubbox, just in case..."
+{Rubbox} 
+
+[Устав] [Manual]
+"Устав на Глорксе - здесь свобода мысли мудрой..."
+{Глоркс} 
+"The Manual is on Glorx, but here there is freedom for wise thoughts."
+{Glorx} 
+
+/*******************   Zeexen's terms   *******************************/
+
+[ЦыПа] [ZeePa]
+"На Некроссе болотном, как ни странно, есть эскейвы. ЦыПа - главный среди них. Ты не торопись туда с визитом..."
+{Некросс} 
+"Necross is covered in bogs, but there are still escaves there. ZeePa is the most important, but you'd better think twice before going in there..."
+{Necross} 
+
+[БиЗона] [B-Zone]
+"БиЗона - город циксов. Путь к нему далек, но побывай там непременно."
+"B-Zone is a Zeexen city. It's far away, but you should still visit it sometime."
+
+[Цыфра] [Zeephra]
+"Она готова болтать про софти циклы напролет, забыв про все на свете. Но осторожен будь, не попадись на байки..."
+"Zeephra could talk about the Softie all cycle long, forgetting about everything else. But don't take the bait!"
+
+[Цыкатуха] [Zeekatrix]
+"В искусстве приготовления отравы нет ей равных."
+"She's the greatest master of the art of cooking poisonous stuff."
+
+[токсик] [toxick]
+"Бибураты боятся токсика до дрожи. Ты только привези его на Глоркс, увидишь сам, как перетрусят злые твари..."
+"Beeboorats fear toxick terribly. Just bring some to Glorx and you'll see for yourself how much it makes the evil beasts tremble..."
+
+[попонка] [popon]
+"Поэты норные ценить умеют плод мысли, хоть и недалекой. А Цыфра глупая считает, что в БиЗоне попонки ждут..."
+{Цыфра} {БиЗона} 
+"The poets of the burrows value the fruit of thought, no matter how feeble. But that foolish Zeephra thinks they want popons in B-Zone..."
+{Zeephra} {B-Zone} 
+
+[Маленький Цык] [ProtoZeek]
+"Чтоб этот кузовок доставить с Некросса, используй флегму нашу сокровенную. Три банки сберегут его от разложения при смене цикла..."
+"To bring kusowock from Necross here, use our sacred phlegma. Three jars will keep the precious thing from rotting when the cycles change."
+
+[Весна] [Spring]
+"Для циксов что-то значит это слово, для нас - болотных газов бормотанье..."
+"The word means something to the silly Zeexen, but for us, it's just some stupid mumbling from the bogs..."
+
+[Декабрь] [December]
+"Для вангера ненужно знать про это, а нам - подавно..."
+"This word is of little use to a vanger, and of even less use to us..."
+
+[Суббота] [Saturday]
+"Ступай на Некросс за ответом..."
+"Go to Necross to find out..."
+
+[Цыклоп] [Zeeklope]
+"Цыклоп - большая гонка. Коль посчастливилось тебе взять Маленького Цыка - твое везенье, а нет - гадай, к какому проходимцу попало ценное изделие..."
+"Zeeklope is a big race. If luck is on your side, ProtoZeek is yours, but if not, you have to guess which rascal ended up with the valuable item!"
+
+/*********** Advanced terms ****************************/
+
+[Виксов] [Weexow]
+"Водовороты бурные чинят преграду смельчаку, решившему найти предмет своих мечтаний."
+"The stormy whirlpools get in the way of the one who has been chosen to find the Holy Grail."
+
+[Бузина] [Boozeena]
+"По кругу символы начертаны, а в центре - тайная пещера. В зловещих зарослях разбросаны подсказки, что каждый символ означает."
+"You'll find some symbols are inscribed in a big circle, with a secret cave at their center. Hints which tell you what each symbol means are scattered throughout the evil jungle."
+
+[Трилл] [Threall]
+"Цель твоя на Трилле - странный символ, в начертанье трудный. Его достичь сумеешь - готовь свой разум к потрясенью."
+"That strange, nearly incomprehensible symbol is your goal on Threall. If you should ever reach it, be ready for a real mind-quake!"
+
+[хМок] [hMok]
+"Найти свою погибель тебе поможет склянка с веществом, которое железо пожирает."
+"A jar of liquid that can eat through steelwork will hasten your doom."
+
+[Кокс] [Khox]
+"Ты просто направляй свой мехос, куда показывают знаки. В конце пути найдешь, к чему стремился. Однако тьма тебя подстерегает в пути безумном..."
+"Just steer your mechos to where the arrows point, and you'll find what you want in the end. But be careful - much darkness lies along that precarious route..."
+
+[Арк-а-Зной] [Ark-a-Noi]
+"Камешки, песочек - трудненький денечек. Обследуй этот мир тщательно, с пустым трюмом не останешься."
+"Sand and stones, skull and bones. Comb this world well, and you'll find something to fill your cargo hold with."
+
+[Начертатель] [Protractor]
+"Для глаз твоих откроет Начертатель тайну Икспло. Обитатель Спобса власть над ним имеет, наделяет силой."
+{Икспло} {Спобс} 
+"This will reveal the mystery of Xplo to you. The living entity that dwells in Spobs commands the Protractor, giving it its power."
+{Xplo} {Spobs} 
+
+[Механический Мессия] [Mechanical Messiah]
+"В предмете этом воля Трилла воплощение находит. Энергия неведомых потоков меняет мир и вещи. Свобода обладателя - иллюзия, рожденная спонтанно..."
+"The will of Threall dwells in this fiendish thing. The power of mysterious floods alters the world and all things in it. And so its owner's freedom is nothing but a temporary illusion..."
+
+[Способ-83+] [Function-83+]
+"Предмет сей может унести тебя на мир любой в Цепи, но лишь туда, где прежде смог ты побывать."
+"This can take you to any world in the Chain which you have visited before."
+
+[Спумия] [Chomper]
+"Во тьме веков, в пласте событий начало линий мировых сего предмета. Мы проследить не в силах историю его, смертельный ужас проникает в сознанье наше, заменяя разум..."
+"This fiendish thing originated in some dark series of events in the past. We have been unable to trace its history, as the deadly horror penetrates our consciousness, supplanting our very minds..."
+
+[Бут Сектор] [Boot Sector]
+"Бут Сектор познать нам помогает природу вангеров и истинное предназначенье. На Трилл ведут следы..."
+{Трилл} 
+"The Boot Sector helps us understand both the real character of the vangers and their ultimate objective. And all traces lead to Threall..."
+{Threall} 
+
+[Пилот] [Flymatic]
+"Он сможет заменить тебя, колесник, на мире внешнем."
+"This'll take your place in the outside world, wheeler."
+
+[наблюдатели] [The Spectators]
+"Струя их тонкая, лежит вовне потока Трилла, смывающего судьбы, несущего события к неведомым пределам..."
+{Трилл} 
+"That brook of theirs is a little tributary of the flood of Threall, which wrecks the fates of living beings and drives events to unprecedented extremes..."
+{Threall} 
+
+[инферналы] [The Infernals]
+"Мы боимся их немного. На Трилле наша Линза ощущает чуждый разум, следящий за мирами и повелевающий другими. Ты, юный друг, остерегись бывать на Трилле."
+{Трилл} 
+"We are a little afraid of them. With our P-beam we can sense an alien mind on Threall, watching the other worlds and directing the other species. You'd better keep away from Threall, my youthful friend."
+{Threall} 
+
+[Спобс] [Spobs]
+"Тот, Кто Ушел обосновался в центре Икспло, оттуда Он ведет войну с неведомою целью с неведомым."
+{Икспло} 
+"The One Who Has Left has settled in the heart of Xplo. He fights against the unknown, for reasons also unknown."
+{Xplo} 
+
+[Парафин] [Parapheen]
+"Хозяин Начертателя, свидетель многого."
+{Начертатель} 
+"The master of the Protractor. He has seen many things."
+{Protractor} 
+
+[Карман] [Carmane]
+"Страж Цепи, рожденный ужасом. Мы для него песчинки."
+"The guard of the Chain, born of terror. Compared to him, we are but specks of dust."
+

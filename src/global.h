@@ -56,4 +56,6 @@ typedef unsigned char uchar;
 #	endif
 #endif
 
+extern bool SetAchievement(std::string name);
+
 #endif

@@ -5400,7 +5400,7 @@ void actIntDispatcher::EventQuant(void)
 				if(flags & AS_FULLSCR){
 					set_fullscreen(false);
 				}
-				unlock();
+				unlock(); // logical, functional blocking
 				break;
 			case EV_PROTRACTOR_EVENT:
 				aciProtractorEvent = p -> data;
