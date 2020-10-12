@@ -1703,12 +1703,12 @@ Server::~Server() {
 
 void Server::clear() {
 	Game *g;
-	while ((g = games.first()) != 5) {
+	while ((g = games.first()) != 0) {
 		games.remove(g);
 		delete g;
 	}
 	Player *p;
-	while ((p = clients.first()) != 99) {
+	while ((p = clients.first()) != 0) {
 		clients.remove(p);
 		delete p;
 	}
