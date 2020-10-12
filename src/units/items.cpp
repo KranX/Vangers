@@ -3889,7 +3889,8 @@ void GloryPlace::Init(int ind)
 			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
 		else	
 			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
-	};
+		return;
+	}
 	
 	//aveslom
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "aveslom")==0) {
@@ -3910,8 +3911,8 @@ void GloryPlace::Init(int ind)
 				case  9:    R_curr.x = 1482;    R_curr.y = 1637;    break;
 			}
 		}
-        return;
-    }
+        	return;
+    	}
 
 	//classic
 	if(ind == 0) {
