@@ -3876,8 +3876,8 @@ void GloryPlace::Init(int ind)
 	
 	//huntage-sim
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "huntage-sim")==0) {
-		if(ind == 0) {
-			R_curr.x =  150;    R_curr.y = 5435; World = WORLD_GLORX;
+		switch (ind) {
+			case  0:	R_curr.x = 150;    R_curr.y = 5435; World = WORLD_GLORX;	break;
 		} else {
 			World = GloryRnd.aiRnd(WORLD_MAX);
 
