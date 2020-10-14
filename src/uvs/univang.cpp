@@ -809,7 +809,7 @@ void uniVangPrepare(void){
 		else if (my_server_data.GameType == 1 && strcmp(game_name,"mega mechosoma")==0) MechosID = 20;
 		else if (my_server_data.GameType == 0 && strcmp(game_name,"super van-war")==0) MechosID = 8;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"shutle fostral")==0) MechosID = 0;
-		else if (my_server_data.GameType == 2 && strcmp(game_name,"progress")==0) MechosID = 15;
+		else if (my_server_data.GameType == 2 && strcmp(game_name,"progress")==0) MechosID = 18;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"satinan")==0) MechosID = 19;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
 		else MechosID = 5;
@@ -10368,7 +10368,7 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				else if (strcmp(game_name,"mega mechosoma")==0) pm -> type = 20;
 				else if (strcmp(game_name,"super van-war")==0) pm -> type = 0;
 				else if (strcmp(game_name,"shutle fostral")==0) pm -> type = 0;
-				else if (strcmp(game_name,"progress")==0) pm -> type = 15;
+				else if (strcmp(game_name,"progress")==0) pm -> type = 18;
 				else if (strcmp(game_name,"razminka")==0) pm -> type = 5;
 				else if (strcmp(game_name,"satinan")==0) pm -> type = 17;
 				else if (strcmp(game_name,"speed konoval")==0) pm -> type = 9;
