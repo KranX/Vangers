@@ -2,9 +2,9 @@ name: Vangers Windows 64bit Build
 
 on:
   push:
-    branches: [ master, EnaB_MoDe ]
+    branches: [ master, M4D ]
   pull_request:
-    branches: [ master, 60fps, hd_v2, EnaB_MoDe ]
+    branches: [ master, 60fps, hd_v2, M4D ]
 
 jobs:
   build:
