@@ -10369,7 +10369,7 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				else if (strcmp(game_name,"super van-war")==0) pm -> type = 0;
 				else if (strcmp(game_name,"shutle fostral")==0) pm -> type = 0;
 				else if (strcmp(game_name,"razminka")==0) pm -> type = 5;
-				else if (strcmp(game_name,"satinan")==0) pm -> type = 17;
+				else if (strcmp(game_name,"satinan")==0) pm -> type = 19;
 				else if (strcmp(game_name,"speed konoval")==0) pm -> type = 9;
 				else if (strcmp(game_name,"progress")==0) pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
