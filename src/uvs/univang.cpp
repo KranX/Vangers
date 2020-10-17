@@ -805,12 +805,12 @@ void uniVangPrepare(void){
 		char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 		if (my_server_data.GameType == 2 && strcmp(game_name,"travel")==0) MechosID = 0;
 		else if (my_server_data.GameType == 0 && strcmp(game_name,"aibatr")==0) MechosID = 22;
-		else if (my_server_data.GameType == 1 && strcmp(game_name,"eleepod bath")==0) MechosID = 6;
 		else if (my_server_data.GameType == 1 && strcmp(game_name,"mega mechosoma")==0) MechosID = 20;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"super van-war")==0) MechosID = 8;
-		else if (my_server_data.GameType == 2 && strcmp(game_name,"shutle fostral")==0) MechosID = 0;
+		else if (my_server_data.GameType == 0 && strcmp(game_name,"super van-war")==0) MechosID = 13;
 		else if (my_server_data.GameType == 1 && strcmp(game_name,"progress")==0) MechosID = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"satinan")==0) MechosID = 19;
+		else if (my_server_data.GameType == 0 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
+		else if (my_server_data.GameType == 1 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
 		else MechosID = 5;
 	}
@@ -10364,7 +10364,6 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				if (strcmp(game_name,"travel")==0) pm -> type = 0;
 				else if (strcmp(game_name,"aibatr")==0) pm -> type = 22;
 				else if (strcmp(game_name,"eleepod bath")==0) pm -> type = 0;
-				else if (strcmp(game_name,"ultra pass")==0) pm -> type = 5;
 				else if (strcmp(game_name,"mega mechosoma")==0) pm -> type = 20;
 				else if (strcmp(game_name,"super van-war")==0) pm -> type = 0;
 				else if (strcmp(game_name,"shutle fostral")==0) pm -> type = 0;

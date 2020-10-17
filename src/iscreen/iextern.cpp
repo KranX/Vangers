@@ -1647,17 +1647,20 @@ void iGetMultiGameParameters(void)
 		case iMP_VAN_WAR:
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_INITIAL_CASH);
 			if(strcmp(game_name,"aibatr")==0) value = 999999;
-			if(strcmp(game_name,"super van-war")==0) value = -20000;
+			if(strcmp(game_name,"super van-war")==0) value = -35000;
+			if(strcmp(game_name,"speed konoval")==0) value = 12500;
 			my_server_data.Van_War.InitialCash = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ARTEFACTS_USING);
 			if(strcmp(game_name,"aibatr")==0) value = 0;
 			if(strcmp(game_name,"super van-war")==0) value = 0;
+			if(strcmp(game_name,"speed konoval")==0) value = 0;
 			my_server_data.Van_War.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_IN_ESCAVE_TIME);
 			if(strcmp(game_name,"aibatr")==0) value = 2;
 			if(strcmp(game_name,"super van-war")==0) value = 2;
+			if(strcmp(game_name,"speed konoval")==0) value = 1;
 			my_server_data.Van_War.InEscaveTime = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_TEAM_MODE);
@@ -1665,11 +1668,13 @@ void iGetMultiGameParameters(void)
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_NASCENCY);
 			if(strcmp(game_name,"aibatr")==0) value = 2;
+			if(strcmp(game_name,"speed konoval")==0) value = 2;
 			my_server_data.Van_War.Nascency = value - 1;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ACCESS);
 			if(strcmp(game_name,"aibatr")==0) value = 0;
 			if(strcmp(game_name,"super van-war")==0) value = 1;
+			if(strcmp(game_name,"speed konoval")==0) value = 0;
 			my_server_data.Van_War.WorldAccess = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_MAX_KILLS);
@@ -1683,18 +1688,21 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"eleepod bath")==0) value = 999999;
 			if(strcmp(game_name,"mega mechosoma")==0) value = 999999;
 			if(strcmp(game_name,"progress")==0) value = 400;
+			if(strcmp(game_name,"speed konoval")==0) value = 10000;
 			my_server_data.Mechosoma.InitialCash = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_ARTEFACTS_USING);
 			if(strcmp(game_name,"eleepod bath")==0) value = 0;
 			if(strcmp(game_name,"mega mechosoma")==0) value = 0;
 			if(strcmp(game_name,"progress")==0) value = 0;
+			if(strcmp(game_name,"speed konoval")==0) value = 0;
 			my_server_data.Mechosoma.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_IN_ESCAVE_TIME);
 			if(strcmp(game_name,"eleepod bath")==0) value = 1;
 			if(strcmp(game_name,"mega mechosoma")==0) value = 3;
 			if(strcmp(game_name,"progress")==0) value = 0;
+			if(strcmp(game_name,"speed konoval")==0) value = 1;
 			my_server_data.Mechosoma.InEscaveTime = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_TEAM_MODE);
@@ -1715,6 +1723,7 @@ void iGetMultiGameParameters(void)
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_ONE_AT_A_TIME);
 			if(strcmp(game_name,"mega mechosoma")==0) value = 17;
 			if(strcmp(game_name,"progress")==0) value = 1;
+			if(strcmp(game_name,"speed konoval")==0) value = 2;
 			my_server_data.Mechosoma.One_at_a_time = value;
 			break;
 		case iMP_PASSEMBLOSS:
@@ -1730,9 +1739,11 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"razminka")==0) value = 999999;
 			if(strcmp(game_name,"huntage-sim")==0) value = 999999;
 			if(strcmp(game_name,"shutle fostral")==0) value = 999999;
+			if(strcmp(game_name,"speed konoval")==0) value = 10000;
             my_server_data.Passembloss.InitialCash = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
+			if(strcmp(game_name,"speed konoval")==0) value = 0;
             if(strcmp(game_name,"travel")==0) value = 0;
             if(strcmp(game_name,"aveslom")==0) value = 0;
             if(strcmp(game_name,"necrally")==0) value = 0;
@@ -1758,6 +1769,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"razminka")==0) value = 3;
 			if(strcmp(game_name,"huntage-sim")==0) value = 3;
 			if(strcmp(game_name,"shutle fostral")==0) value = 2;
+			if(strcmp(game_name,"speed konoval")==0) value = 1;
             my_server_data.Passembloss.InEscaveTime = value;
       
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
@@ -1776,6 +1788,7 @@ void iGetMultiGameParameters(void)
             time(&tm);
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ESCAVE);
+			if(strcmp(game_name,"speed konoval")==0) value = 2;
             if(strcmp(game_name,"travel")==0) value = 1;
             if(strcmp(game_name,"aveslom")==0) value = 2;
             if(strcmp(game_name,"necrally")==0) value = 3;

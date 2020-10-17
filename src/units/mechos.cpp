@@ -13762,6 +13762,11 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			y = 1365;
 			return;
 }
+		if (NetworkON && strcmp(game_name,"speed konoval")==0 && my_server_data.GameType == 0) {
+			x = 485;
+			y = 1310;
+			return;
+}
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
 		if(!strcmp(name,NetworkEscaveName[i])){
 			t = -1;

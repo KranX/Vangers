@@ -4244,6 +4244,9 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 	if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 12 && strcmp(game_name,"aibatr")==0) {
     aScrDisp->send_event(EV_TELEPORT, 12);
 }
+	if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 12 && strcmp(game_name,"speed konoval")==0) {
+    aScrDisp->send_event(EV_TELEPORT, 12);
+}
 	flags &= ~AS_ISCREEN;
 	if(iscr_iP) iscr_iP -> finit();
 
