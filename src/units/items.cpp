@@ -3800,7 +3800,7 @@ void GloryPlace::Init(int ind)
 	//traincross
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "traincross") == 0) {
 		if(ind == 0) {
-			R_curr.x =  488;	R_curr.y = 2487; World = WORLD_NECROSS;
+			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_NECROSS;
 		} else {
 			World = WORLD_NECROSS;
 			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
@@ -3811,10 +3811,10 @@ void GloryPlace::Init(int ind)
 	
 	//lens-team
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens-team") == 0) {
+		World = WORLD_FOSTRAL;
 		if(ind == 0) {
-			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_FOSTRAL;
+			R_curr.x =  488;	R_curr.y = 2487;
 		} else {
-			World = WORLD_FOSTRAL;
 			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
 			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
 		}
@@ -3825,7 +3825,7 @@ void GloryPlace::Init(int ind)
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens-one")==0) {
 		World = WORLD_FOSTRAL;
 		switch (ind) {
-			case  0:	R_curr.x = 1433;	R_curr.y = 4036;	break;
+			case  0:	R_curr.x =  488;	R_curr.y = 2487;	break;
 			default:
 				switch(RND(21)) {
 					case  0:	R_curr.x = 1463;	R_curr.y = 1103;	break;
