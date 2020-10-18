@@ -3800,9 +3800,22 @@ void GloryPlace::Init(int ind)
 	//traincross
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "traincross") == 0) {
 		if(ind == 0) {
+			R_curr.x =  488;	R_curr.y = 2487; World = WORLD_FOSTRAL;
+		} else {
+			World = WORLD_FOSTRAL;
+			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
+			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
+		}
+		return;
+	}
+	
+	//lens
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens") == 0) {
+		if(ind == 0) {
 			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_NECROSS;
 		} else {
-			World = WORLD_NECROSS;
+		World = WORLD_NECROSS;
+		switch(RND) {
 			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
 			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
 		}
@@ -3847,7 +3860,7 @@ void GloryPlace::Init(int ind)
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "satinan")==0) {
 		World = WORLD_XPLO;
 		switch (ind) {
-			case  0:	R_curr.x = 1650;    R_curr.y =  815; World = WORLD_GLORX;	break; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если первый чек не на трех мирах.
+			case  0:	R_curr.x = 1650;    R_curr.y =  815; World = WORLD_GLORX;	break;
 			default:
 				switch(RND(4)) {
 					case  0:	R_curr.x = 1650;	R_curr.y =  310;	break;
