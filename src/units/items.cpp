@@ -3800,7 +3800,19 @@ void GloryPlace::Init(int ind)
 	//traincross
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "traincross") == 0) {
 		if(ind == 0) {
-			R_curr.x =  488;	R_curr.y = 2487; World = WORLD_FOSTRAL;
+			R_curr.x =  488;	R_curr.y = 2487; World = WORLD_NECROSS;
+		} else {
+			World = WORLD_NECROSS;
+			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
+			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
+		}
+		return;
+	}
+	
+	//lens-team
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens-team") == 0) {
+		if(ind == 0) {
+			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_FOSTRAL;
 		} else {
 			World = WORLD_FOSTRAL;
 			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
@@ -3809,18 +3821,39 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
-	//lens
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens") == 0) {
-		if(ind == 0) {
-			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_NECROSS;
-		switch(RND) {
-			World = WORLD_NECROSS;
-			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
-			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
+	//lens-one
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens-one")==0) {
+		World = WORLD_FOSTRAL;
+		switch (ind) {
+			case  0:	R_curr.x = 1433;	R_curr.y = 4036;	break;
+			default:
+				switch(RND(21)) {
+					case  0:	R_curr.x = 1463;	R_curr.y = 1103;	break;
+					case  1:	R_curr.x =  214;	R_curr.y =   50;	break;
+					case  2:	R_curr.x = 1261;	R_curr.y = 2256;	break;
+					case  3:	R_curr.x = 1058;	R_curr.y = 3429;	break;
+					case  4:	R_curr.x =  110;	R_curr.y = 4789;	break;
+					case  5:	R_curr.x = 1969;	R_curr.y = 5352;	break;
+					case  6:	R_curr.x = 1603;	R_curr.y = 7146;	break;
+					case  7:	R_curr.x =  289;	R_curr.y = 6366;	break;
+					case  8:	R_curr.x =  452;	R_curr.y = 7919;	break;
+					case  9:	R_curr.x = 1850;	R_curr.y = 9782;	break;
+					case 10:	R_curr.x =   21;	R_curr.y =10033;	break;
+					case 11:	R_curr.x = 2002;	R_curr.y =11145;	break;
+					case 12:	R_curr.x =  676;	R_curr.y =12108;	break;
+					case 13:	R_curr.x = 1020;	R_curr.y =11892;	break;
+					case 14:	R_curr.x = 1498;	R_curr.y =13317;	break;
+					case 15:	R_curr.x = 1505;	R_curr.y =13998;	break;
+					case 16:	R_curr.x =  411;	R_curr.y =15062;	break;
+					case 17:	R_curr.x = 1505;	R_curr.y =15120;	break;
+					case 18:	R_curr.x =  958;	R_curr.y =15610;	break;
+					case 19:	R_curr.x =  880;	R_curr.y =16325;	break;
+					case 20:	R_curr.x =   96;	R_curr.y =16201;	break;
+				}
 		}
 		return;
 	}
-	
+
 	//xivepass
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "xivepass") == 0) {
 		World = WORLD_THREALL;

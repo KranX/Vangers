@@ -4247,7 +4247,10 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 	if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 12 && strcmp(game_name,"speed konoval")==0) {
     aScrDisp->send_event(EV_TELEPORT, 12);
 }
-	if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 1 && strcmp(game_name,"lens")==0) {
+	if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 1 && strcmp(game_name,"lens-one")==0) {
+    aScrDisp->send_event(EV_TELEPORT, 1);
+}
+	if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 1 && strcmp(game_name,"lens-team")==0) {
     aScrDisp->send_event(EV_TELEPORT, 1);
 }
 	flags &= ~AS_ISCREEN;

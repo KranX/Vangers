@@ -1740,7 +1740,8 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"huntage-sim")==0) value = 999999;
 			if(strcmp(game_name,"shutle fostral")==0) value = 999999;
 			if(strcmp(game_name,"speed konoval")==0) value = 10000;
-			if(strcmp(game_name,"lens")==0) value = 999999;
+			if(strcmp(game_name,"lens-one")==0) value = 999999;
+			if(strcmp(game_name,"lens-team")==0) value = 999999;
             my_server_data.Passembloss.InitialCash = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
@@ -1756,7 +1757,8 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"razminka")==0) value = 0;
 			if(strcmp(game_name,"huntage-sim")==0) value = 0;
 			if(strcmp(game_name,"shutle fostral")==0) value = 0;
-			if(strcmp(game_name,"lens")==0) value = 0;
+			if(strcmp(game_name,"lens-one")==0) value = 0;
+			if(strcmp(game_name,"lens-team")==0) value = 0;
             my_server_data.Passembloss.ArtefactsUsing = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
@@ -1772,7 +1774,8 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"huntage-sim")==0) value = 3;
 			if(strcmp(game_name,"shutle fostral")==0) value = 2;
 			if(strcmp(game_name,"speed konoval")==0) value = 1;
-			if(strcmp(game_name,"lens")==0) value = 1;
+			if(strcmp(game_name,"lens-one")==0) value = 1;
+			if(strcmp(game_name,"lens-team")==0) value = 1;
             my_server_data.Passembloss.InEscaveTime = value;
       
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
@@ -1786,7 +1789,8 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"razminka")==0) value = 10;
 			if(strcmp(game_name,"huntage-sim")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
 			if(strcmp(game_name,"shutle fostral")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*22) + 0;
-			if(strcmp(game_name,"lens")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
+			if(strcmp(game_name,"lens-one")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
+			if(strcmp(game_name,"lens-team")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
             my_server_data.Passembloss.CheckpointsNumber = value;
 
             time(&tm);
@@ -1804,7 +1808,8 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"razminka")==0) value = 2;
 			if(strcmp(game_name,"huntage-sim")==0) value = 2;
 			if(strcmp(game_name,"shutle fostral")==0) value = 1;
-			if(strcmp(game_name,"lens")==0) value = 1;
+			if(strcmp(game_name,"lens-one")==0) value = 1;
+			if(strcmp(game_name,"lens-team")==0) value = 1;
             my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;
