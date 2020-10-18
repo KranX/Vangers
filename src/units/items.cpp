@@ -3813,9 +3813,8 @@ void GloryPlace::Init(int ind)
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens") == 0) {
 		if(ind == 0) {
 			R_curr.x = 1433;	R_curr.y = 4036; World = WORLD_NECROSS;
-		} else {
-		World = WORLD_NECROSS;
 		switch(RND) {
+			World = WORLD_NECROSS;
 			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
 			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
 		}
