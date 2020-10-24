@@ -4282,7 +4282,13 @@ void iScreenDispatcher::load_data(XStream* fh)
 {
 	int i,num_opt;
 	*fh > num_opt;
-	if(num_opt != iMAX_OPTION_ID) return;
+	if(num_opt != iMAX_OPTION_ID) {
+		// Keep destroy terrain mode enabled
+		std::cout<<"iScreenDispatcher::load_data data is broken keep default"<<std::endl;
+		((iTriggerObject*)iScrOpt[iDESTR_MODE]->objPtr)->state = 1;
+		((iTriggerObject*)iScrOpt[iDESTR_MODE]->objPtr)->trigger_init();
+		return;
+	}
 	for(i = 0; i < iMAX_OPTION_ID; i ++){
 		if(iScrOpt[i])
 			iScrOpt[i] -> load(fh);
