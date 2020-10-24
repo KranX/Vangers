@@ -1636,12 +1636,6 @@ void KeyCenter(SDL_Event *key)
 //			shotFlush();
 //			break;
 #endif
-		case SDL_SCANCODE_T:
-			mod = SDL_GetModState();
-			if ((mod&KMOD_SHIFT)||(mod&KMOD_CTRL)) {
-				GameTimerON_OFF();
-			}
-			break;
 		case SDL_SCANCODE_F:
 			mod = SDL_GetModState();
 			if (mod&KMOD_CTRL) {
