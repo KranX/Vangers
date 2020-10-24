@@ -13,8 +13,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: update repos
       run: |
-        echo `brew --prefix`
-        cd `brew --prefix` && git remote add origin https://github.com/Homebrew/homebrew.git && git fetch origin && git reset --hard origin/master
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         brew update
     - name: install libs
       run: |
