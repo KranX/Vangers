@@ -12,7 +12,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: update repos
-      run: brew update
+      run: |
+        cd `brew --prefix`
+        git remote add origin https://github.com/Homebrew/homebrew.git
+        git fetch origin
+        git reset --hard origin/master
+        brew update
     - name: install libs
       run: |
         brew install ninja yasm dylibbundler
