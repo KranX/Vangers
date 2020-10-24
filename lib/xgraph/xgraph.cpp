@@ -897,12 +897,7 @@ void XGR_Screen::flip()
 			SDL_SetTextureColorMod(HDBackgroundTexture, averageColorPalette.r, averageColorPalette.g, averageColorPalette.b);
 			SDL_RenderCopy(sdlRenderer, HDBackgroundTexture, NULL, NULL);
 
-			SDL_Rect src_rect {
-					.x = 0,
-					.y = 0,
-					.w = 800,
-					.h = 600,
-			};
+			SDL_Rect src_rect {0, 0, 800, 600};
 
 			int new_width = 800 / 600.0f * (float)XGR_ScreenSurface->h;
 			SDL_Rect dst_rect {
