@@ -1951,6 +1951,7 @@ void invMatrixCell::init_mem(void)
 
 invMatrix::invMatrix(void)
 {
+	anchor = 0;
 	type = 0;
 	flags = 0;
 
@@ -2296,6 +2297,7 @@ void invMatrixCell::remove_item(void)
 
 aButton::aButton(void)
 {
+	anchor = 0;
 	fname = NULL;
 	frameSeq = NULL;
 
@@ -2526,6 +2528,7 @@ void fncMenuItem::init_name(const char* p)
 
 fncMenu::fncMenu(void)
 {
+	anchor = 0;
 	ibs = NULL;
 	bml = NULL;
 	bml_name = NULL;
@@ -2622,6 +2625,7 @@ fncMenu::~fncMenu(void)
 
 InfoPanel::InfoPanel(void)
 {
+	anchor = 0;
 	ibs = NULL;
 	bml = NULL;
 	bml_name = NULL;
@@ -2651,6 +2655,7 @@ InfoPanel::InfoPanel(void)
 
 CounterPanel::CounterPanel(void)
 {
+	anchor = 0;
 	ibs = NULL;
 	ibs_name = NULL;
 
