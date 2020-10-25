@@ -528,7 +528,7 @@ Object "Multiplayer Option"
 			$EV_CHANGE_OBJ
 		}
 	}
-
+	
 	Object "New Game Option"
 	{
 		x	$NEW_GAME_X
@@ -643,36 +643,6 @@ Object "Multiplayer Option"
 				time		$MOVE2SCREEN_TIME
 			}
 		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"New Game Option"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"New Game Option"
-		#define OBJ2	"Load Game Option"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"New Game Option"
-		#define OBJ2	"Exit Option"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
-	}
 
 	Object "Options Option"
 	{
@@ -796,129 +766,6 @@ Object "Multiplayer Option"
 			$EV_CHANGE_OBJ
 		}
 	}
-
-	Object "Credits Option"
-	{
-		align_x 	right
-		align_x_offs	$CREDITS_X
-		y		$CREDITS_Y
-
-		selectable_obj
-		Element STRING {
-			align_x 	center
-
-			terrain_num	$TERRAIN2
-
-			font		$MAIN_FNT
-			null_level	$DEFAULT_NULL
-			string		$iSTR_CREDITS
-		}
-		Event {
-			if_selected
-			key $VK_LBUTTON
-			key $VK_RETURN
-			key $VK_SPACE
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-
-			EvComm {
-				low_obj        "Credits Option"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Credits screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-
-		Event {
-			if_not_selected
-			key $VK_RBUTTON
-
-			time { $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				jump_obj	"Credits Option"
-				start_time	$PRESS_OBJ_TIME
-			}
-			EvComm {
-				smooth_obj	"Credits Option" 4
-				start_time	$PRESS_OBJ_TIME
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Credits Option"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				low_obj 	"SELECTED_OBJ"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Credits Option"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Credits screen"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_selected
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Credits Option" 4
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Credits Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Credits screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Credits Option"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Credits Option"
-		#define OBJ2	"Exit Option"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Credits Option"
-		#define OBJ2	"Multiplayer Option"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
-	}
 	Object "Exit Option"
 	{
 		x	$EXIT_X
@@ -1033,6 +880,38 @@ Object "Multiplayer Option"
 			key $VK_UP
 
 			$EV_CHANGE_OBJ
+		}
+	}
+
+	Object "Cx name"
+	{
+		x	705
+		y	525
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN4
+
+			font		3
+			null_level	$DEFAULT_NULL
+			string		"M4D"
+		}
+	}
+
+	Object "Cx version"
+	{
+		x	690
+		y	555
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN4
+
+			font		3
+			null_level	$DEFAULT_NULL
+			string		"1.03"
 		}
 	}
 }
@@ -6667,24 +6546,27 @@ Screen "Select Game"
 
 	#define GAME_Y		2
 	#define GAME_OBJ_NAME	"GameObj2"
-//	  #define GAME_OBJ_NEXT   "GameObj3"
-	#define GAME_OBJ_NEXT	"GameObj0"
+	#define GAME_OBJ_NEXT   "GameObj3"
+//	#define GAME_OBJ_NEXT	"GameObj0"
 	#define GAME_OBJ_PREV	"GameObj1"
 	#define GAME_OBJ_ID	$iSTR_PASSEMBLOSS
 	#define GAME_SCR	"Game Params 2"
 	#define GAME_STRING_ID	"GameStr2"
 
 	#include "iscreen/scripts/gameobj.inc"
-/*
+
 	#define GAME_Y		3
 	#define GAME_OBJ_NAME	"GameObj3"
-	#define GAME_OBJ_NEXT	"GameObj4"
+//	#define GAME_OBJ_NEXT	"GameObj4"
+	#define GAME_OBJ_NEXT	"GameObj0"
 	#define GAME_OBJ_PREV	"GameObj2"
 	#define GAME_OBJ_ID	$iSTR_HUNTAGE
 	#define GAME_SCR	"Game Params 3"
 	#define GAME_STRING_ID	"GameStr3"
 
+	#include "iscreen/scripts/gameobj.inc"
 
+/*
 	#define GAME_Y		4
 	#define GAME_OBJ_NAME	"GameObj4"
 	#define GAME_OBJ_NEXT	"GameObj0"
@@ -6722,7 +6604,7 @@ Screen "Game Params 0"  // VAN-WAR
 
 		not_unlock
 
-		num_state	4
+		num_state	5
 
 		State 0 "STRING"{
 			align_x center
@@ -6772,6 +6654,18 @@ Screen "Game Params 0"  // VAN-WAR
 
 			string		$iSTR_Necross
 		}
+        State 4 "STRING"{
+            align_x center
+            align_y center
+
+            terrain_num	$TERRAIN4
+
+            space		$PARAMS_SPACE
+            font		$PARAM_FNT
+            null_level	$DEFAULT_NULL
+
+            string		$iSTR_Satadi
+        }
 		Event {
 			key $VK_LBUTTON
 			key $VK_RBUTTON
@@ -6954,7 +6848,7 @@ Screen "Game Params 0"  // VAN-WAR
 			space		$PARAMS_SPACE
 			font		$PARAM_FNT
 			null_level	$DEFAULT_NULL
-			string		"100"
+			string		"30"
 		}
 		Event {
 			key $VK_LBUTTON
@@ -11817,24 +11711,27 @@ Screen "Select Game2"
 
 	#define GAME_Y		2
 	#define GAME_OBJ_NAME	"GameObj2"
-//	  #define GAME_OBJ_NEXT   "GameObj3"
-	#define GAME_OBJ_NEXT	"GameObj0"
+	#define GAME_OBJ_NEXT   "GameObj3"
+//	#define GAME_OBJ_NEXT	"GameObj0"
 	#define GAME_OBJ_PREV	"GameObj1"
 	#define GAME_OBJ_ID	$iSTR_PASSEMBLOSS
 	#define GAME_SCR	"HallOfFame screen"
 	#define GAME_STRING_ID	"GameStr2"
 
 	#include "iscreen/scripts/gameobj.inc"
-/*
+
 	#define GAME_Y		3
 	#define GAME_OBJ_NAME	"GameObj3"
-	#define GAME_OBJ_NEXT	"GameObj4"
+//	#define GAME_OBJ_NEXT	"GameObj4"
+	#define GAME_OBJ_NEXT	"GameObj0"
 	#define GAME_OBJ_PREV	"GameObj2"
 	#define GAME_OBJ_ID	$iSTR_HUNTAGE
 	#define GAME_SCR	"HallOfFame screen"
 	#define GAME_STRING_ID	"GameStr3"
 
+	#include "iscreen/scripts/gameobj.inc"
 
+/*
 	#define GAME_Y		4
 	#define GAME_OBJ_NAME	"GameObj4"
 	#define GAME_OBJ_NEXT	"GameObj0"
