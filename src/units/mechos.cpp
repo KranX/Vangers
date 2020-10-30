@@ -13787,6 +13787,11 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			y = 620;
 			return;
 }
+		if (NetworkON && strcmp(game_name,"eleerection-sim")==0 && my_server_data.GameType == 2) {
+			x =   18;
+			y = 1509;
+			return;
+}
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
 		if(!strcmp(name,NetworkEscaveName[i])){
 			t = -1;

@@ -3914,6 +3914,37 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
+	//among vangers
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "among vangers")==0) {
+		switch (ind) {
+			case  0:	R_curr.x =  63;    R_curr.y = 7466; World = WORLD_GLORX;	break;
+			default:
+				switch(RND(11)) {
+					case  0:	R_curr.x =  574;	R_curr.y =  909; World = WORLD_FOSTRAL;	break;
+					case  1:	R_curr.x = 1854;	R_curr.y = 4680; World = WORLD_FOSTRAL;	break;
+					case  2:	R_curr.x =  106;	R_curr.y = 8745; World = WORLD_FOSTRAL;	break;
+					case  3:	R_curr.x = 1028;	R_curr.y = 7161; World = WORLD_FOSTRAL;	break;
+					case  4:	R_curr.x = 1176;	R_curr.y = 8595; World = WORLD_GLORX;	break;
+					case  5:	R_curr.x =   51;	R_curr.y =11678; World = WORLD_GLORX;	break;
+					case  6:	R_curr.x =   82;	R_curr.y =12588; World = WORLD_GLORX;	break;
+					case  7:	R_curr.x = 2045;	R_curr.y =  635; World = WORLD_NECROSS;	break;
+					case  8:	R_curr.x = 1411;	R_curr.y =15242; World = WORLD_NECROSS;	break;
+					case  9:	R_curr.x = 1653;	R_curr.y =  802; World = WORLD_XPLO;	break;
+					case 10:    R_curr.x =  282;    R_curr.y = 1189; World = WORLD_THREALL;	break;
+				}
+		}
+		return;
+	}
+	
+	//eleerection-sim
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "eleerection-sim") == 0) {
+		World = WORLD_FOSTRAL;
+		switch (ind) {
+			case  0:	R_curr.x =  953;	R_curr.y =14825;	break;
+		}
+		return;
+	}
+	
 	//stad3la
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "stad3la")==0) {
 		World = WORLD_GLORX;
