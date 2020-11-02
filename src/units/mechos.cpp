@@ -1,6 +1,12 @@
 #include "../global.h"
 #include "../lang.h"
 
+#include "../iscreen/iscreen_options.h"
+#include "../iscreen/iscreen.h"
+#include "../network.h"
+
+extern iScreenOption** iScrOpt;
+
 #include "../zmod_client.h"
 
 //#include "..\win32f.h"
@@ -13729,7 +13735,63 @@ void NetworkGetStart(char* name,int& x,int& y)
 	int i,j,t;
 	SensorSortedData = new SensorDataType*[SnsTableSize];
 	StaticSort(SnsTableSize,(StaticObject**)SensorObjectData,(StaticObject**)SensorSortedData);
-
+	
+char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+		if (NetworkON && strcmp(game_name,"satinan")==0 && my_server_data.GameType == 2) {
+			x = 1650;
+			y = 815;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"necrally")==0 && my_server_data.GameType == 2) {
+			x = 1795;
+			y = 515;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"aibatr")==0 && my_server_data.GameType == 0) {
+			x = 485;
+			y = 1310;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"stad3la")==0 && my_server_data.GameType == 2) {
+			x = 1410;
+			y = 3255;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"shutle fostral")==0 && my_server_data.GameType == 2) {
+			x = 1835;
+			y = 1365;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"speed konoval")==0 && my_server_data.GameType == 0) {
+			x = 485;
+			y = 1310;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"lens-one")==0 && my_server_data.GameType == 2) {
+			x = 625;
+			y = 2275;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"lens-team")==0 && my_server_data.GameType == 2) {
+			x = 625;
+			y = 2275;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"battle for hmok")==0 && my_server_data.GameType == 0) {
+			x = 945;
+			y = 1760;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"vozvrat")==0 && my_server_data.GameType == 2) {
+			x = 975;
+			y = 620;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"eleerection-sim")==0 && my_server_data.GameType == 2) {
+			x =   18;
+			y = 1509;
+			return;
+}
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
 		if(!strcmp(name,NetworkEscaveName[i])){
 			t = -1;

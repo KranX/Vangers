@@ -29,6 +29,10 @@ struct ParticleProcess;
 
 #include "../iscreen/controls.h"
 
+#include "../iscreen/iscreen_options.h"
+#include "../iscreen/iscreen.h"
+extern iScreenOption** iScrOpt;
+
 #undef random
 #define random(num) ((int)(((long)_rand()*(num)) >> 15))
 
@@ -2480,6 +2484,7 @@ void Object::controls(int mode,int param)
 				}
 			break;
 		case CONTROLS::JUMP_USING_ACCUMULATED_POWER:
+			if (NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"eleepod bath")==0) break;
 			if(jump_power){
 				jump();
 				if(active)
@@ -2624,7 +2629,7 @@ void Object::direct_keyboard_control()
 	if(XKey.Pressed(VK_INSERT) | XKey.Pressed('A'))
 		controls(CONTROLS::JUMP_POWER_ACCUMULATION_ON);
 	else
-		if(jump_power)
+		if(jump_power && !(NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"eleepod bath")==0))
 			controls(CONTROLS::JUMP_USING_ACCUMULATED_POWER);
 
 	if(XKey.Pressed('Z'))
@@ -2722,7 +2727,7 @@ void Object::direct_keyboard_control()
 	if(iKeyPressed(iKEY_ACTIVATE_KID))
 		controls(CONTROLS::JUMP_POWER_ACCUMULATION_ON);
 	else
-		if(jump_power)
+		if(jump_power && !(NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"eleepod bath")==0))
 			controls(CONTROLS::JUMP_USING_ACCUMULATED_POWER);
 
 	//if(iKeyPressed(iKEY_VERTICAL_THRUST))
@@ -2937,10 +2942,10 @@ void Object::mechous_analysis(double dt)
 	int i;
 	dt *= speed_correction_factor;
 	if(Status & SOBJ_AUTOMAT){
-		if(jump_power && ++jump_power > max_jump_power)
+		if(jump_power && ++jump_power > max_jump_power && !(NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"eleepod bath")==0))
 			jump();
 	} else {
-		if(jump_power && CheckStartJump(this)){
+		if(jump_power && !(NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"eleepod bath")==0) && CheckStartJump(this)){
 			jump();
 			if(active)
 				SOUND_KIDPUSH();

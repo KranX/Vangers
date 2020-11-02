@@ -1697,7 +1697,7 @@ int iScreenObject::CheckXY(int x,int y)
 void iScreenObject::init(void)
 {
 	iTriggerObject* trg;
-	int i,sx = 0,sy = 0,dx = 0;
+	int i,sx = 0,sy = 0,dx = 0,dy = 0;
 	iScreenElement* p = (iScreenElement*)ElementList -> last;
 	while(p){
 		if(p -> terrainNum != -1) flags |= OBJ_STORE_TERRAIN;
@@ -1854,6 +1854,7 @@ void iScreenObject::init(void)
 	}
 	if(flags & OBJ_AUTO_SIZE && !(flags & OBJ_SET_COORDS) && !(flags & OBJ_AVI_PRESENT) && !(flags & OBJ_PIC_PRESENT)){
 		dx = (PosX > ShadowSize) ? ShadowSize : PosX;
+		dy = (PosY + SizeY < I_RES_Y - ShadowSize - 1) ? ShadowSize : (I_RES_Y - (PosY + SizeY) - 1);
 
 		nPosX = PosX;
 		nPosY = PosY;
@@ -3241,18 +3242,21 @@ void iScreen::free_palette(void)
 
 void render_border(iScreenObject* p)
 {
-	int bx, bs;
+	int bx,by,bs;
 	iAVIBorderElement* b = (iAVIBorderElement*)p -> ElementList -> last;
 
 	bx = p -> PosX + b -> lX;
+	by = p -> PosY + b -> lY;
 	bs = b -> border_size;
 
-	int x1,x2,y1,y2;
+	int x1,x2,y1,y2,dx,dy;
 
 	x1 = p -> PosX;
 	x2 = p -> PosX + p -> SizeX;
 	y1 = p -> PosY;
 	y2 = p -> PosY + bs;
+	dx = x2 - x1;
+	dy = y2 - y1;
 
 	iregRender(x1,y1,x2,y2);
 
@@ -3260,6 +3264,8 @@ void render_border(iScreenObject* p)
 	x2 = bx + bs;
 	y1 = p -> PosY;
 	y2 = p -> PosY + p -> SizeY;
+	dx = x2 - x1;
+	dy = y2 - y1;
 
 	iregRender(x1,y1,x2,y2);
 
@@ -3267,6 +3273,8 @@ void render_border(iScreenObject* p)
 	x2 = p -> PosX + p -> SizeX;
 	y1 = p -> PosY + b -> SizeY - bs;
 	y2 = p -> PosY + p -> SizeY;
+	dx = x2 - x1;
+	dy = y2 - y1;
 
 	iregRender(x1,y1,x2,y2);
 
@@ -3274,6 +3282,8 @@ void render_border(iScreenObject* p)
 	x2 = p -> PosX + p -> SizeX;
 	y1 = p -> PosY;
 	y2 = p -> PosY + p -> SizeY;
+	dx = x2 - x1;
+	dy = y2 - y1;
 
 	iregRender(x1,y1,x2,y2);
 }
@@ -3401,7 +3411,7 @@ void iScreenDispatcher::init_input_string(iScreenElement* p)
 
 void iScreenDispatcher::input_string_quant(void)
 {
-	int k,sz,init_flag = 0,redraw_flag = 0,code;
+	int k,sz,init_flag = 0,redraw_flag = 0,code,shift_flag = 0;
 	iListElementPtr* tmp;
 	iScreenObject* obj;
 	unsigned char* ptr = NULL;
@@ -3459,6 +3469,7 @@ void iScreenDispatcher::input_string_quant(void)
 						break;
 					default:
 						if(!(ActiveEl -> flags & EL_NUMBER)){
+							if(KeyBuf -> flag & SHIFT_PRESSED) shift_flag = 1;
 							code = SDL_GetKeyFromScancode((SDL_Scancode)k);
 							if(code && hfnt && code < hfnt->NumChars){
 								if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
@@ -3473,7 +3484,9 @@ void iScreenDispatcher::input_string_quant(void)
 									redraw_flag = 1;
 								}
 							}
-						} else {
+						}
+						else {
+							if(KeyBuf -> flag & SHIFT_PRESSED) shift_flag = 1;
 							code = SDL_GetKeyFromScancode((SDL_Scancode)k);
 							if(code && code >= '0' && code <= '9'){
 								if(hfnt && (hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
@@ -4269,13 +4282,7 @@ void iScreenDispatcher::load_data(XStream* fh)
 {
 	int i,num_opt;
 	*fh > num_opt;
-	if(num_opt != iMAX_OPTION_ID) {
-		// Keep destroy terrain mode enabled
-		std::cout<<"iScreenDispatcher::load_data data is broken keep default"<<std::endl;
-		((iTriggerObject*)iScrOpt[iDESTR_MODE]->objPtr)->state = 1;
-		((iTriggerObject*)iScrOpt[iDESTR_MODE]->objPtr)->trigger_init();
-		return;
-	}
+	if(num_opt != iMAX_OPTION_ID) return;
 	for(i = 0; i < iMAX_OPTION_ID; i ++){
 		if(iScrOpt[i])
 			iScrOpt[i] -> load(fh);

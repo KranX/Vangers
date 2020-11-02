@@ -26,6 +26,12 @@
 
 #include "../sound/hsound.h"
 
+#include "../iscreen/iscreen_options.h"
+#include "../iscreen/iscreen.h"
+#include "../network.h"
+
+extern iScreenOption** iScrOpt;
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -4230,7 +4236,20 @@ void actIntDispatcher::i_finit(void)
 
 	aciChangeWorld(CurrentWorld);
 	aciPrepareWorldsMenu();
-
+	
+char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+	if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 3 && strcmp(game_name,"satinan")==0) {
+    aScrDisp->send_event(EV_TELEPORT, 3);
+}
+	if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 12 && strcmp(game_name,"aibatr")==0) {
+    aScrDisp->send_event(EV_TELEPORT, 12);
+}
+	if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 12 && strcmp(game_name,"speed konoval")==0) {
+    aScrDisp->send_event(EV_TELEPORT, 12);
+}
+	if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 8 && strcmp(game_name,"battle for hmok")==0) {
+    aScrDisp->send_event(EV_TELEPORT, 8);
+}
 	flags &= ~AS_ISCREEN;
 	if(iscr_iP) iscr_iP -> finit();
 

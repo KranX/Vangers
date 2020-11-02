@@ -42,6 +42,12 @@
 #include "diagen.h"
 #include "univang.h"
 
+#include "../iscreen/iscreen_options.h"
+#include "../iscreen/iscreen.h"
+#include "../network.h"
+
+extern iScreenOption** iScrOpt;
+
 const int TABUTASK_BAD = ACI_TABUTASK_FAILED;
 const int TABUTASK_GOOD = ACI_TABUTASK_SUCCESSFUL;
 
@@ -788,12 +794,25 @@ void uniVangPrepare(void){
 	//zNfo  DEFAULT MECHOS 
 	// 16 = моток
 	int MechosID = 0;
-	if (NetworkON) switch (z_my_server_data.mod_id) {
-		case Z_MODS_RAFARUN_ID:		{ MechosID = 16; break; } // моток
-		case Z_MODS_TRAKTRIAL_ID:	{ MechosID =  7; break; } // аттрактор
-		case Z_MODS_NEPTUN_ID:		{ MechosID = 21; break; } // жаба
-		case Z_MODS_TEST_ID:		{ MechosID =  5; break; } // дряхлый душегуб
-		default: MechosID = 5; // дряхлый душегуб
+	if (NetworkON) {
+		switch (z_my_server_data.mod_id) {
+			case Z_MODS_RAFARUN_ID:		{ MechosID = 16; break; } // моток
+			case Z_MODS_TRAKTRIAL_ID:	{ MechosID =  7; break; } // аттрактор
+			case Z_MODS_NEPTUN_ID:		{ MechosID = 21; break; } // жаба
+			case Z_MODS_TEST_ID:		{ MechosID =  5; break; } // дряхлый душегуб
+			default: MechosID = 5; // дряхлый душегуб
+		}
+		char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+		if (my_server_data.GameType == 2 && strcmp(game_name,"travel")==0) MechosID = 0;
+		else if (my_server_data.GameType == 0 && strcmp(game_name,"aibatr")==0) MechosID = 22;
+		else if (my_server_data.GameType == 1 && strcmp(game_name,"mega mechosoma")==0) MechosID = 20;
+		else if (my_server_data.GameType == 0 && strcmp(game_name,"super van-war")==0) MechosID = 13;
+		else if (my_server_data.GameType == 1 && strcmp(game_name,"progress")==0) MechosID = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
+		else if (my_server_data.GameType == 2 && strcmp(game_name,"satinan")==0) MechosID = 19;
+		else if (my_server_data.GameType == 0 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
+		else if (my_server_data.GameType == 1 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
+		else if (my_server_data.GameType == 2 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
+		else MechosID = 5;
 	}
 	v -> Pescave -> Pshop -> sellMechos(v -> Pmechos, MechosID);
 	v -> Pmechos -> type = MechosID;
@@ -10341,7 +10360,18 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 					pm -> prev -> next = pm -> next;
 				}
 
-				pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
+				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+				if (strcmp(game_name,"travel")==0) pm -> type = 0;
+				else if (strcmp(game_name,"aibatr")==0) pm -> type = 22;
+				else if (strcmp(game_name,"eleepod bath")==0) pm -> type = 0;
+				else if (strcmp(game_name,"mega mechosoma")==0) pm -> type = 20;
+				else if (strcmp(game_name,"super van-war")==0) pm -> type = 0;
+				else if (strcmp(game_name,"shutle fostral")==0) pm -> type = 0;
+				else if (strcmp(game_name,"razminka")==0) pm -> type = 5;
+				else if (strcmp(game_name,"satinan")==0) pm -> type = 19;
+				else if (strcmp(game_name,"speed konoval")==0) pm -> type = 9;
+				else if (strcmp(game_name,"progress")==0) pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
+				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
 				if (!Gamer -> Pmechos)
 					ErrH.Abort("uvsMakeNewGamer :: dont have any mechos in shop");

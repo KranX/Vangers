@@ -2123,14 +2123,14 @@ void XGR_Mouse::InitPrompt(void)
 	}
 	if(flags & XGM_HICOLOR){
 		if(PromptFonBufSize < p -> textSizeX * p -> textSizeY * 2){
-			if(PromptFon) delete[] PromptFon;
+			if(PromptFon) delete PromptFon;
 			PromptFonBufSize = p -> textSizeX * p -> textSizeY * 2;
 			PromptFon = new char[PromptFonBufSize];
 		}
 	}
 	else {
 		if(PromptFonBufSize < p -> textSizeX * p -> textSizeY){
-			if(PromptFon) delete[] PromptFon;
+			if(PromptFon) delete PromptFon;
 			PromptFonBufSize = p -> textSizeX * p -> textSizeY;
 			PromptFon = new char[PromptFonBufSize];
 		}
