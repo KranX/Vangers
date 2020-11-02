@@ -3883,16 +3883,27 @@ void GloryPlace::Init(int ind)
 			case  6:	R_curr.x = 1875;	R_curr.y = 1055;	World = WORLD_WEEXOW;	break;
 			case  7:	R_curr.x = 1919;	R_curr.y = 1063;	World = WORLD_KHOX;	break;
 			case  8:	R_curr.x =  207;	R_curr.y =14676;	World = WORLD_NECROSS;	break;
-			case  9:	R_curr.x = 1915;	R_curr.y =  1510;	World = WORLD_BOOZEENA;	break;
+			case  9:	R_curr.x = 1915;	R_curr.y = 1510;	World = WORLD_BOOZEENA;	break;
+		}
+		return;
+	}
+	
+	//escape
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "escape") == 0) {
+		World = WORLD_GLORX;
+		switch (ind) {
+			case  0:	R_curr.x =  741;	R_curr.y =  515;	break;
 		}
 		return;
 	}
 	
 	//vozvrat
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "vozvrat") == 0) {
-		World = WORLD_GLORX;
+		World = WORLD_FOSTRAL;
 		switch (ind) {
-			case  0:	R_curr.x =  741;	R_curr.y =  515;	break;
+			case  0:	R_curr.x =  741;	R_curr.y =  515;	World = WORLD_GLORX;	break;
+			case  1:	R_curr.x =  808;	R_curr.y = 4631;	break;
+			case  2:	R_curr.x =  382;	R_curr.y = 7333;	break;
 		}
 		return;
 	}
@@ -3939,7 +3950,7 @@ void GloryPlace::Init(int ind)
 	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "eleerection-sim") == 0) {
 		World = WORLD_FOSTRAL;
 		switch (ind) {
-			case  0:	R_curr.x =  953;	R_curr.y =14825;	break;
+			case  0:	R_curr.x =  855;	R_curr.y =14820;	break;
 		}
 		return;
 	}

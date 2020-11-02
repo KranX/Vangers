@@ -1650,6 +1650,8 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"super van-war")==0) value = -35000;
 			if(strcmp(game_name,"speed konoval")==0) value = 12500;
 			if(strcmp(game_name,"battle for hmok")==0) value = 999999;
+			if(strcmp(game_name,"new soup")==0) value = 6500;
+			if(strcmp(game_name,"mechoxes")==0) value = 35700;
 			my_server_data.Van_War.InitialCash = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ARTEFACTS_USING);
@@ -1657,6 +1659,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"super van-war")==0) value = 0;
 			if(strcmp(game_name,"speed konoval")==0) value = 0;
 			if(strcmp(game_name,"battle for hmok")==0) value = 0;
+			if(strcmp(game_name,"new soup")==0) value = 1;
 			my_server_data.Van_War.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_IN_ESCAVE_TIME);
@@ -1664,15 +1667,21 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"super van-war")==0) value = 2;
 			if(strcmp(game_name,"speed konoval")==0) value = 1;
 			if(strcmp(game_name,"battle for hmok")==0) value = 2;
+			if(strcmp(game_name,"new soup")==0) value = 1;
+			if(strcmp(game_name,"mechoxes")==0) value = 0;
 			my_server_data.Van_War.InEscaveTime = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_TEAM_MODE);
+			if(strcmp(game_name,"new soup")==0) value = 1;
+			if(strcmp(game_name,"mechoxes")==0) value = 0;
 			my_server_data.Van_War.TeamMode = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_NASCENCY);
 			if(strcmp(game_name,"aibatr")==0) value = 2;
 			if(strcmp(game_name,"speed konoval")==0) value = 2;
 			if(strcmp(game_name,"battle for hmok")==0) value = 2;
+			if(strcmp(game_name,"new soup")==0) value = 0;
+			if(strcmp(game_name,"mechoxes")==0) value = 1;
 			my_server_data.Van_War.Nascency = value - 1;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ACCESS);
@@ -1680,12 +1689,16 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"super van-war")==0) value = 1;
 			if(strcmp(game_name,"speed konoval")==0) value = 0;
 			if(strcmp(game_name,"battle for hmok")==0) value = 1;
+			if(strcmp(game_name,"new soup")==0) value = 0;
+			if(strcmp(game_name,"mechoxes")==0) value = 1;
 			my_server_data.Van_War.WorldAccess = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_MAX_KILLS);
+			if(strcmp(game_name,"mechoxes")==0) value = 10;
 			my_server_data.Van_War.MaxKills = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_MAX_TIME);
+			if(strcmp(game_name,"new soup")==0) value = 45;
 			my_server_data.Van_War.MaxTime = value;
 			break;
 		case iMP_MECHOSOMA:
@@ -1749,6 +1762,8 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"lens-team")==0) value = 999999;
 			if(strcmp(game_name,"vozvrat")==0) value = 999999;
 			if(strcmp(game_name,"among vangers")==0) value = 999999;
+			if(strcmp(game_name,"eleerection-sim")==0) value = 999999;
+			if(strcmp(game_name,"escape")==0) value = 999999;
             my_server_data.Passembloss.InitialCash = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
@@ -1766,8 +1781,9 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"shutle fostral")==0) value = 0;
 			if(strcmp(game_name,"lens-one")==0) value = 0;
 			if(strcmp(game_name,"lens-team")==0) value = 0;
-			if(strcmp(game_name,"vozvrat")==0) value = 1;
+			if(strcmp(game_name,"vozvrat")==0) value = 0;
 			if(strcmp(game_name,"among vangers")==0) value = 1;
+			if(strcmp(game_name,"escape")==0) value = 1;
             my_server_data.Passembloss.ArtefactsUsing = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
@@ -1787,6 +1803,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"lens-team")==0) value = 1;
 			if(strcmp(game_name,"vozvrat")==0) value = 0;
 			if(strcmp(game_name,"among vangers")==0) value = 0;
+			if(strcmp(game_name,"escape")==0) value = 1;
             my_server_data.Passembloss.InEscaveTime = value;
       
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
@@ -1802,9 +1819,10 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"shutle fostral")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*22) + 0;
 			if(strcmp(game_name,"lens-one")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
 			if(strcmp(game_name,"lens-team")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
-			if(strcmp(game_name,"vozvrat")==0) value = 2;
+			if(strcmp(game_name,"vozvrat")==0) value = 3;
 			if(strcmp(game_name,"among vangers")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
 			if(strcmp(game_name,"eleerection-sim")==0) value = 1;
+			if(strcmp(game_name,"escape")==0) value = 1;
             my_server_data.Passembloss.CheckpointsNumber = value;
 
             time(&tm);
@@ -1827,6 +1845,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"vozvrat")==0) value = 3;
 			if(strcmp(game_name,"among vangers")==0) value = 2;
 			if(strcmp(game_name,"eleerection-sim")==0) value = 1;
+			if(strcmp(game_name,"escape")==0) value = 3;
             my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;

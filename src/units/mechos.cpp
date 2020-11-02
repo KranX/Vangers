@@ -13782,14 +13782,19 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			y = 1760;
 			return;
 }
-		if (NetworkON && strcmp(game_name,"vozvrat")==0 && my_server_data.GameType == 2) {
+		if (NetworkON && strcmp(game_name,"escape")==0 && my_server_data.GameType == 2) {
 			x = 975;
 			y = 620;
 			return;
 }
 		if (NetworkON && strcmp(game_name,"eleerection-sim")==0 && my_server_data.GameType == 2) {
-			x =   18;
-			y = 1509;
+			x = 1960;
+			y = 1505;
+			return;
+}
+		if (NetworkON && strcmp(game_name,"mechoxes")==0 && my_server_data.GameType == 0) {
+			x = 1870;
+			y = 1055;
 			return;
 }
 	for(i = 0;i < NETWORK_NUM_ESCAVE;i++){
