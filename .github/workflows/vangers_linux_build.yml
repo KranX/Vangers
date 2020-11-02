@@ -26,14 +26,3 @@ jobs:
     - name: make
       run: make
       working-directory: build
-    - name: vangers -- prepare release folder
-      run: |
-        mkdir -p vangers/bin
-        cp build/src/vangers vangers/bin/
-        strip vangers/bin/vangers
-        cp build/server/vangers_server vangers/bin/
-        strip vangers/bin/vangers_server
-    - uses: actions/upload-artifact@v1
-      with:
-        name: Vangers[M4D]-linux
-        path: vangers
