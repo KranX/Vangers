@@ -1,4 +1,4 @@
-name: Vangers Windows 32bit Build
+name: Vangers[M4D] Windows 32bit Build
 
 on:
   push:
@@ -88,5 +88,5 @@ jobs:
         msys2do strip vangers/bin/vangers_server.exe
     - uses: actions/upload-artifact@v1
       with:
-        name: Vangers-Release-32
+        name: Vangers[M4D]-32
         path: vangers
