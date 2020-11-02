@@ -3908,6 +3908,15 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
+	//ishod
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "ishod") == 0) {
+		World = WORLD_NECROSS;
+		switch (ind) {
+			case  0:	R_curr.x = 1030;	R_curr.y =16700;	break;
+		}
+		return;
+	}
+	
 	//satinan
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "satinan")==0) {
 		World = WORLD_XPLO;

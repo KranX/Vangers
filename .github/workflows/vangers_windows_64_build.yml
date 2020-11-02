@@ -1,4 +1,4 @@
-name: Vangers[M4D] Windows 64bit Build
+name: Vangers[M4D] Win64
 
 on:
   push:
