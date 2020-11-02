@@ -1804,6 +1804,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"lens-team")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
 			if(strcmp(game_name,"vozvrat")==0) value = 2;
 			if(strcmp(game_name,"among vangers")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
+			if(strcmp(game_name,"eleerection-sim")==0) value = 1;
             my_server_data.Passembloss.CheckpointsNumber = value;
 
             time(&tm);
