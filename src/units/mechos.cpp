@@ -9392,7 +9392,7 @@ void ActionDispatcher::FunctionQuant(void)
 
 			switch(aciProtractorEvent){
 				case ACI_PROTRACTOR_EVENT1:
-					if(!NetworkON && NewFunction(PROTRACTOR_PREPASSAGE,PROTRACTOR_OPEN_SPODS)){
+					if(NewFunction(PROTRACTOR_PREPASSAGE,PROTRACTOR_OPEN_SPODS)){
 						AddCoolFunction(PROTRACTOR_OPEN_SPODS,pfActive->R_curr,SIGNATOR_DELAY,p_flag);
 						p_new = 1;
 					};
