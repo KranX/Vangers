@@ -9466,7 +9466,7 @@ void ActionDispatcher::FunctionQuant(void)
 					};
 					break;
 				case ACI_MECH_MESSIAH_EVENT2:
-					if(!NetworkON && NewFunction(MECHANIC_BEEB_NATION,MECHANIC_GAME_OVER))
+					if(NewFunction(MECHANIC_BEEB_NATION,MECHANIC_GAME_OVER))
 						XpeditionOFF(GAME_OVER_LUCKY);
 					break;
 				case ACI_MECH_MESSIAH_EVENT3:

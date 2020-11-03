@@ -815,7 +815,7 @@ void uniVangPrepare(void){
 		else if (my_server_data.GameType == 0 && strcmp(game_name,"mechoxes")==0) MechosID = 0;
 		else if (my_server_data.GameType == 0 && strcmp(game_name,"new soup")==0) MechosID = 10;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"vozvrat")==0) MechosID = 0;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"bullet run")==0) MechosID = 10;
+		else if (my_server_data.GameType == 2 && strcmp(game_name,"bullet run")==0) MechosID = 10;
 		else MechosID = 5;
 	}
 	v -> Pescave -> Pshop -> sellMechos(v -> Pmechos, MechosID);
