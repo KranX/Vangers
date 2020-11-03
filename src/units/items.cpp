@@ -3938,72 +3938,71 @@ void GloryPlace::Init(int ind)
 		World = WORLD_NECROSS;
 		switch(ind) {
 			case 0 ... 2:
-		switch(RND(3)) {
-			case  0:	R_curr.x =  448;    R_curr.y = 2823;	break;
-			case  1:	R_curr.x =  750;    R_curr.y = 2670;	break;
-			case  2:	R_curr.x = 2001;    R_curr.y = 2795;	break;
-        }
-		break;
-      case 3 ... 8:
-        switch(RND(6)) {
-			case  0:	R_curr.x = 1641;	R_curr.y = 3295;	break;
-			case  1:	R_curr.x =   45;	R_curr.y = 3201;	break;
-			case  2:	R_curr.x =  217;	R_curr.y = 3417;	break;
-			case  3:	R_curr.x =  824;	R_curr.y = 3423;	break;
-			case  4:	R_curr.x =  578;	R_curr.y = 3179;	break;
-			case  5:	R_curr.x =  989;	R_curr.y = 3243;	break;
-        }
-		break;
-      case 9 ... 15:
-        switch(RND(7)) {
-			case  0:	R_curr.x = 1919;	R_curr.y = 5237;	break;
-			case  1:	R_curr.x = 1733;	R_curr.y = 5150;	break;
-			case  2:	R_curr.x = 1367;	R_curr.y = 5240;	break;
-			case  3:	R_curr.x = 1261;	R_curr.y = 5436;	break;
-			case  4:	R_curr.x =  805;	R_curr.y = 5278;	break;
-			case  5:	R_curr.x =  630;	R_curr.y = 5497;	break;
-			case  6:	R_curr.x =  442;	R_curr.y = 5730;	break;
+				switch(RND(3)) {
+					case  0:	R_curr.x =  448;    R_curr.y = 2823;	break;
+					case  1:	R_curr.x =  750;    R_curr.y = 2670;	break;
+					case  2:	R_curr.x = 2001;    R_curr.y = 2795;	break;
+        			}
+				break;
+      			case 3 ... 8:
+        			switch(RND(6)) {
+					case  0:	R_curr.x = 1641;	R_curr.y = 3295;	break;
+					case  1:	R_curr.x =   45;	R_curr.y = 3201;	break;
+					case  2:	R_curr.x =  217;	R_curr.y = 3417;	break;
+					case  3:	R_curr.x =  824;	R_curr.y = 3423;	break;
+					case  4:	R_curr.x =  578;	R_curr.y = 3179;	break;
+					case  5:	R_curr.x =  989;	R_curr.y = 3243;	break;
+				}
+				break;
+      			case 9 ... 15:
+        			switch(RND(7)) {
+					case  0:	R_curr.x = 1919;	R_curr.y = 5237;	break;
+					case  1:	R_curr.x = 1733;	R_curr.y = 5150;	break;
+					case  2:	R_curr.x = 1367;	R_curr.y = 5240;	break;
+					case  3:	R_curr.x = 1261;	R_curr.y = 5436;	break;
+					case  4:	R_curr.x =  805;	R_curr.y = 5278;	break;
+					case  5:	R_curr.x =  630;	R_curr.y = 5497;	break;
+					case  6:	R_curr.x =  442;	R_curr.y = 5730;	break;
+				}
+				break;
+			case 16 ... 20:
+        			switch(RND(5)) {
+					case  0:	R_curr.x =  574;	R_curr.y = 7697;	break;
+					case  1:	R_curr.x =  430;	R_curr.y = 7487;	break;
+					case  2:	R_curr.x =  830;	R_curr.y = 7892;	break;
+					case  3:	R_curr.x = 1179;	R_curr.y = 7730;	break;
+					case  4:	R_curr.x = 2002;	R_curr.y = 7635;	break;
+				}
+				break;
+			case 21 ... 23:
+        			switch(RND(3)) {
+					case  0:	R_curr.x =  865;	R_curr.y =10338;	break;
+					case  1:	R_curr.x =  642;	R_curr.y =10516;	break;
+					case  2:	R_curr.x =  474;	R_curr.y =10318;	break;
+				}
+				break;
+			case 24 ... 27:
+				switch(RND(4)) {
+					case  0:	R_curr.x =    7;	R_curr.y =10788;	break;
+					case  1:	R_curr.x = 1895;	R_curr.y =10938;	break;
+					case  2:	R_curr.x =   33;	R_curr.y =11096;	break;
+					case  3:	R_curr.x =  486;	R_curr.y =11077;	break;
+				}
+				break;
+			case 28 ... 32:
+        			switch(RND(5)) {
+					case  0:	R_curr.x = 1899;	R_curr.y =12002;	break;
+					case  1:	R_curr.x = 2009;	R_curr.y =12350;	break;
+					case  2:	R_curr.x =  248;	R_curr.y =12055;	break;
+					case  3:	R_curr.x =  583;	R_curr.y =12088;	break;
+					case  4:	R_curr.x = 1001;	R_curr.y =12134;	break;
+				}
+				break;
+			case 33:	R_curr.x = 1461;	R_curr.y =12707;	break;
 		}
-		break;
-		case 16 ... 20:
-        switch(RND(5)) {
-			case  0:	R_curr.x =  574;	R_curr.y = 7697;	break;
-			case  1:	R_curr.x =  430;	R_curr.y = 7487;	break;
-			case  2:	R_curr.x =  830;	R_curr.y = 7892;	break;
-			case  3:	R_curr.x = 1179;	R_curr.y = 7730;	break;
-			case  4:	R_curr.x = 2002;	R_curr.y = 7635;	break;
-		}
-		break;
-		case 21 ... 23:
-        switch(RND(3)) {
-			case  0:	R_curr.x =  865;	R_curr.y =10338;	break;
-			case  1:	R_curr.x =  642;	R_curr.y =10516;	break;
-			case  2:	R_curr.x =  474;	R_curr.y =10318;	break;
-		}
-		break;
-		case 24 ... 27:
-        switch(RND(4)) {
-			case  0:	R_curr.x =    7;	R_curr.y =10788;	break;
-			case  1:	R_curr.x = 1895;	R_curr.y =10938;	break;
-			case  2:	R_curr.x =   33;	R_curr.y =11096;	break;
-			case  3:	R_curr.x =  486;	R_curr.y =11077;	break;
-		}
-		break;
-		case 28 ... 32:
-        switch(RND(5)) {
-			case  0:	R_curr.x = 1899;	R_curr.y =12002;	break;
-			case  1:	R_curr.x = 2009;	R_curr.y =12350;	break;
-			case  2:	R_curr.x =  248;	R_curr.y =12055;	break;
-			case  3:	R_curr.x =  583;	R_curr.y =12088;	break;
-			case  4:	R_curr.x = 1001;	R_curr.y =12134;	break;
-		}
-		break;
-		case 33:
-        switch (ind) {
-			case  0:	R_curr.x = 1461;	R_curr.y =12707;	break;
-		}
-		break;
+		return;
 	}
+		
 	
 	//among vangers
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "among vangers")==0) {
