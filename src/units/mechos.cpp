@@ -4618,7 +4618,7 @@ void VangerUnit::InitEnvironment(void)
 									if(abs(vCheck.x) < l){
 										if(R_curr.z > ((SensorDataType*)(st))->z0 - radius && R_curr.z < ((SensorDataType*)(st))->z1 + radius){
 											if(!strcmp(((SensorDataType*)(st))->Name,"SIGN")){
-												if(!NetworkON && ActD.Active && ActD.Active->ExternalMode == EXTERNAL_MODE_NORMAL && ActD.Active->ExternalDraw && !ActD.ThreallDestroy){
+												if(strcmp(game_name,"travel")==0 && ActD.Active && ActD.Active->ExternalMode == EXTERNAL_MODE_NORMAL && ActD.Active->ExternalDraw && !ActD.ThreallDestroy){
 													vCheck.y = getDistY(st->R_curr.y,R_curr.y);
 													if((vCheck.x*vCheck.x + vCheck.y*vCheck.y) < l*l){
 														st->Touch(this);
@@ -9441,7 +9441,7 @@ void ActionDispatcher::FunctionQuant(void)
 					break;
 			};
 
-			if(NetworkON && pfActive == Active){
+			if(strcmp(game_name,"travel")==0 && pfActive == Active){
 				NetFunctionProtractor &= ~7;
 				if(p_new) NetFunctionProtractor |= 64;
 				else NetFunctionProtractor &= ~64;
@@ -9492,7 +9492,7 @@ void ActionDispatcher::FunctionQuant(void)
 					};
 					break;
 				case ACI_MECH_MESSIAH_EVENT6:
-					if(!NetworkON){
+					if(strcmp(game_name,"travel")==0){
 						FunctionSpobsDestroyActive = GAME_OVER_EVENT_TIME;
 						if(ActD.Active){
 							SkyQuake2.set(ActD.Active->R_scr.x,ActD.Active->R_scr.y,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);

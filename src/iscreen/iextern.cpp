@@ -1769,7 +1769,6 @@ void iGetMultiGameParameters(void)
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
 			if(strcmp(game_name,"speed konoval")==0) value = 0;
-            if(strcmp(game_name,"travel")==0) value = 0;
             if(strcmp(game_name,"aveslom")==0) value = 0;
             if(strcmp(game_name,"necrally")==0) value = 0;
 			if(strcmp(game_name,"traincross")==0) value = 0;
