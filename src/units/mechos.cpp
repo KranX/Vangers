@@ -4323,8 +4323,6 @@ void VangerUnit::InitEnvironment(void)
 
 	aiUnitResolve* p;
 	aiUnitResolve* pp;
-	
-char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 
 	if(Status & SOBJ_WAIT_CONFIRMATION) return;
 	nDoorFlag = DoorFlag;
@@ -4376,8 +4374,8 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			};		
 		};
 	};
-
-	if(!NetworkON || (Status & SOBJ_ACTIVE)){
+	if (NetworkON) char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+	if((!NetworkON || strcmp(game_name,"travel")==0) || (Status & SOBJ_ACTIVE)){
 		ExternalLastSensor = ExternalSensor;
 		ExternalSensor = NULL;
 
@@ -4620,7 +4618,7 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 									if(abs(vCheck.x) < l){
 										if(R_curr.z > ((SensorDataType*)(st))->z0 - radius && R_curr.z < ((SensorDataType*)(st))->z1 + radius){
 											if(!strcmp(((SensorDataType*)(st))->Name,"SIGN")){
-												if(strcmp(game_name,"travel")==0 && ActD.Active && ActD.Active->ExternalMode == EXTERNAL_MODE_NORMAL && ActD.Active->ExternalDraw && !ActD.ThreallDestroy){
+												if((!NetworkON || strcmp(game_name,"travel")==0) && ActD.Active && ActD.Active->ExternalMode == EXTERNAL_MODE_NORMAL && ActD.Active->ExternalDraw && !ActD.ThreallDestroy){
 													vCheck.y = getDistY(st->R_curr.y,R_curr.y);
 													if((vCheck.x*vCheck.x + vCheck.y*vCheck.y) < l*l){
 														st->Touch(this);
@@ -9339,8 +9337,6 @@ void ActionDispatcher::FunctionQuant(void)
 	unsigned char ch;
 	int m_flag,p_flag;
 	int p_new,m_new;
-	
-char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 
 	m_flag = 0;
 	p_flag = 0;
@@ -9444,8 +9440,7 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 						FunctionThreallDestroyActive = GAME_OVER_EVENT_TIME;
 					break;
 			};
-
-			if(strcmp(game_name,"travel")==0 && pfActive == Active){
+			if(NetworkON && pfActive == Active){
 				NetFunctionProtractor &= ~7;
 				if(p_new) NetFunctionProtractor |= 64;
 				else NetFunctionProtractor &= ~64;
@@ -9496,7 +9491,8 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 					};
 					break;
 				case ACI_MECH_MESSIAH_EVENT6:
-					if(strcmp(game_name,"travel")==0){
+					if (NetworkON) char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+					if(!NetworkON || strcmp(game_name,"travel")==0){
 						FunctionSpobsDestroyActive = GAME_OVER_EVENT_TIME;
 						if(ActD.Active){
 							SkyQuake2.set(ActD.Active->R_scr.x,ActD.Active->R_scr.y,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
