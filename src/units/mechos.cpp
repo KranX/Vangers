@@ -4374,7 +4374,8 @@ void VangerUnit::InitEnvironment(void)
 			};		
 		};
 	};
-	if (NetworkON) char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+	char *game_name = "";
+	if (NetworkON) game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 	if((!NetworkON || strcmp(game_name,"travel")==0) || (Status & SOBJ_ACTIVE)){
 		ExternalLastSensor = ExternalSensor;
 		ExternalSensor = NULL;
@@ -9491,7 +9492,8 @@ void ActionDispatcher::FunctionQuant(void)
 					};
 					break;
 				case ACI_MECH_MESSIAH_EVENT6:
-					if (NetworkON) char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+					char *game_name = "";
+					if (NetworkON) game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 					if(!NetworkON || strcmp(game_name,"travel")==0){
 						FunctionSpobsDestroyActive = GAME_OVER_EVENT_TIME;
 						if(ActD.Active){
