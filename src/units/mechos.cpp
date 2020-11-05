@@ -4323,6 +4323,8 @@ void VangerUnit::InitEnvironment(void)
 
 	aiUnitResolve* p;
 	aiUnitResolve* pp;
+	
+char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 
 	if(Status & SOBJ_WAIT_CONFIRMATION) return;
 	nDoorFlag = DoorFlag;
@@ -9337,6 +9339,8 @@ void ActionDispatcher::FunctionQuant(void)
 	unsigned char ch;
 	int m_flag,p_flag;
 	int p_new,m_new;
+	
+char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 
 	m_flag = 0;
 	p_flag = 0;

@@ -4091,6 +4091,23 @@ void GloryPlace::Init(int ind)
         	return;
 	}
 
+	//raffa-run-sim
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "raffa-run-sim")==0) {
+		if(ind == 0) {
+			World = GloryRnd.aiRnd(3);
+		} else {
+			World = GloryRnd.aiRnd(WORLD_MAX);
+
+			while (World == WORLD_HMOK && WORLD_THREALL)
+				World = GloryRnd.aiRnd(WORLD_MAX);
+		};
+		R_curr.x = GloryRnd.aiRnd(WorldTable[World]->x_size);
+		if(World < MAIN_WORLD_MAX - 1)
+			R_curr.y = 300 + GloryRnd.aiRnd(WorldTable[World]->y_size - 600);
+		else	
+			R_curr.y = GloryRnd.aiRnd(WorldTable[World]->y_size);
+	};
+
 	//classic
 	if(ind == 0) {
 		World = GloryRnd.aiRnd(3); // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.

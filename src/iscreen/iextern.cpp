@@ -1765,6 +1765,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"eleerection-sim")==0) value = 999999;
 			if(strcmp(game_name,"escape")==0) value = 999999;
 			if(strcmp(game_name,"bullet run")==0) value = 999999;
+			if(strcmp(game_name,"raffa-run-sim")==0) value = 4000;
             my_server_data.Passembloss.InitialCash = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
@@ -1785,6 +1786,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"among vangers")==0) value = 1;
 			if(strcmp(game_name,"escape")==0) value = 1;
 			if(strcmp(game_name,"bullet run")==0) value = 0;
+			if(strcmp(game_name,"raffa-run-sim")==0) value = 0;
             my_server_data.Passembloss.ArtefactsUsing = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
@@ -1806,6 +1808,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"among vangers")==0) value = 0;
 			if(strcmp(game_name,"escape")==0) value = 1;
 			if(strcmp(game_name,"bullet run")==0) value = 1;
+			if(strcmp(game_name,"raffa-run-sim")==0) value = 0;
             my_server_data.Passembloss.InEscaveTime = value;
       
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
