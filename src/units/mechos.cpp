@@ -9439,7 +9439,7 @@ void ActionDispatcher::FunctionQuant(void)
 				case ACI_PROTRACTOR_EVENT8:
 					char *game_name = "";
 					if (NetworkON) game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-					if(!NetworkON || strcmp(game_name,"travel")==0){
+					if(!NetworkON || strcmp(game_name,"travel")==0)
 						FunctionThreallDestroyActive = GAME_OVER_EVENT_TIME;
 					break;
 			};

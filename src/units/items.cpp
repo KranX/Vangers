@@ -4098,7 +4098,7 @@ void GloryPlace::Init(int ind)
 		} else {
 			World = GloryRnd.aiRnd(WORLD_MAX);
 
-			while (World == WORLD_HMOK && World == WORLD_THREALL)
+			while (World == WORLD_HMOK || World == WORLD_THREALL)
 				World = GloryRnd.aiRnd(WORLD_MAX);
 		};
 		R_curr.x = GloryRnd.aiRnd(WorldTable[World]->x_size);
