@@ -67,6 +67,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -msse2 -ftree-vectorize -ffast-math"
 add_definitions(-D_USE_MATH_DEFINES)
 
 add_compile_options(-Werror=dangling-else)
+add_compile_options(-Werror=parentheses)
 
 # subdirs
 ADD_SUBDIRECTORY("src")
