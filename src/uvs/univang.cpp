@@ -586,7 +586,8 @@ void uniVangPrepare(void){
 #else
 			if (i == UVS_ITEM_TYPE::MACHOTINE_GUN_LIGHT ||
 			    i == UVS_ITEM_TYPE::SPEETLE_SYSTEM_LIGHT ||
-			    i == UVS_ITEM_TYPE::GHORB_GEAR_LIGHT )
+			    i == UVS_ITEM_TYPE::GHORB_GEAR_LIGHT ||
+			   (NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"wiring")==0))
 #endif
 				for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item( i );
 			else
@@ -597,21 +598,25 @@ void uniVangPrepare(void){
 #ifdef ALL_ITEM_IN_SHOP
 			for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item( i );
 #else
-
-			switch(i){
-			case UVS_ITEM_TYPE::COPTE_RIG:
-				WorldTable[2] -> generate_item( i );
-				break;
-			case UVS_ITEM_TYPE::CROT_RIG:
-				WorldTable[0] -> generate_item( i );
-				break;
-			case UVS_ITEM_TYPE::CUTTE_RIG:
-				WorldTable[1] -> generate_item( i );
-				break;
-			case UVS_ITEM_TYPE::RADAR_DEVICE:
-				WorldTable[RND(3)] -> generate_item( i );
-				break;
-			}//  end switch
+			if (NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"wiring")==0) {
+                		for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item(i);
+			}
+			else {
+				switch(i){
+					case UVS_ITEM_TYPE::COPTE_RIG:
+						WorldTable[2] -> generate_item( i );
+						break;
+					case UVS_ITEM_TYPE::CROT_RIG:
+						WorldTable[0] -> generate_item( i );
+						break;
+					case UVS_ITEM_TYPE::CUTTE_RIG:
+						WorldTable[1] -> generate_item( i );
+						break;
+					case UVS_ITEM_TYPE::RADAR_DEVICE:
+						WorldTable[RND(3)] -> generate_item( i );
+						break;
+				}//  end switch
+			}
 #endif
 		} else
 			for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item( i );
