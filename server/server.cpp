@@ -836,6 +836,7 @@ void World::process_set_position(Player *player) {
 	Player *p = current_players.first();
 	while (p) {
 		if (p != player)
+		{
 			if (check_visibility(p, player)) {
 				// All's inventories to Me
 				obj = p->inventory.first();
@@ -859,6 +860,7 @@ void World::process_set_position(Player *player) {
 				p->code_queue.put(Event(PLAYERS_POSITION, player));
 				send_position = 2;
 			}
+		}
 		p = p->next_alt;
 	}
 	if (send_position == 2)
