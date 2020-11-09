@@ -378,7 +378,7 @@ inline void XQueue<Type>::clear()
 template <class Type>
 inline int XQueue<Type>::tell()
 {
-	return size + head - tail & size - 1;
+	return (size + head - tail) & (size - 1);
 }
 
 template <class Type>

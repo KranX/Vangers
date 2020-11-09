@@ -68,6 +68,7 @@ add_definitions(-D_USE_MATH_DEFINES)
 
 add_compile_options(-Werror=shift-negative-value)
 add_compile_options(-Werror=dangling-else)
+add_compile_options(-Werror=parentheses)
 
 # subdirs
 ADD_SUBDIRECTORY("src")
