@@ -8338,8 +8338,7 @@ void CompasObject::Open(void)
 				p->Data.SensorT = FindSensor(p->Name);
 				break;
 		};
-		if(!p->Data.SensorT)
-			ErrH.Abort("Error in Compas Target Open");
+		//if(!p->Data.SensorT) ErrH.Abort("Error in Compas Target Open");
 		p = p->Next;
 	};
 };
