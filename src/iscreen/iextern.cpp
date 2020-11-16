@@ -1766,6 +1766,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"escape")==0) value = 999999;
 			if(strcmp(game_name,"bullet run")==0) value = 999999;
 			if(strcmp(game_name,"raffa-run-sim")==0) value = 4000;
+			if(strcmp(game_name,"tankacide-run")==0) value = 999999;
             my_server_data.Passembloss.InitialCash = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
@@ -1787,6 +1788,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"escape")==0) value = 1;
 			if(strcmp(game_name,"bullet run")==0) value = 0;
 			if(strcmp(game_name,"raffa-run-sim")==0) value = 0;
+			if(strcmp(game_name,"tankacide-run")==0) value = 0;
             my_server_data.Passembloss.ArtefactsUsing = value;
 
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
@@ -1809,27 +1811,29 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"escape")==0) value = 1;
 			if(strcmp(game_name,"bullet run")==0) value = 1;
 			if(strcmp(game_name,"raffa-run-sim")==0) value = 0;
+			if(strcmp(game_name,"tankacide-run")==0) value = 0;
             my_server_data.Passembloss.InEscaveTime = value;
       
             value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
             if(strcmp(game_name,"travel")==0) value = 17;
             if(strcmp(game_name,"necrally")==0) value = 51;
             if(strcmp(game_name,"aveslom")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*10) + 1;
-			if(strcmp(game_name,"satinan")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
+			if(strcmp(game_name,"satinan")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
 			if(strcmp(game_name,"stad3la")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*3) + 1;
 			if(strcmp(game_name,"ultra pass")==0) value = 999;
 			if(strcmp(game_name,"xivepass")==0) value = 8;
 			if(strcmp(game_name,"razminka")==0) value = 10;
-			if(strcmp(game_name,"huntage-sim")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
-			if(strcmp(game_name,"shutle fostral")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*22) + 0;
-			if(strcmp(game_name,"lens-one")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
-			if(strcmp(game_name,"lens-team")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
+			if(strcmp(game_name,"huntage-sim")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
+			if(strcmp(game_name,"shutle fostral")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*22;
+			if(strcmp(game_name,"lens-one")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
+			if(strcmp(game_name,"lens-team")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
 			if(strcmp(game_name,"vozvrat")==0) value = 3;
-			if(strcmp(game_name,"among vangers")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*1) + 1;
+			if(strcmp(game_name,"among vangers")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
 			if(strcmp(game_name,"eleerection-sim")==0) value = 1;
 			if(strcmp(game_name,"escape")==0) value = 1;
 			if(strcmp(game_name,"ishod")==0) value = 1;
 			if(strcmp(game_name,"bullet run")==0) value = 34;
+			if(strcmp(game_name,"tankacide-run")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
             my_server_data.Passembloss.CheckpointsNumber = value;
 
             time(&tm);
@@ -1854,6 +1858,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"eleerection-sim")==0) value = 1;
 			if(strcmp(game_name,"escape")==0) value = 3;
 			if(strcmp(game_name,"bullet run")==0) value = 3;
+			if(strcmp(game_name,"tankacide-run")==0) value = 0;
             my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;

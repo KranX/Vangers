@@ -4253,6 +4253,9 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 	if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 11 && strcmp(game_name,"mechoxes")==0) {
     aScrDisp->send_event(EV_TELEPORT, 11);
 }
+	if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 8 && strcmp(game_name,"tankacide-run")==0) {
+    aScrDisp->send_event(EV_TELEPORT, 8);
+}
 	flags &= ~AS_ISCREEN;
 	if(iscr_iP) iscr_iP -> finit();
 

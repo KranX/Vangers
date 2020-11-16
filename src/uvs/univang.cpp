@@ -10383,6 +10383,7 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				else if (strcmp(game_name,"new soup")==0) pm -> type = 0;
 				else if (strcmp(game_name,"mechoxes")==0) pm -> type = 0;
 				else if (strcmp(game_name,"bullet run")==0) pm -> type = 10;
+				else if (strcmp(game_name,"tankacide-run")==0) pm -> type = 5;
 				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
 				if (!Gamer -> Pmechos)

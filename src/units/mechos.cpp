@@ -13780,6 +13780,11 @@ char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 			y = 1760;
 			return;
 }
+		if (NetworkON && strcmp(game_name,"tankacide-run")==0 && my_server_data.GameType == 2) {
+			x = 945;
+			y = 1760;
+			return;
+}
 		if (NetworkON && strcmp(game_name,"escape")==0 && my_server_data.GameType == 2) {
 			x = 975;
 			y = 620;
