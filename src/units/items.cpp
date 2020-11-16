@@ -4009,22 +4009,23 @@ void GloryPlace::Init(int ind)
 		switch (ind) {
 			case 0:	R_curr.x = 945;    R_curr.y = 1760; World = WORLD_GLORX;	break;
 			default:
-			case 1:
 				switch (ind % 2) {
-					case  0:	R_curr.x =  945;	R_curr.y = 1760;	break;
-				} else {
-			case 2:
-					switch(RND(10)) {
-						case  0:	R_curr.x = 1322;	R_curr.y = 1262;	break;
-						case  1:	R_curr.x = 1572;	R_curr.y = 1511;	break;
-						case  2:	R_curr.x = 1625;	R_curr.y = 1848;	break;
-						case  3:	R_curr.x = 1464;	R_curr.y =  125;	break;
-						case  4:	R_curr.x = 1148;	R_curr.y =  292;	break;
-						case  5:	R_curr.x =  785;	R_curr.y =  236;	break;
-						case  6:	R_curr.x =  541;	R_curr.y = 2035;	break;
-						case  7:	R_curr.x =  485;	R_curr.y = 1689;	break;
-						case  8:	R_curr.x =  644;	R_curr.y = 1377;	break;
-						case  9:	R_curr.x =  964;	R_curr.y = 1189;	break;
+					case  0:	
+						switch(RND(10)) {
+							case  0:	R_curr.x = 1322;	R_curr.y = 1262;	break;
+							case  1:	R_curr.x = 1572;	R_curr.y = 1511;	break;
+							case  2:	R_curr.x = 1625;	R_curr.y = 1848;	break;
+							case  3:	R_curr.x = 1464;	R_curr.y =  125;	break;
+							case  4:	R_curr.x = 1148;	R_curr.y =  292;	break;
+							case  5:	R_curr.x =  785;	R_curr.y =  236;	break;
+							case  6:	R_curr.x =  541;	R_curr.y = 2035;	break;
+							case  7:	R_curr.x =  485;	R_curr.y = 1689;	break;
+							case  8:	R_curr.x =  644;	R_curr.y = 1377;	break;
+							case  9:	R_curr.x =  964;	R_curr.y = 1189;	break;
+						}
+						break;
+					case 1:		R_curr.x =  945;	R_curr.y = 1760;	break;
+					
 				}
 				break;
 		}
