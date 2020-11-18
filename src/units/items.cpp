@@ -3665,7 +3665,7 @@ void GloryPlace::Init(int ind)
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "travel") == 0) {
 		World = WORLD_FOSTRAL;
 		switch (ind) {
-		case  0:	R_curr.x =  257;	R_curr.y = 1227;	break; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
+		case  0:	R_curr.x =  257;	R_curr.y = 1227;	break;
 		case  1:	R_curr.x = 1640;	R_curr.y = 9128;	World = WORLD_GLORX;	break;
 		case  2:	R_curr.x = 1579;	R_curr.y = 2233;	World = WORLD_GLORX;	break;
 		case  3:	R_curr.x =  813;	R_curr.y =14586;	World = WORLD_GLORX;	break;
@@ -3870,8 +3870,8 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 	
-	//razminka
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "razminka") == 0) {
+	//razminka plus
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "razminka plus") == 0) {
 		World = WORLD_GLORX;
 		switch (ind) {
 			case  0:	R_curr.x =  625;	R_curr.y = 4386;	break;
@@ -4003,35 +4003,6 @@ void GloryPlace::Init(int ind)
 		return;
 	}
 		
-	//tankacide-run
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "tankacide-run")==0) {
-		World = WORLD_HMOK;
-		switch (ind) {
-			case 0:	R_curr.x = 945;    R_curr.y = 1760; World = WORLD_GLORX;	break;
-			default:
-				switch (ind % 2) {
-					case  0:	
-						switch(RND(10)) {
-							case  0:	R_curr.x = 1322;	R_curr.y = 1262;	break;
-							case  1:	R_curr.x = 1572;	R_curr.y = 1511;	break;
-							case  2:	R_curr.x = 1625;	R_curr.y = 1848;	break;
-							case  3:	R_curr.x = 1464;	R_curr.y =  125;	break;
-							case  4:	R_curr.x = 1148;	R_curr.y =  292;	break;
-							case  5:	R_curr.x =  785;	R_curr.y =  236;	break;
-							case  6:	R_curr.x =  541;	R_curr.y = 2035;	break;
-							case  7:	R_curr.x =  485;	R_curr.y = 1689;	break;
-							case  8:	R_curr.x =  644;	R_curr.y = 1377;	break;
-							case  9:	R_curr.x =  964;	R_curr.y = 1189;	break;
-						}
-						break;
-					case 1:		R_curr.x =  945;	R_curr.y = 1760;	break;
-					
-				}
-				break;
-		}
-		return;
-	}
-	
 	//among vangers
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "among vangers")==0) {
 		switch (ind) {

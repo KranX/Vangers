@@ -1754,7 +1754,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"stad3la")==0) value = 999999;
 			if(strcmp(game_name,"ultra pass")==0) value = 999999;
 			if(strcmp(game_name,"xivepass")==0) value = 999999;
-			if(strcmp(game_name,"razminka")==0) value = 999999;
+			if(strcmp(game_name,"razminka plus")==0) value = 999999;
 			if(strcmp(game_name,"huntage-sim")==0) value = 999999;
 			if(strcmp(game_name,"shutle fostral")==0) value = 999999;
 			if(strcmp(game_name,"speed konoval")==0) value = 10000;
@@ -1778,7 +1778,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"stad3la")==0) value = 0;
 			if(strcmp(game_name,"ultra pass")==0) value = 0;
 			if(strcmp(game_name,"xivepass")==0) value = 0;
-			if(strcmp(game_name,"razminka")==0) value = 0;
+			if(strcmp(game_name,"razminka plus")==0) value = 0;
 			if(strcmp(game_name,"huntage-sim")==0) value = 0;
 			if(strcmp(game_name,"shutle fostral")==0) value = 0;
 			if(strcmp(game_name,"lens-one")==0) value = 0;
@@ -1800,7 +1800,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"stad3la")==0) value = 1;
 			if(strcmp(game_name,"ultra pass")==0) value = 3;
 			if(strcmp(game_name,"xivepass")==0) value = 2;
-			if(strcmp(game_name,"razminka")==0) value = 3;
+			if(strcmp(game_name,"razminka plus")==0) value = 3;
 			if(strcmp(game_name,"huntage-sim")==0) value = 3;
 			if(strcmp(game_name,"shutle fostral")==0) value = 2;
 			if(strcmp(game_name,"speed konoval")==0) value = 1;
@@ -1822,7 +1822,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"stad3la")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*3) + 1;
 			if(strcmp(game_name,"ultra pass")==0) value = 999;
 			if(strcmp(game_name,"xivepass")==0) value = 8;
-			if(strcmp(game_name,"razminka")==0) value = 10;
+			if(strcmp(game_name,"razminka plus")==0) value = 10;
 			if(strcmp(game_name,"huntage-sim")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
 			if(strcmp(game_name,"shutle fostral")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*22;
 			if(strcmp(game_name,"lens-one")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
@@ -1848,7 +1848,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"stad3la")==0) value = 2;
 			if(strcmp(game_name,"ultra pass")==0) value = 2;
 			if(strcmp(game_name,"xivepass")==0) value = 2;
-			if(strcmp(game_name,"razminka")==0) value = 2;
+			if(strcmp(game_name,"razminka plus")==0) value = 2;
 			if(strcmp(game_name,"huntage-sim")==0) value = 2;
 			if(strcmp(game_name,"shutle fostral")==0) value = 1;
 			if(strcmp(game_name,"lens-one")==0) value = 1;
