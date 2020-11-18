@@ -4253,7 +4253,7 @@ void actIntDispatcher::i_finit(void)
 	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 11 && strcmp(game_name,"mechoxes")==0) {
     		aScrDisp->send_event(EV_TELEPORT, 11);
 	}
-	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 8 && strcmp(game_name,"tankacide-run")==0) {
+	else if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 8 && strcmp(game_name,"tankacide-run")==0) {
     		aScrDisp->send_event(EV_TELEPORT, 8);
 	}
 	flags &= ~AS_ISCREEN;

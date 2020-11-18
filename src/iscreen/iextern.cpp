@@ -1858,7 +1858,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"eleerection-sim")==0) value = 1;
 			if(strcmp(game_name,"escape")==0) value = 3;
 			if(strcmp(game_name,"bullet run")==0) value = 3;
-			if(strcmp(game_name,"tankacide-run")==0) value = 0;
+			if(strcmp(game_name,"tankacide-run")==0) value = 2;
             		my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;
