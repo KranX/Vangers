@@ -184,9 +184,6 @@ int XSocket::send(const char *buffer, int size) {
 	if (!tcpSock)
 		return 0;
 
-	if (!SDLNet_SocketReady(tcpSock)) {
-		return 0;
-	}
 	int status = SDLNet_TCP_Send(tcpSock, buffer, size);
 	if (status < size) {
 		XSOCKET_ERROR("TCP send failed", SDLNet_GetError()); // TODO: close socket?
