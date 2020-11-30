@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master, M4D ]
   pull_request:
-    branches: [ master, 60fps, hd_v2 ]
+    branches: [ master, 60fps, M4D ]
 
 jobs:
   build:
