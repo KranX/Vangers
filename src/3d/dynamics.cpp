@@ -63,9 +63,9 @@ extern iScreenOption** iScrOpt;
 #define MIDDLE_LEVEL_PREFER 	       8
 
 
-#define LOW_LEVEL(p)	((unsigned char*)((uintptr_t)p & ~1))
-#define HIGH_LEVEL(p)	((unsigned char*)((uintptr_t)p | 1))
-#define GET_THICKNESS(p) ((GET_DELTA(*HIGH_LEVEL(p + H_SIZE)) + (GET_DELTA(*LOW_LEVEL(p + H_SIZE)) << 2) + 0) << DELTA_SHIFT)
+#define LOW_LEVEL(p)	((unsigned char*)((uintptr_t)(p) & ~1))
+#define HIGH_LEVEL(p)	((unsigned char*)((uintptr_t)(p) | 1))
+#define GET_THICKNESS(p) ((GET_DELTA(*HIGH_LEVEL((p) + H_SIZE)) + (GET_DELTA(*LOW_LEVEL((p) + H_SIZE)) << 2) + 0) << DELTA_SHIFT)
 #define GET_THICKNESS_ATTR(la,ha) (GET_DELTA(ha) + (GET_DELTA(la) << 2) + 1 << DELTA_SHIFT)
 #define BREAKABLE_TERRAIN(prop)		(GET_DESTROY_TERRAIN(GET_TERRAIN(prop)) > 10)
 #define GET_MIDDLE_HIGHT(lh,uh)		(uh - lh > 130 ? lh + 110 : lh + 48)

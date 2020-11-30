@@ -186,7 +186,7 @@ int Game::quant() {
 		work_log += p->receive();
 		if (!p->is_alive()) {
 			Player *p_next = p->next;
-			used_players_IDs &= ~(1 << p->ID - 1);
+			used_players_IDs &= ~(1 << (p->ID - 1));
 			detach_player(p);
 			if (p->status == GAMING_STATUS) {
 				p->status = FINISHED_STATUS;
@@ -836,6 +836,7 @@ void World::process_set_position(Player *player) {
 	Player *p = current_players.first();
 	while (p) {
 		if (p != player)
+		{
 			if (check_visibility(p, player)) {
 				// All's inventories to Me
 				obj = p->inventory.first();
@@ -859,6 +860,7 @@ void World::process_set_position(Player *player) {
 				p->code_queue.put(Event(PLAYERS_POSITION, player));
 				send_position = 2;
 			}
+		}
 		p = p->next_alt;
 	}
 	if (send_position == 2)
@@ -2018,7 +2020,7 @@ void Server::add_rating_data(Player *player, int MP_game) {
 	float rating = p->rating;
 	int counter = 0;
 	RatingData *pp = rating_list.first();
-	while (pp && (pp->MP_game < MP_game || pp->MP_game == MP_game && pp->rating > rating)) {
+	while (pp && (pp->MP_game < MP_game || (pp->MP_game == MP_game && pp->rating > rating))) {
 		if (pp->MP_game == MP_game)
 			if (counter++ > 20) {
 				rating_threshoulds[MP_game] = pp->rating;
