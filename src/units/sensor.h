@@ -68,8 +68,6 @@ struct SensorDataType : StaticObject
 	void Touch(GeneralObject* obj);	
 
 	void SaveSensor(XStream& out);
-	
-	void CreateMovableSensor(int ind = 0);
 };
 
 struct EngineModeList

@@ -1696,7 +1696,6 @@ void VLload(void)
 		ff.read(sign,strlen(VLCsign[2]));
 		if(memcmp(sign,VLCsign[2],strlen(VLCsign[2]))) ErrH.Abort(errm);
 		ff > SnsTableSize;
-		SnsTableSize = SnsTableSize + 1;
 /*#ifndef _NT
 		SnsTableSize = 0;
 #endif*/
@@ -1707,13 +1706,10 @@ void VLload(void)
 			SnsTable[i].load(ff);
 			SnsTable[i].link();
 		};
-		
-		SensorObjectData[SnsTableSize-1] = new SensorDataType;
-		SensorObjectData[SnsTableSize-1]->CreateMovableSensor(SnsTableSize-1);
 #else
 //#ifdef _NT	
 		SensorObjectData = new SensorDataType*[SnsTableSize];
-		for(i = 0;i < SnsTableSize-1;i++){
+		for(i = 0;i < SnsTableSize;i++){
 			SensorObjectData[i] = new SensorDataType;
 			SensorObjectData[i]->CreateSensor(ff,i);
 		};

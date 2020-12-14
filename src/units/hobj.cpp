@@ -41,7 +41,6 @@
 #include "../sound/hsound.h"
 #include "../palette.h"
 #include "magnum.h"
-#include "../ai.h
 
 const int TOUCH_SHIFT = 11;
 
@@ -608,8 +607,6 @@ void GeneralSystemOpen(void)
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("F2W"),rCmpPassWeexow);
 					if(GamerResult.earth_unable)
 						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("PASS83"),rCmpPassEarth);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 				case WORLD_GLORX:
 					AddTarget2Compas(CMP_TARGET_SPOT,(void*)("Ogorod"),rCmpOgorod);
@@ -625,8 +622,6 @@ void GeneralSystemOpen(void)
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate02"),rCmpRepair2);
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("FireUpdate01"),rCmpGhOrb);
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("KeyUpdate01"),rCmpSpiral);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 				case WORLD_NECROSS:
 					AddTarget2Compas(CMP_TARGET_SPOT,(void*)("B-Zone"),rCmpBZone);
@@ -638,40 +633,26 @@ void GeneralSystemOpen(void)
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate01"),rCmpRepair);
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("KeyUpdate01"),rCmpSpiral);
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("RandomUpdate01"),rCmpBroken);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 				case WORLD_XPLO:
 					AddTarget2Compas(CMP_TARGET_SPOT,(void*)("Spobs"),rCmpSpobs);
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("X2G"),rCmpPassGlorx);
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("X2T"),rCmpPassThreall);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 				case WORLD_KHOX:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("K2G"),rCmpPassGlorx);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 				case WORLD_BOOZEENA:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("B2N"),rCmpPassNecross);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 				case WORLD_WEEXOW:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("W2F"),rCmpPassFostral);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 				case WORLD_THREALL:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("T2X"),rCmpPassXplo);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 				case WORLD_ARKONOY:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("A2N"),rCmpPassNecross);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),rCmpBotCheck);
 					break;
 			};
 		}else{
@@ -690,8 +671,6 @@ void GeneralSystemOpen(void)
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("F2W"),eCmpPassWeexow);
 					if(GamerResult.earth_unable)
 						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("PASS83"),eCmpPassEarth);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 				case WORLD_GLORX:
 					AddTarget2Compas(CMP_TARGET_SPOT,(void*)("Ogorod"),eCmpOgorod);
@@ -707,8 +686,6 @@ void GeneralSystemOpen(void)
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate02"),eCmpRepair2);
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("FireUpdate01"),eCmpGhOrb);
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("KeyUpdate01"),eCmpSpiral);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 				case WORLD_NECROSS:
 					AddTarget2Compas(CMP_TARGET_SPOT,(void*)("B-Zone"),eCmpBZone);
@@ -720,40 +697,26 @@ void GeneralSystemOpen(void)
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate01"),eCmpRepair);
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("KeyUpdate01"),eCmpSpiral);
 					AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("RandomUpdate01"),eCmpBroken);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 				case WORLD_XPLO:
 					AddTarget2Compas(CMP_TARGET_SPOT,(void*)("Spobs"),eCmpSpobs);
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("X2G"),eCmpPassGlorx);
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("X2T"),eCmpPassThreall);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 				case WORLD_KHOX:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("K2G"),eCmpPassGlorx);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 				case WORLD_BOOZEENA:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("B2N"),eCmpPassNecross);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 				case WORLD_WEEXOW:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("W2F"),eCmpPassFostral);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 				case WORLD_THREALL:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("T2X"),eCmpPassXplo);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 				case WORLD_ARKONOY:
 					AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("A2N"),eCmpPassNecross	);
-					if (NetworkON && (ai() != PLAYER))
-						AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("MovableSensor"),eCmpBotCheck);
 					break;
 			};
 /*			switch(CurrentWorld){

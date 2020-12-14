@@ -46,25 +46,6 @@
 #include "../iscreen/iscreen.h"
 #include "../network.h"
 
-#include "../3d/3dgraph.h"
-#include "../3d/3dobject.h"
-#include "../units/hobj.h"
-#include "../units/track.h"
-#include "../units/items.h"
-#include "../terra/world.h"
-#include "../dast/poly3d.h"
-#include "../backg.h"
-#include "../particle/light.h"
-#include "../units/mechos.h"
-
-#include "../ai.h"
-#include "../units/magnum.h"
-#include "../particle/particle.h"
-#include "../terra/render.h"
-#include "../units/moveland.h"
-#include "../units/sensor.h"
-#include "../actint/actint.h"
-
 extern iScreenOption** iScrOpt;
 
 const int TABUTASK_BAD = ACI_TABUTASK_FAILED;
@@ -91,7 +72,6 @@ extern int NetworkON;
 extern NetRndType NetRnd;
 extern int ChangeArmor;
 extern int dgAbortStatus;
-extern actIntDispatcher* aScrDisp;
 
 void LoadingMessage(int flush = 0);
 void ChangeVanger(void);
@@ -1043,9 +1023,6 @@ void uvsBunch::Check(char* subj){
 
 void uvsContimer::Quant(void){
 	counter++;
-	uvsPassage* pass;
-	CompasTargetType* p;
-	char* passName;
 	if(++sec == 60){
 		sec = 0;
 		listElem* l = BunchTail;
@@ -1085,81 +1062,6 @@ void uvsContimer::Quant(void){
 		}
 	}
 }
-
-		if (NetworkON) {
-			if (CurrentWorld == -1) {
-			} else if (ActD.Active) {
-				if (my_server_data.GameType == PASSEMBLOSS && UsedCheckNum < GloryPlaceNum) {
-					if (((ActD.Active->MaxPassageCount >= 2 && ActD.Active->PassageCount < 2) && (FindSensor("KeyUpdate1") || FindSensor("KeyUpdate01")))
-					|| ((ActD.Active->MaxPassageCount < 2 && ActD.Active->PassageCount == 0) && (FindSensor("KeyUpdate1") || FindSensor("KeyUpdate01")))) {
-						SensorDataType *spiralStation = FindSensor("KeyUpdate1");
-						if (!spiralStation) spiralStation = FindSensor("KeyUpdate01");
-						
-						if (lang() == RUSSIAN) {
-							SelectCompasTarget(rCmpSpiral);
-						} else {
-							SelectCompasTarget(eCmpSpiral);
-						}
-					} else {
-						if (GloryPlaceData[UsedCheckNum].World == CurrentWorld) {
-							FindSensor("MovableSensor")->R_curr.x = GloryPlaceData[UsedCheckNum].R_curr.x;
-							FindSensor("MovableSensor")->R_curr.y = GloryPlaceData[UsedCheckNum].R_curr.y;
-							if (lang() == RUSSIAN) {
-								SelectCompasTarget(rCmpBotCheck);
-							} else {
-								SelectCompasTarget(eCmpBotCheck);
-							}
-						} else {
-							pass = GetPassage(CurrentWorld,GloryPlaceData[UsedCheckNum].World);
-							passName = pass->GetName();
-							if (lang() == RUSSIAN) {
-								if (strcmp(passName,"F2G")==0) SelectCompasTarget(rCmpPassGlorx);
-								if (strcmp(passName,"F2W")==0) SelectCompasTarget(rCmpPassWeexow);
-								if (strcmp(passName,"G2F")==0) SelectCompasTarget(rCmpPassFostral);
-								if (strcmp(passName,"G2N")==0) SelectCompasTarget(rCmpPassNecross);
-								if (strcmp(passName,"G2X")==0) SelectCompasTarget(rCmpPassXplo);
-								if (strcmp(passName,"G2K")==0) SelectCompasTarget(rCmpPassKhox);
-								if (strcmp(passName,"N2G")==0) SelectCompasTarget(rCmpPassGlorx);
-								if (strcmp(passName,"N2B")==0) SelectCompasTarget(rCmpPassBoozeena);
-								if (strcmp(passName,"N2A")==0) SelectCompasTarget(rCmpPassArk);
-								if (strcmp(passName,"X2G")==0) SelectCompasTarget(rCmpPassGlorx);
-								if (strcmp(passName,"X2T")==0) SelectCompasTarget(rCmpPassThreall);
-								if (strcmp(passName,"W2F")==0) SelectCompasTarget(rCmpPassFostral);
-								if (strcmp(passName,"T2X")==0) SelectCompasTarget(rCmpPassXplo);
-								if (strcmp(passName,"K2G")==0) SelectCompasTarget(rCmpPassGlorx);
-								if (strcmp(passName,"B2N")==0) SelectCompasTarget(rCmpPassNecross);
-								if (strcmp(passName,"A2N")==0) SelectCompasTarget(rCmpPassNecross);
-							} else {
-								if (strcmp(passName,"F2G")==0) SelectCompasTarget(eCmpPassGlorx);
-								if (strcmp(passName,"F2W")==0) SelectCompasTarget(eCmpPassWeexow);
-								if (strcmp(passName,"G2F")==0) SelectCompasTarget(eCmpPassFostral);
-								if (strcmp(passName,"G2N")==0) SelectCompasTarget(eCmpPassNecross);
-								if (strcmp(passName,"G2X")==0) SelectCompasTarget(eCmpPassXplo);
-								if (strcmp(passName,"G2K")==0) SelectCompasTarget(eCmpPassKhox);
-								if (strcmp(passName,"N2G")==0) SelectCompasTarget(eCmpPassGlorx);
-								if (strcmp(passName,"N2B")==0) SelectCompasTarget(eCmpPassBoozeena);
-								if (strcmp(passName,"N2A")==0) SelectCompasTarget(eCmpPassArk);
-								if (strcmp(passName,"X2G")==0) SelectCompasTarget(eCmpPassGlorx);
-								if (strcmp(passName,"X2T")==0) SelectCompasTarget(eCmpPassThreall);
-								if (strcmp(passName,"W2F")==0) SelectCompasTarget(eCmpPassFostral);
-								if (strcmp(passName,"T2X")==0) SelectCompasTarget(eCmpPassXplo);
-								if (strcmp(passName,"K2G")==0) SelectCompasTarget(eCmpPassGlorx);
-								if (strcmp(passName,"B2N")==0) SelectCompasTarget(eCmpPassNecross);
-								if (strcmp(passName,"A2N")==0) SelectCompasTarget(eCmpPassNecross);
-							}
-							if ((abs(getDistX(ActD.Active->R_curr.x,pass->pos_x))) < 100
-							&& (abs(getDistY(ActD.Active->R_curr.y,pass->pos_y))) < 100 && worldIsAboutToChange == 0) {
-								worldIsAboutToChange = 1;
-						}
-					}
-				} else if (my_server_data.GameType == MECHOSOMA) {
-					//
-				} else if (my_server_data.GameType == VAN_WAR) {
-					//
-				}
-			}
-			//aciRefreshTargetsMenu();
-		}
 
 char* uvsContimer::GetTime(void){
 	sTime.init();

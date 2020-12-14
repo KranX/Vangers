@@ -3581,13 +3581,7 @@ void VangerUnit::DrawQuant(void)
 
 			if(dynamic_state & TOUCH_OF_WATER){
 				if(CurrentWorld == WORLD_THREALL){
-					if (NetworkON) {
-						if (ai() != PLAYER) {
-							BulletCollision((MaxEnergy + MaxArmor) / 300,NULL);
-						} else {
-							BulletCollision((MaxEnergy + MaxArmor) / 150,NULL);
-						}
-					}
+					if(NetworkON) BulletCollision((MaxEnergy + MaxArmor) / 150,NULL);
 					else BulletCollision((MaxEnergy + MaxArmor) / 20,NULL);
 				}else{
 					if(!(dynamic_state & TOUCH_OF_AIR)){
@@ -4033,10 +4027,9 @@ void VangerUnit::Quant(void)
 				else SpeedDir = 0;
 				HideAction();
 			};
-		};
-		if ((!(Status & SOBJ_AUTOMAT)) || ai() != PLAYER) {
+		}else{
 			if(aciWorldIndex != -1){
-				//if((!(Status & SOBJ_AUTOMAT)) || ai() != PLAYER){
+				if(!(Status & SOBJ_AUTOMAT)){
 					uvsPoint -> Pworld = WorldTable[aciWorldIndex];				
 					EffD.CreateRingOfLord(EFF_PARTICLE06,R_curr + Vector(0,0,80),radius*2,200,111,111,radius << 7);
 		//			ExternalMode = EXTERNAL_MODE_SIGN_IN;
@@ -4053,12 +4046,12 @@ void VangerUnit::Quant(void)
 					StopCDTRACK();
 					NetFunction83Time = NetGlobalTime;
 					ShellUpdateFlag = 1;
-				//};
+				};
 				aciWorldIndex = -1;
 			};
 
 			if(aciTeleportEvent != 0){
-				//if((!(Status & SOBJ_AUTOMAT)) || ai() != PLAYER){
+				if(!(Status & SOBJ_AUTOMAT)){
 					ExternalTime = CHANGE_VANGER_TIME;
 					ExternalLock = 1;
 					ExternalObject = NULL;
@@ -4071,7 +4064,7 @@ void VangerUnit::Quant(void)
 					for(i = 0;i < 5;i++)
 						EffD.CreateParticleGenerator(R_curr,R_curr,Vector(5,0,0)*DBM((int)(RND(PI*2)),Z_AXIS));
 					SOUND_BOOT_START();
-				//};
+				};
 				aciTeleportEvent = 0;
 			};
 
@@ -4794,8 +4787,7 @@ void VangerUnit::InitEnvironment(void)
 
 void VangerUnit::AutomaticTouchSensor(SensorDataType* p) //znfo !!!
 {
-	int etype,i;
-	TiristorEngine* t;
+	int etype;
 	DoorEngine* d;
 
 	if(p->Enable){
@@ -4806,77 +4798,17 @@ void VangerUnit::AutomaticTouchSensor(SensorDataType* p) //znfo !!!
 			case SensorTypeList::PASSAGE:
 			case SensorTypeList::TRAIN:
 			case SensorTypeList::TRAP:
-				if (ai() != PLAYER) {
-					if(ActD.PassageTouchEnable) ActD.PassageTouchEnable = MAX_PASSAGE_DELAY;
-					if(!BeebonationFlag){
-						if(ExternalSensor){
-							if(ExternalSensor == ExternalObject && ExternalObject != p) ExternalSensor = p;
-						}else ExternalSensor = p;
-					};
-				} else {
-					if(!(Status & SOBJ_ACTIVE)){
-						if(ExternalSensor){
-							if(ExternalSensor == ExternalObject && ExternalObject != p) ExternalSensor = p;
-						}else ExternalSensor = p;
-					};
-				}
+				if(!(Status & SOBJ_ACTIVE)){
+					if(ExternalSensor){
+						if(ExternalSensor == ExternalObject && ExternalObject != p) ExternalSensor = p;
+					}else ExternalSensor = p;
+				};
 				break;
 			case SensorTypeList::IMPULSE:
 				impulse(p->vData,p->Power,0);				
 				break;
 			case SensorTypeList::SENSOR:
-				if (ai() != PLAYER) {
-					if(DoorFlag){
-						if(p->Owner){
-							if(p->Owner->Type == EngineTypeList::DOOR && !(NetworkON && my_server_data.GameType == VAN_WAR && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"arena")==0)){
-								d = (DoorEngine*)(p->Owner);
-								if(d->Luck > 0){
-									if((int)(RND(d->Luck)) <= aiCutLuck){
-										DoorFlag = 0;
-										if(d->Mode == EngineModeList::OPEN)
-											d->CloseDoor();
-										else
-											d->OpenDoor();
-									}else{
-										if(d->Luck > 0){
-											for(i = 0;i < d->NumSensor;i++)
-												d->SensorLink[i]->Enable = 0;
-										};
-									};
-								}else{
-									if(d->Luck >= -aiCutLuck){
-										DoorFlag = 0;
-										if(d->Mode == EngineModeList::OPEN)
-											d->CloseDoor();
-										else
-											d->OpenDoor();
-									};
-								};
-							}else{
-								if(p->Owner->Type == EngineTypeList::TIRISTOR){
-									DoorFlag = 0;
-									t = (TiristorEngine*)(p->Owner);
-									if(t->Luck > 0){
-										if((int)(RND(t->Luck)) <= aiCutLuck){
-											t->OpenDoor();
-										}else{
-											if(t->Luck > 0){
-												for(i = 0;i < t->NumSensor;i++)
-													t->SensorLink[i]->Enable = 0;
-											};
-										};
-									}else{
-										if(t->Luck >= -aiCutLuck){
-											if(t->Mode != EngineModeList::OPEN){
-												t->OpenDoor();
-											};
-										};
-									};
-								};
-							};
-						};
-					};
-				} else if(!(Status & SOBJ_ACTIVE)){
+				if(!(Status & SOBJ_ACTIVE)){
 					if(p->Owner){
 						if(p->Owner->Type == EngineTypeList::DOOR){
 							d = (DoorEngine*)(p->Owner);
@@ -4905,16 +4837,7 @@ void VangerUnit::AutomaticTouchSensor(SensorDataType* p) //znfo !!!
 				break;
 			case SensorTypeList::FIRE_UPDATE:				
 				ChargeWeapon(this,ACI_GHORB_GEAR_LIGHT,1);
-				ChargeWeapon(this,ACI_GHORB_GEAR_HEAVY,1);
-				ChargeWeapon(this,ACI_VERVEMITTER,1);
-				break;
-			case SensorTypeList::KEY_UPDATE:
-				if(ai() != PLAYER) {
-					if(PassageCount < MaxPassageCount){
-						aciWorldLinksON();
-						PassageCount = MaxPassageCount;
-					};
-				}
+				ChargeWeapon(this,ACI_GHORB_GEAR_HEAVY,1);			
 				break;
 		};
 	}else{
@@ -8313,15 +8236,13 @@ void ActionDispatcher::DrawResource(void)
 
 void uvsUnitType::UseOxigenResource(void)
 {
-	if (ai() == PLAYER) {
-		if(OxigenResource > 0){
-			OxigenResource--;
-			if(ActD.Active && ActD.Active->Status & SOBJ_ACTIVE) ActD.DrawResourceValue = OxigenResource;
-		}else{
-			Armor = 0;
-			Energy = 0;
-		};
-	}
+	if(OxigenResource > 0){
+		OxigenResource--;
+		if(ActD.Active && ActD.Active->Status & SOBJ_ACTIVE) ActD.DrawResourceValue = OxigenResource;
+	}else{
+		Armor = 0;
+		Energy = 0;
+	};
 };
 
 int CheckStartJump(Object* p)
