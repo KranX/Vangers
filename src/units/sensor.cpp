@@ -38,6 +38,8 @@
 #include "effect.h"
 #include "mechos.h"
 
+#include "../ai.h"
+
 //#define SAVE_TNT_DATA
 
 const int  TNT_WAIT_TIME = 2;
@@ -686,6 +688,42 @@ void SensorDataType::CreateSensor(XStream& in,int ind)
 	in > data5;
 	in > data6;
 //	in.seek(8*sizeof(int),XS_CUR);
+
+	Owner = NULL;
+	Mode = SensorTypeList::NONE;
+	Enable = 1;
+	StaticType = StaticObjectType::SENSOR;
+
+	cycleTor(R_curr.x,R_curr.y);
+	Status = 0;
+	ID = ID_STATIC;
+	Index = 0;
+	TableIndex = ind;
+};
+
+void SensorDataType::CreateMovableSensor(int ind)
+{
+	char *sensorName;
+	sensorName = new char[strlen("MovableSensor") + 1];
+	strcpy(sensorName,"MovableSensor");
+
+	R_curr.x = 83;
+	R_curr.y = 38;
+	R_curr.z = 255;
+
+	SensorType = SensorTypeList::SENSOR;
+	radius = 0;
+	Name = sensorName;
+	Name[13] = '\0';
+
+	z0 = 0;
+	vData.x = 0;
+	vData.y = 0;
+	vData.z = 0;
+	Power = 0;
+	z1 = 0;
+	data5 = 0;
+	data6 = 0;
 
 	Owner = NULL;
 	Mode = SensorTypeList::NONE;
@@ -1847,10 +1885,18 @@ void DangerDataType::Quant(void)
 					FireWork(200,PI/4);
 					break;
 				case WORLD_THREALL:
-					if(!ActD.ThreallDestroy) FireWork(500,PI/8);
+					if (ai() != PLAYER) {
+						FireWork(1000,PI/8);
+					} else if(!ActD.ThreallDestroy) {
+						FireWork(500,PI/8);
+					}
 					break;
 				case WORLD_ARKONOY:
-					FireWork(1000,PI/6);
+					if (ai() != PLAYER) {
+						FireWork(2000,PI/6);
+					} else {
+						FireWork(1000,PI/6);
+					}
 					break;
 				case WORLD_XPLO:
 					FireWork(800,PI / 6);
