@@ -1746,6 +1746,7 @@ void DangerDataType::Quant(void)
 	int r,n,d1,d2,h;
 	WaterParticleObject* w;
 	int x,y,z,a;
+	char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 
 	//if(NetworkON) return; //zmod fixed
 
@@ -1843,13 +1844,12 @@ void DangerDataType::Quant(void)
 			break;
 		case DangerTypeList::FIRE:
 			switch(CurrentWorld){
-				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 				case WORLD_BOOZEENA:
 					FireWork(200,PI/4);
 					break;
 				case WORLD_THREALL:
 					if(!ActD.ThreallDestroy) FireWork(500,PI/8);
-					if(strcmp(game_name,"mountain king")==0)) FireWork(0,PI/0);
+					if(strcmp(game_name,"mountain king")==0) FireWork(0,PI/0);
 					break;
 				case WORLD_ARKONOY:
 					FireWork(1000,PI/6);

@@ -2,9 +2,9 @@ name: Vangers[M4D] MacOS
 
 on:
   push:
-    branches: [ master, M4D ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, 60fps, hd_v2, M4D ]
+    branches: [ master, 60fps, hd_v2 ]
 
 jobs:
   build:
