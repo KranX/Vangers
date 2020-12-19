@@ -4255,6 +4255,7 @@ void actIntDispatcher::i_finit(void)
 	}
 	else if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 8 && strcmp(game_name,"tankacide-run")==0) {
     		aScrDisp->send_event(EV_TELEPORT, 8);
+	}
 	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 7 && strcmp(game_name,"mountain king")==0) {
     		aScrDisp->send_event(EV_TELEPORT, 7);
 	}
