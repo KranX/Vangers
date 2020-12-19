@@ -13785,11 +13785,6 @@ void NetworkGetStart(char* name,int& x,int& y)
 		y = 1760;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"escape")==0 && my_server_data.GameType == 2) {
-		x = 975;
-		y = 620;
-		return;
-	}
 	else if (NetworkON && strcmp(game_name,"eleerection-sim")==0 && my_server_data.GameType == 2) {
 		x = 1960;
 		y = 1505;
@@ -13798,6 +13793,11 @@ void NetworkGetStart(char* name,int& x,int& y)
 	else if (NetworkON && strcmp(game_name,"mechoxes")==0 && my_server_data.GameType == 0) {
 		x = 1870;
 		y = 1055;
+		return;
+	}
+	else if (NetworkON && strcmp(game_name,"mountain king")==0 && my_server_data.GameType == 0) {
+		x =  283;
+		y = 1186;
 		return;
 	}
 	
