@@ -29,8 +29,6 @@
 #include "../iscreen/iscreen_options.h"
 #include "../iscreen/iscreen.h"
 #include "../network.h"
-#include "../actint/actint.h"
-extern actIntDispatcher* aScrDisp;
 
 extern iScreenOption** iScrOpt;
 
@@ -4261,45 +4259,6 @@ void actIntDispatcher::i_finit(void)
 	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 7 && strcmp(game_name,"mountain king")==0) {
     		aScrDisp->send_event(EV_TELEPORT, 7);
 	}
-	
-if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == 2) {
-    if (strcmp(name, "Podish") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 4);
-      x = 1385;
-      y = 1568;
-    }
-    else if (strcmp(name, "Incubator") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 12);
-      x = 1735;
-      y = 404;
-    }
-    else if (strcmp(name, "VigBoo") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 11);
-      x = 1976;
-      y = 1069;
-    }
-    else if (strcmp(name, "Lampasso") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 7);
-      x = 1991;
-      y =  958;
-    }
-    else if (strcmp(name, "Ogorod") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 6);
-      x = 1402;
-      y = 1812;
-    }
-    else if (strcmp(name, "ZeePa") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 1);
-      x = 1257;
-      y =  976;
-    }
-    else if (strcmp(name, "B-Zone") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 0);
-      x = 2008;
-      y = 5056;
-    }
-    return;
-  }
 	
 	flags &= ~AS_ISCREEN;
 	if(iscr_iP) iscr_iP -> finit();
