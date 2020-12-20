@@ -13805,7 +13805,7 @@ void NetworkGetStart(char* name,int& x,int& y)
 	
 if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == 2) {
     if (strcmp(name, "Podish") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 4);
+      aScrDisp->send_event(EV_TELEPORT, 0);
       x = 1385;
       y = 1568;
     }
@@ -13815,9 +13815,9 @@ if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == 2) 
       y = 404;
     }
     else if (strcmp(name, "VigBoo") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 11);
+      aScrDisp->send_event(EV_TELEPORT, 2);
       x = 1976;
-      y = 1069;
+      y = 10069;
     }
     else if (strcmp(name, "Lampasso") == 0) {
       aScrDisp->send_event(EV_TELEPORT, 7);
@@ -13835,9 +13835,9 @@ if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == 2) 
       y =  976;
     }
     else if (strcmp(name, "B-Zone") == 0) {
-      aScrDisp->send_event(EV_TELEPORT, 0);
-      x = 2008;
-      y = 5056;
+      aScrDisp->send_event(EV_TELEPORT, 11);
+      x = 1976;
+      y = 1069;
     }
     return;
   }
