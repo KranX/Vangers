@@ -4262,7 +4262,7 @@ void actIntDispatcher::i_finit(void)
     		aScrDisp->send_event(EV_TELEPORT, 7);
 	}
 	
-if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == neEby) {
+if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == 2) {
     if (strcmp(name, "Podish") == 0) {
       aScrDisp->send_event(EV_TELEPORT, 4);
       x = 1385;

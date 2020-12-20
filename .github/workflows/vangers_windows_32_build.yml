@@ -2,9 +2,9 @@ name: Vangers[M4D] Win32
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, M4D ]
   pull_request:
-    branches: [ master, 60fps ]
+    branches: [ master, 60fps, M4D ]
 
 jobs:
   build:

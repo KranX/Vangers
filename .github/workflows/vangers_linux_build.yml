@@ -2,9 +2,9 @@ name: Vangers[M4D] Linux
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, M4D ]
   pull_request:
-    branches: [ master, 60fps, hd_v2 ]
+    branches: [ master, 60fps, hd_v2, M4D ]
 
 jobs:
   build:
