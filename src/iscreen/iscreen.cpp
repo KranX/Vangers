@@ -13,6 +13,7 @@
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
 #include "../actint/mlstruct.h"
+#include "../actint/aci_scr.h"
 
 #include "../sound/hsound.h"
 
@@ -3467,20 +3468,7 @@ void iScreenDispatcher::input_string_quant(void)
 				utf = ntohs(utf);
 				code = 0xdb;
 				if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
-					if (utf >= 0xd090 && utf <= 0xd0bf) {
-						code = utf - 0xd010;
-					}
-					else if (utf >= 0xd180 && utf <= 0xd18f) {
-						code = utf - 0xd0a0;
-					}
-					else {
-						switch(utf) {
-							case 0xd081:
-								code = 0xf0; break;
-							case 0xd191:
-								code = 0xf1; break;
-						}
-					}
+					code = UTF8toCP866(utf);
 				} else {
 					code = ' ';
 				}
