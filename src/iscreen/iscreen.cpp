@@ -3425,9 +3425,7 @@ void iScreenDispatcher::input_string_quant(void)
 		SDL_Event *event = KeyBuf->get();
 		if (event->type != SDL_KEYDOWN && event->type != SDL_TEXTINPUT)
 			continue;
-		std::cout<<"type: "<<event->type<<std::endl;
 		if (event->type == SDL_KEYDOWN) {
-			std::cout<<"key: "<<event->key.keysym.sym<<std::endl;
 			if (event->key.keysym.sym == SDLK_RETURN || event->key.keysym.sym == SDLK_ESCAPE || event->key.keysym.sym == SDLK_LEFT || event->key.keysym.sym == SDLK_BACKSPACE) {
 				code = event->key.keysym.sym;
 			} else {
