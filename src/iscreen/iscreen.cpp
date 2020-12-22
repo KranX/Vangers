@@ -1,4 +1,3 @@
-
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
@@ -3402,13 +3401,12 @@ void iScreenDispatcher::init_input_string(iScreenElement* p)
 
 void iScreenDispatcher::input_string_quant(void)
 {
-	int k,sz,init_flag = 0,redraw_flag = 0,code;
+	int sz,init_flag = 0,redraw_flag = 0;
 	iListElementPtr* tmp;
 	iScreenObject* obj;
 	unsigned char* ptr = NULL;
+	unsigned char code;
 	HFont* hfnt = NULL;
-
-	const char* key_name = NULL;
 
 	switch(ActiveEl -> type){
 		case I_STRING_ELEM:
@@ -3425,104 +3423,80 @@ void iScreenDispatcher::input_string_quant(void)
 
 	while(KeyBuf -> size) {
 		SDL_Event *event = KeyBuf->get();
-		//TODO: UTF8 fix
-		if (event->type != SDL_KEYDOWN)
+		if (event->type != SDL_KEYDOWN && event->type != SDL_TEXTINPUT)
 			continue;
-		k = sdlEventToCode(event);
-
-		if(!(k & 0x1000)) {
-			if(!(ActiveEl -> flags & EL_KEY_NAME)){
-				switch(k){
-					case SDL_SCANCODE_RETURN:
-						sz = strlen((char*)ptr);
+		std::cout<<"type: "<<event->type<<std::endl;
+		if (event->type == SDL_KEYDOWN) {
+			std::cout<<"key: "<<event->key.keysym.sym<<std::endl;
+			if (event->key.keysym.sym == SDLK_RETURN || event->key.keysym.sym == SDLK_ESCAPE || event->key.keysym.sym == SDLK_LEFT || event->key.keysym.sym == SDLK_BACKSPACE) {
+				code = event->key.keysym.sym;
+			} else {
+				continue;
+			}
+			switch(event->key.keysym.sym) {
+				case SDLK_RETURN:
+					sz = strlen((char*)ptr);
+					ptr[sz - 1] = 0;
+					flags ^= SD_INPUT_STRING;
+					flags |= SD_FINISH_INPUT;
+					init_flag = 1;
+					redraw_flag = 1;
+					break;
+				case SDLK_ESCAPE:
+					strcpy((char*)ptr,BackupStr);
+					flags ^= SD_INPUT_STRING;
+					flags |= SD_FINISH_INPUT;
+					init_flag = 1;
+					redraw_flag = 1;
+					break;
+				case SDLK_LEFT:
+				case SDLK_BACKSPACE:
+					sz = strlen((char*)ptr);
+					if(sz > 1){
 						ptr[sz - 1] = 0;
-						flags ^= SD_INPUT_STRING;
-						flags |= SD_FINISH_INPUT;
+						ptr[sz - 2] = '_';
 						init_flag = 1;
 						redraw_flag = 1;
-						break;
-					case SDL_SCANCODE_ESCAPE:
-						strcpy((char*)ptr,BackupStr);
-						flags ^= SD_INPUT_STRING;
-						flags |= SD_FINISH_INPUT;
-						init_flag = 1;
-						redraw_flag = 1;
-						break;
-					case SDL_SCANCODE_LEFT:
-					case SDL_SCANCODE_BACKSPACE:
-						sz = strlen((char*)ptr);
-						if(sz > 1){
-							ptr[sz - 1] = 0;
-							ptr[sz - 2] = '_';
-							init_flag = 1;
-							redraw_flag = 1;
+					}
+					break;
+			}
+		}
+		else if (event->type == SDL_TEXTINPUT) {
+			if ((unsigned char)event->text.text[0] < 128) {
+				code = event->text.text[0];
+			} else {
+				unsigned short utf = ((unsigned short *)event->text.text)[0];
+				utf = ntohs(utf);
+				code = 0xdb;
+				if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
+					if (utf >= 0xd090 && utf <= 0xd0bf) {
+						code = utf - 0xd010;
+					}
+					else if (utf >= 0xd180 && utf <= 0xd18f) {
+						code = utf - 0xd0a0;
+					}
+					else {
+						switch(utf) {
+							case 0xd081:
+								code = 0xf0; break;
+							case 0xd191:
+								code = 0xf1; break;
 						}
-						break;
-					default:
-						if(!(ActiveEl -> flags & EL_NUMBER)){
-							code = SDL_GetKeyFromScancode((SDL_Scancode)k);
-							if(code && hfnt && code < hfnt->NumChars){
-								if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
-									break;
-								sz = strlen((char*)ptr);
-								if(sz < cur_max_input){
-									ptr[sz - 1] = code;
-									ptr[sz] = '_';
-									ptr[sz + 1] = 0;
-
-									init_flag = 1;
-									redraw_flag = 1;
-								}
-							}
-						} else {
-							code = SDL_GetKeyFromScancode((SDL_Scancode)k);
-							if(code && code >= '0' && code <= '9'){
-								if(hfnt && (hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
-									break;
-								sz = strlen((char*)ptr);
-								if(sz < cur_max_input){
-									ptr[sz - 1] = code;
-									ptr[sz] = '_';
-									ptr[sz + 1] = 0;
-
-									init_flag = 1;
-									redraw_flag = 1;
-								}
-							}
-						}
-						break;
+					}
+				} else {
+					code = ' ';
 				}
 			}
-			else {
-				switch(k){
-					case SDL_SCANCODE_ESCAPE:
-						strcpy((char*)ptr,BackupStr);
-						flags ^= SD_INPUT_STRING;
-						flags |= SD_FINISH_INPUT;
-						init_flag = 1;
-						redraw_flag = 1;
-						iScreenLastInput = k;
-						break;
-					default:
-						//NEED rewrite
-						/*if(!(k & iJOYSTICK_MASK))
-							key_name = iGetKeyNameText(k,lang());
-						else
-							key_name = iGetJoyBtnNameText(k,lang());
-						*/
-						key_name = iGetKeyNameText(k,lang());
-						if(flags & SD_INPUT_STRING && key_name){
-							if(!(ActiveEl -> flags & EL_JOYSTICK_KEY) || (k & iJOYSTICK_MASK)){
-								strcpy((char*)ptr,key_name);
-								flags ^= SD_INPUT_STRING;
-								flags |= SD_FINISH_INPUT;
-								init_flag = 1;
-								redraw_flag = 1;
-								iScreenLastInput = k;
-							}
-						}
-						break;
-				}
+			if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
+				break;
+			sz = strlen((char*)ptr);
+			if(sz < cur_max_input){
+				ptr[sz - 1] = code;
+				ptr[sz] = '_';
+				ptr[sz + 1] = 0;
+
+				init_flag = 1;
+				redraw_flag = 1;
 			}
 		}
 	}
