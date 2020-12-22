@@ -56,5 +56,5 @@
 9 1 "Palochka Return (Bad)" "2" "0" "1" "data INV_PALOCHKA > 0 data THIEF_PALOCHKA > 0" " " " " 
 4 0 "Boorawchick in Inventory" "3" "0" "1" "data INV_BOORAWCHICK > 0" "abort" "block" 
 5 0 "Mechanic Messiah in Inventory" "3" "0" "1" "data INV_MESSIAH > 0" "abort" "block" 
-5 4 "Ark-a-Znoy key" "5" "0" "0" "data TABUTASKS >= 20 key2boozeena_exist == 0" " " "key2boozeena_gift" 
+5 4 "Ark-a-Znoy key" "5" "0" "0" "data TABUTASKS >= 20 key2arkaznoy_exist == 0" " " "key2arkaznoy_gift"
 5 5 "ruBeecation warning" "5" "0" "0" "( visitW G > 0 data LUCK > 30 ) OR ( key2glorx_exist > 0 AND data LUCK > 55 )" " " " " 
