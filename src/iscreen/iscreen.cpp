@@ -17,6 +17,10 @@
 
 #include "../sound/hsound.h"
 
+#ifndef _WIN32
+#include <arpa/inet.h> // ntohl() FIXME: remove
+#endif
+
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
 #ifdef _DEBUG
