@@ -3930,11 +3930,11 @@ void iTextData::load(void)
 	int i,l = 0,num_len = 0;
 
 	fh.open(fname,XS_IN);
-	mem_heap = aciLoadPackedFile(fh,heap_size);
+//	mem_heap = aciLoadPackedFile(fh,heap_size);
 
-//	  heap_size = fh.size();
-//	  mem_heap = new char[heap_size];
-//	  fh.read(mem_heap,heap_size);
+	heap_size = fh.size();
+	mem_heap = new char[heap_size];
+	fh.read(mem_heap,heap_size);
 
 	fh.close();
 
