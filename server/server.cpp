@@ -946,20 +946,20 @@ Player::~Player() {
 }
 
 void Player::identification() {
-	char string[256] = {0};
-	static const char *request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
-	static const char *response_str = "Enter, my son, please...";
-	static const char *kill_str = "I'm sorry, darling...";
+	char string[256];
+	memset(string, 0, 256);
+	char *request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
+	char *response_str = "Enter, my son, please...";
+	char *kill_str = "I'm sorry, darling...";
 	unsigned int len;
-	if ((len = socket.receive(string, sizeof(string) - 1)) != 0) {
+	if ((len = socket.receive(string, 255)) != 0) {
 		if (!strcmp(string, request_str)) {
-			size_t stringlen = strlen(string);
 			identificated = 1;
 			if (len > strlen(request_str) + 1)
 				client_version = ((unsigned char *)string)[len - 1];
 			strcpy(string, response_str);
-			string[stringlen + 1] = SERVER_VERSION;
-			socket.send(string, stringlen + 2);
+			string[strlen(string) + 1] = SERVER_VERSION;
+			socket.send(string, strlen(string) + 2);
 			return;
 		}
 		if (!strcmp(string, kill_str))
