@@ -930,6 +930,8 @@ void ScriptFile::load_bscript(const char* fname)
 		delete[] buf;
 		binConv = new XBuffer(p1,out_sz);
 		binConvPtr = p1;
+	} else {
+		binConvPtr = buf;
 	}
 
 	delete[] s;
