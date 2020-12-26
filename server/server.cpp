@@ -951,7 +951,9 @@ void Player::identification() {
 	static const char *response_str = "Enter, my son, please...";
 	static const char *kill_str = "I'm sorry, darling...";
 	unsigned int len;
-	if ((len = socket.receive(string, sizeof(string) - 1)) != 0) {
+	// if ((len = socket.receive(string, 255)) != 0) {
+	// if ((len = socket.receive(string, sizeof(string) - 1)) != 0) {
+	if ((len = socket.receive(string, 255)) != 0) {
 		if (!strcmp(string, request_str)) {
 			size_t stringlen = strlen(string);
 			identificated = 1;
