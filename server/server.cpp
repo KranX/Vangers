@@ -953,13 +953,12 @@ void Player::identification() {
 	unsigned int len;
 	if ((len = socket.receive(string, sizeof(string) - 1)) != 0) {
 		if (!strcmp(string, request_str)) {
-			size_t stringlen = strlen(string);
 			identificated = 1;
 			if (len > strlen(request_str) + 1)
 				client_version = ((unsigned char *)string)[len - 1];
 			strcpy(string, response_str);
-			string[stringlen + 1] = SERVER_VERSION;
-			socket.send(string, stringlen + 2);
+			string[strlen(string) + 1] = SERVER_VERSION;
+			socket.send(string, strlen(string) + 2);
 			return;
 		}
 		if (!strcmp(string, kill_str))
