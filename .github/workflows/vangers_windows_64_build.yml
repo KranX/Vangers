@@ -2,7 +2,7 @@ name: Vangers Windows 64bit Build
 
 on:
   push:
-    branches: [ master, patch-6 ]
+    branches: [ master ]
   pull_request:
     branches: [ master, 60fps, hd_v2 ]
 
