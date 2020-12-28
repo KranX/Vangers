@@ -1,5 +1,8 @@
-#ifndef __3DOBJECT_H__
-#define __3DOBJECT_H__
+#ifndef __3D__3DOBJECT_H__
+#define __3D__3DOBJECT_H__
+
+#include "3d_math.h"
+#include "3dgraph.h"
 
 const char TG_NO_TOUCH = 1;
 const char TG_POINT_TOUCH = 2;
