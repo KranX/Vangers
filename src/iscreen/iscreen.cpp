@@ -3406,6 +3406,7 @@ void iScreenDispatcher::init_input_string(iScreenElement* p)
 
 void iScreenDispatcher::input_string_quant(void)
 {
+	SDL_StartTextInput();
 	int sz,init_flag = 0,redraw_flag = 0;
 	iListElementPtr* tmp;
 	iScreenObject* obj;
@@ -3444,6 +3445,7 @@ void iScreenDispatcher::input_string_quant(void)
 					flags |= SD_FINISH_INPUT;
 					init_flag = 1;
 					redraw_flag = 1;
+					SDL_StopTextInput();
 					break;
 				case SDLK_ESCAPE:
 					strcpy((char*)ptr,BackupStr);
@@ -3451,6 +3453,7 @@ void iScreenDispatcher::input_string_quant(void)
 					flags |= SD_FINISH_INPUT;
 					init_flag = 1;
 					redraw_flag = 1;
+					SDL_StopTextInput();
 					break;
 				case SDLK_LEFT:
 				case SDLK_BACKSPACE:
