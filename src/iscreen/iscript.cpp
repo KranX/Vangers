@@ -1567,10 +1567,10 @@ void load_text(char* fname)
 	iStringElement* p;
 	if(iCurObjType == I_OBJECT){
 		fh.open(fname,XS_IN);
-		buf = aciLoadPackedFile(fh,sz);
-//		  sz = fh.size();
-//		  buf = new char[sz];
-//		  fh.read(buf,sz);
+//		buf = aciLoadPackedFile(fh,sz);
+		sz = fh.size();
+		buf = new char[sz];
+		fh.read(buf,sz);
 		fh.close();
 		
 		for(i = 0; i < sz; i ++){
@@ -1614,10 +1614,10 @@ void load_s_text(char* fname)
 	iS_StringElement* p;
 	if(iCurObjType == I_OBJECT){
 		fh.open(fname,XS_IN);
-		buf = aciLoadPackedFile(fh,sz);
-//		  sz = fh.size();
-//		  buf = new char[sz];
-//		  fh.read(buf,sz);
+//		buf = aciLoadPackedFile(fh,sz);
+		sz = fh.size();
+		buf = new char[sz];
+		fh.read(buf,sz);
 		fh.close();
 		
 		for(i = 0; i < sz; i ++){
