@@ -1650,6 +1650,8 @@ void load_s_text(char* fname)
 				}
 			}
 		}
+
+		delete [] buf;
 	}
 }
 

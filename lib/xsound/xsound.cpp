@@ -265,7 +265,7 @@ void SoundLoad(char *filename, void **lpDSB)
 		}
 	*/
 	//std::cout<<"SoundLoad:"<<filename<<std::endl;
-	clunk::Sample *chunk;
+	clunk::Sample *chunk = NULL;
 	try {
 		chunk = context.create_sample();
 		chunk->load(filename);
