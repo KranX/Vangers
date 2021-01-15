@@ -1642,9 +1642,6 @@ void iGetMultiGameParameters(void)
 
 	my_server_data.GameType = iCurMultiGame;
 	char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-	
-	const int NETWORK_NUM_ESCAVE = 7;
-	const char* NetworkEscaveName[NETWORK_NUM_ESCAVE] ={"Podish","Incubator","VigBoo","Lampasso","Ogorod","ZeePa","B-Zone"};
 
 	switch(iCurMultiGame){
 		case iMP_VAN_WAR:
@@ -1856,11 +1853,6 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"escape")==0) value = 3;
 			if(strcmp(game_name,"bullet run")==0) value = 3;
 			if(strcmp(game_name,"tankacide-run")==0) value = 2;
-			if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == 2) {
-				if(strcmp(name,"Podish")==0) value = 2;
-				if(strcmp(name,"VigBoo")==0) value = 3;
-				if(strcmp(name,"ZeePa")==0) value = 1;
-			}
             		my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;
