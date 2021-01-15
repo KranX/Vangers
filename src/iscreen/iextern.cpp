@@ -1642,6 +1642,9 @@ void iGetMultiGameParameters(void)
 
 	my_server_data.GameType = iCurMultiGame;
 	char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
+	
+	const int NETWORK_NUM_ESCAVE = 7;
+	const char* NetworkEscaveName[NETWORK_NUM_ESCAVE] ={"Podish","Incubator","VigBoo","Lampasso","Ogorod","ZeePa","B-Zone"};
 
 	switch(iCurMultiGame){
 		case iMP_VAN_WAR:
@@ -1657,9 +1660,6 @@ void iGetMultiGameParameters(void)
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ARTEFACTS_USING);
 			if(strcmp(game_name,"aibatr")==0) value = 0;
 			if(strcmp(game_name,"super van-war")==0) value = 0;
-			if(strcmp(game_name,"speed konoval")==0) value = 0;
-			if(strcmp(game_name,"battle for hmok")==0) value = 0;
-			if(strcmp(game_name,"new soup")==0) value = 1;
 			my_server_data.Van_War.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_IN_ESCAVE_TIME);
@@ -1771,16 +1771,11 @@ void iGetMultiGameParameters(void)
             		my_server_data.Passembloss.InitialCash = value;
 
             		value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
-			if(strcmp(game_name,"speed konoval")==0) value = 0;
             		if(strcmp(game_name,"aveslom")==0) value = 0;
             		if(strcmp(game_name,"necrally")==0) value = 0;
 			if(strcmp(game_name,"traincross")==0) value = 0;
 			if(strcmp(game_name,"satinan")==0) value = 0;
 			if(strcmp(game_name,"stad3la")==0) value = 0;
-			if(strcmp(game_name,"ultra pass")==0) value = 0;
-			if(strcmp(game_name,"xivepass")==0) value = 0;
-			if(strcmp(game_name,"razminka plus")==0) value = 0;
-			if(strcmp(game_name,"huntage-sim")==0) value = 0;
 			if(strcmp(game_name,"shutle fostral")==0) value = 0;
 			if(strcmp(game_name,"lens-one")==0) value = 0;
 			if(strcmp(game_name,"lens-team")==0) value = 0;
@@ -1788,8 +1783,7 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"among vangers")==0) value = 1;
 			if(strcmp(game_name,"escape")==0) value = 1;
 			if(strcmp(game_name,"bullet run")==0) value = 0;
-			if(strcmp(game_name,"raffa-run-sim")==0) value = 0;
-			if(strcmp(game_name,"tankacide-run")==0) value = 0;
+			if(strcmp(game_name,"tankacide-run")==0) value = 1;
 			if(strcmp(game_name,"passave")==0) value = 0;
 		    	my_server_data.Passembloss.ArtefactsUsing = value;
 
@@ -1862,7 +1856,11 @@ void iGetMultiGameParameters(void)
 			if(strcmp(game_name,"escape")==0) value = 3;
 			if(strcmp(game_name,"bullet run")==0) value = 3;
 			if(strcmp(game_name,"tankacide-run")==0) value = 2;
-			if(strcmp(game_name,"passave")==0) value = 3;
+			if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == 2) {
+				if(strcmp(name,"Podish")==0) value = 2;
+				if(strcmp(name,"VigBoo")==0) value = 3;
+				if(strcmp(name,"ZeePa")==0) value = 1;
+			}
             		my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
 			break;

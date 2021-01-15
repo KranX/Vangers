@@ -3690,7 +3690,7 @@ void GloryPlace::Init(int ind)
 	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "necrally") == 0) {
 		World = WORLD_NECROSS;
 		switch (ind) {
-		case  0:	R_curr.x =  316;	R_curr.y =  840;	break; // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
+		case  0:	R_curr.x =  316;	R_curr.y =  840;	break;
 		case  1:	R_curr.x =  632;	R_curr.y = 1161;	break;
 		case  2:	R_curr.x =  143;	R_curr.y = 1467;	break;
 		case  3:	R_curr.x =  837;	R_curr.y = 1648;	break;
@@ -4092,7 +4092,7 @@ void GloryPlace::Init(int ind)
 
 	//classic
 	if(ind == 0) {
-		World = GloryRnd.aiRnd(3); // НЕ МЕНЯТЬ !!! Связано с багом вылета клиента при смерти в пассе. если чек не на трех мирах.
+		World = GloryRnd.aiRnd(3);
 	} else {
 		World = GloryRnd.aiRnd(WORLD_MAX);
 
