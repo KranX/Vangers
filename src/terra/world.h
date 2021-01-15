@@ -1,3 +1,6 @@
+#ifndef __TERRA__WORLD_H__
+#define __TERRA__WORLD_H__
+
 #define SIMPLE_SHADOWS
 #define COMPLEX_RENDER
 
@@ -91,3 +94,5 @@ const int BIZARRE_ALT_MAP	= 0;
 
 extern uchar DestroyTerrainTable[TERRAIN_MAX];
 #define GET_DESTROY_TERRAIN(n) DestroyTerrainTable[n]
+
+#endif

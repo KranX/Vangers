@@ -1567,10 +1567,10 @@ void load_text(char* fname)
 	iStringElement* p;
 	if(iCurObjType == I_OBJECT){
 		fh.open(fname,XS_IN);
-		buf = aciLoadPackedFile(fh,sz);
-//		  sz = fh.size();
-//		  buf = new char[sz];
-//		  fh.read(buf,sz);
+		// buf = aciLoadPackedFile(fh,sz);
+		sz = fh.size();
+		buf = new char[sz];
+		fh.read(buf,sz);
 		fh.close();
 		
 		for(i = 0; i < sz; i ++){
@@ -1614,10 +1614,11 @@ void load_s_text(char* fname)
 	iS_StringElement* p;
 	if(iCurObjType == I_OBJECT){
 		fh.open(fname,XS_IN);
-		buf = aciLoadPackedFile(fh,sz);
-//		  sz = fh.size();
-//		  buf = new char[sz];
-//		  fh.read(buf,sz);
+		// buf = aciLoadPackedFile(fh,sz);
+		sz = fh.size();
+		buf = new char[sz + 1];
+		memset(buf, 0, sz + 1);
+		fh.read(buf,sz);
 		fh.close();
 		
 		for(i = 0; i < sz; i ++){
@@ -1630,9 +1631,9 @@ void load_s_text(char* fname)
 				if(i >= sz) break;
 			}
 			if(i < sz){
-				p = new iS_StringElement;
 				t_sz = strlen(buf + i) + 1;
 				if(t_sz){
+					p = new iS_StringElement;
 					strcpy(p -> string,buf + i);
 					p -> flags |= EL_TEXT_STRING;
 
@@ -1650,6 +1651,8 @@ void load_s_text(char* fname)
 				}
 			}
 		}
+
+		delete [] buf;
 	}
 }
 

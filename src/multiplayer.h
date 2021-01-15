@@ -106,7 +106,7 @@ const int NID_TERRAIN = (15 << 16) | (1 << 31);
 #define GET_OBJECT_TYPE(id)	((id) & (63 << 16))
 
 #define NON_STATIC(ID)		(!(ID & (1 << 31)))
-#define PLAYERS_OBJECT(ID)		(!(ID & (7 << 16 + 3)))
+#define PLAYERS_OBJECT(ID)		(!(ID & (7 << (16 + 3))))
 #define PRIVATE_OBJECT(ID)	 (((ID >> 16) & 63) >= 8 && ((ID >> 16) & 63) <= 10)
 #define NON_GLOBAL_OBJECT(ID)		(((ID >> 16) & 63))
 

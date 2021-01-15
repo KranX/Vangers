@@ -1,0 +1,20 @@
+Interactive Magic
+HTTP://WWW.IMAGICGAMES.COM
+HTTP://WWW.VANGERS.COM
+    
+Producer - Paul Potera
+Product Marketing Manager - Tristan Hilderley
+Quality Assurance Manager - Mark Moormans
+Quality Assurance Coordinator - Mike Pearson
+Manual - Sara Ley
+Opening Animation - John Zwicker
+   
+Internal Testers - Carlin Gartrell, Chris Gardner, Sean McDaniels,
+Joe Allen, James Cowgill, Chuck Rice, Adam Turner, Denham Hardman, Becky Starling,
+JP Berard, Anthony Lazaro, Scott Jacobs, Beau Norris
+   
+External Testers - Jim Pedicord, Darrell Dik, Kent Coleman, Donald Vess,
+Bryce Whitlock, William Baverstock, Andrew Lee, Chris Logan, Lance Eichman,
+Paul Cabana, Jeffrey Vitous, Eric Strehl, Ronald Bruton, Andrew Burton, Bliksem Tobey,
+Max Cates, Jason Sweat, Ronald Gretz, Anton Damm, Anthony Sage, 
+Tyler Robertson, Gary Turner, Matt McKeehan

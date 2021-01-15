@@ -1,4 +1,7 @@
-//----------------------------------------New header-------------------------------------------------------------
+#ifndef __UNITS__HOBJ_H
+#define __UNITS__HOBJ_H
+
+#include "../3d/parser.h"
 
 #define SIMPLE_PARTICLE_ON
 #define PARTICLE_ON
@@ -141,7 +144,7 @@ struct UnitList
 	int Num;
 	GeneralObject* Tail;
 
-	void Init(Parser& in);	
+	void Init(Parser& in);
 	void Open(Parser& in);
 
 	void ConnectTypeList(GeneralObject* p);
@@ -494,3 +497,4 @@ extern PassageImageType* PassageImageData;
 //!!!!!!!!!!!!!!
 //extern XStream StorageLog;
 //!!!!!!!!!!!!!!!!!!!
+#endif
