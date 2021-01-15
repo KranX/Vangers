@@ -171,7 +171,8 @@ struct sqTextButton : sqElem {
 	sqFont* font;
 	int offset;
 
-		sqTextButton(sqElem* _owner,int _x,int _y,char* _text,sqFont* _font,int _sx = 0);
+	sqTextButton(sqElem* _owner,int _x,int _y,const char* _text,sqFont* _font,int _sx = 0);
+	~sqTextButton();
 
 	virtual int* getXY(void){ return &x; }
 	virtual void draw(int self = 1);
@@ -216,7 +217,7 @@ struct sqField : sqInputString {
 	unsigned char* prompt;
 	int x0,y0;
 
-		sqField(sqElem* _owner,char* _prompt,int _x,int _y,int _size,sqFont* _font,unsigned char* _str = NULL,int _len = 0,int _type = T_STRING,int _dec = 0);
+		sqField(sqElem* _owner,const char* _prompt,int _x,int _y,int _size,sqFont* _font,unsigned char* _str = NULL,int _len = 0,int _type = T_STRING,int _dec = 0);
 		~sqField(void){ free(prompt); }
 
 	virtual void draw(int self = 1);
@@ -229,8 +230,8 @@ struct sqMenuBar {
 	sqMenuBar* next,*prev;
 	int status,value,rec;
 
-		sqMenuBar(unsigned char* s,sqPopupMenu* owner,int _status = 0,int _value = 0,int _rec = -1);
-		~sqMenuBar(void){ delete data; free(original_data); }
+		sqMenuBar(const unsigned char* s,sqPopupMenu* owner,int _status = 0,int _value = 0,int _rec = -1);
+		~sqMenuBar(void){ delete[] data; free(original_data); }
 
 	void replace(sqPopupMenu* owner,unsigned char* s);
 	};
@@ -249,7 +250,7 @@ struct sqPopupMenu : sqElem {
 	unsigned int seekcounter;
 
 		sqPopupMenu(sqElem* _owner,int _x,int _y,int _visibars,sqFont* _font,int _len0 = 0,int _margin = 1);
-		virtual ~sqPopupMenu(void){ free(); delete seekbuf; }
+		virtual ~sqPopupMenu(void){ free(); delete[] seekbuf; }
 
 	sqPopupMenu& operator* (sqMenuBar* obj);
 	void disconnect(sqMenuBar* obj,sqMenuBar** del = NULL);
@@ -317,7 +318,8 @@ struct sqInputBox : sqBox {
 	char* title;
 	sqFont* font;
 
-		sqInputBox(sqElem* _owner,int _x,int _y,int _sx,int _sy,sqFont* _font,char* _title = NULL);
+		sqInputBox(sqElem* _owner,int _x,int _y,int _sx,int _sy,sqFont* _font,const char* _title = NULL);
+		~sqInputBox();
 
 	void close(void);
 

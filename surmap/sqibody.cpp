@@ -4,17 +4,17 @@
 			      (Main Constructions)
 */
 
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
 #include "sqint.h"
+#include "missed.h"
 
 /* ---------------------------- EXTERN SECTION ----------------------------- */
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
 /* --------------------------- DEFINITION SECTION -------------------------- */
 int sqInputString::insert = 1,sqInputString::rus;
 
-static char* EventMsg = "EventQueue overflow. Reboot?";
+static const char* EventMsg = "EventQueue overflow. Reboot?";
 
 inline char* sqstrNcpy(char* dest,char* src,int len)
 {
@@ -251,7 +251,7 @@ void sqButton::handler(sqEvent* e)
 		}
 }
 
-sqInputBox::sqInputBox(sqElem* _owner,int _x,int _y,int _sx,int _sy,sqFont* _font,char* _title)
+sqInputBox::sqInputBox(sqElem* _owner,int _x,int _y,int _sx,int _sy,sqFont* _font,const char* _title)
 : sqBox(_owner,0,0,0,0)
 {
 	owner = _owner;
@@ -262,10 +262,14 @@ sqInputBox::sqInputBox(sqElem* _owner,int _x,int _y,int _sx,int _sy,sqFont* _fon
 //	  if(x + sx + 2 >= getRX()) x = getRX() - sx - 2;
 //	  if(y + sy + 4 >= getRY()) y = getRY() - sy - 4;
 	set();
-	title = _title;
+	title = _title == nullptr ? nullptr : strdup(_title);
 	font = _font;
 
 	KeyTrapObj = this;
+}
+
+sqInputBox::~sqInputBox() {
+	free(title);
 }
 
 void sqInputBox::close(void)
@@ -279,11 +283,11 @@ void sqInputBox::close(void)
 void sqInputBox::keytrap(int key)
 {
 	switch(key){
-		case VK_F10:
+		case SDLK_F10:
 			message(M_ACCEPT);
 			close();
 			break;
-		case VK_ESCAPE:
+		case SDLK_ESCAPE:
 			message(M_CANCEL);
 			close();
 			break;
@@ -479,32 +483,32 @@ void sqInputString::keytrap(int key)
 		col = 6;
 		}
 	switch(key){
-		case VK_TAB:
-			if(XKey.Pressed(VK_SHIFT))
+		case SDLK_TAB:
+			if(XKey.Pressed(SDLK_LSHIFT))
 				owner -> message(M_PREVOBJ);
 			else
 				owner -> message(M_NEXTOBJ);
 			break;
-		case VK_DOWN:
+		case SDLK_DOWN:
 			owner -> message(M_NEXTOBJ);
 			break;
-		case VK_UP:
+		case SDLK_UP:
 			owner -> message(M_PREVOBJ);
 			break;
-		case VK_RETURN:
+		case SDLK_RETURN:
 			owner -> message(M_CHOICE);
 			return;
-		case VK_INSERT:
+		case SDLK_INSERT:
 			delcursor();
 			insert = 1 - insert;
 			break;
-		case VK_RSHIFT:
+		case SDLK_RSHIFT:
 			rus = 1 - rus;
 			break;
-		case VK_LEFT:
+		case SDLK_LEFT:
 			if(index){
 				newindex = index - 1;
-				if(newindex && XKey.Pressed(VK_CONTROL)){
+				if(newindex && XKey.Pressed(SDLK_LCTRL)){
 					if(!isalnum(str[newindex]))
 						while(newindex && !isalnum(str[newindex])) newindex--;
 					while(newindex && isalnum(str[newindex])) newindex--;
@@ -514,10 +518,10 @@ void sqInputString::keytrap(int key)
 					if(dp && newindex == dp) newindex--;
 				}
 			break;
-		case VK_RIGHT:
+		case SDLK_RIGHT:
 			if(index < len - 1){
 				newindex = index + 1;
-				if(newindex < len - 1 && XKey.Pressed(VK_CONTROL)){
+				if(newindex < len - 1 && XKey.Pressed(SDLK_LCTRL)){
 					if(isalnum(str[newindex]))
 						while(newindex < len - 1 && isalnum(str[newindex])) newindex++;
 					while(newindex < len - 1 && !isalnum(str[newindex])) newindex++;
@@ -526,7 +530,7 @@ void sqInputString::keytrap(int key)
 					if(newindex == dp) newindex++;
 				}
 			break;
-		case VK_HOME:
+		case SDLK_HOME:
 			if(fhome <= 0){
 				if(index) newindex = 0;
 				fhome = 2;
@@ -537,7 +541,7 @@ void sqInputString::keytrap(int key)
 				if(i != len) newindex = i;
 				}
 			break;
-		case VK_END:
+		case SDLK_END:
 			if(fend <= 0){
 				if(index < len - 1) newindex = len - 1;
 				fend = 2;
@@ -548,8 +552,8 @@ void sqInputString::keytrap(int key)
 				if(i >= 0) newindex = i + 1;
 				}
 			break;
-		case VK_BACK:
-			if(XKey.Pressed(VK_CONTROL)){
+		case SDLK_BACKSPACE:
+			if(XKey.Pressed(SDLK_LCTRL)){
 				memcpy(str,savestr,len);
 				font -> draw(getX() + x + xadd,getY() + y + yadd,str,SQ_SYSCOLOR,SQ_SYSCOLOR + col);
 				}
@@ -576,7 +580,7 @@ void sqInputString::keytrap(int key)
 						}
 					}
 			break;
-		case VK_DELETE:
+		case SDLK_DELETE:
 			if(!dp){
 				if(index != clen){
 					newindex = index;
@@ -607,7 +611,7 @@ void sqInputString::keytrap(int key)
 				draw();
 				}
 			c = key;	// !
-			if(c == VK_SUBTRACT || c == VK_OEM_MINUS) c = '-';
+			if(c == SDLK_MINUS || c == SDLK_KP_MINUS) c = '-';
 			if(!dp){
 				if((type & T_STRING) || ((type & T_NUMERIC) && !dec && ((isdigit(c) || c == ' ' || c == '-')))){
 					if(index < len - 1){
@@ -697,7 +701,7 @@ void sqInputString::setstr(unsigned char* s)
 	if(clen == len) clen--,index--;
 }
 
-sqField::sqField(sqElem* _owner,char* _prompt,int _x,int _y,int _size,sqFont* _font,unsigned char* _str,int _len,int _type,int _dec)
+sqField::sqField(sqElem* _owner,const char* _prompt,int _x,int _y,int _size,sqFont* _font,unsigned char* _str,int _len,int _type,int _dec)
 : sqInputString(_owner,_x + strlen(_prompt)*_font -> sx + 3,_y,_size - strlen(_prompt)*_font -> sx - 3,_font,_str,_len,_type,_dec)
 {
 	prompt = (unsigned char*)strdup(_prompt);
@@ -711,11 +715,11 @@ void sqField::draw(int self)
 	sqInputString::draw();
 }
 
-sqTextButton::sqTextButton(sqElem* _owner,int _x,int _y,char* _text,sqFont* _font,int _sx)
+sqTextButton::sqTextButton(sqElem* _owner,int _x,int _y,const char* _text,sqFont* _font,int _sx)
 {
 	owner = _owner;
 	x = _x; y = _y;
-	text = _text;
+	text = strdup(_text);
 	font = _font;
 	if(_sx)
 		sx = _sx;
@@ -724,6 +728,10 @@ sqTextButton::sqTextButton(sqElem* _owner,int _x,int _y,char* _text,sqFont* _fon
 	sy = font -> sy + 4;
 	set();
 	offset = (sx - strlen(_text)*_font -> sx)/2;
+}
+
+sqTextButton::~sqTextButton() {
+	free(text);
 }
 
 void sqTextButton::draw(int self)
@@ -752,22 +760,22 @@ void sqTextButton::handler(sqEvent* e)
 void sqTextButton::keytrap(int key)
 {
 	switch(key){
-		case VK_TAB:
-			if(XKey.Pressed(VK_SHIFT))
+		case SDLK_TAB:
+			if(XKey.Pressed(SDLK_RSHIFT))
 				owner -> message(M_PREVOBJ);
 			else
 				owner -> message(M_NEXTOBJ);
 			break;
-		case VK_LEFT:
-		case VK_UP:
+		case SDLK_LEFT:
+		case SDLK_UP:
 			owner -> message(M_PREVOBJ);
 			break;
-		case VK_RIGHT:
-		case VK_DOWN:
+		case SDLK_RIGHT:
+		case SDLK_DOWN:
 			owner -> message(M_NEXTOBJ);
 			break;
-		case VK_RETURN:
-		case VK_SPACE:
+		case SDLK_RETURN:
+		case SDLK_SPACE:
 			owner -> message(M_CHOICE);
 			break;
 		}

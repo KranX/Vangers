@@ -1,14 +1,17 @@
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
-#include "general.h"
 #include "3d_shape.h"
 
-#include "..\common.h"
+#include "../src/common.h"
 
-#include "..\terra\vmap.h"
-#include "..\terra\world.h"
-#include "..\terra\render.h"
+#include "../src/terra/vmap.h"
+#include "../src/terra/world.h"
+#include "../src/terra/render.h"
+
+#include "../src/3d/3d_math.h"
+#include "../src/3d/3dgraph.h"
+
+#include "missed.h"
 
 //#define _SHAPE_
 
@@ -53,18 +56,18 @@ int shape_control(int code)
 		return 0;
 
 	switch(code){
-		case VK_ESCAPE:
+		case SDLK_ESCAPE:
 			catch_log = 0;
 			break;
 
-		case VK_SPACE:
+		case SDLK_SPACE:
 			A_shape = DBM(1,-1,-1,DIAGONAL);
 			A_shape_inv = DBM(1,-1,1,DIAGONAL);
-			if(XKey.Pressed(VK_CONTROL))
+			if(XKey.Pressed(SDLK_LCTRL))
 				shape_scale_x = shape_scale_y = shape_scale_z = 1;
 			break;
 
-		case VK_RETURN:
+		case SDLK_RETURN:
 			shape.height_project();
 			catch_log = 0;
 #ifdef _SURMAP_
@@ -75,9 +78,9 @@ int shape_control(int code)
 
 	int rotate_step;
 	int move_step;
-	int alt = XKey.Pressed(VK_CONTROL);
+	int alt = XKey.Pressed(SDLK_LCTRL);
 	double scale_step;
-	if(XKey.Pressed(VK_SHIFT)){
+	if(XKey.Pressed(SDLK_LSHIFT)){
 		move_step = 20;
 		rotate_step = Pi/8;
 		scale_step = 1.1;
@@ -88,41 +91,42 @@ int shape_control(int code)
 		scale_step = 1.001;
 		}
 
-	if(XKey.Pressed(VK_DELETE)){
+	if(XKey.Pressed(SDLK_DELETE)){
 		A_shape = DBM(-rotate_step,Z_AXIS)*A_shape;
 		A_shape_inv *= DBM(rotate_step,Z_AXIS);
 		}
-	if(XKey.Pressed(VK_NEXT)){
+	//@caiiiycuk: was VK_NEXT
+	if(XKey.Pressed(SDLK_RETURN2)){
 		A_shape = DBM(rotate_step,Z_AXIS)*A_shape;
 		A_shape_inv *= DBM(-rotate_step,Z_AXIS);
 		}
 
-	if(XKey.Pressed(VK_HOME)){
+	if(XKey.Pressed(SDLK_HOME)){
 		A_shape = DBM(-rotate_step,X_AXIS)*A_shape;
 		A_shape_inv *= DBM(rotate_step,X_AXIS);
 		}
-	if(XKey.Pressed(VK_END)){
+	if(XKey.Pressed(SDLK_END)){
 		A_shape = DBM(rotate_step,X_AXIS)*A_shape;
 		A_shape_inv *= DBM(-rotate_step,X_AXIS);
 		}
 
-	if(XKey.Pressed(VK_INSERT)){
+	if(XKey.Pressed(SDLK_INSERT)){
 		A_shape = DBM(rotate_step,Y_AXIS)*A_shape;
 		A_shape_inv *= DBM(-rotate_step,Y_AXIS);
 		}
-	if(XKey.Pressed(VK_PRIOR)){
+	if(XKey.Pressed(SDLK_PRIOR)){
 		A_shape = DBM(-rotate_step,Y_AXIS)*A_shape;
 		A_shape_inv *= DBM(rotate_step,Y_AXIS);
 		}
 
-	if(XKey.Pressed(VK_ADD) || XKey.Pressed(VK_OEM_PLUS)){
+	if(XKey.Pressed(SDLK_PLUS) || XKey.Pressed(SDLK_KP_PLUS)){
 		if(!alt){
 			shape_scale_x *= scale_step;
 			shape_scale_y *= scale_step;
 			}
 		shape_scale_z *= scale_step;
 		}
-	if(XKey.Pressed(VK_SUBTRACT) || XKey.Pressed(VK_OEM_MINUS)){
+	if(XKey.Pressed(SDLK_MINUS) || XKey.Pressed(SDLK_KP_MINUS)){
 		if(!alt){
 			shape_scale_x /= scale_step;
 			shape_scale_y /= scale_step;
@@ -130,22 +134,22 @@ int shape_control(int code)
 		shape_scale_z /= scale_step;
 		}
 
-	if(XKey.Pressed(VK_UP))
+	if(XKey.Pressed(SDLK_UP))
 		if(alt)
 			shape_scale_y *= scale_step;
 		else
 			shape.y_off -= move_step;
-	if(XKey.Pressed(VK_DOWN))
+	if(XKey.Pressed(SDLK_DOWN))
 		if(alt)
 			shape_scale_y /= scale_step;
 		else
 			shape.y_off += move_step;
-	if(XKey.Pressed(VK_LEFT))
+	if(XKey.Pressed(SDLK_LEFT))
 		if(alt)
 			shape_scale_x /= scale_step;
 		else
 			shape.x_off -= move_step;
-	if(XKey.Pressed(VK_RIGHT))
+	if(XKey.Pressed(SDLK_RIGHT))
 		if(alt)
 			shape_scale_x *= scale_step;
 		else
@@ -326,6 +330,7 @@ void Model::draw_big()
 	for(register int i = 0;i < num_vert;i++)
 		vertices[i].convert_big();
 
+	int i;
 	for(i = 0;i < num_norm;i++)
 		normals[i].fast_calc_intensity();
 
@@ -575,6 +580,7 @@ void Model::height_project()
 	memset(upper_buffer,0,shape_size << shape_shift);
 	memset(lower_buffer,255,shape_size << shape_shift);
 
+	int i;
 	for(i = 0;i < num_vert;i++){
 		vertices[i].xscr = vertices[i].turned.x - x_min;
 		vertices[i].yscr = vertices[i].turned.y - y_min;

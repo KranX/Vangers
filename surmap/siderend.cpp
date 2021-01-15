@@ -1,11 +1,10 @@
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
-#include "..\common.h"
-#include "..\3d\3d_math.h"
-#include "..\terra\vmap.h"
-#include "..\terra\world.h"
-#include "..\terra\render.h"
+#include "../src/common.h"
+#include "../src/3d/3d_math.h"
+#include "../src/terra/vmap.h"
+#include "../src/terra/world.h"
+#include "../src/terra/render.h"
 
 #define MEMSET(a,b,c) memset(a,b,c)
 
@@ -260,15 +259,15 @@ void regRender(int LowX,int LowY,int HiX,int HiY,int changed)
 		int LastStep = (H_SIZE - 1 - HiX) * SHADOWDEEP;
 		LastStep -= ((LastStep >> POSPOWER) - MAX_ALT) << POSPOWER;
 
-		//препроход
+		//РїСЂРµРїСЂРѕС…РѕРґ
 		PreStage(LastStep,HiX,pa0,hC,shadowParent + MAX_ALT);
-		//основной проход
+		//РѕСЃРЅРѕРІРЅРѕР№ РїСЂРѕС…РѕРґ
 		int x = HiX;
 		BYTE* grid = shadowParent + MAX_ALT + MAX_ALT;
 		int MaxAlt = 0;
 		MainStage(pa0,hC,pc0,SizeX,x,grid,MaxAlt);
 		
-		//пост проход
+		//РїРѕСЃС‚ РїСЂРѕС…РѕРґ
 		{
 		x |= 1;
 		BYTE* pa = pa0 + x;

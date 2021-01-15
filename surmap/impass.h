@@ -12,7 +12,7 @@ void ImpassSave(void);
 extern ImpassType* ImpPattern[IMP_MAX];
 #ifdef _SURMAP_
 extern int curImpIndex;
-extern char* ImpItem[IMP_MAX];
+extern const char* ImpItem[IMP_MAX];
 #endif
 
 struct ImpassType {

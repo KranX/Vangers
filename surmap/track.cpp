@@ -1,17 +1,20 @@
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
-#include "..\sqint\sqint.h"
+#include "sqint.h"
 
-#include "..\common.h"
+#include "../src/common.h"
 #include "sqexp.h"
 #include "tools.h"
 #include "track.h"
 
 #include "impass.h"
-#include "..\terra\vmap.h"
-#include "..\terra\world.h"
-#include "..\terra\render.h"
+#include "../src/terra/vmap.h"
+#include "../src/terra/world.h"
+#include "../src/terra/render.h"
+
+#include "port.h"
+#define itoa port_itoa
+#include "missed.h"
 
 //XStream fout( "out.txt", XS_OUT );
 
@@ -65,8 +68,6 @@ double f4( double t, double );
 double f5( double t, double );
 
 unsigned realRND(unsigned m);
-
-int round( double);
 
 double f0( double t, double d ){
 	return 0.0;
@@ -1444,7 +1445,7 @@ void sTrack::build_all_node( void ){
 		l_node -> build_polygon( branch, s, 0 );
 		l_node = l_node -> r;
 	}
-	delete s;
+	delete[] s;
 	build_all_branch();
 }
 
@@ -1461,7 +1462,7 @@ void eNode::build_polygon( eBranch*& branch, int*& s, int what ){
 		s[i] = branches[i];
 	}
 
-	//  ����஥��� ��室� ��⥩ s[i]
+	//  Построение обхода путей s[i]
 
 	for( i = 0; i < n_branch-1; i++ ){
 		for( j = i+1; j < n_branch; j++ )
@@ -2065,7 +2066,8 @@ void sTrack::set_height_from_ground(int what){
 	}
 }
 
-char* trackName = "track0.trk";
+//@caiiiycuk: memory leak at the end (not worth to fix)
+char* trackName = strdup("track0.trk");
 
 void sTrack::save(int n){
 	int i;
@@ -2344,7 +2346,7 @@ void eBranch::build_spline(void){
 
 	n_point = 0;
 
-	if ( data_all != 0 ) delete data_all;
+	if ( data_all != 0 ) delete[] data_all;
 
 	if ( n_section == 2 ){
 		data_all = new rSection[2];
@@ -3116,7 +3118,7 @@ void eNode::saveKron( eBranch*& branch, XStream& fout)
 		fout < yp[i];
 	};
 
-	delete s;
+	delete[] s;
 }
 
 void eBranch::saveKron(XStream& fout)

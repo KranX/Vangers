@@ -4,10 +4,10 @@
 				     (Menu)
 */
 
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
 #include "sqint.h"
+#include "missed.h"
 
 /* ---------------------------- EXTERN SECTION ----------------------------- */
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
@@ -15,7 +15,7 @@
 const int MAXSEEK = 32;
 const int SEEKDELAY = 10;
 
-sqMenuBar::sqMenuBar(unsigned char* s,sqPopupMenu* owner,int _status,int _value,int _rec)
+sqMenuBar::sqMenuBar(const unsigned char* s,sqPopupMenu* owner,int _status,int _value,int _rec)
 {
 	int m = owner -> margin;
 	int sl = s?strlen((char*)s):0;
@@ -124,7 +124,7 @@ void sqPopupMenu::setlen(int l)
 			memcpy(s,p -> data,len);
 			memset(s + len,' ',l - len);
 			s[l] = '\0';
-			delete p -> data;
+			delete[] p -> data;
 			p -> data = s;
 			p = p -> next;
 			}
@@ -181,26 +181,26 @@ int sqPopupMenu::getptr(sqMenuBar* b)
 void sqPopupMenu::keytrap(int key)
 {
 	switch(key){
-		case VK_TAB:
-			if(XKey.Pressed(VK_SHIFT))
+		case SDLK_TAB:
+			if(XKey.Pressed(SDLK_LSHIFT))
 				owner -> message(M_PREVOBJ);
 			else
 				owner -> message(M_NEXTOBJ);
 			seeklen = 0;
 			break;
-		case VK_F7:
-		case VK_INSERT:
+		case SDLK_F7:
+		case SDLK_INSERT:
 			owner -> message(M_INSERT);
 			break;
-		case VK_F8:
-		case VK_DELETE:
+		case SDLK_F8:
+		case SDLK_DELETE:
 			owner -> message(M_DELETE);
 			break;
-		case VK_SPACE:
+		case SDLK_SPACE:
 			owner -> message(M_SETOPTION);
 			break;
-		case VK_RETURN:
-			if(XKey.Pressed(VK_SHIFT)){
+		case SDLK_RETURN:
+			if(XKey.Pressed(SDLK_LSHIFT)){
 				if(seeklen)
 					if(pointer -> next)
 						seek(pointer -> next);
@@ -212,10 +212,10 @@ void sqPopupMenu::keytrap(int key)
 				owner -> message(M_CHOICE);
 				}
 			break;
-		case VK_RSHIFT:
+		case SDLK_RSHIFT:
 			sqInputString::rus = 1 - sqInputString::rus;
 			break;
-		case VK_UP:
+		case SDLK_UP:
 			if(!pointer -> prev){
 				pointer = getbar(maxbars - 1);
 				topbar = (maxbars >= visibars)?maxbars - visibars:0;
@@ -227,7 +227,7 @@ void sqPopupMenu::keytrap(int key)
 			draw();
 			seeklen = 0;
 			break;
-		case VK_DOWN:
+		case SDLK_DOWN:
 			if(!pointer -> next){
 				pointer = first;
 				topbar = 0;
@@ -239,7 +239,7 @@ void sqPopupMenu::keytrap(int key)
 			draw();
 			seeklen = 0;
 			break;
-		case VK_HOME:
+		case SDLK_HOME:
 			if(pointer){
 				pointer = first;
 				topbar = 0;
@@ -247,7 +247,7 @@ void sqPopupMenu::keytrap(int key)
 				}
 			seeklen = 0;
 			break;
-		case VK_END:
+		case SDLK_END:
 			if(pointer -> next){
 				pointer = getbar(maxbars - 1);
 				topbar = (maxbars >= visibars)?maxbars - visibars:0;
@@ -255,21 +255,21 @@ void sqPopupMenu::keytrap(int key)
 				}
 			seeklen = 0;
 			break;
-		case VK_LEFT:
+		case SDLK_LEFT:
 			if(pointer != getbar(topbar)){
 				pointer = getbar(topbar);
 				draw();
 				}
 			seeklen = 0;
 			break;
-		case VK_RIGHT:
+		case SDLK_RIGHT:
 			if(pointer != getbar(topbar + MIN(visibars,maxbars) - 1)){
 				pointer = getbar(topbar + MIN(visibars,maxbars) - 1);
 				draw();
 				}
 			seeklen = 0;
 			break;
-		case VK_PRIOR:
+		case SDLK_PRIOR:
 			if(pointer){
 				topbar = getptr(pointer) - visibars;
 				if(topbar < 0) topbar = 0;
@@ -278,7 +278,8 @@ void sqPopupMenu::keytrap(int key)
 				}
 			seeklen = 0;
 			break;
-		case VK_NEXT:
+		//@caiiiycuk: was VK_NEXT
+		case SDLK_RETURN2:
 			if(pointer != getbar(maxbars - 1)){
 				topbar = getptr(pointer) + visibars;
 				if(topbar >= maxbars) topbar = maxbars - 1;
@@ -288,10 +289,10 @@ void sqPopupMenu::keytrap(int key)
 				}
 			seeklen = 0;
 			break;
-		case VK_OEM_PLUS:
+		case SDLK_KP_PLUS:
 			owner -> message(M_SETALL);
 			break;
-		case VK_OEM_MINUS:
+		case SDLK_KP_MINUS:
 			owner -> message(M_UNSETALL);
 			break;
 		default:
@@ -377,7 +378,8 @@ void sqPopupMenu::seek(sqMenuBar* p0,int force)
 {
 	sqMenuBar* p = p0;
 	while(p){
-		if(!memicmp(p -> data + margin,seekbuf,seeklen)){
+	    //@caiiiycuk TODO: was memicmp
+		if(!memcmp(p -> data + margin,seekbuf,seeklen)){
 			setpointer(p,force);
 			return;
 			}
@@ -385,7 +387,8 @@ void sqPopupMenu::seek(sqMenuBar* p0,int force)
 		}
 	p = first;
 	while(p != p0){
-		if(!memicmp(p -> data + margin,seekbuf,seeklen)){
+        //@scaiiiycuk TODO: was memicmp
+		if(!memcmp(p -> data + margin,seekbuf,seeklen)){
 			setpointer(p,force);
 			return;
 			}

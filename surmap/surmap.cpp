@@ -1,28 +1,35 @@
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
 //#define SCREENSHOT
 
+#ifdef _NT
 #include "..\root\win32f.h"
+#endif
 #include "runtime.h"
 
-#include "..\sqint\sqint.h"
+#include "sqint.h"
 
-#include "..\common.h"
+#include "../src/common.h"
 #include "sqexp.h"
 #include "tools.h"
 #include "track.h"
 
 #include "impass.h"
-#include "..\terra\vmap.h"
-#include "..\terra\world.h"
-#include "..\terra\render.h"
-#include "..\units\moveland.h"
-#include "..\root\palette.h"
+#include "../src/terra/vmap.h"
+#include "../src/terra/world.h"
+#include "../src/terra/render.h"
+#include "../src/units/moveland.h"
+#include "../src/palette.h"
 
-#include "..\3d\3d_math.h"
-#include "..\3d\3dgraph.h"
-#include "..\3d\3dobject.h"
+#include "../src/3d/3d_math.h"
+#include "../src/3d/3dgraph.h"
+#include "../src/3d/3dobject.h"
+
+#include "missed.h"
+
+#ifndef DBGCHECK
+#define DBGCHECK
+#endif
 
 #define RANDOMIZE
 
@@ -134,9 +141,9 @@ int ConvertLog;
 int WaterPrm = -1;
 int videoMode;
 
-char* mapFName = "WRLDS.DAT";
+const char* mapFName = "wrlds.dat";
 int ColorShow = 1;
-int DepthShow;
+int DepthShow = 0;
 
 sTrack Track;
 
@@ -159,6 +166,9 @@ int paliterMode;
 
 int emode;
 
+extern int __internal_argc;
+extern char **__internal_argv;
+
 int xtInitApplication(void)
 {
 	XCon < "SURMAP Editor v3.03-Win32/DirectX by K-D LAB (C)1996-97. All Rights Reserved.\n";
@@ -177,9 +187,10 @@ int xtInitApplication(void)
 #endif
 #endif
 
-	ComlineAnalyze(__argc,__argv);
-	ErrH.SetRestore(restore);
-	ErrH.SetFlags(XERR_CTRLBRK);
+	ComlineAnalyze(__internal_argc, __internal_argv);
+	//@caiiiycuk: should we ever fix this?
+	//ErrH.SetRestore(restore);
+	//ErrH.SetFlags(XERR_CTRLBRK);
 
 	XKey.init(NULL,NULL);
 
@@ -498,15 +509,15 @@ void costab(void)
 
 void KeyCenter(int key)
 {
-	if(key == VK_ESCAPE){
+	if(key == SDLK_ESCAPE){
 		sqKey -> top = sqKey -> bottom;
 		sqKey -> put(key);
 		}
 	else
-		if(key != VK_SHIFT && key != VK_CONTROL)
+		if(key != SDLK_LSHIFT && key != SDLK_LCTRL)
 			sqKey -> put(key);
 		else
-			if(key == VK_CONTROL) keyP = 1;
+			if(key == SDLK_LCTRL) keyP = 1;
 }
 
 void photo(void)
@@ -532,7 +543,7 @@ void photo(void)
 		ff.write(line,SX);
 		}
 	ff.close();
-	delete line;
+	delete[] line;
 }
 
 void sqScreen::draw(int self)
@@ -550,13 +561,13 @@ void sqScreen::draw(int self)
 void sqScreen::keytrap(int key)
 {
 	switch(key){
-		case VK_RETURN:
+		case SDLK_RETURN:
 			sqE -> put(E_MAINMENU,E_COMMON,XGR_MAXX/2,XGR_MAXY/2);
 			break;
-		case VK_F12:
+		case SDLK_F12:
 			DBGCHECK
 			break;
-		case VK_F11:
+		case SDLK_F11:
 //			shotMake();
 			photo();
 			break;
@@ -615,20 +626,20 @@ void iGameMap::keytrap(int key)
 
 	int xm,ym;
 	switch(key){
-		case VK_ESCAPE:
+		case SDLK_ESCAPE:
 			if ( TrackBuild == SET_HEIGHT || TrackBuild == SET_HEIGHT_NODE)
 				TrackBuild = WAIT;
 			break;
-		case VK_LBR:
+		case SDLK_LEFTBRACKET:
 			curGMap -> change(-18,-10);
 			break;
-		case VK_RBR:
+		case SDLK_RIGHTBRACKET:
 			curGMap -> change(18,10);
 			break;
-		case VK_DELETE:
+		case SDLK_DELETE:
 			if(!MLstatus)
-				if(XKey.Pressed(VK_SHIFT)) CX--;
-				else if(XKey.Pressed(VK_CONTROL)) CX -= 10;
+				if(XKey.Pressed(SDLK_LSHIFT)) CX--;
+				else if(XKey.Pressed(SDLK_LCTRL)) CX -= 10;
 				else CX -= DELTA;
 			else {
 				LayerStatus = UP_LAYER;
@@ -636,25 +647,26 @@ void iGameMap::keytrap(int key)
 				LayerStatus = DOWN_LAYER;
 				}
 			break;
-		case VK_NEXT:
+		//@caiiiycuk: was VK_NEXT
+	    case SDLK_RETURN2:
 			if(!MLstatus)
-				if(XKey.Pressed(VK_SHIFT)) CX++;
-				else if(XKey.Pressed(VK_CONTROL)) CX += 10;
+				if(XKey.Pressed(SDLK_LSHIFT)) CX++;
+				else if(XKey.Pressed(SDLK_LCTRL)) CX += 10;
 				else CX += DELTA;
 			break;
-		case VK_HOME:
+		case SDLK_HOME:
 			if(!MLstatus)
-				if(XKey.Pressed(VK_SHIFT)) CY--;
-				else if(XKey.Pressed(VK_CONTROL)) CY -= 10;
+				if(XKey.Pressed(SDLK_LSHIFT)) CY--;
+				else if(XKey.Pressed(SDLK_LCTRL)) CY -= 10;
 				else CY -= DELTA;
 			break;
-		case VK_END:
+		case SDLK_END:
 			if(!MLstatus)
-				if(XKey.Pressed(VK_SHIFT)) CY++;
-				else if(XKey.Pressed(VK_CONTROL)) CY += 10;
+				if(XKey.Pressed(SDLK_LSHIFT)) CY++;
+				else if(XKey.Pressed(SDLK_LCTRL)) CY += 10;
 				else CY += DELTA;
 			break;
-		case VK_LEFT:
+		case SDLK_LEFT:
 			if(MLstatus == 2){
 				MLprevframe();
 				break;
@@ -665,10 +677,10 @@ void iGameMap::keytrap(int key)
 				}
 			if(TrackBuild == SET_HEIGHT){
 				DeltalH = -1;
-				if(XKey.Pressed(VK_CONTROL)) DeltalH = -10;
+				if(XKey.Pressed(SDLK_LCTRL)) DeltalH = -10;
 				}
 			break;
-		case VK_RIGHT:
+		case SDLK_RIGHT:
 			if(MLstatus == 2){
 				MLnextframe();
 				break;
@@ -678,43 +690,43 @@ void iGameMap::keytrap(int key)
 				break;
 				}
 			if(TrackBuild == SET_HEIGHT){
-				if(XKey.Pressed(VK_CONTROL)) DeltalH = 10;
+				if(XKey.Pressed(SDLK_LCTRL)) DeltalH = 10;
 				else DeltalH = 1;
 				}
 			break;
-		case VK_UP:
+		case SDLK_UP:
 			if(ShowVoxel){
 				SlopeAngle += 16;
 				break;
 				}
 			if ( TrackBuild == SET_HEIGHT || TrackBuild == SET_HEIGHT_NODE){
-				if(XKey.Pressed(VK_CONTROL)) DeltamH = 10;
+				if(XKey.Pressed(SDLK_LCTRL)) DeltamH = 10;
 				else DeltamH = 1;
 				}
 			break;
-		case VK_DOWN:
+		case SDLK_DOWN:
 			if(ShowVoxel){
 				SlopeAngle -= 16;
 				break;
 				}
 			if(TrackBuild == SET_HEIGHT || TrackBuild == SET_HEIGHT_NODE){
 				DeltamH = -1;
-				if(XKey.Pressed(VK_CONTROL)) DeltamH = -10;
+				if(XKey.Pressed(SDLK_LCTRL)) DeltamH = -10;
 				}
 			break;
-		case VK_SUBTRACT:
-			if(XKey.Pressed(VK_CONTROL))
+		case SDLK_MINUS:
+			if(XKey.Pressed(SDLK_LCTRL))
 				TurnSecX += 50;
 			else
 				TurnSecX += 5;
 			break;
-		case VK_ADD:
-			if(XKey.Pressed(VK_CONTROL))
+		case SDLK_PLUS:
+			if(XKey.Pressed(SDLK_LCTRL))
 				TurnSecX -= 50;
 			else
 				TurnSecX -= 5;
 			break;
-		case VK_INSERT:
+		case SDLK_INSERT:
 			if(MLstatus){
 				MLadd();
 				LayerStatus = UP_LAYER;
@@ -724,27 +736,27 @@ void iGameMap::keytrap(int key)
 			break;
 		case '1':
 			if(TrackStatus)
-				if(!XKey.Pressed(VK_SHIFT)) Track.save(1);
+				if(!XKey.Pressed(SDLK_LSHIFT)) Track.save(1);
 				else Track.load(1);
 			break;
 		case '2':
 			if(TrackStatus)
-				if(!XKey.Pressed(VK_SHIFT)) Track.save(2);
+				if(!XKey.Pressed(SDLK_LSHIFT)) Track.save(2);
 				else Track.load(2);
 			break;
 		case '3':
 			if(TrackStatus)
-				if(!XKey.Pressed(VK_SHIFT)) Track.save(3);
+				if(!XKey.Pressed(SDLK_LSHIFT)) Track.save(3);
 				else Track.load(3);
 			break;
 		case '4':
 			if(TrackStatus)
-				if(!XKey.Pressed(VK_SHIFT)) Track.save(4);
+				if(!XKey.Pressed(SDLK_LSHIFT)) Track.save(4);
 				else Track.load(4);
 			break;
 		case '5':
 			if(TrackStatus)
-				if(!XKey.Pressed(VK_SHIFT)) Track.save(5);
+				if(!XKey.Pressed(SDLK_LSHIFT)) Track.save(5);
 				else Track.load(5);
 			break;
 		case 'F':
@@ -753,7 +765,7 @@ void iGameMap::keytrap(int key)
 			else
 				prmFlag |= PRM_INFO;
 			break;
-		case VK_SPACE:
+		case SDLK_SPACE:
 			if(TrackStatus)
 				message(M_SETOBJ,knobSpline);
 			else
@@ -774,20 +786,20 @@ void iGameMap::keytrap(int key)
 		case '9':
 			Track_show_all ^= 1;
 			break;
-		case VK_F1:
-		case VK_F2:
-		case VK_F3:
-		case VK_F4:
-		case VK_F5:
-		case VK_F6:
-		case VK_F7:
-		case VK_F8:
-		case VK_F9:
-		case VK_F10:
-			if(XKey.Pressed(VK_CONTROL))
-				ClipboardOperation(key - VK_F1,1);
+		case SDLK_F1:
+		case SDLK_F2:
+		case SDLK_F3:
+		case SDLK_F4:
+		case SDLK_F5:
+		case SDLK_F6:
+		case SDLK_F7:
+		case SDLK_F8:
+		case SDLK_F9:
+		case SDLK_F10:
+			if(XKey.Pressed(SDLK_LCTRL))
+				ClipboardOperation(key - SDLK_F1,1);
 			else
-				ClipboardOperation(key - VK_F1,0);
+				ClipboardOperation(key - SDLK_F1,0);
 			break;
 		case 'T':
 			message(M_SETOBJ,knobTrack);
@@ -799,7 +811,7 @@ void iGameMap::keytrap(int key)
 			sqE -> put(E_PRMMENU,E_COMMON,XGR_MAXX/2,XGR_MAXY/2);
 			break;
 		case 'O':
-			if(XKey.Pressed(VK_CONTROL))
+			if(XKey.Pressed(SDLK_LCTRL))
 				MLvisi = 1 - MLvisi;
 			else
 				sqE -> put(E_MOBILOCMENU,E_COMMON,XGR_MAXX/2,XGR_MAXY/2);
@@ -807,13 +819,13 @@ void iGameMap::keytrap(int key)
 		case 'C':
 			sqE -> put(E_VALOCMENU,E_COMMON,XGR_MAXX/2,XGR_MAXY/2);
 			break;
-		case VK_SLASH:
+		case SDLK_SLASH:
 			VisiRegR = 1 - VisiRegR;
 			break;
 		case 'E':
 			paliterMode = 1 - paliterMode;
 			break;
-		case VK_TAB:
+		case SDLK_TAB:
 			GridLog = 1 - GridLog;
 			break;
 		case 'B':
@@ -846,7 +858,7 @@ void iGameMap::keytrap(int key)
 		case 'Z':
 			ZoomLog = 1 - ZoomLog;
 			if(ZoomLog)
-				if(XKey.Pressed(VK_SHIFT))
+				if(XKey.Pressed(SDLK_LSHIFT))
 					TurnSecX = curGMap -> xsize/8;
 				else
 #ifdef POSTER
@@ -857,7 +869,7 @@ void iGameMap::keytrap(int key)
 			else
 				TurnSecX = curGMap -> xsize;
 			break;
-		case VK_TILDE:
+		case SDLK_BACKQUOTE:
 			vMap -> squeeze();
 			break;
 		case '0':
@@ -1102,7 +1114,7 @@ void iGameMap::quant(void)
 	else if(ym > yc + yside - 8) dy = DELTA;
 
 	if(dx || dy){
-		if(XKey.Pressed(VK_CONTROL)) dx *= 3, dy *= 3;
+		if(XKey.Pressed(SDLK_LCTRL)) dx *= 3, dy *= 3;
 		shift(dx,dy);
 		sqE -> put(E_MUFLER,E_COMMON,0,0);
 		}
@@ -1252,7 +1264,7 @@ void analyzeColors(void)
 		ff <= x < ": " <= table[x] < "\r\n";
 		}
 
-	delete table;
+	delete[] table;
 }
 
 #ifdef SCREENSHOT
@@ -1294,12 +1306,12 @@ struct PrmFile {
 	int len;
 	int index;
 
-	void init(char* name);
+	void init(char const* name);
 	char* getAtom(void);
 	void finit(void){ delete buf; }
 	};
 
-void PrmFile::init(char* name)
+void PrmFile::init(char const* name)
 {
 	XStream ff(name,XS_IN);
 	buf = new char[len = ff.size()];

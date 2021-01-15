@@ -1,12 +1,13 @@
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
-#include "..\sqint\sqint.h"
-#include "..\common.h"
+#include "sqint.h"
+#include "../src/common.h"
 
-#include "..\terra\vmap.h"
-#include "..\terra\world.h"
-#include "..\terra\render.h"
+#include "../src/terra/vmap.h"
+#include "../src/terra/world.h"
+#include "../src/terra/render.h"
+
+#include "missed.h"
 
 struct PartParameters {
 	int minAlt;
@@ -536,7 +537,7 @@ void WORLD_colcalc(int y0,int y1,int isColor)
 				lxVal = *(pa - dnD);
 				rxVal = *(pa0 + XCYCL(x + 2 - dnD));
 /*
-//					исправление 0-полоски
+//					РёСЃРїСЂР°РІР»РµРЅРёРµ 0-РїРѕР»РѕСЃРєРё
 					if(x == map_size_x - 1 && (*(pf - 2) & DOUBLE_LEVEL) && (*(pf0 + 1) & DOUBLE_LEVEL)){
 					*pa = (uchar)((int)*(pa - 2) + (int)rxVal >> 1);
 					type = *(pf - 2) & TERRAIN_MASK;
@@ -786,10 +787,10 @@ void worldPrepare(void)
 
 void worldFree(void)
 {
-	delete r_net_map;
-	delete m_net_map;
-	delete proto_m_net_map;
-	delete new_m_net_map;
+	delete[] r_net_map;
+	delete[] m_net_map;
+	delete[] proto_m_net_map;
+	delete[] new_m_net_map;
 	r_net_map = NULL;
 }
 
@@ -924,8 +925,8 @@ void WORLD_shot(void)
 			ffv.write(p1,2*map_size_x);
 			y = YCYCL(y + 1);
 			} while(y != max);
-		delete p0;
-		delete p1;
+		delete[] p0;
+		delete[] p1;
 		}
 	else
 		do {
@@ -941,7 +942,7 @@ void WORLD_shot(void)
 	ff.close();
 	ffh.close();
 	ffv.close();
-	delete buf;
+	delete[] buf;
 
 	ffh.open("HIGHTS.PAL",XS_OUT);
 	for(i = 0;i < 256;i++){
@@ -1144,7 +1145,7 @@ void partWrite(XStream& ff,int mode)
 
 void LoadPP(void)
 {
-	static char* errMsg = "Wrong VSC data";
+	static const char* errMsg = "Wrong VSC data";
 
 	for(uint i = 0;i < PART_MAX;i++){
 		PartPrm[i].minAlt = MIN_ALT;
@@ -1184,6 +1185,8 @@ void SetPP(int n)
 }
 
 #ifdef _SURMAP_
+//@caiiiycuk: not sure that this is right fix
+extern unsigned realRNDVAL;
 void LoadVPR(int ind)
 {
 	XStream ff(vMap -> pname[ind],XS_IN);
@@ -1401,7 +1404,7 @@ void CUTVMP(void)
 	int h_size = 1 << *(buf + LEN);
 	int v_size = 1 << *(buf + LEN + 1);
 
-	delete buf;
+	delete[] buf;
 	buf = new uchar[2*h_size];
 
 	vMap -> openMirror();

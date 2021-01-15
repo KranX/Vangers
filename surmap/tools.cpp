@@ -1,21 +1,20 @@
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
 #ifdef _NT
 #include "..\root\win32f.h"
 #endif
 
-#include "..\sqint\sqint.h"
+#include "sqint.h"
 
-#include "..\common.h"
+#include "../src/common.h"
 #include "tools.h"
 #include "sqexp.h"
 
-#include "..\terra\vmap.h"
-#include "..\terra\world.h"
-#include "..\terra\render.h"
+#include "../src/terra/vmap.h"
+#include "../src/terra/world.h"
+#include "../src/terra/render.h"
 #include "impass.h"
-#include "..\units\moveland.h"
+#include "../src/units/moveland.h"
 
 /* ----------------------------- EXTERN SECTION ---------------------------- */
 extern int LayerStatus;
@@ -40,7 +39,7 @@ void load_shape(char* name,int x,int y);
 void release_shape();
 void ClipboardOperation(int slot,int save,int render = 1);
 void LINE_render(int y);
-char* GetTargetName(char* name);
+char* GetTargetName(const char* name);
 /* --------------------------- DEFINITION SECTION -------------------------- */
 
 BitMap placeBMP;
@@ -49,7 +48,7 @@ BitMap mosaicBMP(1);
 int S3Dmode,S3Dlevel,S3Dinverse,S3DnoiseLevel,S3DnoiseAmp,S3Dside;
 
 static int* lyrT;
-static char* lyrFName = "_LAYER_.SSS";
+static const char* lyrFName = "_LAYER_.SSS";
 static XStream flyr;
 
 int VLstatus,VLmode;
@@ -925,8 +924,8 @@ void MLdelete(int n)
 	MLTableSize--;
 }
 
-static char* vlNames[] = { "TNT","ML Clone","Sensor","Danger" };
-char* getVLname(void){ return vlNames[VLmode]; }
+static const char* vlNames[] = { "TNT","ML Clone","Sensor","Danger" };
+const char* getVLname(void){ return vlNames[VLmode]; }
 BaseValoc* getVLTail(void)
 {
 	switch(VLmode){
@@ -1121,7 +1120,7 @@ void MLCloneValoc::accept(int _z,int _value)
 	MLCVLpattern = *this;
 }
 
-void SensorValoc::accept(int _z,int _id,int _radius,char* _name,int _z0,int _data0,int _data1,int _data2,int _data3,int _data4,int _data5,int _data6)
+void SensorValoc::accept(int _z,int _id,int _radius,const char* _name,int _z0,int _data0,int _data1,int _data2,int _data3,int _data4,int _data5,int _data6)
 { 
 	z = _z; id = _id; radius = _radius;
 	name = strdup(_name);
@@ -1203,7 +1202,8 @@ const int CNUM = 10;
 static int ClipboardStatus[CNUM + 2];
 static int ClipboardCX[CNUM + 2];
 static int ClipboardCY[CNUM + 2];
-static char* ClipFname = "clpbrd#.___";
+//@caiiiycuk: memory leak at the end (not worth to fix)
+static char* ClipFname = strdup("clpbrd#.___");
 
 void ClipboardInit(void)
 {

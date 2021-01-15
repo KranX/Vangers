@@ -1,14 +1,13 @@
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
-#include "..\common.h"
+#include "../src/common.h"
 
-#include "..\3d\3d_math.h"
+#include "../src/3d/3d_math.h"
 
-#include "..\terra\vmap.h"
+#include "../src/terra/vmap.h"
 #include "impass.h"
-#include "..\terra\world.h"
-#include "..\terra\render.h"
+#include "../src/terra/world.h"
+#include "../src/terra/render.h"
 
 /* ----------------------------- EXTERN SECTION ---------------------------- */
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
@@ -29,7 +28,7 @@ static uchar PeakData[PEAK_SIZE*PEAK_SIZE] = {
 ImpassType* ImpPattern[IMP_MAX];
 #ifdef _SURMAP_
 int curImpIndex;
-char* ImpItem[IMP_MAX] = {
+const char* ImpItem[IMP_MAX] = {
 				"SPHERE",
 				"POLYGON",
 				"PEAK"
@@ -267,7 +266,7 @@ void ImpPolygon::build(void)
 				else *p += level;
 				}
 			}
-	delete zzz;
+	delete[] zzz;
 }
 
 ImpPeak::ImpPeak(int _sx,int _sy,int _force,int _mode,int _level,int _rad,int _h,int _n,int _phase,int _inverse,int _plain,int _noiseLevel,int _noiseAmp)

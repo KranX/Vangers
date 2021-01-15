@@ -4,8 +4,7 @@
 				     (Core)
 */
 
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
 #include "sqint.h"
 

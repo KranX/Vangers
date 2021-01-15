@@ -1770,6 +1770,9 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 	uchar* data;
 	debug_view = 10;
 		if(DepthShow)
+			//@caiiiycuk: there is something wrong with clipping in XCYCL & YCYCL
+			// in depth mode there are out of bounds mem reads. I think it's because
+			// clip_mask is not calculated correctly, but why???
 			for(i = 0;i < ysize;i++){
 				YSrc = (ysize - 2*i)*XSrcSize/xsize;
 				fx = (cx << 16) - DEPTH((XSrcSize << 0x10)/2,i) + (1 << 15);

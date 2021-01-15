@@ -1,24 +1,27 @@
 
-#include "..\global.h"
-#pragma hdrstop
+#include "../src/global.h"
 
 #ifdef _SURMAP_
 #define SESSION
 #endif
 
-#include "..\sqint\sqint.h"
+#include "sqint.h"
 
-#include "..\common.h"
+#include "../src/common.h"
 
-#include "..\terra\vmap.h"
+#include "../src/terra/vmap.h"
 #include "impass.h"
-#include "..\terra\world.h"
-#include "..\terra\render.h"
-#include "..\units\moveland.h"
+#include "../src/terra/world.h"
+#include "../src/terra/render.h"
+#include "../src/units/moveland.h"
 
 #include "sqexp.h"
 #include "tools.h"
 #include "track.h"
+
+#include "port.h"
+#define itoa port_itoa
+#include "missed.h"
 
 #ifdef _NT
 #include "..\root\win32f.h"
@@ -150,7 +153,7 @@ int SecondLayerPriority;
 
 int MLstatus,MLprocess;
 
-static char* ibmFName = "LEVEL.IBM";
+static const char* ibmFName = "LEVEL.IBM";
 
 ibmFile ibmObj = { 1024,1024,320,240,800,600,250,200 };
 
@@ -163,14 +166,17 @@ uchar markBMP[7][7] = {
 			0,0,0,COL1,0,0,0,
 			0,0,0,COL1,0,0,0 };
 
-static char* RUS(char* s,int back = 0)
+static const char* RUS(const char* s,int back = 0)
 {
-	static char buffer[512];
-	if(!back)
-		KDWIN::CharToOemBuff(s,buffer,strlen(s) + 1);
-	else
-		KDWIN::OemToCharBuff(s,buffer,strlen(s) + 1);
-	return buffer;
+        printf("RUS function is not supported\n");
+	//@caiiiycuk TODO: write converter that used internal buffer to avoid memory leak
+	return strdup(s);
+//	static char buffer[512];
+//	if(!back)
+//		KDWIN::CharToOemBuff(s,buffer,strlen(s) + 1);
+//	else
+//		KDWIN::OemToCharBuff(s,buffer,strlen(s) + 1);
+//	return buffer;
 }
 
 void sqStateSave(XStream& ff)
@@ -380,7 +386,7 @@ void iMainMenu::flush(void)
 
 struct PrmFormat {
 	int mode;
-	char* string;
+	const char* string;
 	int* prm;
 	int min,max;
 	};
@@ -443,7 +449,7 @@ PrmFormat PrmItem1[PRMMAX1] = {
 		};
 PrmFormat* PrmItemPtr;
 
-static char* MModeStr[LBM_MAX] = {
+static const char* MModeStr[LBM_MAX] = {
 				"FLOOD",
 				"DRIFT",
 				"TOOLZER",
@@ -583,7 +589,7 @@ void iPrmMenu::keytrap(int key)
 			draw();
 			timer = CLOCK();
 			break;
-		case VK_SUBTRACT:
+		case SDLK_MINUS:
 			n = menu -> getptr(menu -> pointer);
 			*(PrmItemPtr[n].prm) = -(*(PrmItemPtr[n].prm));
 			if(*(PrmItemPtr[n].prm) < PrmItemPtr[n].min) *(PrmItemPtr[n].prm) = PrmItemPtr[n].min;
@@ -593,7 +599,7 @@ void iPrmMenu::keytrap(int key)
 			menu -> pointer -> replace(menu,(uchar*)((*buf).GetBuf()));
 			draw();
 			break;
-		case VK_LEFT:
+		case SDLK_LEFT:
 			n = menu -> getptr(menu -> pointer);
 			if(PrmItemPtr[n].prm){
 				buf -> init();
@@ -603,7 +609,7 @@ void iPrmMenu::keytrap(int key)
 				draw();
 				}
 			break;
-		case VK_RIGHT:
+		case SDLK_RIGHT:
 			n = menu -> getptr(menu -> pointer);
 			if(PrmItemPtr[n].prm){
 				buf -> init();
@@ -786,34 +792,34 @@ iInputForm::iInputForm(sqElem* _owner,int _x,int _y,int _mode)
 			i = !MLstatus ? 6 : (MLstatus == 1 ? 3 : 8);
 			yadd = (i - 1)*16;
 			*this + (menu = new sqPopupMenu(this,7,22,i,&sysfont,0,3));
-			switch(MLstatus){
-				case 0:
-					if(!MLprocess)
-						*menu * new sqMenuBar((uchar*)RUS("Ðàçðåøèòü ML-àíèìàöèþ"),menu);
-					else					
-						*menu * new sqMenuBar((uchar*)RUS("Çàïðåòèòü ML-àíèìàöèþ"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Ñîçäàíèå íîâîãî ML-îáúåêòà"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Ïîêàäðîâîå ðåäàêòèðîâàíèå ñóùåñòâóþùèõ ML-îáúåêòîâ..."),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Óäàëåíèå ML-îáúåêòîâ..."),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Ðåäàêòèðîâàíèå ïàðàìåòðîâ ó ñóùåñòâóþùèõ ML-îáúåêòîâ..."),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Ïîêàçàòü îäèí èç ñóùåñòâóþùèõ ML-îáúåêòîâ..."),menu);
-					break;
-				case 1:
-					*menu * new sqMenuBar((uchar*)RUS("Äîáàâèòü êàäð"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Çàêîí÷èòü ñîçäàíèå ML-îáúåêòà è çàïèñàòü åãî"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Ïðåêðàòèòü ñîçäàíèå ML-îáúåêòà áåç ñîõðàíåíèÿ ðåçóëüòàòîâ"),menu);
-					break;
-				case 2:
-					*menu * new sqMenuBar((uchar*)RUS("[G] Ïåðåéòè íà îäèí èç ñóùåñòâóþùèõ êàäðîâ..."),menu);
-					*menu * new sqMenuBar((uchar*)RUS("[A] Çàïîìíèòü èçìåíåíèÿ òåêóùåãî êàäðà"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("[Q] Âîññòàíîâèòü êàäð â åãî íà÷àëüíîå ñîñòîÿíèå"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("[N] Âñòàâèòü íîâûé êàäð"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("[D] Óäàëèòü òåêóùèé êàäð"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Èçìåíèòü ïàðàìåòðû ML-îáúåêòà"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Çàêîí÷èòü ðåäàêòèðîâàíèå ML-îáúåêòà è ñîõðàíèòü âñå èçìåíåíèÿ"),menu);
-					*menu * new sqMenuBar((uchar*)RUS("Ïðåêðàòèòü ðåäàêòèðîâàíèå áåç ñîõðàíåíèÿ âñåõ èçìåíåíèé"),menu);
-					break;
-				}
+		switch(MLstatus){
+		case 0:
+			if(!MLprocess)
+				*menu * new sqMenuBar((uchar*)RUS("Ð Ð°Ð·Ñ€ÐµÑˆÐ¸Ñ‚ÑŒ ML-Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸ÑŽ"),menu);
+			else
+				*menu * new sqMenuBar((uchar*)RUS("Ð—Ð°Ð¿Ñ€ÐµÑ‚Ð¸Ñ‚ÑŒ ML-Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸ÑŽ"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð½Ð¾Ð²Ð¾Ð³Ð¾ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð°"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("ÐŸÐ¾ÐºÐ°Ð´Ñ€Ð¾Ð²Ð¾Ðµ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ñ… ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²..."),menu);
+			*menu * new sqMenuBar((uchar*)RUS("Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²..."),menu);
+			*menu * new sqMenuBar((uchar*)RUS("Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð² Ñƒ ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ñ… ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²..."),menu);
+			*menu * new sqMenuBar((uchar*)RUS("ÐŸÐ¾ÐºÐ°Ð·Ð°Ñ‚ÑŒ Ð¾Ð´Ð¸Ð½ Ð¸Ð· ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ñ… ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²..."),menu);
+			break;
+		case 1:
+			*menu * new sqMenuBar((uchar*)RUS("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ ÐºÐ°Ð´Ñ€"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ñ‚ÑŒ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð° Ð¸ Ð·Ð°Ð¿Ð¸ÑÐ°Ñ‚ÑŒ ÐµÐ³Ð¾"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("ÐŸÑ€ÐµÐºÑ€Ð°Ñ‚Ð¸Ñ‚ÑŒ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð° Ð±ÐµÐ· ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ñ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¾Ð²"),menu);
+			break;
+		case 2:
+			*menu * new sqMenuBar((uchar*)RUS("[G] ÐŸÐµÑ€ÐµÐ¹Ñ‚Ð¸ Ð½Ð° Ð¾Ð´Ð¸Ð½ Ð¸Ð· ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ñ… ÐºÐ°Ð´Ñ€Ð¾Ð²..."),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[A] Ð—Ð°Ð¿Ð¾Ð¼Ð½Ð¸Ñ‚ÑŒ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ³Ð¾ ÐºÐ°Ð´Ñ€Ð°"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[Q] Ð’Ð¾ÑÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ ÐºÐ°Ð´Ñ€ Ð² ÐµÐ³Ð¾ Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¾Ðµ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[N] Ð’ÑÑ‚Ð°Ð²Ð¸Ñ‚ÑŒ Ð½Ð¾Ð²Ñ‹Ð¹ ÐºÐ°Ð´Ñ€"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[D] Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ Ñ‚ÐµÐºÑƒÑ‰Ð¸Ð¹ ÐºÐ°Ð´Ñ€"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ñ‹ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð°"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ñ‚ÑŒ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð° Ð¸ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ Ð²ÑÐµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("ÐŸÑ€ÐµÐºÑ€Ð°Ñ‚Ð¸Ñ‚ÑŒ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð±ÐµÐ· ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ñ Ð²ÑÐµÑ… Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹"),menu);
+			break;
+		}
 			if(copt >= 6) copt = 5;
 			menu -> setpointer(menu -> getbar(copt),0);
 			xadd = menu -> len*8 + 16;
@@ -1391,13 +1397,13 @@ void sTrack::linking(void)
 
 struct LayFormat {
 	int mode;
-	char* string;
+	const char* string;
 	int* prm;
 	int min,max;
 	};
 
 const int LAYMAX = 9;
-char* LayEditStr[2] = {
+const char* LayEditStr[2] = {
 	"Begin editing the second layer",
 	"Accept the created layer"
 	};
@@ -1519,7 +1525,7 @@ void iLayerMenu::keytrap(int key)
 			draw();
 			timer = CLOCK();
 			break;
-		case VK_SUBTRACT:
+		case SDLK_MINUS:
 			n = menu -> getptr(menu -> pointer);
 			*(LayItem[n].prm) = -(*(LayItem[n].prm));
 			if(*(LayItem[n].prm) < LayItem[n].min) *(LayItem[n].prm) = LayItem[n].min;
@@ -1529,7 +1535,7 @@ void iLayerMenu::keytrap(int key)
 			menu -> pointer -> replace(menu,(uchar*)((*buf).GetBuf()));
 			draw();
 			break;
-		case VK_LEFT:
+		case SDLK_LEFT:
 			n = menu -> getptr(menu -> pointer);
 			if(LayItem[n].prm){
 				buf -> init();
@@ -1539,7 +1545,7 @@ void iLayerMenu::keytrap(int key)
 				draw();
 				}
 			break;
-		case VK_RIGHT:
+		case SDLK_RIGHT:
 			n = menu -> getptr(menu -> pointer);
 			if(LayItem[n].prm){
 				buf -> init();
@@ -1608,7 +1614,7 @@ void ibmFile::save(int _mapx_center,int _mapy_center,int _x_center,int _y_center
 		ff.write(p,sx);	
 		}
 	
-	delete p;
+	delete[] p;
 	ff.close();
 }
 
