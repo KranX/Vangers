@@ -1,3 +1,6 @@
+#ifndef __UNITS__MOVELAND_H
+#define __UNITS__MOVELAND_H
+
 #ifdef _ROAD_
 
 const int MAP_POINT_NONE = -1;
@@ -444,5 +447,7 @@ extern uchar DestroyMechosTable[TERRAIN_MAX];
 extern uchar DestroyMoleTable[TERRAIN_MAX];
 #define GET_DESTROY_MOLE(n) DestroyMechosMole[n]
 
+
+#endif
 
 #endif

@@ -1,3 +1,6 @@
+#ifndef __UNITS__EFFECT_H
+#define __UNITS__EFFECT_H
+
 const int EXPLOSION_OFFSET = 50;
 
 const char DT_DEFORM01 = 0;
@@ -262,3 +265,5 @@ inline int SPGetDistY(int s0,int s1)
 	if(ad0 < d1) return d0;
 	return s0 > s1 ? -(SPTorYSize - s0 + s1) : SPTorYSize - s1 + s0;
 };
+
+#endif

@@ -1967,7 +1967,7 @@ void dgRoom::read(dgFile* pf)
 
 void dgRoom::acceptTEXT(void)
 {
-	std::cout<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
+	// std::cout<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
 	dgFile* dgf = new dgFile(getDGname(roomName,".text"));
 
 	char* p = NULL;

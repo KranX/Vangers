@@ -1,3 +1,7 @@
+#ifndef __TERRA__HUFF1_H__
+#define __TERRA__HUFF1_H__
+
+
 struct DHuff{
 	unsigned int  *code;
 	unsigned char   *code_length;
@@ -22,3 +26,5 @@ struct DHuff{
 	void  decompress_line1 (char*& in, char*& out);
 	void  decompress_line2 (char*& in, char*& out);
 };
+
+#endif

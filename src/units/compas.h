@@ -1,3 +1,6 @@
+#ifndef __UNITS__COMPAS_H
+#define __UNITS__COMPAS_H
+
 const int CMP_TARGET_ESCAVE = 0;	//char*
 const int CMP_TARGET_SPOT = 1;		//char*
 const int CMP_TARGET_PASSAGE = 2;	//char*
@@ -31,3 +34,5 @@ inline void DecFuryFactor(void)
 {
 	if(GlobalFuryLevel > 0) GlobalFuryLevel--;	
 };
+
+#endif

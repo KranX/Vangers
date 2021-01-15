@@ -20,6 +20,7 @@ struct XListElement
 	XListElement* prev;
 
 	XListElement(void){ next = prev = NULL; }
+	virtual ~XListElement(){}
 };
 
 // fPtr -> prev == lPtr

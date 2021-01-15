@@ -277,7 +277,7 @@ void ItemsDispatcher::Open(Parser& in)
 
 		p = WorldTable[GameD.cWorld]->Pitem;
 		while(p){
-			n = (uvsItem*)(p);			
+			n = (uvsItem*)(p);
 			addDevice(n->pos_x,n->pos_y,n->pos_z,n->type,n->param1,n->param2,NULL);
 			p = p->next;
 		};

@@ -1,3 +1,12 @@
+#ifndef __UNITS__MECHOS_H
+#define __UNITS__MECHOS_H
+
+#include "../3d/3dobject.h"
+#include "../particle/light.h"
+#include "../dast/poly3d.h"
+#include "hobj.h"
+#include "track.h"
+#include "items.h"
 //#define TEST_TRACK
 
 /*
@@ -1217,3 +1226,6 @@ inline void aiPutHotBug(int d)
 	aiHotBugData02 ^= aiHotBugAdd01;
 	aiHotBugData03 ^= aiHotBugAdd00;
 };
+
+
+#endif
