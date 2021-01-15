@@ -795,29 +795,29 @@ iInputForm::iInputForm(sqElem* _owner,int _x,int _y,int _mode)
 		switch(MLstatus){
 		case 0:
 			if(!MLprocess)
-				*menu * new sqMenuBar((uchar*)RUS("Ð Ð°Ð·Ñ€ÐµÑˆÐ¸Ñ‚ÑŒ ML-Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸ÑŽ"),menu);
+				*menu * new sqMenuBar((uchar*)RUS(" §à¥è¨âì ML- ­¨¬ æ¨î"),menu);
 			else
-				*menu * new sqMenuBar((uchar*)RUS("Ð—Ð°Ð¿Ñ€ÐµÑ‚Ð¸Ñ‚ÑŒ ML-Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸ÑŽ"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð½Ð¾Ð²Ð¾Ð³Ð¾ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð°"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("ÐŸÐ¾ÐºÐ°Ð´Ñ€Ð¾Ð²Ð¾Ðµ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ñ… ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²..."),menu);
-			*menu * new sqMenuBar((uchar*)RUS("Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²..."),menu);
-			*menu * new sqMenuBar((uchar*)RUS("Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð² Ñƒ ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ñ… ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²..."),menu);
-			*menu * new sqMenuBar((uchar*)RUS("ÐŸÐ¾ÐºÐ°Ð·Ð°Ñ‚ÑŒ Ð¾Ð´Ð¸Ð½ Ð¸Ð· ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ñ… ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²..."),menu);
+				*menu * new sqMenuBar((uchar*)RUS("‡ ¯à¥â¨âì ML- ­¨¬ æ¨î"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("‘®§¤ ­¨¥ ­®¢®£® ML-®¡ê¥ªâ "),menu);
+			*menu * new sqMenuBar((uchar*)RUS("®ª ¤à®¢®¥ à¥¤ ªâ¨à®¢ ­¨¥ áãé¥áâ¢ãîé¨å ML-®¡ê¥ªâ®¢..."),menu);
+			*menu * new sqMenuBar((uchar*)RUS("“¤ «¥­¨¥ ML-®¡ê¥ªâ®¢..."),menu);
+			*menu * new sqMenuBar((uchar*)RUS("¥¤ ªâ¨à®¢ ­¨¥ ¯ à ¬¥âà®¢ ã áãé¥áâ¢ãîé¨å ML-®¡ê¥ªâ®¢..."),menu);
+			*menu * new sqMenuBar((uchar*)RUS("®ª § âì ®¤¨­ ¨§ áãé¥áâ¢ãîé¨å ML-®¡ê¥ªâ®¢..."),menu);
 			break;
 		case 1:
-			*menu * new sqMenuBar((uchar*)RUS("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ ÐºÐ°Ð´Ñ€"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ñ‚ÑŒ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð° Ð¸ Ð·Ð°Ð¿Ð¸ÑÐ°Ñ‚ÑŒ ÐµÐ³Ð¾"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("ÐŸÑ€ÐµÐºÑ€Ð°Ñ‚Ð¸Ñ‚ÑŒ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð° Ð±ÐµÐ· ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ñ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¾Ð²"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("„®¡ ¢¨âì ª ¤à"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("‡ ª®­ç¨âì á®§¤ ­¨¥ ML-®¡ê¥ªâ  ¨ § ¯¨á âì ¥£®"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("à¥ªà â¨âì á®§¤ ­¨¥ ML-®¡ê¥ªâ  ¡¥§ á®åà ­¥­¨ï à¥§ã«ìâ â®¢"),menu);
 			break;
 		case 2:
-			*menu * new sqMenuBar((uchar*)RUS("[G] ÐŸÐµÑ€ÐµÐ¹Ñ‚Ð¸ Ð½Ð° Ð¾Ð´Ð¸Ð½ Ð¸Ð· ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ñ… ÐºÐ°Ð´Ñ€Ð¾Ð²..."),menu);
-			*menu * new sqMenuBar((uchar*)RUS("[A] Ð—Ð°Ð¿Ð¾Ð¼Ð½Ð¸Ñ‚ÑŒ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ³Ð¾ ÐºÐ°Ð´Ñ€Ð°"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("[Q] Ð’Ð¾ÑÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ ÐºÐ°Ð´Ñ€ Ð² ÐµÐ³Ð¾ Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¾Ðµ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("[N] Ð’ÑÑ‚Ð°Ð²Ð¸Ñ‚ÑŒ Ð½Ð¾Ð²Ñ‹Ð¹ ÐºÐ°Ð´Ñ€"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("[D] Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ Ñ‚ÐµÐºÑƒÑ‰Ð¸Ð¹ ÐºÐ°Ð´Ñ€"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ñ‹ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð°"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("Ð—Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ñ‚ÑŒ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ ML-Ð¾Ð±ÑŠÐµÐºÑ‚Ð° Ð¸ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ Ð²ÑÐµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ"),menu);
-			*menu * new sqMenuBar((uchar*)RUS("ÐŸÑ€ÐµÐºÑ€Ð°Ñ‚Ð¸Ñ‚ÑŒ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð±ÐµÐ· ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ñ Ð²ÑÐµÑ… Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[G] ¥à¥©â¨ ­  ®¤¨­ ¨§ áãé¥áâ¢ãîé¨å ª ¤à®¢..."),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[A] ‡ ¯®¬­¨âì ¨§¬¥­¥­¨ï â¥ªãé¥£® ª ¤à "),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[Q] ‚®ááâ ­®¢¨âì ª ¤à ¢ ¥£® ­ ç «ì­®¥ á®áâ®ï­¨¥"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[N] ‚áâ ¢¨âì ­®¢ë© ª ¤à"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("[D] “¤ «¨âì â¥ªãé¨© ª ¤à"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("ˆ§¬¥­¨âì ¯ à ¬¥âàë ML-®¡ê¥ªâ "),menu);
+			*menu * new sqMenuBar((uchar*)RUS("‡ ª®­ç¨âì à¥¤ ªâ¨à®¢ ­¨¥ ML-®¡ê¥ªâ  ¨ á®åà ­¨âì ¢á¥ ¨§¬¥­¥­¨ï"),menu);
+			*menu * new sqMenuBar((uchar*)RUS("à¥ªà â¨âì à¥¤ ªâ¨à®¢ ­¨¥ ¡¥§ á®åà ­¥­¨ï ¢á¥å ¨§¬¥­¥­¨©"),menu);
 			break;
 		}
 			if(copt >= 6) copt = 5;
