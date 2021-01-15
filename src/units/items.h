@@ -1,3 +1,8 @@
+#ifndef __UNITS__ITEMS_H
+#define __UNITS__ITEMS_H
+
+#include "../3d/3dgraph.h"
+
 const int ITEM_GUN_DEVICE = 0;
 const int ITEM_CHANGER = 1;
 const int ITEM_OTHER = 2;
@@ -513,4 +518,4 @@ extern aiRndType GloryRnd;
 
 void Item2ShopAction(int type);
 
-
+#endif

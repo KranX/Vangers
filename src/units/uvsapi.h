@@ -1,3 +1,6 @@
+#ifndef __UNITS__UVSAPI_H
+#define __UNITS__UVSAPI_H
+
 const int BUNCH_CHANGE_CYCLE  = 1;
 
 const int UVS_DEVICE_POWER = 1000;
@@ -124,3 +127,5 @@ const int NET_STATISTICS_KILL = 0;
 const int NET_STATISTICS_DEATH = 1;
 const int NET_STATISTICS_CHECKPOINT = 2;
 const int NET_STATISTICS_END_RACE = 3;
+
+#endif
