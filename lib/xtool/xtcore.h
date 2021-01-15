@@ -108,7 +108,7 @@ void xtSysQuant(void);
 void xtCreateDummyWindow(int x = 0,int y = 0,int sx = 100,int sy = 100);
 void xtCloseDummyWindow(void);
 
-void set_key_nadlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*));
+void set_key_handlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*));
 
 #define SDLK_JOYSTICK_BUTTON_MASK (1<<28)
 #define SDLK_GAMECONTROLLER_BUTTON_MASK (1<<27)

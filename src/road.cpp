@@ -810,7 +810,7 @@ void LoadingRTO1::Init(int id)
 	YSIZE = 2*YSIDE;
 #endif
 
-	set_key_nadlers(&KeyCenter, NULL);
+	set_key_handlers(&KeyCenter, NULL);
 
 	graph3d_init();
 
@@ -2135,7 +2135,7 @@ void ShowImageRTO::Init(int id)
 	char* pname;
 
 	//NEED SEE
-	set_key_nadlers(&ShowImageKeyPress, NULL);
+	set_key_handlers(&ShowImageKeyPress, NULL);
 	XGR_MouseSetPressHandler(XGM_LEFT_BUTTON, ShowImageMousePress);
 	XGR_MouseSetPressHandler(XGM_RIGHT_BUTTON, ShowImageMousePress);
 

@@ -30,6 +30,7 @@
 #define DEPTH(u,y)	int(double(u)*double(ysize/2)/double(ysize/2 + y))
 
 #ifdef _SURMAP_
+#include "surmap/missed.h"
 #define SESSION
 #endif
 
@@ -113,9 +114,9 @@ int MAX_LINE = 3000; // 2050;
 #endif
 
 #ifdef SESSION
-static char* sssFName = "SESSION.V__";
-static char* sssFNameT = "SESSION.V_T";
-static char* sssFNameVPR = "SESSION.V_P";
+static const char* sssFName = "SESSION.V__";
+static const char* sssFNameT = "SESSION.V_T";
+static const char* sssFNameVPR = "SESSION.V_P";
 static uchar* linebuf;
 int sssUpdateLog = 1;
 #endif
@@ -527,6 +528,9 @@ void vrtMap::squeeze(void)
 
 void vrtMap::openMirror(void)
 {
+#ifdef _SURMAP_ROUGH_
+	printf("WARN: openMirror is not emplimented\n");
+#else
 	if(!fmap.open(fname,XS_IN | XS_OUT)) ErrH.Abort("VMP not found");
 
 	offset = 0;
@@ -539,14 +543,17 @@ void vrtMap::openMirror(void)
 	memset(lineT = new uchar*[V_SIZE],0,V_SIZE*sizeof(uchar*));
 	memset(lineTcolor = new uchar*[V_SIZE],0,V_SIZE*sizeof(uchar*));
 	for(uint i = 0;i < V_SIZE;i++,p += H2_SIZE) lineT[i] = p;
+#endif
 }
 
 void vrtMap::closeMirror(void)
 {
+#ifndef _SURMAP_ROUGH_
 	win32_VMPMirrorOFF(dHeap);
 	delete lineT;
 	delete lineTcolor;
 	fmap.close();
+#endif
 }
 #endif
 
@@ -602,7 +609,7 @@ void ConvertProcedure(char* name)
 		}
 	XCon < "\n";
 
-	delete buf;
+	delete[] buf;
 	fin.close();
 	fout.close();
 }
@@ -710,10 +717,10 @@ void vrtMap::analyzeINI(const char* name)
 		}
 
 #ifdef _SURMAP_
-	scenarioName = strdup(iniparser_getstring(dict_name,secCreation,"Build Scenario File"));
-	MESH = atoi(iniparser_getstring(dict_name,secCreation,"Mesh Value"));
-	NOISE_AMPL = atoi(iniparser_getstring(dict_name,secCreation,"Noise Amplitude"));
-	DEFAULT_TERRAIN = atoi(iniparser_getstring(dict_namee,secCreation,"Default Terrain Type")) << TERRAIN_OFFSET;
+	scenarioName = strdup(iniparser_getstring_surmap(dict_name,secCreation,"Build Scenario File"));
+	MESH = atoi(iniparser_getstring_surmap(dict_name,secCreation,"Mesh Value"));
+	NOISE_AMPL = atoi(iniparser_getstring_surmap(dict_name,secCreation,"Noise Amplitude"));
+	DEFAULT_TERRAIN = atoi(iniparser_getstring_surmap(dict_name,secCreation,"Default Terrain Type")) << TERRAIN_OFFSET;
 #endif
 	iniparser_freedict(dict_name);
 }
@@ -970,7 +977,7 @@ void vrtMap::reload(int nWorld)
 
 #ifdef SESSION
 	if(!DirectLog){
-		delete sssT;
+		delete[] sssT;
 		memset(sssT = new int[V_SIZE],0xFF,V_SIZE*sizeof(int));
 		if(!ROLog){
 			fsss.open(sssFName,XS_OUT);
