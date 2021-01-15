@@ -917,7 +917,7 @@ iListElement* iGetOptionObj(int id);
 void i_preExtQuant(void);
 void i_postExtQuant(void);
 
-void ParseScript(const char* fname,char* bname = NULL);
+void ParseScript(const char* fname,const char* bname = NULL);
 void iInit(void);
 int iQuant(void);
 

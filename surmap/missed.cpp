@@ -93,7 +93,7 @@ char* win32_findfirst(const char* mask) {
 	abort();
 }
 //http://www.delorie.com/djgpp/doc/libc/libc_167.html
-char* win32_findnext() {
+char* wwin32_findnext() {
 	// @caiiiycuk TODO read links
 	abort();
 }

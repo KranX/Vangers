@@ -162,7 +162,7 @@ struct ScriptFile
 #endif
 
 #ifdef _SAVE_BINARY_SCRIPT_
-	void set_bscript_name(char* fname);
+	void set_bscript_name(const char* fname);
 	void open_bscript(const char* fname);
 	void close_bscript(void);
 
