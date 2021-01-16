@@ -845,7 +845,7 @@ void vrtMap::reload(int nWorld)
 	on  = true;
 	if(nWorld >= maxWorld || nWorld < 0) ErrH.Abort("World Index out of range");
 #ifdef _SURMAP_
-	if(cWorld == nWorld) return;
+	//if(cWorld == nWorld) return;
 #endif
 	cWorld = nWorld;
 	uint old_v_size = V_SIZE;

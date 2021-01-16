@@ -211,6 +211,7 @@ int xtInitApplication(void)
 
 	XCon < "\nMAP loading:";
 	vMapPrepare(mapFName,prevWorld);
+	vMap->reload(prevWorld);
 	XCon < "\nMESH: " <= MESH < "\n";
 
 	PalettePrepare();
