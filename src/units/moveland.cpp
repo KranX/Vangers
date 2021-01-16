@@ -1132,13 +1132,13 @@ extern int StartMainQuantFlag;
 int MobileLocation::quant(int render,int skipVZ,int skipCheck)
 {
 #ifdef _SURMAP_
-	if(!inUse) return 0;
-	int xsd = curGMap -> xside;
-	int ysd = curGMap -> yside;
-	if(!skipVZ){
-		if(!(getDistX(x0 + dx,ViewX) < xsd && getDistX(ViewX,XCYCL(x0 + dx + altSx - 1)) < xsd)) return 0;
-		if(!(getDistY(y0 + dy,ViewY) < ysd && getDistY(ViewY,YCYCL(y0 + dy + altSy - 1)) < ysd)) return 0;
-	}
+	// if(!inUse) return 0;
+	// int xsd = curGMap -> xside;
+	// int ysd = curGMap -> yside;
+	// if(!skipVZ){
+	// 	if(!(getDistX(x0 + dx,ViewX) < xsd && getDistX(ViewX,XCYCL(x0 + dx + altSx - 1)) < xsd)) return 0;
+	// 	if(!(getDistY(y0 + dy,ViewY) < ysd && getDistY(ViewY,YCYCL(y0 + dy + altSy - 1)) < ysd)) return 0;
+	// }
 #endif
 
 	int checked;
