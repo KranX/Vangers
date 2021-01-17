@@ -795,7 +795,7 @@ void pixSetR(int x,int y,int delta,int surf)
 
 void pixDownSet(int x,int y,int delta,int surf)
 {
-std::cout<<"pixDownSet"<<std::endl;
+// std::cout<<"pixDownSet"<<std::endl;
 
 	uchar** lt = vMap -> lineT;
 	uchar* pa = lt[y];
