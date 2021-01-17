@@ -716,6 +716,7 @@ void iGameMap::keytrap(int key)
 				}
 			break;
 		case SDLK_MINUS:
+		case SDLK_KP_MINUS:
 			if(XKey.Pressed(SDLK_LCTRL))
 				TurnSecX += 50;
 			else
