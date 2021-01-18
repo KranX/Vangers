@@ -1695,7 +1695,6 @@ void iGetMultiGameParameters(void)
 			my_server_data.Van_War.MaxKills = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_MAX_TIME);
-			if(strcmp(game_name,"new soup")==0) value = 45;
 			my_server_data.Van_War.MaxTime = value;
 			break;
 		case iMP_MECHOSOMA:
