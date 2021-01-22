@@ -3471,29 +3471,46 @@ void iScreenDispatcher::input_string_quant(void)
 				}
 			}
 			else if (event->type == SDL_TEXTINPUT) {
-				if ((unsigned char)event->text.text[0] < 128) {
-					code = event->text.text[0];
-				} else {
-					unsigned short utf = ((unsigned short *)event->text.text)[0];
-					utf = ntohs(utf);
-					code = 0xdb;
-					if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
-						code = UTF8toCP866(utf);
+				if(!(ActiveEl -> flags & EL_NUMBER)){
+					if ((unsigned char)event->text.text[0] < 128) {
+						code = event->text.text[0];
 					} else {
-						code = ' ';
+						unsigned short utf = ((unsigned short *)event->text.text)[0];
+						utf = ntohs(utf);
+						code = 0xdb;
+						if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
+							code = UTF8toCP866(utf);
+						} else {
+							code = ' ';
+						}
 					}
-				}
-				if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ') {
-					break;
-				}
-				sz = strlen((char*)ptr);
-				if(sz < cur_max_input){
-					ptr[sz - 1] = code;
-					ptr[sz] = '_';
-					ptr[sz + 1] = 0;
+					if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ') {
+						break;
+					}
+					sz = strlen((char*)ptr);
+					if(sz < cur_max_input){
+						ptr[sz - 1] = code;
+						ptr[sz] = '_';
+						ptr[sz + 1] = 0;
 
-					init_flag = 1;
-					redraw_flag = 1;
+						init_flag = 1;
+						redraw_flag = 1;
+					}
+				} else {
+					if((unsigned char)event->text.text[0] >= '0' && (unsigned char)event->text.text[0] <= '9'){
+						code = event->text.text[0];
+						if(hfnt && (hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
+							break;
+						sz = strlen((char*)ptr);
+						if(sz < cur_max_input){
+							ptr[sz - 1] = code;
+							ptr[sz] = '_';
+							ptr[sz + 1] = 0;
+
+							init_flag = 1;
+							redraw_flag = 1;
+						}
+					}
 				}
 			}
 		}
