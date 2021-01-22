@@ -87,16 +87,20 @@ void mainWinMinimize() {
 void mainWinMaximize() {
 }
 
+#if !(defined(__unix__) || defined(__APPLE__))
+// implementation is in moveland.cpp
+#else
 //http://www.delorie.com/djgpp/doc/libc/libc_166.html
 char* win32_findfirst(const char* mask) {
 	// @caiiiycuk TODO read links
 	abort();
 }
 //http://www.delorie.com/djgpp/doc/libc/libc_167.html
-char* wwin32_findnext() {
+char* win32_findnext() {
 	// @caiiiycuk TODO read links
 	abort();
 }
+#endif
 
 
 // unused methods

@@ -376,7 +376,7 @@ void ShowHiddenLayer(void)
 void S3Dload(char* name)
 {
 	XBuffer buf;
-	buf < "\\SHAPE3D\\" < name;
+	buf < "SHAPE3D\\" < name;
 
 	load_shape(buf.GetBuf(),curGMap -> CX,curGMap -> CY);
 }

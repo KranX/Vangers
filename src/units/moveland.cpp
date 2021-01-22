@@ -24,7 +24,7 @@ char* win32_findnext(void)
 		}
 }
 
-char* win32_findfirst(char* mask)
+char* win32_findfirst(const char* mask)
 {
 	FFh = FindFirstFile(mask,&FFdata);
 	if(FFh == INVALID_HANDLE_VALUE) return NULL;
@@ -1132,6 +1132,7 @@ extern int StartMainQuantFlag;
 int MobileLocation::quant(int render,int skipVZ,int skipCheck)
 {
 #ifdef _SURMAP_
+	// TODO: delete this block
 	// if(!inUse) return 0;
 	// int xsd = curGMap -> xside;
 	// int ysd = curGMap -> yside;
