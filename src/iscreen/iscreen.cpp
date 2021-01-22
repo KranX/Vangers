@@ -3411,6 +3411,7 @@ void iScreenDispatcher::input_string_quant(void)
 	iListElementPtr* tmp;
 	iScreenObject* obj;
 	unsigned char* ptr = NULL;
+	const char* key_name = NULL;
 	unsigned char code;
 	HFont* hfnt = NULL;
 
@@ -3431,65 +3432,121 @@ void iScreenDispatcher::input_string_quant(void)
 		SDL_Event *event = KeyBuf->get();
 		if (event->type != SDL_KEYDOWN && event->type != SDL_TEXTINPUT)
 			continue;
-		if (event->type == SDL_KEYDOWN) {
-			if (event->key.keysym.sym == SDLK_RETURN || event->key.keysym.sym == SDLK_ESCAPE || event->key.keysym.sym == SDLK_LEFT || event->key.keysym.sym == SDLK_BACKSPACE) {
-				code = event->key.keysym.sym;
-			} else {
-				continue;
-			}
-			switch(event->key.keysym.sym) {
-				case SDLK_RETURN:
-					sz = strlen((char*)ptr);
-					ptr[sz - 1] = 0;
-					flags ^= SD_INPUT_STRING;
-					flags |= SD_FINISH_INPUT;
-					init_flag = 1;
-					redraw_flag = 1;
-					SDL_StopTextInput();
-					break;
-				case SDLK_ESCAPE:
-					strcpy((char*)ptr,BackupStr);
-					flags ^= SD_INPUT_STRING;
-					flags |= SD_FINISH_INPUT;
-					init_flag = 1;
-					redraw_flag = 1;
-					SDL_StopTextInput();
-					break;
-				case SDLK_LEFT:
-				case SDLK_BACKSPACE:
-					sz = strlen((char*)ptr);
-					if(sz > 1){
+		
+		if(!(ActiveEl -> flags & EL_KEY_NAME)){
+			if (event->type == SDL_KEYDOWN) {
+				if (event->key.keysym.sym > 0 && event->key.keysym.sym < 127) {
+					code = event->key.keysym.sym;
+				} else {
+					continue;
+				}
+				switch(event->key.keysym.sym) {
+					case SDLK_RETURN:
+						sz = strlen((char*)ptr);
 						ptr[sz - 1] = 0;
-						ptr[sz - 2] = '_';
+						flags ^= SD_INPUT_STRING;
+						flags |= SD_FINISH_INPUT;
+						init_flag = 1;
+						redraw_flag = 1;
+						SDL_StopTextInput();
+						break;
+					case SDLK_ESCAPE:
+						strcpy((char*)ptr,BackupStr);
+						flags ^= SD_INPUT_STRING;
+						flags |= SD_FINISH_INPUT;
+						init_flag = 1;
+						redraw_flag = 1;
+						SDL_StopTextInput();
+						break;
+					case SDLK_LEFT:
+					case SDLK_BACKSPACE:
+						sz = strlen((char*)ptr);
+						if(sz > 1){
+							ptr[sz - 1] = 0;
+							ptr[sz - 2] = '_';
+							init_flag = 1;
+							redraw_flag = 1;
+						}
+						break;
+				}
+			}
+			else if (event->type == SDL_TEXTINPUT) {
+				if(!(ActiveEl -> flags & EL_NUMBER)){
+					if ((unsigned char)event->text.text[0] < 128) {
+						code = event->text.text[0];
+					} else {
+						unsigned short utf = ((unsigned short *)event->text.text)[0];
+						utf = ntohs(utf);
+						code = 0xdb;
+						if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
+							code = UTF8toCP866(utf);
+						} else {
+							code = ' ';
+						}
+					}
+					if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ') {
+						break;
+					}
+					sz = strlen((char*)ptr);
+					if(sz < cur_max_input){
+						ptr[sz - 1] = code;
+						ptr[sz] = '_';
+						ptr[sz + 1] = 0;
+
 						init_flag = 1;
 						redraw_flag = 1;
 					}
-					break;
-			}
-		}
-		else if (event->type == SDL_TEXTINPUT) {
-			if ((unsigned char)event->text.text[0] < 128) {
-				code = event->text.text[0];
-			} else {
-				unsigned short utf = ((unsigned short *)event->text.text)[0];
-				utf = ntohs(utf);
-				code = 0xdb;
-				if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
-					code = UTF8toCP866(utf);
 				} else {
-					code = ' ';
+					if((unsigned char)event->text.text[0] >= '0' && (unsigned char)event->text.text[0] <= '9'){
+						code = event->text.text[0];
+						if(hfnt && (hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
+							break;
+						sz = strlen((char*)ptr);
+						if(sz < cur_max_input){
+							ptr[sz - 1] = code;
+							ptr[sz] = '_';
+							ptr[sz + 1] = 0;
+
+							init_flag = 1;
+							redraw_flag = 1;
+						}
+					}
 				}
 			}
-			if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
-				break;
-			sz = strlen((char*)ptr);
-			if(sz < cur_max_input){
-				ptr[sz - 1] = code;
-				ptr[sz] = '_';
-				ptr[sz + 1] = 0;
-
-				init_flag = 1;
-				redraw_flag = 1;
+		}
+		else {
+			int k = sdlEventToCode(event);
+			if(!(k & 0x1000)) {
+				switch(k){
+					case SDLK_ESCAPE:
+						strcpy((char*)ptr,BackupStr);
+						flags ^= SD_INPUT_STRING;
+						flags |= SD_FINISH_INPUT;
+						init_flag = 1;
+						redraw_flag = 1;
+						iScreenLastInput = k;
+						SDL_StopTextInput();
+						break;
+					default:
+						//NEED rewrite
+						/*if(!(k & iJOYSTICK_MASK))
+							key_name = iGetKeyNameText(k,lang());
+						else
+							key_name = iGetJoyBtnNameText(k,lang());
+						*/
+						key_name = iGetKeyNameText(k, lang());
+						if(flags & SD_INPUT_STRING && key_name){
+							if(!(ActiveEl -> flags & EL_JOYSTICK_KEY) || (k & iJOYSTICK_MASK)){
+								strcpy((char*)ptr,key_name);
+								flags ^= SD_INPUT_STRING;
+								flags |= SD_FINISH_INPUT;
+								init_flag = 1;
+								redraw_flag = 1;
+								iScreenLastInput = k;
+							}
+						}
+						break;
+				}
 			}
 		}
 	}
