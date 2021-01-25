@@ -23,7 +23,8 @@ SET(surmap_SRCS
 
 SET_SOURCE_FILES_PROPERTIES(${surmap_SRCS}
 		PROPERTIES COMPILE_FLAGS
-		"-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-register -Wno-dangling-else")
+		"-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-register -Wno-dangling-else \
+		 -Werror=missing-field-initializers -Werror=uninitialized")
 
 SET(vangers_surmap_SRCS
 	"${PROJECT_SOURCE_DIR}/src/3d/3dobject.cpp"

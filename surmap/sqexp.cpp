@@ -155,7 +155,15 @@ int MLstatus,MLprocess;
 
 static const char* ibmFName = "LEVEL.IBM";
 
-ibmFile ibmObj = { 1024,1024,320,240,800,600,250,200 };
+ibmFile ibmObj = { 1024,1024,
+				  320,240,
+				  800,600,
+				  250,200,
+				  0,
+				  nullptr,
+				  0,
+				  0,
+				  0 };
 
 uchar markBMP[7][7] = {
 			0,0,0,COL1,0,0,0,
@@ -627,6 +635,8 @@ void iPrmMenu::keytrap(int key)
 iInputForm::iInputForm(sqElem* _owner,int _x,int _y,int _mode)
 : sqInputBox(_owner,_x,_y,10,10,&sysfont,"P-Form")
 {
+	memset(params, 0, sizeof(params));
+
 	int NITEMS = XGR_MAXX <=640 ? 10 : 20;
 	const int M = 19;
 	int W = XGR_MAXX - (1024 - 950);
@@ -646,7 +656,7 @@ iInputForm::iInputForm(sqElem* _owner,int _x,int _y,int _mode)
 			name -> index = strlen(mapFName);
 			break;
 		case E_PLACEBMPFORM:
-			fname = win32_findfirst("BITMAP\\*.BMP");
+			fname = win32_findfirst("bitmap\\*.bmp");
 			if(!fname) return;
 			*this + (menu = new sqPopupMenu(this,7,22,NITEMS,&sysfont,0,3));
 			i = 0;
@@ -662,7 +672,7 @@ iInputForm::iInputForm(sqElem* _owner,int _x,int _y,int _mode)
 			*this + (params[4] = new sqField(this,"Size: ",4,ady + 5*24,0,&sysfont,(uchar*)itoa(placeBMP.size,tmpstr,10),4,T_NUMERIC));
 			break;
 		case E_MOSAICFORM:
-			fname = win32_findfirst("BITMAP\\MOSAIC\\*.BMP");
+			fname = win32_findfirst("bitmap\\mosaic\\*.bmp");
 			if(!fname) return;
 			*this + (menu = new sqPopupMenu(this,7,22,NITEMS,&sysfont,0,3));
 			i = 0;
@@ -771,7 +781,7 @@ iInputForm::iInputForm(sqElem* _owner,int _x,int _y,int _mode)
 			*this + (params[1] = new sqField(this,tb.GetBuf(),4,22 + 1*24,0,&sysfont,(uchar*)itoa(curGMap -> CY,tmpstr,10),5,T_NUMERIC));
 			break;
 		case E_FORM3D:
-			fname = win32_findfirst("\\SHAPE3D\\*.C3D");
+			fname = win32_findfirst("shape3d\\*.c3d");
 			if(!fname) return;
 			*this + (menu = new sqPopupMenu(this,7,22,NITEMS,&sysfont,0,3));
 			i = 0;
@@ -1255,9 +1265,11 @@ void iInputForm::quant(void)
 				break;
 			}
 
-	QuantObj = obj;
-	obj -> quant();
-	QuantObj = this;
+	if (obj) {
+		QuantObj = obj;
+		obj->quant();
+		QuantObj = this;
+	}
 
 	flush();
 }

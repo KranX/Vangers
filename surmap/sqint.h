@@ -314,7 +314,7 @@ struct sqFiler : sqElem {
 	};
 
 struct sqInputBox : sqBox {
-	sqElem* obj;
+	sqElem* obj = nullptr;
 	char* title;
 	sqFont* font;
 

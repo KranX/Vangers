@@ -34,6 +34,14 @@ extern int DirectLog;
 extern int ViewX,ViewY;
 extern char*VLCsign[4];
 extern char* VLfilenames[];
+
+const char pathSeparator =
+#ifdef _WIN32
+	'\\';
+#else
+	'/';
+#endif
+
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
 void load_shape(char* name,int x,int y);
 void release_shape();
@@ -88,8 +96,8 @@ void BitMap::load(char* name)
 		}
 
 	XBuffer buf;
-	buf < "BITMAP\\";
-	if(mosaic) buf < "MOSAIC\\";
+	buf < "bitmap" < pathSeparator;
+	if(mosaic) buf < "mosaic" < pathSeparator;
 	buf < name;
 
 	XStream ff(buf.GetBuf(),XS_IN);
@@ -99,7 +107,7 @@ void BitMap::load(char* name)
 	ff.close();
 
 	if(!mosaic){
-		memcpy(buf.GetBuf() + strlen(buf.GetBuf()) - 3,"PAL",3);
+		memcpy(buf.GetBuf() + strlen(buf.GetBuf()) - 3,"pal",3);
 		memset(palette,0,768);
 		ff.open(buf.GetBuf(),XS_IN);
 		ff.read(palette,ff.size());
@@ -376,7 +384,7 @@ void ShowHiddenLayer(void)
 void S3Dload(char* name)
 {
 	XBuffer buf;
-	buf < "SHAPE3D\\" < name;
+	buf < "shape3d" < pathSeparator < name;
 
 	load_shape(buf.GetBuf(),curGMap -> CX,curGMap -> CY);
 }

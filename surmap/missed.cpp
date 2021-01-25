@@ -4,6 +4,10 @@
 #include <SDL.h>
 #include <unordered_map>
 
+#if defined(__unix__) || defined(__APPLE__)
+#include <dirent.h>
+#endif
+
 typedef unsigned char uchar;
 
 #include "xglobal.h"
@@ -90,16 +94,64 @@ void mainWinMaximize() {
 #if !(defined(__unix__) || defined(__APPLE__))
 // implementation is in moveland.cpp
 #else
-//http://www.delorie.com/djgpp/doc/libc/libc_166.html
-char* win32_findfirst(const char* mask) {
-	// @caiiiycuk TODO read links
-	abort();
-}
+int lastSearchCount = 0;
+struct dirent **lastSearch = nullptr;
+std::string extToSearch;
+
 //http://www.delorie.com/djgpp/doc/libc/libc_167.html
 char* win32_findnext() {
-	// @caiiiycuk TODO read links
-	abort();
+	if (lastSearchCount == 0 || lastSearch == nullptr) {
+		return nullptr;
+	}
+
+	lastSearchCount--;
+	lastSearch--;
+
+	return (*lastSearch)->d_name;
 }
+
+//http://www.delorie.com/djgpp/doc/libc/libc_166.html
+char* win32_findfirst(const char* cMask) {
+	if (lastSearch != nullptr) {
+		free(lastSearch);
+		lastSearch = nullptr;
+	}
+
+	std::string maskAndPath = cMask;
+	std::replace(maskAndPath.begin(), maskAndPath.end(), '\\', '/');
+	auto lastSepIndex = maskAndPath.rfind('/');
+
+	if (lastSepIndex == std::string::npos) {
+		return nullptr;
+	}
+
+	auto path = maskAndPath.substr(0, lastSepIndex);
+	auto mask = maskAndPath.substr(lastSepIndex + 1, maskAndPath.length() - lastSepIndex - 1);
+
+	if (mask.length() < 3 || mask[0] != '*' || mask[1] != '.') {
+		printf("Unsupported mask %s\n", cMask);
+		abort();
+	}
+
+	extToSearch = mask.substr(1, mask.length() - 1);
+
+	lastSearchCount = scandir(path.c_str(), &lastSearch, [](const struct dirent* next) -> int {
+			std::string name = next->d_name;
+			if (extToSearch.length() > name.length()) {
+				return false;
+			}
+			return extToSearch == name.substr(name.length() - extToSearch.length(), extToSearch.length());
+		}, alphasort);
+
+	if (lastSearchCount < 0) {
+		printf("scandir errored for path %s\n", path.c_str());
+		return nullptr;
+	}
+
+	lastSearch += lastSearchCount;
+	return win32_findnext();
+}
+
 #endif
 
 
