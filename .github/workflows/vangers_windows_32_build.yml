@@ -2,7 +2,7 @@ name: Vangers Windows 32bit Build
 
 on:
   push:
-    branches: [ master, surmap_dilesoft ]
+    branches: [ master ]
   pull_request:
     branches: [ master, 60fps, hd_v2 ]
 
@@ -87,7 +87,6 @@ jobs:
         cp build/server/vangers_server.exe vangers/bin/
         msys2do strip vangers/bin/vangers_server.exe
         cp build/surmap/surmap.exe vangers/bin/
-        msys2do strip vangers/bin/surmap.exe
     - uses: actions/upload-artifact@v1
       with:
         name: Vangers-Release-32
