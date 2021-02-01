@@ -1769,9 +1769,7 @@ void VangerUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 {
 	uchar* TypeMap;
-	int rLog = 1;
 	uchar trn;
-//	int pf;
 
 	double CosTetta = Cos(tetta)*(1 << FIXED_SHIFT)*8/3;
 	int track_nx = -round(Cos(psi)*CosTetta);
@@ -1780,11 +1778,6 @@ void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 	if(CurrentWorld == WORLD_KHOX) return;	
 
 	if(speed != 0){
-//		if(n == nLeftWheel) pf = 0;
-//		else if(n == nRightWheel) pf = 1;
-//			else return;
-		//rLog = (256 - abs(speed)) >> 4;
-		//if(rLog <= 2) rLog = 2;
 
 		cycleTor(x,y);
 		TypeMap = vMap->lineT[y];
