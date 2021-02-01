@@ -3254,7 +3254,7 @@ void GeneralSystemLoad(XStream& in)
 			for(i = 0;i < NUM_CHECK_BSIGN;i++)
 				in > CHECK_BSIGN_DATA[i];
 
-			for(i = 0;i < 83 - WORLD_MAX - 3*sizeof(int) - 2*NUM_CHECK_BSIGN;i++)
+			for(i = 0;i < 83 - WORLD_MAX - 3*(int)sizeof(int) - 2*NUM_CHECK_BSIGN;i++)
 				in > ver;
 			break;
 		case 4:
