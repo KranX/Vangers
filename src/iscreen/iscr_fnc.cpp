@@ -1288,7 +1288,7 @@ void iScrQuantFinit(void)
 	static unsigned char pal_buf[768];
 	if(iScreenLog){
 		iFinitQuant();
-		set_key_nadlers(&KeyCenter, NULL);
+		set_key_handlers(&KeyCenter, NULL);
 
 		i_slake_pal(iscrPal,16);
 

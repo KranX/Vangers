@@ -245,8 +245,8 @@ void free_cell_frame(void);
 void swap_buf_col(int src,int dest,int sx,int sy,unsigned char* buf);
 void mem_putspr(int x,int y,int sx,int sy,int bsx,int bsy,unsigned char* src,unsigned char* dest);
 void mem_rectangle(int x,int y,int sx,int sy,int bsx,int col_in,int col_out,int mode,void* buf);
-void aParseScript(const char* fname,char* bname = NULL);
-void acsParseScript(const char* fname,char* bname = NULL);
+void aParseScript(const char* fname,const char* bname = NULL);
+void acsParseScript(const char* fname,const char* bname = NULL);
 
 void aciChangeWorld(int w_id);
 void aciInitWorldIDs(void);
