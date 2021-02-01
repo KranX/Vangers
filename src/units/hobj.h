@@ -194,7 +194,7 @@ void G2L(Vector v,int& xl,int& yl);
 int MapLineTrace(Vector& c1,Vector& c2);
 char GetCollisionMap(int x,int y,int z);
 char GetMapLevel(Vector& v);
-uchar GetAlt(int x,int y,int z,uchar& alt);
+uchar GetAlt(Vector v,uchar& alt);
 uchar GetGlobalAlt(int x,int y);
 
 int G2LS(Vector v,int& sx,int& sy);

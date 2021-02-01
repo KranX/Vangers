@@ -1575,7 +1575,7 @@ void BulletObject::TimeOutQuant(void)
 						LightData = NULL;
 					};
 				};
-			}else MapLevel = GetAlt(R_curr.x,R_curr.y,R_curr.z,alt);			
+			}else MapLevel = GetAlt(R_curr,alt);
 			R_curr.z = alt + AltOffset;
 		};
 	}else{

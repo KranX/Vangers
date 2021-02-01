@@ -1994,7 +1994,7 @@ void ParticleGenerator::Quant(void)
 	cycleTor(R_curr.x,R_curr.y);	
 
 	Time--;
-	GetAlt(R_curr.x,R_curr.y,R_curr.z,alt);
+	GetAlt(R_curr,alt);
 	R_curr.z = alt + radius;
 	if(Time <= 0) Status |= SOBJ_DISCONNECT;
 };

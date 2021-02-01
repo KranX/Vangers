@@ -1627,24 +1627,24 @@ char GetMapLevelType(Vector& v,uchar*& type)
 	return -1;
 };
 
-uchar GetAlt(int x,int y,int z,uchar& alt)
+uchar GetAlt(Vector v,uchar& alt)
 {
-	uchar* p = vMap->lineT[y];
+	uchar* p = vMap->lineT[v.y];
 	uchar* t;
 	uchar d;
 	if(p){
-		p += x;
+		p += v.x;
 		t = p + H_SIZE;
 		if((*t) & DOUBLE_LEVEL){
-			if(x & 1){
-				if((*p) < z){
+			if(v.x & 1){
+				if((*p) < v.z){
 					alt = *p;
 					return 1;
 				};
 
 				d = *(p -1);
-				if(d < z){
-					if((d + (((GET_DELTA(*(t - 1)) << 2) + GET_DELTA(*t) + 1) << DELTA_SHIFT)) > z){
+				if(d < v.z){
+					if((d + (((GET_DELTA(*(t - 1)) << 2) + GET_DELTA(*t) + 1) << DELTA_SHIFT)) > v.z){
 						alt = d;
 						return 0;
 					}else{
@@ -1656,13 +1656,13 @@ uchar GetAlt(int x,int y,int z,uchar& alt)
 					return 0;
 				};
 			}else{
-				if(*(p + 1) < z){
+				if(*(p + 1) < v.z){
 					alt = *(p + 1);
 					return 1;
 				};
 				d = *p;
-				if(d < z){
-					if((d + (((GET_DELTA(*t) << 2) + GET_DELTA(*(t + 1)) + 1) << DELTA_SHIFT)) > z){
+				if(d < v.z){
+					if((d + (((GET_DELTA(*t) << 2) + GET_DELTA(*(t + 1)) + 1) << DELTA_SHIFT)) > v.z){
 						alt = d;
 						return 0;
 					}else{
