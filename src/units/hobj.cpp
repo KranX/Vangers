@@ -1844,7 +1844,6 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 	int fx,fy,i;
 
 	int dx,dy,kx,ky,tx,ty;
-	int ax,ay,bx,by;
 	char mask;
 
 	cycleTor(cx1,cy1);
@@ -1936,6 +1935,8 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 		};
 	};
 
+	/*
+	int ax,ay,bx,by;
 	if(cy1 < cy2){
 		ay = YCYCL(cy1 - lh);
 		by = YCYCL(cy2 + lh);
@@ -1943,6 +1944,8 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 		ay = YCYCL(cy2 - lh);
 		by = YCYCL(cy1 + lh);
 	};
+	*/
+
 /*
 	if(cx1 < cx2){
 		ax = XCYCL(cx1 - lh);
