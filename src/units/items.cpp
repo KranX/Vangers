@@ -1566,7 +1566,7 @@ void BulletObject::TimeOutQuant(void)
 			};
 		}else{
 			if(ShowID == BULLET_SHOW_TYPE_ID::CRATER && ExtShowType){
-				if(BigGetAlt(R_curr.x,R_curr.y,R_curr.z,alt,ExtShowType)) MapLevel = 1;
+				if(BigGetAlt(R_curr, alt, ExtShowType)) MapLevel = 1;
 				else{
 					MapLevel = 0;
 					alt = 0;

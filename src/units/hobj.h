@@ -215,7 +215,7 @@ int TouchSphereZ(Vector& r0,Vector& r1,Vector& c,int rad,int& r);
 void DrawShadow(int x,int y,int x_size,int y_size,uchar* buff);
 
 char GetMapLevelType(Vector& v,uchar*& type);
-int BigGetAlt(int x,int y,int z,uchar& alt,uchar terrain);
+int BigGetAlt(Vector v,uchar& alt,uchar terrain);
 
 extern char SetWorldFlag;
 extern int CurrentWorld;

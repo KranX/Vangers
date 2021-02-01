@@ -1679,20 +1679,21 @@ uchar GetAlt(int x,int y,int z,uchar& alt)
 	return 1;
 };
 
-
-int BigGetAlt(int x,int y,int z,uchar& alt,uchar terrain)
+int BigGetAlt(Vector v, uchar& alt, uchar terrain)
 {
-	uchar* p = vMap->lineT[y];
-	if(p){
-		p += x;
+	uchar* p = vMap->lineT[v.y];
+	if (p) {
+		p += v.x;
 		alt = *p;
-		if(GET_TERRAIN(*(p + H_SIZE)) == terrain)
+		if (GET_TERRAIN(*(p + H_SIZE)) == terrain)
 			return 1;
-		else 
+		else
 			return 0;
-	}else alt = 0;
+	} else {
+		alt = 0;
+	}
 	return 0;
-};
+}
 
 int TouchSphere(Vector& r0,Vector& r1,Vector& c,int rad,int& r)
 {
