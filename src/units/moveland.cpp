@@ -1794,12 +1794,13 @@ void SensorValoc::load(XStream& ff)
 {
 	ff > x > y > z;
 	ff > id > radius > nameLen;
+
+	free(name);
 	if(nameLen) {
 		name = (char*)malloc(nameLen + 1);
 		ff.read(name, nameLen);
 		name[nameLen] = '\0';
 	} else {
-		free(name);
 		name = strdup("");
 	}
 
