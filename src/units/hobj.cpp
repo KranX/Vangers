@@ -2720,6 +2720,11 @@ void ChangeWorld(int world,int flag)
 //		}
 };*/
 
+void G2L(Vector v,int& xl,int& yl)
+{
+	G2L(v.x, v.y, xl, yl);
+};
+
 void G2L(int x,int y,int& xl,int& yl)
 {
 	x = getDistX(x,ViewX);
@@ -2729,47 +2734,65 @@ void G2L(int x,int y,int& xl,int& yl)
 	yl = round((x*sinTurnFlt + y*cosTurnFlt)) + ScreenCY;
 };
 
-int G2LS(int x,int y,int z,int& sx,int& sy)
+int G2LS(Vector v,int& sx,int& sy)
 {
-	int z1;
-	sx = round(getDistX(x,ViewX)*ScaleMapInvFlt) + ScreenCX;
-	sy = round(getDistY(y,ViewY)*ScaleMapInvFlt) + ScreenCY;
-	z1 = ViewZ - (z >> 1);
-	if(z1 <= 0) z1 = 1;
-//	return((focus << 8)/(-((int)z >> 1) + ViewZ));
-	return(focus << 8)/z1;
+	return G2LS(v.x, v.y, v.z, sx, sy);
 };
 
-void G2LP(int x,int y,int z,int& sx,int& sy)
+int G2LS(int x,int y,int z,int& sx,int& sy)
+{
+	sx = round(getDistX(x,ViewX)*ScaleMapInvFlt) + ScreenCX;
+	sy = round(getDistY(y,ViewY)*ScaleMapInvFlt) + ScreenCY;
+	int _z = ViewZ - (z >> 1);
+	if(_z <= 0) _z = 1;
+	return (focus << 8) / _z;
+};
+
+void G2LP(Vector v, int& sx, int& sy)
+{
+	G2LP(v.x, v.y, sx, sy);
+};
+
+void G2LP(int x,int y,int& sx,int& sy)
 {
 	sx = getDistX(x,ViewX) + ScreenCX;
 	sy = getDistY(y,ViewY) + ScreenCY;
 };
 
-void G2LQ(int x,int y,int z,int& sx,int& sy)
+void G2LQ(Vector v, int& sx, int &sy)
 {
-	z = 0;
+	G2LQ(v.x, v.y, sx, sy);
+};
+
+void G2LQ(int x, int y, int& sx, int &sy)
+{
+	int z = 0;
 	int xx = getDistX(x,ViewX);
 	int yy = getDistY(y,ViewY);
 	double x1 = A_g2s.a[0]*xx + A_g2s.a[1]*yy - A_g2s.a[2]*z;
 	double y1 = A_g2s.a[3]*xx + A_g2s.a[4]*yy - A_g2s.a[5]*z;
 	double z1 = ViewZ + (A_g2s.a[6]*xx + A_g2s.a[7]*yy -A_g2s.a[7]*z)*0.5;
-	if(z1 <= 0) 
+	if (z1 <= 0)
 		z1 = 1;
 	z1 = focus_flt/z1;
 	sx = round(x1*z1) + ScreenCX;
 	sy = round(y1*z1) + ScreenCY;
 };
 
-int G2LF(int x,int y,int z,int& sx,int& sy)
+int G2LF(Vector v,int& sx,int& sy)
 {
-	z = 0;
+	return G2LF(v.x, v.y, sx, sy);
+};
+
+int G2LF(int x,int y,int& sx,int& sy)
+{
+	int z = 0;
 	int xx = getDistX(x,ViewX);
 	int yy = getDistY(y,ViewY);
 	double x1 = round(A_g2s.a[0]*xx + A_g2s.a[1]*yy - A_g2s.a[2]*z);
 	double y1 = round(A_g2s.a[3]*xx + A_g2s.a[4]*yy - A_g2s.a[5]*z);
 	double z1 = ViewZ + round((A_g2s.a[6]*xx + A_g2s.a[7]*yy -A_g2s.a[7]*z)*.5);
-	if(z1 <= 0) 
+	if (z1 <= 0)
 		z1 = 1;
 	z1 = focus_flt/z1;
 	sx = round(x1*z1) + ScreenCX;
@@ -3018,11 +3041,11 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 	v1.x = XCYCL(v1.x);
 
 	if(AdvancedView){
-		G2LQ(v0.x,v0.y,v0.z,x0,y0);
-		G2LQ(v1.x,v1.y,v1.z,x1,y1);
+		G2LQ(v0,x0,y0);
+		G2LQ(v1,x1,y1);
 	}else{
-		G2LP(v0.x,v0.y,v0.z,x0,y0);
-		G2LP(v1.x,v1.y,v1.z,x1,y1);
+		G2LP(v0,x0,y0);
+		G2LP(v1,x1,y1);
 	};
 
 	dx = x1 - x0;

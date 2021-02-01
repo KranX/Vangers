@@ -123,8 +123,8 @@ void ExplosionObject::Free(void)
 void ExplosionObject::DrawQuant(void)
 {
 	int tx,ty,s;
-	if(AdvancedView) s = G2LF(R_curr.x,R_curr.y,R_curr.z,tx,ty);
-	else s = G2LS(R_curr.x,R_curr.y,R_curr.z,tx,ty);
+	if(AdvancedView) s = G2LF(R_curr,tx,ty);
+	else s = G2LS(R_curr,tx,ty);
 	if(MainMapProcess.process((char*)XGR_GetVideoLine(0),tx,ty,Scale*s >> 8,0,0,R_curr.z,R_curr.x & clip_mask_x, R_curr.y & clip_mask_y)) Status |= SOBJ_DISCONNECT;
 
 //	if(MainMapProcess.process((char*)(VS(_video)->_video),tx,ty,Scale*curGMap -> xsize / TurnSecX,0,0)) Status |= SOBJ_DISCONNECT;
@@ -538,7 +538,7 @@ void DeformObject::Quant(void)
 void DeformObject::DrawQuant(void)
 {
 	int tx,ty;
-	G2L(R_curr.x,R_curr.y,tx,ty);
+	G2L(R_curr,tx,ty);
 	wProcess->Deform(tx,ty,Offset,FullFlag);
 };
 
@@ -763,7 +763,7 @@ void ParticleObject::DrawQuant(void)
 				vPos = p->vR;
 				vPos >>= 8;
 //				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-					G2LQ(vPos.x,vPos.y,vPos.z,tx,ty);
+					G2LQ(vPos,tx,ty);
 	//				G2L(vPos.x,vPos.y,tx,ty);
 					if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 //				};
@@ -811,7 +811,7 @@ void ParticleObject::DrawQuant(void)
 				vPos = p->vR;
 				vPos >>= 8;
 				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-					G2LQ(vPos.x,vPos.y,vPos.z,tx,ty);
+					G2LQ(vPos,tx,ty);
 	//				G2L(vPos.x,vPos.y,tx,ty);
 					if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 				};
@@ -1366,7 +1366,7 @@ void TargetParticleType::aQuant(void)
 //		vR.y &= PTrack_mask_y;
 		pDist = d;
 
-		G2LQ(vR.x >> 8,vR.y >> 8,vR.z,tx,ty);
+		G2LQ(Vector(vR.x >> 8,vR.y >> 8,vR.z),tx,ty);
 		if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
 	};
 };
@@ -1502,9 +1502,9 @@ void TargetParticleType::aQuant2(void)
 		vT = vD;
 	}
 
-	G2LQ(vR.x >> 8,vR.y >> 8,vR.z,tx,ty);
+	G2LQ(Vector(vR.x >> 8,vR.y >> 8,vR.z),tx,ty);
 	if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
-};     
+};
 
 
 void TargetParticleType::sQuant2(void)
@@ -1656,7 +1656,7 @@ void WaterParticleObject::DrawQuant(void)
 					vPos = p->vR;
 					vPos >>= 8;
 					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
+						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1680,7 +1680,7 @@ void WaterParticleObject::DrawQuant(void)
 					vPos = p->vR;
 					vPos >>= 8;
 					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
+						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1707,7 +1707,7 @@ void WaterParticleObject::DrawQuant(void)
 					vPos = p->vR;
 					vPos >>= 8;
 					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
+						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1732,7 +1732,7 @@ void WaterParticleObject::DrawQuant(void)
 					vPos = p->vR;
 					vPos >>= 8;
 					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
+						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1857,8 +1857,8 @@ void FireBallObject::Quant(void)
 void FireBallObject::DrawQuant(void)
 {
 	int tx,ty,s;
-	if(AdvancedView) s = G2LF(R_curr.x,R_curr.y,R_curr.z,tx,ty);
-	else s = G2LS(R_curr.x,R_curr.y,R_curr.z,tx,ty);
+	if(AdvancedView) s = G2LF(R_curr,tx,ty);
+	else s = G2LS(R_curr,tx,ty);
 	s = s * Scale;
 //	FBP->Show(tx,ty,R_curr.z,s << 7,frame);
 	FBP->Show(tx,ty,R_curr.z,s,frame);
