@@ -365,7 +365,7 @@ struct ChangerDevice : StuffObject
 	void DeviceOut(Vector v1,int flag = 1,Vector v2 = Vector(-1,-1,-1));
 };
 
-struct GloryPlace : GeneralObject
+struct GloryPlace final : GeneralObject
 {
 	int World;
 	int Enable;
