@@ -2367,7 +2367,7 @@ void iPreparePlayerResults(int id)
 }
 
 const char* STR_NONE1 = "NONE";
-const char STR_NONE2[] = "���"; //cp866 - НЕТ
+const char STR_NONE2[] = {(char)0x8D, (char)0x85, (char)0x92, (char)0x00}; //cp866 - НЕТ
 
 const char* STR_JOYSTICK_KEY_NAME[] = {
 	"jbutton_1",
