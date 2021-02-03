@@ -239,7 +239,7 @@ struct EffectDispatcher : UnitList
 
 int GetAltLevel(Vector v);
 //char GetAltLevel(int x,int y,int z);
-int WaterAltLevel(int x,int y,int z);
+int WaterAltLevel(Vector v);
 //char WaterAltLevel(int x,int y,int z);
 
 extern EffectDispatcher EffD;

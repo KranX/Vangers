@@ -1655,7 +1655,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(WaterAltLevel(vPos)){
 						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
@@ -1666,7 +1666,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(WaterAltLevel(vPos)){
 						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
@@ -1706,7 +1706,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(WaterAltLevel(vPos)){
 						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
@@ -1717,7 +1717,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(WaterAltLevel(vPos)){
 						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 
@@ -1810,15 +1810,15 @@ void WaterParticleObject::CreateParticle(int _LifeTime,int _SetLifeTime,int _Vel
 	};
 };
 
-int WaterAltLevel(int x,int y,int z)
+int WaterAltLevel(Vector v)
 {
-	uchar* p = vMap->lineT[y];
+	uchar* p = vMap->lineT[v.y];
 	uchar* t;
 	if(p){
-		p += x;
+		p += v.x;
 		t = p + H_SIZE;
 		if((*t) & DOUBLE_LEVEL){
-			if(x & 1){
+			if(v.x & 1){
 				return (GET_TERRAIN_TYPE(*t) == WATER_TERRAIN);
 			}else{
 				return (GET_TERRAIN_TYPE(*(t + 1)) == WATER_TERRAIN);
