@@ -3080,8 +3080,11 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 
 				ty = cy >> FIXED_SHIFT;
 				if(cx > UcutLeft && cx < UcutRight && ty > VcutUp && ty < VcutDown){
-					if(GetAltLevel(vC.x >> FIXED_SHIFT,vC.y >> FIXED_SHIFT,vC.z >> FIXED_SHIFT))
-						XGR_SetPixel(cx,ty,ColorTable[XGR_GetPixel(cx,ty) + l]);
+					if(GetAltLevel(Vector(
+						vC.x >> FIXED_SHIFT,
+						vC.y >> FIXED_SHIFT,
+						vC.z >> FIXED_SHIFT))
+					){ XGR_SetPixel(cx,ty,ColorTable[XGR_GetPixel(cx,ty) + l]); };
 				};
 				cx++;
 				cy += k;
@@ -3116,8 +3119,11 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 
 				tx = cx >> FIXED_SHIFT;
 				if(tx > UcutLeft && tx < UcutRight && cy > VcutUp && cy < VcutDown){
-					if(GetAltLevel(vC.x >> FIXED_SHIFT,vC.y >> FIXED_SHIFT,vC.z >> FIXED_SHIFT))
-						XGR_SetPixel(tx,cy,ColorTable[XGR_GetPixel(tx,cy) + l]);
+					if(GetAltLevel(Vector(
+						vC.x >> FIXED_SHIFT,
+						vC.y >> FIXED_SHIFT,
+						vC.z >> FIXED_SHIFT))
+					){ XGR_SetPixel(tx,cy,ColorTable[XGR_GetPixel(tx,cy) + l]); };
 				};
 				cy++;
 				cx += k;
@@ -3158,8 +3164,11 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 
 				ty = cy >> FIXED_SHIFT;
 				if(cx > UcutLeft && cx < UcutRight && ty > VcutUp && ty < VcutDown){
-					if(GetAltLevel(vC.x >> FIXED_SHIFT,vC.y >> FIXED_SHIFT,vC.z >> FIXED_SHIFT))
-						XGR_SetPixel(cx,ty,ColorTable[XGR_GetPixel(cx,ty) + (l & 0xffffff00)]);
+					if(GetAltLevel(Vector(
+						vC.x >> FIXED_SHIFT,
+						vC.y >> FIXED_SHIFT,
+						vC.z >> FIXED_SHIFT))
+					){ XGR_SetPixel(cx,ty,ColorTable[XGR_GetPixel(cx,ty) + (l & 0xffffff00)]); };
 				};
 
 				cx++;
@@ -3202,8 +3211,11 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 
 				tx = cx >> FIXED_SHIFT;
 				if(tx > UcutLeft && tx < UcutRight && cy > VcutUp && cy < VcutDown){
-					if(GetAltLevel(vC.x >> FIXED_SHIFT,vC.y >> FIXED_SHIFT,vC.z >> FIXED_SHIFT))
-						XGR_SetPixel(tx,cy,ColorTable[XGR_GetPixel(tx,cy) + (l & 0xffffff00)]);
+					if(GetAltLevel(Vector(
+						vC.x >> FIXED_SHIFT,
+						vC.y >> FIXED_SHIFT,
+						vC.z >> FIXED_SHIFT))
+					){ XGR_SetPixel(tx,cy,ColorTable[XGR_GetPixel(tx,cy) + (l & 0xffffff00)]); };
 				};
 				cy++;
 				cx += k;

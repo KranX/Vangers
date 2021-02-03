@@ -762,7 +762,7 @@ void ParticleObject::DrawQuant(void)
 				p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
 				vPos = p->vR;
 				vPos >>= 8;
-//				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+//				if(GetAltLevel(vPos)){
 					G2LQ(vPos,tx,ty);
 	//				G2L(vPos.x,vPos.y,tx,ty);
 					if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
@@ -775,7 +775,7 @@ void ParticleObject::DrawQuant(void)
 					p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
 					vPos = p->vR;
 					vPos >>= 8;
-	//				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+	//				if(GetAltLevel(vPos)){
 		//				tx = round(SPGetDistX(p->vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
 		//				ty = round((p->vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
 
@@ -791,7 +791,7 @@ void ParticleObject::DrawQuant(void)
 					p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
 					vPos = p->vR;
 					vPos >>= 8;
-	//				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+	//				if(GetAltLevel(vPos)){
 		//				tx = round(SPGetDistX(p->vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
 		//				ty = round((p->vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
 
@@ -810,7 +810,7 @@ void ParticleObject::DrawQuant(void)
 				p->Quant();
 				vPos = p->vR;
 				vPos >>= 8;
-				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+				if(GetAltLevel(vPos)){
 					G2LQ(vPos,tx,ty);
 	//				G2L(vPos.x,vPos.y,tx,ty);
 					if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
@@ -822,7 +822,7 @@ void ParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 		//				tx = round(SPGetDistX(p->vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
 		//				ty = round((p->vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
 
@@ -837,7 +837,7 @@ void ParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 		//				tx = round(SPGetDistX(p->vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
 		//				ty = round((p->vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
 
@@ -852,12 +852,12 @@ void ParticleObject::DrawQuant(void)
 	};
 };
 
-int  GetAltLevel(int x,int y,int z)
+int GetAltLevel(Vector v)
 {
-	uchar* p = vMap->lineT[y];
+	uchar* p = vMap->lineT[v.y];
 	if(p){
-		p += x;
-		if((*(p+1)) < z && (*p) < z  ) return 1;
+		p += v.x;
+		if( (*(p+1)) < v.z && (*p) < v.z ) return 1;
 	};
 	return 0;
 };
@@ -1679,7 +1679,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->QuantT(vCenter.x,vCenter.y,Velocity);
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
@@ -1689,7 +1689,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->QuantT(vCenter.x,vCenter.y,Velocity);
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 
@@ -1731,7 +1731,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
@@ -1741,7 +1741,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 
