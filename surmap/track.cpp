@@ -339,19 +339,19 @@ eBranch::eBranch(void){
 
 	data_base = new eSection[MAX_BASE];
 //	  data_all = new rSection[MAX_ALL];
-	data_all = 0;
+	data_all = NULL;
 
 	l = 0;
 	r = 0;
 }
 
 eBranch::~eBranch(void){
-	delete data_base;
-	delete xpb;
-	delete ypb;
-	delete xpe;
-	delete ype;
-	if ( data_all != 0 ) delete data_all;
+	delete[] data_base;
+	delete[] xpb;
+	delete[] ypb;
+	delete[] xpe;
+	delete[] ype;
+	if ( data_all != NULL ) delete[] data_all;
 }
 
 
@@ -2346,7 +2346,7 @@ void eBranch::build_spline(void){
 
 	n_point = 0;
 
-	if ( data_all != 0 ) delete[] data_all;
+	if ( data_all != NULL ) delete[] data_all;
 
 	if ( n_section == 2 ){
 		data_all = new rSection[2];
