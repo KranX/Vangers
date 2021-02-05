@@ -856,9 +856,9 @@ eNode::eNode(int X, int Y, int H){
 }
 
 eNode::~eNode(void){
-	delete xp;
-	delete yp;
-	delete branches;
+	delete[] xp;
+	delete[] yp;
+	delete[] branches;
 }
 
 int eNode::find_point( int& X, int& Y){
