@@ -3662,7 +3662,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//travel
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "travel") == 0) {
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "travel") == 0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "приключение")==0)) {
 		World = WORLD_FOSTRAL;
 		switch (ind) {
 		case  0:	R_curr.x =  257;	R_curr.y = 1227;	break;
@@ -3687,7 +3687,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//necrally
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "necrally") == 0) {
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "necrally") == 0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "некралли")==0)) {
 		World = WORLD_NECROSS;
 		switch (ind) {
 		case  0:	R_curr.x =  316;	R_curr.y =  840;	break;
@@ -3746,7 +3746,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//shutle fostral
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "shutle fostral") == 0) {
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "shutle fostral") == 0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "челночный фострал")==0)) {
 		World = WORLD_FOSTRAL;
 		switch (ind) {
 		case  0:	R_curr.x =  180;	R_curr.y = 1616;	break;
@@ -3810,7 +3810,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//lens-team
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens-team") == 0) {
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens-team") == 0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "линза командная")==0)) {
 		World = WORLD_FOSTRAL;
 		if(ind == 0) {
 			R_curr.x =  488;	R_curr.y = 2487;
@@ -3822,7 +3822,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//lens-one
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens-one")==0) {
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "lens-one")==0 strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "линза одиночная")==0)) {
 		World = WORLD_FOSTRAL;
 		switch (ind) {
 			case  0:	R_curr.x =  488;	R_curr.y = 2487;	break;
@@ -3855,7 +3855,7 @@ void GloryPlace::Init(int ind)
 	}
 
 	//xivepass
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "xivepass") == 0) {
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "xivepass")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "ксивипасс")==0)) {
 		World = WORLD_THREALL;
 		switch (ind) {
 			case  0:	R_curr.x = 1558;	R_curr.y = 8299;	World = WORLD_NECROSS;	break;
@@ -3871,7 +3871,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//razminka plus
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "razminka plus") == 0) {
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "razminka plus")==0) {
 		World = WORLD_GLORX;
 		switch (ind) {
 			case  0:	R_curr.x =  625;	R_curr.y = 4386;	break;
@@ -3889,7 +3889,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//escape
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "escape") == 0) {
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "escape")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "побег")==0)) {
 		World = WORLD_GLORX;
 		switch (ind) {
 			case  0:	R_curr.x =  741;	R_curr.y =  515;	break;
@@ -3898,7 +3898,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//vozvrat
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "vozvrat") == 0) {
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "vozvrat")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "возврат")==0)) {
 		World = WORLD_FOSTRAL;
 		switch (ind) {
 			case  0:	R_curr.x =  741;	R_curr.y =  515;	World = WORLD_GLORX;	break;
@@ -3909,7 +3909,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//ishod
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "ishod") == 0) {
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "ishod")==0) {
 		World = WORLD_NECROSS;
 		switch (ind) {
 			case  0:	R_curr.x = 1030;	R_curr.y =16700;	break;
@@ -3918,7 +3918,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//satinan
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "satinan")==0) {
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "satinan")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "сатинан")==0)) {
 		World = WORLD_XPLO;
 		switch (ind) {
 			case  0:	R_curr.x = 1650;    R_curr.y =  815; World = WORLD_GLORX;	break;
@@ -3934,7 +3934,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//bullet run
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "bullet run")==0) {
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "bullet run")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "по болотам!")==0)) {
 		World = WORLD_NECROSS;
 		switch(ind) {
 			case 0 ... 2:
@@ -4026,7 +4026,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//eleerection-sim
-	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "eleerection-sim") == 0) {
+	if(NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "eleerection-sim")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "элирекция-сим")==0)) {
 		World = WORLD_FOSTRAL;
 		switch (ind) {
 			case  0:	R_curr.x =  855;	R_curr.y =14820;	break;
@@ -4050,7 +4050,7 @@ void GloryPlace::Init(int ind)
 	}
 	
 	//huntage-sim
-	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "huntage-sim")==0) {
+	if (NetworkON && my_server_data.GameType == PASSEMBLOSS && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "huntage-sim")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(), "хантаж-сим")==0)) {
 		if(ind == 0) {
 			R_curr.x = 150;    R_curr.y = 5435; World = WORLD_GLORX;
 		} else {

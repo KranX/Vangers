@@ -590,7 +590,7 @@ void uniVangPrepare(void){
 			if (i == UVS_ITEM_TYPE::MACHOTINE_GUN_LIGHT ||
 			    i == UVS_ITEM_TYPE::SPEETLE_SYSTEM_LIGHT ||
 			    i == UVS_ITEM_TYPE::GHORB_GEAR_LIGHT ||
-			   (NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0))
+			   (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"аибатр")==0)))
 #endif
 				for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item( i );
 			else
@@ -601,7 +601,7 @@ void uniVangPrepare(void){
 #ifdef ALL_ITEM_IN_SHOP
 			for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item( i );
 #else
-			if (NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0) {
+			if (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"аибатр")==0)) {
                 		for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item(i);
 			}
 			else {
@@ -811,19 +811,17 @@ void uniVangPrepare(void){
 			default: MechosID = 5; // дряхлый душегуб
 		}
 		char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-		if (my_server_data.GameType == 2 && strcmp(game_name,"travel")==0) MechosID = 0;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"aibatr")==0) MechosID = 22;
-		else if (my_server_data.GameType == 1 && strcmp(game_name,"mega mechosoma")==0) MechosID = 20;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"super van-war")==0) MechosID = 13;
-		else if (my_server_data.GameType == 1 && strcmp(game_name,"progress")==0) MechosID = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
-		else if (my_server_data.GameType == 2 && strcmp(game_name,"satinan")==0) MechosID = 19;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
-		else if (my_server_data.GameType == 1 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
-		else if (my_server_data.GameType == 2 && strcmp(game_name,"speed konoval")==0) MechosID = 9;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"mechoxes")==0) MechosID = 0;
-		else if (my_server_data.GameType == 0 && strcmp(game_name,"new soup")==0) MechosID = 10;
-		else if (my_server_data.GameType == 2 && strcmp(game_name,"vozvrat")==0) MechosID = 0;
-		else if (my_server_data.GameType == 2 && strcmp(game_name,"bullet run")==0) MechosID = 10;
+		if (my_server_data.GameType == 2 && (strcmp(game_name,"travel")==0 || strcmp(game_name,"приключение")==0)) MechosID = 0;
+		else if (my_server_data.GameType == 0 && (strcmp(game_name,"aibatr")==0 || strcmp(game_name,"приключение")==0)) MechosID = 22;
+		else if (my_server_data.GameType == 1 && (strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"приключение")==0)) MechosID = 20;
+		else if (my_server_data.GameType == 0 && (strcmp(game_name,"super van-war")==0 || strcmp(game_name,"приключение")==0)) MechosID = 13;
+		else if (my_server_data.GameType == 1 && (strcmp(game_name,"progress")==0 || strcmp(game_name,"приключение")==0)) MechosID = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
+		else if (my_server_data.GameType == 2 && (strcmp(game_name,"satinan")==0 || strcmp(game_name,"приключение")==0)) MechosID = 19;
+		else if (strcmp(game_name,"speed konoval")==0) MechosID = 9;
+		else if (my_server_data.GameType == 0 && (strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"приключение")==0)) MechosID = 0;
+		else if (my_server_data.GameType == 0 && (strcmp(game_name,"new soup")==0 || strcmp(game_name,"приключение")==0)) MechosID = 10;
+		else if (my_server_data.GameType == 2 && (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"приключение")==0)) MechosID = 0;
+		else if (my_server_data.GameType == 2 && (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"приключение")==0)) MechosID = 10;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"raffa-run-sim")==0) MechosID = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 		else MechosID = 5;
 	}
@@ -10383,18 +10381,18 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				}
 
 				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-				if (strcmp(game_name,"travel")==0) pm -> type = 0;
-				else if (strcmp(game_name,"aibatr")==0) pm -> type = 22;
-				else if (strcmp(game_name,"eleepod bath")==0) pm -> type = 0;
-				else if (strcmp(game_name,"mega mechosoma")==0) pm -> type = 20;
-				else if (strcmp(game_name,"super van-war")==0) pm -> type = 0;
-				else if (strcmp(game_name,"shutle fostral")==0) pm -> type = 0;
+				if (strcmp(game_name,"travel")==0) || (strcmp(game_name,"приключение")==0) pm -> type = 0;
+				else if (strcmp(game_name,"aibatr")==0) || (strcmp(game_name,"аибатр")==0) pm -> type = 22;
+				else if (strcmp(game_name,"eleepod bath")==0) || (strcmp(game_name,"баня элипода")==0) pm -> type = 0;
+				else if (strcmp(game_name,"mega mechosoma")==0) || (strcmp(game_name,"мега мехосома")==0) pm -> type = 20;
+				else if (strcmp(game_name,"super van-war")==0) || (strcmp(game_name,"супер ван-вар")==0) pm -> type = 0;
+				else if (strcmp(game_name,"shutle fostral")==0) || (strcmp(game_name,"челночный фострал")==0) pm -> type = 0;
 				else if (strcmp(game_name,"razminka plus")==0) pm -> type = 5;
-				else if (strcmp(game_name,"satinan")==0) pm -> type = 19;
+				else if (strcmp(game_name,"satinan")==0) || (strcmp(game_name,"сатинан")==0) pm -> type = 19;
 				else if (strcmp(game_name,"speed konoval")==0) pm -> type = 9;
-				else if (strcmp(game_name,"new soup")==0) pm -> type = 0;
-				else if (strcmp(game_name,"mechoxes")==0) pm -> type = 0;
-				else if (strcmp(game_name,"bullet run")==0) pm -> type = 10;
+				else if (strcmp(game_name,"new soup")==0) || (strcmp(game_name,"новый суп")==0) pm -> type = 0;
+				else if (strcmp(game_name,"mechoxes")==0) || (strcmp(game_name,"мехоксес")==0) pm -> type = 0;
+				else if (strcmp(game_name,"bullet run")==0) || (strcmp(game_name,"по болотам!")==0) pm -> type = 10;
 				else if (strcmp(game_name,"tankacide-run")==0) pm -> type = 5;
 				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;

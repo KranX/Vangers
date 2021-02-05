@@ -2484,7 +2484,7 @@ void Object::controls(int mode,int param)
 				}
 			break;
 		case CONTROLS::JUMP_USING_ACCUMULATED_POWER:
-			if (NetworkON && strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"eleepod bath")==0) break;
+			if (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"eleepod bath")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"баня элипода")==0)) break;
 			if(jump_power){
 				jump();
 				if(active)

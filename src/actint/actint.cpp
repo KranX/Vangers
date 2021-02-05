@@ -4238,19 +4238,19 @@ void actIntDispatcher::i_finit(void)
 	aciPrepareWorldsMenu();
 	
 	char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-	if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 3 && strcmp(game_name,"satinan")==0) {
+	if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 3 && (strcmp(game_name,"satinan")==0 || strcmp(game_name,"сатинан")==0)) {
     		aScrDisp->send_event(EV_TELEPORT, 3);
 	}
-	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 12 && strcmp(game_name,"aibatr")==0) {
+	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 12 && (strcmp(game_name,"aibatr")==0 || strcmp(game_name,"аибатр")==0)) {
     		aScrDisp->send_event(EV_TELEPORT, 12);
 	}
 	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 12 && strcmp(game_name,"speed konoval")==0) {
     		aScrDisp->send_event(EV_TELEPORT, 12);
 	}
-	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 8 && strcmp(game_name,"battle for hmok")==0) {
+	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 8 && (strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"битва за хмок")==0)) {
     		aScrDisp->send_event(EV_TELEPORT, 8);
 	}
-	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 11 && strcmp(game_name,"mechoxes")==0) {
+	else if (NetworkON && my_server_data.GameType == 0 && CurrentWorld != 11 && (strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"мехоксес")==0)) {
     		aScrDisp->send_event(EV_TELEPORT, 11);
 	}
 	else if (NetworkON && my_server_data.GameType == 2 && CurrentWorld != 8 && strcmp(game_name,"tankacide-run")==0) {
