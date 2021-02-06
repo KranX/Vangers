@@ -5256,11 +5256,6 @@ void acsSaveData(void)
 	XBuffer XBuf;
 	XStream fh;
 
-	XStream fh2;
-	fh2.open("tmp_f1.txt",XS_OUT);
-	fh2<14<40;
-	fh2.close();
-
 	const char* ptr = NULL;
 	aciScreenInputField* p;
 
