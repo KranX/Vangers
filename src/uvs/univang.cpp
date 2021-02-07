@@ -10382,17 +10382,17 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 
 				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
 				if (strcmp(game_name,"travel")==0) || (strcmp(game_name,"приключение")==0) pm -> type = 0;
-				else if (strcmp(game_name,"aibatr")==0) || (strcmp(game_name,"аибатр")==0) pm -> type = 22;
-				else if (strcmp(game_name,"eleepod bath")==0) || (strcmp(game_name,"баня элипода")==0) pm -> type = 0;
-				else if (strcmp(game_name,"mega mechosoma")==0) || (strcmp(game_name,"мега мехосома")==0) pm -> type = 20;
-				else if (strcmp(game_name,"super van-war")==0) || (strcmp(game_name,"супер ван-вар")==0) pm -> type = 0;
-				else if (strcmp(game_name,"shutle fostral")==0) || (strcmp(game_name,"челночный фострал")==0) pm -> type = 0;
+				else if (strcmp(game_name,"aibatr")==0 || strcmp(game_name,"аибатр")==0) pm -> type = 22;
+				else if (strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"баня элипода")==0) pm -> type = 0;
+				else if (strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"мега мехосома")==0) pm -> type = 20;
+				else if (strcmp(game_name,"super van-war")==0 || strcmp(game_name,"супер ван-вар")==0) pm -> type = 0;
+				else if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"челночный фострал")==0) pm -> type = 0;
 				else if (strcmp(game_name,"razminka plus")==0) pm -> type = 5;
-				else if (strcmp(game_name,"satinan")==0) || (strcmp(game_name,"сатинан")==0) pm -> type = 19;
+				else if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"сатинан")==0) pm -> type = 19;
 				else if (strcmp(game_name,"speed konoval")==0) pm -> type = 9;
-				else if (strcmp(game_name,"new soup")==0) || (strcmp(game_name,"новый суп")==0) pm -> type = 0;
-				else if (strcmp(game_name,"mechoxes")==0) || (strcmp(game_name,"мехоксес")==0) pm -> type = 0;
-				else if (strcmp(game_name,"bullet run")==0) || (strcmp(game_name,"по болотам!")==0) pm -> type = 10;
+				else if (strcmp(game_name,"new soup")==0 || strcmp(game_name,"новый суп")==0) pm -> type = 0;
+				else if (strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"мехоксес")==0) pm -> type = 0;
+				else if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"по болотам!")==0) pm -> type = 10;
 				else if (strcmp(game_name,"tankacide-run")==0) pm -> type = 5;
 				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
