@@ -590,7 +590,7 @@ void uniVangPrepare(void){
 			if (i == UVS_ITEM_TYPE::MACHOTINE_GUN_LIGHT ||
 			    i == UVS_ITEM_TYPE::SPEETLE_SYSTEM_LIGHT ||
 			    i == UVS_ITEM_TYPE::GHORB_GEAR_LIGHT ||
-			   (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"аибатр")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"battle for hmok")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"битва за хмок")==0))
+			   (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"аибатр")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"battle for hmok")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"битва за хмок")==0)))
 #endif
 				for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item( i );
 			else
