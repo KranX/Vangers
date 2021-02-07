@@ -59,7 +59,7 @@ jobs:
       run: msys2do cmake -G Ninja ..
       working-directory: build
     - name: vangers -- make
-      run: msys2do ninja
+      run: msys2do ninja vangers
       working-directory: build
     - name: vangers -- prepare release folder
       run: |
@@ -80,9 +80,6 @@ jobs:
         cp clunk/build/libclunk.dll vangers/bin/
         cp build/src/vangers.exe vangers/bin/
         msys2do strip vangers/bin/vangers.exe
-        cp build/server/vangers_server.exe vangers/bin/
-        msys2do strip vangers/bin/vangers_server.exe
-        cp build/surmap/surmap.exe vangers/bin/
     - uses: actions/upload-artifact@v1
       with:
         name: Vangers[M4D]-32

@@ -59,7 +59,7 @@ jobs:
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: make
-      run: ninja
+      run: ninja vangers
       working-directory: build
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.12
