@@ -230,7 +230,7 @@ void YSetup(void)
 	TOR_YSIZE = TOR_POWER*map_size_y;
 	V_POWER = MAP_POWER_Y;
 	V_SIZE = map_size_y;
-	if(V_POWER <= 11 && !RAM16)
+	// if(V_POWER <= 11 && !RAM16)
 		MAX_LINE = V_SIZE + 2;
 
 	QUANT = 1 << POWER;
