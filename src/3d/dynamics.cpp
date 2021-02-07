@@ -337,7 +337,9 @@ int non_loaded_space;
 DBM A_g2l_old;
 Vector R_old;
 
+#ifndef _SURMAP_
 dastPoly3D terra_moving_tool(Vector(0,0,0),Vector(0,0,0),Vector(0,0,0));
+#endif
 
 extern dastPoly3D MolePoint1;
 extern int MoleInProcess;
@@ -4595,8 +4597,10 @@ int Object::test_object_to_baseobject(BaseObject* bobj)
 		fout <= (double)level1/65536 < "\t";
 		fout <= (double)level2/65536 < "\n";
 #endif
+#ifndef _SURMAP_ROUGH_
 		DestroyCollision(level1,obj);
 		obj -> DestroyCollision(level2,this);
+#endif
 		return 1;
 		}
 	return 0;
@@ -4766,7 +4770,9 @@ void Object::NetEvent(int type,int id,int creator,int time,int x,int y,int radiu
 		A_l2g = DBM(1,-1,1,DIAGONAL)*DBM(Q_real);
 		A_g2l = transpose(A_l2g);
 		update_coord();
+#ifndef _SURMAP_ROUGH_
 		GetVisible();
+#endif
 		return;
 		}
 	DBV R_t = R + dR_corr;
