@@ -824,7 +824,7 @@ Quaternion& Quaternion::rotate(DBV v)
 ******************************************************************************/
 #ifdef __HIGHC__
 _find_t find_buffer;
-char* win32_findfirst(char* mask)
+char* win32_findfirst(const char* mask)
 {
 	if(!_dos_findfirst(mask,_A_NORMAL,&find_buffer))
 		return find_buffer.name;
