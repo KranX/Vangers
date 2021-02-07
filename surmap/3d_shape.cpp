@@ -119,7 +119,7 @@ int shape_control(int code)
 		A_shape_inv *= DBM(rotate_step,Y_AXIS);
 		}
 
-	if(XKey.Pressed(SDLK_PLUS) || XKey.Pressed(SDLK_KP_PLUS)){
+	if(XKey.Pressed(SDLK_EQUALS) || XKey.Pressed(SDLK_KP_PLUS)){
 		if(!alt){
 			shape_scale_x *= scale_step;
 			shape_scale_y *= scale_step;
