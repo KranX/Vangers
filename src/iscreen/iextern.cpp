@@ -1646,52 +1646,51 @@ void iGetMultiGameParameters(void)
 	switch(iCurMultiGame){
 		case iMP_VAN_WAR:
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_INITIAL_CASH);
-			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"–∞–∏–±–∞—Ç—Ä")==0) value = 999999;
-			if(strcmp(game_name,"super van-war")==0 || strcmp(game_name,"—Å—É–ø–µ—Ä –≤–∞–Ω-–≤–∞—Ä")==0) value = -35000;
+			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"†®°†‚‡")==0) value = 999999;
+			if(strcmp(game_name,"super van-war")==0 || strcmp(game_name,"·„Ø•‡ ¢†≠-¢†‡")==0) value = -35000;
 			if(strcmp(game_name,"speed konoval")==0) value = 12500;
-			if(strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"–±–∏—Ç–≤–∞ –∑–∞ —Ö–º–æ–∫")==0) value = 999999;
-			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"–Ω–æ–≤—ã–π —Å—É–ø")==0) value = 6500;
-			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"–º–µ—Ö–æ–∫—Å–µ—Å")==0) value = 35700;
+			if(strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"°®‚¢† ß† Â¨Æ™")==0) value = 999999;
+			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"≠Æ¢Î© ·„Ø")==0) value = 6500;
+			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"¨•ÂÆ™·•·")==0) value = 35700;
 			my_server_data.Van_War.InitialCash = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ARTEFACTS_USING);
-			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"–∞–∏–±–∞—Ç—Ä")==0) value = 0;
-			if(strcmp(game_name,"super van-war")==0 || strcmp(game_name,"—Å—É–ø–µ—Ä –≤–∞–Ω-–≤–∞—Ä")==0) value = 0;
+			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"†®°†‚‡")==0) value = 0;
+			if(strcmp(game_name,"super van-war")==0 || strcmp(game_name,"·„Ø•‡ ¢†≠-¢†‡")==0) value = 1;
 			my_server_data.Van_War.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_IN_ESCAVE_TIME);
-			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"–∞–∏–±–∞—Ç—Ä")==0) value = 2;
-			if(strcmp(game_name,"super van-war")==0 || strcmp(game_name,"—Å—É–ø–µ—Ä –≤–∞–Ω-–≤–∞—Ä")==0) value = 2;
+			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"†®°†‚‡")==0) value = 2;
+			if(strcmp(game_name,"super van-war")==0 || strcmp(game_name,"·„Ø•‡ ¢†≠-¢†‡")==0) value = 2;
 			if(strcmp(game_name,"speed konoval")==0) value = 1;
-			if(strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"–±–∏—Ç–≤–∞ –∑–∞ —Ö–º–æ–∫")==0) value = 2;
-			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"–Ω–æ–≤—ã–π —Å—É–ø")==0) value = 1;
-			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"–º–µ—Ö–æ–∫—Å–µ—Å")==0) value = 0;
+			if(strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"°®‚¢† ß† Â¨Æ™")==0) value = 2;
+			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"≠Æ¢Î© ·„Ø")==0) value = 1;
+			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"¨•ÂÆ™·•·")==0) value = 0;
 			my_server_data.Van_War.InEscaveTime = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_TEAM_MODE);
-			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"–Ω–æ–≤—ã–π —Å—É–ø")==0) value = 1;
-			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"–º–µ—Ö–æ–∫—Å–µ—Å")==0) value = 0;
+			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"¨•ÂÆ™·•·")==0) value = 0;
 			my_server_data.Van_War.TeamMode = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_NASCENCY);
-			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"–∞–∏–±–∞—Ç—Ä")==0) value = 2;
+			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"†®°†‚‡")==0) value = 2;
 			if(strcmp(game_name,"speed konoval")==0) value = 2;
-			if(strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"–±–∏—Ç–≤–∞ –∑–∞ —Ö–º–æ–∫")==0) value = 2;
-			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"–Ω–æ–≤—ã–π —Å—É–ø")==0) value = 0;
-			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"–º–µ—Ö–æ–∫—Å–µ—Å")==0) value = 1;
+			if(strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"°®‚¢† ß† Â¨Æ™")==0) value = 2;
+			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"≠Æ¢Î© ·„Ø")==0) value = 0;
+			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"¨•ÂÆ™·•·")==0) value = 1;
 			my_server_data.Van_War.Nascency = value - 1;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_ACCESS);
-			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"–∞–∏–±–∞—Ç—Ä")==0) value = 0;
-			if(strcmp(game_name,"super van-war")==0 || strcmp(game_name,"—Å—É–ø–µ—Ä –≤–∞–Ω-–≤–∞—Ä")==0) value = 1;
+			if(strcmp(game_name,"aibatr")==0 || strcmp(game_name,"†®°†‚‡")==0) value = 0;
+			if(strcmp(game_name,"super van-war")==0 || strcmp(game_name,"·„Ø•‡ ¢†≠-¢†‡")==0) value = 1;
 			if(strcmp(game_name,"speed konoval")==0) value = 0;
-			if(strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"–±–∏—Ç–≤–∞ –∑–∞ —Ö–º–æ–∫")==0) value = 1;
-			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"–Ω–æ–≤—ã–π —Å—É–ø")==0) value = 0;
-			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"–º–µ—Ö–æ–∫—Å–µ—Å")==0) value = 1;
+			if(strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"°®‚¢† ß† Â¨Æ™")==0) value = 1;
+			if(strcmp(game_name,"new soup")==0 || strcmp(game_name,"≠Æ¢Î© ·„Ø")==0) value = 0;
+			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"¨•ÂÆ™·•·")==0) value = 1;
 			my_server_data.Van_War.WorldAccess = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_MAX_KILLS);
-			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"–º–µ—Ö–æ–∫—Å–µ—Å")==0) value = 10;
+			if(strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"¨•ÂÆ™·•·")==0) value = 10;
 			my_server_data.Van_War.MaxKills = value;
 
 			value = iGetMultiGameParameter(iMP_VAN_WAR,iMP_MAX_TIME);
@@ -1699,23 +1698,23 @@ void iGetMultiGameParameters(void)
 			break;
 		case iMP_MECHOSOMA:
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_INITIAL_CASH);
-			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"–±–∞–Ω—è —ç–ª–∏–ø–æ–¥–∞")==0) value = 999999;
-			if(strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"–º–µ–≥–∞ –º–µ—Ö–æ—Å–æ–º–∞")==0) value = 999999;
-			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"–ø—Ä–æ–≥—Ä–µ—Å—Å")==0) value = 400;
+			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"°†≠Ô Ì´®ØÆ§†")==0) value = 999999;
+			if(strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"¨•£† ¨•ÂÆ·Æ¨†")==0) value = 999999;
+			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"Ø‡Æ£‡•··")==0) value = 400;
 			if(strcmp(game_name,"speed konoval")==0) value = 10000;
 			my_server_data.Mechosoma.InitialCash = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_ARTEFACTS_USING);
-			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"–±–∞–Ω—è —ç–ª–∏–ø–æ–¥–∞")==0) value = 0;
-			if(strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"–º–µ–≥–∞ –º–µ—Ö–æ—Å–æ–º–∞")==0) value = 0;
-			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"–ø—Ä–æ–≥—Ä–µ—Å—Å")==0) value = 0;
+			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"°†≠Ô Ì´®ØÆ§†")==0) value = 0;
+			if(strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"¨•£† ¨•ÂÆ·Æ¨†")==0) value = 0;
+			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"Ø‡Æ£‡•··")==0) value = 0;
 			if(strcmp(game_name,"speed konoval")==0) value = 0;
 			my_server_data.Mechosoma.ArtefactsUsing = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_IN_ESCAVE_TIME);
-			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"–±–∞–Ω—è —ç–ª–∏–ø–æ–¥–∞")==0) value = 1;
-			if(strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"–º–µ–≥–∞ –º–µ—Ö–æ—Å–æ–º–∞")==0) value = 3;
-			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"–ø—Ä–æ–≥—Ä–µ—Å—Å")==0) value = 0;
+			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"°†≠Ô Ì´®ØÆ§†")==0) value = 1;
+			if(strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"¨•£† ¨•ÂÆ·Æ¨†")==0) value = 3;
+			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"Ø‡Æ£‡•··")==0) value = 0;
 			if(strcmp(game_name,"speed konoval")==0) value = 1;
 			my_server_data.Mechosoma.InEscaveTime = value;
 
@@ -1723,109 +1722,109 @@ void iGetMultiGameParameters(void)
 			my_server_data.Mechosoma.TeamMode = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_WORLD);
-			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"–±–∞–Ω—è —ç–ª–∏–ø–æ–¥–∞")==0) value = 0;
-			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"–ø—Ä–æ–≥—Ä–µ—Å—Å")==0) value = 1;
+			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"°†≠Ô Ì´®ØÆ§†")==0) value = 0;
+			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"Ø‡Æ£‡•··")==0) value = 1;
 			my_server_data.Mechosoma.World = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_QUANTITY1);
-			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"–±–∞–Ω—è —ç–ª–∏–ø–æ–¥–∞")==0) value = 0;
+			if(strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"°†≠Ô Ì´®ØÆ§†")==0) value = 0;
 			my_server_data.Mechosoma.ProductQuantity1 = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_QUANTITY2);
 			my_server_data.Mechosoma.ProductQuantity2 = value;
 
 			value = iGetMultiGameParameter(iMP_MECHOSOMA,iMP_ONE_AT_A_TIME);
-			if(strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"–º–µ–≥–∞ –º–µ—Ö–æ—Å–æ–º–∞")==0) value = 17;
-			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"–ø—Ä–æ–≥—Ä–µ—Å—Å")==0) value = 1;
+			if(strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"¨•£† ¨•ÂÆ·Æ¨†")==0) value = 17;
+			if(strcmp(game_name,"progress")==0 || strcmp(game_name,"Ø‡Æ£‡•··")==0) value = 1;
 			if(strcmp(game_name,"speed konoval")==0) value = 2;
 			my_server_data.Mechosoma.One_at_a_time = value;
 			break;
 		case iMP_PASSEMBLOSS:
 		    	value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_INITIAL_CASH);
-		    if (strcmp(game_name,"travel")==0 || strcmp(game_name,"–ø—Ä–∏–∫–ª—é—á–µ–Ω–∏–µ")==0) value = 999999;
+		    if (strcmp(game_name,"travel")==0 || strcmp(game_name,"Ø‡®™´ÓÁ•≠®•")==0) value = 999999;
 		    if (strcmp(game_name,"aveslom")==0) value = 999999;
-		    if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"–Ω–µ–∫—Ä–∞–ª–ª–∏")==0) value = 999999;
+		    if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"≠•™‡†´´®")==0) value = 999999;
 			if (strcmp(game_name,"traincross")==0) value = 999999;
-			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"—Å–∞—Ç–∏–Ω–∞–Ω")==0) value = 500000;
+			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"·†‚®≠†≠")==0) value = 500000;
 			if (strcmp(game_name,"stad3la")==0) value = 999999;
-			if (strcmp(game_name,"ultra pass")==0 || strcmp(game_name,"—É–ª—å—Ç—Ä–∞ –ø–∞—Å—Å")==0) value = 999999;
-			if (strcmp(game_name,"xivepass")==0 || strcmp(game_name,"–∫—Å–∏–≤–∏–ø–∞—Å—Å")==0) value = 999999;
+			if (strcmp(game_name,"ultra pass")==0 || strcmp(game_name,"„´Ï‚‡† Ø†··")==0) value = 999999;
+			if (strcmp(game_name,"xivepass")==0 || strcmp(game_name,"™·®¢®Ø†··")==0) value = 999999;
 			if (strcmp(game_name,"razminka plus")==0) value = 999999;
-			if (strcmp(game_name,"huntage-sim")==0 || strcmp(game_name,"—Ö–∞–Ω—Ç–∞–∂-—Å–∏–º")==0) value = 999999;
-			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"—á–µ–ª–Ω–æ—á–Ω—ã–π —Ñ–æ—Å—Ç—Ä–∞–ª")==0) value = 999999;
+			if (strcmp(game_name,"huntage-sim")==0 || strcmp(game_name,"Â†≠‚†¶-·®¨")==0) value = 999999;
+			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"Á•´≠ÆÁ≠Î© ‰Æ·‚‡†´")==0) value = 999999;
 			if (strcmp(game_name,"speed konoval")==0) value = 10000;
-			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –æ–¥–∏–Ω–æ—á–Ω–∞—è")==0) value = 999999;
-			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –∫–æ–º–∞–Ω–¥–Ω–∞—è")==0) value = 999999;
-			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"–≤–æ–∑–≤—Ä–∞—Ç")==0) value = 999999;
+			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"´®≠ß† Æ§®≠ÆÁ≠†Ô")==0) value = 999999;
+			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"´®≠ß† ™Æ¨†≠§≠†Ô")==0) value = 999999;
+			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"¢Æß¢‡†‚")==0) value = 999999;
 			if (strcmp(game_name,"among vangers")==0) value = 999999;
-			if (strcmp(game_name,"eleerection-sim")==0 || strcmp(game_name,"—ç–ª–∏—Ä–µ–∫—Ü–∏—è-—Å–∏–º")==0) value = 999999;
-			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"–ø–æ–±–µ–≥")==0) value = 999999;
-			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"–ø–æ –±–æ–ª–æ—Ç–∞–º!")==0) value = 999999;
+			if (strcmp(game_name,"eleerection-sim")==0 || strcmp(game_name,"Ì´®‡•™Ê®Ô-·®¨")==0) value = 999999;
+			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"ØÆ°•£")==0) value = 999999;
+			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"ØÆ °Æ´Æ‚†¨!")==0) value = 999999;
 			if (strcmp(game_name,"raffa-run-sim")==0) value = 4000;
 			if (strcmp(game_name,"tankacide-run")==0) value = 999999;
-			if (strcmp(game_name,"passave")==0 || strcmp(game_name,"–ø–∞—Å—Å–µ–π–≤")==0) value = 999999;
+			if (strcmp(game_name,"passave")==0 || strcmp(game_name,"Ø†··•©¢")==0) value = 999999;
             		my_server_data.Passembloss.InitialCash = value;
 
             		value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ARTEFACTS_USING);
             if (strcmp(game_name,"aveslom")==0) value = 0;
-            if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"–Ω–µ–∫—Ä–∞–ª–ª–∏")==0) value = 0;
+            if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"≠•™‡†´´®")==0) value = 0;
 			if (strcmp(game_name,"traincross")==0) value = 0;
-			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"—Å–∞—Ç–∏–Ω–∞–Ω")==0) value = 0;
+			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"·†‚®≠†≠")==0) value = 0;
 			if (strcmp(game_name,"stad3la")==0) value = 0;
-			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"—á–µ–ª–Ω–æ—á–Ω—ã–π —Ñ–æ—Å—Ç—Ä–∞–ª")==0) value = 0;
-			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –æ–¥–∏–Ω–æ—á–Ω–∞—è")==0) value = 0;
-			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –∫–æ–º–∞–Ω–¥–Ω–∞—è")==0) value = 0;
-			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"–≤–æ–∑–≤—Ä–∞—Ç")==0) value = 0;
+			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"Á•´≠ÆÁ≠Î© ‰Æ·‚‡†´")==0) value = 0;
+			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"´®≠ß† Æ§®≠ÆÁ≠†Ô")==0) value = 0;
+			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"´®≠ß† ™Æ¨†≠§≠†Ô")==0) value = 0;
+			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"¢Æß¢‡†‚")==0) value = 0;
 			if (strcmp(game_name,"among vangers")==0) value = 1;
-			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"–ø–æ–±–µ–≥")==0) value = 1;
-			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"–ø–æ –±–æ–ª–æ—Ç–∞–º!")==0) value = 0;
+			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"ØÆ°•£")==0) value = 1;
+			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"ØÆ °Æ´Æ‚†¨!")==0) value = 0;
 			if (strcmp(game_name,"tankacide-run")==0) value = 1;
-			if (strcmp(game_name,"passave")==0 || strcmp(game_name,"–ø–∞—Å—Å–µ–π–≤")==0) value = 0;
+			if (strcmp(game_name,"passave")==0 || strcmp(game_name,"Ø†··•©¢")==0) value = 0;
 		    	my_server_data.Passembloss.ArtefactsUsing = value;
 
 		    	value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_IN_ESCAVE_TIME);
-		    if (strcmp(game_name,"travel")==0 || strcmp(game_name,"–ø—Ä–∏–∫–ª—é—á–µ–Ω–∏–µ")==0) value = 2;
+		    if (strcmp(game_name,"travel")==0 || strcmp(game_name,"Ø‡®™´ÓÁ•≠®•")==0) value = 2;
 		    if (strcmp(game_name,"aveslom")==0) value = 2;
-		    if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"–Ω–µ–∫—Ä–∞–ª–ª–∏")==0) value = 2;
+		    if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"≠•™‡†´´®")==0) value = 2;
 			if (strcmp(game_name,"traincross")==0) value = 2;
-			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"—Å–∞—Ç–∏–Ω–∞–Ω")==0) value = 1;
+			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"·†‚®≠†≠")==0) value = 1;
 			if (strcmp(game_name,"stad3la")==0) value = 1;
-			if (strcmp(game_name,"ultra pass")==0 || strcmp(game_name,"—É–ª—å—Ç—Ä–∞ –ø–∞—Å—Å")==0) value = 3;
-			if (strcmp(game_name,"xivepass")==0 || strcmp(game_name,"–∫—Å–∏–≤–∏–ø–∞—Å—Å")==0) value = 2;
+			if (strcmp(game_name,"ultra pass")==0 || strcmp(game_name,"„´Ï‚‡† Ø†··")==0) value = 3;
+			if (strcmp(game_name,"xivepass")==0 || strcmp(game_name,"™·®¢®Ø†··")==0) value = 2;
 			if (strcmp(game_name,"razminka plus")==0) value = 3;
-			if (strcmp(game_name,"huntage-sim")==0 || strcmp(game_name,"—Ö–∞–Ω—Ç–∞–∂-—Å–∏–º")==0) value = 3;
-			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"—á–µ–ª–Ω–æ—á–Ω—ã–π —Ñ–æ—Å—Ç—Ä–∞–ª")==0) value = 2;
+			if (strcmp(game_name,"huntage-sim")==0 || strcmp(game_name,"Â†≠‚†¶-·®¨")==0) value = 3;
+			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"Á•´≠ÆÁ≠Î© ‰Æ·‚‡†´")==0) value = 2;
 			if (strcmp(game_name,"speed konoval")==0) value = 1;
-			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –æ–¥–∏–Ω–æ—á–Ω–∞—è")==0) value = 1;
-			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –∫–æ–º–∞–Ω–¥–Ω–∞—è")==0) value = 1;
-			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"–≤–æ–∑–≤—Ä–∞—Ç")==0) value = 0;
+			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"´®≠ß† Æ§®≠ÆÁ≠†Ô")==0) value = 1;
+			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"´®≠ß† ™Æ¨†≠§≠†Ô")==0) value = 1;
+			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"¢Æß¢‡†‚")==0) value = 0;
 			if (strcmp(game_name,"among vangers")==0) value = 0;
-			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"–ø–æ–±–µ–≥")==0) value = 1;
-			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"–ø–æ –±–æ–ª–æ—Ç–∞–º!")==0) value = 1;
+			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"ØÆ°•£")==0) value = 1;
+			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"ØÆ °Æ´Æ‚†¨!")==0) value = 1;
 			if (strcmp(game_name,"raffa-run-sim")==0) value = 0;
 			if (strcmp(game_name,"tankacide-run")==0) value = 0;
-			if (strcmp(game_name,"passave")==0 || strcmp(game_name,"–ø–∞—Å—Å–µ–π–≤")==0) value = 0;
+			if (strcmp(game_name,"passave")==0 || strcmp(game_name,"Ø†··•©¢")==0) value = 0;
             		my_server_data.Passembloss.InEscaveTime = value;
       
             		value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_CHECKPOINTS_NUM);
-            if (strcmp(game_name,"travel")==0 || strcmp(game_name,"–ø—Ä–∏–∫–ª—é—á–µ–Ω–∏–µ")==0) value = 17;
-            if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"–Ω–µ–∫—Ä–∞–ª–ª–∏")==0) value = 51;
+            if (strcmp(game_name,"travel")==0 || strcmp(game_name,"Ø‡®™´ÓÁ•≠®•")==0) value = 17;
+            if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"≠•™‡†´´®")==0) value = 51;
             if (strcmp(game_name,"aveslom")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*10) + 1;
-			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"—Å–∞—Ç–∏–Ω–∞–Ω")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
+			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"·†‚®≠†≠")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
 			if (strcmp(game_name,"stad3la")==0) value = (iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*3) + 1;
-			if (strcmp(game_name,"ultra pass")==0 || strcmp(game_name,"—É–ª—å—Ç—Ä–∞ –ø–∞—Å—Å")==0) value = 999;
-			if (strcmp(game_name,"xivepass")==0 || strcmp(game_name,"–∫—Å–∏–≤–∏–ø–∞—Å—Å")==0) value = 8;
+			if (strcmp(game_name,"ultra pass")==0 || strcmp(game_name,"„´Ï‚‡† Ø†··")==0) value = 999;
+			if (strcmp(game_name,"xivepass")==0 || strcmp(game_name,"™·®¢®Ø†··")==0) value = 8;
 			if (strcmp(game_name,"razminka plus")==0) value = 10;
-			if (strcmp(game_name,"huntage-sim")==0 || strcmp(game_name,"—Ö–∞–Ω—Ç–∞–∂-—Å–∏–º")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
-			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"—á–µ–ª–Ω–æ—á–Ω—ã–π —Ñ–æ—Å—Ç—Ä–∞–ª")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*22;
-			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –æ–¥–∏–Ω–æ—á–Ω–∞—è")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
-			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –∫–æ–º–∞–Ω–¥–Ω–∞—è")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
-			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"–≤–æ–∑–≤—Ä–∞—Ç")==0) value = 3;
+			if (strcmp(game_name,"huntage-sim")==0 || strcmp(game_name,"Â†≠‚†¶-·®¨")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
+			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"Á•´≠ÆÁ≠Î© ‰Æ·‚‡†´")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM)*22;
+			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"´®≠ß† Æ§®≠ÆÁ≠†Ô")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
+			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"´®≠ß† ™Æ¨†≠§≠†Ô")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
+			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"¢Æß¢‡†‚")==0) value = 3;
 			if (strcmp(game_name,"among vangers")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
-			if (strcmp(game_name,"eleerection-sim")==0 || strcmp(game_name,"—ç–ª–∏—Ä–µ–∫—Ü–∏—è-—Å–∏–º")==0) value = 1;
-			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"–ø–æ–±–µ–≥")==0) value = 1;
+			if (strcmp(game_name,"eleerection-sim")==0 || strcmp(game_name,"Ì´®‡•™Ê®Ô-·®¨")==0) value = 1;
+			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"ØÆ°•£")==0) value = 1;
 			if (strcmp(game_name,"ishod")==0) value = 1;
-			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"–ø–æ –±–æ–ª–æ—Ç–∞–º!")==0) value = 34;
+			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"ØÆ °Æ´Æ‚†¨!")==0) value = 34;
 			if (strcmp(game_name,"tankacide-run")==0) value = iGetMultiGameParameter(iMP_PASSEMBLOSS, iMP_CHECKPOINTS_NUM) + 1;
             		my_server_data.Passembloss.CheckpointsNumber = value;
 
@@ -1833,24 +1832,24 @@ void iGetMultiGameParameters(void)
 
             		value = iGetMultiGameParameter(iMP_PASSEMBLOSS,iMP_ESCAVE);
 			if (strcmp(game_name,"speed konoval")==0) value = 2;
-            if (strcmp(game_name,"travel")==0 || strcmp(game_name,"–ø—Ä–∏–∫–ª—é—á–µ–Ω–∏–µ")==0) value = 1;
+            if (strcmp(game_name,"travel")==0 || strcmp(game_name,"Ø‡®™´ÓÁ•≠®•")==0) value = 1;
             if (strcmp(game_name,"aveslom")==0) value = 2;
-            if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"–Ω–µ–∫—Ä–∞–ª–ª–∏")==0) value = 3;
+            if (strcmp(game_name,"necrally")==0 || strcmp(game_name,"≠•™‡†´´®")==0) value = 3;
 			if (strcmp(game_name,"traincross")==0) value = 3;
-			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"—Å–∞—Ç–∏–Ω–∞–Ω")==0) value = 2;
+			if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"·†‚®≠†≠")==0) value = 2;
 			if (strcmp(game_name,"stad3la")==0) value = 2;
-			if (strcmp(game_name,"ultra pass")==0 || strcmp(game_name,"—É–ª—å—Ç—Ä–∞ –ø–∞—Å—Å")==0) value = 2;
-			if (strcmp(game_name,"xivepass")==0 || strcmp(game_name,"–∫—Å–∏–≤–∏–ø–∞—Å—Å")==0) value = 2;
+			if (strcmp(game_name,"ultra pass")==0 || strcmp(game_name,"„´Ï‚‡† Ø†··")==0) value = 2;
+			if (strcmp(game_name,"xivepass")==0 || strcmp(game_name,"™·®¢®Ø†··")==0) value = 2;
 			if (strcmp(game_name,"razminka plus")==0) value = 2;
-			if (strcmp(game_name,"huntage-sim")==0 || strcmp(game_name,"—Ö–∞–Ω—Ç–∞–∂-—Å–∏–º")==0) value = 2;
-			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"—á–µ–ª–Ω–æ—á–Ω—ã–π —Ñ–æ—Å—Ç—Ä–∞–ª")==0) value = 1;
-			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –æ–¥–∏–Ω–æ—á–Ω–∞—è")==0) value = 1;
-			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"–ª–∏–Ω–∑–∞ –∫–æ–º–∞–Ω–¥–Ω–∞—è")==0) value = 1;
-			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"–≤–æ–∑–≤—Ä–∞—Ç")==0) value = 3;
+			if (strcmp(game_name,"huntage-sim")==0 || strcmp(game_name,"Â†≠‚†¶-·®¨")==0) value = 2;
+			if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"Á•´≠ÆÁ≠Î© ‰Æ·‚‡†´")==0) value = 1;
+			if (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"´®≠ß† Æ§®≠ÆÁ≠†Ô")==0) value = 1;
+			if (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"´®≠ß† ™Æ¨†≠§≠†Ô")==0) value = 1;
+			if (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"¢Æß¢‡†‚")==0) value = 3;
 			if (strcmp(game_name,"among vangers")==0) value = 2;
-			if (strcmp(game_name,"eleerection-sim")==0 || strcmp(game_name,"—ç–ª–∏—Ä–µ–∫—Ü–∏—è-—Å–∏–º")==0) value = 1;
-			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"–ø–æ–±–µ–≥")==0) value = 3;
-			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"–ø–æ –±–æ–ª–æ—Ç–∞–º!")==0) value = 3;
+			if (strcmp(game_name,"eleerection-sim")==0 || strcmp(game_name,"Ì´®‡•™Ê®Ô-·®¨")==0) value = 1;
+			if (strcmp(game_name,"escape")==0 || strcmp(game_name,"ØÆ°•£")==0) value = 3;
+			if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"ØÆ °Æ´Æ‚†¨!")==0) value = 3;
 			if (strcmp(game_name,"tankacide-run")==0) value = 2;
             		my_server_data.Passembloss.RandomEscave = value - 1;
 //			my_server_data.Passembloss.RandomEscave = tm % 3;
@@ -2510,7 +2509,7 @@ void iPreparePlayerResults(int id)
 }
 
 const char* STR_NONE1 = "NONE";
-const char STR_NONE2[] = {(char)0x8D, (char)0x85, (char)0x92, (char)0x00}; //cp866 - –ù–ï–¢
+const char STR_NONE2[] = {(char)0x8D, (char)0x85, (char)0x92}; //cp866 - –ù–ï–¢
 
 const char* STR_JOYSTICK_KEY_NAME[] = {
 	"jbutton_1",

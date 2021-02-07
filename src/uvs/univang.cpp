@@ -590,7 +590,7 @@ void uniVangPrepare(void){
 			if (i == UVS_ITEM_TYPE::MACHOTINE_GUN_LIGHT ||
 			    i == UVS_ITEM_TYPE::SPEETLE_SYSTEM_LIGHT ||
 			    i == UVS_ITEM_TYPE::GHORB_GEAR_LIGHT ||
-			   (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"Ð°Ð¸Ð±Ð°Ñ‚Ñ€")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"battle for hmok")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"Ð±Ð¸Ñ‚Ð²Ð° Ð·Ð° Ñ…Ð¼Ð¾Ðº")==0)))
+			   (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR()," ¨¡ âà")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"battle for hmok")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"¡¨â¢  §  å¬®ª")==0)))
 #endif
 				for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item( i );
 			else
@@ -601,7 +601,7 @@ void uniVangPrepare(void){
 #ifdef ALL_ITEM_IN_SHOP
 			for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item( i );
 #else
-			if (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"Ð°Ð¸Ð±Ð°Ñ‚Ñ€")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"battle for hmok")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"Ð±Ð¸Ñ‚Ð²Ð° Ð·Ð° Ñ…Ð¼Ð¾Ðº")==0)) {
+			if (NetworkON && (strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"aibatr")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR()," ¨¡ âà")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"battle for hmok")==0 || strcmp(iScrOpt[iSERVER_NAME]->GetValueCHR(),"¡¨â¢  §  å¬®ª")==0)) {
                 		for( int j = 0; j < MAIN_WORLD_MAX; j++) WorldTable[j] -> generate_item(i);
 			}
 			else {
@@ -811,17 +811,17 @@ void uniVangPrepare(void){
 			default: MechosID = 5; // Ð´Ñ€ÑÑ…Ð»Ñ‹Ð¹ Ð´ÑƒÑˆÐµÐ³ÑƒÐ±
 		}
 		char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-		if (my_server_data.GameType == 2 && (strcmp(game_name,"travel")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 0;
-		else if (my_server_data.GameType == 0 && (strcmp(game_name,"aibatr")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 22;
-		else if (my_server_data.GameType == 1 && (strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 20;
-		else if (my_server_data.GameType == 0 && (strcmp(game_name,"super van-war")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 13;
-		else if (my_server_data.GameType == 1 && (strcmp(game_name,"progress")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
-		else if (my_server_data.GameType == 2 && (strcmp(game_name,"satinan")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 19;
+		if (my_server_data.GameType == 2 && (strcmp(game_name,"travel")==0 || strcmp(game_name,"¯à¨ª«îç¥­¨¥")==0)) MechosID = 0;
+		else if (my_server_data.GameType == 0 && (strcmp(game_name,"aibatr")==0 || strcmp(game_name," ¨¡ âà")==0)) MechosID = 22;
+		else if (my_server_data.GameType == 1 && (strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"¬¥£  ¬¥å®á®¬ ")==0)) MechosID = 20;
+		else if (my_server_data.GameType == 0 && (strcmp(game_name,"super van-war")==0 || strcmp(game_name,"áã¯¥à ¢ ­-¢ à")==0)) MechosID = 13;
+		else if (my_server_data.GameType == 1 && (strcmp(game_name,"progress")==0 || strcmp(game_name,"¯à®£à¥áá")==0)) MechosID = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
+		else if (my_server_data.GameType == 2 && (strcmp(game_name,"satinan")==0 || strcmp(game_name,"á â¨­ ­")==0)) MechosID = 19;
 		else if (strcmp(game_name,"speed konoval")==0) MechosID = 9;
-		else if (my_server_data.GameType == 0 && (strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 0;
-		else if (my_server_data.GameType == 0 && (strcmp(game_name,"new soup")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 10;
-		else if (my_server_data.GameType == 2 && (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 0;
-		else if (my_server_data.GameType == 2 && (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0)) MechosID = 10;
+		else if (my_server_data.GameType == 0 && (strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"¬¥å®ªá¥á")==0)) MechosID = 0;
+		else if (my_server_data.GameType == 0 && (strcmp(game_name,"new soup")==0 || strcmp(game_name,"­®¢ë© áã¯")==0)) MechosID = 10;
+		else if (my_server_data.GameType == 2 && (strcmp(game_name,"vozvrat")==0 || strcmp(game_name,"¢®§¢à â")==0)) MechosID = 0;
+		else if (my_server_data.GameType == 2 && (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"¯® ¡®«®â ¬!")==0)) MechosID = 10;
 		else if (my_server_data.GameType == 2 && strcmp(game_name,"raffa-run-sim")==0) MechosID = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 		else MechosID = 5;
 	}
@@ -10381,18 +10381,18 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				}
 
 				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-				if (strcmp(game_name,"travel")==0 || strcmp(game_name,"Ð¿Ñ€Ð¸ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ")==0) pm -> type = 0;
-				else if (strcmp(game_name,"aibatr")==0 || strcmp(game_name,"Ð°Ð¸Ð±Ð°Ñ‚Ñ€")==0) pm -> type = 22;
-				else if (strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"Ð±Ð°Ð½Ñ ÑÐ»Ð¸Ð¿Ð¾Ð´Ð°")==0) pm -> type = 0;
-				else if (strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"Ð¼ÐµÐ³Ð° Ð¼ÐµÑ…Ð¾ÑÐ¾Ð¼Ð°")==0) pm -> type = 20;
-				else if (strcmp(game_name,"super van-war")==0 || strcmp(game_name,"ÑÑƒÐ¿ÐµÑ€ Ð²Ð°Ð½-Ð²Ð°Ñ€")==0) pm -> type = 0;
-				else if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"Ñ‡ÐµÐ»Ð½Ð¾Ñ‡Ð½Ñ‹Ð¹ Ñ„Ð¾ÑÑ‚Ñ€Ð°Ð»")==0) pm -> type = 0;
+				if (strcmp(game_name,"travel")==0 || strcmp(game_name,"¯à¨ª«îç¥­¨¥")==0) pm -> type = 0;
+				else if (strcmp(game_name,"aibatr")==0 || strcmp(game_name," ¨¡ âà")==0) pm -> type = 22;
+				else if (strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"¡ ­ï í«¨¯®¤ ")==0) pm -> type = 0;
+				else if (strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"¬¥£  ¬¥å®á®¬ ")==0) pm -> type = 20;
+				else if (strcmp(game_name,"super van-war")==0 || strcmp(game_name,"áã¯¥à ¢ ­-¢ à")==0) pm -> type = 0;
+				else if (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"ç¥«­®ç­ë© ä®áâà «")==0) pm -> type = 0;
 				else if (strcmp(game_name,"razminka plus")==0) pm -> type = 5;
-				else if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"ÑÐ°Ñ‚Ð¸Ð½Ð°Ð½")==0) pm -> type = 19;
+				else if (strcmp(game_name,"satinan")==0 || strcmp(game_name,"á â¨­ ­")==0) pm -> type = 19;
 				else if (strcmp(game_name,"speed konoval")==0) pm -> type = 9;
-				else if (strcmp(game_name,"new soup")==0 || strcmp(game_name,"Ð½Ð¾Ð²Ñ‹Ð¹ ÑÑƒÐ¿")==0) pm -> type = 0;
-				else if (strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"Ð¼ÐµÑ…Ð¾ÐºÑÐµÑ")==0) pm -> type = 0;
-				else if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"Ð¿Ð¾ Ð±Ð¾Ð»Ð¾Ñ‚Ð°Ð¼!")==0) pm -> type = 10;
+				else if (strcmp(game_name,"new soup")==0 || strcmp(game_name,"­®¢ë© áã¯")==0) pm -> type = 0;
+				else if (strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"¬¥å®ªá¥á")==0) pm -> type = 0;
+				else if (strcmp(game_name,"bullet run")==0 || strcmp(game_name,"¯® ¡®«®â ¬!")==0) pm -> type = 10;
 				else if (strcmp(game_name,"tankacide-run")==0) pm -> type = 5;
 				else pm -> type = RND(MAX_MECHOS_RAFFA) + MAX_MECHOS_MAIN;
 				Gamer -> Pmechos = pm;
