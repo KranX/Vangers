@@ -10381,7 +10381,7 @@ uvsVanger* uvsMakeNewGamerInEscave(uvsEscave* pe, int what ){
 				}
 
 				char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-				if (strcmp(game_name,"travel")==0) || (strcmp(game_name,"приключение")==0) pm -> type = 0;
+				if (strcmp(game_name,"travel")==0 || strcmp(game_name,"приключение")==0) pm -> type = 0;
 				else if (strcmp(game_name,"aibatr")==0 || strcmp(game_name,"аибатр")==0) pm -> type = 22;
 				else if (strcmp(game_name,"eleepod bath")==0 || strcmp(game_name,"баня элипода")==0) pm -> type = 0;
 				else if (strcmp(game_name,"mega mechosoma")==0 || strcmp(game_name,"мега мехосома")==0) pm -> type = 20;
