@@ -20,5 +20,5 @@ jobs:
     - name: configure
       run: mkdir build && cd build && cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 ..
     - name: make
-      run: make
+      run: make vangers
       working-directory: build
