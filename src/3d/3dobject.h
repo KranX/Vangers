@@ -55,6 +55,7 @@ struct GeneralObject
 	GeneralObject* NextTypeList;
 	GeneralObject* PrevTypeList;
 
+	virtual ~GeneralObject() = default;
 #ifdef _ROAD_
 	virtual void Init(StorageType* s);
 	virtual void Init(MemoryStorageType* s);

@@ -421,7 +421,7 @@ iStackElement* iStack::get(void)
 	return heap[curSize];
 }
 
-void ParseScript(const char* fname,char* bname)
+void ParseScript(const char* fname,const char* bname)
 {
 	int id,t_id = 0,st = 0;
 

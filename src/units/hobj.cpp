@@ -1189,7 +1189,6 @@ void GameObjectDispatcher::Quant(void)
 	VangerUnit* p;
 	int i;
 
-	int time;
 	if(TurnAngle == 0 && DepthShow == 0) AdvancedView = 0;
 	else AdvancedView = 1;
 
@@ -1226,9 +1225,7 @@ void GameObjectDispatcher::Quant(void)
 					break;
 				};	
 		};
-	}else{
-		time = GLOBAL_CLOCK();
-	};	
+	}
 
 #ifdef _DEBUG
 //	DBGCHECK;
@@ -1772,9 +1769,7 @@ void VangerUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 {
 	uchar* TypeMap;
-	int rLog = 1;
 	uchar trn;
-//	int pf;
 
 	double CosTetta = Cos(tetta)*(1 << FIXED_SHIFT)*8/3;
 	int track_nx = -round(Cos(psi)*CosTetta);
@@ -1783,11 +1778,6 @@ void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 	if(CurrentWorld == WORLD_KHOX) return;	
 
 	if(speed != 0){
-//		if(n == nLeftWheel) pf = 0;
-//		else if(n == nRightWheel) pf = 1;
-//			else return;
-		//rLog = (256 - abs(speed)) >> 4;
-		//if(rLog <= 2) rLog = 2;
 
 		cycleTor(x,y);
 		TypeMap = vMap->lineT[y];
@@ -1851,7 +1841,6 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 	int fx,fy,i;
 
 	int dx,dy,kx,ky,tx,ty;
-	int ax,ay,bx,by;
 	char mask;
 
 	cycleTor(cx1,cy1);
@@ -1943,6 +1932,8 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 		};
 	};
 
+	/*
+	int ax,ay,bx,by;
 	if(cy1 < cy2){
 		ay = YCYCL(cy1 - lh);
 		by = YCYCL(cy2 + lh);
@@ -1950,6 +1941,8 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 		ay = YCYCL(cy2 - lh);
 		by = YCYCL(cy1 + lh);
 	};
+	*/
+
 /*
 	if(cx1 < cx2){
 		ax = XCYCL(cx1 - lh);
@@ -3235,7 +3228,7 @@ void GeneralSystemLoad(XStream& in)
 			for(i = 0;i < NUM_CHECK_BSIGN;i++)
 				in > CHECK_BSIGN_DATA[i];
 
-			for(i = 0;i < 83 - WORLD_MAX - 3*sizeof(int) - 2*NUM_CHECK_BSIGN;i++)
+			for(i = 0;i < 83 - WORLD_MAX - 3*(int)sizeof(int) - 2*NUM_CHECK_BSIGN;i++)
 				in > ver;
 			break;
 		case 4:
