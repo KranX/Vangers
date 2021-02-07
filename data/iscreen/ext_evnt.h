@@ -10,9 +10,13 @@
 #define iEXT_SET_SLOT			7
 
 #define iEXT_FIRST_SEARCH		8
+// Old local network system
 #define iEXT_INIT_SERVERS_LIST		9
+// Old local network system
 #define iEXT_UPDATE_SERVERS_LIST	10
+// Old local network system
 #define iEXT_UP_SERVERS_LIST		11
+// Old local network system
 #define iEXT_DN_SERVERS_LIST		12
 #define iEXT_CHOOSE_SERVER		13
 #define iEXT_CONNECT			14

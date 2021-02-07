@@ -152,11 +152,11 @@ struct dgFile {
 	int len,index;
 	int external;
 
-		dgFile(char* fname,int _len = 0){ load(fname,_len); }
+		dgFile(char* fname,int _len = 0, bool verbose=false){ load(fname, _len, verbose); }
 		dgFile(void){ buf = NULL; len = index = -1; external = 0; }
 		~dgFile(void){ if(!external && buf) delete buf; }
 
-	void load(char* fname,int _len = 0);
+	void load(char* fname,int _len, bool verbose=false);
 	char* getElement(int DualElements,int empty_available = 0);
 	void free(void){ if(!external && buf) delete buf; len = index = -1; }
 	void reset(void){ index = 0; }

@@ -1,3 +1,9 @@
+#ifndef __PARTICLE__LIGHT_H__
+#define __PARTICLE__LIGHT_H__
+
+#include "../3d/3dobject.h"
+#include "../backg.h"
+
 #define LIGHT_HEIGHT 100
 #define LIGHT_LIFE_TIME 16
 #define LIGHT_FIRST_TIME 2
@@ -64,3 +70,5 @@ void aWriteHelpString(int count, int* x, int* y, int font, unsigned char **pstr,
 extern int *light_table;
 extern uchar *invisible_table;
 extern LightPoint LPoint;
+
+#endif

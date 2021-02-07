@@ -591,10 +591,14 @@ int getSpectorsTaskStatus(void)
 	int i,j,res;
 	for(i = 0;i < 4;i++)
 		for(j = 0;j < 7;j++)
-			if(res = getPassangerStats(es[j],ws[i])){
+		{
+		    auto res = getPassangerStats(es[j],ws[i]);
+			if(res != 0)
+			{
 				esS[j] = '\0';
 				wsS[i] = '\0';
-				}
+			}
+		}
 	res = 0;
 	for(i = 0;i < 4;i++) res += wsS[i];
 	for(i = 0;i < 7;i++) res += esS[i];
@@ -651,7 +655,7 @@ char* detect_text(char *ret) {
 	return  (*ret2 == LINK_SYMBOL || *ret2 == '<') ? ret2 + 1 : ret2;
 }
 
-void dgFile::load(char* fname,int _len)
+void dgFile::load(char* fname,int _len, bool verbose)
 {
 	static char mss[] = "Wrong dgFile format";
 	int handle = 0;
@@ -664,6 +668,7 @@ void dgFile::load(char* fname,int _len)
 		ff.close();
 		buf[len] = '\0';
 		handle = 1;
+		if (verbose) std::cout<<"dgFile::load buf:"<<buf<<std::endl;
 #else
 		external = 1;
 		buf = FBox -> get(fname,len);
@@ -752,7 +757,6 @@ void dgFile::load(char* fname,int _len)
 		i++;
 	}
 	index = 0;
-
 #ifdef DIAGEN_TEST
 	if(external) return;
 	char* b = new char[len];
@@ -772,7 +776,7 @@ void dgFile::load(char* fname,int _len)
 		if(!skip){
 			p2 = detect_text(p);
 			if(!(*p2 == SUBJ_SYMBOL || *p2 == COMMAND_SYMBOL || *p2 == '<' || *p2 == '#')) {
-				if(!((lang() !== RUSSIAN && ISEALPHA(*p2)) || (lang() == RUSSIAN && !ISEALPHA(*p2)))) continue;
+				if(!((lang() != RUSSIAN && ISEALPHA(*p2)) || (lang() == RUSSIAN && !ISEALPHA(*p2)))) continue;
 			}
 			
 		}
@@ -1018,7 +1022,7 @@ char* dgMolecule::getVarPhrase(char* s)
 int dgMolecule::getHandledPhrase(char* s)
 {
 	static char mss[] = "Wrong VarPhrase format";
-	
+
 	char* var = strchr(s,'$');
 	if(!var) return 0;
 	char* p = var + 1;
@@ -1963,7 +1967,7 @@ void dgRoom::read(dgFile* pf)
 
 void dgRoom::acceptTEXT(void)
 {
-	//std::cout<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
+	// std::cout<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
 	dgFile* dgf = new dgFile(getDGname(roomName,".text"));
 
 	char* p = NULL;
@@ -2425,8 +2429,7 @@ void DiagenDispatcher::init(void)
 #ifndef DIAGEN_TEST
 	FBox -> load();
 #endif	
-	dgFile* pf = new dgFile(getDGname("room",".lst"));
-	
+	dgFile* pf = new dgFile(getDGname("room",".lst"), 0, true);
 	char* p = NULL;
 	dgRoom* pr;
 	int i,j;
@@ -2447,7 +2450,7 @@ void DiagenDispatcher::init(void)
 		for(i = 0;i < DG_SECRETW_MAX;i++) SecretWname[1][i] = pf -> getElement(DGF_NONE);
 //#endif
 	}
-	delete pf;
+
 //stalkerg Тест диалогов и скриптов, нужно отключить для большого теста
 /*#ifdef DIAGEN_TEST
 	pr = rtail;
@@ -2464,7 +2467,9 @@ void DiagenDispatcher::init(void)
 #ifdef DIAGEN_TEST
 	FBox -> save();
 #endif
-	
+#ifndef DIAGEN_TEST
+	delete pf;
+#endif
 }
 
 char* DiagenDispatcher::findQfirst(void)

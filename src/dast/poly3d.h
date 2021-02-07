@@ -1,11 +1,10 @@
-#ifdef _DAST_
+#ifndef __DAST__POLY3D_H__
+#define __DAST__POLY3D_H__
+
 #include "../3d/3d_math.h"
 #include "../terra/vmap.h"
 #include "../terra/world.h"
 #include "../terra/render.h"
-#else
-#define _DAST_
-#endif
   
 struct dastResourcePoly3D;
 struct dastResourceSign;
@@ -100,3 +99,5 @@ void dastDeleteResourceSign(void);
 
 void dastPutSpriteOnMapAlt(int x, int y, uchar *data, int x_size, int y_size, unsigned int scale);
 void dastPutSandOnMapAlt(int x, int y, uchar _z, uchar, uchar);
+
+#endif

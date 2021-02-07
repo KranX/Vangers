@@ -1,0 +1,549 @@
+[quotha]
+"Гиря занят. Сгинь, бродяга..."
+"Geer'ah is busy. Get lost, rambler!"
+
+[Empty Question]
+"Что, перепугался? Дара речи лишился, слизь булькающая? Похвально, бойся Гирю..."
+"Messed your pants, huh? Lost your tongue, you bubbling clot of mucus? Right, fear Geer'ah..."
+
+[Empty Molecule]
+"Ты утомил меня, железка. Не пошел бы ВОН?"
+"I'm getting tired of you, you hunk of metal. Why don't you just get out?"
+
+[Block Molecule:B]
+"Ты, право, нагл. Гиря вещает тебе, стой-слушай и запоминай!"
+"You are bold all right. Geer'ah is broadcasting: halt and listen!"
+
+[Out Molecule:B]
+"Пошел отсюда, недотепа!"
+"Get out of here!"
+
+[Dead Molecule]
+"Все ушли на фронт..."
+"Dead Escave"
+
+[empty]
+"п"
+"e"
+
+[DEAD w/o Rubbox:B]
+"Ба ! Какая радость - беглый раб заглянул. Без Раббокса, растяпа!"
+"Ha! What luck: a fugitive slave showed up... Without his Rubbox, slob!"
+{Раббокс}
+{Rubbox}
+"Привет, дурашка. Спасибо, что заехал к Гире. Он задаст тебе работку. Скоро черед Героев выступать. Ты им поможешь."
+"Hi, duffer! Thanks for visiting Geer'ah. He'll give you a job. The Heroes are taking to the field soon, and you will help them."
+{Гиря}
+{Geer'ah}
+
+[Kernowar Win (Boond):B]
+"Победа раба в Ядерной Войне - это провал Бюро в воспитательной работе. Буравчику выговор! Я должен бы казнить тебя, но дам тебе шанс исправиться."
+"A Slave's win in the Nuclear War means there is a flaw in our education system. Boorawchick will get an admonition! I ought to execute you, but I'll give you a chance to redeem yourself."
+{раб} {Ядерная Война} {Бюро} {Буравчик}
+{Slave} {Nuclear War} {The Buro} {Boorawchick}
+
+[Kernowar Participation (Boond):B]
+"Ты посмел явиться с Ядробусами, раб. Одно твое касание осквернит Ядробус навсегда. Ты занесен в списки врагов Бюро. Еще один некрасивый поступок, и герои смогут пинать твою башку на стадионе."
+"You dared to come with Nucleoboom, Slave! A single touch from you will befoul Nucleoboom forever. You're on the list of the Buro's enemies. Another offense and the Heroes will kick your head around the stadium."
+{Ядробус} {раб} {Бюро}
+{Nucleoboom} {Slave} {The Buro}
+
+[Kernowar Win (Commissar):G]
+"Прораб! В этот светлый час хочу поздравить тебя с победой в Ядерной Войне! Думаю, твоя отвага мало в чем уступит отваге Героев на стадионе."
+"Commissar! On this momentous occasion I would like to congratulate you on your win in the Nuclear War! Your bravery is comparable to that of the Heroes in the stadium."
+{прораб} {Ядерная Война}
+{Commissar} {Nuclear War}
+"Буравчик уже получил подтверждение твоего успеха. Бюро готовит наградные документы."
+"Boorawchick has received confirmation of your success. The Buro is preparing the documents for your advancement."
+{Буравчик} {Бюро}
+{Boorawchick} {The Buro}
+
+[Kernowar Participation (Commissar):G]
+"Сакральные Ядробусы для отважных героев! В этом и есть смысл твоей службы и твоей в остальном никчемной жизни. Герои скажут спасибо скромному труженику колес, ковавшему им победу!"
+"Sacred Nucleoboom for brave Heroes! This is the meaning of your service and your otherwise useless life. The Heroes will thank you, the humble worker who enabled their victory!"
+{Ядробус}
+{Nucleoboom}
+
+[Kernowar Win (Agent)]
+"Агент, ты напрасно истощаешь свои силы и мое терпение. Ты победил в Ядерной Войне, но это дело медленных прорабов. Бюро каждой козявке приготовила место. Оно лучше знает что к чему."
+"Agent, you are wasting your energy and my patience. You won the Nuclear War, but that's for slow Commissars. The Buro defined the purpose of every mite, and they know better how things are meant to be."
+{агент} {Ядерная Война} {прораб}
+{Agent} {Nuclear War} {Commissar}
+
+[Kernowar Participation (Agent)]
+"Решил отсидеться в тылу, таская Ядробусы, дрянной агентишка? В то время, когда отважные Герои проявляют героизм на стадионах, смрадная козявка позволяет себе леность?"
+"You decided to wait in the rear and ship Nucleoboom, you scabby, feeble Agent? While the brave Heroes are performing deeds of valor in the stadium?"
+{Ядробус} {агент}
+{Nucleoboom} {Agent}
+"Что, пост прораба тебе больше по нраву? Я составлю подробный рапорт в Бюро о твоих 'подвигах'. Думаю, вопрос о твоем разжаловании будет решен в скором времени."
+"You'd prefer the rank of Commissar, huh? I'm writing a detailed report to the Buro about your 'feats.' I'm sure the decision regarding your demotion will soon follow."
+
+[Boond Arrival]
+"Рабы, рабы... И все тщедушные, они..."
+"A Slave arrived. They are all miserable slaves..."
+{раб}
+{Slave}
+
+[Commissar Arrival]
+"Прораб! Я, Гиря, твой вождь, забочусь о тебе!"
+"Commissar! I'm Geer'ah, your big brother. I'm the one who takes care of you."
+{прораб} {Гиря}
+{Commissar} {Geer'ah}
+
+[Agent Arrival]
+"Здравия желаю, агент. Что нужно тебе от светлого на выдумки Гири?"
+"My greetings to you, Agent! Is there anything Geer'ah can help you with?"
+{агент} {Гиря}
+{Agent} {Geer'ah}
+
+[Shrub in Inventory (Boond):B]
+"Раб. Ты умиляешь своим преступлением. Здесь Лампассы и Гиря, кусты здесь не требуются. Разворачивай катафалк и езжай с глаз моих в Огород!"
+"Slave, your monkey tricks make me laugh! This is Lampasso; Geer'ah is here and shrubs aren't my business! Turn your crate around and get out of here and into Ogorod!"
+{раб} {Лампассы} {Гиря} {Огород}
+{Slave} {Lampasso} {Geer'ah} {Ogorod}
+
+[+Shrub in Inventory (Boond):B]
+"Раб! Ты упорствуешь в своем заблуждении. Бюро разочаровано в тебе и объявляет твое существование бессмысленным. Я уполномочен провести соответствующую процедуру."
+"Но милосердное Бюро дает тебе шанс умереть, искупив проступок. Ты участвуешь в Игрищах!..."
+"Дорогой раб, только что пришло сообщение о побитии рекорда в соревновании 'Аэростаты'. Герой лопнул с такой силой, что завалило три тоннеля к стадиону! Это великая радость! Я милую тебя, живи на пользу Бюро. А твое имущество я возьму, чтоб наградить героя."
+"Slave! You are obstinate in your error. You disappointed the Buro and they declared your existence meaningless. I am assigned to carry out the appropriate procedure. "
+"However, the merciful Buro is giving you a chance to die and wash away your guilt. You will take part in the Competition! "
+"Dear Slave, a message just arrived about a new record in the Zeppelins competition. The hero produced such a powerful pop that it caused a series of rock slides that blocked three approaches to the stadium. This is great news! I am granting you a pardon: live on for the benefit of the Buro. Your property, however, is confiscated to reward the hero."
+
+[Heroin in Inventory (Boond):G]
+"Осторожней обращайся с Героином, криволапый!"
+"Handle Valorins with care, you clumsy freak!"
+{Героин}
+{Valorin}
+
+[Pipetka in Inventory (Boond):B]
+"Ретивая козявка привезла мне пипеток. Это огромное испытание для моего терпения. Внимай, убогий! Нашим Героям не нужны пипетки! Здесь славное место и осквернять я его не позволю!"
+"Haw-haw, the zealous mite brought me peeperettes. You're getting on my nerves! Listen, you crummy grub, our Heroes don't need peeperettes! This is a famous place and I won't let you dirty it!"
+{пипетка}
+{peeperette}
+"Вези пипетки в Огород! Если скоро Обурец не сообщит мне о твоем прибытии, гнев Бюро настигнет тебя везде!"
+"Drive the peeperettes to Ogorod! If Oboorez doesn't report your arrival to me soon, our fury will get at you wherever you are."
+{Огород} {Обурец}
+{Ogorod} {Oboorez}
+
+[+Pipetka in Inventory (Boond):B]
+"Дрянной раб снова везет пипетки, не внемля наставлениям и плюя на уставы. Ну что же, тебе сейчас покажут, зачем нужны пипетки бибуратам. Только я опасаюсь истратить семя на такую дрянь. Ну да ладно, зато другим рабам будет урок!"
+"Живи, тупое создание, живи, сегодня день твоей удачи. Из ВигБу пришло сообщение о готовой к отправке партии Героина. Все свободные рабы мобилизуются на работы по перевозке. Бегом отсюда, а я очищу твой трюм, чтобы в него поместилось больше Героина!"
+"The scabby Slave came with peeperettes again! You didn't heed our instructions and ignored the Manual. Well, we'll show you the purpose of peeperettes. I just wish the seeds weren't wasted on a scab like you. But at least this is going to be a lesson to other slaves! "
+"All right, you dumb creature, live on - today is your lucky day. A message from VigBoo just arrived about a planned shipment of Valorins. All available Slaves must get down to loading and shipping. Get over there quickly. I'll empty your bay so that it has more room for cargo."
+
+[Shrub in Inventory (Commissar):B]
+"Прораб, с кустами здесь никого не ждут. И не рассчитывай на теплый прием. Твоя промашка может подорвать наши игровые мероприятия!"
+"Commissar! We weren't expecting anyone with shrubs here. Don't expect a warm welcome. Your stumble may screw up our sporting events!"
+{прораб} {куст}
+{Commissar} {shrub}
+"Я пошлю запрос в Бюро, чтобы проверили твое личное дело!"
+"I'll send an inquiry to the Buro to check your personal file."
+
+[+Shrub in Inventory (Commissar):B]
+"Твои преступления против бибуратов переполнили чашу терпения. Назначение тебя прорабом было недопустимо поспешным. Но Бюро умеет исправлять свои ошибки. Сдай свой Раббокс, который ты опозорил!"
+"Your crimes against the Beeboorats have exhausted all patience. Your promotion to Commissar was definitely premature. However, the Buro can correct their mistake: hand in your Rubbox, you've brought enough shame upon it!"
+
+[Heroin in Inventory (Commissar):G]
+"Прораб, Героин всегда возьмут здесь с радостью. Трудись, но помни, что Герои ждут Ядробусов... Не заставляй их ждать слишком долго!"
+"Commissar, you're always welcome here with Valorin. Work hard, but remember that the Heroes need Nucleoboom... Don't make them wait too long!"
+{Героин} {Ядробус}
+{Valorin} {Nucleoboom}
+
+[Pipetka in Inventory (Commissar):B]
+"Прораб привез пипетку. Модный Гиря сокрушен! Такие прорабы могут погубить бибуратов на радость многочисленным врагам. Одумайся, пока не поздно!"
+"The Commissar brought a peeperette. The stylish Geer'ah is stunned! Slipshod Commissars like you could ruin the Beeboorats to the joy of our numerous enemies. Think better of it before it's too late!"
+{Гиря} {пипетка}
+{Geer'ah} {peeperette}
+
+[+Pipetka in Inventory (Commissar):B]
+"Ты, негодяй, видимо, украл свой Раббокс! Прорабы бибуратов никогда не были такими тупыми! Бюро за этим пристально следит! Ты, раб, сгинь отсюда! Езжай, искупай свои проступки!"
+"You must've stolen your Rubbox, scoundrel! The Beeboorats' Commissars have never been so stupid: the Buro keeps close tabs on them! Get lost, Slave! Go wash away your guilt!"
+
+[Shrub in Inventory (Agent):B]
+"Я, кажется, подорвал зрение на этом трудном посту. Вот уже агенты с кустами мерещатся... Но я то знаю, что этого не может быть. Сгинь, видение!"
+"I must've lost my vision, what with all this heavy duty. Pink elephants and now Agents with shrubs... But I KNOW this can't be. Begone vision!"
+{агент} {куст}
+{Agent} {shrub}
+
+[+Shrub in Inventory (Agent):B]
+"Нет хуже гостя у меня, чем агент с кустом. Я скорблю... Обурение агента направлено против вождя... Видимо, это от безделья. Но это поправимо. Прораб, отныне у тебя широкое поле для деятельности."
+"The worst guest is an Agent with a shrub. It's a pity... Your gripe is with the Beeboorats... Guess that's because of your idleness. But it can be fixed. Commissar, you now have many things to do."
+
+[Heroin in Inventory (Agent)]
+"Героин меня осчастливил, как всегда. Но агент, его привезший, огорчил! В это трудное время лучшие служивые отлынивают от важных дел. Горько сознавать это..."
+"I'm always glad to get Valorin... But not from an Agent! In these rugged times our best soldiers waste time on trifles. It makes me bitter just thinking about it..."
+{Героин} {агент}
+{Valorin} {Agent}
+
+[Pipetka in Inventory (Agent):B]
+"Мерзкую пипетку привез отважный агент. Редкий случай... Дай-ка твой Раббокс погляжу. Так, так... Молодой агентик, неопытный. Что ж, на первый раз ограничимся строгим выговором с занесением в Раббокс."
+"A brave Agent brought a trifling peeperette. An odd case... Let's take a look at your Rubbox. Well, well... The Agent is new and green. Okay, since it's your first time I'll just give you a reprimand."
+{пипетка} {агент} {Раббокс}
+{peeperette} {Agent} {Rubbox}
+
+[+Pipetka in Inventory (Agent):B]
+"Что, опять агент с пипеткой! И строгий выговор в Раббоксе! Агент полностью провалился! Катастрофа! Нужно срочно рубить концы! Мой долг ликвидировать агента - неудачника!"
+"Ладно, я погорячился. Мне из ВигБу доставили твою медицинскую карту. Оказывается, ты перетрудился на службе у Бюро и зациклился на пипетках. Живи, бедняга. Я возьму твои пожитки, а ты покатайся налегке по миру, успокойся..."
+"An Agent with a peeperette again! And with a reprimand on his Rubbox! The Agent failed! It's a disaster, we must remove all traces! My duty is to liquidate the loser Agent! "
+"All right, I've been too hasty. Your medical file has just been brought from VigBoo. It appears you're overworked and got hung up on peeperettes. Live on, poor thing. I'll take your belongings and you go have some carefree fun. Maybe you'll calm down..."
+
+[Sports Introduction]
+"Ну, колесник, настало время рассказать тебе о наших обрядах. А то помрешь непросвещенным. Основа бибуратов - подвиги отважных героев, которые они свершают на стадионах под моим присмотром."
+"Велика отвага героев и велика их слава. Модный Гиря скромно пособляет им, придумывая новые состязания. Вот некоторые из них."
+"Well, wheeler, it's time to tell you about our rites, or else you will perish in the darkness. The feats of our brave heroes are the cornerstone of Beeboorat existence and are performed in the stadium under my guidance. "
+"The valor of our heroes is high, and so is their glory. Stylish Geer'ah is only a humble helper to those who host the competitions. Here are some of them."
+{Гиря}
+{Geer'ah}
+
+[B-Sport 00]
+"Состязанием БЕГ СЛОМЯ ГОЛОВУ открывается сезон соревнований. Зрители обожают его. Запоминай. Вот Правила:"
+"Отважный герой решительно отрывает себе голову и на ее место судья кладет священный Ядробус. В таком непростом положении участник должен пробежать до финиша, не уронив Ядробус."
+"Немногим это удается, однако имена удачливых героев навсегда выбиваются на Плите Славы."
+"The Breakneck Rush competition opens the season, and spectators just love it. Listen and remember. Here are the rules: "
+"The fearless hero rips off his head and the referee replaces it with a sacred Nucleoboom. Even with this inconvenience, the hero must reach the finish line without  letting the Nucleoboom fall. "
+"Only a few are able to do this, but their names are engraved on the Stone of Fame forever."
+
+[B-Sport 01]
+"Слушай, ничтожный, и потрясайся невиданной отвагой участников ГОРОДКОВ. Вот Правила:"
+"Состязание для настоящих героев, которые к нему долго готовятся, думая при этом о вечной славе. Перед участником складывают пирамиду из заветных Ядробусов,"
+"которую он должен разбить используя исключительно части своего тела. Некоторый недостаток меткости с лихвой компенсируется высочайшей отвагой. Все помнят подвиг героя,"
+"который сумел своей головой завершить соревнование, когда на его теле не осталось уже конечностей."
+"Listen, you wretched little scrub, and admire the utter bravery of the heroes who take part in Gorodki. Here are the rules: "
+"This competition is for true heroes. They spend a lot of time preparing for it, thinking of eternal glory. "
+"Sacred Nucleobooms are piled up in front of the competitor, and he must break them using only parts of his own body. Some lack of accuracy is compensated by extreme bravery. "
+"Everybody still remembers the feat of one hero who managed to complete the competition using his head, having lost all his limbs!"
+
+[B-Sport 02]
+"Соревнование КЛАДОИСКАНИЕ демонстрирует врагам выдержку бибуратов и готовность нанести удар возмездия неожиданно и сокрушительно. Вот Правила:"
+"Две команды храбрецов, напоенных соком ароматного Ядробуса (для повышения мускульной активности) ложатся в  котлованах в несколько слоев, стремясь занять место в самом низу."
+"Потом их засыпают камнями и глиной под пение спортивных гимнов. Через некоторый промежуток времени, отведенный для усадки глины подается сигнал старта."
+"Побеждает команда, чьих участников на поверхности окажется больше за контрольное время."
+"The Diggers competition demonstrates Beeboorat endurance and their ability to deliver an abrupt and smashing strike at the enemy. Here are the rules: "
+"Having tanked themselves up on Nucleoboom juice (to increase muscle activity), two teams of courageous souls lie in a trench in several layers, all trying to be the one on the bottom. "
+"Then they are buried under stones and clay, accompanied by sports anthems. After a certain period of time that is needed to allow the clay to contract, the competition starts. "
+"The team with the most members to break through the surface within a set period of time wins."
+
+[B-Sport 03]
+"Соревнование АЭРОСТАТЫ завершает Олимпиаду. В нем принимают участие все оставшиеся герои. Вот Правила:"
+"Бодрые герои с прибаутками съедают неимоверное количество оболочек отборных Ядробусов, которые многократно усиливают образование газов в организме."
+"Раздувшись втрое от своего нормального размера атлеты бросаются с вышки на острые предметы, добиваясь самого громкого хлопка от разрыва."
+"От самого громкого зафиксированного взрыва один раз завалило два тоннеля к стадиону. Грохот АЭРОСТАТОВ вселяет в наши сердца мужество и решимость."
+"The Zeppelins competition concludes the Olympics, and all remaining heroes take part in it. Here are the rules: "
+"Cheerful heroes eat enormous amounts of the finest Nucleoboom shells, which causes increased gas in their bellies. "
+"Having plumped up to three times their normal size, the competitors jump down from the tower onto sharp objects, trying to produce the loudest pop. "
+"One hero once made such a loud pop that it caused two rock slides near the stadium."
+
+[B-Sport 04]
+"Состязание КУСТЫ В ОГОРОДЕ наглядно показывают нашим врагам, какая участь их ждет. Вот Правила:"
+"Группу героев закапывают в землю квадратно-гнездовым способом. У закопанного над поверхностью должна остаться только голова и он должен постоянно подбадривать бросающих."
+"Участникам дается по три Ядробуса на три попытки.  Герой должен сделать как можно больше попаданий по кустам."
+"Самые результативные по итогам тура заменяют вышедших из строя по тем или иным причинам героев."
+"The Shrubs on a Bed competition demonstrates the destiny of our enemies. Here are the rules: "
+"While buried in the ground up to his neck, the hero must cheer on the participants who throw Nucleoboom at him. "
+"The competitors are given three attempts with three Nucleobooms per attempt, with the goal of scoring the best hits. "
+"The best snipers replace those who for some reason leave the action."
+
+[B-Sport 05]
+"Состязание КУКЛЫ показывают всем решимость бибуратов обзавестись всеми Куклами мира. Вот Правила:"
+"После разминки нетерпеливые герои растираются соком спелых Ядробусов, который сильно размягчает покровы тела. Они изображают куклу в вечном движении, а остающиеся следы нюху."
+"Другие игроки команды привязывают их за конечности и начинают волочить по сильно шероховатому полу. Побеждает команда, сумевшая быстрее всех избавиться от 'куклы'."
+"The Larvae competition demonstrates the Beeboorat resolve to own all the Larvae in the world. Here are the rules: "
+"After a short warm-up the heroes rub themselves with the juice of ripe Nucleoboom, which softens their skin. Then they play a Larva in its eternal movement. "
+"Other participants tie their limbs and start dragging them across a very harsh surface. The winning team is the one that gets rid of their Larva first."
+{Куклы}
+{Larvae}
+
+[B-Sport 06]
+"Состязание БОМБЫ показывает врагам Бюро неотвратимость расплаты за все их преступления. Вот Правила:"
+"Это состязание для самых метких героев. Они прыгают с вышки с завязанными глазами на беспорядочно лежащие внизу крепкие Ядробусы, которые строгие судьи разбрасывают в большом количестве."
+"Побеждает игрок, сумевший раздавить больше Ядробусов за неограниченное число попыток, однако совершивший не больше двух попыток  с позором выбывает из состязаний и становится кустом."
+"The Bombs competition demonstrates the unstoppable vengeance of Beeboorats upon their enemies for their crimes. Here are the rules:"
+"This competition is for the most accurate heroes. They jump blindfolded from the tower down onto strong Nucleoboom densely scattered on the ground by strict referees. "
+"The winner is the one who smashes the most Nucleobooms, with an unlimited number of attempts. Those who make fewer than three attempts are kicked out and converted into shrubs."
+
+[B-Sport 07]
+"Состязание ЖАДНЫЕ ЭЛИПОДЫ высмеивает порочный и вырождающийся биос элиподов, беспощадно обнажает всю глубину падения этих червей, язвы их загнивающего общества. Вот Правила:"
+"Храбрые герои втыкают с свое тело большое количество обоюдоострых стержней, причем самые отчаянные готовы лишиться некоторых конечностей, лишь бы в их тело влезло больше колючек."
+"Потом участники начинают кататься по манежу, пытыясь наколоть на свои шипы как можно большее количество Ядробусов, разбросанных судьями."
+"The Greedy Eleepods competition satirizes the depraved and degenerate bios of the Eleepods, revealing all the dirt and filth of their vicious society. Here are the rules:"
+"The brave heroes plunge pointed metallic rods into themselves, with the bravest ones ready to lose some of their limbs to make room for more rods. "
+"Then they start rolling around the arena trying to pick up the most Nucleobooms, which are scattered around by the referees."
+
+[B-Sport 08]
+"Очень любимое зрителями состязание СТРУЧКИ. Его недавно выдумал модный Гиря, между прочим. Вот Правила:"
+"Каждая команда состоит поначалу из трех героев, которые насаживают себя на длинный острый шест, хорошо смазанный маслом из сакральных Ядробусов. Это начало стручка."
+"Потом команды начинают быстро бегать среди большой толпы носящихся взад-вперед участников, стремясь собрать в свой стручок побольше единиц путем накалывания."
+"Попавший в стручок обязан принимать активное участие в его деятельности."
+"This one is the spectators' favorite. The Pods competition was recently invented by the stylish Geer'ah. Here are the rules: "
+"Each team initially consists of three heroes who set themselves on a rod well-greased with the oil of sacred Nucleoboom. This is the pod starter. "
+"Then the teams start tearing around the crowd picking up new members for the pods by impaling them with their rods. "
+"Those impaled on a rod must actively help the pod."
+
+[B-Sport 09]
+"Состязание УПАКОВКА символизирует то, что бибураты под руководством Бюро представляют плотную сплоченную массу, которой под силу любые свершения и подвиги. Вот Правила:"
+"Хорошо разогретые члены команд растираются соком спелых Ядробусов до полного  размягчения тела. Потом герои начинают очень плотно набиваться в тесную пещеру."
+"Побеждает команда, сумевшая самоупаковаться самым оптимальным и быстрым методом. Рекордсменов приходится долго отскребать от стенок, пола и потолка."
+"The Squeeze competition symbolizes the Beeboorats' tight cohesion under the wise guidance of the Buro. Here are the rules:"
+"The heroes, after a good warm-up, rub themselves with Nucleoboom juice to soften their bodies, after which they start squeezing into a narrow cave. "
+"The winner is the team whose members manage to pack themselves in faster and better. Those who show the best results are then rubbed off the walls."
+
+[Kernowar Waiting?]
+"Прораб, ты можешь здесь побыть с прелестным Гирей, послушать его советов, ума набраться. Там, глядишь, и Ядерная Война начнется. Соберешь Ядробусов - чем больше и скорей, тем лучше для тебя!"
+"Commissar, you can stay here with the charming Geer'ah and listen to his wise advice to expand your mind. When the Nuclear War begins, you'll go for Nucleoboom. The more you collect, the better for you!"
+{Гиря} {Ядерная Война} {Героизм} {Ядробус}
+{Geer'ah} {Nuclear War} {Heroism} {Nucleoboom}
+@? 2		6 0
+"Согласен, Гиря. Жду - но недолго!..."
+"Жабли в воздухе, вези Ядробусы скорей! Я же пока буду напутствовать героев смелых для подвигов умелых..."
+"Okay, Geer'ah, I'll wait, but not for long... "
+"Jablees is in the air, go for Nucleoboom now! I'll prepare the brave Heroes for their exploits in the meantime."
+{Жабли}
+{Jablees}
+"Ну уж нет, рахитичная скотина. Я обойдусь и без твоих советов."
+"Не хами, прораб, а привези ядробусов корзину. Или я сообщу в Бюро о твоих проделках!"
+"Anything else, you rickety beast? I'll get by without your advice! "
+"Give me none of your lip! Go get a basket of Nucleoboom, or I'll tell the Buro about your mischief!"
+
+[Nymbos in Inventory:G]
+"Я созерцаю Нимбос и испытываю чувство глубокого удовлетворения за ударный труд наших простых рабочих."
+"I see nymbos and I'm very proud of our plain workers' outstanding performance."
+
+[Phlegma in Inventory:G]
+"Хе, слизь элиподская. Ну возьми за труды, мокровоз ушлый..."
+"Hee! Eleepod mucus. All right, have some beebs for your pain, mucus shipper..."
+
+[Poponka in Inventory:B]
+"Стой! Ты куда это циксовскую писанину везешь? Это же подрывная литература! Небось по Глорксу ее разбрасываешь? Колесник, твой груз изымается для проверки и обыска во имя безопасности бибуратов!"
+"Halt! Where are you taking those Zeexen squiggles? That's subversive stuff! Scattering it around Glorx, huh? Wheeler, your cargo is being confiscated for a check and investigation in the name of the Beeboorats!"
+{попонка}
+{popon}
+
+[Toxick in Inventory:B]
+"Караул! Помогите! Где охрана!? Диверсанты жизни лишают! Травят токсиком! Что же это делается! Ты, вражина, решил оставить бибуратов без модного Гири? Нет страшнее преступления! Бюро приговаривает тебя к казни!"
+"Alarm! Help! Diversion! Where's security!? They're poisoning me with toxick! It hurts like hell! You want to deprive the Beeboorats of the stylish Geer'ah, sworn enemy? There's no crime worse than that! The Buro sentences you to death!"
+{токсик}
+{toxick}
+
+[eLeech in Inventory:G]
+"Смачный эЛик у меня! Какой светлый праздник! Меня переполняет гордость за своего воспитанника. Бюро отметит твои заслуги! Я знаю, настоящим героем может стать каждый!"
+"Come to me, lip-smacking eLeech! What a joy! I'm so proud of my nursling. The Buro will make note of your services! I know, anyone can become a regular hero!"
+
+[WeeZyk in Inventory:B]
+"Я, кажется, наблюдаю похабную статую. Ты, вредитель, полагаешь, что герой, увидев это уродство, еще больше вдохновится на подвиги? Ты заблуждаешься!"
+"Пересядь-ка на мехос поменьше. Думаю, избавишься от привычки таскать всякую дрянь..."
+"Seems you have an ugly statue. Do you think it can inspire the Heroes to greater feats? You're wrong, damn saboteur! "
+"Get a smaller mechos, as I believe this will get rid of your habit of picking up garbage..."
+{Маленький Цык}
+{ProtoZeek}
+
+[MP0 Start]
+"Вангер! На Глорксе стартовал ВАН-ВАР. Наверху в нетерпении разъезжают многочисленные желающие выбить из тебя дух. Выйди им навстречу и подороже продай свою беспутную жизнь. Бибураты очень любят наблюдать всякие заварушки и перестрелки. Не обмани их ожиданий..."
+"Vanger! The VAN-WAR has started on Glorx! The pluckiest ones have started getting into it up there, and they're anxious to take your life. Go up and meet them, and try to take more than you give. Beeboorats like watching rumbles and gun fights, so don't disappoint us..."
+
+[MP1 Start]
+"Эй, извозчик хлама, Вангеры устроили МЕХОСОМУ. Ты должен перевезти условленное количество кустов или Героина. Набивай скорее трюм, смотри только, чтоб мехос не развалился от тяжести. На Глорксе сейчас время торгашей и перевозчиков. Потряси всех их своей грузоподъёмностью!"
+"Hey you, scavenger, the vangers have started the MECHOSOMA! You must deliver the predetermined amount of shrubs and Valorins. Load the cargo quickly, but take care that your crate doesn't collapse under the weight. The time of merchants and traffickers has come on Glorx; rock us with your carrying capacity."
+
+[MP2 Start]
+"Держись за руль крепче, колесник. ПАССЕМБЛОСС стартовал! Покажи, как ты умеешь быстро ездить и сталкивать соперника в канавы. Чтобы тупые вангеры не сбивались с дороги и видели, куда им ехать, гонка проходит по контрольным пунктам. Это мерцающие круги на дорогах. Не перепутай с водоворотами!"
+"Hold the wheel tight, vanger! The PASSEMBLOSS has started! Show us how you can drive fast and throw your competitors into ditches. To help the dumb vangers, the route goes through checkpoints that are seen as glowing circles on the road. Don't mix them up with whirlpools!"
+
+[MP3 Start]
+"ОХОТРОН стартовал!"
+"HUNTAGE started!"
+
+[MP4 Start]
+"МАСТОДОНТ стартовал!"
+"MUSTODONT started!"
+
+[MP0 Comment]
+"Ну, пугливый, ВАН-ВАР ещё идёт! Вооружись получше, сразу почувствуешь себя уверенней. У тебя ещё есть возможность догнать того невежу, который посмел подъехать к тебе на кривом мехосе. Влепи ему так, чтоб в округе обвалились мосты и попадали кверху брюхом бибы!"
+"Okay, yellow belly, the VAN-WAR is in full swing! Get yourself a big gun, maybe you'll feel more confident then. You can still get at the jackanapes who dared take you on in his craggy buggy. Blow the scab up so that nearby bridges collapse and beebs fall legs up!"
+
+[MP1 Comment]
+"МЕХОСОМА продолжается... Не устал ещё катать Героин и кусты? Ничего страшного, зато на мехос заработать можно. Покажи другим, кто главный торгаш на Глорксе! А если пара олухов окажется в воде, то не беда. Возить товар могут только крутые вангеры!"
+"The MECHOSOMA is going full blast... Tired of shipping shrubs and Valorins, huh? That's all right, but isn't it a good way to save up for a new mechos? Show the others who's the best merchant on Glorx! And if a couple of oafs end up in the water, never mind. Only tough vangers can ship goods!"
+
+[MP2 Comment]
+"Выиграть ПАССЕМБЛОСС нелегко, знаю. Тут главное не заблудиться и не пролететь контрольный пункт сгоряча. Это такой мерцающий круг на пути, запомни. А увидишь зазевавшегося вангера, спихивай его в канаву, не стесняйся. В ПАССЕМБЛОССЕ главное скорость!"
+"I know it isn't that easy to win the PASSEMBLOSS. The main thing here is to not go astray or skip a checkpoint in the heat of the moment. Remember, they are those glowing circles. If an oaf lingers in front of you, throw him into a ditch without hesitating. Speed is the name of the game!"
+
+[MP3 Comment]
+"ОХОТРОН продолжается..."
+"HUNTAGE in progress..."
+
+[MP4 Comment]
+"МАСТОДОНТ продолжается..."
+"MUSTODONT in progress..."
+
+[Cirt in Inventory]
+"Что я смею наблюдать! Вялый вангер собрал все свое обурение и раздобыл нюхи... Отрадно. Ты становишься на путь верного служителя Бюро и я рад, что не зря герои проявляют храбрость на стадионе, а Ядробусы падают с небес!"
+"Gee whiz! The flabby vanger pulled his wimpy muscles together and secured some cirt... That's good. I'm glad you are taking the way of a loyal servant of the Buro. The Heroes perform their feats in the stadium and Nucleoboom falls from the sky for a good cause."
+{вангеры} {нюха} {Ядробус} {Гиря} {ВигБу} {Буравчик}
+{vangers} {cirt} {Nucleoboom} {Geer'ah} {VigBoo} {Boorawchick}
+"Благодари модного Гирю, вколотившего в твою пустую голову полезные и практичные мысли. А теперь мчись в ВигБу и сдавай нюху Буравчику. Он ее взвесит и оценит как положено."
+"Praise the stylish Geer'ah, who beat some useful and practical thoughts into your dull head. Now fly to VigBoo and hand the cirt to Boorawchick. He'll weigh it and evaluate it properly."
+
+[BadCirt in Inventory:B]
+"Что-то я с трудом поднимаю свою почетную ношу. Такого не бывает, даже если я нюхну токсика... Нужно срочно принять отборной нюхи... А где ж ее взять, спрашивается?"
+"It's not usually so hard to bear my honorable duty. This is worse than when I smell toxick... Need to take some choice cirt... But where can I get it?"
+{токсик} {нюха}
+{toxick} {cirt}
+
+[GoodCirt in Inventory:G]
+"О ля ля, какое просветление в голове! Меня посетило вдохновение! Я вспомнил таблицу умножения! Как славно. Сейчас я смогу придумать несколько новых состязаний для героев! А хочешь сам поучаствовать? Шучу, козявка. Что-то весело твоему любимому Гире нынче!"
+"Oh la la, what clearness in my head! I was inspired! I remembered the multiplication table! What joy! Now I can devise a few new competitions for the Heroes! Want to take part? Just a joke, midget. Your cherished Geer'ah feels really good today."
+{нюха}
+{cirt}
+
+[Larva in Inventory]
+"О, моя тонкая натура на грани потрясения! В этом Куккише сидит что-то интересное! А что может сидеть в Куккише? А Кукла может сидеть в Куккише! Понял, пипеткин хвост, что привез? Однако я сейчас прослезюсь..."
+"Наконец еще один вангер внял наставлениям модного Гири и прославил свой Раббокс навеки. Если бы ты знал, сколько нужно вангеров сделать кустами, прежде чем попадется один толковый..."
+"Ну ладно.  Надеюсь, ты от радости не забыл дорогу в ВигБу. Там Буравчик оприходует свою добычу. Вернее нашу. Любой вангер скажет, что без поучений Гири Куклу не возьмешь, хоть не на мехосе разъезжай, а на Куккише верхом!"
+"Oh, my sensitive nature is on the edge of collapse! Something interesting is sitting in this conlarver! And what can sit in a conlarver? A Larva can sit in a conlarver! You understand what you've brought, you peeperette tail? I think I'm going to weep... "
+"At last, another vanger who listened to the wise mentoring of stylish Geer'ah and brought glory on his Rubbox forever. If you only knew how many vangers must be converted into shrubs before you come across a gifted one... "
+"All right. I hope you haven't forgotten the way to VigBoo after all this joy. Boorawchick will take charge of his trophy. Our trophy, to be precise. Any vanger will tell you that you can't get a Larva without the wise mentoring of Geer'ah, even if you ride a conlarver!"
+
+[Protractor in Inventory:G]
+"Как же тебе повезло, навозник. Ты раздобыл Начертатель! Давненько я мечтал заполучить его на стадион..."
+"В моей светлой и просторной голове гнездится множество дельных мыслей по использованию Начертателя. А не хочешь ли ты сам выступить с этим предметом? Или продай!!!"
+"You are bloody lucky, bungler! You got the Protractor! For a long time I've been dreaming of getting it for the stadium... "
+"I have a lot of clever thoughts in my wide and clear mind on how to use the Protractor. Oh, by the way, do you want to use this thing yourself? Or sell it to me!!!"
+{Начертатель}
+{Protractor}
+
+[Mechanic Messiah in Inventory:B]
+"Погоди, погоди... Ты рассчитывал порадовать меня Механическим Мессией? Этакое милое тупое создание... Однако, Модный Гиря и не такое повидал на своих стадионах и не убоится твою находку..."
+"Небось, моя-то гантель потяжелее будет! Как въеду тебе между фар, сразу дорогу сюда забудешь... Проваливай, пугач липовый!"
+"Whoa... whoa... whoa... stop right there. You thought your Mechanical Messiah would make me happy? What a dumb, sweet creature you are... But Geer'ah has seen something even scarier, so he won't be trembling in fear of your toy... "
+"My barbell is heavier, how about that?! I'll smash it into your forehead and you'll forget the way here at once. Get lost, you freak!"
+{Механический Мессия}
+{Mechanical Messiah}
+
+[Function-83 in Inventory]
+"Покажи-ка мне свой Способ-83+... Модный Гиря не понимает, как эта банка с окошками делает Коридоры... Может, это на самом деле жбанчик для флегмы? Я дам тебе за него двенадцать бибов, подумай... Или даже все тринадцать. Выгодная сделка!"
+"Let me take a look at your Function-83+... Stylish Geer'ah can't understand how this tin can with all its holes can get through Passages... Maybe it's just a jar for phlegma? I'll give you ten beebs for it, think about it... Or even thirteen. It's a good bargain!"
+{Способ-83+}
+{Function-83+}
+
+[Spummy in Inventory:B]
+"Что случилось с моими славными героями?! Они смотрят в потолок и не шевелятся... А как же состязания, подвиги? Это диверсия! И я вижу источник зла. Это Спумия! Точно, мои ручные бибы разбежались..."
+"Эй, колесник, я ничего не боюсь! У меня Орден за Бесстрашие и Несгибаемость. Я самолично уничтожаю конфискованный токсик! Я тебя в бараний рог скручу со Спумией! Ты и так сорвал мне Старты Отважных. Убирайся, пока цел!"
+"What's wrong with my glorious heroes?! They are frozen, looking at the ceiling... What about the competitions, the feats? It's sabotage! I know where the evil is from: the Chomper! Right, and my tame beebs have panicked... "
+"Hey you, damned wheeler, I fear nothing! I have the Medal of Fearlessness and Inflexibility. I personally destroy the toxick that we confiscate! I'll tie you up in knots with this Chomper! You stopped our Competition of Valorins, what else are you going to ruin? Get out while you still can!"
+{Спумия}
+{Chomper}
+
+[Boot Sector in Inventory]
+"Раскопал Бут Сектор? Зря старался. Сейчас такие вангеры пошли, что разберут оставленный мехос быстрее, чем ты сможешь настроить этот ржавый прибор... Лучше отдай мне - я его пристрою к состязаниям..."
+"You dug up Boot Sector? You wasted your time. Today's vangers will filch your spare mechos piece by piece before you set up this rusty old thing... Better give it to me to use in our competitions..."
+{Бут Сектор}
+{Boot Sector}
+
+[Peelot in Inventory]
+"Если бы Бюро освоило производство Пилотов, то рабы стали бы не нужны. Мехосы сами бы возили мне Героин в Лампассы без задержек и перебоев. Но потому как он один на всех, то вещь абсолютно бесполезная. Лучше продай ее мне - я тебе бибов дам!"
+"If the Buro could produce Flymatics in bulk, the Slaves would become unnecessary. The mechos would ship Valorins and shrubs continuously and without much trouble. Unfortunately, as there's only one Flymatic, it's an absolutely useless widget. Better sell it to me. I'll give you some beebs for it!"
+{Пилот}
+{Flymatic}
+
+[Fake Kernoboo found]
+"Стоп, что-то не то у тебя с Ядробусами! Кондиция не та, вес завышен, окраска нестандартная... Ах вот в чем дело! Фальшивка! Ты что, мешок пыльный, хотел провести модного Гирю? Напрасно. Он способен заметить даже малейшие нарушения правил на стадионе!"
+"Я вас, воров, насквозь вижу. Гиря не допустит появления некачественных Ядробусов на стадионах. Герои умрут только с отборным материалом!"
+"А ты, фальшивоядробусник, положи свои пожитки вон там у скамеечки. На досуге я проверю, нет ли там еще чего незаконного!"
+"Wait, what's wrong with these Nucleobooms? They're a strange color and their weight is different... I got it! They're counterfeit! You dusty sack, you wanted to cheat Geer'ah? You're wasting your time. I can notice even the slightest deviation from the rules here in the stadium. "
+"I can see right through you, you pilferers. Geer'ah will never allow fake Nucleoboom in the stadiums. The heroes need only the best for their farewell performance! "
+"You kerno-forger, dump your plunder there, near the bench. I'll check to see if there's anything else illegal there!"
+{Ядробус}
+{Nucleoboom}
+
+[Boorawchick in Inventory]
+"А, коллега Буравчик! Модный Гиря на посту. Погляди, каковы у меня герои. Все как на подбор, землю роют, дым из ушей валит!"
+"Героин у тебя что надо, не жалуемся. Только нюха в последнее время приходит разбавленная глиной. Подворовываешь? Шучу-шучу... Доложи в Бюро, что мол сам Гиря тебя хвалил!"
+"Hi Boorawchick, my colleague! Stylish Geer'ah is on duty. Watch my heroes, see how they act as one: when they start digging, nothing can be seen through the flying dirt! "
+"Your Valorins are very good; I have no complaints. But the cirt's been arriving mixed with clay lately. Stealing little by little? Just a joke... Report to the Buro that Geer'ah himself praised you!"
+
+[Last Moggy part note]
+"Давно я не видел такого ушлого вангера. Ты мне можешь пригодиться! Я планирую скоро переехать в ВигБу... Но об этом молчок! У тебя должен быть для этого очень крутой мехос - чтобы меня защищать..."
+"Поэтому слушай сюда. Коробка есть часть от мехоса Последний из Могикан. Действуй, собирай механизм и храни тайну. По моему свистку явишься за меня умирать! Будут пытать - держись..."
+"It's been a while since I've seen as pushy a vanger as you. You can help us! I'm planning to relocate to VigBoo soon... But that's a secret! I need a really tough mechos for the trip, for proper protection... "
+"So listen up: Box is a part of Last Moggy. Go ahead, put the machine together and hold your tongue. When I whistle, you come here to die for me! If they torture you, you say nothing..."
+
+[Wormaster part note]
+"Вангер, ты продолжаешь умилять Модного Гирю. Такой вояка должен показывать на стадионах чудеса ловкости и героизма. Но дело колесников - мехосы. Поэтому о мехосах и пойдет речь."
+"Ерунда с Зубчиками - часть мехоса модели Червонец. Это наше секретное оружие против элиподов. Бди его!"
+"You make me laugh, vanger. A soldier like you should be the greatest hero in the stadium. But the mechos are your business, wheelers. So, let's talk mechos. "
+"The Cogged Widget is a part of Wormaster, our secret weapon against the Eleepods, so keep an eye on it!"
+
+[Weexow visit]
+"Ну как, шалопай, твоя колымага после Виксова не заржавела? А то гляди, развалится мехос где-нибудь на Некроссе и сожрут тебя тамошние дикие бибы - никто не спасет бедолагу..."
+"So, good-for-nothing, did your crate get rusty after Weexow? You'd better watch it: should your wagon fall apart somewhere on Necross, the local wild beebs will gnaw you away to nothing, poor thing..."
+{Виксов}
+{Weexow}
+
+[Boozeena visit]
+"Скажи, вроде на Бузине есть какие-то растения подходящие для героических соревнований? А то хочется удивить доблестных героев чего-нибудь эдаким... Бюро ради такого дела оформит тебе командировку..."
+"Tell me, is there any vegetation on Boozeena that would be good for our competitions? It would be good to surprise our heroes with something special... The Buro is sending you there on a business trip to collect the flora..."
+{Бузина}
+{Boozeena}
+
+[Ark-a-Znoy visit]
+"Что, проныра, побывал на Арк-а-Зное? Может в следующий раз захватишь мне парочку тамошних светлячков? Я тут мозгую новый спорт, однако... Говоришь великоваты? Жаль... Будем думать дальше..."
+"What, you dodger, you've been to Ark-a-Noi? Get a couple of those local light-worms for me the next time you're there, will you? I'm thinking of a new sport for our heroes. They're kinda big, you say? That's a pity... I'll try to think of something else..."
+{Арк-а-Зной}
+{Ark-a-Noi}
+
+[Khox visit]
+"Давно я уже не встречал живых коксопроходцев. Ты первый за много циклов. Последний жаловался что уж больно там темно... Я балбесу посоветовал с собой фонарик взять - больше его не видел после этого..."
+"It's been a long time since I last saw survivors from Khox. You are the first in many cycles who has gotten through. The last one who returned from there complained about the darkness... I advised the dolt to take a torch with him, and that was the last I saw of him..."
+{Кокс}
+{Khox}
+
+[hMok visit]
+"Ну что там на хМоке твориться? Говорят, тамошние бибы сделаны из нержавеющей стали и питаются мехосами... А ты не заметил, кто туда подбрасывает банки с кислотой? Это должны быть довольно-таки зловещие и преступные субъекты, наподобие цикс..."
+"So what's going on over there on hMok? They say the local beebs are made of stainless steel and eat mechos... Did you notice who delivers jars with acid there? They must be pretty wicked and criminal subjects like the Zeexen..."
+{хМок}
+{hMok}
+
+[Threall visit]
+"Что везешь с Трилла, безумец? Инструкции врагов по срыву состязаний? Бюро давно хочет замуровать этот Коридор на Трилл, да руки не доходят..."
+"You brought something from Threall, you nut? Enemy instructions for sabotaging our competitions, I guess? The Buro's been thinking of plugging that Passage to Threall for ages, but can't find the time..."
+{Трилл}
+{Threall}
+
+[Eleepod in Inventory]
+"О, Гиря видит элипода! Я его, пожалуй, запишу в герои и назначу капитаном команды... Нет, капитаном слишком почетно, скорее как инвентарь..."
+"Тебе, червяк, понравится выступать на стадионе. Представь, ты такой огромный, наполненный водами Глоркса бурдюк, под аплодисменты лопаешься при попадании меткого Ядробуса..."
+"Вот это картина! Зрители будут в восторге славить находчивость модного Гири - Изобретателя Зрелищ!"
+"Oh, Geer'ah sees an Eleepod! I guess I'll place him among the heroes as a team captain. No, that's too much honor for the worm. He'd be better as equipment... "
+"You'll like our competitions, worm. Imagine how a big fat sack full of Fostral waters like you would pop from a Nucleoboom hit, accompanied by a storm of applause... "
+"That would be a show! The spectators would praise the initiative of stylish Geer'ah, the Show Creator!"
+
+[Beeboorat in Inventory]
+"Эй, бибурат! Отдай честь модному Гире! Зачем явился? Запись героев и распределение по командам уже закончены. Есть вакансия оператора по выжиманию Ядробусов и подметальщика арен. Или ты с секретной миссией? Тогда пожалуйте сюда..."
+"Hey, Beeboorat! Salute stylish Geer'ah! Why are you here? Hero registration is closed and the teams have been formed. We have vacancies for a Nucleoboom squeezer and an arena cleaner. Or are you on a secret mission? Then come this way..."
+
+[Zeex in Inventory]
+"Ага, ядовитая цикса прибыла! Чтобы своими выпученными глазами убедиться в легендарных мужестве и непреклонности бибуратов. Похвально!"
+"Похоже на Некроссе начали наконец-то проникаться величием Бюро и делать робкие попытки перейти под наше чуткое руководство. Так держать - с нами не пропадешь!"
+"Aha, an acid Zeex is here! To personally see the legendary valor and rigidity of the Beeboorats with your popped eyes, I guess? Good for you! "
+"Looks like you hornets from Necross have finally started to recognize the superiority of the Buro and are even trying to get under our command. Keep it up, you're on the right path!"
+
+[Zyklope warning]
+"Колесник, ты отменно развлекал модного Гирю, поэтому я тоже хочу повеселить тебя и расскажу, что циксы делают с вами, вангерами. В ЦыПе сумасшедшая Цыфра замуровывает пойманных вангеров в глину и отправляет их в БиЗону в качестве сувениров."
+"Смешно, не правда ли? Поэтому ты в ЦыПу не езжай, а езжай в БиЗону, там циксы не такие сумасшедшие..."
+"Wheeler! You've entertained stylish Geer'ah well and I would like to pay you back in kind. I'll tell you what the Zeexen do to you ramblers. Mad Zeephra, who lives in ZeePa, envelops all the vangers that she catches in clay and sends them to B-Zone as souvenirs. "
+"Funny, huh? So don't go to ZeePa, go to B-Zone instead. The local Zeexen are not that crazy..."
+{ЦыПа} {БиЗона} {Цыфра}
+{ZeePa} {B-Zone} {Zeephra}
+
+[Boozeena Code]
+"Эй, вангер. Ты, видать, СУПЕРАГЕНТ! Твой пассажир передал тебе это слово: $(Boozeena Secret Code)... Это явно зашифрованное сообщение из Бюро. Но не бойся, я буду хранить эту тайну..."
+"Hey, vanger! You are a SUPERAGENT, aren't you? Your passenger asked me to give you a message: $(Boozeena Secret Code)... That's without doubt a cipher from the Buro. But don't be afraid, I'll hold my tongue..."
+
+[Larvae Vision note:G]
+"Эй, ездок колесный, твой авторитет уже достиг половины уровня, соответствующего Сверхуполномоченному Бюро. Похвально. Теперь тебе доступна информация о передвижении Куклы. Смотри на карту!"
+"Hey, wheeler! Your Dominance has reached 50% of the level of a Buro Superagent. Well done! You are being granted access to information about Larva movement. Keep an eye on the map!"
+{Куклы}
+{Larvae}
+

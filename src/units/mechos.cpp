@@ -759,6 +759,8 @@ void VangerUnit::BulletCollision(int pow,GeneralObject* p)
 					case 2:
 						s |= UVS_KRON_FLAG::ZEEX;
 						break;
+					default:
+						break;
 				};
 				TabuUse |= TABUTASK_COUNT_OTHER;
 			};
@@ -2404,8 +2406,8 @@ void ActionDispatcher::Quant(void)
 	char* ThreallText;
 
 	PlayerData* pd;
-	int n_score[4],n_total,n_position,n_current;
-	int c_score[4],n2_score[4];
+	int n_score[10],n_total,n_position,n_current;
+	int c_score[10],n2_score[10];
 	int drop_log;
 	uvsPassage* pass;	
 
@@ -2467,8 +2469,8 @@ void ActionDispatcher::Quant(void)
 					case VAN_WAR:
 						strcpy(aciCurRaceType,"VWR");
 						if(my_server_data.Van_War.TeamMode){
-							memset(n_score,0,sizeof(int)*4);
-							memset(c_score,0,sizeof(int)*4);
+							memset(n_score,0,sizeof(int)*10);
+							memset(c_score,0,sizeof(int)*10);
 							pd = players_list.first();
 							while(pd){
 								if(pd->status == GAMING_STATUS){
@@ -2478,8 +2480,8 @@ void ActionDispatcher::Quant(void)
 								pd = (PlayerData*)pd -> next;
 							};
 							n_position = 1;
-							n_total = 4;
-							for(i = 0;i < 4;i++){
+							n_total = 10;
+							for(i = 0;i < 10;i++){
 								if(n_score[i] >= my_server_data.Van_War.MaxKills) drop_log = 1;
 								if(i != my_player_body.color){
 									if(n_score[i] > n_score[my_player_body.color]){
@@ -2577,9 +2579,9 @@ void ActionDispatcher::Quant(void)
 					case MECHOSOMA:
 						strcpy(aciCurRaceType,"MHS");
 						if(my_server_data.Mechosoma.TeamMode){
-							memset(n_score,0,sizeof(int)*4);
-							memset(c_score,0,sizeof(int)*4);
-							memset(n2_score,0,sizeof(int)*4);
+							memset(n_score,0,sizeof(int)*10);
+							memset(c_score,0,sizeof(int)*10);
+							memset(n2_score,0,sizeof(int)*10);
 							pd = players_list.first();
 							while(pd){
 								if(pd->status == GAMING_STATUS){
@@ -2591,8 +2593,8 @@ void ActionDispatcher::Quant(void)
 							};
 
 							n_position = 1;
-							n_total = 4;
-							for(i = 0;i < 4;i++){
+							n_total = 10;
+							for(i = 0;i < 10;i++){
 								if(i != my_player_body.color){
 									if((n_score[i] + n2_score[i]) > (n_score[my_player_body.color] + n2_score[my_player_body.color])){
 										n_position++;
@@ -3634,7 +3636,8 @@ void VangerUnit::DrawQuant(void)
 				XGR_SetClip(UcutLeft,VcutUp,UcutRight,VcutDown);
 				aOutText32clip(R_scr.x,R_scr.y,165 | (2 << 16),pl->name,0,0,0);
 				XGR_SetClip(cclx,ccly,ccrx,ccry);
-				XGR_SetClipMode(ccm);				
+				XGR_SetClipMode(ccm);
+				break;
 			};
 			pl = (PlayerData*)pl -> next;
 		};
@@ -5609,15 +5612,16 @@ void VangerUnit::SensorQuant(void)
 				GameQuantReturnValue = RTO_LOADING3_ID;
 			};
 			break;
-		case EXTERNAL_MODE_IN_VANGER:
+		case EXTERNAL_MODE_IN_VANGER:  // teleport from mehos 
 			ExternalTime--;
+			aciSendEvent2actint(ACI_LOCK_INTERFACE,NULL); // disable right menu and full screen
 			if(ExternalTime <= 0){
 				SOUND_BOOT_STOP();
 				Go2Universe();
 				Status |= SOBJ_DISCONNECT;
 			};			
 			break;
-		case EXTERNAL_MODE_OUT_VANGER:
+		case EXTERNAL_MODE_OUT_VANGER:  // loading into mechos
 			ExternalTime--;
 			if(ExternalTime <= 0){
 				SOUND_BOOT_STOP();
@@ -5626,6 +5630,7 @@ void VangerUnit::SensorQuant(void)
 				ExternalDraw = 1;
 				switch_analysis(0);
 				ExternalSensor = ExternalObject;
+				aciSendEvent2actint(ACI_UNLOCK_INTERFACE,NULL); // enable right menu 
 			};
 			break;
 	};
@@ -5842,6 +5847,30 @@ void VangerUnit::CreateVangerUnit(void)
 			break;
 		case 3:
 			set_body_color(COLORS_IDS::BODY_YELLOW);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 4:
+			set_body_color(COLORS_IDS::BODY_CRIMSON);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 5:
+			set_body_color(COLORS_IDS::BODY_GRAY);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 6:
+			set_body_color(COLORS_IDS::ROTTEN_ITEM);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 7:
+			set_body_color(COLORS_IDS::MATERIAL_3);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 8:
+			set_body_color(COLORS_IDS::MATERIAL_1);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 9:
+			set_body_color(COLORS_IDS::MATERIAL_0);
 			aiModifier = AI_MODIFIER_ZEEX;
 			break;
 	};
@@ -6296,8 +6325,9 @@ void ActionDispatcher::PromptQuant(void)
 						
 						if (PromptIncubatorFreeVisit < 2
 							&& (PromptIncubatorCount > 2 || GetStuffObject(Active,ACI_NYMBOS))
-							&& !(ConTimer.min % 11)
-							&& ConTimer.sec == 0) {
+							&& !(ConTimer.min % 30) //  show every 30 minutes (1.5 min real)
+							&& ConTimer.sec == 0
+							&& ConTimer.counter < 36000 ) {  //do not show message if an 10 game hour(30 min real) has passed 
 							aiMessageQueue.Send(AI_MESSAGE_CAMERA_HELP, 0, 0xff, 0);
 							return;
 						}
@@ -9222,6 +9252,24 @@ void VangerFunctionType::Quant(void)
 								case 3:
 									((VangerUnit*)(ActD.mfActive))->set_body_color(COLORS_IDS::BODY_YELLOW);
 									break;
+								case 4:
+									((VangerUnit*)(ActD.mfActive))->set_body_color(COLORS_IDS::BODY_CRIMSON);
+									break;
+								case 5:
+									((VangerUnit*)(ActD.mfActive))->set_body_color(COLORS_IDS::BODY_GRAY);
+									break;
+								case 6:
+									((VangerUnit*)(ActD.mfActive))->set_body_color(COLORS_IDS::ROTTEN_ITEM);
+									break;
+								case 7:
+									((VangerUnit*)(ActD.mfActive))->set_body_color(COLORS_IDS::MATERIAL_3);
+									break;
+								case 8:
+									((VangerUnit*)(ActD.mfActive))->set_body_color(COLORS_IDS::MATERIAL_1);
+									break;
+								case 9:
+									((VangerUnit*)(ActD.mfActive))->set_body_color(COLORS_IDS::MATERIAL_0);
+									break;
 							};
 						};
 					};
@@ -10568,14 +10616,14 @@ void VangerUnit::ResolveGenerator(void)
 		q = SeedNum;
 		s = DeviceData;
 		SeedNum = 0;
-		if(uvsCurrentCycle == 1){
+		if(uvsCurrentCycle == 1) { // Election of Castaways
 			while(s){
 				if(s->ActIntBuffer.type == ACI_PIPETKA)
 					SeedNum += s->ActIntBuffer.data1;
 				s = s->NextDeviceList;
 			};
 		}else{
-			if(uvsCurrentCycle == 2){
+			if(uvsCurrentCycle == 2){ // Heroism
 				while(s){
 					if(s->ActIntBuffer.type == ACI_KERNOBOO)
 						SeedNum += s->ActIntBuffer.data1;
@@ -10587,11 +10635,11 @@ void VangerUnit::ResolveGenerator(void)
 		if(FarmerD.Num == 0 && ActD.WorldSeedNum <= MaxSeed)
 			SeedNum = MaxSeed;
 
-		if(SeedNum >= MaxSeed && q < MaxSeed){
+		if(SeedNum >= MaxSeed && q < MaxSeed && uvsCurrentCycle != 0){ // 0 - Progress
 			aiResolveFind.ClearResolve();
 			uvsPoint->break_harvest();
 			MainOrderInit();
-		};			
+		};
 	};
 
 	if(Visibility == VISIBLE && CoptePoint && !aiAlarmTime) aiStatus |= AI_STATUS_FLY;
@@ -14013,6 +14061,31 @@ void VangerUnit::ChangeVangerProcess(void)
 			break;
 		case 3:
 			set_body_color(COLORS_IDS::BODY_YELLOW);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+
+		case 4:
+			set_body_color(COLORS_IDS::BODY_CRIMSON);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 5:
+			set_body_color(COLORS_IDS::BODY_GRAY);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 6:
+			set_body_color(COLORS_IDS::ROTTEN_ITEM);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 7:
+			set_body_color(COLORS_IDS::MATERIAL_3);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 8:
+			set_body_color(COLORS_IDS::MATERIAL_1);
+			aiModifier = AI_MODIFIER_ZEEX;
+			break;
+		case 9:
+			set_body_color(COLORS_IDS::MATERIAL_0);
 			aiModifier = AI_MODIFIER_ZEEX;
 			break;
 	};

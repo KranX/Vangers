@@ -25,6 +25,8 @@
 #define iSTR_FPS_60		$iSTR_FPS_601
 #define iSTR_ON 			$iSTR_ON1
 #define iSTR_OFF			$iSTR_OFF1
+#define iSTR_ENABLED 			$iSTR_ENABLED1
+#define iSTR_DISABLED			$iSTR_DISABLED1
 #define iSTR_BACK			$iSTR_BACK1
 #define iSTR_SCREEN			$iSTR_SCREEN1
 #define iSTR_800x600			$iSTR_800x6001
@@ -72,6 +74,12 @@
 #define iSTR_ORANGE			$iSTR_ORANGE1
 #define iSTR_BLUE			$iSTR_BLUE1
 #define iSTR_GREEN			$iSTR_GREEN1
+#define iSTR_RED			$iSTR_RED1
+#define iSTR_WHITE			$iSTR_WHITE1
+#define iSTR_GRAY			$iSTR_GRAY1
+#define iSTR_BLACK			$iSTR_BLACK1
+#define iSTR_CAMOUFLAGE			$iSTR_CAMOUFLAGE1
+#define iSTR_PATROL			$iSTR_PATROL1
 
 #define iSTR_Connection_failed		$iSTR_Connection_failed1
 
@@ -158,6 +166,7 @@
 #define iSTR_Move_forward		$iSTR_Move_forward1
 #define iSTR_Move_backward		$iSTR_Move_backward1
 #define iSTR_Acceleration		$iSTR_Acceleration1
+#define iSTR_Auto_acceleration		$iSTR_Auto_acceleration1
 #define iSTR_Handbrake			$iSTR_Handbrake1
 #define iSTR_Turn_over_left		$iSTR_Turn_over_left1
 #define iSTR_Turn_over_right		$iSTR_Turn_over_right1
@@ -187,6 +196,7 @@
 #define iSTR_ChatON			$iSTR_ChatON1
 #define iSTR_Statistics 		$iSTR_Statistics1
 #define iSTR_ExitGame			$iSTR_ExitGame1
+#define iSTR_Screenshot			$iSTR_Screenshot1
 
 #define iSTR_VAN_WAR			$iSTR_VAN_WAR1
 #define iSTR_MECHOSOMA			$iSTR_MECHOSOMA1
@@ -213,6 +223,12 @@
 #define AVI_TEXT	$AVI_TEXT1
 
 #define iSTR_Controls		$iSTR_Controls1
+#define iSTR_Movement		$iSTR_Movement1
+#define iSTR_Utility		$iSTR_Utility1
+#define iSTR_Combat		$iSTR_Combat1
+#define iSTR_Camera		$iSTR_Camera1
+#define iSTR_MultiplayerAndMisc		$iSTR_MultiplayerAndMisc1
+#define iSTR_TO_MENU		$iSTR_TO_MENU1
 
 #define iSTR_JOYSTICK_SETUP		$iSTR_JOYSTICK_SETUP1
 #define iSTR_CUSTOMIZE			$iSTR_CUSTOMIZE1

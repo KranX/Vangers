@@ -2,7 +2,7 @@
 data/*
 !data/iscreen
 !data/actint
-!data/resource/iscreen/oftr2.scb
+!data/data
 
 # CMake files
 CMakeFiles/
@@ -14,9 +14,21 @@ CMakeCache.txt
 *.a
 lib/utils/zip_convert
 src/vangers
+data/iscreen/temp.scr
 
 # TODO: VC stuff, windows binaries
 build
 .fuse_hidden*
 .vscode/
 *.code-workspace
+
+# VS cmake
+.vs/
+[Oo]ut/
+CMakeSettings.json
+
+# compile stuff
+/ffmpeg
+/build
+/clunk
+/vangers

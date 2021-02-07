@@ -11,7 +11,7 @@
 #define acsSTR_TIPS1		"TIPS"
 #define acsSTR_TIPS2		"„‘Š€‡Šˆ"
 
-#define acsSTR_AUTORUN1 	"AUTORUN"
+#define acsSTR_AUTORUN1 	"AUTO ACC."
 #define acsSTR_AUTORUN2 	"€‚’“‘Š…ˆ…"
 
 #define acsSTR_RESUME_GAME1	"RESUME GAME"

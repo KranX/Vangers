@@ -95,6 +95,14 @@ extern int iScreenLastInput;
 extern int iScreenChat;
 extern int iChatON;
 
+extern int IsMainMenu;
+
+extern bool autoconnect;
+extern char *autoconnectHost;
+extern int  autoconnectPort;
+extern int  autoconnectJoinGame;
+extern int  autoconnectGameID;
+
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
 int iGetEscaveTime(void);
@@ -142,10 +150,10 @@ void iChatMouseQuant(int x,int y,int bt);
 void iSoundQuant(int value = 0);
 
 void iPrepareSaveNames(void);
-void iInitServersList(int inet = 0);
-void iUpdateServersList(int inet = 0);
-void iServersListUp(int inet = 0);
-void iServersListDown(int inet = 0);
+void iInitServersList();
+void iUpdateServersList();
+void iServersListUp();
+void iServersListDown();
 void iConnect2Server(void);
 void iInitControlKey(int id,int num);
 void iDeleteControl(int vkey,int id);
@@ -371,6 +379,12 @@ const char* iSTR_COLOR_GREEN_CHAR = iSTR_COLOR_GREEN_CHAR1;
 const char* iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR1;
 const char* iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR1;
 const char* iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR1;
+const char* iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR1;
+const char* iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR1;
+const char* iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR1;
+const char* iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR1;
+const char* iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR1;
+const char* iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR1;
 const char* iSTR_MUTE_ALL = iSTR_MUTE_ALL1;
 const char* iSTR_CLEAR_LOG = iSTR_CLEAR_LOG1;
 const char* iSTR_BACKGROUND = iSTR_BACKGROUND1;
@@ -380,6 +394,12 @@ const char* iSTR_Yellow = iSTR_Yellow1;
 const char* iSTR_Orange = iSTR_Orange1;
 const char* iSTR_Blue = iSTR_Blue1;
 const char* iSTR_Green = iSTR_Green1;
+const char* iSTR_Red = iSTR_Red1;
+const char* iSTR_White = iSTR_White1;
+const char* iSTR_Gray = iSTR_Gray1;
+const char* iSTR_Black = iSTR_Black1;
+const char* iSTR_Camouflage = iSTR_Camouflage1;
+const char* iSTR_Patrol = iSTR_Patrol1;
 const char* iSTR_CleanUp = iSTR_CleanUp1;
 const char* iSTR_SpaceInUse = iSTR_SpaceInUse1;
 const char* iSTR_MBytes = iSTR_MBytes1;
@@ -513,7 +533,7 @@ void iPreInitFirst() {
 		aScrDisp->i_init();
 	}
 	iSecondInit();
-	
+
 	iScreen* p;
 	if(actIntLog){
 		p = (iScreen*)iScrDisp -> get_object(aci_iScreenID);
@@ -563,6 +583,28 @@ void iPreInitFirst() {
 
 void iQuantFirst(void)
 {
+    init_hfonts();
+
+    if (!iFirstInit) {
+        RegisterValues();
+        iPrepareOptions();
+
+#ifndef _ACI_SKIP_MAINMENU_
+        iSetOptionValueCHR(iPLAYER_NAME2, (lang() == RUSSIAN ? "‚ ­ЈҐа" : "Vanger"));
+        iSetOptionValueCHR(iPLAYER_PASSWORD, iSTR_DefaultPassword);
+        iSetOptionValueCHR(iHOST_NAME, "vangers.net");
+        iSetOptionValueCHR(iSERVER_NAME, iSTR_NONE);
+        iSetOptionValueCHR(iPROXY_SERVER, "192.1.1.1");
+        iSetOptionValueCHR(iPROXY_PORT, "1080");
+        iSetOptionValueCHR(iSERVER_PORT, "2197");
+        iGetIP();
+#endif
+        iInitMultiGames();
+
+        CurServerName = iGetOptionValueCHR(iSERVER_NAME);
+        CurPlayerName = iGetOptionValueCHR(iPLAYER_NAME2);
+    }
+
 	iScreen* p;
 	if(actIntLog){
 		p = (iScreen*)iScrDisp -> get_object(aci_iScreenID);
@@ -583,6 +625,41 @@ void iQuantFirst(void)
 			iMultiFlag = 0;
 			iEndGameFlag = 1;
 		}
+        else if (autoconnect) {
+            iScrDisp->curScr = (iScreen *) iScrDisp->get_object("iSearch server screen");
+            avaible_servers.find_servers_in_the_internet(autoconnectHost, autoconnectPort);
+            if (avaible_servers.size() > 0) {
+                iFirstServerPtr = avaible_servers.first();
+                iCurServer      = 0;
+                iInitServersList();
+                if (autoconnectJoinGame) {
+                    auto serverPtr = iFirstServerPtr;
+                    int  serverId  = 0;
+                    while (serverPtr) {
+                        if (serverPtr->game_ID == autoconnectGameID) break;     // game match or new game
+                        if (serverPtr->game_ID && autoconnectGameID < 0) break; // first existent game
+                        serverPtr = serverPtr->next;
+                        serverId++;
+                    }
+                    if (serverPtr) {
+                        iScrDisp->curScr = (iScreen *) iScrDisp->get_object("Identification screen");
+                        iLoadData();
+                        iHandleExtEvent(iEXT_CHOOSE_SERVER, serverId);
+                        iHandleExtEvent(iEXT_CONNECT, 0);
+                        if (iEvLineID == 1) {
+                            iScrDisp->curScr = (iScreen *) iScrDisp->get_object("Failed screen");
+                        } else if (iEvLineID == 2) {
+                            iHandleExtEvent(iEXT_CHECK_SERVER_CONFIG, 0);
+                            if (iEvLineID == 3) {
+                                iScrDisp->curScr = (iScreen *) iScrDisp->get_object("Server Info screen");
+                            } else if (iEvLineID == 4) {
+                                iScrDisp->curScr = (iScreen *) iScrDisp->get_object("Server Config screen");
+                            }
+                        }
+                    }
+                }
+            }
+        }
 		else
 			iScrDisp -> curScr = (iScreen*)iScrDisp -> get_object(iScrDisp -> t_scrID);
 #endif
@@ -594,7 +671,6 @@ void iQuantFirst(void)
 #ifdef _ACI_SKIP_MAINMENU_
 	if(actIntLog){
 #endif
-	init_hfonts();
 	if(!actIntLog)
 		iScrDisp -> prepare();
 	iScrDisp -> curScr -> prepare();
@@ -604,35 +680,6 @@ void iQuantFirst(void)
 	}
 #endif
 
-	if(!iFirstInit){
-		RegisterValues();
-		iPrepareOptions();
-#ifndef _ACI_SKIP_MAINMENU_
-		if(lang() == RUSSIAN)
-			iSetOptionValueCHR(iPLAYER_NAME2,"‚ ­ЈҐа");
-		else
-			iSetOptionValueCHR(iPLAYER_NAME2,"Vanger");
-		iSetOptionValueCHR(iPLAYER_PASSWORD,iSTR_DefaultPassword);
-		if(lang() == RUSSIAN) {
-            iSetOptionValueCHR(iHOST_NAME, "vangers.pp.ru");
-        } else if (lang() == GERMAN) {
-//			iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.de");
-            iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
-		}
-		else
-            iSetOptionValueCHR(iHOST_NAME,"vangers.pp.ru");
-//            iSetOptionValueCHR(iHOST_NAME,"www.imagicgames.com");
-		iSetOptionValueCHR(iSERVER_NAME,iSTR_NONE);
-		iSetOptionValueCHR(iPROXY_SERVER,"192.1.1.1");
-		iSetOptionValueCHR(iPROXY_PORT,"1080");
-		iSetOptionValueCHR(iSERVER_PORT,"2197");
-		iGetIP();
-#endif
-		iInitMultiGames();
-
-		CurServerName = iGetOptionValueCHR(iSERVER_NAME);
-		CurPlayerName = iGetOptionValueCHR(iPLAYER_NAME2);
-	}
 	aciSet_iMouse();
 
 	KBD_init();
@@ -743,7 +790,8 @@ int iQuantSecond(void)
 						acsScreenID = 2;
 					}
 
-					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
+//					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_F11) {
+					if(iKeyPressed(iKEY_SCREENSHOT)) {
 						shotFlush();
 					}
 
@@ -1183,9 +1231,9 @@ void iInitS_Text(iScreenObject* obj,char* text,int text_len,int font,int space,i
 	while(i < text_len){
 		while(!buf[i]) i ++;
 		if(i < text_len){
-			p = new iS_StringElement;
 			t_sz = strlen(buf + i) + 1;
 			if(t_sz){
+				p = new iS_StringElement;
 				p -> string = new char[t_sz];
 				strcpy(p -> string,buf + i);
 				p -> flags |= EL_TEXT_STRING;
@@ -1240,7 +1288,7 @@ void iScrQuantFinit(void)
 	static unsigned char pal_buf[768];
 	if(iScreenLog){
 		iFinitQuant();
-		set_key_nadlers(&KeyCenter, NULL);
+		set_key_handlers(&KeyCenter, NULL);
 
 		i_slake_pal(iscrPal,16);
 
@@ -1779,7 +1827,7 @@ void aciShowLocation(void)
 
 		//XGR_Flush(0,0,XGR_MAXX,XGR_MAXY);
 		XGR_Flip();
-		
+
 		xtClearMessageQueue();
 	}
 
@@ -2053,7 +2101,8 @@ void iSaveData(void)
 	if(!RecorderMode){
 		XStream fh("options.dat",XS_OUT);
 		iScrDisp -> save_data(&fh);
-		fh < aciAutoRun;
+//		fh < aciAutoRun;
+		fh < iGetOptionValue(iAUTO_ACCELERATION);
 		fh.close();
 	}
 #endif
@@ -2070,6 +2119,8 @@ void iLoadData(void)
 			fh.close();
 		}
 	}
+
+	aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);
 
 	iHandleExtEvent(iEXT_UPDATE_SOUND_MODE);
 	iHandleExtEvent(iEXT_UPDATE_MUSIC_MODE);
@@ -2212,8 +2263,10 @@ void iHandleExtEvent(int code,int data)
 			mode = xsGetStatusMusic();
 			if(!iGetOptionValue(iMUSIC_ON)){
 				MusicON = 1;
-				if(mode != XCD_PLAYING){
-					StartCDTRACK();
+				if (CurrentWorld != -1) {
+					if (mode != XCD_PLAYING) {
+						IsMainMenu ? StartCDTRACK() : StartWTRACK();
+					}
 				}
 			}
 			else {
@@ -2247,31 +2300,31 @@ void iHandleExtEvent(int code,int data)
 		case iEXT_SET_SLOT:
 			iSlotNumber = data;
 			break;
-		case iEXT_INIT_SERVERS_LIST:
+//		case iEXT_INIT_SERVERS_LIST:
+//			iFirstServerPtr = avaible_servers.first();
+//			iInitServersList();
+//			break;
+		case iEXT_INIT_iSERVERS_LIST:
 			iFirstServerPtr = avaible_servers.first();
 			iInitServersList();
 			break;
-		case iEXT_INIT_iSERVERS_LIST:
-			iFirstServerPtr = avaible_servers.first();
-			iInitServersList(1);
-			break;
-		case iEXT_UPDATE_SERVERS_LIST:
+//		case iEXT_UPDATE_SERVERS_LIST:
+//			iUpdateServersList();
+//			break;
+		case iEXT_UPDATE_iSERVERS_LIST:
 			iUpdateServersList();
 			break;
-		case iEXT_UPDATE_iSERVERS_LIST:
-			iUpdateServersList(1);
-			break;
-		case iEXT_UP_SERVERS_LIST:
+//		case iEXT_UP_SERVERS_LIST:
+//			iServersListUp();
+//			break;
+		case iEXT_UP_iSERVERS_LIST:
 			iServersListUp();
 			break;
-		case iEXT_UP_iSERVERS_LIST:
-			iServersListUp(1);
-			break;
-		case iEXT_DN_SERVERS_LIST:
-			iServersListDown();
-			break;
+//		case iEXT_DN_SERVERS_LIST:
+//			iServersListDown();
+//			break;
 		case iEXT_DN_iSERVERS_LIST:
-			iServersListDown(1);
+			iServersListDown();
 			break;
 		case iEXT_SAVE_GAME:
 			if(actIntLog && !iPause && !NetworkON){
@@ -2474,18 +2527,14 @@ void iPrepareSaveNames(void)
 	}
 }
 
-void iUpdateServersList(int inet)
+void iUpdateServersList()
 {
-	if(!inet)
-		avaible_servers.find_servers();
-	else
-		avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME),iServerPort);
-
+	avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME), iServerPort);
 	iFirstServerPtr = avaible_servers.first();
-	iInitServersList(inet);
+	iInitServersList();
 }
 
-void iInitServersList(int inet)
+void iInitServersList()
 {
 	int i,sz;
 	iScreen* scr;
@@ -2494,10 +2543,7 @@ void iInitServersList(int inet)
 	XBuffer XBuf;
 	ServerFindChain* p;
 
-	if(!inet)
-		scr = (iScreen*)iScrDisp -> get_object("Search server screen");
-	else
-		scr = (iScreen*)iScrDisp -> get_object("iSearch server screen");
+	scr = (iScreen*)iScrDisp -> get_object("iSearch server screen");
 	if(!scr) return;
 
 	p = iFirstServerPtr;
@@ -2527,7 +2573,7 @@ void iInitServersList(int inet)
 	}
 }
 
-void iServersListUp(int inet)
+void iServersListUp()
 {
 	int i;
 	ServerFindChain* p = iFirstServerPtr;
@@ -2536,11 +2582,11 @@ void iServersListUp(int inet)
 	}
 	if(p){
 		iFirstServerPtr = p;
-		iInitServersList(inet);
+		iInitServersList();
 	}
 }
 
-void iServersListDown(int inet)
+void iServersListDown()
 {
 	int i;
 	ServerFindChain* p = iFirstServerPtr;
@@ -2549,7 +2595,7 @@ void iServersListDown(int inet)
 	}
 	if(p){
 		iFirstServerPtr = p;
-		iInitServersList(inet);
+		iInitServersList();
 	}
 }
 
@@ -2762,6 +2808,12 @@ void iInitStrings(void)
 		iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR2;
 		iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR2;
 		iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR2;
+		iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR2;
+		iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR2;
+		iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR2;
+		iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR2;
+		iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR2;
+		iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR2;
 		iSTR_MUTE_ALL = iSTR_MUTE_ALL2;
 		iSTR_CLEAR_LOG = iSTR_CLEAR_LOG2;
 		iSTR_BACKGROUND = iSTR_BACKGROUND2;
@@ -2771,6 +2823,12 @@ void iInitStrings(void)
 		iSTR_Orange = iSTR_Orange2;
 		iSTR_Blue = iSTR_Blue2;
 		iSTR_Green = iSTR_Green2;
+		iSTR_Red = iSTR_Red2;
+		iSTR_White = iSTR_White2;
+		iSTR_Gray = iSTR_Gray2;
+		iSTR_Black = iSTR_Black2;
+		iSTR_Camouflage = iSTR_Camouflage2;
+		iSTR_Patrol = iSTR_Patrol2;
 		iSTR_CleanUp = iSTR_CleanUp2;
 		iSTR_SpaceInUse = iSTR_SpaceInUse2;
 		iSTR_MBytes = iSTR_MBytes2;
@@ -2815,6 +2873,12 @@ void iInitStrings(void)
 		iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR1;
 		iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR1;
 		iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR1;
+		iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR1;
+		iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR1;
+		iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR1;
+		iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR1;
+		iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR1;
+		iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR1;
 		iSTR_MUTE_ALL = iSTR_MUTE_ALL1;
 		iSTR_CLEAR_LOG = iSTR_CLEAR_LOG1;
 		iSTR_BACKGROUND = iSTR_BACKGROUND1;
@@ -2824,6 +2888,12 @@ void iInitStrings(void)
 		iSTR_Orange = iSTR_Orange1;
 		iSTR_Blue = iSTR_Blue1;
 		iSTR_Green = iSTR_Green1;
+		iSTR_Red = iSTR_Red1;
+		iSTR_White = iSTR_White1;
+		iSTR_Gray = iSTR_Gray1;
+		iSTR_Black = iSTR_Black1;
+		iSTR_Camouflage = iSTR_Camouflage1;
+		iSTR_Patrol = iSTR_Patrol1;
 		iSTR_CleanUp = iSTR_CleanUp1;
 		iSTR_SpaceInUse = iSTR_SpaceInUse1;
 		iSTR_MBytes = iSTR_MBytes1;

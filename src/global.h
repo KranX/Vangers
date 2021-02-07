@@ -24,8 +24,10 @@ namespace KDWIN
 }
 #endif
 
+#ifndef _SURMAP_
 #define _ROAD_
 //#define RUSSIAN_VERSION
+#endif
 
 typedef void* HANDLE;
 
@@ -34,7 +36,7 @@ typedef void* HANDLE;
 
 #include "common.h"
 
-extern char* win32_findfirst(char* mask);
+extern char* win32_findfirst(const char* mask);
 extern char* win32_findnext();
 
 typedef unsigned char uchar;
@@ -55,5 +57,7 @@ typedef unsigned char uchar;
 #		define Steamworks_SelfCheck()
 #	endif
 #endif
+
+extern bool SetAchievement(std::string name);
 
 #endif

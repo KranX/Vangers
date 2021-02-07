@@ -1,3 +1,6 @@
+#ifndef __3D__PARSER_H__
+#define __3D__PARSER_H__
+
 struct Parser : XBuffer {
 
 	Parser(const char* name, const char* del_chars = 0);
@@ -12,3 +15,4 @@ struct Parser : XBuffer {
 };
 
 
+#endif

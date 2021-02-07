@@ -98,7 +98,9 @@ unsigned char COLORS_VALUE_TABLE[2*COLORS_IDS::MAX_COLORS_IDS] =
 
 	136,	4,				// 22 - SKYFARMER_KERNOBOO
 	128,    4,				// 23 - SKYFARMER_PIPETKA
-	224, 	4			        // 24 - ROTTEN_ITEM
+	224, 	4,			        // 24 - ROTTEN_ITEM
+
+	192, 	3			        // 25 - BODY_CRIMSON
 };
 
 // Visualization adjust params loaded in dynamics.cpp
@@ -2168,7 +2170,7 @@ void CastArbitraryShadow(int x,int y,int zg,int size,int shift,unsigned char* bu
 	x0 = SHL16(X1) - x_bmp_corner_16;
 	y0 = (Y0 << 16) - y_bmp_corner_16;
 	dx0 = 0;
-	dy0 = dy <= 0 ? 1 << 16 : -1 << 16;
+	dy0 = dy <= 0 ? 65536 : -65536;
 	bmp_len = 0;
 	d_bmp_len = d_1_y;
 

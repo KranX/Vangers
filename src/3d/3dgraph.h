@@ -1,6 +1,6 @@
 
-#ifndef __3D_GRAPH_H
-#define __3D_GRAPH_H
+#ifndef __3D__3DGRAPH_H__
+#define __3D__3DGRAPH_H__
 
 /*******************************************************************************
 		3D graphical structs and constants
@@ -69,6 +69,8 @@ struct COLORS_IDS {
 		SKYFARMER_KERNOBOO,
 		SKYFARMER_PIPETKA,
 		ROTTEN_ITEM,
+
+		BODY_CRIMSON,
 
 		MAX_COLORS_IDS
 		};

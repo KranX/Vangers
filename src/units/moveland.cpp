@@ -25,7 +25,7 @@ char* win32_findnext(void)
 		}
 }
 
-char* win32_findfirst(char* mask)
+char* win32_findfirst(const char* mask)
 {
 	FFh = FindFirstFile(mask,&FFdata);
 	if(FFh == INVALID_HANDLE_VALUE) return NULL;
@@ -62,6 +62,10 @@ char* win32_findfirst(char* mask)
 #include "mechos.h"
 
 #include <iostream>
+
+#ifdef _SURMAP_
+#include "surmap/missed.h"
+#endif
 
 
 /* ----------------------------- EXTERN SECTION ---------------------------- */
@@ -858,10 +862,15 @@ void MLreload(void)
 	SensorValoc::tail = NULL;
 	DangerValoc::tail = NULL;
 
-	delete TntTable;
-	delete MLCTable;
-	delete SnsTable;
-	delete DngTable;
+	delete[] TntTable;
+	delete[] MLCTable;
+	delete[] SnsTable;
+	delete[] DngTable;
+
+	TntTable = nullptr;
+	MLCTable = nullptr;
+	SnsTable = nullptr;
+	DngTable = nullptr;
 
 	TntTableSize = 0;
 	MLCTableSize = 0;
@@ -985,11 +994,11 @@ void MobileLocation::save(int reserve)
 		if(ff.open(GetTargetName(buf.GetBuf()),XS_IN)){
 			ff.close();
 			XCon < "\nVOT file < " < name < "> already exist. Overwriting...";
-			win32_MainWinMinimize();
+			mainWinMinimize();
 			}
 	if(!ff.open(GetTargetName(buf.GetBuf()),XS_OUT)){
 		XCon < "\nCan't create VOT file < " < buf.GetBuf() < ">. Data may be lost...";
-		win32_MainWinMinimize();
+		mainWinMinimize();
 		return;
 		}
 	ff.write(MLsign,3);
@@ -1012,7 +1021,7 @@ void MLFrame::load(XStream& ff,int mode)
 {
 	ff > x0 > y0 > sx > sy > period > surfType;
 	ff > csd > cst;
-#ifdef _SURMAP_
+#if defined(_SURMAP_) && !defined(_SURMAP_ROUGH_)
 	if(csd || cst)
 		ErrH.Abort("Compressed ML not supported!");
 #endif
@@ -1082,8 +1091,8 @@ MobileLocation::~MobileLocation(void)
 {
 	if(!isClone){
 		for(int i = 0;i < maxFrame;i++){
-			if(table[i].delta) delete table[i].delta;
-			if(table[i].terrain) delete table[i].terrain;
+			if(table[i].delta) delete[] table[i].delta;
+			if(table[i].terrain) delete[] table[i].terrain;
 			if(table[i].c_delta) delete[] table[i].c_delta;
 			if(table[i].c_terrain) delete[] table[i].c_terrain;
 			if(table[i].signBits) delete[] table[i].signBits;
@@ -1124,13 +1133,14 @@ extern int StartMainQuantFlag;
 int MobileLocation::quant(int render,int skipVZ,int skipCheck)
 {
 #ifdef _SURMAP_
-	if(!inUse) return 0;
-	int xsd = curGMap -> xside;
-	int ysd = curGMap -> yside;
-	if(!skipVZ){
-		if(!(getDistX(x0 + dx,ViewX) < xsd && getDistX(ViewX,XCYCL(x0 + dx + altSx - 1)) < xsd)) return 0;
-		if(!(getDistY(y0 + dy,ViewY) < ysd && getDistY(ViewY,YCYCL(y0 + dy + altSy - 1)) < ysd)) return 0;
-	}
+	// TODO: delete this block
+	// if(!inUse) return 0;
+	// int xsd = curGMap -> xside;
+	// int ysd = curGMap -> yside;
+	// if(!skipVZ){
+	// 	if(!(getDistX(x0 + dx,ViewX) < xsd && getDistX(ViewX,XCYCL(x0 + dx + altSx - 1)) < xsd)) return 0;
+	// 	if(!(getDistY(y0 + dy,ViewY) < ysd && getDistY(ViewY,YCYCL(y0 + dy + altSy - 1)) < ysd)) return 0;
+	// }
 #endif
 
 	int checked;
@@ -1785,13 +1795,15 @@ void SensorValoc::load(XStream& ff)
 {
 	ff > x > y > z;
 	ff > id > radius > nameLen;
-	if(nameLen){
-		name = new char[nameLen + 1];
-		ff.read(name,nameLen);
+
+	free(name);
+	if(nameLen) {
+		name = (char*)malloc(nameLen + 1);
+		ff.read(name, nameLen);
 		name[nameLen] = '\0';
-		}
-	else
-		name = "";
+	} else {
+		name = strdup("");
+	}
 
 	ff > z0;
 	ff > data0;

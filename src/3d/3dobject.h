@@ -1,5 +1,8 @@
+#ifndef __3D__3DOBJECT_H__
+#define __3D__3DOBJECT_H__
 
-#include "../xsocket.h"
+#include "3d_math.h"
+#include "3dgraph.h"
 
 const char TG_NO_TOUCH = 1;
 const char TG_POINT_TOUCH = 2;
@@ -52,6 +55,7 @@ struct GeneralObject
 	GeneralObject* NextTypeList;
 	GeneralObject* PrevTypeList;
 
+	virtual ~GeneralObject() = default;
 #ifdef _ROAD_
 	virtual void Init(StorageType* s);
 	virtual void Init(MemoryStorageType* s);
@@ -465,3 +469,5 @@ extern int stuff_delta_phase;
 extern int STANDART_FRAME_RATE;
 extern double speed_correction_factor;
 extern double speed_correction_tau;
+
+#endif

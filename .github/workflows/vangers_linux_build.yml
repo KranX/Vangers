@@ -1,10 +1,6 @@
 name: Vangers Linux Build
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master, 60fps, hd_v2 ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -19,10 +15,10 @@ jobs:
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
       working-directory: /tmp
     - name: clunk build and install
-      run: cmake -DCMAKE_INSTALL_PREFIX=/usr . && make && sudo make install
+      run: cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_COMPILER=/usr/bin/gcc-9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 . && make && sudo make install
       working-directory: /tmp/clunk
     - name: configure
-      run: mkdir build && cd build && cmake ..
+      run: mkdir build && cd build && cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 ..
     - name: make
       run: make
       working-directory: build

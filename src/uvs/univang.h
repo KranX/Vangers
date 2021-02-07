@@ -504,6 +504,7 @@ struct listElem {
 	listElem* prev;
 
 	listElem(void){ next = prev = NULL;};
+	virtual ~listElem() {}
 
 	void link(listElem*& tail);		// добавляет объект (this) в список с хвостом на tail (обычно глобальный указатель) в конец
 	listElem* seekName(const char* name);  // ищет по списку (this как хвост) name, сравнивая его со значением виртуального метода GetName()
@@ -561,6 +562,7 @@ struct uvsTarget {
 	UnitOrderType unitPtr;
 #endif
 		uvsTarget(void ) {pos_x = pos_y = 0;}
+		virtual ~uvsTarget() {}
 
 	};
 

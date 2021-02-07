@@ -13,6 +13,9 @@
 #include <locale.h>
 #endif
 
+int __internal_argc;
+char **__internal_argv;
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
 struct xtMsgHandlerObject
@@ -95,12 +98,13 @@ XStream xtRTO_Log;
 int xtSysQuantDisabled = 0;
 extern bool XGR_FULL_SCREEN;
 
+bool autoconnect = false;
+char *autoconnectHost;
+int  autoconnectPort = 2197;
+bool autoconnectJoinGame = false;
+int  autoconnectGameID;
 
-#ifdef win_arg
-int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
-#else
 int main(int argc, char *argv[])
-#endif
 {
 #ifdef __HAIKU__
 	const char *data_dir = getenv("VANGERS_DATA");
@@ -110,6 +114,9 @@ int main(int argc, char *argv[])
 #endif
 	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
 	XRuntimeObject* XObj;
+	__internal_argc = argc;
+	__internal_argv = argv;
+
 	#ifdef _WIN32
 		std::cout<<"Load backtrace"<<std::endl;
 		LoadLibraryA("backtrace.dll");
@@ -117,22 +124,48 @@ int main(int argc, char *argv[])
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 		putenv("SDL_AUDIODRIVER=DirectSound");
 	#endif
-#ifdef win_arg
-	std::string cmd_line = szCmdLine;
-	if(cmd_line.find("-fullscreen")!=std::string::npos) {
-		XGR_FULL_SCREEN = true;
-	}
-	
-#else
-	int i;
-	for(i=1;i<argc;i++) {
+
+    for (int i = 1; i < argc; i++) {
         std::string cmd_key = argv[i];
-        if (cmd_key == "-fullscreen")
+        if (cmd_key == "-fullscreen") {
             XGR_FULL_SCREEN = true;
-        else if (cmd_key == "-russian")
+        } else if (cmd_key == "-russian") {
             setLang(RUSSIAN);
+        } else if (cmd_key == "-server") {
+            if (argc > i) {
+                i++;
+                autoconnect = true;
+                autoconnectHost = argv[i];
+            } else {
+                std::cout << "Invalid parameter usage: '-server hostname' expected" << std::endl;
+            }
+        } else if (cmd_key == "-port") {
+            if (argc > i) {
+                i++;
+                autoconnectPort = strtol(argv[i], &argv[i], 0);
+            } else {
+                std::cout << "Invalid parameter usage: '-port value' expected" << std::endl;
+            }
+        } else if (cmd_key == "-game") {
+            if (argc > i) {
+                i++;
+                std::string value = argv[i];
+                autoconnectJoinGame = true;
+                if (value == "new") {
+                    autoconnectGameID = 0;
+                } else if (value == "any") {
+                    autoconnectGameID = -1;
+                } else {
+                    autoconnectGameID = strtol(argv[i], &argv[i], 0);
+                }
+            } else {
+                std::cout << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
+            }
+        } else {
+            std::cout << "Unknown parameter: '" << cmd_key << "'" << std::endl;
+        }
     }
-#endif
+
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 	std::cout<<"Set locale. ";
 	char* res = setlocale(LC_NUMERIC, "POSIX");
@@ -141,7 +174,7 @@ int main(int argc, char *argv[])
 	//Set handlers to null
 	press_handler = NULL;
 	unpress_handler = NULL;
-	
+
 	XMsgBuf = new XMessageBuffer;
 
 	initclock();
@@ -615,7 +648,7 @@ void xtSysQuantDisable(int v)
 }
 
 
-void set_key_nadlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*)) {
+void set_key_handlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*)) {
 	press_handler = pH;
 	unpress_handler = upH;
 }

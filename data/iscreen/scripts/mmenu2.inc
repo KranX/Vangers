@@ -34,6 +34,9 @@
 #define Controls_screen_Defaults_Option_PosX	$Controls_screen_Defaults_Option_PosX2
 #define Controls_screen_Defaults_Option_PosY	$Controls_screen_Defaults_Option_PosY2
 
+#define Controls_screen_Menu_Option_PosX	$Controls_screen_Menu_Option_PosX2
+#define Controls_screen_Menu_Option_PosY	$Controls_screen_Menu_Option_PosY2
+
 // ------------ Screen: "Sound screen" ------------
 
 #define Sound_screen_BackSndTrig_PosX	$Sound_screen_BackSndTrig_PosX2

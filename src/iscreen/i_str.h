@@ -56,6 +56,24 @@
 #define iSTR_COLOR_YELLOW_CHAR1 	"Y"
 #define iSTR_COLOR_YELLOW_CHAR2 	"Ж"
 
+#define iSTR_COLOR_RED_CHAR1		"R"
+#define iSTR_COLOR_RED_CHAR2		"К"
+
+#define iSTR_COLOR_WHITE_CHAR1		"W"
+#define iSTR_COLOR_WHITE_CHAR2		"Б"
+
+#define iSTR_COLOR_GRAY_CHAR1		"G"
+#define iSTR_COLOR_GRAY_CHAR2		"С"
+
+#define iSTR_COLOR_BLACK_CHAR1		"B"
+#define iSTR_COLOR_BLACK_CHAR2		"Ч"
+
+#define iSTR_COLOR_CAMOUFLAGE_CHAR1		"C"
+#define iSTR_COLOR_CAMOUFLAGE_CHAR2		"К"
+
+#define iSTR_COLOR_PATROL_CHAR1		"P"
+#define iSTR_COLOR_PATROL_CHAR2		"П"
+
 // Chat buttons...
 #define iSTR_MUTE_ALL1			"MUTE ALL"
 #define iSTR_MUTE_ALL2			"ВСЕМ МОЛЧАТЬ"
@@ -83,6 +101,24 @@
 
 #define iSTR_Green1			"Green"
 #define iSTR_Green2			"Зелёный"
+
+#define iSTR_Red1			"Red"
+#define iSTR_Red2			"Красный"
+
+#define iSTR_White1			"White"
+#define iSTR_White2			"Белый"
+
+#define iSTR_Gray1			"Gray"
+#define iSTR_Gray2			"Серый"
+
+#define iSTR_Black1			"Black"
+#define iSTR_Black2			"Чёрный"
+
+#define iSTR_Camouflage1			"Camouflage"
+#define iSTR_Camouflage2			"Камуфляж"
+
+#define iSTR_Patrol1			"Patrol"
+#define iSTR_Patrol2			"Патрульный"
 
 // Some strings...
 #define iSTR_CleanUp1			"CLEAN UP!"

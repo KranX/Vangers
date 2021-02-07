@@ -22,7 +22,7 @@ void KBD_init(void) {
 	if(!KeyBuf)
 		KeyBuf = new KeyBuffer;
 
-	set_key_nadlers(&key, &unpress_key);
+	set_key_handlers(&key, NULL);
 }
 
 void key(SDL_Event *key) {

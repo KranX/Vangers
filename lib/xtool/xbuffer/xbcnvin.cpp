@@ -51,6 +51,13 @@ XBuffer& XBuffer::operator<= (long var)
 	return *this;
 }
 
+XBuffer& XBuffer::operator<= (long long int var)
+{
+	char* s = port_ltoa(var,_ConvertBuffer,radix);
+	write(s,strlen(s),0);
+	return *this;
+}
+
 XBuffer& XBuffer::operator<= (unsigned long var)
 {
 	char* s = port_ultoa(var,_ConvertBuffer,radix);
