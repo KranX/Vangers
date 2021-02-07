@@ -859,7 +859,7 @@ void ParticleObject::DrawQuant(void)
 
 int  GetAltLevel(int x,int y,int z)
 {
-	uchar* p = vMap->lineT[y];
+	uchar* p = vMap->lineT[YCYCL(y)];
 	if(p){
 		p += x;
 		if((*(p+1)) < z && (*p) < z  ) return 1;
