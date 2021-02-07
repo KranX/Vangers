@@ -13737,17 +13737,17 @@ void NetworkGetStart(char* name,int& x,int& y)
 	StaticSort(SnsTableSize,(StaticObject**)SensorObjectData,(StaticObject**)SensorSortedData);
 	
 	char *game_name = iScrOpt[iSERVER_NAME]->GetValueCHR();
-	if (NetworkON && strcmp(game_name,"satinan")==0 && my_server_data.GameType == 2) {
+	if (NetworkON && (strcmp(game_name,"satinan")==0 || strcmp(game_name,"сатинан")==0) && my_server_data.GameType == 2) {
 		x = 1650;
 		y = 815;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"necrally")==0 && my_server_data.GameType == 2) {
+	else if (NetworkON && (strcmp(game_name,"necrally")==0 || strcmp(game_name,"некралли")==0) && my_server_data.GameType == 2) {
 		x = 1795;
 		y = 515;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"aibatr")==0 && my_server_data.GameType == 0) {
+	else if (NetworkON && (strcmp(game_name,"aibatr")==0 || strcmp(game_name,"аибатр")==0) && my_server_data.GameType == 0) {
 		x = 485;
 		y = 1310;
 		return;
@@ -13757,7 +13757,7 @@ void NetworkGetStart(char* name,int& x,int& y)
 		y = 3255;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"shutle fostral")==0 && my_server_data.GameType == 2) {
+	else if (NetworkON && (strcmp(game_name,"shutle fostral")==0 || strcmp(game_name,"челночный фострал")==0) && my_server_data.GameType == 2) {
 		x = 1835;
 		y = 1365;
 		return;
@@ -13767,17 +13767,17 @@ void NetworkGetStart(char* name,int& x,int& y)
 		y = 1310;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"lens-one")==0 && my_server_data.GameType == 2) {
+	else if (NetworkON && (strcmp(game_name,"lens-one")==0 || strcmp(game_name,"линза одиночная")==0) && my_server_data.GameType == 2) {
 		x = 625;
 		y = 2275;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"lens-team")==0 && my_server_data.GameType == 2) {
+	else if (NetworkON && (strcmp(game_name,"lens-team")==0 || strcmp(game_name,"линза командная")==0) && my_server_data.GameType == 2) {
 		x = 625;
 		y = 2275;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"battle for hmok")==0 && my_server_data.GameType == 0) {
+	else if (NetworkON && (strcmp(game_name,"battle for hmok")==0 || strcmp(game_name,"битва за хмок")==0) && my_server_data.GameType == 0) {
 		x = 945;
 		y = 1760;
 		return;
@@ -13787,12 +13787,12 @@ void NetworkGetStart(char* name,int& x,int& y)
 		y = 1760;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"eleerection-sim")==0 && my_server_data.GameType == 2) {
+	else if (NetworkON && (strcmp(game_name,"eleerection-sim")==0 || strcmp(game_name,"элирекция-сим")==0) && my_server_data.GameType == 2) {
 		x = 1960;
 		y = 1505;
 		return;
 	}
-	else if (NetworkON && strcmp(game_name,"mechoxes")==0 && my_server_data.GameType == 0) {
+	else if (NetworkON && (strcmp(game_name,"mechoxes")==0 || strcmp(game_name,"мехоксес")==0) && my_server_data.GameType == 0) {
 		x = 1870;
 		y = 1055;
 		return;
@@ -13803,7 +13803,7 @@ void NetworkGetStart(char* name,int& x,int& y)
 		return;
 	}
 	
-if(NetworkON && strcmp(game_name,"passave")==0 && my_server_data.GameType == 2) {
+if(NetworkON && (strcmp(game_name,"passave")==0 || strcmp(game_name,"пассейв")==0) && my_server_data.GameType == 2) {
     if (strcmp(name, "Podish") == 0) {
       aScrDisp->send_event(EV_TELEPORT, 0);
       x = 1385;
