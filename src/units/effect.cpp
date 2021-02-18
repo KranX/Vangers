@@ -123,8 +123,8 @@ void ExplosionObject::Free(void)
 void ExplosionObject::DrawQuant(void)
 {
 	int tx,ty,s;
-	if(AdvancedView) s = G2LF(R_curr.x,R_curr.y,R_curr.z,tx,ty);
-	else s = G2LS(R_curr.x,R_curr.y,R_curr.z,tx,ty);
+	if(AdvancedView) s = G2LF(R_curr,tx,ty);
+	else s = G2LS(R_curr,tx,ty);
 	if(MainMapProcess.process((char*)XGR_GetVideoLine(0),tx,ty,Scale*s >> 8,0,0,R_curr.z,R_curr.x & clip_mask_x, R_curr.y & clip_mask_y)) Status |= SOBJ_DISCONNECT;
 
 //	if(MainMapProcess.process((char*)(VS(_video)->_video),tx,ty,Scale*curGMap -> xsize / TurnSecX,0,0)) Status |= SOBJ_DISCONNECT;
@@ -538,7 +538,7 @@ void DeformObject::Quant(void)
 void DeformObject::DrawQuant(void)
 {
 	int tx,ty;
-	G2L(R_curr.x,R_curr.y,tx,ty);
+	G2L(R_curr,tx,ty);
 	wProcess->Deform(tx,ty,Offset,FullFlag);
 };
 
@@ -762,8 +762,8 @@ void ParticleObject::DrawQuant(void)
 				p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
 				vPos = p->vR;
 				vPos >>= 8;
-//				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-					G2LQ(vPos.x,vPos.y,vPos.z,tx,ty);
+//				if(GetAltLevel(vPos)){
+					G2LQ(vPos,tx,ty);
 	//				G2L(vPos.x,vPos.y,tx,ty);
 					if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 //				};
@@ -775,7 +775,7 @@ void ParticleObject::DrawQuant(void)
 					p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
 					vPos = p->vR;
 					vPos >>= 8;
-	//				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+	//				if(GetAltLevel(vPos)){
 		//				tx = round(SPGetDistX(p->vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
 		//				ty = round((p->vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
 
@@ -791,7 +791,7 @@ void ParticleObject::DrawQuant(void)
 					p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
 					vPos = p->vR;
 					vPos >>= 8;
-	//				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+	//				if(GetAltLevel(vPos)){
 		//				tx = round(SPGetDistX(p->vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
 		//				ty = round((p->vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
 
@@ -810,8 +810,8 @@ void ParticleObject::DrawQuant(void)
 				p->Quant();
 				vPos = p->vR;
 				vPos >>= 8;
-				if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-					G2LQ(vPos.x,vPos.y,vPos.z,tx,ty);
+				if(GetAltLevel(vPos)){
+					G2LQ(vPos,tx,ty);
 	//				G2L(vPos.x,vPos.y,tx,ty);
 					if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 				};
@@ -822,7 +822,7 @@ void ParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 		//				tx = round(SPGetDistX(p->vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
 		//				ty = round((p->vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
 
@@ -837,7 +837,7 @@ void ParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 		//				tx = round(SPGetDistX(p->vR.x,SPViewX)*ScaleMapInvFlt) + ScreenCX;
 		//				ty = round((p->vR.y - SPViewY) * ScaleMapInvFlt) + ScreenCY;
 
@@ -852,12 +852,12 @@ void ParticleObject::DrawQuant(void)
 	};
 };
 
-int  GetAltLevel(int x,int y,int z)
+int GetAltLevel(Vector v)
 {
-	uchar* p = vMap->lineT[y];
+	uchar* p = vMap->lineT[v.y];
 	if(p){
-		p += x;
-		if((*(p+1)) < z && (*p) < z  ) return 1;
+		p += v.x;
+		if( (*(p+1)) < v.z && (*p) < v.z ) return 1;
 	};
 	return 0;
 };
@@ -1366,7 +1366,7 @@ void TargetParticleType::aQuant(void)
 //		vR.y &= PTrack_mask_y;
 		pDist = d;
 
-		G2LQ(vR.x >> 8,vR.y >> 8,vR.z,tx,ty);
+		G2LQ(Vector(vR.x >> 8,vR.y >> 8,vR.z),tx,ty);
 		if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
 	};
 };
@@ -1502,9 +1502,9 @@ void TargetParticleType::aQuant2(void)
 		vT = vD;
 	}
 
-	G2LQ(vR.x >> 8,vR.y >> 8,vR.z,tx,ty);
+	G2LQ(Vector(vR.x >> 8,vR.y >> 8,vR.z),tx,ty);
 	if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
-};     
+};
 
 
 void TargetParticleType::sQuant2(void)
@@ -1655,8 +1655,8 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
+					if(WaterAltLevel(vPos)){
+						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1666,7 +1666,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(WaterAltLevel(vPos)){
 						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
@@ -1679,8 +1679,8 @@ void WaterParticleObject::DrawQuant(void)
 					p->QuantT(vCenter.x,vCenter.y,Velocity);
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
+					if(GetAltLevel(vPos)){
+						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1689,7 +1689,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->QuantT(vCenter.x,vCenter.y,Velocity);
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 
@@ -1706,8 +1706,8 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
+					if(WaterAltLevel(vPos)){
+						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1717,7 +1717,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
-					if(WaterAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(WaterAltLevel(vPos)){
 						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 
@@ -1731,8 +1731,8 @@ void WaterParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
-						G2L(vPos.x,vPos.y,tx,ty);
+					if(GetAltLevel(vPos)){
+						G2L(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1741,7 +1741,7 @@ void WaterParticleObject::DrawQuant(void)
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
-					if(GetAltLevel(vPos.x,vPos.y,vPos.z)){
+					if(GetAltLevel(vPos)){
 						tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 						ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 
@@ -1810,15 +1810,15 @@ void WaterParticleObject::CreateParticle(int _LifeTime,int _SetLifeTime,int _Vel
 	};
 };
 
-int WaterAltLevel(int x,int y,int z)
+int WaterAltLevel(Vector v)
 {
-	uchar* p = vMap->lineT[y];
+	uchar* p = vMap->lineT[v.y];
 	uchar* t;
 	if(p){
-		p += x;
+		p += v.x;
 		t = p + H_SIZE;
 		if((*t) & DOUBLE_LEVEL){
-			if(x & 1){
+			if(v.x & 1){
 				return (GET_TERRAIN_TYPE(*t) == WATER_TERRAIN);
 			}else{
 				return (GET_TERRAIN_TYPE(*(t + 1)) == WATER_TERRAIN);
@@ -1857,8 +1857,8 @@ void FireBallObject::Quant(void)
 void FireBallObject::DrawQuant(void)
 {
 	int tx,ty,s;
-	if(AdvancedView) s = G2LF(R_curr.x,R_curr.y,R_curr.z,tx,ty);
-	else s = G2LS(R_curr.x,R_curr.y,R_curr.z,tx,ty);
+	if(AdvancedView) s = G2LF(R_curr,tx,ty);
+	else s = G2LS(R_curr,tx,ty);
 	s = s * Scale;
 //	FBP->Show(tx,ty,R_curr.z,s << 7,frame);
 	FBP->Show(tx,ty,R_curr.z,s,frame);
@@ -1994,7 +1994,7 @@ void ParticleGenerator::Quant(void)
 	cycleTor(R_curr.x,R_curr.y);	
 
 	Time--;
-	GetAlt(R_curr.x,R_curr.y,R_curr.z,alt);
+	GetAlt(R_curr,alt);
 	R_curr.z = alt + radius;
 	if(Time <= 0) Status |= SOBJ_DISCONNECT;
 };
