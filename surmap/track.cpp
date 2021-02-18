@@ -39,8 +39,6 @@ int Track_show_all;
 
 static int delta = 20;
 
-int n_function = 6;
-
 int NoiseLevel,NoiseAmp,ShapeNumber,ShapeAmp;
 
 int DeltamH = 0;
@@ -53,19 +51,19 @@ int cNode = 0;
 
 //int UcutLeft,UcutRight,VcutUp,VcutDown;
 
-PF* profils;
-eBranch* delBranch = 0;
-eNode* delNode = 0;
-void drawpoly(int* x, int* y, int n, int, int, double, int, int, int, int, int, int, double, int, int);
-void calc_normal_vector( eSection* data, int pos, int& xv, int& yv );
-void set_one_section(int,eBranch*&,int,int ,int,int,int,int,int,int);
-
 double f0( double t, double );
 double f1( double t, double );
 double f2( double t, double );
 double f3( double t, double );
 double f4( double t, double );
 double f5( double t, double );
+
+PF profils[] = {f0, f1, f2, f3, f4, f5};
+eBranch* delBranch = 0;
+eNode* delNode = 0;
+void drawpoly(int* x, int* y, int n, int, int, double, int, int, int, int, int, int, double, int, int);
+void calc_normal_vector( eSection* data, int pos, int& xv, int& yv );
+void set_one_section(int,eBranch*&,int,int ,int,int,int,int,int,int);
 
 unsigned realRND(unsigned m);
 
@@ -1825,9 +1823,6 @@ void drawpoly(int* x, int* y, int n, int hl, int hr, double t, int f1, int f2, i
 		if(!lt[minY] || !lt[maxY])
 			vMap -> change(minY,maxY);
 
-//	  f1 = f1 % n_function;
-//	  f2 = f2 % n_function;
-
 	if(hl <= 1) hl = 2;
 	else if(hl >= 254) hl = 253;
 
@@ -2177,16 +2172,6 @@ void sTrack::load(int n){
 	int ln_node, ln_branch, dn_node, dn_branch;
 
 	XStream fin(0);
-
-	if ( n == 0 ){
-		profils = new PF[n_function];
-		profils[0] = f0;
-		profils[1] = f1;
-		profils[2] = f2;
-		profils[3] = f3;
-		profils[4] = f4;
-		profils[5] = f5;
-	}
 
 	trackName[5] += n;
 	if(!fin.open(GetTargetName(trackName),XS_IN)){
