@@ -777,6 +777,7 @@ void iPrepareOptions(void)
 	
 	iScrOpt[iFULLSCREEN] = new iScreenOption(iTRIGGER,0,"Graphics screen","FullScreenTrig");
 	((iTriggerObject *)iScrOpt[iFULLSCREEN]->objPtr)->callback = &iSetFullscreen;
+iScrOpt[iAUTO_ACCELERATION] = new iScreenOption(iTRIGGER,0,"Controls screen","AutoAccelerationTrig");
 	((iTriggerObject *)iScrOpt[iFPS_60]->objPtr)->callback = &iSetFPS;
 	
 	iPrepareControls();
@@ -1020,7 +1021,9 @@ void iScreenOption::SetValueCHR(const char* p)
 		switch(ObjectType){
 			case iSTRING:
 				if(ValueType == iOPTION_VALUE_CUR){
-					strcpy(((iStringElement*)objPtr) -> string,p);
+					if (((iStringElement*)objPtr)->string != p) {
+						strcpy(((iStringElement*)objPtr) -> string, p);
+					}
 					((iStringElement*)objPtr) -> init_size();
 					((iStringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iStringElement*)objPtr) -> owner;
@@ -1030,7 +1033,9 @@ void iScreenOption::SetValueCHR(const char* p)
 				break;
 			case iS_STRING:
 				if(ValueType == iOPTION_VALUE_CUR){
-					strcpy(((iS_StringElement*)objPtr) -> string,p);
+					if (((iS_StringElement*)objPtr)->string != p) {
+						strcpy(((iS_StringElement*)objPtr) -> string, p);
+					}
 					((iS_StringElement*)objPtr) -> init_size();
 					((iS_StringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iS_StringElement*)objPtr) -> owner;
@@ -1167,7 +1172,7 @@ void iInitControlObjects(void)
 				else {
 					str = iGetJoyBtnNameText(key,lang());
 				}*/
-				str = iGetKeyNameText(key, lang());
+				str = iGetKeyNameText(key, lang(), true);
 				
 				if (str) {
 					if(strcasecmp(iControlsStr[index]->string,str)) {
@@ -2375,7 +2380,7 @@ void iPreparePlayerResults(int id)
 }
 
 const char* STR_NONE1 = "NONE";
-const char STR_NONE2[] = {(char)0x8D, (char)0x85, (char)0x92}; //cp866 - НЕТ
+const char STR_NONE2[] = {(char)0x8D, (char)0x85, (char)0x92, (char)0x00}; //cp866 - НЕТ
 
 const char* STR_JOYSTICK_KEY_NAME[] = {
 	"jbutton_1",
@@ -2426,7 +2431,7 @@ const char* get_joystick_hat_name(int key) {
 	return "jhat_unknow";
 }
 
-const char* iGetKeyNameText(int vkey, Language lang)
+const char* iGetKeyNameText(int vkey, Language lang, bool scan)
 {
 	//std::cout<<"iGetKeyNameText:"<<vkey<<" lang:"<<lang<<std::endl;
 	/*char* ret = NULL;
@@ -2454,6 +2459,8 @@ const char* iGetKeyNameText(int vkey, Language lang)
 		return get_joystick_hat_name( (vkey ^ SDLK_JOYSTICK_HAT_MASK) % 10 );
 	} else if (vkey & SDLK_SCANCODE_MASK) {
 		return SDL_GetKeyName(vkey);
+	} else if (scan) {
+		return SDL_GetScancodeName((SDL_Scancode)vkey);
 	} else {
 		return SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)vkey));
 	}

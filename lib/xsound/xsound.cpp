@@ -2,7 +2,7 @@
 
 //#include "dsound.h"
 //#include <SDL_mixer.h>
-#include <clunk.h>
+#include <clunk/clunk.h>
 
 #include "xglobal.h"
 #include "xgraph.h"
@@ -265,7 +265,7 @@ void SoundLoad(char *filename, void **lpDSB)
 		}
 	*/
 	//std::cout<<"SoundLoad:"<<filename<<std::endl;
-	clunk::Sample *chunk;
+	clunk::Sample *chunk = NULL;
 	try {
 		chunk = context.create_sample();
 		chunk->load(filename);

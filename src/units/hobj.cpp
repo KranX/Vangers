@@ -1190,7 +1190,6 @@ void GameObjectDispatcher::Quant(void)
 	VangerUnit* p;
 	int i;
 
-	int time;
 	if(TurnAngle == 0 && DepthShow == 0) AdvancedView = 0;
 	else AdvancedView = 1;
 
@@ -1227,9 +1226,7 @@ void GameObjectDispatcher::Quant(void)
 					break;
 				};	
 		};
-	}else{
-		time = GLOBAL_CLOCK();
-	};	
+	}
 
 #ifdef _DEBUG
 //	DBGCHECK;
@@ -1773,9 +1770,7 @@ void VangerUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 {
 	uchar* TypeMap;
-	int rLog = 1;
 	uchar trn;
-//	int pf;
 
 	double CosTetta = Cos(tetta)*(1 << FIXED_SHIFT)*8/3;
 	int track_nx = -round(Cos(psi)*CosTetta);
@@ -1784,11 +1779,6 @@ void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 	if(CurrentWorld == WORLD_KHOX) return;	
 
 	if(speed != 0){
-//		if(n == nLeftWheel) pf = 0;
-//		else if(n == nRightWheel) pf = 1;
-//			else return;
-		//rLog = (256 - abs(speed)) >> 4;
-		//if(rLog <= 2) rLog = 2;
 
 		cycleTor(x,y);
 		TypeMap = vMap->lineT[y];
@@ -1852,7 +1842,6 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 	int fx,fy,i;
 
 	int dx,dy,kx,ky,tx,ty;
-	int ax,ay,bx,by;
 	char mask;
 
 	cycleTor(cx1,cy1);
@@ -1944,6 +1933,8 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 		};
 	};
 
+	/*
+	int ax,ay,bx,by;
 	if(cy1 < cy2){
 		ay = YCYCL(cy1 - lh);
 		by = YCYCL(cy2 + lh);
@@ -1951,6 +1942,8 @@ void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,in
 		ay = YCYCL(cy2 - lh);
 		by = YCYCL(cy1 + lh);
 	};
+	*/
+
 /*
 	if(cx1 < cx2){
 		ax = XCYCL(cx1 - lh);
@@ -2963,6 +2956,27 @@ char getObjectPosition(int& x,int& y)
 					case 2:
 						c = 6;
 						break;
+					case 3:
+						c = 7;
+						break;
+					case 4:
+						c = 11;
+						break;
+					case 5:
+						c = 12;
+						break;
+					case 6:
+						c = 13;
+						break;
+					case 7:
+						c = 14;
+						break;
+					case 8:
+						c = 15;
+						break;
+					case 9:
+						c = 16;
+						break;
 					default:
 						c = 7;
 						break;
@@ -3215,7 +3229,7 @@ void GeneralSystemLoad(XStream& in)
 			for(i = 0;i < NUM_CHECK_BSIGN;i++)
 				in > CHECK_BSIGN_DATA[i];
 
-			for(i = 0;i < 83 - WORLD_MAX - 3*sizeof(int) - 2*NUM_CHECK_BSIGN;i++)
+			for(i = 0;i < 83 - WORLD_MAX - 3*(int)sizeof(int) - 2*NUM_CHECK_BSIGN;i++)
 				in > ver;
 			break;
 		case 4:
@@ -3750,8 +3764,10 @@ int NetInit(ServerFindChain* p)
 	GloryPlaceData = NULL;
 	UsedCheckNum = 0;
 
-	if(object_ID_offsets[NID_DEVICE >> 16] > object_ID_offsets[NID_STUFF >> 16]) stuff_ID_offsets = object_ID_offsets[(NID_DEVICE & (~(1 << 31))) >> 16];
-	else stuff_ID_offsets = object_ID_offsets[(NID_STUFF & (~(1 << 31))) >> 16];
+	if(object_ID_offsets[NID_DEVICE >> 16] > object_ID_offsets[NID_STUFF >> 16]) 
+		stuff_ID_offsets = object_ID_offsets[(NID_DEVICE & (~(1 << 31))) >> 16];
+	else
+		stuff_ID_offsets = object_ID_offsets[(NID_STUFF & (~(1 << 31))) >> 16];
 
 	std::cout<<"NetInit - [ok]"<<std::endl;
 	return 1;

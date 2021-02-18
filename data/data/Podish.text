@@ -1,0 +1,544 @@
+[quotha]
+"Ба! Вот так раз - ты живуч однако, канавный воин..."
+"Hello poor pupa, still wheeling in the dust?"
+
+[Empty Question]
+"Что ты бормочешь там, навозник?"
+"What are you mumbling about, pupa?"
+
+[Empty Molecule]
+"Мне нечего сказать тебе, механик. Отстань, я занят..."
+"I have nothing to say, fitter. Leave me alone, I'm busy..."
+
+[Block Molecule:B]
+"Постой козявка, я не договорил еще!"
+"Stop right there. I haven't finished yet!"
+
+[Out Molecule]
+"Пошел отсюда, недотепа!"
+"Get out of here!"
+
+[Dead Molecule]
+"Мы счастливы в себе. Прощай Фострал."
+"We are happy by ourselves. Farewell to Fostral."
+
+[empty]
+"п"
+"e"
+
+[Leepky Introduction]
+"Очнулся, жалкий? Хорошо, а мы уж думали ты сдох совсем, придется отнимать другого..."
+"Вот так бывает - вчера ты резвая личинка без забот, а сегодня... ты прыгнешь в мехос и наверх, бррpp, из теплых наших нор долой - пылить дороги на Фострале, пугаясь встречных, падая в канавы..."
+"Welcome back, poor pilgarlic! We thought you were completely dead, have to give another one away... "
+"You know how it happens: yesterday you were a dapper little caterpillar without a care in the world, and now you're climbing into your mechos and going up, ugh, from our warmth, up there to plow the roads on Fostral, scaring everyone you meet into ditches..."
+{мехос} {Фострал}
+{mechos} {Fostral}
+"Однако ж как я погляжу ты слишком туп внимать мне - что возьмешь с тебя, несчастная личинка элипода, что жирел напрасно и породил тебя, урода..."
+"I see you're too dumb to listen to me. What are you worth, you worthless piece of trash."
+{элиподы}
+{Eleepods}
+"Слушай и запоминай, поймешь все позже - если выживешь, бедняга..."
+"Я - Липкий, советник Подиша - эскейва на Фострале, так наш мир зовется..."
+"Listen and remember, as you'll understand this later, if you survive, of course... "
+"I'm Leepky, the counselor of Podish, an escave on Fostral, which is what we call our world..."
+{Липкий} {Подиш} {эскейв}
+{Leepky} {Podish} {escave}
+"А ты - комочек слизи, тебя отвергли все стручки, судьба твоя понятна - сегодня ты возьмешь свой ржавый механизм и будешь выкинут наверх... Таков закон..."
+"And you're a clot of mucus cast away from the pods. Your fate is clear: you'll take your rattletrap and be thrown out, as that's the law..."
+{стручок}
+{pod}
+"Надеюсь, смерть твоя там не заставит себя ждать - ведь жить вне стручка ужасное мучение..."
+"I hope your fate won't make you wait. It's excruciating living off a pod..."
+{стручок}
+{pod}
+"Уж сколько недоумков, тебе подобных, я перевидал - а все вас жалко... Вот также и они бессмысленно моргали, не понимая кто они, откуда и куда..."
+"Но порядок есть порядок - я должен объяснить тебе картину мира... Слушай..."
+"Не бойся, тебе не нужно знать уж очень много - зачем? Когда-то я пытался долго вас учить, я говорил о банчах, о Цепи, о подземных Куклах, про глупых бибуратов что живут на Глорксе и кто такие раффа, про кузовки опять же..."
+"I've seen a lot of jerks like you, yet I still sympathize with you... They blinked innocently, just like you, not knowing who they were, where they were from, or where they should go..."
+"All right, as a matter of routine, I must tell you about the anatomy of the universe... Now listen... "
+"Don't be afraid, there's no need to know too much. I used to give lengthy lessons talking about bunches, the Chain, the underground Larvae, about stupid Beeboorats that live on Glorx... I'd explain what raffa is, about kusowocks..."
+{банч} {Цепь} {Куклы} {бибураты} {Глоркс} {раффа} {кузовки}
+{bunch} {The Chain} {Larvae} {Beeboorats} {Glorx} {raffa} {kusowocks}
+"Вот-вот, я вижу лишний труд, ты выпучил глаза свои пустые в попытке что-либо понять, но понять не в силах, ты не видел жизни, ни внутренней, ни внешней..."
+"Поэтому мой метод очень прост - я дам тебе задание не вдаваясь в суть его..."
+"Фострал велик, мы находимся внизу, тут наш эскейв, а далеко вверху есть Инкубатор, святое место - туда мы посылаем вкусный нимбос наш для продления рода элиподов, запомни этот биос, он верховный над всеми тварями Цепи..."
+"Yes, I see it's all for nothing: you look at me like ET trying to understand the message. At your wit's end? You haven't seen life inside or outside... "
+"So I'll do this the easy way: I'll give you the mission without splitting hairs... "
+"Fostral is big, and we're on the bottom. Our escave is here. Far up is Incubator, the holy place, which is where we send our tasty nymbos to prolong the Eleepod race. Remember our bios, it's superior to all the creatures in the Chain..."
+{Фострал} {эскейв} {Инкубатор} {элиподы} {биос} {Цепь} {нимбос}
+{Fostral} {escave} {Incubator} {Eleepods} {bios} {The Chain} {nymbos}
+"И помни главное - что ты теперь один на свете, никто уже не станет тебя кормить, облизывать и гладить.."
+"Ты одиночка, сам себе слуга и тут же господин - никто не даст и горстки нюхи за твои ошибки..."
+"And now remember the main thing: you're on your own from this moment on, with no one to feed or lick or cuddle you... "
+"You are a maverick, your own master and servant; no one will give a pinch of cirt for your mistakes..."
+{нюха}
+{cirt}
+"Ты должен выбрать мехос - ржавую машину древних, ей будешь ты владеть и в ней погибнешь ибо... вас не так уж мало, торгашей удачи, снующих меж миров лишь в поисках наживы и готовых за пустяк убить друг друга... Вангеры ведь звери..."
+"Your choice is mechos, an ancient machine you'll own and die in, for... there are quite a lot of you, knights of the road, who comb the worlds for gain and kill each other for chickenfeed... Vangers are beasts..."
+{мехос} {вангеры}
+{mechos} {vangers}
+"Мы, элиподы, к вам добры - но в меру... Нам безразличны судьбы ваши - ты можешь делать все во что горазд, но помни - если хочешь жить, то слушай нас, козявка..."
+"We Eleepods are kind to you, but only somewhat... We don't give a crap about your destiny, and you are free to do whatever you want. But remember: if you want to survive, you'd better listen to us, shrimp..."
+{элиподы}
+{Eleepods}
+"Служа лишь Подишу ты враз получишь все - от быстрых мехосов до скрытых знаний, вот первое задание..."
+"Only by serving Podish will you get everything from fast mechos to secret knowledge. Here's your first mission..."
+{Подиш} {мехос}
+{Podish} {mechos}
+"Возьми-ка нимбоса секретного отсюда и отвези в другой конец Фострала - в Инкубатор знойный..."
+"Get some secret nymbos from here and take it to the other end of Fostral, into sultry Incubator..."
+{нимбос} {Фострал} {Инкубатор}
+{nymbos} {Fostral} {Incubator}
+"Там ждет тебя мой Палец, он расскажет больше, если выживешь среди причуд Фострала..."
+"My Feenger's waiting there; he'll tell you more if you survive in the jungles of Fostral..."
+{Палец} {Фострал}
+{Feenger} {Fostral}
+"Прощай, юнец. Удачи. Привези мне кузовков..."
+"Farewell, kiddo, and good luck. Bring me some kusowocks..."
+{кузовки}
+{kusowocks}
+
+[Eleepods Story]
+"Что ж, дорожник, пора тебе поведать об основе всех и вся - о нас, проникновенных элиподах..."
+"So, rover, it's time to tell you about the basis of the universe: about us, the profound Eleepods..."
+{элиподы}
+{Eleepods}
+"История Потерянной Цепи покрыта для нас мраком - мы не собиратели занятных баек подобно циксам..."
+"The story of the Chain is cloudy to us; we don't like fairy tales like the Zeexen do..."
+{Цепь} {циксы}
+{The Chain} {Zeexen}
+"Поэтому все эти слухи о древних софти и проклятых криспо нас волнуют мало - если ты любитель небылиц поезжай на Некросс - там тебе залепят слуховые дыры флегмой..."
+"That's why all the various rumors about ancient Softie and cursed Cryspo mean nothing to us. And if you are a fan of bedtime stories, go to Necross, where you'll have your ears stuffed with phlegma..."
+{софти} {криспо} {Некросс} {флегма}
+{The Softie} {The Cryspo} {Necross} {phlegma}
+"Мы, элиподы, вне времени и вне реальных дел. Для нас нет прошлого и то что будет завтра нам абсолютно безразлично. Зато текущее мгновение мы изучили плотно и знаем все о настоящем..."
+"We Eleepods are not bound by time and real deeds. For us there is no past, and we do not care about tomorrow. However, we have studied the current moment at length and know everything about the present..."
+{элиподы}
+{Eleepods}
+"Никому из обитателей Цепи не дано познать то чувство Знания о Состоянии Всех Дел, что есть у нас. Нам стоит лишь собрать все струны любого из стручков в единую гармонию - и тут же мы увидим все миры в своем сознании единым неподвижным слепком..."
+"None of the inhabitants of the Chain have been allowed the feeling of Knowledge about the Condition of All Things that we have. We need but to collect all the chords from the pods into a unified harmony, at which point we will see all the worlds in our consciousness as a unified, motionless mold."
+{Цепь} {стручок}
+{The Chain} {pod}
+"Мы тихо преем глубоко в Фострале и счастье окунуть чесалку в клейкой флегме и провести по бугоркам, от нимбоса набухшим, скользя при этом Линзой по суетным мирам, тебе не дано узнать, впрочем как и остальным несчастным - будь то бибураты или циксы..."
+"We are quietly stewing deep in Fostral and the happiness of dipping a comb in sticky phlegma and running it through protuberances swollen with nymbos, slipping the P-beam through vain worlds, is not for you or any other of the luckless to know, be they Beeboorats or Zeexen..."
+{Фострал} {флегма} {нимбос} {Линза} {бибураты} {циксы}
+{Fostral} {phlegma} {nymbos} {P-beam} {Beeboorats} {Zeexen}
+"Суть элиподов вся в стручках, в ощущении единства. У нас нет одиночества и страха мелкого комочка жизни перед реальным необъятным миром - наше подсознание объединено в стручках... Впрочем, вряд ли это нужно знать тебе, добытчик нюхи..."
+"The essence of the Eleepods is all in pods and the feeling of unity. We do not have loneliness or the fear of the nubbin of life before the real, immense world, as our subconscious is wrapped up in pods... Then again, you probably don't need to know that, cirt hunter..."
+{элиподы} {стручок} {нюха}
+{Eleepods} {pod} {cirt}
+"Мы объясним тебе лишь позже связь стручков и Линзы. Не каждый вангер выживает наверху и не каждый вангер нужен элиподам. Запомни - информация о текущем миге всей вселенной у нас, ты лишь исполнитель нашей воли..."
+"We will explain later the connection between pods and the P-beam. Not every vanger survives up above, and not every vanger is needed by the Eleepods. Remember: information about the current instant in all the universe is ours, and you are just the executor of our will..."
+{стручок} {элиподы} {Линза} {вангеры}
+{pod} {Eleepods} {P-beam} {vangers}
+
+[Cirt Story]
+"Ну вот, механик скорый, теперь мы видим твои старания и можем рассказать чуть больше - ты ведь хочешь вангером-агентом стать, не так ли?"
+"Well, wimble fitter, we now see your zeal, so we can tell you a bit more. You want to be our agent vanger, correct?"
+{вангеры}
+{vangers}
+"То, что я тебе скажу сейчас, раскроет многое в пульсации Цепи. И если ты поймешь меня, поймешь предназначение нюхи - считай что закрепился в этом мире, и не только на Фострале..."
+"What I'm going to tell you now will reveal much inside the Chain. And if you understand me, and see what cirt is about, you'll settle down here for good. Not only on Fostral..."
+{Цепь} {нюха} {Фострал}
+{The Chain} {cirt} {Fostral}
+"Запомни - нами правят Куклы. Что такое Кукла? Увы, мы не знаем точно сами - пока наш банч не смог добыть ее..."
+"Remember: our sovereigns are Larvae. What is a Larva, you ask? Alas, we know very little, as our bunch hasn't been able to snag one..."
+{Куклы} {банч}
+{Larvae} {bunch}
+"Проклятие. Ходят слухи, что у циксов есть одна... Про бибуратов мы не знаем - тупость их не позволяет проникнуть в Глоркса закрома, может сам узнаешь... Ты спросишь - что же наша Линза? Верно, мы знаем все - но Кукол мы не видим, они скользят вне нас..."
+"Damn! It's rumored the Zeexen have a Larva... We know nothing about the Beeboorats, as for all their stupidity we cannot pry into the inner space of Glorx. Perhaps you'll find that out yourself..."
+{циксы} {бибураты} {Глоркс} {Куклы}
+{Zeexen} {Beeboorats} {Glorx} {Larvae}
+"Еще есть сплетни, что на Икспло скрыт от глаз Ушедший Биос, реализовавший все свои мечты о Куклах. Счастливчики, им уже не нужно в ожидании томиться..."
+"You are wondering about the P-beam? You're right, we know everything, but Larvae are beyond us and pass unnoticed... Another rumor says there's a hidden Departed Bios on Xplo that has realized all dreams about the Larvae. The lucky guys, they don't have to yearn any more..."
+{Икспло} {Ушедший Биос} {Куклы}
+{Xplo} {Departed Bios} {Larvae}
+"Так вот, наш цикл мертв без ощущения Кукол - лишь присутствие Их духа позволяет элиподам пройти весь путь сквозь Элирекцию от Жирогона к Чавке и начать все вновь..."
+"Now our cycles are dead without Larvae, and only their spirit enables us to go all the way through the Eleection, from Plump-up to Gulp-down, and then start over..."
+{Куклы} {элиподы} {Жирогон} {Чавка}
+{Larvae} {Eleepods} {Plump-up} {Gulp-down}
+"Кукол дух мы получаем посредством нюхи - простого праха, отнятого с других миров где обитают наши боги. Дело в том, что Куклу невозможно видеть вам, колесникам..."
+"We get the Larva's spirit through cirt, plain soil taken from the worlds where our lords live. The problem is, the Larvae are unseen to you, the wheelers."
+{Куклы} {нюха}
+{Larvae} {cirt}
+"Глубоко в подземной толще они живут и там, гораздо глубже всех эскейвов, прогрызают ход себе. Смысл их действий нам непонятен до сих пор..."
+"They crawl deep underground, much deeper than escaves. And their being is still a mystery to us..."
+{эскейв}
+{escave}
+"Все Куклы разные и каждый наш цикл в Круге циклов жизни требует свою, единственную нюху от уникальной Куклы. За доставку этой нюхи элиподной мы хорошо вам платим, торгаши удачи..."
+"All Larvae are different, and every cycle of our rotation requires a specific cirt: the only cirt from a unique Larva. We'll pay you well for the delivery of this specific cirt, you hucksters of fortune..."
+{Куклы} {нюха}
+{Larvae} {cirt}
+"Тебе лишь нужно нюхонтейнер взять, найти пахучий грунт, набрать его туда и привезти в наш банч, на Подиш..."
+"You only have to take the cirtainer, find the smelly soil and fill it up, and take it back to Podish and our bunch..."
+{банч} {Подиш}
+{bunch} {Podish}
+
+[Cirt Story Add]
+"Впрочем, пока я вижу мало пользы в этом деле от тебя, возница эЛиков успешный. Ты пока не можешь пройти сквозь Коридор на Глоркс, а значит не доступны для тебя и наши Куклы - на Фострале обитают лишь противные чужие..."
+"However, I see no value coming from you in this affair yet, you lucky carter of eLeech. You can't get to Glorx through the Passage and reach our Larvae there yet. You know, only aliens live here on Fostral, and they're loathsome to us..."
+{эЛик} {Коридор} {Глоркс} {Куклы} {Фострал}
+{eLeech} {Passage} {Glorx} {Larvae} {Fostral}
+"Поэтому служи нам и получишь ключ на Глоркс, поборник бибов..."
+"So serve us and you'll get the key to Glorx, you apostle of beebs..."
+{Глоркс} {бибы}
+{Glorx} {beebs}
+
+[Bad Cirt Delivery:B]
+"Что это в мехосе твоем так дурно пахнет, колесник недобитый жизнью? Где ты ЭТО взял? Ты прежде чем везти сюда чужую нюху подумал бы сперва, подшипник ржавый, а нужна ли нам она?"
+"What's that stinking stuff in your mechos, you crummy roamer? Where did you get THAT? Before you bring alien cirt here, you'd better think about whether or not we need it, you rusty bearing."
+{мехос} {бибураты} {циксы} {нюха} {бибы}
+{mechos} {Beeboorats} {Zeexen} {cirt} {beebs}
+"Ведь это бибуратов глупых нюха, или говорливых циксов. Не делай больше так. Иначе мы тебя накажем..."
+"That's cirt from boneheaded Beeboorats or gabby Zeexen. Don't do that anymore or we will punish you..."
+
+[Good Cirt Delivery:G]
+"Вот так раз, механик. Где ты смог добыть столь нужную нам нюху? Уж не защекотал ли в смерть ты вангеров других, пройдоха? Или и впрямь добрался до элиподской Куклы? Сам?"
+"На сегодня ты привез нам уже $(Cirt Delivery) порций вкуснейшей элиподной нюхи - продолжай служить нам, старатель мирный!"
+"Gee whiz, fitter! Where did you get that precious cirt? You must have tickled the other vangers to death. Or did you really get to the Eleepods' Larva? All by yourself? "
+"As of today, you've brought us $(Cirt Delivery) portions of tastiest Eleepods' cirt. Keep serving us well, peaceful prospector!"
+{нюха} {Куклы} {вангеры}
+{cirt} {Larvae} {vangers}
+
+[FIRST-Good Cirt Delivery:G]
+"Ну и делец, задор в тебе я вижу! Пожалуй, станешь ты старателем известным по извозу нюхи когда откроешь для себя миры, в которых обитают Куклы наши..."
+"What a rustler, full of zeal! Looks like you're going to be a famous cirt digger when you discover the worlds where our Larvae live..."
+
+[NO-Cirt Delivery]
+"Да, давненько я не видел столь тупого вангера как ты. Погляди в себя, что видишь? В контейнере! Ну, что там?"
+"А ничего там нет, тупица! Ты нагреб в него земли ненужной никому и таскаешь за собой, потеха на колесах. Видно, думал это нюха? Ан нет, свистулька, это просто пыль. Дыхание Кукол не касалось твоего груза..."
+"Yeah, it's been a long time since I've seen a vanger as stupid as you. Look deep inside yourself, what do you see? In the container! So, what's there? "
+"Nothing is there, you blockhead! You crammed it full of useless soil and schlepped it around. You thought that was cirt? Wrong, you retard! It's just dust. The breath of Larvae hasn't touched your cargo..."
+
+[Nymbos in Inventory:B]
+"Ты поступаешь неразумно, вангер, возвращаясь с нимбосом на Подиш. Он нужен в Инкубаторе - езжай туда скорей..."
+"You were wrong, vanger, to come back to Podish with the nymbos. It's needed in Incubator, so get over there now..."
+{вангеры} {нимбос} {Подиш} {Инкубатор}
+{vangers} {nymbos} {Podish} {Incubator}
+
+[Phlegma in Inventory:G]
+"Я вижу, что беседы наши тебе пошли на пользу, вангер, ты привез нам флегмы. Мы, элиподы, любим в ней купаться..."
+"I see our talks are not in vain, vanger: you brought us phlegma. We Eleepods like to wallow in it..."
+{вангеры} {элиподы} {флегма}
+{vangers} {Eleepods} {phlegma}
+
+[Vangers Killing Comments]
+"До меня уже дошли известия, что ты закончил чей-то путь там наверху. Надеюсь не нарочно..."
+"Элиподам мало дела до вас, колесников, но вот тебе совет - немногие дадут за жизнь твою и биба если будешь ты наглеть и отнимать у банчей слуг их ради личных прихотей. Подумай..."
+"Rumors have reached me that you terminated someone's life up there. I hope it wasn't on purpose. "
+"Eleepods don't care much about you ramblers, but I'll give you some advice: no one will give a beeb for your life if you become too bold and keep killing other vangers, the slaves of bunches, on a whim. Think about it..."
+{элиподы} {бибы} {банч}
+{Eleepods} {beebs} {bunch}
+
+[eLeech Loss (with body):B]
+"Навозник, как посмел ты явиться после этого на Подиш? Ты заглядывал в свой трюм, рожденный умереть в канаве? Там смерть, там мертвый эЛик!"
+"How dare you come to Podish after that!? Did you even look in your bay? Death is there: the eLeech is dead!"
+{Подиш} {эЛик}
+{Podish} {eLeech}
+"О горе нам, я слышу тишину - стручок его парализован. Теперь они обречены бестелесника хранить, ты знаешь что это такое? Впрочем, ты труп уже. Ступай, отродье, с глаз долой..."
+"Oh grief, I hear silence: his pod is crippled. They are now doomed to keep the bodiless - do you know that is? You're a dead man now. Buzz off, cursed one..."
+{стручок}
+{pod}
+
+[eLeech Loss (w/o body):B]
+"Я молчу и таю при мысли, куда ты мог девать врученный тебе груз. О сладкий эЛик, где ты? Безмозглый Палец - как он мог доверить такому недоумку эЛика тонкого. Мерзавец, где малыш? Ты нам заплатишь за утрату, тля колесная, нахлебник. Вон отсюда..."
+"I wonder what you could have done with the precious cargo we entrusted to you? Oh, sweet eLeech, where are you? Blockhead Feenger! How could he trust a fragile eLeech to such a freak? Where is the baby, you scat? You'll pay for this, green-fly. Now bug off!"
+{Палец} {эЛик}
+{Feenger} {eLeech}
+
+[eLeech Delivery (2-(n-1)):G]
+"Что ж, быстрый воин. Ты неплохо мехосом владеешь. Ты сохранил малютку эЛика - отрадно. Бибы ждут тебя..."
+"So, nimble fighter, you handle your mechos well. You have preserved the little eLeech, that's good. Your beebs are waiting..."
+{мехос} {эЛик} {бибы}
+{mechos} {eLeech} {beebs}
+
+[eLeech Delivery (n)]
+"Ну наконец-то, мы уж начали прощаться с эЛиком несчастным, доверенным тебе. Отрадно, что ты успел добраться в Подиш и за это время остался жив наш драгоценный груз... Тренируйся, вангер, и не соверши ошибки..."
+"At last! We already started the lament for the poor eLeech we entrusted to you. It's good you've come to Podish before our little treasure died an untimely death... You should practice, vanger. Don't mess up!"
+{Подиш} {эЛик} {вангеры}
+{Podish} {eLeech} {vangers}
+
+[Eleerection Win I:G]
+"Механик! Ты приехал ПЕРВЫМ! Теперь ты Элирекции герой - элиподы это не забудут. Мы умеем отличать зерно от плевел..."
+"Gee, fitter! You got here FIRST! You're now the hero of the Eleection, something the Eleepods will remember. We know how to separate the grain from the chaff..."
+{Элирекция} {элиподы}
+{Eleection} {Eleepods}
+
+[Beebos Prize Gift:G]
+"Мы, элиподы, ценим вангеров умелых и смышленых. За твои труды мы дарим тебе горстку бибов славных, знай нашу щедрость, катафальщик хитрый. И продолжай служить нам так же хорошо..."
+"We Eleepods appreciate smart and efficient vangers, and we are granting you a handful of beebs for your pain. Know our generosity, cunning hearse-rider. And keep on serving us as well..."
+{элиподы} {бибы} {вангеры}
+{Eleepods} {beebs} {vangers}
+
+[Eleerection Win II:G]
+"Ты снова выиграл, возница эЛиков прекрасных! Элирекция - твоя стихия. В отношении тебя у нас возникли планы... Элиподы благосклонны к вангерам не всем - средь вас ведь много проходимцев глупых. Но ты нас убедил. Ты в седле..."
+"You won again, charioteer of golden eLeeches! The Eleection is your element. We have some plans for you... Eleepods don't favor all vangers, as I'm sure you know there are a lot of crooks among you. But you have won our trust and are in the saddle..."
+{Элирекция} {элиподы} {эЛик} {вангеры}
+{Eleection} {Eleepods} {eLeech} {vangers}
+
+[Key to Glorx Gift:G]
+"Мой стручок решил открыть тебе секрет других миров. Фострал велик, но мы нуждаемся в охотниках за нюхой. Теперь ты знаешь ключ на Глоркс - я научил твою Спираль. Посети тот мир и если ты вернешься целым мы обсудим наши планы..."
+"My pod has decided to give you a secret of other worlds. Fostral is big, but we need cirt hunters. You know the key to Glorx now, as I taught your Spiral. Try and visit that world, and if you come back alive, we'll talk about our plans..."
+{стручок} {Фострал} {нюха} {Глоркс} {Спираль}
+{pod} {Fostral} {cirt} {Glorx} {Spiral}
+
+[Eleerection Win III+:G]
+"Вангер, ты непобедим. Элирекция твоя - остальным здесь нечего ловить. Но что ты делаешь еще на нашем мире? Тебе давно пора на Глоркс - к бибуратам грубым..."
+"Vanger, you are the best! The Eleection is yours; there's nothing for the others to catch here. But what are you still doing in our world? The time has come to go to Glorx, the world of the brutal Beeboorats..."
+{Элирекция} {Глоркс} {бибураты}
+{Eleection} {Glorx} {Beeboorats}
+
+[Bad Larva Delivery:B]
+"Так - вижу полный Куккиш. Открываю..."
+"ВСЕМ ЭЛИПОДАМ ВНИЗ! Чужая Кукла в Подише - катастрофа элиподов!!! Всем не дышать - закрываю дерзкий Куккиш! Фуф... Успел... Дышу..."
+"Тааак, диверсант, хотел сгубить ты славных элиподов привозом чуждой Куклы? Попался, хлюпик? Что же с тобой сделать? Мы ведь и не бибураты чтоб издеваться прямо так над вангером - хотя бы и таким преступным..."
+"Опасность миновала - я, Липкий, снова подобрел. Ты легко отделался, уродливый шуруп. Я просто отниму с тебя всего лишь десять тысяч бибов - за испуг мой..."
+"I see a loaded conlarver. Opening it... "
+"ALARM! ALL ELEEPODS GET DOWN! Alien Larva in Podish! Disaster!!! Everybody hold your breath, I'm closing the filthy conlarver! Phew... Did it... Breathing... "
+"So, damn saboteur, you wanted to ruin the revered Eleepods with an alien Larva? We got you, freak! What shall we do with you? We are not like the Beeboorats who would torture a vanger for less... "
+"The danger is over, and I'm feeling friendly again. You got away with one this time, nasty screw. I'll just fine you ten thousand beebs for my fright..."
+
+[Good Larva Delivery:G]
+"Так - вижу полный Куккиш. Открываю..."
+"О, блаженство, наша Кукла здесь!!! Я жирею на глазах! Свершилось ЧУДО! Лопаюсь... Экстаз... О, царица, ешь меня всего! Элиподы победили, все стручки застыли от восторга. Жди, о Великий Вангер........................................."
+"Что ж, еще не все мои чесалки очнулись от амброзии прекрасной. Гордись, Колесник, ты завоевал меня! Элиподы навсегда твои друзья!"
+"Нет подвига важнее, чем добыча нужной Куклы. Я давно тебя приметил, вангер, все ждал, надеялся на твой суровый Ум и Путь Героя! Удача к нам пришла с тобой, o лучший пилигрим Цепи - служитель элиподов."
+"Отныне $(Cycle Name of Locked Larva) - вымершее слово. Отныне $(Cycle Name of Locked Larva) - внутри элиподов! У нас есть теперь эта Кукла и когда она нужна, мы будем ее страстно облизывать - долой ненужную нюху этого цикла! Экстаз пришел!"
+"I see a loaded conlarver. Opening... "
+"Oh, it's heaven on Fostral: our Larva is here!!! I'm plumping! It's a MIRACLE! I think I'm gonna burst... Ecstasy... Oh, my queen, eat all of me! The Eleepods have won: all the pods are petrified with delight. Wait, Your Majesty Vanger......................................... "
+"Well, not all of my scratchers have awoken from the wonderful ambrosia. Be proud, wheeler, you have won my favor. The Eleepods are your friends forever! "
+"There's no feat greater than securing an Eleepod Larva. I noticed you long ago, vanger, and have been waiting and hoping for your strong mind and heroic ways! Fortune came to us with you, the best pilgrim of the Chain, the Eleepods' apostle. "
+"From now on $(Cycle Name of Locked Larva) is an extinct word. $(Cycle Name of Locked Larva) is inside Eleepods now. We have the Larva now, and when the time comes, we'll lick her passionately. Down with the cirt for $(Cycle Name of Locked Larva), we don't need it anymore. Ecstasy is ours!"
+
+[Heroin in Inventory:B]
+"О горе, горе моему стручку! Мои чесалки сохнут от ужаса и отвращенья. Тупой колесник что-то притащил и это что-то - мерзкий бибурат! Уйди отсюда, неудачное творенье, и гнев не умножай мой многократно!"
+"Oh, grief to my pod! My scratchers are drying out from horror and disgust. The dumb wheeler brought something, and that something is a vile Beeboorat! Get out of here, lame duck! Don't multiply my anger."
+
+[Shrub in Inventory]
+"Ах ты проказник! Давай сюда скорее куст! Я помещу его в свою кладовку для наслаждения в час досуга. И мой стручок прославится средь элиподов своим зоопарком!"
+"Ah, you little rogue! Give me the shrub quickly! I'll put it in my cellar to enjoy in my spare time. My pod will be famous among the Eleepods for its zoo!"
+
+[Poponka in Inventory:G]
+"О, кузовки! Ты не забыл моих заветов, отважный воин, брат колес. Я хлюпаю от радости, дрожат мои чесалки, я предвкушаю радость обладания!"
+"Oh, you have kusowocks! You haven't forgotten my lessons, brave soldier. My scratchers are shuddering and flopping from joy, anticipating the miracle of possessing this marvelous gift!"
+
+[Toxick in Inventory]
+"Здравствуй, собиратель пыли. Ты посетил далекий мир никчемных цикс, проявив отвагу и смекалку. Но зря спешил сюда с охапкой дряни, которая нужна лишь глупым тварям. Привези-ка лучше кузовков, ты, верю, сможешь их добыть..."
+"Hello, dust picker. I see you've been to the world of the worthless Zeexen, which shows your bravery and savvy. But you shouldn't have come here with that gunk, only those dumb beasts need it. Better bring me some kusowocks. I know you can get them..."
+
+[Kernoboo in Inventory]
+"Ой, что я чую? Зловонье Глоркса заполняет все вокруг, напоминая озлобленных бибуратов... Оставил бы ты им их глупые игрушки, пускай подавятся. С такой отвагой ты себе добудешь бибов, а мне, быть может, кузовков..."
+"Ugh, what's that smell? The stink of Glorx is all around, evoking the vicious Beeboorats... You should have left their stupid toys there, let the dull beasts choke on them. But with your courage you'll be sure to get some beebs and maybe even some kusowocks for me..."
+
+[Pipetka in Inventory]
+"О, нам чуждая пипетка... Влекут гнилые ветры Глоркса их, подобно мыслям глупых бибуратов, кидая по миру, роняя в воду... Но я отвлекся. Ты храбр, безумный мехоса наездник, возьми же за труды и попытай еще удачи!"
+"Oh, an alien peeperette... The rotten winds of Glorx carry them like the thoughts of the doltish Beeboorats and throw them to and fro, dropping them into water... But I digress. You're a brave, crazy mechos rider, and I'll give you some beebs for your trouble. Try your luck again!"
+
+[WeeZyk in Inventory]
+"О-о-о! Сбылась моя мечта! Как долго думал я об этом кузовке в тиши эскейва, купаясь в флегме. На Фострале это редкий гость, и мы его встречаем с честью. Ты заслужил премного бибов, вангер смелый!"
+"O-o-o! My dream has come true. For so long I've been dreaming about this kusowock, sitting in the still of the escave and swimming in phlegma. It's a rare guest on Fostral, and we greet it with all due respect. You deserve many beebs, brave vanger!"
+
+[MP0 Start]
+"Мужайся, вангер, ВАН-ВАР начался! Там ты явишь свою отвагу и увидишь ярость храбрецов в дыму сражений, на грудах мехосов коптящих смрадно. Убей их всех и сам подохни много раз, для мести возрождаясь. Я, осторожный элипод, все трупы посчитаю, ни одного не пропущу. И победителя назначу!"
+"Pluck up your courage, vanger: the VAN-WAR has started! You'll show your prowess and taste the fury of the brave in the rage of battle. Kill them all and die many times, reviving for revenge. I, a canny Eleepod, will count all the bodies and name the winner."
+
+[MP1 Start]
+"Эй, колесник, стартовала МЕХОСОМА! Ты должен привезти товара доброго, в количестве немалом. Так торопись добром свой мехос набивать. Другие уже мчатся по путям Фострала, в уме считая барыши. Трудись же ты прилежно, не загорай в канавах, и новый мехос обретёшь, и славу на Цепи Миров."
+"Hey wheeler, the MECHOSOMA has begun! You must bring us wads of sundry wares. Now go and load up, as the others are already on their way, anticipating their profits. If you prove to be an effective merchant, you'll get your due reward: a new mechos and glory throughout the Chain."
+
+[MP2 Start]
+"ПАССЕМБЛОСС стартовал! Вперёд, колесник, на дорогу. Жми на газ усердно, пихай других в канавы, лети, назад не глядя. Тогда свою удачу и настигнешь за поворотом где-нибудь крутым. Увидишь на дороге круг мерцающий - не бойся. Ты должен пробираться от круга к кругу - компас твой помощник."
+"The PASSEMBLOSS has begun! Hit the road, wheeler! Step on the gas and push the others; rush to your goal and don't look back. You'll meet your fate around a bend. Don't be afraid of those glowing circles, as you have to go from one to the next, your compass guiding you through."
+
+[MP3 Start]
+"ОХОТРОН стартовал!"
+"HUNTAGE started!"
+
+[MP4 Start]
+"МАСТОДОНТ стартовал!"
+"MUSTODONT started!"
+
+[MP0 Comment]
+"ВАН-ВАР идёт жестокий... А ты решил сидеть в тиши эскейва, дрожа и плача? Быстрей на мир! Найди того урода, что смел тебя задеть, и покажи ему, что значит гнев героя. А можешь пушку взять крутую и ей накостылять обидчикам. Я уступлю за полцены, вали отсюда только..."
+"The VAN-WAR is in full swing and you are quaking in an escave, you stinking coward! Go up into the world and find the chump who dared offend you. Show him what the anger of a real hero means. You want to take a decent gun to shoot up those drips? I'll sell it for half the price if you disappear quick!"
+
+[MP1 Comment]
+"В разгаре МЕХОСОМА... Ну что, наездник храбрый, товар успешно возишь ты? Как много ты доставил прохладной флегмы или нимбоса в эскейвы наши? Старайся, шустрый вангер, не гоняй пустым свой мехос ржавый..."
+"The MECHOSOMA is going full blast... And what about you, brave wheeler, are you shipping wares? How much phlegma and precious nymbos have you brought into our escaves? Work hard and don't drive your rusty mechos empty..."
+
+[MP2 Comment]
+"ПАССЕМБЛОСС наверху... Однако, сидеть в эскейве непристойно отважным гонщикам, царям Цепи Миров. Скорей катись, других ещё настичь успеешь, пока ещё... Не забывай, что ехать надо от знака к знаку, ни одного не пропуская, по компасу..."
+"The PASSEMBLOSS is in full fling up there... It's unbecoming to a true racer to sit out in an escave, so hurry up and catch up to your competitors while you still can... Don't forget: you have to go from circle to circle, following your compass..."
+
+[MP3 Comment]
+"ОХОТРОН продолжается..."
+"HUNTAGE in progress..."
+
+[MP4 Comment]
+"МАСТОДОНТ продолжается..."
+"MUSTODONT in progress..."
+
+[Larva 0 Note]
+"Мир $(World of Larva0) - вот место, где пребывает Кукла, царица Жирогона!"
+"$(World of Larva0) is where the Larva is, the Queen of Plump-up!"
+
+[Larva 1 Note]
+"Мир $(World of Larva1) - вот место, где пребывает Кукла, царица Элирекции!"
+"$(World of Larva1) is where the Larva is, the Queen of the Eleection!"
+
+[Larva 2 Note]
+"Мир $(World of Larva2) - вот место, где пребывает Кукла, царица Чавки!"
+"$(World of Larva2) is where the Larva is, the Queen of Gulp-down!"
+
+[Protractor in Inventory]
+"Давно не видел Начертатель мой стручок... Загадочный предмет, вне времени и действий. Творит он чудеса, пленяет бибов. Проводник дорог..."
+"It's been a long time since my pod last saw the Protractor... That mysterious object, beyond time and space. It works wonders and captivates beebs. The guide of the roads..."
+{Начертатель}
+{Protractor}
+
+[Mechanic Messiah in Inventory:B]
+"Механический Мессия - тебя я не боюсь. За мной стручок зеленых пухлых элиподов, мы устоим! Возьми другую жертву - колесника тупого, что ты себе поймал. Он никому не нужен, только бибы ждут, чтоб поглодать его останки где-нибудь в канаве..."
+"I don't fear you, Mechanical Messiah! A pod of glossy and chubby Eleepods is behind me, we'll survive! Find yourself other prey: the stupid wheeler you caught. No one really needs him, besides the beebs who are waiting for the chance to gnaw at his remains in a ditch..."
+{Механический Мессия}
+{Mechanical Messiah}
+
+[Function-83 in Inventory:G]
+"Ты раздобыл прибор загадочных корней... Прекрасно. Твой Способ, несомненно, поможет натаскать нам кузовков с миров далеких. Смотри, не урони его в канаву, и бибуратам не давай смотреть - отнимут, грубияны, ценность мира..."
+"Oh, you've secured the mysterious device... That's good. Your Function will surely help us get some kusowocks from distant worlds. Take care of it, don't drop it in a ditch, and don't show it to the Beeboorats or they'll grab the jewel of the Chain, the barbarians..."
+{Способ-83+}
+{Function-83+}
+
+[Spummy in Inventory:B]
+"Я ощущаю Спумию... Кошмар покинул место заточения и к Липкому вернулся. Не думал, что увижу вновь предмет ужасный. Такого мне не пережить! Я умираю, точно, и ты тому виной, помойщик!"
+"Как смел ты, катафальщик гнутый, явить сюда Проклятие Софти? Я знаю, чья это затея! То бибуратов происки! Но умирать я передумал. Покинь немедля Подиш, навоза кучка, и умри в канаве в обнимку с мерзким грузом, бесславно..."
+"I feel the Chomper... The horror left its cage and came to Leepky. I didn't think I'd see the dreadful thing again. Oh, I won't survive this! It seems I'm dying, and YOU are to blame, scavenger! "
+"How dare you, crummy hearse-rider, bring the curse of the Softie here? I know whose plan this is! It's a plot of the evil Beeboorats! No, I won't die. Get out of Podish, you heap of dung, and die in a hole, clutching at your filthy cargo..."
+{Спумия}
+{Chomper}
+
+[Boot Sector in Inventory:G]
+"Тебе Бут Сектор достался не случайно, изыскатель. Ты захотел владеть десятком мехосов, плутишка? Мечта твоя сбылась! Присмотрит за твоим добром хороший Липкий, пока ты будешь в мехосе ином кузовки искать кругом..."
+"You don't have Boot Sector by accident, explorer. You want to own a dozen mechos, little rogue? Your dream has come true! Kind Leepky will take care of your gear while you're out in another mechos combing the worlds for kusowocks..."
+{Бут Сектор}
+{Boot Sector}
+
+[Peelot in Inventory]
+"Случится Элирекция - ты свой Пилот не пользуй. Изделие тупо, небыстро. Дорогу знает, это верно, да только не торопится оно... Но вещь занятная в себе..."
+"If you take part in the Eleection, don't use your Flymatic. It's a low-tech widget that knows the way, all right, but isn't really fast... An amusing doodad..."
+{Пилот}
+{Flymatic}
+
+[Leepuringa Return (Good):G]
+"Ну наконец-то! Вернулась Липуринга в свою нору! Вот светлый миг удачи, стручок мой торжествует. Я снова буду сочинять поэмы, любуясь чудным кузовком... Ты избавитель элиподов, проворный вангер. Я дам тебе богатство!"
+"Ты наверняка считаешь, что изучил Фострал. Я добавлю в тебя знаний. Неподалеку от Коридора, ведущего на Глоркс, есть место потайное... Оно тебе доступно... Я не знаю что там..."
+"At last! Leepuringa returned to its burrow! It's a stroke of luck, my pod is ringing the bells! I'll be writing poems again, feasting my eyes on the wonderful kusowock... You are the savior of the Eleepods, nimble vanger. I'll give you treasure! "
+"You probably think you know Fostral backwards and forwards, but I'll tell you something new: near the Passage to Glorx there is a secret place... It's open to you... I Don't know what's in it..."
+
+[Leepuringa Return (Bad)]
+"Пример раскаяния я наблюдаю редкий. Бандит колесный, вор и обормот, привез украденное здесь. Что ж, тебя прощаю я, колесник. Признаюсь, был я сокрушен твоим предательством коварным - сказать иначе не могу..."
+"Ну ладно, случилось это не от злобы - уразумением не был переполнен мехос твой... Ступай, зеленка, больше не воруй!"
+"What we have here is a rare case of remorse. The motor-bandit, thief, and tough guy returning the stolen goods. Well, I'll forgive you, wheeler. To tell the truth, I was saddened by your knavish betrayal; there are no words for it... "
+"All right, I hope you didn't do it with evil intentions; your mechos wasn't that smart... Go away, greenhorn, and don't steal things any more!"
+
+[Boorawchick in Inventory]
+"О-о, Буравчик вдруг нанес визит к нам, элиподам скромным. Какая честь! Ты, бибуратский выползок дрожащий, приехал умолять нас о прощении? Сожрав десятки эЛиков, почуял свой конец, обжорством отягченный?"
+"Ну ладно, мерзкий образец исчадий Глоркса, знаю, не разумом ты дышишь. Влечет тебя твой собственный живот, где вечно пустота царит, как, впрочем, в голове... Езжай, катайся на своем рабе..."
+"Oooh, Boorawchick paid us, the humble Eleepods, a visit. What an honor! You beeboorattish freak, you came to plead for our forgiveness? Felt your doom coming on after eating a dozen eLeeches? "
+"All right, you filthy sample of the hellish progeny of Glorx. I know, it's not your mind that steers you; your stomach does, which is always as empty as your head... Go and ride your slave..."
+
+[Queen Frog part note]
+"Ты ушлый вангер, друг колес, владеешь мехосом отменно. В твоих руках железки выполняют наши просьбы и заветы. И новый мехос ждет тебя! Тебе я сообщу секреты мехосов творения."
+"Отныне знай, Тяжелую Железку когда-то потеряла Жаба, мехос водный..."
+"You are a pushy vanger, friend of the wheels, and you handle your mechos flawlessly. The hardware in your hands fulfills our wishes and requests. And now, a new mechos is waiting for you! I'll tell you some secrets of the art of building mechos. "
+"From now on you'll know that Heavy Iron is an aquatic mechos that Queen Frog once lost..."
+
+[Lawn Mover part note]
+"Ты ушлый вангер, друг колес, владеешь мехосом отменно. В твоих руках железки выполняют наши просьбы и заветы. И новый мехос ждет тебя! Тебе я сообщу секреты мехосов творения."
+"Отныне знай, что Звездочка - часть Винтокрыла, властителя небес..."
+"You are a pushy vanger, friend of the wheels, and you handle your mechos flawlessly. The hardware in your hands fulfills our wishes and requests. And now a new mechos is waiting for you! I'll tell you some secrets of the art of building mechos. "
+"From now on you'll know that Star is a part of Lawn Mower, the ruler of the sky..."
+
+[Weexow visit]
+"Еще блестят на мехосе твоем Виксова капли, видны царапины от тамошних акул... Отважный вангер, что и говорить, сейчас стоит передо мной и ждет, наверное, награды... Но мне твое шатание вдали от Кукол не нужно, бродяга."
+"The drops from Weexow are still glittering on your mechos alongside the scratches made by the sharks there... A brave vanger is standing before me, that's for sure. And expecting a reward, I suppose? However, your quests far away from the Larvae are of little use to us, roamer."
+{Виксов}
+{Weexow}
+
+[Boozeena visit]
+"Ага, скиталец прибыл с Бузины. Ну что, ты не свихнулся часом среди кораллов дивных и злобных истуканов, бродильный гвоздь?"
+"Aha, a rambler from Boozeena. So, naughty rover, have you by any chance lost your marbles among the magnificent corals and evil statues?"
+{Бузина}
+{Boozeena}
+
+[Ark-a-Znoy visit]
+"Среди песков и тварей Арк-а-Зноя искал себе кончину, вангер? Как далеко забрался ты за смертью, очень далеко... Но ведь вылез, шустрый!"
+"Been seeking your fate among the sands and beasts of Ark-a-Noi, vanger? Yeah, it was a long, long trip to your doom... But you survived, nimble warrior!"
+{Арк-а-Зной}
+{Ark-a-Noi}
+
+[Khox visit]
+"Что, побывал на Коксе, видел город, опускался в темноту? Скажи, а правда, что дороги мира обрамляет множество обломков мехосов погибших, пытавшихся прорваться к свету... тщетно... Впрочем, мне все равно. Я там не был и не буду!"
+"You've been to Khox, I see. And did you see the city, did you try the darkness? Say, is it true that there's a lot of wrecked mechos on the sides of the roads that tried to push through to the light... in vain...? Not that I care, though. I've never been and don't plan on going there!"
+{Кокс}
+{Khox}
+
+[hMok visit]
+"Сходил ты в гости к проклятию древнему на хМоке. Скажи, как шла беседа ваша, что вынес ты оттуда? Как встретил хМок тебя? Молчишь? Я знаю, клянешь себя за глупость, толкнувшую на это безрассудство..."
+"Oh, you've been to the ancient curse on hMok. Say, how did the conversation go? What did you gather from it? How did hMok greet you?.. You won't say? I know, you're sorry for being so stupid as to engage in that crazy adventure..."
+{хМок}
+{hMok}
+
+[Threall visit]
+"Скажи, безумец, что тебя толкнуло на самоубийство? Наверное, чья-то злая воля... Никто в рассудке здравом не пойдет туда, в озера лавы, в ад Цепи... Весь мой стручок совет тебе дает: не приближайся даже к Коридору на проклятый Трилл!"
+"Say, loony, what drove you to suicide? Someone's evil will, I guess... Nobody in his right mind would go there, into the lakes of lava, into the hell of the Chain... My pod is giving you advice: don't get even close to the Passage to Threall."
+{Трилл}
+{Threall}
+
+[Eleepod in Inventory:G]
+"Посланник Инкубатора, приветствую тебя! Как Палец поживает мой? Я чувствовал, чесалку простудил он, мешая флегму. Как эЛики, растут? Не досаждают бибураты им?"
+"Greetings to you, envoy of Incubator! How is my Feenger getting on? I felt he chilled his scratcher while stirring phlegma. Are the eLeeches growing up well? Do the Beeboorats annoy them?"
+
+[Beeboorat in Inventory]
+"О, вангер изловить сумел мне бибурата? Отлично! Расплодились нынче бибы и в Подише кишмя кишат, на них я спотыкаюсь. Вот этот мОлодец послужит нам. Слышишь, житель Глоркса, отныне истребитель ты инсектов мелких. Жить будешь на цепи, питаться флегмой..."
+"Oh, vanger, you caught a Beeboorat for me? That's good! Beebs have bred in large amounts, and Podish is so rife with them that I stumble over the little scabs. This brave one will help us. You hear me, dweller of Glorx? You are an insect killer from now on. You'll live on a chain and eat phlegma..."
+
+[Zeex in Inventory]
+"Ага, посланник Некросса! Приехала, нахалка, байки собирать и слухи? Или хочешь обсмеять мою персону липкую? И не надейся. Хоть острый твой язык, да голова пуста."
+"Aha, envoy of Necross! You came to pick up tales and rumors, saucebox? Or you want to laugh me out of Podish? Don't even think about it. Your tongue is sharp, all right, but your head is empty."
+
+[Key to Weexow Gift:G]
+"Чтоб перечислить деяния славные твои, моих чесалок может не хватить. Ты заслужил на Виксов ключ. Там, кажется, предмет схоронен ценный. Тебе поможет в странствиях далеких..."
+"All my scratchers may not be enough to count your great deeds. You've earned the key to Weexow. It seems there is a precious object buried in that world. It will help you on your long quests..."
+{Виксов}
+{Weexow}
+
+[ruBeecation warning]
+"Ты, вангер приглянулся мне своим старанием. Тебя хочу спасти от участи ужасной, что ждет тебя на Глорксе. Ты должен побывать сначала в Огороде, эскейве нижнем Глоркса..."
+"В один из циклов добыть ты сможешь у советника тупого предмет заветный. А без него не суйся ты к другим эскейвам бибуратским даже близко!"
+"You caught my fancy with your diligence, vanger, and I want to save you from the dreadful fate that awaits you on Glorx. The first escave you come to must be Ogorod, the lowest on Glorx. "
+"You'll get the sacramental object from a dull counselor there in one of the cycles. Don't even peek into the other Beeboorat escaves without it!"
+{раБикация} {Огород}
+{ruBeecation} {Ogorod}
+
+[Spummy Death]
+"СВЕРШИЛОСЬ! Элиподы давно уже слыхали о Вангере, летящем сквозь века... Минуя Линзы наши... Я таю, прибыл Бог Цепи, безусловный странник."
+"Я уже забыл когда встречал похожий случай - явление Души... Спумия восстала..."
+"Тебе, прошедший все на свете пилигрим, открылся Коридор в неведомое... Он посреди Фострала, одинокий, неведомый другим стоит. Изведай что за ним..."
+"Прощай, Легендарный Вангер. Мы не увидимся уже - твоя дорога уходит вдаль, оттуда нет возврата никому из вас... Ты сложнее всех в Цепи, ты избран для Отчета..."
+"Не забывай своих друзей - пугливых элиподов, прости за все что было. Ныне ты Другой... Ступай..."
+"It finally happened! The Eleepods have heard of a vanger who flew through time... bypassing our P-beams... I'm melting - the Lord of the Chain has arrived, the utter rambler. "
+"I forget when I last went through something like this, the appearance of the Soul... The Chomper has been revived... "
+"For you, pilgrim, who've been through all the hardships of the Chain, the Passage to enigma has opened... In the center of Fostral it lies all alone, unknown to the rest of you. Explore the mystery that dwells behind it... "
+"Farewell, Vanger from Legends. We won't meet again, as your way goes into infinity and there is no way back for any of you... You are the most elaborate in the Chain and have been selected for the Ultimate Report... "
+"Don't forget your friends, the shy Eleepods, and forgive us for what you've been through. Now you are Different... Go..."
+
+[Larvae Vision note:G]
+"О, вангер, накопив авторитет, достиг прозрения ты! Святая Кукла показать тебе решила свой путь по миру вечный. Смотри на карту в мехосе своем ретивом, друг мой. Средь мельтешения других, Ее увидишь ты. И действуй!"
+"Vanger! By raising your Dominance you've reached revelation! The Holy Larva has decided to show you her eternal way. Look at the map in your proud mechos, and among the vanities of the world you'll see Her. And get moving!"
+{Куклы}
+{Larvae}
+
+[Last Letter]
+"Тому, кто возродится здесь. Прощальное письмо. Коридор на Землю для тебя открыт. Ступай туда. Сбылась легенда о Последнем Вангере. Ты здесь возник и отсюда отправишься вовне. Элиподы не застали этот миг..."
+"To the one who returns here, a farewell letter: the Passage to Earth is open to you. Go there. The prophecy of the Last Vanger has come true. It's here you emerged and from here you will start your journey to the outside. The Eleepods will not witness this..."
+

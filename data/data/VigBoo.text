@@ -1,0 +1,693 @@
+[quotha]
+"Буравчик спит. Не отвлекать!"
+"Boorawchick is sleeping. Do not disturb him!"
+
+[Empty Question]
+"Вопрос. Какой вопрос?"
+"Question? What question?"
+
+[Empty Molecule]
+"В беседе с Буравчиком отказано. Освободить помещение!"
+"Audience with Boorawchick refused. Leave the room immediately!"
+
+[Block Molecule:B]
+"Приговор еще не зачитан. Стоять-слушать!"
+"Your sentence hasn't been read. Halt and listen!"
+
+[Out Molecule:B]
+"Пошел отсюда, недотепа!"
+"Get out, sad sack!"
+
+[Dead Molecule]
+"Все ушли на фронт..."
+"Dead Escave"
+
+[empty]
+"п"
+"e"
+
+[Boond ruBeecation:B]
+"В Бюро: Вижу беглую козявку. Обнаружил Буравчик. Приступаю к процедуре раБикации."
+"To the Buro: Boorawchick reporting. Observed a fugitive mite. Initiating ruBeecation."
+{Бюро} {Буравчик} {раБикация}
+{The Buro} {Boorawchick} {ruBeecation}
+"Раб! Ты поступаешь в департамент утряски беглых вангеров. Все твое имущество конфисковано как нажитое преступным путем."
+"Slave! You are being put under the command of the Fugitive Vangers Enslaving Department. All of your property has been confiscated as illegally gained."
+{раб}
+{Slave}
+"Я, твой горячо любимый бибуратский наставник, отмечаю тебя Раббоксом - береги его, ведь он с нашим знаменем цвета одного! Утерявший его подвергается повторной раБикации."
+"I am your esteemed Beeboorat instructor. I hereby label you with a Rubbox. Take care of it, as it's the color of our banner! Whoever loses it will be ruBeecated again."
+{Раббокс} {бибураты}
+{Rubbox} {Beeboorats}
+"Твои действия под полным контролем Бюро. Непрестанно бойся. Учи Устав."
+"Everything you do is totally controlled by the Buro. Always fear. Study the Manual."
+{Устав}
+{Manual}
+"Приказ: следуй в Лампассы имея на борту Героин. Отклонение от приказов караются. Бюро нужны послушные рабы."
+"Attention for orders! Drive Valorins to Lampasso. Disobedience is strictly punished. The Buro needs obedient Slaves."
+{Лампассы} {Героин}
+{Lampasso} {Valorin}
+"В Бюро: Новый раб адаптирован. Речь сдал Буравчик."
+"To the Buro: The new Slave adapted. Boorawchick out."
+
+[Commissar ruBeecation:B]
+"В Бюро: В поле зрения прораб, потерявший доверие Бюро. Обнаружил Буравчик. Приступаю к процессу раБикации."
+"To the Buro: Boorawchick reporting. Observed a Commissar that lost the Buro's trust. Initiating ruBeecation."
+{Бюро} {прораб} {Буравчик} {раБикация}
+{The Buro} {Commissar} {Boorawchick} {ruBeecation}
+"Бывший прораб! Ты посмел опозорить свой Раббокс! Тобой сейчас занимается департамент утряски беглых вангеров. Все твое имущество конфисковано."
+"Ex-Commissar! You dared bring shame upon your Rubbox! The Fugitive Vangers Enslaving Department is now taking charge of you. All your property has been confiscated."
+{Раббокс}
+{Rubbox}
+"Я, твой обожаемый бибуратский наставник, переоформляю твой Раббокс. Береги его, ведь он с нашим знаменем цвета одного."
+"Твои действия под полным контролем Бюро. Непрестанно бойся."
+"Приказ: следуй в Лампассы имея на борту Героин. Все твои прошлые заслуги аннулированы, Бюро не одобряет охламонов."
+"I am your esteemed Beeboorat instructor. I'm re-registering your Rubbox. Take care of it, it's the color of our banner! "
+"Everything you do is totally controlled by the Buro. Always fear. "
+"Pay attention to orders! Drive Valorins to Lampasso. All your previous services have been annulled. The Buro doesn't favor slobs."
+{Лампассы} {Героин}
+{Lampasso} {Valorin}
+"В Бюро: Конвертация прораба завершена. Новый раб добавлен в Кучу. Речь сдал Буравчик."
+"To the Buro: Conversion of Commissar complete. New Slave added to the heap. Boorawchick out."
+
+[Agent ruBeecation:B]
+"В Бюро: Прибыл агент, усомнившийся в благообразности Бюро. Процесс раБикации инициализирован Буравчиком."
+"To the Buro: Boorawchick reporting. An Agent arrived that doubted the integrity of the Buro. Initializing ruBeecation."
+{Бюро} {агент} {раБикация} {Буравчик}
+{The Buro} {Agent} {ruBeecation} {Boorawchick}
+"Неудачный агент! Утратить Раббокс означает утратить доверие Бюро. Ты поступаешь в департамент утряски беглых вангеров. Все твое имущество конфисковано."
+"Ineffective Agent! Losing your Rubbox means losing the Buro's trust. You are being put under the command of the Fugitive Vangers Enslaving Department. All your property has been confiscated."
+{Раббокс}
+{Rubbox}
+"Я, твой родной бибуратский наставник,  реконструирую твой Раббокс. Береги его, ведь он с нашим знаменем цвета одного."
+"Твои действия как всегда под полным контролем Бюро. Непрестанно бойся."
+"Приказ: следуй в Лампассы имея на борту Героин. Все твои прошлые заслуги стерты, Бюро не нужны экспериментаторы."
+"I am your esteemed Beeboorat instructor. I'm re-registering your Rubbox. Take care of it, it's the color of our banner! "
+"As usual, everything you do is totally controlled by the Buro. Always fear. "
+"Pay attention to orders! Drive Valorins to Lampasso. All your previous services have been erased. The Buro doesn't need experimenters."
+{Лампассы} {Героин}
+{Lampasso} {Valorin}
+"В Бюро: Агент признан невменяемым и начато лечение рабством. Речь сдал Буравчик."
+"To the Buro: Agent found to be insane. Started slavery therapy. Boorawchick out."
+
+[Commissar Promotion:G]
+"В Бюро: Прибыл раб повышенной полезности. Данные других эскейвов проверены. Начинаю оформление."
+"To the Buro: Slave of advanced utility arrived. Data from other escaves verified. Starting registration."
+{раб} {Бюро}
+{Slave} {The Buro}
+"Раб! Ты аккуратно соблюдал требования Бюро и на твой Раббокс наносится новая метка - теперь ты прораб."
+"Slave! You have been carefully following the regulations of the Buro and we are adding a new label to your Rubbox. You are now a Commissar."
+{Раббокс} {прораб}
+{Rubbox} {Commissar}
+"Прораб! Твоя задача - успешное участие в Ядерной Войне и ПипШоу. Инструкции получишь на месте у Гири и Обурца. Выполняй."
+"Commissar! Your task is to participate in the Nuclear War and PeepShow and win. You'll get detailed instructions at the appropriate places from Geer'ah and Oboorez. Execute the order!"
+{Ядерная Война} {ПипШоу} {Гиря} {Обурец}
+{Nuclear War} {PeepShow} {Geer'ah} {Oboorez}
+"В Бюро: Один раб удален и один прораб добавлен в Кучу Буравчиком."
+"To the Buro: One Slave removed and one Commissar inserted into the heap by Boorawchick."
+
+[Agent Promotion:G]
+"В Бюро: Вижу обуреваемого прораба. Данные других эскейвов подтверждены. Начинаю оформление."
+"To the Buro: Observed a pushy Commissar. Data from other escaves confirmed. Starting registration."
+{Бюро} {прораб}
+{The Buro} {Commissar}
+"Прораб! Информация о твоих успехах в Ядерной Войне и ПипШоу начала циркулировать в Бюро."
+"Commissar! Information about your achievements in the Nuclear War and PeepShow has reached the Buro."
+{Ядерная Война} {ПипШоу}
+{Nuclear War} {PeepShow}
+"Бюро нужны такие обуреваемые вангеры как ты. Шустрые и нешумные. Внимай мне, твоему умному наставнику."
+"Твой Раббокс переведен в состояние Агент. Отныне ты будешь выполнять задачи бибуратов, связанные с другими усохшими мирами."
+"The Buro needs pushy vangers like you, nimble and silent. Listen to me, as I am your wise mentor. "
+"Your Rubbox has been switched to the status of Agent. From now on, you will carry out Beeboorat missions in other, sapless worlds."
+{Раббокс} {агент} {бибураты}
+{Rubbox} {Agent} {Beeboorats}
+"Коридор на Некросс открыт. Немедленно следуй туда и принеси в циксовские притоны информацию о могуществе бибуратов не меньше трех раз."
+"В Бюро: Агент создан Буравчиком. В связи с этим просьба увеличить время нахождения оного в Бункере с нюхой за заслуги перед Бюро."
+"The Passage to Necross is open. Get there immediately, find information about our power, and enter the Zeexen lairs at least three times. "
+"To the Buro: New Agent created by Boorawchick. For my good service to the Buro I'm requesting an increase in my allowance of Cirt Bunker."
+
+[Boond Arrival]
+"В Бюро: Буравчик видит оприходованного раба в ВигБу. Проверка статистических данных по объекту наблюдения... Раб! Напоминаю тебе список подвигов, которые тебе нужно совершить."
+"Пункт первый: доставка Героина в Лампассы. Пункт второй: доставка кустов в Огород."
+"To the Buro: Boorawchick observed a registered Slave in VigBoo. Checking subject's statistics... Slave! I hereby remind you of the feats you are to accomplish. "
+"Item 1: deliver Valorins to Lampasso. Item 2: deliver shrubs to Ogorod."
+{Бюро} {Буравчик} {раб} {ВигБу}
+{The Buro} {Boorawchick} {Slave} {VigBoo}
+
+[Commissar Arrival]
+"В Бюро: Виден определенный прораб в ВигБу. Наблюдения ведет Буравчик. Проверка статистических данных по объекту..."
+"To the Buro: Documented Commissar identified in VigBoo. Boorawchick reporting. Checking the subject's statistics..."
+{Бюро} {Буравчик} {прораб} {ВигБу}
+{The Buro} {Boorawchick} {Commissar} {VigBoo}
+
+[Agent Arrival]
+"В Бюро: Прибыл ушлый обуреваемый агент. В контакт с объектом вступает Буравчик."
+"To the Buro: Full-fledged, pushy Agent arrived. Boorawchick is getting in contact with the subject."
+{Бюро} {агент} {Буравчик}
+{The Buro} {Agent} {Boorawchick}
+
+[Shrub in Inventory (Boond):B]
+"Раб! Кусты необходимо везти в Огород!"
+"Slave! Shrubs must be shipped to Ogorod!"
+{раб} {куст} {Огород}
+{Slave} {shrub} {Ogorod}
+"Раб! Огород - место, куда нужно отвезти твои кусты!"
+"Раб! То, что у тебя в трюме, нужно доставить Обурцу!"
+"Slave! Ogorod is where you must ship the shrubs you have with you! Slave! What you have in your bay must be driven to Oboorez!"
+{Обурец}
+{Oboorez}
+"Раб! Обурцу хорошо отвезти то, что лежит у тебя в трюме!"
+"В Бюро: Прошу добавку нюхи за вредность - рабы пошли совсем тупые."
+"Slave! You must take to Oboorez what you have in your bay! "
+"To the Buro: Requesting an increase in my cirt allowance for the hazardous work, since Slaves are obtuse nowadays."
+{Бюро}
+"To the Buro: Requesting an increase in my cirt allowance for the hazardous work, since Slaves are obtuse nowadays."
+
+[+Shrub in Inventory (Boond):B]
+"В Бюро: У прибывшего раба коэффициент сообразительности ниже предельно допустимого. Согласно инструкции эксплуатация раба в этом случае запрещена."
+"Раб, по требованиям Бюро ты переводишься в резерв начальника Лампасс по проведению игровых мероприятий...ТЕБЕ КОНЕЦ, ПРИДУРОК!!!"
+"В приборе, измерявшем твой умственный коэффициент, обнаружен сушеный биб, искажавший показания. Виновные в халатности вместо тебя отправлены в Лампассы. За твой счет..."
+"Славь справедливость Бюро! В честь своего чудесного спасения выучи Устав с комментариями и дополнениями. Твои бибы пойдут на издание его новой редакции."
+"To the Buro: The newly arrived Slave has an IQ below the minimum. According to the instructions, exploitation of the slave is prohibited. "
+"Slave, by order of the Buro you are being put into the reserve of the Sports Events Commander in Lampasso... YOU ARE DEAD, DUNCE!!! "
+"A dried beeb was found in the IQ meter, something that caused a measurement error. The technicians to blame for this gross dereliction of duty were sent to Lampasso instead of you. At your expense... "
+"Praise the fair Buro! In honor of your providential escape you are assigned to learn by heart the new edition of the Manual with its additions and corrections. Your beebs will go toward publishing it."
+{Лампассы}
+{Lampasso}
+
+[Heroin in Inventory (Boond):B]
+"Раб! По предписанию Бюро конечным пунктом доставки Героина являются Лампассы. Крепко запомни это!"
+"Slave! According to the Buro's instructions, the final destination for Valorins is Lampasso. Don't forget!"
+{раб} {Бюро} {Героин} {Лампассы}
+{Slave} {The Buro} {Valorin} {Lampasso}
+"О факте твоего повторного появления здесь с Героином будет доложено в Бюро. Трепещи активно."
+"I will report to the Buro if you come here again with Valorins. Actively fear."
+
+[+Heroin in Inventory (Boond):B]
+"Раб! Согласно постановлению Бюро 'О борьбе с саботажем на игровых мероприятиях' ты предаешься смертной казни с конфискацией имущества."
+"Бюро не церемонится с врагами!"
+"Раб! Слушай известие о твоем помиловании. В связи с крушением Жабля над ВигБу Бюро объявляет амнистию всем преступникам. Твои бибы пойдут на печать листовок с популярным изложением некоторых положений Устава... Для твоей же пользы!"
+"Slave! According to the Buro's decree entitled 'On Counteracting Sabotage during Sporting Events,' you are sentenced to death along with the confiscation of all your property. "
+"The Buro rides roughshod over its enemies! "
+"Slave! Listen to the latest news! Because of a Jablee crash near VigBoo the Buro is declaring a general amnesty for all offenders. Your beebs are confiscated and will be spent on printing fliers with popularized extracts from the Manual... For your own benefit!"
+{Жабли}
+{Jablees}
+
+[Pipetka in Inventory (Boond):B]
+"Раб! Твои действия под полным контролем бибуратов. Тебе запрещается собирать пипетки и заниматься их перевозкой."
+"Slave! Everything you do is completely controlled by the Beeboorats. You are not allowed to collect or ship peeperettes."
+{раб} {пипетка} {бибураты}
+{Slave} {peeperette} {Beeboorats}
+"Повторная ошибка будет стоить тебе мехоса. Немедленно верни найденные пипетки на место!"
+"A repeat offense will be punished by confiscation of your mechos. Return the peeperettes immediately!"
+
+[+Pipetka in Inventory (Boond):B]
+"Раб! Твои действия могут серьезно подорвать мероприятия Бюро по утилизации Неприкаянных. Твой мехос изымается для поощрения более смекалистых вангеров."
+"Slave! Your actions could seriously impair the Buro's Castaway utilization procedures. Your mechos is being confiscated in favor of vangers who are quicker on the uptake."
+{неприкаянный}
+{castaway}
+
+[Kernoboo in Inventory (Boond):B]
+"Раб! Тебе под страхом принудительной конвертации в куст запрещается прикасаться к священным Ядробусам!"
+"Slave! Under penalty of forced conversion into a shrub I forbid you to touch the holy Nucleobooms!"
+{раб} {куст} {Ядробус}
+{Slave} {shrub} {Nucleoboom}
+"Поспеши вернуть их на место или гнев Героев будет ужасен, жалкий тупой недомерок."
+"Return them home quickly, you feeble, doltish midget, or else the Heroes' anger will be wild."
+
+[+Kernoboo in Inventory (Boond):B]
+"Раб! Благодаря твоему вопиющему нарушению субординации, на соревнованиях некоторым Героям не хватило Ядробусов! Это чрезвычайное происшествие заставляет нас принять жесткие меры."
+"Ты поступаешь в распоряжение начальника утилизации в Огороде."
+"Из Огорода пришла шифровка об отсутствии вакансий на размещение кустов. Ты вывернулся из этой истории, негодный раб. Живи, но если ты еще раз притащишь сюда Ядробус, я утоплю тебя своими руками."
+"Тебя не спасет даже жертвование своего имущества для Бюро, как сегодня!"
+"Slave! Because of your outrageous insubordination, we ran short of Nucleoboom at the competition! This calamity has forced us to take strong measures. "
+"You are being put under the command of the Utilization Commander in Ogorod. "
+"A cipher just arrived from Ogorod about a lack of free places for the accommodation of shrubs. You got away with it this time, wretched Slave. Live on, but if you bring a Nucleoboom here one more time, I'll drown you with my own hands. "
+"Even donating all your property to the Buro, like you're doing today, will not save you."
+
+[Shrub in Inventory (Commissar):B]
+"Похоже, прораб, ты решил покатать кусты у себя в мехосе? Это нерациональное использование рабочего времени! Я выношу предупреждение..."
+"Looks like you decided to give the shrubs a ride in your mechos, Commissar? This is an irrational waste of work time! I am giving you a reprimand..."
+{прораб} {куст}
+{Commissar} {shrub}
+"Бюро не может воспитывать такого нестандартного прораба."
+"The Buro cannot develop such a nonstandard Commissar."
+
+[+Shrub in Inventory (Commissar):B]
+"Колесник! Ты опозорил высокое звание прораба бибуратов. Для него недопустимы подобные нарушения трудовой дисциплины! Бюро санкционировало твою деградацию."
+"Только ударный труд позволит тебе занять место среди Героев."
+"Wheeler! You have brought shame upon the grand title of Beeboorat Commissar. Your title does not allow for such a violation of work discipline! The Buro has sanctioned your demotion. "
+"Only hard labor will let you take your place among the Heroes."
+
+[Heroin in Inventory (Commissar):B]
+"Радуйся, бедный прораб. Сегодня твой наставник добр и позволит себе не заметить у тебя в трюме Героин, который давно должен быть... В ЛАМПАСАХ!!!"
+"Consider yourself lucky, Commissar. Your mentor is in a good mood today, and I will not notice Valorins in your bay that should be in Lampasso!!!"
+{прораб} {Героин} {Лампассы}
+{Commissar} {Valorin} {Lampasso}
+"Ступай, в следующий раз после такой ошибки тебя настигнет суровое возмездие."
+"Now go. Another mistake like that and you will be punished severely."
+
+[+Heroin in Inventory (Commissar):B]
+"В то время, как Герои с полной самоотдачей готовятся для подвигов, чтобы проявить себя на стадионе, некоторые отдельные прорабы в нарушении всех инструкций срывают сроки поставки Героина. Но недремлющий Буравчик разрушит планы отщепенцев."
+"В Бюро: Начинаю процесс деградации опустившегося прораба. Протокол ведет Буравчик."
+"While the Heroes unceasingly prepare themselves for heroic achievements in the stadium, some Commissars, in violation of all instructions, infringe on the Valorin delivery schedule. Boorawchick, who is always on the ball, will take care of the rebel plot. "
+"To the Buro: Initiating demotion sequence for degraded Commissar. Boorawchick is keeping the minutes."
+
+[Pipetka in Inventory (Commissar):B]
+"Прораб! Ты забыл 'Правила проведения ПипШоу'. В ВигБу запрещена поставка пипеток согласно регламенту. Твоя задача доставить груз под расписку в Огород."
+"Commissar! You forgot the PeepShow Code. The rules of procedure forbid delivering peeperettes to VigBoo. You are to ship the cargo to Ogorod on receipt."
+{прораб} {ПипШоу} {пипетка} {ВигБу} {Огород}
+{Commissar} {PeepShow} {peeperette} {VigBoo} {Ogorod}
+"В Бюро: Зарегистрирован туповатый прораб, сообщаю его идентификатор. Прошу поставить на учет."
+"To the Buro: Obtuse Commissar identified. Sending his ID, requesting registration."
+
+[+Pipetka in Inventory (Commissar):B]
+"Прораб! Твое игнорирование правил плохо для тебя кончилось. Бюро дальше не имеет права использовать твой мехос как орудие прораба-разгильдяя."
+"В Бюро: Просьба оприходовать конфискованный мехос для дальнейшей эксплуатации. Опись произвел Буравчик."
+"Commissar! Your defiance of the rules ultimately turned out badly. The Buro is no longer able to allow the use of your mechos as a tool for a slob of a Commissar. "
+"To the Buro: Request to take control of the confiscated mechos for further exploitation. Registered by Boorawchick."
+
+[Kernoboo in Inventory (Commissar):B]
+"Прораб! Ядробусы должны быть в Лампассах до окончания Героизма Глоркса. Подумай о Героях Глоркса. Спеши!"
+"Commissar! Nucleoboom must be in Lampasso before Heroism on Glorx ends. Think about the Heroes of Glorx. Hurry up!"
+{прораб} {Ядробус} {Лампассы} {Прогресс} {Героизм}
+{Commissar} {Nucleoboom} {Lampasso} {Progress} {Heroism}
+"В Бюро: Зарегистрирован туповатый прораб с критическим уровнем сообразительности и антигеройскими поползновениями. Сообщаю его идентификатор. Прошу поставить на учет."
+"To the Buro: Obtuse Commissar identified with critically low IQ and anti-hero disposition. Sending his ID, requesting registration."
+
+[+Kernoboo in Inventory (Commissar):B]
+"Прораб! Тебя ожидает проигрыш в Ядерной Войне. И ничего удивительного. Подобное нарушение инструкций трудно припомнить. Но Бюро действует с строгом соответствии с Уставом."
+"В Бюро: Начинаю процедуру деградации и конфискации антигеройского прораба. Протокол ведет Буравчик."
+"Commissar! You are going to lose the Nuclear War, and no wonder: I can't remember ever seeing as bad a violation of instructions as this. The Buro is acting in strict accordance with the Manual. "
+"To the Buro: Initiating confiscation and demotion procedure for Commissar with anti-hero disposition. Boorawchick is keeping the minutes."
+
+[Shrub in Inventory (Agent):B]
+"Агент! Куст к нему присовокуплен. Это известие вряд ли порадует Бюро. Но я думаю, что это маскировка ловкого агента."
+"An Agent arrived. With a shrub. The Buro will hardly be happy about this. Well, I guess it's just the camouflage of an experienced Agent."
+{агент} {куст}
+{Agent} {shrub}
+
+[+Shrub in Inventory (Agent):B]
+"Агент, почему у тебя кусты в трюме? Я должен пресечь попрание законов Бюро, пока не случилось большей беды. Прораб с кустами меньшее зло. Поэтому позволь поздравить тебя с деградацией."
+"В Бюро: начинаю переоформление заплутавшего агента. Уровень секретности номер два. Протокол ведет Буравчик."
+"Agent, why do you have shrubs in your bay? I ought to stop this violation of the Buro's instructions before it brings disaster. A Commissar with shrubs is a lesser evil. Hence, I congratulate you on your demotion. "
+"To the Buro: Initiating re-registration procedure for straying Agent. Security level 2. Boorawchick is keeping the protocol."
+
+[Heroin in Inventory (Agent):B]
+"Агент! Ты наверное прикрываешь Героя своим телом, что бы он не пострадал? Похвальное обурение. Только в инструкции ничего об этом не говориться, понял?"
+"Сдай Героин модному Гире, но впредь не отвлекайся."
+"Agent! What are you doing with the Hero? Covering him with your body, so that he doesn't get hurt? That's commendable, but the instructions say nothing about that, got it? Check the Valorins in with the stylish Geer'ah and don't stray off any more."
+{агент} {Героин} {Гиря}
+{Agent} {Valorin} {Geer'ah}
+
+[+Heroin in Inventory (Agent):B]
+"Колесник! Как уполномоченный Бюро по агентурным делам, я аннулирую твое разрешение на агентурную деятельность. Твои бибы пойдут на компенсацию морального ущерба, нанесенного твоими поступками."
+"В Бюро: Прошу повысить мое нюхательное содержание."
+"Wheeler! As the Buro's assignee for relations with Agents, I hereby annul your Agent's license. Your beebs are confiscated to compensate for the moral damage inflicted by your actions. To the Buro: I request an increase in my cirt allowance."
+
+[Pipetka in Inventory (Agent):B]
+"Агент! Пипетки в твоем трюме льют воду на мельницу врагов Бюро. Твоя задача - доносить в Мирах вести о могуществе бибуратов."
+"Agent! The Peeperettes in your bay bolster the Buro's enemies. Your mission is to preach the power of Beeboorats in other worlds."
+{агент} {пипетка}
+{Agent} {peeperette}
+"В Бюро: Провел воспитательную работу с агентом-пипеточником. Прошу дополнительные талоны на посещения бункера с нюхой."
+"To the Buro: Brainwashed an Agent keen on peeperettes. Petitioning for an increase in my access time to the Cirt Bunker."
+
+[+Pipetka in Inventory (Agent):B]
+"Агент, если ты пожертвуешь содержимое своих трюмов для моего департамента, я не стану выносить твое личное дело на Комиссию по Делам Пипетковозов. Иначе тебе полный КАЮК!"
+"В Бюро: Воспитательная работа с пипетковозом оказалась результативной. Требую еще нюхи!"
+"Agent, if you contribute the contents of your bay to my department, I will not pass your personal file on to the Peeperette Misuse Commission. Otherwise you're a dead fitter! "
+"To the Buro: Gave adjustment instruction to a Peeperette Misuser. Result is positive. I require more cirt!"
+
+[Kernoboo in Inventory (Agent):B]
+"Агент! По последним шифровкам из Лампасс, жеманный Гиря испытывает острую нехватку Ядробусов. Ты понимаешь, во что это может для тебя вылиться?"
+"Agent! According to the latest cipher from Lampasso, Geer'ah is in desperate need of Nucleoboom. Do you realize what that may cost you?"
+{агент} {Лампассы} {Гиря} {Ядробус}
+{Agent} {Lampasso} {Geer'ah} {Nucleoboom}
+"В Бюро: Веду наблюдение за подозрительным агентом. Налицо признаки заговора и саботажа."
+"To the Buro: Watching a suspicious Agent. There are clear indications of conspiracy and sabotage."
+
+[+Kernoboo in Inventory (Agent):B]
+"Колесник! Я тебя разоблачил! Ты не агент, а шпион врагов Глоркса с заданием сорвать игровые мероприятия бибуратов! Бюро с такими не церемонится. Смерть врагам!"
+"В Бюро: Разоблачил врага Глоркса! Прошу повышения по службе. Хочу на место Гири. Рапортовал Буравчик!"
+"Агент! Я решил, что сохранение тебе жизни не будет осуждено Бюро. Думаю, ты поднял священный Ядробус, спеша ко мне с рапортом, чтобы спасти его от порчи и усыхания."
+"Этот поступок достоин награды. Для меня, разумеется, как твоего учителя. Твои пожитки - скромная плата за мои труды."
+"Wheeler! I have blown your cover! You are not an Agent, but a spy of Glorx's enemies trying to sabotage our sporting events! The Buro handles spies harshly: death to enemies! "
+"To the Buro: Exposed an enemy of Glorx! Petitioning for a promotion. I want Geer'ah's position. Boorawchick out. "
+"Agent! I have decided that granting your pardon will not be denounced by the Buro. I believe that you picked up the holy Nucleoboom and took it to me to save the precious seed from rotting or drying. "
+"This deed deserves a reward. For me, of course, your mentor. Your plunder is a humble reward for my pain."
+
+[Nymbos in Inventory:G]
+"Колесник доставил нимбос. В Бюро: Обуревание вангеров благодаря хорошо поставленной воспитательной работе Буравчика неуклонно повышается. Рапортовал Буравчик."
+"A wheeler brought nymbos. To the Buro: Vangers' pushiness keeps increasing due to Boorawchick's educational work. Boorawchick out."
+
+[Phlegma in Inventory:G]
+"Флегма...Это хорошо, вангер, что ты бываешь на засохших мирах, однако до конца ли ты выполнил свой долг здесь?"
+"Phlegma... It's a plus for you, vanger, that you visit the sapless worlds, but have you completed your solemn duty on Glorx?"
+
+[Poponka in Inventory:B]
+"В Бюро: Изъял попонки у несознательного элемента. Провожу дальнейшую конфискацию и выяснение обстоятельств. Речь сдал Буравчик."
+"To the Buro: Confiscated popons from an irresponsible vanger. Carrying out further confiscation and investigation. Boorawchick out."
+{попонка}
+{popon}
+
+[Toxick in Inventory:B]
+"В Бюро: Объявляю тревогу и мобилизацию! Всему составу Бюро пройти в укрытие! Врагам удалось провезти в ВигБу токсик. Бдительный Буравчик принимает меры!"
+"To the Buro: Alarm! Total mobilization! All personnel of the Buro must take cover! Our enemies sneaked toxick into VigBoo. Boorawchick, as usual, is on the ball and taking the appropriate measures!"
+{токсик}
+{toxick}
+"Вангер! За утерю бдительности и невольное пособничество врагам ты заслуживаешь деградации. Сдать свой Раббокс в переделку!"
+"Vanger! For your lack of vigilance, and for unintentionally aiding and abetting the enemy you deserve a demotion. Hand your Rubbox in for modification!"
+
+[eLeech in Inventory:G]
+"В Бюро: По заданию преданного Буравчика обуреваемый вангер в сжатые сроки доставил эЛика. Это большой успех стал возможен благодаря моему чуткому руководству. Рапортовал Буравчик."
+"Вангер! Твои заслуги Бюро не забудет. Старайся!"
+"To the Buro: At the instruction of the loyal Boorawchick, a pushy vanger quickly delivered an eLeech. This great success was possible due to my wise mentoring. Boorawchick out. "
+"Vanger! The Buro will remember your services. Struggle on!"
+
+[WeeZyk in Inventory:B]
+"О, сувенир с загнивающего Некросса! Мусорник, известно ли тебе последнее постановление Бюро 'О борьбе с тлетворным влиянием сухих миров'? Тебе грозят огромные неприятности!"
+"Oh, you brought a souvenir from rotting Necross! Garbage collector, do you know about the Buro's recent decree entitled 'On Counteracting the Pernicious Influence of the Sapless Worlds'? You risk getting into huge trouble!"
+{Маленький Цык}
+{ProtoZeek}
+"Но я готов за скромную плату проконсультировать тебя в наших справедливых законах..."
+"However, I can give you advice on our fair laws for a reasonable fee..."
+
+[Kernowar Waiting?]
+"Прораб! Ты останешься в ВигБу чтобы дождаться Героизма и выехать за Ядробусами с взлетом Жаблей?"
+{Героизм} {Прогресс} {Ядробус} {Жабли}
+"Commissar! Will you stay in VigBoo and wait for Heroism to go for Nucleoboom when the jablees fly up?"
+{Heroism} {Progress} {Nucleoboom} {Jablees}
+@? 2		6 0
+"Да, Буравчик. Я останусь..."
+"Жабли начали посев - спеши наверх. Тот кто наберет Ядробусов больше всех и привезет в Лампассы до конца цикла заслужит благосклонность Бюро."
+"Мне не нужно ждать - я разберусь сам."
+"Смотри, прораб, не упусти свой шанс."
+"Yes, Boorawchick, I'll wait... "
+"It's time, the jablees have started sowing. Go for Nucleoboom now. The one who picks up the most Nucleoboom and brings it to Lampasso before the end of the cycle will gain the Buro's favor."
+"I don't need to wait, I'll manage myself... "
+"Don't miss your chance, Commissar."
+
+[Pipiska Waiting?]
+"Прораб! Ты останешься в ВигБу чтобы дождаться Выборов Неприкаянных - времени сбора пипеток?"
+"Commissar! Will you stay in VigBoo and wait for the Election of the Castaways to go for peeperettes?"
+{Выборы Неприкаянных} {пипетка}
+{Election of the Castaways} {peeperette}
+@? 2		6 0
+"Пожалуй да, буравчатый. Я с тобой побуду..."
+"Цикл вступил в силу. Набери пипеток и бегом к Обурцу - он будет рад."
+"Ты смердишь, тупая сволочь. Я поеду..."
+"Ну-ну, прораб. ПипШоу не заставит себя ждать..."
+"Okay, Boorawchick, I'll wait... "
+"The cycle is here. Go pick up peeperettes and bring them to Oboorez. He'll be thrilled. "
+"That's balderdash, you doltish scab! I'll go... "
+"Well, well, Commissar. The PeepShow is coming up..."
+
+[Bad Cirt Delivery:B]
+"В чем ты вывалял свой поганый мехос, кретин? А-а, понятно. Мне притащили чужую нюху! Ты перепутал эскейвы, отросток червивый... Нет, это явный саботаж, имеющий целью сорвать заседания Бюро! Я проверю все твои связи и контакты, негодяй!"
+"What did you drag your rotten mechos through, little cretin? Ah, I see. You brought alien cirt! You came to the wrong escave, you worm sprout... No, that's clearly sabotage aimed at hampering the work of the Buro! I'll check all your connections and contacts, scab!"
+{мехос} {нюха}
+{mechos} {cirt}
+"Запихнуть бы тебя самого в нюхконтейнер целиком да и отправить в Огород - на прорастание! Смотри внимательнее в следующий раз, где собираешь нюху, ты, тупое создание на колесах..."
+"What if I put YOU into a cirtainer and send it to Ogorod for planting? You deserve that. Next time watch where you pick cirt, you brainless pupa on wheels..."
+
+[Good Cirt Delivery:G]
+"В Бюро: В возглавляемую мной комиссию по приему нюхи доставлен нюхконтейнер. Вдыхание через ноздрю подтвердило бибуратность содержимого."
+"Нюха описана и передана в Департамент Распределения. Рапортовал Буравчик. Заявка на дополнительную дозу прилагается."
+"Вангер! Твое обурение вышло на проектный уровень. На текущий момент ты доставил нам $(Cirt Delivery) порций нюхи. Продолжай изыскания!"
+"To the Buro: Cirtainer delivered to my Cirt Reception Department. The sniff test confirmed the Beebooratness of the contents. "
+"The cirt has been registered and sent to the Distribution Department. Boorawchick out. My request for increased cirt allowance included. "
+"Vanger! Your push has risen to the rated level. As of today, you've brought us $(Cirt Delivery) portions of cirt. Continue harvesting!"
+{нюха}
+{cirt}
+
+[NO-Cirt Delivery]
+"Хе-хе, чем это ты набил нюхконтейнер, навозник? Готов спорить, что своими мозгами, которые из тебя вышибли твои дружки! От содержимого твоего ящика абсолютно нет никакого прока..."
+"Hehe, what did you fill your cirtainer with, dungler? With your brains, I bet, that your 'friends' beat out of you! There's no use for that stuff in your box... What I see is a lazy and dumb vanger who didn't find time to study the Buro's instructions for cirt harvesting and decided not to worry about it."
+{нюха}
+{cirt}
+"Я наблюдаю в упор ленивого и тупого вангера, который не удосужился изучить инструкции Бюро по сбору нюхи и решил не напрягаться. Боюсь, что эксплуатация тебя даже в виде раба может вызвать резонные сомнения у некоторых членов Бюро..."
+"I'm afraid your exploitation, even as a slave, will trigger reasonable objections from some members of the Buro..."
+
+[MP0 Start]
+"Вангер! На Глорксе стартовал ВАН-ВАР. Наверху в нетерпении разъезжают многочисленные желающие выбить из тебя дух. Выйди им навстречу и подороже продай свою беспутную жизнь. Бибураты очень любят наблюдать всякие заварушки и перестрелки. Не обмани их ожиданий..."
+"Vanger! The VAN-WAR has started on Glorx! The pluckiest ones have started getting into it up there, and they're anxious to take your life. Go up and meet them, and try to take more than you give. Beeboorats like watching rumbles and gun fights, so don't disappoint us..."
+
+[MP1 Start]
+"Эй, извозчик хлама, Вангеры устроили МЕХОСОМУ. Ты должен перевезти условленное количество кустов или Героина. Набивай скорее трюм, смотри только, чтоб мехос не развалился от тяжести. На Глорксе сейчас время торгашей и перевозчиков. Потряси всех их своей грузоподъёмностью!"
+"Hey you, scavenger, the vangers have started the MECHOSOMA! You must deliver the predetermined amount of shrubs and Valorins. Load the cargo quickly, but take care that your crate doesn't collapse under the weight. The time of merchants and traffickers has come on Glorx; rock us with your carrying capacity."
+
+[MP2 Start]
+"Держись за руль крепче, колесник. ПАССЕМБЛОСС стартовал! Покажи, как ты умеешь быстро ездить и сталкивать соперника в канавы. Чтобы тупые вангеры не сбивались с дороги и видели, куда им ехать, гонка проходит по контрольным пунктам. Это мерцающие круги на дорогах. Не перепутай с водоворотами!"
+"Hold the wheel tight, vanger! The PASSEMBLOSS has started! Show us how you can drive fast and throw your competitors into ditches. To help the dumb vangers, the route goes through checkpoints that are seen as glowing circles on the road. Don't mix them up with whirlpools!"
+
+[MP3 Start]
+"ОХОТРОН стартовал!"
+"HUNTAGE started!"
+
+[MP4 Start]
+"МАСТОДОНТ стартовал!"
+"MUSTODONT started!"
+
+[MP0 Comment]
+"Ну, пугливый, ВАН-ВАР ещё идёт! Вооружись получше, сразу почувствуешь себя уверенней. У тебя ещё есть возможность догнать того невежу, который посмел подъехать к тебе на кривом мехосе. Влепи ему так, чтоб в округе обвалились мосты и попадали кверху брюхом бибы!"
+"Okay, yellow belly, the VAN-WAR is high! Get yourself a big gun, maybe you'll feel more confident then. You can still get at the jackanapes who dared take you on in his craggy buggy. Blow the scab up so that nearby bridges collapse and beebs fall legs up!"
+
+[MP1 Comment]
+"МЕХОСОМА продолжается... Не устал ещё катать Героин и кусты? Ничего страшного, зато на мехос заработать можно. Покажи другим, кто главный торгаш на Глорксе! А если пара олухов окажется в воде, то не беда. Возить товар могут только крутые вангеры!"
+"The MECHOSOMA is going full blast... Tired of shipping shrubs and Valorins, huh? That's all right, but isn't it a good way to save up for a new mechos? Show the others who's the best merchant on Glorx! And if a couple of oafs end up in the water, never mind. Only tough vangers can ship goods!"
+
+[MP2 Comment]
+"Выиграть ПАССЕМБЛОСС нелегко, знаю. Тут главное не заблудиться и не пролететь контрольный пункт сгоряча. Это такой мерцающий круг на пути, запомни. А увидишь зазевавшегося вангера, спихивай его в канаву, не стесняйся. В ПАССЕМБЛОССЕ главное скорость!"
+"I know it isn't that easy to win the PASSEMBLOSS. The main thing here is to not go astray or skip a checkpoint in the heat of the moment. Remember, they are those glowing circles. If an oaf lingers in front of you, throw him into a ditch without hesitating. Speed is the name of the game!"
+
+[MP3 Comment]
+"ОХОТРОН продолжается..."
+"HUNTAGE in progress..."
+
+[MP4 Comment]
+"МАСТОДОНТ продолжается..."
+"MUSTODONT in progress..."
+
+[Larva 0 Note]
+"Запомни, агент. Кукла, ответственная за Прогресс, временно пребывает в зоне Цепи под кодовым названием $(World of Larva0)..."
+"Agent, remember: the Larva responsible for Progress is temporarily residing in a zone of the Chain codenamed $(World of Larva0)..."
+
+[Larva 1 Note]
+"Запомни, агент. Кукла, ответственная за проведение Выборов Неприкаянных, временно пребывает в зоне Цепи под кодовым названием $(World of Larva1)..."
+"Agent, remember: the Larva responsible for the Election of the Castaways is temporarily residing in a zone of the Chain codenamed $(World of Larva1)..."
+
+[Larva 2 Note]
+"Запомни, агент. Кукла, ответственная за Героизм, временно пребывает в зоне Цепи под кодовым названием $(World of Larva2)..."
+"Agent, remember: the Larva responsible for Heroism is temporarily residing in a zone of the Chain codenamed $(World of Larva2)..."
+
+[Bad Larva Delivery:B]
+"О-о-о, как мне плохо... Кажется, наступил конец Глоркса. Что ж, я честно выполнил свой долг перед Бюро и мужественно встречу свою смерть..."
+"А собственно, что происходит? Я вижу всего лишь подгнивший отброс, который поймал в Куккиш нечто омерзительное!"
+"Oh, I feel so bad... It seems the doom of Glorx has come. Oh, well, I've done my duty to the Beeboorats faithfully and I will face my death without fear... What's going on? I see nothing but a pile of garbage picked up by another pile of garbage!"
+"What's going on? I see nothing but a pile of garbage picked up by another pile of garbage!"
+{Глоркс} {Бюро}
+{Glorx} {The Buro}
+"Ты, кучка потрохов, знай, что любой бибурат скорее запишется в неприкаянные кусты, чем посмотрит на чужую Куклу! Он скорее упьется мерзкого токсика или засушит сочного эЛика, чем дотронется до этого подземного кошмара!"
+"Hey you, pile of offal! You must know that a Beeboorat would rather convert himself into a castaway shrub than even look at an alien Larva! They'd rather tank themselves up with toxick or dry a fleshy eLeech than touch this underground filth!"
+{бибураты} {куст} {Куклы} {токсик} {эЛик}
+{Beeboorats} {shrub} {Larvae} {toxick} {eLeech}
+"Мне не терпится зачитать приговор, усопший. За чудовищное попрание законов Бюро и принципов бибуратства, за попытку насильственного обэлиподивания и насаждение циксовского образа жизни, ты приговариваешься к изъятию твоих бибов."
+"I'm anxious to read out your sentence. For your outrageous transgression of the laws of the Buro and the principles of Beeboorats, and for your attempt to advocate Eleepod morals and Zeexen truths, you will be deprived of all your beebs."
+{Бюро} {бибураты} {бибы}
+{The Buro} {Beeboorats} {beebs}
+"Они пойдут на очистку и дезинфекцию ВигБу, изготовление дорожных знаков 'С чужими Куклами въезд строго запрещен!' и закупку нюхи для пострадавших в результате покушения на жизнь Бюро. Езжай отсюда скорее, ублюдок, и забудь что такое Кукла!"
+"They will be spent on the sanitation and disinfection of VigBoo, for road signs reading 'No entry with alien Larvae!', and for cirt for the victims of the assassination. Get out of here, scoundrel! And forget about Larvae forever!"
+{ВигБу} {Куклы} {нюха}
+{VigBoo} {Larvae} {cirt}
+
+[Good Larva Delivery:G]
+"Вот! Свершилось! Сбылась вековая мечта простых бибуратов о полном и окончательном завершении цикла $(Cycle Name of Locked Larva)."
+"Об этом думали герои, умирая на стадионах, об этом думал и я, отправляя кусты на исправление, об этом думало само Бюро, тренируя агентов..."
+"Whee! It finally happened! The old dream of the common Beeboorats "
+"about the final settlement of $(Cycle Name of Locked Larva) came true."
+{бибураты} {куст} {Бюро} {агент}
+{Beeboorats} {shrub} {The Buro} {Agent}
+"И вот, когда враги уже начали поднимать голову, когда тучи заговоров и мятежей начали сгущаться над нами, когда токсик уже готов был смешаться со светлыми водами Глоркса, явился простой вангер, которого когда-то пригрело и приютило Бюро."
+"Heroes dreamed of it as they died in the stadium; I dreamed of it when sending shrubs for correction; even the Buro dreamed of it when training Agents... And now, as our enemies started raising their heads, as clouds of dark plots started gathering above us, and as toxick was about to flow into the virgin waters of Glorx, a plain vanger came who was once given the shelter and care of the Buro."
+{токсик} {Глоркс} {вангеры} {Бюро}
+{toxick} {Glorx} {vangers} {The Buro}
+"И рухнули в одночасье планы врагов и недоброжелатей, им осталось только бессильно хлопать своими чесалками и разбивать об выпученные глаза свои попонки."
+"Снова высоко взлетели Жабли над Глорксом и бибураты сказали свое решительное НЕТ! проискам сухотрупов."
+"All the plots of our enemies and traitors fail at once, and all that is left for them is to flop their scratchers in impotent anger and crash their popons against their popped eyes. "
+"Jablees flew high above Glorx again and Beeboorats thundered their loud NO to the plots of the sapless carcasses."
+{попонка} {Жабли} {Глоркс} {бибураты}
+"Jablees flew high above Glorx again and Beeboorats thundered their loud NO to the plots of the sapless carcasses."
+{Jablees} {Glorx} {Beeboorats}
+"Много сил и терпения было затрачено легендарным Буравчиком на воспитание пламенного борца за дело бибуратов, много циклов пролетело, прежде чем он проникся любовью к Уставам и инструкциям и, наконец, стало возможным спланировать эту блестящую операцию."
+"How much effort and patience the legendary Boorawchick displayed in developing this committed fighter for the Beeboorats' cause. "
+{Буравчик} {бибураты} {Устав}
+{Boorawchick} {Beeboorats} {Manual}
+"Стратегический гений Буравчика и безудержное обурение подопечного агента, вдохновляемого опять-таки Буравчиком, принесли счастье в эскейвы Глоркса. Вперед, вангер, к вершинам подвигов и свершений под руководством Бюро и меня!"
+"So many cycles passed before his nursling developed a firm love of the Manual and instructions, before it finally became possible to plan and implement this delicate operation. The strategic genius of Boorawchick and the outstanding push of an Agent nurtured by Boorawchick have brought happiness to the escaves of Glorx. March on, Agent, and make your way to great feats and accomplishments under the guidance of the Buro and me!"
+{Буравчик} {агент} {эскейв} {Глоркс} {Бюро}
+{Boorawchick} {Agent} {escave} {Glorx} {The Buro}
+"Бюро отмечает нас с тобой высшими наградами! Буравчик получает всемирную бибуратскую премию и постоянный пропуск в Хранилище с нюхой. Его именем будет назван один из обвалов Глоркса."
+"В честь Буравчика будет торжественно утоплено десять преступников-раффа."
+"Ты же отмечен Грамотой об участии в операции 'Прощай, $(Cycle Name of Locked Larva)!'. Гордись, агент - тебе довелось быть в деле с самим Буравчиком! Теперь такому заслуженному вангеру как ты будет что вспомнить в дороге!"
+"The Buro is giving us the highest awards! Boorawchick receives the All-Glorx Beeborat Award and a permanent pass to the cirt bunker. "
+"One of the rockslides of Glorx will be named after Boorawchick. Ten raffa offenders will be drowned in honor of me. "
+"You receive the Certificate of Participation in the 'Farewell to $(Cycle Name of Locked Larva)' operation. Be proud of that, Agent. You've had the good fortune to take part in an operation with Boorawchick! You are now a veteran vanger and will have something to write home about!"
+
+[Protractor in Inventory]
+"Стой, навозник! Предъяви трюм на досмотр. Ага, так и думал. Ты получил от нелояльных субъектов Начертатель. Случайно не для компрометации Буравчика? Дескать, устраивает он в служебное время представления... Ничего у тебя не выйдет!"
+"Stop right there, you dungler! Open your bay for inspection. Aha, I thought so: you acquired the Protractor from disloyal subjects. Not to discredit Boorawchick, I hope? Like, that he arranges picnics during working hours... This won't do!"
+{Начертатель}
+{Protractor}
+
+[Mechanic Messiah in Inventory:B]
+"Не двигайся, преступник! Ты слишком близко подошел к черте бюроубийцы! Механический Мессия в неумелых руках может натворить много бед!"
+"А я даже каску не успел надеть, как требует инструкция от членов Бюро... Убирайся скорей, тупоголовый, и забудь сюда дорогу!"
+"Freeze, culprit! You've come too close to the line of becoming a Buro-killer! The Mechanical Messiah in clumsy hands would do great mischief! "
+"I couldn't even put on my helmet as the Buro instructions require... Get out, you muff, and forget the way here!"
+{Механический Мессия}
+{Mechanical Messiah}
+
+[Function-83 in Inventory]
+"Ага, ты притащил Способ-83+? Появление этого предмета может вселить в головы рабов вредную мысль об отклонении услуг Бюро по их воспитанию. Устав велит конфисковать подобный предмет."
+"Но я думаю, что эЛик, добытый с его помощью, успокоит критиканов из Бюро. Поэтому я закрою глаза на это нарушение во благо бибуратов. Цени меня, винтик!"
+"Brought Function-83+, huh? This object can inspire the Slaves with the idea to refuse the Buro's care. The Manual prescribes the confiscation of appliances like this."
+"However, I think that an eLeech secured with the help of this device will calm the Buro's censors. So I'll overlook this offense on behalf of the Beeboorats. Appreciate me, you piece of iron!"
+{Способ-83+}
+{Function-83+}
+
+[Spummy in Inventory:B]
+"Пробил час моего решительного испытания на верность Бюро. Отщепенец и преступник привез в ВигБу Спумию, чтобы поселить в бибуратах ужас и неверие в мудрость Бюро. Мне хочется скорей спрятаться в служебной пещере, но я должен оставаться на своем посту!"
+"The time has come for the final test of my loyalty to the Buro. The renegade and criminal has brought the Chomper to VigBoo to inspire the Beeboorats with horror and distrust of the Buro. I'd like to go under cover, but I must stay at my post!"
+{Спумия}
+{Chomper}
+"Я должен воспрепятствовать планам врагов по деморализации и дезориентации Глоркса. Воистину, мужество мое беспредельно, а подвиг мой бессмертен!.. Приказ по ВигБу: Вангеру, имеющему на борту Спумию, до конца цикла покинуть пределы Глоркса!"
+"I must frustrate the enemy's plans of demoralizing Glorx and seducing Beeboorats off the right path. My valor is immense and my deed will never be forgotten! Attention! Orders! The vanger with the Chomper aboard must leave VigBoo before the end of the cycle!"
+
+[Boot Sector in Inventory]
+"В каком болоте ты выловил Бут Сектор, помойка? Я думал, что этот объект уже безвозвратно утилизирован. Служил у меня один агент, который с его помощью завел себе восемь мехосов, отступник. Хотел нарушить подотчетность."
+"Потом он окончательно запутался в своем хозяйстве и сошел с ума. Доброе Бюро все же выдало ему мехос раффа после капремонта. Теперь он возит почту, зарабатывает на пенсию. Таков урок избыточной ушлости."
+"Where in the bogs did you find Boot Sector, you piece of garbage? I thought it was buried forever. An Agent once served me who'd gotten himself eight mechos. The dodger wanted to violate the rules of subordination. "
+"Later he got completely mixed up with his motor pool and went nuts. The generous Buro gave him a rebuilt raffa and now he's shipping mail to earn his pension. That's what excessive push leads to."
+{Бут Сектор}
+{Boot Sector}
+
+[Peelot in Inventory]
+"Пилот когда-нибудь завезет тебя в канаву или водоворот. Не доверяю я этому шлангу гофрированному. Зря ты его таскаешь. Правильный вангер должен самостоятельно противостоять природе."
+"Flymatic will drive you into a ditch or a whirlpool one day. I don't trust this doodad and you shouldn't either. A righteous vanger must oppose nature itself."
+{Пилот}
+{Flymatic}
+
+[Boorawchick absent]
+"Буравчик совершает поездку в регионы. Прием посетителей по личным вопросам отменен."
+"Boorawchick is away on a trip to the provinces. The reception for personal affairs is canceled."
+
+[Boorawchick Return (Good):G]
+"Вангер! Бюро выносит тебе Благодарность за образцовое выполнение обязанностей личного шофера Буравчика. Это большая честь. Персона Буравчика - самое дорогое, что есть у бибуратов после Бюро."
+"Однако, чтобы проследить ход выполнения задач по соблюдению инструкций, я должен лично совершать эти рискованные поездки. Иначе другие советники совсем отобьются от рук."
+"За успешный извоз Меня награждаю тебя Разрешением на посещение одного из запечатанных складов Глоркса, расположенного недалеко от Риг-Станции. Не забывай, что сам склад и его содержимое - собственность бибуратов!"
+"Vanger! The Buro acknowledges you for your excellent service as Boorawchick's driver. This is a great honor for you, as Boorawchick is the Beeboorats' most valuable asset after the Buro. "
+"However, to check on the progress of planned tasks, I must personally go on these risky trips, otherwise the other counselors will get out of hand. "
+"For your diligence I'm rewarding you by granting you access to one of the sealed Glorx stores near the Rig Station. Remember that the store and its contents is the property of the Beeboorats!"
+
+[Boorawchick Return (Bad):B]
+"Ну вот ты и попался, гнусный предатель! Как у тебя, оторванного потроха, поднялась рука оставить твоего любимого вождя среди враждебного окружения? Бюро заседало непрерывно много циклов, обсуждая эту ситуацию..."
+"Исчезновение Буравчика поставило Глоркс на край катастрофы!"
+"Только эта мысль придавала мне силы, чтобы, терпя страдания и унижения, доползти самостоятельно до ВигБу. Проклятые бибы чуть не сожрали меня! В лице моей персоне оскорблены все бибураты."
+"Я полз и думал о возмездии для подонка, что пренебрег долгом по охране Буравчика. Только твоя полная и безоговорочная раБикация смоет позор с лица Глоркса и моих орденов."
+"I got you, you cursed traitor! You wretched piece of offal, how dare you leave your precious leader in a hostile environment? The Buro sat for many cycles discussing this situation... The disappearance of Boorawchick left Glorx on the brink of disaster! It was only thinking about the fate of the Beeboorats that gave me the power to reach VigBoo by myself, crawling through the hostile jungle. The damned beebs nearly gnawed me away! By offending me you offended all the Beeboorats. I was crawling and thinking about taking revenge on the ratfink who neglected his duty of guarding Boorawchick. Only your ruBeecation will wipe out this disgrace from Glorx and my medals."
+"The disappearance of Boorawchick left Glorx on the brink of disaster! "
+"It was only thinking about the fate of the Beeboorats that gave me the power to reach VigBoo by myself, crawling through the hostile jungle. The damned beebs nearly gnawed me away! By offending me you offended all the Beeboorats. "
+"I was crawling and thinking about taking revenge on the ratfink who neglected his duty of guarding Boorawchick. Only your ruBeecation will wipe out this disgrace from Glorx and my medals."
+
+[Sandoll part note]
+"Вангер! Просмотрев твой Раббокс, я пришел к приятному выводу, что твое обурение велико, как никогда. Таким агентам мы благоволим. Поэтому я сообщаю тебе сверхсекретную информацию из архива."
+"Тележка есть часть для разукомплектованного мехоса Песколаз. Эти сведения агенты добыли, рискуя жизнью. Не урони оказанное тебе доверие и не вздумай разглашать эту секретную информацию на сухих мирах!"
+"Vanger! By looking at your Rubbox I have concluded that your push is higher than it has ever been. We favor Agents like you. I'm going to tell you top secret information from our archive:"
+"Cart is a spare part of Sandoll. Our Agents risked their lives to secure this data, so don't betray our trust in you and tell this secret to the sapless worlds!"
+
+[Last Moggy part note]
+"В Бюро: наблюдаю в упор сверхобуреваемого вангера. По Уставу ему доступны архивы второй группы секретности. Ознакомление агента с материалами проводит Буравчик. Расписка о неразглашении не взята в связи с неграмотностью субъекта."
+"Вангер, внимай Буравчику. Моторчик - часть мехоса Последний из Могикан. Докажи свою квалификацию и возврати на службу Бюро этот мехос!"
+"To the Buro: Observing a vanger with extraordinary push. According to the Manual he has access to security level 2 archives. Boorawchick is acquainting the subject with the materials. The non-disclosure agreement was not signed due to the illiteracy of the subject. Vanger, listen to Boorawchick! Putt-putt is a spare part of Last Moggy. Prove that you are qualified and return this mechos to the Buro's service."
+
+[Weexow visit]
+"Ну что, нашел на Виксове следы врагов Бюро? Нет? Значит плохо искал. Обследуй тщательнее дно тамошнего водоема!"
+"So did you find traces of the Buro's enemies there on Weexow? No? You should have searched better. Survey the bottom of the local reservoir thoroughly."
+{Виксов}
+{Weexow}
+
+[Boozeena visit]
+"Ну и как тебе Бузина? Бюро полагает, что загадочные символы в круге образуют ругательную надпись в адрес Глоркса. Надо бы разобраться как следует в этом деле и наказать кое-кого за неуважение..."
+"So, what do you think about Boozeena? The Buro supposes that the symbols in the circle are an insult to Glorx. This affair requires investigation and the villains must be punished for their disrespect..."
+{Бузина}
+{Boozeena}
+
+[Ark-a-Znoy visit]
+"Посоветуй-ка мне, агент. Бюро планирует устроить на Арк-а-Зное исправительную колонию для врагов Бюро и моих личных недоброжелателей. Как по твоему, заключенные никуда не разбегутся оттуда? Я тоже думаю что для них это самое место..."
+"Give me some advice, Agent. The Buro is planning to set up a penitentiary on Ark-a-Noi for the Buro's enemies and my ill-wishers. Do you think it will be easy for convicts to escape from there? I agree, it's the right place for them..."
+{Арк-а-Зной}
+{Ark-a-Noi}
+
+[Khox visit]
+"Ты с Кокса? Похвально. Этот мир граничит с Глорксом. В целях безопасности ты должен посещать его почаще, чтобы выявлять малейшую угрозу для Бюро со стороны этих странных развалин..."
+"Have you been to Khox? Good. This world neighbors Glorx. You must visit it often so that you can quickly detect any threat coming from that strange rubble..."
+{Кокс}
+{Khox}
+
+[hMok visit]
+"Ты, пузырь засохший, все-таки добрался до хМока? Что ж, в таком случае Бюро снимает с себя ответственность за твое воспитание и рассудок. Не забудь в завещании указать любимого Буравчика..."
+"You finally got to hMok, you piece of dung? Well, in that case the Buro washes their hands of you. Your education and mental health is up to you now. Don't forget to mention your cherished Boorawchick in your will."
+{хМок}
+{hMok}
+
+[Threall visit]
+"Что видел на Трилле, потрох поджаренный? Не чудились ли тебе голоса? Если так - срочно пройди медкомиссию! Это очень опасные для здоровья агента галлюцинации!"
+"What did you see there on Threall, you fried piece of garbage? Did you by chance hear any voices? If so, you must undergo a physical examination! These hallucinations are dangerous to an Agent's health!"
+{Трилл}
+{Threall}
+
+[Eleepod in Inventory]
+"В Бюро: завершена операция по доставке в ВигБу элипода для дознания. Преступник прибыл под конвоем."
+"Следственная комиссия под моим руководством приступает к дознанию задержанного. Повестка дня - местонахождение эЛиков и пароли в Инкубатор. Рапортовал Буравчик."
+"To the Buro: Operation to deliver an Eleepod to VigBoo for interrogation completed successfully. The culprit arrived under guard. "
+"The investigative commission under my command is beginning the examination of the suspect. Agenda: disposition of eLeeches and access codes to Incubator. Boorawchick out."
+
+[Beeboorat in Inventory]
+"Так-c, делегация из провинции... Что, опять приехал клянчить бибы на ремонт эскейва? Или талоны на нюху отоварить? Самим, братец, не хватает. Ну ладно, записывайся ко мне на прием, будет свободный цикл - приму..."
+"Aha, a delegation from the country has arrived... Have you come to ask for beebs to repair an escave? Or to get cirt with your coupons? We're short on it, comrade. All right, join the line, I'll see you when I have free time..."
+
+[Zeex in Inventory]
+"Вот морока, цикса-отравительница прибыла в ВигБу. Ты, элемент вражеский, не думай застать Бюро врасплох! И даже не пробуй читать свои попонки в эскейве! И на стенах не пиши!"
+"Быстренько делай свои дела и проваливай. А то не посмотрю на Пакт о Вседозволенности Пассажиров и мигом отправлю в карцер кормить бибов!"
+"A new headache: a poisoner Zeex has come to VigBoo. You wicked enemy! Thought you'd catch us with our pants down? Don't even think of reading your popons in the escave! And don't scribble on the walls! "
+"Do your business and get out quickly, or else I'll put you into a cell to feed beebs and the Pact on a Permissive Environment for Passengers won't help you!"
+
+[Key to Boozeena Gift:G]
+"Ты показал себя лояльным к Бюро и Буравчику вангером. Мы можем доверить тебе свою безопасность. Я сообщаю ключ на Кокс. Этот мир граничит с Глорксом. Теперь ты можешь бывать там и сигнализировать о приближении врагов."
+"You've proven your loyalty to the Buro and personally to Boorawchick. We can entrust you with our secret: I'm giving you the key to Khox, a neighboring world. Now you'll be able to visit it now and then and signal us if you find our enemies."
+{Кокс}
+{Khox}
+
+[Zyklope warning]
+"Агент, рост твоей полезности для Бюро опережает все графики и расчеты Департамента Статистики. Мы не должны потерять такого ценного агента. Сейчас ты получишь инструкции по поведению на Некроссе."
+"Ты не в коем случае не должен являться в ЦыПу, не побывав в БиЗоне!"
+"Agent, the growth of your utility to the Buro exceeds all the Statistics Department's forecasts. We don't want to lose such a useful Agent, so you will receive instructions on the tactics to use on Necross shortly. "
+"You must not under any circumstances peek into ZeePa before you visit B-Zone!"
+{ЦыПа} {БиЗона}
+{ZeePa} {B-Zone}
+
+[Hideout Open]
+"Агент! За преуспевание в деле борьбы с врагами Бюро, тебе поручается выполнить ревизию в одном из запечатанных бункеров бибуратов, созданного на случай войны с хитрыми циксами!"
+"Он находится рядом с резиденцией Гири и служит для экстренной эвакуации важного советника!"
+"Agent! For your achievements in the struggle against the enemies of the Buro you are assigned to conduct an audit in one of the Buro's underground sealed stores. It was built in case of war with the cunning Zeexen. "
+"It's near the residence of Geer'ah and stocked for the accommodation of an important counselor in case of emergency."
+
+[Larvae Vision note:G]
+"В Бюро. Подтверждаю запрос по состоянию авторитета данного вангера. Текущий статус: категория А50. Анализ провел Буравчик... Вангер, твое обурение, как и предсказало Бюро, позволяет тебе вступить в косвенный визуальный контакт с Куклой."
+"Отслеживай ее движение по карте, входящей в комплект мехоса. Можешь приступить к целенаправленному сбору нюхи. От себя лично хочу выразить Буравчику и тебе благодарность."
+"To the Buro: Your request on the Dominance level of this vanger is confirmed. Current status: category A50. Analysis carried out by Boorawchick... Vanger, your push, as it was predicted by the Buro, allows you to get in direct visual contact with a Larva. "
+"Watch its movement on the map integrated into your mechos. You can start purposeful cirt harvesting activity. I hereby commend you."
+{Куклы}
+{Larvae}
+

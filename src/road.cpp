@@ -295,6 +295,7 @@ int MMXsuppress;
 int SkipCD;
 
 int CurrentWorld = 0;
+int IsMainMenu = 0;
 
 int inTRall;
 int TimerMode = 1;
@@ -400,7 +401,7 @@ int xtInitApplication(void) {
 #endif
 
     //stalkerg:NEED SEE!!!
-    //ComlineAnalyze(__argc,__argv);
+    //ComlineAnalyze(__internal_argc,__internal_argv);
 
 //	ErrH.SetRestore(restore); #not implement
 //	ErrH.SetFlags(XERR_CTRLBRK);
@@ -818,7 +819,7 @@ void LoadingRTO1::Init(int id)
 	YSIZE = 2*YSIDE;
 #endif
 
-	set_key_nadlers(&KeyCenter, NULL);
+	set_key_handlers(&KeyCenter, NULL);
 
 	graph3d_init();
 
@@ -1618,16 +1619,10 @@ void KeyCenter(SDL_Event *key)
 //  		case SDL_SCANCODE_F4:
 //  			creat_poster();
 //  			break;
-		case SDL_SCANCODE_F11:
-			shotFlush();
-			break;
+//		case SDL_SCANCODE_F11:
+//			shotFlush();
+//			break;
 #endif
-		case SDL_SCANCODE_T:
-			mod = SDL_GetModState();
-			if ((mod&KMOD_SHIFT)||(mod&KMOD_CTRL)) {
-				GameTimerON_OFF();
-			}
-			break;
 		case SDL_SCANCODE_F:
 			mod = SDL_GetModState();
 			if (mod&KMOD_CTRL) {
@@ -1689,6 +1684,9 @@ void KeyCenter(SDL_Event *key)
 	if (iKeyPressed(iKEY_ZOOM_STANDART)) {
 		if(!Pause)
 			camera_zmin = curGMap -> xsize;
+	}
+	if (iKeyPressed(iKEY_SCREENSHOT)) {
+		shotFlush();
 	}
 #ifdef ACTINT
 	aKeyTrap(key);
@@ -2002,6 +2000,12 @@ void iGameMap::draw(int self)
 					case 1:	zColor = zCOLOR_ORANGE;	break;
 					case 2:	zColor = zCOLOR_BLUE;	break;
 					case 3:	zColor = zCOLOR_YELLOW;	break;
+					case 4:	zColor = zCOLOR_RED;	break;
+					case 5:	zColor = zCOLOR_WHITE;	break;
+					case 6:	zColor = zCOLOR_GRAY;	break;
+					case 7:	zColor = zCOLOR_BLACK;	break;
+					case 8:	zColor = zCOLOR_CAMOUFLAGE;	break;
+					case 9:	zColor = zCOLOR_PATROL;	break;
 					default:zColor = zCOLOR_WHITE;
 				}
 				if (msg->message[0]=='$' && msg->message[1]==':')
@@ -2164,7 +2168,7 @@ void ShowImageRTO::Init(int id)
 	char* pname;
 
 	//NEED SEE
-	set_key_nadlers(&ShowImageKeyPress, NULL);
+	set_key_handlers(&ShowImageKeyPress, NULL);
 	XGR_MouseSetPressHandler(XGM_LEFT_BUTTON, ShowImageMousePress);
 	XGR_MouseSetPressHandler(XGM_RIGHT_BUTTON, ShowImageMousePress);
 
@@ -2783,4 +2787,10 @@ void ShowImageMousePress(int fl, int x, int y)
 void ShowImageKeyPress(SDL_Event *k)
 {
 	ShowImageKeyFlag = 1;
+}
+
+
+bool SetAchievement(std::string name) {
+	std::cout<<"Set achievement:"<<name<<std::endl;
+	return true;
 }

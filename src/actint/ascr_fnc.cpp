@@ -4,6 +4,12 @@
 #include "../lang.h"
 #include <zlib.h>
 
+#if defined(__APPLE__) || __GNUC__ < 9
+#include <sys/stat.h>
+#else
+#include <filesystem>
+#endif
+
 #include "../runtime.h"
 
 #include "../network.h"
@@ -41,6 +47,11 @@
 #include "acsconst.h"
 #include "aci_scr.h"
 #include "chtree.h"
+
+#if defined(__APPLE__) || __GNUC__ < 9
+#else
+namespace fs = std::filesystem;
+#endif
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -234,8 +245,8 @@ void free_cell_frame(void);
 void swap_buf_col(int src,int dest,int sx,int sy,unsigned char* buf);
 void mem_putspr(int x,int y,int sx,int sy,int bsx,int bsy,unsigned char* src,unsigned char* dest);
 void mem_rectangle(int x,int y,int sx,int sy,int bsx,int col_in,int col_out,int mode,void* buf);
-void aParseScript(const char* fname,char* bname = NULL);
-void acsParseScript(const char* fname,char* bname = NULL);
+void aParseScript(const char* fname,const char* bname = NULL);
+void acsParseScript(const char* fname,const char* bname = NULL);
 
 void aciChangeWorld(int w_id);
 void aciInitWorldIDs(void);
@@ -1260,7 +1271,7 @@ void aMS_RightUnpress(int fl, int x, int y)
 #define MAP_VANGER	1
 #define MAP_INSECT	2
 
-static int aciMapVngColors[5] = { 254, 143, 156, 175, 200 };
+static int aciMapVngColors[11] = { 254, 143, 156, 175, 200, 200, 239, 230, 224, 254, 156 };
 
 void show_map(int x,int y,int sx,int sy)
 {
@@ -1515,6 +1526,24 @@ void show_map(int x,int y,int sx,int sy)
 					case 10:
 						if(scr_x > MAP_PTR_XL && scr_x < sx - MAP_PTR_XL && scr_y > MAP_PTR_XL && scr_y < sy - MAP_PTR_XL)
 							XGR_Rectangle(x + scr_x - MAP_PTR_XL2,y + scr_y - MAP_PTR_XL2,MAP_PTR_XL,MAP_PTR_XL,aciMapVngColors[3],aciMapVngColors[2],XGR_FILLED);
+						break;
+					case 11:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[5],aciMapVngColors[5],XGR_FILLED);
+						break;
+					case 12:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[6],aciMapVngColors[6],XGR_FILLED);
+						break;
+					case 13:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[7],aciMapVngColors[7],XGR_FILLED);
+						break;
+					case 14:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[8],aciMapVngColors[8],XGR_FILLED);
+						break;
+					case 15:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[9],aciMapVngColors[9],XGR_FILLED);
+						break;
+					case 16:
+						XGR_Rectangle(x + scr_x - MAP_PTR_X2,y + scr_y - MAP_PTR_X2,MAP_PTR_X,MAP_PTR_X,aciMapVngColors[10],aciMapVngColors[10],XGR_FILLED);
 						break;
 				}
 			}
@@ -1835,6 +1864,7 @@ void aci_LocationQuantFinit(void)
 	aScrDisp -> i_finit();
 	aciKillLinks();
 	aScrDisp -> flags &= ~AS_FULL_REDRAW;
+	aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);
 }
 
 void loadMouseFrames(void)
@@ -4879,7 +4909,11 @@ void aciPromptData::quant(void)
 
 	if(!NumStr) return;
 
-	CurTimer ++;
+	if (NetworkON) {
+		CurTimer += 2;
+	} else {
+		CurTimer ++;
+	}
 	for(i = 0; i < NumStr; i ++){
 		if(StrBuf[i]){
 			if(CurTimer > TimeBuf[i]){
@@ -5045,6 +5079,7 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 			break;
 		case ACS_SET_AUTORUN_MODE:
 			aciAutoRun = acsGetStrState(ACS_AUTORUN_MODE);
+			iScrOpt[iAUTO_ACCELERATION]->SetValueINT(acsGetStrState(ACS_AUTORUN_MODE));
 			break;
 		case ACS_SET_SOUND_MODE:
 			iSetOptionValue(iSOUND_ON,!acsGetStrState(ACS_SOUND_MODE));
@@ -5055,7 +5090,9 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 			iHandleExtEvent(iEXT_UPDATE_MUSIC_MODE);
 			break;
 		case ACS_INIT_AUTORUN_MODE:
-			acsSetStrState(ACS_AUTORUN_MODE,aciAutoRun);
+//			acsSetStrState(ACS_AUTORUN_MODE,aciAutoRun);
+			aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);
+			acsSetStrState(ACS_AUTORUN_MODE,iGetOptionValue(iAUTO_ACCELERATION));
 			break;
 		case ACS_INIT_SOUND_MODE:
 			acsSetStrState(ACS_SOUND_MODE,!iGetOptionValue(iSOUND_ON));
@@ -5093,6 +5130,7 @@ void acsHandleExtEvent(int code,int data0,int data1,int data2)
 		case ACS_CHANGE_AUTORUN_MODE:
 			acsChangeStrState(ACS_AUTORUN_MODE);
 			aciAutoRun = acsGetStrState(ACS_AUTORUN_MODE);
+			iScrOpt[iAUTO_ACCELERATION]->SetValueINT(acsGetStrState(ACS_AUTORUN_MODE));
 			break;
 		case ACS_CHANGE_SOUND_MODE:
 			acsChangeStrState(ACS_SOUND_MODE);
@@ -5185,6 +5223,32 @@ void acsPrepareSlotNameInput(int id,int slot_num)
 	acsCurrentSlotNum = slot_num;
 }
 
+#if defined(__APPLE__) || __GNUC__ < 9
+void createDirIfNotExist(const char* dirName) {
+	struct stat info;
+	if (stat(dirName, &info) != 0) {
+		std::cout<<"Directory "<<dirName<<" not found. Created it..."<< std::endl;
+		const int dirr_err = mkdir(dirName, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+		if (dirr_err == -1) {
+			std::string subj = "Dir name: ";
+			subj += dirName;
+			ErrH.Abort("Can't create directory", XERR_USER, 0, subj.c_str());
+			return;
+		}
+	}
+}
+#else
+void createDirIfNotExist(const fs::path& dirName) {
+	if (fs::exists(dirName)) {
+		return;
+	}
+
+	std::cout<<"Directory "<<dirName<<" not found. Created it..."<<std::endl;
+	fs::create_directory(dirName);
+}
+#endif
+
 void acsSaveData(void)
 {
 	int i,null_flag = 1;
@@ -5209,7 +5273,7 @@ void acsSaveData(void)
 		p = (aciScreenInputField*)acsScrD -> GetObject(acsCurrentSlotID);
 		ptr = p -> string;
 	}
-
+	createDirIfNotExist("savegame");
 	if(slot != -1 && ptr){
 		XBuf < "savegame/save";
 		if(slot < 10) XBuf < "0";
@@ -5641,6 +5705,12 @@ const unsigned ACI_FRAG_COL0	 = (252 | (246 << 8));
 const unsigned ACI_FRAG_COL1	 = (143 | (135 << 8));
 const unsigned ACI_FRAG_COL2	 = (156 | (151 << 8));
 const unsigned ACI_FRAG_COL3	 = (173 | (166 << 8));
+const unsigned ACI_FRAG_COL4	 = (200 | (195 << 8));
+const unsigned ACI_FRAG_COL5	 = (238 | (233 << 8));
+const unsigned ACI_FRAG_COL6	 = (238 | (233 << 8));
+const unsigned ACI_FRAG_COL7	 = (238 | (233 << 8));
+const unsigned ACI_FRAG_COL8	 = (252 | (246 << 8));
+const unsigned ACI_FRAG_COL9	 = (156 | (151 << 8));
 
 void aciShowFrags(void)
 {
@@ -5649,7 +5719,7 @@ void aciShowFrags(void)
 	PlayerData* p;
 	char* world_name;
 
-	static int fragColors[4] = { ACI_FRAG_COL0, ACI_FRAG_COL1, ACI_FRAG_COL2, ACI_FRAG_COL3 };
+	static int fragColors[10] = { ACI_FRAG_COL0, ACI_FRAG_COL1, ACI_FRAG_COL2, ACI_FRAG_COL3, ACI_FRAG_COL4, ACI_FRAG_COL5, ACI_FRAG_COL6, ACI_FRAG_COL7, ACI_FRAG_COL8, ACI_FRAG_COL9 };
 
 	if(!NetworkON || !players_list.size()) return;
 	if(aScrDisp -> curPrompt -> NumStr){

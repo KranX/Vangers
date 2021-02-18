@@ -32,11 +32,14 @@
 #ifdef _ROAD_
 #include "../units/uvsapi.h"
 #include "../units/compas.h"
+#include "../units/mechos.h"
+#include "../units/hobj.h"
 #include "../runtime.h"
 #endif
 
 #include "../3d/3d_math.h"
 #include "../3d/parser.h"
+#include "../3d/3dobject.h"
 #include "../terra/vmap.h"
 #include "../sound/hsound.h"
 #include "diagen.h"
@@ -3019,15 +3022,17 @@ void uvsShop::sellMechos(uvsMechos*& Pm, int type){
 
 	if (!type) type = ~0;
 
-	if (Pm) addMechos( Pm );
-
-	Pm = (uvsMechos*)Pmechos;
-
-	while( Pm && ((Pm -> type >= first_constr) || ((Pm -> status & type) == 0))){
-		Pm = (uvsMechos*)Pm -> next;
+	if (Pm) {
+		addMechos(Pm);
 	}
 
-	if (last_type){
+	if (last_type) {
+		Pm = (uvsMechos*)Pmechos;
+
+		while( Pm && ((Pm -> type >= first_constr) || ((Pm -> status & type) == 0))) {
+			Pm = (uvsMechos*)Pm -> next;
+		}
+
 		uvsMechos*_pm_ = Pm;
 		while( Pm ){
 			if ((uvsMechosTable[Pm -> type]->price > uvsMechosTable[_pm_ -> type]->price) &&  (Pm -> type < first_constr))
@@ -4025,7 +4030,7 @@ void uvsBunch::end_harvest( void ){
 		listElem*& Item = WorldTable[i] -> Pitem;
 		pi = GetItem( Item, (pg -> GoodsTypeBeg), 0);
 		while ( pi ){
-			((uvsItem*)pi) -> delink(Item);
+			pi->delink(Item);
 			delete (uvsItem*)pi;
 			pi = GetItem( Item, (pg -> GoodsTypeBeg), 0);
 		}//  while
@@ -4035,7 +4040,6 @@ void uvsBunch::end_harvest( void ){
 	while(e){
 		if( ((uvsVanger*)e) -> type == UVS_OBJECT::VANGER ){
 			pi = GetItem( ((uvsVanger*)e) -> Pitem, pg -> GoodsTypeBeg, 0);
-
 			while ( pi ){
 				((uvsItem*)pi) -> delink( ((uvsVanger*)e) -> Pitem);
 				delete (uvsItem*)pi;
@@ -4044,6 +4048,16 @@ void uvsBunch::end_harvest( void ){
 		}
 		e = e -> enext;
 	}//  while
+
+	VangerUnit *vanger_unit = (VangerUnit*)(ActD.Tail);
+	while(vanger_unit) {
+		if (vanger_unit->aiActionID == AI_ACTION_FARMER) {
+			vanger_unit->aiResolveFind.ClearResolve();
+			vanger_unit->uvsPoint->break_harvest();
+			vanger_unit->MainOrderInit();
+		}
+		vanger_unit = (VangerUnit*)(vanger_unit->NextTypeList);
+	};
 
 /*	uvsActInt* pr  = GItem;
 	uvsActInt* pl;

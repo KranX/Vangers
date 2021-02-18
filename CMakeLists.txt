@@ -19,7 +19,7 @@ IF(MINGW)
 		SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
 ENDIF()
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -52,7 +52,7 @@ ENDIF(DIAGEN_TEST)
 INCLUDE_DIRECTORIES(SYSTEM
 	${ZLIB_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
-	${SDL2_NET_INCLUDE_DIR}
+	${SDL2_NET_INCLUDE_DIRS}
 	${FFMPEG_INCLUDE_DIRS}
 	${CLUNK_INCLUDE_DIR}
 	${OGG_INCLUDE_DIR}
@@ -61,10 +61,25 @@ INCLUDE_DIRECTORIES(SYSTEM
 	${STEAM_INCLUDE_DIR}
 )
 
+INCLUDE(CheckCXXCompilerFlag)
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wextra")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-source-encoding -O2 -msse2 -ftree-vectorize -ffast-math")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2 -ftree-vectorize -ffast-math")
+CHECK_CXX_COMPILER_FLAG("-msse2" HAVE_SIMDSSE)
+IF(HAVE_SIMDSSE)
+  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -msse2")
+ENDIF()
 # For modern gcc
 add_definitions(-D_USE_MATH_DEFINES)
+
+add_compile_options(-Werror=shift-negative-value)
+add_compile_options(-Werror=dangling-else)
+add_compile_options(-Werror=parentheses)
+add_compile_options(-Werror=delete-non-virtual-dtor)
+add_compile_options(-Werror=write-strings)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	add_compile_options(-Werror=mismatched-new-delete )
+endif()
 
 # subdirs
 ADD_SUBDIRECTORY("src")
@@ -72,3 +87,5 @@ ADD_SUBDIRECTORY("lib/xgraph")
 ADD_SUBDIRECTORY("lib/xsound")
 ADD_SUBDIRECTORY("lib/xtool")
 ADD_SUBDIRECTORY("lib/utils")
+ADD_SUBDIRECTORY("server")
+ADD_SUBDIRECTORY("surmap")

@@ -10,7 +10,6 @@
 #include "sound/hsound.h"
 #endif
 
-#include "xsocket.h"
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
 #endif
@@ -184,10 +183,9 @@ ServerFindChain::ServerFindChain(int IP,int port,char* domain_name,int game_ID,c
 	XBuffer str_buf;
 	if(!game_ID) {
 	    if (lang() == RUSSIAN) {
-            //CP866 Новая игра на
-            const unsigned char new_game_on[] = {0x8D, 0xAE, 0xA2, 0xA0, 0xEF, 0x20, 0xA8, 0xA3, 0xE0, 0xA0, 0x20, 0xAD,
-                                                 0xA0, 0x20};
-            str_buf < (const char *) new_game_on;
+			//CP866 Новая игра на
+			const unsigned char new_game_on[] = {0x8D, 0xAE, 0xA2, 0xA0, 0xEF, 0x20, 0xA8, 0xA3, 0xE0, 0xA0, 0x20, 0xAD, 0xA0, 0x20, 0x00};
+			str_buf < (const char *)new_game_on;
         } else {
             str_buf < "New Game on ";
         }
@@ -227,7 +225,7 @@ int identification(XSocket& socket)
 	char string[256] = "";
 	memset(string,0,256);
 	unsigned int len,identificated = 0;
-	START_TIMER(60*CLOCKS_PER_SEC);
+	START_TIMER(60*1000);
 	const char* request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
 	strcpy(string, request_str);
 	string[strlen(string) + 1] = CLIENT_VERSION;
@@ -309,7 +307,7 @@ int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_g
 	if(!sock.send(servers_buffer.GetBuf(),servers_buffer.tell()))
 		return 0;
 
-	START_TIMER(60*CLOCKS_PER_SEC);
+	START_TIMER(60*1000);
 	while(CHECK_TIMER())
 		if(sock.receive(servers_buffer.GetBuf(), servers_buffer.length(), 1000))
 			break;
@@ -334,48 +332,6 @@ int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_g
 	p = new ServerFindChain(IP,port,domain_name,0,0);
 	append(p);
 	return n_games + 1;
-}
-
-int ServersList::find_servers(int bc_port)
-{
-	char buffer[300];
-	int IP,port, sent_size;
-	char* name;
-	ServerFindChain* p;
-	XSocket udp_sock;
-	udp_sock.openUDP(bc_port);
-	clear_states();
-	START_TIMER(5*CLOCKS_PER_SEC);
-	while(CHECK_TIMER()){
-		sent_size = udp_sock.receivefrom(buffer,256);
-		if(buffer[0] != 'K' || buffer[1] != 'D'){
-			continue;
-			}
-		IP = *((int*)(buffer + 2));
-		port = *((unsigned short*)(buffer + 6));
-		if(sent_size > 8){
-			buffer[sent_size] = 0;
-			name = strupr(buffer + 8);
-			}
-		else
-			name = 0;
-
-		p = first();
-		while(p){
-			if(p -> IP == IP && p -> port == port)
-				break;
-			p = p -> next;
-			}
-		if(!p)
-			talk_to_server(IP,port,name);
-		}
-
-#ifdef _DEBUG
-	if(host_name)
-		talk_to_server(0,host_port,host_name);
-#endif
-
-	return size();
 }
 
 int ServersList::find_servers_in_the_internet(char* host_name,int host_port)
@@ -640,10 +596,10 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 {
 	//std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
 	receive(sock);
-	START_TIMER(10*CLOCKS_PER_SEC);
+	START_TIMER(10*1000);
 	while(current_event() || CHECK_TIMER()) {
 		do {
-			//std::cout<<"current_event:"<<(int)current_event()<<" clock:"<<clock()<<" _end_time_:"<<_end_time_<<std::endl;
+			//std::cout<<"current_event:"<<(int)current_event()<<" clock:"<<SDL_GetTicks()<<" _end_time_:"<<_end_time_<<std::endl;
 			if(current_event() == event) {
 				//std::cout<<"ok"<<std::endl;
 				int size = event_size + 2;
@@ -664,10 +620,12 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 		receive(sock,1);
 	}
 	if(!skip_if_aint)
+        {
 	    if (lang() == RUSSIAN) {
             ErrH.Abort("Сервер не отвечает", XERR_USER, event);
         } else {
             ErrH.Abort("Time out of Server's response receiving", XERR_USER, event);
+        }
         }
 	event_ID = 0;
 	offset = next_event_pointer = 0;
@@ -879,10 +837,12 @@ int restore_connection()
 	current_server_addr.connect(main_socket);
 	if(!main_socket){
 		if(number_of_reconnection_attempt-- <= 0)
+            {
 		    if (lang() == RUSSIAN) {
                 ErrH.Abort("Не могу восстановить соединение с Сервером");
             } else {
                 ErrH.Abort("Unable to restore connection to Server");
+            }
             }
 		return 0;
 	}
@@ -902,9 +862,9 @@ int restore_connection()
 void disconnect_from_server()
 {
 	events_out.send_simple_query(CLOSE_SOCKET);
-	delay(256*(CLOCKS_PER_SEC/1000));
+	delay(256);
 	main_socket.close();
-	delay(256*(CLOCKS_PER_SEC/1000));
+	delay(256);
 	events_out.clear();
 	events_in.reset();
 }
@@ -939,6 +899,8 @@ void set_time_by_server(int n_measures)
 	response_time /= N*256.;
 	average_lag = round(response_time*1000);
 	time_synchronization_sigma = sqrt((dtau2 - N*sqr(tau))/N/(N-1))/256.;
+	std::cout<<"set_time_by_server time_synchronization_sigma:"<<time_synchronization_sigma
+			 <<" average_lag:"<<average_lag<<" t2:"<<t2<<std::endl;
 }
 int set_world(int world,int world_y_size) //znfo - send set_world event
 {
@@ -1275,7 +1237,7 @@ void PlayersList::single_parsing(int event_ID)
 				}
 			else{
 				if(strcmp(p -> name,name)){
-					delete p -> name;
+					delete[] p -> name;
 					p -> name = new char[strlen(name) + 1];
 					strcpy(p -> name, name);
 					}

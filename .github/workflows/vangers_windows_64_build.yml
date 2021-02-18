@@ -1,16 +1,12 @@
 name: Vangers Windows 64bit Build
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master, 60fps, hd_v2 ]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: numworks/setup-msys2@v1
+    - uses: stalkerg/setup-msys2@v2
       with:
         msystem: MINGW64
     - name: install libs
@@ -84,6 +80,9 @@ jobs:
         cp clunk/build/libclunk.dll vangers/bin/
         cp build/src/vangers.exe vangers/bin/
         msys2do strip vangers/bin/vangers.exe
+        cp build/server/vangers_server.exe vangers/bin/
+        msys2do strip vangers/bin/vangers_server.exe
+        cp build/surmap/surmap.exe vangers/bin/
     - uses: actions/upload-artifact@v1
       with:
         name: Vangers-Release-64

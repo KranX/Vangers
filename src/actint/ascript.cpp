@@ -591,7 +591,7 @@ aciML_EventSeq* mlEvSeq;
 aciBitmapMenuItem* aciBM_it;
 aciBitmapMenu* aciBM;
 
-void aParseScript(const char* fname,char* bname)
+void aParseScript(const char* fname,const char* bname)
 {
 	int i,id,t_id = 0,sz = 0,num;
 

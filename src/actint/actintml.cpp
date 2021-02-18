@@ -1020,7 +1020,7 @@ void aciML_Data::rnd_event_quant(void)
 			else {
 				ev -> cur_timer --;
 				if(ev -> cur_timer <= 0){
-					if(!rand()%ev -> rndValue){
+					if(!(rand()%ev -> rndValue)) {
 						code = ((iScanCode*)ev -> keys -> codes -> last) -> code;
 						aciML_KeyTrap(code,ev -> startupType);
 						if(ev -> flags & AML_ACTIVE_EVENT)

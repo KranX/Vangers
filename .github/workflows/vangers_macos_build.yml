@@ -1,21 +1,20 @@
 name: Vangers MacOS Build
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master, 60fps, hd_v2 ]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
-    - name: update repos
-      run: brew update
+    # - name: update repos
+    #   run: |
+    #     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    #     brew update
     - name: install libs
       run: |
-        brew install git ninja cmake yasm dylibbundler
+        brew install ninja yasm dylibbundler
+        brew reinstall -s ./formulas/libsndfile.rb
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb
         brew install -s ./formulas/sdl2.rb

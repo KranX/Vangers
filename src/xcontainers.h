@@ -378,7 +378,7 @@ inline void XQueue<Type>::clear()
 template <class Type>
 inline int XQueue<Type>::tell()
 {
-	return size + head - tail & size - 1;
+	return (size + head - tail) & (size - 1);
 }
 
 template <class Type>
@@ -413,16 +413,19 @@ inline int XQueue<Type>::put(Type p)
 	ErrH.Abort("XQueue overflow");
 	return 0;
 }
+
 template <class Type>
 inline Type XQueue<Type>::get()
 {
 	int ind;
-	while(head != tail){
+	while(head != tail) {
 		ind = tail;
 		tail = (tail + 1) & (size - 1);
-		if(buffer[ind] != (Type)(-1))
+		Type&& t = (Type)(-1);
+		if(buffer[ind] != t) {
 			return buffer[ind];
 		}
+	}
 	return (Type)0;
 }
 
