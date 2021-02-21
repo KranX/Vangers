@@ -237,9 +237,9 @@ struct EffectDispatcher : UnitList
 	void CreateParticleGenerator(Vector vC,Vector vT,Vector vD,int mode = PG_STYLE_INCAR);
 };
 
-int GetAltLevel(int x,int y,int z);
+int GetAltLevel(Vector v);
 //char GetAltLevel(int x,int y,int z);
-int WaterAltLevel(int x,int y,int z);
+int WaterAltLevel(Vector v);
 //char WaterAltLevel(int x,int y,int z);
 
 extern EffectDispatcher EffD;

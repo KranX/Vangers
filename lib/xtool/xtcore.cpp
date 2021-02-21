@@ -647,7 +647,7 @@ void xtSysQuantDisable(int v)
 }
 
 
-void set_key_nadlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*)) {
+void set_key_handlers(void (*pH)(SDL_Event*),void (*upH)(SDL_Event*)) {
 	press_handler = pH;
 	unpress_handler = upH;
 }

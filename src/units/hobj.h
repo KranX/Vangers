@@ -190,16 +190,21 @@ void putMapPixel(int px,int py,int col);
 //void line_trace(const Vector& c1,const Vector& c2);
 
 void G2L(int x,int y,int& xl,int& yl);
+void G2L(Vector v,int& xl,int& yl);
 int MapLineTrace(Vector& c1,Vector& c2);
 char GetCollisionMap(int x,int y,int z);
 char GetMapLevel(Vector& v);
-uchar GetAlt(int x,int y,int z,uchar& alt);
+uchar GetAlt(Vector v,uchar& alt);
 uchar GetGlobalAlt(int x,int y);
 
+int G2LS(Vector v,int& sx,int& sy);
 int G2LS(int x,int y,int z,int& sx,int& sy);
-int G2LF(int x,int y,int z,int& sx,int& sy);
-void G2LQ(int x,int y,int z,int& sx,int& sy);
-void G2LP(int x,int y,int z,int& sx,int& sy);
+int G2LF(Vector v,int& sx,int& sy);
+int G2LF(int x,int y,int& sx,int& sy);
+void G2LQ(Vector v,int& sx,int& sy);
+void G2LQ(int x,int y,int& sx,int& sy);
+void G2LP(Vector v,int& sx,int& sy);
+void G2LP(int x,int y,int& sx,int& sy);
 void S2G(int xs,int ys,int& xg,int& yg);
 
 //void SetMapBuff(int x,int y,int x_size,int y_size,uchar* MapBuf);
@@ -215,7 +220,7 @@ int TouchSphereZ(Vector& r0,Vector& r1,Vector& c,int rad,int& r);
 void DrawShadow(int x,int y,int x_size,int y_size,uchar* buff);
 
 char GetMapLevelType(Vector& v,uchar*& type);
-int BigGetAlt(int x,int y,int z,uchar& alt,uchar terrain);
+int BigGetAlt(Vector v,uchar& alt,uchar terrain);
 
 extern char SetWorldFlag;
 extern int CurrentWorld;
