@@ -1308,6 +1308,12 @@ struct uvsGamerResult{
 	int toxick_bonus;
 	int BoorawchickGoHimself;
 	int unik_poponka;
+	int nymbos_buy;
+	int phlegma_buy;
+	int heroin_buy;
+	int shrub_buy;
+	int poponka_buy;
+	int toxick_buy;
 
 	void Init( void );
 	void LocalInit( void );
