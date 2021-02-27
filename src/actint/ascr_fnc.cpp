@@ -23,6 +23,7 @@
 
 #include "item_api.h"
 #include "../units/uvsapi.h"
+#include "../units/magnum.h"
 
 #include "../uvs/univang.h"
 #include "../uvs/diagen.h"
@@ -4085,7 +4086,12 @@ void aciAddTeleportMenuItem(int id,int fnc_id)
 	if(!mn) return;
 
 	if(id == -1){
-		ptr = aci_curLocationName;
+		if (lang() == RUSSIAN) {
+			if (strcmp(aci_curLocationName, (char*)eCmpPodish) == 0) ptr = rCmpPodish;
+			else if (strcmp(aci_curLocationName, (char*)eCmpVigBoo) == 0) ptr = rCmpVigBoo;
+			else if (strcmp(aci_curLocationName, (char*)eCmpZeePa) == 0) ptr = rCmpZeePa;
+		}
+		else ptr = aci_curLocationName;
 	}
 	else {
 		m = aScrDisp -> get_matrix(id);
