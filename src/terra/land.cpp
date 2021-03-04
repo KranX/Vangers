@@ -8,7 +8,7 @@
 #include "world.h"
 #include "render.h"
 #ifdef _SURMAP_
-#include "../surmap/tools.h"
+#include "surmap/tools.h"
 #endif
 const int _COL1 = 224 + 15;
 const int _COL2 = 224 + 10;
@@ -165,7 +165,7 @@ void landPrepare(void)
 		xheap += maxRad[ind];
 		yheap += maxRad[ind];
 		}
-	delete rad;
+	delete[] rad;
 }
 #endif
 
@@ -557,7 +557,6 @@ void GeoSetZone(int x,int y,int rad,int level,int delta)
 
 void pixSet(int x,int y,int delta,int surf)
 {
-std::cout<<"pixSet"<<std::endl;
 	if(!delta) return;
 #ifdef _SURMAP_
 	if(RenderingLayer == DOWN_LAYER){
@@ -796,7 +795,7 @@ void pixSetR(int x,int y,int delta,int surf)
 
 void pixDownSet(int x,int y,int delta,int surf)
 {
-std::cout<<"pixDownSet"<<std::endl;
+// std::cout<<"pixDownSet"<<std::endl;
 
 	uchar** lt = vMap -> lineT;
 	uchar* pa = lt[y];

@@ -1,3 +1,6 @@
+#ifndef __UNITS__TRACK_H
+#define __UNITS__TRACK_H
+
 const int BRANCH_STATUS_HI = 180;
 const int BRANCH_STATUS_LOW = 80;
 const int BRANCH_STATUS_WATER = 10;
@@ -115,3 +118,5 @@ struct TrackLinkType
 };
 
 extern TrackType HideTrack;
+
+#endif

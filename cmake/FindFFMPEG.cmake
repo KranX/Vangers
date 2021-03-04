@@ -11,8 +11,11 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 		avutil.h
 	PATHS
 		/usr/local/include
+		/usr/pkg/include/ffmpeg3/libavutil
 		/usr/include
 		/usr/include/x86_64-linux-gnu
+		/usr/include/aarch64-linux-gnu
+		/usr/include/aarch64-linux-gnu/libavutil
 		/local/include
 		/mingw/include
 		/opt/local/include
@@ -31,8 +34,11 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
 		avcodec.h
 	PATHS
 		/usr/local/include
+		/usr/pkg/include/ffmpeg3/libavcodec
 		/usr/include
 		/usr/include/x86_64-linux-gnu
+		/usr/include/aarch64-linux-gnu
+		/usr/include/aarch64-linux-gnu/libavcodec
 		/opt/local/include
 		/local/include
 		/mingw/include
@@ -51,8 +57,11 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 		avformat.h
 	PATHS
 		/usr/local/include
+		/usr/pkg/include/ffmpeg3/libavformat
 		/usr/include
 		/usr/include/x86_64-linux-gnu
+		/usr/include/aarch64-linux-gnu
+		/usr/include/aarch64-linux-gnu/libavformat
 		/opt/local/include
 		/local/include
 		/mingw/include
@@ -73,8 +82,10 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 		avutil-56
 	PATHS
 		/usr/local/lib
+		/usr/pkg/lib/ffmpeg3
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
+		/usr/lib/aarch64-linux-gnu
 		/usr/lib/ffmpeg
 		/opt/local/lib
 		/sw/lib
@@ -92,8 +103,10 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 		avcodec-58
 	PATHS
 		/usr/local/lib
+		/usr/pkg/lib/ffmpeg3
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
+		/usr/lib/aarch64-linux-gnu
 		/opt/local/lib
 		/sw/lib
 		/local/lib
@@ -110,8 +123,10 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		avformat-58
 	PATHS
 		/usr/local/lib
+		/usr/pkg/lib/ffmpeg3
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
+		/usr/lib/aarch64-linux-gnu
 		/usr/lib/ffmpeg
 		/opt/local/lib
 		/sw/lib

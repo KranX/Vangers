@@ -591,10 +591,14 @@ int getSpectorsTaskStatus(void)
 	int i,j,res;
 	for(i = 0;i < 4;i++)
 		for(j = 0;j < 7;j++)
-			if(res = getPassangerStats(es[j],ws[i])){
+		{
+		    auto res = getPassangerStats(es[j],ws[i]);
+			if(res != 0)
+			{
 				esS[j] = '\0';
 				wsS[i] = '\0';
-				}
+			}
+		}
 	res = 0;
 	for(i = 0;i < 4;i++) res += wsS[i];
 	for(i = 0;i < 7;i++) res += esS[i];
@@ -1963,7 +1967,7 @@ void dgRoom::read(dgFile* pf)
 
 void dgRoom::acceptTEXT(void)
 {
-	std::cout<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
+	// std::cout<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
 	dgFile* dgf = new dgFile(getDGname(roomName,".text"));
 
 	char* p = NULL;

@@ -1,3 +1,5 @@
+#ifndef __TERRA__VMAP_H__
+#define __TERRA__VMAP_H__
 
 const uint H_POWER = MAP_POWER_X;
 const uint H_SIZE = 1 << H_POWER;
@@ -174,3 +176,5 @@ inline double getDistY(double v0,double v1)
 }
 
 const int MLNAMELEN = 15;
+
+#endif

@@ -292,7 +292,6 @@ void LoadResourceSOUND(const char *path_name, int surface)
 		}
 
 		if(ff.open(buf.GetBuf(),XS_IN)){
-			ff.close();
 			if (SndData[i].lpDSB){
 				SoundRelease(SndData[i].lpDSB);
 				SndData[i].lpDSB = NULL;
@@ -300,6 +299,7 @@ void LoadResourceSOUND(const char *path_name, int surface)
 			SoundLoad(buf.GetBuf(),&SndData[i].lpDSB);
 			
 		}
+		ff.close();
 		//std::cout<<"file:"<<buf.GetBuf()<<" addr:"<<SndData[i].lpDSB<<std::endl;
 	}
 	EffectsOn(surface);

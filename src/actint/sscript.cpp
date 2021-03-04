@@ -173,7 +173,7 @@ aciScreenFrameSequence* acsFrameSeq;
 aciScreenObject* acsObj;
 aciScreen* acsScr;
 
-void acsParseScript(const char* fname,char* bname)
+void acsParseScript(const char* fname,const char* bname)
 {
 	int id,num = 0;
 

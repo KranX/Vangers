@@ -111,7 +111,7 @@ int XSocket::tcp_open() {
 		return 0;
 	}
 
-	socketSet = SDLNet_AllocSocketSet(16);
+	socketSet = SDLNet_AllocSocketSet(64);
 	SDLNet_TCP_AddSocket(socketSet, tcpSock);
 
 	return 1;

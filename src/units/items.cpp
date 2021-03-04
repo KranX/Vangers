@@ -272,7 +272,7 @@ void ItemsDispatcher::Open(Parser& in)
 
 		p = WorldTable[GameD.cWorld]->Pitem;
 		while(p){
-			n = (uvsItem*)(p);			
+			n = (uvsItem*)(p);
 			addDevice(n->pos_x,n->pos_y,n->pos_z,n->type,n->param1,n->param2,NULL);
 			p = p->next;
 		};
@@ -1566,7 +1566,7 @@ void BulletObject::TimeOutQuant(void)
 			};
 		}else{
 			if(ShowID == BULLET_SHOW_TYPE_ID::CRATER && ExtShowType){
-				if(BigGetAlt(R_curr.x,R_curr.y,R_curr.z,alt,ExtShowType)) MapLevel = 1;
+				if(BigGetAlt(R_curr, alt, ExtShowType)) MapLevel = 1;
 				else{
 					MapLevel = 0;
 					alt = 0;
@@ -1575,7 +1575,7 @@ void BulletObject::TimeOutQuant(void)
 						LightData = NULL;
 					};
 				};
-			}else MapLevel = GetAlt(R_curr.x,R_curr.y,R_curr.z,alt);			
+			}else MapLevel = GetAlt(R_curr,alt);
 			R_curr.z = alt + AltOffset;
 		};
 	}else{
@@ -1648,8 +1648,8 @@ void BulletObject::DrawQuant(void)
 				EffD.CreateParticle(ExtShowType,R_prev,R_curr,ShowType);
 			break;
 		case BULLET_SHOW_TYPE_ID::FIREBALL:
-			if(AdvancedView) s = G2LF(R_curr.x,R_curr.y,R_curr.z,tx,ty);
-			else s = G2LS(R_curr.x,R_curr.y,R_curr.z,tx,ty);
+			if(AdvancedView) s = G2LF(R_curr,tx,ty);
+			else s = G2LS(R_curr,tx,ty);
 //!!!!!!!!!
 			s *= BulletScale;
 			EffD.FireBallData[ShowType].Show(tx,ty,R_curr.z,s,FrameCount);
@@ -1660,8 +1660,8 @@ void BulletObject::DrawQuant(void)
 				LightData = MapD.CreateLight(R_curr.x,R_curr.y,R_curr.z,40,32,LIGHT_TYPE::DYNAMIC);
 			break;
 		case BULLET_SHOW_TYPE_ID::DEFORM:
-			if(AdvancedView) s = G2LF(R_curr.x,R_curr.y,R_curr.z,tx,ty);
-			else s = G2LS(R_curr.x,R_curr.y,R_curr.z,tx,ty);
+			if(AdvancedView) s = G2LF(R_curr,tx,ty);
+			else s = G2LS(R_curr,tx,ty);
 			if(EffD.DeformData[ShowType].CheckOffset(FrameCount)) FrameCount = 0;
 			EffD.DeformData[ShowType].Deform(tx,ty,FrameCount,1);
 			break;
@@ -2891,7 +2891,7 @@ void HordeObject::DrawQuant(void)
 			p->QuantP(R_curr << 8, vDelta << 8,3 << 8,5);
 			vPos = p->vR;
 			vPos >>= 8;
-			G2LQ(vPos.x,vPos.y,vPos.z,tx,ty);
+			G2LQ(vPos,tx,ty);
 			if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 		};
 	}else{

@@ -82,7 +82,8 @@ void XStream::close(void)
 	//if(extSize == -1 && !CloseHandle(handler) && ErrHUsed)
 	//	ErrH.Abort(closeMSG,XERR_USER,GetLastError(),fname);
 
-	handler->close();
+	if (handler->is_open())
+		handler->close();
 	delete handler;
 	handler = NULL;
 	//fname = "";

@@ -31,7 +31,7 @@ unsigned sHeapOffs = 0;
 unsigned sHeapSize = 0;
 
 #ifndef _BINARY_SCRIPT_
-static char* scMathOpNames[MT_MAX_CODE] = { "+", "-", "*", "/", "(", ")" };
+static const char* scMathOpNames[MT_MAX_CODE] = { "+", "-", "*", "/", "(", ")" };
 static int scMathOpLevels[MT_MAX_CODE] = { 0, 0, 1, 1, -1, -1 };
 #ifdef _iSCRIPT_DEBUG_
 int mtLogFile = 0;
@@ -930,6 +930,8 @@ void ScriptFile::load_bscript(const char* fname)
 		delete[] buf;
 		binConv = new XBuffer(p1,out_sz);
 		binConvPtr = p1;
+	} else {
+		binConvPtr = buf;
 	}
 
 	delete[] s;
@@ -1449,7 +1451,7 @@ void scMathExpression::write(void)
 #endif
 
 #ifdef _SAVE_BINARY_SCRIPT_
-void ScriptFile::set_bscript_name(char* fname)
+void ScriptFile::set_bscript_name(const char* fname)
 {
 	int sz = strlen(fname) + 1;
 	bScriptName = new char[sz];

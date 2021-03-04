@@ -183,8 +183,9 @@ ServerFindChain::ServerFindChain(int IP,int port,char* domain_name,int game_ID,c
 	XBuffer str_buf;
 	if(!game_ID) {
 	    if (lang() == RUSSIAN) {
-            //CP866 Новая игра на
-            str_buf < "����� ��� �� ";
+			//CP866 Новая игра на
+			const unsigned char new_game_on[] = {0x8D, 0xAE, 0xA2, 0xA0, 0xEF, 0x20, 0xA8, 0xA3, 0xE0, 0xA0, 0x20, 0xAD, 0xA0, 0x20, 0x00};
+			str_buf < (const char *)new_game_on;
         } else {
             str_buf < "New Game on ";
         }
@@ -619,10 +620,12 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 		receive(sock,1);
 	}
 	if(!skip_if_aint)
+        {
 	    if (lang() == RUSSIAN) {
             ErrH.Abort("Сервер не отвечает", XERR_USER, event);
         } else {
             ErrH.Abort("Time out of Server's response receiving", XERR_USER, event);
+        }
         }
 	event_ID = 0;
 	offset = next_event_pointer = 0;
@@ -834,10 +837,12 @@ int restore_connection()
 	current_server_addr.connect(main_socket);
 	if(!main_socket){
 		if(number_of_reconnection_attempt-- <= 0)
+            {
 		    if (lang() == RUSSIAN) {
                 ErrH.Abort("Не могу восстановить соединение с Сервером");
             } else {
                 ErrH.Abort("Unable to restore connection to Server");
+            }
             }
 		return 0;
 	}
