@@ -5335,6 +5335,11 @@ void uvsEscave::add_goods_to_shop( void ){ //znfo - добавка товаро�
 
 	if (Pbunch -> status == UVS_BUNCH_STATUS::UNABLE) return;
 
+	if (NetworkON && uvsGoodsON) {
+		GamerResult.phlegma_buy *= (int)(GamerResult.phlegma_buy < 0);
+		GamerResult.toxick_buy *= (int)(GamerResult.toxick_buy < 0);
+	}
+	
 	while( pt ){
 		int k = 0;
 
@@ -5348,10 +5353,6 @@ void uvsEscave::add_goods_to_shop( void ){ //znfo - добавка товаро�
 				case UVS_ITEM_TYPE::HEROIN: n -= GamerResult.heroin_buy; break;
 				case UVS_ITEM_TYPE::SHRUB: n -= GamerResult.shrub_buy; break;
 				case UVS_ITEM_TYPE::POPONKA: n -= GamerResult.poponka_buy; break;
-			}
-			if (uvsGoodsON) {
-				GamerResult.phlegma_buy *= (int)(GamerResult.phlegma_buy < 0);
-				GamerResult.toxick_buy *= (int)(GamerResult.toxick_buy < 0);
 			}
 		} else {
 			n = 4 + RND(5) + 4;
@@ -5472,6 +5473,13 @@ void uvsSpot::add_goods_to_shop( void ){
 
 	if (Pworld -> escT[0] -> Pbunch -> status == UVS_BUNCH_STATUS::UNABLE) return;
 
+	if (NetworkON && uvsGoodsON) {
+		GamerResult.nymbos_buy *= (int)(GamerResult.nymbos_buy < 0);
+		GamerResult.heroin_buy *= (int)(GamerResult.heroin_buy < 0);
+		GamerResult.shrub_buy *= (int)(GamerResult.shrub_buy < 0);
+		GamerResult.poponka_buy *= (int)(GamerResult.poponka_buy < 0);
+	}
+	
 	while( pt ){
 		int k = 0;
 
@@ -5482,12 +5490,6 @@ void uvsSpot::add_goods_to_shop( void ){
 			switch (pt->type) {
 				case UVS_ITEM_TYPE::PHLEGMA: n -= GamerResult.phlegma_buy; break;
 				case UVS_ITEM_TYPE::TOXICK: n -= GamerResult.toxick_buy; break;
-			}
-			if (uvsGoodsON) {
-				GamerResult.nymbos_buy *= (int)(GamerResult.nymbos_buy < 0);
-				GamerResult.heroin_buy *= (int)(GamerResult.heroin_buy < 0);
-				GamerResult.shrub_buy *= (int)(GamerResult.shrub_buy < 0);
-				GamerResult.poponka_buy *= (int)(GamerResult.poponka_buy < 0);
 			}
 		} else {
 			n = 4 + RND(5) + 4;
