@@ -189,14 +189,14 @@ void iListElement::init_id(const char* p)
 {
 	ID_ptr = p;
 	/*int sz = strlen(p) + 1;
-	std::cout<<"iListElement::init_id sz:"<<sz<<std::endl;
+	VNG_DEBUG()<<"iListElement::init_id sz:"<<sz<<std::endl;
 	if(!name_len || sz > name_len){
 		if(name_len) {
 			delete[] ID_ptr;
 		}
-		std::cout<<"iListElement::init_id name_len:"<<name_len<<std::endl;
+		VNG_DEBUG()<<"iListElement::init_id name_len:"<<name_len<<std::endl;
 		ID_ptr = new char[sz];
-		std::cout<<"iListElement::init_id A"<<std::endl;
+		VNG_DEBUG()<<"iListElement::init_id A"<<std::endl;
 		name_len = sz;
 	}
 	strcpy(ID_ptr, p);*/
@@ -751,7 +751,7 @@ void iAVIElement::load(void)
 		palBuf=(unsigned char*)AVIGetPalette(data);
 		//memcpy(palBuf,pal_tmp,768);
 
-		//std::cout<<"iAVIElement::load"<<std::endl;
+		//VNG_DEBUG()<<"iAVIElement::load"<<std::endl;
 		flags |= EL_DATA_LOADED;
 	}
 }
@@ -1354,14 +1354,14 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 	if(flags & EL_SCALE_NULL){
 		null_lev = (null_level * sc) >> 8;
 	}
-//std::cout<<"iScreenElement::redraw"<<std::endl;
+//VNG_DEBUG()<<"iScreenElement::redraw"<<std::endl;
 	switch(type){
 		case I_AVI_ELEM:
-			//std::cout<<"I_AVI_ELEM"<<std::endl;
+			//VNG_DEBUG()<<"I_AVI_ELEM"<<std::endl;
 			if(flags & AVI_STOPPED) return;
 			break;
 		case I_AVI_BORDER_ELEM:
-			//std::cout<<"I_AVI_BORDER_ELEM"<<std::endl;
+			//VNG_DEBUG()<<"I_AVI_BORDER_ELEM"<<std::endl;
 			bsx = ((iAVIBorderElement*)this) -> ShapeX;
 			bsy = ((iAVIBorderElement*)this) -> ShapeY;
 			bs = ((iAVIBorderElement*)this) -> border_size;
@@ -1372,11 +1372,11 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 			col = (col * sc) >> 8;
 			break;
 		case I_STRING_ELEM:
-			//std::cout<<"I_STRING_ELEM"<<std::endl;
+			//VNG_DEBUG()<<"I_STRING_ELEM"<<std::endl;
 			data = (unsigned char*)(((iStringElement*)this) -> string);
 			break;
 		case I_S_STRING_ELEM:
-			//std::cout<<"I_S_STRING_ELEM"<<std::endl;
+			//VNG_DEBUG()<<"I_S_STRING_ELEM"<<std::endl;
 			data = (unsigned char*)(((iS_StringElement*)this) -> string);
 			if(((iScreenObject*)owner) -> flags & OBJ_SELECTABLE && !(((iScreenObject*)owner) -> flags & OBJ_SELECTED)){
 				col = iS_STR_COL0_START;
@@ -1384,11 +1384,11 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 			}
 			break;
 		case I_BITMAP_ELEM:
-			//std::cout<<"I_BITMAP_ELEM"<<std::endl;
+			//VNG_DEBUG()<<"I_BITMAP_ELEM"<<std::endl;
 			data = (unsigned char*)(((iBitmapElement*)this) -> fdata);
 			break;
 		case I_SCROLLER_ELEM:
-			//std::cout<<"I_SCROLLER_ELEM"<<std::endl;
+			//VNG_DEBUG()<<"I_SCROLLER_ELEM"<<std::endl;
 			data = (unsigned char*)(((iScrollerElement*)this) -> fdata);
 			v = ((iScrollerElement*)this) -> Value;
 			pv = ((iScrollerElement*)this) -> prevValue;
@@ -1403,7 +1403,7 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 			sp = ((iScrollerElement*)this) -> space;
 			break;
 		case I_TERRAIN_ELEM:
-			//std::cout<<"I_TERRAIN_ELEM"<<std::endl;
+			//VNG_DEBUG()<<"I_TERRAIN_ELEM"<<std::endl;
 			data = ((iScreenObject*)owner) -> fonData;
 			bsx = ((iScreenObject*)owner) -> SizeX;
 			bsy = ((iScreenObject*)owner) -> SizeY;
@@ -1414,7 +1414,7 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 		sc = (sc * scale) >> 8;
 
 	if(!sm){
-		//std::cout<<"sm = 0"<<std::endl;
+		//VNG_DEBUG()<<"sm = 0"<<std::endl;
 		switch(type){
 			case I_STRING_ELEM:
 				if(terrainNum == -1)
@@ -3841,7 +3841,7 @@ void i_pal_quant(unsigned char* pal_buf,int lev,int n_lev)
 		p_val = pal_buf[i];
 		val = (lev * p_val) / n_lev;
 		p[i] = val;
-		//std::cout<<val<<" ";
+		//VNG_DEBUG()<<val<<" ";
 	}
 	XGR_SetPal(p + I_PAL_OFFS,I_PAL_START,I_PAL_SIZE);
 
@@ -4281,7 +4281,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 
 void iScreenDispatcher::save_data(XStream* fh)
 {
-	std::cout<<"iScreenDispatcher::save_data"<<std::endl;
+	VNG_DEBUG()<<"iScreenDispatcher::save_data"<<std::endl;
 	int i,num_opt = iMAX_OPTION_ID;
 	*fh < num_opt;
 	for(i = 0; i < iMAX_OPTION_ID; i ++){
@@ -4296,7 +4296,7 @@ void iScreenDispatcher::load_data(XStream* fh)
 	*fh > num_opt;
 	if(num_opt != iMAX_OPTION_ID) {
 		// Keep destroy terrain mode enabled
-		std::cout<<"iScreenDispatcher::load_data data is broken keep default"<<std::endl;
+		VNG_DEBUG()<<"iScreenDispatcher::load_data data is broken keep default"<<std::endl;
 		((iTriggerObject*)iScrOpt[iDESTR_MODE]->objPtr)->state = 1;
 		((iTriggerObject*)iScrOpt[iDESTR_MODE]->objPtr)->trigger_init();
 		return;

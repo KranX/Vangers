@@ -119,7 +119,7 @@ XGR_Screen::XGR_Screen(void)
 int XGR_Screen::init(int x,int y,int flags_in)
 {
 	flags = flags_in;
-	std::cout<<"XGR_Screen::init"<<std::endl;
+	VNG_DEBUG()<<"XGR_Screen::init"<<std::endl;
 	// Init SDL video
 	if (XGR_ScreenSurface==NULL) {
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
@@ -132,22 +132,22 @@ int XGR_Screen::init(int x,int y,int flags_in)
 		SDL_DestroyRenderer(sdlRenderer);
 		SDL_DestroyWindow(sdlWindow);
 	}
-	std::cout<<"SDL_CreateWindowAndRenderer"<<std::endl;
+	VNG_DEBUG()<<"SDL_CreateWindowAndRenderer"<<std::endl;
 	if (XGR_FULL_SCREEN) {
 		if (SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP, &sdlWindow, &sdlRenderer) < 0) {
-			std::cout<<"ERROR1"<<std::endl;
+			VNG_DEBUG()<<"ERROR1"<<std::endl;
 			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 		}
 	} else {
 		if (SDL_CreateWindowAndRenderer(x, y, 0, &sdlWindow, &sdlRenderer) < 0) {
-			std::cout<<"ERROR2"<<std::endl;
+			VNG_DEBUG()<<"ERROR2"<<std::endl;
 			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 		}
 	}
-	std::cout<<"SDL_SetWindowTitle"<<std::endl;
+	VNG_DEBUG()<<"SDL_SetWindowTitle"<<std::endl;
 	SDL_SetWindowTitle(sdlWindow, "Vangers");
 	
-	std::cout<<"Load and set icon"<<std::endl;
+	VNG_DEBUG()<<"Load and set icon"<<std::endl;
 #ifdef __APPLE__
 	IconSurface = SDL_LoadBMP("vangers_mac.bmp");
 #else
@@ -157,31 +157,31 @@ int XGR_Screen::init(int x,int y,int flags_in)
 		SDL_SetWindowIcon(sdlWindow, IconSurface); 
 		SDL_FreeSurface(IconSurface);
 	} else {
-		std::cout<<"Can't load icon vangers.bmp"<<std::endl;
+		VNG_DEBUG()<<"Can't load icon vangers.bmp"<<std::endl;
 	}
-	std::cout<<"SDL_SetRenderDrawColor"<<std::endl;
+	VNG_DEBUG()<<"SDL_SetRenderDrawColor"<<std::endl;
 	SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
-	std::cout<<"SDL_RenderClear"<<std::endl;
+	VNG_DEBUG()<<"SDL_RenderClear"<<std::endl;
 	SDL_RenderClear(sdlRenderer);
-	std::cout<<"SDL_RenderPresent"<<std::endl;
+	VNG_DEBUG()<<"SDL_RenderPresent"<<std::endl;
 	SDL_RenderPresent(sdlRenderer);
 	
-	std::cout<<"SDL_SetHint"<<std::endl;
+	VNG_DEBUG()<<"SDL_SetHint"<<std::endl;
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");  // "linear" make the scaled rendering look smoother.
 	
 	XGR_Palette = SDL_AllocPalette(256);
 	
-	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
+	VNG_DEBUG()<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
 	
-	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
+	VNG_DEBUG()<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 32, 0, 0, 0, 0);
 	
-	std::cout<<"SDL_SetSurfacePalette"<<std::endl;
+	VNG_DEBUG()<<"SDL_SetSurfacePalette"<<std::endl;
 	SDL_SetSurfacePalette(XGR_ScreenSurface, XGR_Palette);
 	
 	
-	std::cout<<"SDL_CreateTexture sdlTexture"<<std::endl;
+	VNG_DEBUG()<<"SDL_CreateTexture sdlTexture"<<std::endl;
 	sdlTexture = SDL_CreateTexture(sdlRenderer,
 		SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
 		SDL_TEXTUREACCESS_STREAMING,
@@ -191,16 +191,16 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
 	SDL_SetSurfacePalette(HDBackgroundSurface, XGR_Palette);
 	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
-	std::cout<<"SDL_ShowCursor"<<std::endl;
+	VNG_DEBUG()<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_ShowCursor(SDL_DISABLE);
 	
 	if (XGR_FULL_SCREEN) {
-		std::cout<<"SDL_SetWindowPosition"<<std::endl;
+		VNG_DEBUG()<<"SDL_SetWindowPosition"<<std::endl;
 		SDL_SetWindowPosition(sdlWindow, 0, 0);
 	}
 	// TODO(amdmi3): assuming safe locking; otherwise, use additional surface + SDL_MapRGB
-	std::cout<<"SDL_LockSurface"<<std::endl;
+	VNG_DEBUG()<<"SDL_LockSurface"<<std::endl;
 	if (SDL_LockSurface(XGR_ScreenSurface) < 0)
 		ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 
@@ -318,7 +318,7 @@ void XGR_Screen::get_clip(int& left,int& top,int& right,int& bottom)
 
 void XGR_Screen::putspr(int x,int y,int sx,int sy,void* p,int mode)
 {
-	//std::cout<<"XGR_Screen::putspr "<<x<<" "<<sx<<" "<<y<<" "<<sy<<std::endl;
+	//VNG_DEBUG()<<"XGR_Screen::putspr "<<x<<" "<<sx<<" "<<y<<" "<<sy<<std::endl;
 	assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 	int i,j,_x,_y,_x1,_y1,_sx,_sy,dx = 0,dy = 0;
 	unsigned char* scrBuf,*memBuf;
@@ -798,7 +798,7 @@ void XGR_Screen::flip()
 		}
 		XGR_MouseObj.GetFon();
 		XGR_MouseObj.PutFrame();
-		// std::cout<<"Flip"<<std::endl;
+		// VNG_DEBUG()<<"Flip"<<std::endl;
 		assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 		void *pixels;
 		int pitch;
@@ -828,7 +828,7 @@ void XGR_Screen::flip()
 
 void XGR_Screen::flush(int x,int y,int sx,int sy)
 {
-//std::cout<<"flush: "<<x<<" "<<sx<<" "<<y<<" "<<sy<<std::endl;
+//VNG_DEBUG()<<"flush: "<<x<<" "<<sx<<" "<<y<<" "<<sy<<std::endl;
 //For fix trash nums...
 //if (sx>800)
 //	ScreenBuf[666666666666]++;
@@ -854,7 +854,7 @@ void XGR_Screen::flush(int x,int y,int sx,int sy)
 		}
 
 		ssert(SDL_LockSurface(XGR_ScreenSurface) == 0);
-		std::cout<<"flush: "<<x<<" "<<sx<<" "<<y<<" "<<sy<<std::endl;
+		VNG_DEBUG()<<"flush: "<<x<<" "<<sx<<" "<<y<<" "<<sy<<std::endl;
 		if (sx >= 640 && sy >= 480)
 			SDL_Flip(XGR_ScreenSurface);
 		else
@@ -921,7 +921,7 @@ void XGR_Screen::setpal(void* ptr,int start,int count)
 	if (count < 0){
 		count = -count;
 	}
-	//std::cout<<"stepal start:"<<start<<" count:"<<count<<std::endl;
+	//VNG_DEBUG()<<"stepal start:"<<start<<" count:"<<count<<std::endl;
 	// ptr is XGR_ColorData*
 	XGR_ColorData* pal = (XGR_ColorData*)ptr;
 	for (i = 0; i < count; i++) {
@@ -969,7 +969,7 @@ void XGR_Screen::setpal(void* ptr,int start,int count)
 // 		averageColorPalette.r += c;
 // 		averageColorPalette.g += c;
 // 		averageColorPalette.b += c;
-		//std::cout<<"Set averageColorPalette r:"<<(int)averageColorPalette.r<<" g:"<<(int)averageColorPalette.g<<" b:"<<(int)averageColorPalette.b<<std::endl;
+		//VNG_DEBUG()<<"Set averageColorPalette r:"<<(int)averageColorPalette.r<<" g:"<<(int)averageColorPalette.g<<" b:"<<(int)averageColorPalette.b<<std::endl;
 	//}
 }
 
@@ -1539,7 +1539,7 @@ void XGR_Mouse::SetClipAuto(void)
 
 void XGR_Mouse::SetCursor(int sx,int sy,int num,void* p)
 {
-	//std::cout<<"XGR_Mouse::SetCursor sx:"<<sx<<" sy:"<<sy<<std::endl;
+	//VNG_DEBUG()<<"XGR_Mouse::SetCursor sx:"<<sx<<" sy:"<<sy<<std::endl;
 	int dx,dy;
 	if(BackBuf) {
 		delete[] BackBuf;
@@ -1581,7 +1581,7 @@ void XGR_Mouse::SetCursor(int sx,int sy,int num,void* p)
 
 void XGR_Mouse::PutFrame(void)
 {
-//std::cout<<"PutFrame:"<<CurFrame<<std::endl;
+//VNG_DEBUG()<<"PutFrame:"<<CurFrame<<std::endl;
 	int cl,ct,cr,cb;
 	if(PosX + SizeX < XGR_MAXX && PosY + SizeY < XGR_MAXY){
 		if(flags & XGM_HICOLOR){
@@ -1623,7 +1623,7 @@ void XGR_Mouse::PutFrame(void)
 
 void XGR_Mouse::PutFon(void)
 {
-//std::cout<<"XGR_Mouse::PutFon"<<std::endl;
+//VNG_DEBUG()<<"XGR_Mouse::PutFon"<<std::endl;
 	int sx,sy;
 	if(PosX + SizeX < XGR_MAXX && PosY + SizeY < XGR_MAXY){
 		if(flags & XGM_HICOLOR)
@@ -1634,7 +1634,7 @@ void XGR_Mouse::PutFon(void)
 		sx = XGR_MAXX - PosX;
 		sy = XGR_MAXY - PosY;
 
-		//std::cout<<"XGR_Mouse::PutFon sx:"<<sx<<" sy:"<<sy<<" SizeX:"<<SizeX<<" SizeY:"<<SizeY<<" PosY:"<<PosY<<std::endl;
+		//VNG_DEBUG()<<"XGR_Mouse::PutFon sx:"<<sx<<" sy:"<<sy<<" SizeX:"<<SizeX<<" SizeY:"<<SizeY<<" PosY:"<<PosY<<std::endl;
 		if(sx > SizeX) sx = SizeX;
 		if(sy > SizeY) sy = SizeY;
 		
@@ -1647,7 +1647,7 @@ void XGR_Mouse::PutFon(void)
 
 void XGR_Mouse::GetFon(void)
 {
-//std::cout<<"XGR_Mouse::GetFon"<<std::endl;
+//VNG_DEBUG()<<"XGR_Mouse::GetFon"<<std::endl;
 	int sx,sy;
 	if(PosX + SizeX < XGR_MAXX && PosY + SizeY < XGR_MAXY){
 		if(flags & XGM_HICOLOR)
@@ -1671,7 +1671,7 @@ void XGR_Mouse::GetFon(void)
 
 void XGR_Mouse::InitPos(int x,int y)
 {
-	//std::cout<<"XGR_Mouse::InitPos x:"<<x<<" y:"<<y<<std::endl;
+	//VNG_DEBUG()<<"XGR_Mouse::InitPos x:"<<x<<" y:"<<y<<std::endl;
 	LastPosX = PosX;
 	LastPosY = PosY;
 
@@ -1705,7 +1705,7 @@ void XGR_Mouse::AdjustPos(void)
 
 void XGR_Mouse::SetPos(int x,int y)
 {
-	//std::cout<<"XGR_Mouse::SetPos sx:"<<x<<" sy:"<<y<<std::endl;
+	//VNG_DEBUG()<<"XGR_Mouse::SetPos sx:"<<x<<" sy:"<<y<<std::endl;
 //	static POINT pt;
 
 	LastPosX = PosX;
@@ -1829,7 +1829,7 @@ void XGR_Mouse::SetAlphaSeq(int beg,int end,int mode,int delta)
 
 int XGR_Mouse::NextFrame(void)
 {
-//std::cout<<"XGR_Mouse::NextFrame "<<CurFrame<<" "<<SeqDelta<<std::endl;
+//VNG_DEBUG()<<"XGR_Mouse::NextFrame "<<CurFrame<<" "<<SeqDelta<<std::endl;
 	int ret = 0;
 	if(SeqMode != XGM_NONE){
 		CurFrame += SeqDelta;
@@ -2240,7 +2240,7 @@ void XGR_MouseFnc(SDL_Event* p)
 		if (p->motion.which==SDL_TOUCH_MOUSEID) {
 			return;
 		}
-		//std::cout<<"x:"<<p->motion.x<<" y:"<<p->motion.y<<std::endl;
+		//VNG_DEBUG()<<"x:"<<p->motion.x<<" y:"<<p->motion.y<<std::endl;
 		x = p->motion.x;
 		y = p->motion.y;
 

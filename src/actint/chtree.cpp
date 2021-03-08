@@ -167,9 +167,9 @@ void aciCHTree::save(char* fname)
 	int stat = compress((Bytef*)(p1+2+4),(uLongf*)&(sz1),(Bytef*)p,sz);
 	sz1+=2+4;
 	switch(stat){
-		case Z_OK: std::cout<<"Compress ok."<<std::endl; break;
-		case Z_MEM_ERROR: std::cout<<"not enough memory."<<std::endl; break;
-		case Z_BUF_ERROR: std::cout<<"not enough room in the output buffer."<<std::endl; break;
+		case Z_OK: VNG_DEBUG()<<"Compress ok."<<std::endl; break;
+		case Z_MEM_ERROR: VNG_DEBUG()<<"not enough memory."<<std::endl; break;
+		case Z_BUF_ERROR: VNG_DEBUG()<<"not enough room in the output buffer."<<std::endl; break;
 	};
 
 	fh.open(fname, XS_OUT);
@@ -197,13 +197,13 @@ void aciCHTree::load(const char* fname)
 	//ZIP_expand(p1,sz1,p,sz);
 	/* ZLIB realisation (stalkerg)*/
 	if(*(short*)(p)) { //if label = 0 not compress
-		//std::cout<<"aciCHTree::load DeCompress "<<fname<<" file."<<std::endl;
+		//VNG_DEBUG()<<"aciCHTree::load DeCompress "<<fname<<" file."<<std::endl;
 		int stat = uncompress((Bytef*)p1,(uLongf*)&sz1,(Bytef*)(p+2+4),sz-2-4);
 		switch(stat){
-			//case Z_OK: std::cout<<"DeCompress ok."<<std::endl; break;
-			case Z_MEM_ERROR: std::cout<<"DeCompress not enough memory."<<std::endl; break;
-			case Z_BUF_ERROR: std::cout<<"DeCompress not enough room in the output buffer."<<std::endl; break;
-			case Z_DATA_ERROR: std::cout<<"DeCompress error data."<<std::endl; break;
+			//case Z_OK: VNG_DEBUG()<<"DeCompress ok."<<std::endl; break;
+			case Z_MEM_ERROR: VNG_DEBUG()<<"DeCompress not enough memory."<<std::endl; break;
+			case Z_BUF_ERROR: VNG_DEBUG()<<"DeCompress not enough room in the output buffer."<<std::endl; break;
+			case Z_DATA_ERROR: VNG_DEBUG()<<"DeCompress error data."<<std::endl; break;
 		};
 	} else {
 		memcpy(p1, p + 2 + 4,(unsigned)(sz - 2 - 4));

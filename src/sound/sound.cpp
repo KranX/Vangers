@@ -201,7 +201,7 @@ void InstallSOUND(void)
     }
 
 	if(!SoundInit(EFFECT_KHZ, 16)){
-		std::cout<<"\nInitialization of sound failed, mute mode accepted...\n";
+		VNG_DEBUG()<<"\nInitialization of sound failed, mute mode accepted...\n";
 		MuteLog = 1;
 		return;
 		}
@@ -300,7 +300,7 @@ void LoadResourceSOUND(const char *path_name, int surface)
 			
 		}
 		ff.close();
-		//std::cout<<"file:"<<buf.GetBuf()<<" addr:"<<SndData[i].lpDSB<<std::endl;
+		//VNG_DEBUG()<<"file:"<<buf.GetBuf()<<" addr:"<<SndData[i].lpDSB<<std::endl;
 	}
 	EffectsOn(surface);
 
@@ -351,7 +351,7 @@ void StartEFFECT(EFFECT_VALUE EffectValue,int loop,int pan)
 	if (SoundVolumePanning)
 		SoundPan(SndData[EffectValue].channel, -pan*8);
 	//if (SndData[EffectValue].status & ESCAVE_SOUND&&EffectValue!=EFF_NOISE)
-	//	std::cout<<"StartEFFECT:"<<SndData[EffectValue].fname<<" int:"<<(int)EffectValue<<std::endl;
+	//	VNG_DEBUG()<<"StartEFFECT:"<<SndData[EffectValue].fname<<" int:"<<(int)EffectValue<<std::endl;
 	SoundPlay(SndData[EffectValue].lpDSB,SndData[EffectValue].channel,SndData[EffectValue].priority,SndData[EffectValue].cropos,flag);
 }
 
@@ -395,7 +395,7 @@ void EffectsOn(int surface)
 
 void SetSoundVolume(int value)
 {
-	//std::cout<<"SetSoundVolume:"<<value<<std::endl;
+	//VNG_DEBUG()<<"SetSoundVolume:"<<value<<std::endl;
 	if(EffectInUsePriory){
 //		xsSetVolumeWAVE(value);
 		soundVolumecurrent = soundVolume = value;
@@ -493,7 +493,7 @@ void SoundQuant(void)
 	if(!d) {
 		return;
 	}
-	std::cout<<"AAAAAAAAAAAAA"<<std::cout;
+	VNG_DEBUG()<<"AAAAAAAAAAAAA";
 	if(ViewZ >= 512) {
 		d = soundVolume - DB_SIZE/32 - (ViewZ - 512)*DB_SIZE/4/(1024 - 512);
 	} else {

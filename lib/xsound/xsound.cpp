@@ -57,7 +57,7 @@ void SoundPlay(void *lpDSB, int channel, int priority, int cropos, int flags)
 		clunk::Sample *source = (clunk::Sample *)lpDSB;
 		
 		//if (channel==2)
-		//	std::cout<<"SoundPlay:"<<source->name<<" channel:"<<channel<<" cropos:"<<cropos<<" pr1:"<<channels[channel].priority<<" pr2:"<<priority<<" playing:"<<clunk_object->playing(source->name)<<std::endl;
+		//	VNG_DEBUG()<<"SoundPlay:"<<source->name<<" channel:"<<channel<<" cropos:"<<cropos<<" pr1:"<<channels[channel].priority<<" pr2:"<<priority<<" playing:"<<clunk_object->playing(source->name)<<std::endl;
 		if (cropos == 255) {
 			if (!clunk_object->playing(source->name)||channels[channel].priority>priority) {
 				SoundStop(channel);
@@ -81,11 +81,11 @@ void SoundPlay(void *lpDSB, int channel, int priority, int cropos, int flags)
 			}
 		}
 		if(flags & DS_QUEUE){
-			std::cout<<"DS_QUEUE!!!"<<std::endl;
+			VNG_DEBUG()<<"DS_QUEUE!!!"<<std::endl;
 			
 		}
 		if(flags & DS_STREAM){
-			std::cout<<"DS_STREAM!!!"<<std::endl;
+			VNG_DEBUG()<<"DS_STREAM!!!"<<std::endl;
 			
 		}
 		channels[channel].priority = priority;
@@ -146,7 +146,7 @@ void SoundVolume(int channel, int volume)
 	float f_volume = volume + 10000;
 	f_volume *= 0.0001;
 	//Debug
-	//std::cout<<"SoundVolume:"<<channel<<" "<<volume<<std::endl;
+	//VNG_DEBUG()<<"SoundVolume:"<<channel<<" "<<volume<<std::endl;
 	
 	if(XSoundInitFlag){
 		if(channels[channel].sound) //channels[channel].sound -> SetVolume((LONG )volume);
@@ -163,7 +163,7 @@ int GetSoundVolume(int channel)
 {
 	int volume = 0;
 	if(XSoundInitFlag){
-		std::cout<<"GetSoundVolume:"<<channel<<std::endl;
+		VNG_DEBUG()<<"GetSoundVolume:"<<channel<<std::endl;
 		if(channels[channel].sound)
 			volume = channels[channel].volume;
 	}
@@ -173,7 +173,7 @@ int GetSoundVolume(int channel)
 void GlobalVolume(int volume)
 {
 	int i;
-	std::cout<<"GlobalVolume:"<<volume<<std::endl;
+	VNG_DEBUG()<<"GlobalVolume:"<<volume<<std::endl;
 	for(i = 0; i < MAX_CHANNELS; i ++)
 		SoundVolume(i, volume);
 }
@@ -181,7 +181,7 @@ void GlobalVolume(int volume)
 void SoundPan(int channel, int panning)
 {
 	if(XSoundInitFlag){
-		//std::cout<<"SoundPan "<<channel<<" "<<panning*0.001<<std::endl;
+		//VNG_DEBUG()<<"SoundPan "<<channel<<" "<<panning*0.001<<std::endl;
 		channels[channel].pan = panning;
 		//if(channels[channel].sound) {
 		//	channels[channel].sound->panning = panning*0.01;
@@ -192,7 +192,7 @@ void SoundPan(int channel, int panning)
 
 int GetSoundFrequency(void *lpDSB)
 {
-	//std::cout<<"Get SoundFrequency"<<((clunk::Sample *)lpDSB)->name<<std::endl;
+	//VNG_DEBUG()<<"Get SoundFrequency"<<((clunk::Sample *)lpDSB)->name<<std::endl;
 	unsigned long ret = 0;
 	if(XSoundInitFlag){
 		/*int numtimesopened, frequency, channels;
@@ -208,18 +208,18 @@ int GetSoundFrequency(void *lpDSB)
 
 void SetSoundFrequency(void *lpDSB,int frq)
 {
-	//std::cout<<"SetSoundFrequency:"<<((clunk::Sample *)lpDSB)->name<<" frq:"<<frq<<std::endl;
+	//VNG_DEBUG()<<"SetSoundFrequency:"<<((clunk::Sample *)lpDSB)->name<<" frq:"<<frq<<std::endl;
 	if(XSoundInitFlag){
 		float out_pitch = frq;
 		out_pitch/=22050;
-		//std::cout<<"pitch:"<<out_pitch<<" freq:"<<((clunk::Sample *)lpDSB)->spec.freq<<std::endl;
+		//VNG_DEBUG()<<"pitch:"<<out_pitch<<" freq:"<<((clunk::Sample *)lpDSB)->spec.freq<<std::endl;
 		((clunk::Sample *)lpDSB)->pitch = out_pitch;
 	}
 }
 
 void* GetSound(int channel)
 {
-	//std::cout<<"GetSound:"<<((clunk::Sample *)channels[channel].sound)->name<<" channel:"<<channel<<std::endl;
+	//VNG_DEBUG()<<"GetSound:"<<((clunk::Sample *)channels[channel].sound)->name<<" channel:"<<channel<<std::endl;
 	if(XSoundInitFlag)
 		return channels[channel].sound;
 
@@ -229,7 +229,7 @@ void* GetSound(int channel)
 void SoundStop(int channel)
 {
 	if(XSoundInitFlag){
-		//std::cout<<"SoundStop:"<<channel<<std::endl;
+		//VNG_DEBUG()<<"SoundStop:"<<channel<<std::endl;
 		if(channels[channel].sound){
 			/* SDL_Mixer version
 			Mix_HaltChannel(channel); */
@@ -244,7 +244,7 @@ void SoundStop(int channel)
 void SoundRelease(void *lpDSB)
 {
 	if(XSoundInitFlag){
-		//std::cout<<"SoundRelease:"<<((clunk::Sample *)lpDSB)->name<<std::endl;
+		//VNG_DEBUG()<<"SoundRelease:"<<((clunk::Sample *)lpDSB)->name<<std::endl;
 		/* SDL_Mixer version
 		Mix_FreeChunk((Mix_Chunk *)lpDSB);*/
 		//clunk_object->cancel(((clunk::Sample *)lpDSB)->name, 0);
@@ -264,7 +264,7 @@ void SoundLoad(char *filename, void **lpDSB)
 		ErrH.Log(tmp.c_str());
 		}
 	*/
-	//std::cout<<"SoundLoad:"<<filename<<std::endl;
+	//VNG_DEBUG()<<"SoundLoad:"<<filename<<std::endl;
 	clunk::Sample *chunk = NULL;
 	try {
 		chunk = context.create_sample();
@@ -289,7 +289,7 @@ void SetVolume(void *lpDSB, int volume)
 	/* OLD system
 	float f_volume = volume + 10000;
 	f_volume *= 0.0001;*/
-	//std::cout<<"SetVolume lpDSB f_volume:"<<volume/256.0<<" volume:"<<volume<<std::endl;
+	//VNG_DEBUG()<<"SetVolume lpDSB f_volume:"<<volume/256.0<<" volume:"<<volume<<std::endl;
 	
 	((clunk::Sample *)lpDSB)->gain=volume/256.0;
 	
@@ -323,20 +323,20 @@ int SoundInit(int maxHZ, int schannels)
 	/* SDL_Mixer version
 	if (SDL_Init (SDL_INIT_AUDIO) == -1)
 	{
-		std::cout<<"SDL_init: "<<Mix_GetError()<<std::endl;
+		VNG_DEBUG()<<"SDL_init: "<<Mix_GetError()<<std::endl;
 		ErrH.Abort("SDL_init:trabl!");
 		return false;
 	}
 
 	if (Mix_OpenAudio (maxHZ, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
 	{
-		std::cout<<"Mix_OpenAudio: "<<Mix_GetError()<<std::endl;
+		VNG_DEBUG()<<"Mix_OpenAudio: "<<Mix_GetError()<<std::endl;
 		ErrH.Abort(Mix_GetError());
 		return false;
 	}
 
 	Mix_AllocateChannels(MAX_CHANNELS); */
-	//std::cout<<"SoundInit maxHZ:"<<maxHZ<<std::endl;
+	//VNG_DEBUG()<<"SoundInit maxHZ:"<<maxHZ<<std::endl;
 	context.init(maxHZ, 2, 512);
 	g_freq = maxHZ;
 	context.set_max_sources(MAX_CHANNELS);

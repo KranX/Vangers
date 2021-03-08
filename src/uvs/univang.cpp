@@ -413,7 +413,7 @@ int getRW(int n){
 }
 
 void uniVangPrepare(void){
-	std::cout<<"uniVangPrepare"<<std::endl;
+	VNG_DEBUG()<<"uniVangPrepare"<<std::endl;
 	uvsEscave* pe;
 	PrmFile pfile;
 	char* atom;
@@ -8749,7 +8749,7 @@ void uniVangLoad(XStream &pfile){
 	
 	/*for( i = 0; i < MAX_ITEM_TYPE; i++) {
 		if (uvsItemTable[i] -> gamer_use) {
-			std::cout<<"gamer use item:"<<uvsItemTable[i]->type<<std::endl;
+			VNG_DEBUG()<<"gamer use item:"<<uvsItemTable[i]->type<<std::endl;
 		}
 	}*/
 

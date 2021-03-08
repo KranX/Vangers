@@ -274,7 +274,7 @@ int iKeyPressed(int id)
 	if(!iControlsObj) return 0;
 	for(i = 0; i < iKEY_OBJECT_SIZE; i ++){
 		code = iControlsObj->getCode(id, i);
-		//std::cout<<"iKeyPressed code:"<<(int)code<<" id:"<<id<<" i:"<<i<<std::endl;
+		//VNG_DEBUG()<<"iKeyPressed code:"<<(int)code<<" id:"<<id<<" i:"<<i<<std::endl;
 		if(code) {
 			if (code & SDLK_JOYSTICK_BUTTON_MASK && joy) {
 				state = SDL_JoystickGetButton(joy, code ^ SDLK_JOYSTICK_BUTTON_MASK);

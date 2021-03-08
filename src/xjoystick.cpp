@@ -37,7 +37,7 @@ XJOYSTATE  XJoystickState;
 
 int JoystickWhatsPressedNow()
 {
-	std::cout<<"JoystickWhatsPressedNow "<<std::endl;
+	VNG_DEBUG()<<"JoystickWhatsPressedNow "<<std::endl;
 	if(!JoystickAvailable)
 		return 0;
 	if(SDL_GetTicks() > next_joystick_input){
@@ -54,7 +54,7 @@ int JoystickWhatsPressedNow()
 
 int isJoystickButtonPressed(int vk_code)
 {
-	std::cout<<"isJoystickButtonPressed "<<vk_code<<std::endl;
+	VNG_DEBUG()<<"isJoystickButtonPressed "<<vk_code<<std::endl;
 	if(!JoystickAvailable)
 		return 0;
 	if(SDL_GetTicks() > next_joystick_input){
@@ -104,7 +104,7 @@ bool XJoystickInit() {
 	SDL_GameControllerEventState(SDL_ENABLE);
 	
 	if(!SDL_WasInit(SDL_INIT_JOYSTICK) && SDL_InitSubSystem(SDL_INIT_JOYSTICK)) {
-		std::cout<<"Unable to initialize the joystick subsystem"<<std::endl;
+		VNG_DEBUG()<<"Unable to initialize the joystick subsystem"<<std::endl;
 		return false;
 	}
 	
@@ -160,12 +160,12 @@ bool XJoystickInit_old(int ErrHUsed)
     if (nJoysticks < 1)
 	return false;
 
-	std::cout<<"Found "<<nJoysticks<<" joysticks"<<std::endl;
+	VNG_DEBUG()<<"Found "<<nJoysticks<<" joysticks"<<std::endl;
     joy = SDL_JoystickOpen(0);
     if (!joy)
 		return false;
 
-	std::cout<<"Init joystick: "<<SDL_JoystickNameForIndex(0)<<std::endl;
+	VNG_DEBUG()<<"Init joystick: "<<SDL_JoystickNameForIndex(0)<<std::endl;
     // set joystick parameters (deadzone, etc)
     if(!inputPrepareDevice())
     {
@@ -206,7 +206,7 @@ void XJoystickCleanup(void)
 //===========================================================================
 int XJoystickInput()
 {
-	std::cout<<"XJoystickInput"<<std::endl;
+	VNG_DEBUG()<<"XJoystickInput"<<std::endl;
 	if(!JoystickAvailable)
 		return 0;
 

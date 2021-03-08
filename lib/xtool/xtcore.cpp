@@ -118,9 +118,9 @@ int main(int argc, char *argv[])
 	__internal_argv = argv;
 
 	#ifdef _WIN32
-		std::cout<<"Load backtrace"<<std::endl;
+		VNG_DEBUG()<<"Load backtrace"<<std::endl;
 		LoadLibraryA("backtrace.dll");
-		std::cout<<"Set priority class"<<std::endl;
+		VNG_DEBUG()<<"Set priority class"<<std::endl;
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 		putenv("SDL_AUDIODRIVER=DirectSound");
 	#endif
@@ -137,14 +137,14 @@ int main(int argc, char *argv[])
                 autoconnect = true;
                 autoconnectHost = argv[i];
             } else {
-                std::cout << "Invalid parameter usage: '-server hostname' expected" << std::endl;
+                VNG_DEBUG() << "Invalid parameter usage: '-server hostname' expected" << std::endl;
             }
         } else if (cmd_key == "-port") {
             if (argc > i) {
                 i++;
                 autoconnectPort = strtol(argv[i], &argv[i], 0);
             } else {
-                std::cout << "Invalid parameter usage: '-port value' expected" << std::endl;
+                VNG_DEBUG() << "Invalid parameter usage: '-port value' expected" << std::endl;
             }
         } else if (cmd_key == "-game") {
             if (argc > i) {
@@ -159,17 +159,17 @@ int main(int argc, char *argv[])
                     autoconnectGameID = strtol(argv[i], &argv[i], 0);
                 }
             } else {
-                std::cout << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
+                VNG_DEBUG() << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
             }
         } else {
-            std::cout << "Unknown parameter: '" << cmd_key << "'" << std::endl;
+            VNG_DEBUG() << "Unknown parameter: '" << cmd_key << "'" << std::endl;
         }
     }
 
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
-	std::cout<<"Set locale. ";
+	VNG_DEBUG()<<"Set locale. ";
 	char* res = setlocale(LC_NUMERIC, "POSIX");
-	std::cout<<"Result:"<<res<<std::endl;
+	VNG_DEBUG()<<"Result:"<<res<<std::endl;
 #endif
 	//Set handlers to null
 	press_handler = NULL;
@@ -204,14 +204,14 @@ int main(int argc, char *argv[])
 				XTCORE_FRAME_DELTA = (clockNowGlobal - clockCntGlobal) / 1000.0;
 				XTCORE_FRAME_NORMAL = XTCORE_FRAME_DELTA / 0.050; //20FPS
 				clockCntGlobal = clockNowGlobal;
-//				std::cout<<"XTCORE_FRAME_DELTA:"<<XTCORE_FRAME_DELTA
+//				VNG_DEBUG()<<"XTCORE_FRAME_DELTA:"<<XTCORE_FRAME_DELTA
 //						 <<" XTCORE_FRAME_NORMAL:"<<XTCORE_FRAME_NORMAL
 //						 <<" clockDelta:"<<clockDelta<<std::endl;
 
 				if (clockDelta < XObj->Timer) {
 					SDL_Delay(XObj->Timer - clockDelta);
 				} else {
-					std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
+					VNG_DEBUG()<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
 					if (clockDelta > 300) {
 						// something wrong and for preventing abnormal physics set something neutral
 						XTCORE_FRAME_NORMAL = 1.0;
@@ -254,6 +254,11 @@ void xtCreateRuntimeObjectTable(int len)
 	}
 }
 
+void XRuntimeObject::Init(int pID)
+{
+    VNG_DEBUG()<<"Init pure virtual XRuntimeObject pID:"<<pID<<std::endl;
+};
+
 XRuntimeObject* xtGetRuntimeObject(unsigned int id)
 {
 	if(id == XT_TERMINATE_ID)
@@ -293,40 +298,40 @@ int xtCallXKey(SDL_Event* m) {
 			}
 			break;
 		case SDL_JOYBUTTONDOWN:
-			//std::cout<<"jevent down button:"<<(int)m->jbutton.button<<std::endl;
+			//VNG_DEBUG()<<"jevent down button:"<<(int)m->jbutton.button<<std::endl;
 			if (press_handler) {
 				(*press_handler)(m);
 			}
 			break;
 		case SDL_JOYBUTTONUP:
-			//std::cout<<"jevent up"<<std::endl;
+			//VNG_DEBUG()<<"jevent up"<<std::endl;
 			if (unpress_handler) {
 				(*unpress_handler)(m);
 			}
 			break;
 		case SDL_CONTROLLERBUTTONDOWN:
-			//std::cout<<"CONTROLLERBUTTONDOWN"<<std::endl;
+			//VNG_DEBUG()<<"CONTROLLERBUTTONDOWN"<<std::endl;
 			if (press_handler) {
 				(*press_handler)(m);
 			}
 			break;
 		case SDL_CONTROLLERBUTTONUP:
-			//std::cout<<"CONTROLLERBUTTONUP"<<std::endl;
+			//VNG_DEBUG()<<"CONTROLLERBUTTONUP"<<std::endl;
 			if (unpress_handler) {
 				(*unpress_handler)(m);
 			}
 			break;
 		case SDL_JOYHATMOTION:
-			//std::cout<<"SDL_JOYHATMOTION:"<<(int)m->jhat.hat<<" value"<<(int)m->jhat.value<<" k:"<<std::endl;
+			//VNG_DEBUG()<<"SDL_JOYHATMOTION:"<<(int)m->jhat.hat<<" value"<<(int)m->jhat.value<<" k:"<<std::endl;
 			if (press_handler) {
 				(*press_handler)(m);
 			}
 			break;
 		case SDL_JOYBALLMOTION:
-			//std::cout<<"SDL_JOYBALLMOTION:"<<(int)m->jball.ball<<" xrel:"<<m->jball.xrel<<" yrel:"<<m->jball.yrel<<std::endl;
+			//VNG_DEBUG()<<"SDL_JOYBALLMOTION:"<<(int)m->jball.ball<<" xrel:"<<m->jball.xrel<<" yrel:"<<m->jball.yrel<<std::endl;
 			break;
 		case SDL_JOYAXISMOTION:
-			//std::cout<<"SDL_JOYAXISMOTION:"<<(int)m->jaxis.axis<<" value"<<m->jaxis.value<<std::endl;
+			//VNG_DEBUG()<<"SDL_JOYAXISMOTION:"<<(int)m->jaxis.axis<<" value"<<m->jaxis.value<<std::endl;
 			break;
 	}
 	return 1;
@@ -337,7 +342,7 @@ int xtCallXKey(SDL_Event* m) {
 	int rec_flag = 0,ret = 0;
 	switch(m->type){
 		case SDL_KEYDOWN:
-			//std::cout<<"xtCallXKey sym:"<<m->key.keysym.sym<<" scancode:"<<(int)m->key.keysym.scancode<<" SDLK_q:"<<SDLK_q<<std::endl;
+			//VNG_DEBUG()<<"xtCallXKey sym:"<<m->key.keysym.sym<<" scancode:"<<(int)m->key.keysym.scancode<<" SDLK_q:"<<SDLK_q<<std::endl;
 			// TODO(amdmi3): this is supposed to be executed on WM_CHAR; non-char keys should probably be filtered here
 			XKey.LastChar = m->key.keysym.sym;
 
@@ -509,7 +514,7 @@ void xtSysFinit(void)
 
 void xtSetExit()
 {
-	std::cout<<"Exit!"<<std::endl;
+	VNG_DEBUG()<<"Exit!"<<std::endl;
 	SDL_Quit();
 	exit(0);
 //	ResetEvent(hXActiveWndEvent);
@@ -540,35 +545,35 @@ int xtDispatchMessage(SDL_Event* msg)
 					SDL_LockAudioDevice(1);
 					SDL_PauseAudioDevice(1, 0);
 					SDL_UnlockAudioDevice(1);
-					std::cout<<"window show"<<std::endl;
+					VNG_DEBUG()<<"window show"<<std::endl;
 					break;
 				case SDL_WINDOWEVENT_HIDDEN:
 					//Pause = 1;
 					SDL_LockAudioDevice(1);
 					SDL_PauseAudioDevice(1, 1);
 					SDL_UnlockAudioDevice(1);
-					std::cout<<"window hidden"<<std::endl;
+					VNG_DEBUG()<<"window hidden"<<std::endl;
 					break;
 				case SDL_WINDOWEVENT_RESTORED:
 					//Pause = 0;
 					SDL_LockAudioDevice(1);
 					SDL_PauseAudioDevice(1, 0);
 					SDL_UnlockAudioDevice(1);
-					std::cout<<"window restored"<<std::endl;
+					VNG_DEBUG()<<"window restored"<<std::endl;
 					break;
 				case SDL_WINDOWEVENT_FOCUS_LOST:
 					//Pause = 1;
 					SDL_LockAudioDevice(1);
 					SDL_PauseAudioDevice(1, 1);
 					SDL_UnlockAudioDevice(1);
-					std::cout<<"window focus lost"<<std::endl;
+					VNG_DEBUG()<<"window focus lost"<<std::endl;
 					break;
 				case SDL_WINDOWEVENT_FOCUS_GAINED:
 					//Pause = 0;
 					SDL_LockAudioDevice(1);
 					SDL_PauseAudioDevice(1, 0);
 					SDL_UnlockAudioDevice(1);
-					std::cout<<"window focus gained"<<std::endl;
+					VNG_DEBUG()<<"window focus gained"<<std::endl;
 					break;
 			}
 			break;
@@ -581,7 +586,7 @@ void xtClearMessageQueue(void)
 {
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
-		//std::cout<<"event "<<event.type<<std::endl;
+		//VNG_DEBUG()<<"event "<<event.type<<std::endl;
 		if(XRec.CheckMessage(event.type)) {
 			xtDispatchMessage(&event);
 //			if(!xtDispatchMessage(&event))
@@ -620,10 +625,10 @@ void xtRegisterSysMsgFnc(void (*fPtr)(SDL_Event*),int id)
 
 void win32_break(char* error,char* msg)
 {
-	std::cout<<"--------------------------------\n";
-	std::cout<<error<<"\n";
-	std::cout<<msg<<"\n";
-	std::cout<<"--------------------------------\n";
+	VNG_DEBUG()<<"--------------------------------\n";
+	VNG_DEBUG()<<error<<"\n";
+	VNG_DEBUG()<<msg<<"\n";
+	VNG_DEBUG()<<"--------------------------------\n";
 }
 
 void* xtGet_hInstance(void)

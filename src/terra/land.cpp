@@ -673,7 +673,7 @@ void pixSet(int x,int y,int delta,int surf)
 //Отрисовка следа от колёс!!!
 void pixSetR(int x,int y,int delta,int surf)
 {
-//std::cout<<"pixSetR"<<std::endl;
+//VNG_DEBUG()<<"pixSetR"<<std::endl;
 	if(!delta) return;
 
 	uchar** lt = vMap -> lineT;
@@ -795,7 +795,7 @@ void pixSetR(int x,int y,int delta,int surf)
 
 void pixDownSet(int x,int y,int delta,int surf)
 {
-// std::cout<<"pixDownSet"<<std::endl;
+// VNG_DEBUG()<<"pixDownSet"<<std::endl;
 
 	uchar** lt = vMap -> lineT;
 	uchar* pa = lt[y];
@@ -907,7 +907,7 @@ void pixDownSet(int x,int y,int delta,int surf)
 
 void regSet(int x0,int y0,int x1,int y1,int dry,int surf)
 {
-//std::cout<<"regSet"<<std::endl;
+//VNG_DEBUG()<<"regSet"<<std::endl;
 
 	int i;
 	uchar** lt = vMap -> lineT;
@@ -1003,7 +1003,7 @@ void regSet(int x0,int y0,int x1,int y1,int dry,int surf)
 //Рендринг, в основную картинку поверхности.
 void LINE_render(int y)
 {
-//std::cout<<" LINE_render "<<y<<std::endl;
+//VNG_DEBUG()<<" LINE_render "<<y<<std::endl;
 	uchar* pa,*pc,*pf,*pa0,*pc0,*pf0;
 	uchar type,lxVal,rxVal;
 
@@ -1021,7 +1021,7 @@ void LINE_render(int y)
 				*(pc - 1) = *pc = palCLR[type][256 + ((lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)) >> 1)];
 			else
 				*(pc - 1) = *pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
-			//std::cout<<(int)*(pa)<<" ";
+			//VNG_DEBUG()<<(int)*(pa)<<" ";
 			}
 		else {
 			type = (*pf & TERRAIN_MASK) >> TERRAIN_OFFSET;
@@ -1032,7 +1032,7 @@ void LINE_render(int y)
 			else
 				*pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
 			
-			//std::cout<<(int)*pc<<" ";
+			//VNG_DEBUG()<<(int)*pc<<" ";
 			lxVal = *pa;
 			x++; pa++; pc++; pf++;
 
@@ -1044,6 +1044,6 @@ void LINE_render(int y)
 				*pc = palCLR[type][256 + lightCLR[type][255 - (lxVal - rxVal)] - ((255 - *pa) >> H_CORRECTION)];
 			}
 		
-		//std::cout<<std::endl;
+		//VNG_DEBUG()<<std::endl;
 		}
 }

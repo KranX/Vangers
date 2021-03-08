@@ -628,7 +628,7 @@ int aciScreenKeyObject::KeyTrap(int code)
 	
 	aciScreenKey* p = (aciScreenKey*)codes -> fPtr;
 	while(p){
-		//std::cout<<"aciScreenKeyObject::KeyTrap "<<p->code<<" "<<code<<std::endl;
+		//VNG_DEBUG()<<"aciScreenKeyObject::KeyTrap "<<p->code<<" "<<code<<std::endl;
 		if(p -> code == code)
 			return 1;
 		p = (aciScreenKey*)p -> next;
@@ -852,7 +852,7 @@ void aciScreenDispatcher::KeyTrap(int code, SDL_Event *event)
 
 void aciScreen::KeyTrap(int code)
 {
-	//std::cout<<"aciScreen::KeyTrap"<<std::endl;
+	//VNG_DEBUG()<<"aciScreen::KeyTrap"<<std::endl;
 	int x,y,mouse = 0;
 	aciScreenEvent* ev;
 	aciScreenObject* p;
@@ -876,7 +876,7 @@ void aciScreen::KeyTrap(int code)
 			ev = (aciScreenEvent*)p -> events -> fPtr;
 			while(ev){
 				if(!(ev -> flags & ACS_EVENT_ACTIVE) && ev -> KeyTrap(code)) {
-					//std::cout<<"Start"<<std::endl;
+					//VNG_DEBUG()<<"Start"<<std::endl;
 					ev -> Start();
 					}
 				ev = (aciScreenEvent*)ev -> next;
@@ -1036,7 +1036,7 @@ void aciScreenDispatcher::FlushEvents(void)
 				acsChangeStrState(ev -> data[0]);
 				break;
 		}
-		//std::cout<<"aciScreenDispatcher::FlushEvents "<<ev->code<<" QuantCode:"<<QuantCode<<std::endl;
+		//VNG_DEBUG()<<"aciScreenDispatcher::FlushEvents "<<ev->code<<" QuantCode:"<<QuantCode<<std::endl;
 	}
 }
 

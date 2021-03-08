@@ -1091,7 +1091,7 @@ void bmlObject::load2mem(unsigned char* ptr,char* fname)
 
 	if(!fname) return;
 
-	//std::cout<<"bmlObject::load2mem "<<fname<<std::endl;
+	//VNG_DEBUG()<<"bmlObject::load2mem "<<fname<<std::endl;
 	XStream fh(fname,XS_IN);
 
 	if(!(flags & BMP_FLAG) && !(flags & BG_FLAG)){
@@ -5410,7 +5410,7 @@ void actIntDispatcher::EventQuant(void)
 
 void actIntDispatcher::change_mode(void)
 {
-	//std::cout<<"actIntDispatcher::change_mode"<<std::endl;
+	//VNG_DEBUG()<<"actIntDispatcher::change_mode"<<std::endl;
 	aButton* b;
 	fncMenu* p;
 	switch(curMode){
@@ -5992,7 +5992,7 @@ int actIntDispatcher::put_item(actintItemData* d)
 	int id = d -> type;
 	invItem* p = get_item(id),*p1;
 	if(!p){
-		std::cout<<"actIntDispatcher::put_item Item data not present... "<<XERR_USER<<" id:"<<id<<std::endl;
+		VNG_DEBUG()<<"actIntDispatcher::put_item Item data not present... "<<XERR_USER<<" id:"<<id<<std::endl;
 	}
 
 	p1 = alloc_item();
@@ -6001,7 +6001,7 @@ int actIntDispatcher::put_item(actintItemData* d)
 	if(!curMatrix -> auto_put_item(p1)){
 		aciSendEvent2itmdsp(ACI_DROP_ITEM,d);
 		free_item(p1);
-		std::cout<<"actIntDispatcher::put_item !curMatrix -> auto_put_item(p1) id:"<<id<<std::endl;
+		VNG_DEBUG()<<"actIntDispatcher::put_item !curMatrix -> auto_put_item(p1) id:"<<id<<std::endl;
 		return 0;
 	}
 	p1 -> item_ptr = d;
@@ -8305,7 +8305,7 @@ void actIntDispatcher::put_in_slot(actintItemData* d)
 	invItem* dvc;
 	invItem* p = (invItem*)d -> actintOwner;
 
-	//std::cout<<"actIntDispatcher::put_in_slot "<<p->fname<<std::endl;
+	//VNG_DEBUG()<<"actIntDispatcher::put_in_slot "<<p->fname<<std::endl;
 	
 	if(flags & AS_INV_MOVE_ITEM && curItem == p){
 		ms_flag = 1;

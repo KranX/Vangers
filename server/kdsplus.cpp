@@ -31,13 +31,13 @@ int xtInitApplication(void) {
 #ifdef _WIN32
 	SetConsoleTitle("Vangers Server ");
 #else
-	std::cout << "\033]0;"
+	VNG_DEBUG() << "\033]0;"
 			  << "Vangers Server "
 			  << "\007";
 #endif
-	std::cout << "Multiplayer VANGERS Server by K-D LAB\nRelease Version " VERSION
+	VNG_DEBUG() << "Multiplayer VANGERS Server by K-D LAB\nRelease Version " VERSION
 				 " (c) 1998 All Rights Reserved\n";
-	std::cout << "Compilation: DATE: " << __DATE__ << " TIME: " << __TIME__ << "\n\n";
+	VNG_DEBUG() << "Compilation: DATE: " << __DATE__ << " TIME: " << __TIME__ << "\n\n";
 
 	// SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	ComlineAnalyze(__internal_argc, __internal_argv);
@@ -45,7 +45,7 @@ int xtInitApplication(void) {
 
 	/* initialize SDL */
 	if (SDL_Init(0) == -1) {
-		std::cout << "SDL_Init: %s\n" << SDL_GetError() << std::endl;
+		VNG_DEBUG() << "SDL_Init: %s\n" << SDL_GetError() << std::endl;
 		exit(1);
 	}
 
@@ -112,23 +112,23 @@ void ComlineAnalyze(int argc, char **argv) {
 					break;
 				case 't':
 					time_to_live = atoi(argv[i] + (j + 2));
-					std::cout << "Time to Live: " << time_to_live << " second\n";
+					VNG_DEBUG() << "Time to Live: " << time_to_live << " second\n";
 					break;
 				case 'i':
 					// TODO: looks like only windows strange function
 					// FreeConsole();
 					break;
 				case 's':
-					std::cout << "Logging ON\n";
+					VNG_DEBUG() << "Logging ON\n";
 					StatLogging = 1;
 					break;
 				case 'l':
-					std::cout << "Empty games will not be removed\n";
+					VNG_DEBUG() << "Empty games will not be removed\n";
 					leave_empty_games = 1;
 					break;
 				case 'h':
 				case '?':
-					std::cout << "Switches: \n"
+					VNG_DEBUG() << "Switches: \n"
 							  << "  /pxxxx  -  main TCP/IP port \n"
 							  << "  /bxxxx  -  UDP broadcast port \n"
 							  << "  /b-     -  supress UDP broadcast \n"

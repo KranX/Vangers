@@ -57,12 +57,12 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 	if(ret != 0) {
 		char error_message[256];
 		av_strerror(ret, error_message, 256);
-		std::cout<<"Couldn't open video file:"<<aviname<<" "<<error_message<<std::endl;
+		VNG_DEBUG()<<"Couldn't open video file:"<<aviname<<" "<<error_message<<std::endl;
 		return 0; // Couldn't open file
 	}
 	// Retrieve stream information
 	if(avformat_find_stream_info(pFormatCtx, NULL) < 0) {
-		std::cout<<"Couldn't find stream information file:"<<aviname<<std::endl;
+		VNG_DEBUG()<<"Couldn't find stream information file:"<<aviname<<std::endl;
 		return 0; // Couldn't find stream information
 	}
 	// Find the first video stream
@@ -77,7 +77,7 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 			break;
 		}
 	if(videoStream==-1) {
-		std::cout<<"Didn't find a video stream file:"<<aviname<<std::endl;
+		VNG_DEBUG()<<"Didn't find a video stream file:"<<aviname<<std::endl;
 		return 0; // Didn't find a video stream
 	}
 
@@ -85,12 +85,12 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 #if AV_CODEC_PAR
 	pCodecCtx=avcodec_alloc_context3(NULL);
 	if (!pCodecCtx) {
-		std::cout<<"Unabled to allocate codec context";
+		VNG_DEBUG()<<"Unabled to allocate codec context";
 		return 0;
 	}
 	ret = avcodec_parameters_to_context(pCodecCtx, pFormatCtx->streams[videoStream]->codecpar);
 	if (ret != 0) {
-		std::cout<<"Couldn't get the codec context"<<std::endl;
+		VNG_DEBUG()<<"Couldn't get the codec context"<<std::endl;
 		return 0;
 	}
 #else
@@ -100,7 +100,7 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 	// Find the decoder for the video stream
 	pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
 	if(pCodec==NULL) {
-		std::cout<<"Unsupported codec! file:"<<aviname<<std::endl;
+		VNG_DEBUG()<<"Unsupported codec! file:"<<aviname<<std::endl;
 		return 0; // Codec not found
 	}
 	// Open codec
@@ -109,7 +109,7 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 #else
 	if(avcodec_open(pCodecCtx, pCodec)<0) {
 #endif
-		std::cout<<"Could not open codec file:"<<aviname<<std::endl;
+		VNG_DEBUG()<<"Could not open codec file:"<<aviname<<std::endl;
 		return 0; // Could not open codec
 	}
 
@@ -154,17 +154,17 @@ void AVIFile::draw(void) {
 				while (true) {
 					int ret = avcodec_send_packet(pCodecCtx, &packet);
 					if (ret != 0 && ret != AVERROR(EAGAIN)) {
-						std::cout<<"Can't send packet"<<std::endl;
+						VNG_DEBUG()<<"Can't send packet"<<std::endl;
 						return;
 					}
 					ret = avcodec_receive_frame(pCodecCtx, pFrame);
 					if (ret == 0 || ret == AVERROR_EOF) {
 						frameFinished = 1;
 					} else if (ret == AVERROR(EAGAIN)) {
-						std::cout<<"Can't receive the frame, try it again"<<std::endl;
+						VNG_DEBUG()<<"Can't receive the frame, try it again"<<std::endl;
 						continue;
 					} else {
-						std::cout<<"Can't receive the frame"<<std::endl;
+						VNG_DEBUG()<<"Can't receive the frame"<<std::endl;
 						return;
 					}
 					break;
@@ -191,19 +191,19 @@ void AVIFile::draw(void) {
 				// Open video file
 				int ret = avformat_open_input(&pFormatCtx, filename.c_str(), NULL, NULL);
 				if(ret != 0) {
-					std::cout<<"Couldn't open video file"<<std::endl;
+					VNG_DEBUG()<<"Couldn't open video file"<<std::endl;
 					return; // Couldn't open file
 				}
 				// Get a pointer to the codec context for the video stream
 #if AV_CODEC_PAR
 				pCodecCtx=avcodec_alloc_context3(NULL);
 				if (!pCodecCtx) {
-					std::cout<<"Unabled to allocate codec context";
+					VNG_DEBUG()<<"Unabled to allocate codec context";
 					return;
 				}
 				ret = avcodec_parameters_to_context(pCodecCtx, pFormatCtx->streams[videoStream]->codecpar);
 				if (ret != 0) {
-					std::cout<<"Couldn't get the codec context"<<std::endl;
+					VNG_DEBUG()<<"Couldn't get the codec context"<<std::endl;
 					return;
 				}
 #else
@@ -212,7 +212,7 @@ void AVIFile::draw(void) {
 				// Find the decoder for the video stream
 				pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
 				if(pCodec==NULL) {
-					std::cout<<"Unsupported codec!"<<std::endl;
+					VNG_DEBUG()<<"Unsupported codec!"<<std::endl;
 					return; // Codec not found
 				}
 				// Open codec
@@ -221,7 +221,7 @@ void AVIFile::draw(void) {
 #else
 				if(avcodec_open(pCodecCtx, pCodec)<0) {
 #endif
-					std::cout<<"Could not open codec"<<std::endl;
+					VNG_DEBUG()<<"Could not open codec"<<std::endl;
 					return; // Could not open codec
 				}
 				draw();

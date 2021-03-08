@@ -40,7 +40,7 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 //Наклон изображения
 int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize)
 {
-	// std::cout<<"PerpSlopTurn Turn:"<<Turn<<" Slop:"<<Slop<<" H:"<<H<<" cx:"<<cx<<" cy:"<<cy<<" xc:"<<xc<<" yc:"<<yc<<" XDstSize:"<<XDstSize<<" YDstSize:"<<YDstSize<<std::endl;
+	// VNG_DEBUG()<<"PerpSlopTurn Turn:"<<Turn<<" Slop:"<<Slop<<" H:"<<H<<" cx:"<<cx<<" cy:"<<cy<<" xc:"<<xc<<" yc:"<<yc<<" XDstSize:"<<XDstSize<<" YDstSize:"<<YDstSize<<std::endl;
 	ParaMapSkipFactor =PerpScreenSkipFactor = PerpMapSkipFactor = SlopeQualityFactor;
 
 	static int initialisation = 1;

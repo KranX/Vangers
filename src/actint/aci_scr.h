@@ -29,7 +29,7 @@ struct aciScreenResource : XListElement
 	virtual void free(void){ };
 
 	virtual void change_coords(int dx,int dy) { 
-		std::cout<<"aciScreenResource::change_coords(dx="<<dx<<", dy="<<dy<<")"<<std::endl;
+		VNG_DEBUG()<<"aciScreenResource::change_coords(dx="<<dx<<", dy="<<dy<<")"<<std::endl;
 	};
 
 	virtual void redraw(int x,int y,int frame,int mode) {};

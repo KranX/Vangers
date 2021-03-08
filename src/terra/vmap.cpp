@@ -144,7 +144,7 @@ char* GetTargetName(const char* name)
 {
 	static int first = 1;
 	static char namebuf[256];
-	//std::cout<<"name:"<<name<<" mapFName:"<<mapFName<<std::endl;
+	//VNG_DEBUG()<<"name:"<<name<<" mapFName:"<<mapFName<<std::endl;
 	if(!name) { 
 		first = 1;
 		return NULL; 
@@ -241,8 +241,8 @@ void YSetup(void)
 	if(FloodLvl)
 		delete FloodLvl;
 	FloodLvl = new int[PART_MAX];
-	//std::cout<<"Map size x:"<<map_size_x<<" y:"<<map_size_y<<std::endl;
-	//std::cout<<"YSetup - V_POWER:"<<V_POWER<<" V_SIZE/map_size_y:"<<V_SIZE<<" map_size_x:"<<map_size_x<<std::endl;
+	//VNG_DEBUG()<<"Map size x:"<<map_size_x<<" y:"<<map_size_y<<std::endl;
+	//VNG_DEBUG()<<"YSetup - V_POWER:"<<V_POWER<<" V_SIZE/map_size_y:"<<V_SIZE<<" map_size_x:"<<map_size_x<<std::endl;
 
 #ifdef _SURMAP_
 	worldPrepare();
@@ -393,7 +393,7 @@ void vrtMap::release(void)
 void vrtMap::init(void)
 {
 	UI_OR_GAME=0;
-	//std::cout<<"vrtMap::init "<<"V_SIZE:"<<V_SIZE<<std::endl;
+	//VNG_DEBUG()<<"vrtMap::init "<<"V_SIZE:"<<V_SIZE<<std::endl;
 	memset(lineT = new uchar*[V_SIZE],0,V_SIZE*sizeof(uchar*));
 	memset(lineTcolor = new uchar*[V_SIZE],0,V_SIZE*sizeof(uchar*));
 	memset(SkipLineTable = new uchar*[V_SIZE],0,V_SIZE*sizeof(uchar*));
@@ -637,7 +637,7 @@ void vrtMap::analyzeINI(const char* name)
 
 	XStream ff((char*)iniName,XS_IN);
 	ff.close();
-	std::cout<<"vrtMap::analyzeINI "<<name<<std::endl;
+	VNG_DEBUG()<<"vrtMap::analyzeINI "<<name<<std::endl;
 	dictionary *dict_name = iniparser_load(name);
 	int val = atoi(iniparser_getstring(dict_name,"Global Parameters:Map Power X", NULL));
 	if(val != MAP_POWER_X) ErrH.Abort("Incorrect X-Size");
@@ -742,7 +742,7 @@ void vrtMap::fileLoad(void)
 	}
 
 	if(isCompressed){
-		std::cout<<"Compressed format detected..."<<std::endl;
+		VNG_DEBUG()<<"Compressed format detected..."<<std::endl;
 	}
 }
 
@@ -781,7 +781,7 @@ void vrtMap::load(const char* name,int nWorld)
 	}
 	
 	if(KeepON) {
-		std::cout<<"KeepON"<<std::endl;
+		VNG_DEBUG()<<"KeepON"<<std::endl;
 		memset(keepT = new uchar[V_SIZE],0,V_SIZE);
 		int need = 0;
 		if(kmap.open(kname,XS_IN)) {
@@ -802,7 +802,7 @@ void vrtMap::load(const char* name,int nWorld)
 			kmap.open(kname,XS_OUT|XS_NOSHARING);
 		}
 		kmap.close();
-		//std::cout<<"KMAP2!!!!"<<std::endl;
+		//VNG_DEBUG()<<"KMAP2!!!!"<<std::endl;
 		kmap.open(kname,XS_IN|XS_OUT|XS_NOSHARING/*|XS_NOBUFFERING*/);
 	}
 
@@ -816,7 +816,7 @@ void vrtMap::load(const char* name,int nWorld)
 		inbuf = new uchar[H2_SIZE]; // возможно не нужен
 		st_table = new int[V_SIZE];
 		sz_table = new short[V_SIZE];
-		std::cout<<"Get compressed tables for V_SIZE:"<<V_SIZE<<std::endl;
+		VNG_DEBUG()<<"Get compressed tables for V_SIZE:"<<V_SIZE<<std::endl;
 		for(uint i = 0;i < V_SIZE;i++) {
 			fmap > st_table[i];
 			fmap > sz_table[i];
@@ -931,7 +931,7 @@ void vrtMap::reload(int nWorld)
 			kmap.write(keepT,V_SIZE);
 			}
 		kmap.close();
-		//std::cout<<"KMAP1!!!!"<<std::endl;
+		//VNG_DEBUG()<<"KMAP1!!!!"<<std::endl;
 		kmap.open(kname,XS_IN|XS_OUT|XS_NOSHARING/*|XS_NOBUFFERING*/);
 		}
 #endif
@@ -1030,7 +1030,7 @@ void vrtMap::increase(int up,int down)
 
 
 void vrtMap::dump_terrain() {
-	std::cout<<"Start dump terrain H2_SIZE:"<<H2_SIZE<<" H_SIZE:"<<H_SIZE<<" V_SIZE:"<<V_SIZE<<std::endl;
+	VNG_DEBUG()<<"Start dump terrain H2_SIZE:"<<H2_SIZE<<" H_SIZE:"<<H_SIZE<<" V_SIZE:"<<V_SIZE<<std::endl;
 	unsigned char *line_buffer = new unsigned char[H2_SIZE];
 	unsigned int i = 0, i2 = 0;
 
@@ -1052,7 +1052,7 @@ void vrtMap::dump_terrain() {
 	do {
 			memset(line_buffer, 0, map_size_x);
 			if(KeepON && keepT[i]){
-				std::cout<<"KeepON && keepT[i]"<<std::endl;
+				VNG_DEBUG()<<"KeepON && keepT[i]"<<std::endl;
 				kmap.seek(i*H2_SIZE,XS_BEG);
 				kmap.read(line_buffer, H2_SIZE);
 			} else {
@@ -1097,7 +1097,7 @@ void vrtMap::dump_terrain() {
 Удалил закомментированный код, смотреть в svn.*/
 void vrtMap::accept(int up,int down) 
 {
-	// std::cout<<"vrtMap::accept up:"<<up<<" down:"<<down<<std::endl;
+	// VNG_DEBUG()<<"vrtMap::accept up:"<<up<<" down:"<<down<<std::endl;
 	up = YCYCL(up);
 	down = YCYCL(down);
 
@@ -1210,9 +1210,9 @@ void vrtMap::change(int up,int down)
 	du = getDistY(upLine, up);
 	dd = getDistY(downLine, down);
 	req = MAX(du, -dd);
-	// std::cout<<"vrtMap::change du:"<<du<<" dd:"<<dd<<" req:"<<req<<" up:"<<up<<" down:"<<down<<" upLine:"<<upLine<<" downLine:"<<downLine<<std::endl;
+	// VNG_DEBUG()<<"vrtMap::change du:"<<du<<" dd:"<<dd<<" req:"<<req<<" up:"<<up<<" down:"<<down<<" upLine:"<<upLine<<" downLine:"<<downLine<<std::endl;
 	if (up > down) {
-		std::cout<<"vrtMap::change oposite order for request terrain"<<std::endl;
+		VNG_DEBUG()<<"vrtMap::change oposite order for request terrain"<<std::endl;
 	}
 	if (req > 0 && freeMax <= req + 1) {
 		if (du < 0) {
@@ -1330,12 +1330,12 @@ inline void vrtMap::unuse_c(int i)
 
 void vrtMap::link(int up, int down, int d)
 {
-	//std::cout<<"vrtMap::link"<<std::endl;
+	//VNG_DEBUG()<<"vrtMap::link"<<std::endl;
 	if(MAP_POWER_Y <= 11 && !RAM16) return;
 
 	up = YCYCL(up);
 	down = YCYCL(down);
-	std::cout<<"vrtMap::link up:"<<up<<" down:"<<down<<std::endl;
+	VNG_DEBUG()<<"vrtMap::link up:"<<up<<" down:"<<down<<std::endl;
 
 	uchar* p;
 	int max = YCYCL(down + d), off;
@@ -1343,7 +1343,7 @@ void vrtMap::link(int up, int down, int d)
 	do {
 		if (!lineTcolor[i]) {
 			if(freeMax <= 1) {
-				std::cout<<"We have no more free space in terrain buffer"<<std::endl;
+				VNG_DEBUG()<<"We have no more free space in terrain buffer"<<std::endl;
 				return;
 //				XBuffer buf;
 //				buf < "up: " <= upLine < " down: " <= downLine < " size: " <= getDelta(downLine,upLine);
@@ -1389,15 +1389,15 @@ void vrtMap::link(int up, int down, int d)
 void vrtMap::linkC(int up,int down,int d)
 {
 	if(MAP_POWER_Y <= 11 && !RAM16) {
-		std::cout<<"vrtMap::linkC MAP_POWER_Y <= 11"<<std::endl;
+		VNG_DEBUG()<<"vrtMap::linkC MAP_POWER_Y <= 11"<<std::endl;
 		return;
 	}
 	up = YCYCL(up);
 	down = YCYCL(down);
 	if (up > down) {
-		std::cout<<"vrtMap::change Wrong order for request terrain"<<std::endl;
+		VNG_DEBUG()<<"vrtMap::change Wrong order for request terrain"<<std::endl;
 	}
-	// std::cout<<"vrtMap::linkC up:"<<up<<" down:"<<down<<std::endl;
+	// VNG_DEBUG()<<"vrtMap::linkC up:"<<up<<" down:"<<down<<std::endl;
 
 
 	uchar* p;
@@ -1406,7 +1406,7 @@ void vrtMap::linkC(int up,int down,int d)
 	do {
 		if(!lineTcolor[i]) {
 			if(freeMax <= 1) {
-				std::cout<<"We have no more free space in terrain buffer"<<std::endl;
+				VNG_DEBUG()<<"We have no more free space in terrain buffer"<<std::endl;
 				return;
 //				XBuffer buf;
 //				buf < "up: " <= upLine < " down: " <= downLine < " size: " <= getDelta(downLine,upLine);
@@ -1476,7 +1476,7 @@ void vrtMap::delink(int up, int down)
 	if(MAP_POWER_Y <= 11 && !RAM16) return;
 	up = YCYCL(up);
 	down = YCYCL(down);
-	// std::cout<<"vrtMap::delink up:"<<up<<" down:"<<down<<std::endl;
+	// VNG_DEBUG()<<"vrtMap::delink up:"<<up<<" down:"<<down<<std::endl;
 
 	int max = YCYCL(down + 1);
 	int i = up;
@@ -1611,7 +1611,7 @@ void vrtMap::flush(void)
 
 void vrtMap::screenRender(void)
 {
-	//std::cout<<"vrtMap::screenRender"<<std::endl;
+	//VNG_DEBUG()<<"vrtMap::screenRender"<<std::endl;
 	int max = YCYCL(downLine + 1);
 	int i = upLine;
 	if(MAP_POWER_Y <= 11 && !RAM16) i = max = 0;
@@ -1809,7 +1809,7 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 				XGR_SetPal(old_pal,0,255);
 				debug_view = -3;
 				 }
-// 			std::cout<<"DOUBLE_LEVEL:"<<(unsigned int)DOUBLE_LEVEL<<" OBJSHADOW:"<<(unsigned int)OBJSHADOW<<std::endl;
+// 			VNG_DEBUG()<<"DOUBLE_LEVEL:"<<(unsigned int)DOUBLE_LEVEL<<" OBJSHADOW:"<<(unsigned int)OBJSHADOW<<std::endl;
 			unsigned char* p;
 			for(i = 0;i < ysize;i++){
 				fx = tfx;
@@ -1817,7 +1817,7 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 				data = lt[YCYCL(fy >> 16)];
 				for(j = 0;j < xsize;j++,vp++){
 					p = data + XCYCL(fx >> 16);
-// 					std::cout<<"D:"<<(unsigned int)*vp<<" H_SIZE:"<<H_SIZE<<" *(p + H_SIZE):"<<(unsigned int)*(p + H_SIZE)<<std::endl;
+// 					VNG_DEBUG()<<"D:"<<(unsigned int)*vp<<" H_SIZE:"<<H_SIZE<<" *(p + H_SIZE):"<<(unsigned int)*(p + H_SIZE)<<std::endl;
 					switch(debug_view){
 						case 10:
 							*vp = (*p >> 2);
@@ -1934,7 +1934,7 @@ void calcLineTable(int curr_lenght,int k_vu,int base_step,int up_step)
 
 void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize)
 {
-	// std::cout<<"vrtMap::turning XSrcSize:"<<XSrcSize<<" Turn:"<<Turn<<" cx:"<<cx<<" cy:"<<cy<<" xc:"<<xc<<" yc:"<<yc<<" XDstSize:"<<XDstSize<<" YDstSize:"<<YDstSize<<std::endl;
+	// VNG_DEBUG()<<"vrtMap::turning XSrcSize:"<<XSrcSize<<" Turn:"<<Turn<<" cx:"<<cx<<" cy:"<<cy<<" xc:"<<xc<<" yc:"<<yc<<" XDstSize:"<<XDstSize<<" YDstSize:"<<YDstSize<<std::endl;
 
 
 //#define SLOW_FLOAT_TURNING

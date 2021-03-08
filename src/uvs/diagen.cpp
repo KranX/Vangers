@@ -162,7 +162,7 @@ char* ConvertUTF8(const char* s,int back = 0) {
 			{
 			//NOT IMPLEMENT NOW
 			/*if((unsigned char)s[i]<128 && !get_dual)
-				std::cout<<" "<<(int)s[i];
+				VNG_DEBUG()<<" "<<(int)s[i];
 			if((unsigned char)s[i]>127 || get_dual)
 				{
 				dc.c[i_dual_char]=s[i];
@@ -170,8 +170,8 @@ char* ConvertUTF8(const char* s,int back = 0) {
 					{
 					get_dual=false;
 					i_dual_char=0;
-					std::cout<<" "<<std::dec<<dc.sh;
-					std::cout<<"-"<<std::hex<<(int)dc.c[0]<<(int)dc.c[1];
+					VNG_DEBUG()<<" "<<std::dec<<dc.sh;
+					VNG_DEBUG()<<"-"<<std::hex<<(int)dc.c[0]<<(int)dc.c[1];
 					}
 				else
 					{
@@ -182,9 +182,9 @@ char* ConvertUTF8(const char* s,int back = 0) {
 			buffer[i]=s[i];
 			}
 	else
-		std::cout<<"ERROR:CP866 to UTF8 not implement!!!"<<std::endl;
-	//std::cout<<std::endl;
-	//std::cout<<"A:"<<(unsigned char*)buffer<<std::endl;
+		VNG_DEBUG()<<"ERROR:CP866 to UTF8 not implement!!!"<<std::endl;
+	//VNG_DEBUG()<<std::endl;
+	//VNG_DEBUG()<<"A:"<<(unsigned char*)buffer<<std::endl;
 	return buffer;
 }
 
@@ -362,7 +362,7 @@ void doCommand(void)
 			r -> comingCounter = atoi(Command[3]);
 			}
 		}
-	else std::cout << "\nError: unknown command...\n";
+	else VNG_DEBUG() << "\nError: unknown command...\n";
 }
 
 void console_clear() {
@@ -386,25 +386,25 @@ void showmap(void)
 		for(i = 0;i < sx;i++)
 			switch(map[j*sx + i]){
 				case DG_CELLSTATUS::EMPTY:
-					std::cout << " ";
+					VNG_DEBUG() << " ";
 					break;
 				case DG_CELLSTATUS::DORMANT:
-					std::cout << "D";
+					VNG_DEBUG() << "D";
 					break;
 				case DG_CELLSTATUS::USED:
-					std::cout << "U";
+					VNG_DEBUG() << "U";
 					break;
 				case DG_CELLSTATUS::WAITING:
-					std::cout << "W";
+					VNG_DEBUG() << "W";
 					break;
 				case DG_CELLSTATUS::OPENED:
-					std::cout << "O";
+					VNG_DEBUG() << "O";
 					break;
 				case DG_CELLSTATUS::EXPLODED:
-					std::cout << "E";
+					VNG_DEBUG() << "E";
 					break;
 				}
-			std::cout << "\n";
+			VNG_DEBUG() << "\n";
 		}
 }
 
@@ -421,44 +421,44 @@ void diagenEventHandle(int code)
 			break;
 		case DG_GET_QUERY_LIST:
 			console_clear();
-			std::cout << strLine << strLine << "\n";
+			VNG_DEBUG() << strLine << strLine << "\n";
 			s = dgD -> getQprefix();
-			if(s) std::cout << cp1251_to_utf8(cp866_to_cp1251(s)) << ":\n\n";
+			if(s) VNG_DEBUG() << cp1251_to_utf8(cp866_to_cp1251(s)) << ":\n\n";
 			s = dgD -> findQfirst();
 			while(s){
 //				dgLog(s);
-				std::cout << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
+				VNG_DEBUG() << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
 				s = dgD -> findQnext();
 				}
 			s = dgD -> getQpostfix();
-			if(s) std::cout << "\n" << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
-			std::cout << strLine << strLine << "\n\n";
+			if(s) VNG_DEBUG() << "\n" << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
+			VNG_DEBUG() << strLine << strLine << "\n\n";
 			break;
 		case DG_TEST_QUERY:
 			if(!dgD -> varAtom){
 				console_clear();
-				std::cout << strLine << strLine << "\n";
+				VNG_DEBUG() << strLine << strLine << "\n";
 				s = dgD -> findQfirst();
 				while(s){
-					std::cout << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
+					VNG_DEBUG() << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
 					dgD -> getAnswer(s);
 					s = dgD -> findQnext();
 					}
-				std::cout << strLine << strLine << "\n\n";
+				VNG_DEBUG() << strLine << strLine << "\n\n";
 				}
 			break;
 		case DG_ENTER_COMMAND:
 			console_clear();
 			//TODO stalkerg
 			//inpS.initString();
-			std::cout << "Command:\n";
+			VNG_DEBUG() << "Command:\n";
 			break;
 		case DG_GET_COMMAND:
 			//TODO stalkerg
 			//s = inpS.getString();
 			console_clear();
 			if(s && *s){
-				std::cout << "Accept command (" << s << ")...\n";
+				VNG_DEBUG() << "Accept command (" << s << ")...\n";
 				ParseCommand(s);
 				doCommand();
 				}
@@ -494,8 +494,8 @@ void dgLog(char* string)
 	if(!string) return;
 #ifdef DIAGEN_TEST
 	if(checkStatus) return;
-	std::cout << cp1251_to_utf8(cp866_to_cp1251(string)) << "\n";
-	std::cout << strLine << strLine << "\n\n";
+	VNG_DEBUG() << cp1251_to_utf8(cp866_to_cp1251(string)) << "\n";
+	VNG_DEBUG() << strLine << strLine << "\n\n";
 #endif
 }
 
@@ -503,7 +503,7 @@ inline char* getSubj(char* p,int& m)
 {
 	int len = strlen(p);
 	if(*p != SUBJ_SYMBOL || *(p + len - 1) != SUBJ_SYMBOL_RIGHT) {
-		std::cout<<"dgSyntaxError p:"<<p<<"|"<<m<<std::endl;
+		VNG_DEBUG()<<"dgSyntaxError p:"<<p<<"|"<<m<<std::endl;
 		ErrH.Abort(dgSyntaxError);
 	}
 	*(p + len - 1) = '\0';
@@ -638,7 +638,7 @@ char* detect_text(char *ret) {
 	char* ret2 = ret;
 	if (*ret2) {
 		if (*ret2 == '$' && *(ret2+1) == '(') {
-			std::cout<<"Detect variable in start string."<<std::endl;
+			VNG_DEBUG()<<"Detect variable in start string."<<std::endl;
 			while(*ret2 && *ret2 != ')') { //Ищем конец переменной. Могут быть переполнения. Но мы будем писать аккуратно. :)
 				ret2++;
 			}
@@ -668,7 +668,7 @@ void dgFile::load(char* fname,int _len, bool verbose)
 		ff.close();
 		buf[len] = '\0';
 		handle = 1;
-		if (verbose) std::cout<<"dgFile::load buf:"<<buf<<std::endl;
+		if (verbose) VNG_DEBUG()<<"dgFile::load buf:"<<buf<<std::endl;
 #else
 		external = 1;
 		buf = FBox -> get(fname,len);
@@ -814,7 +814,7 @@ char* dgFile::getElement(int DualElements,int empty_available)
 	if(DualElements == DGF_DUAL) {
 		if (*ret2) {
 			if (*ret2 == '$' && *(ret2+1) == '(') {
-				std::cout<<"Detect variable in start string."<<std::endl;
+				VNG_DEBUG()<<"Detect variable in start string."<<std::endl;
 				while(*ret2 && *ret2 != ')') { //Ищем конец переменной. Могут быть переполнения. Но мы будем писать аккуратно. :)
 					ret2++;
 				}
@@ -1342,7 +1342,7 @@ int dgCell::analyzeACCESS(char* p)
 	do if(!strcasecmp(p,Query[i].name)) break;
 	while(Query[++i].name);
 	if(!Query[i].name)
-		std::cout<<"Unknown query "<<p<<std::endl;
+		VNG_DEBUG()<<"Unknown query "<<p<<std::endl;
 	char* opr,*arg2;
 	int lvalue = 0,rvalue;
 	dgRoom* r;
@@ -1719,7 +1719,7 @@ int dgCell::doCMD(int startup)
 		while(CmdData[++i].name);
 		if(!CmdData[i].name) ErrH.Abort("Unknown CMD",XERR_USER,-1,p);
 #ifdef DIAGEN_TEST
-		if(!checkStatus) std::cout << "   [DOING]: " << CmdData[i].name << "\n";
+		if(!checkStatus) VNG_DEBUG() << "   [DOING]: " << CmdData[i].name << "\n";
 #endif
 		if(checkStatus){
 			if(CmdData[i].id == CMD::ABORT)
@@ -1967,7 +1967,7 @@ void dgRoom::read(dgFile* pf)
 
 void dgRoom::acceptTEXT(void)
 {
-	// std::cout<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
+	// VNG_DEBUG()<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
 	dgFile* dgf = new dgFile(getDGname(roomName,".text"));
 
 	char* p = NULL;
@@ -2001,7 +2001,7 @@ void dgRoom::acceptTEXT(void)
 
 void dgRoom::acceptDIL(void)
 {
-	//std::cout<<"dgRoom::acceptDIL "<<getDGname(roomName,".dil")<<std::endl;
+	//VNG_DEBUG()<<"dgRoom::acceptDIL "<<getDGname(roomName,".dil")<<std::endl;
 	dgFile* dgf = new dgFile(getDGname(roomName,".dil"));
 
 	gridSX = atoi(dgf -> getElement(DGF_NONE));
@@ -2029,7 +2029,7 @@ void dgRoom::acceptQUERY(void)
 	static dgAtom* adim[64];
 	static int ldim[64];
 	
-	//std::cout<<"dgRoom::acceptQUERY "<<getDGname(roomName,".query")<<std::endl;
+	//VNG_DEBUG()<<"dgRoom::acceptQUERY "<<getDGname(roomName,".query")<<std::endl;
 	dgFile* pf = new dgFile(getDGname(roomName,".query"));
 
 	prefixQ = pf -> getElement(DGF_DUAL,1);
@@ -2208,11 +2208,11 @@ void dgRoom::locateActiveMolecule(void)
 				currentM = seekM(grid[cIndex] -> Name);
 				currentM -> reset();
 #ifdef DIAGEN_TEST
-				if(!checkStatus) std::cout << "\n   Molecule [" << currentM -> name << "] involved (mood " << currentM -> mood << "):" << "\n";
+				if(!checkStatus) VNG_DEBUG() << "\n   Molecule [" << currentM -> name << "] involved (mood " << currentM -> mood << "):" << "\n";
 #endif	
 				if(grid[cIndex] -> doCMD()) explodeState(cIndex%gridSX,cIndex/gridSX);
 #ifdef DIAGEN_TEST
-				if(!checkStatus) std::cout << "\n";
+				if(!checkStatus) VNG_DEBUG() << "\n";
 #endif	
 				status[cIndex] = repeatable ? DG_CELLSTATUS::HALFLIFE : DG_CELLSTATUS::EXPLODED;
 				return;
@@ -2372,7 +2372,7 @@ void dgRoom::test(void)
 	if(i != DG_EXTERNS::MAX) ErrH.Abort("MAX comparing failed!");
 
 #ifdef STARTUP_TESTING
-	std::cout << "*** " << cp1251_to_utf8(roomName) << " ***\n";
+	VNG_DEBUG() << "*** " << cp1251_to_utf8(roomName) << " ***\n";
 	dgMolecule* m;
 	owner -> currentR = this;
 	for(i = 0;i < gridSX*gridSY;i++)
@@ -2424,7 +2424,7 @@ char* DiagenDispatcher::getQdead(void)
 
 void DiagenDispatcher::init(void)
 {
-	std::cout<<"DiagenDispatcher::init "<<getDGname("room",".lst")<<std::endl;
+	VNG_DEBUG()<<"DiagenDispatcher::init "<<getDGname("room",".lst")<<std::endl;
 	FBox = new FileBox;
 #ifndef DIAGEN_TEST
 	FBox -> load();
@@ -2504,13 +2504,13 @@ void DiagenDispatcher::startSession(const char* rname)
 	dgRoom* r = seekR(rname);
 #ifdef DIAGEN_TEST
 	if(!r){
-		std::cout << "\nError: room not found...\n\n";
+		VNG_DEBUG() << "\nError: room not found...\n\n";
 		return;
 		}
-	std::cout << "\n" << strLine << " SESSION IN " << cp1251_to_utf8(r -> roomName) << " started" << strLine << "\n";
+	VNG_DEBUG() << "\n" << strLine << " SESSION IN " << cp1251_to_utf8(r -> roomName) << " started" << strLine << "\n";
 	checkSession(rname);
-	if(dgAbortStatus) std::cout << "This session will be aborted!\n";
-	std::cout << "\n";
+	if(dgAbortStatus) VNG_DEBUG() << "This session will be aborted!\n";
+	VNG_DEBUG() << "\n";
 #endif	
 	(currentR = r) -> startSession();
 	if(!isLoading){
@@ -2537,7 +2537,7 @@ void DiagenDispatcher::endSession(void)
 {
 	if(currentR){
 #ifdef DIAGEN_TEST
-		if(!checkStatus) std::cout << "\n" << strLine << " SESSION IN " << cp1251_to_utf8(currentR -> roomName) << " finished" << strLine << "\n\n";
+		if(!checkStatus) VNG_DEBUG() << "\n" << strLine << " SESSION IN " << cp1251_to_utf8(currentR -> roomName) << " finished" << strLine << "\n\n";
 #endif
 		currentR -> endSession();
 		if(!checkStatus) lastR = currentR;
@@ -2630,14 +2630,14 @@ dgRoom* DiagenDispatcher::seekR(const char* _name,int onlyfirstchar)
 void DiagenDispatcher::getStatus(void)
 {
 	console_clear();
-	std::cout << "\nStatus:\n";
+	VNG_DEBUG() << "\nStatus:\n";
 	if(currentR){
-		std::cout << "\troom: " << currentR -> roomName << "\n";
-		std::cout << "\tperson: " << currentR -> counsillorNames[lang() == RUSSIAN ? 1 : 0] << "\n";
-		if(dgLevel) std::cout << "\tlevel: " << *dgLevel << "\n";
+		VNG_DEBUG() << "\troom: " << currentR -> roomName << "\n";
+		VNG_DEBUG() << "\tperson: " << currentR -> counsillorNames[lang() == RUSSIAN ? 1 : 0] << "\n";
+		if(dgLevel) VNG_DEBUG() << "\tlevel: " << *dgLevel << "\n";
 		}
 	else
-		std::cout << "\tin fly...\n";
+		VNG_DEBUG() << "\tin fly...\n";
 }
 #endif
 
@@ -2664,26 +2664,26 @@ char* DiagenDispatcher::getAnswer(char* subj)
 	dgQuery* q = currentR -> seekQvisible(subject);
 
 #ifdef DIAGEN_TEST
-	std::cout << "Subject: " << cp866_to_cp1251(cp1251_to_utf8(subj));
+	VNG_DEBUG() << "Subject: " << cp866_to_cp1251(cp1251_to_utf8(subj));
 	free(subj);
 #endif
 	if(q){
 		dgMood = q -> mood;
 		int n = q -> getIndex();
 #ifdef DIAGEN_TEST
-		std::cout << " (" << n << ")\n";
+		VNG_DEBUG() << " (" << n << ")\n";
 #endif
 		char* str = q -> answers[n] -> data;
 		involveQ(q -> answers[n]);
 
 		str = Convert(str);
 #ifdef DIAGEN_TEST
-		std::cout << str << "\n";
+		VNG_DEBUG() << str << "\n";
 #endif
 		return str;
 		}
 #ifdef DIAGEN_TEST
-		std::cout << "\n" << (q ? "Not available...\n" : "Not found...\n");
+		VNG_DEBUG() << "\n" << (q ? "Not available...\n" : "Not found...\n");
 #endif
 	return NULL;
 }
@@ -2716,7 +2716,7 @@ void DiagenDispatcher::save(XStream& ff)
 
 void DiagenDispatcher::load(XStream& ff)
 {
-	std::cout<<"DiagenDispatcher::load"<<std::endl;
+	VNG_DEBUG()<<"DiagenDispatcher::load"<<std::endl;
 /*#ifdef DIAGEN_TEST
 	ff.open("test.sav",XS_IN);
 //	ff.seek(68734,XS_BEG);
@@ -2874,7 +2874,7 @@ void FileBox::save(void)
 		ff.write(data[i],lens[i]);
 		}
 	ff.close();
-	std::cout << "Diagen.text saved..."<<std::endl;
+	VNG_DEBUG() << "Diagen.text saved..."<<std::endl;
 	ret = 1;
 }
 #endif

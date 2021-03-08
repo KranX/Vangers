@@ -144,7 +144,7 @@ int LightPoint::quant(void) {
 	//E=32;
 	_R = E*(1<<16)/(R*R);
 
-	//std::cout<<"LightPoint::quant type:"<<type<<" R:"<<R<<" _R:"<<_R<<" E:"<<E<<" energy:"<<energy<<std::endl;
+	//VNG_DEBUG()<<"LightPoint::quant type:"<<type<<" R:"<<R<<" _R:"<<_R<<" E:"<<E<<" energy:"<<energy<<std::endl;
 	BackD.put(this);
 	load_color_line();
 
@@ -229,10 +229,10 @@ int LightPoint::quant(void) {
 							ee = (ee*_R)>>16;
 							first_shift = (ee << 8) + llct[_x];
 							if (light_table_pal_size <= first_shift || first_shift < 0) {
-								std::cout<<"LightPoint::quant wrong light_table_pal position"<<std::endl;
+								VNG_DEBUG()<<"LightPoint::quant wrong light_table_pal position"<<std::endl;
 								break;
 							}
-							//std::cout<<"rr*rr:"<<rr*rr<<"_R:"<<_R<<" ee:"<<ee<<"A:"<<(ee << 8) + llct[_x]<<" llct[_x]:"<<(long)llct[_x]<<" _x:"<<_x<<" pal:"<<&light_table_pal<<std::endl;
+							//VNG_DEBUG()<<"rr*rr:"<<rr*rr<<"_R:"<<_R<<" ee:"<<ee<<"A:"<<(ee << 8) + llct[_x]<<" llct[_x]:"<<(long)llct[_x]<<" _x:"<<_x<<" pal:"<<&light_table_pal<<std::endl;
 							llct[_x] = light_table_pal[ first_shift ];
 							llct[_x-1] = light_table_pal[ (ee << 8) + llct[_x-1] ];
 						}
@@ -248,7 +248,7 @@ int LightPoint::quant(void) {
 						if ( rr >= 0 ){ 
 							ee=rr*rr;
 							ee = (ee*_R)>>16;
-							//std::cout<<"B:"<<(ee << 8) + llct[_x]<<" llct[_x]:"<<(long)llct[_x]<<" _x:"<<_x<<" pal:"<<&light_table_pal<<std::endl;
+							//VNG_DEBUG()<<"B:"<<(ee << 8) + llct[_x]<<" llct[_x]:"<<(long)llct[_x]<<" _x:"<<_x<<" pal:"<<&light_table_pal<<std::endl;
 							llct1[_x] = light_table_pal[ (ee << 8) + llct1[_x] ];
 							llct1[_x-1] = light_table_pal[ (ee << 8) + llct1[_x-1] ];
 						}
@@ -331,7 +331,7 @@ int LightPoint::quant(void) {
 }
 
 void PrepareLight( void ) {
-	std::cout<<"PrepareLight"<<std::endl;
+	VNG_DEBUG()<<"PrepareLight"<<std::endl;
 	int i, j, k;
 	//int h2 = LIGHT_HEIGHT*LIGHT_HEIGHT;
 
@@ -368,7 +368,7 @@ void LightPoint::BackRestore(void)
 void LightPoint::CreateLight( int _r,int _e, int _t)
 {
 	Status = 0;
-	//std::cout<<"LightPoint::CreateLight _r:"<<_r<<" _e:"<<_e<<" _t:"<<_t<<" light_table_pal:"<<(long long)light_table_pal<<std::endl;
+	//VNG_DEBUG()<<"LightPoint::CreateLight _r:"<<_r<<" _e:"<<_e<<" _t:"<<_t<<" light_table_pal:"<<(long long)light_table_pal<<std::endl;
 	//Activate Function	
 
 	if ( _r > maxR ) _r = maxR;
@@ -397,7 +397,7 @@ void LightPoint::Quant(void)
 
 void LightPoint::Init(StorageType* s )
 {
-// 	std::cout<<"LightPoint::Init"<<std::endl;
+// 	VNG_DEBUG()<<"LightPoint::Init"<<std::endl;
 	GeneralObject::Init(s);
 };
 

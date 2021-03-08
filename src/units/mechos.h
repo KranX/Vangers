@@ -240,7 +240,7 @@ struct ActionUnit : Object
 
 	virtual void Quant(void);
 	virtual void InitEnvironment(void);
-	virtual void keyhandler(int key){std::cout<<"virtual ActionUnit::keyhandler key:"<<key<<std::endl;};
+	virtual void keyhandler(int key){VNG_DEBUG()<<"virtual ActionUnit::keyhandler key:"<<key<<std::endl;};
 
 	virtual void Hide2Show(void);
 	virtual void DeleteHandler(void);

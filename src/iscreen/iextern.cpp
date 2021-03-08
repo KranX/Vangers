@@ -1143,7 +1143,7 @@ void iProcessControlsScreen(const char* name)
 
 void iInitControlObjects(void)
 {
-	//std::cout<<"iInitControlObjects"<<std::endl;
+	//VNG_DEBUG()<<"iInitControlObjects"<<std::endl;
 	int i,j,key,index;
 	const char* str;
 	iScreenObject* obj;
@@ -1184,7 +1184,7 @@ void iInitControlObjects(void)
 
 void iDeleteControl(int vkey,int id)
 {
-	//std::cout<<"iDeleteControl vkey:"<<vkey<<" id:"<<id<<std::endl;
+	//VNG_DEBUG()<<"iDeleteControl vkey:"<<vkey<<" id:"<<id<<std::endl;
 	int i,j,key,index;
 	iScreenObject* obj;
 	for(i = 0; i < iKEY_MAX_ID; i ++){
@@ -2420,7 +2420,7 @@ const char* get_joystick_hat_name(int key) {
 
 const char* iGetKeyNameText(int vkey, Language lang, bool scan)
 {
-	//std::cout<<"iGetKeyNameText:"<<vkey<<" lang:"<<lang<<std::endl;
+	//VNG_DEBUG()<<"iGetKeyNameText:"<<vkey<<" lang:"<<lang<<std::endl;
 	/*char* ret = NULL;
 	if(vkey >= 0 && vkey < 256){
 		ret = (lang) ? iKeyNamesText2[vkey] : iKeyNamesText1[vkey];

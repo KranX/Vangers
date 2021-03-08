@@ -2441,7 +2441,7 @@ void iHandleExtEvent(int code,int data)
 			iPrepareResults();
 			break;
 		//case iFULLSCREEN:
-		//	std::cout<<"iFULLSCREEN"<<std::endl;
+		//	VNG_DEBUG()<<"iFULLSCREEN"<<std::endl;
 		//	break;
 
 	}
@@ -2716,14 +2716,14 @@ void iInitControlKey(int id,int num)
 	if (iScreenLastInput == SDL_SCANCODE_ESCAPE) {
 		return;
 	}
-	//std::cout<<"iInitControlKey id:"<<id<<" num:"<<num<<std::endl;
+	//VNG_DEBUG()<<"iInitControlKey id:"<<id<<" num:"<<num<<std::endl;
 	iSetControlCode(id,iScreenLastInput,num);
 	iDeleteControl(iScreenLastInput,id * iKEY_OBJECT_SIZE + num);
 }
 
 void iDeleteControlKey(int id,int num)
 {
-	//std::cout<<"iDeleteControlKey"<<std::endl;
+	//VNG_DEBUG()<<"iDeleteControlKey"<<std::endl;
 	int index;
 	iScreenObject* obj;
 	iResetControlCode(id,num);

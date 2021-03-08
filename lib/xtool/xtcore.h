@@ -49,9 +49,7 @@ struct XRuntimeObject
 
 	XRuntimeObject* next;
 
-	virtual void Init(int pID) {
-		std::cout<<"Init pure virtual XRuntimeObject pID:"<<pID<<std::endl;
-	};
+	virtual void Init(int pID);
 	virtual void Finit(void) {
 		};
 	virtual int Quant(void){

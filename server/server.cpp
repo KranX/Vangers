@@ -33,17 +33,17 @@ XStream fout("lst", XS_OUT);
 
 #ifdef _DEBUG
 #	define DOUT(str) \
-		{ std::cout << str << "                                       \n"; }
+		{ VNG_DEBUG() << str << "                                       \n"; }
 #	define DOUT1(str, code) \
-		{ std::cout << str << ", code: " << code << "                                       \n"; }
+		{ VNG_DEBUG() << str << ", code: " << code << "                                       \n"; }
 #else
 #	define DOUT(str)
 #	define DOUT1(str, code)
 #endif
 #define MOUT(str) \
-	{ std::cout << str << "                                       \n"; }
+	{ VNG_DEBUG() << str << "                                       \n"; }
 #define MOUT1(str, code) \
-	{ std::cout << str << ", code: " << code << "                                       \n"; }
+	{ VNG_DEBUG() << str << ", code: " << code << "                                       \n"; }
 
 const char *MP_GAMES_NAMES[NUMBER_MP_GAMES] = {"VAN_WAR", "MECHOSOMA", "PASSEMBLOSS"};
 
@@ -1674,7 +1674,7 @@ Server::Server(int main_port, int broadcast_port, int time_to_live) {
 		ErrH.Abort(err.GetBuf());
 		// SERVER_ERROR("Unable to create Server",main_port);
 	}
-	std::cout << "Main TCP/IP port: " << main_port << std::endl;
+	VNG_DEBUG() << "Main TCP/IP port: " << main_port << std::endl;
 
 	load_rating_list("Rating.lst");
 
@@ -1772,7 +1772,7 @@ void Server::consoleReport(int players) {
 	p = players;
 	c = clients.size();
 
-	std::cout << "Games: " << games.size() << " "
+	VNG_DEBUG() << "Games: " << games.size() << " "
 			  << "Players: " << players << " "
 			  << "Clients: " << clients.size() << " "
 			  << "\n";
@@ -1837,24 +1837,24 @@ void Server::analyse_statistics(Game *g) {
 		playing_time_max[type] = playing_time;
 	playing_time_sum[type] += playing_time;
 
-	std::cout << "\nGames' Statistics (maximum/average):\n";
+	VNG_DEBUG() << "\nGames' Statistics (maximum/average):\n";
 	for (int i = 0; i < NUMBER_MP_GAMES; i++) {
 		if (!n_games[i])
 			continue;
-		std::cout << (char *)MP_GAMES_NAMES[i] << ": " << n_games[i]
+		VNG_DEBUG() << (char *)MP_GAMES_NAMES[i] << ": " << n_games[i]
 				  << "; Players: " << n_players_max[i] << "/"
 				  << round(double(n_players_sum[i]) / n_games[i])
 				  << "; Time of game: " << playing_time_max[i] << "/"
 				  << round(double(playing_time_sum[i]) / n_games[i]) << " min.\n";
 	}
 
-	std::cout << "Last game: ";
+	VNG_DEBUG() << "Last game: ";
 	time_t aclock;
 	time(&aclock);
 	struct tm *newtime = localtime(&aclock);
 	char *strtime = asctime(newtime);
 	strtime[strlen(strtime) - 1] = 0;
-	std::cout << (char *)MP_GAMES_NAMES[type] << "; " << strtime << "; Players: " << n_players
+	VNG_DEBUG() << (char *)MP_GAMES_NAMES[type] << "; " << strtime << "; Players: " << n_players
 			  << "; Time of game: " << playing_time << " min.\n\n";
 	if (StatLogging) {
 		stat_log < strtime < "; " < (char *)MP_GAMES_NAMES[type] < "; Players: " <= n_players <
@@ -1905,22 +1905,22 @@ void Server::get_games_list(OutputEventBuffer &out_buffer, int client_version) {
 }
 
 void Server::report() {
-	std::cout << "\n\nReport's time: " << SECONDS() << "\n";
+	VNG_DEBUG() << "\n\nReport's time: " << SECONDS() << "\n";
 	Player *p;
 	World *w;
 	Game *s = games.first();
 	while (s) {
-		std::cout << "Game " << (unsigned char)(s->ID) << ": ";
+		VNG_DEBUG() << "Game " << (unsigned char)(s->ID) << ": ";
 		if (!(s->players.size() | s->worlds.size())) {
-			std::cout << "Empty\n\n";
+			VNG_DEBUG() << "Empty\n\n";
 			s = s->next;
 			continue;
 		}
-		std::cout << "\nPlayers: " << s->players.size() << "\tWorlds: " << s->worlds.size()
+		VNG_DEBUG() << "\nPlayers: " << s->players.size() << "\tWorlds: " << s->worlds.size()
 				  << "\tglobal objects: " << s->global_objects.size() << "\n";
 		p = s->players.first();
 		while (p) {
-			std::cout << "Player: " << p->ID << "\tsocket: " << p->socket()
+			VNG_DEBUG() << "Player: " << p->ID << "\tsocket: " << p->socket()
 					  << "\tworld: " << (p->world ? p->world->ID : 0)
 					  << "\tinventory: " << p->inventory.size() << "\t " << p->name << "\n";
 			p = p->next;
@@ -1928,10 +1928,10 @@ void Server::report() {
 
 		w = s->worlds.first();
 		while (w) {
-			std::cout << "World: " << w->ID << "\ttotal objects: " << w->number_of_objects << "\n";
+			VNG_DEBUG() << "World: " << w->ID << "\ttotal objects: " << w->number_of_objects << "\n";
 			w = w->next;
 		}
-		std::cout << "\n";
+		VNG_DEBUG() << "\n";
 		s = s->next;
 	}
 }

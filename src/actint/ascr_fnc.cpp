@@ -1894,7 +1894,7 @@ int aciReInitItem(actintItemData* p)
 	int id;
 	invItem* it = aScrDisp -> get_item_ptr(p -> type);
 	if(!it) {
-		std::cout<<"aciReInitItem !it p:"<<p<<std::endl;
+		VNG_DEBUG()<<"aciReInitItem !it p:"<<p<<std::endl;
 		return 0;
 	}
 	it -> item_ptr = p;
@@ -1913,7 +1913,7 @@ int aciReInitItemXY(actintItemData* p,int x,int y)
 	int id;
 	invItem* it = aScrDisp->get_item_ptr_xy(p->type, x, y);
 	if(!it) {
-		std::cout<<"aciReInitItemXY !it p:"<<p<<std::endl;
+		VNG_DEBUG()<<"aciReInitItemXY !it p:"<<p<<std::endl;
 		return 0;
 	}
 	it -> item_ptr = p;
@@ -2926,7 +2926,7 @@ void aciBuyItem(void)
 				if(aScrDisp -> curMatrix){
 					if(GGamerMechos){
 						el = GMechos;
-						//std::cout<<"GGamerMechos -> link(el)"<<std::endl;
+						//VNG_DEBUG()<<"GGamerMechos -> link(el)"<<std::endl;
 						GGamerMechos -> link(el);
 						GMechos = (uvsActInt*)el;
 					}
@@ -2939,7 +2939,7 @@ void aciBuyItem(void)
 				else {
 					aciNextShopItem();
 				}
-				//std::cout<<"aciBuyItem GGamerMechos = u"<<std::endl;
+				//VNG_DEBUG()<<"aciBuyItem GGamerMechos = u"<<std::endl;
 				GGamerMechos = u;
 
 				cr = aciGetCurCredits();
@@ -3554,7 +3554,7 @@ void aciInitPanel(InfoPanel* p,unsigned char* str)
 			len = aStrLen(dest_str,ACI_PHRASE_FONT,p->hSpace);
 		if(len < p->SizeX){
 			if(p -> items -> Size >= p -> MaxStr){
-				std::cout<<"Dialog phrase too long..."<<std::endl;
+				VNG_DEBUG()<<"Dialog phrase too long..."<<std::endl;
 				quit_log = 1;
 			} else {
 				p->add_item((char*)dest_str,-1,col);
@@ -4429,9 +4429,9 @@ void aciPackFile(char* fname)
 	int stat = compress((Bytef*)(p1+2+4),(uLongf*)&(sz1),(Bytef*)p,sz);
 	sz1+=2+4;
 	switch(stat){
-		//case Z_OK: std::cout<<"Compress ok."<<std::endl; break;
-		case Z_MEM_ERROR: std::cout<<"not enough memory."<<std::endl; break;
-		case Z_BUF_ERROR: std::cout<<"not enough room in the output buffer."<<std::endl; break;
+		//case Z_OK: VNG_DEBUG()<<"Compress ok."<<std::endl; break;
+		case Z_MEM_ERROR: VNG_DEBUG()<<"not enough memory."<<std::endl; break;
+		case Z_BUF_ERROR: VNG_DEBUG()<<"not enough room in the output buffer."<<std::endl; break;
 	};
 
 	fh.open(fname,XS_OUT);
@@ -4460,13 +4460,13 @@ void aciUnPackFile(char* fname)
 	//ZIP_expand(p1,sz1,p,sz);
 	/* ZLIB realization (stalkerg)*/
 	if(*(short*)(p)) { //if label = 0 not compress
-		std::cout<<"aciUnPackFile DeCompress "<<fname<<" file."<<std::endl;
+		VNG_DEBUG()<<"aciUnPackFile DeCompress "<<fname<<" file."<<std::endl;
 		int stat = uncompress((Bytef*)p1,(uLongf*)&sz1,(Bytef*)(p+2+4),sz-2-4);
 		switch(stat){
-			//case Z_OK: std::cout<<"DeCompress ok."<<std::endl; break;
-			case Z_MEM_ERROR: std::cout<<"DeCompress not enough memory."<<std::endl; break;
-			case Z_BUF_ERROR: std::cout<<"DeCompress not enough room in the output buffer."<<std::endl; break;
-			case Z_DATA_ERROR: std::cout<<"DeCompress error data."<<std::endl; break;
+			//case Z_OK: VNG_DEBUG()<<"DeCompress ok."<<std::endl; break;
+			case Z_MEM_ERROR: VNG_DEBUG()<<"DeCompress not enough memory."<<std::endl; break;
+			case Z_BUF_ERROR: VNG_DEBUG()<<"DeCompress not enough room in the output buffer."<<std::endl; break;
+			case Z_DATA_ERROR: VNG_DEBUG()<<"DeCompress error data."<<std::endl; break;
 		};
 	} else {
 		memcpy(p1, p + 2 + 4,(unsigned)(sz - 2 - 4));
@@ -5233,7 +5233,7 @@ void acsPrepareSlotNameInput(int id,int slot_num)
 void createDirIfNotExist(const char* dirName) {
 	struct stat info;
 	if (stat(dirName, &info) != 0) {
-		std::cout<<"Directory "<<dirName<<" not found. Created it..."<< std::endl;
+		VNG_DEBUG()<<"Directory "<<dirName<<" not found. Created it..."<< std::endl;
 		const int dirr_err = mkdir(dirName, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 		if (dirr_err == -1) {
@@ -5250,7 +5250,7 @@ void createDirIfNotExist(const fs::path& dirName) {
 		return;
 	}
 
-	std::cout<<"Directory "<<dirName<<" not found. Created it..."<<std::endl;
+	VNG_DEBUG()<<"Directory "<<dirName<<" not found. Created it..."<<std::endl;
 	fs::create_directory(dirName);
 }
 #endif
@@ -5354,7 +5354,7 @@ void acsLoadData(void)
 #ifdef _ACI_PACK_SAVES_
 		acsDecompressData(XBuf.address());
 #endif
-		std::cout<<"acsLoadData"<<std::endl;
+		VNG_DEBUG()<<"acsLoadData"<<std::endl;
 		fh.open(XBuf.address(),XS_IN);
 		fh > len;
 		time_len = (len >> 16) & 0xFF;
@@ -5384,7 +5384,7 @@ void acsLoadData(void)
 				for(i = 0; i < aScrDisp->curMatrix->SizeY; i++){
 					for(j = 0; j < aScrDisp->curMatrix->SizeX; j++){
 						invMatrixCell *cell = aScrDisp->curMatrix->matrix[index];
-						/*std::cout<<"GGamer type:"<<iter_gamer->type
+						/*VNG_DEBUG()<<"GGamer type:"<<iter_gamer->type
 							<<" x:"<<iter_gamer->pos_x
 							<<" y:"<<iter_gamer->pos_y
 							<<" i:"<<i
@@ -5393,7 +5393,7 @@ void acsLoadData(void)
 							<<" mcell type:"<<cell->type
 							<<" index:"<<index<<std::endl;*/
 						if(cell->flags & AS_BUSY_CELL && cell->item) {
-							/*std::cout<<"item_type:"<<cell->item->ID
+							/*VNG_DEBUG()<<"item_type:"<<cell->item->ID
 								<<" MX:"<<cell->item->MatrixX
 								<<" MY:"<<cell->item->MatrixY<<std::endl;*/
 							if (cell->item->ID == iter_gamer->type &&
@@ -5407,7 +5407,7 @@ void acsLoadData(void)
 						index++;
 					}
 				}
-				std::cout<<"Can't find item GGamer type:"<<iter_gamer->type
+				VNG_DEBUG()<<"Can't find item GGamer type:"<<iter_gamer->type
 						<<" pos_x:"<<iter_gamer->pos_x
 						<<" pos_y:"<<iter_gamer->pos_y
 						<<" and we make it"<<std::endl;
@@ -5426,7 +5426,7 @@ void acsLoadData(void)
 					while (el2) {
 						uvsActInt *item = dynamic_cast<uvsActInt*> (el2);
 						if (item->pos_x == iter_gamer->pos_x && item->pos_y == iter_gamer->pos_y && item->type == iter_gamer->type) {
-							std::cout<<"We find duplicate item GGamer type:"<<iter_gamer->type
+							VNG_DEBUG()<<"We find duplicate item GGamer type:"<<iter_gamer->type
 								<<" pos_x:"<<iter_gamer->pos_x
 								<<" pos_y:"<<iter_gamer->pos_y
 								<<std::endl;
@@ -5541,32 +5541,32 @@ void aciChange2Raffa(void)
 
 	aScrDisp -> curMatrix = NULL;
 	if(GGamerMechos){
-		//std::cout<<"aciChange2Raffa if(GGamerMechos) "<<GGamerMechos<<std::endl;
+		//VNG_DEBUG()<<"aciChange2Raffa if(GGamerMechos) "<<GGamerMechos<<std::endl;
 		m = aScrDisp -> get_imatrix(GGamerMechos -> type);
 		if(!m -> uvsDataPtr) {
 			m -> uvsDataPtr = GGamerMechos;
 		}
-		//std::cout<<"aciChange2Raffa el = GMechos "<<GMechos<<std::endl;
+		//VNG_DEBUG()<<"aciChange2Raffa el = GMechos "<<GMechos<<std::endl;
 		el = GMechos;
 		GGamerMechos -> link(el);
 		GMechos = (uvsActInt*)el;
-		//std::cout<<"aciChange2Raffa GMechos = (uvsActInt*)el "<<GMechos<<std::endl;
+		//VNG_DEBUG()<<"aciChange2Raffa GMechos = (uvsActInt*)el "<<GMechos<<std::endl;
 	}
 	GGamerMechos = NULL;
 
 	m = (invMatrix*)aScrDisp -> i_matrixList -> last;
 	while(m){
-		//std::cout<<"aciChange2Raffa invMatrix type: "<<m->type<<std::endl;
+		//VNG_DEBUG()<<"aciChange2Raffa invMatrix type: "<<m->type<<std::endl;
 		if(m -> flags & IM_RAFFA){
 			if(m -> uvsDataPtr){
 				u = (uvsActInt*)m -> uvsDataPtr;
-				//std::cout<<"aciChange2Raffa GMechos "<<GMechos<<std::endl;
+				//VNG_DEBUG()<<"aciChange2Raffa GMechos "<<GMechos<<std::endl;
 				u -> delink(GMechos);
 				u->next = NULL;
 				u->prev = NULL;
 				if(((iListElement*)m) == iShopItem)
 					aciNextShopItem();
-				//std::cout<<"aciChange2Raffa GGamerMechos = u "<<u<<std::endl;
+				//VNG_DEBUG()<<"aciChange2Raffa GGamerMechos = u "<<u<<std::endl;
 				GGamerMechos = u;
 
 				u1 = aciGetMechos(m -> type);
@@ -5594,7 +5594,7 @@ void aciChange2Raffa(void)
 	if(((iListElement*)m) == iShopItem)
 		aciNextShopItem();
 
-	//std::cout<<"aciChange2Raffa2 GGamerMechos = u"<<std::endl;
+	//VNG_DEBUG()<<"aciChange2Raffa2 GGamerMechos = u"<<std::endl;
 	GGamerMechos = u;
 
 	u1 = aciGetMechos(m -> type);
@@ -5677,7 +5677,7 @@ void aciFreeUVSList(uvsActInt* p)
 	ptr = p;
 	while(ptr){
 		ptr1 = (uvsActInt*)ptr -> next;
-		//std::cout<<"aciFreeUVSList "<<ptr<<" type:"<<ptr->type<<std::endl;
+		//VNG_DEBUG()<<"aciFreeUVSList "<<ptr<<" type:"<<ptr->type<<std::endl;
 		delete ptr;
 		ptr = ptr1;
 	}
@@ -5693,7 +5693,7 @@ void aciLoadUVSList(XStream& fh,uvsActInt** p,int list_type)
 	for(i = 0; i < list_size; i ++){
 		ptr = new uvsActInt;
 		ptr -> load(fh,list_type);
-		//std::cout<<"aciLoadUVSList new "<<ptr<<" type:"<<ptr->type<<" price:"<<ptr->price<<" param1:"<<ptr->param1<<" param2:"<<ptr->param2<<std::endl;
+		//VNG_DEBUG()<<"aciLoadUVSList new "<<ptr<<" type:"<<ptr->type<<" price:"<<ptr->price<<" param1:"<<ptr->param1<<" param2:"<<ptr->param2<<std::endl;
 		ptr -> link(el);
 	}
 	*p = (uvsActInt*)el;
@@ -5841,17 +5841,17 @@ void aciResizeItem(double delta)
 
 void aciFreeUVS(void)
 {
-	//std::cout<<"aciFreeUVSList(GItem)"<<std::endl;
+	//VNG_DEBUG()<<"aciFreeUVSList(GItem)"<<std::endl;
 	if(GItem) aciFreeUVSList(GItem);
-	//std::cout<<"aciFreeUVSList(GMechos)"<<std::endl;
+	//VNG_DEBUG()<<"aciFreeUVSList(GMechos)"<<std::endl;
 	if(GMechos) aciFreeUVSList(GMechos);
-	//std::cout<<"aciFreeUVSList(GGamer)"<<std::endl;
+	//VNG_DEBUG()<<"aciFreeUVSList(GGamer)"<<std::endl;
 	if(GGamer) aciFreeUVSList(GGamer);
-	//std::cout<<"aciFreeUVSList(GGamerMechos)"<<std::endl;
+	//VNG_DEBUG()<<"aciFreeUVSList(GGamerMechos)"<<std::endl;
 	if(GGamerMechos) aciFreeUVSList(GGamerMechos);
-	//std::cout<<"aciFreeUVSList(GCharItem)"<<std::endl;
+	//VNG_DEBUG()<<"aciFreeUVSList(GCharItem)"<<std::endl;
 	if(GCharItem) aciFreeUVSList(GCharItem);
-	//std::cout<<"aciFreeUVSList(GTreasureItem)"<<std::endl;
+	//VNG_DEBUG()<<"aciFreeUVSList(GTreasureItem)"<<std::endl;
 	if(GTreasureItem) aciFreeUVSList(GTreasureItem);
 
 	GItem = NULL;
@@ -6655,7 +6655,7 @@ void acsCompressData(char* p)
 	fh.read(src_buf,src_sz);
 	fh.close();
 
-	//std::cout<<"compress src_sz:"<<src_sz<<std::endl;
+	//VNG_DEBUG()<<"compress src_sz:"<<src_sz<<std::endl;
 	//dest_sz = ZIP_compress(dest_buf,src_sz,src_buf,src_sz);
 	/* ZLIB realization (stalkerg)*/
 	dest_buf[0] = (char)(8 & 0xFF); //8 it is DEFLATE method
@@ -6665,11 +6665,11 @@ void acsCompressData(char* p)
 	int stat = compress((Bytef*)(dest_buf+2+4),(uLongf*)&(dest_sz),(Bytef*)src_buf,src_sz);
 	dest_sz+=2+4;
 	switch(stat){
-		//case Z_OK: std::cout<<"Compress ok."<<std::endl; break;
-		case Z_MEM_ERROR: std::cout<<"not enough memory."<<std::endl; break;
-		case Z_BUF_ERROR: std::cout<<"not enough room in the output buffer."<<std::endl; break;
+		//case Z_OK: VNG_DEBUG()<<"Compress ok."<<std::endl; break;
+		case Z_MEM_ERROR: VNG_DEBUG()<<"not enough memory."<<std::endl; break;
+		case Z_BUF_ERROR: VNG_DEBUG()<<"not enough room in the output buffer."<<std::endl; break;
 	};
-	//std::cout<<"compress dest_sz:"<<dest_sz<<std::endl;
+	//VNG_DEBUG()<<"compress dest_sz:"<<dest_sz<<std::endl;
 	flags |= ACI_SAVE_COMPRESSED;
 	data = len | ((time_len | (flags << 8)) << 16);
 
@@ -6720,13 +6720,13 @@ void acsDecompressData(char* p)
 	//ZIP_expand(dest_buf,dest_sz,src_buf,src_sz);
 	/* ZLIB realisation (stalkerg)*/
 	if(*(short*)(src_buf)) { //if label = 0 not compress
-		//std::cout<<"acsDecompressData DeCompress "<<p<<" file."<<std::endl;
+		//VNG_DEBUG()<<"acsDecompressData DeCompress "<<p<<" file."<<std::endl;
 		int stat = uncompress((Bytef*)dest_buf,(uLongf*)&dest_sz,(Bytef*)(src_buf+2+4),src_sz-2-4);
 		switch(stat){
-			//case Z_OK: std::cout<<"DeCompress ok."<<std::endl; break;
-			case Z_MEM_ERROR: std::cout<<"not enough memory."<<std::endl; break;
-			case Z_BUF_ERROR: std::cout<<"not enough room in the output buffer."<<std::endl; break;
-			case Z_DATA_ERROR: std::cout<<"error data."<<std::endl; break;
+			//case Z_OK: VNG_DEBUG()<<"DeCompress ok."<<std::endl; break;
+			case Z_MEM_ERROR: VNG_DEBUG()<<"not enough memory."<<std::endl; break;
+			case Z_BUF_ERROR: VNG_DEBUG()<<"not enough room in the output buffer."<<std::endl; break;
+			case Z_DATA_ERROR: VNG_DEBUG()<<"error data."<<std::endl; break;
 		};
 	} else {
 		memcpy(dest_buf,src_buf + 2 + 4,(unsigned)(src_sz - 2 - 4));
@@ -7178,13 +7178,13 @@ char* aciLoadPackedFile(XStream& fh,int& out_sz) //Text decompress
 	//ZIP_expand(ptr,out_sz,p,sz);
 	/* ZLIB realisation (stalkerg)*/
 	if(*(short*)(p)) { //if label = 0 not compress
-		//std::cout<<"aciLoadPackedFile DeCompress "<<fh.file_name<<" file."<<std::endl;
+		//VNG_DEBUG()<<"aciLoadPackedFile DeCompress "<<fh.file_name<<" file."<<std::endl;
 		int stat = uncompress((Bytef*)ptr,(uLongf*)&long_out_sz,(Bytef*)(p+2+4),sz-2-4);
 		switch(stat){
-			//case Z_OK: std::cout<<"DeCompress ok."<<std::endl; break;
-			case Z_MEM_ERROR: std::cout<<"DeCompress not enough memory."<<std::endl; break;
-			case Z_BUF_ERROR: std::cout<<"DeCompress not enough room in the output buffer."<<std::endl; break;
-			case Z_DATA_ERROR: std::cout<<"DeCompress error data."<<std::endl; break;
+			//case Z_OK: VNG_DEBUG()<<"DeCompress ok."<<std::endl; break;
+			case Z_MEM_ERROR: VNG_DEBUG()<<"DeCompress not enough memory."<<std::endl; break;
+			case Z_BUF_ERROR: VNG_DEBUG()<<"DeCompress not enough room in the output buffer."<<std::endl; break;
+			case Z_DATA_ERROR: VNG_DEBUG()<<"DeCompress error data."<<std::endl; break;
 		};
 	} else {
 		memcpy(ptr, p + 2 + 4,(unsigned)(sz - 2 - 4));

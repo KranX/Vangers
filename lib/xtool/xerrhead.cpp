@@ -2,8 +2,9 @@
 #include "port.h"
 #include <stdlib.h>
 
+#include <algorithm>
+
 #include <SDL.h>
-#include <iostream>
 
 XErrorHandler ErrH;
 
@@ -71,4 +72,19 @@ void XErrorHandler::Log(const char* message)
 void XErrorHandler::Exit(void)
 {
 	exit(0);
+}
+
+void XErrorHandler::logMessage(MessageSeverity messageSeverity, const std::string &context, const std::string &message)
+{
+    std::stringstream stream;
+    std::string line(message);
+
+    line.erase(std::find_if(line.rbegin(), line.rend(), [](char symbol) // NOTE trim EoLs and spaces at end of the line
+    {
+        return !(std::iscntrl(symbol) || std::isspace(symbol));
+    }).base(), line.end());
+
+    stream << "[" << to_string(messageSeverity) << "] (" << context << ") " << line;
+
+    Log(stream.str().c_str());
 }

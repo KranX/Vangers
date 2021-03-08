@@ -31,6 +31,12 @@
 
 struct XErrorHandler
 {
+	enum class MessageSeverity
+	{
+        Unknown = XERR_NONE,
+		Debug = XERR_DEBUG,
+	};
+
 	std::string log_name;
 
 	std::fstream log_file;
@@ -39,18 +45,66 @@ struct XErrorHandler
 
 	void	 Abort(const char* message, int code = XERR_USER, int val = -1, const char* subj = NULL);
 	void	 Log(const char* message);
+	void logMessage(MessageSeverity messageSeverity, const std::string &context, const std::string &message);
 	void	 Exit(void);
 	void	 RTC(const char *file,unsigned int line, const char *expr);
+
+    static std::string to_string(XErrorHandler::MessageSeverity severity)
+    {
+        switch (severity)
+        {
+        case XErrorHandler::MessageSeverity::Debug:
+            return "DEBUG";
+        default:
+            return "UNKNOWN";
+        }
+    }
 };
 
 extern XErrorHandler ErrH;
 
 // Use this macro for after any operation for errors diagnostic
 #define XAssert(expr) ErrH.RTC(__FILE__,__LINE__,expr)
-#endif /* _ERRH_H */
 
+struct ErrorHandlerStreamWrapper
+{
+    const std::string context;
+    const XErrorHandler::MessageSeverity messageSeverity;
+
+    std::stringstream stream;
+
+    ErrorHandlerStreamWrapper(XErrorHandler::MessageSeverity messageSeverity, const std::string &context)
+        : messageSeverity(messageSeverity)
+        , context(context)
+    {
+
+    }
+
+    ~ErrorHandlerStreamWrapper()
+    {
+        ::ErrH.logMessage(messageSeverity, context, stream.str());
+    }
+
+    ErrorHandlerStreamWrapper &operator<<(std::ostream&(*value)(std::ostream&)) // NOTE std::endl workaround
+    {
+        value(stream);
+
+        return *this;
+    }
+
+    template <typename T>
+    ErrorHandlerStreamWrapper &operator<<(T value)
+    {
+        stream << value;
+
+        return *this;
+    }
+};
+
+#define VNG_DEBUG_CTX(context) ErrorHandlerStreamWrapper(XErrorHandler::MessageSeverity::Debug, context)
+#define VNG_DEBUG() VNG_DEBUG_CTX(std::string(__FUNCTION__) + "@" + std::to_string(__LINE__))
 
 //#if (!defined(_FINAL_VERSION_) || defined(_DEBUG)) && !defined(NASSERT)
 //#endif
 
-
+#endif /* _ERRH_H */

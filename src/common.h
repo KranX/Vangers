@@ -66,7 +66,7 @@ inline unsigned RND(unsigned m)
 	RNDVAL &= 0x7FFFFFFF;
 
 	if(!m) return 0;
-	//std::cout<<"m:"<<m<<" r:"<<RNDVAL%m<<std::endl;
+	//VNG_DEBUG()<<"m:"<<m<<" r:"<<RNDVAL%m<<std::endl;
 	return RNDVAL%m;
 }
 
@@ -81,7 +81,7 @@ inline unsigned realRND(unsigned m)
 	realRNDVAL &= 0x7FFFFFFF;
 
 	if(!m) return 0;
-	std::cout<<"m:"<<m<<" r:"<<realRNDVAL%m<<std::endl;
+	VNG_DEBUG()<<"m:"<<m<<" r:"<<realRNDVAL%m<<std::endl;
 	return realRNDVAL%m;
 }*/
 inline unsigned realRND(unsigned m) {

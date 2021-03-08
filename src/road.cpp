@@ -373,20 +373,20 @@ int xtInitApplication(void) {
     char *tmp;
 
 #ifdef _DEMO_
-    std::cout<<"\""<<XGraphWndID<<": One For The Road\" Cover Demo by K-D Lab (SDL Version)\n";
+    VNG_DEBUG()<<"\""<<XGraphWndID<<": One For The Road\" Cover Demo by K-D Lab (SDL Version)\n";
 #else
     if (lang() == GERMAN) {
-        std::cout << "\"" << XGraphWndID << "\" by K-D Lab (SDL Version)\n";
-        std::cout << "Release (DE)\n";
+        VNG_DEBUG() << "\"" << XGraphWndID << "\" by K-D Lab (SDL Version)\n";
+        VNG_DEBUG() << "Release (DE)\n";
     } else if (lang() == RUSSIAN) {
-        std::cout << "\"" << XGraphWndID << "\" by K-D Lab (SDL Version)\n";
-        std::cout << "Release (RUS)\n";
+        VNG_DEBUG() << "\"" << XGraphWndID << "\" by K-D Lab (SDL Version)\n";
+        VNG_DEBUG() << "Release (RUS)\n";
     } else {
-        std::cout << "\"" << XGraphWndID << ": One For The Road\" by K-D Lab (SDL Version)\n";
-        std::cout << "Release (ENG)\n";
+        VNG_DEBUG() << "\"" << XGraphWndID << ": One For The Road\" by K-D Lab (SDL Version)\n";
+        VNG_DEBUG() << "Release (ENG)\n";
     }
 #ifdef BETA_TESTING
-    std::cout<<nVER<<"\n";
+    VNG_DEBUG()<<nVER<<"\n";
 #endif
 #endif
 
@@ -527,10 +527,10 @@ int xtInitApplication(void) {
     SetSoundVolume(256);
 
     if (XJoystickInit()) {
-        std::cout << "Joystick found\n";
+        VNG_DEBUG() << "Joystick found\n";
         JoystickMode = JOYSTICK_Joystick;
     } else {
-        std::cout << "Joystick not found" << std::endl;
+        VNG_DEBUG() << "Joystick not found" << std::endl;
     }
 
     //XSocketInit();
@@ -640,8 +640,8 @@ int xtInitApplication(void) {
 	
 	// Init Steam CEG
 	if ( !Steamworks_InitCEGLibrary() )	{
-		std::cout<<"Steamworks_InitCEGLibrary() failed"<<std::endl;
-		std::cout<<"Fatal Error, Steam must be running to play this game (InitDrmLibrary() failed)."<<std::endl;
+		VNG_DEBUG()<<"Steamworks_InitCEGLibrary() failed"<<std::endl;
+		VNG_DEBUG()<<"Fatal Error, Steam must be running to play this game (InitDrmLibrary() failed)."<<std::endl;
 		SDL_Quit();
 	}
 	
@@ -653,8 +653,8 @@ int xtInitApplication(void) {
 	// injected by steam when it launches games, but by calling this you cause it to always load,
 	// even when not launched via steam.
 	if ( !SteamAPI_Init() )	{
-		std::cout<<"SteamAPI_Init() failed"<<std::endl;
-		std::cout<<"Fatal Error, Steam must be running to play this game (SteamAPI_Init() failed)."<<std::endl;
+		VNG_DEBUG()<<"SteamAPI_Init() failed"<<std::endl;
+		VNG_DEBUG()<<"Fatal Error, Steam must be running to play this game (SteamAPI_Init() failed)."<<std::endl;
 		SDL_Quit();
 	}
 	
@@ -669,9 +669,9 @@ int xtInitApplication(void) {
 	SteamUtils()->SetOverlayNotificationPosition( k_EPositionTopRight );
 #endif
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
-	std::cout<<"Set locale. ";
+	VNG_DEBUG()<<"Set locale. ";
 	char* res = setlocale(LC_NUMERIC, "POSIX");
-	std::cout<<"Result:"<<res<<std::endl;
+	VNG_DEBUG()<<"Result:"<<res<<std::endl;
 #endif
 	if(SkipIntro)
 		return RTO_MAIN_MENU_ID;
@@ -1055,7 +1055,7 @@ _MEM_STATISTIC_("AFRET LOADING RTO2 FINIT -> ");
 
 int FirstEscaveRTO::Quant(void)
 {
-//std::cout<<"FirstEscaveRTO::Quant"<<std::endl;
+//VNG_DEBUG()<<"FirstEscaveRTO::Quant"<<std::endl;
 
 #ifdef ISCREEN
 	int code;
@@ -1294,7 +1294,7 @@ extern int WorldLightParam[WORLD_MAX][3];
 extern int CurrentWorldLightParam;
 
 void PalettePrepare(void) {
-	std::cout<<"PalettePrepare"<<std::endl;
+	VNG_DEBUG()<<"PalettePrepare"<<std::endl;
 //	palbufC = new unsigned char[768];
 //	palbufA = new unsigned char[768];
 //	palbufOrg = new unsigned char[768];
@@ -1486,7 +1486,7 @@ void ComlineAnalyze(int argc,char** argv)
 					case 'S':
 					case 's':
 						if(!strcasecmp(argv[i] + 1,"SKIPINTRO")) {
-						    std::cout<<"Skip intro\n";
+						    VNG_DEBUG()<<"Skip intro\n";
 							SkipIntro = 1;
                         }
 						break;
@@ -1549,14 +1549,14 @@ void creat_poster() {
 			
 			dstrect.x = 256*iter2;
 			dstrect.y = 256*iter;
-			std::cout<<"dstrect.x:"<<dstrect.x<<" dstrect.y:"<<dstrect.y<<std::endl;
+			VNG_DEBUG()<<"dstrect.x:"<<dstrect.x<<" dstrect.y:"<<dstrect.y<<std::endl;
 			
 			camera_quant(256*iter2, 256*iter, 0, 0);
 			/*actIntQuant();
 			uvsQuant();
 			BackD.restore();
 			MLquant();*/
-			//std::cout<<"TurnSecX:"<<TurnSecX<<" ViewX:"<<ViewX<<" ViewY:"<<ViewY<<" curGMap->xc:"<<curGMap->xc<<" curGMap->yc:"<<curGMap->yc
+			//VNG_DEBUG()<<"TurnSecX:"<<TurnSecX<<" ViewX:"<<ViewX<<" ViewY:"<<ViewY<<" curGMap->xc:"<<curGMap->xc<<" curGMap->yc:"<<curGMap->yc
 			//<<" curGMap->xside:"<<curGMap->xside<<" curGMap->yside:"<<curGMap->yside<<std::endl;
 			vMap -> scaling(TurnSecX,ViewX,ViewY,curGMap->xc,curGMap->yc,curGMap->xside,curGMap->yside);
 			
@@ -1586,7 +1586,7 @@ void KeyCenter(SDL_Event *key)
 			disconnect_from_server();
 			ErrH.Exit();
 #endif
-			std::cout<<"road.KeyCenter:"<<key<<std::endl;
+			VNG_DEBUG()<<"road.KeyCenter:"<<key<<std::endl;
 			if(!Pause) {
 				Pause = 1;
 			}
@@ -1671,7 +1671,7 @@ void KeyCenter(SDL_Event *key)
 
 iGameMap::iGameMap(int _x,int _y,int _xside,int _yside)
 {
-	std::cout<<"iGameMap::iGameMap"<<std::endl;
+	VNG_DEBUG()<<"iGameMap::iGameMap"<<std::endl;
 	xside = _xside;
 	yside = _yside;
 	xsize = 2*xside/* + 1*/;
@@ -1711,7 +1711,7 @@ iGameMap::iGameMap(int _x,int _y,int _xside,int _yside)
 
 void iGameMap::change(int Dx,int Dy,int mode,int xcenter,int ycenter)
 {
-	std::cout<<"iGameMap::change"<<std::endl;
+	VNG_DEBUG()<<"iGameMap::change"<<std::endl;
 	int xsize_old = xsize;
 	if(mode) {
 		if(xside + Dx > XGR_MAXX/2 - 2 || xside + Dx < 100) {
@@ -1770,7 +1770,7 @@ void iGameMap::change(int Dx,int Dy,int mode,int xcenter,int ycenter)
 
 void iGameMap::reset(void)
 {
-	std::cout<<"iGameMap::reset"<<std::endl;
+	VNG_DEBUG()<<"iGameMap::reset"<<std::endl;
 //	ViewX = PlayerInitData.x;
 //	ViewY = PlayerInitData.y;
 
@@ -1816,7 +1816,7 @@ void calc_view_factors()
 		speed_correction_factor = 1;
 	}
 	//speed_correction_factor = 1;
-	//std::cout<<"DT::"<<SDL_GetTicks() - prev_frame_time<<std::endl;
+	//VNG_DEBUG()<<"DT::"<<SDL_GetTicks() - prev_frame_time<<std::endl;
 
 	prev_frame_time = SDL_GetTicks();
 
@@ -1912,7 +1912,7 @@ void iGameMap::draw(int self)
 			//try {
 				GameD.Quant();
 			/*} catch (...) {
-				std::cout<<"ERROR:Some GameD.Quant is error."<<std::endl;
+				VNG_DEBUG()<<"ERROR:Some GameD.Quant is error."<<std::endl;
 			}*/
 			
 		}
@@ -2069,10 +2069,10 @@ void preCALC(void)
 
 void PrintError(char* error,char* msg)
 {
-	std::cout<<"--------------------------------\n";
-	std::cout<<error<<"\n";
-	std::cout<<msg<<"\n";
-	std::cout<<"--------------------------------\n";
+	VNG_DEBUG()<<"--------------------------------\n";
+	VNG_DEBUG()<<error<<"\n";
+	VNG_DEBUG()<<msg<<"\n";
+	VNG_DEBUG()<<"--------------------------------\n";
 }
 
 /*
@@ -2485,7 +2485,7 @@ void shotFlush(void)
 		filestr.close();
 		buf = buf < "v";
 	}
-	std::cout<<"ScreenShot name:"<<out_buf.GetBuf()<<std::endl;
+	VNG_DEBUG()<<"ScreenShot name:"<<out_buf.GetBuf()<<std::endl;
 	SDL_SaveBMP(XGR_Obj.XGR_ScreenSurface, out_buf.GetBuf());
 	curShotNumber++;
 }
@@ -2756,6 +2756,6 @@ void ShowImageKeyPress(SDL_Event *k)
 
 
 bool SetAchievement(std::string name) {
-	std::cout<<"Set achievement:"<<name<<std::endl;
+	VNG_DEBUG()<<"Set achievement:"<<name<<std::endl;
 	return true;
 }

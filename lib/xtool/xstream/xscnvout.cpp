@@ -52,9 +52,9 @@ XStream& XStream::operator>= (int& var)
 	char* p = _ConvertBuffer;
 	p[ret] = ' ';
 	var = strtol(p,&p,0);
-	//std::cout<<"seek - p:"<<(long long)p<<" _ConvertBuffer:"<<(long)_ConvertBuffer<<" ret:"<<var<<" result:"<<p - _ConvertBuffer + 1 - ret<<std::endl;
+	//VNG_DEBUG()<<"seek - p:"<<(long long)p<<" _ConvertBuffer:"<<(long)_ConvertBuffer<<" ret:"<<var<<" result:"<<p - _ConvertBuffer + 1 - ret<<std::endl;
 	seek(p - _ConvertBuffer + 1 - ret,XS_CUR);
-	//std::cout<<"Pos:"<<ppos<<std::endl;
+	//VNG_DEBUG()<<"Pos:"<<ppos<<std::endl;
 	return *this;
 }
 

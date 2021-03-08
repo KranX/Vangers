@@ -3767,12 +3767,12 @@ void GeneralObject::NetEvent(int type,int id,int creator,int time,int x,int y,in
 
 int NetInit(ServerFindChain* p)
 {
-	std::cout<<"NetInit - [start]"<<std::endl;
+	VNG_DEBUG()<<"NetInit - [start]"<<std::endl;
 	int i;
 	if(!connect_to_server(p))
 		return 0;
 
-	std::cout<<"NetInit - [1]"<<std::endl;
+	VNG_DEBUG()<<"NetInit - [1]"<<std::endl;
 	NetworkON = 1;
 	
 	LocalStationID = GlobalStationID << 26;
@@ -3782,18 +3782,18 @@ int NetInit(ServerFindChain* p)
 	LocalNetEnvironment  =  0;
 
 	set_time_by_server(10);
-	std::cout<<"NetInit - [1.5]"<<std::endl;
+	VNG_DEBUG()<<"NetInit - [1.5]"<<std::endl;
 	my_player_body.clear();
 	
 	NETWORK_OUT_STREAM.register_name((char*)(aciGetPlayerName() ? aciGetPlayerName() : "Finger"), (char*)(aciGetPlayerPassword() ? aciGetPlayerPassword() : "Password"));
-	std::cout<<"NetInit - [2]"<<std::endl;
+	VNG_DEBUG()<<"NetInit - [2]"<<std::endl;
 	//NETWORK_OUT_STREAM.register_name(aciGetPlayerName() ? aciGetPlayerName() : "Finger", "Password");
 	my_player_body.color = aciGetPlayerColor();
-	std::cout<<"NetInit - [3]"<<std::endl;
+	VNG_DEBUG()<<"NetInit - [3]"<<std::endl;
 	send_player_body(my_player_body);
-	std::cout<<"NetInit - [4]"<<std::endl;
+	VNG_DEBUG()<<"NetInit - [4]"<<std::endl;
 	total_players_data_list_query();
-	std::cout<<"NetInit - [5]"<<std::endl;
+	VNG_DEBUG()<<"NetInit - [5]"<<std::endl;
 
 	GloryPlaceNum = 0;
 	GloryPlaceData = NULL;
@@ -3804,7 +3804,7 @@ int NetInit(ServerFindChain* p)
 	else
 		stuff_ID_offsets = object_ID_offsets[(NID_STUFF & (~(1 << 31))) >> 16];
 
-	std::cout<<"NetInit - [ok]"<<std::endl;
+	VNG_DEBUG()<<"NetInit - [ok]"<<std::endl;
 	return 1;
 }
 

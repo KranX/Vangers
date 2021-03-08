@@ -2881,7 +2881,7 @@ void HordeObject::DrawQuant(void)
 	Vector vPos;
 	int tx,ty;
 
-	//std::cout<<"HordeObject::DrawQuant "<<ActD.Active<<std::endl;
+	//VNG_DEBUG()<<"HordeObject::DrawQuant "<<ActD.Active<<std::endl;
 	if(Status & SOBJ_DISCONNECT) return;
 	
 	if(ActD.Active)

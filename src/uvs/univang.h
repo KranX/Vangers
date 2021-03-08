@@ -747,7 +747,7 @@ struct uvsEscave : uvsTarget, listElem {
 
 		// pfile - обработчик escaves.prm, atom - первая значимая строка
 	uvsEscave(void) : uvsTarget(), listElem() {
-		std::cout<<"uvsEscave::uvsEscave(void) "<<this<<std::endl;
+		VNG_DEBUG()<<"uvsEscave::uvsEscave(void) "<<this<<std::endl;
 		name = NULL; Ptrade = Pitem = NULL; TradeCount = locked = GamerVisit = 0;
 		Pworld = NULL; Pbunch = NULL; Pshop = NULL; Pgood = NULL; TabuTaskID = TabuTaskCount = TabuTaskGood = 0;
 		PassagerFrom = 0; PassagerWait = 0; lastTabuTaskGood = 0;
