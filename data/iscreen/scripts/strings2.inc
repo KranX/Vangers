@@ -43,20 +43,11 @@
 #define iSTR_ENGINE_NOISE		$iSTR_ENGINE_NOISE2
 #define iSTR_BACKGROUND_SOUND		$iSTR_BACKGROUND_SOUND2
 
-#define iSTR_Multiplayer		$iSTR_Multiplayer2
-#define iSTR_JOIN_SERVER		$iSTR_JOIN_SERVER2
-#define iSTR_CREATE_SERVER		$iSTR_CREATE_SERVER2
 #define iSTR_PLAYER_SETUP		$iSTR_PLAYER_SETUP2
-#define iSTR_Join_Server		$iSTR_Join_Server2
-
-#define iSTR_LAN			$iSTR_LAN2
 #define iSTR_INTERNET			$iSTR_INTERNET2
-#define iSTR_SERVER_PORT		$iSTR_SERVER_PORT2
 #define iSTR_Default			$iSTR_Default2
 #define iSTR_Server_Port		$iSTR_Server_Port2
-#define iSTR_CANT_CREATE		$iSTR_CANT_CREATE2
 
-#define iSTR_LAN_Servers		$iSTR_LAN_Servers2
 #define iSTR_UP 			$iSTR_UP2
 #define iSTR_DOWN			$iSTR_DOWN2
 #define iSTR_Update_List		$iSTR_Update_List2

@@ -150,43 +150,14 @@
 #define iSTR_TO_MENU1			"TO MENU"
 #define iSTR_TO_MENU2			"В МЕНЮ"
 
-#define iSTR_Multiplayer1		"Multiplayer"
-#define iSTR_Multiplayer2		"Сетевая игра"
-
-#define iSTR_JOIN_SERVER1		"JOIN SERVER"
-#define iSTR_JOIN_SERVER2		"НАЙТИ СЕРВЕР"
-
-#define iSTR_CREATE_SERVER1		"CREATE SERVER"
-#define iSTR_CREATE_SERVER2		"СОЗДАТЬ СЕРВЕР"
-
 #define iSTR_PLAYER_SETUP1		"PLAYER SETUP"
 #define iSTR_PLAYER_SETUP2		"НАСТРОИТЬ ИГРОКА"
 
-#define iSTR_SERVER_PORT1		"SET SERVER PORT"
-#define iSTR_SERVER_PORT2		"ПОРТ СЕРВЕРА"
-
 #define iSTR_Default1			"RESTORE"
-#define iSTR_Default2			"ВОСТАНОВИТЬ"
+#define iSTR_Default2			"ВЕРНУТЬ"
 
-#define iSTR_Server_Port1		"Server Port:"
-#define iSTR_Server_Port2		"Порт сервера:"
-
-#define iSTR_Join_Server1		"Join Server"
-#define iSTR_Join_Server2		"Где искать сервер?"
-
-
-#define iSTR_LAN1			"LAN"
-#define iSTR_LAN2			"ЛОКАЛЬНАЯ СЕТЬ"
-
-#define iSTR_INTERNET1			"INTERNET"
-#define iSTR_INTERNET2			"ИНТЕРНЕТ"
-
-#define iSTR_CANT_CREATE1		"Can't create server..."
-#define iSTR_CANT_CREATE2		"Невозможно создать сервер..."
-
-
-#define iSTR_LAN_Servers1		"LAN Servers"
-#define iSTR_LAN_Servers2		"Локальные сервера"
+#define iSTR_Server_Port1		"PORT:"
+#define iSTR_Server_Port2		"ПОРТ:"
 
 #define iSTR_UP1			"UP"
 #define iSTR_UP2			"ВВЕРХ"
@@ -203,6 +174,8 @@
 #define iSTR_Please_wait1		"Please wait"
 #define iSTR_Please_wait2		"Ждите"
 
+#define iSTR_INTERNET1			"INTERNET"
+#define iSTR_INTERNET2			"ИНТЕРНЕТ"
 
 #define iSTR_Player_Settings1		"Player Settings"
 #define iSTR_Player_Settings2		"Настройки Игрока"

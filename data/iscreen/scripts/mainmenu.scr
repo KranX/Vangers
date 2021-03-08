@@ -212,7 +212,7 @@
 
 #define SLOT_TERRAIN		$TERRAIN4
 
-/* ----------------------- Multiplayer Screen Defines ----------------------- */
+/* ----------------------- INet Host screen Defines ----------------------- */
 
 #define TITLE_STR_Y		20
 #define TITLE_STR2_Y		60
@@ -223,8 +223,6 @@
 
 #define SERVER_START_Y		170
 #define SERVER_DELTA_Y		80
-
-/* ---------------------- Search Server Screen Defines ---------------------- */
 
 #define SMOOTH_TIME		3
 #define SCALE_TIME		5
@@ -426,7 +424,7 @@ Object "Multiplayer Option"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -465,7 +463,7 @@ Object "Multiplayer Option"
 				time		$PRESS_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $PRESS_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -490,7 +488,7 @@ Object "Multiplayer Option"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -3079,1079 +3077,6 @@ Screen "Loading screen"
 	}
 }
 
-Screen "Multiplayer screen"
-{
-	screen_offs	800
-
-	default_obj "Join Option"
-
-	Object "TitleStr"
-	{
-		align_x center
-		y	$TITLE_STR_Y
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Multiplayer
-		}
-	}
-
-	Object "Main Menu Option"
-	{
-//		  x	  $RETURN2_X
-		align_x center
-		y	$RETURN2_Y
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_MAIN_MENU
-		}
-
-		Event {
-			key $VK_LBUTTON
-			key $VK_ESCAPE
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				low_obj 	"Main Menu Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"Main Screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Main Menu Option" 2
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Main Menu Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Main Screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-	}
-	Object "Join Option"
-	{
-		align_x center
-		y	{ $MULTI_START_Y + $MULTI_DELTA_Y * 0 }
-
-		selectable_obj
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		$MAIN_FNT
-			null_level	$DEFAULT_NULL
-			string		$iSTR_JOIN_SERVER
-		}
-
-		Event {
-			if_selected
-			key $VK_SPACE
-			key $VK_RETURN
-			key $VK_LBUTTON
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				low_obj 	"Join Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"Server screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_not_selected
-			key $VK_RBUTTON
-
-			time { $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				jump_obj	"Join Option"
-				start_time	$PRESS_OBJ_TIME
-			}
-			EvComm {
-				smooth_obj	"Join Option" 4
-				start_time	$PRESS_OBJ_TIME
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Join Option"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				low_obj 	"SELECTED_OBJ"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Join Option"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Server screen"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_selected
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Join Option" 4
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Join Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Server screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Join Option"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Join Option"
-		#define OBJ2	"Create Option"
-//		  #define OBJ2	  "Port Option"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-		#define OBJ1	"Join Option"
-		#define OBJ2	"Port Option"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
-	}
-	Object "Create Option"
-	{
-		align_x center
-		y	{ $MULTI_START_Y + $MULTI_DELTA_Y * 1 }
-
-		selectable_obj
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		$MAIN_FNT
-			null_level	$DEFAULT_NULL
-			string		$iSTR_CREATE_SERVER
-		}
-		Event {
-			if_selected
-			key $VK_SPACE
-			key $VK_RETURN
-			key $VK_LBUTTON
-
-			multi_event
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				low_obj 	"Create Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				ext_event	$iEXT_CREATE_SERVER 0
-				start_time	{ $PRESS_OBJ_TIME - 1 }
-			}
-			EvComm {
-				move2screen	"Identification screen2"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-
-				event_line	2
-			}
-			EvComm {
-				move2screen	"Create server screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-
-				event_line	1
-			}
-		}
-		Event {
-			if_not_selected
-			key $VK_RBUTTON
-
-			multi_event
-
-			time { $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				jump_obj	"Create Option"
-				start_time	$PRESS_OBJ_TIME
-			}
-			EvComm {
-				smooth_obj	"Create Option" 4
-				start_time	$PRESS_OBJ_TIME
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Create Option"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				ext_event	$iEXT_CREATE_SERVER 0
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME - 1 }
-			}
-			EvComm {
-				low_obj 	"SELECTED_OBJ"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Create Option"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Identification screen2"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	2
-			}
-			EvComm {
-				move2screen	"Create server screen"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	1
-			}
-		}
-		Event {
-			if_selected
-			key $VK_RBUTTON
-
-			multi_event
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Create Option" 4
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Create Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				ext_event	$iEXT_CREATE_SERVER 0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME - 1 }
-			}
-			EvComm {
-				move2screen	"Create server screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	1
-			}
-			EvComm {
-				move2screen	"Identification screen2"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	2
-			}
-		}
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Create Option"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Create Option"
-		#define OBJ2	"Port Option"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-		#define OBJ1	"Create Option"
-		#define OBJ2	"Join Option"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
-	}
-/*
-	Object "Player Option"
-	{
-		align_x center
-		y	{ $MULTI_START_Y + $MULTI_DELTA_Y * 2 }
-
-		selectable_obj
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		$MAIN_FNT
-			null_level	$DEFAULT_NULL
-			string		$iSTR_PLAYER_SETUP
-		}
-
-		Event {
-			if_selected
-			key $VK_SPACE
-			key $VK_RETURN
-			key $VK_LBUTTON
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				low_obj 	"Player Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"Configuration screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_not_selected
-			key $VK_RBUTTON
-
-			time { $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				jump_obj	"Player Option"
-				start_time	$PRESS_OBJ_TIME
-			}
-			EvComm {
-				smooth_obj	"Player Option" 4
-				start_time	$PRESS_OBJ_TIME
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Player Option"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				low_obj 	"SELECTED_OBJ"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Player Option"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Configuration screen"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_selected
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Player Option" 4
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Player Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Configuration screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Player Option"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Player Option"
-		#define OBJ2	"Port Option"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-		#define OBJ1	"Player Option"
-		#define OBJ2	"Create Option"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
-	}
-*/
-	Object "Port Option"
-	{
-		align_x center
-		y	{ $MULTI_START_Y + $MULTI_DELTA_Y * 2 }
-
-		selectable_obj
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		$MAIN_FNT
-			null_level	$DEFAULT_NULL
-			string		$iSTR_SERVER_PORT
-		}
-
-		Event {
-			if_selected
-			key $VK_SPACE
-			key $VK_RETURN
-			key $VK_LBUTTON
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				low_obj 	"Port Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"Port screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_not_selected
-			key $VK_RBUTTON
-
-			time { $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				jump_obj	"Port Option"
-				start_time	$PRESS_OBJ_TIME
-			}
-			EvComm {
-				smooth_obj	"Port Option" 4
-				start_time	$PRESS_OBJ_TIME
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Port Option"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				low_obj 	"SELECTED_OBJ"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Port Option"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Port screen"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_selected
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Port Option" 4
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Port Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Port screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Port Option"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Port Option"
-		#define OBJ2	"Join Option"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-		#define OBJ1	"Port Option"
-		#define OBJ2	"Create Option"
-//		  #define OBJ2	  "Join Option"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
-	}
-}
-
-Screen "Server screen"
-{
-	screen_offs	0
-
-	default_obj "LAN Option"
-
-	Object "TitleStr"
-	{
-		align_x center
-		y	$TITLE_STR2_Y
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Join_Server
-		}
-	}
-
-	Object "Back Option"
-	{
-		x	$Server_screen_Back_Option_PosX
-		y	$Server_screen_Back_Option_PosY
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_BACK
-		}
-		Event {
-			key $VK_LBUTTON
-			key $VK_ESCAPE
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME }
-
-			EvComm {
-				low_obj 	"Back Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"Multiplayer screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Back Option" 2
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Back Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Multiplayer screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-	}
-	Object "LAN Option"
-	{
-		align_x center
-		y	{ $SERVER_START_Y + $SERVER_DELTA_Y * 0 }
-
-		selectable_obj
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		$MAIN_FNT
-			null_level	$DEFAULT_NULL
-			string		$iSTR_LAN
-		}
-
-		Event {
-			if_selected
-			key $VK_SPACE
-			key $VK_RETURN
-			key $VK_LBUTTON
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 3 }
-
-			multi_event
-
-			EvComm {
-				low_obj 	"LAN Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				ext_event	$iEXT_INIT_SERVERS_LIST 	0
-				start_time	1
-			}
-			EvComm {
-				ext_event	$iEXT_FIRST_SEARCH 0
-				start_time	{ $PRESS_OBJ_TIME - 1 }
-			}
-			EvComm {
-				move2screen	"Search server screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-
-				event_line	2
-			}
-			EvComm {
-				end_event
-				start_time	{ $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-
-				event_line	2
-			}
-			EvComm {
-				ext_event	$iEXT_UPDATE_SERVERS_LIST 0
-				start_time	{ $PRESS_OBJ_TIME + 1 }
-
-				event_line	1
-			}
-			EvComm {
-				move2screen	"Search server screen"
-				start_time	{ $PRESS_OBJ_TIME + 2 }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	1
-			}
-		}
-		Event {
-			if_not_selected
-			key $VK_RBUTTON
-
-			multi_event
-
-			time { $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 3 }
-			EvComm {
-				jump_obj	"LAN Option"
-				start_time	$PRESS_OBJ_TIME
-			}
-			EvComm {
-				smooth_obj	"LAN Option" 4
-				start_time	$PRESS_OBJ_TIME
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"LAN Option"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				low_obj 	"SELECTED_OBJ"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"LAN Option"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				ext_event	$iEXT_INIT_SERVERS_LIST 	0
-				start_time	1
-			}
-			EvComm {
-				ext_event	$iEXT_FIRST_SEARCH 0
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-			}
-			EvComm {
-				move2screen	"Search server screen"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 1 }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	2
-			}
-			EvComm {
-				end_event
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
-
-				event_line	2
-			}
-			EvComm {
-				ext_event	$iEXT_UPDATE_SERVERS_LIST 0
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 2 }
-
-				event_line	1
-			}
-			EvComm {
-				move2screen	"Search server screen"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 3 }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	1
-			}
-		}
-		Event {
-			if_selected
-			key $VK_RBUTTON
-
-			multi_event
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 3 }
-			EvComm {
-				smooth_obj	"LAN Option" 4
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"LAN Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				ext_event	$iEXT_INIT_SERVERS_LIST 	0
-				start_time	1
-			}
-			EvComm {
-				ext_event	$iEXT_FIRST_SEARCH 0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-			}
-			EvComm {
-				move2screen	"Search server screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 1 }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	2
-			}
-			EvComm {
-				end_event
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
-
-				event_line	2
-			}
-			EvComm {
-				ext_event	$iEXT_UPDATE_SERVERS_LIST 0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 1 }
-
-				event_line	1
-			}
-			EvComm {
-				move2screen	"Search server screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 2 }
-				time		$MOVE2SCREEN_TIME
-
-				event_line	1
-			}
-		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"LAN Option"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"LAN Option"
-		#define OBJ2	"Inet Option"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
-	}
-
-	Object "Inet Option"
-	{
-		align_x center
-		y	{ $SERVER_START_Y + $SERVER_DELTA_Y * 1 }
-
-		selectable_obj
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		$MAIN_FNT
-			null_level	$DEFAULT_NULL
-			string		$iSTR_INTERNET
-		}
-
-		Event {
-			if_selected
-			key $VK_SPACE
-			key $VK_RETURN
-			key $VK_LBUTTON
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				low_obj 	"Inet Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"INet Host screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_not_selected
-			key $VK_RBUTTON
-
-			time	  { $SMOOTH_OBJ_TIME + $PRESS_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				jump_obj	"Inet Option"
-				start_time	$PRESS_OBJ_TIME
-			}
-			EvComm {
-				smooth_obj	"Inet Option" 4
-				start_time	$PRESS_OBJ_TIME
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Inet Option"
-				start_time	{ $SMOOTH_OBJ_TIME + $PRESS_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				low_obj 	"SELECTED_OBJ"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Inet Option"
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"INet Host screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $PRESS_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			if_selected
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Inet Option" 4
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Inet Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"INet Host screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Inet Option"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Inet Option"
-		#define OBJ2	"LAN Option"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
-	}
-}
-
-Screen "Create server screen"
-{
-	screen_offs	0
-
-	default_obj "Back Option"
-
-	Object "TitleStr"
-	{
-		align_x center
-		align_y center
-		align_y_offs	-100
-//		  y	  $TITLE_STR_Y
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_CANT_CREATE
-		}
-	}
-
-	Object "Back Option"
-	{
-		x	$BACK_X
-		y	$BACK_Y
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_BACK
-		}
-		Event {
-			key $VK_LBUTTON
-			key $VK_ESCAPE
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				low_obj 	"Back Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"Multiplayer screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Back Option" 2
-				start_time	0
-				time		$PRESS_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Back Option"
-				start_time	$PRESS_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Multiplayer screen"
-				start_time	{ $PRESS_OBJ_TIME + $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-	}
-}
-
-
 #define SERVER_LIST_ITEM_EVENTS 	Event { 						\
 						key $VK_LBUTTON 				\
 						key $VK_RBUTTON 				\
@@ -4174,391 +3099,6 @@ Screen "Create server screen"
 							time		$MOVE2SCREEN_TIME	\
 						}						\
 					}
-
-Screen "Search server screen"
-{
-	screen_offs	800
-
-	default_obj "Back Option"
-	Object "TitleStr"
-	{
-		align_x center
-		y	$TITLE_STR_Y
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_LAN_Servers
-		}
-	}
-
-	Object "Back Option"
-	{
-		x	$SLIST_BACK_X
-		y	$SLIST_BACK_Y
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_BACK
-		}
-		Event {
-			key $VK_LBUTTON
-			key $VK_ESCAPE
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				low_obj 	"Back Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"Server screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Back Option" 2
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Back Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Server screen"
-				start_time	{ $HIDE_OBJ_TIME + $SMOOTH_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-	}
-	#define SERVER_LIST_ITEM	"List00"
-	#define SERVER_NUM		0
-	Object "List00"
-	{
-		align_x center
-		y	{ $SLIST_START_Y + $SLIST_DELTA_Y * 0 }
-
-		Element STRING {
-			id	"ServerStr0"
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			space		1
-			font		3
-			null_level	$DEFAULT_NULL
-			string		"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-		}
-		$SERVER_LIST_ITEM_EVENTS
-	}
-	#define SERVER_LIST_ITEM	"List01"
-	#define SERVER_NUM		1
-	Object "List01"
-	{
-		align_x center
-		y	{ $SLIST_START_Y + $SLIST_DELTA_Y * 1 }
-
-		Element STRING {
-			id	"ServerStr1"
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			space		1
-			font		3
-			null_level	$DEFAULT_NULL
-			string		"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-		}
-		$SERVER_LIST_ITEM_EVENTS
-	}
-	#define SERVER_LIST_ITEM	"List02"
-	#define SERVER_NUM		2
-	Object "List02"
-	{
-		align_x center
-		y	{ $SLIST_START_Y + $SLIST_DELTA_Y * 2 }
-
-		Element STRING {
-			id	"ServerStr2"
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			space		1
-			font		3
-			null_level	$DEFAULT_NULL
-			string		"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-		}
-		$SERVER_LIST_ITEM_EVENTS
-	}
-	#define SERVER_LIST_ITEM	"List03"
-	#define SERVER_NUM		3
-	Object "List03"
-	{
-		align_x center
-		y	{ $SLIST_START_Y + $SLIST_DELTA_Y * 3 }
-
-		Element STRING {
-			id	"ServerStr3"
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			space		1
-			font		3
-			null_level	$DEFAULT_NULL
-			string		"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-		}
-		$SERVER_LIST_ITEM_EVENTS
-	}
-	#define SERVER_LIST_ITEM	"List04"
-	#define SERVER_NUM		4
-	Object "List04"
-	{
-		align_x center
-		y	{ $SLIST_START_Y + $SLIST_DELTA_Y * 4 }
-
-		Element STRING {
-			id	"ServerStr4"
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			space		1
-			font		3
-			null_level	$DEFAULT_NULL
-			string		"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-		}
-		$SERVER_LIST_ITEM_EVENTS
-	}
-
-	Object "Up Option"
-	{
-		x	$Search_server_screen_Up_Option_PosX
-		y	$Search_server_screen_Up_Option_PosY
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_UP
-		}
-		Event {
-			key $VK_LBUTTON
-
-			time { $SCALE_TIME * 2 + 1 }
-			EvComm {
-				low_obj 	"Up Option"
-				time		$SCALE_TIME
-				start_time	0
-			}
-			EvComm {
-				ext_event	$iEXT_UP_SERVERS_LIST	0
-				start_time	$SCALE_TIME
-			}
-			EvComm {
-				rise_obj	"Up Option"
-				time		$SCALE_TIME
-				start_time	$SCALE_TIME
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { $SCALE_TIME * 2 + $SMOOTH_TIME * 2 + 1 }
-			EvComm {
-				smooth_obj	"Up Option" 2
-				start_time	0
-				time		$SMOOTH_TIME
-			}
-			EvComm {
-				scale_obj	"Up Option"     128
-				start_time	$SMOOTH_TIME
-				time		$SCALE_TIME
-			}
-			EvComm {
-				ext_event	$iEXT_UP_SERVERS_LIST	0
-				start_time	{ $SCALE_TIME + $SMOOTH_TIME }
-			}
-			EvComm {
-				smooth_obj	"Up Option" 0
-				start_time	{ $SCALE_TIME * 2 + $SMOOTH_TIME }
-				time		$SMOOTH_TIME
-			}
-			EvComm {
-				rise_obj	"Up Option"
-				start_time	{ $SCALE_TIME + $SMOOTH_TIME }
-				time		$SCALE_TIME
-			}
-		}
-	}
-	Object "Down Option"
-	{
-		x	$Search_server_screen_Down_Option_PosX
-		y	$Search_server_screen_Down_Option_PosY
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_DOWN
-		}
-		Event {
-			key $VK_LBUTTON
-
-			time { $SCALE_TIME * 2 + 1 }
-			EvComm {
-				low_obj 	"Down Option"
-				time		$SCALE_TIME
-				start_time	0
-			}
-			EvComm {
-				ext_event	$iEXT_DN_SERVERS_LIST	0
-				start_time	$SCALE_TIME
-			}
-			EvComm {
-				rise_obj	"Down Option"
-				time		$SCALE_TIME
-				start_time	$SCALE_TIME
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { $SCALE_TIME * 2 + $SMOOTH_TIME * 2 + 1 }
-			EvComm {
-				smooth_obj	"Down Option" 2
-				start_time	0
-				time		$SMOOTH_TIME
-			}
-			EvComm {
-				scale_obj	"Down Option"   128
-				start_time	$SMOOTH_TIME
-				time		$SCALE_TIME
-			}
-			EvComm {
-				smooth_obj	"Down Option" 0
-				start_time	{ $SCALE_TIME * 2 + $SMOOTH_TIME }
-				time		$SMOOTH_TIME
-			}
-			EvComm {
-				ext_event	$iEXT_DN_SERVERS_LIST	0
-				start_time	{ $SCALE_TIME + $SMOOTH_TIME }
-			}
-			EvComm {
-				rise_obj	"Down Option"
-				start_time	{ $SCALE_TIME + $SMOOTH_TIME }
-				time		$SCALE_TIME
-			}
-		}
-	}
-	Object "Update Option"
-	{
-//		  x	  $UPDATE_LIST_X
-		align_x center
-		y	$UPDATE_LIST_Y
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN4
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Update_List
-		}
-		Event {
-			key $VK_LBUTTON
-
-			time { $SCALE_TIME * 2 + 23 }
-			EvComm {
-				low_obj 	"Update Option"
-				time		$SCALE_TIME
-				start_time	0
-			}
-			EvComm {
-				rise_obj	"Update Option"
-				time		$SCALE_TIME
-				start_time	$SCALE_TIME
-			}
-			EvComm {
-				move2screen	"Searching screen"
-				start_time	{ $SCALE_TIME * 2 }
-				time		10
-			}
-			EvComm {
-				ext_event	$iEXT_UPDATE_SERVERS_LIST	0
-				start_time	{ $SCALE_TIME * 2 + 11 }
-			}
-			EvComm {
-				move2screen	"Search server screen"
-				start_time	{ $SCALE_TIME * 2 + 12 }
-				time		10
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { $SCALE_TIME * 2 + $SMOOTH_TIME * 2 + 1 + 22 }
-			EvComm {
-				smooth_obj	"Update Option" 2
-				start_time	0
-				time		$SMOOTH_TIME
-			}
-			EvComm {
-				scale_obj      "Update Option"        128
-				start_time	$SMOOTH_TIME
-				time		$SCALE_TIME
-			}
-			EvComm {
-				smooth_obj	"Update Option" 0
-				start_time	{ $SCALE_TIME * 2 + $SMOOTH_TIME }
-				time		$SMOOTH_TIME
-			}
-			EvComm {
-				rise_obj	"Update Option"
-				start_time	{ $SCALE_TIME + $SMOOTH_TIME }
-				time		$SCALE_TIME
-			}
-			EvComm {
-				move2screen	"Searching screen"
-				start_time	{ $SCALE_TIME * 2 + $SMOOTH_TIME * 2 }
-				time		10
-			}
-			EvComm {
-				ext_event	$iEXT_UPDATE_SERVERS_LIST	0
-				start_time	{ $SCALE_TIME * 2 + $SMOOTH_TIME * 2 + 10 }
-			}
-			EvComm {
-				move2screen	"Search server screen"
-				start_time	{ $SCALE_TIME * 2 + $SMOOTH_TIME * 2 + 11 }
-				time		10
-			}
-		}
-	}
-}
 
 
 Screen "Searching screen"
@@ -4630,7 +3170,7 @@ Screen "Configuration screen"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -4650,7 +3190,7 @@ Screen "Configuration screen"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -4894,7 +3434,7 @@ Screen "Failed screen"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Search server screen"
+				move2screen	"INet Host screen"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -4914,7 +3454,7 @@ Screen "Failed screen"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Search server screen"
+				move2screen	"INet Host screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -8163,7 +6703,7 @@ Screen "Server Config screen"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -8187,7 +6727,7 @@ Screen "Server Config screen"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -8554,7 +7094,7 @@ Screen "Server Info screen"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -8578,7 +7118,7 @@ Screen "Server Info screen"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -9901,7 +8441,7 @@ Screen "MultiGame Results screen"
 				ext_event	$iEXT_CHECK_END_FLAG 0
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 
@@ -9930,7 +8470,7 @@ Screen "MultiGame Results screen"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -11232,14 +9772,14 @@ Screen "Joystick screen"
 
 Screen "INet Host screen"
 {
-	screen_offs	0
+	screen_offs	800
 
 	default_obj "Back Option"
 
 	Object "Back Option"
 	{
 		x	$INet_Host_screen_Back_Option_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 6 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 7 - 18 }
 
 		Element STRING {
 			align_x center
@@ -11261,7 +9801,7 @@ Screen "INet Host screen"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"Main Screen"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -11281,7 +9821,7 @@ Screen "INet Host screen"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"Main Screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -11290,7 +9830,7 @@ Screen "INet Host screen"
 	Object "Ok Option"
 	{
 		x	$INet_Host_screen_Ok_Option_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 6 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 7 - 18 }
 
 		Element STRING {
 			align_x center
@@ -11332,7 +9872,6 @@ Screen "INet Host screen"
 				time		$MOVE2SCREEN_TIME
 			}
 		}
-
 		Event {
 			key $VK_RBUTTON
 
@@ -11385,7 +9924,7 @@ Screen "INet Host screen"
 	Object "IP_Str"
 	{
 		x	$INet_Host_screen_IP_Str_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 2 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 3 }
 
 		Element STRING {
 			align_x center
@@ -11401,7 +9940,7 @@ Screen "INet Host screen"
 	Object "IP_Addr"
 	{
 		x	$INet_Host_screen_IP_Addr_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 2 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 3 }
 
 		Element STRING {
 			id		"IP_AddrID"
@@ -11461,7 +10000,7 @@ Screen "INet Host screen"
 	Object "ProxyStr"
 	{
 		x	$INet_Host_screen_ProxyStr_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 3 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 4 }
 
 		Element STRING {
 			align_x center
@@ -11477,7 +10016,7 @@ Screen "INet Host screen"
 	Trigger "ProxyTrg"
 	{
 		x	$INet_Host_screen_ProxyTrg_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 3 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 4 }
 
 		num_state	2
 		State 0 STRING {
@@ -11504,7 +10043,7 @@ Screen "INet Host screen"
 			key $VK_LBUTTON
 			key $VK_RBUTTON
 
-			time $TRIGGER_TIME + 2 }
+			time { $TRIGGER_TIME + 2 }
 			EvComm {
 				change_trigger	"ProxyTrg"
 				time $TRIGGER_TIME
@@ -11518,7 +10057,7 @@ Screen "INet Host screen"
 	Object "ProxyServerStr"
 	{
 		x	$INet_Host_screen_ProxyServerStr_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 4 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 5 - 10 }
 
 		not_unlock
 
@@ -11537,7 +10076,7 @@ Screen "INet Host screen"
 	Object "ProxyServerNameStr"
 	{
 		x	$INet_Host_screen_ProxyServerNameStr_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 4 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 5 - 10 }
 
 		not_unlock
 
@@ -11569,7 +10108,7 @@ Screen "INet Host screen"
 	Object "ProxyPortStr"
 	{
 		x	$INet_Host_screen_ProxyPortStr_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 5 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 6 - 15 }
 
 		not_unlock
 
@@ -11588,7 +10127,7 @@ Screen "INet Host screen"
 	Object "ProxyPortNumStr"
 	{
 		x	$INet_Host_screen_ProxyPortNumStr_PosX
-		y	{ $HOST_START_Y + $HOST_DELTA_Y * 5 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 6 - 15 }
 
 		not_unlock
 
@@ -11615,6 +10154,117 @@ Screen "INet Host screen"
 			EvComm {
 				ext_event	$iEXT_INIT_PROXY	0
 				start_time	5
+			}
+		}
+	}
+	Object "TitlePortStr"
+	{
+		x	{ $INet_Host_screen_IP_Str_PosX - 85 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 2 + 5 }
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		3
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Server_Port
+		}
+	}
+	Object "PortStr"
+	{
+		x	{ $INet_Host_screen_IP_Str_PosX  + 40 }
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 2 + 5 }
+
+		Element STRING {
+			id		"PortStrID"
+
+			space		1
+			align_x 	center
+
+			terrain_num	$TERRAIN3
+			number_text
+
+			font		3
+			null_level	$DEFAULT_NULL
+			string		"1292"
+		}
+		Event {
+			key	$VK_LBUTTON
+			time	6
+
+			EvComm {
+				input_string	"PortStrID"       7
+				time		2
+			}
+			EvComm {
+				ext_event	$iEXT_INIT_PORT 	0
+				start_time	5
+			}
+		}
+	}
+	Object "Default Option"
+	{
+		x	450
+		y	{ $HOST_START_Y + $HOST_DELTA_Y * 2 + 5 }
+
+		Element STRING {
+			space		1
+			align_x 	center
+
+			terrain_num	$TERRAIN2
+
+			font		3
+			null_level	$DEFAULT_NULL
+			string		$iSTR_Default
+		}
+		Event {
+			key $VK_LBUTTON
+
+			time { $PRESS_OBJ_TIME * 2 + 1 }
+			EvComm {
+				low_obj 	"Default Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_RESTORE_PORT 0
+				start_time	$PRESS_OBJ_TIME
+			}
+			EvComm {
+				rise_obj	"Default Option"
+				time		$PRESS_OBJ_TIME
+				start_time	$PRESS_OBJ_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { ( $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME ) * 2 + 1 }
+			EvComm {
+				smooth_obj	"Default Option" 2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Default Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				smooth_obj	"Default Option" 0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME * 2 }
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				ext_event	$iEXT_RESTORE_PORT 0
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+			}
+			EvComm {
+				rise_obj	"Default Option"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$HIDE_OBJ_TIME
 			}
 		}
 	}
@@ -12068,178 +10718,6 @@ Screen "HallOfFame screen"
 	}
 }
 
-Screen "Port screen"
-{
-	screen_offs	0
-
-	default_obj "Back Option"
-
-	Object "TitleStr"
-	{
-		x	$Port_screen_TitleStr_PosX
-		y	$Port_screen_TitleStr_PosY
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Server_Port
-		}
-	}
-
-	Object "Back Option"
-	{
-		x	$Port_screen_Back_Option_PosX
-		y	$Port_screen_Back_Option_PosY
-
-		Element STRING {
-			align_x center
-
-			terrain_num	$TERRAIN2
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_BACK
-		}
-		Event {
-			key $VK_LBUTTON
-			key $VK_ESCAPE
-
-			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME }
-
-			EvComm {
-				low_obj 	"Back Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				move2screen	"Multiplayer screen"
-				start_time	$PRESS_OBJ_TIME
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
-			EvComm {
-				smooth_obj	"Back Option" 2
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Back Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				move2screen	"Multiplayer screen"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
-			}
-		}
-	}
-	Object "PortStr"
-	{
-		x	$Port_screen_PortStr_PosX
-		y	$Port_screen_TitleStr_PosY
-
-		Element STRING {
-			id		"PortStrID"
-
-			space		1
-			align_x 	center
-
-			terrain_num	$TERRAIN4
-			number_text
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		"1292"
-		}
-		Event {
-			key	$VK_LBUTTON
-			time	6
-
-			EvComm {
-				input_string	"PortStrID"       7
-				time		2
-			}
-			EvComm {
-				ext_event	$iEXT_INIT_PORT 	0
-				start_time	5
-			}
-		}
-	}
-	Object "Default Option"
-	{
-		x	$Port_screen_Default_Option_PosX
-		y	$Port_screen_Default_Option_PosY
-
-		Element STRING {
-			space		1
-			align_x 	center
-
-			terrain_num	$TERRAIN2
-
-			font		0
-			null_level	$DEFAULT_NULL
-			string		$iSTR_Default
-		}
-		Event {
-			key $VK_LBUTTON
-
-			time { $PRESS_OBJ_TIME * 2 + 1 }
-			EvComm {
-				low_obj 	"Default Option"
-				time		$PRESS_OBJ_TIME
-				start_time	0
-			}
-			EvComm {
-				ext_event	$iEXT_RESTORE_PORT 0
-				start_time	$PRESS_OBJ_TIME
-			}
-			EvComm {
-				rise_obj	"Default Option"
-				time		$PRESS_OBJ_TIME
-				start_time	$PRESS_OBJ_TIME
-			}
-		}
-		Event {
-			key $VK_RBUTTON
-
-			time { ( $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME ) * 2 + 1 }
-			EvComm {
-				smooth_obj	"Default Option" 2
-				start_time	0
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				hide_obj	"Default Option"
-				start_time	$SMOOTH_OBJ_TIME
-				time		$HIDE_OBJ_TIME
-			}
-			EvComm {
-				smooth_obj	"Default Option" 0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME * 2 }
-				time		$SMOOTH_OBJ_TIME
-			}
-			EvComm {
-				ext_event	$iEXT_RESTORE_PORT 0
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-			}
-			EvComm {
-				rise_obj	"Default Option"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$HIDE_OBJ_TIME
-			}
-		}
-	}
-}
-
 Screen "Identification screen2"
 {
 	screen_offs	0
@@ -12272,7 +10750,7 @@ Screen "Identification screen2"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -12292,7 +10770,7 @@ Screen "Identification screen2"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Multiplayer screen"
+				move2screen	"INet Host screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
