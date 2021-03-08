@@ -31,16 +31,12 @@
 
 struct XErrorHandler
 {
-	const char* prefix;
-	const char* postfix;
 	std::string log_name;
 
 	std::fstream log_file;
 	XErrorHandler();
 	~XErrorHandler();
 
-	void	 SetPrefix(const char* s);
-	void	 SetPostfix(const char* s);
 	void	 Abort(const char* message, int code = XERR_USER, int val = -1, const char* subj = NULL);
 	void	 Log(const char* message);
 	void	 Exit(void);

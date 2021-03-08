@@ -26,16 +26,6 @@ XErrorHandler::~XErrorHandler(void)
 		log_file.close();
 }
 
-void XErrorHandler::SetPrefix(const char* s)
-{
-	prefix = s;
-}
-
-void XErrorHandler::SetPostfix(const char* s)
-{
-	postfix = s;
-}
-
 void XErrorHandler::RTC(const char *file, unsigned int line, const char *expr)
 {
 	char msg[256], msg_tmp[10];
