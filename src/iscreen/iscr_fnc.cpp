@@ -1231,9 +1231,9 @@ void iInitS_Text(iScreenObject* obj,char* text,int text_len,int font,int space,i
 	while(i < text_len){
 		while(!buf[i]) i ++;
 		if(i < text_len){
-			p = new iS_StringElement;
 			t_sz = strlen(buf + i) + 1;
 			if(t_sz){
+				p = new iS_StringElement;
 				p -> string = new char[t_sz];
 				strcpy(p -> string,buf + i);
 				p -> flags |= EL_TEXT_STRING;
@@ -1288,7 +1288,7 @@ void iScrQuantFinit(void)
 	static unsigned char pal_buf[768];
 	if(iScreenLog){
 		iFinitQuant();
-		set_key_nadlers(&KeyCenter, NULL);
+		set_key_handlers(&KeyCenter, NULL);
 
 		i_slake_pal(iscrPal,16);
 

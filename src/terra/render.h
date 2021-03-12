@@ -1,3 +1,6 @@
+#ifndef __TERRA__RENDER_H__
+#define __TERRA__RENDER_H__
+
 const int CLR_MAX_SIDE = 255;
 const int CLR_MAX = 2*CLR_MAX_SIDE + 1;
 const uchar H_CORRECTION = 1;
@@ -128,3 +131,5 @@ void regSet(int x0,int y0,int x1,int y1,int dry,int surf = 1);
 #define GETCOL(x,y)	(*(vMap -> lineTcolor[y] + (x)))
 #define GETTERRAIN(x,y) GET_REAL_TERRAIN((vMap -> lineT[y] + H_SIZE + (x)),x)
 #define GETDOWNTERRAIN(x,y) GET_REAL_DOWNTERRAIN((vMap -> lineT[y] + H_SIZE + (x)),x)
+
+#endif

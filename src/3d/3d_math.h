@@ -1,5 +1,5 @@
-#ifndef __3D_MATH_H__
-#define __3D_MATH_H__
+#ifndef __3D__3D_MATH_H__
+#define __3D__3D_MATH_H__
 /******************************************************************************
 			 3D MATHEMATICS FUNCTION.
 			 KD_Lab::Alexander "Sicher" Kotliar (C) 1995 - 1997
