@@ -166,7 +166,7 @@
 #define iSTR_DOWN2			"ВНИЗ"
 
 #define iSTR_Update_List1		"Update List"
-#define iSTR_Update_List2		"Обновить Список"
+#define iSTR_Update_List2		"Обновить список"
 
 #define iSTR_Searching_Servers1 	"Searching Servers"
 #define iSTR_Searching_Servers2 	"Поиск Серверов"
@@ -174,8 +174,8 @@
 #define iSTR_Please_wait1		"Please wait"
 #define iSTR_Please_wait2		"Ждите"
 
-#define iSTR_INTERNET1			"INTERNET"
-#define iSTR_INTERNET2			"ИНТЕРНЕТ"
+#define iSTR_INTERNET1			"Search Server"
+#define iSTR_INTERNET2			"Найти Сервер"
 
 #define iSTR_Player_Settings1		"Player Settings"
 #define iSTR_Player_Settings2		"Настройки Игрока"
@@ -237,7 +237,7 @@
 
 
 #define iSTR_SELECT_GAME1		"SELECT GAME"
-#define iSTR_SELECT_GAME2		"Список Доступных Игр"
+#define iSTR_SELECT_GAME2		"ДОСТУПНЫЕ ИГРЫ"
 
 #define iSTR_Nascency1			"Nascency:"
 #define iSTR_Nascency2			"Рождение:"             // whats that? An artificial word -
@@ -315,7 +315,7 @@
 
 
 #define iSTR_IDENTIFICATION1		"IDENTIFICATION"
-#define iSTR_IDENTIFICATION2		"ИНДЕНТИФИКАЦИЯ"
+#define iSTR_IDENTIFICATION2		"ИДЕНТИФИКАЦИЯ"
 
 #define iSTR_PASSWORD1			"PASSWORD"
 #define iSTR_PASSWORD2			"ПАРОЛЬ"
@@ -355,15 +355,15 @@
 #define iSTR_Chat_Room1 		"Chat Room"
 #define iSTR_Chat_Room2 		"Чат"
 
-#define iSTR_SERVER_INFO1		"SERVER INFO"
-#define iSTR_SERVER_INFO2		"ТЕКУЩАЯ ИГРА"
+#define iSTR_SERVER_INFO1		"BACK"
+#define iSTR_SERVER_INFO2		"НАЗАД"
 
 
 #define iSTR_HOST_NAME1 		"HOST NAME:"
 #define iSTR_HOST_NAME2 		"ИМЯ СЕРВЕРА:"
 
 #define iSTR_Internet_Servers1		"Internet Servers"
-#define iSTR_Internet_Servers2		"Серверы Интернет"
+#define iSTR_Internet_Servers2		"Список доступных игр"
 
 
 #define iSTR_Game_Results1		"Game Results"
@@ -398,7 +398,7 @@
 #define iSTR_ACHTUNG2			"ВНИМАНИЕ"
 
 #define iSTR_VANGERS_APPROACHING1	"VANGERS APPROACHING"
-#define iSTR_VANGERS_APPROACHING2	"СОЕДИНЯЕМ С ВАШИМ ВАНГЕРОМ"
+#define iSTR_VANGERS_APPROACHING2	"Соединяем с Вашим Вангером"
 
 
 #define iSTR_Genesis1			"Genesis"
@@ -523,7 +523,7 @@
 #define iSTR_MECHOSOMA2 		"МЕХОСОМА"
 
 #define iSTR_PASSEMBLOSS1		"PASSEMBLOSS"
-#define iSTR_PASSEMBLOSS2		"ПАССЕМБЛОС"
+#define iSTR_PASSEMBLOSS2		"ПАССЕМБЛОСС"
 
 #define iSTR_HUNTAGE1			"HUNTAGE"
 #define iSTR_HUNTAGE2			"ХАНТЭЙДЖ"
