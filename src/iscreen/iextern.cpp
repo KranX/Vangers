@@ -682,7 +682,6 @@ void iPrepareOptions(void)
 	iScrOpt[iMUSIC_VOLUME_MAX] = new iScreenOption(iSCROLLER,1,"Sound screen","MusVolumeScroller");
 
 	iScrOpt[iTUTORIAL_ON] = new iScreenOption(iTRIGGER,0,"Graphics screen","TutorialTrig");
-	iScrOpt[iFPS_60] = new iScreenOption(iTRIGGER,0,"Graphics screen","FpsTrig");
 	iScrOpt[iDETAIL_SETTING] = new iScreenOption(iTRIGGER,0,"Graphics screen","DetailTrig");
 
 	iScrOpt[iSCREEN_RESOLUTION] = new iScreenOption(iTRIGGER,0,"Graphics screen","ResTrig");
@@ -777,7 +776,10 @@ void iPrepareOptions(void)
 	
 	iScrOpt[iFULLSCREEN] = new iScreenOption(iTRIGGER,0,"Graphics screen","FullScreenTrig");
 	((iTriggerObject *)iScrOpt[iFULLSCREEN]->objPtr)->callback = &iSetFullscreen;
-iScrOpt[iAUTO_ACCELERATION] = new iScreenOption(iTRIGGER,0,"Controls screen","AutoAccelerationTrig");
+
+	iScrOpt[iAUTO_ACCELERATION] = new iScreenOption(iTRIGGER,0,"Controls screen","AutoAccelerationTrig");
+
+	iScrOpt[iFPS_60] = new iScreenOption(iTRIGGER,0,"Graphics screen","FpsTrig");
 	((iTriggerObject *)iScrOpt[iFPS_60]->objPtr)->callback = &iSetFPS;
 	
 	iPrepareControls();

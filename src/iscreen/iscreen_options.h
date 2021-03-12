@@ -65,7 +65,7 @@ enum iScreenOptionID
 	iSERVER_PORT,			// 38
 
 	iPLAYER_NAME_CR,		// 39
-	iPLAYER_PASSWORD_CR,		// 40
+	iPLAYER_PASSWORD_CR,	// 40
 
 	iIP_ADDRESS,			// 41
 	iCAMERA_TURN,			// 42
@@ -74,10 +74,11 @@ enum iScreenOptionID
 	
 	iFULLSCREEN,			// 45
 
+	iAUTO_ACCELERATION,		// 46
 
-	iFPS_60,                // 46
-	iMAX_OPTION_ID,
-	iAUTO_ACCELERATION,			// 46
+	iFPS_60,				// 47
+
+	iMAX_OPTION_ID, 		// 48
 };
 
 enum iScreenOptionObjType
