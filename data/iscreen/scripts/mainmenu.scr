@@ -171,8 +171,8 @@
 #define DETAIL_STR_X		200
 #define DETAIL_TRG_X		400
 
-#define RESOLUTION_STR_X	200
-#define RESOLUTION_TRG_X	470
+#define RESOLUTION_STR_X	90
+#define RESOLUTION_TRG_X	600
 
 #define DESTR_STR_X		90
 
@@ -1766,10 +1766,10 @@ Screen "Graphics screen"
 			}
 		}
 	}
-	/*Object "ResStr"
+	Object "ResStr"
 	{
 		x	$RESOLUTION_STR_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 1 }
 
 		Element STRING {
 			align_x 	center
@@ -1781,10 +1781,10 @@ Screen "Graphics screen"
 			null_level	$DEFAULT_NULL
 			string		$iSTR_SCREEN
 		}
-	}*/
+	}
 	Trigger "ResTrig" {
 		x	$RESOLUTION_TRG_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 1 }
 
 		num_state	2
 
@@ -1798,10 +1798,11 @@ Screen "Graphics screen"
 			space		$OPTION_SPACE
 			terrain_num	$TERRAIN4
 
-			/*string		$iSTR_800x600*/
-			string ""
+			// TODO: string constant
+			string      "1280x720"
 			null_level	$DEFAULT_NULL
 		}
+
 		State 0 "STRING"{
 			align_x center
 			align_y center
@@ -1810,8 +1811,7 @@ Screen "Graphics screen"
 			space		$OPTION_SPACE
 			terrain_num	$TERRAIN4
 
-			/*string		$iSTR_640x480*/
-			string ""
+			string		$iSTR_800x600
 			null_level	$DEFAULT_NULL
 		}
 		Event {

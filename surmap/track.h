@@ -217,7 +217,7 @@ struct sTrack {
 };
 
 typedef double (*PF)(double,double);
-extern PF* profils;
+extern PF profils[6];
 
 extern sTrack Track;
 

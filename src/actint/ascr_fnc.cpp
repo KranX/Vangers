@@ -700,8 +700,6 @@ void actIntQuant(void)
 	actintActiveFlag = 1;
 	aScrDisp -> KeyQuant();
 	aScrDisp -> EventQuant();
-	/*Нужно что бы не было мерцания когда подгружаются полноэкранные картинки прям в видео буфер.*/
-	aScrDisp -> redraw(); 
 }
 
 void aLoadFonts(void)
@@ -1567,7 +1565,7 @@ void change_screen(int mode)
 {
 	aScrDisp -> change_ibs(mode);
 	aScrDisp -> flags &= ~AS_FULL_REDRAW;
-	set_screen(aScrDisp -> curIbs -> SideX,aScrDisp -> curIbs -> SideY,0,aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY);
+//	set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
 }
 
 void aciSendEvent2actint(int code,actintItemData* p,int data)
@@ -5255,11 +5253,6 @@ void acsSaveData(void)
 	int slot = acsCurrentSlotNum,len,time_len;
 	XBuffer XBuf;
 	XStream fh;
-
-	XStream fh2;
-	fh2.open("tmp_f1.txt",XS_OUT);
-	fh2<14<40;
-	fh2.close();
 
 	const char* ptr = NULL;
 	aciScreenInputField* p;

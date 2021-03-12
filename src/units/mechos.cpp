@@ -69,6 +69,7 @@ extern int multi_draw;
 extern int RAM16;
 extern int GameQuantReturnValue;
 
+int mechosCameraOffsetX = 0;
 extern int aciWorldIndex;
 
 extern int light_modulation;
@@ -3281,8 +3282,16 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	camera_Y_prev = Y;
 
 	int TurnSecX_old = TurnSecX;
-	int z = camera_moving_z_enable ? (V_abs < camera_vmax ? camera_zmin + ((curGMap -> xsize*MAX_ZOOM >> 8) - camera_zmin)*V_abs/camera_vmax : camera_zmax)
-					: camera_zmin;
+	int z;
+	if (camera_moving_z_enable) {
+		auto v = V_abs < camera_vmax ? V_abs : camera_vmax;
+		auto z_max = curGMap->xsize * 1.38;
+
+		z = camera_zmin + (z_max - camera_zmin) * v / camera_vmax;
+	} else {
+		z = camera_zmin;
+	}
+
 	camera_vz += (double)(z - TurnSecX)*camera_miz * XTCORE_FRAME_NORMAL;
 	//camera_vz -= camera_vz*camera_dragz;
 	camera_vz *= camera_dragz*pow(0.97,camera_vz_min/(fabs(camera_vz) + 1e-10));
@@ -3393,7 +3402,17 @@ void ActionDispatcher::CameraQuant(void)
 		int Turn = Active -> psi;
 		//if(Active -> traction < 0)
 		//	Turn = rPI(Turn + PI);
-		camera_quant(Active -> R_curr.x,Active -> R_curr.y,Turn,Active -> V.vabs());
+		double turnf = 1.5 * M_PI - GTOR(TurnAngle);
+		double cdx = 0, cdy = 0;
+		if (camera_rotate_enable) {
+			cdx = -mechosCameraOffsetX * cos(M_PI / 2 - turnf);
+			cdy = mechosCameraOffsetX * sin(M_PI / 2 - turnf);
+		} else {
+			cdx = mechosCameraOffsetX;
+			cdy = 0;
+		}
+
+		camera_quant(Active->R_curr.x + cdx, Active->R_curr.y + cdy, Turn, Active->V.vabs());
 //		fout < "camera_quant(x,y,t,v): " <= ViewX < "\t" <= ViewY < "\n";
 		}
 }
@@ -8193,7 +8212,7 @@ void ActionDispatcher::DrawResource(void)
 	XGR_SetClip(UcutLeft,VcutUp,UcutRight,VcutDown);
 
 	y0 = VcutDown - RES_DRAW_DOWN;
-	x0 = UcutRight - RES_DRAW_LEFT;
+	x0 = UcutRight - RES_DRAW_LEFT - mechosCameraOffsetX;
 	x1 = UcutLeft + RES_DRAW_LEFT;
 	sx = x0 - x1;
 
@@ -8667,16 +8686,15 @@ void CompasObject::Quant(void)
 	v = Vector(ActD.Active->Speed,0,0)*ActD.Active->RotMat;
 	x = XCYCL(x + vMove.x + v.x);
 	y = YCYCL(y + vMove.y + v.y);
-	if(AdvancedView) G2LQ(x,y,0,tx,ty);
-	else G2LS(x,y,0,tx,ty);
 
+	G2LQ(Vector(x,y,0), tx, ty);
 	if(tx < UcutLeft + COMPAS_LEFT){
 		tx = UcutLeft + COMPAS_LEFT;
 		vMove.x = 0;
 	};
 
-	if(tx > UcutRight - COMPAS_RIGHT){
-		tx = UcutRight - COMPAS_RIGHT;
+	if(tx > UcutRight - COMPAS_RIGHT - mechosCameraOffsetX * 2){
+		tx = UcutRight - COMPAS_RIGHT - mechosCameraOffsetX * 2;
 		vMove.x = 0;
 	};
 

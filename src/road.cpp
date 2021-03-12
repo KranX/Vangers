@@ -366,7 +366,6 @@ void showModal(char* fname, float reelW, float reelH, float screenW, float scree
 }
 
 
-
 int xtInitApplication(void) {
     XGraphWndID = "VANGERS";
     char *tmp;
@@ -683,6 +682,7 @@ extern int activeWTRACK;
 
 void MainMenuRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled(true);
 	Dead = 0;
 //	activeWTRACK = 0;
 _MEM_STATISTIC_("BEFORE MAIN MENU INIT -> ");
@@ -722,6 +722,7 @@ _MEM_STATISTIC_("AFTER IQUANTFIRST INIT -> ");
 	p -> SetTimer(RTO_GAME_QUANT_TIMER);
 	
 	XGR_Obj.set_fullscreen(iGetOptionValue(iFULLSCREEN));
+	iSetResolution(iGetOptionValue(iSCREEN_RESOLUTION));
 _MEM_STATISTIC_("AFTER MAIN MENU INIT -> ");
 }
 
@@ -764,6 +765,7 @@ int MainMenuRTO::Quant(void)
 
 void MainMenuRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled(false);
 #ifdef ISCREEN
 	
 	if(flags & RTO_FINIT_FLAG){
@@ -808,8 +810,8 @@ void LoadingRTO1::Init(int id)
 #endif
 
 #ifdef ACTINT
-	XSIDE = aScrDisp -> curIbs -> SideX;
-	YSIDE = aScrDisp -> curIbs -> SideY;
+	XSIDE = XGR_MAXX / 2;
+	YSIDE = XGR_MAXY / 2;
 	XSIZE = 2*XSIDE;
 	YSIZE = 2*YSIDE;
 #else
@@ -860,6 +862,7 @@ _MEM_STATISTIC_("AFTER LOADING RTO1 FINIT -> ");
 
 void EscaveOutRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled(true);
 #ifdef ISCREEN
 	iOutEscaveInit();
 #endif
@@ -887,6 +890,7 @@ int EscaveOutRTO::Quant(void)
 
 void EscaveOutRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled(false);
 #ifdef ISCREEN
 	iOutEscaveFinit();
 	aci_LocationQuantFinit();
@@ -898,6 +902,7 @@ _MEM_STATISTIC_("AFTER ESCAVE FINIT -> ");
 
 void FirstEscaveOutRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled(true);
 #ifdef ISCREEN
 #ifndef _ACI_SKIP_SHOP_
 	iOutEscaveInit();
@@ -932,6 +937,7 @@ int FirstEscaveOutRTO::Quant(void)
 
 void FirstEscaveOutRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled(false);
 #ifdef ISCREEN
 #ifndef _ACI_SKIP_SHOP_
 	iOutEscaveFinit();
@@ -978,7 +984,7 @@ _MEM_STATISTIC_("AFTER TABLE GENERAL  -> ");
 _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 
 #ifdef ACTINT
-	curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
+	curGMap = new iGameMap(XGR_MAXX / 2, XGR_MAXY / 2, XGR_MAXX / 2, XGR_MAXY / 2);
 #else
 	curGMap = new iGameMap(XGR_MAXX/2,XGR_MAXY/2,XSIDE,YSIDE);
 #endif
@@ -1020,6 +1026,7 @@ _MEM_STATISTIC_("AFTER LOADING RTO2 INIT -> ");
 
 void FirstEscaveRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled(true);
 _MEM_STATISTIC_("\nBEFORE FIRST ESCAVE RTO INIT -> ");
 #ifdef ISCREEN
 	CurrentWorld = 0;
@@ -1090,6 +1097,7 @@ int FirstEscaveRTO::Quant(void)
 
 void FirstEscaveRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled(false);
 	if(flags & RTO_FINIT_FLAG){
 		ClearFlag(RTO_ALL_FLAGS);
 	}
@@ -1103,6 +1111,10 @@ void GameQuantRTO::Init(int id)
 {
 	vMap -> lockHeap();
 _MEM_STATISTIC_("AFTER GAME QUANT INIT -> ");
+}
+
+void GameQuantRTO::Finit() {
+	XGR_Obj.clear_2d_surface();
 }
 
 int GameQuantRTO::Quant(void)
@@ -1153,6 +1165,7 @@ int GameQuantRTO::Quant(void)
 
 void EscaveRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled(true);
 #ifdef ISCREEN
 	uvsPrepareQuant();
 	aci_LocationQuantPrepare();
@@ -1182,6 +1195,7 @@ int EscaveRTO::Quant(void)
 
 void EscaveRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled(false);
 #ifdef ISCREEN
 	if(flags & RTO_FINIT_FLAG){
 		ClearFlag(RTO_ALL_FLAGS);
@@ -1201,6 +1215,14 @@ _MEM_STATISTIC_("AFTER ESCAVE RTO FINIT -> ");
 		if(d & mask) res += isCDok(ii);
 	if(!res) ErrH.Abort(AVInotFoundMSS);
 #endif
+}
+
+void PaletteTransformRTO::Init(int) {
+	XGR_Obj.set_is_scaled(true);
+}
+
+void PaletteTransformRTO::Finit() {
+	XGR_Obj.set_is_scaled(false);
 }
 
 int PaletteTransformRTO::Quant(void)
@@ -2082,14 +2104,15 @@ void iGameMap::draw(int self)
 		FirstDraw = 0;
 //2D Rendring in game.
 #ifdef ACTINT
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
+		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
 		//XGR_Obj.fill(2);
 		if(GeneralSystemSkip) {
 			aScrDisp -> redraw();
 		}
 		aScrDisp -> flush();
 		//aScrDisp->pal_flush();
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		aScrDisp -> text_redraw();
 #endif
 	};
 	
@@ -2157,6 +2180,7 @@ void PaletteTransform::quant(void)
 
 void ShowImageRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled(true);
 #ifdef SHOW_IMAGES
 	int i;
 	short sx,sy;
@@ -2449,6 +2473,7 @@ int ShowAviRTO::Quant(void)
 
 void ShowImageRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled(false);
 #ifdef SHOW_IMAGES
 	char* pal;
 	pal = new char[768];

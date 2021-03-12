@@ -8600,7 +8600,6 @@ void uniVangLoad(XStream &pfile){
 		(v = new uvsVanger(pfile));
 		if( v -> shape == UVS_VANGER_SHAPE::GAMER  ){
 			Gamer = v;
-			v -> shape = UVS_VANGER_SHAPE::GAMER;
 		}
 		v -> elink(ETail);
 	}
