@@ -89,8 +89,8 @@ extern char* aciSTR_PRICE;
 extern char* aciSTR_EMPTY_SLOT;
 extern char* aciSTR_UNNAMED_SAVE;
 extern char* aciSTR_AUTOSAVE;
-extern char* aciSTR_KILLS;
-extern char* aciSTR_DEATHS;
+extern char* aciSTR_WINS;
+extern char* aciSTR_LOSSES;
 extern char* aciSTR_LUCK;
 extern char* aciSTR_DOMINANCE;
 extern char* aciSTR_BROKEN;
@@ -111,6 +111,10 @@ extern char* aciSTR_NO_CASH;
 extern char* aciSTR_PICKUP_ITEMS_OFF;
 extern char* aciSTR_PICKUP_WEAPONS_OFF;
 extern char* aciSTR_PutThis;
+
+extern char* aciSTR_RESTRICTIONS;
+extern char* aciSTR_STATISTICS;
+extern char* aciSTR_MINUTES;
 
 extern int aciItmTextQueueSize;
 
