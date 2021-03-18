@@ -6,6 +6,8 @@
 // iChatScreenObject::flags...
 #define ICS_HIDDEN_OBJECT	0x01
 
+extern int iChatMUTE;
+
 struct iChatScreenObject : XListElement
 {
 	int ID;
