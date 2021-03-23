@@ -108,20 +108,20 @@ struct XGR_Screen
 
 	unsigned char* ScreenBuf;
 
-	SDL_Surface *XGR_ScreenSurface;
-	SDL_Surface *XGR_ScreenSurface2D;
+	uint8_t *XGR_ScreenSurface;
+	uint8_t *XGR_ScreenSurface2D;
 	SDL_Surface *XGR32_ScreenSurface;
-	//SDL_Surface *XGR32_ScreenSurface2D;
+
 	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
 	SDL_Texture *sdlTexture;
-	//SDL_Texture *sdlTexture2D;
+
 	SDL_Texture *HDBackgroundTexture;
 	SDL_Window *sdlWindow;
 	SDL_Renderer *sdlRenderer;
 	
-	//SDL_Color   XGR_Palette[256];
-	SDL_Palette *XGR_Palette;
+	SDL_Color XGR_Palette[256] {{0, 0, 0, 0}};
+	uint32_t XGR32_PaletteCache[256] {0};
 	SDL_Color averageColorPalette = {255,255,255,0};
 
 	int ClipMode;
@@ -142,6 +142,7 @@ struct XGR_Screen
 	void set_fullscreen(bool fullscreen); 
 	void set_resolution(int width, int height);
 	void set_is_scaled(bool is_scaled);
+	bool get_is_scaled();
 
 	void setpixel(int x,int y,int col);
 	int getpixel(int x,int y);
@@ -186,12 +187,13 @@ struct XGR_Screen
 
 	void rectangle16(int x,int y,int sx,int sy,int outcol,int incol,int mode);
 	
-	void blitScreen(uint32_t *dst, uint8_t *src);
+        void blitRGBA(uint32_t *dst, uint8_t *screenPixels, uint8_t *overlayPixels);
 
 	void clear_2d_surface();
 
 
-	void set_render_buffer(SDL_Surface *buf);
+        uint8_t* get_render_buffer();
+	void set_render_buffer(uint8_t *buf);
 	void lock_current_surface();
 	void unlock_current_surface();
 
@@ -200,7 +202,6 @@ struct XGR_Screen
 private:
 	void create_surfaces(int width, int height);
 	void destroy_surfaces();
-	SDL_Surface* currentSurface;
 	bool is_scaled;
 };
 
