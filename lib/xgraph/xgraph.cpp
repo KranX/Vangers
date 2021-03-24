@@ -246,14 +246,6 @@ void XGR_Screen::create_surfaces(int width, int height) {
 	set_render_buffer(XGR_ScreenSurface);
 }
 
-void XGR_Screen::lock_current_surface() {
-    // noop
-}
-
-void XGR_Screen::unlock_current_surface() {
-	// noop
-}
-
 void XGR_Screen::set_resolution(int width, int height){
 	// TODO: do not change resolution, is new res is the same
 	std::cout<<"XGR_Screen::set_resolution: "<<width<<", "<<height<<std::endl;
@@ -841,6 +833,20 @@ uint8_t* XGR_Screen::get_render_buffer() {
 
 void XGR_Screen::set_render_buffer(uint8_t *buf) {
 	ScreenBuf = (unsigned char*)buf;
+}
+
+void XGR_Screen::set_default_render_buffer() {
+	set_render_buffer(XGR_ScreenSurface);
+}
+
+void XGR_Screen::set_2d_render_buffer() {
+	set_render_buffer(XGR_ScreenSurface);
+}
+
+SDL_Surface* XGR_Screen::get_screenshot() {
+	SDL_Surface *screenshotSurface = SDL_CreateRGBSurface(0, xgrScreenSizeX, xgrScreenSizeY, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_RenderReadPixels(sdlRenderer, NULL, SDL_PIXELFORMAT_ARGB8888, screenshotSurface->pixels, screenshotSurface->pitch);
+	return screenshotSurface;
 }
 
 

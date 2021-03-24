@@ -106,24 +106,6 @@ struct XGR_Screen
 	int RealX;
 	int RealY;
 
-	unsigned char* ScreenBuf;
-
-	uint8_t *XGR_ScreenSurface;
-	uint8_t *XGR_ScreenSurface2D;
-	SDL_Surface *XGR32_ScreenSurface;
-
-	SDL_Surface *HDBackgroundSurface;
-	SDL_Surface *IconSurface;
-	SDL_Texture *sdlTexture;
-
-	SDL_Texture *HDBackgroundTexture;
-	SDL_Window *sdlWindow;
-	SDL_Renderer *sdlRenderer;
-	
-	SDL_Color XGR_Palette[256] {{0, 0, 0, 0}};
-	uint32_t XGR32_PaletteCache[256] {0};
-	SDL_Color averageColorPalette = {255,255,255,0};
-
 	int ClipMode;
 
 	int clipLeft;
@@ -133,6 +115,8 @@ struct XGR_Screen
 
 	int yStrOffs;
 	int* yOffsTable;
+
+	uint8_t *ScreenBuf;
 
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
@@ -192,10 +176,12 @@ struct XGR_Screen
 	void clear_2d_surface();
 
 
-        uint8_t* get_render_buffer();
+    uint8_t* get_render_buffer();
 	void set_render_buffer(uint8_t *buf);
-	void lock_current_surface();
-	void unlock_current_surface();
+	void set_default_render_buffer();
+	void set_2d_render_buffer();
+
+	SDL_Surface* get_screenshot();
 
 	XGR_Screen(void);
 
@@ -203,6 +189,23 @@ private:
 	void create_surfaces(int width, int height);
 	void destroy_surfaces();
 	bool is_scaled;
+
+
+	uint8_t *XGR_ScreenSurface;
+	uint8_t *XGR_ScreenSurface2D;
+	SDL_Surface *XGR32_ScreenSurface;
+
+	SDL_Surface *HDBackgroundSurface;
+	SDL_Surface *IconSurface;
+	SDL_Texture *sdlTexture;
+
+	SDL_Texture *HDBackgroundTexture;
+	SDL_Window *sdlWindow;
+	SDL_Renderer *sdlRenderer;
+
+	SDL_Color XGR_Palette[256] {{0, 0, 0, 0}};
+	uint32_t XGR32_PaletteCache[256] {0};
+	SDL_Color averageColorPalette = {255,255,255,0};
 };
 
 // XGR_MousePromptData::flags...

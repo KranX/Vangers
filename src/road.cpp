@@ -2071,14 +2071,14 @@ void iGameMap::draw(int self)
 		FirstDraw = 0;
 //2D Rendring in game.
 #ifdef ACTINT
-		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
+		XGR_Obj.set_2d_render_buffer();
 		//XGR_Obj.fill(2);
 		if(GeneralSystemSkip) {
 			aScrDisp -> redraw();
 		}
 		aScrDisp -> flush();
 		//aScrDisp->pal_flush();
-		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		XGR_Obj.set_default_render_buffer();
 		aScrDisp -> text_redraw();
 #endif
 	};
@@ -2511,10 +2511,9 @@ void shotFlush(void)
 		buf = buf < "v";
 	}
 	std::cout<<"ScreenShot name:"<<out_buf.GetBuf()<<std::endl;
-    SDL_Surface *screenShotSurface = SDL_CreateRGBSurface(0, xgrScreenSizeX, xgrScreenSizeY, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-    SDL_RenderReadPixels(XGR_Obj.sdlRenderer, NULL, SDL_PIXELFORMAT_ARGB8888, screenShotSurface->pixels, screenShotSurface->pitch);
-    SDL_SaveBMP(screenShotSurface, out_buf.GetBuf());
-    SDL_FreeSurface(screenShotSurface);
+	SDL_Surface* screenshotSurface = XGR_Obj.get_screenshot();
+    SDL_SaveBMP(screenshotSurface, out_buf.GetBuf());
+    SDL_FreeSurface(screenshotSurface);
 	curShotNumber++;
 }
 #endif
