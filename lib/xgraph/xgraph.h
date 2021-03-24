@@ -45,6 +45,8 @@ typedef void (*XGR_OutTextHandler)(int x,int y,int col,void* text,int font,int h
 typedef int  (*XGR_TextWidthHandler)(void* text,int font,int hspace);
 typedef int  (*XGR_TextHeightHandler)(void* text,int font,int vspace);
 
+typedef unsigned char uchar;
+
 // XGR_Font IDs...
 #define XGR_FONT0_8x16		0
 #define XGR_FONT0_8x8		1
@@ -116,8 +118,6 @@ struct XGR_Screen
 	int yStrOffs;
 	int* yOffsTable;
 
-	uint8_t *ScreenBuf;
-
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
 	void get_clip(int& left,int& top,int& right,int& bottom);
@@ -175,9 +175,9 @@ struct XGR_Screen
 
 	void clear_2d_surface();
 
-
-    uint8_t* get_render_buffer();
-	void set_render_buffer(uint8_t *buf);
+	uint8_t* get_active_render_buffer();
+	uint8_t* get_default_render_buffer();
+	uint8_t* get_2d_render_buffer();
 	void set_default_render_buffer();
 	void set_2d_render_buffer();
 
@@ -190,6 +190,7 @@ private:
 	void destroy_surfaces();
 	bool is_scaled;
 
+	uint8_t *ScreenBuf;
 
 	uint8_t *XGR_ScreenSurface;
 	uint8_t *XGR_ScreenSurface2D;
@@ -206,6 +207,37 @@ private:
 	SDL_Color XGR_Palette[256] {{0, 0, 0, 0}};
 	uint32_t XGR32_PaletteCache[256] {0};
 	SDL_Color averageColorPalette = {255,255,255,0};
+
+	void set_active_render_buffer(uint8_t *buf);
+
+	// @caiiycuk TODO: TBD: refactor this methods to accept video buffer as argument (to get rid from usage of XGR_VIDEOBUF)
+	friend inline uint8_t* XGR_GetVideoLine(int y);
+	friend inline void XGR_SetPixelFast(int x,int y,int col);
+	friend inline void XGR_SetPixel16Fast(int x,int y,int col);
+	friend void putspr(int x,int y,int size,int shift,unsigned char* buffer,int image);
+	friend void DrawLinear(int x,int y,int size,int shift,unsigned char* buffer,int image);
+	friend void Draw3DPlane(int x,int y,int size,int shift,unsigned char* buffer,int image,int y_offset);
+	friend void smart_putspr(unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize,int height,unsigned char* color_table);
+	friend void CastShadow(int x,int y,int zg,int size,int shift,unsigned char* buffer);
+	friend void ibsout(int x,int y,void* ptr);
+	friend void put_map(int x,int y,int sx,int sy);
+	friend void i_get_scrfon(int x,int y,int sx,int sy,unsigned char* buf);
+	friend void i_put_scrfon(int x,int y,int sx,int sy,unsigned char* buf);
+	friend void i_mem_putspr(int x,int y,int sx,int sy,unsigned char* ptr);
+	friend void smart_putspr_f(unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize,int height);
+	friend int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize);
+	friend void DrawHFLine(int x0,int y0,int x1,uchar* c,int h);
+	friend void DrawHLine(int x0,int y0,int x1,uchar* c);
+	friend void DrawVLine(int x0,int y0,int y1,uchar* c);
+	friend void ShowSigmaBmp(int x,int y,int sx,int sy,uchar* b,uchar* t);
+	friend void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int XDstSize,int YDstSize);
+
+	// @caiiycuk TODO: TBD: refactor structures below to use get_default_render_buffer() instead of XGR_VIDEOBUFF
+	friend struct vrtMap;
+	friend struct WaveProcess;
+	friend struct FireBallProcess;
+	friend struct Mask;
+	friend struct SimplePolygonType;
 };
 
 // XGR_MousePromptData::flags...
@@ -508,6 +540,7 @@ extern int xgrScreenSizeY;
 #define XGR_MAXX	xgrScreenSizeX
 #define XGR_MAXY	xgrScreenSizeY
 
+// @caiiiycuk: deprecated, use get_default_render_buffer or get_2d_render_buffer_instead
 #define XGR_VIDEOBUF	XGR_Obj.ScreenBuf
 
 extern XGR_Screen XGR_Obj;
@@ -520,7 +553,7 @@ void XGR_OutText(int x,int y,int col,void* text,int font = 0,int hspace = 1,int 
 int XGR_TextHeight(void* text,int font = 0,int hspace = 1);
 int XGR_TextWidth(void* text,int font = 0,int vspace = 1);
 
-inline unsigned char* XGR_GetVideoLine(int y){ return (XGR_Obj.ScreenBuf + XGR_Obj.yOffsTable[y]); }
+inline uint8_t* XGR_GetVideoLine(int y){ return (XGR_Obj.ScreenBuf + XGR_Obj.yOffsTable[y]); }
 
 inline void XGR_SetPixelFast(int x,int y,int col){ XGR_Obj.ScreenBuf[XGR_Obj.yOffsTable[y] + x] = col; }
 inline void XGR_SetPixel16Fast(int x,int y,int col){

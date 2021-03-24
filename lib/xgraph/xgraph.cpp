@@ -243,7 +243,7 @@ void XGR_Screen::create_surfaces(int width, int height) {
 	set_pitch(width);
 	set_clip(0,0, width, height);
 	set_clip_mode(XGR_CLIP_PUTSPR);
-	set_render_buffer(XGR_ScreenSurface);
+	set_default_render_buffer();
 }
 
 void XGR_Screen::set_resolution(int width, int height){
@@ -827,20 +827,28 @@ void XGR_Screen::blitRGBA(uint32_t *dst, uint8_t *screenPixels, uint8_t *overlay
 }
 
 
-uint8_t* XGR_Screen::get_render_buffer() {
+uint8_t* XGR_Screen::get_active_render_buffer() {
 	return ScreenBuf;
 }
 
-void XGR_Screen::set_render_buffer(uint8_t *buf) {
+uint8_t* XGR_Screen::get_default_render_buffer() {
+	return XGR_ScreenSurface;
+}
+
+uint8_t* XGR_Screen::get_2d_render_buffer() {
+	return XGR_ScreenSurface2D;
+}
+
+void XGR_Screen::set_active_render_buffer(uint8_t *buf) {
 	ScreenBuf = (unsigned char*)buf;
 }
 
 void XGR_Screen::set_default_render_buffer() {
-	set_render_buffer(XGR_ScreenSurface);
+	set_active_render_buffer(XGR_ScreenSurface);
 }
 
 void XGR_Screen::set_2d_render_buffer() {
-	set_render_buffer(XGR_ScreenSurface);
+	set_active_render_buffer(XGR_ScreenSurface2D);
 }
 
 SDL_Surface* XGR_Screen::get_screenshot() {
@@ -1466,10 +1474,9 @@ void XGR_Screen::rectangle16(int x,int y,int sx,int sy,int outcol,int incol,int 
 }
 
 void XGR_Screen::clear_2d_surface() {
-	uint8_t * orig = get_render_buffer();
-	set_render_buffer(XGR_ScreenSurface2D);
+	set_active_render_buffer(get_2d_render_buffer());
 	fill(0);
-	set_render_buffer(orig);
+	set_active_render_buffer(get_default_render_buffer());
 }
 
 
