@@ -266,7 +266,7 @@ void XGR_Screen::destroy_surfaces() {
 	SDL_UnlockSurface(XGR32_ScreenSurface);
 
 	delete[] XGR_ScreenSurface;
-        delete[] XGR_ScreenSurface2D;
+	delete[] XGR_ScreenSurface2D;
 	SDL_FreeSurface(XGR32_ScreenSurface);
 	SDL_FreeSurface(HDBackgroundSurface);
 
@@ -1011,7 +1011,7 @@ void XGR_Screen::setpal(void* ptr,int start,int count)
 		XGR_Palette[i].g = pal[i - start].G << 2;
 		XGR_Palette[i].b = pal[i - start].B << 2;
 		XGR32_PaletteCache[i] = SDL_MapRGB(XGR32_ScreenSurface->format,
-										   XGR_Palette[i].r, XGR_Palette[i].g, XGR_Palette[i].b);
+			XGR_Palette[i].r, XGR_Palette[i].g, XGR_Palette[i].b);
 	}
   	averageColorPalette.r = XGR_Palette[220].r;
   	averageColorPalette.g = XGR_Palette[220].g;

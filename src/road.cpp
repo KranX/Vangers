@@ -2512,9 +2512,9 @@ void shotFlush(void)
 	}
 	std::cout<<"ScreenShot name:"<<out_buf.GetBuf()<<std::endl;
 	SDL_Surface* screenshotSurface = XGR_Obj.get_screenshot();
-    SDL_SaveBMP(screenshotSurface, out_buf.GetBuf());
-    SDL_FreeSurface(screenshotSurface);
-	curShotNumber++;
+	SDL_SaveBMP(screenshotSurface, out_buf.GetBuf());
+	SDL_FreeSurface(screenshotSurface);
+    curShotNumber++;
 }
 #endif
 

@@ -171,7 +171,7 @@ struct XGR_Screen
 
 	void rectangle16(int x,int y,int sx,int sy,int outcol,int incol,int mode);
 	
-        void blitRGBA(uint32_t *dst, uint8_t *screenPixels, uint8_t *overlayPixels);
+	void blitRGBA(uint32_t *dst, uint8_t *screenPixels, uint8_t *overlayPixels);
 
 	void clear_2d_surface();
 
