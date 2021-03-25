@@ -816,8 +816,8 @@ void XGR_Screen::blitRGBA(uint32_t *dst, uint8_t *screenPixels, uint8_t *overlay
 	int x, y; 
 	SDL_Color color;
 
-	for (y = xgrScreenSizeY; y > 0; y--) {
-		for (x = xgrScreenSizeX; x > 0; x--) {
+	for (y = xgrScreenSizeY; y > 0; --y) {
+		for (x = xgrScreenSizeX; x > 0; --x) {
 		    uint8_t colorIndex = *overlayPixels == 0 ? *screenPixels : *overlayPixels;
 			*(dst++) = XGR32_PaletteCache[colorIndex];
 			screenPixels++;
@@ -861,12 +861,15 @@ SDL_Surface* XGR_Screen::get_screenshot() {
 void XGR_Screen::flip()
 {
 	if(flags & XGR_INIT) {
+		set_2d_render_buffer();
 		if(XGR_MouseObj.flags & XGM_PROMPT_ACTIVE) {
 			XGR_MouseObj.GetPromptFon();
 			XGR_MouseObj.PutPrompt();
 		}
 		XGR_MouseObj.GetFon();
 		XGR_MouseObj.PutFrame();
+		set_default_render_buffer();
+
 		// std::cout<<"Flip"<<std::endl;
 		void *pixels;
 		int pitch;
@@ -903,10 +906,13 @@ void XGR_Screen::flip()
 		}
 
 		SDL_RenderPresent(sdlRenderer);
+
+		set_2d_render_buffer();
 		XGR_MouseObj.PutFon();
 		if(XGR_MouseObj.flags & XGM_PROMPT_ACTIVE) {
 			XGR_MouseObj.PutPromptFon();
 		}
+		set_default_render_buffer();
 	}
 }
 
