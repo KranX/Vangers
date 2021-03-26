@@ -188,7 +188,8 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 				for(j = J0; j < J1; j++){
 					fx = sTables[j*4 + 0];
 					fy = sTables[j*4 + 1];
-					int tmp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
+					uchar* linePtr = slt[YCYCL(fy >> 16)];
+					uchar tmp = linePtr == nullptr ? 0 : *(linePtr + XCYCL(fx >> 16));
 					*vpp = tmp;
 					vpp[1] = tmp;
 					vpp += XGR_MAXX;
@@ -201,7 +202,8 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 				for (j = J0; j < J1; j++) {
 					fx = sTables[j*4 + 0];
 					fy = sTables[j*4 + 1];
-					*vpp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
+					uchar* linePtr = slt[YCYCL(fy >> 16)];
+					*vpp = linePtr == nullptr ? 0 : *(linePtr + XCYCL(fx >> 16));
 					vpp += XGR_MAXX;
 					fx += sTables[j*4 + 2];
 					fy += sTables[j*4 + 3];
