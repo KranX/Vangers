@@ -57,7 +57,6 @@ extern int NOISE_AMPL;
 extern int DEFAULT_TERRAIN;
 
 extern int TotalDrawFlag;
-extern int RAM16;
 extern const char* mapFName;
 
 extern int NetworkON;
@@ -108,14 +107,11 @@ uint PART_MAX;
 vrtMap* vMap;
 int KeepON = 0;
 
+extern constexpr int MAX_MAP_IN_MEMORY_POWER = 12; // 4096
 #ifdef _SURMAP_
-#if defined(EXTSCREEN) || defined(POSTER) || defined(ACTINT)
-int MAX_LINE = V_SIZE + 8;
+constexpr int MAX_LINE = MAX(2 ^ MAX_MAP_IN_MEMORY_POWER, 2 ^ 15);
 #else
-int MAX_LINE = 5000;
-#endif
-#else
-int MAX_LINE = 5000; // 2050;
+constexpr int MAX_LINE = MAX(2 ^ MAX_MAP_IN_MEMORY_POWER, 5000);
 #endif
 
 #ifdef SESSION
@@ -254,8 +250,6 @@ void YSetup(void)
 
 void vMapInit(void)
 {
-	if(RAM16) MAX_LINE = 900;
-
 	vMap -> init();
 	Verbose = 0;
 
@@ -488,14 +482,14 @@ void vrtMap::sssReserve(void)
 {
 	int max = YCYCL(downLine + 1);
 	int i = upLine;
-	if(MAP_POWER_Y <= 11 && !RAM16) i = max = 0;
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) i = max = 0;
 	do {
 		changedT[i] = 1;
 		i = YCYCL(i + 1);
 	} while(i != max);
 	flush();
 	i = upLine;
-	if(MAP_POWER_Y <= 11 && !RAM16) i = 0;
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) i = 0;
 	do {
 		changedT[i] = 1;
 		i = YCYCL(i + 1);
@@ -506,7 +500,7 @@ void vrtMap::sssRestore(void)
 {
 	int max = YCYCL(downLine + 1);
 	int i = upLine;
-	if(MAP_POWER_Y <= 11 && !RAM16) i = max = 0;
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) i = max = 0;
 	do {
 		readLine(i,lineT[i]);
 		LINE_render(i);
@@ -994,24 +988,16 @@ void vrtMap::reload(int nWorld)
 	LoadVPR();
 	RenderPrepare();
 
-#ifdef _ROAD_
-	if(MAP_POWER_Y <= 11)
-		accept(0, V_SIZE - 1);
-	else
-		accept(ViewY - 100, ViewY + 100);
-#else
-	if(MAP_POWER_Y <= 11) {
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) {
 		accept(0, V_SIZE - 1);
 	} else {
-		upLine = 1;
-		downLine = 0;
+		accept(ViewY - 100, ViewY + 100);
 	}
-#endif
 }
 
 void vrtMap::increase(int up,int down)
 {
-	if(MAP_POWER_Y <= 11 && !RAM16) return;
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) return;
 
 	up = YCYCL(up);
 	down = YCYCL(down);
@@ -1181,23 +1167,9 @@ void vrtMap::lockMem(void)
 		}
 }
 
-void vrtMap::another(int up,int down)
-{
-	up = YCYCL(up);
-	down = YCYCL(down);
-
-	delink(upLine,downLine);
-	if(isCompressed) linkC(up,down,1);
-	else link(up,down,1);
-
-	upLine = up;
-	downLine = down;
-	preViewY = ViewY;
-}
-
 void vrtMap::change(int up,int down)
 {
-	if (MAP_POWER_Y <= 11) {
+	if (MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) {
 		// small word - keep it all time
 		// it's data is set using accept call
 		return;
@@ -1209,11 +1181,6 @@ void vrtMap::change(int up,int down)
 #ifdef _SURMAP_
 	lastUpRq = up;
 	lastDownRq = down;
-
-	if(getDistY(up,downLine) > 0 || getDistY(upLine,down) > 0){
-		another(up,down);
-		return;
-	}
 #endif
 
 	unsigned int unlinkBorders[4];
@@ -1454,9 +1421,6 @@ inline void vrtMap::unuse_c(int i)
 
 void vrtMap::link(int up, int down, int d)
 {
-	//std::cout<<"vrtMap::link"<<std::endl;
-	if(MAP_POWER_Y <= 11 && !RAM16) return;
-
 	up = YCYCL(up);
 	down = YCYCL(down);
 	std::cout<<"vrtMap::link up:"<<up<<" down:"<<down<<std::endl;
@@ -1663,7 +1627,7 @@ void vrtMap::refresh(void)
 	int off;
 	int max = YCYCL(downLine + 1);
 	int i = upLine;
-	if(MAP_POWER_Y <= 11 && !RAM16) i = max = 0;
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) i = max = 0;
 	do {
 		if(lineT[i]){
 #ifdef SESSION
@@ -1696,7 +1660,7 @@ void vrtMap::flush(void)
 	int max = YCYCL(downLine + 1);
 	int m;
 	int i = upLine;
-	if(MAP_POWER_Y <= 11 && !RAM16) i = max = 0;
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) i = max = 0;
 	do {
 		if(lineT[i] && changedT[i]){
 			changedT[i] = 0;
@@ -1733,13 +1697,13 @@ void vrtMap::screenRender(void)
 	//std::cout<<"vrtMap::screenRender"<<std::endl;
 	int max = YCYCL(downLine + 1);
 	int i = upLine;
-	if(MAP_POWER_Y <= 11 && !RAM16) i = max = 0;
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) i = max = 0;
 	do {
 		changedT[i] = 1;
 		i = YCYCL(i + 1);
 	} while(i != max);
 
-	if(MAP_POWER_Y <= 11 && !RAM16)
+	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER)
 		WORLD_colcalc(0,V_SIZE - 1);
 	else
 		WORLD_colcalc(YCYCL(upLine + 1),downLine);
@@ -2005,9 +1969,11 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 				fx = tfx;
 				fy = tfy;
 				data = ltc[YCYCL(fy >> 16)];
-				for(j = 0;j < xsize;j++,vp++) {
-					*vp = *(data + XCYCL(fx >> 16));
-					fx += k_xscr_x;
+				if (data) {
+					for (j = 0; j < xsize; j++, vp++) {
+						*vp = *(data + XCYCL(fx >> 16));
+						fx += k_xscr_x;
+					}
 				}
 				tfy += k_yscr_y;
 				vp += XADD;
