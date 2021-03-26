@@ -4,6 +4,11 @@
 //#include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <vector>
+
+#ifdef DEBUG_MAP_REQUESTS
+#include <cassert>
+#endif
 
 
 
@@ -107,10 +112,10 @@ int KeepON = 0;
 #if defined(EXTSCREEN) || defined(POSTER) || defined(ACTINT)
 int MAX_LINE = V_SIZE + 8;
 #else
-int MAX_LINE = 3000;
+int MAX_LINE = 5000;
 #endif
 #else
-int MAX_LINE = 3000; // 2050;
+int MAX_LINE = 5000; // 2050;
 #endif
 
 #ifdef SESSION
@@ -230,8 +235,6 @@ void YSetup(void)
 	TOR_YSIZE = TOR_POWER*map_size_y;
 	V_POWER = MAP_POWER_Y;
 	V_SIZE = map_size_y;
-	// if(V_POWER <= 11 && !RAM16)
-		MAX_LINE = V_SIZE + 2;
 
 	QUANT = 1 << POWER;
 	part_map_size_y = 1 << WPART_POWER;
@@ -997,12 +1000,12 @@ void vrtMap::reload(int nWorld)
 	else
 		accept(ViewY - 100, ViewY + 100);
 #else
-	if(MAP_POWER_Y <= 11)
-		accept(0,V_SIZE - 1);
-	else {
+	if(MAP_POWER_Y <= 11) {
+		accept(0, V_SIZE - 1);
+	} else {
 		upLine = 1;
 		downLine = 0;
-		}
+	}
 #endif
 }
 
@@ -1194,7 +1197,12 @@ void vrtMap::another(int up,int down)
 
 void vrtMap::change(int up,int down)
 {
-	int du,dd,req;
+	if (MAP_POWER_Y <= 11) {
+		// small word - keep it all time
+		// it's data is set using accept call
+		return;
+	}
+
 	up = YCYCL(up);
 	down = YCYCL(down);
 
@@ -1205,49 +1213,168 @@ void vrtMap::change(int up,int down)
 	if(getDistY(up,downLine) > 0 || getDistY(upLine,down) > 0){
 		another(up,down);
 		return;
-		}
+	}
 #endif
-	du = getDistY(upLine, up);
-	dd = getDistY(downLine, down);
-	req = MAX(du, -dd);
-	// std::cout<<"vrtMap::change du:"<<du<<" dd:"<<dd<<" req:"<<req<<" up:"<<up<<" down:"<<down<<" upLine:"<<upLine<<" downLine:"<<downLine<<std::endl;
-	if (up > down) {
-		std::cout<<"vrtMap::change oposite order for request terrain"<<std::endl;
+
+	unsigned int unlinkBorders[4];
+	unsigned int linkBorders[4];
+
+	if (upLine < downLine) {
+		unlinkBorders[0] = upLine;
+		unlinkBorders[1] = downLine;
+		unlinkBorders[2] = map_size_y;
+		unlinkBorders[3] = map_size_y;
+	} else {
+		unlinkBorders[0] = 0;
+		unlinkBorders[1] = downLine;
+		unlinkBorders[2] = upLine;
+		unlinkBorders[3] = map_size_y - 1;
 	}
-	if (req > 0 && freeMax <= req + 1) {
-		if (du < 0) {
-			delink(upLine, upLine + req - 1);
-			upLine = YCYCL(upLine + req);
-		}
-		if (dd > 0) {
-			delink(downLine - req + 1, downLine);
-			downLine = YCYCL(downLine - req);
-		}
+
+	if (up < down) {
+		linkBorders[0] = up;
+		linkBorders[1] = down;
+		linkBorders[2] = map_size_y;
+		linkBorders[3] = map_size_y;
+	} else {
+		linkBorders[0] = 0;
+		linkBorders[1] = down;
+		linkBorders[2] = up;
+		linkBorders[3] = map_size_y - 1;
 	}
-	if (req < 0 && du < 0 && freeMax <= abs(du) + 1) {
-		delink(upLine, up - 1);
-		upLine = YCYCL(up);
-	}
-	if (req < 0 && dd > 0 && freeMax <= abs(dd) + 1) {
-		delink(down + 1, downLine);
-		downLine = YCYCL(down);
-	}
-	if (du > 0) {
-		if (isCompressed) {
-			linkC(up, upLine - 1, 1);
+
+	enum BorderType {
+		SKIP,
+		UNLINK,
+		LINK,
+	};
+
+	std::vector<std::pair<int, BorderType>> borders;
+	borders.reserve(9);
+	borders.emplace_back(-1, SKIP);
+
+	int unlinkIndex = 0;
+	int linkIndex = 0;
+	bool unlinkOpened = false;
+	bool linkOpened = false;
+	while (unlinkIndex < 4 || linkIndex < 4) {
+		unsigned int unlinkBorder = unlinkIndex < 4 ? unlinkBorders[unlinkIndex] : map_size_y;
+		unsigned int linkBorder = linkIndex < 4 ? linkBorders[linkIndex] : map_size_y;
+
+		unsigned int border;
+		unsigned int borderOpening;
+
+		if (linkBorder == unlinkBorder) {
+			border = unlinkBorder;
+			unlinkOpened = unlinkIndex % 2 == 0;
+			linkOpened = linkIndex % 2 == 0;
+			unlinkIndex++;
+			linkIndex++;
+		} else if (linkBorder < unlinkBorder) {
+			border = linkBorder;
+			linkOpened = linkIndex % 2 == 0;
+			linkIndex++;
 		} else {
-			link(up, upLine - 1, 1);
+			border = unlinkBorder;
+			unlinkOpened = unlinkIndex % 2 == 0;
+			unlinkIndex++;
 		}
-		upLine = up;
-	}
-	if (dd < 0) {
-		if (isCompressed) {
-			linkC(downLine + 1, down, 1);
-		} else {
-			link(downLine + 1, down, 1);
+
+		BorderType borderType = linkOpened == unlinkOpened ? SKIP :
+								(linkOpened ? LINK : UNLINK);
+
+		if (borderType != borders[borders.size() - 1].second) {
+			borders.emplace_back(border, borderType);
 		}
-		downLine = down;
 	}
+
+#ifdef DEBUG_MAP_REQUESTS
+	std::cout << "map request [" << up << " .. " << down << "] current [" << upLine << " .. " << downLine << "]" << std::endl;
+#endif
+
+	// starting from 2, because 1st is always SKIP type
+	// first run for unlink, second for link
+	for (int run = 0; run < 2; ++run) {
+		for (int i = 2; i < borders.size(); ++i) {
+			unsigned int up = borders[i - 1].first;
+			unsigned int down = borders[i].first;
+#ifdef DEBUG_MAP_REQUESTS
+			assert(up <= down);
+#endif
+
+			switch (borders[i - 1].second) {
+			case SKIP: {
+#ifdef DEBUG_MAP_REQUESTS
+				if (run == 0) {
+					std::cout << "skip [" << up << " .. " << down << "]" << std::endl;
+				}
+#endif
+			}
+				break;
+			case LINK: {
+				if (run == 0) {
+#ifdef DEBUG_MAP_REQUESTS
+					std::cout << "link [" << up << " .. " << down << "]" << std::endl;
+#endif
+					continue;
+				}
+				if (isCompressed) {
+					linkC(up, down, 1);
+				} else {
+					link(up, down, 1);
+				}
+			}
+				break;
+			case UNLINK: {
+				if (run != 0) {
+					continue;
+				}
+
+				// check the corner cases
+				if ((up >= linkBorders[0] && up <= linkBorders[1]) ||
+					(up >= linkBorders[2] && up <= linkBorders[3])) {
+					up++;
+				}
+				if ((down >= linkBorders[0] && down <= linkBorders[1]) ||
+					(down >= linkBorders[2] && down <= linkBorders[3])) {
+					down--;
+				}
+
+				if (up <= down) {
+#ifdef DEBUG_MAP_REQUESTS
+					auto prevMax = freeMax;
+					std::cout << "unlink [" << up << " .. " << down << "] free nodes before: " << freeMax;
+#endif
+					delink(up, down);
+#ifdef DEBUG_MAP_REQUESTS
+					std::cout << " after: " << freeMax << std::endl;
+					if (prevMax == freeMax) {
+						std::cout << "err! unlink memory leak" << std::endl;
+						delink(up, down); // for debug
+					}
+#endif
+				}
+			}
+				break;
+			}
+		}
+	}
+
+#ifdef DEBUG_MAP_REQUESTS
+	std::cout << "validating..." << std::endl;
+	for (int i = 0; i < map_size_y; ++i) {
+		bool shouldExists = (i >= linkBorders[0] && i <= linkBorders[1]) ||
+							(i >= linkBorders[2] && i <= linkBorders[3]);
+		if (shouldExists != (lineTcolor[i] != nullptr)) {
+			std::cout << "map error line [" << i << "] " << (shouldExists ? " should be loaded " : " should be unloaded") << " but NOT!" << std::endl;
+			assert(false);
+		}
+	}
+	std::cout << "map updated, free nodes " << freeMax << std::endl;
+#endif
+
+	upLine = up;
+	downLine = down;
 }
 
 void vrtMap::updownSetup(void)
@@ -1263,10 +1390,7 @@ void vrtMap::updownSetup(void)
 
 void vrtMap::request(int up,int down,int left, int right)
 {
-#ifdef _SURMAP_
-	if(MAP_POWER_Y > 10)
-#endif
-		change(up,down);
+	change(up,down);
 }
 
 void vrtMap::quant(void)
@@ -1388,10 +1512,6 @@ void vrtMap::link(int up, int down, int d)
 
 void vrtMap::linkC(int up,int down,int d)
 {
-	if(MAP_POWER_Y <= 11 && !RAM16) {
-		std::cout<<"vrtMap::linkC MAP_POWER_Y <= 11"<<std::endl;
-		return;
-	}
 	up = YCYCL(up);
 	down = YCYCL(down);
 	if (up > down) {
@@ -1473,7 +1593,6 @@ if (NetworkON && zMod_flood_level_delta!=0) {
 void vrtMap::delink(int up, int down)
 {
 	static int keeped = 0;
-	if(MAP_POWER_Y <= 11 && !RAM16) return;
 	up = YCYCL(up);
 	down = YCYCL(down);
 	// std::cout<<"vrtMap::delink up:"<<up<<" down:"<<down<<std::endl;
