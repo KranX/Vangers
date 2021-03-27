@@ -4969,8 +4969,7 @@ int acsQuant(void)
 		XGR_MouseShow();
 		acsScrD -> alloc_mem();
 
-		if(XGR_MAXX == 800 && !(aScrDisp -> flags & AS_ISCREEN))
-			acsScrD -> curScr -> ChangeCoords((800 - 640)/2,(600 - 480)/2);
+		if (!(aScrDisp -> flags & AS_ISCREEN)) { acsScrD -> curScr -> ChangeCoords((XGR_MAXX - 640)/2, (XGR_MAXY - 480)/2); }
 
 		EffectsOff();
 		firstQuant = 1;
@@ -5025,8 +5024,7 @@ int acsQuant(void)
 	}
 	if(ret){
 		acsAllocFlag = 0;
-		if(XGR_MAXX == 800 && !(aScrDisp -> flags & AS_ISCREEN))
-			acsScrD -> curScr -> ChangeCoords(-(800 - 640)/2,-(600 - 480)/2);
+		if (!(aScrDisp -> flags & AS_ISCREEN)) { acsScrD -> curScr -> ChangeCoords(-(XGR_MAXX - 640)/2, -(XGR_MAXY - 480)/2); }
 		acsScrD -> free_mem();
 		if(aScrDisp -> flags & AS_FULLSCR && !(aScrDisp -> flags & AS_ISCREEN)){
 			XGR_MouseHide();

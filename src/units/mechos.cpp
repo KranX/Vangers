@@ -3227,15 +3227,8 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	int t,dx,dy;
 
 	if(!camera_moving_xy_enable) {
-		dx = getDistX(X,camera_X_prev);
-		dy = getDistY(Y,camera_Y_prev);
-		if(dx < 400 && dy < 400) {
-			ViewX += dx;
-			ViewY += dy;
-		} else {
-			ViewX = X;
-			ViewY = Y;
-		}
+		ViewX = X;
+		ViewY = Y;
 	}
 	dx = getDistX(X,ViewX);
 	dy = getDistY(Y,ViewY);
