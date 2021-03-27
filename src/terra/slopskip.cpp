@@ -151,7 +151,8 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 			k_xscr_x *= 2;
 			k_xscr_y *= 2;
 			for (int j = 0; j < XDstSize; j += 2) {
-				int tmp = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
+				uchar* linePtr = slt[YCYCL(fy >> 16)];
+				uchar tmp = linePtr == nullptr ? 0 : *(linePtr + XCYCL(fx >> 16));
 				*vpp++ = tmp;
 				*vpp++ = tmp;
 				fx += k_xscr_x;
@@ -159,7 +160,8 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 			}
 		} else {
 			for (int j = 0; j < XDstSize; j++) {
-				*vpp++ = *(slt[YCYCL(fy >> 16)] + XCYCL(fx >> 16));
+				uchar* linePtr = slt[YCYCL(fy >> 16)];
+				*vpp++ = linePtr == nullptr ? 0 : *(linePtr + XCYCL(fx >> 16));
 				fx += k_xscr_x;
 				fy += k_xscr_y;
 			}

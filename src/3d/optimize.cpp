@@ -863,16 +863,17 @@ inline void shadow_line(int len,int fx,int fy)
 	delta -= len;
 
 	while(len-- > 0){
-		if((dz = *draw_dbuf) != 0){
-			mbuf = draw_lt[(fy >> 16) & clip_mask_y] + (((fx >> 16) | 1) & clip_mask_x);
-			if((unsigned int)z_low_level + (unsigned int)dz > (unsigned int)*mbuf)
+		uchar* linePtr = draw_lt[(fy >> 16) & clip_mask_y];
+		if(linePtr != nullptr && (dz = *draw_dbuf) != 0){
+			mbuf = linePtr + (((fx >> 16) | 1) & clip_mask_x);
+			if ((unsigned int)z_low_level + (unsigned int)dz > (unsigned int)*mbuf)
 				*draw_vbuf = ShadowColorTable[*draw_vbuf];
-			}
+		}
 		draw_vbuf++;
 		draw_dbuf += 2;
 		fx += draw_k_xscr_x;
 		fy += draw_k_xscr_y;
-		}
+	}
 	draw_vbuf += delta;
 	draw_dbuf += delta << 1;
 }
@@ -903,9 +904,10 @@ inline void image_line(int len,int fx,int fy)
 		}
 	delta -= len;
 
-	while(len-- > 0){
-		if((dz = *draw_dbuf) != 0){
-			mbuf = draw_lt[(fy >> 16) & clip_mask_y] + (((fx >> 16) | 1) & clip_mask_x);
+	while(len-- > 0) {
+		auto linePtr = draw_lt[(fy >> 16) & clip_mask_y];
+		if(linePtr != nullptr && (dz = *draw_dbuf) != 0) {
+			mbuf = linePtr + (((fx >> 16) | 1) & clip_mask_x);
 			z = z_low_level + dz - (int)*mbuf;
 			if(z > 0){
 				if(((type = *(mbuf + H_SIZE)) & (7 << 3)) != 0){
@@ -933,12 +935,12 @@ inline void image_line(int len,int fx,int fy)
 			else
 				if((type = *(mbuf + H_SIZE - 1)) & DOUBLE_LEVEL)
 					draw_state |= (type & (7 << 3)) != 0 || z_low_level_water + dz > 0 ? TOUCH_OF_AIR : TOUCH_OF_WATER;
-			}
+		}
 		draw_vbuf++;
 		draw_dbuf += 2;
 		fx += draw_k_xscr_x;
 		fy += draw_k_xscr_y;
-		}
+	}
 	draw_vbuf += delta;
 	draw_dbuf += delta << 1;
 }
