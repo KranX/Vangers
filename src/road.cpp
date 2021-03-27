@@ -1533,61 +1533,61 @@ void costab(void)
 }
 
 //Render poster by stalkerg
-extern void camera_quant(int X,int Y,int Turn,double V_abs);
-void creat_poster_pixels_copy(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
-	int x,y, src_x, src_y, dst_x, dst_y;
-	for (y = 0;y < srcrect->h; y++) {
-		for (x = 0;x < srcrect->w; x++) {
-			dst_y = dstrect->y+y;
-			dst_x = dstrect->x+x;
-			src_y = srcrect->y+y;
-			src_x = srcrect->x+x;
-			if (dst_y<dst->h&&dst_x<dst->w&&src_y<src->h&&src_x<src->w) {
-				((unsigned char*)dst->pixels)[dst_y*dst->w+dst_x] = 
-					((unsigned char*)src->pixels)[src_y*src->w+src_x];
-			}
-		}
-	}
-}
-void creat_poster() {
-	int iter, iter2;
-	
-	SDL_Surface *surface;
-	SDL_Rect srcrect, dstrect;
-	srcrect.w = 256;
-	srcrect.h = 256;
- 	srcrect.x = curGMap->xside-128;
- 	srcrect.y = curGMap->yside-128;
-	dstrect.w = 256;
-	dstrect.h = 256;
-	
-	
-    surface = SDL_CreateRGBSurface(0, map_size_x, map_size_y, 8,
-		0, 0, 0, 0);
-	surface->format = XGR_Obj.XGR_ScreenSurface->format;
-	
-	for (iter=0; iter<map_size_y/256;iter++) {
-		for (iter2=0; iter2<map_size_x/256;iter2++) {
-			
-			dstrect.x = 256*iter2;
-			dstrect.y = 256*iter;
-			std::cout<<"dstrect.x:"<<dstrect.x<<" dstrect.y:"<<dstrect.y<<std::endl;
-			
-			camera_quant(256*iter2, 256*iter, 0, 0);
-			/*actIntQuant();
-			uvsQuant();
-			BackD.restore();
-			MLquant();*/
-			//std::cout<<"TurnSecX:"<<TurnSecX<<" ViewX:"<<ViewX<<" ViewY:"<<ViewY<<" curGMap->xc:"<<curGMap->xc<<" curGMap->yc:"<<curGMap->yc
-			//<<" curGMap->xside:"<<curGMap->xside<<" curGMap->yside:"<<curGMap->yside<<std::endl;
-			vMap -> scaling(TurnSecX,ViewX,ViewY,curGMap->xc,curGMap->yc,curGMap->xside,curGMap->yside);
-			
-			creat_poster_pixels_copy(XGR_Obj.XGR_ScreenSurface, &srcrect, surface, &dstrect);
-		}
-	}
-
-	SDL_SaveBMP(surface, "./poster.bmp");
-}
+//extern void camera_quant(int X,int Y,int Turn,double V_abs);
+//void creat_poster_pixels_copy(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+//	int x,y, src_x, src_y, dst_x, dst_y;
+//	for (y = 0;y < srcrect->h; y++) {
+//		for (x = 0;x < srcrect->w; x++) {
+//			dst_y = dstrect->y+y;
+//			dst_x = dstrect->x+x;
+//			src_y = srcrect->y+y;
+//			src_x = srcrect->x+x;
+//			if (dst_y<dst->h&&dst_x<dst->w&&src_y<src->h&&src_x<src->w) {
+//				((unsigned char*)dst->pixels)[dst_y*dst->w+dst_x] =
+//					((unsigned char*)src->pixels)[src_y*src->w+src_x];
+//			}
+//		}
+//	}
+//}
+//void creat_poster() {
+//	int iter, iter2;
+//
+//	SDL_Surface *surface;
+//	SDL_Rect srcrect, dstrect;
+//	srcrect.w = 256;
+//	srcrect.h = 256;
+// 	srcrect.x = curGMap->xside-128;
+// 	srcrect.y = curGMap->yside-128;
+//	dstrect.w = 256;
+//	dstrect.h = 256;
+//
+//
+//    surface = SDL_CreateRGBSurface(0, map_size_x, map_size_y, 8,
+//		0, 0, 0, 0);
+//	surface->format = XGR_Obj.XGR_ScreenSurface->format;
+//
+//	for (iter=0; iter<map_size_y/256;iter++) {
+//		for (iter2=0; iter2<map_size_x/256;iter2++) {
+//
+//			dstrect.x = 256*iter2;
+//			dstrect.y = 256*iter;
+//			std::cout<<"dstrect.x:"<<dstrect.x<<" dstrect.y:"<<dstrect.y<<std::endl;
+//
+//			camera_quant(256*iter2, 256*iter, 0, 0);
+//			/*actIntQuant();
+//			uvsQuant();
+//			BackD.restore();
+//			MLquant();*/
+//			std::cout<<"TurnSecX:"<<TurnSecX<<" ViewX:"<<ViewX<<" ViewY:"<<ViewY<<" curGMap->xc:"<<curGMap->xc<<" curGMap->yc:"<<curGMap->yc
+//			<<" curGMap->xside:"<<curGMap->xside<<" curGMap->yside:"<<curGMap->yside<<std::endl;
+//			vMap -> scaling(TurnSecX,ViewX,ViewY,curGMap->xc,curGMap->yc,curGMap->xside,curGMap->yside);
+//
+//			creat_poster_pixels_copy(XGR_Obj.XGR32_ScreenSurface, &srcrect, surface, &dstrect);
+//		}
+//	}
+//
+//	SDL_SaveBMP(surface, "./poster.bmp");
+//}
 
 void KeyCenter(SDL_Event *key)
 {
@@ -2071,14 +2071,14 @@ void iGameMap::draw(int self)
 		FirstDraw = 0;
 //2D Rendring in game.
 #ifdef ACTINT
-		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
+		XGR_Obj.set_2d_render_buffer();
 		//XGR_Obj.fill(2);
 		if(GeneralSystemSkip) {
 			aScrDisp -> redraw();
 		}
 		aScrDisp -> flush();
 		//aScrDisp->pal_flush();
-		XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		XGR_Obj.set_default_render_buffer();
 		aScrDisp -> text_redraw();
 #endif
 	};
@@ -2498,7 +2498,7 @@ void shotFlush(void)
 	if(curShotNumber < 10)
 		buf < "0";
 	buf <= curShotNumber;
-	
+
 	while(true) {
 		XBuffer buf2;
 		buf2 = buf2 < buf.GetBuf() < ".bmp";
@@ -2511,8 +2511,10 @@ void shotFlush(void)
 		buf = buf < "v";
 	}
 	std::cout<<"ScreenShot name:"<<out_buf.GetBuf()<<std::endl;
-	SDL_SaveBMP(XGR_Obj.XGR_ScreenSurface, out_buf.GetBuf());
-	curShotNumber++;
+	SDL_Surface* screenshotSurface = XGR_Obj.get_screenshot();
+	SDL_SaveBMP(screenshotSurface, out_buf.GetBuf());
+	SDL_FreeSurface(screenshotSurface);
+    curShotNumber++;
 }
 #endif
 
