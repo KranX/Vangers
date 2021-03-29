@@ -282,7 +282,7 @@ void XGR_Screen::set_fullscreen(bool fullscreen) {
 	if (fullscreen!=XGR_FULL_SCREEN) {
 		SDL_SetWindowFullscreen(sdlWindow, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 		if (!fullscreen) {
-			SDL_SetWindowSize(sdlWindow, 800, 600);
+			SDL_SetWindowSize(sdlWindow, XGR_MAXX, XGR_MAXY);
 			SDL_SetWindowPosition(sdlWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 			
 		} else {
