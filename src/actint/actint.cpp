@@ -7383,11 +7383,14 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 	x = iMouseX;
 	y = iMouseY;
 
-	ix = 0;
-	iy = 0;
+	float scaleX = XGR_Obj.get_screen_scale_x();
+	float scaleY = XGR_Obj.get_screen_scale_y();
 
-	isx = ix + XGR_MAXX;
-	isy = iy + XGR_MAXY;
+	ix = curIbs -> PosX / scaleX;
+	iy = curIbs -> PosY / scaleY;
+
+	isx = ix + curIbs -> SizeX * scaleX;
+	isy = iy + curIbs -> SizeY * scaleY;
 
 	if(x >= ix && x < isx && y >= iy && y < isy){
 		id = aciGetScreenItem(x,y);

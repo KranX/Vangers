@@ -125,8 +125,10 @@ struct XGR_Screen
 
 	void set_fullscreen(bool fullscreen); 
 	void set_resolution(int width, int height);
-	void set_is_scaled(bool is_scaled);
-	bool get_is_scaled();
+	void set_is_scaled_renderer(bool is_scaled_renderer);
+	const bool get_is_scaled_renderer();
+	const float get_screen_scale_x();
+	const float get_screen_scale_y();
 
 	void setpixel(int x,int y,int col);
 	int getpixel(int x,int y);
@@ -188,7 +190,7 @@ struct XGR_Screen
 private:
 	void create_surfaces(int width, int height);
 	void destroy_surfaces();
-	bool is_scaled;
+	bool is_scaled_renderer;
 
 	uint8_t *ScreenBuf;
 
@@ -207,6 +209,9 @@ private:
 	SDL_Color XGR_Palette[256] {{0, 0, 0, 0}};
 	uint32_t XGR32_PaletteCache[256] {0};
 	SDL_Color averageColorPalette = {255,255,255,0};
+
+	float screen_scale_x = 1.f;
+	float screen_scale_y = 1.f;
 
 	void set_active_render_buffer(uint8_t *buf);
 
