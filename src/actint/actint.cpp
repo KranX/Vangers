@@ -5463,7 +5463,11 @@ void actIntDispatcher::set_fullscreen(bool isEnabled) {
 	} else {
 		flags &= ~AS_FULL_REDRAW;
 		flags &= ~AS_FULLSCR;
-		set_screen(XGR_MAXX/2, XGR_MAXY/2,0, XGR_MAXX/2, XGR_MAXY/2);
+		if (XGR_Obj.get_screen_scale_x() == 1) {
+			set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
+		} else {
+			set_screen(XGR_MAXX / 2, XGR_MAXY / 2, 0, XGR_MAXX / 2, XGR_MAXY / 2);
+		}
 		XGR_MouseShow();
 		if(curMode == AS_INV_MODE){
 			XGR_MouseSetPromptData(invPrompt);

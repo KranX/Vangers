@@ -1565,7 +1565,17 @@ void change_screen(int mode)
 {
 	aScrDisp -> change_ibs(mode);
 	aScrDisp -> flags &= ~AS_FULL_REDRAW;
-//	set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
+
+	if (XGR_Obj.get_screen_scale_x() == 1) {
+		set_screen(
+			aScrDisp->curIbs->SideX,
+			aScrDisp->curIbs->SideY,
+			0,
+			aScrDisp->curIbs->CenterX,
+			aScrDisp->curIbs->CenterY);
+	} else {
+		set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
+	}
 }
 
 void aciSendEvent2actint(int code,actintItemData* p,int data)

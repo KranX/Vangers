@@ -258,8 +258,14 @@ void XGR_Screen::set_resolution(int width, int height){
 	SDL_SetWindowSize(sdlWindow, width, height);
 	create_surfaces(width, height);
 
-	screen_scale_x = (float) width / 800;
-	screen_scale_y = (float) height / 600;
+	if (width == 800 && height == 600) {
+		// for comparison == 1
+		screen_scale_x = 1;
+		screen_scale_y = 1;
+	} else {
+		screen_scale_x = (float)width / 800;
+		screen_scale_y = (float)height / 600;
+	}
 }
 
 const float XGR_Screen::get_screen_scale_x() {
