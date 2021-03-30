@@ -2487,10 +2487,39 @@ void ShowAviRTO::Finit(void)
 _MEM_STATISTIC_("AFTER SHOW IMAGE RTO 4 FINIT -> ");
 }
 
-void set_screen(int Dx,int Dy,int mode,int xcenter,int ycenter)
+void set_map_to_fullscreen()
 {
-	curGMap -> change(Dx,Dy,mode,xcenter,ycenter);
+	curGMap -> change(
+		XGR_MAXX / 2,
+		XGR_MAXY / 2,
+		0,
+		XGR_MAXX / 2,
+		XGR_MAXY / 2);
 	Redraw = 1;
+}
+
+void set_map_to_ibs(ibsObject* ibs)
+{
+	if (XGR_Obj.get_screen_scale_x() == 1) {
+		curGMap -> change(
+			ibs->SideX,
+			ibs->SideY,
+			0,
+			ibs->CenterX,
+			ibs->CenterY);
+		Redraw = 1;
+	} else if (ibs->ID == 2 /* INVENTORY HD*/) {
+		auto inventoryWidth = 800 - ibs->SizeX;
+		curGMap -> change(
+			(XGR_MAXX - inventoryWidth) / 2,
+			XGR_MAXY  / 2,
+			0,
+			(XGR_MAXX - inventoryWidth) / 2,
+			XGR_MAXY / 2);
+		Redraw = 1;
+	} else {
+		set_map_to_fullscreen();
+	}
 }
 
 #ifdef SCREENSHOT

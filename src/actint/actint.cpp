@@ -270,7 +270,8 @@ void swap_buf_col(int src,int dest,int sx,int sy,unsigned char* buf);
 
 void restore_mouse_cursor(void);
 void set_mouse_cursor(char* p,int sx,int sy);
-void set_screen(int Dx,int Dy,int mode,int xcenter,int ycenter);
+void set_map_to_fullscreen();
+void set_map_to_ibs(ibsObject* ibs);
 
 void put_fon(int x,int y,int sx,int sy,unsigned char* buf);
 void put_attr_fon(int x,int y,int sx,int sy,unsigned char* buf);
@@ -5456,18 +5457,14 @@ void actIntDispatcher::EventQuant(void)
 void actIntDispatcher::set_fullscreen(bool isEnabled) {
 	if(isEnabled){
 		flags |= AS_FULLSCR;
-		set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+		set_map_to_fullscreen();
 		XGR_Obj.clear_2d_surface();
 		XGR_MouseSetPromptData(NULL);
 		XGR_MouseHide();
 	} else {
 		flags &= ~AS_FULL_REDRAW;
 		flags &= ~AS_FULLSCR;
-		if (XGR_Obj.get_screen_scale_x() == 1) {
-			set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
-		} else {
-			set_screen(XGR_MAXX / 2, XGR_MAXY / 2, 0, XGR_MAXX / 2, XGR_MAXY / 2);
-		}
+		set_map_to_ibs(curIbs);
 		XGR_MouseShow();
 		if(curMode == AS_INV_MODE){
 			XGR_MouseSetPromptData(invPrompt);
