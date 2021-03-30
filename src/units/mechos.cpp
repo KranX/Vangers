@@ -8261,10 +8261,10 @@ int VangerUnit::CheckStartJump(void)
 	return 1;
 };
 
-const int COMPAS_RIGHT = 80;
-const int COMPAS_LEFT = 60;
-const int COMPAS_UP = 60;
-const int COMPAS_DOWN = 80;
+extern int COMPAS_RIGHT;
+constexpr int COMPAS_LEFT = 60;
+constexpr int COMPAS_UP = 60;
+constexpr int COMPAS_DOWN = 80;
 
 const int MAX_COMPAS_DELTA = 7;
 const int MAX_COMPAS_SPEED = 10;

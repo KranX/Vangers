@@ -309,6 +309,10 @@ int StartMainQuantFlag = 0;
 int RecorderMode = 0;
 char* RecorderName = NULL;
 
+int COMPAS_RIGHT;
+constexpr int DEFAULT_COMPAS_RIGHT = 80;
+constexpr int HD_COMPAS_RIGHT = 340;
+
 #ifdef _DEMO_
 int aciCompleteGameFlag = 0;
 #endif
@@ -982,8 +986,10 @@ _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 #ifdef ACTINT
 	if (XGR_Obj.get_screen_scale_x() == 1) {
 		curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 	} else {
 		curGMap = new iGameMap(XGR_MAXX / 2, XGR_MAXY / 2, XGR_MAXX / 2, XGR_MAXY / 2);
+		COMPAS_RIGHT = HD_COMPAS_RIGHT;
 	}
 #else
 	curGMap = new iGameMap(XGR_MAXX/2,XGR_MAXY/2,XSIDE,YSIDE);
@@ -2496,6 +2502,8 @@ void set_map_to_fullscreen()
 		XGR_MAXX / 2,
 		XGR_MAXY / 2);
 	Redraw = 1;
+
+	COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 }
 
 void set_map_to_ibs(ibsObject* ibs)
@@ -2508,17 +2516,21 @@ void set_map_to_ibs(ibsObject* ibs)
 			ibs->CenterX,
 			ibs->CenterY);
 		Redraw = 1;
+
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 	} else if (ibs->ID == 2 /* INVENTORY HD*/) {
 		auto inventoryWidth = 800 - ibs->SizeX;
-		curGMap -> change(
+			curGMap -> change(
 			(XGR_MAXX - inventoryWidth) / 2,
 			XGR_MAXY  / 2,
 			0,
 			(XGR_MAXX - inventoryWidth) / 2,
 			XGR_MAXY / 2);
 		Redraw = 1;
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 	} else {
 		set_map_to_fullscreen();
+		COMPAS_RIGHT = HD_COMPAS_RIGHT;
 	}
 }
 
