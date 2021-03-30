@@ -111,7 +111,6 @@ extern int iScreenLog;
 extern int* AVI_index;
 
 extern actIntDispatcher* aScrDisp;
-extern int mechosCameraOffsetX;
 extern int PalIterLock;
 extern int aciShopMenuLog;
 extern int ExclusiveLog;
@@ -1302,7 +1301,6 @@ actIntDispatcher::actIntDispatcher(void)
 	events = new actEventHeap;
 
 	curMode = AS_INFO_MODE;
-	mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
 
 	mapObj = new bmlObject;
 	mapObj -> flags |= BMP_FLAG;
@@ -5468,12 +5466,10 @@ void actIntDispatcher::set_fullscreen(bool isEnabled) {
 		set_screen(XGR_MAXX/2, XGR_MAXY/2,0, XGR_MAXX/2, XGR_MAXY/2);
 		XGR_MouseShow();
 		if(curMode == AS_INV_MODE){
-			mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
 			XGR_MouseSetPromptData(invPrompt);
 		}
 		else {
 			if(curMode == AS_INFO_MODE){
-				mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
 				XGR_MouseSetPromptData(infPrompt);
 			}
 		}
@@ -5505,7 +5501,6 @@ void actIntDispatcher::change_mode(void)
 				b -> set_flush();
 				b = (aButton*)b -> prev;
 			}
-			mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
 			break;
 		case AS_INFO_MODE:
 			curMode = AS_INV_MODE;
@@ -5523,7 +5518,6 @@ void actIntDispatcher::change_mode(void)
 				b -> set_flush();
 				b = (aButton*)b -> prev;
 			}
-			mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
 			break;
 	}
 	flags &= ~AS_CHANGE_MODE;
