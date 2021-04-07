@@ -1,5 +1,6 @@
 //#include "PlayOgg.h"
 
+#include <memory>
 #include <sstream>
 
 #include "../global.h"
@@ -7,7 +8,7 @@
 #include "hsound.h"
 #include "../../lib/xsound/ogg_stream.h"
 
-extern clunk::Context context;
+extern std::unique_ptr<clunk::Context> context;
 //static MpegSound* music = 0;
 //extern LPDIRECTSOUND lpDS;
 
@@ -59,41 +60,53 @@ void xsDeInitMusic(void) {
 }
 
 void xsPlayMusic(int track,int min = 0,int sec = 0) {
-	curTrack = track;
-	//music->OpenToPlay(getTrackPathName(track));
-	//music=Mix_LoadMUS(getTrackPathName(track));
-	//Mix_PlayMusic(music, 31);
-	//std::cout<<"xsPlayMusic:"<<curTrack<<std::endl;
-	context.play(-1, new OggStream(getTrackPathName(track)), true);
-	context.set_volume(-1, volume/256.0);
+    if (context)
+    {
+        curTrack = track;
+        //music->OpenToPlay(getTrackPathName(track));
+        //music=Mix_LoadMUS(getTrackPathName(track));
+        //Mix_PlayMusic(music, 31);
+        //std::cout<<"xsPlayMusic:"<<curTrack<<std::endl;
+        context->play(-1, new OggStream(getTrackPathName(track)), true);
+        context->set_volume(-1, volume / 256.0);
+    }
 }
 
 void xsPlayOneTrackMusic(int track,int min = 0,int sec = 0) {
 	curTrack = track;
-	//if (music)
-	//	{
-		//Mix_HaltMusic();
-		//Mix_RewindMusic();
-		//Mix_FreeMusic(music);
-		//music = NULL;
-		//}
-	//music=Mix_LoadMUS(getTrackPathName(track));
-	//Mix_RewindMusic();
-	//Mix_PlayMusic(music, 31);
-	//music->OpenToPlay(getTrackPathName(track));
-	//std::cout<<"xsPlayOneTrackMusic:"<<curTrack<<std::endl;
-	if (context.playing(-1))
-		context.stop(-1);
-	context.play(-1, new OggStream(getTrackPathName(track)), true);
-	context.set_volume(-1, volume/256.0);
+    if (context)
+    {
+        //if (music)
+        //  {
+            //Mix_HaltMusic();
+            //Mix_RewindMusic();
+            //Mix_FreeMusic(music);
+            //music = NULL;
+            //}
+        //music=Mix_LoadMUS(getTrackPathName(track));
+        //Mix_RewindMusic();
+        //Mix_PlayMusic(music, 31);
+        //music->OpenToPlay(getTrackPathName(track));
+        //std::cout<<"xsPlayOneTrackMusic:"<<curTrack<<std::endl;
+        if (context->playing(-1))
+        {
+            context->stop(-1);
+        }
+        context->play(-1, new OggStream(getTrackPathName(track)), true);
+        context->set_volume(-1, volume / 256.0);
+    }
 }
 
 void xsStopMusic(void) {
-	//music->Stop();
-	//Mix_HaltMusic();
-	if (context.playing(-1))
-		context.stop(-1);
-
+    if (context)
+    {
+        //music->Stop();
+        //Mix_HaltMusic();
+        if (context->playing(-1))
+        {
+            context->stop(-1);
+        }
+    }
 }
 
 void xsStopMusic(int &track) {
@@ -102,33 +115,43 @@ void xsStopMusic(int &track) {
 }
 
 void xsPauseMusic(void) {
-	//music->Pause();
-	//Mix_PausedMusic();
-	context.pause(-1);
+    if (context)
+    {
+        //music->Pause();
+        //Mix_PausedMusic();
+        context->pause(-1);
+    }
 }
 
 void xsResumeMusic(void) {
-	//music->Resume();
-	//Mix_ResumeMusic();
-	context.pause(-1);
+    if (context)
+    {
+        //music->Resume();
+        //Mix_ResumeMusic();
+        context->pause(-1);
+    }
 }
 
 int xsGetStatusMusic(void) {
-	/*switch (music->IsPlay()) {
-		case MPEG_STOP:
-			return XCD_STOPPED;
-		case MPEG_PAUSE:
-			return XCD_PAUSED;
-		case MPEG_PLAY:
-			return XCD_PLAYING;
-		default:
-			return XCD_OTHER;
-	}*/
-	if (context.playing(-1)) {
-		return XCD_PLAYING;
-	} else {
-		return XCD_STOPPED;
-	}
+    if (context)
+    {
+        /*switch (music->IsPlay()) {
+            case MPEG_STOP:
+                return XCD_STOPPED;
+            case MPEG_PAUSE:
+                return XCD_PAUSED;
+            case MPEG_PLAY:
+                return XCD_PLAYING;
+            default:
+                return XCD_OTHER;
+        }*/
+        if (context->playing(-1)) {
+            return XCD_PLAYING;
+        } else {
+            return XCD_STOPPED;
+        }
+    }
+
 	return XCD_OTHER;
 }
 
@@ -155,13 +178,16 @@ int xsGetVolumeMusic(void) {
 }
 
 void xsSetVolumeMusic(int val) {
-	//std::cout<<"xsSetVolumeMusic:"<<val<<std::endl;
-	//music->SetVolume(val);
-	float f_val = val;
-	f_val/=256;
-	//Mix_VolumeMusic(val);
-	context.set_volume(-1, f_val);
-	volume=val;
+    if (context)
+    {
+        //std::cout<<"xsSetVolumeMusic:"<<val<<std::endl;
+        //music->SetVolume(val);
+        float f_val = val;
+        f_val /= 256;
+        //Mix_VolumeMusic(val);
+        context->set_volume(-1, f_val);
+        volume=val;
+    }
 }
 
 

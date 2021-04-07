@@ -4,6 +4,8 @@
 //#include <SDL_mixer.h>
 #include <clunk/clunk.h>
 
+#include <memory>
+
 #include "xglobal.h"
 #include "xgraph.h"
 #include "_xsound.h"
@@ -45,15 +47,14 @@ void xtDeactivateSysFinitFnc(int id);
 static XSoundChannel channels[MAX_CHANNELS];
 
 int XSoundError = 0;
-int XSoundInitFlag = 0;
-clunk::Context context;
-clunk::Object * clunk_object;
+std::unique_ptr<clunk::Context> context;
+clunk::Object * clunk_object = nullptr;
 int g_freq;
 
 
 void SoundPlay(void *lpDSB, int channel, int priority, int cropos, int flags)
 {
-	if(XSoundInitFlag){
+	if(clunk_object){
 		clunk::Sample *source = (clunk::Sample *)lpDSB;
 		
 		//if (channel==2)
@@ -140,6 +141,10 @@ void SoundPlay(void *lpDSB, int channel, int priority, int cropos, int flags)
 
 void SoundVolume(int channel, int volume)
 {
+    if (!context)
+    {
+        return;
+    }
 	/* SDL_Mixer Version
 	volume+=10000;
 	volume*=0.0128;*/
@@ -148,13 +153,13 @@ void SoundVolume(int channel, int volume)
 	//Debug
 	//std::cout<<"SoundVolume:"<<channel<<" "<<volume<<std::endl;
 	
-	if(XSoundInitFlag){
+	if(clunk_object){
 		if(channels[channel].sound) //channels[channel].sound -> SetVolume((LONG )volume);
 			{
 			channels[channel].volume = volume;
 			/* SDL_Mixer Version
 			Mix_Volume(channel, volume);*/
-			context.set_volume(channel, f_volume);
+			context->set_volume(channel, f_volume);
 			}	
 	}
 }
@@ -162,7 +167,7 @@ void SoundVolume(int channel, int volume)
 int GetSoundVolume(int channel)
 {
 	int volume = 0;
-	if(XSoundInitFlag){
+	if(clunk_object){
 		std::cout<<"GetSoundVolume:"<<channel<<std::endl;
 		if(channels[channel].sound)
 			volume = channels[channel].volume;
@@ -180,7 +185,7 @@ void GlobalVolume(int volume)
 
 void SoundPan(int channel, int panning)
 {
-	if(XSoundInitFlag){
+	if(clunk_object){
 		//std::cout<<"SoundPan "<<channel<<" "<<panning*0.001<<std::endl;
 		channels[channel].pan = panning;
 		//if(channels[channel].sound) {
@@ -194,7 +199,7 @@ int GetSoundFrequency(void *lpDSB)
 {
 	//std::cout<<"Get SoundFrequency"<<((clunk::Sample *)lpDSB)->name<<std::endl;
 	unsigned long ret = 0;
-	if(XSoundInitFlag){
+	if(clunk_object){
 		/*int numtimesopened, frequency, channels;
 		Uint16 format;
 		SDL_Mixer Version
@@ -209,7 +214,7 @@ int GetSoundFrequency(void *lpDSB)
 void SetSoundFrequency(void *lpDSB,int frq)
 {
 	//std::cout<<"SetSoundFrequency:"<<((clunk::Sample *)lpDSB)->name<<" frq:"<<frq<<std::endl;
-	if(XSoundInitFlag){
+	if(clunk_object){
 		float out_pitch = frq;
 		out_pitch/=22050;
 		//std::cout<<"pitch:"<<out_pitch<<" freq:"<<((clunk::Sample *)lpDSB)->spec.freq<<std::endl;
@@ -220,7 +225,7 @@ void SetSoundFrequency(void *lpDSB,int frq)
 void* GetSound(int channel)
 {
 	//std::cout<<"GetSound:"<<((clunk::Sample *)channels[channel].sound)->name<<" channel:"<<channel<<std::endl;
-	if(XSoundInitFlag)
+	if(clunk_object)
 		return channels[channel].sound;
 
 	return NULL;
@@ -228,7 +233,7 @@ void* GetSound(int channel)
 
 void SoundStop(int channel)
 {
-	if(XSoundInitFlag){
+	if(clunk_object){
 		//std::cout<<"SoundStop:"<<channel<<std::endl;
 		if(channels[channel].sound){
 			/* SDL_Mixer version
@@ -243,7 +248,7 @@ void SoundStop(int channel)
 
 void SoundRelease(void *lpDSB)
 {
-	if(XSoundInitFlag){
+	if(clunk_object){
 		//std::cout<<"SoundRelease:"<<((clunk::Sample *)lpDSB)->name<<std::endl;
 		/* SDL_Mixer version
 		Mix_FreeChunk((Mix_Chunk *)lpDSB);*/
@@ -254,6 +259,11 @@ void SoundRelease(void *lpDSB)
 
 void SoundLoad(char *filename, void **lpDSB)
 {
+    if (!context)
+    {
+        *lpDSB = nullptr;
+        return;
+    }
 	/* SDL_Mixer version
 	Mix_Chunk *chunk=Mix_LoadWAV(filename);
 	if(chunk==NULL)
@@ -267,7 +277,7 @@ void SoundLoad(char *filename, void **lpDSB)
 	//std::cout<<"SoundLoad:"<<filename<<std::endl;
 	clunk::Sample *chunk = NULL;
 	try {
-		chunk = context.create_sample();
+		chunk = context->create_sample();
 		chunk->load(filename);
 	} catch(const std::exception & e)
 		{ 
@@ -303,7 +313,7 @@ void SetVolume(void *lpDSB, int volume)
 int GetVolume(void *lpDSB)
 {
 	int ret = 0;
-	if(XSoundInitFlag){
+	if(clunk_object){
 		/* SDL_Mixer Version
 		ret = Mix_VolumeChunk((Mix_Chunk *)lpDSB, 0);
 		Mix_VolumeChunk((Mix_Chunk *)lpDSB, ret);*/
@@ -319,6 +329,7 @@ void ChannelFinished(int channel)
 
 int SoundInit(int maxHZ, int schannels)
 {
+    std::unique_ptr<clunk::Context> initializer(new clunk::Context());
 	//Only one freq, now sound more powerfull.	
 	/* SDL_Mixer version
 	if (SDL_Init (SDL_INIT_AUDIO) == -1)
@@ -337,10 +348,19 @@ int SoundInit(int maxHZ, int schannels)
 
 	Mix_AllocateChannels(MAX_CHANNELS); */
 	//std::cout<<"SoundInit maxHZ:"<<maxHZ<<std::endl;
-	context.init(maxHZ, 2, 512);
+    try
+    {
+        initializer->init(maxHZ, 2, 512);
+        context = std::move(initializer);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "unable to initialize sound, reason: " << e.what() << std::endl;
+        return false;
+    }
 	g_freq = maxHZ;
-	context.set_max_sources(MAX_CHANNELS);
-	clunk_object = context.create_object();
+	context->set_max_sources(MAX_CHANNELS);
+	clunk_object = context->create_object();
 	int i;
 	for(i = 0; i < MAX_CHANNELS; ++i)
 	{
@@ -351,7 +371,6 @@ int SoundInit(int maxHZ, int schannels)
 	}
 	/* SDL_Mixer version
 	Mix_ChannelFinished(&ChannelFinished);*/
-	XSoundInitFlag = 1;
 	//ErrH.Abort("SoundInit OK!!!");
 	return true;
 }
@@ -359,14 +378,14 @@ int SoundInit(int maxHZ, int schannels)
 void SoundFinit(void)
 {
 	int i;
-	if(XSoundInitFlag){
+	if(clunk_object){
 		for(i = 0; i < MAX_CHANNELS; ++i)
 			SoundStop(i);
 		/* SDL_Mixer version
 		Mix_CloseAudio();*/
 		delete clunk_object;
-		context.deinit();
-		XSoundInitFlag = 0;
+		context->deinit();
+		context.reset();
 	}
 }
 
