@@ -231,7 +231,7 @@ void GeneralSystemLoad(XStream& in);
 void GeneralSystemSave(XStream& out);
 
 void load_map_bmp(int num);
-void set_screen(int Dx,int Dy,int mode,int xcenter,int ycenter);
+void set_map_to_ibs(ibsObject* ibs);
 void set_mouse_cursor(char* p,int sx,int sy);
 void restore_mouse_cursor(void);
 
@@ -1565,7 +1565,7 @@ void change_screen(int mode)
 {
 	aScrDisp -> change_ibs(mode);
 	aScrDisp -> flags &= ~AS_FULL_REDRAW;
-//	set_screen(XGR_MAXX/2, XGR_MAXY/2, 0, XGR_MAXX/2, XGR_MAXY/2);
+	set_map_to_ibs(aScrDisp->curIbs);
 }
 
 void aciSendEvent2actint(int code,actintItemData* p,int data)

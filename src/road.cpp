@@ -309,6 +309,10 @@ int StartMainQuantFlag = 0;
 int RecorderMode = 0;
 char* RecorderName = NULL;
 
+int COMPAS_RIGHT;
+constexpr int DEFAULT_COMPAS_RIGHT = 80;
+constexpr int HD_COMPAS_RIGHT = 340;
+
 #ifdef _DEMO_
 int aciCompleteGameFlag = 0;
 #endif
@@ -681,7 +685,7 @@ extern int activeWTRACK;
 
 void MainMenuRTO::Init(int id)
 {
-	XGR_Obj.set_is_scaled(true);
+	XGR_Obj.set_is_scaled_renderer(true);
 	Dead = 0;
 //	activeWTRACK = 0;
 _MEM_STATISTIC_("BEFORE MAIN MENU INIT -> ");
@@ -756,7 +760,7 @@ int MainMenuRTO::Quant(void)
 
 void MainMenuRTO::Finit(void)
 {
-	XGR_Obj.set_is_scaled(false);
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef ISCREEN
 	
 	if(flags & RTO_FINIT_FLAG){
@@ -801,8 +805,13 @@ void LoadingRTO1::Init(int id)
 #endif
 
 #ifdef ACTINT
-	XSIDE = XGR_MAXX / 2;
-	YSIDE = XGR_MAXY / 2;
+	if (XGR_Obj.get_screen_scale_x() == 1) {
+		XSIDE = aScrDisp -> curIbs -> SideX;
+		YSIDE = aScrDisp -> curIbs -> SideY;
+	} else {
+		XSIDE = XGR_MAXX / 2;
+		YSIDE = XGR_MAXY / 2;
+	}
 	XSIZE = 2*XSIDE;
 	YSIZE = 2*YSIDE;
 #else
@@ -853,7 +862,7 @@ _MEM_STATISTIC_("AFTER LOADING RTO1 FINIT -> ");
 
 void EscaveOutRTO::Init(int id)
 {
-	XGR_Obj.set_is_scaled(true);
+	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef ISCREEN
 	iOutEscaveInit();
 #endif
@@ -881,7 +890,7 @@ int EscaveOutRTO::Quant(void)
 
 void EscaveOutRTO::Finit(void)
 {
-	XGR_Obj.set_is_scaled(false);
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef ISCREEN
 	iOutEscaveFinit();
 	aci_LocationQuantFinit();
@@ -893,7 +902,7 @@ _MEM_STATISTIC_("AFTER ESCAVE FINIT -> ");
 
 void FirstEscaveOutRTO::Init(int id)
 {
-	XGR_Obj.set_is_scaled(true);
+	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef ISCREEN
 #ifndef _ACI_SKIP_SHOP_
 	iOutEscaveInit();
@@ -928,7 +937,7 @@ int FirstEscaveOutRTO::Quant(void)
 
 void FirstEscaveOutRTO::Finit(void)
 {
-	XGR_Obj.set_is_scaled(false);
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef ISCREEN
 #ifndef _ACI_SKIP_SHOP_
 	iOutEscaveFinit();
@@ -975,7 +984,13 @@ _MEM_STATISTIC_("AFTER TABLE GENERAL  -> ");
 _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 
 #ifdef ACTINT
-	curGMap = new iGameMap(XGR_MAXX / 2, XGR_MAXY / 2, XGR_MAXX / 2, XGR_MAXY / 2);
+	if (XGR_Obj.get_screen_scale_x() == 1) {
+		curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
+	} else {
+		curGMap = new iGameMap(XGR_MAXX / 2, XGR_MAXY / 2, XGR_MAXX / 2, XGR_MAXY / 2);
+		COMPAS_RIGHT = HD_COMPAS_RIGHT;
+	}
 #else
 	curGMap = new iGameMap(XGR_MAXX/2,XGR_MAXY/2,XSIDE,YSIDE);
 #endif
@@ -1017,7 +1032,7 @@ _MEM_STATISTIC_("AFTER LOADING RTO2 INIT -> ");
 
 void FirstEscaveRTO::Init(int id)
 {
-	XGR_Obj.set_is_scaled(true);
+	XGR_Obj.set_is_scaled_renderer(true);
 _MEM_STATISTIC_("\nBEFORE FIRST ESCAVE RTO INIT -> ");
 #ifdef ISCREEN
 	CurrentWorld = 0;
@@ -1088,7 +1103,7 @@ int FirstEscaveRTO::Quant(void)
 
 void FirstEscaveRTO::Finit(void)
 {
-	XGR_Obj.set_is_scaled(false);
+	XGR_Obj.set_is_scaled_renderer(false);
 	if(flags & RTO_FINIT_FLAG){
 		ClearFlag(RTO_ALL_FLAGS);
 	}
@@ -1156,7 +1171,7 @@ int GameQuantRTO::Quant(void)
 
 void EscaveRTO::Init(int id)
 {
-	XGR_Obj.set_is_scaled(true);
+	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef ISCREEN
 	uvsPrepareQuant();
 	aci_LocationQuantPrepare();
@@ -1186,7 +1201,7 @@ int EscaveRTO::Quant(void)
 
 void EscaveRTO::Finit(void)
 {
-	XGR_Obj.set_is_scaled(false);
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef ISCREEN
 	if(flags & RTO_FINIT_FLAG){
 		ClearFlag(RTO_ALL_FLAGS);
@@ -1209,11 +1224,11 @@ _MEM_STATISTIC_("AFTER ESCAVE RTO FINIT -> ");
 }
 
 void PaletteTransformRTO::Init(int) {
-	XGR_Obj.set_is_scaled(true);
+	XGR_Obj.set_is_scaled_renderer(true);
 }
 
 void PaletteTransformRTO::Finit() {
-	XGR_Obj.set_is_scaled(false);
+	XGR_Obj.set_is_scaled_renderer(false);
 }
 
 int PaletteTransformRTO::Quant(void)
@@ -2147,7 +2162,7 @@ void PaletteTransform::quant(void)
 
 void ShowImageRTO::Init(int id)
 {
-	XGR_Obj.set_is_scaled(true);
+	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef SHOW_IMAGES
 	int i;
 	short sx,sy;
@@ -2440,7 +2455,7 @@ int ShowAviRTO::Quant(void)
 
 void ShowImageRTO::Finit(void)
 {
-	XGR_Obj.set_is_scaled(false);
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef SHOW_IMAGES
 	char* pal;
 	pal = new char[768];
@@ -2478,10 +2493,45 @@ void ShowAviRTO::Finit(void)
 _MEM_STATISTIC_("AFTER SHOW IMAGE RTO 4 FINIT -> ");
 }
 
-void set_screen(int Dx,int Dy,int mode,int xcenter,int ycenter)
+void set_map_to_fullscreen()
 {
-	curGMap -> change(Dx,Dy,mode,xcenter,ycenter);
+	curGMap -> change(
+		XGR_MAXX / 2,
+		XGR_MAXY / 2,
+		0,
+		XGR_MAXX / 2,
+		XGR_MAXY / 2);
 	Redraw = 1;
+
+	COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
+}
+
+void set_map_to_ibs(ibsObject* ibs)
+{
+	if (XGR_Obj.get_screen_scale_x() == 1) {
+		curGMap -> change(
+			ibs->SideX,
+			ibs->SideY,
+			0,
+			ibs->CenterX,
+			ibs->CenterY);
+		Redraw = 1;
+
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
+	} else if (ibs->ID == 2 /* INVENTORY HD*/) {
+		auto inventoryWidth = 800 - ibs->SizeX;
+			curGMap -> change(
+			(XGR_MAXX - inventoryWidth) / 2,
+			XGR_MAXY  / 2,
+			0,
+			(XGR_MAXX - inventoryWidth) / 2,
+			XGR_MAXY / 2);
+		Redraw = 1;
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
+	} else {
+		set_map_to_fullscreen();
+		COMPAS_RIGHT = HD_COMPAS_RIGHT;
+	}
 }
 
 #ifdef SCREENSHOT

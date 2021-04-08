@@ -102,7 +102,7 @@ Uint32 CursorAnim(Uint32 interval, void *param)
 XGR_Screen::XGR_Screen(void)
 {
 	flags = 0;
-	is_scaled = false;
+	is_scaled_renderer = false;
 
 	ClipMode = XGR_CLIP_PUTSPR;
 
@@ -248,15 +248,32 @@ void XGR_Screen::create_surfaces(int width, int height) {
 
 void XGR_Screen::set_resolution(int width, int height){
 	// TODO: do not change resolution, is new res is the same
-	std::cout<<"XGR_Screen::set_resolution: "<<width<<", "<<height<<std::endl;
+	std::cout << "XGR_Screen::set_resolution: " << width << ", " << height << std::endl;
 	if(width == ScreenX && height == ScreenY){
-		std::cout<<"Resolution didn't change"<<std::endl;
+		std::cout << "Resolution didn't change" << std::endl;
 		return;
 	}
 
 	destroy_surfaces();
 	SDL_SetWindowSize(sdlWindow, width, height);
 	create_surfaces(width, height);
+
+	if (width == 800 && height == 600) {
+		// for comparison == 1
+		screen_scale_x = 1;
+		screen_scale_y = 1;
+	} else {
+		screen_scale_x = (float)width / 800;
+		screen_scale_y = (float)height / 600;
+	}
+}
+
+const float XGR_Screen::get_screen_scale_x() {
+	return screen_scale_x;
+}
+
+const float XGR_Screen::get_screen_scale_y() {
+	return screen_scale_y;
 }
 
 void XGR_Screen::destroy_surfaces() {
@@ -295,14 +312,14 @@ void XGR_Screen::set_fullscreen(bool fullscreen) {
 	} 
 }
 
-void XGR_Screen::set_is_scaled(bool is_scaled)
+void XGR_Screen::set_is_scaled_renderer(bool is_scaled_renderer)
 {
-	this->is_scaled = is_scaled;
+	this->is_scaled_renderer = is_scaled_renderer;
 }
 
-bool XGR_Screen::get_is_scaled()
+const bool XGR_Screen::get_is_scaled_renderer()
 {
-	return this->is_scaled;
+	return this->is_scaled_renderer;
 }
 
 void XGR_Screen::setpixel(int x,int y,int col)
@@ -887,12 +904,12 @@ void XGR_Screen::flip()
 		}
 		SDL_RenderSetLogicalSize(sdlRenderer, xgrScreenSizeX, xgrScreenSizeY);
 
-		if(is_scaled){
+		if(is_scaled_renderer){
 			SDL_SetTextureColorMod(HDBackgroundTexture, averageColorPalette.r, averageColorPalette.g, averageColorPalette.b);
 			SDL_RenderCopy(sdlRenderer, HDBackgroundTexture, NULL, NULL);
 
 			SDL_Rect src_rect {0, 0, 800, 600};
-			int new_width = 800 / 600.0f * (float)xgrScreenSizeY;
+			int new_width = screen_scale_y * 800;
 			SDL_Rect dst_rect {
 					.x = (xgrScreenSizeX - new_width)/2,
 					.y = 0,
