@@ -419,6 +419,8 @@ void uniVangPrepare(void){
 	char* atom;
 	int i;
 
+	uvsCurrentWorldUnable = 0;
+	uvsCurrentWorldUnableBefore = 0;
 	aci_curLocationName = "";
 	uvsLastEscaveName = "";
 	DollyIndex = 1;
