@@ -69,7 +69,6 @@ extern int multi_draw;
 extern int RAM16;
 extern int GameQuantReturnValue;
 
-int mechosCameraOffsetX = 0;
 extern int aciWorldIndex;
 
 extern int light_modulation;
@@ -747,7 +746,7 @@ void VangerUnit::BulletCollision(int pow,GeneralObject* p)
 				if(PowerFlag & VANGER_POWER_RUFFA_GUN)
 					s |= UVS_KRON_FLAG::RAFFA;
 
-				if(uvsPoint->Pmechos->color != uvsPoint->Pmechos->color)
+				if(((VangerUnit*)(p))->uvsPoint->Pmechos->color != uvsPoint->Pmechos->color)
 					s |= UVS_KRON_FLAG::ALIEN;
 
 				switch(uvsPoint->Pmechos->color){
@@ -3238,15 +3237,8 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	int t,dx,dy;
 
 	if(!camera_moving_xy_enable) {
-		dx = getDistX(X,camera_X_prev);
-		dy = getDistY(Y,camera_Y_prev);
-		if(dx < 400 && dy < 400) {
-			ViewX += dx;
-			ViewY += dy;
-		} else {
-			ViewX = X;
-			ViewY = Y;
-		}
+		ViewX = X;
+		ViewY = Y;
 	}
 	dx = getDistX(X,ViewX);
 	dy = getDistY(Y,ViewY);
@@ -3402,17 +3394,7 @@ void ActionDispatcher::CameraQuant(void)
 		int Turn = Active -> psi;
 		//if(Active -> traction < 0)
 		//	Turn = rPI(Turn + PI);
-		double turnf = 1.5 * M_PI - GTOR(TurnAngle);
-		double cdx = 0, cdy = 0;
-		if (camera_rotate_enable) {
-			cdx = -mechosCameraOffsetX * cos(M_PI / 2 - turnf);
-			cdy = mechosCameraOffsetX * sin(M_PI / 2 - turnf);
-		} else {
-			cdx = mechosCameraOffsetX;
-			cdy = 0;
-		}
-
-		camera_quant(Active->R_curr.x + cdx, Active->R_curr.y + cdy, Turn, Active->V.vabs());
+		camera_quant(Active -> R_curr.x,Active -> R_curr.y,Turn,Active -> V.vabs());
 //		fout < "camera_quant(x,y,t,v): " <= ViewX < "\t" <= ViewY < "\n";
 		}
 }
@@ -8212,7 +8194,7 @@ void ActionDispatcher::DrawResource(void)
 	XGR_SetClip(UcutLeft,VcutUp,UcutRight,VcutDown);
 
 	y0 = VcutDown - RES_DRAW_DOWN;
-	x0 = UcutRight - RES_DRAW_LEFT - mechosCameraOffsetX;
+	x0 = UcutRight - RES_DRAW_LEFT;
 	x1 = UcutLeft + RES_DRAW_LEFT;
 	sx = x0 - x1;
 
@@ -8312,10 +8294,10 @@ int VangerUnit::CheckStartJump(void)
 	return 1;
 };
 
-const int COMPAS_RIGHT = 80;
-const int COMPAS_LEFT = 60;
-const int COMPAS_UP = 60;
-const int COMPAS_DOWN = 80;
+extern int COMPAS_RIGHT;
+constexpr int COMPAS_LEFT = 60;
+constexpr int COMPAS_UP = 60;
+constexpr int COMPAS_DOWN = 80;
 
 const int MAX_COMPAS_DELTA = 7;
 const int MAX_COMPAS_SPEED = 10;
@@ -8693,8 +8675,8 @@ void CompasObject::Quant(void)
 		vMove.x = 0;
 	};
 
-	if(tx > UcutRight - COMPAS_RIGHT - mechosCameraOffsetX * 2){
-		tx = UcutRight - COMPAS_RIGHT - mechosCameraOffsetX * 2;
+	if(tx > UcutRight - COMPAS_RIGHT){
+		tx = UcutRight - COMPAS_RIGHT;
 		vMove.x = 0;
 	};
 

@@ -111,7 +111,6 @@ extern int iScreenLog;
 extern int* AVI_index;
 
 extern actIntDispatcher* aScrDisp;
-extern int mechosCameraOffsetX;
 extern int PalIterLock;
 extern int aciShopMenuLog;
 extern int ExclusiveLog;
@@ -127,8 +126,8 @@ extern char* aciSTR_PRICE;
 extern char* aciSTR_EMPTY_SLOT;
 extern char* aciSTR_UNNAMED_SAVE;
 extern char* aciSTR_AUTOSAVE;
-extern char* aciSTR_KILLS;
-extern char* aciSTR_DEATHS;
+extern char* aciSTR_WINS;
+extern char* aciSTR_LOSSES;
 extern char* aciSTR_LUCK;
 extern char* aciSTR_DOMINANCE;
 extern char* aciSTR_BROKEN;
@@ -149,6 +148,10 @@ extern char* aciSTR_NO_CASH;
 extern char* aciSTR_PICKUP_ITEMS_OFF;
 extern char* aciSTR_PICKUP_WEAPONS_OFF;
 extern char* aciSTR_PutThis;
+
+extern char* aciSTR_RESTRICTIONS;
+extern char* aciSTR_STATISTICS;
+extern char* aciSTR_MINUTES;
 
 extern int aciItmTextQueueSize;
 
@@ -271,7 +274,8 @@ void swap_buf_col(int src,int dest,int sx,int sy,unsigned char* buf);
 
 void restore_mouse_cursor(void);
 void set_mouse_cursor(char* p,int sx,int sy);
-void set_screen(int Dx,int Dy,int mode,int xcenter,int ycenter);
+void set_map_to_fullscreen();
+void set_map_to_ibs(ibsObject* ibs);
 
 void put_fon(int x,int y,int sx,int sy,unsigned char* buf);
 void put_attr_fon(int x,int y,int sx,int sy,unsigned char* buf);
@@ -1302,7 +1306,6 @@ actIntDispatcher::actIntDispatcher(void)
 	events = new actEventHeap;
 
 	curMode = AS_INFO_MODE;
-	mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
 
 	mapObj = new bmlObject;
 	mapObj -> flags |= BMP_FLAG;
@@ -5458,22 +5461,20 @@ void actIntDispatcher::EventQuant(void)
 void actIntDispatcher::set_fullscreen(bool isEnabled) {
 	if(isEnabled){
 		flags |= AS_FULLSCR;
-		set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
+		set_map_to_fullscreen();
 		XGR_Obj.clear_2d_surface();
 		XGR_MouseSetPromptData(NULL);
 		XGR_MouseHide();
 	} else {
 		flags &= ~AS_FULL_REDRAW;
 		flags &= ~AS_FULLSCR;
-		set_screen(XGR_MAXX/2, XGR_MAXY/2,0, XGR_MAXX/2, XGR_MAXY/2);
+		set_map_to_ibs(curIbs);
 		XGR_MouseShow();
 		if(curMode == AS_INV_MODE){
-			mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
 			XGR_MouseSetPromptData(invPrompt);
 		}
 		else {
 			if(curMode == AS_INFO_MODE){
-				mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
 				XGR_MouseSetPromptData(infPrompt);
 			}
 		}
@@ -5505,7 +5506,6 @@ void actIntDispatcher::change_mode(void)
 				b -> set_flush();
 				b = (aButton*)b -> prev;
 			}
-			mechosCameraOffsetX = AS_INF_CAMERA_OFFSET;
 			break;
 		case AS_INFO_MODE:
 			curMode = AS_INV_MODE;
@@ -5523,7 +5523,6 @@ void actIntDispatcher::change_mode(void)
 				b -> set_flush();
 				b = (aButton*)b -> prev;
 			}
-			mechosCameraOffsetX = AS_INV_CAMERA_OFFSET;
 			break;
 	}
 	flags &= ~AS_CHANGE_MODE;
@@ -7383,11 +7382,14 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 	x = iMouseX;
 	y = iMouseY;
 
-	ix = 0;
-	iy = 0;
+	float scaleX = XGR_Obj.get_screen_scale_x();
+	float scaleY = XGR_Obj.get_screen_scale_y();
 
-	isx = ix + XGR_MAXX;
-	isy = iy + XGR_MAXY;
+	ix = curIbs -> PosX / scaleX;
+	iy = curIbs -> PosY / scaleY;
+
+	isx = ix + curIbs -> SizeX * scaleX;
+	isy = iy + curIbs -> SizeY * scaleY;
 
 	if(x >= ix && x < isx && y >= iy && y < isy){
 		id = aciGetScreenItem(x,y);
@@ -9666,10 +9668,10 @@ void aciScreenText::redraw(void)
 		p = (aciScreenTextPage*)p -> next;
 	}
 
-	y = (XGR_MAXY - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
+	y = (I_RES_Y - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
 	for(i = 0; i < CurStr; i ++){
 		str = p -> StrTable[i];
-		x = (XGR_MAXX - aTextWidth32(str,font,1))/2;
+		x = (I_RES_X - aTextWidth32(str,font,1))/2;
 
 		aOutText32(x,y,color,str,font,1,1);
 		y += DeltaY + aTextHeight32(str,font,1);

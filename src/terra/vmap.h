@@ -78,7 +78,6 @@ struct vrtMap {
 	void dump_terrain(void);
 	void accept(int up,int down);
 	void change(int up,int down);
-	void another(int up,int down);
 	void request(int up,int down,int left, int right);
 	void quant(void);
 	void link(int up,int down,int d);

@@ -99,7 +99,7 @@ extern int IsMainMenu;
 
 extern bool autoconnect;
 extern char *autoconnectHost;
-extern int  autoconnectPort;
+extern unsigned short  autoconnectPort;
 extern int  autoconnectJoinGame;
 extern int  autoconnectGameID;
 

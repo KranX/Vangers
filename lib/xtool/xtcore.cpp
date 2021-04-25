@@ -100,7 +100,7 @@ extern bool XGR_FULL_SCREEN;
 
 bool autoconnect = false;
 char *autoconnectHost;
-int  autoconnectPort = 2197;
+unsigned short  autoconnectPort = 2197;
 bool autoconnectJoinGame = false;
 int  autoconnectGameID;
 
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
         } else if (cmd_key == "-port") {
             if (argc > i) {
                 i++;
-                autoconnectPort = strtol(argv[i], &argv[i], 0);
+                autoconnectPort = (unsigned short)strtol(argv[i], NULL, 0);
             } else {
                 std::cout << "Invalid parameter usage: '-port value' expected" << std::endl;
             }
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
                 } else if (value == "any") {
                     autoconnectGameID = -1;
                 } else {
-                    autoconnectGameID = strtol(argv[i], &argv[i], 0);
+                    autoconnectGameID = (int)strtol(argv[i], NULL, 0);
                 }
             } else {
                 std::cout << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
