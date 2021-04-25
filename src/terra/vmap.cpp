@@ -231,6 +231,9 @@ void YSetup(void)
 	TOR_YSIZE = TOR_POWER*map_size_y;
 	V_POWER = MAP_POWER_Y;
 	V_SIZE = map_size_y;
+#ifdef _SURMAP_
+	MAX_LINE = V_SIZE + 2;
+#endif
 
 	QUANT = 1 << POWER;
 	part_map_size_y = 1 << WPART_POWER;

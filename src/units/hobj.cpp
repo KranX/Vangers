@@ -848,7 +848,7 @@ void GeneralSystemFree(void)
 	if(NetworkON){
 		if(my_server_data.GameType == PASSEMBLOSS){
 			if(GloryPlaceData){
-				delete GloryPlaceData;
+				delete[] GloryPlaceData;
 				GloryPlaceData = NULL;
 			};
 		};

@@ -66,6 +66,7 @@
 #include "iscreen/hfont.h"
 #include "iscreen/iscreen.h"
 #include "iscreen/controls.h"
+#include "iscreen/i_chat.h"
 #include "actint/actint.h"
 #endif
 
@@ -2017,13 +2018,15 @@ void iGameMap::draw(int self)
 
 				zChat.init();
 				zChat < msg->message;
-				zchatfont.draw(
-					xc-xside+80,
-					yc-yside+20+(zCHAT_ROWLIMIT*zCHAT_ROWHEIGHT)-(zCount*zCHAT_ROWHEIGHT),
-					(unsigned char*)(zChat.GetBuf()),
-					zColor, 
-					zCOLOR_TRANSPARENT
-				);
+				if (!iChatMUTE) {
+					zchatfont.draw(
+						xc-xside+80,
+						yc-yside+20+(zCHAT_ROWLIMIT*zCHAT_ROWHEIGHT)-(zCount*zCHAT_ROWHEIGHT),
+						(unsigned char*)(zChat.GetBuf()),
+						zColor, 
+						zCOLOR_TRANSPARENT
+					);
+				}
 
 				if(msg == message_dispatcher.first()) break;
 				msg = (MessageElement*)msg->prev;
