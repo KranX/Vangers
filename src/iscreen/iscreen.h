@@ -33,7 +33,7 @@ const int  iS_STR_SEG_START_COL	= 144;
 //const int  iS_STR_SEG_START_COL	  = 80;
 
 const int  iSTR_LEN			= 50;
-const int  iS_STR_LEN		= 100;
+const int  iS_STR_LEN		= 512;
 
 const int  LEFT_MOUSE		= -1;
 const int  RIGHT_MOUSE		= -2;
@@ -917,7 +917,7 @@ iListElement* iGetOptionObj(int id);
 void i_preExtQuant(void);
 void i_postExtQuant(void);
 
-void ParseScript(const char* fname,char* bname = NULL);
+void ParseScript(const char* fname,const char* bname = NULL);
 void iInit(void);
 int iQuant(void);
 

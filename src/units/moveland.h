@@ -1,3 +1,6 @@
+#ifndef __UNITS__MOVELAND_H
+#define __UNITS__MOVELAND_H
+
 #ifdef _ROAD_
 
 const int MAP_POINT_NONE = -1;
@@ -298,6 +301,8 @@ struct BaseValoc {
 	int x,y,z;
 	BaseValoc* next;
 	BaseValoc* prev;
+
+	virtual ~BaseValoc() = default;
 	
 	void link(void);
 
@@ -351,11 +356,12 @@ struct SensorValoc : BaseValoc {
 	virtual BaseValoc** getTail(void){ return &tail; }
 	virtual void load(XStream& ff);
 		
-		SensorValoc(void){ id = 0; nameLen = 0; name = ""; radius = 0; }
+		SensorValoc(){ id = 0; nameLen = 0; name = strdup(""); radius = 0; }
+		~SensorValoc() { free(name); }
 
 	virtual void edit(void);
 	virtual void save(XStream& ff);
-	void accept(int _z,int _id,int _radius,char* _name,int _z0,int _data0,int _data1,int _data2,int _data3,int _data4,int _data5,int _data6);
+	void accept(int _z,int _id,int _radius,const char* _name,int _z0,int _data0,int _data1,int _data2,int _data3,int _data4,int _data5,int _data6);
 	};
 
 struct DangerValoc : BaseValoc {
@@ -444,5 +450,7 @@ extern uchar DestroyMechosTable[TERRAIN_MAX];
 extern uchar DestroyMoleTable[TERRAIN_MAX];
 #define GET_DESTROY_MOLE(n) DestroyMechosMole[n]
 
+
+#endif
 
 #endif

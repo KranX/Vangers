@@ -1,3 +1,6 @@
+#ifndef __UNITS__EFFECT_H
+#define __UNITS__EFFECT_H
+
 const int EXPLOSION_OFFSET = 50;
 
 const char DT_DEFORM01 = 0;
@@ -234,9 +237,9 @@ struct EffectDispatcher : UnitList
 	void CreateParticleGenerator(Vector vC,Vector vT,Vector vD,int mode = PG_STYLE_INCAR);
 };
 
-int GetAltLevel(int x,int y,int z);
+int GetAltLevel(Vector v);
 //char GetAltLevel(int x,int y,int z);
-int WaterAltLevel(int x,int y,int z);
+int WaterAltLevel(Vector v);
 //char WaterAltLevel(int x,int y,int z);
 
 extern EffectDispatcher EffD;
@@ -262,3 +265,5 @@ inline int SPGetDistY(int s0,int s1)
 	if(ad0 < d1) return d0;
 	return s0 > s1 ? -(SPTorYSize - s0 + s1) : SPTorYSize - s1 + s0;
 };
+
+#endif

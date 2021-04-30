@@ -3,7 +3,8 @@
 #include "general.h"
 
 #ifdef _SURMAP_
-#define dynamics_init()
+//@caiiiycuk: should we call dynamics_init or not?
+#define dynamics_init(a)
 #endif
 
 /*******************************************************************************

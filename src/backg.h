@@ -1,3 +1,6 @@
+#ifndef __BACKG_H__
+#define __BACKG_H__
+
 struct BackgroundElement
 {
 	virtual void BackRestore(void);
@@ -17,3 +20,5 @@ struct BackgroundDispatcher
 };
 
 extern BackgroundDispatcher BackD;
+
+#endif

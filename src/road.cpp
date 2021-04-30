@@ -66,6 +66,7 @@
 #include "iscreen/hfont.h"
 #include "iscreen/iscreen.h"
 #include "iscreen/controls.h"
+#include "iscreen/i_chat.h"
 #include "actint/actint.h"
 #endif
 
@@ -810,7 +811,7 @@ void LoadingRTO1::Init(int id)
 	YSIZE = 2*YSIDE;
 #endif
 
-	set_key_nadlers(&KeyCenter, NULL);
+	set_key_handlers(&KeyCenter, NULL);
 
 	graph3d_init();
 
@@ -1980,13 +1981,15 @@ void iGameMap::draw(int self)
 
 				zChat.init();
 				zChat < msg->message;
-				zchatfont.draw(
-					xc-xside+80,
-					yc-yside+20+(zCHAT_ROWLIMIT*zCHAT_ROWHEIGHT)-(zCount*zCHAT_ROWHEIGHT),
-					(unsigned char*)(zChat.GetBuf()),
-					zColor, 
-					zCOLOR_TRANSPARENT
-				);
+				if (!iChatMUTE) {
+					zchatfont.draw(
+						xc-xside+80,
+						yc-yside+20+(zCHAT_ROWLIMIT*zCHAT_ROWHEIGHT)-(zCount*zCHAT_ROWHEIGHT),
+						(unsigned char*)(zChat.GetBuf()),
+						zColor, 
+						zCOLOR_TRANSPARENT
+					);
+				}
 
 				if(msg == message_dispatcher.first()) break;
 				msg = (MessageElement*)msg->prev;
@@ -2135,7 +2138,7 @@ void ShowImageRTO::Init(int id)
 	char* pname;
 
 	//NEED SEE
-	set_key_nadlers(&ShowImageKeyPress, NULL);
+	set_key_handlers(&ShowImageKeyPress, NULL);
 	XGR_MouseSetPressHandler(XGM_LEFT_BUTTON, ShowImageMousePress);
 	XGR_MouseSetPressHandler(XGM_RIGHT_BUTTON, ShowImageMousePress);
 

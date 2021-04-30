@@ -746,7 +746,7 @@ void VangerUnit::BulletCollision(int pow,GeneralObject* p)
 				if(PowerFlag & VANGER_POWER_RUFFA_GUN)
 					s |= UVS_KRON_FLAG::RAFFA;
 
-				if(uvsPoint->Pmechos->color != uvsPoint->Pmechos->color)
+				if(((VangerUnit*)(p))->uvsPoint->Pmechos->color != uvsPoint->Pmechos->color)
 					s |= UVS_KRON_FLAG::ALIEN;
 
 				switch(uvsPoint->Pmechos->color){
@@ -8634,8 +8634,8 @@ void CompasObject::Quant(void)
 	v = Vector(ActD.Active->Speed,0,0)*ActD.Active->RotMat;
 	x = XCYCL(x + vMove.x + v.x);
 	y = YCYCL(y + vMove.y + v.y);
-	if(AdvancedView) G2LQ(x,y,0,tx,ty);
-	else G2LS(x,y,0,tx,ty);
+	if(AdvancedView) G2LQ(Vector(x,y,0),tx,ty);
+	else G2LS(Vector(x,y,0),tx,ty);
 
 	if(tx < UcutLeft + COMPAS_LEFT){
 		tx = UcutLeft + COMPAS_LEFT;
@@ -10583,14 +10583,14 @@ void VangerUnit::ResolveGenerator(void)
 		q = SeedNum;
 		s = DeviceData;
 		SeedNum = 0;
-		if(uvsCurrentCycle == 1){
+		if(uvsCurrentCycle == 1) { // Election of Castaways
 			while(s){
 				if(s->ActIntBuffer.type == ACI_PIPETKA)
 					SeedNum += s->ActIntBuffer.data1;
 				s = s->NextDeviceList;
 			};
 		}else{
-			if(uvsCurrentCycle == 2){
+			if(uvsCurrentCycle == 2){ // Heroism
 				while(s){
 					if(s->ActIntBuffer.type == ACI_KERNOBOO)
 						SeedNum += s->ActIntBuffer.data1;
@@ -10602,11 +10602,11 @@ void VangerUnit::ResolveGenerator(void)
 		if(FarmerD.Num == 0 && ActD.WorldSeedNum <= MaxSeed)
 			SeedNum = MaxSeed;
 
-		if(SeedNum >= MaxSeed && q < MaxSeed){
+		if(SeedNum >= MaxSeed && q < MaxSeed && uvsCurrentCycle != 0){ // 0 - Progress
 			aiResolveFind.ClearResolve();
 			uvsPoint->break_harvest();
 			MainOrderInit();
-		};			
+		};
 	};
 
 	if(Visibility == VISIBLE && CoptePoint && !aiAlarmTime) aiStatus |= AI_STATUS_FLY;

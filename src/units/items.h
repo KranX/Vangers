@@ -1,3 +1,8 @@
+#ifndef __UNITS__ITEMS_H
+#define __UNITS__ITEMS_H
+
+#include "../3d/3dgraph.h"
+
 const int ITEM_GUN_DEVICE = 0;
 const int ITEM_CHANGER = 1;
 const int ITEM_OTHER = 2;
@@ -360,7 +365,7 @@ struct ChangerDevice : StuffObject
 	void DeviceOut(Vector v1,int flag = 1,Vector v2 = Vector(-1,-1,-1));
 };
 
-struct GloryPlace : GeneralObject
+struct GloryPlace final : GeneralObject
 {
 	int World;
 	int Enable;
@@ -513,4 +518,4 @@ extern aiRndType GloryRnd;
 
 void Item2ShopAction(int type);
 
-
+#endif

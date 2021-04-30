@@ -946,13 +946,12 @@ Player::~Player() {
 }
 
 void Player::identification() {
-	char string[256];
-	memset(string, 0, 256);
-	char *request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
-	char *response_str = "Enter, my son, please...";
-	char *kill_str = "I'm sorry, darling...";
+	char string[256] = {0};
+	static const char *request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
+	static const char *response_str = "Enter, my son, please...";
+	static const char *kill_str = "I'm sorry, darling...";
 	unsigned int len;
-	if ((len = socket.receive(string, 255)) != 0) {
+	if ((len = socket.receive(string, sizeof(string) - 1)) != 0) {
 		if (!strcmp(string, request_str)) {
 			identificated = 1;
 			if (len > strlen(request_str) + 1)

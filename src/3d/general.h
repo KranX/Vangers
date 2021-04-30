@@ -6,7 +6,7 @@
 #define _video_page	VS(_video)->_video
 
 #define ALLOC(b,c)	new c[b]
-#define FREE(p) 	delete p;
+#define FREE(p) 	delete[] p;
 
 #include "3d_math.h"
 #include "3dgraph.h"
