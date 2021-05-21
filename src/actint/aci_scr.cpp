@@ -1721,7 +1721,7 @@ void aciScreenDispatcher::CancelInput(void)
 	activeInput -> flags |= ACS_REDRAW_OBJECT;
 	activeInput -> flags &= ~ACS_ACTIVE_STRING;
 	activeInput = NULL;
-	delete acsBackupStr;
+	delete[] acsBackupStr;
 	acsBackupStr = NULL;
 	SDL_StopTextInput();
 }
@@ -1734,7 +1734,7 @@ void aciScreenDispatcher::DoneInput(void)
 	activeInput -> flags |= ACS_REDRAW_OBJECT;
 	activeInput -> flags &= ~ACS_ACTIVE_STRING;
 	activeInput = NULL;
-	delete acsBackupStr;
+	delete[] acsBackupStr;
 	acsBackupStr = NULL;
 	SDL_StopTextInput();
 }
