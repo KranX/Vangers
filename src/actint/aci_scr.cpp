@@ -173,7 +173,7 @@ aciScreenInputField::aciScreenInputField(void)
 
 aciScreenInputField::~aciScreenInputField(void)
 {
-	if(string) delete string;
+	if(string) delete[] string;
 }
 
 aciScreen::aciScreen(void)
