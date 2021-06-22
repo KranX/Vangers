@@ -6,6 +6,11 @@
 #define iSTR_CREDITS		$iSTR_CREDITS1
 #define iSTR_EXIT		$iSTR_EXIT1
 #define iSTR_Credits		$iSTR_Credits1
+#define iSTR_CreditsSubA		$iSTR_CreditsSubA1
+#define iSTR_CreditsSubBA		$iSTR_CreditsSubBA1
+#define iSTR_CreditsSubBB		$iSTR_CreditsSubBB1
+#define iSTR_CreditsSubCA		$iSTR_CreditsSubCA1
+#define iSTR_CreditsSubCB		$iSTR_CreditsSubCB1
 #define iSTR_MAIN_MENU		$iSTR_MAIN_MENU1
 #define iSTR_HALL_OF_FAME	$iSTR_HALL_OF_FAME1
 

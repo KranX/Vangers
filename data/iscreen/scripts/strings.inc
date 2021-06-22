@@ -31,6 +31,21 @@
 #define iSTR_Credits1			"Credits"
 #define iSTR_Credits2			"О создателях"
 
+#define iSTR_CreditsSubA1		"Original, 1998"
+#define iSTR_CreditsSubA2		"Оригинал, 1998"
+
+#define iSTR_CreditsSubBA1		" Community,"
+#define iSTR_CreditsSubBA2		" Сообщество,"
+
+#define iSTR_CreditsSubBB1		"1998 - 2013"
+#define iSTR_CreditsSubBB2		"1998 - 2013"
+
+#define iSTR_CreditsSubCA1		" Re-release,"
+#define iSTR_CreditsSubCA2		" Переиздание,"
+
+#define iSTR_CreditsSubCB1		"2013 - present time"
+#define iSTR_CreditsSubCB2		"2013 - наши дни"
+
 #define iSTR_MAIN_MENU1 		"MAIN MENU"
 #define iSTR_MAIN_MENU2 		"ГЛАВНОЕ МЕНЮ"
 
