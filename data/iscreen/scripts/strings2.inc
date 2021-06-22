@@ -256,3 +256,15 @@
 
 #define iSTR_GameInfo			$iSTR_GameInfo2
 
+#define iSTR_CreditsPathA		$iSTR_CreditsPathA2
+#define iSTR_CreditsPathB		$iSTR_CreditsPathB2
+#define iSTR_CreditsPathCA		$iSTR_CreditsPathCA2
+#define iSTR_CreditsPathCB		$iSTR_CreditsPathCB2
+#define iSTR_CreditsPathDA		$iSTR_CreditsPathDA2
+#define iSTR_CreditsPathDB		$iSTR_CreditsPathDB2
+#define iSTR_CreditsPathEA		$iSTR_CreditsPathEA2
+#define iSTR_CreditsPathEB		$iSTR_CreditsPathEB2
+#define iSTR_CreditsPathF		$iSTR_CreditsPathF2
+#define iSTR_CreditsPathG		$iSTR_CreditsPathG2
+#define iSTR_CreditsPathH		$iSTR_CreditsPathH2
+

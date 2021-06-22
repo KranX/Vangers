@@ -75,8 +75,8 @@ Screen "Credits screen"
 	Object "SubtitleStrA"
 	{
 		align_x	center
-		align_x_offs 200
-		y	70
+		align_x_offs -200
+		y	90
 		Element STRING {
 			align_x	center
 			terrain_num	$TERRAIN3
@@ -89,8 +89,8 @@ Screen "Credits screen"
 	Object "SubtitleStrBA"
 	{
 		align_x	center
-		align_x_offs -200
-		y	70
+		align_x_offs 200
+		y	90
 		Element STRING {
 			align_x	center
 			terrain_num	$TERRAIN3
@@ -102,8 +102,8 @@ Screen "Credits screen"
 	Object "SubtitleStrBB"
 	{
 		align_x	center
-		align_x_offs -200
-		y	102
+		align_x_offs 200
+		y	122
 		Element STRING {
 			align_x	center
 			terrain_num	$TERRAIN3
@@ -116,8 +116,8 @@ Screen "Credits screen"
 	Object "SubtitleStrOrg"
 	{
 		align_x	center
-		align_x_offs -100
-		y	150
+		align_x_offs 300
+		y	170
 		Element STRING {
 			align_x	center
 			terrain_num	$TERRAIN4
@@ -130,8 +130,8 @@ Screen "Credits screen"
 	Object "SubtitleStrCA"
 	{
 		align_x	center
-		align_x_offs -200
-		y	220
+		align_x_offs 200
+		y	240
 		Element STRING {
 			align_x	center
 			terrain_num	$TERRAIN3
@@ -143,8 +143,8 @@ Screen "Credits screen"
 	Object "SubtitleStrCB"
 	{
 		align_x	center
-		align_x_offs -200
-		y	252
+		align_x_offs 200
+		y	272
 		Element STRING {
 			align_x	center
 			terrain_num	$TERRAIN3
@@ -211,8 +211,8 @@ Screen "Credits screen"
 	#define CREDITS_SCR_ID	"Credits0"
 	Object "Logo0" {
 		align_x	center
-		align_x_offs 200
-		y	120
+		align_x_offs -200
+		y	140
 
 		Element BITMAP {
 			align_x 	center
@@ -231,8 +231,8 @@ Screen "Credits screen"
 	#define CREDITS_SCR_ID	"Credits1"
 	Object "Logo1" {
 		align_x	center
-		align_x_offs 200
-		y	270
+		align_x_offs -200
+		y	290
 
 		Element BITMAP {
 			align_x 	center
@@ -251,8 +251,8 @@ Screen "Credits screen"
 	#define CREDITS_SCR_ID	"Credits2"
 	Object "Logo2" {
 		align_x	center
-		align_x_offs 200
-		y	370
+		align_x_offs -200
+		y	390
 
 		Element BITMAP {
 			align_x 	center
@@ -268,11 +268,11 @@ Screen "Credits screen"
 		$LOGO_EV
 	}
 	#define LOGO_OBJ_ID	"Logo3"
-	#define CREDITS_SCR_ID	"Credits2"
+	#define CREDITS_SCR_ID	"Credits0"
 	Object "Logo3" {
 		align_x	center
-		align_x_offs -250
-		y	160
+		align_x_offs 150
+		y	180
 
 		Element BITMAP {
 			align_x 	center
@@ -288,11 +288,11 @@ Screen "Credits screen"
 		$LOGO_EV
 	}
 	#define LOGO_OBJ_ID	"Logo4"
-	#define CREDITS_SCR_ID	"Credits2"
+	#define CREDITS_SCR_ID	"Credits0"
 	Object "Logo4" {
 		align_x	center
-		align_x_offs -200
-		y	320
+		align_x_offs 200
+		y	340
 
 		Element BITMAP {
 			align_x 	center

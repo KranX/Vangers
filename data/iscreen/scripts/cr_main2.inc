@@ -269,7 +269,7 @@ Screen "Credits screen"
 		$LOGO_EV
 	}
 	#define LOGO_OBJ_ID	"Logo3"
-	#define CREDITS_SCR_ID	"Credits2"
+	#define CREDITS_SCR_ID	"Credits0"
 	Object "Logo3" {
 		align_x	center
 		align_x_offs 150
@@ -289,7 +289,7 @@ Screen "Credits screen"
 		$LOGO_EV
 	}
 	#define LOGO_OBJ_ID	"Logo4"
-	#define CREDITS_SCR_ID	"Credits2"
+	#define CREDITS_SCR_ID	"Credits0"
 	Object "Logo4" {
 		align_x	center
 		align_x_offs 200

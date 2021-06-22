@@ -649,3 +649,36 @@
 #define iSTR_CurIP1			"Your IP:"
 #define iSTR_CurIP2			"‚ è IP:"
 
+#define iSTR_CreditsPathA1		"resource/iscreen/text/eng/credits1.txt"
+#define iSTR_CreditsPathA2		"resource/iscreen/text/rus/credits1.txt"
+
+#define iSTR_CreditsPathB1		"resource/iscreen/text/eng/credits2.txt"
+#define iSTR_CreditsPathB2		"resource/iscreen/text/rus/credits2.txt"
+
+#define iSTR_CreditsPathCA1		"resource/iscreen/text/eng/credits31.txt"
+#define iSTR_CreditsPathCA2		"resource/iscreen/text/rus/credits31.txt"
+
+#define iSTR_CreditsPathCB1		"resource/iscreen/text/eng/credits32.txt"
+#define iSTR_CreditsPathCB2		"resource/iscreen/text/rus/credits32.txt"
+
+#define iSTR_CreditsPathDA1		"resource/iscreen/text/eng/credits41.txt"
+#define iSTR_CreditsPathDA2		"resource/iscreen/text/rus/credits41.txt"
+
+#define iSTR_CreditsPathDB1		"resource/iscreen/text/eng/credits42.txt"
+#define iSTR_CreditsPathDB2		"resource/iscreen/text/rus/credits42.txt"
+
+#define iSTR_CreditsPathEA1		"resource/iscreen/text/eng/credits51.txt"
+#define iSTR_CreditsPathEA2		"resource/iscreen/text/rus/credits51.txt"
+
+#define iSTR_CreditsPathEB1		"resource/iscreen/text/eng/credits52.txt"
+#define iSTR_CreditsPathEB2		"resource/iscreen/text/rus/credits52.txt"
+
+#define iSTR_CreditsPathF1		"resource/iscreen/text/eng/credits6.txt"
+#define iSTR_CreditsPathF2		"resource/iscreen/text/rus/credits6.txt"
+
+#define iSTR_CreditsPathG1		"resource/iscreen/text/eng/credits7.txt"
+#define iSTR_CreditsPathG2		"resource/iscreen/text/rus/credits7.txt"
+
+#define iSTR_CreditsPathH1		"resource/iscreen/text/eng/credits8.txt"
+#define iSTR_CreditsPathH2		"resource/iscreen/text/rus/credits8.txt"
+
