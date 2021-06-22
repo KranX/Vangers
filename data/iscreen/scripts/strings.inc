@@ -682,3 +682,9 @@
 #define iSTR_CreditsPathH1		"resource/iscreen/text/eng/credits8.txt"
 #define iSTR_CreditsPathH2		"resource/iscreen/text/rus/credits8.txt"
 
+#define iSTR_CreditsPathIA1		"resource/iscreen/text/eng/credits91.txt"
+#define iSTR_CreditsPathIA2		"resource/iscreen/text/rus/credits91.txt"
+
+#define iSTR_CreditsPathIB1		"resource/iscreen/text/eng/credits92.txt"
+#define iSTR_CreditsPathIB2		"resource/iscreen/text/rus/credits92.txt"
+

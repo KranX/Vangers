@@ -1,27 +1,21 @@
-New release and community support since 2013
+Dmitry "[W]Dimon" Tolkunov,
+support and community management,
+work organization and initiatives, news in Steam
  
-Contributors to GitHub repository
-https://github.com/KranX/Vangers
+Dmitry "DileSoft" Leikin,
+support and community management
  
-Aigars Zeiza / Zuzon
-Aleksei "alehay" Kudakov
-Aleksander "caiiiycuk" Guryanov
-Alexander "€¨¤"/"Haedes" Dormidontov
-Andrew "ludwici" Volski
-David "devnexen" Carlier
-Dmitry "DileSoft" Leikin
-Dzmitry "kvark" Malyshau
-EXL
-Friedrich von Never / ForNeVeR
-Ilya "Tstis" Nakonechny
-Klim "klimrmad" Madygulov
-Michael "zorgrin" Vasilyev
-Nikita "lpenguin" Prianichnikov
-vaelund
-Vasyl "vk" Kaigorodov
-Vasily "shamazmazum" Postnicov
-Vitaly "Fenex" Busko
-XiadaOku
-ZeeWanderer
+Vadim "Zamorochenniy" Zagidullin,
+support and community management
  
-And many thanks to all who participated in the closed test before the Steam release!
+fau, news in Steam and their
+translations, some designs
+ 
+virosu, news in Steam and their translations
+ 
+Localization from Levsha Games, 2013
+Peter Keay, proofreading
+Fedor Kulikov, localization manager
+ 
+Also thanks to all who reviews the game
+and tells people about it!

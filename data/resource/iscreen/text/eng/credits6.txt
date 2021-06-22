@@ -2,9 +2,9 @@ Community support, 1998-2013
  
 Vadim "Zamorochenniy" Zagidullin, support and community management
 Drunya, forum support and back-end of various community projects
-Klim "klimrmad" Madygulov, development of zMod (special multiplayer client), 24/7
-multiplayer server, rating system and online tracker
-Konstantin "capkoh" Sarychev, development of zMod (special multiplayer client)
+Klim "klimrmad" Madygulov, development of zMod,
+24/7 multiplayer server, rating system and online tracker
+Konstantin "capkoh" Sarychev, development of zMod
 Dmitry "[W]Dimon" Tolkunov, support and community management
 Alexander "€¨¤"/"Haedes" Dormidontov, support at later stages
  
@@ -13,5 +13,4 @@ who took part in community activities in Vangers Community International Forum a
 kept up traditions of regular online games
 and competed in three worldwide Championships.
  
-And thanks to K-D LAB for their support and encouragement
-during these somewhat prolonged and sometimes tricky times!
+And thanks to K-D LAB for their support and encouragement!

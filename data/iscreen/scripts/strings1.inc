@@ -267,4 +267,6 @@
 #define iSTR_CreditsPathF		$iSTR_CreditsPathF1
 #define iSTR_CreditsPathG		$iSTR_CreditsPathG1
 #define iSTR_CreditsPathH		$iSTR_CreditsPathH1
+#define iSTR_CreditsPathIA		$iSTR_CreditsPathIA1
+#define iSTR_CreditsPathIB		$iSTR_CreditsPathIB1
 

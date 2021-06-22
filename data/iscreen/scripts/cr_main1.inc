@@ -268,7 +268,7 @@ Screen "Credits screen"
 		$LOGO_EV
 	}
 	#define LOGO_OBJ_ID	"Logo3"
-	#define CREDITS_SCR_ID	"Credits0"
+	#define CREDITS_SCR_ID	"Credits5"
 	Object "Logo3" {
 		align_x	center
 		align_x_offs 150
@@ -288,7 +288,7 @@ Screen "Credits screen"
 		$LOGO_EV
 	}
 	#define LOGO_OBJ_ID	"Logo4"
-	#define CREDITS_SCR_ID	"Credits0"
+	#define CREDITS_SCR_ID	"Credits6"
 	Object "Logo4" {
 		align_x	center
 		align_x_offs 200
@@ -350,6 +350,8 @@ Screen "Credits screen"
 				}						\
 			}
 
+#include "iscreen/scripts/cr4.inc"
+#include "iscreen/scripts/cr3.inc"
 #include "iscreen/scripts/cr2.inc"
 #include "iscreen/scripts/cr1.inc"
 #include "iscreen/scripts/cr0.inc"
