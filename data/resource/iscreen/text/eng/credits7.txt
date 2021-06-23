@@ -13,7 +13,7 @@ Dmitry "AMDmi3" Marakasov, rework of the source code
  
 Nikita "lpenguin" Prianichnikov, HD support
  
-Aigars Zeiza / Zuzon, 60 FPS support
+Aigars "Zuzon" Zeiza, 60 FPS support
  
 Aleksander "caiiiycuk" Guryanov, updating of the original
 SURMAP editor and its browser version, browser port of the game

@@ -4,7 +4,7 @@ support since 2013
 Contributors to GitHub repository
 https://github.com/KranX/Vangers
  
-Aigars Zeiza / Zuzon
+Aigars "Zuzon" Zeiza
 Aleksei "alehay" Kudakov
 Aleksander "caiiiycuk" Guryanov
 Alexander "€¨¤"/"Haedes" Dormidontov
