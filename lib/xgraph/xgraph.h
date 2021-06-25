@@ -198,7 +198,6 @@ private:
 	uint8_t *XGR_ScreenSurface2D;
 	SDL_Surface *XGR32_ScreenSurface;
 
-	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
 	SDL_Texture *sdlTexture;
 

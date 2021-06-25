@@ -3,6 +3,9 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "xgraph.h"
+#include "xpng.h"
+#include "xside.h"
+
 #include <assert.h>
 
 #ifdef __APPLE__
@@ -223,8 +226,7 @@ void XGR_Screen::create_surfaces(int width, int height) {
 								   SDL_TEXTUREACCESS_STREAMING,
 								   width, height);
 
-	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
-	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
+	HDBackgroundTexture = PNG_CreateTexture("resource/actint/hd/hd_background.png", sdlRenderer);
 
 	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
 
@@ -285,14 +287,12 @@ void XGR_Screen::destroy_surfaces() {
 	delete[] XGR_ScreenSurface;
 	delete[] XGR_ScreenSurface2D;
 	SDL_FreeSurface(XGR32_ScreenSurface);
-	SDL_FreeSurface(HDBackgroundSurface);
 
-	sdlTexture = NULL;
-	HDBackgroundTexture = NULL;
-	XGR_ScreenSurface = NULL;
-	XGR_ScreenSurface2D = NULL;
-	XGR32_ScreenSurface = NULL;
-	HDBackgroundSurface = NULL;
+	sdlTexture = nullptr;
+	HDBackgroundTexture = nullptr;
+	XGR_ScreenSurface = nullptr;
+	XGR_ScreenSurface2D = nullptr;
+	XGR32_ScreenSurface = nullptr;
 }
 
 void XGR_Screen::set_fullscreen(bool fullscreen) {
@@ -918,6 +918,7 @@ void XGR_Screen::flip()
 			};
 			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0);
 			SDL_RenderCopy(sdlRenderer, sdlTexture, &src_rect, &dst_rect);
+			XGR_RenderSides(sdlRenderer);
 		}else{
 			SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
 		}
