@@ -104,6 +104,12 @@ unsigned short  autoconnectPort = 2197;
 bool autoconnectJoinGame = false;
 int  autoconnectGameID;
 
+XRuntimeObject* XObj = nullptr;
+
+int getCurRtoId() {
+	return XObj == nullptr ? 0 : XObj->ID;
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef __HAIKU__
@@ -113,7 +119,6 @@ int main(int argc, char *argv[])
 	}
 #endif
 	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
-	XRuntimeObject* XObj;
 	__internal_argc = argc;
 	__internal_argv = argv;
 

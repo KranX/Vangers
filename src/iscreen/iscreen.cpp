@@ -106,7 +106,7 @@ void map_rectangle(int x,int y,int sx,int sy,int col);
 
 #define iAVI_NULL_LEV		12
 
-iScreenDispatcher* iScrDisp;
+iScreenDispatcher* iScrDisp = nullptr;
 iScreenEventCommand* CurEvComm;
 
 char* iMemHeap;
@@ -125,6 +125,10 @@ int aciCurCredits06 = 0;
 int EventFlag = 0;
 
 int iEvLineID = 0;
+
+int getCurIScreenId() {
+	return iScrDisp == nullptr || iScrDisp->curScr == nullptr ? 0 : iScrDisp->curScr->ID;
+}
 
 iListElement::iListElement(void)
 {
