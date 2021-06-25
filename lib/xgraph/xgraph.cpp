@@ -2399,3 +2399,7 @@ void XGR_MouseFnc(SDL_Event* p)
 		//XRec.PutSysMessage(XRC_XMOUSE_MESSAGE,p -> message,p -> wParam,p -> lParam);
 	}
 }
+
+void XGR_Flip() {
+	XGR_Obj.flip();
+}
