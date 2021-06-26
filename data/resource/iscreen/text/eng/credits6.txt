@@ -1,16 +1,18 @@
-Community support, 1998-2013
- 
 Vadim "Zamorochenniy" Zagidullin, support and community management
-Drunya, forum support and back-end of various community projects
+Andrey "Drunya" Bolshakov, forum support
+and back-end of various community projects
 Klim "klimrmad" Madygulov, development of zMod,
-24/7 multiplayer server, rating system and online tracker
-Konstantin "capkoh" Sarychev, development of zMod
+24/7 multiplayer server, rating system and online tracker,
+first working post-release version of the SURMAP editor
+Konstantin "capkoh" Sarychev, development of various tools
 Dmitry "[W]Dimon" Tolkunov, support and community management
 Alexander "€¨¤"/"Haedes" Dormidontov, support at later stages
  
 Special thanks for all
-who took part in community activities in Vangers Community International Forum and IRC,
+who took part in community activities
+in Vangers Community International Forum and IRC,
 kept up traditions of regular online games
 and competed in three worldwide Championships.
  
-And thanks to K-D LAB for their support and encouragement!
+And thanks to K-D LAB and KranX Productions
+for their support and encouragement!

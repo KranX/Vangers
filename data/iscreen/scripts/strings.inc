@@ -37,8 +37,8 @@
 #define iSTR_CreditsSubBA1		" Community,"
 #define iSTR_CreditsSubBA2		" Сообщество,"
 
-#define iSTR_CreditsSubBB1		"1998 - 2013"
-#define iSTR_CreditsSubBB2		"1998 - 2013"
+#define iSTR_CreditsSubBB1		"2002 - 2013"
+#define iSTR_CreditsSubBB2		"2002 - 2013"
 
 #define iSTR_CreditsSubCA1		" Re-release,"
 #define iSTR_CreditsSubCA2		" Переиздание,"

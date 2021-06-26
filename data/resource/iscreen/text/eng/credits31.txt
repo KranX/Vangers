@@ -1,4 +1,5 @@
-External Beta-Vangers:
+External Beta-Vangers,
+"Vangers beta-testing Team":
  
 Michael "3ABXO3" Fedorov
 Alexey "Allex" Demakov
