@@ -113,25 +113,11 @@ Screen "Credits screen"
 		}
 	}
 
-	Object "SubtitleStrOrg"
-	{
-		align_x	center
-		align_x_offs 300
-		y	170
-		Element STRING {
-			align_x	center
-			terrain_num	$TERRAIN4
-			font		0
-			null_level	$DEFAULT_NULL
-			string		".org"
-		}
-	}
-
 	Object "SubtitleStrCA"
 	{
 		align_x	center
 		align_x_offs 200
-		y	240
+		y	250
 		Element STRING {
 			align_x	center
 			terrain_num	$TERRAIN3
@@ -144,7 +130,7 @@ Screen "Credits screen"
 	{
 		align_x	center
 		align_x_offs 200
-		y	272
+		y	282
 		Element STRING {
 			align_x	center
 			terrain_num	$TERRAIN3
@@ -271,8 +257,8 @@ Screen "Credits screen"
 	#define CREDITS_SCR_ID	"Credits5"
 	Object "Logo3" {
 		align_x	center
-		align_x_offs 150
-		y	180
+		align_x_offs 200
+		y	160
 
 		Element BITMAP {
 			align_x 	center
@@ -283,7 +269,7 @@ Screen "Credits screen"
 			bmp_null_level	148
 			null_level	128
 
-			bmp_file	"resource/iscreen/bitmap/community_small.bmp"
+			bmp_file	"resource/iscreen/bitmap/community.bmp"
 		}
 		$LOGO_EV
 	}

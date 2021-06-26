@@ -72,7 +72,6 @@ Screen "Credits5"
 	#define LOGO_OBJ_ID	"Logo1"
 	Object "Logo1" {
 		align_x 	center
-		align_x_offs -150
 		y		10
 
 		Element BITMAP {
@@ -87,20 +86,6 @@ Screen "Credits5"
 			bmp_file	"resource/iscreen/bitmap/community.bmp"
 		}
 		$LOGO_EV
-	}
-
-	Object "LogoStrOrg"
-	{
-		align_x	center
-		align_x_offs 150
-		y	30
-		Element STRING {
-			align_x	center
-			terrain_num	$TERRAIN4
-			font		1
-			null_level	$DEFAULT_NULL
-			string		"ORG"
-		}
 	}
 }
 

@@ -10,7 +10,7 @@ Screen "Credits2"
 		null_level	200
 		align_x center
 		align_x_offs 180
-		y	20
+		y	35
 		space	2
 
 		font	0

@@ -1,8 +1,8 @@
 
 #define Credits0_More_Option_PosX	330
-#define Credits0_More_Option_PosY	280
+#define Credits0_More_Option_PosY	270
 #define Credits0_Back_Option_PosX	-330
-#define Credits0_Back_Option_PosY	280
+#define Credits0_Back_Option_PosY	270
 
 Screen "Credits0"
 {
@@ -131,9 +131,9 @@ Screen "Credits0"
 
 
 #define Credits4_More_Option_PosX	330
-#define Credits4_More_Option_PosY	280
+#define Credits4_More_Option_PosY	270
 #define Credits4_Back_Option_PosX	-330
-#define Credits4_Back_Option_PosY	280
+#define Credits4_Back_Option_PosY	270
 
 Screen "Credits4"
 {

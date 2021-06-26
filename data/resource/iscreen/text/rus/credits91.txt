@@ -3,7 +3,6 @@
  
 Контрибьюторы репозитория
 игры на GitHub
-https://github.com/KranX/Vangers
  
 Aigars "Zuzon" Zeiza
 Алексей "alehay" Кудаков
