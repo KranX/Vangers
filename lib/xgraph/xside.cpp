@@ -35,7 +35,23 @@ std::pair<const char *, const char *> getSideNames() {
 	currentIScreenId = activeIScreenId;
 
 	if (currentRto == 5 /*RTO_MAIN_MENU_ID*/) {
-		if (activeIScreenId == 27 /*Main menu*/ || activeIScreenId == 0) {
+		if (activeIScreenId == 20 /* Genesis */ ||
+			activeIScreenId == 27 /* Main menu */ ||
+			activeIScreenId == 41 /* Graphics */ ||
+			activeIScreenId == 59 /* Sound */ ||
+			activeIScreenId == 123 /* Join */ ||
+			activeIScreenId == 128 /* Create Server */ ||
+			activeIScreenId == 358 /* Network Game Type */ ||
+			activeIScreenId == 467 /* Identification */ ||
+			activeIScreenId == 508 /* Chat */ ||
+			activeIScreenId == 528 /* Game Result */ ||
+			activeIScreenId == 654 /* Player Setup */ ||
+			activeIScreenId == 662 /* Controls */ ||
+			activeIScreenId == 678 /* Internet */ ||
+			activeIScreenId == 698 /* Hall of Fame */ ||
+			activeIScreenId == 770 /* Set Server Port */ ||
+			activeIScreenId == 788 /* Addons (Web Version) */ ||
+			activeIScreenId == 0) {
 			return std::make_pair<>(
 				"resource/actint/hd/side/main_menu_left.png",
 				"resource/actint/hd/side/main_menu_right.png");
