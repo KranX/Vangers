@@ -17,9 +17,8 @@ jobs:
         export PATH="/usr/local/opt/curl-openssl/bin:$PATH"
         echo 'export PATH="/usr/local/opt/curl-openssl/bin:$PATH"' >> ~/.zshrc
     - name: install our libs
-      env:
-        PATH: "/usr/local/opt/curl-openssl/bin:$PATH"
       run: |
+        export PATH="/usr/local/opt/curl-openssl/bin:$PATH"
         brew reinstall -s ./formulas/libsndfile.rb
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb
