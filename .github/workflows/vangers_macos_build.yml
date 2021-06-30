@@ -14,6 +14,8 @@ jobs:
     - name: install libs
       run: |
         brew install ninja yasm dylibbundler
+    - name: install our libs
+      run: |
         brew reinstall -s ./formulas/libsndfile.rb
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb
