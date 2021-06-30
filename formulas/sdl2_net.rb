@@ -5,7 +5,6 @@ class Sdl2Net < Formula
   sha256 "15ce8a7e5a23dafe8177c8df6e6c79b6749a03fff1e8196742d3571657609d21"
 
   bottle do
-    cellar :any
     sha256 "920e892ba80cba3a99d4a15473351be5dc23f0d9445c28480c5dae904e8a8271" => :catalina
     sha256 "0631754a7016b3e6e175644cc7976cc22843f7b872e8f50662d0cb50a4264901" => :mojave
     sha256 "f193c7c2ae1b7f2c82cbbc9b83a16fc72d845c6396ecd33644eea19695a850ee" => :high_sierra

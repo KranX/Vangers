@@ -13,7 +13,7 @@ jobs:
     #     brew update
     - name: install libs
       run: |
-        brew install ninja yasm dylibbundler curl
+        brew install ninja yasm dylibbundler openssl
         brew reinstall -s ./formulas/libsndfile.rb
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb

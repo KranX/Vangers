@@ -14,7 +14,6 @@ class Libogg < Formula
     end
   
     bottle do
-      cellar :any
       rebuild 1
       sha256 "b95bbf935f48878bd96d1c0e6557a017aa18cb17a080bc3ef9308b6415c278ef" => :catalina
       sha256 "3cc7656859154f6eb98d3ddbe4b74c810b505e2162af1357b3ed6b70cad35125" => :mojave
