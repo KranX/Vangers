@@ -13,9 +13,10 @@ jobs:
     #     brew update
     - name: install libs
       run: |
-        brew update
-        brew upgrade
-        brew install ninja yasm dylibbundler openssl
+        brew install ninja yasm dylibbundler curl-openssl
+        brew uninstall curl
+        export PATH="/usr/local/opt/curl-openssl/bin:$PATH"
+        echo 'export PATH="/usr/local/opt/curl-openssl/bin:$PATH"' >> ~/.zshrc
         brew reinstall -s ./formulas/libsndfile.rb
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb
