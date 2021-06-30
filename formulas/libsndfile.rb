@@ -1,20 +1,20 @@
 class Libsndfile < Formula
   desc "C library for files containing sampled sound"
-  homepage "http://www.mega-nerd.com/libsndfile/"
-  url "https://github.com/erikd/libsndfile/releases/download/v1.0.30/libsndfile-1.0.30.tar.bz2"
-  sha256 "9df273302c4fa160567f412e10cc4f76666b66281e7ba48370fb544e87e4611a"
+  homepage "https://libsndfile.github.io/libsndfile/"
+  url "https://github.com/libsndfile/libsndfile/releases/download/1.0.31/libsndfile-1.0.31.tar.bz2"
+  sha256 "a8cfb1c09ea6e90eff4ca87322d4168cdbe5035cb48717b40bf77e751cc02163"
   license "LGPL-2.1-or-later"
 
   livecheck do
-    url :homepage
-    regex(/href=.*?libsndfile[._-]v?([\d.]+)\.t/i)
+    url :stable
+    strategy :github_latest
   end
 
   bottle do
-    cellar :any
-    sha256 "bf93a0083eecbcadc7eb391b9f429e0f55c4f571b5f4d9104cfaf60f8e5932dc" => :catalina
-    sha256 "ef1bd6eb6f6d33e22a05116b0893d85422e3ad7fced4252eace97232e523075d" => :mojave
-    sha256 "9d7d184ccf41eff27b8425a8fd50d60fa8a383338efcd0dcf7121f0ce7e3545c" => :high_sierra
+    sha256 cellar: :any, arm64_big_sur: "8e2fc3b0df09a21840f8643f644bd3a0bb3c3551d21f600b344f6b316d3ef44d"
+    sha256 cellar: :any, big_sur:       "a4a734e58220fc8615d86e4563e9a874447d568151b366aa94391dfe07c4e0fb"
+    sha256 cellar: :any, catalina:      "671a3cc9c7dafd89cbaffeccf4de826262c144184bf5779320c236e87e7636cc"
+    sha256 cellar: :any, mojave:        "8b2876610f9188e8125f636e85bcbd525343b216c6d0787954e78b88dfe8f101"
   end
 
   depends_on "autoconf" => :build
