@@ -166,7 +166,7 @@ WorldScreen::WorldScreen(int _y,int _sy,uvsWorld* _Pworld)
 
 void WorldScreen::Quant(void)
 {
-std::cout<<"WorldScreen::Quant"<<std::endl;
+VNG_DEBUG()<<"WorldScreen::Quant"<<std::endl;
 #ifdef TINY_MODE
 	XGR_Rectangle(x,y,sx,sy,0,0,XGR_FILLED);
 #else

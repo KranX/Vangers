@@ -154,7 +154,7 @@ void Model::loadC3D(XBuffer& buf)
 	int phi,psi,tetta;
 	
 	buf > version;
-	//std::cout<<"Load C3D. Version:"<<version<<std::endl;
+	//VNG_DEBUG()<<"Load C3D. Version:"<<version<<std::endl;
 	if(version != C3D_VERSION_1 && version != C3D_VERSION_3)
 		ErrH.Abort("Incorrect C3D version", version);
 
@@ -165,12 +165,12 @@ void Model::loadC3D(XBuffer& buf)
 	buf > x_off > y_off > z_off;
 	buf > rmax;
 	buf > phi > psi > tetta;
-	/*std::cout<<"num_vert:"<<num_vert<<" num_norm:"<<num_norm<<" num_poly:"<<num_poly<<" num_vert_total:"<<num_vert_total<<std::endl;
-	std::cout<<"xmax:"<<xmax<<" ymax:"<<ymax<<" zmax:"<<zmax<<std::endl;
-	std::cout<<"xmin:"<<xmin<<" ymin:"<<ymin<<" zmin:"<<zmin<<std::endl;
-	std::cout<<"x_off:"<<x_off<<" y_off:"<<y_off<<" z_off:"<<z_off<<std::endl;
-	std::cout<<"rmax:"<<rmax<<std::endl;
-	std::cout<<"phi:"<<phi<<" psi:"<<psi<<" tetta:"<<tetta<<std::endl;*/
+	/*VNG_DEBUG()<<"num_vert:"<<num_vert<<" num_norm:"<<num_norm<<" num_poly:"<<num_poly<<" num_vert_total:"<<num_vert_total<<std::endl;
+	VNG_DEBUG()<<"xmax:"<<xmax<<" ymax:"<<ymax<<" zmax:"<<zmax<<std::endl;
+	VNG_DEBUG()<<"xmin:"<<xmin<<" ymin:"<<ymin<<" zmin:"<<zmin<<std::endl;
+	VNG_DEBUG()<<"x_off:"<<x_off<<" y_off:"<<y_off<<" z_off:"<<z_off<<std::endl;
+	VNG_DEBUG()<<"rmax:"<<rmax<<std::endl;
+	VNG_DEBUG()<<"phi:"<<phi<<" psi:"<<psi<<" tetta:"<<tetta<<std::endl;*/
 	if(version == C3D_VERSION_3)
 		buf > volume > rcm > J;
 	else
@@ -385,17 +385,17 @@ void Object::loadA3D(char* name)
 	XBuffer buf(ff.size());
 	ff.read(buf.address(),ff.size());
 	ff.close();
-	//std::cout<<"Load A3D:"<<name<<std::endl;
+	//VNG_DEBUG()<<"Load A3D:"<<name<<std::endl;
 	buf > n_models > xmax > ymax > zmax > rmax;
 	buf >  body_color_offset > body_color_shift;
-	//std::cout<<"n_models:"<<n_models<<" xmax:"<<xmax<<" ymax:"<<ymax<<" zmax:"<<zmax<<" rmax:"<<rmax<<std::endl;
-	//std::cout<<"body_color_offset:"<<body_color_offset<<" body_color_shift:"<<body_color_shift<<std::endl;
+	//VNG_DEBUG()<<"n_models:"<<n_models<<" xmax:"<<xmax<<" ymax:"<<ymax<<" zmax:"<<zmax<<" rmax:"<<rmax<<std::endl;
+	//VNG_DEBUG()<<"body_color_offset:"<<body_color_offset<<" body_color_shift:"<<body_color_shift<<std::endl;
 	//ErrH.Abort(name, n_models);
 	models = new Model[n_models];
 
 	for(i = 0;i < n_models;i++)
 		{
-		//std::cout<<"BBB:"<<n_models<<" "<<xmax<<""<<ymax<<" "<<zmax<<" "<<rmax<<std::endl;
+		//VNG_DEBUG()<<"BBB:"<<n_models<<" "<<xmax<<""<<ymax<<" "<<zmax<<" "<<rmax<<std::endl;
 		models[i].loadC3D(buf);
 		
 		}

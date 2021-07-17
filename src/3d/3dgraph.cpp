@@ -125,13 +125,13 @@ Parser::Parser(const char* name, const char* del_chars)
 		//ZIP_expand(address(),decompressed_size,compressed_buff,compressed_size);
 		/* ZLIB realisation (stalkerg)*/
 		if(*(short*)(compressed_buff)) { //if label = 0 not compress
-			//std::cout<<"Parser::Parser DeCompress "<<ff.file_name<<" file."<<std::endl;
+			//VNG_DEBUG()<<"Parser::Parser DeCompress "<<ff.file_name<<" file."<<std::endl;
 			int stat = uncompress((Bytef*)address(),(uLongf*)&decompressed_size,(Bytef*)(compressed_buff+2+4),compressed_size-2-4);
 			switch(stat){
-				//case Z_OK: std::cout<<"DeCompress ok."<<std::endl; break;
-				case Z_MEM_ERROR: std::cout<<"DeCompress not enough memory."<<std::endl; break;
-				case Z_BUF_ERROR: std::cout<<"DeCompress not enough room in the output buffer."<<std::endl; break;
-				case Z_DATA_ERROR: std::cout<<"DeCompress error data."<<std::endl; break;
+				//case Z_OK: VNG_DEBUG()<<"DeCompress ok."<<std::endl; break;
+				case Z_MEM_ERROR: VNG_DEBUG()<<"DeCompress not enough memory."<<std::endl; break;
+				case Z_BUF_ERROR: VNG_DEBUG()<<"DeCompress not enough room in the output buffer."<<std::endl; break;
+				case Z_DATA_ERROR: VNG_DEBUG()<<"DeCompress error data."<<std::endl; break;
 			};
 		} else {
 			memcpy(address(),compressed_buff + 2 + 4,(unsigned)(compressed_size - 2 - 4));

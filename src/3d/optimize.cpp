@@ -1088,7 +1088,7 @@ void DrawLinear(int x,int y,int size,int shift,unsigned char* buffer,int image)
 				}
 			break;
 		case 0:
-			//std::cout<<"DrawLinear__shadow_line"<<std::endl;
+			//VNG_DEBUG()<<"DrawLinear__shadow_line"<<std::endl;
 			for(i = 0;i < nys;i++){
 				#ifndef LOW_LEVEL_LINE
 					shadow_line(nxs,tfx,tfy);
@@ -1102,7 +1102,7 @@ void DrawLinear(int x,int y,int size,int shift,unsigned char* buffer,int image)
 				}
 			break;
 		case TRANSPARENCY_DRAW_MODE:
-			//std::cout<<"DrawLinear__transparency_line"<<std::endl;
+			//VNG_DEBUG()<<"DrawLinear__transparency_line"<<std::endl;
 			for(i = 0;i < nys;i++){
 				transparency_line(nxs,tfx,tfy);
 				draw_vbuf += vadd;
@@ -1576,7 +1576,7 @@ void Object::ground_pressing() {
 					z = z_low_level_pressing - z;
 					if(!(type & DOUBLE_LEVEL) ){ // type == (1<<3) == 8 это слой с тенью
 						if(z < *p){
-							//std::cout<<"ground_pressing p1 z:"<<z<<" p:"<<(int)*p<<" type:"<<(int)type<<std::endl;
+							//VNG_DEBUG()<<"ground_pressing p1 z:"<<z<<" p:"<<(int)*p<<" type:"<<(int)type<<std::endl;
 							p[1] = *p = z > 0 ? z : 0;
 							regrender_log = 1;
 							}

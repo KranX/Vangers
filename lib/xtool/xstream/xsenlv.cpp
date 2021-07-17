@@ -71,7 +71,7 @@ void XStream::close(void)
 	
 	if(handler == NULL)
 		return;
-	//std::cout<<"XStream::close: "<<fname<<std::endl;
+	//VNG_DEBUG()<<"XStream::close: "<<fname<<std::endl;
 	/* Full stream debug
 	std::fstream debug("openfile.txt", std::ios::out|std::ios::app);
 

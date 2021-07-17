@@ -38,7 +38,7 @@ void CompressMap( char* name, int X_SHIFT, int Y_SHIFT ){
 	short *LineSize = new short[1<<Y_SHIFT];
 	char *Out = new char[2*(1<<X_SHIFT)];
 
-	std::cout<<"\n\nThe first start of game detected, please wait for some data preparing...";
+	VNG_DEBUG()<<"\n\nThe first start of game detected, please wait for some data preparing...";
 
 	XStream a;
 	XStream fo;
@@ -80,10 +80,10 @@ void CompressMap( char* name, int X_SHIFT, int Y_SHIFT ){
 	int CurrentPos = fo.tell();
 	int LenAll2 = 0;
 
-	std::cout<<"\nProgress: ";
+	VNG_DEBUG()<<"\nProgress: ";
 	for ( i = 0; i < (1<<Y_SHIFT); i++ ){
 		int LenLine = 0;
-		if(!(i%256)) std::cout<<"+";
+		if(!(i%256)) VNG_DEBUG()<<"+";
 
 		a.read(Buffer, 2*(1<<X_SHIFT) );
 
@@ -107,7 +107,7 @@ void CompressMap( char* name, int X_SHIFT, int Y_SHIFT ){
 		fo < LineSize[i];
 	}
 
-	std::cout<<"\nPreparing completed...";
+	VNG_DEBUG()<<"\nPreparing completed...";
 
 	fo.close();
 	a.close();

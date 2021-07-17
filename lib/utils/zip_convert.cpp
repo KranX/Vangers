@@ -29,7 +29,7 @@ void xtDoneApplication() {
 int main(int argc, char** argv) {
 //int SDL_main(int argc, char *argv[]) {
 	if (argc<3) {
-		std::cout<<"need 2 files"<<std::endl;
+		VNG_DEBUG()<<"need 2 files"<<std::endl;
 		return 0;
 	}
 
@@ -42,14 +42,14 @@ int main(int argc, char** argv) {
 	int len = ff.size();
 	ff > c;
 	if(c) {
-		std::cout<<"Not compress file"<<std::endl;
+		VNG_DEBUG()<<"Not compress file"<<std::endl;
 		ff.seek(0,XS_BEG);
 		buf = new char[len+1];
 		ff.read(buf,len);
 		buf[len] = 0;
 		ff.close();
 	} else {
-		std::cout<<"Compress file"<<std::endl;
+		VNG_DEBUG()<<"Compress file"<<std::endl;
 		ff > _time_;
 		_time_ *= 6386891;
 		_time_ |= 1;
@@ -58,25 +58,25 @@ int main(int argc, char** argv) {
 		char* compressed_buff = new char[compressed_size];
 		ff.read(compressed_buff,compressed_size);
 		ff.close();
-		std::cout<<"Read compress file - done."<<std::endl;
+		VNG_DEBUG()<<"Read compress file - done."<<std::endl;
 		
 		for(i = 0;i < compressed_size;i++)
 			compressed_buff[i] ^= crt(_time_);
 
-		std::cout<<"Decrypt data - done."<<std::endl;
+		VNG_DEBUG()<<"Decrypt data - done."<<std::endl;
 		
 		int decompressed_size = ZIP_GetExpandedSize(compressed_buff);
 		out_buf = new char[decompressed_size+1];
-		std::cout<<"Uncompress data size:"<<decompressed_size<<std::endl;
+		VNG_DEBUG()<<"Uncompress data size:"<<decompressed_size<<std::endl;
 		ZIP_expand(out_buf,decompressed_size,compressed_buff,compressed_size);
 		//delete compressed_buff;
 		//buf[decompressed_size] = 0;
-		std::cout<<"Uncompress data - done."<<std::endl;
+		VNG_DEBUG()<<"Uncompress data - done."<<std::endl;
 		fh.open(argv[2], std::fstream::out |  std::fstream::binary);
 		fh.write(out_buf, decompressed_size);
 		fh.close();
 	}
-// 	std::cout<<out_buf<<std::endl;
+// 	VNG_DEBUG()<<out_buf<<std::endl;
 	
 	
 	/*long sz,sz1;
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 	fh.close();
 
 	for (int i=0; i<20; i++) {
-		std::cout<<"A:"<<*(unsigned int *)(p+i)<<std::endl;
+		VNG_DEBUG()<<"A:"<<*(unsigned int *)(p+i)<<std::endl;
 	}
 	sz1 = ZIP_GetExpandedSize(p);
 	p1 = new char[sz1];
@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
 	sz = sz1+20;
 	p = new char[sz];
 
-	std::cout<<"p1:"<<p1<<" sz1:"<<sz1<<std::endl;
+	VNG_DEBUG()<<"p1:"<<p1<<" sz1:"<<sz1<<std::endl;
 	p[0] = (char)(8 & 0xFF); //8 it is DEFLATE method
 	p[1] = (char)((8 >> 8) & 0xFF);
 	*(unsigned int*)(p + 2) = (unsigned int)sz1;
@@ -108,9 +108,9 @@ int main(int argc, char** argv) {
 	int stat = compress((Bytef*)(p+2+4),(uLongf*)&(sz),(Bytef*)p1,sz1);
 	sz+=2+4;
 	switch(stat){
-		case Z_OK: std::cout<<"Compress ok."<<std::endl; break;
-		case Z_MEM_ERROR: std::cout<<"not enough memory."<<std::endl; break;
-		case Z_BUF_ERROR: std::cout<<"not enough room in the output buffer."<<std::endl; break;
+		case Z_OK: VNG_DEBUG()<<"Compress ok."<<std::endl; break;
+		case Z_MEM_ERROR: VNG_DEBUG()<<"not enough memory."<<std::endl; break;
+		case Z_BUF_ERROR: VNG_DEBUG()<<"not enough room in the output buffer."<<std::endl; break;
 	};
 	fh.open(argv[2], std::fstream::out |  std::fstream::binary);
 	fh.write(p, sz);

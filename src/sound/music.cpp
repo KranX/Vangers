@@ -63,7 +63,7 @@ void xsPlayMusic(int track,int min = 0,int sec = 0) {
 	//music->OpenToPlay(getTrackPathName(track));
 	//music=Mix_LoadMUS(getTrackPathName(track));
 	//Mix_PlayMusic(music, 31);
-	//std::cout<<"xsPlayMusic:"<<curTrack<<std::endl;
+	//VNG_DEBUG()<<"xsPlayMusic:"<<curTrack<<std::endl;
 	context.play(-1, new OggStream(getTrackPathName(track)), true);
 	context.set_volume(-1, volume/256.0);
 }
@@ -81,7 +81,7 @@ void xsPlayOneTrackMusic(int track,int min = 0,int sec = 0) {
 	//Mix_RewindMusic();
 	//Mix_PlayMusic(music, 31);
 	//music->OpenToPlay(getTrackPathName(track));
-	//std::cout<<"xsPlayOneTrackMusic:"<<curTrack<<std::endl;
+	//VNG_DEBUG()<<"xsPlayOneTrackMusic:"<<curTrack<<std::endl;
 	if (context.playing(-1))
 		context.stop(-1);
 	context.play(-1, new OggStream(getTrackPathName(track)), true);
@@ -155,7 +155,7 @@ int xsGetVolumeMusic(void) {
 }
 
 void xsSetVolumeMusic(int val) {
-	//std::cout<<"xsSetVolumeMusic:"<<val<<std::endl;
+	//VNG_DEBUG()<<"xsSetVolumeMusic:"<<val<<std::endl;
 	//music->SetVolume(val);
 	float f_val = val;
 	f_val/=256;

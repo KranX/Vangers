@@ -23,7 +23,7 @@
 #define XSOCKET_ERROR(str, code)                      \
 	do {                                              \
 		if (ErrHUsed) {                               \
-			std::cout << str << ": " << code << "\n"; \
+			VNG_DEBUG() << str << ": " << code << "\n"; \
 		} else {                                      \
 			XSocketLastErrorString = (char *)str;     \
 			XSocketLastErrorCode = (char *)code;      \

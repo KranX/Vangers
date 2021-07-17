@@ -898,7 +898,7 @@ void ScriptFile::load_bscript(const char* fname)
 	fh.read(buf,sz);
 	fh.close();
 
-	std::cout<<"ScriptFile::load_bscript"<<fname<<" file."<<std::endl;
+	VNG_DEBUG()<<"ScriptFile::load_bscript"<<fname<<" file."<<std::endl;
 	
 	binConv = new XBuffer(buf,sz);
 
@@ -906,7 +906,7 @@ void ScriptFile::load_bscript(const char* fname)
 		ErrH.Abort("Wrong bscript file",XERR_USER,0,s);
 
 	if(CompressLog){
-		std::cout<<"ScriptFile::load_bscript DeCompress "<<s<<" file."<<std::endl;
+		VNG_DEBUG()<<"ScriptFile::load_bscript DeCompress "<<s<<" file."<<std::endl;
 		sz -= strlen(BSCR_SIGN) + 1 + sizeof(int);
 		p = buf + strlen(BSCR_SIGN) + 1 + sizeof(int);
 
@@ -918,10 +918,10 @@ void ScriptFile::load_bscript(const char* fname)
 		if(*(short*)(p)) { //if label = 0 not compress
 			int stat = uncompress((Bytef*)p1,(uLongf*)&out_sz,(Bytef*)(p+2+4),sz-2-4);
 			switch(stat){
-				case Z_OK: std::cout<<"DeCompress ok."<<std::endl; break;
-				case Z_MEM_ERROR: std::cout<<"DeCompress not enough memory."<<std::endl; break;
-				case Z_BUF_ERROR: std::cout<<"DeCompress not enough room in the output buffer."<<std::endl; break;
-				case Z_DATA_ERROR: std::cout<<"DeCompress error data."<<std::endl; break;
+				case Z_OK: VNG_DEBUG()<<"DeCompress ok."<<std::endl; break;
+				case Z_MEM_ERROR: VNG_DEBUG()<<"DeCompress not enough memory."<<std::endl; break;
+				case Z_BUF_ERROR: VNG_DEBUG()<<"DeCompress not enough room in the output buffer."<<std::endl; break;
+				case Z_DATA_ERROR: VNG_DEBUG()<<"DeCompress error data."<<std::endl; break;
 			};
 		} else {
 			memcpy(p1, p + 2 + 4,(unsigned)(sz - 2 - 4));

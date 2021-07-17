@@ -187,7 +187,7 @@ void _srand(unsigned int seed)
 	return c;
 }*/
 void Vector::print() {
-	std::cout<<x<<" \t"<<y<<" \t"<<z<<"\n";
+	VNG_DEBUG()<<x<<" \t"<<y<<" \t"<<z<<"\n";
 }
 
 XStream& operator<= (XStream& s,const Vector& v)
@@ -250,7 +250,7 @@ Matrix::Matrix(const DBM& m)
 	return c;
 }*/
 void DBV::print() {
-	std::cout<<x<<" \t"<<y<<" \t"<<z<<"\n";
+	VNG_DEBUG()<<x<<" \t"<<y<<" \t"<<z<<"\n";
 }
 
 XStream& operator<= (XStream& s,const DBV& v)
@@ -440,9 +440,9 @@ DBM::DBM(const DBV& v,double angle)
 }*/
 
 void DBM::print() {
-	std::cout<<a[0]<<" \t"<<a[1]<<" \t"<<a[2]<<"\n";
-	std::cout<<a[3]<<" \t"<<a[4]<<" \t"<<a[5]<<"\n";
-	std::cout<<a[6]<<" \t"<<a[7]<<" \t"<<a[8]<<"\n";
+	VNG_DEBUG()<<a[0]<<" \t"<<a[1]<<" \t"<<a[2]<<"\n";
+	VNG_DEBUG()<<a[3]<<" \t"<<a[4]<<" \t"<<a[5]<<"\n";
+	VNG_DEBUG()<<a[6]<<" \t"<<a[7]<<" \t"<<a[8]<<"\n";
 }
 
 
@@ -763,7 +763,7 @@ Quaternion Slerp(const Quaternion& A,const Quaternion& B,double t)
 }*/
 
 void Quaternion::print() {
-	std::cout<<w<<" \t\t"<<x<<" \t"<<y<<" \t"<<z<<"\n";
+	VNG_DEBUG()<<w<<" \t\t"<<x<<" \t"<<y<<" \t"<<z<<"\n";
 }
 
 XStream& operator<= (XStream& s,const Quaternion& q)

@@ -289,7 +289,7 @@ char* iGetMergedName(char* name,char* path)
 	int st = out.find_last_of('/');
 	out = out.substr(0, st+1);
 	out+= name;
-	//std::cout<<"iGetMergedName:"<<out<<std::endl;
+	//VNG_DEBUG()<<"iGetMergedName:"<<out<<std::endl;
 	return strdup(out.c_str());
 }
 

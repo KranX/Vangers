@@ -48,8 +48,8 @@ NetRndType NetRnd;
 #define OUT_EVENTS_LOG1(id,code)
 #endif
 
-#define DOUT(str) { std::cout<<str<<"\n"; }
-#define DOUT1(str, code) { std::cout<<str<<", code: "<<code<<"\n"; }
+#define DOUT(str) { VNG_DEBUG()<<str<<"\n"; }
+#define DOUT1(str, code) { VNG_DEBUG()<<str<<", code: "<<code<<"\n"; }
 
 const int IN_BUFFER_SIZE = 128000;
 const int OUT_BUFFER_SIZE = 256000;
@@ -237,7 +237,7 @@ int identification(XSocket& socket)
 			break;
 			}
 	if(!identificated) {
-		std::cout<<"Network:identificated is wrong! SV:"<<SERVER_VERSION<<" SV2:"<<(int)string[strlen(string)+1]<<std::endl;
+		VNG_DEBUG()<<"Network:identificated is wrong! SV:"<<SERVER_VERSION<<" SV2:"<<(int)string[strlen(string)+1]<<std::endl;
 		socket.close();
 		return 0;
 	}
@@ -263,7 +263,7 @@ int identification(XSocket& socket)
 	if(zevent_ID == SERVER_TIME)
 		zserver_version = 1;
 
-    //std::cout<<"Client auth: "<<(int)zevent_ID<<" "<<zSERVER_VERSION_RESPONSE<<" "<<(int)zresponse<<" "<<zCLIENT_VERSION<<std::endl;
+    //VNG_DEBUG()<<"Client auth: "<<(int)zevent_ID<<" "<<zSERVER_VERSION_RESPONSE<<" "<<(int)zresponse<<" "<<zCLIENT_VERSION<<std::endl;
 	if (zevent_ID == zSERVER_VERSION_RESPONSE) {
 		if (zCLIENT_VERSION == zresponse) {
 			zserver_version = zresponse;
@@ -325,7 +325,7 @@ int ServersList::talk_to_server(int IP,int port,char* domain_name,int only_new_g
 		n_games = 0;
 	for(int i = 0;i < n_games;i++) {
 		servers_buffer > game_ID > game_name;
-		std::cout<<"game_ID:"<<game_ID<<" game_name:"<<game_name<<std::endl;
+		VNG_DEBUG()<<"game_ID:"<<game_ID<<" game_name:"<<game_name<<std::endl;
 		p = new ServerFindChain(IP, port, domain_name, game_ID, game_name);
 		append(p);
 	}
@@ -448,7 +448,7 @@ void OutputEventBuffer::end_body()
 	if(pointer_to_size_of_event < 0)
 		ErrH.Abort("There wasn't a beginning of event");
 
-	//std::cout<<"OutputEventBuffer::end_body size:"<<tell() - pointer_to_size_of_event - sizeof(short int)<<std::endl;
+	//VNG_DEBUG()<<"OutputEventBuffer::end_body size:"<<tell() - pointer_to_size_of_event - sizeof(short int)<<std::endl;
 	*(short*)(address() + pointer_to_size_of_event) = tell() - pointer_to_size_of_event - sizeof(short int);
 
 	int ev_ID,event_ID = *(unsigned char*)(address() + pointer_to_size_of_event + 2);
@@ -588,20 +588,20 @@ int InputEventBuffer::receive(XSocket& sock,int dont_free) {
 	if(add_size)
 		fout < "Receive: " <= SDL_GetTicks() < "\t" <= add_size < "\n";
 #endif
-	//std::cout<<"InputEventBuffer::receive "<<add_size<<" "<<std::endl;
+	//VNG_DEBUG()<<"InputEventBuffer::receive "<<add_size<<" "<<std::endl;
 	return next_event();
 }
 
 int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int skip_if_aint)
 {
-	//std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
+	//VNG_DEBUG()<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
 	receive(sock);
 	START_TIMER(10*1000);
 	while(current_event() || CHECK_TIMER()) {
 		do {
-			//std::cout<<"current_event:"<<(int)current_event()<<" clock:"<<SDL_GetTicks()<<" _end_time_:"<<_end_time_<<std::endl;
+			//VNG_DEBUG()<<"current_event:"<<(int)current_event()<<" clock:"<<SDL_GetTicks()<<" _end_time_:"<<_end_time_<<std::endl;
 			if(current_event() == event) {
-				//std::cout<<"ok"<<std::endl;
+				//VNG_DEBUG()<<"ok"<<std::endl;
 				int size = event_size + 2;
 				int prefix = next_event_pointer - size;
 				if(prefix > 0) {
@@ -636,7 +636,7 @@ int InputEventBuffer::next_event() {
 	int prev_event_ID = event_ID;
 	event_ID = 0;
 
-	//std::cout<<"InputEventBuffer::next_event event_ID:"<<(int)event_ID<<" client_ID:"<<(int)client_ID<<" next_event_pointer:"<<next_event_pointer
+	//VNG_DEBUG()<<"InputEventBuffer::next_event event_ID:"<<(int)event_ID<<" client_ID:"<<(int)client_ID<<" next_event_pointer:"<<next_event_pointer
 	//		 <<" filled_size:"<<filled_size<<std::endl;
 	if(next_event_pointer + 2 > filled_size) {
 		return 0;
@@ -648,7 +648,7 @@ int InputEventBuffer::next_event() {
 	}
 
 	*this > event_size;
-	//std::cout<<"event_size:"<<(int)event_size<<std::endl;
+	//VNG_DEBUG()<<"event_size:"<<(int)event_size<<std::endl;
 	unsigned int new_pointer = next_event_pointer + event_size + 2;
 	if(new_pointer > filled_size) {
 		set(next_event_pointer);
@@ -662,11 +662,11 @@ int InputEventBuffer::next_event() {
 
 	*this > event_ID;
 
-	//std::cout<<"event_ID:"<<(int)event_ID<<std::endl;
+	//VNG_DEBUG()<<"event_ID:"<<(int)event_ID<<std::endl;
 	unsigned char factory_number, ammo_count;
 	zCreateObjectQueue* temp;
 	if (event_ID == zCREATE_OBJECT_BY_SERVER) {
-		std::cout<<"zCREATE_OBJECT_BY_SERVER"<<std::endl;
+		VNG_DEBUG()<<"zCREATE_OBJECT_BY_SERVER"<<std::endl;
 		//zmod - пакет "создай предмед"
 		*this > factory_number > ammo_count;
 		body_size = 0;
@@ -781,7 +781,7 @@ void InputEventBuffer::ignore_event()
 {
 	event_ID = 0;
 	set(next_event_pointer);
-	//std::cout<<"InputEventBuffer::ignore_event next_event_pointer:"<<next_event_pointer<<std::endl;
+	//VNG_DEBUG()<<"InputEventBuffer::ignore_event next_event_pointer:"<<next_event_pointer<<std::endl;
 }
 /***********************************************************************
 				Some utilites
@@ -800,9 +800,9 @@ int connect_to_server(ServerFindChain* p)
 		events_out.end_body();
 		events_out.send(1);
 
-		//std::cout<<"ATTACH_TO_GAME_RESPONSE"<<std::endl;
+		//VNG_DEBUG()<<"ATTACH_TO_GAME_RESPONSE"<<std::endl;
 		events_in.receive_waiting_for_event(ATTACH_TO_GAME_RESPONSE);
-		//std::cout<<"[ok]"<<std::endl;
+		//VNG_DEBUG()<<"[ok]"<<std::endl;
 		current_server_addr.game_ID = events_in.get_int();
 		current_server_addr.configured = events_in.get_byte();
 		game_birth_time_offset = events_in.get_dword();
@@ -813,9 +813,9 @@ int connect_to_server(ServerFindChain* p)
 
 		zGameBirthTime = 0;
 		if (zserver_version > 1) {
-			//std::cout<<"zTIME_RESPONSE"<<std::endl;
+			//VNG_DEBUG()<<"zTIME_RESPONSE"<<std::endl;
 			events_in.receive_waiting_for_event(zTIME_RESPONSE); //ZMOD second network packet
-			//std::cout<<"[ok]"<<std::endl;
+			//VNG_DEBUG()<<"[ok]"<<std::endl;
 			zGameBirthTime = events_in.get_int();
 			events_in.ignore_event();
 		}
@@ -832,7 +832,7 @@ int restore_connection()
 {
 	if(main_socket())
 		return 1;
-	//std::cout<<"restore_connection:Connection lost"<<std::endl;
+	//VNG_DEBUG()<<"restore_connection:Connection lost"<<std::endl;
 	DOUT("Connection lost");
 	current_server_addr.connect(main_socket);
 	if(!main_socket){
@@ -899,7 +899,7 @@ void set_time_by_server(int n_measures)
 	response_time /= N*256.;
 	average_lag = round(response_time*1000);
 	time_synchronization_sigma = sqrt((dtau2 - N*sqr(tau))/N/(N-1))/256.;
-	std::cout<<"set_time_by_server time_synchronization_sigma:"<<time_synchronization_sigma
+	VNG_DEBUG()<<"set_time_by_server time_synchronization_sigma:"<<time_synchronization_sigma
 			 <<" average_lag:"<<average_lag<<" t2:"<<t2<<std::endl;
 }
 int set_world(int world,int world_y_size) //znfo - send set_world event

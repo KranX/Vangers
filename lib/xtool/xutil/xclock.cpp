@@ -88,7 +88,7 @@ void initclock()
 	beg_tick=getRDTSC();
 
 
-std::cout<<"initclock() "<<tick_per_sec<<" b:"<<beg_tick<<std::endl;
+VNG_DEBUG()<<"initclock() "<<tick_per_sec<<" b:"<<beg_tick<<std::endl;
 //	timeEndPeriod(1);
 	
 
@@ -115,14 +115,14 @@ std::cout<<"initclock() "<<tick_per_sec<<" b:"<<beg_tick<<std::endl;
 
 double clockf()
 {
-//std::cout<<"clockf() "<<(double)(getRDTSC()-beg_tick)/(double)tick_per_sec<<std::endl;
+//VNG_DEBUG()<<"clockf() "<<(double)(getRDTSC()-beg_tick)/(double)tick_per_sec<<std::endl;
 //	return (double)(getRDTSC()-beg_tick)/(double)tick_per_sec;
 	return (double)SDL_GetTicks()*MS_PER_PERIOD;
 } 
 
 int clocki()
 {
-//std::cout<<"clocki() "<<(int)((getRDTSC()-beg_tick)/tick_per_sec)<<std::endl;
+//VNG_DEBUG()<<"clocki() "<<(int)((getRDTSC()-beg_tick)/tick_per_sec)<<std::endl;
 //	return (int)((getRDTSC()-beg_tick)/tick_per_sec);
 //	return (int)((getRDTSC()-beg_tick)*1000);
 	return (SDL_GetTicks()*MS_PER_PERIOD);

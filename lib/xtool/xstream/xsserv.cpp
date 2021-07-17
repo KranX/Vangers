@@ -53,7 +53,7 @@ long XStream::seek(long offset, int dir)
 	else
 	{
 		//ret = SetFilePointer(handler,offset,0,dir);
-		//std::cout<<"SEEK:"<<fname<<std::endl;
+		//VNG_DEBUG()<<"SEEK:"<<fname<<std::endl;
 		switch(dir){
 			case XS_BEG:
 				if (((std::fstream *)handler)->flags() & std::ios::out)
@@ -88,11 +88,11 @@ long XStream::seek(long offset, int dir)
 		<<" ret:"<<ret<<std::endl;
 	debug.close();*/
 	if (((std::fstream *)handler)->fail()) {
-		std::cout<<"Warning: Bad seek in file."<<std::endl;
+		VNG_DEBUG()<<"Warning: Bad seek in file."<<std::endl;
 		}
 	if (ret == -1L)
 		{
-		std::cout<<"Warning: XStream::seek applies when the end of the file reached. "<<fname<<std::endl;
+		VNG_DEBUG()<<"Warning: XStream::seek applies when the end of the file reached. "<<fname<<std::endl;
 		return -1L;
 		}
 
@@ -119,7 +119,7 @@ void XStream::flush()
 
 long XStream::size()
 {
-//std::cout<<"XStream::size()"<<std::endl;
+//VNG_DEBUG()<<"XStream::size()"<<std::endl;
 	long tmp = extSize;
 	long int tmp2;
 	if(tmp == -1){

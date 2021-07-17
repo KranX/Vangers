@@ -911,7 +911,7 @@ dastResourceSign::dastResourceSign(const char* FileName){
 	XStream fin(FileName, XS_IN);
 
 	fin >=  n;
-	//std::cout<<"dastResourceSig n:"<<(int)n<<std::endl;
+	//VNG_DEBUG()<<"dastResourceSig n:"<<(int)n<<std::endl;
 	poly = new uchar[n];
 	x = new char*[n];
 	y = new char*[n];
@@ -925,7 +925,7 @@ dastResourceSign::dastResourceSign(const char* FileName){
 		else coef = 1;
 
 		fin >= poly[i];
-		//std::cout<<"poly:"<<(int)poly[i]<<std::endl;
+		//VNG_DEBUG()<<"poly:"<<(int)poly[i]<<std::endl;
 		fin >= once[i];
 		x[i] = new char[poly[i]];
 		y[i] = new char[poly[i]];
@@ -934,13 +934,13 @@ dastResourceSign::dastResourceSign(const char* FileName){
 
 		for( int j = 0; j < poly[i]; j++){
 			fin >= tmp;		x[i][j] = tmp*coef;
-			//std::cout<<"x[i][j]:"<<(int)x[i][j]<<" "<<j<<std::endl;
+			//VNG_DEBUG()<<"x[i][j]:"<<(int)x[i][j]<<" "<<j<<std::endl;
 			fin >= tmp;		y[i][j] = tmp*coef;
-			//std::cout<<"y[i][j]:"<<(int)y[i][j]<<std::endl;
+			//VNG_DEBUG()<<"y[i][j]:"<<(int)y[i][j]<<std::endl;
 			fin >= tmp;		type[i][j] = tmp;
-			//std::cout<<"type[i][j]:"<<(int)type[i][j]<<std::endl;
+			//VNG_DEBUG()<<"type[i][j]:"<<(int)type[i][j]<<std::endl;
 			fin >= tmp;		wide[i][j] = tmp;
-			//std::cout<<"wide[i][j]:"<<(int)wide[i][j]<<std::endl;
+			//VNG_DEBUG()<<"wide[i][j]:"<<(int)wide[i][j]<<std::endl;
 		}
 	}
 

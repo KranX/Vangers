@@ -632,7 +632,7 @@ void regRender(int LowX,int LowY,int HiX,int HiY,int changed)
 void regRender2(int LowX,int LowY,int HiX,int HiY,int changed)
 {
 	//ErrH.Abort("regRender");
-	//std::cout<<"BB"<<std::endl;
+	//VNG_DEBUG()<<"BB"<<std::endl;
 	LowX = XCYCL(LowX);
 	HiX = XCYCL(HiX);
 	LowY = YCYCL(LowY);

@@ -2474,7 +2474,7 @@ void Object::controls(int mode,int param)
 			break;
 
 		case CONTROLS::JUMP_POWER_ACCUMULATION_ON:
-			//std::cout<<"JUMP_POWER_ACCUMULATION_ON"<<std::endl;
+			//VNG_DEBUG()<<"JUMP_POWER_ACCUMULATION_ON"<<std::endl;
 			if(!jump_power && dynamic_state & (WHEELS_TOUCH | GROUND_COLLISION | TOUCH_OF_WATER) && !mole_on){
 				if(active)
 					SOUND_KIDPULL();

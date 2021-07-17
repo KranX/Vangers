@@ -10,7 +10,7 @@ static unsigned char* decomp_tree_char3;
 
 
 void InitSplay(XStream& fo){
-	std::cout<<"Start load decomp trees"<<std::endl;
+	VNG_DEBUG()<<"Start load decomp trees"<<std::endl;
 	if(!decomp_tree1) 
 		decomp_tree1 = new int[512 + 512/sizeof(int)];
 	if(!decomp_tree3)

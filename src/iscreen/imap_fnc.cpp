@@ -105,7 +105,7 @@ void dscale_buf(int sx,int sy,int sc,unsigned char* p,unsigned char* p1,int dx,i
 
 void put_buf(int x,int y,int sx,int sy,unsigned char* buf,unsigned char* mask,int lev,int hide_mode)
 {
-//std::cout<<"put_buf "<<hide_mode<<std::endl;
+//VNG_DEBUG()<<"put_buf "<<hide_mode<<std::endl;
 	int i,j,index = 0;
 	int t,m;
 	unsigned char** lta = ivMap -> lineT;

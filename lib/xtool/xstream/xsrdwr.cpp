@@ -66,7 +66,7 @@ unsigned long XStream::write(const void* buf, unsigned long len)
 	debug.close();
 	*/
 	unsigned long ret;
-	/*std::cout<<"Start write to:"<<fname
+	/*VNG_DEBUG()<<"Start write to:"<<fname
 			<<" len:"<<len
 			<<" "<<((std::fstream *)handler)->fail()
 			<<" "<<((std::fstream *)handler)->good()
@@ -76,14 +76,14 @@ unsigned long XStream::write(const void* buf, unsigned long len)
 			<<" tellp:"<<((std::fstream *)handler)->tellp()<<std::endl;*/
 	((std::fstream *)handler)->write((char *)buf, len);
 	/*
-		std::cout<<"END write to:"<<fname
+		VNG_DEBUG()<<"END write to:"<<fname
 			<<" len:"<<len
 			<<" "<<((std::fstream *)handler)->fail()
 			<<" "<<((std::fstream *)handler)->good()
 			<<" "<<((std::fstream *)handler)->eof()
 			<<" "<<((std::fstream *)handler)->bad()
 			<<" tellp:"<<((std::fstream *)handler)->tellp()<<std::endl;
-		std::cout<<(char *)buf<<std::endl;*/
+		VNG_DEBUG()<<(char *)buf<<std::endl;*/
 	
 	ret = len;
 	pos += ret;
