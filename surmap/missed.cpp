@@ -258,3 +258,8 @@ int aciMaxJumpImpulse = 0;
 int aciKeyboardLocked = 0;
 int aciAutoRun = 0;
 int EngineNoise = 0;
+int CurrentWorld = -1;
+
+int getCurIScreenId() {
+	return 0;
+}

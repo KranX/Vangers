@@ -198,7 +198,6 @@ private:
 	uint8_t *XGR_ScreenSurface2D;
 	SDL_Surface *XGR32_ScreenSurface;
 
-	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
 	SDL_Texture *sdlTexture;
 
@@ -461,7 +460,7 @@ struct XGR_Mouse
 #define XGR_SetClipMode(mode)				XGR_Obj.set_clip_mode(mode)
 
 #define XGR_Flush(x,y,sx,sy)				XGR_Obj.flush(x,y,sx,sy)
-#define XGR_Flip()					XGR_Obj.flip()
+void XGR_Flip();
 #define XGR_Fill(col)					XGR_Obj.fill(col)
 #define XGR_Erase(x,y,sx,sy,col)			XGR_Obj.erase(x,y,sx,sy,col)
 #define XGR_Rectangle(x,y,sx,sy,outcol,incol,mode)	XGR_Obj.rectangle(x,y,sx,sy,outcol,incol,mode)
