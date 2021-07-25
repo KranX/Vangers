@@ -3,7 +3,7 @@ New release and community support since 2013
 Andrey "KranK" Kouzmine, idea, organization and development
 of the original game, help and support of community initiatives
  
-Alexey Postnikov, initiative and organization of game re-release
+Alexey "Alex1001" Postnikov, initiative and organization of game re-release
  
 Yury "stalkerg" Zhuravlev, rework of the source code,
 publication of sources, crossplatform support,
