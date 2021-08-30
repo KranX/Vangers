@@ -1,0 +1,22 @@
+New release and community support since 2013
+ 
+Andrey "KranK" Kouzmine, idea, organization and development
+of the original game, help and support of community initiatives
+ 
+Alexey "Alex1001" Postnikov, initiative and organization of game re-release
+ 
+Yury "stalkerg" Zhuravlev, rework of the source code,
+publication of sources, crossplatform support,
+updating of the game in Steam and GOG
+ 
+Dmitry "AMDmi3" Marakasov, rework of the source code
+ 
+Nikita "lpenguin" Prianichnikov, HD support
+ 
+Aigars "Zuzon" Zeiza, 60 FPS support
+ 
+Aleksander "caiiiycuk" Guryanov, updating of the original
+SURMAP editor and its browser version, browser port of the game
+ 
+Alexander "€¨¤"/"Haedes" Dormidontov, community support,
+addition of new worlds

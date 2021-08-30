@@ -1,0 +1,16 @@
+K-D Lab Russian Game Development Company
+ 
+Surmap ART(tm) technology
+by Andrey "KranK" Kouzmine
+ 
+3D-objects & physics model technology
+by Alexander "Sicher" Kotliar
+ 
+UNIVANG ideas by
+Andrey "KranK" Kouzmine,
+Michail "Snark" Piskounov,
+Yulia "Ylitka" Kouzmina
+ 
+Thanx to Vadim "Bogus" Lobanov (algorithms),
+Sanan (some static graphics)
+and Andrey Cherezov (multiplayer consulting)
