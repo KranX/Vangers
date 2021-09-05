@@ -1,10 +1,10 @@
 
-#define Credits0_More_Option_PosX	330
-#define Credits0_More_Option_PosY	270
-#define Credits0_Back_Option_PosX	-330
-#define Credits0_Back_Option_PosY	270
+#define Credits6_More_Option_PosX	330
+#define Credits6_More_Option_PosY	280
+#define Credits6_Back_Option_PosX	-330
+#define Credits6_Back_Option_PosY	280
 
-Screen "Credits0"
+Screen "Credits6"
 {
 	screen_offs	0
 
@@ -19,14 +19,14 @@ Screen "Credits0"
 		space	2
 
 		font	0
-		s_text	  $iSTR_CreditsPathA
+		s_text	  $iSTR_CreditsPathG
 	}
 
 	Object "Back Option"
 	{
 		align_x	center
-		align_x_offs $Credits0_Back_Option_PosX
-		y	$Credits0_Back_Option_PosY
+		align_x_offs $Credits6_Back_Option_PosX
+		y	$Credits6_Back_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -78,8 +78,8 @@ Screen "Credits0"
 	Object "More Option"
 	{
 		align_x	center
-		align_x_offs $Credits0_More_Option_PosX
-		y	$Credits0_More_Option_PosY
+		align_x_offs $Credits6_More_Option_PosX
+		y	$Credits6_More_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -101,7 +101,7 @@ Screen "Credits0"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Credits4"
+				move2screen	"Credits7"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -121,7 +121,7 @@ Screen "Credits0"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Credits4"
+				move2screen	"Credits7"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -130,12 +130,12 @@ Screen "Credits0"
 }
 
 
-#define Credits4_More_Option_PosX	330
-#define Credits4_More_Option_PosY	270
-#define Credits4_Back_Option_PosX	-330
-#define Credits4_Back_Option_PosY	270
+#define Credits7_More_Option_PosX	330
+#define Credits7_More_Option_PosY	280
+#define Credits7_Back_Option_PosX	-330
+#define Credits7_Back_Option_PosY	280
 
-Screen "Credits4"
+Screen "Credits7"
 {
 	screen_offs	800
 
@@ -150,14 +150,14 @@ Screen "Credits4"
 		space	2
 
 		font	0
-		s_text	  $iSTR_CreditsPathB
+		s_text	  $iSTR_CreditsPathH
 	}
 
 	Object "Back Option"
 	{
 		align_x	center
-		align_x_offs $Credits4_Back_Option_PosX
-		y	$Credits4_Back_Option_PosY
+		align_x_offs $Credits7_Back_Option_PosX
+		y	$Credits7_Back_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -180,7 +180,7 @@ Screen "Credits4"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Credits0"
+				move2screen	"Credits6"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -200,7 +200,7 @@ Screen "Credits4"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Credits0"
+				move2screen	"Credits6"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -209,8 +209,8 @@ Screen "Credits4"
 	Object "More Option"
 	{
 		align_x	center
-		align_x_offs $Credits4_More_Option_PosX
-		y	$Credits4_More_Option_PosY
+		align_x_offs $Credits7_More_Option_PosX
+		y	$Credits7_More_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -232,7 +232,7 @@ Screen "Credits4"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Credits3"
+				move2screen	"Credits8"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -252,7 +252,7 @@ Screen "Credits4"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Credits3"
+				move2screen	"Credits8"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -260,11 +260,11 @@ Screen "Credits4"
 	}
 }
 
-#define Credits3_Logo0_PosY	177
-#define Credits3_Back_Option_PosX	616
-#define Credits3_Back_Option_PosY	324
+#define Credits8_Logo0_PosY	307
+#define Credits8_Back_Option_PosX	616
+#define Credits8_Back_Option_PosY	424
 
-Screen "Credits3"
+Screen "Credits8"
 {
 	screen_offs	0
 
@@ -279,7 +279,7 @@ Screen "Credits3"
 		space	2
 
 		font	0
-		s_text	  $iSTR_CreditsPathCA
+		s_text	  $iSTR_CreditsPathIA
 	}
 
 	Object "Credits Text B"{
@@ -290,14 +290,14 @@ Screen "Credits3"
 		space	2
 
 		font	0
-		s_text	  $iSTR_CreditsPathCB
+		s_text	  $iSTR_CreditsPathIB
 	}
 
 	Object "Back Option"
 	{
 		align_x center
 		align_x_offs 200
-		y	$Credits3_Back_Option_PosY
+		y	$Credits8_Back_Option_PosY
 
 		Element STRING {
 			align_x center
@@ -320,7 +320,7 @@ Screen "Credits3"
 				start_time	0
 			}
 			EvComm {
-				move2screen	"Credits4"
+				move2screen	"Credits7"
 				start_time	$PRESS_OBJ_TIME
 				time		$MOVE2SCREEN_TIME
 			}
@@ -340,7 +340,7 @@ Screen "Credits3"
 				time		$HIDE_OBJ_TIME
 			}
 			EvComm {
-				move2screen	"Credits4"
+				move2screen	"Credits7"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 				time		$MOVE2SCREEN_TIME
 			}
@@ -350,7 +350,7 @@ Screen "Credits3"
 	Object "Logo0" {
 		align_x center
 		align_x_offs 200
-		y	$Credits3_Logo0_PosY
+		y	$Credits8_Logo0_PosY
 
 		Element BITMAP {
 			align_x 	center
@@ -361,10 +361,9 @@ Screen "Credits3"
 			bmp_null_level	148
 			null_level	128
 
-			bmp_file	"resource/iscreen/bitmap/logo0.bmp"
+			bmp_file	"resource/iscreen/bitmap/kranx_logo.bmp"
 		}
 		$LOGO_EV
 	}
 }
-
 

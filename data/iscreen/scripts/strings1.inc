@@ -6,6 +6,11 @@
 #define iSTR_CREDITS		$iSTR_CREDITS1
 #define iSTR_EXIT		$iSTR_EXIT1
 #define iSTR_Credits		$iSTR_Credits1
+#define iSTR_CreditsSubA		$iSTR_CreditsSubA1
+#define iSTR_CreditsSubBA		$iSTR_CreditsSubBA1
+#define iSTR_CreditsSubBB		$iSTR_CreditsSubBB1
+#define iSTR_CreditsSubCA		$iSTR_CreditsSubCA1
+#define iSTR_CreditsSubCB		$iSTR_CreditsSubCB1
 #define iSTR_MAIN_MENU		$iSTR_MAIN_MENU1
 #define iSTR_HALL_OF_FAME	$iSTR_HALL_OF_FAME1
 
@@ -250,4 +255,18 @@
 #define iSTR_SOCKS5_ProxyPort		$iSTR_SOCKS5_ProxyPort1
 
 #define iSTR_GameInfo			$iSTR_GameInfo1
+
+#define iSTR_CreditsPathA		$iSTR_CreditsPathA1
+#define iSTR_CreditsPathB		$iSTR_CreditsPathB1
+#define iSTR_CreditsPathCA		$iSTR_CreditsPathCA1
+#define iSTR_CreditsPathCB		$iSTR_CreditsPathCB1
+#define iSTR_CreditsPathDA		$iSTR_CreditsPathDA1
+#define iSTR_CreditsPathDB		$iSTR_CreditsPathDB1
+#define iSTR_CreditsPathEA		$iSTR_CreditsPathEA1
+#define iSTR_CreditsPathEB		$iSTR_CreditsPathEB1
+#define iSTR_CreditsPathF		$iSTR_CreditsPathF1
+#define iSTR_CreditsPathG		$iSTR_CreditsPathG1
+#define iSTR_CreditsPathH		$iSTR_CreditsPathH1
+#define iSTR_CreditsPathIA		$iSTR_CreditsPathIA1
+#define iSTR_CreditsPathIB		$iSTR_CreditsPathIB1
 

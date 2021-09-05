@@ -1,38 +1,26 @@
 
-Screen "Credits2"
+Screen "Credits5"
 {
 	screen_offs	0
 
 	block_global_obj
 	default_obj "Back Option"
 
-	Object "Credits Text A"{
+	Object "Credits Text"{
 		null_level	200
 		align_x center
-		align_x_offs 180
-		y	35
+		y	110
 		space	2
 
 		font	0
-		s_text	  $iSTR_CreditsPathEA
-	}
-
-	Object "Credits Text B"{
-		null_level	200
-		align_x center
-		y	90
-		space	2
-
-		font	0
-		s_text	  $iSTR_CreditsPathEB
+		s_text	  $iSTR_CreditsPathF
 	}
 
 	Object "Back Option"
 	{
 		align_x 	right
-		align_x_offs	20
-		align_y 	center
-		align_y_offs	-150
+		align_x_offs	30
+		y	30
 
 		Element STRING {
 			align_x center
@@ -81,11 +69,10 @@ Screen "Credits2"
 			}
 		}
 	}
-	#define LOGO_OBJ_ID	"Logo2"
-	Object "Logo2" {
+	#define LOGO_OBJ_ID	"Logo1"
+	Object "Logo1" {
 		align_x 	center
-		align_x_offs -160
-		y		20
+		y		10
 
 		Element BITMAP {
 			align_x 	center
@@ -96,7 +83,7 @@ Screen "Credits2"
 			bmp_null_level	148
 			null_level	128
 
-			bmp_file	"resource/iscreen/bitmap/logo2.bmp"
+			bmp_file	"resource/iscreen/bitmap/community.bmp"
 		}
 		$LOGO_EV
 	}
