@@ -310,6 +310,10 @@ int StartMainQuantFlag = 0;
 int RecorderMode = 0;
 char* RecorderName = NULL;
 
+int COMPAS_RIGHT;
+constexpr int DEFAULT_COMPAS_RIGHT = 80;
+constexpr int HD_COMPAS_RIGHT = 340;
+
 #ifdef _DEMO_
 int aciCompleteGameFlag = 0;
 #endif
@@ -366,7 +370,6 @@ void showModal(char* fname, float reelW, float reelH, float screenW, float scree
 /*WORK	winVideo.Stop();
 	winVideo.Close(); */
 }
-
 
 
 int xtInitApplication(void) {
@@ -683,6 +686,7 @@ extern int activeWTRACK;
 
 void MainMenuRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled_renderer(true);
 	Dead = 0;
 //	activeWTRACK = 0;
 _MEM_STATISTIC_("BEFORE MAIN MENU INIT -> ");
@@ -714,6 +718,7 @@ _MEM_STATISTIC_("AFTER IQUANTFIRST INIT -> ");
 #endif
 	
 	XGR_Obj.set_fullscreen(iGetOptionValue(iFULLSCREEN));
+	iSetResolution(iGetOptionValue(iSCREEN_RESOLUTION));
 _MEM_STATISTIC_("AFTER MAIN MENU INIT -> ");
 }
 
@@ -756,6 +761,7 @@ int MainMenuRTO::Quant(void)
 
 void MainMenuRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef ISCREEN
 	
 	if(flags & RTO_FINIT_FLAG){
@@ -800,8 +806,13 @@ void LoadingRTO1::Init(int id)
 #endif
 
 #ifdef ACTINT
-	XSIDE = aScrDisp -> curIbs -> SideX;
-	YSIDE = aScrDisp -> curIbs -> SideY;
+	if (XGR_Obj.get_screen_scale_x() == 1) {
+		XSIDE = aScrDisp -> curIbs -> SideX;
+		YSIDE = aScrDisp -> curIbs -> SideY;
+	} else {
+		XSIDE = XGR_MAXX / 2;
+		YSIDE = XGR_MAXY / 2;
+	}
 	XSIZE = 2*XSIDE;
 	YSIZE = 2*YSIDE;
 #else
@@ -852,6 +863,7 @@ _MEM_STATISTIC_("AFTER LOADING RTO1 FINIT -> ");
 
 void EscaveOutRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef ISCREEN
 	iOutEscaveInit();
 #endif
@@ -879,6 +891,7 @@ int EscaveOutRTO::Quant(void)
 
 void EscaveOutRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef ISCREEN
 	iOutEscaveFinit();
 	aci_LocationQuantFinit();
@@ -890,6 +903,7 @@ _MEM_STATISTIC_("AFTER ESCAVE FINIT -> ");
 
 void FirstEscaveOutRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef ISCREEN
 #ifndef _ACI_SKIP_SHOP_
 	iOutEscaveInit();
@@ -924,6 +938,7 @@ int FirstEscaveOutRTO::Quant(void)
 
 void FirstEscaveOutRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef ISCREEN
 #ifndef _ACI_SKIP_SHOP_
 	iOutEscaveFinit();
@@ -970,7 +985,13 @@ _MEM_STATISTIC_("AFTER TABLE GENERAL  -> ");
 _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 
 #ifdef ACTINT
-	curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
+	if (XGR_Obj.get_screen_scale_x() == 1) {
+		curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
+	} else {
+		curGMap = new iGameMap(XGR_MAXX / 2, XGR_MAXY / 2, XGR_MAXX / 2, XGR_MAXY / 2);
+		COMPAS_RIGHT = HD_COMPAS_RIGHT;
+	}
 #else
 	curGMap = new iGameMap(XGR_MAXX/2,XGR_MAXY/2,XSIDE,YSIDE);
 #endif
@@ -1012,6 +1033,7 @@ _MEM_STATISTIC_("AFTER LOADING RTO2 INIT -> ");
 
 void FirstEscaveRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled_renderer(true);
 _MEM_STATISTIC_("\nBEFORE FIRST ESCAVE RTO INIT -> ");
 #ifdef ISCREEN
 	CurrentWorld = 0;
@@ -1082,6 +1104,7 @@ int FirstEscaveRTO::Quant(void)
 
 void FirstEscaveRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled_renderer(false);
 	if(flags & RTO_FINIT_FLAG){
 		ClearFlag(RTO_ALL_FLAGS);
 	}
@@ -1095,6 +1118,10 @@ void GameQuantRTO::Init(int id)
 {
 	vMap -> lockHeap();
 _MEM_STATISTIC_("AFTER GAME QUANT INIT -> ");
+}
+
+void GameQuantRTO::Finit() {
+	XGR_Obj.clear_2d_surface();
 }
 
 int GameQuantRTO::Quant(void)
@@ -1145,6 +1172,7 @@ int GameQuantRTO::Quant(void)
 
 void EscaveRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef ISCREEN
 	uvsPrepareQuant();
 	aci_LocationQuantPrepare();
@@ -1174,6 +1202,7 @@ int EscaveRTO::Quant(void)
 
 void EscaveRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef ISCREEN
 	if(flags & RTO_FINIT_FLAG){
 		ClearFlag(RTO_ALL_FLAGS);
@@ -1193,6 +1222,14 @@ _MEM_STATISTIC_("AFTER ESCAVE RTO FINIT -> ");
 		if(d & mask) res += isCDok(ii);
 	if(!res) ErrH.Abort(AVInotFoundMSS);
 #endif
+}
+
+void PaletteTransformRTO::Init(int) {
+	XGR_Obj.set_is_scaled_renderer(true);
+}
+
+void PaletteTransformRTO::Finit() {
+	XGR_Obj.set_is_scaled_renderer(false);
 }
 
 int PaletteTransformRTO::Quant(void)
@@ -1512,61 +1549,61 @@ void costab(void)
 }
 
 //Render poster by stalkerg
-extern void camera_quant(int X,int Y,int Turn,double V_abs);
-void creat_poster_pixels_copy(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
-	int x,y, src_x, src_y, dst_x, dst_y;
-	for (y = 0;y < srcrect->h; y++) {
-		for (x = 0;x < srcrect->w; x++) {
-			dst_y = dstrect->y+y;
-			dst_x = dstrect->x+x;
-			src_y = srcrect->y+y;
-			src_x = srcrect->x+x;
-			if (dst_y<dst->h&&dst_x<dst->w&&src_y<src->h&&src_x<src->w) {
-				((unsigned char*)dst->pixels)[dst_y*dst->w+dst_x] = 
-					((unsigned char*)src->pixels)[src_y*src->w+src_x];
-			}
-		}
-	}
-}
-void creat_poster() {
-	int iter, iter2;
-	
-	SDL_Surface *surface;
-	SDL_Rect srcrect, dstrect;
-	srcrect.w = 256;
-	srcrect.h = 256;
- 	srcrect.x = curGMap->xside-128;
- 	srcrect.y = curGMap->yside-128;
-	dstrect.w = 256;
-	dstrect.h = 256;
-	
-	
-    surface = SDL_CreateRGBSurface(0, map_size_x, map_size_y, 8,
-		0, 0, 0, 0);
-	surface->format = XGR_Obj.XGR_ScreenSurface->format;
-	
-	for (iter=0; iter<map_size_y/256;iter++) {
-		for (iter2=0; iter2<map_size_x/256;iter2++) {
-			
-			dstrect.x = 256*iter2;
-			dstrect.y = 256*iter;
-			std::cout<<"dstrect.x:"<<dstrect.x<<" dstrect.y:"<<dstrect.y<<std::endl;
-			
-			camera_quant(256*iter2, 256*iter, 0, 0);
-			/*actIntQuant();
-			uvsQuant();
-			BackD.restore();
-			MLquant();*/
-			//std::cout<<"TurnSecX:"<<TurnSecX<<" ViewX:"<<ViewX<<" ViewY:"<<ViewY<<" curGMap->xc:"<<curGMap->xc<<" curGMap->yc:"<<curGMap->yc
-			//<<" curGMap->xside:"<<curGMap->xside<<" curGMap->yside:"<<curGMap->yside<<std::endl;
-			vMap -> scaling(TurnSecX,ViewX,ViewY,curGMap->xc,curGMap->yc,curGMap->xside,curGMap->yside);
-			
-			creat_poster_pixels_copy(XGR_Obj.XGR_ScreenSurface, &srcrect, surface, &dstrect);
-		}
-	}
-
-	SDL_SaveBMP(surface, "./poster.bmp");
-}
+//extern void camera_quant(int X,int Y,int Turn,double V_abs);
+//void creat_poster_pixels_copy(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+//	int x,y, src_x, src_y, dst_x, dst_y;
+//	for (y = 0;y < srcrect->h; y++) {
+//		for (x = 0;x < srcrect->w; x++) {
+//			dst_y = dstrect->y+y;
+//			dst_x = dstrect->x+x;
+//			src_y = srcrect->y+y;
+//			src_x = srcrect->x+x;
+//			if (dst_y<dst->h&&dst_x<dst->w&&src_y<src->h&&src_x<src->w) {
+//				((unsigned char*)dst->pixels)[dst_y*dst->w+dst_x] =
+//					((unsigned char*)src->pixels)[src_y*src->w+src_x];
+//			}
+//		}
+//	}
+//}
+//void creat_poster() {
+//	int iter, iter2;
+//
+//	SDL_Surface *surface;
+//	SDL_Rect srcrect, dstrect;
+//	srcrect.w = 256;
+//	srcrect.h = 256;
+// 	srcrect.x = curGMap->xside-128;
+// 	srcrect.y = curGMap->yside-128;
+//	dstrect.w = 256;
+//	dstrect.h = 256;
+//
+//
+//    surface = SDL_CreateRGBSurface(0, map_size_x, map_size_y, 8,
+//		0, 0, 0, 0);
+//	surface->format = XGR_Obj.XGR_ScreenSurface->format;
+//
+//	for (iter=0; iter<map_size_y/256;iter++) {
+//		for (iter2=0; iter2<map_size_x/256;iter2++) {
+//
+//			dstrect.x = 256*iter2;
+//			dstrect.y = 256*iter;
+//			std::cout<<"dstrect.x:"<<dstrect.x<<" dstrect.y:"<<dstrect.y<<std::endl;
+//
+//			camera_quant(256*iter2, 256*iter, 0, 0);
+//			/*actIntQuant();
+//			uvsQuant();
+//			BackD.restore();
+//			MLquant();*/
+//			std::cout<<"TurnSecX:"<<TurnSecX<<" ViewX:"<<ViewX<<" ViewY:"<<ViewY<<" curGMap->xc:"<<curGMap->xc<<" curGMap->yc:"<<curGMap->yc
+//			<<" curGMap->xside:"<<curGMap->xside<<" curGMap->yside:"<<curGMap->yside<<std::endl;
+//			vMap -> scaling(TurnSecX,ViewX,ViewY,curGMap->xc,curGMap->yc,curGMap->xside,curGMap->yside);
+//
+//			creat_poster_pixels_copy(XGR_Obj.XGR32_ScreenSurface, &srcrect, surface, &dstrect);
+//		}
+//	}
+//
+//	SDL_SaveBMP(surface, "./poster.bmp");
+//}
 
 void KeyCenter(SDL_Event *key)
 {
@@ -2052,14 +2089,15 @@ void iGameMap::draw(int self)
 		FirstDraw = 0;
 //2D Rendring in game.
 #ifdef ACTINT
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface2D);
+		XGR_Obj.set_2d_render_buffer();
 		//XGR_Obj.fill(2);
 		if(GeneralSystemSkip) {
 			aScrDisp -> redraw();
 		}
 		aScrDisp -> flush();
 		//aScrDisp->pal_flush();
-		//XGR_Obj.set_render_buffer(XGR_Obj.XGR_ScreenSurface);
+		XGR_Obj.set_default_render_buffer();
+		aScrDisp -> text_redraw();
 #endif
 	};
 	
@@ -2127,6 +2165,7 @@ void PaletteTransform::quant(void)
 
 void ShowImageRTO::Init(int id)
 {
+	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef SHOW_IMAGES
 	int i;
 	short sx,sy;
@@ -2419,6 +2458,7 @@ int ShowAviRTO::Quant(void)
 
 void ShowImageRTO::Finit(void)
 {
+	XGR_Obj.set_is_scaled_renderer(false);
 #ifdef SHOW_IMAGES
 	char* pal;
 	pal = new char[768];
@@ -2456,10 +2496,45 @@ void ShowAviRTO::Finit(void)
 _MEM_STATISTIC_("AFTER SHOW IMAGE RTO 4 FINIT -> ");
 }
 
-void set_screen(int Dx,int Dy,int mode,int xcenter,int ycenter)
+void set_map_to_fullscreen()
 {
-	curGMap -> change(Dx,Dy,mode,xcenter,ycenter);
+	curGMap -> change(
+		XGR_MAXX / 2,
+		XGR_MAXY / 2,
+		0,
+		XGR_MAXX / 2,
+		XGR_MAXY / 2);
 	Redraw = 1;
+
+	COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
+}
+
+void set_map_to_ibs(ibsObject* ibs)
+{
+	if (XGR_Obj.get_screen_scale_x() == 1) {
+		curGMap -> change(
+			ibs->SideX,
+			ibs->SideY,
+			0,
+			ibs->CenterX,
+			ibs->CenterY);
+		Redraw = 1;
+
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
+	} else if (ibs->ID == 2 /* INVENTORY HD*/) {
+		auto inventoryWidth = 800 - ibs->SizeX;
+			curGMap -> change(
+			(XGR_MAXX - inventoryWidth) / 2,
+			XGR_MAXY  / 2,
+			0,
+			(XGR_MAXX - inventoryWidth) / 2,
+			XGR_MAXY / 2);
+		Redraw = 1;
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
+	} else {
+		set_map_to_fullscreen();
+		COMPAS_RIGHT = HD_COMPAS_RIGHT;
+	}
 }
 
 #ifdef SCREENSHOT
@@ -2476,7 +2551,7 @@ void shotFlush(void)
 	if(curShotNumber < 10)
 		buf < "0";
 	buf <= curShotNumber;
-	
+
 	while(true) {
 		XBuffer buf2;
 		buf2 = buf2 < buf.GetBuf() < ".bmp";
@@ -2489,8 +2564,10 @@ void shotFlush(void)
 		buf = buf < "v";
 	}
 	std::cout<<"ScreenShot name:"<<out_buf.GetBuf()<<std::endl;
-	SDL_SaveBMP(XGR_Obj.XGR_ScreenSurface, out_buf.GetBuf());
-	curShotNumber++;
+	SDL_Surface* screenshotSurface = XGR_Obj.get_screenshot();
+	SDL_SaveBMP(screenshotSurface, out_buf.GetBuf());
+	SDL_FreeSurface(screenshotSurface);
+    curShotNumber++;
 }
 #endif
 

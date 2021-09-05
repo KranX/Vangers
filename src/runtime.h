@@ -75,6 +75,7 @@ struct LoadingRTO3 : BaseRTO
 struct GameQuantRTO : BaseRTO
 {
 	virtual void Init(int id);
+	virtual void Finit();
 	virtual int Quant(void);
 
 	GameQuantRTO(void){ ID = RTO_GAME_QUANT_ID; Timer = RTO_GAME_QUANT_TIMER; }
@@ -176,7 +177,8 @@ struct ShowAviRTO : ShowImageRTO
 struct PaletteTransformRTO : BaseRTO
 {
 	virtual int Quant(void);
-
+	void Init(int);
+	void Finit();
 	PaletteTransformRTO(void){ ID = RTO_PALETTE_TRANSFORM_ID; Timer = RTO_PALETTE_TIMER; }
 };
 

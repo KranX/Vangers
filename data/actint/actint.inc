@@ -649,6 +649,16 @@ mode_key	$VK_F1
 #define BG2		2
 #define BG3		3
 
+#define BG_INF_TOP_LEFT		11
+#define BG_INF_TOP_RIGHT	12
+#define BG_INF_BOTTOM_LEFT	13
+#define BG_INF_BOTTOM_RIGHT	14
+
+#define BG_INV_TOP_LEFT		21
+#define BG_INV_TOP_RIGHT	22
+#define BG_INV_BOTTOM_LEFT	23
+#define BG_INV_BOTTOM_RIGHT	24
+
 // aIndData::CornerNum values...
 #define IND_NONE	0
 #define IND_UP_LEFT	1
@@ -720,8 +730,9 @@ mode_key	$VK_F1
 #define MATRIX_LOWRES	x	360	\
 			y	60
 
-#define MATRIX_HIRES	x	456	\
-			y	76
+#define MATRIX_HIRES	x	55	\
+			y	76 \
+			anchor_right
 
 #define iMATRIX_HIRES	x	476	\
 			y	70

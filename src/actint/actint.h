@@ -503,6 +503,8 @@ struct invMatrix : public iListElement
 	int ScreenX;
 	int ScreenY;
 
+	unsigned int anchor;
+
 	int ScreenSizeX;
 	int ScreenSizeY;
 
@@ -673,6 +675,8 @@ struct aButton : public iListElement
 	int PosX;
 	int PosY;
 
+	unsigned int anchor;
+
 	int type;
 	int flags;
 
@@ -789,6 +793,7 @@ struct fncMenu : public iListElement
 
 	int PosX;
 	int PosY;
+	unsigned int anchor;
 
 	int SizeX;
 	int SizeY;
@@ -962,6 +967,8 @@ struct CounterPanel : public iListElement
 	int PosX;
 	int PosY;
 
+	unsigned int anchor;
+
 	int SizeX;
 	int SizeY;
 
@@ -1017,6 +1024,8 @@ struct InfoPanel : public iListElement
 
 	int PosX;
 	int PosY;
+
+	unsigned int anchor;
 
 	int OffsX;
 	int OffsY;
@@ -1374,6 +1383,7 @@ struct actIntDispatcher
 
 	void redraw(void);
 	void ind_redraw(void);
+	void text_redraw();
 	void flush(void);
 	void pal_flush();
 
@@ -1413,6 +1423,7 @@ struct actIntDispatcher
 	void free_matrix(invMatrix* p);
 
 	void change_mode(void);
+	void set_fullscreen(bool isEnabled);
 	void inv_mouse_move_quant(void);
 	void inv_mouse_imove_quant(void);
 	void inv_mouse_quant_l(void);

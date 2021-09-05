@@ -3,6 +3,9 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "xgraph.h"
+#include "xbmp.h"
+#include "xside.h"
+
 #include <assert.h>
 
 #ifdef __APPLE__
@@ -102,6 +105,7 @@ Uint32 CursorAnim(Uint32 interval, void *param)
 XGR_Screen::XGR_Screen(void)
 {
 	flags = 0;
+	is_scaled_renderer = false;
 
 	ClipMode = XGR_CLIP_PUTSPR;
 
@@ -110,6 +114,7 @@ XGR_Screen::XGR_Screen(void)
 	yStrOffs = 0;
 
 	XGR_ScreenSurface = NULL;
+	XGR_ScreenSurface2D = NULL;
 	XGR32_ScreenSurface = NULL;
 	sdlWindow = NULL;
 	sdlRenderer = NULL;
@@ -168,52 +173,12 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	
 	std::cout<<"SDL_SetHint"<<std::endl;
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");  // "linear" make the scaled rendering look smoother.
-	
-	XGR_Palette = SDL_AllocPalette(256);
-	
-	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
-	XGR_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
-	
-	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
-	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, x, y, 32, 0, 0, 0, 0);
-	
-	std::cout<<"SDL_SetSurfacePalette"<<std::endl;
-	SDL_SetSurfacePalette(XGR_ScreenSurface, XGR_Palette);
-	
-	
-	std::cout<<"SDL_CreateTexture sdlTexture"<<std::endl;
-	sdlTexture = SDL_CreateTexture(sdlRenderer,
-		SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
-		SDL_TEXTUREACCESS_STREAMING,
-		x, y);
-	
-	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
-	HDBackgroundSurface = SDL_LoadBMP("hd_background.bmp");
-	SDL_SetSurfacePalette(HDBackgroundSurface, XGR_Palette);
-	HDBackgroundTexture = SDL_CreateTextureFromSurface(sdlRenderer, HDBackgroundSurface);
+
+	create_surfaces(x, y);
+
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_ShowCursor(SDL_DISABLE);
-	
-	if (XGR_FULL_SCREEN) {
-		std::cout<<"SDL_SetWindowPosition"<<std::endl;
-		SDL_SetWindowPosition(sdlWindow, 0, 0);
-	}
-	// TODO(amdmi3): assuming safe locking; otherwise, use additional surface + SDL_MapRGB
-	std::cout<<"SDL_LockSurface"<<std::endl;
-	if (SDL_LockSurface(XGR_ScreenSurface) < 0)
-		ErrH.Abort(SDL_GetError(),XERR_USER, 0);
-
-	ScreenBuf = (unsigned char*)XGR_ScreenSurface->pixels;
-
-	// Other initializations
-	ScreenX = xgrScreenSizeX = XGR_ScreenSurface->w;
-	ScreenY = xgrScreenSizeY = XGR_ScreenSurface->h;
-
-	if(yOffsTable) delete[] yOffsTable;
-		yOffsTable = new int[y + 1];
-	set_pitch(XGR_ScreenSurface->pitch);
-
 
 	XFNT_Prepare();
 
@@ -223,9 +188,6 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	flags &= ~XGR_REINIT;
 
 	//XRec.hWnd = XGR_hWnd;
-
-	set_clip(0,0,x,y);
-	set_clip_mode(XGR_CLIP_PUTSPR);
 
 	if(XGR_MouseObj.flags & XGM_INIT){
 		if(XGR_MouseObj.flags & XGM_AUTOCLIP){
@@ -243,15 +205,101 @@ int XGR_Screen::init(int x,int y,int flags_in)
 // 		SDL_FreeSurface(old_surface_1);
 // 		SDL_FreeSurface(old_surface_2);
 // 	}
-	
+
 	return false;
+}
+
+void XGR_Screen::create_surfaces(int width, int height) {
+	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
+	XGR_ScreenSurface = new uint8_t[width * height] {0};
+
+	std::cout<<"XGR_ScreenSurface2D = SDL_CreateRGBSurface"<<std::endl;
+	XGR_ScreenSurface2D = new uint8_t[width * height] {0};
+
+	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
+	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+	std::cout<<"SDL_SetSurfacePalette"<<std::endl;
+
+	std::cout<<"SDL_CreateTexture sdlTexture"<<std::endl;
+	sdlTexture = SDL_CreateTexture(sdlRenderer,
+								   SDL_PIXELFORMAT_ARGB8888, //SDL_PIXELFORMAT_INDEX8,
+								   SDL_TEXTUREACCESS_STREAMING,
+								   width, height);
+
+	HDBackgroundTexture = BMP_CreateTexture("resource/actint/hd/hd_background.bmp", sdlRenderer);
+
+	SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
+
+	if (!XGR_FULL_SCREEN) {
+		SDL_SetWindowPosition(sdlWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	} else {
+		SDL_SetWindowPosition(sdlWindow, 0, 0);
+	}
+
+	// Other initializations
+	ScreenX = xgrScreenSizeX = width;
+	ScreenY = xgrScreenSizeY = height;
+
+	if(yOffsTable) delete[] yOffsTable;
+	yOffsTable = new int[ScreenY + 1];
+	set_pitch(width);
+	set_clip(0,0, width, height);
+	set_clip_mode(XGR_CLIP_PUTSPR);
+	set_default_render_buffer();
+}
+
+void XGR_Screen::set_resolution(int width, int height){
+	// TODO: do not change resolution, is new res is the same
+	std::cout << "XGR_Screen::set_resolution: " << width << ", " << height << std::endl;
+	if(width == ScreenX && height == ScreenY){
+		std::cout << "Resolution didn't change" << std::endl;
+		return;
+	}
+
+	destroy_surfaces();
+	SDL_SetWindowSize(sdlWindow, width, height);
+	create_surfaces(width, height);
+
+	if (width == 800 && height == 600) {
+		// for comparison == 1
+		screen_scale_x = 1;
+		screen_scale_y = 1;
+	} else {
+		screen_scale_x = (float)width / 800;
+		screen_scale_y = (float)height / 600;
+	}
+}
+
+const float XGR_Screen::get_screen_scale_x() {
+	return screen_scale_x;
+}
+
+const float XGR_Screen::get_screen_scale_y() {
+	return screen_scale_y;
+}
+
+void XGR_Screen::destroy_surfaces() {
+	SDL_DestroyTexture(sdlTexture);
+	SDL_DestroyTexture(HDBackgroundTexture);
+
+	SDL_UnlockSurface(XGR32_ScreenSurface);
+
+	delete[] XGR_ScreenSurface;
+	delete[] XGR_ScreenSurface2D;
+	SDL_FreeSurface(XGR32_ScreenSurface);
+
+	sdlTexture = nullptr;
+	HDBackgroundTexture = nullptr;
+	XGR_ScreenSurface = nullptr;
+	XGR_ScreenSurface2D = nullptr;
+	XGR32_ScreenSurface = nullptr;
 }
 
 void XGR_Screen::set_fullscreen(bool fullscreen) {
 	if (fullscreen!=XGR_FULL_SCREEN) {
 		SDL_SetWindowFullscreen(sdlWindow, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 		if (!fullscreen) {
-			SDL_SetWindowSize(sdlWindow, 800, 600);
+			SDL_SetWindowSize(sdlWindow, XGR_MAXX, XGR_MAXY);
 			SDL_SetWindowPosition(sdlWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 			
 		} else {
@@ -264,23 +312,33 @@ void XGR_Screen::set_fullscreen(bool fullscreen) {
 	} 
 }
 
+void XGR_Screen::set_is_scaled_renderer(bool is_scaled_renderer)
+{
+	this->is_scaled_renderer = is_scaled_renderer;
+}
+
+const bool XGR_Screen::get_is_scaled_renderer()
+{
+	return this->is_scaled_renderer;
+}
+
 void XGR_Screen::setpixel(int x,int y,int col)
 {
-	assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
-	if(ClipMode == XGR_CLIP_ALL && (x < clipLeft || x >= clipRight || y < clipTop || y >= clipBottom)) return;
+	if(ClipMode == XGR_CLIP_ALL && (x < clipLeft || x >= clipRight || y < clipTop || y >= clipBottom)) {
+		return;
+	}
 	ScreenBuf[yOffsTable[y] + x] = col;
-	SDL_UnlockSurface(XGR_ScreenSurface);
 }
 
 void XGR_Screen::setpixel16(int x,int y,int col)
 {
-	assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 	unsigned short* p;
-	if(ClipMode == XGR_CLIP_ALL && (x < clipLeft || x >= clipRight || y < clipTop || y >= clipBottom)) return;
+	if(ClipMode == XGR_CLIP_ALL && (x < clipLeft || x >= clipRight || y < clipTop || y >= clipBottom)) {
+		return;
+	}
 
 	p = (unsigned short*)(ScreenBuf + yOffsTable[y]);
 	p[x] = col;
-	SDL_UnlockSurface(XGR_ScreenSurface);
 }
 
 int XGR_Screen::getpixel(int x,int y)
@@ -319,7 +377,6 @@ void XGR_Screen::get_clip(int& left,int& top,int& right,int& bottom)
 void XGR_Screen::putspr(int x,int y,int sx,int sy,void* p,int mode)
 {
 	//std::cout<<"XGR_Screen::putspr "<<x<<" "<<sx<<" "<<y<<" "<<sy<<std::endl;
-	assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 	int i,j,_x,_y,_x1,_y1,_sx,_sy,dx = 0,dy = 0;
 	unsigned char* scrBuf,*memBuf;
 	unsigned char* ptr = (unsigned char*)p;
@@ -345,7 +402,9 @@ void XGR_Screen::putspr(int x,int y,int sx,int sy,void* p,int mode)
 		_sx = sx;
 		_sy = sy;
 	}
-	if(_sx <= 0 || _sy <= 0) return;
+	if(_sx <= 0 || _sy <= 0) {
+		return;
+	};
 
 	scrBuf = ScreenBuf + yOffsTable[_y] + _x;
 	memBuf = ptr + dy * sx + dx;
@@ -368,7 +427,6 @@ void XGR_Screen::putspr(int x,int y,int sx,int sy,void* p,int mode)
 			memBuf += sx;
 		}
 	}
-	SDL_UnlockSurface(XGR_ScreenSurface);
 }
 
 void XGR_Screen::putspr16(int x,int y,int sx,int sy,void* p,int mode)
@@ -591,7 +649,6 @@ void XGR_Screen::getspr16(int x,int y,int sx,int sy,void* p)
 
 void XGR_Screen::erase(int x,int y,int sx,int sy,int col)
 {
-	assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 	int i,_x,_y,_x1,_y1;
 	unsigned char* ptr;
 
@@ -610,7 +667,9 @@ void XGR_Screen::erase(int x,int y,int sx,int sy,int col)
 		sx = _x1 - _x;
 		sy = _y1 - _y;
 
-		if(sx <= 0 || sy <= 0) return;
+		if(sx <= 0 || sy <= 0) {
+			return;
+		}
 	}
 	else {
 		_x = x;
@@ -620,7 +679,6 @@ void XGR_Screen::erase(int x,int y,int sx,int sy,int col)
 		ptr = ScreenBuf + yOffsTable[i] + _x;
 		memset(ptr,col,sx);
 	}
-	SDL_UnlockSurface(XGR_ScreenSurface);
 }
 
 void XGR_Screen::erase16(int x,int y,int sx,int sy,int col)
@@ -661,7 +719,7 @@ void XGR_Screen::finit(void)
 
 //		if(XGR_hWnd) KillTimer((HWND)XGR_hWnd,1);
 
-		SDL_UnlockSurface(XGR_ScreenSurface);
+		destroy_surfaces();
 		SDL_Quit();
 
 		// TODO(AMDmi3): uncomment/rewrite more stuff to free used resources
@@ -703,8 +761,8 @@ void XGR_Screen::finit(void)
 
 //		XGR_PalHandle = NULL;
 //		XGR_Pal = NULL;
-		XGR_hWnd = NULL;
 
+		XGR_hWnd = NULL;
 		if(yOffsTable) delete[] yOffsTable;
 		yOffsTable = NULL;
 		XGR_InitFlag = 0;
@@ -719,7 +777,7 @@ void XGR_Screen::close(void)
 
 		xtDeactivateSysFinitFnc(XGRAPH_SYSOBJ_ID);
 
-		SDL_UnlockSurface(XGR_ScreenSurface);
+		XGR_Obj.destroy_surfaces();
 		SDL_Quit();
 
 		// TODO(AMDmi3): uncomment/rewrite more stuff to free used resources
@@ -771,39 +829,69 @@ void XGR_Screen::close(void)
 
 int UI_OR_GAME=1;
 
-void XGR_Screen::blitScreen(uint32_t *dst, uint8_t *src) { 
+void XGR_Screen::blitRGBA(uint32_t *dst, uint8_t *screenPixels, uint8_t *overlayPixels) {
 	int x, y; 
 	SDL_Color color;
 
-	for (y = XGR_ScreenSurface->h; y > 0; y--) {
-		for (x = XGR_ScreenSurface->w; x > 0; x--) {
-			color = XGR_Palette->colors[*src];
-			*(dst++) = SDL_MapRGBA(XGR32_ScreenSurface->format, color.r, color.g, color.b, color.a);
-			src++;
+	for (y = xgrScreenSizeY; y > 0; --y) {
+		for (x = xgrScreenSizeX; x > 0; --x) {
+		    uint8_t colorIndex = *overlayPixels == 0 ? *screenPixels : *overlayPixels;
+			*(dst++) = XGR32_PaletteCache[colorIndex];
+			screenPixels++;
+			overlayPixels++;
 		}
 	}
-} 
+}
 
-void XGR_Screen::set_render_buffer(SDL_Surface *buf) {
-	ScreenBuf = (unsigned char*)buf->pixels;
+
+uint8_t* XGR_Screen::get_active_render_buffer() {
+	return ScreenBuf;
+}
+
+uint8_t* XGR_Screen::get_default_render_buffer() {
+	return XGR_ScreenSurface;
+}
+
+uint8_t* XGR_Screen::get_2d_render_buffer() {
+	return XGR_ScreenSurface2D;
+}
+
+void XGR_Screen::set_active_render_buffer(uint8_t *buf) {
+	ScreenBuf = (unsigned char*)buf;
+}
+
+void XGR_Screen::set_default_render_buffer() {
+	set_active_render_buffer(XGR_ScreenSurface);
+}
+
+void XGR_Screen::set_2d_render_buffer() {
+	set_active_render_buffer(XGR_ScreenSurface2D);
+}
+
+SDL_Surface* XGR_Screen::get_screenshot() {
+	SDL_Surface *screenshotSurface = SDL_CreateRGBSurface(0, xgrScreenSizeX, xgrScreenSizeY, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_RenderReadPixels(sdlRenderer, NULL, SDL_PIXELFORMAT_ARGB8888, screenshotSurface->pixels, screenshotSurface->pitch);
+	return screenshotSurface;
 }
 
 
 void XGR_Screen::flip()
 {
 	if(flags & XGR_INIT) {
+		set_2d_render_buffer();
 		if(XGR_MouseObj.flags & XGM_PROMPT_ACTIVE) {
 			XGR_MouseObj.GetPromptFon();
 			XGR_MouseObj.PutPrompt();
 		}
 		XGR_MouseObj.GetFon();
 		XGR_MouseObj.PutFrame();
+		set_default_render_buffer();
+
 		// std::cout<<"Flip"<<std::endl;
-		assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 		void *pixels;
 		int pitch;
 		SDL_LockTexture(sdlTexture, NULL, &pixels, &pitch);
-		blitScreen((uint32_t*)pixels, (uint8_t *)XGR_ScreenSurface->pixels);
+		blitRGBA((uint32_t*)pixels, XGR_ScreenSurface, XGR_ScreenSurface2D);
 		SDL_UnlockTexture(sdlTexture);
 		
 		SDL_RenderClear(sdlRenderer);
@@ -814,15 +902,35 @@ void XGR_Screen::flip()
 			SDL_SetTextureColorMod(HDBackgroundTexture, averageColorPalette.r, averageColorPalette.g, averageColorPalette.b);
 			SDL_RenderCopy(sdlRenderer, HDBackgroundTexture, NULL, NULL);
 		}
-		SDL_RenderSetLogicalSize(sdlRenderer, XGR_ScreenSurface->w, XGR_ScreenSurface->h);
-		SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
-		
+		SDL_RenderSetLogicalSize(sdlRenderer, xgrScreenSizeX, xgrScreenSizeY);
+
+		if(is_scaled_renderer){
+			SDL_SetTextureColorMod(HDBackgroundTexture, averageColorPalette.r, averageColorPalette.g, averageColorPalette.b);
+			SDL_RenderCopy(sdlRenderer, HDBackgroundTexture, NULL, NULL);
+
+			SDL_Rect src_rect {0, 0, 800, 600};
+			int new_width = screen_scale_y * 800;
+			SDL_Rect dst_rect {
+					.x = (xgrScreenSizeX - new_width)/2,
+					.y = 0,
+					.w = new_width,
+					.h = xgrScreenSizeY,
+			};
+			XGR_RenderSides(sdlRenderer);
+			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0);
+			SDL_RenderCopy(sdlRenderer, sdlTexture, &src_rect, &dst_rect);
+		}else{
+			SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+		}
+
 		SDL_RenderPresent(sdlRenderer);
-		SDL_UnlockSurface(XGR_ScreenSurface);
+
+		set_2d_render_buffer();
 		XGR_MouseObj.PutFon();
 		if(XGR_MouseObj.flags & XGM_PROMPT_ACTIVE) {
 			XGR_MouseObj.PutPromptFon();
 		}
+		set_default_render_buffer();
 	}
 }
 
@@ -876,7 +984,6 @@ void XGR_Screen::flush(int x,int y,int sx,int sy)
 
 void XGR_Screen::fill(int col)
 {
-	assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 	//int i;
 	//unsigned char* ptr = ScreenBuf;
 	
@@ -886,7 +993,6 @@ void XGR_Screen::fill(int col)
 		ptr = ScreenBuf + yOffsTable[i];
 		memset(ptr,col,ScreenX);
 	}*/
-	SDL_UnlockSurface(XGR_ScreenSurface);
 }
 
 void XGR_Screen::fill16(int col)
@@ -905,9 +1011,9 @@ void XGR_Screen::getpal(void* p)
 	int i;
 	unsigned char* ptr = (unsigned char*)p;
 	for(i = 0; i < 256; i++){
-		*ptr ++ = XGR_Palette->colors[i].r >> 2;
-		*ptr ++ = XGR_Palette->colors[i].g >> 2;
-		*ptr ++ = XGR_Palette->colors[i].b >> 2;
+		*ptr ++ = XGR_Palette[i].r >> 2;
+		*ptr ++ = XGR_Palette[i].g >> 2;
+		*ptr ++ = XGR_Palette[i].b >> 2;
 	}
 }
 
@@ -924,15 +1030,16 @@ void XGR_Screen::setpal(void* ptr,int start,int count)
 	//std::cout<<"stepal start:"<<start<<" count:"<<count<<std::endl;
 	// ptr is XGR_ColorData*
 	XGR_ColorData* pal = (XGR_ColorData*)ptr;
-	for (i = 0; i < count; i++) {
-		XGR_Palette->colors[i].r = pal[i].R << 2;
-		XGR_Palette->colors[i].g = pal[i].G << 2;
-		XGR_Palette->colors[i].b = pal[i].B << 2;
+	for (i = start; i < start + count; i++) {
+		XGR_Palette[i].r = pal[i - start].R << 2;
+		XGR_Palette[i].g = pal[i - start].G << 2;
+		XGR_Palette[i].b = pal[i - start].B << 2;
+		XGR32_PaletteCache[i] = SDL_MapRGB(XGR32_ScreenSurface->format,
+			XGR_Palette[i].r, XGR_Palette[i].g, XGR_Palette[i].b);
 	}
-	SDL_SetPaletteColors(XGR_Palette, XGR_Palette->colors, start, count);
-  	averageColorPalette.r = XGR_Palette->colors[220].r;
-  	averageColorPalette.g = XGR_Palette->colors[220].g;
-  	averageColorPalette.b = XGR_Palette->colors[220].b;
+  	averageColorPalette.r = XGR_Palette[220].r;
+  	averageColorPalette.g = XGR_Palette[220].g;
+  	averageColorPalette.b = XGR_Palette[220].b;
 	/*if (averageColorPalette.r>averageColorPalette.b&&averageColorPalette.r>averageColorPalette.g) {
 		averageColorPalette.r = 255;
 		if (averageColorPalette.b+averageColorPalette.g>200) {
@@ -998,7 +1105,6 @@ void XGR_Screen::capture_screen(char* bmp_name,char* pal_name)
 
 void XGR_Screen::lineto(int x,int y,int len,int dir,int col)
 {
-	assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 	int i,v,_x,_x1;
 	unsigned char* ptr;
 
@@ -1006,7 +1112,9 @@ void XGR_Screen::lineto(int x,int y,int len,int dir,int col)
 		switch(dir){
 			case XGR_LEFT:
 				v = x - len;
-				if(y < clipTop || y >= clipBottom || x >= clipRight) return;
+				if(y < clipTop || y >= clipBottom || x >= clipRight) {
+					return;
+				};
 				_x = (x < clipRight) ? x : clipRight;
 				_x1 = (v > clipLeft) ? v : clipLeft;
 				ptr = ScreenBuf + yOffsTable[y] + _x;
@@ -1017,7 +1125,9 @@ void XGR_Screen::lineto(int x,int y,int len,int dir,int col)
 				break;
 			case XGR_TOP:
 				v = y - len;
-				if(x < clipLeft || x >= clipRight || y < clipTop) return;
+				if(x < clipLeft || x >= clipRight || y < clipTop) {
+					return;
+				};
 				_x = (y < clipBottom) ? y : clipBottom - 1;
 				_x1 = (v > clipTop) ? v : clipTop;
 				ptr = ScreenBuf + yOffsTable[_x] + x;
@@ -1028,7 +1138,9 @@ void XGR_Screen::lineto(int x,int y,int len,int dir,int col)
 				break;
 			case XGR_RIGHT:
 				v = x + len;
-				if(y < clipTop || y >= clipBottom || x >= clipRight) return;
+				if(y < clipTop || y >= clipBottom || x >= clipRight) {
+					return;
+				}
 				_x = (x > clipLeft) ? x : clipLeft;
 				_x1 = (v < clipRight) ? v : clipRight;
 				ptr = ScreenBuf + yOffsTable[y] + _x;
@@ -1039,7 +1151,9 @@ void XGR_Screen::lineto(int x,int y,int len,int dir,int col)
 				break;
 			case XGR_BOTTOM:
 				v = y + len;
-				if(x < clipLeft || x >= clipRight || y >= clipBottom) return;
+				if(x < clipLeft || x >= clipRight || y >= clipBottom) {
+					return;
+				};
 				_x = (y > clipTop) ? y : clipTop;
 				_x1 = (v < clipBottom) ? v : clipBottom;
 				ptr = ScreenBuf + yOffsTable[_x] + x;
@@ -1083,7 +1197,6 @@ void XGR_Screen::lineto(int x,int y,int len,int dir,int col)
 				break;
 		}
 	}
-	SDL_UnlockSurface(XGR_ScreenSurface);
 }
 
 void XGR_Screen::lineto16(int x,int y,int len,int dir,int col)
@@ -1178,7 +1291,6 @@ void XGR_Screen::lineto16(int x,int y,int len,int dir,int col)
 
 void XGR_Screen::line(int x1,int y1,int x2,int y2,int col)
 {
-	assert(SDL_LockSurface(XGR_ScreenSurface) == 0);
 	unsigned char* ptr;
 	int dx,dy,xinc,yinc,err,cnt,i_xinc,i_yinc;
 
@@ -1264,7 +1376,6 @@ void XGR_Screen::line(int x1,int y1,int x2,int y2,int col)
 			}
 		}
 	}
-	SDL_UnlockSurface(XGR_ScreenSurface);
 }
 
 void XGR_Screen::line16(int x1,int y1,int x2,int y2,int col)
@@ -1384,6 +1495,12 @@ void XGR_Screen::rectangle16(int x,int y,int sx,int sy,int outcol,int incol,int 
 		if(sx < 3) return;
 		erase16(x + 1,y + 1,sx - 2,sy - 2,incol);
 	}
+}
+
+void XGR_Screen::clear_2d_surface() {
+	set_active_render_buffer(get_2d_render_buffer());
+	fill(0);
+	set_active_render_buffer(get_default_render_buffer());
 }
 
 
@@ -2281,4 +2398,8 @@ void XGR_MouseFnc(SDL_Event* p)
 	if(rec_flag && XRec.flags & XRC_RECORD_MODE){
 		//XRec.PutSysMessage(XRC_XMOUSE_MESSAGE,p -> message,p -> wParam,p -> lParam);
 	}
+}
+
+void XGR_Flip() {
+	XGR_Obj.flip();
 }

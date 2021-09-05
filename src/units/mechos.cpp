@@ -3226,15 +3226,8 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	int t,dx,dy;
 
 	if(!camera_moving_xy_enable) {
-		dx = getDistX(X,camera_X_prev);
-		dy = getDistY(Y,camera_Y_prev);
-		if(dx < 400 && dy < 400) {
-			ViewX += dx;
-			ViewY += dy;
-		} else {
-			ViewX = X;
-			ViewY = Y;
-		}
+		ViewX = X;
+		ViewY = Y;
 	}
 	dx = getDistX(X,ViewX);
 	dy = getDistY(Y,ViewY);
@@ -3270,8 +3263,16 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	camera_Y_prev = Y;
 
 	int TurnSecX_old = TurnSecX;
-	int z = camera_moving_z_enable ? (V_abs < camera_vmax ? camera_zmin + ((curGMap -> xsize*MAX_ZOOM >> 8) - camera_zmin)*V_abs/camera_vmax : camera_zmax)
-					: camera_zmin;
+	int z;
+	if (camera_moving_z_enable) {
+		auto v = V_abs < camera_vmax ? V_abs : camera_vmax;
+		auto z_max = curGMap->xsize * 1.38;
+
+		z = camera_zmin + (z_max - camera_zmin) * v / camera_vmax;
+	} else {
+		z = camera_zmin;
+	}
+
 	camera_vz += (double)(z - TurnSecX)*camera_miz * XTCORE_FRAME_NORMAL;
 	//camera_vz -= camera_vz*camera_dragz;
 	camera_vz *= camera_dragz*pow(0.97,camera_vz_min/(fabs(camera_vz) + 1e-10));
@@ -8260,10 +8261,10 @@ int VangerUnit::CheckStartJump(void)
 	return 1;
 };
 
-const int COMPAS_RIGHT = 80;
-const int COMPAS_LEFT = 60;
-const int COMPAS_UP = 60;
-const int COMPAS_DOWN = 80;
+extern int COMPAS_RIGHT;
+constexpr int COMPAS_LEFT = 60;
+constexpr int COMPAS_UP = 60;
+constexpr int COMPAS_DOWN = 80;
 
 const int MAX_COMPAS_DELTA = 7;
 const int MAX_COMPAS_SPEED = 10;
@@ -8634,9 +8635,8 @@ void CompasObject::Quant(void)
 	v = Vector(ActD.Active->Speed,0,0)*ActD.Active->RotMat;
 	x = XCYCL(x + vMove.x + v.x);
 	y = YCYCL(y + vMove.y + v.y);
-	if(AdvancedView) G2LQ(Vector(x,y,0),tx,ty);
-	else G2LS(Vector(x,y,0),tx,ty);
 
+	G2LQ(Vector(x,y,0), tx, ty);
 	if(tx < UcutLeft + COMPAS_LEFT){
 		tx = UcutLeft + COMPAS_LEFT;
 		vMove.x = 0;

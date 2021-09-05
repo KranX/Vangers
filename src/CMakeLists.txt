@@ -70,7 +70,7 @@ SET(vangers_SRCS
 	zmod_client.cpp
 	lang.cpp
 	${WINDOWS_RES}
-)
+        actint/layout.h)
 
 ADD_EXECUTABLE(vangers ${vangers_SRCS})
 

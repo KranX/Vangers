@@ -232,7 +232,7 @@ void GeneralSystemLoad(XStream& in);
 void GeneralSystemSave(XStream& out);
 
 void load_map_bmp(int num);
-void set_screen(int Dx,int Dy,int mode,int xcenter,int ycenter);
+void set_map_to_ibs(ibsObject* ibs);
 void set_mouse_cursor(char* p,int sx,int sy);
 void restore_mouse_cursor(void);
 
@@ -705,8 +705,6 @@ void actIntQuant(void)
 	actintActiveFlag = 1;
 	aScrDisp -> KeyQuant();
 	aScrDisp -> EventQuant();
-	/*Нужно что бы не было мерцания когда подгружаются полноэкранные картинки прям в видео буфер.*/
-	aScrDisp -> redraw(); 
 }
 
 void aLoadFonts(void)
@@ -1572,7 +1570,7 @@ void change_screen(int mode)
 {
 	aScrDisp -> change_ibs(mode);
 	aScrDisp -> flags &= ~AS_FULL_REDRAW;
-	set_screen(aScrDisp -> curIbs -> SideX,aScrDisp -> curIbs -> SideY,0,aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY);
+	set_map_to_ibs(aScrDisp->curIbs);
 }
 
 void aciSendEvent2actint(int code,actintItemData* p,int data)
@@ -4981,8 +4979,7 @@ int acsQuant(void)
 		XGR_MouseShow();
 		acsScrD -> alloc_mem();
 
-		if(XGR_MAXX == 800 && !(aScrDisp -> flags & AS_ISCREEN))
-			acsScrD -> curScr -> ChangeCoords((800 - 640)/2,(600 - 480)/2);
+		if (!(aScrDisp -> flags & AS_ISCREEN)) { acsScrD -> curScr -> ChangeCoords((XGR_MAXX - 640)/2, (XGR_MAXY - 480)/2); }
 
 		EffectsOff();
 		firstQuant = 1;
@@ -5037,8 +5034,7 @@ int acsQuant(void)
 	}
 	if(ret){
 		acsAllocFlag = 0;
-		if(XGR_MAXX == 800 && !(aScrDisp -> flags & AS_ISCREEN))
-			acsScrD -> curScr -> ChangeCoords(-(800 - 640)/2,-(600 - 480)/2);
+		if (!(aScrDisp -> flags & AS_ISCREEN)) { acsScrD -> curScr -> ChangeCoords(-(XGR_MAXX - 640)/2, -(XGR_MAXY - 480)/2); }
 		acsScrD -> free_mem();
 		if(aScrDisp -> flags & AS_FULLSCR && !(aScrDisp -> flags & AS_ISCREEN)){
 			XGR_MouseHide();

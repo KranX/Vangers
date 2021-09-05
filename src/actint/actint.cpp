@@ -25,9 +25,47 @@
 #include "../uvs/diagen.h"
 
 #include "../sound/hsound.h"
-
+#include "layout.h"
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
+
+template <> void layout(invMatrix* view, int width, int height){
+	unsigned int anchor = view->anchor;
+
+	if(anchor & WIDGET_ANCHOR_INITIALIZED){
+		std::cout<<"  WARNING: layout is already done"<<std::endl;
+		return;
+	}
+
+	view->anchor |= WIDGET_ANCHOR_INITIALIZED;
+
+	if(anchor & WIDGET_ANCHOR_RIGHT){
+		view->ScreenX = width - view->ScreenX - view->ScreenSizeX;
+	}
+
+	if(anchor & WIDGET_ANCHOR_BOTTOM){
+		view->ScreenY = height - view->ScreenY - view->ScreenSizeY;
+	}
+}
+
+template <> void layout(bmlObject* view, int width, int height){
+	unsigned int anchor = view->anchor;
+
+	if(anchor & WIDGET_ANCHOR_INITIALIZED){
+		std::cout<<"  WARNING: layout is already done"<<std::endl;
+		return;
+	}
+
+	view->anchor |= WIDGET_ANCHOR_INITIALIZED;
+
+	if(anchor & WIDGET_ANCHOR_RIGHT){
+		view->OffsX = width - view->OffsX - view->SizeX;
+	}
+
+	if(anchor & WIDGET_ANCHOR_BOTTOM){
+		view->OffsY = height - view->OffsY - view->SizeY;
+	}
+}
 
 extern int uvsTabuTaskFlag;
 
@@ -73,7 +111,6 @@ extern int iScreenLog;
 extern int* AVI_index;
 
 extern actIntDispatcher* aScrDisp;
-
 extern int PalIterLock;
 extern int aciShopMenuLog;
 extern int ExclusiveLog;
@@ -237,7 +274,8 @@ void swap_buf_col(int src,int dest,int sx,int sy,unsigned char* buf);
 
 void restore_mouse_cursor(void);
 void set_mouse_cursor(char* p,int sx,int sy);
-void set_screen(int Dx,int Dy,int mode,int xcenter,int ycenter);
+void set_map_to_fullscreen();
+void set_map_to_ibs(ibsObject* ibs);
 
 void put_fon(int x,int y,int sx,int sy,unsigned char* buf);
 void put_attr_fon(int x,int y,int sx,int sy,unsigned char* buf);
@@ -1024,7 +1062,7 @@ aIndData::~aIndData(void)
 bmlObject::bmlObject(void)
 {
 	ID = 0;
-
+	anchor = 0;
 	flags = 0;
 	SizeX = SizeY = Size = 0;
 	OffsX = OffsY = 0;
@@ -1130,8 +1168,6 @@ void bmlObject::offs_show(int x,int y,int frame)
 ibsObject::ibsObject(void)
 {
 	ID = 0;
-	backObjID = -1;
-	back = NULL;
 	image = NULL;
 	name = NULL;
 
@@ -1197,8 +1233,8 @@ void ibsObject::show(void)
 
 void ibsObject::show_bground(void)
 {
-	if(back){
-		back -> show();
+	for(int i = 0; i < backs.size(); i++){
+		backs[i] -> show();
 	}
 }
 
@@ -1918,6 +1954,7 @@ void invMatrixCell::init_mem(void)
 
 invMatrix::invMatrix(void)
 {
+	anchor = 0;
 	type = 0;
 	flags = 0;
 
@@ -2263,6 +2300,7 @@ void invMatrixCell::remove_item(void)
 
 aButton::aButton(void)
 {
+	anchor = 0;
 	fname = NULL;
 	frameSeq = NULL;
 
@@ -2379,6 +2417,8 @@ void aButton::load_frames(void)
 		fh.close();
 
 		flags |= B_FRAMES_LOADED;
+
+		layout(this, XGR_MAXX, XGR_MAXY);
 	}
 }
 
@@ -2491,6 +2531,7 @@ void fncMenuItem::init_name(const char* p)
 
 fncMenu::fncMenu(void)
 {
+	anchor = 0;
 	ibs = NULL;
 	bml = NULL;
 	bml_name = NULL;
@@ -2587,6 +2628,7 @@ fncMenu::~fncMenu(void)
 
 InfoPanel::InfoPanel(void)
 {
+	anchor = 0;
 	ibs = NULL;
 	bml = NULL;
 	bml_name = NULL;
@@ -2616,6 +2658,7 @@ InfoPanel::InfoPanel(void)
 
 CounterPanel::CounterPanel(void)
 {
+	anchor = 0;
 	ibs = NULL;
 	ibs_name = NULL;
 
@@ -3258,11 +3301,12 @@ void actIntDispatcher::redraw(void)
 	}
 	if(!(flags & AS_FULL_REDRAW)){
 		XGR_MouseObj.flags &= ~XGM_PROMPT_ACTIVE;
-		curIbs -> back -> load2mem(XGR_VIDEOBUF);
+		XGR_Obj.fill(0);
+		for(int i = 0; i < curIbs -> backs.size(); i++) {
+			curIbs -> backs[i] -> show(0);
+		}
 		if(curMode == AS_INV_MODE && curMatrix && curMatrix -> back){
-			curMatrix -> back -> load();
-			XGR_PutSpr(curMatrix -> back -> OffsX,curMatrix -> back -> OffsY,curMatrix -> back -> SizeX,curMatrix -> back -> SizeY,curMatrix -> back -> frames,XGR_BLACK_FON);
-			curMatrix -> back -> free();
+			curMatrix -> back -> show();
 		}
 		flags |= AS_FULL_FLUSH;
 		cp = (CounterPanel*)intCounters -> last;
@@ -3409,6 +3453,39 @@ void actIntDispatcher::redraw(void)
 		}
 		iPl = (InfoPanel*)iPl -> prev;
 	}
+}
+
+void actIntDispatcher::text_redraw(){
+	if(Pause > 1 && NetworkON){
+		if(GameQuantReturnValue || acsQuant()){
+			Pause = 0;
+		}
+		flags |= AS_FULL_FLUSH;
+	}
+
+	if(flags & AS_TEXT_MODE){
+		ScrTextData -> redraw();
+		ScrTextData -> Quant();
+	}
+	if(curPrompt -> NumStr){
+		curPrompt -> redraw(0,0,XGR_MAXX,XGR_MAXY);
+		curPrompt -> quant();
+	}
+	if(flags & AS_CHAT_MODE){
+		iChatQuant();
+	}
+	else {
+		if(aciRacingFlag){
+			aciShowRacingPlace();
+		}
+	}
+	if(Pause > 1 && NetworkON){
+		if(GameQuantReturnValue || acsQuant()){
+			Pause = 0;
+		}
+	}
+
+
 }
 
 void actIntDispatcher::i_redraw(void)
@@ -3558,34 +3635,9 @@ void actIntDispatcher::flush(void)
 			PalIterLock = 0;
 			flags ^= AS_EVINCE_PALETTE;
 		}
-		if(flags & AS_TEXT_MODE){
-			ScrTextData -> redraw();
-			ScrTextData -> Quant();
-		}
-		if(curPrompt -> NumStr){
-			curPrompt -> redraw(0,0,XGR_MAXX,XGR_MAXY);
-			curPrompt -> quant();
-		}
-		if(flags & AS_CHAT_MODE){
-			iChatQuant();
-		}
-		else {
-			if(aciRacingFlag){
-				aciShowRacingPlace();
-			}
-		}
-		if(Pause > 1 && NetworkON){
-			if(GameQuantReturnValue || acsQuant()){
-				Pause = 0;
-			}
-		}
 		return;
 	}
-	if(curPrompt -> NumStr){
-		curPrompt -> redraw(curIbs -> PosX,curIbs -> PosY,curIbs -> SizeX,curIbs -> SizeY);
-		curPrompt -> quant();
-	}
-	curIbs -> show();
+
 	ind = (aIndData*)indList -> last;
 	while(ind){
 		ind -> redraw();
@@ -3593,16 +3645,6 @@ void actIntDispatcher::flush(void)
 		ind = (aIndData*)ind -> prev;
 	}
 
-	if(aciRacingFlag){
-		aciShowRacingPlace();
-	}
-
-	if(Pause > 1 && NetworkON){
-		if(GameQuantReturnValue || acsQuant()){
-			Pause = 0;
-		}
-		flags |= AS_FULL_FLUSH;
-	}
 
 	if(flags & AS_FULL_FLUSH){
 		flags &= ~AS_FULL_FLUSH;
@@ -3874,9 +3916,14 @@ void actIntDispatcher::init(void)
 	bmlObject* bml;
 
 	aciCurColorScheme = aciColorSchemes[SCH_DEFAULT];
-	if(iP) iP -> init();
+	if(iP) {
+		layout(iP, XGR_MAXX, XGR_MAXY);
+		iP -> init();
+	}
+
 	ip = (InfoPanel*)infoPanels -> last;
 	while(ip){
+		layout(ip, XGR_MAXX, XGR_MAXY);
 		ip -> init();
 		ip = (InfoPanel*)ip -> prev;
 	}
@@ -3899,16 +3946,19 @@ void actIntDispatcher::init(void)
 
 	cp = (CounterPanel*)intCounters -> last;
 	while(cp){
+        layout(cp, XGR_MAXX, XGR_MAXY);
 		cp -> init();
 		cp = (CounterPanel*)cp -> prev;
 	}
 	cp = (CounterPanel*)infCounters -> last;
 	while(cp){
+        layout(cp, XGR_MAXX, XGR_MAXY);
 		cp -> init();
 		cp = (CounterPanel*)cp -> prev;
 	}
 	cp = (CounterPanel*)invCounters -> last;
 	while(cp){
+        layout(cp, XGR_MAXX, XGR_MAXY);
 		cp -> init();
 		cp = (CounterPanel*)cp -> prev;
 	}
@@ -3916,6 +3966,13 @@ void actIntDispatcher::init(void)
 	p = (invMatrix*)matrixList -> last;
 	while(p){
 		p -> init();
+		layout(p, XGR_MAXX, XGR_MAXY);
+		p -> back -> load();
+		// TODO: move to resource file
+		p -> back -> OffsX = 10;
+		p -> back -> anchor = WIDGET_ANCHOR_RIGHT;
+
+		layout(p -> back, XGR_MAXX, XGR_MAXY);
 		p = (invMatrix*)p -> prev;
 	}
 
@@ -3927,8 +3984,11 @@ void actIntDispatcher::init(void)
 
 	ibs = (ibsObject*)ibsList -> last;
 	while(ibs){
-		bml = get_back_bml(ibs -> backObjID);
-		ibs -> back = bml;
+		for(int i = 0; i < ibs -> backObjIDs.size(); i++) {
+			ibs -> backs.push_back(get_back_bml(ibs -> backObjIDs[i]));
+			ibs -> backs[i] -> load(NULL, 1);
+			layout(ibs -> backs[i], XGR_MAXX, XGR_MAXY);
+		}
 		ibs = (ibsObject*)ibs -> prev;
 	}
 	curIbs = get_ibs(curIbsID);
@@ -3937,6 +3997,15 @@ void actIntDispatcher::init(void)
 	if(wMap -> world_ids[CurrentWorld] != -1 && map_names[wMap -> world_ids[CurrentWorld]]){
 		mapObj -> free();
 		mapObj -> load(map_names[wMap -> world_ids[CurrentWorld]],1);
+		// TODO: the code below is quick hack
+		//  for blitting XGR_Obj 2d surface onto main, with color=0 as colorkey
+		//  This should be solved in the future with actIntDispatcher refactoring
+		int size = mapObj->Size * mapObj->SizeX * mapObj->SizeY;
+		for (int i = 0; i < size; ++i) {
+			if(mapObj->frames[i] == 0){
+				mapObj->frames[i] = 1; // Should be a close to black color
+			}
+		}
 	}
 	else {
 		ErrH.Abort("Map BMP not found...");
@@ -3951,22 +4020,26 @@ void actIntDispatcher::init(void)
 	it = (fncMenu*)menuList -> last;
 	while(it){
 		it -> init();
+		layout(it, XGR_MAXX, XGR_MAXY);
 		it = (fncMenu*)it -> prev;
 	}
 
 	b = (aButton*)intButtons -> last;
 	while(b){
 		b -> init();
+		layout(b, XGR_MAXX, XGR_MAXY);
 		b = (aButton*)b -> prev;
 	}
 	b = (aButton*)invButtons -> last;
 	while(b){
 		b -> init();
+		layout(b, XGR_MAXX, XGR_MAXY);
 		b = (aButton*)b -> prev;
 	}
 	b = (aButton*)infButtons -> last;
 	while(b){
 		b -> init();
+		layout(b, XGR_MAXX, XGR_MAXY);
 		b = (aButton*)b -> prev;
 	}
 	init_menus();
@@ -4314,14 +4387,26 @@ void fncMenuItem::init(void)
 
 void InfoPanel::init(void)
 {
-	if(bml_name){
-		if(!bml) bml = new bmlObject;
-		bml -> load(bml_name);
-	}
-	if(ibs_name){
-		if(!ibs) ibs = new ibsObject;
-		ibs -> load(ibs_name);
-	}
+    if(bml_name){
+        if(!bml) bml = new bmlObject;
+        bml -> load(bml_name);
+        bml -> OffsX = (short)PosX;
+        bml -> OffsX = (short)PosY;
+
+    }
+    if(ibs_name){
+        if(!ibs) ibs = new ibsObject;
+        ibs -> load(ibs_name);
+        ibs -> PosX = (short)PosX;
+        ibs -> PosY = (short)PosY;
+        // TODO:
+//        ibs -> recalc_geometry();
+//        SideX = SizeX / 2;
+//        SideY = SizeY / 2;
+//
+//        CenterX = PosX + SideX;
+//        CenterY = PosY + SideY;
+    }
 }
 
 void InfoPanel::finit(void)
@@ -4352,11 +4437,17 @@ void fncMenu::init(void)
 		if(bml_name){
 			if(!bml) bml = new bmlObject;
 			bml -> load(bml_name);
-			bml -> change_color(0,aciCurColorScheme[ACI_BACK_COL]);
+			bml -> OffsX = (short)PosX;
+			bml -> OffsY = (short)PosY;
+			bml -> change_color(0, aciCurColorScheme[ACI_BACK_COL]);
 		}
 		if(ibs_name){
 			if(!ibs) ibs = new ibsObject;
 			ibs -> load(ibs_name);
+			ibs -> PosX = (short)PosX;
+			ibs -> PosY = (short)PosY;
+			ibs -> CenterX = ibs -> PosX + ibs -> SideX;
+			ibs -> CenterY = ibs -> PosY + ibs -> SideY;
 		}
 	}
 	init_objects();
@@ -5165,23 +5256,11 @@ void actIntDispatcher::EventQuant(void)
 			case EV_FULLSCR_CHANGE:
 				flags ^= AS_FULLSCR;
 				if(flags & AS_FULLSCR){
-					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
-					XGR_MouseHide();
-					XGR_MouseSetPromptData(NULL);
+					set_fullscreen(true);
 				}
 				else {
-					flags &= ~AS_FULL_REDRAW;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
-					XGR_MouseShow();
-					if(curMode == AS_INV_MODE){
-						XGR_MouseSetPromptData(invPrompt);
-					}
-					else {
-						if(curMode == AS_INFO_MODE){
-							XGR_MouseSetPromptData(infPrompt);
-						}
-					}
+					set_fullscreen(false);
 				}
 				break;
 			case EV_ACTIVATE_IINV:
@@ -5302,11 +5381,8 @@ void actIntDispatcher::EventQuant(void)
 					aciWorldIndex = wMap -> world_ptr[p -> data] -> uvsID;
 					aciPrevJumpCount = -1;
 					if(!(flags & AS_FULLSCR)){
-						flags |= AS_FULLSCR;
 						flags &= ~AS_TEXT_MODE;
-						set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
-						XGR_MouseSetPromptData(NULL);
-						XGR_MouseHide();
+						set_fullscreen(true);
 					}
 					lock();
 				}
@@ -5317,10 +5393,7 @@ void actIntDispatcher::EventQuant(void)
 			case EV_ENTER_TEXT_MODE:
 			case ACI_SHOW_TEXT:
 				if(!(flags & AS_FULLSCR)){
-					flags |= AS_FULLSCR;
-					XGR_MouseSetPromptData(NULL);
-					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
-					XGR_MouseHide();
+					set_fullscreen(true);
 				}
 				ScrTextData -> color = aciTEXT_COLOR;
 				flags |= AS_TEXT_MODE;
@@ -5328,38 +5401,21 @@ void actIntDispatcher::EventQuant(void)
 			case EV_LEAVE_TEXT_MODE:
 			case ACI_HIDE_TEXT:
 				if(flags & AS_FULLSCR){
-					flags &= ~AS_FULL_REDRAW;
-					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
-					XGR_MouseShow();
-					if(curMode == AS_INV_MODE)
-						XGR_MouseSetPromptData(invPrompt);
-					if(curMode == AS_INFO_MODE)
-						XGR_MouseSetPromptData(infPrompt);
+					set_fullscreen(false);
 				}
 				ScrTextData -> clear();
 				flags &= ~AS_TEXT_MODE;
 				break;
 			case ACI_LOCK_INTERFACE:
 				if(!(flags & AS_FULLSCR)){
-					flags |= AS_FULLSCR;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
-					XGR_MouseHide();
-					XGR_MouseSetPromptData(NULL);
+					set_fullscreen(true);
 				}
 				lock();
 				break;
 			case ACI_UNLOCK_INTERFACE:
-				if(flags & AS_FULLSCR){ 
-					flags &= ~AS_FULL_REDRAW;
-					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
-					if(curMode == AS_INV_MODE)
-						XGR_MouseSetPromptData(invPrompt);
-					if(curMode == AS_INFO_MODE)
-						XGR_MouseSetPromptData(infPrompt);
-					XGR_MouseShow();
+				if(flags & AS_FULLSCR){
+					set_fullscreen(false);
 				}
 				unlock(); // logical, functional blocking
 				break;
@@ -5377,11 +5433,8 @@ void actIntDispatcher::EventQuant(void)
 				break;
 			case EV_ENTER_CHAT:
 				if(!(flags & AS_FULLSCR)){
-					flags |= AS_FULLSCR;
 					flags &= ~AS_TEXT_MODE;
-					set_screen(XGR_MAXX/2 - 0,XGR_MAXY/2 - 0,0,XGR_MAXX/2,XGR_MAXY/2);
-					XGR_MouseSetPromptData(NULL);
-					XGR_MouseHide();
+					set_fullscreen(true);
 				}
 				lock();
 				iChatInit();
@@ -5392,14 +5445,7 @@ void actIntDispatcher::EventQuant(void)
 				break;
 			case EV_LEAVE_CHAT:
 				if(flags & AS_FULLSCR){
-					flags &= ~AS_FULL_REDRAW;
-					flags &= ~AS_FULLSCR;
-					set_screen(curIbs -> SideX,curIbs -> SideY,0,curIbs -> CenterX,curIbs -> CenterY);
-					XGR_MouseShow();
-					if(curMode == AS_INV_MODE)
-						XGR_MouseSetPromptData(invPrompt);
-					if(curMode == AS_INFO_MODE)
-						XGR_MouseSetPromptData(infPrompt);
+					set_fullscreen(false);
 				}
 				unlock();
 				iChatFinit();
@@ -5408,6 +5454,29 @@ void actIntDispatcher::EventQuant(void)
 			case EV_INIT_AVI_OBJECT:
 				aciInitAviObject();
 				break;
+		}
+	}
+}
+
+void actIntDispatcher::set_fullscreen(bool isEnabled) {
+	if(isEnabled){
+		flags |= AS_FULLSCR;
+		set_map_to_fullscreen();
+		XGR_Obj.clear_2d_surface();
+		XGR_MouseSetPromptData(NULL);
+		XGR_MouseHide();
+	} else {
+		flags &= ~AS_FULL_REDRAW;
+		flags &= ~AS_FULLSCR;
+		set_map_to_ibs(curIbs);
+		XGR_MouseShow();
+		if(curMode == AS_INV_MODE){
+			XGR_MouseSetPromptData(invPrompt);
+		}
+		else {
+			if(curMode == AS_INFO_MODE){
+				XGR_MouseSetPromptData(infPrompt);
+			}
 		}
 	}
 }
@@ -6377,7 +6446,9 @@ void actIntDispatcher::next_ibs(void)
 {
 	if(curIbs){
 		curIbs -> free();
-		if(curIbs -> back) curIbs -> back -> free();
+		for(int i = 0; i < curIbs -> backs.size(); i++){
+			curIbs -> backs[i] -> free();
+		}
 	}
 	curIbs = (ibsObject*)curIbs -> next;
 	if(!curIbs) ErrH.Abort("IBS object not present");
@@ -6825,11 +6896,11 @@ void actIntDispatcher::init_inds(void)
 	ibsObject* ibs = curIbs;
 	XGR_MousePromptData* pr;
 
-	lx = ibs -> PosX;
-	ly = ibs -> PosY;
+	lx = 0;
+	ly = 0;
 
-	rx = lx + ibs -> SizeX;
-	ry = ly + ibs -> SizeY;
+	rx = XGR_MAXX;
+	ry = XGR_MAXY;
 
 	aIndData* p = (aIndData*)indList -> last;
 	while(p){
@@ -7311,11 +7382,14 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 	x = iMouseX;
 	y = iMouseY;
 
-	ix = curIbs -> PosX;
-	iy = curIbs -> PosY;
+	float scaleX = XGR_Obj.get_screen_scale_x();
+	float scaleY = XGR_Obj.get_screen_scale_y();
 
-	isx = ix + curIbs -> SizeX;
-	isy = iy + curIbs -> SizeY;
+	ix = curIbs -> PosX / scaleX;
+	iy = curIbs -> PosY / scaleY;
+
+	isx = ix + curIbs -> SizeX * scaleX;
+	isy = iy + curIbs -> SizeY * scaleY;
 
 	if(x >= ix && x < isx && y >= iy && y < isy){
 		id = aciGetScreenItem(x,y);
@@ -7726,6 +7800,8 @@ void CounterPanel::init(void)
 	if(ibs_name){
 		if(!ibs) ibs = new ibsObject;
 		ibs -> load(ibs_name);
+		ibs -> PosX = this->PosX;
+		ibs -> PosY = this->PosY;
 	}
 	SizeX = MaxLen * (aCellSize + 1);
 	SizeY = aCellSize + 1;
@@ -9592,10 +9668,10 @@ void aciScreenText::redraw(void)
 		p = (aciScreenTextPage*)p -> next;
 	}
 
-	y = (XGR_MAXY - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
+	y = (I_RES_Y - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
 	for(i = 0; i < CurStr; i ++){
 		str = p -> StrTable[i];
-		x = (XGR_MAXX - aTextWidth32(str,font,1))/2;
+		x = (I_RES_X - aTextWidth32(str,font,1))/2;
 
 		aOutText32(x,y,color,str,font,1,1);
 		y += DeltaY + aTextHeight32(str,font,1);

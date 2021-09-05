@@ -952,7 +952,7 @@ struct CompasObject
 //const int SPEETLE_AMMO = 0;
 //const int CRUSTEST_AMMO = 1;
 
-const int RES_DRAW_LEFT = 50;
+const int RES_DRAW_LEFT = 150;
 const int RES_DRAW_DOWN = 80;
 const int RES_DRAW_STEP_Y = 10;
 const int RES_DRAW_MAX_SIZE = 300;

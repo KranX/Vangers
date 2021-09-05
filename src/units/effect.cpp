@@ -1649,14 +1649,14 @@ void WaterParticleObject::DrawQuant(void)
 	
 	if(TargetType){
 		if(Time == SetLifeTime){
-			if(TurnAngle){
+			if(AdvancedView){
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
 					p->QuantT(vCenter.x,vCenter.y,Velocity);
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
 					if(WaterAltLevel(vPos)){
-						G2L(vPos,tx,ty);
+						G2LQ(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1674,13 +1674,13 @@ void WaterParticleObject::DrawQuant(void)
 				};
 			};
 		}else{
-			if(TurnAngle){
+			if(AdvancedView){
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
 					p->QuantT(vCenter.x,vCenter.y,Velocity);
 					vPos = p->vR;
 					vPos >>= 8;
 					if(GetAltLevel(vPos)){
-						G2L(vPos,tx,ty);
+						G2LQ(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1700,14 +1700,14 @@ void WaterParticleObject::DrawQuant(void)
 		};
 	}else{
 		if(Time == SetLifeTime){
-			if(TurnAngle){
+			if(AdvancedView){
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
 					p->Quant();
 					p->dColor = DeltaColor;
 					vPos = p->vR;
 					vPos >>= 8;
 					if(WaterAltLevel(vPos)){
-						G2L(vPos,tx,ty);
+						G2LQ(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};
@@ -1726,13 +1726,13 @@ void WaterParticleObject::DrawQuant(void)
 				};
 			};
 		}else{
-			if(TurnAngle){
+			if(AdvancedView){
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
 					p->Quant();
 					vPos = p->vR;
 					vPos >>= 8;
 					if(GetAltLevel(vPos)){
-						G2L(vPos,tx,ty);
+						G2LQ(vPos,tx,ty);
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 					};
 				};

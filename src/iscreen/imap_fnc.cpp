@@ -644,8 +644,13 @@ void put_map(int x,int y,int sx,int sy)
 
 		for(j = 0; j < sy; j ++){
 			yy = iYCYCL(y + j);
-
-			memcpy(XGR_VIDEOBUF + index,ltc[yy] + x0,bsx);
+			unsigned char* dest = XGR_VIDEOBUF + index;
+			if(ltc[yy] == NULL){
+				memset(dest, 0, bsx);
+			}else{
+				auto* source = ltc[yy] + x0;
+				memcpy(dest, source, bsx);
+			}
 			index += XGR_MAXX;
 		}
 	}
