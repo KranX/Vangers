@@ -869,8 +869,25 @@ void XGR_Screen::set_2d_render_buffer() {
 }
 
 SDL_Surface* XGR_Screen::get_screenshot() {
-	SDL_Surface *screenshotSurface = SDL_CreateRGBSurface(0, xgrScreenSizeX, xgrScreenSizeY, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-	SDL_RenderReadPixels(sdlRenderer, NULL, SDL_PIXELFORMAT_ARGB8888, screenshotSurface->pixels, screenshotSurface->pitch);
+	int w, h;
+	SDL_GetRendererOutputSize(sdlRenderer, &w, &h);
+	SDL_Surface *screenshotSurface = SDL_CreateRGBSurface(
+		0,
+		w,
+		h,
+		32,
+		0x00ff0000,
+		0x0000ff00,
+		0x000000ff,
+		0xff000000
+	);
+	SDL_RenderReadPixels(
+		sdlRenderer,
+		NULL,
+		SDL_PIXELFORMAT_ARGB8888,
+		screenshotSurface->pixels,
+		screenshotSurface->pitch
+	);
 	return screenshotSurface;
 }
 

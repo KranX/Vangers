@@ -2542,32 +2542,32 @@ void shotFlush(void)
 {
 	static int curShotNumber;
 
-	XBuffer buf, out_buf;
-	buf < "Vangers";
-	if(curShotNumber < 1000)
-		buf < "0";
-	if(curShotNumber < 100)
-		buf < "0";
-	if(curShotNumber < 10)
-		buf < "0";
-	buf <= curShotNumber;
+	XBuffer out_buf;
 
 	while(true) {
-		XBuffer buf2;
-		buf2 = buf2 < buf.GetBuf() < ".bmp";
-		std::fstream filestr(buf2.GetBuf(), std::ios::in);
+		XBuffer buf;
+		buf < "Vangers";
+		if(curShotNumber < 1000)
+			buf < "0";
+		if(curShotNumber < 100)
+			buf < "0";
+		if(curShotNumber < 10)
+			buf < "0";
+		buf <= curShotNumber;
+
+		buf < ".bmp";
+		std::fstream filestr(buf.GetBuf(), std::ios::in);
 		if (!filestr.is_open()) {
-			out_buf = out_buf < buf2.GetBuf();
+			out_buf < buf.GetBuf();
 			break;
 		}
 		filestr.close();
-		buf = buf < "v";
+		curShotNumber++;
 	}
 	std::cout<<"ScreenShot name:"<<out_buf.GetBuf()<<std::endl;
 	SDL_Surface* screenshotSurface = XGR_Obj.get_screenshot();
 	SDL_SaveBMP(screenshotSurface, out_buf.GetBuf());
 	SDL_FreeSurface(screenshotSurface);
-    curShotNumber++;
 }
 #endif
 
