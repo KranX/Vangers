@@ -13,14 +13,15 @@ jobs:
     #     brew update
     - name: install libs
       run: |
+        brew update
         brew install ninja yasm dylibbundler
     - name: install our libs
       run: |
-        brew vendor-install reinstall -s ./formulas/libsndfile.rb
-        brew vendor-install reinstall -s ./formulas/libogg.rb
-        brew vendor-install reinstall -s ./formulas/libvorbis.rb
-        brew vendor-install install -s ./formulas/sdl2.rb
-        brew vendor-install install -s ./formulas/sdl2_net.rb
+        brew reinstall -s ./formulas/libsndfile.rb
+        brew reinstall -s ./formulas/libogg.rb
+        brew reinstall -s ./formulas/libvorbis.rb
+        brew install -s ./formulas/sdl2.rb
+        brew install -s ./formulas/sdl2_net.rb
     - name: clunk -- download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
     - name: clunk -- create build dir
