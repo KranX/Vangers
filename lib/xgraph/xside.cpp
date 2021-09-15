@@ -53,6 +53,13 @@ std::pair<const char *, const char *> getSideNames() {
 			activeIScreenId == 698 /* Hall of Fame */ ||
 			activeIScreenId == 770 /* Set Server Port */ ||
 			activeIScreenId == 788 /* Addons (Web Version) */ ||
+			activeIScreenId == 1126 /* Credits (2013+ Page 1) */ ||
+			activeIScreenId == 1134 /* Credits (2013+ Page 3) */ ||
+			activeIScreenId == 1139 /* Credits (2002 - 2013) */ ||
+			activeIScreenId == 1143 /* Credits (IM) */ ||
+			activeIScreenId == 1148 /* Credits (Buka) */ ||
+			activeIScreenId == 1153 /* Credits (KD-Lab Page 1) */ ||
+			activeIScreenId == 1161 /* Credits (KD-Lab Page 2) */ ||
 			activeIScreenId == 0) {
 			return std::make_pair<>(
 				"resource/actint/hd/side/main_menu_left.bmp",
