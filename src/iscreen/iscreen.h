@@ -160,7 +160,7 @@ struct ibsObject : public iListElement
 	unsigned char* image;
 
 	void load(char* fname = NULL);
-	void show(void);
+	void show(uint8_t* renderBuffer = NULL);
 	void show_bground(void);
 	void free(void);
 
@@ -411,8 +411,6 @@ struct iAVIElement : public iScreenElement
 	char* border_shape;
 
 	ibsObject* ibs;
-
-	unsigned char* palBuf;
 
 	short ShSizeX;
 	short ShSizeY;
@@ -709,10 +707,6 @@ struct iScreen : public iListElement
 
 	void load_palette(void);
 	void free_palette(void);
-
-	void show_avi(void);
-	void hide_avi(void);
-	void hide_avi_place(void);
 
 	void load_data(void);
 	void free_data(void);

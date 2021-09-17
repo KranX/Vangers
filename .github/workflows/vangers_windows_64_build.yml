@@ -40,7 +40,7 @@ jobs:
         --enable-swscale
         --enable-zlib
         --enable-demuxer=avi,rawvideo
-        --enable-decoder=png,rawvideo
+        --enable-decoder=png,rawvideo,h264
         --enable-parser=png
         --enable-protocol=file
         --disable-d3d11va

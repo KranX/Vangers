@@ -39,8 +39,6 @@ struct AVIFile : XListElement
 	int redraw;
 	int released;
 	int flags;
-	unsigned char* color_table;
-	unsigned char palette[768];
 	std::string filename;
 
 	~AVIFile();
@@ -50,5 +48,17 @@ struct AVIFile : XListElement
 	void draw(void);
 	void close(void);
 };
+
+int AVIopen(char *filename, int flags, int channel, void **avi);
+void AVIplay(void *avi,int x, int y);
+void AVIstop(void *avi);
+void AVIclose(void *avi);
+int AVIwidth(void *avi);
+int AVIheight(void *avi);
+int AVIredraw(void *avi);
+void AVIredraw(void *avi, int state);
+
+void AVIPrepareFrame(void *avi);
+void AVIDrawFrame(void *avi, int offsetX, int offsetY, int lineWidth, uint32_t* rgba, float bright = 1.0);
 
 #endif //__AVI_H__

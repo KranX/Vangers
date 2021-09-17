@@ -4502,12 +4502,12 @@ void aciDetectLeaks(void)
 }
 #endif
 
-void ibsout(int x,int y,void* ptr)
+void ibsout(int x,int y,void* ptr, uint8_t *renderBuffer)
 {
 	int _x,_y,cnt;
 	int* offs_table = XGR_Obj.yOffsTable;
 
-	unsigned char* vbuf = XGR_VIDEOBUF;
+	unsigned char* vbuf = renderBuffer == NULL ? XGR_VIDEOBUF : renderBuffer;
 	unsigned char* pbuf = (unsigned char*)ptr;
 
 	cnt = *((int*)pbuf);
@@ -4524,6 +4524,11 @@ void ibsout(int x,int y,void* ptr)
 		cnt = *((int*)pbuf);
 		pbuf += 4;
 	}
+}
+
+void ibsout(int x,int y,void* ptr)
+{
+	ibsout(x, y, ptr, NULL);
 }
 
 void aciPrepareMenus(void)
