@@ -76,8 +76,8 @@ inline void downMainStage(BYTE* pa0,int& hC,BYTE* pc0,int SizeX,int& x,BYTE*& gr
 	BYTE* pf = pa + H_SIZE;
 	BYTE* pc = pc0 + x;
 
-	BYTE* palCLRlast;
-	BYTE* lightCLRlast;
+	BYTE* palCLRlast = nullptr;
+	BYTE* lightCLRlast = nullptr;
 	BYTE typeC = 0xFF;
 	register int i;
 	for(i = 0;i < SizeX;i += 2){
@@ -227,8 +227,8 @@ void regDownRender(int LowX,int LowY,int HiX,int HiY,int changed)
 		BYTE* pa = pa0 + x;
 		BYTE* pf = pa + H_SIZE;
 		BYTE* pc = pc0 + x;
-		BYTE* palCLRlast;
-		BYTE* lightCLRlast;
+		BYTE* palCLRlast = nullptr;
+		BYTE* lightCLRlast = nullptr;
 		BYTE typeC = 0xFF;
 		int MaxPossibleAlt = MAX_ALT;
 		unsigned bNeedScan = 1;

@@ -162,12 +162,12 @@ void BitMap::place(char* name,int _force,int _mode,int _border,int _level,int _s
 	int y = YCYCL(curGMap -> CY - sy/2);
 	uchar** lt = vMap -> lineT;
 	uchar* bmp = data;
-	uchar* pa,*pa0;
+	uchar* pa = nullptr,*pa0 = nullptr;
 
 	vMap -> increase(y,y + sy - 1);
 
 	register int i,j;
-	int v,xx,yy,vv;
+	int v = 0,xx = 0,yy = 0,vv = 0;
 	for(j = 0;j < sy;j++){
 		pa0 = pa = lt[yy = YCYCL(y + j)];
 		if(!pa0) continue;
@@ -259,7 +259,7 @@ void AcceptSecondLayer(void)
 	uchar** lt = vMap -> lineT;
 	uchar** ltc = vMap -> lineTcolor;
 	uchar* pch = vMap -> changedT;
-	uchar* pa,*pa0,*pay,*pay0,*pf,*pfy,*pt,prepa,pret,*pc;
+	uchar* pa = nullptr,*pa0,*pay,*pay0,*pf,*pfy,*pt,prepa = 0,pret = 0,*pc;
 	pay0 = pay = new uchar[H2_SIZE];
 
 	register int x,d;
@@ -394,7 +394,7 @@ void S3Danalyze(void)
 	uchar** lt = vMap -> lineT;
 	int x = shape_x;
 	int y = shape_y;
-	int xysize = shape_size,v,vv,xx,yy,empty;
+	int xysize = shape_size,v = 0,vv = 0,xx = 0,yy = 0,empty = 0;
 	uchar* p;
 	uchar* pa0;
 	uchar* surface;
@@ -1024,7 +1024,7 @@ void BaseValoc::remove(void)
 
 void VLadd(int x,int y)
 {
-	BaseValoc* p;
+	BaseValoc* p = nullptr;
 	switch(VLmode){
 		case 0:
 			p = new TntValoc;
