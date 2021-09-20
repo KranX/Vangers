@@ -115,6 +115,7 @@ XGR_Screen::XGR_Screen(void)
 
 	XGR_ScreenSurface = NULL;
 	XGR_ScreenSurface2D = NULL;
+	XGR_ScreenSurface2DRgba = NULL;
 	XGR32_ScreenSurface = NULL;
 	sdlWindow = NULL;
 	sdlRenderer = NULL;
@@ -210,11 +211,9 @@ int XGR_Screen::init(int x,int y,int flags_in)
 }
 
 void XGR_Screen::create_surfaces(int width, int height) {
-	std::cout<<"XGR_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 	XGR_ScreenSurface = new uint8_t[width * height] {0};
-
-	std::cout<<"XGR_ScreenSurface2D = SDL_CreateRGBSurface"<<std::endl;
 	XGR_ScreenSurface2D = new uint8_t[width * height] {0};
+	XGR_ScreenSurface2DRgba = new uint32_t[width * height] {0};
 
 	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
@@ -286,12 +285,14 @@ void XGR_Screen::destroy_surfaces() {
 
 	delete[] XGR_ScreenSurface;
 	delete[] XGR_ScreenSurface2D;
+	delete[] XGR_ScreenSurface2DRgba;
 	SDL_FreeSurface(XGR32_ScreenSurface);
 
 	sdlTexture = nullptr;
 	HDBackgroundTexture = nullptr;
 	XGR_ScreenSurface = nullptr;
 	XGR_ScreenSurface2D = nullptr;
+	XGR_ScreenSurface2DRgba = nullptr;
 	XGR32_ScreenSurface = nullptr;
 }
 
@@ -829,16 +830,23 @@ void XGR_Screen::close(void)
 
 int UI_OR_GAME=1;
 
-void XGR_Screen::blitRGBA(uint32_t *dst, uint8_t *screenPixels, uint8_t *overlayPixels) {
-	int x, y; 
-	SDL_Color color;
+void XGR_Screen::blitRgba(uint32_t *dstRgba, uint8_t *screenIndexes, uint32_t *screen2DRgba, uint8_t *screen2DIndexes) {
+	int x, y;
 
 	for (y = xgrScreenSizeY; y > 0; --y) {
 		for (x = xgrScreenSizeX; x > 0; --x) {
-		    uint8_t colorIndex = *overlayPixels == 0 ? *screenPixels : *overlayPixels;
-			*(dst++) = XGR32_PaletteCache[colorIndex];
-			screenPixels++;
-			overlayPixels++;
+			if (*screen2DIndexes != 0) {
+				*dstRgba = XGR32_PaletteCache[*screen2DIndexes];
+			} else if (((uint8_t*)screen2DRgba)[3] != 0) {
+				*dstRgba = *screen2DRgba;
+			} else {
+				*dstRgba = XGR32_PaletteCache[*screenIndexes];
+			}
+
+			++dstRgba;
+			++screenIndexes;
+			++screen2DIndexes;
+			++screen2DRgba;
 		}
 	}
 }
@@ -854,6 +862,10 @@ uint8_t* XGR_Screen::get_default_render_buffer() {
 
 uint8_t* XGR_Screen::get_2d_render_buffer() {
 	return XGR_ScreenSurface2D;
+}
+
+uint32_t* XGR_Screen::get_2d_rgba_render_buffer() {
+	return XGR_ScreenSurface2DRgba;
 }
 
 void XGR_Screen::set_active_render_buffer(uint8_t *buf) {
@@ -908,7 +920,7 @@ void XGR_Screen::flip()
 		void *pixels;
 		int pitch;
 		SDL_LockTexture(sdlTexture, NULL, &pixels, &pitch);
-		blitRGBA((uint32_t*)pixels, XGR_ScreenSurface, XGR_ScreenSurface2D);
+		blitRgba((uint32_t*)pixels, XGR_ScreenSurface, XGR_ScreenSurface2DRgba, XGR_ScreenSurface2D);
 		SDL_UnlockTexture(sdlTexture);
 		
 		SDL_RenderClear(sdlRenderer);
@@ -999,17 +1011,13 @@ void XGR_Screen::flush(int x,int y,int sx,int sy)
 	}*/
 }
 
-void XGR_Screen::fill(int col)
+void XGR_Screen::fill(int col, void* buffer)
 {
-	//int i;
-	//unsigned char* ptr = ScreenBuf;
-	
-	memset(ScreenBuf, col, ScreenX*ScreenY);
-	
-	/*for(i = 0; i < ScreenY; i ++){
-		ptr = ScreenBuf + yOffsTable[i];
-		memset(ptr,col,ScreenX);
-	}*/
+	if (buffer == XGR_ScreenSurface2DRgba) {
+		memset(XGR_ScreenSurface2DRgba, col, ScreenX * ScreenY * 4);
+	} else {
+		memset(buffer == NULL ? ScreenBuf : buffer, col, ScreenX * ScreenY);
+	}
 }
 
 void XGR_Screen::fill16(int col)

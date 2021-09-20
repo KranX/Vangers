@@ -50,18 +50,6 @@ void SoundStreamRelease(void *stream);
 
 #define SoundStreamPlay(lpDSB, channel, priority, cropos, flags) SoundPlay(lpDSB, channel, priority, cropos, flags | DS_STREAM)
 
-int AVIopen(char *filename, int flags, int channel, void **avi);
-void AVIplay(void *avi,int x, int y);
-void AVIstop(void *avi);
-void AVIclose(void *avi);
-int AVIwidth(void *avi);
-int AVIheight(void *avi);
-int AVIredraw(void *avi);
-void AVIredraw(void *avi, int state);
-void AVIdraw(void *avi);
-void AVIGetData(void *avi, void *data);
-void *AVIGetPalette(void *avi);
-
 /* --------------------- CD Management --------------------- */
 
 // xsGetStatusCD() return values...

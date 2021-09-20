@@ -18,7 +18,6 @@ void FinitAVI(void);
 void xtRegisterSysFinitFnc(void (*fPtr)(void),int id);
 void xtUnRegisterSysFinitFnc(int id);
 
-
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
 // compatability with newer libavcodec
@@ -122,13 +121,6 @@ int AVIFile::open(char* aviname, int initFlags, int channel)
 	if (flags & AVI_INTERPOLATE)
 		return 0; // XXX: add support for palettes
 
-	for (i = 0; i < 256; i++){
-		//gray
-		palette[i*3] = i >> 2;
-		palette[i*3 + 1] = i >> 2;
-		palette[i*3 + 2] = i >> 2;
-	}
-
 	released = redraw = x = y = 0;
 
 	if(flags & AVI_DRAW){
@@ -225,12 +217,6 @@ void AVIFile::draw(void) {
 					return; // Could not open codec
 				}
 				draw();
-			}else{
-			for (i = 0; i < 256; i++) {
-				palette[i*3] = pFrame->data[1][i*4+2] >> 2;
-				palette[i*3+1] = pFrame->data[1][i*4+1] >> 2;
-				palette[i*3+2] = pFrame->data[1][i*4] >> 2;
-				}
 			}
 	}
 }
@@ -313,32 +299,61 @@ void AVIredraw(void *avi,int state)
 	((AVIFile *)avi) -> redraw = state;
 }
 
-void AVIdraw(void *avi)
+void AVIPrepareFrame(void *avi)
 {
 	((AVIFile *)avi) -> draw();
 }
 
-void AVIGetData(void *avi,void *data)
+void AVIDrawFrame(void *avi, int offsetX, int offsetY, int lineWidth, uint32_t* rgba, float bright)
 {
 	XCriticalSection critical(((AVIFile *)avi) -> avCriticalSection);
-	int xs = AVIwidth(avi);
-	int ys = AVIheight(avi);
-	int i, i2;
+	int width = AVIwidth(avi);
+	int height = AVIheight(avi);
+	bright = std::min(1.0f, bright);
 
-	if (((AVIFile *)avi)->pFrame)
-		for(i=0; i<ys; ++i){
-			for (i2=0;i2<xs;++i2){
-				
-				((unsigned char *)data)[i*xs+i2]=
-				((unsigned char *)((AVIFile *)avi)->pFrame->data[0])[i*((AVIFile *)avi)->pFrame->linesize[0]+i2];
+	AVFrame* frame  = ((AVIFile *) avi)->pFrame;
+	if (frame->format == AV_PIX_FMT_PAL8) {
+		for (int y = 0; y < height; ++y) {
+			for (int x = 0; x < width; ++x) {
+				int index = frame->data[0][y * frame->linesize[0] + x];
+				uint32_t* pixel = rgba + (y + offsetY) * lineWidth + x + offsetX;
+				*pixel = ((uint32_t *)frame->data[1])[index];
+				((uint8_t*) pixel)[3] = 255;
+
+				if (bright < 1) {
+					((uint8_t*) pixel)[0] *= bright;
+					((uint8_t*) pixel)[1] *= bright;
+					((uint8_t*) pixel)[2] *= bright;
+				}
 			}
 		}
-}
+	} else if (frame->format == AV_PIX_FMT_YUV444P) {
+		for (int y = 0; y < height; ++y) {
+			for (int x = 0; x < width; ++x) {
+				uint8_t *pixel = (uint8_t*) (rgba + (y + offsetY) * lineWidth + x + offsetX);
 
-void *AVIGetPalette(void *avi)
-{
-	XCriticalSection critical(((AVIFile *)avi) -> avCriticalSection);
-	return ((AVIFile *)avi) -> palette;
+				double Y = frame->data[0][y * frame->linesize[0] + x];
+				double U = frame->data[1][y * frame->linesize[0] + x];
+				double V = frame->data[2][y * frame->linesize[0] + x];
+
+				double R  = Y +                      + (U - 128) *  1.40200;
+				double G  = Y + (V - 128) * -0.34414 + (U - 128) * -0.71414;
+				double B  = Y + (V - 128) *  1.77200;
+
+				pixel[0] = std::max(std::min(R, 255.0), 0.0) * bright;
+				pixel[1] = std::max(std::min(G, 255.0), 0.0) * bright;
+				pixel[2] = std::max(std::min(B, 255.0), 0.0) * bright;
+				pixel[3] = 255;
+			}
+		}
+	} else {
+		static bool warn = true;
+		if (warn) {
+			printf("WARN! Video pixel format '%d' is not supported\n", frame->format);
+			printf("WARN! Video pixel format should be one of pal8, yuv444p\n");
+			warn = false;
+		}
+	}
 }
 
 void FinitAVI(void)
