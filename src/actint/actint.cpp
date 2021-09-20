@@ -9674,10 +9674,10 @@ void aciScreenText::redraw(void)
 		p = (aciScreenTextPage*)p -> next;
 	}
 
-	y = (I_RES_Y - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
+	y = (XGR_MAXY - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
 	for(i = 0; i < CurStr; i ++){
 		str = p -> StrTable[i];
-		x = (I_RES_X - aTextWidth32(str,font,1))/2;
+		x = (XGR_MAXX - aTextWidth32(str,font,1))/2;
 
 		aOutText32(x,y,color,str,font,1,1);
 		y += DeltaY + aTextHeight32(str,font,1);
