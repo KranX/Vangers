@@ -3467,8 +3467,13 @@ void actIntDispatcher::text_redraw(){
 		ScrTextData -> redraw();
 		ScrTextData -> Quant();
 	}
-	if(curPrompt -> NumStr){
-		curPrompt -> redraw(0,0,XGR_MAXX,XGR_MAXY);
+	if(curPrompt -> NumStr) {
+        if (flags & AS_FULLSCR || !curIbs) {
+            curPrompt->redraw(0, 0, XGR_MAXX, XGR_MAXY);
+        } else {
+            int offsetX = (XGR_MAXX - curIbs->bSizeX) / 2;
+            curPrompt -> redraw(curIbs -> PosX + offsetX,curIbs -> PosY,curIbs -> SizeX,curIbs -> SizeY);
+        }
 		curPrompt -> quant();
 	}
 	if(flags & AS_CHAT_MODE){
