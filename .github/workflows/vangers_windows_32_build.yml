@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: stalkerg/setup-msys2@v2
+    - uses: msys2/setup-msys2@v2
       with:
         msystem: MINGW32
     - name: install libs
