@@ -35,7 +35,7 @@ jobs:
     - name: ffmpeg -- download
       run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
-      run: msys2 -c './configure --enable-shared --prefix=/mingw64'
+      run: msys2 -c './configure --enable-shared --prefix=/mingw64
         --disable-everything
         --enable-swscale
         --enable-zlib
@@ -46,7 +46,7 @@ jobs:
         --disable-d3d11va
         --disable-dxva2
         --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
-        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
+        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv'
       working-directory: ffmpeg
     - name: ffmpeg -- build and install
       run: |
