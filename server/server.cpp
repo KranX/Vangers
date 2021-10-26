@@ -961,8 +961,8 @@ void Player::identification() {
 			socket.send(string, strlen(string) + 2);
 			return;
 		}
-		if (!strcmp(string, kill_str))
-			GlobalExit = 1;
+		// if (!strcmp(string, kill_str))
+		// 	GlobalExit = 1;
 	}
 }
 
