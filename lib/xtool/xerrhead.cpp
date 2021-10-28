@@ -51,6 +51,7 @@ void XErrorHandler::Abort(const char* message, int code, int val, const char* su
 {
 	log_file.open(log_name.c_str(),std::ios::out|std::ios::app);
 	log_file<<"Abort: "<<message<<" code:"<<code<<" val:"<<val<<std::endl;
+	std::cout<<"Abort: "<<message<<" code:"<<code<<" val:"<<val<<std::endl;
 	if (subj)
 		log_file<<"Subj:"<<subj<<std::endl;
 	log_file.close();
