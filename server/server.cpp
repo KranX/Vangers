@@ -1736,6 +1736,9 @@ Game *Server::create_game() {
 }
 
 int Server::check_new_clients() {
+	if (clients.size() >= 256) {
+		return 0;
+	}
 	if (!main_socket)
 		return 0;
 
@@ -1745,6 +1748,9 @@ int Server::check_new_clients() {
 
 	Player *player = new Player(this, sock);
 	clients.append(player);
+	if (clients.size() == 256) {
+		SERVER_ERROR_NO_EXIT("DDOS", 0);
+	}
 	DOUT("Client attached");
 
 	return 1;
