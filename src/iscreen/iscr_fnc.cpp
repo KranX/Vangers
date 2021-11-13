@@ -2346,8 +2346,10 @@ void iHandleExtEvent(int code,int data)
 //#endif
 			break;
 		case iEXT_CHECK_END_FLAG:
-			if(iEndGameFlag)
+			if(iEndGameFlag) {
 				iEvLineID = 1;
+				iEndGameFlag = 0;
+			}
 			else
 				iEvLineID = 3;
 			break;
