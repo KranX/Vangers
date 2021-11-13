@@ -4,6 +4,7 @@
 
 #include <SDL.h>
 #include <iostream>
+#include <ctime>
 
 XErrorHandler ErrH;
 
@@ -15,9 +16,6 @@ XErrorHandler::XErrorHandler(void)
 	log_name = SDL_GetPrefPath("KranX Productions", "Vangers");
 	log_name += "/logfile.txt";
 #endif
-	log_file.open(log_name.c_str(),std::ios::out|std::ios::trunc);
-	log_file.close();
-
 }
 
 XErrorHandler::~XErrorHandler(void)
@@ -49,7 +47,13 @@ void XErrorHandler::RTC(const char *file, unsigned int line, const char *expr)
 
 void XErrorHandler::Abort(const char* message, int code, int val, const char* subj)
 {
+	time_t now;
+    time(&now);
+    char time_buf[sizeof "2011-10-08T07:07:09Z"];
+    strftime(time_buf, sizeof time_buf, "%Y-%m-%dT%H:%M:%SZ", gmtime(&now));
+
 	log_file.open(log_name.c_str(),std::ios::out|std::ios::app);
+	log_file<<time_buf<<" ";
 	log_file<<"Abort: "<<message<<" code:"<<code<<" val:"<<val<<std::endl;
 	std::cout<<"Abort: "<<message<<" code:"<<code<<" val:"<<val<<std::endl;
 	if (subj)
