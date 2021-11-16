@@ -213,6 +213,9 @@ int LightPoint::quant(void) {
 					llt1 =  lt[YCYCL(_y1)] + XCYCL(_x);
 					llt2 = lt[YCYCL(_y)]+XCYCL(_x2);
 					llt3 = lt[YCYCL(_y1)]+XCYCL(_x2);
+					if (!lt[YCYCL(_y)] || !lt[YCYCL(_y1)]) {
+						continue;
+					}
 					int r4=(R*2-dimR[j]-dimR[R-i]);
 					int r, first_shift;
 					if ( (*llt) < _z ){
