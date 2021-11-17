@@ -209,10 +209,13 @@ int LightPoint::quant(void) {
 					int _x2 = ((x+R-j-2) & clip_mask_x)|1; 
 					j += 2;
 					//Sectors light around point (light under pulse)
-					llt  =  lt[_y] + _x;
-					llt1 =  lt[_y1] + _x;
-					llt2 = lt[_y]+_x2;
-					llt3 = lt[_y1]+_x2;
+					llt  =  lt[YCYCL(_y)] + XCYCL(_x);
+					llt1 =  lt[YCYCL(_y1)] + XCYCL(_x);
+					llt2 = lt[YCYCL(_y)]+XCYCL(_x2);
+					llt3 = lt[YCYCL(_y1)]+XCYCL(_x2);
+					if (!lt[YCYCL(_y)] || !lt[YCYCL(_y1)]) {
+						continue;
+					}
 					int r4=(R*2-dimR[j]-dimR[R-i]);
 					int r, first_shift;
 					if ( (*llt) < _z ){
