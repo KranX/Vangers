@@ -12,6 +12,7 @@ updating of the game in Steam and GOG
 Dmitry "AMDmi3" Marakasov, rework of the source code
  
 Nikita "lpenguin" Prianichnikov, HD support
+Egor V.D., artist for HD resources
  
 Aigars "Zuzon" Zeiza, 60 FPS support
  

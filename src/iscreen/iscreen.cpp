@@ -131,6 +131,10 @@ int getCurIScreenId() {
 	return iScrDisp == nullptr || iScrDisp->curScr == nullptr ? 0 : iScrDisp->curScr->ID;
 }
 
+int getCurIScreenX() {
+	return iScrDisp == nullptr || iScrDisp->curScr == nullptr ? 0 : iScrDisp->curScr->ScreenOffs;
+}
+
 iListElement::iListElement(void)
 {
 	//ID_ptr = new char[256];

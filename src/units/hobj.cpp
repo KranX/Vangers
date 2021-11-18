@@ -2625,7 +2625,6 @@ extern int camera_Y_prev;
 
 void ChangeWorld(int world,int flag)
 {
-	const int passImageMinSize = 800;
 	int t,i;
 	if(CurrentWorld == WORLD_KHOX)
 		scale_general *= 2.;
@@ -2635,9 +2634,9 @@ void ChangeWorld(int world,int flag)
 
 	PassageBmpPrev = -1;
 	t = RND(PassageBmpNum);
-	if(PassageImageData[t].xSize < passImageMinSize || PassageImageData[t].xSize > XGR_MAXX){
+	if(PassageImageData[t].xSize != XGR_MAXX){
 		for(i = t;i < PassageBmpNum;i++){
-			if(PassageImageData[i].xSize >= passImageMinSize && PassageImageData[i].xSize <= XGR_MAXX) {
+			if(PassageImageData[i].xSize == XGR_MAXX){
 				PassageBmpPrev = i;
 				break;
 			};
@@ -2645,7 +2644,7 @@ void ChangeWorld(int world,int flag)
 
 		if(PassageBmpPrev == -1){
 			for(i = 0;i < PassageBmpNum;i++){
-				if(PassageImageData[i].xSize >= passImageMinSize && PassageImageData[i].xSize <= XGR_MAXX){
+				if(PassageImageData[i].xSize == XGR_MAXX){
 					PassageBmpPrev = i;
 					break;
 				};
