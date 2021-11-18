@@ -4,7 +4,6 @@
 
 #include "xbmp.h"
 #include <functional>
-#include <iostream>
 #include <utility>
 
 extern int xgrScreenSizeX;
