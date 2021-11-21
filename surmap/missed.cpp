@@ -263,3 +263,7 @@ int CurrentWorld = -1;
 int getCurIScreenId() {
 	return 0;
 }
+
+int getCurIScreenX() {
+	return 0;
+}

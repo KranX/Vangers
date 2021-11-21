@@ -1,0 +1,2254 @@
+NumImage	36
+NameImage	00.svs
+NameImage	10.svs
+NameImage	20.svs
+NameImage	01.svs
+NameImage	11.svs
+NameImage	21.svs
+NameImage	02.svs
+NameImage	12.svs
+NameImage	22.svs
+NameImage	03.svs
+NameImage	13.svs
+NameImage	23.svs
+NameImage	04.svs
+NameImage	14.svs
+NameImage	24.svs
+NameImage	05.svs
+NameImage	15.svs
+NameImage	25.svs
+NameImage	06.svs
+NameImage	16.svs
+NameImage	26.svs
+NameImage	07.svs
+NameImage	17.svs
+NameImage	27.svs
+NameImage	08.svs
+NameImage	18.svs
+NameImage	28.svs
+NameImage	09.svs
+NameImage	19.svs
+NameImage	29.svs
+NameImage	091.svs
+NameImage 	191.svs
+NameImage 	291.svs
+NameImage	092.svs
+NameImage	192.svs
+NameImage	292.svs
+
+
+NumSkipML	11
+RealNumLocation 1
+
+
+SkipLocationID 69
+SkipLocationName 0001.vot
+
+SkipLocationID 70
+SkipLocationName 0005.vot
+
+SkipLocationID 71
+SkipLocationName 0006.vot
+
+SkipLocationID 72
+SkipLocationName 0007.vot
+
+SkipLocationID 73
+SkipLocationName 0008.vot
+
+SkipLocationID 74
+SkipLocationName 0009.vot
+
+SkipLocationID 75
+SkipLocationName 0010.vot
+
+SkipLocationID 76
+SkipLocationName 0011.vot
+
+SkipLocationID 77
+SkipLocationName 0002.vot
+
+SkipLocationID 78
+SkipLocationName 0003.vot
+
+SkipLocationID 79
+SkipLocationName 0004.vot
+
+
+
+SkipLocationID 69
+SkipLocationName GORA1.VOT
+
+SkipLocationID 70
+SkipLocationName GORA2.VOT
+
+SkipLocationID 71
+SkipLocationName GORA3.VOT
+
+SkipLocationID 72
+SkipLocationName GORA5.VOT
+
+SkipLocationID 73
+SkipLocationName GORA6.VOT
+
+SkipLocationID 74
+SkipLocationName GORA7.VOT
+
+SkipLocationID 75
+SkipLocationName GORA8.VOT
+
+SkipLocationID 76
+SkipLocationName GORA9.VOT
+
+SkipLocationID 77
+SkipLocationName GORA10.VOT
+
+SkipLocationID 78
+SkipLocationName GORA11.VOT
+
+SkipLocationID 79
+SkipLocationName GORA12.VOT
+
+
+
+
+NumSkipML	0
+RealNumLocation 0
+
+NumSkipML	0
+RealNumLocation 0
+
+NumSkipML	0
+RealNumLocation 0
+
+NumSkipML	0
+RealNumLocation 0
+
+NumSkipML	0
+RealNumLocation 0
+
+NumSkipML	0
+RealNumLocation 0
+
+NumSkipML	0
+RealNumLocation 0
+
+NumSkipML	0
+RealNumLocation 0
+
+NumSkipML	0
+RealNumLocation 0
+
+NumMessage	52
+
+//0
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Fostral in sight..."
+rString: "Виден Коридор на Фострал..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "No key - access denied!"
+rString: "Ключ неизвестен. Проход невозможен!"
+
+//1
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Glorx in sight..."
+rString: "Виден Коридор на Глоркс..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "No key - access denied!"
+rString: "Ключ неизвестен. Проход невозможен!"
+
+//2
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Necross in sight..."
+rString: "Виден Коридор на Некросс..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "No key - access denied!"
+rString: "Ключ неизвестен. Проход невозможен!"
+
+//3
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Xplo in sight..."
+rString: "Виден Коридор на Икспло..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "No key - access denied!"
+rString: "Ключ неизвестен. Проход невозможен!"
+
+//4
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Khox in sight..."
+rString: "Виден Коридор на Кокс..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "Inaccessible Passage in sight..."
+rString: "Виден закрытый Коридор..."
+
+//5
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Boozeena in sight..."
+rString: "Виден Коридор на Бузину..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!!"
+Time:	90
+Color:	175
+String: "Inaccessible Passage in sight..."
+rString: "Виден закрытый Коридор..."
+
+//6
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Weexow in sight..."
+rString: "Виден Коридор на Виксов..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "Inaccessible Passage in sight..."
+rString: "Виден закрытый Коридор..."
+
+//7
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to hMok in sight..."
+rString: "Виден Коридор на хМок..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "Inaccessible Passage in sight..."
+rString: "Виден закрытый Коридор..."
+
+//8
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Threall in sight..."
+rString: "Виден Коридор на Трилл..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "Inaccessible Passage in sight..."
+rString: "Виден закрытый Коридор..."
+
+//9
+TypeString	0
+NumString	3
+rNumString	3
+Time:	90
+Color:	175
+String: "Passage to Ark-a-Noi in sight..."
+rString: "Виден Коридор на Арк-а-Зной..."
+Time:	90
+Color:	175
+String: "Spiral discharged. Passage closed!"
+rString: "Спираль разряжена. Коридор закрыт!"
+Time:	90
+Color:	175
+String: "Inaccessible Passage in sight..."
+rString: "Виден закрытый Коридор..."
+
+
+//10
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Approaching Podish entrance..."
+rString: "Приближается вход в Подиш..."
+Time:	90
+Color:	175
+String: "Use 'Open' for activation..."
+rString: "Активируется функцией 'Открыть'..."
+
+//11
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Approaching Incubator entrance..."
+rString: "Приближается вход в Инкубатор..."
+Time:	90
+Color:	175
+String: "Use 'Open' for activation..."
+rString: "Активируется функцией 'Открыть'..."
+
+//12
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Approaching VigBoo entrance..."
+rString: "Приближается вход в ВигБу..."
+Time:	90
+Color:	175
+String: "Use 'Open' for activation..."
+rString: "Активируется функцией 'Открыть'..."
+
+//13
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Approaching Lampasso entrance..."
+rString: "Приближается вход в Лампассы..."
+Time:	90
+Color:	175
+String: "Use 'Open' for activation..."
+rString: "Активируется функцией 'Открыть'..."
+
+//14
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Approaching Ogorod entrance..."
+rString: "Приближается вход в Огород..."
+Time:	90
+Color:	175
+String: "Use 'Open' for activation..."
+rString: "Активируется функцией 'Открыть'..."
+
+//15
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Approaching B-Zone entrance..."
+rString: "Приближается вход в БиЗону..."
+Time:	90
+Color:	175
+String: "Use 'Open' for activation..."
+rString: "Активируется функцией 'Открыть'..."
+
+//16
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Approaching ZeePa entrance..."
+rString: "Приближается вход в ЦыПу..."
+Time:	90
+Color:	175
+String: "Use 'Open' for activation..."
+rString: "Активируется функцией 'Открыть'..."
+
+//17
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Approaching Spobs entrance..."
+rString: "Приближается вход в Спобс..."
+Time:	90
+Color:	175
+String: "Use Protractor for activation..."
+rString: "Активируется функцией Начертателя..."
+
+
+//18
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Spiral Station is here!"
+rString: "Зарядка Спирали!"
+Time:	90
+Color:	143
+String: "Spiral charged..."
+rString: "Спираль заряжена..."
+
+//19
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Ghorb Power Station is here!"
+rString: "гОрб-Станция!"
+Time:	90
+Color:	143
+String: "Ghorb Power restored..."
+rString: "гОрб Генератор заряжен..."
+
+//20
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Repairing Station is here!"
+rString: "Ремонт-Станция!"
+Time:	90
+Color:	143
+String: "Mechos repaired..."
+rString: "Броня восстановлена..."
+
+//21
+TypeString	0
+NumString	2
+rNumString	2
+Time:	90
+Color:	175
+String: "Rigs Energy Station is here!"
+rString: "Риг-Станция!"
+Time:	90
+Color:	143
+String: "Rigs Energy restored..."
+rString: "Ресурс приборов возобновлён..."
+
+//22
+TypeString	0
+NumString	1
+rNumString	1
+Time:	90
+Color:	143
+String: "Ghorb Power out of charge..."
+rString: "гОрб Генератор разряжен..."
+
+//23
+TypeString	0
+NumString	1
+rNumString	1
+Time:	90
+Color:	143
+String: "Device resources out..."
+rString: "Вышел ресурс приборов..."
+
+//24
+TypeString	0
+NumString	1
+rNumString	1
+Time:	90
+Color:	143
+String: "Energy Shield discharged..."
+rString: "Энергетический щит разряжен..."
+
+//25
+TypeString	0
+NumString	1
+rNumString	1
+Time:	90
+Color:	143
+String: "Energy Shield charged..."
+rString: "Защитная энергия восстановлена..."
+
+//26
+TypeString	0
+NumString	1
+rNumString	1
+Time:	90
+Color:	143
+String: "MacHOTine charged..."
+rString: "Махотин заряжен..."
+
+//27
+TypeString	0
+NumString	1
+rNumString	1
+Time:	90
+Color:	175
+String: "Broken Station!"
+rString: "Сломанная станция!"
+
+
+//28
+TypeString	0
+NumString	3
+rNumString	3
+Time:	100
+Color:	175
+String: "Hey, rover, want to get some money?"
+rString: "Эй, колесник, если хочешь заработать,"
+Time:	100
+Color:	175
+String: "Take some nymbos with you"
+rString: "прихвати нимбос"
+Time:	100
+Color:	175
+String: "from Podish!"
+rString: "в Подише!"
+
+//29
+TypeString	0
+NumString	3
+rNumString	3
+Time:	100
+Color:	175
+String: "Hey, beeb hunter,"
+rString: "Эй, охотник за бибами,"
+Time:	100
+Color:	175
+String: "you forgot to buy some phlegma"
+rString: "ты забыл купить в Инкубаторе флегмы"
+Time:	100
+Color:	175
+String: "in Incubator for the way back!"
+rString: "на обратный путь!"
+
+//30
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	175
+String: "Stop hanging around, fitter."
+rString: "Не катайся без толку, механик."
+Time:	100
+Color:	175
+String: "Follow your compass to Podish!"
+rString: "Езжай по компасу в Подиш!"
+
+//31
+TypeString	0
+NumString	3
+rNumString	3
+Time:	100
+Color:	175
+String: "You're lost, vanger;"
+rString: "Ты заплутал, вангер,"
+Time:	100
+Color:	175
+String: "you gotta head for Incubator!"
+rString: "тебе нужно в Инкубатор!"
+Time:	100
+Color:	175
+String: "Follow your compass bug..."
+rString: "Следуй своему компасу-козявке..."
+
+//32
+TypeString	0
+NumString	5
+rNumString	5
+Time:	100
+Color:	175
+String: "Plump-up has started, vanger."
+rString: "Наступил Жирогон, вангер."
+Time:	100
+Color:	175
+String: "If you want to take part in"
+rString: "Если хочешь успеть поучаствовать"
+Time:	100
+Color:	175
+String: "the Eleepods' holy race,"
+rString: "в священной гонке элиподов,"
+Time:	100
+Color:	175
+String: "go to Incubator pronto."
+rString: "то поспеши в Инкубатор"
+Time:	100
+Color:	175
+String: "And take your goods with you!"
+rString: "и прихвати с собой товар!"
+
+//33
+TypeString	0
+NumString	6
+rNumString	6
+Time:	100
+Color:	175
+String: "Eleection has started, rambler."
+rString: "Элирекция стартовала, колесник."
+Time:	100
+Color:	175
+String: "Tough vangers are racing to Podish"
+rString: "Отчаянные вангеры мчатся в Подиш"
+Time:	100
+Color:	175
+String: "with eLeeches."
+rString: "со священными эЛиками."
+Time:	100
+Color:	175
+String: "And you go fight the stinkers"
+rString: "А ты пока повоюй с вонючками"
+Time:	100
+Color:	175
+String: "and trample some beebs meanwhile, yellow belly..."
+rString: "и подави бибов, трусишка..."
+Time:	100
+Color:	175
+String: "Just don't die too quick!"
+rString: "Только не умри раньше времени."
+
+//34
+TypeString	0
+NumString	3
+rNumString	3
+Time:	100
+Color:	175
+String: "Gulp-down has come into the world."
+rString: "В силу вcтупила Чавка."
+Time:	100
+Color:	175
+String: "It's a good time for holdups"
+rString: "Самое время для грабежа"
+Time:	100
+Color:	175
+String: "and tabutasks, vanger!"
+rString: "и выполнения табутасков, вангер!"
+
+//35
+TypeString	0
+NumString	3
+rNumString	3
+Time:	100
+Color:	175
+String: "You desperately"
+rString: "Тебе нужно во что бы то ни стало"
+Time:	100
+Color:	175
+String: "need to win an Eleection,"
+rString: "выиграть наконец Элирекцию,"
+Time:	100
+Color:	175
+String: "beeb champion!"
+rString: "гроза бибов!"
+
+//36
+TypeString	0
+NumString	3
+rNumString	3
+Time:	100
+Color:	175
+String: "The Eleepods still need you"
+rString: "Элиподы хотят,"
+Time:	100
+Color:	175
+String: "to carry their eLeeches,"
+rString: "чтобы ты еще повозил эЛиков,"
+Time:	100
+Color:	175
+String: "you nimble delivery boy!"
+rString: "стремительный возница!"
+
+//37
+TypeString	0
+NumString	4
+rNumString	4
+Time:	100
+Color:	175
+String: "The Beeboorats are waiting for you,"
+rString: "Бибураты ждут тебя,"
+Time:	100
+Color:	175
+String: "hero of Fostral!"
+rString: "герой Фострала!"
+Time:	100
+Color:	175
+String: "Go straight to Passage,"
+rString: "Скорее в Коридор,"
+Time:	100
+Color:	175
+String: "but remember to activate your Spiral!"
+rString: "и не забудь зажечь свою Спираль!"
+
+//38
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	143
+String: "Warning:"
+rString: "Внимание:"
+Time:	100
+Color:	143
+String: "The eLeech has conked out!"
+rString: "эЛик загрустил!"
+
+//39
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	143
+String: "Warning:"
+rString: "Внимание:"
+Time:	100
+Color:	143
+String: "The Nucleobooms have rotted away!"
+rString: "Ядробусы испорчены!"
+
+//40
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	143
+String: "Warning:"
+rString: "Внимание:"
+Time:	100
+Color:	143
+String: "The peeperettes have faded!"
+rString: "пипетки завяли!"
+
+//41
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	143
+String: "Warning:"
+rString: "Внимание:"
+Time:	100
+Color:	143
+String: "ProtoZeek has moldered!"
+rString: "Маленький Цык развалился!"
+
+//42
+TypeString	0
+NumString	1
+rNumString	1
+Time:	100
+Color:	143
+String: "Warning: Armor low!"
+rString: "Внимание: низкий уровень брони!"
+
+//43
+TypeString	0
+NumString	3
+rNumString	3
+Time:	100
+Color:	143
+String: "Flymatic Activated."
+rString: "Пилот включён."
+Time:	100
+Color:	143
+String: "Press any control key"
+rString: "Нажмите любую управляющую клавишу"
+Time:	100
+Color:	143
+String: "to deactivate"
+rString: "для отключения"
+
+//44
+TypeString	0
+NumString	1
+rNumString	1
+Time:	100
+Color:	143
+String: "Flymatic deactivated"
+rString: "Пилот выключен"
+
+
+//45 Zyklope invitation
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	175
+String: "Vanger: To get to Xplo"
+rString: "Вангер, чтобы выбраться на Икспло,"
+Time:	100
+Color:	175
+String: "you need to win a Zeeklope!"
+rString: "нужно выиграть Цыклоп!"
+
+
+//46 Boond promt
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	175
+String: "Vanger: You have to ship shrubs"
+rString: "Вангер, вози кусты и Героин,"
+Time:	100
+Color:	175
+String: "and Valorins or you'll remain a slave..."
+rString: "а то останешься рабом..."
+
+
+//47 Commissar promt
+TypeString	0
+NumString	3
+rNumString	3
+Time:	100
+Color:	175
+String: "Commissar:"
+rString: "Прораб,"
+Time:	100
+Color:	175
+String: "To get to Necross you need"
+rString: "выигрывай Ядерную Войну"
+Time:	100
+Color:	175
+String: "to win Nuclear War and PeepShow!"
+rString: "и ПипШоу, чтоб попасть на Некросс!"
+
+//48
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	175
+String: "You have a"
+rString: "Для вас имеется сообщение"
+Time:	100
+Color:	175
+String: "chat message!"
+rString: "в чате!"
+
+//49
+TypeString	0
+NumString	2
+rNumString	2
+Time:	100
+Color:	175
+String: "The entrance to Spobs is closed"
+rString: "Вход в Спобс закрыт"
+Time:	100
+Color:	175
+String: "forever!"
+rString: "навсегда!"
+
+//50
+TypeString	0
+NumString	1
+rNumString	1
+Time:	100
+Color:	175
+String: "Carmane is unavailable!"
+rString: "Карман недоступен!"
+
+//51
+TypeString	0
+NumString	3
+rNumString	3
+Time:	150
+Color:	143
+String: "Wanna get a new perspective on the world,"
+rString: "Хочешь взглянуть на мир по-новому,"
+Time:	150
+Color:	143
+String: "wheeler? Click the window on the right,"
+rString: "колесник? Кликай на окошко справа,"
+Time:	150
+Color:	143
+String: "click 'camera' and experiment all you want!"
+rString: "выбирай 'камера' и экспериментируй!"
+
+NumUnitMatrix	29
+
+//Ammo
+UnitMatrixID	0
+NumID	0
+NumSlot 0
+
+//ITEM
+UnitMatrixID	1
+NumID	3
+DataID	0 0 0
+NumSlot 0
+
+//DEVICE
+UnitMatrixID	2
+NumID	3
+DataID	0 0 0
+NumSlot 0
+
+//CIRTAINER
+UnitMatrixID	3
+NumID	2
+DataID	1 0
+NumSlot 0
+
+
+//ZIP
+UnitMatrixID	4
+NumID	2
+DataID	1 0
+NumSlot 0
+
+
+//Speetle
+UnitMatrixID	5
+NumID	3
+DataID	3 0 0
+NumSlot 0
+
+//Beebbanoza
+UnitMatrixID	6
+NumID	4
+DataID	3 0 0 0
+NumSlot 0
+
+//Crustest
+UnitMatrixID	7
+NumID	4
+DataID	6 0 0 0
+NumSlot 0
+
+//Kukkish
+UnitMatrixID	8
+NumID	10
+DataID	7 6 3 1 0 0 0 0 0 0
+NumSlot 0
+
+
+//Retro
+UnitMatrixID	9
+NumID	4
+DataID	3 0 0 0
+NumSlot 3
+SlotSize 0 3 3
+nSlot	 4 1 2
+
+
+//Microbus
+UnitMatrixID	10
+NumID	17
+DataID	5 5 5 2 2 2 4 1 0 0 0 0 0 0 0 0 0
+NumSlot 3
+SlotSize 0 5 5
+nSlot	 5 1 2
+
+
+//Baggi
+UnitMatrixID	11
+NumID	7
+DataID	5 5 2 2 0 0 0
+NumSlot 3
+SlotSize 0 5 5
+nSlot	 5 1 2
+
+
+//Dragster
+UnitMatrixID	12
+NumID	11
+DataID	8 4 3 2 1 0 0 0 0 0 0
+NumSlot 4
+SlotSize 0 3 5 6
+nSlot	 4 1 2 3
+
+
+//Dumper
+UnitMatrixID	13
+NumID	13
+DataID	8 4 3 2 2 1 1 0 0 0 0 0 0
+NumSlot 4
+SlotSize 0 5 5 7
+nSlot	 5 1 2 3
+
+
+//Hammer
+UnitMatrixID	14
+NumID	10
+DataID	6 3 2 2 2 1 0 0 0 0
+NumSlot 3
+SlotSize 0 5 6
+nSlot	 4 1 2
+
+
+//Jeep
+UnitMatrixID	15
+NumID	12
+DataID	7 3 2 2 2 1 0 0 0 0 0 0
+NumSlot 3
+SlotSize 0 7 5
+nSlot	 5 3 2
+
+
+//Mash
+UnitMatrixID	16
+NumID	11
+DataID	7 7 5 4 3 2 0 0 0 0 0
+NumSlot 3
+SlotSize 0 5 7
+nSlot	 5 1 3
+
+
+//Oldcar
+UnitMatrixID	17
+NumID	19
+DataID	5 3 2  0 0 0 0	0 0 0 0  0 0 0	0 0 0  0 0
+NumSlot 3
+SlotSize 0 5 5
+nSlot	 5 1 2
+
+
+//Roadster
+UnitMatrixID	18
+NumID	4
+DataID	3 1 0 0
+NumSlot 2
+SlotSize 0 5
+nSlot	 4 3
+
+
+
+//Sedan
+UnitMatrixID	19
+NumID	9
+DataID	5 2 2 0 0 0 0 0 0
+NumSlot 3
+SlotSize 0 3 5
+nSlot	 5 1 2
+
+
+
+//Track
+UnitMatrixID	20
+NumID	12
+DataID	8 6 5 4 3 2 0 0 0 0 0 0
+NumSlot 4
+SlotSize 0 5 6 7
+nSlot	 4 3 1 2
+
+
+//Universal
+UnitMatrixID	21
+NumID	13
+DataID	5 4 3 2 2 1 1 0 0 0 0 0 0
+NumSlot 3
+SlotSize 0 3 5
+nSlot	 4 1 2
+
+
+//Vagon
+UnitMatrixID	22
+NumID	18
+DataID	5 5 5 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0
+NumSlot 3
+SlotSize 0 5 5
+nSlot	 5 1 2
+
+
+//Raffa
+UnitMatrixID	23
+NumID	1
+DataID	3
+NumSlot 0
+
+
+
+//QueenFrog
+UnitMatrixID	24
+NumID	1
+DataID	3
+NumSlot 3
+SlotSize 5 5 0
+nSlot	 1 2 5
+
+//Sandoll
+UnitMatrixID	25
+NumID	1
+DataID	3
+NumSlot 3
+SlotSize 5 5 0
+nSlot	 1 2 5
+
+
+//LastMoggy
+UnitMatrixID	26
+NumID	1
+DataID	3
+NumSlot 3
+SlotSize  7 7 0
+nSlot	  1 2 4
+
+
+//LawnMower
+UnitMatrixID	27
+NumID	1
+DataID	3
+NumSlot 3
+SlotSize 5 5 0
+nSlot	 1 2 5
+
+//Wormaster
+
+UnitMatrixID	28
+NumID	1
+DataID	3
+NumSlot  3
+SlotSize 5 5 0
+nSlot	 1 2 5
+
+
+
+UnitTimeConst	20
+WeaponWaitTime	20
+MaxOxigenBar	1010
+TotalVangerSpeed 15
+
+GameBulletNumType 22
+
+BulletID	FireBall
+LifeTime	100
+FirstPower	9000
+LastPower	9000
+CraterType	10
+BulletMode	{ Target Untouch MapDestruction }
+Speed		3
+ShowID		FireBall
+ShowType	1
+ExtentionShowType	0
+Precision	3
+TargetMode	Wall
+BulletScale	256
+AltOffset	20
+BulletRadius	10
+TapeSize	0
+WaitTime	0
+
+BulletID	FireBall
+LifeTime	50
+FirstPower	5000
+LastPower	5000
+CraterType	10
+BulletMode	{ Fly }
+Speed		25
+ShowID		FireBall
+ShowType	0
+ExtentionShowType	0
+Precision	4
+TargetMode	None
+BulletScale	512
+AltOffset	0
+BulletRadius	20
+TapeSize	0
+WaitTime	0
+
+
+BulletID	FireBall
+LifeTime	50
+FirstPower	5000
+LastPower	5000
+CraterType	10
+BulletMode	{ Fly }
+Speed		25
+ShowID		FireBall
+ShowType	0
+ExtentionShowType	0
+Precision	4
+TargetMode	None
+BulletScale	256
+AltOffset	0
+BulletRadius	10
+TapeSize	0
+WaitTime	0
+
+
+BulletID	Terminator
+LifeTime	100
+FirstPower	5000
+LastPower	5000
+CraterType	1
+BulletMode	{ Target Impulse }
+Speed		5
+ShowID		Crater
+ShowType	0
+ExtentionShowType	1
+Precision	7
+TargetMode	Control
+BulletScale	1
+AltOffset	10
+BulletRadius	20
+TapeSize	0
+WaitTime	0
+
+
+BulletID	Terminator
+LifeTime	100
+FirstPower	800
+LastPower	800
+CraterType	0
+BulletMode	{ Target Impulse }
+Speed		5
+ShowID		Crater
+ShowType	0
+ExtentionShowType	1
+Precision	7
+TargetMode	Random
+BulletScale	0
+AltOffset	10
+BulletRadius	10
+TapeSize	0
+WaitTime	0
+
+
+BulletID	Rocket
+LifeTime	50
+FirstPower	500
+LastPower	0
+CraterType	10
+BulletMode	{ Impulse Target MapDestruction }
+Speed		5
+ShowID		Particle
+ShowType	6
+ExtentionShowType	5
+Precision	4
+TargetMode	Random
+BulletScale	0
+AltOffset	20
+BulletRadius	2
+TapeSize	0
+WaitTime	0
+
+
+BulletID	Rocket
+LifeTime	5
+FirstPower	500
+LastPower	0
+CraterType	10
+BulletMode	{ Impulse Fly MapDestruction }
+Speed		15
+ShowID		Particle
+ShowType	6
+ExtentionShowType	5
+Precision	2
+TargetMode	None
+BulletScale	0
+AltOffset	20
+BulletRadius	2
+TapeSize	0
+WaitTime	0
+
+
+BulletID	Rocket
+LifeTime	5
+FirstPower	500
+LastPower	0
+CraterType	10
+BulletMode	{ Impulse Fly MapDestruction }
+Speed		15
+ShowID		Particle
+ShowType	6
+ExtentionShowType	5
+Precision	5
+TargetMode	Random
+BulletScale	0
+AltOffset	0
+BulletRadius	2
+TapeSize	0
+WaitTime	0
+
+
+BulletID	Rocket
+LifeTime	5
+FirstPower	500
+LastPower	0
+CraterType	10
+BulletMode	{ Impulse Fly MapDestruction }
+Speed		15
+ShowID		Particle
+ShowType	6
+ExtentionShowType	5
+Precision	5
+TargetMode	Random
+BulletScale	0
+AltOffset	0
+BulletRadius	2
+TapeSize	0
+WaitTime	0
+
+
+BulletID	Laser
+LifeTime	20
+FirstPower	300
+LastPower	300
+CraterType	4
+BulletMode	{ Fly Speed }
+Speed		15
+ShowID		Laser
+ShowType	0
+ExtentionShowType	0
+Precision	4
+TargetMode	None
+BulletScale	256
+AltOffset	0
+BulletRadius	5
+TapeSize	0
+WaitTime	0
+
+
+BulletID	Rocket
+LifeTime	50
+FirstPower	5000
+LastPower	5000
+CraterType	10
+BulletMode	{ Impulse MapDestruction }
+Speed		5
+ShowID		Particle
+ShowType	6
+ExtentionShowType	6
+Precision	5
+TargetMode	None
+BulletScale	0
+AltOffset	20
+BulletRadius	10
+TapeSize	0
+WaitTime	0
+
+
+
+
+MACHOTINE_GUN_LIGHT
+BulletID	Laser
+LifeTime	7
+FirstPower	250
+LastPower	250
+CraterType	4
+BulletMode	{ Fly Speed }
+Speed		30
+ShowID		Laser
+ShowType	0
+ExtentionShowType	0
+Precision	4
+TargetMode	None
+BulletScale	256
+AltOffset	0
+BulletRadius	5
+TapeSize	2
+WaitTime	85
+
+
+MACHOTINE_GUN_HEAVY
+BulletID	Laser
+LifeTime	10
+FirstPower	333
+LastPower	333
+CraterType	4
+BulletMode	{ Fly Speed }
+Speed		40
+ShowID		Laser
+ShowType	0
+ExtentionShowType	0
+Precision	4
+TargetMode	None
+BulletScale	256
+AltOffset	0
+BulletRadius	5
+TapeSize	3
+WaitTime	85
+
+
+
+TERMINATOR
+BulletID	Terminator
+LifeTime	150
+FirstPower	1000
+LastPower	1000
+CraterType	0
+BulletMode	{ Impulse Target }
+Speed		5
+ShowID		Crater
+ShowType	4
+ExtentionShowType	0
+Precision	2
+TargetMode	Control
+BulletScale	256
+AltOffset	0
+BulletRadius	2
+TapeSize	1
+WaitTime	128
+
+
+TERMINATOR2
+BulletID	Horde
+LifeTime	200
+FirstPower	1500
+LastPower	1500
+CraterType	9
+BulletMode	None
+Speed		10
+ShowID		JumpBall
+ShowType	10
+ExtentionShowType	0
+Precision	0
+TargetMode	None
+BulletScale	256
+AltOffset	0
+BulletRadius	0
+TapeSize	1
+WaitTime	128
+
+
+GHORB_GEAR_LIGHT
+BulletID	FireBall
+LifeTime	30
+FirstPower	1250
+LastPower	1250
+CraterType	7
+BulletMode	{ Fly Speed Aim Target }
+Speed		20
+ShowID		FireBall
+ShowType	0
+ExtentionShowType	0
+Precision	4
+TargetMode	Control
+BulletScale	256
+AltOffset	0
+BulletRadius	5
+TapeSize	1
+WaitTime	128
+
+
+GHORB_GEAR_HEAVY
+BulletID	FireBall
+LifeTime	40
+FirstPower	2500
+LastPower	2500
+BulletRadius	5
+CraterType	7
+BulletMode	{ Fly Speed Aim Target }
+Speed		30
+ShowID		FireBall
+ShowType	0
+ExtentionShowType	0
+Precision	4
+TargetMode	Control
+BulletScale	512
+AltOffset	0
+BulletRadius	5
+TapeSize	1
+WaitTime	128
+
+
+SPEETLE_SYSTEM_LIGHT
+BulletID	Rocket
+LifeTime	20
+FirstPower	3000
+LastPower	3000
+CraterType	6
+BulletMode	{ Fly Speed Impulse Target }
+Speed		25
+ShowID		Particle
+ShowType	6
+ExtentionShowType	0
+Precision	7
+TargetMode	Control
+BulletScale	0
+AltOffset	0
+BulletRadius	2
+TapeSize	1
+WaitTime	256
+
+
+
+SPEETLE_SYSTEM_HEAVY
+BulletID	Rocket
+LifeTime	30
+FirstPower	7000
+LastPower	7000
+CraterType	6
+BulletMode	{ Fly Speed Impulse Target }
+Speed		35
+ShowID		Particle
+ShowType	6
+ExtentionShowType	0
+Precision	7
+TargetMode	Control
+BulletScale	256
+AltOffset	0
+BulletRadius	2
+TapeSize	1
+WaitTime	256
+
+
+
+BEEBBANOZA_BLOCKADE
+BulletID	JumpBall
+LifeTime	100
+FirstPower	500
+LastPower	500
+CraterType	8
+BulletMode	None
+Speed		10
+ShowID		JumpBall
+ShowType	90
+ExtentionShowType	0
+Precision	0
+TargetMode	Control
+BulletScale	256
+AltOffset	0
+BulletRadius	0
+TapeSize	5
+WaitTime	256
+
+
+
+CRUSTEST_CANNON
+BulletID	JumpBall
+LifeTime	150
+FirstPower	20000
+LastPower	20000
+CraterType	9
+BulletMode	None
+Speed		10
+ShowID		JumpBall
+ShowType	10
+ExtentionShowType	0
+Precision	0
+TargetMode	None
+BulletScale	256
+AltOffset	0
+BulletRadius	0
+TapeSize	1
+WaitTime	2560
+
+
+HYPNOTISER
+BulletID	Hypnotise
+LifeTime	300
+FirstPower	20000
+LastPower	20000
+CraterType	9
+BulletMode	None
+Speed		10
+ShowID		JumpBall
+ShowType	10
+ExtentionShowType	0
+Precision	0
+TargetMode	None
+BulletScale	256
+AltOffset	0
+BulletRadius	0
+TapeSize	1
+WaitTime	1
+
+
+NumModel	92
+MaxSize 101
+
+//Beeb
+ModelNum 0
+Name	resource/m3d/animated/a1.a3d
+Size	10
+NameID	Bug
+
+//Cirtainer
+ModelNum 1
+Name	resource/m3d/items/i3.m3d
+Size	12
+NameID	Cont
+
+//Nymbos
+ModelNum 2
+Name	resource/m3d/items/i4.m3d
+Size	6
+NameID	Eggs
+
+//Eleech
+ModelNum 3
+Name	resource/m3d/items/i6.m3d
+Size	7
+NameID	Elec
+
+//Lipuringa
+ModelNum 4
+Name	resource/m3d/items/i8.m3d
+Size	4
+NameID	Statue
+
+//Copterig
+ModelNum 5
+Name	resource/m3d/items/i1.m3d
+Size	7
+NameID	Jump
+
+//Vector
+ModelNum 6
+Name	resource/m3d/items/i7.m3d
+Size	7
+NameID	Locator
+
+//Flegma
+ModelNum 7
+Name	resource/m3d/items/i5.m3d
+Size	6
+NameID	Slime
+
+//CuteRig
+ModelNum 8
+Name	resource/m3d/items/i2.m3d
+Size	7
+NameID	Swim
+
+//Terminator(Wormer)
+ModelNum 9
+Name	resource/m3d/items/i9.m3d
+Size	4
+NameID	Terminator
+
+//Boltun
+ModelNum 10
+Name	resource/m3d/ammun/am1.m3d
+Size	3
+NameID	Bomb
+
+//Okorok
+ModelNum 11
+Name	resource/m3d/ammun/am2.m3d
+Size	3
+NameID	AmmoControlMissile
+
+//Pupok
+ModelNum 12
+Name	resource/m3d/ammun/am3.m3d
+Size	3
+NameID	AmmoMissile
+
+//CrustestCannon
+ModelNum 13
+Name	resource/m3d/weapon/w5.m3d
+Size	16
+NameID	Crustest
+
+//GhorbGear(Heavy)
+ModelNum 14
+Name	resource/m3d/weapon/w3h.m3d
+Size	14
+NameID	HeavyFireBall
+
+//GhorbGear(Light)
+ModelNum 15
+Name	resource/m3d/weapon/w3l.m3d
+Size	9
+NameID	LightFireBall
+
+
+ModelNum 16
+Name	resource/m3d/weapon/w4.m3d
+Size	12
+NameID	JumpBug
+
+//MacHotine(Heavy)
+ModelNum 17
+Name	resource/m3d/weapon/w2h.m3d
+Size	12
+NameID	HeavyLaser
+
+//MacHotine(Lihgt)
+ModelNum 18
+Name	resource/m3d/weapon/w2l.m3d
+Size	10
+NameID	LightLaser
+
+//Speetle(Heavy)
+ModelNum 19
+Name	resource/m3d/weapon/w1h.m3d
+Size	12
+NameID	HeavyMissile
+
+//Speetle(Light)
+ModelNum 20
+Name	resource/m3d/weapon/w1l.m3d
+Size	9
+NameID	LightMissile
+
+
+ModelNum 21
+Name	resource/m3d/mechous/m1.m3d
+Size	66
+NameID	IronShadow
+
+
+ModelNum 22
+Name	resource/m3d/mechous/m2.m3d
+Size	66
+NameID	BladeKeeper
+
+
+ModelNum 23
+Name	resource/m3d/mechous/m5.m3d
+Size	66
+NameID	HeavyLady
+
+
+ModelNum 24
+Name	resource/m3d/mechous/m3.m3d
+Size	66
+NameID	atTractor
+
+
+ModelNum 25
+Name resource/m3d/mechous/m4.m3d
+Size	66
+NameID	OxidizeMonk
+
+
+ModelNum 26
+Name resource/m3d/mechous/u1.m3d
+Size	66
+NameID	QueenFrog
+
+
+ModelNum 27
+Name resource/m3d/mechous/m6.m3d
+Size	66
+NameID	SpreadSpot
+
+
+ModelNum 28
+Name resource/m3d/mechous/u3.m3d
+Size	66
+NameID	LastMoggy
+
+
+ModelNum 29
+Name resource/m3d/mechous/m7.m3d
+Size	66
+NameID	TheRipper
+
+
+ModelNum 30
+Name resource/m3d/mechous/m8.m3d
+Size	66
+NameID	AncientDemon
+
+
+ModelNum 31
+Name resource/m3d/mechous/u4.m3d
+Size	66
+NameID	LawnMower
+
+
+ModelNum 32
+Name resource/m3d/mechous/u2.m3d
+Size	66
+NameID	Sandoll
+
+
+ModelNum 33
+Name resource/m3d/mechous/m9.m3d
+Size	66
+NameID	Arcan
+
+
+ModelNum 34
+Name resource/m3d/mechous/m10.m3d
+Size	66
+NameID	MadSurgeon
+
+
+ModelNum 35
+Name resource/m3d/mechous/m11.m3d
+Size	66
+NameID	Zippax
+
+
+ModelNum 36
+Name resource/m3d/mechous/m12.m3d
+Size	66
+NameID	RiverBier
+
+
+ModelNum 37
+Name resource/m3d/mechous/m13.m3d
+Size	66
+NameID	Piercator
+
+
+ModelNum 38
+Name resource/m3d/mechous/m14.m3d
+Size	66
+NameID	Excorps
+
+
+ModelNum 39
+Name resource/m3d/mechous/r1.m3d
+Size	66
+NameID	BLOCH
+
+
+ModelNum 40
+Name resource/m3d/mechous/r2.m3d
+Size	66
+NameID	SMOK
+
+
+ModelNum 41
+Name resource/m3d/mechous/r3.m3d
+Size	66
+NameID	MOTOK
+
+
+ModelNum 42
+Name resource/m3d/mechous/r4.m3d
+Size	66
+NameID	SHROT
+
+
+ModelNum 43
+Name resource/m3d/mechous/r5.m3d
+Size	66
+NameID	DOCHOD
+
+
+ModelNum 44
+Name resource/m3d/fauna/f2.m3d
+Size	24
+NameID	SkyFarmer
+
+//AcidTank
+ModelNum 45
+Name	resource/m3d/items/i10.m3d
+Size	5
+NameID	Capsule
+
+
+ModelNum 46
+Name resource/m3d/items/i11.m3d
+Size	20
+NameID	WorldLocker
+
+//Kernoboo
+ModelNum 47
+Name resource/m3d/items/i12.m3d
+Size	4
+NameID	Seed
+
+ModelNum 48
+Name resource/m3d/fauna/f1.m3d
+Size	10
+NameID	FishWarrior
+
+
+//Rattle
+ModelNum 49
+Name resource/m3d/unique/u1a.m3d
+Size	9
+NameID	AmfEng
+
+//HeavyIron
+ModelNum 50
+Name resource/m3d/unique/u1b.m3d
+Size	18
+NameID	AmfKil
+
+//Zigger-Zagger -- First COOL Name for mechos Part
+ModelNum 51
+Name resource/m3d/unique/u2a.m3d
+Size	8
+NameID	BigEng
+
+//Cart
+ModelNum 52
+Name resource/m3d/unique/u2b.m3d
+Size	21
+NameID	BigShass
+
+//Put-Put -- Second COOL name for mechos Part
+ModelNum 53
+Name resource/m3d/unique/u3a.m3d
+Size	10
+NameID	BtrEng
+
+//Box - PostBOX
+ModelNum 54
+Name resource/m3d/unique/u3b.m3d
+Size	12
+NameID	BtrInstr
+
+//Star WARS
+ModelNum 55
+Name resource/m3d/unique/u4a.m3d
+Size	8
+NameID	VertEng
+
+//Whizzer CHRU-CHRU
+ModelNum 56
+Name resource/m3d/unique/u4b.m3d
+Size	13
+NameID	VertVint
+
+ModelNum 57
+Name resource/m3d/mechous/u5.m3d
+Size	66
+NameID	Wormaster
+
+//Cogged Widget
+ModelNum 58
+Name resource/m3d/unique/u5a.m3d
+Size	8
+NameID	CrotBur
+
+//Husker
+ModelNum 59
+Name resource/m3d/unique/u5b.m3d
+Size	14
+NameID	CrotEng
+
+//Poponka
+ModelNum 60
+Name resource/m3d/items/i15.m3d
+Size	8
+NameID	ClayTabl
+
+//Toxic
+ModelNum 61
+Name resource/m3d/items/i14.m3d
+Size	6
+NameID	Toxic
+
+//Conlarver
+ModelNum 62
+Name resource/m3d/items/i13.m3d
+Size	30
+NameID	Kukkish
+
+//CrotRig
+ModelNum 63
+Name resource/m3d/items/i16.m3d
+Size	8
+NameID	CrotRig
+
+
+ModelNum 64
+Name resource/m3d/items/i17.m3d
+Size	23
+NameID	Horde
+
+//Function83
+ModelNum 65
+Name resource/m3d/items/i18.m3d
+Size	8
+NameID	Art11083
+
+//Heroin
+ModelNum 66
+Name resource/m3d/items/i19.m3d
+Size	8
+NameID	Heroin
+
+//MechanicMessiah
+ModelNum 67
+Name resource/m3d/items/i20.m3d
+Size	8
+NameID	Messiah
+
+
+//Protractor
+ModelNum 68
+Name resource/m3d/items/i21.m3d
+Size	8
+NameID	Protract
+
+//Rubbox
+ModelNum 69
+Name resource/m3d/items/i22.m3d
+Size	4
+NameID	Rubbox
+
+//Shurub
+ModelNum 70
+Name resource/m3d/items/i23.m3d
+Size	8
+NameID	Shurub
+
+//Spummy
+ModelNum 71
+Name resource/m3d/items/i24.m3d
+Size	8
+NameID	Spummy
+
+//Terminator(Wasp)
+ModelNum 72
+Name resource/m3d/items/i25.m3d
+Size	4
+NameID	Wasp
+
+//Weezyk
+ModelNum 73
+Name resource/m3d/items/i26.m3d
+Size	8
+NameID	Weezyk
+
+//Peelot
+ModelNum 74
+Name resource/m3d/items/i27.m3d
+Size	8
+NameID	Auto
+
+//BootSector
+ModelNum 75
+Name resource/m3d/items/i28.m3d
+Size	14
+NameID	Teleport
+
+//Amputator
+ModelNum 76
+Name resource/m3d/items/i29.m3d
+Size	2
+NameID	Amputat
+
+//Beeboorat
+ModelNum 77
+Name resource/m3d/items/i30.m3d
+Size	12
+NameID	Beeboor
+
+//BORAVchic
+ModelNum 78
+Name resource/m3d/items/i31.m3d
+Size	12
+NameID	Booraw
+
+//Degradator
+ModelNum 79
+Name resource/m3d/items/i32.m3d
+Size	2
+NameID	Degradat
+
+//Eleepod
+ModelNum 80
+Name resource/m3d/items/i33.m3d
+Size	12
+NameID	Eleepod
+
+
+//Gluek
+ModelNum 81
+Name resource/m3d/items/i34.m3d
+Size	2
+NameID	Gluek
+
+//Mechoscope
+ModelNum 82
+Name resource/m3d/items/i35.m3d
+Size	2
+NameID	Scope
+
+//Nobool
+ModelNum 83
+Name resource/m3d/items/i36.m3d
+Size	4
+NameID	Nobool
+
+//Paloch
+ModelNum 84
+Name resource/m3d/items/i37.m3d
+Size	4
+NameID	Paloch
+
+//Pereponka
+ModelNum 85
+Name resource/m3d/items/i38.m3d
+Size	4
+NameID	Perepon
+
+
+//Pipka & Pupka
+ModelNum 86
+Name resource/m3d/items/i39.m3d
+Size	4
+NameID	Pipka
+
+//Tabutask & TIBUtask
+ModelNum 87
+Name resource/m3d/items/i40.m3d
+Size	5
+NameID	Tabutask
+
+//Zeefick & Sifik
+ModelNum 88
+Name resource/m3d/items/i41.m3d
+Size	4
+NameID	Zeefick
+
+//Zeex'a
+ModelNum 89
+Name resource/m3d/items/i42.m3d
+Size	12
+NameID	Zeex
+
+//SEX BOMB FOR ALL VANGERS & Co.
+ModelNum 90
+Name	resource/m3d/weapon/w6.m3d
+Size	12
+NameID	BeeboBomb
+
+ModelNum 91
+Name	resource/m3d/items/i43.m3d
+Size	4
+NameID	Seed2
+
+
+
+NumMapPoint	200
+NumTrace	100
+NumMapProcess	84	10	20	20	5
+
+
+NumEffect	16	10	10	2	36	300	300	2	300	300	80	20	2    80     400
+
+NumFireBallProcessType	5
+NameFireBallProcess	resource/bml/fireball.bml
+NameFireBallProcess	resource/bml/explos.bml
+NameFireBallProcess	resource/bml/compas.bml
+NameFireBallProcess	resource/bml/tnt.bml
+NameFireBallProcess	resource/bml/dust.bml
+
+NumDeformProcessType	3
+NameDeformProcess	resource/mss/out.mss
+NameDeformProcess	resource/mss/tpmss.mss
+NameDeformProcess	resource/mss/rotor.mss
+
+NumParticleProcessType		9
+
+LifeTime	25
+Velocity	3	7
+FirstRadius	0
+EndRadius	1
+FirstColor	218
+EndColor	193
+FirstAlpha	0
+StepAlpha	20
+
+LifeTime	10
+Velocity	1	8
+FirstRadius	1
+EndRadius	2
+FirstColor	224
+EndColor	193
+FirstAlpha	0
+StepAlpha	20
+
+LifeTime	2
+Velocity	1	8
+FirstRadius	0
+EndRadius	0
+FirstColor	224
+EndColor	193
+FirstAlpha	0
+StepAlpha	20
+
+LifeTime	40
+Velocity	1	8
+FirstRadius	50
+EndRadius	0
+FirstColor	224
+EndColor	193
+FirstAlpha	0
+StepAlpha	0
+
+LifeTime	20
+Velocity	2	8
+FirstRadius	0
+EndRadius	8
+FirstColor	224
+EndColor	193
+FirstAlpha	0
+StepAlpha	20
+
+LifeTime	5
+Velocity	1	7
+FirstRadius	0
+EndRadius	0
+FirstColor	127
+EndColor	120
+FirstAlpha	0
+StepAlpha	0
+
+LifeTime	20
+Velocity	1	8
+FirstRadius	0
+EndRadius	1
+FirstColor	127
+EndColor	120
+FirstAlpha	0
+StepAlpha	20
+
+LifeTime	10
+Velocity	1	5
+FirstRadius	0
+EndRadius	1
+FirstColor	175
+EndColor	160
+FirstAlpha	0
+StepAlpha	0
+
+
+LifeTime	4
+Velocity	1	5
+FirstRadius	0
+EndRadius	1
+FirstColor	31
+EndColor	1
+FirstAlpha	0
+StepAlpha	0
+
+NumItems	200	2	400
+
+UnitEnergy	83
+UnitArmor	83
+UnitDeletaEnergy	83
+
+
+NumActionUnit 100
+
+NumMobilityType 	1
+MobilityDelta	8

@@ -2,15 +2,16 @@
 // Created by caiiiycuk on 25.06.2021.
 //
 
-#include <utility>
-#include <functional>
 #include "xbmp.h"
+#include <functional>
+#include <utility>
 
 extern int xgrScreenSizeX;
 extern int xgrScreenSizeY;
 
 extern int getCurRtoId();
 extern int getCurIScreenId();
+extern int getCurIScreenX();
 extern int CurrentWorld;
 
 namespace {
@@ -23,6 +24,7 @@ int currentIScreenId = 0;
 std::pair<const char *, const char *> getSideNames() {
 	int activeRtoId = getCurRtoId();
 	int activeIScreenId = getCurIScreenId();
+	int activeIScreenX = getCurIScreenX();
 
 	if (activeRtoId == 0) {
 		return activeSides;
@@ -37,30 +39,7 @@ std::pair<const char *, const char *> getSideNames() {
 	currentIScreenId = activeIScreenId;
 
 	if (currentRto == 5 /*RTO_MAIN_MENU_ID*/) {
-		if (activeIScreenId == 20 /* Genesis */ ||
-			activeIScreenId == 27 /* Main menu */ ||
-			activeIScreenId == 41 /* Graphics */ ||
-			activeIScreenId == 59 /* Sound */ ||
-			activeIScreenId == 123 /* Join */ ||
-			activeIScreenId == 128 /* Create Server */ ||
-			activeIScreenId == 358 /* Network Game Type */ ||
-			activeIScreenId == 467 /* Identification */ ||
-			activeIScreenId == 508 /* Chat */ ||
-			activeIScreenId == 528 /* Game Result */ ||
-			activeIScreenId == 654 /* Player Setup */ ||
-			activeIScreenId == 662 /* Controls */ ||
-			activeIScreenId == 678 /* Internet */ ||
-			activeIScreenId == 698 /* Hall of Fame */ ||
-			activeIScreenId == 770 /* Set Server Port */ ||
-			activeIScreenId == 788 /* Addons (Web Version) */ ||
-			activeIScreenId == 1126 /* Credits (2013+ Page 1) */ ||
-			activeIScreenId == 1134 /* Credits (2013+ Page 3) */ ||
-			activeIScreenId == 1139 /* Credits (2002 - 2013) */ ||
-			activeIScreenId == 1143 /* Credits (IM) */ ||
-			activeIScreenId == 1148 /* Credits (Buka) */ ||
-			activeIScreenId == 1153 /* Credits (KD-Lab Page 1) */ ||
-			activeIScreenId == 1161 /* Credits (KD-Lab Page 2) */ ||
-			activeIScreenId == 0) {
+		if (activeIScreenX == 0) {
 			return std::make_pair<>(
 				"resource/actint/hd/side/main_menu_left.bmp",
 				"resource/actint/hd/side/main_menu_right.bmp");
