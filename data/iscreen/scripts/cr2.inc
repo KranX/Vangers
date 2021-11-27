@@ -6,14 +6,25 @@ Screen "Credits2"
 	block_global_obj
 	default_obj "Back Option"
 
-	Object "Credits Text"{
+	Object "Credits Text A"{
 		null_level	200
 		align_x center
-		y	100
+		align_x_offs 180
+		y	35
 		space	2
 
 		font	0
-		s_text	  "resource/iscreen/credits2.txt"
+		s_text	  $iSTR_CreditsPathEA
+	}
+
+	Object "Credits Text B"{
+		null_level	200
+		align_x center
+		y	90
+		space	2
+
+		font	0
+		s_text	  $iSTR_CreditsPathEB
 	}
 
 	Object "Back Option"
@@ -21,7 +32,7 @@ Screen "Credits2"
 		align_x 	right
 		align_x_offs	20
 		align_y 	center
-		align_y_offs	-90
+		align_y_offs	-150
 
 		Element STRING {
 			align_x center
@@ -73,6 +84,7 @@ Screen "Credits2"
 	#define LOGO_OBJ_ID	"Logo2"
 	Object "Logo2" {
 		align_x 	center
+		align_x_offs -160
 		y		20
 
 		Element BITMAP {

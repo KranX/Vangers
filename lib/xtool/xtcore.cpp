@@ -5,10 +5,6 @@
 #include "xt_list.h"
 #include "../xgraph/xgraph.h"
 
-#ifdef __HAIKU__
-#include <unistd.h>
-#endif
-
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 #include <locale.h>
 #endif
@@ -104,16 +100,15 @@ unsigned short  autoconnectPort = 2197;
 bool autoconnectJoinGame = false;
 int  autoconnectGameID;
 
+XRuntimeObject* XObj = nullptr;
+
+int getCurRtoId() {
+	return XObj == nullptr ? 0 : XObj->ID;
+}
+
 int main(int argc, char *argv[])
 {
-#ifdef __HAIKU__
-	const char *data_dir = getenv("VANGERS_DATA");
-	if(data_dir != NULL){
-		chdir(data_dir);
-	}
-#endif
 	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
-	XRuntimeObject* XObj;
 	__internal_argc = argc;
 	__internal_argv = argv;
 

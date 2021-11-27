@@ -1,0 +1,24 @@
+K-D Lab Russian Game Development Company
+ 
+Development team:
+Andrey "KranK" Kouzmine, project leader, game design,
+technology, scenario, music
+Yulia "Ylitka" Kouzmina, art director,
+worlds design, character design, environment design
+Andrey "Kron" Soukhanov, senior programmer, engine,
+game logic, visual effects
+Eugene "Steeler" Hudenko, senior programmer, interface, system platform
+Alexander "Sicher" Kotliar, senior programmer,
+3D technology, physics model
+Michail "ChSnark" Piskounov, 3D artist, game design, game texts
+Vlad Spitsky, 2D/3D artist, worlds making, static graphics
+Anatoly "Koto" Konyk, programmer, internal logic,
+visual effects, algorithms
+Vladimir Golidnichuk, translator, programmer
+Victor "Ruber" Krasnokutsky, music arrangement, sound effects
+Alexey "Alex1001" Postnikov, QA/PR manager
+Alexey Ivanov, low-level programming, profiling
+ 
+Administration:
+Dmitry "Rooble" Radinovich,
+general management

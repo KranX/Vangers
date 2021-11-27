@@ -286,7 +286,8 @@ void a_buf_line(int x1,int y1,int x2,int y2,int col,int sx,int sy,unsigned char*
 void a_buf_line2(int x1,int y1,int x2,int y2,int col,int sx,int sy,unsigned char* buf);
 void a_buf_setpixel(int x,int y,int sx,int sy,int col,unsigned char* buf);
 
-void ibsout(int x,int y,void* ptr);
+void ibsout(int x, int y, void* ptr);
+void ibsout(int x, int y, void* ptr, uint8_t *renderBuffer);
 
 void change_screen(int scr);
 
@@ -1226,9 +1227,9 @@ void ibsObject::load(char* fname)
 	CenterY = PosY + SideY;
 }
 
-void ibsObject::show(void)
+void ibsObject::show(uint8_t* renderBuffer)
 {
-	ibsout(PosX,PosY,image);
+	ibsout(PosX, PosY, image, renderBuffer);
 }
 
 void ibsObject::show_bground(void)
@@ -3467,8 +3468,13 @@ void actIntDispatcher::text_redraw(){
 		ScrTextData -> redraw();
 		ScrTextData -> Quant();
 	}
-	if(curPrompt -> NumStr){
-		curPrompt -> redraw(0,0,XGR_MAXX,XGR_MAXY);
+	if(curPrompt -> NumStr) {
+        if (flags & AS_FULLSCR || !curIbs) {
+            curPrompt->redraw(0, 0, XGR_MAXX, XGR_MAXY);
+        } else {
+            int offsetX = (XGR_MAXX - curIbs->bSizeX) / 2;
+            curPrompt -> redraw(curIbs -> PosX + offsetX,curIbs -> PosY,curIbs -> SizeX,curIbs -> SizeY);
+        }
 		curPrompt -> quant();
 	}
 	if(flags & AS_CHAT_MODE){
@@ -9668,10 +9674,10 @@ void aciScreenText::redraw(void)
 		p = (aciScreenTextPage*)p -> next;
 	}
 
-	y = (I_RES_Y - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
+	y = (XGR_MAXY - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
 	for(i = 0; i < CurStr; i ++){
 		str = p -> StrTable[i];
-		x = (I_RES_X - aTextWidth32(str,font,1))/2;
+		x = (XGR_MAXX - aTextWidth32(str,font,1))/2;
 
 		aOutText32(x,y,color,str,font,1,1);
 		y += DeltaY + aTextHeight32(str,font,1);

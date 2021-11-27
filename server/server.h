@@ -328,6 +328,7 @@ struct Server {
 #define GLOBAL_CLOCK() (round(SDL_GetTicks() * (256. / 1000)))
 #define SECONDS() (round(SDL_GetTicks() * (1. / 1000)))
 #define SERVER_ERROR(str, code) ErrH.Abort(str, XERR_USER, code)
+#define SERVER_ERROR_NO_EXIT(str, code) std::cout<<"Error: "<<str<<" code:"<<XERR_USER<<" val:"<<code<<std::endl
 
 #define START_TIMER(interval) unsigned int _end_time_ = SDL_GetTicks() + interval;
 #define CHECK_TIMER() ((int)(SDL_GetTicks() - _end_time_) < 0)

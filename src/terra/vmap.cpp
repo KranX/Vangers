@@ -109,9 +109,9 @@ int KeepON = 0;
 
 extern constexpr int MAX_MAP_IN_MEMORY_POWER = 12; // 4096
 #ifdef _SURMAP_
-constexpr int MAX_LINE = MAX(2 ^ MAX_MAP_IN_MEMORY_POWER, 2 ^ 15);
+constexpr int MAX_LINE = MAX(2 << (MAX_MAP_IN_MEMORY_POWER - 1), 2 << 14);
 #else
-constexpr int MAX_LINE = MAX(2 ^ MAX_MAP_IN_MEMORY_POWER, 5000);
+constexpr int MAX_LINE = MAX(2 << (MAX_MAP_IN_MEMORY_POWER - 1), 5000);
 #endif
 
 #ifdef SESSION

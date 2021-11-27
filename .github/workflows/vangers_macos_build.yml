@@ -14,6 +14,8 @@ jobs:
     - name: install libs
       run: |
         brew install ninja yasm dylibbundler
+    - name: install our libs
+      run: |
         brew reinstall -s ./formulas/libsndfile.rb
         brew reinstall -s ./formulas/libogg.rb
         brew reinstall -s ./formulas/libvorbis.rb
@@ -39,7 +41,7 @@ jobs:
         --enable-swscale
         --enable-zlib
         --enable-demuxer=avi,rawvideo
-        --enable-decoder=png,rawvideo
+        --enable-decoder=png,rawvideo,h264
         --enable-parser=png
         --enable-protocol=file
         --disable-d3d11va

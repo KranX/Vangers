@@ -4576,7 +4576,9 @@ void PassageImageType::Close(void)
 	}
 };
 
-const int MAX_PASSAGE_IMAGE_SHOW_TIME = 200;
+const int PASSAGE_SHOW_TIME_MS = 1500;
+const int PASSAGE_FADE_TIME_MS = 500;
+const int PASSAGE_UPDATE_INTERVAL_MS = 10;
 
 void PassageImageType::Show(void)
 {
@@ -4595,22 +4597,11 @@ void PassageImageType::Show(void)
 	in.read(Data,xSize*ySize);
 	in.close();
 
-	for(i = 0;i < 768;i++){
-		start[i] = palbuf[i] << 16;
-		delta[i] = -start[i] / MAX_PASSAGE_IMAGE_SHOW_TIME;
-	};
+	int ticks = PASSAGE_FADE_TIME_MS / PASSAGE_UPDATE_INTERVAL_MS;
 
-	for(j = 0;j < MAX_PASSAGE_IMAGE_SHOW_TIME;j++){
-		for(i = 0;i < 768;i++){
-			start[i] += delta[i];
-			palbuf[i] = (uchar)(start[i] >> 16);
-		};
-		XGR_SetPal(palbuf,0,255);
-	};
+	XGR_Obj.clear_2d_surface();
+	XGR_Obj.fill(0);
 
-//	PassageImageType::Hide();
-//	XGR_PutSpr(0,0,xSize,ySize,Data,XGR_BLACK_FON);
-	
 	ccm = XGR_Obj.ClipMode;
 	XGR_SetClipMode(XGR_CLIP_ALL);
 	cclx = XGR_Obj.clipLeft;
@@ -4618,24 +4609,29 @@ void PassageImageType::Show(void)
 	ccrx = XGR_Obj.clipRight;
 	ccry = XGR_Obj.clipBottom;
 	XGR_SetClip(0,0,XGR_MAXX,XGR_MAXY);
-	XGR_PutSpr(0,0,xSize,ySize,Data,XGR_BLACK_FON);	
+	XGR_PutSpr((XGR_MAXX - xSize) / 2,(XGR_MAXY - ySize) / 2, xSize, ySize, Data, XGR_BLACK_FON);
 	XGR_Flush(0,0,XGR_MAXX,XGR_MAXY);
+	XGR_Flip();
 	XGR_SetClip(cclx,ccly,ccrx,ccry);
 	XGR_SetClipMode(ccm);
 
 	for(i = 0;i < 768;i++){
 		start[i] = 0;
-		delta[i] = ((int)(Pal[i]) << 16) / MAX_PASSAGE_IMAGE_SHOW_TIME;
+		delta[i] = ((int)(Pal[i]) << 16) / ticks;
 	};
 
-	for(j = 0;j < MAX_PASSAGE_IMAGE_SHOW_TIME;j++){
+	for(j = 0;j < ticks;j++){
 		for(i = 0;i < 768;i++){
 			start[i] += delta[i];
 			palbuf[i] = (uchar)(start[i] >> 16);
 		};
 		XGR_SetPal(palbuf,0,255);
+		XGR_Flip();
+		SDL_Delay(PASSAGE_UPDATE_INTERVAL_MS);
 	};
 	delete[] Data;
+
+	SDL_Delay(PASSAGE_SHOW_TIME_MS);
 };
 
 void PassageImageType::Hide(void)
@@ -4645,17 +4641,21 @@ void PassageImageType::Hide(void)
 
 	if(!Name) return;
 
+	int ticks = PASSAGE_FADE_TIME_MS / PASSAGE_UPDATE_INTERVAL_MS;
+
 	for(i = 0;i < 768;i++){
 		start[i] = Pal[i] << 16;
-		delta[i] = -start[i] / MAX_PASSAGE_IMAGE_SHOW_TIME;
+		delta[i] = -start[i] / ticks;
 	};
 
-	for(j = 0;j < MAX_PASSAGE_IMAGE_SHOW_TIME;j++){
+	for(j = 0;j < ticks;j++){
 		for(i = 0;i < 768;i++){
 			start[i] += delta[i];
 			palbuf[i] = (uchar)(start[i] >> 16);
 		};
 		XGR_SetPal(palbuf,0,255);
+		XGR_Flip();
+		SDL_Delay(PASSAGE_UPDATE_INTERVAL_MS);
 	};
 	aciSetRedraw();
 };

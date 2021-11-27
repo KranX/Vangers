@@ -596,7 +596,7 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 {
 	//std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
 	receive(sock);
-	START_TIMER(10*1000);
+	START_TIMER(120*1000);
 	while(current_event() || CHECK_TIMER()) {
 		do {
 			//std::cout<<"current_event:"<<(int)current_event()<<" clock:"<<SDL_GetTicks()<<" _end_time_:"<<_end_time_<<std::endl;
@@ -728,9 +728,9 @@ int InputEventBuffer::next_event() {
 					ignore_event();
 					if(!lag_averaging_t0.empty()) {
 						int dt = (int)(SDL_GetTicks() - lag_averaging_t0.get());
-						if(dt > 100 && dt < 20000) {
-							average_lag = (dt + average_lag*3) >> 2;
-						}
+						// if(dt > 100 && dt < 20000) {
+							average_lag = dt;
+						// }
 					}
 				}
 				body_size = 0;

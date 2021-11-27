@@ -16,6 +16,7 @@
 #include "../actint/aci_scr.h"
 
 #include "../sound/hsound.h"
+#include "avi.h"
 
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
@@ -106,7 +107,7 @@ void map_rectangle(int x,int y,int sx,int sy,int col);
 
 #define iAVI_NULL_LEV		12
 
-iScreenDispatcher* iScrDisp;
+iScreenDispatcher* iScrDisp = nullptr;
 iScreenEventCommand* CurEvComm;
 
 char* iMemHeap;
@@ -125,6 +126,14 @@ int aciCurCredits06 = 0;
 int EventFlag = 0;
 
 int iEvLineID = 0;
+
+int getCurIScreenId() {
+	return iScrDisp == nullptr || iScrDisp->curScr == nullptr ? 0 : iScrDisp->curScr->ID;
+}
+
+int getCurIScreenX() {
+	return iScrDisp == nullptr || iScrDisp->curScr == nullptr ? 0 : iScrDisp->curScr->ScreenOffs;
+}
 
 iListElement::iListElement(void)
 {
@@ -637,7 +646,6 @@ iAVIElement::iAVIElement(void)
 	memset(avi_name, 0, sizeof(char));
 
 	border_shape_file = NULL;
-	palBuf = NULL;
 
 	ibs = NULL;
 
@@ -679,8 +687,7 @@ void iAVIElement::free_mem(void)
 	free();
 	if(border_shape_file)
 		delete border_shape_file;
-	//if(palBuf)
-	//	delete palBuf;
+
 	free_shape();
 }
 
@@ -719,9 +726,6 @@ void iAVIElement::free(void)
 		AVIstop(data);
 		AVIclose(data);
 
-		//delete palBuf;
-		palBuf = NULL;
-
 		flags ^= EL_DATA_LOADED;
 	}
 }
@@ -730,7 +734,6 @@ void iAVIElement::load(void)
 {
 	if(!(flags & EL_DATA_LOADED)){
 		flags &= ~AVI_STOPPED;
-		//palBuf = new unsigned char[768];
 
 		iResBuf -> init();
 		*iResBuf < iVideoPathDefault < avi_name;
@@ -747,11 +750,6 @@ void iAVIElement::load(void)
 		}
 		AVIplay(data,0,0);
 
-		//pal_tmp = (char*)AVIGetPalette(data);
-		palBuf=(unsigned char*)AVIGetPalette(data);
-		//memcpy(palBuf,pal_tmp,768);
-
-		//std::cout<<"iAVIElement::load"<<std::endl;
 		flags |= EL_DATA_LOADED;
 	}
 }
@@ -1602,48 +1600,27 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 				put_fon(x,y,bsx,bsy,p1);
 				_iFREE_A_(unsigned char,p1,bsx * bsy);
 				break;
-			case I_AVI_ELEM://Draw video
-				if(((iAVIElement*)this) -> check_visible()){
-					_iALLOC_A_(unsigned char,p,SizeX * SizeY);
-					memset(p,0,SizeX * SizeY);
+			case I_AVI_ELEM: { // Draw video
+				fncMenu* menu = aScrDisp -> get_imenu(SHOP_ITEMS_MENU_ID);
+				uint8_t *screen = XGR_Obj.get_2d_render_buffer();
+				uint32_t *screenRgba = XGR_Obj.get_2d_rgba_render_buffer();
+				int offsetX = x + lX - iScreenOffs;
+				int offsetY = y + lY;
 
-					lev = (null_lev * abs(sc)) >> 8;
-					AVIdraw(((iAVIElement*)this) -> data);
-					AVIGetData(((iAVIElement*)this) -> data,p);
+				lev = (null_lev * abs(sc)) >> 8;
 
-					if(lev != null_lev){
-						i_pal_quant(((iAVIElement*)this) -> palBuf,lev,null_lev);
-						flags |= EL_PAL_CHANGE;
-					}
-					else {
-						if(flags & EL_PAL_CHANGE){
-							i_pal_quant(((iAVIElement*)this) -> palBuf,lev,null_lev);
-							flags ^= EL_PAL_CHANGE;
-						}
-					}
+				if (((iAVIElement *)this)->check_visible() && !(menu && menu->flags & FM_ACTIVE)) {
+					AVIPrepareFrame(((iAVIElement *)this)->data);
+					AVIDrawFrame(
+						((iAVIElement *)this)->data, offsetX, offsetY, xgrScreenSizeX, screenRgba, lev / 82.0f);
 
-					if(lev){
-						put_frame2scr(x + lX,y + lY,SizeX,SizeY,p);
-						if(((iAVIElement*)this) -> ibs)
-							((iAVIElement*)this) -> ibs -> show();
-					}
-					else {
-						memset(p,0,SizeX * SizeY);
-						put_buf2col(x + lX,y + lY,SizeX,SizeY,p,iAVI_NULL_LEV,1);
-						put_map(x + lX,y + lY,SizeX,SizeY);
-						if(((iAVIElement*)this) -> ibs)
-							((iAVIElement*)this) -> ibs -> show();
-					}
-
-					_iFREE_A_(unsigned char,p,SizeX * SizeY);
+					if (((iAVIElement *)this)->ibs)
+						((iAVIElement *)this)->ibs->show(screen);
+				} else {
+					XGR_Obj.fill(0, screen);
+					XGR_Obj.fill(0, screenRgba);
 				}
-				else {
-					_iALLOC_A_(unsigned char,p,SizeX * SizeY);
-					memset(p,0,SizeX * SizeY);
-					put_buf2col(x + lX,y + lY,SizeX,SizeY,p,iAVI_NULL_LEV,1);
-					_iFREE_A_(unsigned char,p,SizeX * SizeY);
-				}
-				break;
+			} break;
 			case I_AVI_BORDER_ELEM:
 				if(((iAVIBorderElement*)this) -> border_type == AVI_FLAT_BORDER){
 					_iALLOC_A_(unsigned char,p,SizeX * SizeY);
@@ -3620,7 +3597,6 @@ void iScreenDispatcher::aci_move_screen(int val,int time)
 		aScrDisp -> flags &= ~AS_FULL_FLUSH;
 		aScrDisp -> i_redraw();
 		aScrDisp -> i_flush();
-		curScr -> show_avi();
 	}
 	for(i = 0; i < time; i ++){
 		iScreenOffs += iScreenOffsDelta;
@@ -3728,8 +3704,6 @@ void iScreenDispatcher::move2screen(iScreen* p,int time)
 		show_screen(p);
 		flags |= (SD_GETFON | SD_END_GETFON);
 		redraw_quant();
-		p -> show_avi();
-		p -> hide_avi();
 
 		if(actIntLog)
 			aci_move_screen(delta,time);
@@ -3738,7 +3712,6 @@ void iScreenDispatcher::move2screen(iScreen* p,int time)
 		drwObjHeap -> init_list();
 		hide_screen(cp);
 		redraw_quant();
-		cp -> hide_avi_place();
 	}
 	drwObjHeap -> init_list();
 	if(p != cp)
@@ -3855,55 +3828,6 @@ int iAVIElement::check_visible(void)
 	scr = (iScreen*)obj -> owner;
 	if(iScreenOffs != scr -> ScreenOffs) return 0;
 	return 1;
-}
-
-void iScreen::show_avi(void)
-{
-	int sz;
-	iAVIElement* avi;
-	iScreenElement* el;
-	iScreenObject* obj = (iScreenObject*)objList -> last;
-	unsigned char* p;
-	while(obj){
-		if(obj -> flags & OBJ_AVI_PRESENT){
-			el = (iScreenElement*)obj -> ElementList -> last;
-			while(el){
-				if(el -> type == I_AVI_ELEM){
-					avi = (iAVIElement*)el;
-					sz = avi -> SizeX * avi -> SizeY;
-					_iALLOC_A_(unsigned char,p,sz);
-					memset(p,0,sz);
-					put_buf2col(obj -> PosX + avi -> lX,obj -> PosY + avi -> lY,avi -> SizeX,avi -> SizeY,p,iAVI_NULL_LEV,1);
-					_iFREE_A_(unsigned char,p,sz);
-				}
-				el = (iScreenElement*)el -> prev;
-			}
-		}
-		obj = (iScreenObject*)obj -> prev;
-	}
-}
-
-void iScreen::hide_avi(void)
-{
-	iScreenObject* obj = (iScreenObject*)objList -> last;
-	while(obj){
-		if(obj -> flags & OBJ_AVI_PRESENT){
-			obj -> curHeightScale = 0;
-		}
-		obj = (iScreenObject*)obj -> prev;
-	}
-}
-
-void iScreen::hide_avi_place(void)
-{
-	iScreenObject* obj = (iScreenObject*)objList -> last;
-	while(obj){
-		if(obj -> flags & OBJ_AVI_PRESENT){
-			obj -> curHeightScale = 0;
-			iregRender(obj -> PosX,obj -> PosY,obj -> PosX + obj -> SizeX,obj -> PosY + obj -> SizeY);
-		}
-		obj = (iScreenObject*)obj -> prev;
-	}
 }
 
 void iTriggerObject::init_state(void)

@@ -136,7 +136,7 @@ struct XGR_Screen
 	void flush(int x,int y,int sx,int sy);
 	void flip();
 
-	void fill(int col);
+	void fill(int col, void* buffer = NULL);
 	void erase(int x,int y,int sx,int sy,int col);
 
 	void rectangle(int x,int y,int sx,int sy,int outcol,int incol,int mode);
@@ -173,13 +173,14 @@ struct XGR_Screen
 
 	void rectangle16(int x,int y,int sx,int sy,int outcol,int incol,int mode);
 	
-	void blitRGBA(uint32_t *dst, uint8_t *screenPixels, uint8_t *overlayPixels);
+	void blitRgba(uint32_t *dstRgba, uint8_t *screenIndexes, uint32_t *screen2DRgba, uint8_t *screen2DIndexes);
 
 	void clear_2d_surface();
 
 	uint8_t* get_active_render_buffer();
 	uint8_t* get_default_render_buffer();
 	uint8_t* get_2d_render_buffer();
+	uint32_t* get_2d_rgba_render_buffer();
 	void set_default_render_buffer();
 	void set_2d_render_buffer();
 
@@ -196,9 +197,9 @@ private:
 
 	uint8_t *XGR_ScreenSurface;
 	uint8_t *XGR_ScreenSurface2D;
+	uint32_t *XGR_ScreenSurface2DRgba;
 	SDL_Surface *XGR32_ScreenSurface;
 
-	SDL_Surface *HDBackgroundSurface;
 	SDL_Surface *IconSurface;
 	SDL_Texture *sdlTexture;
 
@@ -224,7 +225,7 @@ private:
 	friend void Draw3DPlane(int x,int y,int size,int shift,unsigned char* buffer,int image,int y_offset);
 	friend void smart_putspr(unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize,int height,unsigned char* color_table);
 	friend void CastShadow(int x,int y,int zg,int size,int shift,unsigned char* buffer);
-	friend void ibsout(int x,int y,void* ptr);
+	friend void ibsout(int x,int y,void* ptr,uint8_t* renderBuffer);
 	friend void put_map(int x,int y,int sx,int sy);
 	friend void i_get_scrfon(int x,int y,int sx,int sy,unsigned char* buf);
 	friend void i_put_scrfon(int x,int y,int sx,int sy,unsigned char* buf);
@@ -461,7 +462,7 @@ struct XGR_Mouse
 #define XGR_SetClipMode(mode)				XGR_Obj.set_clip_mode(mode)
 
 #define XGR_Flush(x,y,sx,sy)				XGR_Obj.flush(x,y,sx,sy)
-#define XGR_Flip()					XGR_Obj.flip()
+void XGR_Flip();
 #define XGR_Fill(col)					XGR_Obj.fill(col)
 #define XGR_Erase(x,y,sx,sy,col)			XGR_Obj.erase(x,y,sx,sy,col)
 #define XGR_Rectangle(x,y,sx,sy,outcol,incol,mode)	XGR_Obj.rectangle(x,y,sx,sy,outcol,incol,mode)

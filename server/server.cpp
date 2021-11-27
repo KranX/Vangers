@@ -961,8 +961,8 @@ void Player::identification() {
 			socket.send(string, strlen(string) + 2);
 			return;
 		}
-		if (!strcmp(string, kill_str))
-			GlobalExit = 1;
+		// if (!strcmp(string, kill_str))
+		// 	GlobalExit = 1;
 	}
 }
 
@@ -1026,7 +1026,7 @@ int Player::receive() {
 			Object *obj = 0;
 			if (NON_GLOBAL_OBJECT(obj_ID)) {
 				if (!world) {
-					SERVER_ERROR("Create permanent object before set world", 0);
+					SERVER_ERROR_NO_EXIT("Create permanent object before set world", 0);
 					in_buffer.ignore_event();
 					break;
 				}
@@ -1089,7 +1089,7 @@ int Player::receive() {
 			Object *obj = 0;
 			if (NON_GLOBAL_OBJECT(obj_ID)) {
 				if (!world) {
-					SERVER_ERROR("Delete object before set world", 0);
+					SERVER_ERROR_NO_EXIT("Delete object before set world", 0);
 					in_buffer.ignore_event();
 					break;
 				}
@@ -1122,7 +1122,7 @@ int Player::receive() {
 			Object *obj = 0;
 			if (NON_GLOBAL_OBJECT(obj_ID)) {
 				if (!world) {
-					SERVER_ERROR("Update object before set world", 0);
+					SERVER_ERROR_NO_EXIT("Update object before set world", 0);
 					in_buffer.ignore_event();
 					break;
 				}
@@ -1144,14 +1144,14 @@ int Player::receive() {
 				y_half_size_of_screen = in_buffer.get_byte() << 1;
 				int update_size = in_buffer.event_size() - 14;
 				if (update_size > obj->body_size)
-					SERVER_ERROR("Update body size is greater than create size", obj_ID);
+					SERVER_ERROR_NO_EXIT("Update body size is greater than create size", obj_ID);
 				in_buffer.read(obj->body, update_size);
 				world->process_update(!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj);
 				world->process_set_position(this);
 			} else {
 				int update_size = in_buffer.event_size() - 13;
 				if (update_size > obj->body_size)
-					SERVER_ERROR("Update body size is greater than create size", obj_ID);
+					SERVER_ERROR_NO_EXIT("Update body size is greater than create size", obj_ID);
 				in_buffer.read(obj->body, update_size);
 				if (!PLAYERS_OBJECT(obj_ID))
 					world->process_update(
@@ -1169,7 +1169,7 @@ int Player::receive() {
 
 		case SET_POSITION:
 			if (!world) {
-				SERVER_ERROR("Set position before set world", 0);
+				SERVER_ERROR_NO_EXIT("Set position before set world", 0);
 				in_buffer.ignore_event();
 				break;
 			}
@@ -1192,7 +1192,7 @@ int Player::receive() {
 
 		case ATTACH_TO_GAME:
 			if (game || ID)
-				SERVER_ERROR("Player have already been attached to game", game->ID);
+				SERVER_ERROR_NO_EXIT("Player have already been attached to game", game->ID);
 			if ((game = server->games.search(in_buffer.get_int())) == 0 ||
 				(game->data.GameType == UNCONFIGURED && game->players.size()) ||
 				game->used_players_IDs == 0x7fffffff)
@@ -1260,7 +1260,7 @@ int Player::receive() {
 
 		case SET_WORLD: {
 			if (world) {
-				SERVER_ERROR("Duplicated set world", ID);
+				SERVER_ERROR_NO_EXIT("Duplicated set world", ID);
 				in_buffer.ignore_event();
 				break;
 			}
@@ -1272,7 +1272,7 @@ int Player::receive() {
 				game->worlds.append(world);
 				world_status = 1;
 			} else if (world_y_size != world->V_SIZE)
-				SERVER_ERROR("Incorrect world Y size", world_y_size * 100000 + world->V_SIZE);
+				SERVER_ERROR_NO_EXIT("Incorrect world Y size", world_y_size * 100000 + world->V_SIZE);
 
 			out_buffer.begin_event(SET_WORLD_RESPONSE);
 			out_buffer < (unsigned char)world_ID;
@@ -1287,7 +1287,7 @@ int Player::receive() {
 
 		case LEAVE_WORLD:
 			if (!world) {
-				SERVER_ERROR("Leave world before set", 0);
+				SERVER_ERROR_NO_EXIT("Leave world before set", 0);
 				in_buffer.ignore_event();
 				break;
 			}
@@ -1310,7 +1310,7 @@ int Player::receive() {
 			in_buffer > game->name;
 			int size = in_buffer.event_size() - 1 - strlen(game->name) - 1;
 			if (size != sizeof(ServerData))
-				SERVER_ERROR("Incorrect Server Data", size);
+				SERVER_ERROR_NO_EXIT("Incorrect Server Data", size);
 			in_buffer.read((unsigned char *)&game->data, sizeof(ServerData));
 			game->client_version = client_version;
 			IN_EVENTS_LOG(SET_GAME_DATA);
@@ -1324,7 +1324,7 @@ int Player::receive() {
 		case SET_PLAYER_DATA: {
 			int size = in_buffer.event_size() - 1;
 			if (size != sizeof(PlayerBody))
-				SERVER_ERROR("Incorrect Player Body", size);
+				SERVER_ERROR_NO_EXIT("Incorrect Player Body", size);
 			static PlayerBody prev_body;
 			prev_body = body;
 			in_buffer.read((unsigned char *)&body, sizeof(PlayerBody));
@@ -1380,7 +1380,7 @@ int Player::receive() {
 			break;
 
 		default:
-			SERVER_ERROR("Incorrect event ID", in_buffer.current_event());
+			SERVER_ERROR_NO_EXIT("Incorrect event ID", in_buffer.current_event());
 		}
 		in_buffer.next_event();
 	}
@@ -1529,7 +1529,7 @@ int Player::send() {
 				break;
 
 			default:
-				SERVER_ERROR("Incorrect event ID in code queue", code);
+				SERVER_ERROR_NO_EXIT("Incorrect event ID in code queue", code);
 			}
 			continue;
 		}
@@ -1587,8 +1587,11 @@ void InputEventBuffer::reset() {
 }
 
 int InputEventBuffer::receive(XSocket &sock) {
-	if (next_event_pointer != tell())
-		ErrH.Abort("Incorrect events reading");
+	if (next_event_pointer != tell()) {
+		SERVER_ERROR_NO_EXIT("Incorrect events reading", 0);
+		ignore_event();
+		return 0;
+	}
 	if (next_event_pointer) {
 		if (filled_size != next_event_pointer)
 			memmove(address(), address() + next_event_pointer, filled_size - next_event_pointer);
@@ -1607,8 +1610,11 @@ int InputEventBuffer::next_event() {
 
 	if (next_event_pointer + 2 > filled_size)
 		return 0;
-	if (next_event_pointer != tell())
-		ErrH.Abort("Incorrect events reading");
+	if (next_event_pointer != tell()) {
+		SERVER_ERROR_NO_EXIT("Incorrect events reading", 0);
+		ignore_event();
+		return 0;
+	}
 
 	size_of_event = get_short();
 	unsigned int new_pointer = next_event_pointer + size_of_event + 2;
@@ -1634,8 +1640,10 @@ OutputEventBuffer::OutputEventBuffer(unsigned int size): XBuffer(size) {
 }
 
 int OutputEventBuffer::send(XSocket &sock) {
-	if (pointer_to_size_of_event != -1)
-		SERVER_ERROR("There wasn't the end of the event", 0);
+	if (pointer_to_size_of_event != -1) {
+		SERVER_ERROR_NO_EXIT("There wasn't the end of the event", 0);
+		return 0;
+	}
 	unsigned int sent = sock.send(buf, tell());
 	if (sent == tell())
 		init();
@@ -1647,15 +1655,19 @@ int OutputEventBuffer::send(XSocket &sock) {
 }
 
 void OutputEventBuffer::begin_event(int event_ID) {
-	if (pointer_to_size_of_event != -1)
-		SERVER_ERROR("There wasn't the end of the event", 0);
+	if (pointer_to_size_of_event != -1) {
+		SERVER_ERROR_NO_EXIT("There wasn't the end of the event", 0);
+		return;
+	}
 	pointer_to_size_of_event = offset;
 	*this < short(0) < (unsigned char)event_ID;
 }
 
 void OutputEventBuffer::end_event() {
-	if (pointer_to_size_of_event == -1)
-		SERVER_ERROR("There wasn't the begining of the event", 0);
+	if (pointer_to_size_of_event == -1) {
+		SERVER_ERROR_NO_EXIT("There wasn't the begining of the event", 0);
+		return;
+	}
 	int off = tell();
 	set(pointer_to_size_of_event);
 	*this < short(off - pointer_to_size_of_event - 2);
@@ -1724,6 +1736,9 @@ Game *Server::create_game() {
 }
 
 int Server::check_new_clients() {
+	if (clients.size() >= 256) {
+		return 0;
+	}
 	if (!main_socket)
 		return 0;
 
@@ -1733,6 +1748,9 @@ int Server::check_new_clients() {
 
 	Player *player = new Player(this, sock);
 	clients.append(player);
+	if (clients.size() == 256) {
+		SERVER_ERROR_NO_EXIT("DDOS", 0);
+	}
 	DOUT("Client attached");
 
 	return 1;
