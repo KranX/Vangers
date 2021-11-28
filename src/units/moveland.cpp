@@ -69,6 +69,7 @@ char* win32_findfirst(const char* mask)
 
 
 /* ----------------------------- EXTERN SECTION ---------------------------- */
+extern int frame; // kdsplus.cpp
 extern int ViewX,ViewY;
 extern iGameMap* curGMap;
 extern int MLstatus,MLprocess;
@@ -470,7 +471,9 @@ void LocalMapProcess::Quant(void)
 	for(i = 0;i < NumDustType;i++){
 		Dust[i].quant1();
 		while((p = (MapPointType*)(DustStorage[i].GetAll())) != NULL) Dust[i].set_hot_spot(p->R_curr.x,p->R_curr.y,100,p->R_curr.z);
-		Dust[i].quant2();
+		if(frame % (int)GAME_TIME_COEFF == 0) {
+			Dust[i].quant2();
+		}
 	};
 };
 
