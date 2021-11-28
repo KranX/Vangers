@@ -19,6 +19,7 @@ const int PART_H_SIZE = H_SIZE>>PARTICLE_SHIFT;
 unsigned BogusRNDVAL = 83838383;
 
 void ParticleProcess::quant1(){
+	BackD.put(this);
 	ListExhausted = 0;
 	GetBackGround();
 	express();
@@ -47,8 +48,6 @@ void ParticleProcess::quant2(){
 	for(p = ActivList.next;p != &ActivList; p = p -> next){
 		p -> valueDecrease();
 	}
-	BackD.put(this);
-	//GetBackGround();
 }
 
 void Particle::process(ParticleProcess* proc){
