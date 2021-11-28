@@ -1817,6 +1817,11 @@ void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 			};
 		};
 
+		// 60PFS: Creating dust at 20FPS
+		if(frame % (int)GAME_TIME_COEFF > 0){
+			return;
+		}
+
 		if((int)(RND(10)) > speed) return;
 
 		if(trn == 1) 
