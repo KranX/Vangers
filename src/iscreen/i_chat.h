@@ -46,8 +46,13 @@ struct iChatScreenObject : XListElement
 struct iChatInputField : iChatScreenObject
 {
 	int color;
-	char* string;
+	std::string string;
 	XBuffer* XConv;
+	
+	int position;
+	int selectionPosition;
+
+	void selectionRedraw(void);
 
 	virtual void redraw(void);
 

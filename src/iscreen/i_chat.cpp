@@ -82,8 +82,11 @@ void iInitChatButtons(void);
 void iInitChatScreen(void);
 
 void iChatInputChar(SDL_Event *code);
+void iChatInputChar(unsigned char* input_char);
 void iChatInputFlush(void);
 void iChatInputBack(void);
+void iChatInputEditing(SDL_Event *code);
+void iChatInputDrawCursor(void);
 
 void iChatMouseHandler(iChatButton* bt,int bt_id);
 void iChatClearButtons(void);
@@ -93,8 +96,11 @@ iChatButton* iGetChatButton(int id);
 iChatButton* iGetChatPlayerButton(int id);
 
 void put_map(int x,int y,int sx,int sy);
-unsigned char UTF8toCP866(unsigned short utf);
 
+unsigned char UTF8toCP866(unsigned short utf);
+unsigned short CP866toUTF8(unsigned char cp866);
+
+int getCharGroup(char chr);
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
 #define ICS_INPUT_TIMER 	5
@@ -167,7 +173,7 @@ int iChatFilterID = 0;
 int iChatMUTE = 0;
 int iChatBackLog = 1;
 
-int iChatCursorFlag = 0;
+bool iChatCursorFlag = false;
 int iChatCursorTimer = 0;
 
 static int aciChatColors0[10] =
@@ -197,6 +203,13 @@ static int aciChatColors1[10] =
 	(244 | (2 << 16)),
 	(150 | (2 << 16))
 };
+
+int selectionColorI = (244 | (2 << 16)); //aciChatColors0[2] blue color for selection
+int selectionColor = (150 | (2 << 16)); //aciChatColors1[2]
+
+int cursorColorI = (6 | (2 << 16)); //aciChatColors0[5] white color for cursor
+int cursorColor = (230 | (2 << 16)); //aciChatColors1[5]
+int cursorWidth = 2;
 
 static char* iChatWorlds[] = {
 	iSTR_WORLD_NONE_CHAR,
@@ -257,32 +270,63 @@ void iChatScreenObject::flush(void)
 
 iChatInputField::iChatInputField(void)
 {
-	string = new char[ISC_MAX_STRING_LEN];
-	memset(string,0,ISC_MAX_STRING_LEN);
-
+	string = std::string();
+	
 	XConv = new XBuffer(256);
 
 	if(!iScreenChat)
 		color = ICS_STRING_COL1;
 	else
 		color = ICS_iSTRING_COL1;
+	
+	position = 0;
+	
+	selectionPosition = 0;
 }
 
 iChatInputField::~iChatInputField(void)
 {
-	delete[] string;
 }
 
 void iChatInputField::redraw(void)
 {
 	int dy;
 	iChatScreenObject::redraw();
-	dy = (SizeY - aTextHeight32(string,font,0)) / 2;
-
+	dy = (SizeY - aTextHeight32((char*)string.c_str(), font, 0)) / 2;
+	
+	this -> selectionRedraw();
+	
 	XConv -> init();
-	*XConv < CurPlayerName < string;
+	*XConv < CurPlayerName < (char*)(string.c_str());
 
-	aOutText32(PosX,PosY,color,XConv -> address(),font,1,0);
+	aOutText32(PosX, PosY, color, XConv -> address(), font, 1, 0);
+}
+
+void iChatInputField::selectionRedraw(void) {
+	int color;
+	if (iScreenChat) {
+		color = selectionColorI;
+	}
+	else {
+		color = selectionColor;
+	}
+	
+	int leftPosition = std::min(position, selectionPosition);
+	int rightPosition = std::max(position, selectionPosition);
+	
+	char* ptr;
+	
+	XConv -> init();
+	*XConv < CurPlayerName < (char*)(string.substr(0, leftPosition).c_str());
+	ptr = iChatInput -> XConv -> address();
+	int left_x = aTextWidth32(ptr, iChatInput -> font, 1);
+	
+	XConv -> init();
+	*XConv < CurPlayerName < (char*)(string.substr(0, rightPosition).c_str());
+	ptr = iChatInput -> XConv -> address();
+	int right_x = aTextWidth32(ptr, iChatInput -> font, 1);
+	
+	XGR_Rectangle(PosX + left_x, PosY, right_x - left_x, SizeY, color, color, XGR_FILLED);
 }
 
 iChatHistoryScreen::iChatHistoryScreen(void)
@@ -400,7 +444,9 @@ void iChatInit(void)
 
 	iChatInput = new iChatInputField;
 	iChatInput -> init(x,y + ICS_HISTORY_SIZE_Y + ICS_DELTA + (ICS_BUTTON_SIZE_Y + ICS_DELTA) * 1,ICS_HISTORY_SIZE_X,ICS_BUTTON_SIZE_Y,bcol,bcol);
-	strcpy(iChatInput -> string,">_");
+	iChatInput -> string = ">";
+	iChatInput -> position = 1;
+	iChatInput -> selectionPosition = 1;
 
 	p = new iChatButton(2);
 	p -> init(x,y,bsx,ICS_BUTTON_SIZE_Y,bcol,bcol);
@@ -768,7 +814,6 @@ void iChatInit(void)
 
 void iChatQuant(int flush)
 {
-	int sz;
 	iChatButton* p;
 	if(!iChatON) return;
 
@@ -780,22 +825,19 @@ void iChatQuant(int flush)
 		if(!(p -> flags & ICS_HIDDEN_OBJECT)) p -> redraw();
 		p = (iChatButton*)p -> next;
 	}
-	iChatCursorTimer ++;
-	if(iChatCursorTimer >= ICS_INPUT_TIMER){
-		iChatCursorTimer = 0;
-		iChatCursorFlag = 1;
-	}
-	if(iChatCursorFlag){
-		sz = strlen(iChatInput -> string);
-		if(iChatInput -> string[sz - 1] == '_')
-			iChatInput -> string[sz - 1] = ' ';
-		else
-			iChatInput -> string[sz - 1] = '_';
-		iChatCursorFlag = 0;
-	}
+	
 	iChatInput -> redraw();
 	iChatHistory -> redraw();
-
+	
+	iChatCursorTimer++;
+	if (iChatCursorTimer >= ICS_INPUT_TIMER) {
+		iChatCursorTimer = 0;
+		iChatCursorFlag = !iChatCursorFlag;
+	}
+	if (iChatCursorFlag) {
+		iChatInputDrawCursor();
+	}
+	
 	if(flush){
 		p = (iChatButton*)iChatButtons -> fPtr;
 		while(p){
@@ -837,15 +879,20 @@ void iChatFinit(void)
 }
 
 void iChatKeyQuant(SDL_Event *k) {
-	if (k->type == SDL_TEXTINPUT) {
-		return iChatInputChar(k);
+	if (k) {
+		iChatInputChar(k);
+		iChatInputEditing(k);
 	}
-	if (k->type != SDL_KEYDOWN) {
+	
+	if (k -> type != SDL_KEYDOWN && k -> type != SDL_TEXTINPUT) {
 		iChatExit = 1;
 		return;
 	}
-	if(iCheckKeyID(iKEY_CHAT, k->key.keysym.scancode))
+	if (iCheckKeyID(iKEY_CHAT, k -> key.keysym.scancode)) {
 		iChatExit = 1;
+		return;
+	}
+	
 	switch(k->key.keysym.scancode) {
 		case SDL_SCANCODE_ESCAPE:
 			iChatExit = 1;
@@ -854,13 +901,9 @@ void iChatKeyQuant(SDL_Event *k) {
 			iChatInputFlush();
 			break;
 		case SDL_SCANCODE_BACKSPACE:
-		case SDL_SCANCODE_LEFT:
 			iChatInputBack();
 			break;
 		default:
-			if(k) {
-				iChatInputChar(k);
-			}
 			break;
 	}
 }
@@ -1039,66 +1082,272 @@ iChatButton* iGetChatPlayerButton(int id)
 	return 0;
 }
 
-void iChatInputChar(SDL_Event *event)
-{
-	char* ptr,*ptr0 = iChatInput->string;
-	int x, sz;
+void iChatInputDrawCursor(void) {
+	iChatInput -> XConv -> init();
+	*iChatInput -> XConv < CurPlayerName < (char*)((iChatInput -> string).substr(0, iChatInput -> position).c_str());
+	char* ptr = iChatInput -> XConv -> address();
+	int x = aTextWidth32(ptr, iChatInput -> font, 1);
+	
+	int color;
+	if (iScreenChat) {
+		color = cursorColorI;
+	}
+	else {
+		color = cursorColor;
+	}
+	
+	XGR_Rectangle(iChatInput -> PosX + x - cursorWidth / 2, iChatInput -> PosY, cursorWidth, iChatInput -> SizeY, color, color, XGR_FILLED);
+}
+
+void iChatInputChar(char* input_char) {
 	unsigned char chr;
-
-	iChatInput->XConv->init();
-	*iChatInput->XConv < CurPlayerName < iChatInput->string;
-	ptr = iChatInput->XConv->address();
-
-	x = aTextWidth32(ptr, iChatInput->font, 1);
-
-	sz = strlen(ptr0);
-//	if(sz >= ISC_MAX_STRING_LEN && x >= iChatInput->SizeX - 10) {
-	if((sz >= ISC_MAX_STRING_LEN) || (x >= iChatInput->SizeX - 10))
-		return;
-
+	
 	aciFont* hfnt = aScrFonts32[iChatInput->font];
 
-	if (event->type == SDL_TEXTINPUT) {
-		if ((unsigned char)event->text.text[0] < 128) {
-			chr = event->text.text[0];
-		} else {
-			unsigned short utf = ((unsigned short *)event->text.text)[0];
-			utf = ntohs(utf);
-			// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
-			if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
-				chr = UTF8toCP866(utf);
-			} else {
-				chr = ' ';
+	if ((unsigned char)(input_char[0]) < 128) {
+		chr = input_char[0];
+	} 
+	else {
+		unsigned short utf = ((unsigned short*)input_char)[0];
+		utf = ntohs(utf);
+		// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
+		if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
+			chr = UTF8toCP866(utf);
+		} 
+		else {
+			chr = ' ';
+		}
+	}
+	
+	if(hfnt && chr < hfnt->Size) {
+		iChatInputDrawCursor();
+		iChatCursorFlag = true;
+		iChatCursorTimer = 0;
+		
+		int leftPosition = std::min(iChatInput -> position, iChatInput -> selectionPosition);
+		int rightPosition = std::max(iChatInput -> position, iChatInput -> selectionPosition);
+		
+		std::string new_string = (iChatInput -> string).substr(0, leftPosition);
+		new_string.push_back(chr);
+		new_string += (iChatInput -> string).substr(rightPosition);
+		
+		iChatInput -> XConv -> init();
+		*iChatInput -> XConv < CurPlayerName < (char*)(new_string.c_str());
+		char* ptr = iChatInput -> XConv -> address();
+
+		int x = aTextWidth32(ptr, iChatInput -> font, 1);
+		//	if(sz >= ISC_MAX_STRING_LEN && x >= iChatInput->SizeX - 10) {
+		if ((new_string.length() > ISC_MAX_STRING_LEN) || (x > iChatInput -> SizeX - 10)) {
+			return;
+		}
+		
+		iChatInput -> string = new_string;
+		iChatInput -> position = leftPosition + 1;
+		iChatInput -> selectionPosition = iChatInput -> position;
+	}
+}
+
+void iChatInputChar(SDL_Event *event) {
+	if (event -> type == SDL_TEXTINPUT) {
+		iChatInputChar(event -> text.text);
+	}
+}
+
+void iChatInputFlush(void) {
+	iChatInputDrawCursor();
+	iChatCursorFlag = true;
+	iChatCursorTimer = 0;
+
+	if ((iChatInput -> string).length() > 1) {
+		message_dispatcher.send((char*)((iChatInput -> string).substr(1).c_str()), iChatFilter, iChatFilterID);
+	}
+	
+	iChatInput -> string = ">";
+	iChatInput -> position = 1;
+	iChatInput -> selectionPosition = 1;
+}
+
+void iChatInputBack(void) {
+	iChatInputDrawCursor();
+	iChatCursorTimer = 0;
+	
+	std::string new_string;
+	if (iChatInput -> position == iChatInput -> selectionPosition) {
+		if (iChatInput -> position <= 1) {
+			return;
+		}
+		
+		new_string = (iChatInput -> string).substr(0, iChatInput -> position - 1) + (iChatInput -> string).substr(iChatInput -> position);
+		iChatInput -> position -= 1;
+	}
+	else {
+		int leftPosition = std::min(iChatInput -> position, iChatInput -> selectionPosition);
+		int rightPosition = std::max(iChatInput -> position, iChatInput -> selectionPosition);
+		
+		new_string = (iChatInput -> string).substr(0, leftPosition) + (iChatInput -> string).substr(rightPosition);
+		iChatInput -> position = leftPosition;
+	}
+	
+	iChatInput -> string = new_string;
+	iChatInput -> selectionPosition = iChatInput -> position;
+}
+
+void iChatInputEditing(SDL_Event *event) {
+	SDL_Scancode scancode = event -> key.keysym.scancode;
+	
+	if (scancode == SDL_SCANCODE_LEFT) {
+		iChatInputDrawCursor();
+		iChatCursorFlag = true;
+		iChatCursorTimer = 0;
+		
+		int position = iChatInput -> position;
+		
+		if (SDL_GetModState() & KMOD_CTRL) {
+			std::string string = iChatInput -> string;
+			int group = getCharGroup(string[position - 1]);
+			
+			while (position > 1 && getCharGroup(string[position - 1]) == group) {
+				position -= 1;
 			}
 		}
-		if(hfnt && chr < hfnt->Size) {
-			ptr0[sz - 1] = chr;
-			ptr0[sz] = '_';
-			ptr0[sz + 1] = 0;
+		else if (!(SDL_GetModState() & KMOD_SHIFT) && position != iChatInput -> selectionPosition) {
+			position = std::min(position, iChatInput -> selectionPosition);
+		}
+		else {
+			position = std::max(1, position - 1);
+		}
+		
+		iChatInput -> position = position;
+		if (!(SDL_GetModState() & KMOD_SHIFT)) {
+			iChatInput -> selectionPosition = position;
+		}
+	}
+	else if (scancode == SDL_SCANCODE_RIGHT) {
+		iChatInputDrawCursor();
+		iChatCursorFlag = true;
+		iChatCursorTimer = 0;
+		
+		int position = iChatInput -> position;
+		
+		if (SDL_GetModState() & KMOD_CTRL) {
+			std::string string = iChatInput -> string;
+			int group = getCharGroup(string[position]);
+			
+			while (position < (int)string.length() && getCharGroup(string[position]) == group) {
+				position += 1;
+			}
+		}
+		else if (!(SDL_GetModState() & KMOD_SHIFT) && position != iChatInput -> selectionPosition) {
+			position = std::max(position, iChatInput -> selectionPosition);
+		}
+		else {
+			position = std::min(position + 1, (int)((iChatInput -> string).length()));
+		}
+		
+		iChatInput -> position = position;
+		if (!(SDL_GetModState() & KMOD_SHIFT)) {
+			iChatInput -> selectionPosition = position;
+		}
+	}
+	else if (scancode == SDL_SCANCODE_UP) {
+		iChatInputDrawCursor();
+		iChatCursorFlag = true;
+		iChatCursorTimer = 0;
+		
+		iChatInput -> position = 1;
+		if (!(SDL_GetModState() & KMOD_SHIFT)) {
+			iChatInput -> selectionPosition = iChatInput -> position;
+		}
+	}
+	else if (scancode == SDL_SCANCODE_DOWN) {
+		iChatInputDrawCursor();
+		iChatCursorFlag = true;
+		iChatCursorTimer = 0;
+		
+		iChatInput -> position = (iChatInput -> string).length();
+		if (!(SDL_GetModState() & KMOD_SHIFT)) {
+			iChatInput -> selectionPosition = iChatInput -> position;
+		}
+	}
+	else if (scancode == SDL_SCANCODE_A && (SDL_GetModState() & KMOD_CTRL)) {
+		iChatInput -> position = (iChatInput -> string).length();
+		iChatInput -> selectionPosition = 1;
+	}
+	else if (scancode == SDL_SCANCODE_V && (SDL_GetModState() & KMOD_CTRL) && SDL_HasClipboardText() == SDL_TRUE) {
+		char* clipboard = SDL_GetClipboardText();
+		
+		for (size_t i = 0; i < strlen(clipboard); i++) {
+			char* chr = new char[2]{ clipboard[i], 0 };
+			if ((unsigned char)(chr[0]) >= 128) {
+				chr[1] = clipboard[i + 1];
+				i++;
+			}
+
+			iChatInputChar(chr);
+		}
+	}
+	else if ((scancode == SDL_SCANCODE_C || scancode == SDL_SCANCODE_X) && (SDL_GetModState() & KMOD_CTRL)) {
+		int leftPosition = std::min(iChatInput -> position, iChatInput -> selectionPosition);
+		int rightPosition = std::max(iChatInput -> position, iChatInput -> selectionPosition);
+		
+		if (leftPosition == rightPosition) {
+			return;
+		}
+		
+		std::string copy_string = (iChatInput -> string).substr(leftPosition, rightPosition - leftPosition);
+		std::string new_string;
+		for (size_t i = 0; i < copy_string.length(); i++) {
+			if ((unsigned char)(copy_string[i]) < 128) {
+				new_string.push_back(copy_string[i]);
+			}
+			else {
+				unsigned short utf = CP866toUTF8((unsigned char)(copy_string[i]));
+				new_string.push_back(utf >> 8);
+				new_string.push_back(utf & 0xFF);
+			}
+		}
+		
+		SDL_SetClipboardText(new_string.c_str());
+		
+		if (scancode == SDL_SCANCODE_X) {
+			iChatInputBack();
 		}
 	}
 }
 
-void iChatInputFlush(void)
-{
-	int sz;
-	char* ptr = iChatInput -> string;
-
-	sz = strlen(ptr);
-	ptr[sz - 1] = 0;
-	if(sz > 2){
-		message_dispatcher.send(ptr + 1,iChatFilter,iChatFilterID);
+//returns "group" of the char: 0 - space, 1 - symbol, 2 - letter/number
+int getCharGroup(char chr) {
+	if (chr == ' ') {
+		return 0;
 	}
-	strcpy(ptr,">_");
+	else {
+		std::string symbols = "~`!@\"#$;%^:&?*()_-+=[{]}\\|/\'<>,.";
+		
+		for (size_t i = 0; i < symbols.length(); i++) {
+			if (chr == symbols[i]) {
+				return 1;
+			}
+		}
+		
+		return 2;
+	}
 }
 
-void iChatInputBack(void)
-{
-	char* ptr = iChatInput -> string;
-	int sz = strlen(ptr);
-	if(sz > 2){
-		ptr[sz - 1] = 0;
-		ptr[sz - 2] = '_';
+unsigned short CP866toUTF8(unsigned char cp866) {
+	if (cp866 >= 0x80 && cp866 <= 0xAF) {
+		return cp866 + 0xD010;
+	}
+	if (cp866 >= 0xE0 && cp866 <= 0xEF) {
+		return cp866 + 0xD0A0;
+	}
+	
+	switch(cp866) {
+		case 0xF0: //Ё
+			return 0xD001;
+		case 0xF1: //ё
+			return 0xD191;
+		default:
+			return 0x20;
 	}
 }
 
