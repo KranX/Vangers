@@ -103,7 +103,7 @@ unsigned short CP866toUTF8(unsigned char cp866);
 int getCharGroup(char chr);
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
-#define ICS_INPUT_TIMER 	5
+#define ICS_INPUT_TIMER 	10
 
 // Button IDs...
 #define ICS_UP_BUTTON		0x01
