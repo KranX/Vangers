@@ -1169,6 +1169,7 @@ void iChatInputFlush(void) {
 
 void iChatInputBack(void) {
 	iChatInputDrawCursor();
+	iChatCursorFlag = true;
 	iChatCursorTimer = 0;
 	
 	std::string new_string;
