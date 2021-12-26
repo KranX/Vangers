@@ -8,6 +8,8 @@
 #include "../terra/vmap.h"
 #include "../terra/world.h"
 
+#include "../runtime.h"
+
 #include "particle.h"
 #include "partmap.h"
 
@@ -391,8 +393,9 @@ void Particle::express(ParticleProcess* proc){
 	uchar **lt = vMap -> lineT;
 	uchar **ltc = vMap -> lineTcolor;
 	uchar *ParticlePaletteTable;
-	const int noise = 4;
-	//const int noise = 2;
+
+	// lower noise for FPS=60
+	const int noise = GAME_TIME_COEFF > 0 ? 2 : 4;
 
 	switch(proc -> PaletteColor){
 	case 0 :
