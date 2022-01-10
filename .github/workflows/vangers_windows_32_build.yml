@@ -57,7 +57,7 @@ jobs:
     - name: vangers -- create build dir
       run: msys2 -c 'mkdir build'
     - name: vangers -- configure
-      run: msys2 -c 'cmake -G Ninja ..'
+      run: msys2 -c 'cmake -DCMAKE_BUILD_TYPE=Debug -G Ninja ..'
       working-directory: build
     - name: vangers -- make
       run: msys2 -c 'ninja'
@@ -68,7 +68,6 @@ jobs:
         msys2 -c 'unzip cv2pdb-0.50.zip'
         .\cv2pdb.exe vangers.exe
       working-directory: build/src
-
     - name: vangers -- prepare release folder
       run: |
         msys2 -c 'mkdir -p vangers/bin'

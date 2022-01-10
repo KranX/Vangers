@@ -29,7 +29,7 @@ jobs:
       run: msys2 -c 'mkdir clunk/build'
     - name: clunk -- build and install
       run: |
-        msys2 -c 'cmake -DCMAKE_INSTALL_PREFIX=/mingw64 -G Ninja ..'
+        msys2 -c 'cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/mingw64 -G Ninja ..'
         msys2 -c 'ninja'
         msys2 -c 'ninja install'
       working-directory: clunk/build
