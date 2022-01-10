@@ -77,7 +77,6 @@ ADD_EXECUTABLE(vangers ${vangers_SRCS})
 IF(WIN32)
 	SET(WIN_LIB 
 		wsock32
-		dbghelp
 		#-mwindows
 		#-Wl,-subsystem,windows
 	)
