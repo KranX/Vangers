@@ -103,7 +103,13 @@
 		frame.AddrFrame.Mode        = AddrModeFlat;
 	#endif
 
-    while (StackWalk(IMAGE_FILE_MACHINE_I386 ,
+    while (StackWalk(
+					#ifdef _M_AMD64
+						IMAGE_FILE_MACHINE_AMD64
+					#else
+						IMAGE_FILE_MACHINE_I386
+					#endif
+					,
                      GetCurrentProcess(),
                      GetCurrentThread(),
                      &frame,
