@@ -86,6 +86,7 @@ jobs:
         msys2 -c 'cp /mingw64/bin/libwinpthread-1.dll vangers/bin/'
         cp clunk/build/libclunk.dll vangers/bin/
         cp build/src/vangers.exe vangers/bin/
+        cp build/src/vangers.pdb vangers/bin/
         cp build/src/vangers.exe vangers/bin/vangers_debug.exe
         msys2 -c 'strip vangers/bin/vangers.exe'
         cp build/server/vangers_server.exe vangers/bin/
