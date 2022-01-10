@@ -20,7 +20,8 @@ jobs:
         mingw-w64-x86_64-libvorbis
         mingw-w64-x86_64-nasm
         mingw-w64-x86_64-yasm
-        mingw-w64-x86_64-make'
+        mingw-w64-x86_64-make
+        unzip'
     - uses: actions/checkout@v1
     - name: clunk -- download
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
@@ -61,6 +62,12 @@ jobs:
     - name: vangers -- make
       run: msys2 -c 'ninja'
       working-directory: build
+    - name: vangers -- pdb
+      run: |
+        msys2 -c 'wget https://github.com/rainers/cv2pdb/releases/download/v0.50/cv2pdb-0.50.zip'
+        msys2 -c 'unzip cv2pdb-0.50.zip'
+        .\cv2pdb.exe vangers.exe
+      working-directory: build/src
     - name: vangers -- prepare release folder
       run: |
         msys2 -c 'mkdir -p vangers/bin'
