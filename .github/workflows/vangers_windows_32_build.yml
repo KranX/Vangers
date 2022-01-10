@@ -66,7 +66,7 @@ jobs:
       run: |
         msys2 -c 'wget https://github.com/rainers/cv2pdb/releases/download/v0.50/cv2pdb-0.50.zip'
         msys2 -c 'unzip cv2pdb-0.50.zip'
-        cv2pdb vangers.exe
+        cv2pdb.exe vangers.exe
       working-directory: build/src
 
     - name: vangers -- prepare release folder
