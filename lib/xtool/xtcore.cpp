@@ -174,6 +174,9 @@ int main(int argc, char *argv[])
 
 	initclock();
 	prevID = 0;
+	#ifdef _WIN32
+		set_signal_handler();
+	#endif
 	id = xtInitApplication();
 	XObj = xtGetRuntimeObject(id);
 #ifdef _RTO_LOG_

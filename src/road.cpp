@@ -373,9 +373,6 @@ void showModal(char* fname, float reelW, float reelH, float screenW, float scree
 
 
 int xtInitApplication(void) {
-	#ifdef _WIN32
-		set_signal_handler();
-	#endif
     XGraphWndID = "VANGERS";
     char *tmp;
 
