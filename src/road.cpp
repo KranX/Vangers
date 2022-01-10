@@ -87,12 +87,21 @@
     STACKFRAME frame = { 0 };
 
     /* setup initial stack frame */
-    frame.AddrPC.Offset         = context->Eip;
-    frame.AddrPC.Mode           = AddrModeFlat;
-    frame.AddrStack.Offset      = context->Esp;
-    frame.AddrStack.Mode        = AddrModeFlat;
-    frame.AddrFrame.Offset      = context->Ebp;
-    frame.AddrFrame.Mode        = AddrModeFlat;
+	#ifdef _M_AMD64
+		frame.AddrPC.Offset         = context->Rip;
+		frame.AddrPC.Mode           = AddrModeFlat;
+		frame.AddrStack.Offset      = context->Rsp;
+		frame.AddrStack.Mode        = AddrModeFlat;
+		frame.AddrFrame.Offset      = context->Rbp;
+		frame.AddrFrame.Mode        = AddrModeFlat;
+	#else
+		frame.AddrPC.Offset         = context->Eip;
+		frame.AddrPC.Mode           = AddrModeFlat;
+		frame.AddrStack.Offset      = context->Esp;
+		frame.AddrStack.Mode        = AddrModeFlat;
+		frame.AddrFrame.Offset      = context->Ebp;
+		frame.AddrFrame.Mode        = AddrModeFlat;
+	#endif
 
     while (StackWalk(IMAGE_FILE_MACHINE_I386 ,
                      GetCurrentProcess(),
