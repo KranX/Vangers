@@ -20,7 +20,8 @@ jobs:
         mingw-w64-i686-libvorbis
         mingw-w64-i686-nasm
         mingw-w64-i686-yasm
-        mingw-w64-i686-make'
+        mingw-w64-i686-make
+        unzip'
     - uses: actions/checkout@v1
     - name: clunk -- download
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
