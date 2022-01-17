@@ -34,6 +34,14 @@
 
 #define RANDOMIZE
 
+#include <renderer/scene/sokol/SokolRenderer.h>
+#include <renderer/scene/rust/RustRenderer.h>
+#include <renderer/scene/RenderingContext.h>
+
+using RenderingContext = renderer::scene::RenderingContext;
+using SokolRenderer = renderer::scene::SokolRenderer;
+using RustRenderer = renderer::scene::rust::RustRenderer;
+
 extern const int MAX_MAP_IN_MEMORY_POWER;
 
 struct RGBcolor{ uchar r,g,b; };
@@ -172,6 +180,8 @@ int emode;
 extern int __internal_argc;
 extern char **__internal_argv;
 
+#include <renderer/scene/RenderingContext.h>
+
 int xtInitApplication(void)
 {
 	XCon < "SURMAP Editor v3.03-Win32/DirectX by K-D LAB (C)1996-97. All Rights Reserved.\n";
@@ -189,6 +199,8 @@ int xtInitApplication(void)
 	win32_debugSet();
 #endif
 #endif
+
+	
 
 	ComlineAnalyze(__internal_argc, __internal_argv);
 	//@caiiiycuk: should we ever fix this?
@@ -211,13 +223,6 @@ int xtInitApplication(void)
 	costab();
 	ImpassPrepare();
 	landPrepare();
-
-	XCon < "\nMAP loading:";
-	vMapPrepare(mapFName,prevWorld);
-	vMap->reload(prevWorld);
-	XCon < "\nMESH: " <= MESH < "\n";
-
-	PalettePrepare();
 
 	XStream ffo("SURMAP.FNT",XS_IN);
 	void* fo = new char[ffo.size()];
@@ -248,6 +253,30 @@ int xtInitApplication(void)
 
 	XKey.finit();
 	XKey.init(KeyCenter,NULL);
+
+	if(RenderingContext::has_renderer()){
+		RenderingContext::renderer()->destroy();
+	}
+
+	// TODO:
+
+	RenderingContext::create(std::make_unique<RustRenderer>(XGR_Obj.RealX, XGR_Obj.RealY));
+
+	float FOV = atan((float)xgrScreenSizeY / 2.0 / (float)focus) * 2/ M_PI * 180.0;
+
+	RenderingContext::renderer()->camera_create({
+		  .fov = FOV,
+		  .aspect = (float)xgrScreenSizeX/(float)xgrScreenSizeY,
+          .near_plane = 10,
+          .far_plane = 5000,
+	});
+
+		XCon < "\nMAP loading:";
+	vMapPrepare(mapFName,prevWorld);
+	vMap->reload(prevWorld);
+	XCon < "\nMESH: " <= MESH < "\n";
+
+	PalettePrepare();
 
 	graph3d_init();
 	calc_screen(100);
@@ -567,6 +596,9 @@ void sqScreen::keytrap(int key)
 	switch(key){
 		case SDLK_RETURN:
 			sqE -> put(E_MAINMENU,E_COMMON,XGR_MAXX/2,XGR_MAXY/2);
+			break;
+		case SDLK_BACKSLASH:
+			vMap->__use_external_renderer = !vMap->__use_external_renderer;
 			break;
 		case SDLK_F12:
 			DBGCHECK
@@ -1022,6 +1054,75 @@ void iGameMap::draw(int self)
 //	if(ShowVoxel)
 //		vMap -> draw_voxel(TurnAngle,SlopeAngle,TurnSecX,CX,CY,xc,yc,xside,yside);
 //	else
+
+if(vMap->__use_external_renderer){
+			auto& renderer = renderer::scene::RenderingContext::renderer();
+
+			// TODO: put the camera related stuff to the Camera class
+			float turn = GTOR(TurnAngle);
+			float slope = GTOR(SlopeAngle);
+
+			Quaternion slopeQ(slope, DBV(1, 0, 0));
+			Quaternion turnQ(-turn, DBV(0, 0, 1));
+			Quaternion rotationQuaternion = Quaternion::multiply(
+				turnQ, slopeQ
+			);
+
+			DBV pos0(ViewX, ViewY, 0);
+			DBV camera_pos = Quaternion::multiply(turnQ, slopeQ) * DBV(0, 0, ViewZ);
+			// std::cout << "camera_pos: "
+			// 			<< camera_pos.x << " "
+			// 			<< camera_pos.y << " "
+			// 			<< camera_pos.z << std::endl;
+			camera_pos += pos0;
+
+
+			renderer::scene::Quaternion rotation = {
+				.x = (float)rotationQuaternion.x,
+				.y = (float)rotationQuaternion.y,
+				.z = (float)rotationQuaternion.z,
+				.w = (float)rotationQuaternion.w,
+			};
+
+			renderer::scene::Vector3 position = {
+				.x = (float) camera_pos.x,
+				.y = (float) camera_pos.y,
+				.z = (float) camera_pos.z,
+			};
+
+			// 854 14835 512, rotation=-0.544639 -0 -0 0.838671
+			// position = {856, 14821, 512};
+			// rotation = {0, 0, 0, 1};
+			// rotation = {-0.156434, -0, -0, 0.987688};
+
+			// std::cout << "TurnAngle: " << TurnAngle
+			// 		  << ", TurnSecX: " << TurnSecX
+			// 		  << ", SlopeAngle" << SlopeAngle
+			// 		  << ", turn: " << turn
+			// 		  << ", slope: " << slope
+			// 		  << ", ViewX: " << ViewX
+			// 		  << ", ViewY: " << ViewY
+			// 		  << ", ViewZ: " << ViewZ
+			// 		  << ", focus: " << focus
+			// 		  << std::endl;
+
+			renderer->camera_set_transform({
+			   .position = position,
+			   .rotation = rotation,
+			});
+
+			renderer->map_update_palette(XGR_Obj.XGR32_PaletteCache, 256);
+			renderer::Rect view_rect = {
+				.x = 0,
+				.y = 0,
+				.width = XGR_Obj.RealX,
+				.height = XGR_Obj.RealY,
+			};
+			renderer->render(view_rect);
+
+
+		}
+
 		if(TurnAngle)
 			vMap -> turning(TurnSecX,TurnAngle,CX,CY,xc,yc,xside,yside);
 		else {
@@ -1106,6 +1207,8 @@ void iGameMap::draw(int self)
 	if(VLstatus) VLshow();
 
 	sqInputBox::draw(0);
+
+	
 }
 
 void iGameMap::quant(void)
