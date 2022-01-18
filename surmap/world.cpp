@@ -769,6 +769,10 @@ void WORLD_colcalc(int y0,int y1,int isColor)
 			}
 */
 		}
+
+	#ifdef _SURMAP_
+		vMap->request_region_update(0, y0, H_SIZE - 1, y1);
+	#endif
 }
 
 void worldPrepare(void)
