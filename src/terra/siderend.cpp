@@ -626,9 +626,7 @@ void regRender(int LowX,int LowY,int HiX,int HiY,int changed)
 		if(CurrScanLenght > BackScanLen) BackScanLen = CurrScanLenght;
 		}
 	}
-	#ifdef _SURMAP_
-		vMap->request_region_update(LowX, LowY, LowX + SizeX, LowY + SizeY);
-	#endif
+	vMap->request_region_update(LowX, LowY, LowX + SizeX, LowY + SizeY);
 }
 
 //znfo render
