@@ -238,6 +238,9 @@ void regRender(int LowX,int LowY,int HiX,int HiY,int changed)
 	HiX = XCYCL(HiX);
 	LowY = YCYCL(LowY);
 	HiY = YCYCL(HiY);
+	#ifdef _SURMAP_
+		vMap->request_region_update(LowX, LowY, HiX, HiY);
+	#endif
 
 	LowX &= ~1;
 	HiX |= 1;
