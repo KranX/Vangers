@@ -509,7 +509,7 @@ struct Quaternion {
 	Quaternion operator% (const Quaternion& q) const;   //      Cross product
 	
 	double operator* (const Quaternion& q) const;		//      Dot product
-
+	static Quaternion multiply(const Quaternion& q1, const Quaternion& q2);
 		/* Scalar operations */
 	Quaternion& operator*= (double s);
 	Quaternion& operator/= (double s);

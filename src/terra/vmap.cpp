@@ -26,6 +26,8 @@
 
 #include <iostream>
 
+#include <renderer/visualbackend/VisualBackendContext.h>
+using VisualBackendContext = renderer::visualbackend::VisualBackendContext;
 
 #ifdef _ROAD_
 //#define FILEMAPPING
@@ -315,7 +317,7 @@ vrtMap::~vrtMap(void)
 }
 
 vrtMap::vrtMap(void)
-: fmap(0), kmap(0)
+	: fmap(0), kmap(0), __use_external_renderer(true)
 {
 	pFile = new PrmFile;
 	cWorld = 0;
@@ -434,6 +436,18 @@ void vrtMap::init(void)
 		}
 #endif
 	upLine = downLine = 0;
+
+	auto& r = VisualBackendContext::backend();
+	r->map_destroy();
+
+	r->map_create({
+		.width = H_SIZE,
+		.height = (int32_t)V_SIZE,
+		.lineT = lineT,
+		.material_begin_offsets = BEGCOLOR,
+		.material_end_offsets = ENDCOLOR,
+		.material_count = TERRAIN_MAX,
+	});
 }
 
 #ifdef _SURMAP_
@@ -988,6 +1002,17 @@ void vrtMap::reload(int nWorld)
 	LoadVPR();
 	RenderPrepare();
 
+	auto& r = VisualBackendContext::backend();
+	r->map_destroy();
+	r->map_create({
+		.width = H_SIZE,
+		.height = (int32_t)V_SIZE,
+		.lineT = lineT,
+		.material_begin_offsets = BEGCOLOR,
+		.material_end_offsets = ENDCOLOR,
+		.material_count = TERRAIN_MAX,
+	});
+
 	if(MAP_POWER_Y <= MAX_MAP_IN_MEMORY_POWER) {
 		accept(0, V_SIZE - 1);
 	} else {
@@ -1143,6 +1168,7 @@ void vrtMap::accept(int up,int down)
 			i = YCYCL(i + 1);
 		} while(i != max);
 
+	request_region_update(0, up, H_SIZE - 1, down);
 	upLine = up;
 	downLine = down;
 	preViewY = ViewY;
@@ -1391,6 +1417,35 @@ void vrtMap::quant(void)
 	change(ytop,ybottom);
 }
 
+void vrtMap::request_region_update(int32_t left, int32_t bottom, int32_t right, int32_t top)
+{
+	left = XCYCL(left);
+	bottom = YCYCL(bottom);
+	right = XCYCL(right);
+	top = YCYCL(top);
+
+	if(left > right) {
+		request_region_update(left, bottom, H_SIZE - 1, top);
+		request_region_update(0, bottom, right, top);
+		return;
+	}
+
+	if(bottom > top){
+		request_region_update(left, bottom, right, V_SIZE - 1);
+		request_region_update(left, 0, right, top);
+		return;
+	}
+
+	renderer::Rect rect {
+		.x = left,
+		.y = bottom,
+		.width = right - left + 1,
+		.height = top - bottom + 1,
+	};
+
+	VisualBackendContext::backend()->map_request_update(rect);
+}
+
 inline uchar* vrtMap::use(void)
 {
 	uchar* p = dHeap + freeTail*H2_SIZE;
@@ -1552,6 +1607,7 @@ if (NetworkON && zMod_flood_level_delta!=0) {
 			}
 		i = YCYCL(i + d);
 	} while(i != max);
+	request_region_update(0, up, H_SIZE - 1, down);
 }
 
 void vrtMap::delink(int up, int down)
@@ -1843,6 +1899,11 @@ void vrtMap::scaling(int XSrcSize,int cx,int cy,int xc,int yc,int xside,int ysid
 
 	request(MIN(y0,y1) - MAX_RADIUS/2,MAX(y0,y1) + MAX_RADIUS/2,MIN(x0,x1) - 4,MAX(x0,x1) + 4);
 
+	// TODO: allow to continue rendering for the DummyVisualBackend
+	if(__use_external_renderer){
+		return;
+	}
+
 #if defined(_ROAD_) && defined(_DEBUG)
 	if(!TotalDrawFlag) return;
 #endif
@@ -2089,6 +2150,11 @@ void vrtMap::turning(int XSrcSize,int Turn,int cx,int cy,int xc,int yc,int XDstS
 	request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,
 			MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
 	
+	// TODO: allow to continue rendering for the DummyVisualBackend
+	if(__use_external_renderer){
+		return;
+	}
+
 	int x, y, srcx, srcy;
 	
 	char *dst;
@@ -2441,6 +2507,11 @@ void vrtMap::scaling_3D(DBM& A,int H,int focus,int cx,int cy,int xc,int yc,int x
 	int y3 = ((int)round((-bi - bj)/(Oc - ci - cj)) + cy) >> 16;
 
 	request(MIN(MIN(MIN(y0,y1),y2),y3) - MAX_RADIUS/2,MAX(MAX(MAX(y0,y1),y2),y3) + MAX_RADIUS/2,0,0);
+
+	if(__use_external_renderer){
+		return;
+	}
+
 
 	double al = -ai - aj;
 	double bl = -bi - bj;

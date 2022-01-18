@@ -20,6 +20,10 @@
 #include "i_mem.h"
 #include "ikeys.h"
 
+#include <renderer/visualbackend/VisualBackendContext.h>
+
+using VisualBackendContext = renderer::visualbackend::VisualBackendContext;
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
 // MP Game Parameters...
@@ -664,16 +668,25 @@ void iSetFPS(int state) {
 }
 
 void iSetResolution(int state) {
+	int32_t width;
+	int32_t height;
+
 	switch(state){
 		case 0:
-			XGR_Obj.set_resolution(800, 600);
+		    width = 800;
+			height = 600;
 			break;
 		case 1:
-			XGR_Obj.set_resolution(1280, 720);
+		    width = 1280;
+			height = 720;
 			break;
-
+	    default:
+		    return;
 	}
+
+	XGR_Obj.set_resolution(width, height);
 	put_map(iScreenOffs,0,I_RES_X,I_RES_Y);
+	VisualBackendContext::backend()->set_screen_resolution(width, height);
 }
 
 void iPrepareOptions(void)

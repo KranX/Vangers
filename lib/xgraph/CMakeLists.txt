@@ -1,5 +1,6 @@
 include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xtool"
+	"${PROJECT_SOURCE_DIR}/lib/renderer/src"
 )
 
 SET(xgraph_SRCS
@@ -13,4 +14,5 @@ ADD_LIBRARY(xgraph STATIC ${xgraph_SRCS})
 
 TARGET_LINK_LIBRARIES(xgraph
 	${SDL2_LIBRARY}
+		renderer
 )

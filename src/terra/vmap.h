@@ -1,6 +1,9 @@
 #ifndef __TERRA__VMAP_H__
 #define __TERRA__VMAP_H__
 
+#include <renderer/visualbackend/AbstractVisualBackend.h>
+#include <memory>
+
 const uint H_POWER = MAP_POWER_X;
 const uint H_SIZE = 1 << H_POWER;
 const uint H2_SIZE = 2*H_SIZE;
@@ -28,6 +31,7 @@ struct vrtMap {
 	uchar** lineT; //Масив с вокселями.
 	uchar** lineTcolor; //Масив цветов(картинка) поверхности.
 
+	bool __use_external_renderer;
 	int upLine,downLine;
 
 	uchar* dHeap;
@@ -80,6 +84,9 @@ struct vrtMap {
 	void change(int up,int down);
 	void request(int up,int down,int left, int right);
 	void quant(void);
+
+	// TODO: merge with void request(int up,int down,int left, int right)
+	void request_region_update(int32_t left, int32_t bottom, int32_t right, int32_t top);
 	void link(int up,int down,int d);
 	void linkC(int up,int down,int d);
 	void delink(int up,int down);

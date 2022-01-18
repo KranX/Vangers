@@ -1,6 +1,7 @@
 include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xtool"
 	"${PROJECT_SOURCE_DIR}/lib/xgraph"
+	"${PROJECT_SOURCE_DIR}/lib/renderer/src"
 )
 
 SET(xsound_SRCS

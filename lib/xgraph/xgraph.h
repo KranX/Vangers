@@ -12,6 +12,7 @@
 #define __XGRAPH_H__
 
 #include "xglobal.h"
+#include <renderer/compositor/AbstractCompositor.h>
 
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
@@ -118,6 +119,8 @@ struct XGR_Screen
 	int yStrOffs;
 	int* yOffsTable;
 
+	uint32_t XGR32_PaletteCache[256] {0};
+
 	void set_pitch(int p);
 	void set_clip(int left,int top,int right,int bottom);
 	void get_clip(int& left,int& top,int& right,int& bottom);
@@ -187,7 +190,6 @@ struct XGR_Screen
 	SDL_Surface* get_screenshot();
 
 	XGR_Screen(void);
-
 private:
 	void create_surfaces(int width, int height);
 	void destroy_surfaces();
@@ -201,19 +203,20 @@ private:
 	SDL_Surface *XGR32_ScreenSurface;
 
 	SDL_Surface *IconSurface;
-	SDL_Texture *sdlTexture;
+	renderer::compositor::Texture texture;
 
-	SDL_Texture *HDBackgroundTexture;
+	renderer::compositor::Texture HDBackgroundTexture;
 	SDL_Window *sdlWindow;
-	SDL_Renderer *sdlRenderer;
+	renderer::compositor::AbstractCompositor * renderer;
 
 	SDL_Color XGR_Palette[256] {{0, 0, 0, 0}};
-	uint32_t XGR32_PaletteCache[256] {0};
+
 	SDL_Color averageColorPalette = {255,255,255,0};
 
 	float screen_scale_x = 1.f;
 	float screen_scale_y = 1.f;
 
+	SDL_GLContext openGlContext;
 	void set_active_render_buffer(uint8_t *buf);
 
 	// @caiiycuk TODO: TBD: refactor this methods to accept video buffer as argument (to get rid from usage of XGR_VIDEOBUF)
