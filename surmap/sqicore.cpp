@@ -194,7 +194,7 @@ void sqQuant(void)
 
 	if(TrackBuild) isFlush = 1;
 
-	if(isFlush && KeyTrapObj) KeyTrapObj -> draw();
+	if(KeyTrapObj) KeyTrapObj -> draw();
 
 	if(QuantObj) QuantObj -> quant();
 
