@@ -706,6 +706,18 @@ double Quaternion::operator* (const Quaternion& q) const
 	return w*q.w + x*q.x + y*q.y + z*q.z;
 }
 
+Quaternion Quaternion::multiply(const Quaternion& q1, const Quaternion &q2)
+{
+	Quaternion result;
+
+	result.x = (q1.x * q2.w) + (q1.y * q2.z) - (q1.z * q2.y) + (q1.w * q2.x);
+	result.y = (-q1.x * q2.z) + (q1.y * q2.w) + (q1.z * q2.x) + (q1.w * q2.y);
+	result.z = (q1.x * q2.y) - (q1.y * q2.x) + (q1.z * q2.w) + (q1.w * q2.z);
+	result.w = (-q1.x * q2.x) - (q1.y * q2.y) - (q1.z * q2.z) + (q1.w * q2.w);
+
+	return result;
+}
+
 	/* Scalar operations */
 Quaternion& Quaternion::operator*= (double s)
 {

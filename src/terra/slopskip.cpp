@@ -111,6 +111,12 @@ void SlopTurnSkip(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int 
 		0,
 		0
 	);
+
+	if(vMap->__use_external_renderer){
+		return;
+	}
+
+
 	uchar** lt = vMap -> lineTcolor;
 
 	int z;

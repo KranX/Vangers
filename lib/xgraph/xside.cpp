@@ -15,8 +15,9 @@ extern int getCurIScreenX();
 extern int CurrentWorld;
 
 namespace {
-SDL_Texture *HDLeftSideTexture = nullptr;
-SDL_Texture *HDRightSideTexture = nullptr;
+renderer::compositor::Texture HDLeftSideTexture = renderer::compositor::Texture::Invalid;
+renderer::compositor::Texture HDRightSideTexture = renderer::compositor::Texture::Invalid;
+
 std::pair<const char *, const char *> activeSides = std::make_pair<>(nullptr, nullptr);
 int currentRto = 0;
 int currentIScreenId = 0;
@@ -82,32 +83,48 @@ std::pair<const char *, const char *> getSideNames() {
 }
 }
 
-void XGR_RenderSides(SDL_Renderer *renderer) {
+void XGR_RenderSides(renderer::compositor::AbstractCompositor* renderer) {
 	auto sideNames = getSideNames();
 
 	if (sideNames.first != activeSides.first) {
-		SDL_DestroyTexture(HDLeftSideTexture);
+		if(HDLeftSideTexture.is_valid()){
+			renderer->texture_destroy(HDLeftSideTexture);
+		}
 		HDLeftSideTexture =
-			sideNames.first ? BMP_CreateTexture(sideNames.first, renderer) : nullptr;
+				sideNames.first
+				? BMP_CreateTexture(sideNames.first, renderer)
+				: renderer::compositor::Texture::Invalid;
 		activeSides.first = sideNames.first;
 	}
 
 	if (sideNames.second != activeSides.second) {
-		SDL_DestroyTexture(HDRightSideTexture);
-		HDRightSideTexture =
-			sideNames.second ? BMP_CreateTexture(sideNames.second, renderer) : nullptr;
+		if(HDRightSideTexture.is_valid()){
+			renderer->texture_destroy(HDRightSideTexture);
+		}
+		HDRightSideTexture = sideNames.second
+				? BMP_CreateTexture(sideNames.second, renderer)
+				: renderer::compositor::Texture::Invalid;
 		activeSides.second = sideNames.second;
 	}
 
-	SDL_Rect dst_rect{0, 0, 0, xgrScreenSizeY};
-	if (HDLeftSideTexture != nullptr) {
-		SDL_QueryTexture(HDLeftSideTexture, nullptr, nullptr, &dst_rect.w, nullptr);
-		SDL_RenderCopy(renderer, HDLeftSideTexture, NULL, &dst_rect);
+	int32_t width;
+	if (HDLeftSideTexture.is_valid()) {
+		renderer->texture_query(HDLeftSideTexture, &width, nullptr, nullptr, nullptr);
+		renderer->texture_render(HDLeftSideTexture, {}, {
+			.x = 0,
+			.y = 0,
+			.width = width,
+			.height = xgrScreenSizeY,
+			});
 	}
 
-	if (HDRightSideTexture != nullptr) {
-		SDL_QueryTexture(HDRightSideTexture, nullptr, nullptr, &dst_rect.w, nullptr);
-		dst_rect.x = xgrScreenSizeX - dst_rect.w;
-		SDL_RenderCopy(renderer, HDRightSideTexture, NULL, &dst_rect);
+	if (HDRightSideTexture.is_valid()) {
+		renderer->texture_query(HDRightSideTexture, &width, nullptr, nullptr, nullptr);
+		renderer->texture_render(HDRightSideTexture, {}, {
+			.x = xgrScreenSizeX - (int32_t)width, 
+			.y = 0,
+			.width = width,
+			.height = xgrScreenSizeY,
+			});
 	}
 }

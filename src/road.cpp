@@ -1,3 +1,5 @@
+#include <cstring>
+
 #define _ROAD_
 #include "zmod_client.h"
 
@@ -99,6 +101,12 @@
 #ifdef _DEBUG
 XStream fmemory("memstats.dmp", XS_OUT);
 #endif
+
+#include <renderer/visualbackend/rust/RustVisualBackend.h>
+#include <renderer/visualbackend/VisualBackendContext.h>
+
+using VisualBackendContext = renderer::visualbackend::VisualBackendContext;
+using RustVisualBackend = renderer::visualbackend::rust::RustVisualBackend;
 
 /* ----------------------------- EXTERN SECTION ---------------------------- */
 extern XStream fout;
@@ -489,6 +497,13 @@ int xtInitApplication(void) {
 
     if (XGR_Init(w, h, emode)) ErrH.Abort(ErrorVideoMss);
 
+	// TODO:
+
+	if(VisualBackendContext::has_renderer()){
+		VisualBackendContext::backend()->destroy();
+	}
+
+	VisualBackendContext::create(std::make_unique<RustVisualBackend>(XGR_Obj.RealX, XGR_Obj.RealY));
 
 //WORK	sWinVideo::Init();
 //	::ShowCursor(0);
@@ -966,10 +981,20 @@ void LoadingRTO2::Init(int id)
 	LoadingMessage(1);
 #endif
 
+	VisualBackendContext::backend()->camera_destroy();
+
+	float FOV = atan((float)xgrScreenSizeY / 2.0 / (float)focus) * 2/ M_PI * 180.0;
+	VisualBackendContext::backend()->camera_create({
+	      .fov = FOV,
+	      .aspect = (float)xgrScreenSizeX/(float)xgrScreenSizeY,
+	      .near_plane = 10,
+	      .far_plane = 5000,
+	  });
 #ifdef _DEBUG
 	StandScreenPrepare();
 #endif
 _MEM_STATISTIC_("\nBEFORE VMAP  -> ");
+
 	vMapPrepare(mapFName,CurrentWorld);
 	vMapInit();
 _MEM_STATISTIC_("AFTER VMAP  -> ");
@@ -1705,6 +1730,10 @@ void KeyCenter(SDL_Event *key)
 				aciSetCameraMenu();
 			}
 			break;
+
+		case SDL_SCANCODE_BACKSLASH:
+			vMap->__use_external_renderer = !vMap->__use_external_renderer;
+			break;
 		}
 	
 	if (iKeyPressed(iKEY_ZOOM_IN)) {
@@ -1972,6 +2001,8 @@ void iGameMap::draw(int self)
 		uvsQuantFrame = 0;
 	}
 
+	uint8_t* screen = XGR_Obj.get_default_render_buffer();
+	std::memset(screen, 0, sizeof(uint8_t) * xgrScreenSizeX * xgrScreenSizeY);
 	if(GeneralSystemSkip && !ChangeWorldSkipQuant){
 		if(curGMap) {
 			BackD.restore();
@@ -1988,6 +2019,53 @@ void iGameMap::draw(int self)
 			
 		}
 
+		if(vMap->__use_external_renderer){
+			auto& renderer = VisualBackendContext::backend();
+
+			// TODO: put the camera related stuff to the Camera class
+			float turn = GTOR(TurnAngle);
+			float slope = GTOR(SlopeAngle);
+
+			Quaternion slopeQ(slope, DBV(1, 0, 0));
+			Quaternion turnQ(-turn, DBV(0, 0, 1));
+			Quaternion rotationQuaternion = Quaternion::multiply(
+				turnQ, slopeQ
+			);
+
+			DBV pos0(ViewX, ViewY, 0);
+			DBV camera_pos = Quaternion::multiply(turnQ, slopeQ) * DBV(0, 0, ViewZ);
+			camera_pos += pos0;
+
+
+			renderer::visualbackend::Quaternion rotation = {
+				.x = (float)rotationQuaternion.x,
+				.y = (float)rotationQuaternion.y,
+				.z = (float)rotationQuaternion.z,
+				.w = (float)rotationQuaternion.w,
+			};
+
+			renderer::visualbackend::Vector3 position = {
+				.x = (float) camera_pos.x,
+				.y = (float) camera_pos.y,
+				.z = (float) camera_pos.z,
+			};
+
+			renderer->camera_set_transform({
+			   .position = position,
+			   .rotation = rotation,
+			});
+
+			renderer->map_update_palette(XGR_Obj.XGR32_PaletteCache, 256);
+			renderer::Rect view_rect = {
+			    .x = xc - xside,
+			    .y = yc - yside,
+			    .width = xside * 2,
+			    .height = yside * 2,
+			};
+			renderer->render(view_rect);
+		}
+
+		// TODO: Dummy rederer should do the software rendering here
 		if(DepthShow) {
 			if(SkipShow) {
 				//Наклон изображения

@@ -164,6 +164,10 @@ int PerpSlopTurn(int Turn,int Slop,int H,int F,int cx,int cy,int xc,int yc,int X
 		0,
 		0
 	);
+
+	if(vMap->__use_external_renderer){
+		return 1;
+	}
 	uchar** lt = vMap -> lineTcolor;
 	uchar** slt = SetSkipLineTable(lt, ky, Ymin - MAX_RADIUS/2, Ymax + MAX_RADIUS/2);
 	int i_float = 0;
