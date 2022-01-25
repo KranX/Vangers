@@ -34,13 +34,11 @@
 
 #define RANDOMIZE
 
-#include <renderer/scene/sokol/SokolRenderer.h>
-#include <renderer/scene/rust/RustRenderer.h>
-#include <renderer/scene/RenderingContext.h>
+#include <renderer/visualbackend/rust/RustVisualBackend.h>
+#include <renderer/visualbackend/VisualBackendContext.h>
 
-using RenderingContext = renderer::scene::RenderingContext;
-using SokolRenderer = renderer::scene::SokolRenderer;
-using RustRenderer = renderer::scene::rust::RustRenderer;
+using VisualBackendContext = renderer::visualbackend::VisualBackendContext;
+using RustVisualBackend = renderer::visualbackend::rust::RustVisualBackend;
 
 extern const int MAX_MAP_IN_MEMORY_POWER;
 
@@ -180,8 +178,6 @@ int emode;
 extern int __internal_argc;
 extern char **__internal_argv;
 
-#include <renderer/scene/RenderingContext.h>
-
 int xtInitApplication(void)
 {
 	XCon < "SURMAP Editor v3.03-Win32/DirectX by K-D LAB (C)1996-97. All Rights Reserved.\n";
@@ -254,17 +250,15 @@ int xtInitApplication(void)
 	XKey.finit();
 	XKey.init(KeyCenter,NULL);
 
-	if(RenderingContext::has_renderer()){
-		RenderingContext::renderer()->destroy();
+	if(VisualBackendContext::has_renderer()){
+		VisualBackendContext::backend()->destroy();
 	}
 
-	// TODO:
+	VisualBackendContext::create(std::make_unique<RustVisualBackend>(XGR_Obj.RealX, XGR_Obj.RealY));
 
-	RenderingContext::create(std::make_unique<RustRenderer>(XGR_Obj.RealX, XGR_Obj.RealY));
-
+	VisualBackendContext::backend()->camera_destroy();
 	float FOV = atan((float)xgrScreenSizeY / 2.0 / (float)focus) * 2/ M_PI * 180.0;
-
-	RenderingContext::renderer()->camera_create({
+	VisualBackendContext::backend()->camera_create({
 		  .fov = FOV,
 		  .aspect = (float)xgrScreenSizeX/(float)xgrScreenSizeY,
           .near_plane = 10,
@@ -1061,7 +1055,7 @@ uint8_t* screen = XGR_Obj.get_default_render_buffer() + sizeof(uint8_t) * xgrScr
 memset(screen, 0, sizeof(uint8_t) * xgrScreenSizeX * (xgrScreenSizeY - interface_header - interface_footer));
 
 if(vMap->__use_external_renderer){
-			auto& renderer = renderer::scene::RenderingContext::renderer();
+			auto& renderer = VisualBackendContext::backend();
 
 			// TODO: put the camera related stuff to the Camera class
 			float turn = GTOR(TurnAngle);
@@ -1082,14 +1076,14 @@ if(vMap->__use_external_renderer){
 			camera_pos += pos0;
 
 
-			renderer::scene::Quaternion rotation = {
+			renderer::visualbackend::Quaternion rotation = {
 				.x = (float)rotationQuaternion.x,
 				.y = (float)rotationQuaternion.y,
 				.z = (float)rotationQuaternion.z,
 				.w = (float)rotationQuaternion.w,
 			};
 
-			renderer::scene::Vector3 position = {
+			renderer::visualbackend::Vector3 position = {
 				.x = (float) camera_pos.x,
 				.y = (float) camera_pos.y,
 				.z = (float) camera_pos.z,
