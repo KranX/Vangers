@@ -3,7 +3,7 @@ name: Vangers Windows 64bit Build
 on: [push, pull_request]
 
 env: 
-  VANGE_RS_REF: 950a5dd30e374c5e8cd28d7742eec814301c4ed2
+  VANGE_RS_REF: 4ba328799397016d19c7976679c33f8ee05ff074
 
 jobs:
   build:
@@ -56,11 +56,11 @@ jobs:
 
     - name: vange-rs -- build
       if: steps.vange-rs-cache-build.outputs.cache-hit != 'true'
-      run: cargo build --release      
+      run: cargo build --release --features env_logger     
       working-directory: vange-rs/lib/ffi
 
     - name: vange-rs -- copy artifacts to prefix
-      run: msys2 -c 'cp vange-rs/target/release/libvangers_ffi.a /mingw64/lib/'
+      run: msys2 -c 'cp vange-rs/target/release/librusty_vangers.a /mingw64/lib/'
 
     - name: ANGLE/GLES2 -- download
       run: |

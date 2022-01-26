@@ -2,6 +2,9 @@ name: Vangers MacOS Build
 
 on: [push, pull_request]
 
+env: 
+  VANGE_RS_REF: 4ba328799397016d19c7976679c33f8ee05ff074
+
 jobs:
   build:
     runs-on: macos-10.15
@@ -43,11 +46,11 @@ jobs:
         path: vange-rs
 
     - name: vange-rs -- build
-      run: cargo build --release
+      run: cargo build --release --features env_logger
       working-directory: vange-rs/lib/ffi
       
     - name: vange-rs -- copy artifacts to prefix
-      run: sudo cp vange-rs/target/release/libvangers_ffi.a /usr/local/lib/
+      run: sudo cp vange-rs/target/release/librusty_vangers.a /usr/local/lib/
 
     - name: clunk -- download lib
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
