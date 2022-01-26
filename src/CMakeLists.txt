@@ -99,3 +99,5 @@ TARGET_LINK_LIBRARIES(vangers
 	xgraph
 	xsound
 )
+
+#target_compile_definitions(vangers PUBLIC _ROAD_)
