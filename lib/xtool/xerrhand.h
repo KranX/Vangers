@@ -57,4 +57,4 @@ extern XErrorHandler ErrH;
 //#if (!defined(_FINAL_VERSION_) || defined(_DEBUG)) && !defined(NASSERT)
 //#endif
 
-
+void set_signal_handler();
