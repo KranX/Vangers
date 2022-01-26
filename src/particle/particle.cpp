@@ -8,6 +8,8 @@
 #include "../terra/vmap.h"
 #include "../terra/world.h"
 
+#include "../runtime.h"
+
 #include "particle.h"
 #include "partmap.h"
 
@@ -19,6 +21,7 @@ const int PART_H_SIZE = H_SIZE>>PARTICLE_SHIFT;
 unsigned BogusRNDVAL = 83838383;
 
 void ParticleProcess::quant1(){
+	BackD.put(this);
 	ListExhausted = 0;
 	GetBackGround();
 	express();
@@ -44,8 +47,9 @@ void ParticleProcess::quant2(){
 	for( p = NewParticles -> next; p != &ActivList; p = p -> next)
 		p -> delFromCol(this);
 
-	BackD.put(this);
-	//GetBackGround();
+	for(p = ActivList.next;p != &ActivList; p = p -> next){
+		p -> valueDecrease();
+	}
 }
 
 void Particle::process(ParticleProcess* proc){
@@ -365,21 +369,6 @@ void ParticleProcess::finit(){
 }
 
 void Particle::purge(ParticleProcess* proc){
-	Value = ((3*NewValue >> 3) + Value)>>2;
-
-	switch(RND(13)){
-			case 0: break;
-			case 1:  if(U)  Value = ((3*U -> NewValue >>3) + Value)>>2; break;
-			case 2: break;
-			case 3: if(L)  Value = ((3*L -> NewValue >>3) + Value)>>2; break;
-			case 4: break;
-			case 5: if(R) Value = ((3*R -> NewValue >>3) + Value)>>2; break;
-			case 6:  break;
-			case 7:  if(D)  Value = ((3*D -> NewValue >>3) + Value)>>2; break;
-			case 8: break;
-		}
-	
-	Protected = 0;
 	if(!Value){
 		if(*BackGround){
 			int _X = X<<PARTICLE_SHIFT;
@@ -404,8 +393,9 @@ void Particle::express(ParticleProcess* proc){
 	uchar **lt = vMap -> lineT;
 	uchar **ltc = vMap -> lineTcolor;
 	uchar *ParticlePaletteTable;
-	const int noise = 4;
-	//const int noise = 2;
+
+	// lower noise for FPS=60
+	const int noise = GAME_TIME_COEFF > 0 ? 2 : 4;
 
 	switch(proc -> PaletteColor){
 	case 0 :
@@ -585,6 +575,25 @@ void Particle::GetBackGround(void){
 		if( lt[y] )
 			memcpy(BackGround+(j<<2),ltc[y] + _X,PARTICLE_SIZE);
 	}
+}
+
+void Particle::valueDecrease()
+{
+	Value = ((3*NewValue >> 3) + Value)>>2;
+
+	switch(RND(13)){
+		case 0: break;
+		case 1:  if(U)  Value = ((3*U -> NewValue >>3) + Value)>>2; break;
+		case 2: break;
+		case 3: if(L)  Value = ((3*L -> NewValue >>3) + Value)>>2; break;
+		case 4: break;
+		case 5: if(R) Value = ((3*R -> NewValue >>3) + Value)>>2; break;
+		case 6:  break;
+		case 7:  if(D)  Value = ((3*D -> NewValue >>3) + Value)>>2; break;
+		case 8: break;
+	}
+
+	Protected = 0;
 }
 
 uchar *ParticlePaletteTableDust;

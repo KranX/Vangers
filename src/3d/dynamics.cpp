@@ -3085,7 +3085,7 @@ void Object::mechous_analysis(double dt)
 	hand_brake = turbo = brake = 0;
 	if(rudder && dynamic_state & WHEELS_TOUCH)
 		rudder -= SIGN(rudder) * fabs(round(rudder*V.y*dt*num_calls_analysis*rudder_k_decr) + 1);
-	speed = round(V.vabs()*dt*num_calls_analysis);
+	speed = round(V.vabs()*dt*num_calls_analysis * GAME_TIME_COEFF);
 }
 
 //stalkerg: а ещё важнее физика тут
@@ -3596,7 +3596,7 @@ void Object::debris_analysis(double dt)
 //		R = R_old;
 		}
 	after_db_coll--;
-	speed = round(V.vabs()*dt*num_calls_analysis);
+	speed = round(V.vabs()*dt*num_calls_analysis * GAME_TIME_COEFF);
 }
 
 void Object::basic_debris_analysis(double dt)
