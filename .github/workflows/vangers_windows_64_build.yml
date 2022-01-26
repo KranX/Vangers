@@ -56,7 +56,7 @@ jobs:
 
     - name: vange-rs -- build
       if: steps.vange-rs-cache-build.outputs.cache-hit != 'true'
-      run: cargo build --release      
+      run: cargo build --release --features env_logger     
       working-directory: vange-rs/lib/ffi
 
     - name: vange-rs -- copy artifacts to prefix
