@@ -132,7 +132,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	std::cout<<"XGR_Screen::init"<<std::endl;
 	// Init SDL video
 	if (XGR_ScreenSurface==NULL) {
-		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 1) {
 			auto* error = SDL_GetError();
 
 			std::cerr << "SDL_Init failed: "<<error<<std::endl;
@@ -183,7 +183,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 		std::cout<<"Can't load icon vangers.bmp"<<std::endl;
 	}
 
-    renderer = new renderer::compositor::gles3::GLES3Compositor(x, y, (GLADloadproc)SDL_GL_GetProcAddress);
+	renderer = new renderer::compositor::gles3::GLES3Compositor(x, y, (GLADloadproc)SDL_GL_GetProcAddress);
 	renderer->initialize();
 	// TODO:
 	std::cout<<"SDL_SetRenderDrawColor"<<std::endl;

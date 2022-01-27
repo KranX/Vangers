@@ -16,9 +16,12 @@ RustVisualBackend::RustVisualBackend(int32_t width, int32_t height)
 {
 	std::cout << "RustVisualBackend::RustVisualBackend" << std::endl;
 
+#ifndef EMSCRIPTEN
 	if(rv_api_1 != 1){
-		throw RendererException("Invalid libvangers_ffi version");
+		printf("Invalid librusty_vangers version expected 1, actual %d\n", rv_api_1);
+		abort();
 	}
+#endif
 
 	rv_init_descriptor desc {
 		.width = (uint32_t) width,
@@ -46,8 +49,8 @@ void RustVisualBackend::camera_create(const CameraDescription& camera_descriptio
 	rv_camera_description v_desc {
 		.fov = camera_description.fov,
 		.aspect = camera_description.aspect,
-        .near= camera_description.near_plane,
-        .far = camera_description.far_plane,
+		.near= camera_description.near_plane,
+		.far = camera_description.far_plane,
 	};
 
 	std::cout << "rv_camera_init(context=" << _context << ", {" << std::endl
@@ -167,16 +170,16 @@ void RustVisualBackend::map_update_palette(uint32_t* palette, int32_t palette_si
 void RustVisualBackend::set_screen_resolution(int32_t width, int32_t height)
 {
 	std::cout << "RustVisualBackend::set_screen_resolution" <<
-	             " width: " << width <<
-	             " , height: "<< height <<
-	             std::endl;
+				 " width: " << width <<
+				 " , height: "<< height <<
+				 std::endl;
 
 	uint32_t rv_width = width;
 	uint32_t rv_height = height;
 	std::cout << "rv_resize(context=" << _context <<
-	             ", width="<<rv_width <<
-	             ", height="<<rv_height <<
-	             ")" << std::endl;
+				 ", width="<<rv_width <<
+				 ", height="<<rv_height <<
+				 ")" << std::endl;
 	rv_resize(_context, rv_width, rv_height);
 }
 

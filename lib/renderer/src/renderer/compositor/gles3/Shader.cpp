@@ -23,7 +23,8 @@ void Shader::initialize(const char* vs_shader, const char* fs_shader)
 		if(!success){
 			char infoLog[1024];
 			glGetShaderInfoLog(vertex_shader, 1024, nullptr, infoLog);
-			throw CompositorException(std::string("Vertex shader compilation error: " + std::string(infoLog)));
+			printf("%s\n", (std::string("Vertex shader compilation error: " + std::string(infoLog))).c_str());
+			abort();
 		}
 	}
 
@@ -36,7 +37,8 @@ void Shader::initialize(const char* vs_shader, const char* fs_shader)
 		if(!success){
 			char infoLog[1024];
 			glGetShaderInfoLog(fragment_shader, 1024, nullptr, infoLog);
-			throw CompositorException(std::string("Fragment shader compilation error: " + std::string(infoLog)));
+			printf("%s\n", (std::string("Fragment shader compilation error: " + std::string(infoLog))).c_str());
+			abort();
 		}
 	}
 
@@ -49,7 +51,9 @@ void Shader::initialize(const char* vs_shader, const char* fs_shader)
 		glGetProgramiv(_program, GL_LINK_STATUS, &success);
 		if(!success){
 			char infoLog[1024];
-			throw CompositorException(std::string("Program link error: " + std::string(infoLog)));
+			glGetShaderInfoLog(fragment_shader, 1024, nullptr, infoLog);
+			printf("%s\n", (std::string("Program link error: " + std::string(infoLog))).c_str());
+			abort();
 		}
 	}
 	glDeleteShader(vertex_shader);
@@ -59,7 +63,8 @@ void Shader::initialize(const char* vs_shader, const char* fs_shader)
 void Shader::use()
 {
 	if(_program == 0){
-		throw CompositorException("shader is not initialized");
+		printf("shader is not initialized\n");
+		abort();
 	}
 	glUseProgram(_program);
 }
@@ -72,7 +77,8 @@ void Shader::unuse()
 void Shader::set_uniform(const char* name, int value)
 {
 	if(_program == 0){
-		throw CompositorException("shader is not initialized");
+		printf("shader is not initialized\n");
+		abort();
 	}
 
 	glUniform1i(glGetUniformLocation(_program, name), value);
@@ -81,7 +87,8 @@ void Shader::set_uniform(const char* name, int value)
 void Shader::set_uniform(const char* name, float value[4])
 {
 	if(_program == 0){
-		throw CompositorException("shader is not initialized");
+		printf("shader is not initialized\n");
+		abort();
 	}
 
 	glUniform4f(glGetUniformLocation(_program, name), value[0], value[1], value[2], value[3]);
@@ -90,7 +97,8 @@ void Shader::set_uniform(const char* name, float value[4])
 void Shader::set_uniform_mat(const char* name, float value[])
 {
 	if(_program == 0){
-		throw CompositorException("shader is not initialized");
+		printf("shader is not initialized\n");
+		abort();
 	}
 
 	glUniformMatrix4fv(glGetUniformLocation(_program, name), 1, false, value);
