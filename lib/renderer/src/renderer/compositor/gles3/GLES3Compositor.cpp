@@ -352,5 +352,6 @@ void GLES3Compositor::set_logical_screen_size(int32_t width, int32_t height)
 void GLES3Compositor::read_pixels(uint8_t*)
 {
 	// TODO:
-	throw CompositorException("GLES3Compositor::read_pixels is not implemented");
+    printf("GLES3Compositor::read_pixels is not implemented\n");
+    abort();
 }

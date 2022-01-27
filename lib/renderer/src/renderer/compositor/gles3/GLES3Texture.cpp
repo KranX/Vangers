@@ -22,7 +22,8 @@ GLES3Texture::GLES3Texture(int32_t width, int32_t height, TextureType texture_ty
 	glBindTexture(GL_TEXTURE_2D, _name);
 	gl_error = glGetError();
 	if(gl_error != 0){
-		throw CompositorException(std::string("glBindTexture error: ") + std::to_string(gl_error));
+        printf("%s\n", (std::string("glBindTexture error: ") + std::to_string(gl_error)).c_str());
+        abort();
 	}
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -39,8 +40,10 @@ GLES3Texture::GLES3Texture(int32_t width, int32_t height, TextureType texture_ty
 		format = GL_RGBA;
 		type = GL_UNSIGNED_BYTE;
 		break;
-	default:
-		throw CompositorException(std::string("Unknown TextureType: ") + std::to_string((int)_texture_type));
+	default: {
+        printf("%s\n", (std::string("Unknown TextureType: ") + std::to_string((int) _texture_type)).c_str());
+        abort();
+    }
 	}
 
 	glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0,
@@ -48,7 +51,8 @@ GLES3Texture::GLES3Texture(int32_t width, int32_t height, TextureType texture_ty
 
 	gl_error = glGetError();
 	if(gl_error != 0){
-		throw CompositorException(std::string("glTexImage2D error: ") + std::to_string(gl_error));
+        printf("%s\n", ((std::string("glTexImage2D error: ") + std::to_string(gl_error)).c_str()));
+        abort();
 	}
 
 	glGenerateMipmap(GL_TEXTURE_2D);

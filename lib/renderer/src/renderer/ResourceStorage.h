@@ -69,7 +69,8 @@ namespace renderer {
 			iterator it = _storage.find(rid);
 
 			if(it == _storage.end()){
-				throw ResourceDoesNotExistsException (rid);
+                printf("Resource does not exists %d\n", rid);
+                abort();
 			}
 			return it;
 		}
