@@ -20,7 +20,7 @@ namespace renderer::visualbackend {
 		int32_t material_count;
 	};
 
-	struct CameraDescription {
+	struct CameraProjection {
 		float fov;
 		float aspect;
         float near_plane;
@@ -47,8 +47,7 @@ namespace renderer::visualbackend {
 
 	class AbstractVisualBackend {
 	public:
-		virtual void camera_create(const CameraDescription& camera_description) = 0;
-		virtual void camera_destroy() = 0;
+		virtual void camera_set_projection(const CameraProjection& camera_projection) = 0;
 		virtual void camera_set_transform(const Transform& transform) = 0;
 
 		// Creates HeightMap from description
