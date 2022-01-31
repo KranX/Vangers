@@ -183,10 +183,12 @@ void GLES3Compositor::texture_render(Texture texture, const renderer::Rect& src_
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, t->name());
 
+#ifndef EMSCRIPTEN
 	GLuint gl_error = glGetError();
 	if(gl_error != 0){
 		std::cout << "glBindTexture error: " << gl_error << std::endl;
 	}
+#endif
 
 	_texture_shader->use();
 	_vertex_array->bind();
