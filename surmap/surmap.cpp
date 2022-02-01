@@ -1049,11 +1049,10 @@ void iGameMap::draw(int self)
 	//		vMap -> draw_voxel(TurnAngle,SlopeAngle,TurnSecX,CX,CY,xc,yc,xside,yside);
 	//	else
 
-	const int interface_header = 24;
-	const int interface_footer = 24;
-	uint8_t* screen = XGR_Obj.get_default_render_buffer() + sizeof(uint8_t) * xgrScreenSizeX * interface_header;
-
 	if(vMap->__use_external_renderer){
+		const int interface_header = 24;
+		const int interface_footer = 24;
+		uint8_t* screen = XGR_Obj.get_default_render_buffer() + sizeof(uint8_t) * xgrScreenSizeX * interface_header;
 		memset(screen, 0, sizeof(uint8_t) * xgrScreenSizeX * (xgrScreenSizeY - interface_header - interface_footer));
 
 		auto& renderer = VisualBackendContext::backend();
