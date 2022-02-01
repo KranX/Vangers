@@ -425,4 +425,5 @@ void regRender(int LowX,int LowY,int HiX,int HiY,int changed)
 		if(CurrScanLenght > BackScanLen) BackScanLen = CurrScanLenght;
 		}
 		}
+	vMap->request_region_update(LowX, LowY, HiX, HiY);
 }

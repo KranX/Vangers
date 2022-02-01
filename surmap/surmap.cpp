@@ -34,6 +34,12 @@
 
 #define RANDOMIZE
 
+#include <renderer/visualbackend/rust/RustVisualBackend.h>
+#include <renderer/visualbackend/VisualBackendContext.h>
+
+using VisualBackendContext = renderer::visualbackend::VisualBackendContext;
+using RustVisualBackend = renderer::visualbackend::rust::RustVisualBackend;
+
 extern const int MAX_MAP_IN_MEMORY_POWER;
 
 struct RGBcolor{ uchar r,g,b; };
@@ -190,6 +196,8 @@ int xtInitApplication(void)
 #endif
 #endif
 
+	
+
 	ComlineAnalyze(__internal_argc, __internal_argv);
 	//@caiiiycuk: should we ever fix this?
 	//ErrH.SetRestore(restore);
@@ -211,13 +219,6 @@ int xtInitApplication(void)
 	costab();
 	ImpassPrepare();
 	landPrepare();
-
-	XCon < "\nMAP loading:";
-	vMapPrepare(mapFName,prevWorld);
-	vMap->reload(prevWorld);
-	XCon < "\nMESH: " <= MESH < "\n";
-
-	PalettePrepare();
 
 	XStream ffo("SURMAP.FNT",XS_IN);
 	void* fo = new char[ffo.size()];
@@ -248,6 +249,28 @@ int xtInitApplication(void)
 
 	XKey.finit();
 	XKey.init(KeyCenter,NULL);
+
+	if(VisualBackendContext::has_renderer()){
+		VisualBackendContext::backend()->destroy();
+	}
+
+	VisualBackendContext::create(std::make_unique<RustVisualBackend>(XGR_Obj.RealX, XGR_Obj.RealY));
+
+	VisualBackendContext::backend()->camera_destroy();
+	float FOV = atan((float)xgrScreenSizeY / 2.0 / (float)focus) * 2/ M_PI * 180.0;
+	VisualBackendContext::backend()->camera_create({
+		  .fov = FOV,
+		  .aspect = (float)xgrScreenSizeX/(float)xgrScreenSizeY,
+          .near_plane = 10,
+          .far_plane = 5000,
+	});
+
+		XCon < "\nMAP loading:";
+	vMapPrepare(mapFName,prevWorld);
+	vMap->reload(prevWorld);
+	XCon < "\nMESH: " <= MESH < "\n";
+
+	PalettePrepare();
 
 	graph3d_init();
 	calc_screen(100);
@@ -567,6 +590,9 @@ void sqScreen::keytrap(int key)
 	switch(key){
 		case SDLK_RETURN:
 			sqE -> put(E_MAINMENU,E_COMMON,XGR_MAXX/2,XGR_MAXY/2);
+			break;
+		case SDLK_BACKSLASH:
+			vMap->__use_external_renderer = !vMap->__use_external_renderer;
 			break;
 		case SDLK_F12:
 			DBGCHECK
@@ -1019,30 +1045,99 @@ void iGameMap::draw(int self)
 	CX += DX; CY += DY;
 	cycleTor(CX,CY);
 
-//	if(ShowVoxel)
-//		vMap -> draw_voxel(TurnAngle,SlopeAngle,TurnSecX,CX,CY,xc,yc,xside,yside);
-//	else
-		if(TurnAngle)
-			vMap -> turning(TurnSecX,TurnAngle,CX,CY,xc,yc,xside,yside);
-		else {
-			vMap -> scaling(TurnSecX,CX,CY,xc,yc,xside,yside);
-			if(GridLog && TurnSecX == xsize){
-				int i = (CY - yside) & clip_mask_y;
-				int im = (CY + yside) & clip_mask_y;
-				for(;i != im;i = (i + 1) & clip_mask_y)
-					if(!(i%part_map_size_y)){
-						XGR_LineTo(xc - xside,yc + getDistY(i,CY),xsize,2,COL2);
-						status.init();
-						status <= i/part_map_size_y;
-						sysfont.draw(xc - xside + 3,yc + getDistY(i,CY) + 3,(unsigned char*)(status.GetBuf()),COL2,-1);
-						}
-				if(CX < xside || CX > (int)map_size_x - xside)
-					if(CX < xside)
-						XGR_LineTo(xc - CX,yc - yside,ysize,3,COL2);
-					else
-						XGR_LineTo(xc + map_size_x - CX,yc - yside,ysize,3,COL2);
-				}
-			}
+	//	if(ShowVoxel)
+	//		vMap -> draw_voxel(TurnAngle,SlopeAngle,TurnSecX,CX,CY,xc,yc,xside,yside);
+	//	else
+
+	if(vMap->__use_external_renderer){
+		const int interface_header = 24;
+		const int interface_footer = 24;
+		uint8_t* screen = XGR_Obj.get_default_render_buffer() + sizeof(uint8_t) * xgrScreenSizeX * interface_header;
+		memset(screen, 0, sizeof(uint8_t) * xgrScreenSizeX * (xgrScreenSizeY - interface_header - interface_footer));
+
+		auto& renderer = VisualBackendContext::backend();
+
+		// TODO: put the camera related stuff to the Camera class
+		float turn = GTOR(TurnAngle);
+		float slope = GTOR(SlopeAngle);
+
+		Quaternion slopeQ(slope, DBV(1, 0, 0));
+		Quaternion turnQ(-turn, DBV(0, 0, 1));
+		Quaternion rotationQuaternion = Quaternion::multiply(
+			turnQ, slopeQ
+		);
+
+		DBV pos0(ViewX, ViewY, 0);
+		DBV camera_pos = Quaternion::multiply(turnQ, slopeQ) * DBV(0, 0, ViewZ);
+		// std::cout << "camera_pos: "
+		// 			<< camera_pos.x << " "
+		// 			<< camera_pos.y << " "
+		// 			<< camera_pos.z << std::endl;
+		camera_pos += pos0;
+
+
+		renderer::visualbackend::Quaternion rotation = {
+			.x = (float)rotationQuaternion.x,
+			.y = (float)rotationQuaternion.y,
+			.z = (float)rotationQuaternion.z,
+			.w = (float)rotationQuaternion.w,
+		};
+
+		renderer::visualbackend::Vector3 position = {
+			.x = (float) camera_pos.x,
+			.y = (float) camera_pos.y,
+			.z = (float) camera_pos.z,
+		};
+
+		// std::cout << "TurnAngle: " << TurnAngle
+		// 		  << ", TurnSecX: " << TurnSecX
+		// 		  << ", SlopeAngle" << SlopeAngle
+		// 		  << ", turn: " << turn
+		// 		  << ", slope: " << slope
+		// 		  << ", ViewX: " << ViewX
+		// 		  << ", ViewY: " << ViewY
+		// 		  << ", ViewZ: " << ViewZ
+		// 		  << ", focus: " << focus
+		// 		  << std::endl;
+
+		renderer->camera_set_transform({
+			.position = position,
+			.rotation = rotation,
+		});
+
+		renderer->map_update_palette(XGR_Obj.XGR32_PaletteCache, 256);
+		renderer::Rect view_rect = {
+			.x = 0,
+			.y = 0,
+			.width = XGR_Obj.RealX,
+			.height = XGR_Obj.RealY,
+		};
+		renderer->render(view_rect);
+
+
+	}
+
+	if(TurnAngle)
+		vMap -> turning(TurnSecX,TurnAngle,CX,CY,xc,yc,xside,yside);
+	else {
+		vMap -> scaling(TurnSecX,CX,CY,xc,yc,xside,yside);
+		if(GridLog && TurnSecX == xsize){
+			int i = (CY - yside) & clip_mask_y;
+			int im = (CY + yside) & clip_mask_y;
+			for(;i != im;i = (i + 1) & clip_mask_y)
+				if(!(i%part_map_size_y)){
+					XGR_LineTo(xc - xside,yc + getDistY(i,CY),xsize,2,COL2);
+					status.init();
+					status <= i/part_map_size_y;
+					sysfont.draw(xc - xside + 3,yc + getDistY(i,CY) + 3,(unsigned char*)(status.GetBuf()),COL2,-1);
+					}
+			if(CX < xside || CX > (int)map_size_x - xside)
+				if(CX < xside)
+					XGR_LineTo(xc - CX,yc - yside,ysize,3,COL2);
+				else
+					XGR_LineTo(xc + map_size_x - CX,yc - yside,ysize,3,COL2);
+		}
+	}
 
 	if(TrackStatus)
 		TurnAngle = 0;
@@ -1069,7 +1164,7 @@ void iGameMap::draw(int self)
 			status < " u:"<= u;
 			status < " t:" <= t;
 			status < " w:" <= (u - d - t);
-			}
+		}
 		if(sssInuse) status < " ";
 		if(LandBounded) status < " ";
 		sysfont.draw(xc - xside + 3,yc - yside + 3,(unsigned char*)(status.GetBuf()),COL1,-1);
@@ -1082,19 +1177,19 @@ void iGameMap::draw(int self)
 			status < "3D object editing...";
 			sysfont.draw(xc - xside + 3,yc - yside + 3 + 40,(unsigned char*)(status.GetBuf()),COL1,-1);
 			off += 20;
-			}
+		}
 		if(mlobj && (!MLstatus || MLstatus == 2)){
 			status.init();
 			status < "ML<" < mlobj -> name < ">, Phase:" <= mlobj -> getCurPhase() < " Step: " <= mlobj -> steps[mlobj -> cFrame] - 1 < /*" Stage: " <= mlobj -> getStage() < */" Frame: " <= mlobj -> cFrame;
 			sysfont.draw(xc - xside + 3,yc - yside + 3 + 40 + off,(unsigned char*)(status.GetBuf()),COL1,-1);
 			off += 20;
-			}
+		}
 		if(VLstatus){
 			status.init();
 			status < getVLname() < "Valocs Handling...";
 			sysfont.draw(xc - xside + 3,yc - yside + 3 + 40 + off,(unsigned char*)(status.GetBuf()),COL1,-1);
-			}
 		}
+	}
 
 	if(TrackStatus)
 		Track.show();
@@ -1106,6 +1201,8 @@ void iGameMap::draw(int self)
 	if(VLstatus) VLshow();
 
 	sqInputBox::draw(0);
+
+	
 }
 
 void iGameMap::quant(void)
