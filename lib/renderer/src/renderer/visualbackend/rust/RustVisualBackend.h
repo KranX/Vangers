@@ -11,8 +11,7 @@ namespace renderer::visualbackend::rust {
 	public:
 		RustVisualBackend(int32_t width, int32_t height);
 		~RustVisualBackend();
-		void camera_create(const CameraDescription& camera_description) override;
-		void camera_destroy() override;
+		void camera_set_projection(const CameraProjection &camera_projection) override;
 		void camera_set_transform(const Transform& transform) override;
 		void map_create(const MapDescription& map_description) override;
 		void map_destroy() override;

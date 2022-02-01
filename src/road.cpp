@@ -981,15 +981,6 @@ void LoadingRTO2::Init(int id)
 	LoadingMessage(1);
 #endif
 
-	VisualBackendContext::backend()->camera_destroy();
-
-	float FOV = atan((float)xgrScreenSizeY / 2.0 / (float)focus) * 2/ M_PI * 180.0;
-	VisualBackendContext::backend()->camera_create({
-	      .fov = FOV,
-	      .aspect = (float)xgrScreenSizeX/(float)xgrScreenSizeY,
-	      .near_plane = 10,
-	      .far_plane = 5000,
-	  });
 #ifdef _DEBUG
 	StandScreenPrepare();
 #endif
@@ -2019,10 +2010,11 @@ void iGameMap::draw(int self)
 			
 		}
 
+		// TODO: this must be refactored into a new class managing Vangers game data and VisualBackend data
+		// TODO: return to this after implementing mechoses in VisualBackend
 		if(vMap->__use_external_renderer){
 			auto& renderer = VisualBackendContext::backend();
 
-			// TODO: put the camera related stuff to the Camera class
 			float turn = GTOR(TurnAngle);
 			float slope = GTOR(SlopeAngle);
 
@@ -2050,6 +2042,14 @@ void iGameMap::draw(int self)
 				.z = (float) camera_pos.z,
 			};
 
+			float FOV = atan((float)ysize / 2.0 / (float)focus) * 2/ M_PI * 180.0;
+			VisualBackendContext::backend()->camera_set_projection({
+				  .fov = FOV,
+				  .aspect = (float)xsize/(float)ysize,
+				  .near_plane = 10,
+				  .far_plane = 5000,
+			});
+
 			renderer->camera_set_transform({
 			   .position = position,
 			   .rotation = rotation,
@@ -2062,6 +2062,7 @@ void iGameMap::draw(int self)
 			    .width = xside * 2,
 			    .height = yside * 2,
 			};
+
 			renderer->render(view_rect);
 		}
 

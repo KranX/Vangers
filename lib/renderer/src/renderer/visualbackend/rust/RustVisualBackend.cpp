@@ -39,32 +39,25 @@ RustVisualBackend::~RustVisualBackend()
 
 }
 
-void RustVisualBackend::camera_create(const CameraDescription& camera_description)
+void RustVisualBackend::camera_set_projection(const CameraProjection &camera_projection)
 {
-	std::cout << "RustVisualBackend::camera_create" << std::endl;
+//	std::cout << "RustVisualBackend::camera_set_projection" << std::endl;
 
 	rv_camera_description v_desc {
-		.fov = camera_description.fov,
-		.aspect = camera_description.aspect,
-        .near= camera_description.near_plane,
-        .far = camera_description.far_plane,
+		.fov = camera_projection.fov,
+		.aspect = camera_projection.aspect,
+		.near= camera_projection.near_plane,
+		.far = camera_projection.far_plane,
 	};
 
-	std::cout << "rv_camera_init(context=" << _context << ", {" << std::endl
-				<< "\t.fov="<<v_desc.fov << std::endl
-				<< "\t.aspect="<<v_desc.aspect << std::endl
-				<< "\t.near="<<v_desc.near << std::endl
-				<< "\t.far="<<v_desc.far << std::endl
-				<< "})" << std::endl;
+//	std::cout << "rv_camera_init(context=" << _context << ", {" << std::endl
+//				<< "\t.fov="<<v_desc.fov << std::endl
+//				<< "\t.aspect="<<v_desc.aspect << std::endl
+//				<< "\t.near="<<v_desc.near << std::endl
+//				<< "\t.far="<<v_desc.far << std::endl
+//				<< "})" << std::endl;
 
 	rv_camera_init(_context, v_desc);
-}
-
-void RustVisualBackend::camera_destroy()
-{
-//	std::cout << "RustVisualBackend::camera_destroy [NOOP]" << std::endl;
-	// TODO:
-//	vange_rs_camera_destroy();
 }
 
 void RustVisualBackend::camera_set_transform(const Transform& transform)

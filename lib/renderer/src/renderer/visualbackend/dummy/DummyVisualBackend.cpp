@@ -30,12 +30,7 @@ void DummyVisualBackend::render(const renderer::Rect &viewport)
 
 }
 
-void DummyVisualBackend::camera_create(const CameraDescription &camera_description)
-{
-
-}
-
-void DummyVisualBackend::camera_destroy()
+void DummyVisualBackend::camera_set_projection(const CameraProjection &camera_projection)
 {
 
 }

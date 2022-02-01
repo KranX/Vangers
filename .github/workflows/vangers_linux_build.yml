@@ -3,7 +3,7 @@ name: Vangers Linux Build
 on: [push, pull_request]
 
 env: 
-  VANGE_RS_REF: 4ba328799397016d19c7976679c33f8ee05ff074
+  VANGE_RS_REF: adf17c6b563b2b236847a04b5f8df3023b1d1b5b
 
 jobs:
   build:

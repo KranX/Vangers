@@ -18,9 +18,7 @@ namespace renderer::visualbackend::dummy {
 
 		void render(const Rect& viewport) override;
 
-		void  camera_create(const CameraDescription &camera_description) override;
-
-		void camera_destroy() override;
+		void camera_set_projection(const CameraProjection &camera_projection) override;
 
 		void camera_set_transform(const Transform &transform) override;
 
