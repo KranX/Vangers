@@ -256,16 +256,7 @@ int xtInitApplication(void)
 
 	VisualBackendContext::create(std::make_unique<RustVisualBackend>(XGR_Obj.RealX, XGR_Obj.RealY));
 
-	VisualBackendContext::backend()->camera_destroy();
-	float FOV = atan((float)xgrScreenSizeY / 2.0 / (float)focus) * 2/ M_PI * 180.0;
-	VisualBackendContext::backend()->camera_create({
-		  .fov = FOV,
-		  .aspect = (float)xgrScreenSizeX/(float)xgrScreenSizeY,
-          .near_plane = 10,
-          .far_plane = 5000,
-	});
-
-		XCon < "\nMAP loading:";
+	XCon < "\nMAP loading:";
 	vMapPrepare(mapFName,prevWorld);
 	vMap->reload(prevWorld);
 	XCon < "\nMESH: " <= MESH < "\n";
@@ -1099,6 +1090,14 @@ void iGameMap::draw(int self)
 		// 		  << ", ViewZ: " << ViewZ
 		// 		  << ", focus: " << focus
 		// 		  << std::endl;
+
+		float FOV = atan((float)ysize / 2.0 / (float)focus) * 2/ M_PI * 180.0;
+		VisualBackendContext::backend()->camera_set_projection({
+				.fov = FOV,
+				.aspect = (float)xsize/(float)ysize,
+				.near_plane = 10,
+				.far_plane = 5000,
+		});
 
 		renderer->camera_set_transform({
 			.position = position,
