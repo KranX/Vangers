@@ -1527,6 +1527,7 @@ void vrtMap::link(int up, int down, int d)
 			}
 		i = YCYCL(i + d);
 	} while(i != max);
+	request_region_update(0, up, H_SIZE - 1, down);
 }
 
 void vrtMap::linkC(int up,int down,int d)
