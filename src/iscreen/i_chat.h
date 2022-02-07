@@ -30,7 +30,7 @@ struct iChatScreenObject : XListElement
 	virtual void flush(void);
 
 	int check_xy(int x,int y){
-		if(x >= PosX && x < PosX + SizeX && y >= PosY && y < PosY + SizeY) return 1; return 0;
+		return (x >= PosX && x < PosX + SizeX && y >= PosY && y < PosY + SizeY);
 	}
 
 	void init(int x,int y,int sx,int sy,int col1,int col2);
@@ -38,7 +38,6 @@ struct iChatScreenObject : XListElement
 	void set_font(int f){ font = f; }
 
 	iChatScreenObject(void);
-	~iChatScreenObject(void);
 };
 
 #define ISC_MAX_STRING_LEN		100
@@ -48,16 +47,23 @@ struct iChatInputField : iChatScreenObject
 	int color;
 	std::string string;
 	XBuffer* XConv;
-	
-	int position;
+
+	int cursorPosition;
 	int selectionPosition;
 
+	int leftDrawPosition; // position of the first char drawn in the string
+	int rightDrawPosition; // position of the last char drawn in the string + 1
+	// drawn string = string[leftDrawPosition, rightDrawPosition)
+
+	int getLeftDrawPositionByRight(int rightPosition);
+	int getRightDrawPositionByLeft(int leftPosition);
+
 	void selectionRedraw(void);
+	void counterRedraw(void);
 
 	virtual void redraw(void);
 
 	iChatInputField(void);
-	~iChatInputField(void);
 };
 
 #define ICS_MAX_HISTORY_OBJ		20
@@ -96,4 +102,3 @@ struct iChatButton : iChatScreenObject
 	iChatButton(int num_state);
 	~iChatButton(void);
 };
-
