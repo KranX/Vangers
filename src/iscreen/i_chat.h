@@ -1,3 +1,5 @@
+#include <vector>
+
 
 // iChatScreenObject::type...
 #define ICS_STRING		0x01
@@ -66,21 +68,36 @@ struct iChatInputField : iChatScreenObject
 	iChatInputField(void);
 };
 
-#define ICS_MAX_HISTORY_OBJ		20
+struct Message {
+	std::string text;
+	int color;
+
+	Message(const char* text, int color) {
+		this -> text = std::string(text);
+		this -> color = color;
+	}
+};
+
+#define ICS_HISTORY_MAX_MESSAGES	15
 
 struct iChatHistoryScreen : iChatScreenObject
 {
-	int NumStr;
-	char** data;
-	int* ColorData;
+	int position; // position of the first line drawn in the history
+	std::vector<Message> data;
+
+	void redrawScroll(void);
+	void scrollUp(void) {
+		position = std::max(0, position - 1);
+	}
+	void scrollDown(void) {
+		position = std::min((int)(data.size()) - ICS_HISTORY_MAX_MESSAGES, position + 1);
+	}
 
 	virtual void redraw(void);
 
-	void clear(void);
-	void add_str(char* str,int id,int col = 0);
+	void add_str(char* str, int col = 0);
 
 	iChatHistoryScreen(void);
-	~iChatHistoryScreen(void);
 };
 
 struct iChatButton : iChatScreenObject

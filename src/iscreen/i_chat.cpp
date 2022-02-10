@@ -217,6 +217,12 @@ int cursorWidth = 2;
 int counterColorI = 2 + (3 << 16); //ICS_iSTRING_COL0 gray color for counter
 int counterColor = 227 + (3 << 16); //ICS_STRING_COL0
 
+int scrollBgColorI = 2 + (3 << 16); //ICS_iSTRING_COL0 gray color for scroll background
+int scrollBgColor = 227 + (3 << 16); //ICS_STRING_COL0
+int scrollColorI = (6 | (2 << 16)); //aciChatColors0[5] white color for scroll
+int scrollColor = (230 | (2 << 16)); //aciChatColors1[5]
+int scrollSizeX = 5;
+
 static char* iChatWorlds[] = {
 	iSTR_WORLD_NONE_CHAR,
 	iSTR_WORLD_FOSTRAL_CHAR,
@@ -379,51 +385,42 @@ int iChatInputField::getRightDrawPositionByLeft(int leftPosition) {
 	return rightPosition - 1;
 }
 
-iChatHistoryScreen::iChatHistoryScreen(void)
-{
-	int i;
-	NumStr = ICS_MAX_HISTORY_OBJ;
-
-	data = new char*[NumStr];
-	ColorData = new int[NumStr];
-	for(i = 0; i < NumStr; i ++){
-		data[i] = new char[ISC_MAX_STRING_LEN];
-		memset(data[i],0,ISC_MAX_STRING_LEN);
-
-		if(!iScreenChat)
-			ColorData[i] = ICS_STRING_COL0;
-		else
-			ColorData[i] = ICS_iSTRING_COL0;
-	}
+iChatHistoryScreen::iChatHistoryScreen(void) {
+	position = 0;
 }
 
-iChatHistoryScreen::~iChatHistoryScreen(void)
-{
-	int i;
-	for(i = 0; i < NumStr; i ++){
-		delete[] data[i];
-	}
-	delete[] data;
-	delete[] ColorData;
-}
-
-void iChatHistoryScreen::redraw(void)
-{
-	int i,y = 0;
+void iChatHistoryScreen::redraw(void) {
 	iChatScreenObject::redraw();
-	for(i = 0; i < NumStr; i ++){
-		if(strlen(data[i]))
-			aOutText32(PosX,PosY + y,ColorData[i],data[i],font,1,0);
-		y += aTextHeight32(data[i],font,0) + 2;
+
+	this -> redrawScroll();
+
+	int y = 0;
+
+	for(int i = position; i < std::min((int)(data.size()), position + ICS_HISTORY_MAX_MESSAGES); i++){
+		if (data[i].text.length()) {
+			aOutText32(PosX, PosY + y, data[i].color, (char*)(data[i].text.c_str()), font, 1, 0);
+		}
+		y += aTextHeight32((char*)(data[i].text.c_str()), font, 0) + 2;
 	}
 }
 
-void iChatHistoryScreen::clear(void)
-{
-	int i;
-	for(i = 0; i < NumStr; i ++){
-		*data[i] = 0;
+void iChatHistoryScreen::redrawScroll(void) {
+	int bgColor, color;
+	if (iScreenChat) {
+		bgColor = scrollBgColorI;
+		color = scrollColorI;
 	}
+	else {
+		bgColor = scrollBgColor;
+		color = scrollColor;
+	}
+
+	int messages_num = std::max(ICS_HISTORY_MAX_MESSAGES, (int)(data.size()));
+	float percent = (float)position / messages_num;
+	float percentSizeY = (float)ICS_HISTORY_MAX_MESSAGES / messages_num;
+
+	XGR_Rectangle(PosX + SizeX, PosY, scrollSizeX, SizeY, bgColor, bgColor, XGR_FILLED);
+	XGR_Rectangle(PosX + SizeX, PosY + std::round(percent * SizeY), scrollSizeX, std::round(percentSizeY * SizeY), color, color, XGR_FILLED);
 }
 
 iChatButton::iChatButton(int num_state)
@@ -939,6 +936,10 @@ void iChatKeyQuant(SDL_Event *k) {
 	iChatInputChar(k);
 	iChatInputEditing(k);
 
+	if (k -> type == SDL_MOUSEWHEEL) {
+		return;
+	}
+
 	if (k -> type != SDL_KEYDOWN && k -> type != SDL_TEXTINPUT) {
 		iChatExit = 1;
 		return;
@@ -1235,6 +1236,9 @@ void iChatInputFlush(void) {
 	iChatInput -> leftDrawPosition = 1;
 
 	iChatInputPrev = *iChatInput;
+
+	// jump to the end of new history after sending message
+	iChatHistory -> position = std::max(0, message_dispatcher.ListSize - ICS_HISTORY_MAX_MESSAGES);
 }
 
 void iChatInputBack(void) {
@@ -1273,7 +1277,22 @@ void iChatInputBack(void) {
 }
 
 void iChatInputEditing(SDL_Event *event) {
-	if (event -> type == SDL_KEYDOWN) {
+	if (event -> type == SDL_MOUSEWHEEL) {
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+
+		iChatHistory -> SizeX += scrollSizeX; // check history bounds with scroll
+		if (iChatHistory -> check_xy(x, y)) {
+			if (event -> wheel.y > 0) {
+				iChatHistory -> scrollUp();
+			}
+			else if (event -> wheel.y < 0) {
+				iChatHistory -> scrollDown();
+			}
+		}
+		iChatHistory -> SizeX -= scrollSizeX;
+	}
+	else if (event -> type == SDL_KEYDOWN) {
 		SDL_Keycode keycode = event -> key.keysym.sym;
 		uint16_t keymod = event -> key.keysym.mod;
 
@@ -1357,6 +1376,10 @@ void iChatInputEditing(SDL_Event *event) {
 			iChatCursorFlag = true;
 			iChatCursorTimer = 0;
 
+			if (iChatInput -> cursorPosition == 1) {
+				iChatHistory -> scrollUp();
+			}
+
 			iChatInput -> cursorPosition = 1;
 			if (!(keymod & KMOD_SHIFT)) {
 				iChatInput -> selectionPosition = iChatInput -> cursorPosition;
@@ -1368,6 +1391,10 @@ void iChatInputEditing(SDL_Event *event) {
 		else if (keycode == SDLK_DOWN) {
 			iChatCursorFlag = true;
 			iChatCursorTimer = 0;
+
+			if (iChatInput -> cursorPosition == (int)((iChatInput -> string).length())) {
+				iChatHistory -> scrollDown();
+			}
 
 			iChatInput -> cursorPosition = (iChatInput -> string).length();
 			if (!(keymod & KMOD_SHIFT)) {
@@ -1479,7 +1506,6 @@ unsigned short CP866toUTF8(unsigned char cp866) {
 
 void iInitChatScreen(void)
 {
-	int i;
 	int teamFilterID = ICS_GREEN_BUTTON + iChatFilterID;
 	iChatButton* p;
 	MessageElement* el;
@@ -1519,14 +1545,17 @@ void iInitChatScreen(void)
 			p -> CurState = 1;
 			break;
 	}
-	i = 0;
+
+	// jump to the end of new history if last position at the current history end
+	if (iChatHistory -> position + ICS_HISTORY_MAX_MESSAGES == (int)((iChatHistory -> data).size())) {
+		iChatHistory -> position = std::max(0, message_dispatcher.ListSize - ICS_HISTORY_MAX_MESSAGES);
+	}
+
 	el = message_dispatcher.first();
-	iChatHistory -> clear();
-	if(!iChatMUTE){
-		while(el){
-			iChatHistory -> add_str(el -> message,i,el -> color);
-//			  iChatHistory -> add_str(el -> message,i);
-			i ++;
+	(iChatHistory -> data).clear();
+	if (!iChatMUTE) {
+		while (el) {
+			iChatHistory -> add_str(el -> message, el -> color);
 			el = (MessageElement*)el -> next;
 		}
 	}
@@ -1602,10 +1631,13 @@ void iChatClearLog(void)
 		p = p1;
 	}
 	message_dispatcher.ClearList();
+
+	(iChatHistory -> data).clear();
+	iChatHistory -> position = 0;
 }
 
-void iChatHistoryScreen::add_str(char* str,int id,int col)
+void iChatHistoryScreen::add_str(char* str, int col)
 {
-	strcpy(data[id],str);
-	ColorData[id] = (iScreenChat) ? aciChatColors0[col] : aciChatColors1[col];
+	int color = (iScreenChat) ? aciChatColors0[col] : aciChatColors1[col];
+	data.push_back(Message(str, color));
 }
