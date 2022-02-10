@@ -420,7 +420,7 @@ void iChatHistoryScreen::redrawScroll(void) {
 	float percentSizeY = (float)ICS_HISTORY_MAX_MESSAGES / messages_num;
 
 	XGR_Rectangle(PosX + SizeX, PosY, scrollSizeX, SizeY, bgColor, bgColor, XGR_FILLED);
-	XGR_Rectangle(PosX + SizeX, PosY + std::round(percent * SizeY), scrollSizeX, std::round(percentSizeY * SizeY), color, color, XGR_FILLED);
+	XGR_Rectangle(PosX + SizeX, PosY + round(percent * SizeY), scrollSizeX, round(percentSizeY * SizeY), color, color, XGR_FILLED);
 }
 
 iChatButton::iChatButton(int num_state)
