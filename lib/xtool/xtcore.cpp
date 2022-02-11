@@ -326,6 +326,11 @@ int xtCallXKey(SDL_Event* m) {
 		case SDL_JOYAXISMOTION:
 			//std::cout<<"SDL_JOYAXISMOTION:"<<(int)m->jaxis.axis<<" value"<<m->jaxis.value<<std::endl;
 			break;
+		case SDL_MOUSEWHEEL:
+			if (press_handler) {
+				(*press_handler)(m);
+			}
+			break;
 	}
 	return 1;
 }
