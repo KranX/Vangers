@@ -4003,15 +4003,6 @@ void actIntDispatcher::init(void)
 	if(wMap -> world_ids[CurrentWorld] != -1 && map_names[wMap -> world_ids[CurrentWorld]]){
 		mapObj -> free();
 		mapObj -> load(map_names[wMap -> world_ids[CurrentWorld]],1);
-		// TODO: the code below is quick hack
-		//  for blitting XGR_Obj 2d surface onto main, with color=0 as colorkey
-		//  This should be solved in the future with actIntDispatcher refactoring
-		int size = mapObj->Size * mapObj->SizeX * mapObj->SizeY;
-		for (int i = 0; i < size; ++i) {
-			if(mapObj->frames[i] == 0){
-				mapObj->frames[i] = 1; // Should be a close to black color
-			}
-		}
 	}
 	else {
 		ErrH.Abort("Map BMP not found...");
