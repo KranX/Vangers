@@ -575,6 +575,12 @@ int xtDispatchMessage(SDL_Event* msg)
 					break;
 			}
 			break;
+		case SDL_USEREVENT:
+			switch (msg->user.code) {
+				case CursorAnimationEvent:
+					doCursorAnimation();
+			}
+			break;
 	}
 
 	return ret;

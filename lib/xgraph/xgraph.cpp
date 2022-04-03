@@ -91,14 +91,24 @@ void XGR_FinitFnc(void)
 
 Uint32 CursorAnim(Uint32 interval, void *param)
 {
+	SDL_Event event;
+	SDL_zero(event);
+	event.type = SDL_USEREVENT;
+	event.user.code = CursorAnimationEvent;
+	event.user.data1 = nullptr;
+	event.user.data2 = nullptr;
+	SDL_PushEvent(&event);
+
+	return interval;
+}
+
+void doCursorAnimation() {
 	int result = 0;
 	result += XGR_MouseObj.NextFrame();
 	result += XGR_MouseObj.NextPromptFrame();
 	if(result) {
 		XGR_MouseObj.Redraw();
 	}
-
-	return interval;
 }
 
 

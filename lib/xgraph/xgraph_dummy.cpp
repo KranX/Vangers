@@ -8,3 +8,5 @@
 bool XGR_FULL_SCREEN = false;
 void XGR_Flip() {
 }
+void doCursorAnimation() {
+}
