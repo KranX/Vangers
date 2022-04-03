@@ -1157,13 +1157,13 @@ void bmlObject::show(int frame)
 {
 	unsigned char* frame_ptr = frames + SizeX * SizeY * frame;
 
-	XGR_PutSpr(OffsX,OffsY,SizeX,SizeY,frame_ptr,XGR_HIDDEN_FON);
+	XGR_PutSpr(OffsX,OffsY,SizeX,SizeY,frame_ptr,XGR_HIDDEN_FON | XGR_CLIPPED);
 }
 
 void bmlObject::offs_show(int x,int y,int frame)
 {
 	unsigned char* frame_ptr = frames + SizeX * SizeY * frame;
-	XGR_PutSpr(x,y,SizeX,SizeY,frame_ptr,XGR_HIDDEN_FON);
+	XGR_PutSpr(x,y,SizeX,SizeY,frame_ptr,XGR_HIDDEN_FON | XGR_CLIPPED);
 }
 
 ibsObject::ibsObject(void)
