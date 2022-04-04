@@ -174,6 +174,9 @@ int main(int argc, char *argv[])
 
 	initclock();
 	prevID = 0;
+	#ifdef _WIN32
+		set_signal_handler();
+	#endif
 	id = xtInitApplication();
 	XObj = xtGetRuntimeObject(id);
 #ifdef _RTO_LOG_
@@ -323,6 +326,11 @@ int xtCallXKey(SDL_Event* m) {
 			break;
 		case SDL_JOYAXISMOTION:
 			//std::cout<<"SDL_JOYAXISMOTION:"<<(int)m->jaxis.axis<<" value"<<m->jaxis.value<<std::endl;
+			break;
+		case SDL_MOUSEWHEEL:
+			if (press_handler) {
+				(*press_handler)(m);
+			}
 			break;
 	}
 	return 1;
@@ -566,6 +574,12 @@ int xtDispatchMessage(SDL_Event* msg)
 					SDL_UnlockAudioDevice(1);
 					std::cout<<"window focus gained"<<std::endl;
 					break;
+			}
+			break;
+		case SDL_USEREVENT:
+			switch (msg->user.code) {
+				case CursorAnimationEvent:
+					doCursorAnimation();
 			}
 			break;
 	}
