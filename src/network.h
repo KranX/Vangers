@@ -115,7 +115,7 @@ struct MessageElement : XListElement {
 struct MessageDispatcher : XList {
 	int max_number_of_messages;
 	int new_messages; //zmod
-	MessageDispatcher(int max_num_messages = 15) : XList() { max_number_of_messages = max_num_messages; }
+	MessageDispatcher(int max_num_messages = 100) : XList() { max_number_of_messages = max_num_messages; }
 	MessageElement* first(){ return (MessageElement*)fPtr; }
 	MessageElement* last(){ return (MessageElement*)lPtr; }
 	void send(char* message,int mode,int parameter);

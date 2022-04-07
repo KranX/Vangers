@@ -82,8 +82,11 @@ void iInitChatButtons(void);
 void iInitChatScreen(void);
 
 void iChatInputChar(SDL_Event *code);
+void iChatInputChar(unsigned char* input_char);
 void iChatInputFlush(void);
 void iChatInputBack(void);
+void iChatInputEditing(SDL_Event *code);
+void iChatInputDrawCursor(void);
 
 void iChatMouseHandler(iChatButton* bt,int bt_id);
 void iChatClearButtons(void);
@@ -93,11 +96,15 @@ iChatButton* iGetChatButton(int id);
 iChatButton* iGetChatPlayerButton(int id);
 
 void put_map(int x,int y,int sx,int sy);
-unsigned char UTF8toCP866(unsigned short utf);
 
+unsigned char UTF8toCP866(unsigned short utf);
+unsigned short CP866toUTF8(unsigned char cp866);
+
+int getCharGroup(char chr);
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
-#define ICS_INPUT_TIMER 	5
+#define ICS_INPUT_TIMER 	10
+#define ICS_INPUT_MAX_LENGTH	200
 
 // Button IDs...
 #define ICS_UP_BUTTON		0x01
@@ -167,8 +174,10 @@ int iChatFilterID = 0;
 int iChatMUTE = 0;
 int iChatBackLog = 1;
 
-int iChatCursorFlag = 0;
+bool iChatCursorFlag = false;
 int iChatCursorTimer = 0;
+
+iChatInputField iChatInputPrev;
 
 static int aciChatColors0[10] =
 {
@@ -197,6 +206,22 @@ static int aciChatColors1[10] =
 	(244 | (2 << 16)),
 	(150 | (2 << 16))
 };
+
+int selectionColorI = (244 | (2 << 16)); //aciChatColors0[2] blue color for selection
+int selectionColor = (150 | (2 << 16)); //aciChatColors1[2]
+
+int cursorColorI = (6 | (2 << 16)); //aciChatColors0[5] white color for cursor
+int cursorColor = (230 | (2 << 16)); //aciChatColors1[5]
+int cursorWidth = 2;
+
+int counterColorI = 2 + (3 << 16); //ICS_iSTRING_COL0 gray color for counter
+int counterColor = 227 + (3 << 16); //ICS_STRING_COL0
+
+int scrollBgColorI = 2 + (3 << 16); //ICS_iSTRING_COL0 gray color for scroll background
+int scrollBgColor = 227 + (3 << 16); //ICS_STRING_COL0
+int scrollColorI = (6 | (2 << 16)); //aciChatColors0[5] white color for scroll
+int scrollColor = (230 | (2 << 16)); //aciChatColors1[5]
+int scrollSizeX = 5;
 
 static char* iChatWorlds[] = {
 	iSTR_WORLD_NONE_CHAR,
@@ -238,10 +263,6 @@ iChatScreenObject::iChatScreenObject(void)
 	fonColor = borderColor = 0;
 }
 
-iChatScreenObject::~iChatScreenObject(void)
-{
-}
-
 void iChatScreenObject::redraw(void)
 {
 	if(iChatBackLog)
@@ -257,8 +278,7 @@ void iChatScreenObject::flush(void)
 
 iChatInputField::iChatInputField(void)
 {
-	string = new char[ISC_MAX_STRING_LEN];
-	memset(string,0,ISC_MAX_STRING_LEN);
+	string = std::string();
 
 	XConv = new XBuffer(256);
 
@@ -266,70 +286,141 @@ iChatInputField::iChatInputField(void)
 		color = ICS_STRING_COL1;
 	else
 		color = ICS_iSTRING_COL1;
-}
 
-iChatInputField::~iChatInputField(void)
-{
-	delete[] string;
+	cursorPosition = 0;
+	selectionPosition = 0;
+	leftDrawPosition = 0;
+	rightDrawPosition = 0;
 }
 
 void iChatInputField::redraw(void)
 {
-	int dy;
 	iChatScreenObject::redraw();
-	dy = (SizeY - aTextHeight32(string,font,0)) / 2;
+
+	this -> selectionRedraw();
+	this -> counterRedraw();
 
 	XConv -> init();
-	*XConv < CurPlayerName < string;
+	*XConv < CurPlayerName < (char*)((">" + string.substr(leftDrawPosition, rightDrawPosition - leftDrawPosition)).c_str());
 
-	aOutText32(PosX,PosY,color,XConv -> address(),font,1,0);
+	aOutText32(PosX, PosY, color, XConv -> address(), font, 1, 0);
 }
 
-iChatHistoryScreen::iChatHistoryScreen(void)
-{
-	int i;
-	NumStr = ICS_MAX_HISTORY_OBJ;
-
-	data = new char*[NumStr];
-	ColorData = new int[NumStr];
-	for(i = 0; i < NumStr; i ++){
-		data[i] = new char[ISC_MAX_STRING_LEN];
-		memset(data[i],0,ISC_MAX_STRING_LEN);
-
-		if(!iScreenChat)
-			ColorData[i] = ICS_STRING_COL0;
-		else
-			ColorData[i] = ICS_iSTRING_COL0;
+void iChatInputField::selectionRedraw(void) {
+	int color;
+	if (iScreenChat) {
+		color = selectionColorI;
 	}
-}
-
-iChatHistoryScreen::~iChatHistoryScreen(void)
-{
-	int i;
-	for(i = 0; i < NumStr; i ++){
-		delete[] data[i];
+	else {
+		color = selectionColor;
 	}
-	delete[] data;
-	delete[] ColorData;
+
+	int leftSelectionPosition = std::min(std::max(std::min(cursorPosition, selectionPosition), leftDrawPosition), rightDrawPosition);
+	int rightSelectionPosition = std::min(std::max(std::max(cursorPosition, selectionPosition), leftDrawPosition), rightDrawPosition);
+
+	XConv -> init();
+	*XConv < CurPlayerName < (char*)((">" + string.substr(leftDrawPosition, leftSelectionPosition - leftDrawPosition)).c_str());
+	int left_x = aTextWidth32(XConv -> address(), font, 1);
+
+	XConv -> init();
+	*XConv < CurPlayerName < (char*)((">" + string.substr(leftDrawPosition, rightSelectionPosition - leftDrawPosition)).c_str());
+	int right_x = aTextWidth32(XConv -> address(), font, 1);
+
+	XGR_Rectangle(PosX + left_x, PosY, right_x - left_x, SizeY, color, color, XGR_FILLED);
 }
 
-void iChatHistoryScreen::redraw(void)
-{
-	int i,y = 0;
+void iChatInputField::counterRedraw(void) {
+	int color;
+	if (iScreenChat) {
+		color = counterColorI;
+	}
+	else {
+		color = counterColor;
+	}
+
+	XConv -> init();
+	*XConv < (char*)((std::to_string(ICS_INPUT_MAX_LENGTH)).c_str());
+	int x = aTextWidth32(XConv -> address(), font, 1);
+
+	XConv -> init();
+	*XConv < (char*)((std::to_string(ICS_INPUT_MAX_LENGTH - (string.length() - 1))).c_str());
+
+	XGR_Rectangle(PosX - x - 10, PosY, x + 10, SizeY, fonColor, fonColor, XGR_FILLED);
+	aOutText32(PosX - x - 10, PosY, color, XConv -> address(), font, 1, 0);
+}
+
+int iChatInputField::getLeftDrawPositionByRight(int rightPosition) {
+	rightPosition = std::min((int)(string.length()), rightPosition);
+
+	int leftPosition = rightPosition - 1;
+	while (leftPosition >= 1) {
+		XConv -> init();
+		*XConv < CurPlayerName < (char*)((">" + string.substr(leftPosition, rightPosition - leftPosition)).c_str());
+
+		if (aTextWidth32(XConv -> address(), font, 1) > SizeX - 10) {
+			break;
+		}
+
+		leftPosition -= 1;
+	}
+
+	return leftPosition + 1;
+}
+
+int iChatInputField::getRightDrawPositionByLeft(int leftPosition) {
+	leftPosition = std::max(1, leftPosition);
+
+	int rightPosition = leftPosition + 1;
+	while (rightPosition <= (int)(string.length())) {
+		XConv -> init();
+		*XConv < CurPlayerName < (char*)((">" + string.substr(leftPosition, rightPosition - leftPosition)).c_str());
+
+		if (aTextWidth32(XConv -> address(), font, 1) > SizeX - 10) {
+			break;
+		}
+
+		rightPosition += 1;
+	}
+
+	return rightPosition - 1;
+}
+
+iChatHistoryScreen::iChatHistoryScreen(void) {
+	position = 0;
+}
+
+void iChatHistoryScreen::redraw(void) {
 	iChatScreenObject::redraw();
-	for(i = 0; i < NumStr; i ++){
-		if(strlen(data[i]))
-			aOutText32(PosX,PosY + y,ColorData[i],data[i],font,1,0);
-		y += aTextHeight32(data[i],font,0) + 2;
+
+	this -> redrawScroll();
+
+	int y = 0;
+
+	for(int i = position; i < std::min((int)(data.size()), position + ICS_HISTORY_MAX_MESSAGES); i++){
+		if (data[i].text.length()) {
+			aOutText32(PosX, PosY + y, data[i].color, (char*)(data[i].text.c_str()), font, 1, 0);
+		}
+		y += aTextHeight32((char*)(data[i].text.c_str()), font, 0) + 2;
 	}
 }
 
-void iChatHistoryScreen::clear(void)
-{
-	int i;
-	for(i = 0; i < NumStr; i ++){
-		*data[i] = 0;
+void iChatHistoryScreen::redrawScroll(void) {
+	int bgColor, color;
+	if (iScreenChat) {
+		bgColor = scrollBgColorI;
+		color = scrollColorI;
 	}
+	else {
+		bgColor = scrollBgColor;
+		color = scrollColor;
+	}
+
+	int messages_num = std::max(ICS_HISTORY_MAX_MESSAGES, (int)(data.size()));
+	float percent = (float)position / messages_num;
+	float percentSizeY = (float)ICS_HISTORY_MAX_MESSAGES / messages_num;
+
+	XGR_Rectangle(PosX + SizeX, PosY, scrollSizeX, SizeY, bgColor, bgColor, XGR_FILLED);
+	XGR_Rectangle(PosX + SizeX, PosY + round(percent * SizeY), scrollSizeX, round(percentSizeY * SizeY), color, color, XGR_FILLED);
 }
 
 iChatButton::iChatButton(int num_state)
@@ -400,7 +491,12 @@ void iChatInit(void)
 
 	iChatInput = new iChatInputField;
 	iChatInput -> init(x,y + ICS_HISTORY_SIZE_Y + ICS_DELTA + (ICS_BUTTON_SIZE_Y + ICS_DELTA) * 1,ICS_HISTORY_SIZE_X,ICS_BUTTON_SIZE_Y,bcol,bcol);
-	strcpy(iChatInput -> string,">_");
+	iChatInput -> string = ">";
+	iChatInput -> cursorPosition = 1;
+	iChatInput -> selectionPosition = 1;
+	iChatInput -> leftDrawPosition = 1;
+	iChatInput -> rightDrawPosition = 1;
+	iChatInputPrev = *iChatInput;
 
 	p = new iChatButton(2);
 	p -> init(x,y,bsx,ICS_BUTTON_SIZE_Y,bcol,bcol);
@@ -768,7 +864,6 @@ void iChatInit(void)
 
 void iChatQuant(int flush)
 {
-	int sz;
 	iChatButton* p;
 	if(!iChatON) return;
 
@@ -780,21 +875,18 @@ void iChatQuant(int flush)
 		if(!(p -> flags & ICS_HIDDEN_OBJECT)) p -> redraw();
 		p = (iChatButton*)p -> next;
 	}
-	iChatCursorTimer ++;
-	if(iChatCursorTimer >= ICS_INPUT_TIMER){
-		iChatCursorTimer = 0;
-		iChatCursorFlag = 1;
-	}
-	if(iChatCursorFlag){
-		sz = strlen(iChatInput -> string);
-		if(iChatInput -> string[sz - 1] == '_')
-			iChatInput -> string[sz - 1] = ' ';
-		else
-			iChatInput -> string[sz - 1] = '_';
-		iChatCursorFlag = 0;
-	}
+
 	iChatInput -> redraw();
 	iChatHistory -> redraw();
+
+	iChatCursorTimer++;
+	if (iChatCursorTimer >= ICS_INPUT_TIMER) {
+		iChatCursorTimer = 0;
+		iChatCursorFlag = !iChatCursorFlag;
+	}
+	if (iChatCursorFlag) {
+		iChatInputDrawCursor();
+	}
 
 	if(flush){
 		p = (iChatButton*)iChatButtons -> fPtr;
@@ -837,15 +929,26 @@ void iChatFinit(void)
 }
 
 void iChatKeyQuant(SDL_Event *k) {
-	if (k->type == SDL_TEXTINPUT) {
-		return iChatInputChar(k);
+	if (!k) {
+		return;
 	}
-	if (k->type != SDL_KEYDOWN) {
+
+	iChatInputChar(k);
+	iChatInputEditing(k);
+
+	if (k -> type == SDL_MOUSEWHEEL) {
+		return;
+	}
+
+	if (k -> type != SDL_KEYDOWN && k -> type != SDL_TEXTINPUT) {
 		iChatExit = 1;
 		return;
 	}
-	if(iCheckKeyID(iKEY_CHAT, k->key.keysym.scancode))
+	if (iCheckKeyID(iKEY_CHAT, k -> key.keysym.scancode)) {
 		iChatExit = 1;
+		return;
+	}
+
 	switch(k->key.keysym.scancode) {
 		case SDL_SCANCODE_ESCAPE:
 			iChatExit = 1;
@@ -854,13 +957,9 @@ void iChatKeyQuant(SDL_Event *k) {
 			iChatInputFlush();
 			break;
 		case SDL_SCANCODE_BACKSPACE:
-		case SDL_SCANCODE_LEFT:
 			iChatInputBack();
 			break;
 		default:
-			if(k) {
-				iChatInputChar(k);
-			}
 			break;
 	}
 }
@@ -1039,72 +1138,374 @@ iChatButton* iGetChatPlayerButton(int id)
 	return 0;
 }
 
-void iChatInputChar(SDL_Event *event)
-{
-	char* ptr,*ptr0 = iChatInput->string;
-	int x, sz;
+void iChatInputDrawCursor(void) {
+	int color;
+	if (iScreenChat) {
+		color = cursorColorI;
+	}
+	else {
+		color = cursorColor;
+	}
+
+	int cursorPosition = std::min(iChatInput -> rightDrawPosition, std::max(iChatInput -> leftDrawPosition, iChatInput -> cursorPosition));
+
+	iChatInput -> XConv -> init();
+	*iChatInput -> XConv < CurPlayerName < (char*)((">" + (iChatInput -> string).substr(iChatInput -> leftDrawPosition, cursorPosition - iChatInput -> leftDrawPosition)).c_str());
+	int x = aTextWidth32(iChatInput -> XConv -> address(), iChatInput -> font, 1);
+
+	XGR_Rectangle(iChatInput -> PosX + x - cursorWidth / 2, iChatInput -> PosY, cursorWidth, iChatInput -> SizeY, color, color, XGR_FILLED);
+}
+
+void iChatInputChar(char* input_char) {
 	unsigned char chr;
-
-	iChatInput->XConv->init();
-	*iChatInput->XConv < CurPlayerName < iChatInput->string;
-	ptr = iChatInput->XConv->address();
-
-	x = aTextWidth32(ptr, iChatInput->font, 1);
-
-	sz = strlen(ptr0);
-//	if(sz >= ISC_MAX_STRING_LEN && x >= iChatInput->SizeX - 10) {
-	if((sz >= ISC_MAX_STRING_LEN) || (x >= iChatInput->SizeX - 10))
-		return;
 
 	aciFont* hfnt = aScrFonts32[iChatInput->font];
 
-	if (event->type == SDL_TEXTINPUT) {
-		if ((unsigned char)event->text.text[0] < 128) {
-			chr = event->text.text[0];
-		} else {
-			unsigned short utf = ((unsigned short *)event->text.text)[0];
-			utf = ntohs(utf);
-			// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
-			if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
-				chr = UTF8toCP866(utf);
-			} else {
-				chr = ' ';
+	if ((unsigned char)(input_char[0]) < 128) {
+		chr = input_char[0];
+	}
+	else {
+		unsigned short utf = ((unsigned short*)input_char)[0];
+		utf = ntohs(utf);
+		// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
+		if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
+			chr = UTF8toCP866(utf);
+		}
+		else {
+			chr = ' ';
+		}
+	}
+
+	if(hfnt && chr < hfnt->Size) {
+		int leftSelectionPosition = std::min(iChatInput -> cursorPosition, iChatInput -> selectionPosition);
+		int rightSelectionPosition = std::max(iChatInput -> cursorPosition, iChatInput -> selectionPosition);
+
+		std::string new_string = (iChatInput -> string).substr(0, leftSelectionPosition);
+		new_string.push_back(chr);
+		new_string += (iChatInput -> string).substr(rightSelectionPosition);
+
+		//length without string[0] = '>'
+		if (new_string.length() - 1 > ICS_INPUT_MAX_LENGTH) {
+			return;
+		}
+
+		iChatCursorFlag = true;
+		iChatCursorTimer = 0;
+
+		iChatInputPrev = *iChatInput;
+
+		iChatInput -> string = new_string;
+		iChatInput -> rightDrawPosition = std::max(std::min(iChatInput -> rightDrawPosition, (int)((iChatInput -> string).length())), iChatInput -> cursorPosition + 1);
+		iChatInput -> leftDrawPosition = iChatInput -> getLeftDrawPositionByRight(iChatInput -> rightDrawPosition);
+		iChatInput -> cursorPosition = leftSelectionPosition + 1;
+		iChatInput -> selectionPosition = iChatInput -> cursorPosition;
+	}
+}
+
+void iChatInputChar(SDL_Event *event) {
+	if (event && event -> type == SDL_TEXTINPUT) {
+		iChatInputChar(event -> text.text);
+	}
+}
+
+void iChatInputFlush(void) {
+	iChatCursorFlag = true;
+	iChatCursorTimer = 0;
+
+	if ((iChatInput -> string).length() > 1) {
+		std::string string = iChatInput -> string;
+
+		int leftPosition = 1;
+		for (int rightPosition = 2; rightPosition <= (int)(string.length()); rightPosition++) {
+			iChatInput -> XConv -> init();
+			*iChatInput -> XConv < CurPlayerName < (char*)((": " + string.substr(leftPosition, rightPosition - leftPosition)).c_str());
+
+			if (aTextWidth32(iChatInput -> XConv -> address(), iChatInput -> font, 1) > iChatHistory -> SizeX - 10) {
+				message_dispatcher.send((char*)(string.substr(leftPosition, rightPosition - leftPosition - 1).c_str()), iChatFilter, iChatFilterID);
+				leftPosition = rightPosition - 1;
 			}
 		}
-		if(hfnt && chr < hfnt->Size) {
-			ptr0[sz - 1] = chr;
-			ptr0[sz] = '_';
-			ptr0[sz + 1] = 0;
+
+		message_dispatcher.send((char*)(string.substr(leftPosition).c_str()), iChatFilter, iChatFilterID);
+	}
+
+	iChatInput -> string = ">";
+	iChatInput -> cursorPosition = 1;
+	iChatInput -> selectionPosition = 1;
+	iChatInput -> rightDrawPosition = 1;
+	iChatInput -> leftDrawPosition = 1;
+
+	iChatInputPrev = *iChatInput;
+
+	// jump to the end of new history after sending message
+	iChatHistory -> position = std::max(0, message_dispatcher.ListSize - ICS_HISTORY_MAX_MESSAGES);
+}
+
+void iChatInputBack(void) {
+	iChatCursorFlag = true;
+	iChatCursorTimer = 0;
+
+	if (iChatInput -> cursorPosition == iChatInput -> selectionPosition && iChatInput -> cursorPosition <= 1) {
+		return;
+	}
+
+	iChatInputPrev = *iChatInput;
+
+	std::string new_string;
+	if (iChatInput -> cursorPosition == iChatInput -> selectionPosition) {
+		new_string = (iChatInput -> string).substr(0, iChatInput -> cursorPosition - 1) + (iChatInput -> string).substr(iChatInput -> cursorPosition);
+		iChatInput -> cursorPosition -= 1;
+	}
+	else {
+		int leftSelectionPosition = std::min(iChatInput -> cursorPosition, iChatInput -> selectionPosition);
+		int rightSelectionPosition = std::max(iChatInput -> cursorPosition, iChatInput -> selectionPosition);
+
+		new_string = (iChatInput -> string).substr(0, leftSelectionPosition) + (iChatInput -> string).substr(rightSelectionPosition);
+		iChatInput -> cursorPosition = leftSelectionPosition;
+	}
+
+	iChatInput -> string = new_string;
+	iChatInput -> selectionPosition = iChatInput -> cursorPosition;
+	if (iChatInput -> cursorPosition <= iChatInput -> leftDrawPosition) {
+		iChatInput -> leftDrawPosition = iChatInput -> getLeftDrawPositionByRight(iChatInput -> cursorPosition + 1);
+		iChatInput -> rightDrawPosition = iChatInput -> getRightDrawPositionByLeft(iChatInput -> leftDrawPosition);
+	}
+	else {
+		iChatInput -> rightDrawPosition = std::min(iChatInput -> rightDrawPosition, (int)((iChatInput -> string).length()));
+		iChatInput -> leftDrawPosition = iChatInput -> getLeftDrawPositionByRight(iChatInput -> rightDrawPosition);
+	}
+}
+
+void iChatInputEditing(SDL_Event *event) {
+	if (event -> type == SDL_MOUSEWHEEL) {
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+
+		iChatHistory -> SizeX += scrollSizeX; // check history bounds with scroll
+		if (iChatHistory -> check_xy(x, y)) {
+			if (event -> wheel.y > 0) {
+				iChatHistory -> scrollUp();
+			}
+			else if (event -> wheel.y < 0) {
+				iChatHistory -> scrollDown();
+			}
+		}
+		iChatHistory -> SizeX -= scrollSizeX;
+	}
+	else if (event -> type == SDL_KEYDOWN) {
+		SDL_Keycode keycode = event -> key.keysym.sym;
+		uint16_t keymod = event -> key.keysym.mod;
+
+		// because SDL doesn't know what numlock is
+		if (!(keymod & KMOD_NUM)) {
+			switch (keycode) {
+	 			case SDLK_KP_2:
+					keycode = SDLK_DOWN;
+					break;
+				case SDLK_KP_4:
+					keycode = SDLK_LEFT;
+					break;
+				case SDLK_KP_6:
+					keycode = SDLK_RIGHT;
+					break;
+				case SDLK_KP_8:
+					keycode = SDLK_UP;
+					break;
+			}
+		}
+
+		if (keycode == SDLK_LEFT) {
+			iChatCursorFlag = true;
+			iChatCursorTimer = 0;
+
+			int position = iChatInput -> cursorPosition;
+
+			if (keymod & KMOD_CTRL) {
+				std::string string = iChatInput -> string;
+				int group = getCharGroup(string[position - 1]);
+
+				while (position > 1 && getCharGroup(string[position - 1]) == group) {
+					position -= 1;
+				}
+			}
+			else if (!(keymod & KMOD_SHIFT) && position != iChatInput -> selectionPosition) {
+				position = std::min(position, iChatInput -> selectionPosition);
+			}
+			else {
+				position = std::max(1, position - 1);
+			}
+
+			iChatInput -> cursorPosition = position;
+			if (!(keymod & KMOD_SHIFT)) {
+				iChatInput -> selectionPosition = position;
+			}
+
+			iChatInput -> leftDrawPosition = std::min(iChatInput -> leftDrawPosition, position);
+			iChatInput -> rightDrawPosition = iChatInput -> getRightDrawPositionByLeft(iChatInput -> leftDrawPosition);
+		}
+		else if (keycode == SDLK_RIGHT) {
+			iChatCursorFlag = true;
+			iChatCursorTimer = 0;
+
+			int position = iChatInput -> cursorPosition;
+
+			if (keymod & KMOD_CTRL) {
+				std::string string = iChatInput -> string;
+				int group = getCharGroup(string[position]);
+
+				while (position < (int)string.length() && getCharGroup(string[position]) == group) {
+					position += 1;
+				}
+			}
+			else if (!(keymod & KMOD_SHIFT) && position != iChatInput -> selectionPosition) {
+				position = std::max(position, iChatInput -> selectionPosition);
+			}
+			else {
+				position = std::min(position + 1, (int)((iChatInput -> string).length()));
+			}
+
+			iChatInput -> cursorPosition = position;
+			if (!(keymod & KMOD_SHIFT)) {
+				iChatInput -> selectionPosition = position;
+			}
+
+			iChatInput -> rightDrawPosition = std::max(iChatInput -> rightDrawPosition, position);
+			iChatInput -> leftDrawPosition = iChatInput -> getLeftDrawPositionByRight(iChatInput -> rightDrawPosition);
+		}
+		else if (keycode == SDLK_UP) {
+			iChatCursorFlag = true;
+			iChatCursorTimer = 0;
+
+			if (iChatInput -> cursorPosition == 1) {
+				iChatHistory -> scrollUp();
+			}
+
+			iChatInput -> cursorPosition = 1;
+			if (!(keymod & KMOD_SHIFT)) {
+				iChatInput -> selectionPosition = iChatInput -> cursorPosition;
+			}
+
+			iChatInput -> leftDrawPosition = 1;
+			iChatInput -> rightDrawPosition = iChatInput -> getRightDrawPositionByLeft(iChatInput -> leftDrawPosition);
+		}
+		else if (keycode == SDLK_DOWN) {
+			iChatCursorFlag = true;
+			iChatCursorTimer = 0;
+
+			if (iChatInput -> cursorPosition == (int)((iChatInput -> string).length())) {
+				iChatHistory -> scrollDown();
+			}
+
+			iChatInput -> cursorPosition = (iChatInput -> string).length();
+			if (!(keymod & KMOD_SHIFT)) {
+				iChatInput -> selectionPosition = iChatInput -> cursorPosition;
+			}
+
+			iChatInput -> rightDrawPosition = iChatInput -> cursorPosition;
+			iChatInput -> leftDrawPosition = iChatInput -> getLeftDrawPositionByRight(iChatInput -> rightDrawPosition);
+		}
+		else if (keycode == SDLK_a && (keymod & KMOD_CTRL)) {
+			iChatInput -> cursorPosition = (iChatInput -> string).length();
+			iChatInput -> selectionPosition = 1;
+			iChatInput -> rightDrawPosition = iChatInput -> cursorPosition;
+			iChatInput -> leftDrawPosition = iChatInput -> getLeftDrawPositionByRight(iChatInput -> rightDrawPosition);
+		}
+		else if (keycode == SDLK_v && (keymod & KMOD_CTRL) && SDL_HasClipboardText() == SDL_TRUE) {
+			iChatInputField prevBuf = *iChatInput;
+
+			char* clipboard = SDL_GetClipboardText();
+
+			for (size_t i = 0; i < strlen(clipboard); i++) {
+				char* chr = new char[2]{ clipboard[i], 0 };
+				if ((unsigned char)(chr[0]) >= 128) {
+					chr[1] = clipboard[i + 1];
+					i++;
+				}
+
+				if (chr[0] < 32 && chr[1] == 0) {
+					chr[0] = ' ';
+				}
+
+				iChatInputChar(chr);
+			}
+
+			iChatInputPrev = prevBuf;
+		}
+		else if ((keycode == SDLK_c || keycode == SDLK_x) && (keymod & KMOD_CTRL)) {
+			int leftSelectionPosition = std::min(iChatInput -> cursorPosition, iChatInput -> selectionPosition);
+			int rightSelectionPosition = std::max(iChatInput -> cursorPosition, iChatInput -> selectionPosition);
+
+			if (leftSelectionPosition == rightSelectionPosition) {
+				return;
+			}
+
+			std::string copy_string = (iChatInput -> string).substr(leftSelectionPosition, rightSelectionPosition - leftSelectionPosition);
+			std::string new_string;
+			for (size_t i = 0; i < copy_string.length(); i++) {
+				if ((unsigned char)(copy_string[i]) < 128) {
+					new_string.push_back(copy_string[i]);
+				}
+				else {
+					unsigned short utf = CP866toUTF8((unsigned char)(copy_string[i]));
+					new_string.push_back(utf >> 8);
+					new_string.push_back(utf & 0xFF);
+				}
+			}
+
+			SDL_SetClipboardText(new_string.c_str());
+
+			if (keycode == SDLK_x) {
+				iChatInputField prevBuf = *iChatInput;
+				iChatInputBack();
+				iChatInputPrev = prevBuf;
+			}
+		}
+		else if (keycode == SDLK_z && (keymod & KMOD_CTRL)) {
+			iChatInputField prevBuf = *iChatInput;
+			*iChatInput = iChatInputPrev;
+			iChatInputPrev = prevBuf;
 		}
 	}
 }
 
-void iChatInputFlush(void)
-{
-	int sz;
-	char* ptr = iChatInput -> string;
-
-	sz = strlen(ptr);
-	ptr[sz - 1] = 0;
-	if(sz > 2){
-		message_dispatcher.send(ptr + 1,iChatFilter,iChatFilterID);
+//returns "group" of the char: 0 - space, 1 - symbol, 2 - letter/number
+int getCharGroup(char chr) {
+	if (chr == ' ') {
+		return 0;
 	}
-	strcpy(ptr,">_");
+	else {
+		std::string symbols = "~`!@\"#$;%^:&?*()_-+=[{]}\\|/\'<>,.";
+
+		for (size_t i = 0; i < symbols.length(); i++) {
+			if (chr == symbols[i]) {
+				return 1;
+			}
+		}
+
+		return 2;
+	}
 }
 
-void iChatInputBack(void)
-{
-	char* ptr = iChatInput -> string;
-	int sz = strlen(ptr);
-	if(sz > 2){
-		ptr[sz - 1] = 0;
-		ptr[sz - 2] = '_';
+unsigned short CP866toUTF8(unsigned char cp866) {
+	if (cp866 >= 0x80 && cp866 <= 0xAF) {
+		return cp866 + 0xD010;
+	}
+	if (cp866 >= 0xE0 && cp866 <= 0xEF) {
+		return cp866 + 0xD0A0;
+	}
+
+	switch(cp866) {
+		case 0xF0: //Ё
+			return 0xD001;
+		case 0xF1: //ё
+			return 0xD191;
+		default:
+			return 0x20;
 	}
 }
 
 void iInitChatScreen(void)
 {
-	int i;
 	int teamFilterID = ICS_GREEN_BUTTON + iChatFilterID;
 	iChatButton* p;
 	MessageElement* el;
@@ -1144,14 +1545,17 @@ void iInitChatScreen(void)
 			p -> CurState = 1;
 			break;
 	}
-	i = 0;
+
+	// jump to the end of new history if last position at the current history end
+	if (iChatHistory -> position + ICS_HISTORY_MAX_MESSAGES == (int)((iChatHistory -> data).size())) {
+		iChatHistory -> position = std::max(0, message_dispatcher.ListSize - ICS_HISTORY_MAX_MESSAGES);
+	}
+
 	el = message_dispatcher.first();
-	iChatHistory -> clear();
-	if(!iChatMUTE){
-		while(el){
-			iChatHistory -> add_str(el -> message,i,el -> color);
-//			  iChatHistory -> add_str(el -> message,i);
-			i ++;
+	(iChatHistory -> data).clear();
+	if (!iChatMUTE) {
+		while (el) {
+			iChatHistory -> add_str(el -> message, el -> color);
 			el = (MessageElement*)el -> next;
 		}
 	}
@@ -1227,11 +1631,13 @@ void iChatClearLog(void)
 		p = p1;
 	}
 	message_dispatcher.ClearList();
+
+	(iChatHistory -> data).clear();
+	iChatHistory -> position = 0;
 }
 
-void iChatHistoryScreen::add_str(char* str,int id,int col)
+void iChatHistoryScreen::add_str(char* str, int col)
 {
-	strcpy(data[id],str);
-	ColorData[id] = (iScreenChat) ? aciChatColors0[col] : aciChatColors1[col];
+	int color = (iScreenChat) ? aciChatColors0[col] : aciChatColors1[col];
+	data.push_back(Message(str, color));
 }
-
