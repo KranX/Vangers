@@ -549,6 +549,14 @@ extern int xgrScreenSizeY;
 // @caiiiycuk: deprecated, use get_default_render_buffer or get_2d_render_buffer_instead
 #define XGR_VIDEOBUF	XGR_Obj.ScreenBuf
 
+#define XGR_VIDEOBUF	XGR_Obj.ScreenBuf
+enum XGR_CustomEvents {
+	CursorAnimationEvent
+};
+
+void doCursorAnimation();
+
+
 extern XGR_Screen XGR_Obj;
 extern XGR_Mouse XGR_MouseObj;
 

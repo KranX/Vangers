@@ -20,7 +20,8 @@ jobs:
         mingw-w64-x86_64-libvorbis
         mingw-w64-x86_64-nasm
         mingw-w64-x86_64-yasm
-        mingw-w64-x86_64-make'
+        mingw-w64-x86_64-make
+        unzip'
     - uses: actions/checkout@v1
     - name: clunk -- download
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
@@ -56,11 +57,21 @@ jobs:
     - name: vangers -- create build dir
       run: msys2 -c 'mkdir build'
     - name: vangers -- configure
-      run: msys2 -c 'cmake -G Ninja ..'
+      run: msys2 -c 'cmake -DCMAKE_BUILD_TYPE=Debug -G Ninja ..'
       working-directory: build
     - name: vangers -- make
       run: msys2 -c 'ninja'
       working-directory: build
+    - name: vangers -- pdb
+      run: |
+        msys2 -c 'wget https://github.com/rainers/cv2pdb/releases/download/v0.50/cv2pdb-0.50.zip'
+        msys2 -c 'unzip cv2pdb-0.50.zip'
+        .\cv2pdb.exe vangers.exe
+      working-directory: build/src
+    - name: surmap -- pdb
+      run: |
+        ..\src\cv2pdb.exe surmap.exe
+      working-directory: build/surmap
     - name: vangers -- prepare release folder
       run: |
         msys2 -c 'mkdir -p vangers/bin'
@@ -79,12 +90,14 @@ jobs:
         msys2 -c 'cp /mingw64/bin/libwinpthread-1.dll vangers/bin/'
         cp clunk/build/libclunk.dll vangers/bin/
         cp build/src/vangers.exe vangers/bin/
+        cp build/src/vangers.pdb vangers/bin/
         cp build/src/vangers.exe vangers/bin/vangers_debug.exe
         msys2 -c 'strip vangers/bin/vangers.exe'
         cp build/server/vangers_server.exe vangers/bin/
         cp build/server/vangers_server.exe vangers/bin/vangers_server_debug.exe
         msys2 -c 'strip vangers/bin/vangers_server.exe'
         cp build/surmap/surmap.exe vangers/bin/
+        cp build/surmap/surmap.pdb vangers/bin/
     - uses: actions/upload-artifact@v1
       with:
         name: Vangers-Release-64
