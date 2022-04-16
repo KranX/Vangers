@@ -2157,7 +2157,7 @@ XGR_MousePromptData::XGR_MousePromptData(void)
 
 XGR_MousePromptData::~XGR_MousePromptData(void)
 {
-	if(textData && flags & XGR_PROMPT_MEM_ALLOC) delete textData;
+	if(textData && flags & XGR_PROMPT_MEM_ALLOC) delete [] textData;
 }
 
 void XGR_MousePromptData::init_text(char* p)
