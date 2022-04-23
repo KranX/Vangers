@@ -83,6 +83,12 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Werror=mismatched-new-delete )
 endif()
 
+IF(WIN32)
+	SET(WIN_DBG
+		dbghelp
+	)
+ENDIF(WIN32)
+
 # subdirs
 ADD_SUBDIRECTORY("src")
 ADD_SUBDIRECTORY("lib/glad")

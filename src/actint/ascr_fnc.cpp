@@ -1296,6 +1296,9 @@ void show_map(int x,int y,int sx,int sy)
 	if(y0 < 0) y0 += p -> SizeY;
 	if(y0 >= p -> SizeY) y0 -= p -> SizeY;
 
+	// Holes prevention: filling the back of the minimap with ones
+	XGR_Obj.erase(x, y, sx, sy, 1);
+
 	ptr = new unsigned char[sx * sy];
 	memset(ptr,0,sx * sy);
 
@@ -1393,7 +1396,9 @@ void show_map(int x,int y,int sx,int sy)
 			}
 		}
 	}
-	XGR_PutSpr(x,y,sx,sy,ptr,XGR_BLACK_FON);
+
+	// Holes prevention: overriding only non-zero pixels
+	XGR_PutSpr(x,y,sx,sy,ptr, XGR_HIDDEN_FON);
 	delete[] ptr;
 
 	_y = 0;

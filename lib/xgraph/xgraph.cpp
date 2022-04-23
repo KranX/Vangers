@@ -95,14 +95,24 @@ void XGR_FinitFnc(void)
 
 Uint32 CursorAnim(Uint32 interval, void *param)
 {
+	SDL_Event event;
+	SDL_zero(event);
+	event.type = SDL_USEREVENT;
+	event.user.code = CursorAnimationEvent;
+	event.user.data1 = nullptr;
+	event.user.data2 = nullptr;
+	SDL_PushEvent(&event);
+
+	return interval;
+}
+
+void doCursorAnimation() {
 	int result = 0;
 	result += XGR_MouseObj.NextFrame();
 	result += XGR_MouseObj.NextPromptFrame();
 	if(result) {
 		XGR_MouseObj.Redraw();
 	}
-
-	return interval;
 }
 
 
@@ -1579,7 +1589,7 @@ XGR_Mouse::XGR_Mouse(void)
 	PromptFon = NULL;
 	promptData = NULL;
 	AlphaData = NULL;
-
+	PromptFonBufSize = 0;
 }
 
 void XGR_Mouse::Hide(void)
@@ -2286,18 +2296,13 @@ void XGR_Mouse::InitPrompt(void)
 		else
 			return;
 	}
-	if(flags & XGM_HICOLOR){
-		if(PromptFonBufSize < p -> textSizeX * p -> textSizeY * 2){
-			if(PromptFon) delete[] PromptFon;
-			PromptFonBufSize = p -> textSizeX * p -> textSizeY * 2;
-			PromptFon = new char[PromptFonBufSize];
-		}
-	}
-	else {
-		if(PromptFonBufSize < p -> textSizeX * p -> textSizeY){
-			if(PromptFon) delete[] PromptFon;
-			PromptFonBufSize = p -> textSizeX * p -> textSizeY;
-			PromptFon = new char[PromptFonBufSize];
+	int hiColorMult = flags & XGM_HICOLOR ? 2 : 1;
+	if (PromptFonBufSize < p -> textSizeX * p -> textSizeY * hiColorMult) {
+		char *oldPromptFon = PromptFon ? PromptFon : nullptr;
+		PromptFonBufSize = p -> textSizeX * p -> textSizeY * hiColorMult;
+		PromptFon = new char[PromptFonBufSize];
+		if (oldPromptFon) {
+			delete[] oldPromptFon;
 		}
 	}
 
