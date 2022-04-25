@@ -28,6 +28,8 @@ http://www.gog.com/game/vangers
 * ffmpeg
 * zlib
 
+You can see the [wiki pages](https://github.com/KranX/Vangers/wiki) to learn how to build this project.
+
 ## Server
 
 To host server you can use Docker image or [build server](https://github.com/KranX/Vangers/wiki/Starting-up-server-compatible-with-web-&-native-versions)
