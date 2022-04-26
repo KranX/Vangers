@@ -55,4 +55,4 @@ Explanation:
 * **-e SERVER=vangers.net**: should be name of domain you want to host server
 * **-e CERT_FILE=/root/websockify/vangers.net.cer**: full path to cer file
 * **-e KEY_FILE=/root/websockify/vangers.net.key**: full path to key file
-* **--network host**: use host networking (reuired to bind on domain)
+* **--network host**: use host networking (required to bind on domain)
