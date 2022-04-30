@@ -74,7 +74,7 @@ add_definitions(-D_USE_MATH_DEFINES)
 add_compile_options(-Werror=shift-negative-value)
 add_compile_options(-Werror=dangling-else)
 add_compile_options(-Werror=parentheses)
-add_compile_options(-Werror=delete-non-virtual-dtor)
+add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=delete-non-virtual-dtor>)
 add_compile_options(-Werror=write-strings)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
