@@ -319,7 +319,7 @@ std::string cp1251_to_utf8(std::string in_string) {
 }
 
 #ifdef DIAGEN_TEST
-static char* strLine = "------------------------";
+static char* strLine = (char*) "------------------------";
 static int CommandMax;
 char* Command[16];
 XStream ffsave(1);
