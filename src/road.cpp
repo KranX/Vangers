@@ -265,7 +265,6 @@ int* CO;
 int zoom_delta;
 int zoom_threshold;
 
-int videoMode = 1;
 int beebos;
 int idOS,inHighPriority;
 
@@ -463,32 +462,8 @@ int xtInitApplication(void) {
     emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
     //emode |= XGR_HICOLOR;
 
-
-    if (!videoMode) {
-        actintLowResFlag = 1;
-#ifdef ISCREEN
-        videoMode = 2;
-#endif
-    }
-    videoMode = 1;
-    float w = 800;
-    float h = 600;
-
-    switch (videoMode) {
-        case 1:
-            w = 800;
-            h = 600;
-            break;
-        case 2:
-            w = 1024;
-            h = 768;
-            break;
-        case 3:
-            w = 1280;
-            h = 720;
-    }
-
-    if (XGR_Init(w, h, emode)) ErrH.Abort(ErrorVideoMss);
+	actintLowResFlag = 1;
+    if (XGR_Init(emode)) ErrH.Abort(ErrorVideoMss);
 
 
 //WORK	sWinVideo::Init();
@@ -1479,17 +1454,6 @@ void ComlineAnalyze(int argc,char** argv)
 					case '&':
 						if(argv[i][j + 2] == '^') SkipCD = 1;
 						break;
-					case '0':
-						videoMode = 0;
-						break;
-					case '1':
-						videoMode = 1;
-						break;
-/* video 1024 not working correctly */
-					case '2':
-						videoMode = 2;
-						break;
-/* */
 #ifdef _DEBUG
 					case 'q':
 						host_port = atoi(argv[i] + (j + 2));
@@ -1820,7 +1784,7 @@ void iGameMap::reset(void)
 	prmFlag = 0;
 	SlopeAngle = 0;// -Pi/4;
 	DepthShow = 0;
-	camera_zmin = TurnSecX = xsize;
+	camera_zmin = TurnSecX = xsize / XGR_Obj.get_screen_scale_x();
 	TurnSecY = ysize;
 	TurnSideX = TurnSecX >> 1;
 	TurnSideY = TurnSecY >> 1;

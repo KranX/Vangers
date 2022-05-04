@@ -657,7 +657,7 @@ void iSetResolution(int state) {
 			XGR_Obj.set_resolution(800, 600);
 			break;
 		case 1:
-			XGR_Obj.set_resolution(1280, 720);
+			XGR_Obj.set_resolution(XGR_Obj.hdWidth, XGR_Obj.hdHeight);
 			break;
 
 	}

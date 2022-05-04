@@ -103,6 +103,9 @@ struct XGR_Screen
 {
 	int flags;
 
+	int hdWidth;
+	int hdHeight;
+
 	int ScreenX;
 	int ScreenY;
 	int RealX;
@@ -144,7 +147,7 @@ struct XGR_Screen
 	void line(int x1,int y1,int x2,int y2,int col);
 	void lineto(int x,int y,int len,int dir,int col);
 
-	int init(int x,int y,int flags);
+	int init(int flags);
 	void close(void);
 	void finit(void);
 
@@ -454,8 +457,7 @@ struct XGR_Mouse
 	XGR_Mouse(void);
 };
 
-#define XGR_Init(x,y,fl)				XGR_Obj.init(x,y,fl)
-#define XGR_ReInit(x,y,fl)				XGR_Obj.init(x,y,fl | XGR_REINIT)
+#define XGR_Init(fl)				XGR_Obj.init(fl)
 #define XGR_Finit()					XGR_Obj.finit()
 #define XGR_SetClip(left,top,right,bottom)		XGR_Obj.set_clip(left,top,right,bottom)
 #define XGR_GetClip(left,top,right,bottom)		XGR_Obj.get_clip(left,top,right,bottom)
