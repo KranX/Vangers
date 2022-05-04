@@ -6,11 +6,9 @@ jobs:
   build:
     runs-on: macos-10.15
     steps:
-    - uses: actions/checkout@v2
-    # - name: update repos
-    #   run: |
-    #     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-    #     brew update
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
     - name: install libs
       run: |
         brew install ninja yasm dylibbundler
@@ -21,15 +19,6 @@ jobs:
         brew reinstall -s ./formulas/libvorbis.rb
         brew install -s ./formulas/sdl2.rb
         brew install -s ./formulas/sdl2_net.rb
-    - name: clunk -- download lib
-      run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
-    - name: clunk -- create build dir
-      run: mkdir clunk/build
-    - name: clunk -- build and install
-      run: cmake -DCMAKE_INSTALL_PREFIX=/usr/local -G Ninja .. && ninja && sudo ninja install
-      working-directory: clunk/build
-      env:
-        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: ffmpeg -- download
       run: git clone --depth 1 --branch n4.2.3 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
@@ -79,7 +68,6 @@ jobs:
         cp -L /usr/local/lib/libogg.0.dylib Vangers.app/Contents/Libs/
         cp -L /usr/local/lib/libvorbis.0.dylib Vangers.app/Contents/Libs/
         cp -L /usr/local/lib/libvorbisfile.3.dylib Vangers.app/Contents/Libs/
-        cp clunk/build/libclunk.dylib Vangers.app/Contents/Libs/
         cp build/src/vangers Vangers.app/Contents/MacOS/Vangers
         dylibbundler -x Vangers.app/Contents/MacOS/Vangers
         strip Vangers.app/Contents/MacOS/Vangers

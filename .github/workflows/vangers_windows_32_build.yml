@@ -22,17 +22,9 @@ jobs:
         mingw-w64-i686-yasm
         mingw-w64-i686-make
         unzip'
-    - uses: actions/checkout@v1
-    - name: clunk -- download
-      run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
-    - name: clunk -- create build dir
-      run: msys2 -c 'mkdir clunk/build'
-    - name: clunk -- build and install
-      run: |
-        msys2 -c 'cmake -DCMAKE_INSTALL_PREFIX=/mingw32 -G Ninja ..'
-        msys2 -c 'ninja'
-        msys2 -c 'ninja install'
-      working-directory: clunk/build
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
     - name: ffmpeg -- download
       run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
@@ -88,7 +80,6 @@ jobs:
         msys2 -c 'cp /mingw32/bin/libgcc_s_seh-1.dll vangers/bin/'
         msys2 -c 'cp /mingw32/bin/libstdc++-6.dll vangers/bin/'
         msys2 -c 'cp /mingw32/bin/libwinpthread-1.dll vangers/bin/'
-        cp clunk/build/libclunk.dll vangers/bin/
         cp build/src/vangers.exe vangers/bin/
         cp build/src/vangers.pdb vangers/bin/
         cp build/src/vangers.exe vangers/bin/vangers_debug.exe
