@@ -2410,7 +2410,7 @@ void TntCreature::Load(XStream& in)
 	TntLinkDelay = 5;
 	TntNumLink = 0;
 
-	TntClone = MLTnt[nSource]->cloning(getDistX(R_curr.x,MLTnt[nSource]->x0),getDistY(R_curr.y,MLTnt[nSource]->y0),"TntLocation");
+	TntClone.reset(MLTnt[nSource]->cloning(getDistX(R_curr.x,MLTnt[nSource]->x0),getDistY(R_curr.y,MLTnt[nSource]->y0),"TntLocation"));
 
 	dx = abs(getDistX(TntClone->x0,TntClone->x1)) / 2;
 	dy = abs(getDistY(TntClone->y0,TntClone->y1)) / 2;

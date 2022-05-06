@@ -2,6 +2,7 @@
 #define __UNITS__SENSOR_H
 
 #define NEW_TNT
+#include <memory>
 
 const int EXPLOSION_BARELL_RADIUS = 40;
 const int TRAP_SENSOR_RADIUS = 3;
@@ -426,7 +427,7 @@ struct TntCreature : StaticObject
 	int Time;
 	int TouchTime;
 
-	MobileLocation* TntClone;
+	std::unique_ptr<MobileLocation> TntClone;
 
 	int TntNumLink;
 	int TntLinkDelay;

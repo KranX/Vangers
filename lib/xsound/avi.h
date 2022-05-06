@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 #include <avformat.h>
+#include <avcodec.h>
 #ifdef __cplusplus
 }
 #endif
@@ -24,7 +25,7 @@ struct AVIFile : XListElement
 {
 	AVFormatContext *pFormatCtx;
 	AVCodecContext *pCodecCtx;
-	AVCodec *pCodec;
+	const AVCodec *pCodec;
 	AVFrame *pFrame;
 	AVPacket packet;
 	int videoStream;

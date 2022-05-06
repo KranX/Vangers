@@ -1763,8 +1763,14 @@ void VangerUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 {
 	if(ExternalMode != EXTERNAL_MODE_NORMAL || !ExternalDraw)
 		return;
-	if(Armor < MaxArmor && (int)(RND(MaxArmor)) > Armor && (int)(RND(MaxArmor)) > Armor)
-		MapD.CreateDust(Vector(x,y,level), (int)MAP_SMOKE_PROCESS);
+
+	if(Armor < MaxArmor && 
+		frame % (int)GAME_TIME_COEFF == 0 &&
+		(int)(RND(MaxArmor)) > Armor && 
+		(int)(RND(MaxArmor)) > Armor) {
+			MapD.CreateDust(Vector(x,y,level), (int)MAP_SMOKE_PROCESS);
+	}
+		
 	TrackUnit::DrawMechosParticle(x,y,speed,level,n);
 };
 
@@ -1816,6 +1822,11 @@ void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 				PrevWheelFlag[n] = 1;
 			};
 		};
+
+		// 60PFS: Creating dust at 20FPS
+		if(frame % (int)GAME_TIME_COEFF > 0){
+			return;
+		}
 
 		if((int)(RND(10)) > speed) return;
 

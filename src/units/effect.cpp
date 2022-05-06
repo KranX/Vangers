@@ -594,8 +594,8 @@ void SimpleParticleType::Quant(void)
 	vR.y += (int)round(vD.y / GAME_TIME_COEFF);
 	vR.z += (int)round(vD.z / GAME_TIME_COEFF);
 
-	vR.x &= (int)round(PTrack_mask_x * GAME_TIME_COEFF);
-	vR.y &= (int)round(PTrack_mask_y * GAME_TIME_COEFF);
+    vR.x &= (int)round(PTrack_mask_x);
+    vR.y &= (int)round(PTrack_mask_y);
 	Color += dColor;
 };
 

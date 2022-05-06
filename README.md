@@ -28,6 +28,8 @@ http://www.gog.com/game/vangers
 * ffmpeg
 * zlib
 
+You can see the [wiki pages](https://github.com/KranX/Vangers/wiki) to learn how to build this project.
+
 ## Server
 
 To host server you can use Docker image or [build server](https://github.com/KranX/Vangers/wiki/Starting-up-server-compatible-with-web-&-native-versions)
@@ -53,4 +55,4 @@ Explanation:
 * **-e SERVER=vangers.net**: should be name of domain you want to host server
 * **-e CERT_FILE=/root/websockify/vangers.net.cer**: full path to cer file
 * **-e KEY_FILE=/root/websockify/vangers.net.key**: full path to key file
-* **--network host**: use host networking (reuired to bind on domain)
+* **--network host**: use host networking (required to bind on domain)
