@@ -11,12 +11,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: vange-rs -- cache build
-      uses: actions/cache@v2
-      id: vange-rs-cache-build
-      with:
-        path: vange-rs/target/release/librusty_vangers.a
-        key: ${{ env.VANGE_RS_REF }}
+    # TODO: enable cache
+    # - name: vange-rs -- cache build
+    #   uses: actions/cache@v2
+    #   id: vange-rs-cache-build
+    #   with:
+    #     path: vange-rs/target/release/librusty_vangers.a
+    #     key: ${{ env.VANGE_RS_REF }}
 
     - name: install rustup toolchain
       if: steps.vange-rs-cache-build.outputs.cache-hit != 'true'
