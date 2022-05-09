@@ -1067,14 +1067,14 @@ void iGameMap::draw(int self)
 		camera_pos += pos0;
 
 
-		renderer::visualbackend::Quaternion rotation = {
+		renderer::vectormath::Quaternion rotation = {
 			.x = (float)rotationQuaternion.x,
 			.y = (float)rotationQuaternion.y,
 			.z = (float)rotationQuaternion.z,
 			.w = (float)rotationQuaternion.w,
 		};
 
-		renderer::visualbackend::Vector3 position = {
+		renderer::vectormath::Vector3 position = {
 			.x = (float) camera_pos.x,
 			.y = (float) camera_pos.y,
 			.z = (float) camera_pos.z,
@@ -1101,6 +1101,7 @@ void iGameMap::draw(int self)
 
 		renderer->camera_set_transform({
 			.position = position,
+			.scale = 1,
 			.rotation = rotation,
 		});
 

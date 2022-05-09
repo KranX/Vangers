@@ -7,6 +7,12 @@
 #include "hobj.h"
 #include "track.h"
 #include "items.h"
+
+#include <renderer/visualbackend/VisualBackendContext.h>
+
+using ModelHandle = renderer::visualbackend::ModelHandle;
+using VisualBackendContext = renderer::visualbackend::VisualBackendContext;
+
 //#define TEST_TRACK
 
 /*
@@ -915,6 +921,7 @@ struct ModelDispatcher
 	Object* Data;
 	char** NameData;
 
+	ModelHandle* ModelHandles;
 	void Init(Parser& in);
 	void Free(void);
 
@@ -1124,7 +1131,6 @@ struct InsectList : UnitBaseListType
 	void Free(void);
 	void Quant(void);
 };
-
 extern InsectList InsectD;
 
 extern ActionDispatcher ActD;

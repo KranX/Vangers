@@ -16,7 +16,7 @@ RustVisualBackend::RustVisualBackend(int32_t width, int32_t height)
 {
 	std::cout << "RustVisualBackend::RustVisualBackend" << std::endl;
 
-	if(rv_api_1 != 1){
+	if(rv_api_2 != 1){
 		throw RendererException("Invalid libvangers_ffi version");
 	}
 
@@ -60,15 +60,16 @@ void RustVisualBackend::camera_set_projection(const CameraProjection &camera_pro
 	rv_camera_init(_context, v_desc);
 }
 
-void RustVisualBackend::camera_set_transform(const Transform& transform)
+void RustVisualBackend::camera_set_transform(const vectormath::Transform& transform)
 {
 //	std::cout << "RustVisualBackend::camera_set_transform" << std::endl;
 	rv_transform v_transform {
 		.position = rv_vector3 {
 			.x = transform.position.x,
 			.y = transform.position.y,
-			.z = transform.position.z + 64,
+			.z = transform.position.z * 2.0f + 64,
 		},
+		.scale = 1.0f,
 		.rotation = rv_quaternion {
 			.x = transform.rotation.x,
 			.y = transform.rotation.y,
@@ -171,6 +172,77 @@ void RustVisualBackend::set_screen_resolution(int32_t width, int32_t height)
 	             ", height="<<rv_height <<
 	             ")" << std::endl;
 	rv_resize(_context, rv_width, rv_height);
+}
+
+ModelHandle RustVisualBackend::model_create(const char* name, void* model)
+{
+	std::cout << "RustVisualBackend::model_create"
+				<< " name: " << name
+				<< ", model: " << (void*)model
+				<< std::endl;
+
+	uint64_t handle = rv_model_create(_context, name, model);
+	return {handle};
+}
+
+void RustVisualBackend::model_destroy(ModelHandle model_handle)
+{
+	std::cout << "RustVisualBackend::model_destroy"
+				<< " model_handle: " << model_handle.handle
+				<< std::endl;
+	rv_model_destroy(_context, model_handle.handle);
+}
+
+ModelInstanceHandle RustVisualBackend::model_instance_create(ModelHandle model_handle, uint8_t color_id)
+{
+//	std::cout << "RustVisualBackend::model_instance_create"
+//				<< " model_handle: " << model_handle.handle
+//				<< ", color_id: " << color_id
+//				<< std::endl;
+
+	uint64_t model_instance_handle = rv_model_instance_create(_context, model_handle.handle, color_id);
+	return {model_instance_handle};
+}
+
+void RustVisualBackend::model_instance_destroy(ModelInstanceHandle model_instance_handle)
+{
+	std::cout << "RustVisualBackend::model_instance_destroy"
+				<< " model_instance_handle: " << model_instance_handle.handle
+				<< std::endl;
+	rv_model_instance_destroy(_context, model_instance_handle.handle);
+}
+
+void RustVisualBackend::model_instance_set_transform(ModelInstanceHandle model_instance_handle, const vectormath::Transform& transform)
+{
+//	std::cout << "RustVisualBackend::model_instance_set_transform"
+//				<< " model_instance_handle: " << model_instance_handle.handle
+//				<< "\t.position={" << transform.position.x << " " << transform.position.y << " " << transform.position.z << "}"<< std::endl
+//				<< "\t.rotation={" << transform.rotation.x << " " << transform.rotation.y << " " << transform.rotation.z << " " << transform.rotation.w << "}"<< std::endl
+//				<< "\t.scale="<<transform.scale << std::endl
+//				<< "})"
+//				<< std::endl;
+
+	rv_transform v_transform {
+		.position = rv_vector3 {
+			.x = transform.position.x,
+			.y = transform.position.y,
+			.z = transform.position.z,
+		},
+		.scale = transform.scale,
+		.rotation = rv_quaternion {
+			.x = transform.rotation.x,
+			.y = transform.rotation.y,
+			.z = transform.rotation.z,
+			.w = transform.rotation.w,
+		}
+	};
+
+	rv_model_instance_set_transform(_context, model_instance_handle.handle, v_transform);
+}
+
+void RustVisualBackend::model_instance_set_visible(ModelInstanceHandle model_instance_handle, bool visible)
+{
+	rv_model_instance_set_visibile(_context, model_instance_handle.handle, visible);
 }
 
 void RustVisualBackend::render(const Rect& viewport)

@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
 					// std::cout<<"clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
 					SDL_Delay(XObj->Timer - clockDelta);
 				} else {
-					std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
+//					std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
 					if (clockDelta > 300) {
 						// something wrong and for preventing abnormal physics set something neutral
 						XTCORE_FRAME_NORMAL = 1.0;

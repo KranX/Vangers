@@ -478,7 +478,13 @@ void ActionUnit::Init(StorageType* s)
 	ViewRadius = 300;
 };
 
-void ActionUnit::Free(void){ };
+void ActionUnit::Free(void)
+{
+	if(model_instance_handle.handle != 0)
+	{
+		VisualBackendContext::backend()->model_instance_destroy(model_instance_handle);
+	}
+}
 void ActionUnit::Open(void){ };
 
 void ActionUnit::Close(void)
@@ -494,6 +500,7 @@ void ActionUnit::CreateActionUnit(int nmodel/*Object& _model*/,int _status,const
 	Status = _status;
 	nModel = nmodel;
 	Object::operator = (ModelD.ActiveModel(nModel));
+	model_instance_handle = VisualBackendContext::backend()->model_instance_create(ModelD.ModelHandles[nModel], 1);
 	cycleTor(R_curr.x,R_curr.y);
 
 	PrevVisibility = UNVISIBLE;
@@ -669,6 +676,10 @@ void ActionUnit::Quant(void)
 	};
 	vUp = Vector(ymax_real,0,0)*MovMat;
 	vDown = -vUp;
+
+	if(PrevVisibility != Visibility && model_instance_handle.handle != 0){
+		VisualBackendContext::backend()->model_instance_set_visible(model_instance_handle, Visibility == VISIBLE);
+	}
 };
 
 void ActionUnit::DrawQuant(void)
@@ -1780,6 +1791,7 @@ void TrackUnit::Init(StorageType* s)
 
 void TrackUnit::Free(void)
 {
+	ActionUnit::Free();
 };
 
 void TrackUnit::Open(void)
@@ -2057,6 +2069,7 @@ void ModelDispatcher::Init(Parser& in)
 
 	Data = new Object[MaxModel];
 	NameData = new char*[MaxModel];
+	ModelHandles = new ModelHandle[MaxModel];
 
 	for(i = 0;i < MaxModel;i++){
 		in.search_name("ModelNum");
@@ -2074,6 +2087,7 @@ void ModelDispatcher::Init(Parser& in)
 		n = in.get_name();
 		NameData[i] = new char[strlen(n) + 1];
 		strcpy(NameData[i],n);
+		ModelHandles[i] = VisualBackendContext::backend()->model_create(n, Data[i].model);
 	};
 /*
 //Test CRC
@@ -9843,6 +9857,14 @@ void GunSlot::OpenGun(GunDevice* p)
 	TargetObject = NULL;
 	aiTargetObject = NULL;
 	Owner->lay_to_slot(nSlot,&ModelD.ActiveModel(p->ModelID));
+	// TODO: move to lay_to_slot?
+	if((1 << nSlot) & Owner->slots_existence){
+		ModelHandle modelHandle = ModelD.ModelHandles[p->ModelID];
+		Owner->weapon_handles[nSlot] = VisualBackendContext::backend()->model_instance_create(modelHandle, 1);
+	}
+
+
+
 	ItemData->ActIntBuffer.slot = nSlot;
 	
 	StuffNetID = ItemData->NetDeviceID;
@@ -9911,6 +9933,11 @@ void GunSlot::NetStuffQuant(void)
 				TargetObject = NULL;
 				aiTargetObject = NULL;
 				Owner->lay_to_slot(nSlot,&ModelD.ActiveModel(p->ModelID));
+				// TODO: move to lay_to_slot?
+				if((1 << nSlot) & Owner->slots_existence){
+					ModelHandle modelHandle = ModelD.ModelHandles[p->ModelID];
+					Owner->weapon_handles[nSlot] = VisualBackendContext::backend()->model_instance_create(modelHandle, 1);
+				}
 				ItemData->ActIntBuffer.slot = nSlot;
 				FireCount = NetFireCount;
 			};

@@ -83,6 +83,8 @@ IF(WIN32)
 	)
 ENDIF(WIN32)
 
+target_compile_definitions(vangers PUBLIC _ROAD_)
+
 TARGET_LINK_LIBRARIES(vangers
 	${SDL2_LIBRARY}
 	${OGG_LIBRARY}

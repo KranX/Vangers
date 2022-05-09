@@ -3,6 +3,8 @@ SET(renderer_SRCS
 	src/renderer/ResourceId.h
 	src/renderer/common.h
 	src/renderer/common.cpp
+	src/renderer/vectormath.cpp
+	src/renderer/vectormath.h
 	src/renderer/compositor/AbstractCompositor.h
 	src/renderer/compositor/CompositorException.cpp
 	src/renderer/compositor/CompositorException.h
@@ -17,6 +19,7 @@ SET(renderer_SRCS
 	src/renderer/compositor/sdl_ext/SDL_extensions.cpp
 	src/renderer/compositor/sdl_ext/SDL_extensions.h
 	src/renderer/visualbackend/AbstractVisualBackend.h
+	src/renderer/visualbackend/AbstractVisualBackend.cpp
 	src/renderer/visualbackend/VisualBackendContext.cpp
 	src/renderer/visualbackend/VisualBackendContext.h
 	src/renderer/visualbackend/dummy/DummyVisualBackend.cpp
