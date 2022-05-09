@@ -54,7 +54,7 @@ void XErrorHandler::Abort(const char* message, int code, int val, const char* su
     strftime(time_buf, sizeof time_buf, "%Y-%m-%dT%H:%M:%SZ", gmtime(&now));
 
 	stream<<time_buf<<" "<<std::endl;
-		stream<<GIT_BRANCH<<" "<<GIT_COMMIT_HASH<<std::endl<<std::endl;
+		stream<<GIT_BRANCH<<GITHUB_BRANCH<<" "<<GIT_COMMIT_HASH<<GITHUB_COMMIT_HASH<<std::endl<<std::endl;
 
 stream<<"Abort: "<<message<<" code:"<<code<<" val:"<<val<<std::endl;
 	std::cout<<"Abort: "<<message<<" code:"<<code<<" val:"<<val<<std::endl;
