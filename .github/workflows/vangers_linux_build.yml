@@ -3,7 +3,7 @@ name: Vangers Linux Build
 on: [push, pull_request]
 
 env: 
-  VANGE_RS_REF: adf17c6b563b2b236847a04b5f8df3023b1d1b5b
+  VANGE_RS_REF: 5dae095d4d5bf13ba293b9e772657a004d808fc2
 
 jobs:
   build:
@@ -28,7 +28,7 @@ jobs:
       if: steps.vange-rs-cache-build.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
-        repository: kvark/vange-rs
+        repository: lpenguin/vange-rs
         ref: ${{ env.VANGE_RS_REF }}
         path: vange-rs
 
