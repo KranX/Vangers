@@ -318,7 +318,6 @@ struct DBV {
 		DBV(double u,double v,double t);
 		DBV(const DBV& v);
 		DBV(const Vector& v);
-
 	double operator [](unsigned int i) const { return ((double*)this)[i % 3]; }
 	double& operator [](unsigned int i) { return ((double*)this)[i % 3]; }
 
@@ -403,6 +402,8 @@ struct DBV {
 /******************************************************************************
 			   DOUBLE MATRIX
 ******************************************************************************/
+struct Quaternion;
+
 struct DBM {
 	double a[9];
 
@@ -421,7 +422,8 @@ struct DBM {
 		DBM(double psi,double tetta,double phi,int mode);
 			// Rotation around vector
 		DBM(const DBV& v,double angle);
-	
+
+
 	//	Access to elements:
 	//	0  1  2		1,1   1,2    1,3    	
 	//	3  4  5		2,1   2,2    2,3 
@@ -469,6 +471,9 @@ struct DBM {
 
 	double det() const;
 	DBM inverse() const;
+
+	void CalculateRotation( Quaternion& q ) const;
+	void CalculateRotation1( Quaternion& q ) const;
 };
 
 /******************************************************************************

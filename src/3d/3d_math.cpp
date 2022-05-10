@@ -527,13 +527,99 @@ DBM DBM::inverse() const
       return inv;
 }
 
+void DBM::CalculateRotation(Quaternion& q) const {
+	const double* aa[3] = {
+		a + 0,
+		a + 3,
+		a + 6
+	};
+
+	double trace = aa[0][0] + aa[1][1] + aa[2][2]; // I removed + 1.0f; see discussion with Ethan
+		if( trace > 0 ) {// I changed M_EPSILON to 0
+			double s = 0.5 / sqrt(trace+ 1.0);
+			q.w = 0.25 / s;
+			q.x = ( aa[2][1] - aa[1][2] ) * s;
+			q.y = ( aa[0][2] - aa[2][0] ) * s;
+			q.z = ( aa[1][0] - aa[0][1] ) * s;
+		} else {
+			if ( aa[0][0] > aa[1][1] && aa[0][0] > aa[2][2] ) {
+				double s = 2.0f * sqrt( 1.0f + aa[0][0] - aa[1][1] - aa[2][2]);
+				q.w = (aa[2][1] - aa[1][2] ) / s;
+				q.x = 0.25f * s;
+				q.y = (aa[0][1] + aa[1][0] ) / s;
+				q.z = (aa[0][2] + aa[2][0] ) / s;
+			} else if (aa[1][1] > aa[2][2]) {
+				double s = 2.0f * sqrt( 1.0f + aa[1][1] - aa[0][0] - aa[2][2]);
+				q.w = (aa[0][2] - aa[2][0] ) / s;
+				q.x = (aa[0][1] + aa[1][0] ) / s;
+				q.y = 0.25f * s;
+				q.z = (aa[1][2] + aa[2][1] ) / s;
+			} else {
+				double s = 2.0f * sqrt( 1.0f + aa[2][2] - aa[0][0] - aa[1][1] );
+				q.w = (aa[1][0] - aa[0][1] ) / s;
+				q.x = (aa[0][2] + aa[2][0] ) / s;
+				q.y = (aa[1][2] + aa[2][1] ) / s;
+				q.z = 0.25f * s;
+			}
+		}
+}
+
+void DBM::CalculateRotation1(Quaternion& q) const
+{
+	double T;
+	double x, y, z, w;
+	const double* aa[3] = {
+		a + 0,
+		a + 3,
+		a + 6
+	};
+	if (aa[2][2] < 0.0f) {
+		if (aa[0][0] > aa[1][1]) {
+			T = 1 + aa[0][0] - aa[1][1] - aa[2][2];
+			x = T;
+			y = aa[0][1] + aa[1][0];
+			z = aa[2][0] + aa[0][2];
+			w = aa[1][2] - aa[2][1];
+
+		} else {
+			T = 1 - aa[0][0] + aa[1][1] - aa[2][2];
+			x = aa[0][1] + aa[1][0];
+			y = T;
+			z = aa[1][2] + aa[2][1];
+			w = aa[2][0] - aa[0][2];
+
+		}
+	} else {
+		if (aa[0][0] < -aa[1][1]) {
+			T = 1 - aa[0][0] - aa[1][1] + aa[2][2];
+
+			x = aa[2][0] + aa[0][2];
+			y = aa[1][2] + aa[2][1];
+			z = T;
+			w = aa[0][1] - aa[1][0];
+		} else {
+			T = 1 + aa[0][0] + aa[1][1] + aa[2][2];
+			x = aa[1][2] - aa[2][1];
+			y = aa[2][0] - aa[0][2];
+			z = aa[0][1] - aa[1][0];
+			w = T;
+		}
+	}
+
+	T = 0.5 / sqrt(T);
+	q.x = x * T;
+	q.y = y * T;
+	q.z = z * T,
+	q.w = z * T;
+}
+
 DBV DBM::rotation_angles() const
 {
 	return DBV(
-		acos(a[0]/sqrt(sqr(a[0]) + sqr(a[3]) + sqr(a[6]) + DBL_EPS)),
-		acos(a[4]/sqrt(sqr(a[1]) + sqr(a[4]) + sqr(a[7]) + DBL_EPS)),
-		acos(a[8]/sqrt(sqr(a[2]) + sqr(a[5]) + sqr(a[8]) + DBL_EPS))
-		);
+				acos(a[0]/sqrt(sqr(a[0]) + sqr(a[3]) + sqr(a[6]) + DBL_EPS)),
+			acos(a[4]/sqrt(sqr(a[1]) + sqr(a[4]) + sqr(a[7]) + DBL_EPS)),
+			acos(a[8]/sqrt(sqr(a[2]) + sqr(a[5]) + sqr(a[8]) + DBL_EPS))
+			);
 }
 double DBM::rotation_energy() const
 {
@@ -588,6 +674,7 @@ Quaternion::Quaternion(const DBM& m)
 	if(SIGN(w*z) != SIGN(m[3] - m[1]))
 		z = -z;
 }
+
 Quaternion::operator DBM()
 {
 	double t1 = w*w;

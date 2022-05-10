@@ -2025,18 +2025,21 @@ void iGameMap::draw(int self)
 			);
 
 			DBV pos0(ViewX, ViewY, 0);
+			auto a = Quaternion::multiply(turnQ, slopeQ);
+			auto b = DBV(0, 0, ViewZ);
+
 			DBV camera_pos = Quaternion::multiply(turnQ, slopeQ) * DBV(0, 0, ViewZ);
 			camera_pos += pos0;
 
 
-			renderer::visualbackend::Quaternion rotation = {
+			renderer::vectormath::Quaternion rotation = {
 				.x = (float)rotationQuaternion.x,
 				.y = (float)rotationQuaternion.y,
 				.z = (float)rotationQuaternion.z,
 				.w = (float)rotationQuaternion.w,
 			};
 
-			renderer::visualbackend::Vector3 position = {
+			renderer::vectormath::Vector3 position = {
 				.x = (float) camera_pos.x,
 				.y = (float) camera_pos.y,
 				.z = (float) camera_pos.z,
@@ -2149,10 +2152,10 @@ void iGameMap::draw(int self)
 
 		// All Debug Messages should be placed here
 		if(prmFlag & PRM_FPS) {
-			sysfont.draw(xc + xside - 150,yc - yside + 80,(unsigned char*)fps_string,224 + 15,-1);
+			sysfont.draw(xc + xside/2 - 150,yc - yside + 80,(unsigned char*)fps_string,224 + 15,-1);
 			status.init();
 			status <= ViewX < " " <= ViewY/* < ":" <= ActD.NumResolve*/;
-			sysfont.draw(xc + xside - 150,yc - yside + 96,(unsigned char*)status.GetBuf(),224 + 15,-1);
+			sysfont.draw(xc + xside/2 - 150,yc - yside + 96,(unsigned char*)status.GetBuf(),224 + 15,-1);
 			if(NetworkON)
 				sysfont.drawtext(xc - xside + 3,yc - yside + 32,network_analysis_buffer.address(),255,-1);
 			#ifdef SICHER_DEBUG

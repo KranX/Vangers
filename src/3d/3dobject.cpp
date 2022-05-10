@@ -240,6 +240,8 @@ void Model::loadC3D(XBuffer& buf){ loadC3Dvariable(buf); }
 *******************************************************************************/
 Object::Object()
 {
+	model_instance_handle = {0};
+
 	i_model = n_models = 0;
 	models = 0;
 	model = 0;
@@ -254,6 +256,9 @@ Object::Object()
 	collision_object = 0;
 	slots_existence = 0;
 	memset(data_in_slots,0,MAX_SLOTS*sizeof(Object*));
+	for(int i = 0; i < MAX_SLOTS; i++){
+		weapon_handles[i] = {0};
+	}
 	old_appearance_storage = 0;
 
   	set_body_color(COLORS_IDS::BODY_RED);
@@ -331,6 +336,9 @@ void Object::free()
 	bound_debris = nullptr;
 	slots_existence = 0;
 	memset(data_in_slots, 0, MAX_SLOTS*sizeof(Object*));
+	for(int i = 0; i < MAX_SLOTS; i++){
+		weapon_handles[i] = {0};
+	}
 }
 void Object::loadM3D(char* name)
 {
@@ -372,6 +380,7 @@ void Object::loadM3D(char* name)
 		for(i = 0;i < MAX_SLOTS;i++){
 			buf > R_slots[i] > location_angle_of_slots[i];
 			data_in_slots[i] = 0;
+			weapon_handles[i] = {0};
 			}
 		}
 
@@ -483,4 +492,8 @@ void Object::lay_to_slot(int slot,Object* weapon)
 	if(!((1 << slot) & slots_existence))
 		return;
 	data_in_slots[slot] = weapon;
+	if(weapon == nullptr && weapon_handles[slot].handle != 0){
+		VisualBackendContext::backend()->model_instance_destroy(weapon_handles[slot]);
+		weapon_handles[slot] = {0};
+	}
 }

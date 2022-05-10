@@ -41,9 +41,14 @@ namespace renderer::visualbackend {
 			_renderer = std::move(renderer);
 		}
 
+		static bool renderer_enabled() {
+			return _renderer_enabled;
+		}
+
 	private:
 		std::unique_ptr<AbstractVisualBackend> _renderer;
 		static std::unique_ptr<VisualBackendContext> _instance;
+		static bool _renderer_enabled;
 	};
 }
 

@@ -3,6 +3,9 @@
 
 #include "3d_math.h"
 #include "3dgraph.h"
+#include <renderer/visualbackend/VisualBackendContext.h>
+using VisualBackendContext = renderer::visualbackend::VisualBackendContext;
+using ModelInstanceHandle =  renderer::visualbackend::ModelInstanceHandle;
 
 const char TG_NO_TOUCH = 1;
 const char TG_POINT_TOUCH = 2;
@@ -206,6 +209,7 @@ struct Wheel {
 *******************************************************************************/
 struct Object : BaseObject {
 
+	ModelInstanceHandle model_instance_handle;
 	// Part of 3D data
 	int n_models;
 	Model* models;
@@ -228,6 +232,7 @@ struct Object : BaseObject {
 
 	int slots_existence;
 	Object* data_in_slots[MAX_SLOTS];
+	ModelInstanceHandle weapon_handles[MAX_SLOTS];
 	Vector R_slots[MAX_SLOTS];
 	int location_angle_of_slots[MAX_SLOTS];
 	

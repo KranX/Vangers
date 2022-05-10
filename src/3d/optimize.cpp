@@ -167,68 +167,138 @@ void Object::draw()
 	A_convert[6] = A_l2g[6]*scale_real; A_convert[7] = A_l2g[7]*scale_real; A_convert[8] = A_l2g[8]*scale_real;
 	A_convert_8 = Matrix(A_convert*127);
 
-	model -> z_buffering_draw();
+	DBM rot = A_l2g * DBM(1, -1, 1, DIAGONAL);
+	Quaternion rotation = Quaternion::multiply(Quaternion(rot), Quaternion(0, 0, 0, 1));
+
+	renderer::vectormath::Transform transform = {
+		.position = {
+			.x = (float)R.x,
+			.y = (float)R.y,
+			.z = (float)R.z,
+		},
+		.scale = (float)scale_real,
+		.rotation = {
+			.x = (float)rotation.x,
+			.y = (float)rotation.y,
+			.z = (float)rotation.z,
+			.w = (float)rotation.w,
+		}
+
+	};
+	if(model_instance_handle.handle != 0){
+		VisualBackendContext::backend()->model_instance_set_transform(model_instance_handle, transform);
+	}
+
+	if(!vMap->__use_external_renderer)
+	{
+		model -> z_buffering_draw();
+	}
+
 
 	if(ID & ID_VANGER){
-		for(i = 0;i < MAX_SLOTS;i++)
+		for(i = 0;i < MAX_SLOTS;i++){
 			if(data_in_slots[i]){
 				double scl = data_in_slots[i] -> scale_size/original_scale_size;
-				if(location_angle_of_slots[i]){
+				Vector off = Vector(
+								 data_in_slots[i] -> model -> x_off,
+								 data_in_slots[i] -> model -> y_off,
+								 data_in_slots[i] -> model -> z_off);
+
+				if(location_angle_of_slots[i]) {
 					DBM A_c2p = DBM(location_angle_of_slots[i],Y_AXIS);
 					DBM A_p2c = transpose(A_c2p);
 					A_c2p *= scl;
-					Vector off = A_c2p*Vector(data_in_slots[i] -> model -> x_off,data_in_slots[i] -> model -> y_off,data_in_slots[i] -> model -> z_off);
-					data_in_slots[i] -> model -> draw_child(R_slots[i] - off,A_c2p,A_p2c);
-					}
-				else{
-					Vector off = Vector(data_in_slots[i] -> model -> x_off,data_in_slots[i] -> model -> y_off,data_in_slots[i] -> model -> z_off)*scl;
-					data_in_slots[i] -> model -> draw_child(R_slots[i] - off,DBM()*scl,DBM());
+					off = A_c2p * off;
+					if(!vMap->__use_external_renderer) {
+						data_in_slots[i] -> model -> draw_child(R_slots[i] - off,A_c2p,A_p2c);
 					}
 				}
+				else {
+					off *= scl;
+					if(!vMap->__use_external_renderer) {
+						data_in_slots[i] -> model -> draw_child(R_slots[i] - off,DBM()*scl,DBM());
+					}
+				}
+
+				if(weapon_handles[i].handle != 0){
+					renderer::vectormath::Vector3 slotPos = {
+						(float)R_slots[i].x, (float)R_slots[i].y, (float)R_slots[i].z
+					};
+					renderer::vectormath::Vector3 offset = {
+						(float)data_in_slots[i] -> model -> x_off,
+						(float)data_in_slots[i] -> model -> y_off,
+						(float)data_in_slots[i] -> model -> z_off
+					};
+
+					renderer::vectormath::Vector3 v = slotPos / (float)scl;
+
+					renderer::vectormath::Transform weapon_transform = {
+						.position = slotPos - offset * (float)scl,
+						.scale = (float)(scl),
+						.rotation = {
+							.x = 0,
+							.y = 0,
+							.z = 0,
+							.w = 1,
+						}
+					};
+					weapon_transform = transform.concat(weapon_transform);
+					VisualBackendContext::backend()->model_instance_set_transform(weapon_handles[i], weapon_transform);
+				}
+			}
+		}
 		 
 		DBM A_c2p = DBM(rudder,Z_AXIS);
 		#ifdef _MT_
 		if(model == models)
 		#endif
 		for(i = 0;i < n_wheels;i++)
-			if(wheels[i].steer)
-				wheels[i].model.draw_child(Vector(wheels[i].model.x_off,wheels[i].model.y_off,wheels[i].model.z_off),A_c2p,transpose(A_c2p));
+			if(wheels[i].steer) {
+				wheels[i].model.draw_child(Vector(wheels[i].model.x_off,wheels[i].model.y_off + 100,wheels[i].model.z_off),A_c2p,transpose(A_c2p));
+			}
+
 		}
 
 #ifdef _ROAD_
-	// Put Shadow 
-	if(draw_mode == NORMAL_DRAW_MODE){
-		if(ID != ID_INSECT)
-			if(TurnAngle)
-				CastArbitraryShadow(R_scr.x - draw_offset,R_scr.y - draw_offset,R_curr.z - z_global_offset,draw_size,draw_shift,draw_buffer);
-			else
-				CastShadow(R_scr.x - draw_offset,R_scr.y - draw_offset,R_curr.z - z_global_offset,draw_size,draw_shift,draw_buffer);
-		else{
-			int dz = R_curr.z - z_below - (zmax_real >> 2);
-			if(dz < MIN_SHADOW_dZ)
-				dz = MIN_SHADOW_dZ;
-			if(dz > zmax)
-				dz = trace_shadow(R_curr.x,R_curr.y,R_curr.z);
-			double dzd = (double)dz*ScaleMapInvFlt;
-			int vx = -round(A_g2s[0]*dzd);
-			int vy = round(A_g2s[1]*dzd);
-			if(!DepthShow)
-				DrawLinear(R_scr.x - draw_offset + vx,R_scr.y - draw_offset + vy,draw_size,draw_shift,draw_buffer,0);
-			else
-         			Draw3DPlane(R_scr.x - draw_offset + vx,R_scr.y - draw_offset + vy,draw_size,draw_shift,draw_buffer,0,0);
+	if(!vMap->__use_external_renderer)
+	{
+		// Put Shadow
+		if(draw_mode == NORMAL_DRAW_MODE){
+			if(ID != ID_INSECT)
+				if(TurnAngle)
+					CastArbitraryShadow(R_scr.x - draw_offset,R_scr.y - draw_offset,R_curr.z - z_global_offset,draw_size,draw_shift,draw_buffer);
+				else
+					CastShadow(R_scr.x - draw_offset,R_scr.y - draw_offset,R_curr.z - z_global_offset,draw_size,draw_shift,draw_buffer);
+			else{
+				int dz = R_curr.z - z_below - (zmax_real >> 2);
+				if(dz < MIN_SHADOW_dZ)
+					dz = MIN_SHADOW_dZ;
+				if(dz > zmax)
+					dz = trace_shadow(R_curr.x,R_curr.y,R_curr.z);
+				double dzd = (double)dz*ScaleMapInvFlt;
+				int vx = -round(A_g2s[0]*dzd);
+				int vy = round(A_g2s[1]*dzd);
+				if(!DepthShow)
+					DrawLinear(R_scr.x - draw_offset + vx,R_scr.y - draw_offset + vy,draw_size,draw_shift,draw_buffer,0);
+				else
+						Draw3DPlane(R_scr.x - draw_offset + vx,R_scr.y - draw_offset + vy,draw_size,draw_shift,draw_buffer,0,0);
+				}
 			}
-		}
 
-	// Put Image
-	if(!DepthShow)
-		DrawLinear(R_scr.x - draw_offset,R_scr.y - draw_offset,draw_size,draw_shift,draw_buffer,draw_mode);
-	else{
-		int y_offset =0;// (2*zmax*scale >> 9)*Sin(-SlopeAngle)/Cos(SlopeAngle);
-		Draw3DPlane(R_scr.x - draw_offset,R_scr.y - draw_offset,draw_size,draw_shift,draw_buffer,draw_mode,y_offset);
+		// Put Image
+		if(!DepthShow)
+			DrawLinear(R_scr.x - draw_offset,R_scr.y - draw_offset,draw_size,draw_shift,draw_buffer,draw_mode);
+		else {
+			int y_offset =0;// (2*zmax*scale >> 9)*Sin(-SlopeAngle)/Cos(SlopeAngle);
+			Draw3DPlane(R_scr.x - draw_offset,R_scr.y - draw_offset,draw_size,draw_shift,draw_buffer,draw_mode,y_offset);
 		}
+	}
+
 	
 	dynamic_state &= ~(TOUCH_OF_WATER | TOUCH_OF_AIR);
 	dynamic_state |= draw_state;
+	// TODO: this should be calculated in DrawLinear/Draw3DPlane
+	dynamic_state |= (TOUCH_OF_AIR);
 //	if(mole_on)
 //		dynamic_state |= TOUCH_OF_AIR;
 #endif
@@ -260,7 +330,11 @@ void Model::draw_child(const Vector& R,const DBM& A_c2p,const DBM& A_p2c)
 	Refl *= A_p2c;
 	View *= A_p2c;
 
-	z_buffering_draw();
+	//if(!vMap->__use_external_renderer)
+	{
+		z_buffering_draw();
+	}
+
 
 	CentrX = CentrX_old;
 	CentrY = CentrY_old;
