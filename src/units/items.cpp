@@ -50,6 +50,7 @@ const char DEBRIS_LIFE_TIME = 100;
 
 //extern XStream MechosLst;
 extern int AdvancedView;
+extern int frame; // kdsplus.cpp
 
 const int MAX_STUFF_SCATTER = 150;
 
@@ -1668,7 +1669,9 @@ void BulletObject::DrawQuant(void)
 			EffD.DeformData[ShowType].Deform(tx,ty,FrameCount,1);
 			break;
 		case BULLET_SHOW_TYPE_ID::DUST:
-			MapD.CreateDust(Vector(R_curr.x,R_curr.y,MapLevel),ShowType);
+			if(frame % (int)GAME_TIME_COEFF == 0){
+				MapD.CreateDust(Vector(R_curr.x, R_curr.y, MapLevel), ShowType);
+			}			
 			break;
 		case BULLET_SHOW_TYPE_ID::CRATER:
 			if(MapLevel && (vDelta.x != 0 || vDelta.y != 0 || vDelta.z != 0)){
