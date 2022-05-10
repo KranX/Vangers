@@ -5394,8 +5394,9 @@ void VangerUnit::SensorQuant(void)
 				switch_analysis(0);
 //				set_3D(SET_3D_CHOOSE_LEVEL,R_curr.x,R_curr.y,R_curr.z,0,-Angle,0);
 				ExternalSensor = ExternalObject;
-//				if(Status & SOBJ_ACTIVE)
-//					aciSendEvent2actint(ACI_UNLOCK_INTERFACE,NULL);
+				if(Status & SOBJ_ACTIVE) {
+					aciSendEvent2actint(ACI_UNLOCK_INTERFACE, NULL);
+				}
 			};
 			break;
 		case EXTERNAL_MODE_SPOT_OUT:
@@ -5405,8 +5406,9 @@ void VangerUnit::SensorQuant(void)
 				ExternalLock = 0;
 				switch_analysis(0);
 				ExternalSensor = ExternalObject;
-//				if(Status & SOBJ_ACTIVE)
-//					aciSendEvent2actint(ACI_UNLOCK_INTERFACE,NULL);
+				if(Status & SOBJ_ACTIVE) {
+					aciSendEvent2actint(ACI_UNLOCK_INTERFACE, NULL);
+				}
 			};
 			break;
 		case EXTERNAL_MODE_SPOT_IN:
