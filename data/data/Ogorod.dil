@@ -59,7 +59,7 @@
 4 10 "MP4 Comment" "2" "1" "1" "MP_GAME == 4" " " " " 
 4 9 "MP4 Start" "1" "0" "0" "MP_GAME == 4" " " "clear" 
 7 4 "Larva in Inventory" "2" "0" "1" "data INV_BAD_LARVA > 0 OR data INV_GOOD_LARVA > 0" " " " " 
-0 7 "Pipiska Waiting?" "2" "0" "1" "BSTATUS == 1 data CYCLE == $PREV_CYCLE_1 cycle_exist 1 > 0" " " " " 
+0 7 "Pipiska Waiting?" "2" "0" "1" "BSTATUS == 1 data CYCLE == $PREV_CYCLE_1 cycle_exist 1 > 0 cycle_exist 0 > 0" " " " " 
 11 0 "Mechanic Messiah in Inventory" "3" "0" "1" "data INV_MESSIAH > 0" "abort" "block" 
 6 5 "Weexow visit" "5" "0" "0" "visitW W > 0 BSTATUS == 2" " " " " 
 7 5 "Boozeena visit" "5" "0" "0" "visitW B > 0" " " " " 
