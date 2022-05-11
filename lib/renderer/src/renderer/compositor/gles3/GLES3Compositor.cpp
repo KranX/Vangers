@@ -183,10 +183,12 @@ void GLES3Compositor::texture_render(Texture texture, const renderer::Rect& src_
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, t->name());
 
+#ifndef EMSCRIPTEN
 	GLuint gl_error = glGetError();
 	if(gl_error != 0){
 		std::cout << "glBindTexture error: " << gl_error << std::endl;
 	}
+#endif
 
 	_texture_shader->use();
 	_vertex_array->bind();
@@ -352,5 +354,6 @@ void GLES3Compositor::set_logical_screen_size(int32_t width, int32_t height)
 void GLES3Compositor::read_pixels(uint8_t*)
 {
 	// TODO:
-	throw CompositorException("GLES3Compositor::read_pixels is not implemented");
+    printf("GLES3Compositor::read_pixels is not implemented\n");
+    abort();
 }

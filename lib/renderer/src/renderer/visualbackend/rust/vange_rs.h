@@ -71,7 +71,9 @@ typedef void* rv_context;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef EMSCRIPTEN
 	extern int32_t rv_api_1;
+#endif
 
 	rv_context rv_init(rv_init_descriptor desc);
 

@@ -16,9 +16,12 @@ RustVisualBackend::RustVisualBackend(int32_t width, int32_t height)
 {
 	std::cout << "RustVisualBackend::RustVisualBackend" << std::endl;
 
+#ifndef EMSCRIPTEN
 	if(rv_api_1 != 1){
-		throw RendererException("Invalid libvangers_ffi version");
+		printf("Invalid librusty_vangers version expected 1, actual %d\n", rv_api_1);
+        abort();
 	}
+#endif
 
 	rv_init_descriptor desc {
 		.width = (uint32_t) width,

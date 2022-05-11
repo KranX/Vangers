@@ -142,7 +142,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	std::cout<<"XGR_Screen::init"<<std::endl;
 	// Init SDL video
 	if (XGR_ScreenSurface==NULL) {
-		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
 			auto* error = SDL_GetError();
 
 			std::cerr << "SDL_Init failed: "<<error<<std::endl;
