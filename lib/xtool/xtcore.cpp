@@ -106,7 +106,11 @@ int getCurRtoId() {
 	return XObj == nullptr ? 0 : XObj->ID;
 }
 
+#ifdef ANDROID
+extern int vangers_main(int argc, char *argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
 	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
 	__internal_argc = argc;

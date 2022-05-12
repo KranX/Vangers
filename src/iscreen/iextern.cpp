@@ -1079,6 +1079,11 @@ void iScreenOption::SetValueCHR(const char* p)
 
 int iGetOptionValue(int id)
 {
+#ifdef ANDROID
+	if (id == iSCREEN_RESOLUTION) {
+		return 1;
+	}
+#endif
 	if(iScrOpt && iScrOpt[id])
 		return iScrOpt[id] -> GetValueINT();
 	else
