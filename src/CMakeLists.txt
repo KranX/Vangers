@@ -68,7 +68,6 @@ SET(vangers_SRCS
 	xjoystick.cpp
 	xsocket.cpp
 	zmod_client.cpp
-	lang.cpp
 	${WINDOWS_RES}
         actint/layout.h)
 

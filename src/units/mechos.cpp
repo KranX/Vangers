@@ -1,5 +1,5 @@
 #include "../global.h"
-#include "../lang.h"
+#include "lang.h"
 
 #include "../zmod_client.h"
 
