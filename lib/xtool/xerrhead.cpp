@@ -48,7 +48,7 @@ void XErrorHandler::RTC(const char *file, unsigned int line, const char *expr)
 void XErrorHandler::Abort(const char* message, int code, int val, const char* subj)
 {
   std::ostringstream stream;
-  
+
   time_t now;
   time(&now);
   char time_buf[sizeof "2011-10-08T07:07:09Z"];
@@ -63,11 +63,13 @@ void XErrorHandler::Abort(const char* message, int code, int val, const char* su
   if (subj)
     stream<<"Subj:"<<subj<<std::endl<<std::endl;
 
+  char * basePath = SDL_GetBasePath();
   stream<<"Please send:" << std::endl <<
     " - this message," << std::endl <<
-    " - logfile from " << SDL_GetBasePath() << log_name.c_str() << "," << std::endl <<
+	" - logfile from " << (basePath ? basePath : "N/A") << log_name.c_str() << "," << std::endl <<
     " - your savegame" << std::endl <<
     "to https://t.me/vangers or https://github.com/KranX/Vangers";
+  SDL_free(basePath);
 
   std::string str =  stream.str();
   std::cout<<str;
