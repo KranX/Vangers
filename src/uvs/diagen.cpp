@@ -5,7 +5,7 @@
 */
 
 #include "../global.h"
-#include "../lang.h"
+#include "lang.h"
 
 #include "../common.h"
 #include "diagen.h"

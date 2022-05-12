@@ -1,6 +1,6 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
-#include "../../src/lang.h"
+#include "lang.h"
 #include "xglobal.h"
 #include "xt_list.h"
 #include "../xgraph/xgraph.h"

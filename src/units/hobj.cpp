@@ -1,5 +1,5 @@
 #include "../global.h"
-#include "../lang.h"
+#include "lang.h"
 
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"

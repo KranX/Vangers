@@ -21,6 +21,7 @@ SET(xtool_SRCS
 	xutil/xclock.cpp
 	iniparser/dictionary.c
 	iniparser/iniparser.c
+	lang.cpp
 )
 
 IF(DXSTREAM_DEBUG)

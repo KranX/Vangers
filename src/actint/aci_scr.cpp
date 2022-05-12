@@ -1,7 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
-#include "../lang.h"
+#include "lang.h"
 #include "../iscreen/hfont.h"
 
 #include "aci_evnt.h"
