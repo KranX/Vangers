@@ -581,7 +581,7 @@ aciLocationShutterInfo* locSh;
 aciWorldMap* wMap;
 aciWorldInfo* wData;
 
-actIntDispatcher* aScrDisp;
+std::unique_ptr<actIntDispatcher> aScrDisp;
 
 int aciCurCredits03 = 0;
 
@@ -605,7 +605,7 @@ void aParseScript(const char* fname,const char* bname)
 	invMatrix* mtx;
 	invItem* itm;
 
-	aScrDisp = new actIntDispatcher;
+	aScrDisp.reset(new actIntDispatcher);
 	aciML_D = new aciML_Dispatcher;
 
 #ifndef _BINARY_SCRIPT_
