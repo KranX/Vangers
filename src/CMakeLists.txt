@@ -65,11 +65,12 @@ SET(vangers_SRCS
 	uvs/diagen.cpp
 	uvs/screen.cpp
 	uvs/univang.cpp
+	vangers/sys.cpp
 	xjoystick.cpp
 	xsocket.cpp
 	zmod_client.cpp
 	${WINDOWS_RES}
-        actint/layout.h)
+	actint/layout.h)
 
 if (ANDROID)
 	ADD_LIBRARY(vangers STATIC ${vangers_SRCS}
