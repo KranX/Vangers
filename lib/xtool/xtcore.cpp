@@ -5,6 +5,8 @@
 #include "xt_list.h"
 #include "../xgraph/xgraph.h"
 
+extern void sys_postReadyEvent();
+
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 #include <locale.h>
 #endif
@@ -190,6 +192,7 @@ int main(int argc, char *argv[])
 		xtRTO_Log.open("xt_rto_w.log",XS_OUT);
 #endif
 
+	sys_postReadyEvent();
 
 	while(XObj){
 		XObj -> Init(prevID);

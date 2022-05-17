@@ -14,7 +14,6 @@ CMakeCache.txt
 # Generated binaries
 *.a
 lib/utils/zip_convert
-src/vangers
 data/iscreen/temp.scr
 
 # TODO: VC stuff, windows binaries
