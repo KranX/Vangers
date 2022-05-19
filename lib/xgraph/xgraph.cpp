@@ -132,7 +132,7 @@ XGR_Screen::XGR_Screen(void)
 	sdlTexture = NULL;
 }
 
-int XGR_Screen::init(int x,int y,int flags_in)
+int XGR_Screen::init(int flags_in)
 {
 	flags = flags_in;
 	std::cout<<"XGR_Screen::init"<<std::endl;
@@ -148,6 +148,24 @@ int XGR_Screen::init(int x,int y,int flags_in)
 		SDL_DestroyRenderer(sdlRenderer);
 		SDL_DestroyWindow(sdlWindow);
 	}
+
+	SDL_DisplayMode displayMode;
+	SDL_GetCurrentDisplayMode(0, &displayMode);
+	int maxWidth = displayMode.w;
+	int maxHeight = displayMode.h;
+
+	float aspect = (float) maxWidth / (float) maxHeight;
+	if (aspect < 4/3.f) {
+		aspect = 4/3.f;
+	}
+
+	if (aspect > 13/6.f /* iPhone */) {
+		aspect = 13/6.f;
+	}
+
+	this->hdWidth = 1280;
+	this->hdHeight = 1280 / aspect;
+
 	std::cout<<"SDL_CreateWindowAndRenderer"<<std::endl;
 	if (XGR_FULL_SCREEN) {
 		if (SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP, &sdlWindow, &sdlRenderer) < 0) {
@@ -155,12 +173,12 @@ int XGR_Screen::init(int x,int y,int flags_in)
 			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 		}
 	} else {
-		if (SDL_CreateWindowAndRenderer(x, y, 0, &sdlWindow, &sdlRenderer) < 0) {
+		if (SDL_CreateWindowAndRenderer(this->hdWidth, this->hdHeight, SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED, &sdlWindow, &sdlRenderer) < 0) {
 			std::cout<<"ERROR2"<<std::endl;
 			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 		}
 	}
-	std::cout<<"SDL_SetWindowTitle"<<std::endl;
+	std::cout << "SDL_Window created: " << this->hdWidth << "x" << this->hdHeight << std::endl;
 	SDL_SetWindowTitle(sdlWindow, "Vangers");
 	
 	std::cout<<"Load and set icon"<<std::endl;
@@ -185,7 +203,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	std::cout<<"SDL_SetHint"<<std::endl;
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");  // "linear" make the scaled rendering look smoother.
 
-	create_surfaces(x, y);
+	create_surfaces(this->hdWidth, this->hdHeight);
 
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -258,16 +276,7 @@ void XGR_Screen::create_surfaces(int width, int height) {
 }
 
 void XGR_Screen::set_resolution(int width, int height){
-	// TODO: do not change resolution, is new res is the same
 	std::cout << "XGR_Screen::set_resolution: " << width << ", " << height << std::endl;
-	if(width == ScreenX && height == ScreenY){
-		std::cout << "Resolution didn't change" << std::endl;
-		return;
-	}
-
-	destroy_surfaces();
-	SDL_SetWindowSize(sdlWindow, width, height);
-	create_surfaces(width, height);
 
 	if (width == 800 && height == 600) {
 		// for comparison == 1
@@ -277,6 +286,14 @@ void XGR_Screen::set_resolution(int width, int height){
 		screen_scale_x = (float)width / 800;
 		screen_scale_y = (float)height / 600;
 	}
+
+	if(width == ScreenX && height == ScreenY){
+		std::cout << "Resolution didn't change" << std::endl;
+		return;
+	}
+
+	destroy_surfaces();
+	create_surfaces(width, height);
 }
 
 const float XGR_Screen::get_screen_scale_x() {
@@ -955,7 +972,7 @@ void XGR_Screen::flip()
 					.w = new_width,
 					.h = xgrScreenSizeY,
 			};
-			XGR_RenderSides(sdlRenderer);
+			XGR_RenderSides(sdlRenderer, new_width);
 			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0);
 			SDL_RenderCopy(sdlRenderer, sdlTexture, &src_rect, &dst_rect);
 		}else{
