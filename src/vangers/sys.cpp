@@ -8,8 +8,8 @@
 using namespace vangers;
 
 const char *vangers::SYS_EVENT_READY = "sys_ready";
-const char *vangers::SYS_EVENT_SCALED_RENDERER_ENABLED = "sys_scaled_renderer_enabled";
-const char *vangers::SYS_EVENT_SCALED_RENDERER_DISABLED = "sys_scaled_renderer_disabled";
+const char *vangers::SYS_EVENT_SCALED_RENDERER_CHANGED = "sys_scaled_renderer_changed";
+const char *vangers::SYS_EVENT_RUNTIME_OBJECT_CHANGED = "sys_runtime_object_changed";
 
 int Sys::rendererWidth() {
     return XGR_Obj.hdWidth;
@@ -46,10 +46,21 @@ void sys_postReadyEvent() {
     sys().postEvent({ .type = SYS_EVENT_READY });
 }
 
-void sys_postScaledRendererEvent(bool enabled) {
-    if (enabled) {
-        sys().postEvent({ .type = vangers::SYS_EVENT_SCALED_RENDERER_ENABLED });
-    } else {
-        sys().postEvent({ .type = vangers::SYS_EVENT_SCALED_RENDERER_DISABLED });
+void sys_postScaledRendererChangedEvent(bool enabled) {
+    sys().postEvent({
+        .type = vangers::SYS_EVENT_SCALED_RENDERER_CHANGED,
+        .scaledRenderer = enabled
+    });
+}
+
+void sys_postRuntimeObjectChangedEvent(int runtimeObjectId) {
+    static int currentRuntimeObjectId = -1;
+    if (currentRuntimeObjectId == runtimeObjectId) {
+        return;
     }
+    currentRuntimeObjectId = runtimeObjectId;
+    sys().postEvent({
+        .type = vangers::SYS_EVENT_RUNTIME_OBJECT_CHANGED,
+        .runtimeObjectId = runtimeObjectId,
+    });
 }
