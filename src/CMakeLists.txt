@@ -71,29 +71,37 @@ SET(vangers_SRCS
 	${WINDOWS_RES}
         actint/layout.h)
 
-ADD_EXECUTABLE(vangers ${vangers_SRCS})
-
-IF(WIN32)
-	SET(WIN_LIB 
-		wsock32
-		#-mwindows
-		#-Wl,-subsystem,windows
+if (ANDROID)
+	ADD_LIBRARY(vangers STATIC ${vangers_SRCS}
+		$<TARGET_OBJECTS:xtool>
+		$<TARGET_OBJECTS:xgraph>
+		$<TARGET_OBJECTS:xsound>
 	)
-ENDIF(WIN32)
+else()
+	ADD_EXECUTABLE(vangers ${vangers_SRCS})
 
-TARGET_LINK_LIBRARIES(vangers
-	${SDL2_LIBRARY}
-	${OGG_LIBRARY}
-	${VORBIS_LIBRARY}
-	${VORBISFILE_LIBRARY}
-	${CLUNK_LIBRARY}
-	${SDL2_NET_LIBRARY}
-	${FFMPEG_LIBRARIES}
-	${ZLIB_LIBRARIES}
-	${OPENGL_LIBRARIES}
-	${WIN_LIB}
-	${STEAM_LIBS}
-	xtool
-	xgraph
-	xsound
-)
+	IF(WIN32)
+		SET(WIN_LIB
+			wsock32
+			#-mwindows
+			#-Wl,-subsystem,windows
+		)
+	ENDIF(WIN32)
+
+	TARGET_LINK_LIBRARIES(vangers
+		${SDL2_LIBRARY}
+		${OGG_LIBRARY}
+		${VORBIS_LIBRARY}
+		${VORBISFILE_LIBRARY}
+		${CLUNK_LIBRARY}
+		${SDL2_NET_LIBRARY}
+		${FFMPEG_LIBRARIES}
+		${ZLIB_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		${WIN_LIB}
+		${STEAM_LIBS}
+		xtool
+		xgraph
+		xsound
+	)
+endif(ANDROID)
