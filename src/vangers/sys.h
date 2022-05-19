@@ -19,6 +19,11 @@ namespace vangers {
         size_t addEventListener(const std::function<void(Event)> listener);
         void removeEventListener(size_t id);
     private:
+        Sys & operator=(const Sys&) = delete;
+        Sys(const Sys&) = delete;
+        Sys() = default;
+        friend Sys &sys();
+
         std::vector<std::function<void(Event)>> listeners;
     };
 
@@ -27,6 +32,7 @@ namespace vangers {
 
 // @caiiiycuk: to use without including <vangers/sys.h>
 extern void sys_postReadyEvent();
-extern void sys_postScaledRendererEvent(bool enabled);
+extern void sys_postScaledRendererChangedEvent(bool enabled);
+extern void sys_postRuntimeObjectChangedEvent(int runtimeObjectId);
 
 #endif //VANGERS_SYS_H

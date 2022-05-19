@@ -6,6 +6,7 @@
 #include "../xgraph/xgraph.h"
 
 extern void sys_postReadyEvent();
+extern void sys_postRuntimeObjectChangedEvent(int runtimeObjectId);
 
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 #include <locale.h>
@@ -185,6 +186,7 @@ int main(int argc, char *argv[])
 	#endif
 	id = xtInitApplication();
 	XObj = xtGetRuntimeObject(id);
+    sys_postRuntimeObjectChangedEvent(XObj->ID);
 #ifdef _RTO_LOG_
 	if(XRec.flags & XRC_PLAY_MODE)
 		xtRTO_Log.open("xt_rto_p.log",XS_OUT);
@@ -237,6 +239,7 @@ int main(int argc, char *argv[])
 		xtRTO_Log < "\r\nChange RTO: " <= XObj -> ID < " -> " <= id < " frame -> " <= XRec.frameCount;
 #endif
 		XObj = xtGetRuntimeObject(id);
+        sys_postRuntimeObjectChangedEvent(XObj->ID);
 	}
 	xtDoneApplication();
 	xtSysFinit();
