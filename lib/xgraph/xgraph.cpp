@@ -239,9 +239,9 @@ int XGR_Screen::init(int flags_in)
 }
 
 void XGR_Screen::create_surfaces(int width, int height) {
-	XGR_ScreenSurface = new uint8_t[width * height] {0};
-	XGR_ScreenSurface2D = new uint8_t[width * height] {0};
-	XGR_ScreenSurface2DRgba = new uint32_t[width * height] {0};
+	XGR_ScreenSurface.reset(new uint8_t[width * height] {0});
+	XGR_ScreenSurface2D.reset(new uint8_t[width * height] {0});
+	XGR_ScreenSurface2DRgba.reset(new uint32_t[width * height] {0});
 
 	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 	XGR32_ScreenSurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
@@ -310,9 +310,6 @@ void XGR_Screen::destroy_surfaces() {
 
 	SDL_UnlockSurface(XGR32_ScreenSurface);
 
-	delete[] XGR_ScreenSurface;
-	delete[] XGR_ScreenSurface2D;
-	delete[] XGR_ScreenSurface2DRgba;
 	SDL_FreeSurface(XGR32_ScreenSurface);
 
 	sdlTexture = nullptr;
@@ -884,15 +881,15 @@ uint8_t* XGR_Screen::get_active_render_buffer() {
 }
 
 uint8_t* XGR_Screen::get_default_render_buffer() {
-	return XGR_ScreenSurface;
+	return XGR_ScreenSurface.get();
 }
 
 uint8_t* XGR_Screen::get_2d_render_buffer() {
-	return XGR_ScreenSurface2D;
+	return XGR_ScreenSurface2D.get();
 }
 
 uint32_t* XGR_Screen::get_2d_rgba_render_buffer() {
-	return XGR_ScreenSurface2DRgba;
+	return XGR_ScreenSurface2DRgba.get();
 }
 
 void XGR_Screen::set_active_render_buffer(uint8_t *buf) {
@@ -900,11 +897,11 @@ void XGR_Screen::set_active_render_buffer(uint8_t *buf) {
 }
 
 void XGR_Screen::set_default_render_buffer() {
-	set_active_render_buffer(XGR_ScreenSurface);
+	set_active_render_buffer(get_default_render_buffer());
 }
 
 void XGR_Screen::set_2d_render_buffer() {
-	set_active_render_buffer(XGR_ScreenSurface2D);
+	set_active_render_buffer(get_2d_render_buffer());
 }
 
 SDL_Surface* XGR_Screen::get_screenshot() {
@@ -947,7 +944,7 @@ void XGR_Screen::flip()
 		void *pixels;
 		int pitch;
 		SDL_LockTexture(sdlTexture, NULL, &pixels, &pitch);
-		blitRgba((uint32_t*)pixels, XGR_ScreenSurface, XGR_ScreenSurface2DRgba, XGR_ScreenSurface2D);
+		blitRgba((uint32_t*)pixels, get_default_render_buffer(), get_2d_rgba_render_buffer(), get_2d_render_buffer());
 		SDL_UnlockTexture(sdlTexture);
 		
 		SDL_RenderClear(sdlRenderer);
@@ -1040,8 +1037,9 @@ void XGR_Screen::flush(int x,int y,int sx,int sy)
 
 void XGR_Screen::fill(int col, void* buffer)
 {
-	if (buffer == XGR_ScreenSurface2DRgba) {
-		memset(XGR_ScreenSurface2DRgba, col, ScreenX * ScreenY * 4);
+	auto surface2dRgba = XGR_ScreenSurface2DRgba.get();
+	if (buffer == surface2dRgba) {
+		memset(surface2dRgba, col, ScreenX * ScreenY * 4);
 	} else {
 		memset(buffer == NULL ? ScreenBuf : buffer, col, ScreenX * ScreenY);
 	}

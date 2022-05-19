@@ -198,9 +198,9 @@ private:
 
 	uint8_t *ScreenBuf;
 
-	uint8_t *XGR_ScreenSurface;
-	uint8_t *XGR_ScreenSurface2D;
-	uint32_t *XGR_ScreenSurface2DRgba;
+	std::unique_ptr<uint8_t[]> XGR_ScreenSurface;
+	std::unique_ptr<uint8_t[]> XGR_ScreenSurface2D;
+	std::unique_ptr<uint32_t[]> XGR_ScreenSurface2DRgba;
 	SDL_Surface *XGR32_ScreenSurface;
 
 	SDL_Surface *IconSurface;

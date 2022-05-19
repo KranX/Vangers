@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <memory>
 
 #ifdef __WORDSIZE
 #else
