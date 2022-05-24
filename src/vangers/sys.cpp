@@ -19,6 +19,14 @@ int Sys::rendererHeight() {
     return XGR_Obj.hdHeight;
 }
 
+JoystickQuantFunction& Sys::getJoystickQuantFunction() {
+    return joystickQuantFunction;
+}
+
+void Sys::setJoystickQuantFunction(const JoystickQuantFunction& fn) {
+    joystickQuantFunction = fn;
+}
+
 size_t Sys::addEventListener(const std::function<void(Event)> listener) {
     auto id = this->listeners.size();
     this->listeners.push_back(listener);

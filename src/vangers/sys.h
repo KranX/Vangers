@@ -10,10 +10,22 @@
 #include "event.h"
 
 namespace vangers {
+    struct JoystickQuant {
+        bool active;
+        int traction;
+        int rudder;
+        bool helicopterStrife;
+    };
+    typedef std::function<JoystickQuant(int traction, int tinc, int tdec, int tmax,
+                                        int rudder, int rster, int rmax, float angle)> JoystickQuantFunction;
+
     class Sys {
     public:
         int rendererWidth();
         int rendererHeight();
+
+        JoystickQuantFunction& getJoystickQuantFunction();
+        void setJoystickQuantFunction(const JoystickQuantFunction& fn);
 
         void postEvent(const Event& event);
         size_t addEventListener(const std::function<void(Event)> listener);
@@ -24,6 +36,7 @@ namespace vangers {
         Sys() = default;
         friend Sys &sys();
 
+        JoystickQuantFunction joystickQuantFunction;
         std::vector<std::function<void(Event)>> listeners;
     };
 
