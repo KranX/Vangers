@@ -25,9 +25,11 @@ struct ParticleProcess;
 #include "../units/track.h"
 #include "../units/items.h"
 #include "../units/sensor.h"
+#include "../units/mechos.h"
 #include "../dast/poly3d.h"
 
 #include "../iscreen/controls.h"
+#include "../vangers/sys.h"
 
 #undef random
 #define random(num) ((int)(((long)_rand()*(num)) >> 15))
@@ -2744,6 +2746,22 @@ void Object::direct_keyboard_control()
 
 void Object::direct_joystick_control()
 {
+	if (vangers::sys().getJoystickQuantFunction()) {
+		float unitAngle = GTOR(dynamic_cast<ActionUnit*>(this)->Angle);
+		vangers::JoystickQuant joystickQuant = vangers::sys().getJoystickQuantFunction()(
+			traction, traction_increment, traction_decrement, 255,
+			rudder, rudder_step, rudder_max,
+			unitAngle
+		);
+		if (!joystickQuant.active) {
+			return;
+		}
+		traction = joystickQuant.traction;
+		rudder = joystickQuant.rudder;
+		helicopter_strife = helicopter_strife && joystickQuant.helicopterStrife;
+		return;
+	}
+
 	if(!XJoystickInput())
 		return;
 
@@ -2847,11 +2865,12 @@ void Object::analysis()
 			entries_control();
 			if(!disable_control){
 				direct_keyboard_control();
-				/*if(JoystickMode)
-					direct_joystick_control();*/
+				if(JoystickMode || vangers::sys().getJoystickQuantFunction()) {
+					direct_joystick_control();
 				}
 			}
 		}
+	}
 	if(interpolation_on){
 		import_controls();
 		}
