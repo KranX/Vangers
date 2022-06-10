@@ -29,8 +29,8 @@ namespace vangers {
 		const float unitAngle;
     };
 
-    typedef std::function<void(OptionQuant)> OptionQuantFunction;
-	typedef std::function<void(JoystickQuant)> JoystickQuantFunction;
+    typedef std::function<void(OptionQuant&)> OptionQuantFunction;
+	typedef std::function<void(JoystickQuant&)> JoystickQuantFunction;
 
 class Sys {
     public:
