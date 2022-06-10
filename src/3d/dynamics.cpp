@@ -2748,11 +2748,20 @@ void Object::direct_joystick_control()
 {
 	if (vangers::sys().getJoystickQuantFunction()) {
 		float unitAngle = GTOR(dynamic_cast<ActionUnit*>(this)->Angle);
-		vangers::JoystickQuant joystickQuant = vangers::sys().getJoystickQuantFunction()(
-			traction, traction_increment, traction_decrement, 255,
-			rudder, rudder_step, rudder_max,
-			unitAngle
-		);
+		vangers::JoystickQuant joystickQuant = {
+			.active = false,
+			.traction = traction,
+			.rudder = rudder,
+			.helicopterStrife = false,
+
+			.tractionIncrement = traction_increment,
+			.tractionDecrement = traction_decrement,
+			.tractionMax = 255,
+			.rudderStep = rudder_step,
+			.rudderMax = rudder_max,
+			.unitAngle = unitAngle,
+		};
+		vangers::sys().getJoystickQuantFunction()(joystickQuant);
 		if (!joystickQuant.active) {
 			return;
 		}

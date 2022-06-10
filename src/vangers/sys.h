@@ -10,33 +10,51 @@
 #include "event.h"
 
 namespace vangers {
-    struct JoystickQuant {
-        bool active;
-        int traction;
-        int rudder;
-        bool helicopterStrife;
-    };
-    typedef std::function<JoystickQuant(int traction, int tinc, int tdec, int tmax,
-                                        int rudder, int rster, int rmax, float angle)> JoystickQuantFunction;
+	struct OptionQuant {
+		int optionValue;
+		const int optionId;
+	};
 
-    class Sys {
+    struct JoystickQuant {
+		bool active;
+		int traction;
+		int rudder;
+		bool helicopterStrife;
+
+		const int tractionIncrement;
+		const int tractionDecrement;
+		const int tractionMax;
+		const int rudderStep;
+		const int rudderMax;
+		const float unitAngle;
+    };
+
+    typedef std::function<void(OptionQuant)> OptionQuantFunction;
+	typedef std::function<void(JoystickQuant)> JoystickQuantFunction;
+
+class Sys {
     public:
-        int rendererWidth();
+		Sys & operator=(const Sys&) = delete;
+		Sys(const Sys&) = delete;
+
+		int rendererWidth();
         int rendererHeight();
 
-        JoystickQuantFunction& getJoystickQuantFunction();
-        void setJoystickQuantFunction(const JoystickQuantFunction& fn);
+        OptionQuantFunction& getOptionQuantFunction();
+        void setOptionQuantFunction(const OptionQuantFunction& fn);
 
-        void postEvent(const Event& event);
-        size_t addEventListener(const std::function<void(Event)> listener);
+		JoystickQuantFunction& getJoystickQuantFunction();
+		void setJoystickQuantFunction(const JoystickQuantFunction& fn);
+
+	void postEvent(const Event& event);
+        size_t addEventListener(const std::function<void(Event)>& listener);
         void removeEventListener(size_t id);
     private:
-        Sys & operator=(const Sys&) = delete;
-        Sys(const Sys&) = delete;
         Sys() = default;
         friend Sys &sys();
 
-        JoystickQuantFunction joystickQuantFunction;
+		OptionQuantFunction optionkQuantFunction;
+		JoystickQuantFunction joystickQuantFunction;
         std::vector<std::function<void(Event)>> listeners;
     };
 
