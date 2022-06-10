@@ -20,6 +20,8 @@
 #include "i_mem.h"
 #include "ikeys.h"
 
+#include "../vangers/sys.h"
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
 // MP Game Parameters...
@@ -1079,15 +1081,21 @@ void iScreenOption::SetValueCHR(const char* p)
 
 int iGetOptionValue(int id)
 {
-#ifdef ANDROID
-	if (id == iSCREEN_RESOLUTION) {
-		return 1;
+	int value = 1;
+	if(iScrOpt && iScrOpt[id]) {
+		value = iScrOpt[id]->GetValueINT();
 	}
-#endif
-	if(iScrOpt && iScrOpt[id])
-		return iScrOpt[id] -> GetValueINT();
-	else
-		return 1;
+
+	if (vangers::sys().getOptionQuantFunction()) {
+		vangers::OptionQuant data = {
+			.optionValue = value,
+			.optionId = id,
+		};
+		vangers::sys().getOptionQuantFunction()(data);
+		value = data.optionValue;
+	}
+
+	return value;
 }
 
 iListElement* iGetOptionObj(int id)
