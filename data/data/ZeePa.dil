@@ -40,7 +40,7 @@
 4 1 "NO-Cirt Delivery" "2" "0" "1" "data INV_GOOD_CIRT == 0 data INV_BAD_CIRT == 0" " " " " 
 5 1 "Toxick Delivery" "2" "0" "1" "data INV_TOXICK > 0" " " " " 
 0 2 "empty" "0" "0" "0" "true" " " " " 
-6 6 "Zyklope Waiting" "2" "0" "1" "data CYCLE == $PREV_CYCLE_1 cycle_exist 1 > 0" " " " " 
+6 6 "Zyklope Waiting" "2" "0" "1" "data CYCLE == $PREV_CYCLE_1 cycle_exist 1 > 0 cycle_exist 0 > 0" " " " " 
 7 6 "WeeZyk Assignment" "2" "0" "1" "data CYCLE == 1 QCODE > 0 data WEEZYK_ASSIGNMENT == 2" " " " " 
 8 6 "WeeZyk Recession" "2" "0" "1" "data CYCLE == 1 QCODE > 0 data WEEZYK_ASSIGNMENT == 1" " " " " 
 6 0 "Mechanic Messiah in Inventory" "3" "0" "1" "data INV_MESSIAH > 0" "abort" "block" 

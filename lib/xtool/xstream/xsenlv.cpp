@@ -2,8 +2,6 @@
 #include <iostream>
 #include <fstream>
 
-static const char *openMSG	 = "CREATE/OPEN FAILURE";
-
 std::fstream *open_file(const char* name, unsigned f)
 {
 	std::ios::openmode mode;
@@ -40,10 +38,15 @@ int XStream::open(const char* name, unsigned f)
 		#ifdef XSTREAM_DEBUG
 			std::cerr << "ERR: XStream::open(\"" << name << "\", 0x" << std::hex << f << ")" << std::endl;
 		#endif
-		if(ErrHUsed)
-			ErrH.Abort(openMSG,XERR_USER,0,smode.c_str());
-		else
+		if (ErrHUsed) {
+			char * error = strerror(errno);
+			ErrH.Abort((std::string("I/O Error: ") +
+				(error ? error : "unknown") +
+				" file: " + name).c_str(),
+			   XERR_USER, 0, smode.c_str());
+		} else {
 			return 0;
+		}
 	}
 	return 1;
 }

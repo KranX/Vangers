@@ -677,13 +677,13 @@ void iSetResolution(int state) {
 			height = 600;
 			break;
 		case 1:
-		    width = 1280;
-			height = 720;
+			width = XGR_Obj.hdWidth;
+			height = XGR_Obj.hdHeight;
 			break;
 	    default:
 		    return;
 	}
-
+			
 	XGR_Obj.set_resolution(width, height);
 	put_map(iScreenOffs,0,I_RES_X,I_RES_Y);
 	VisualBackendContext::backend()->set_screen_resolution(width, height);
@@ -1107,6 +1107,11 @@ void iScreenOption::SetValueCHR(const char* p)
 
 int iGetOptionValue(int id)
 {
+#ifdef ANDROID
+	if (id == iSCREEN_RESOLUTION) {
+		return 1;
+	}
+#endif
 	if(iScrOpt && iScrOpt[id])
 		return iScrOpt[id] -> GetValueINT();
 	else
