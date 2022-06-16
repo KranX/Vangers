@@ -50,6 +50,8 @@
 
 #include "../actint/credits.h"
 
+#include "../vangers/sys.h"
+
 #define INSECTOIDS
 
 int DbgCheckEnable;
@@ -3313,6 +3315,17 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 		TurnAngle  = 0;
 	if(abs(DistPi(TurnAngle,0)) < 8)
 		TurnAngle = 0;
+
+    if (vangers::sys().getCameraQuantFunction()) {
+        vangers::CameraQuant quant = {
+            .slopeAngle = SlopeAngle,
+            .turnAngle = TurnAngle,
+        };
+
+        vangers::sys().getCameraQuantFunction()(quant);
+        SlopeAngle = quant.slopeAngle;
+        TurnAngle = quant.turnAngle;
+    }
 
 	calc_view_factors();
 }

@@ -2747,7 +2747,7 @@ void Object::direct_keyboard_control()
 void Object::direct_joystick_control()
 {
 	if (vangers::sys().getJoystickQuantFunction()) {
-		float unitAngle = GTOR(dynamic_cast<ActionUnit*>(this)->Angle);
+		int unitAngle = dynamic_cast<ActionUnit*>(this)->Angle;
 		vangers::JoystickQuant joystickQuant = {
 			.active = false,
 			.traction = traction,

@@ -35,6 +35,14 @@ void Sys::setJoystickQuantFunction(const JoystickQuantFunction& fn) {
     joystickQuantFunction = fn;
 }
 
+CameraQuantFunction& Sys::getCameraQuantFunction() {
+    return cameraQuantFunction;
+}
+
+void Sys::setCameraQuantFunction(const CameraQuantFunction& fn) {
+    cameraQuantFunction = fn;
+}
+
 size_t Sys::addEventListener(const std::function<void(Event)>& listener) {
     auto id = this->listeners.size();
     this->listeners.push_back(listener);

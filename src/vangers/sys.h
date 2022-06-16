@@ -26,11 +26,17 @@ namespace vangers {
 		const int tractionMax;
 		const int rudderStep;
 		const int rudderMax;
-		const float unitAngle;
+		const int unitAngle;
     };
+
+	struct CameraQuant {
+		int slopeAngle;
+		int turnAngle;
+	};
 
     typedef std::function<void(OptionQuant&)> OptionQuantFunction;
 	typedef std::function<void(JoystickQuant&)> JoystickQuantFunction;
+	typedef std::function<void(CameraQuant&)> CameraQuantFunction;
 
 class Sys {
     public:
@@ -46,6 +52,9 @@ class Sys {
 		JoystickQuantFunction& getJoystickQuantFunction();
 		void setJoystickQuantFunction(const JoystickQuantFunction& fn);
 
+		CameraQuantFunction& getCameraQuantFunction();
+		void setCameraQuantFunction(const CameraQuantFunction& fn);
+
 	void postEvent(const Event& event);
         size_t addEventListener(const std::function<void(Event)>& listener);
         void removeEventListener(size_t id);
@@ -55,7 +64,8 @@ class Sys {
 
 		OptionQuantFunction optionkQuantFunction;
 		JoystickQuantFunction joystickQuantFunction;
-        std::vector<std::function<void(Event)>> listeners;
+		CameraQuantFunction cameraQuantFunction;
+		std::vector<std::function<void(Event)>> listeners;
     };
 
     Sys &sys();
