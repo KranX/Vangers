@@ -3,6 +3,7 @@
 //
 
 #include "xbmp.h"
+#include <algorithm>
 #include <functional>
 #include <utility>
 
@@ -21,6 +22,7 @@ renderer::compositor::Texture HDRightSideTexture = renderer::compositor::Texture
 std::pair<const char *, const char *> activeSides = std::make_pair<>(nullptr, nullptr);
 int currentRto = 0;
 int currentIScreenId = 0;
+constexpr int contentWidth = 160;
 
 std::pair<const char *, const char *> getSideNames() {
 	int activeRtoId = getCurRtoId();
@@ -83,7 +85,7 @@ std::pair<const char *, const char *> getSideNames() {
 }
 }
 
-void XGR_RenderSides(renderer::compositor::AbstractCompositor* renderer) {
+void XGR_RenderSides(renderer::compositor::AbstractCompositor* renderer, int renderWidth) {
 	auto sideNames = getSideNames();
 
 	if (sideNames.first != activeSides.first) {
@@ -107,6 +109,9 @@ void XGR_RenderSides(renderer::compositor::AbstractCompositor* renderer) {
 		activeSides.second = sideNames.second;
 	}
 
+	// TODO:
+	// int outWidth = (xgrScreenSizeX - renderWidth) / 2;
+	// dst_rect.x = std::max<int>(0, outWidth - contentWidth);
 	int32_t width;
 	if (HDLeftSideTexture.is_valid()) {
 		renderer->texture_query(HDLeftSideTexture, &width, nullptr, nullptr, nullptr);

@@ -136,7 +136,7 @@ XGR_Screen::XGR_Screen(void)
 	texture = renderer::compositor::Texture::Invalid;
 }
 
-int XGR_Screen::init(int x,int y,int flags_in)
+int XGR_Screen::init(int flags_in)
 {
 	flags = flags_in;
 	std::cout<<"XGR_Screen::init"<<std::endl;
@@ -162,6 +162,23 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
+	SDL_DisplayMode displayMode;
+	SDL_GetCurrentDisplayMode(0, &displayMode);
+	int maxWidth = displayMode.w;
+	int maxHeight = displayMode.h;
+
+	float aspect = (float) maxWidth / (float) maxHeight;
+	if (aspect < 4/3.f) {
+		aspect = 4/3.f;
+	}
+
+	if (aspect > 13/6.f /* iPhone */) {
+		aspect = 13/6.f;
+	}
+
+	this->hdWidth = 1280;
+	this->hdHeight = 1280 / aspect;
+
 	std::cout<<"SDL_CreateWindowAndRenderer"<<std::endl;
 	if (XGR_FULL_SCREEN) {
 		if ((sdlWindow = SDL_CreateWindow("Vangers", 0, 0, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP)) == nullptr) {
@@ -169,12 +186,12 @@ int XGR_Screen::init(int x,int y,int flags_in)
 			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 		}
 	} else {
-		if ((sdlWindow = SDL_CreateWindow("Vangers", 0, 0, x, y, SDL_WINDOW_OPENGL)) == nullptr) {
+		if ((sdlWindow = SDL_CreateWindow("Vangers", 0, 0, this->hdWidth, this->hdHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED)) == nullptr) {
 			std::cout<<"ERROR2"<<std::endl;
 			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 		}
 	}
-	std::cout<<"SDL_SetWindowTitle"<<std::endl;
+	std::cout << "SDL_Window created: " << this->hdWidth << "x" << this->hdHeight << std::endl;
 	SDL_SetWindowTitle(sdlWindow, "Vangers");
 
 	std::cout<<"SDL_GL_CreateContext"<<std::endl;
@@ -193,7 +210,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 		std::cout<<"Can't load icon vangers.bmp"<<std::endl;
 	}
 
-    renderer = new renderer::compositor::gles3::GLES3Compositor(x, y, (GLADloadproc)SDL_GL_GetProcAddress);
+	renderer = new renderer::compositor::gles3::GLES3Compositor(this->hdWidth, this->hdHeight, (GLADloadproc)SDL_GL_GetProcAddress);
 	renderer->initialize();
 	// TODO:
 	std::cout<<"SDL_SetRenderDrawColor"<<std::endl;
@@ -203,7 +220,7 @@ int XGR_Screen::init(int x,int y,int flags_in)
 	// TODO: renderer filtering
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");  // "linear" make the scaled rendering look smoother.
 
-	create_surfaces(x, y);
+	create_surfaces(this->hdWidth, this->hdHeight);
 
 	std::cout<<"SDL_ShowCursor"<<std::endl;
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -239,9 +256,9 @@ int XGR_Screen::init(int x,int y,int flags_in)
 }
 
 void XGR_Screen::create_surfaces(int width, int height) {
-	XGR_ScreenSurface = new uint8_t[width * height] {0};
-	XGR_ScreenSurface2D = new uint8_t[width * height] {0};
-	XGR_ScreenSurface2DRgba = new uint32_t[width * height] {0};
+	XGR_ScreenSurface.reset(new uint8_t[width * height] {0});
+	XGR_ScreenSurface2D.reset(new uint8_t[width * height] {0});
+	XGR_ScreenSurface2DRgba.reset(new uint32_t[width * height] {0});
 
 	std::cout<<"XGR32_ScreenSurface = SDL_CreateRGBSurface"<<std::endl;
 	XGR32_ScreenSurface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
@@ -273,17 +290,7 @@ void XGR_Screen::create_surfaces(int width, int height) {
 }
 
 void XGR_Screen::set_resolution(int width, int height){
-	// TODO: do not change resolution, is new res is the same
 	std::cout << "XGR_Screen::set_resolution: " << width << ", " << height << std::endl;
-	if(width == ScreenX && height == ScreenY){
-		std::cout << "Resolution didn't change" << std::endl;
-		return;
-	}
-
-	destroy_surfaces();
-	SDL_SetWindowSize(sdlWindow, width, height);
-	renderer->set_physical_screen_size(width, height);
-	create_surfaces(width, height);
 
 	if (width == 800 && height == 600) {
 		// for comparison == 1
@@ -293,6 +300,16 @@ void XGR_Screen::set_resolution(int width, int height){
 		screen_scale_x = (float)width / 800;
 		screen_scale_y = (float)height / 600;
 	}
+
+	if(width == ScreenX && height == ScreenY){
+		std::cout << "Resolution didn't change" << std::endl;
+		return;
+	}
+
+	destroy_surfaces();
+	// SDL_SetWindowSize(sdlWindow, width, height);
+	renderer->set_physical_screen_size(width, height);
+	create_surfaces(width, height);
 }
 
 const float XGR_Screen::get_screen_scale_x() {
@@ -309,9 +326,6 @@ void XGR_Screen::destroy_surfaces() {
 
 	SDL_UnlockSurface(XGR32_ScreenSurface);
 
-	delete[] XGR_ScreenSurface;
-	delete[] XGR_ScreenSurface2D;
-	delete[] XGR_ScreenSurface2DRgba;
 	SDL_FreeSurface(XGR32_ScreenSurface);
 
 	texture = renderer::compositor::Texture::Invalid;
@@ -885,15 +899,15 @@ uint8_t* XGR_Screen::get_active_render_buffer() {
 }
 
 uint8_t* XGR_Screen::get_default_render_buffer() {
-	return XGR_ScreenSurface;
+	return XGR_ScreenSurface.get();
 }
 
 uint8_t* XGR_Screen::get_2d_render_buffer() {
-	return XGR_ScreenSurface2D;
+	return XGR_ScreenSurface2D.get();
 }
 
 uint32_t* XGR_Screen::get_2d_rgba_render_buffer() {
-	return XGR_ScreenSurface2DRgba;
+	return XGR_ScreenSurface2DRgba.get();
 }
 
 void XGR_Screen::set_active_render_buffer(uint8_t *buf) {
@@ -901,11 +915,11 @@ void XGR_Screen::set_active_render_buffer(uint8_t *buf) {
 }
 
 void XGR_Screen::set_default_render_buffer() {
-	set_active_render_buffer(XGR_ScreenSurface);
+	set_active_render_buffer(get_default_render_buffer());
 }
 
 void XGR_Screen::set_2d_render_buffer() {
-	set_active_render_buffer(XGR_ScreenSurface2D);
+	set_active_render_buffer(get_2d_render_buffer());
 }
 
 SDL_Surface* XGR_Screen::get_screenshot() {
@@ -939,9 +953,11 @@ void XGR_Screen::flip()
 		// TODO: pixels size should be renderer-specific
 		uint32_t *pixels = new uint32_t [xgrScreenSizeX * xgrScreenSizeY];
 		int pitch;
-		blitRgba(pixels, XGR_ScreenSurface, XGR_ScreenSurface2DRgba, XGR_ScreenSurface2D);
+		blitRgba((uint32_t*)pixels, get_default_render_buffer(), get_2d_rgba_render_buffer(), get_2d_render_buffer());
 		renderer->texture_set_data(texture, (uint8_t*)pixels);
 		delete[] pixels;
+
+		
 		if (XGR_FULL_SCREEN) {
 			SDL_GetWindowSize(sdlWindow, &RealX, &RealY);
 			// TODO:
@@ -975,8 +991,7 @@ void XGR_Screen::flip()
 					.width = new_width,
 					.height = xgrScreenSizeY,
 			};
-
-			XGR_RenderSides(renderer);
+			XGR_RenderSides(renderer, this->hdWidth);
 			// TODO:
 //			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0);
 			renderer->texture_render(texture, src_rect, dst_rect);
@@ -1046,8 +1061,9 @@ void XGR_Screen::flush(int x,int y,int sx,int sy)
 
 void XGR_Screen::fill(int col, void* buffer)
 {
-	if (buffer == XGR_ScreenSurface2DRgba) {
-		memset(XGR_ScreenSurface2DRgba, col, ScreenX * ScreenY * 4);
+	auto surface2dRgba = XGR_ScreenSurface2DRgba.get();
+	if (buffer == surface2dRgba) {
+		memset(surface2dRgba, col, ScreenX * ScreenY * 4);
 	} else {
 		memset(buffer == NULL ? ScreenBuf : buffer, col, ScreenX * ScreenY);
 	}

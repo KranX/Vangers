@@ -1,7 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
-#include "../lang.h"
+#include "lang.h"
 #include <zlib.h>
 
 #if defined(__APPLE__) || __GNUC__ < 9

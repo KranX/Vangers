@@ -10,9 +10,9 @@ SET(xgraph_SRCS
 	xside.cpp
 )
 
-ADD_LIBRARY(xgraph STATIC ${xgraph_SRCS})
-
-TARGET_LINK_LIBRARIES(xgraph
-	${SDL2_LIBRARY}
-		renderer
-)
+if (ANDROID)
+	ADD_LIBRARY(xgraph OBJECT ${xgraph_SRCS})
+else()
+	ADD_LIBRARY(xgraph STATIC ${xgraph_SRCS})
+	TARGET_LINK_LIBRARIES(xgraph ${SDL2_LIBRARY} renderer)
+endif()

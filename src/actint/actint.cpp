@@ -9536,6 +9536,7 @@ aciScreenText::aciScreenText(void)
 aciScreenText::~aciScreenText(void)
 {
 	free();
+	delete [] convBuf;
 	delete NextPageKey;
 	delete PageTable;
 	delete StrTable;
