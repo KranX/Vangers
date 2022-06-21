@@ -5,75 +5,78 @@
 #ifndef VANGERS_SYS_H
 #define VANGERS_SYS_H
 
-#include <vector>
 #include <functional>
+#include <vector>
+
 #include "event.h"
 
 namespace vangers {
-	struct OptionQuant {
-		int optionValue;
-		const int optionId;
-	};
+struct OptionQuant {
+  int optionValue;
+  const int optionId;
+};
 
-    struct JoystickQuant {
-		bool active;
-		int traction;
-		int rudder;
-		bool helicopterStrife;
+struct JoystickQuant {
+  bool active;
+  int traction;
+  int rudder;
+  bool helicopterStrife;
 
-		const int tractionIncrement;
-		const int tractionDecrement;
-		const int tractionMax;
-		const int rudderStep;
-		const int rudderMax;
-		const int unitAngle;
-    };
+  const int tractionIncrement;
+  const int tractionDecrement;
+  const int tractionMax;
+  const int rudderStep;
+  const int rudderMax;
+  const int unitAngle;
+};
 
-	struct CameraQuant {
-		int slopeAngle;
-		int turnAngle;
-	};
+struct CameraQuant {
+  int slopeAngle;
+  int turnAngle;
+};
 
-    typedef std::function<void(OptionQuant&)> OptionQuantFunction;
-	typedef std::function<void(JoystickQuant&)> JoystickQuantFunction;
-	typedef std::function<void(CameraQuant&)> CameraQuantFunction;
+typedef std::function<void(OptionQuant&)> OptionQuantFunction;
+typedef std::function<void(JoystickQuant&)> JoystickQuantFunction;
+typedef std::function<void(CameraQuant&)> CameraQuantFunction;
 
 class Sys {
-    public:
-		Sys & operator=(const Sys&) = delete;
-		Sys(const Sys&) = delete;
+ public:
+  Sys& operator=(const Sys&) = delete;
+  Sys(const Sys&);
 
-		int rendererWidth();
-        int rendererHeight();
+  int rendererWidth();
+  int rendererHeight();
 
-        OptionQuantFunction& getOptionQuantFunction();
-        void setOptionQuantFunction(const OptionQuantFunction& fn);
+  OptionQuantFunction& getOptionQuantFunction();
+  void setOptionQuantFunction(const OptionQuantFunction& fn);
 
-		JoystickQuantFunction& getJoystickQuantFunction();
-		void setJoystickQuantFunction(const JoystickQuantFunction& fn);
+  JoystickQuantFunction& getJoystickQuantFunction();
+  void setJoystickQuantFunction(const JoystickQuantFunction& fn);
 
-		CameraQuantFunction& getCameraQuantFunction();
-		void setCameraQuantFunction(const CameraQuantFunction& fn);
+  CameraQuantFunction& getCameraQuantFunction();
+  void setCameraQuantFunction(const CameraQuantFunction& fn);
 
-	void postEvent(const Event& event);
-        size_t addEventListener(const std::function<void(Event)>& listener);
-        void removeEventListener(size_t id);
-    private:
-        Sys() = default;
-        friend Sys &sys();
+  void postEvent(const Event& event);
+  size_t addEventListener(const std::function<void(Event)>& listener);
+  void removeEventListener(size_t id);
 
-		OptionQuantFunction optionkQuantFunction;
-		JoystickQuantFunction joystickQuantFunction;
-		CameraQuantFunction cameraQuantFunction;
-		std::vector<std::function<void(Event)>> listeners;
-    };
+ private:
+  Sys();
+  ~Sys();
+  friend Sys& sys();
 
-    Sys &sys();
-}
+  OptionQuantFunction optionkQuantFunction;
+  JoystickQuantFunction joystickQuantFunction;
+  CameraQuantFunction cameraQuantFunction;
+  std::vector<std::function<void(Event)>> listeners;
+};
+
+Sys& sys();
+}  // namespace vangers
 
 // @caiiiycuk: to use without including <vangers/sys.h>
 extern void sys_postReadyEvent();
 extern void sys_postScaledRendererChangedEvent(bool enabled);
 extern void sys_postRuntimeObjectChangedEvent(int runtimeObjectId);
 
-#endif //VANGERS_SYS_H
+#endif  // VANGERS_SYS_H
