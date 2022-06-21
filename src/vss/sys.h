@@ -77,6 +77,7 @@ Sys& sys();
 }  // namespace vangers
 
 // @caiiiycuk: to use without including <vangers/sys.h>
+extern void sys_initScripts(const char* folder);
 extern void sys_postReadyEvent();
 extern void sys_postScaledRendererChangedEvent(bool enabled);
 extern void sys_postRuntimeObjectChangedEvent(int runtimeObjectId);

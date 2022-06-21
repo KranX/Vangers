@@ -68,6 +68,8 @@ SET(vangers_SRCS
 	uvs/univang.cpp
 	vss/sys.cpp
 	vss/duktape-2.7.0/duktape.c
+	vss/duktape-2.7.0/extras/console/duk_console.c
+	vss/duktape-2.7.0/extras/module-node/duk_module_node.c
 	xjoystick.cpp
 	xsocket.cpp
 	zmod_client.cpp

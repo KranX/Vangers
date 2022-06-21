@@ -5,6 +5,7 @@
     "license": "GPL-3.0",
     "private": false,
     "devDependencies": {
+        "@types/node": "^18.0.0",
         "@typescript-eslint/eslint-plugin": "^5.27.0",
         "@typescript-eslint/parser": "^5.27.0",
         "eslint": "^8.16.0",
