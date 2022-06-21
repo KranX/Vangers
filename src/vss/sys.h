@@ -7,8 +7,10 @@
 
 #include <functional>
 #include <vector>
+#include <duktape.h>
 
 #include "event.h"
+#include "quant-names.h"
 
 namespace vss {
 struct OptionQuant {
@@ -39,15 +41,40 @@ typedef std::function<void(OptionQuant&)> OptionQuantFunction;
 typedef std::function<void(JoystickQuant&)> JoystickQuantFunction;
 typedef std::function<void(CameraQuant&)> CameraQuantFunction;
 
+class QuantResult {
+ public:
+  explicit QuantResult(duk_context* ctx);
+  ~QuantResult();
+  bool isNotHandled();
+  bool isPreventDefault();
+  int getInt(const char* name, int defaultValue);
+ private:
+  duk_context* ctx;
+  bool notHandled;
+  bool preventDefault;
+};
+
+class QuantBuilder {
+ public:
+  QuantBuilder(duk_context* ctx, const char* eventName);
+  QuantBuilder& prop(const char* name, int value);
+  QuantResult send();
+ private:
+  duk_context* ctx;
+  bool valid;
+};
+
 class Sys {
  public:
   Sys& operator=(const Sys&) = delete;
-  Sys(const Sys&);
+  Sys(const Sys&) = delete;
 
   void initScripts(const char* folder);
 
   int rendererWidth();
   int rendererHeight();
+
+  QuantBuilder quant(const char* eventName);
 
   OptionQuantFunction& getOptionQuantFunction();
   void setOptionQuantFunction(const OptionQuantFunction& fn);
@@ -67,7 +94,9 @@ class Sys {
   ~Sys();
   friend Sys& sys();
 
-  OptionQuantFunction optionkQuantFunction;
+  duk_context* ctx;
+
+  OptionQuantFunction optionQuantFunction;
   JoystickQuantFunction joystickQuantFunction;
   CameraQuantFunction cameraQuantFunction;
   std::vector<std::function<void(Event)>> listeners;

@@ -66,24 +66,29 @@ SET(vangers_SRCS
 	uvs/diagen.cpp
 	uvs/screen.cpp
 	uvs/univang.cpp
-	vss/sys.cpp
-	vss/duktape-2.7.0/duktape.c
-	vss/duktape-2.7.0/extras/console/duk_console.c
-	vss/duktape-2.7.0/extras/module-node/duk_module_node.c
 	xjoystick.cpp
 	xsocket.cpp
 	zmod_client.cpp
 	${WINDOWS_RES}
 	actint/layout.h)
 
+SET(vss_SRCS
+		vss/sys.cpp
+		vss/sys-modules.cpp
+		vss/sys-bridge.cpp
+		vss/sys-quant.cpp
+		vss/duktape-2.7.0/duktape.c
+		vss/duktape-2.7.0/extras/console/duk_console.c
+		vss/duktape-2.7.0/extras/module-node/duk_module_node.c)
+
 if (ANDROID)
-	ADD_LIBRARY(vangers STATIC ${vangers_SRCS}
+	ADD_LIBRARY(vangers STATIC ${vangers_SRCS} ${vss_SRCS}
 		$<TARGET_OBJECTS:xtool>
 		$<TARGET_OBJECTS:xgraph>
 		$<TARGET_OBJECTS:xsound>
 	)
 else()
-	ADD_EXECUTABLE(vangers ${vangers_SRCS})
+	ADD_EXECUTABLE(vangers ${vangers_SRCS} ${vss_SRCS})
 
 	IF(WIN32)
 		SET(WIN_LIB

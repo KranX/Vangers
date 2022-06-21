@@ -1,22 +1,26 @@
 ## Vangers Scirpting Subsytem (vss)
 
-The vangers binary accepts optional argument for scripting directory. If this arguments present then scripting subsystem
-tried to load `main.js` from that folder.
+The vangers binary accepts optional argument for scripting directory. If this arguments present then scripting subsystem tried to load `main.js` from that folder.
 
 So, to run you custom addon please do:
 
 ```bash
-./vangres -vss <path-to-directory>
+./vangres -vss <path-to-addon-directory>
 ```
 
-This directory contains simple echo addon, you can compile it using following steps:
+## Camera addon
+
+This directory contains simple camera addon. The camera addon will lock the camera
+to front of mechos.
+
+You can compile it using following steps:
 
 1. Install node.js + yarn
-2. Install dependencies `yarn`
-3. Build the code `yarn run tsc`
-4. Run the vangers `./vangers --vss scripting/build`
+2. Install dependencies: `yarn`
+3. Build the code: `yarn run tsc` (--watch for watch mode)
+4. Run the vangers: `./vangers --vss scripting/build`
 
-You can copy simple echo addon in separate directory and develop your addon.
+You can use this addon as template for new addons, just copy it to another location.
 
 ## TypeScript
 
@@ -33,7 +37,7 @@ vss.fatal("not implemented");
 ## Module definition
 
 Standard loader will load all js files in it's own directory. You must proved **init** function to work
-with standard loader. Like this (echo.ts):
+with standard loader. Like this:
 
 ```ts
 import vss from "./vss";

@@ -1086,14 +1086,13 @@ int iGetOptionValue(int id)
 		value = iScrOpt[id]->GetValueINT();
 	}
 
-	if (vss::sys().getOptionQuantFunction()) {
-		vss::OptionQuant data = {
-			.optionValue = value,
-			.optionId = id,
-		};
-		vss::sys().getOptionQuantFunction()(data);
-		value = data.optionValue;
-	}
+	auto result = vss::sys()
+		.quant(vss::OPTION_QUANT)
+		.prop("id", id)
+		.prop("value", value)
+		.send();
+
+	value = result.getInt("value", value);
 
 	return value;
 }
