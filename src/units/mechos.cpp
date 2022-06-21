@@ -3316,16 +3316,14 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	if(abs(DistPi(TurnAngle,0)) < 8)
 		TurnAngle = 0;
 
-    if (vss::sys().getCameraQuantFunction()) {
-        vss::CameraQuant quant = {
-            .slopeAngle = SlopeAngle,
-            .turnAngle = TurnAngle,
-        };
+	auto result = vss::sys()
+		.quant(vss::CAMERA_QUANT)
+		.prop("slopeAngle", SlopeAngle)
+		.prop("turnAngle", TurnAngle)
+		.send();
 
-        vss::sys().getCameraQuantFunction()(quant);
-        SlopeAngle = quant.slopeAngle;
-        TurnAngle = quant.turnAngle;
-    }
+	SlopeAngle = result.getInt("slopeAngle", SlopeAngle);
+	TurnAngle = result.getInt("turnAngle", TurnAngle);
 
 	calc_view_factors();
 }

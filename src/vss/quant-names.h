@@ -7,6 +7,7 @@
 
 namespace vss {
   constexpr const char* OPTION_QUANT = "option";
+  constexpr const char* CAMERA_QUANT = "camera";
 }
 
 #endif  // VANGERS_QUANT_NAMES_H

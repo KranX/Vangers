@@ -13,10 +13,6 @@
 #include "quant-names.h"
 
 namespace vss {
-struct OptionQuant {
-  int optionValue;
-  const int optionId;
-};
 
 struct JoystickQuant {
   bool active;
@@ -32,14 +28,7 @@ struct JoystickQuant {
   const int unitAngle;
 };
 
-struct CameraQuant {
-  int slopeAngle;
-  int turnAngle;
-};
-
-typedef std::function<void(OptionQuant&)> OptionQuantFunction;
 typedef std::function<void(JoystickQuant&)> JoystickQuantFunction;
-typedef std::function<void(CameraQuant&)> CameraQuantFunction;
 
 class QuantResult {
  public:
@@ -76,14 +65,8 @@ class Sys {
 
   QuantBuilder quant(const char* eventName);
 
-  OptionQuantFunction& getOptionQuantFunction();
-  void setOptionQuantFunction(const OptionQuantFunction& fn);
-
   JoystickQuantFunction& getJoystickQuantFunction();
   void setJoystickQuantFunction(const JoystickQuantFunction& fn);
-
-  CameraQuantFunction& getCameraQuantFunction();
-  void setCameraQuantFunction(const CameraQuantFunction& fn);
 
   void postEvent(const Event& event);
   size_t addEventListener(const std::function<void(Event)>& listener);
@@ -96,9 +79,7 @@ class Sys {
 
   duk_context* ctx;
 
-  OptionQuantFunction optionQuantFunction;
   JoystickQuantFunction joystickQuantFunction;
-  CameraQuantFunction cameraQuantFunction;
   std::vector<std::function<void(Event)>> listeners;
 };
 

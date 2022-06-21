@@ -1,27 +1,40 @@
 declare const bridge: VssNative;
 const global = new Function("return this;")();
 
-export type VssQuantName = "option";
-export type VssQuantPayload = VssOptionQuant;
-export type VssQuantResult = undefined | "preventDefault" | VssOptionQuantResult;
+export type VssQuantName = keyof VssQuantMap;
+export type VssQuantPayload<K extends keyof VssQuantMap> = VssQuantMap[K][0];
+export type VssQuantResult<K extends keyof VssQuantMap> = undefined | "preventDefault" | VssQuantMap[K][1];
+
+interface VssQuantMap {
+    "option": [VssOptionQuant, VssOptionQuantResult],
+    "camera": [VssCameraQuant, VssCameraQuantResult],
+}
 
 export interface VssOptionQuant {
     id: iScreenOptionId,
     value: number,
 }
-
 export interface VssOptionQuantResult {
-    value: number;
+    value?: number;
 }
 
-export type VssQuantListener = (payload: VssQuantPayload,
-    stopPropogation: () => void, quant: VssQuantName) => VssQuantResult;
+export interface VssCameraQuant {
+    turnAngle: number,
+    slopAngle: number,
+}
+export interface VssCameraQuantResult {
+    turnAngle?: number;
+    slopeAngle?: number;
+}
+
+export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
+    stopPropogation: () => void, quant: K) => VssQuantResult<K>;
 
 class Vss {
     // all scripts that available to use in 'require'
     scripts: string[];
 
-    private quantListeners: { [quantName: string]: VssQuantListener[] } = {};
+    private quantListeners: { [quantName: string]: VssQuantListener<any>[] } = {};
 
     constructor() {
         this.scripts = bridge.scripts().filter((value) => {
@@ -36,21 +49,21 @@ class Vss {
         bridge.fatal("vss: " + msg);
     }
 
-    addQuantListener(quant: VssQuantName, listener: VssQuantListener) {
+    addQuantListener<K extends VssQuantName>(quant: K, listener: VssQuantListener<K>) {
         if (this.quantListeners[quant] === undefined) {
             this.quantListeners[quant] = [];
         }
         this.quantListeners[quant].push(listener);
     }
 
-    removeQuantListener(quant: VssQuantName, listener: VssQuantListener) {
+    removeQuantListener<K extends VssQuantName>(quant: K, listener: VssQuantListener<K>) {
         const index = this.quantListeners[quant]?.indexOf(listener);
         if (index && index !== -1) {
             this.quantListeners[quant].splice(index, 1);
         }
     }
 
-    private onVssQuant(quant: VssQuantName, payload: VssQuantPayload) {
+    private onVssQuant<K extends VssQuantName>(quant: K, payload: VssQuantPayload<K>) {
         const listeners = this.quantListeners[quant];
         if (listeners === undefined || listeners.length === 0) {
             return undefined;

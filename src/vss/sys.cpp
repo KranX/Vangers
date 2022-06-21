@@ -40,28 +40,12 @@ int Sys::rendererWidth() { return XGR_Obj.hdWidth; }
 
 int Sys::rendererHeight() { return XGR_Obj.hdHeight; }
 
-OptionQuantFunction& Sys::getOptionQuantFunction() {
-  return optionQuantFunction;
-}
-
-void Sys::setOptionQuantFunction(const OptionQuantFunction& fn) {
-  optionQuantFunction = fn;
-}
-
 JoystickQuantFunction& Sys::getJoystickQuantFunction() {
   return joystickQuantFunction;
 }
 
 void Sys::setJoystickQuantFunction(const JoystickQuantFunction& fn) {
   joystickQuantFunction = fn;
-}
-
-CameraQuantFunction& Sys::getCameraQuantFunction() {
-  return cameraQuantFunction;
-}
-
-void Sys::setCameraQuantFunction(const CameraQuantFunction& fn) {
-  cameraQuantFunction = fn;
 }
 
 size_t Sys::addEventListener(const std::function<void(Event)>& listener) {
