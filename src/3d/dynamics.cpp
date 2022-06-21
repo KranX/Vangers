@@ -29,7 +29,7 @@ struct ParticleProcess;
 #include "../dast/poly3d.h"
 
 #include "../iscreen/controls.h"
-#include "../vangers/sys.h"
+#include "../vss/sys.h"
 
 #undef random
 #define random(num) ((int)(((long)_rand()*(num)) >> 15))
@@ -2746,9 +2746,9 @@ void Object::direct_keyboard_control()
 
 void Object::direct_joystick_control()
 {
-	if (vangers::sys().getJoystickQuantFunction()) {
+	if (vss::sys().getJoystickQuantFunction()) {
 		int unitAngle = dynamic_cast<ActionUnit*>(this)->Angle;
-		vangers::JoystickQuant joystickQuant = {
+		vss::JoystickQuant joystickQuant = {
 			.active = false,
 			.traction = traction,
 			.rudder = rudder,
@@ -2761,7 +2761,7 @@ void Object::direct_joystick_control()
 			.rudderMax = rudder_max,
 			.unitAngle = unitAngle,
 		};
-		vangers::sys().getJoystickQuantFunction()(joystickQuant);
+		vss::sys().getJoystickQuantFunction()(joystickQuant);
 		if (!joystickQuant.active) {
 			return;
 		}
@@ -2874,7 +2874,7 @@ void Object::analysis()
 			entries_control();
 			if(!disable_control){
 				direct_keyboard_control();
-				if(JoystickMode || vangers::sys().getJoystickQuantFunction()) {
+				if(JoystickMode || vss::sys().getJoystickQuantFunction()) {
 					direct_joystick_control();
 				}
 			}

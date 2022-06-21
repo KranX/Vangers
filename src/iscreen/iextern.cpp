@@ -20,7 +20,7 @@
 #include "i_mem.h"
 #include "ikeys.h"
 
-#include "../vangers/sys.h"
+#include "../vss/sys.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
@@ -1086,12 +1086,12 @@ int iGetOptionValue(int id)
 		value = iScrOpt[id]->GetValueINT();
 	}
 
-	if (vangers::sys().getOptionQuantFunction()) {
-		vangers::OptionQuant data = {
+	if (vss::sys().getOptionQuantFunction()) {
+		vss::OptionQuant data = {
 			.optionValue = value,
 			.optionId = id,
 		};
-		vangers::sys().getOptionQuantFunction()(data);
+		vss::sys().getOptionQuantFunction()(data);
 		value = data.optionValue;
 	}
 

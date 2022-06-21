@@ -5,7 +5,7 @@
 #ifndef VANGERS_SYS_EVENT_H
 #define VANGERS_SYS_EVENT_H
 
-namespace vangers {
+namespace vss {
 extern const char *SYS_EVENT_READY;
 extern const char *SYS_EVENT_SCALED_RENDERER_CHANGED;
 extern const char *SYS_EVENT_RUNTIME_OBJECT_CHANGED;

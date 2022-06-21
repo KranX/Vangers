@@ -1,0 +1,14 @@
+{
+    "name": "vss-addon",
+    "version": "1.0.0",
+    "author": "caiiiycuk",
+    "license": "GPL-3.0",
+    "private": false,
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.27.0",
+        "@typescript-eslint/parser": "^5.27.0",
+        "eslint": "^8.16.0",
+        "eslint-config-google": "^0.14.0",
+        "typescript": "^4.7.2"
+    }
+}

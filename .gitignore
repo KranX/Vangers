@@ -35,3 +35,8 @@ CMakeSettings.json
 /build
 /clunk
 /vangers
+
+# vss
+scripting/yarn-error.log
+scripting/node_modules
+scripting/build

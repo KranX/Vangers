@@ -2,7 +2,7 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xtool"
 	"${PROJECT_SOURCE_DIR}/lib/xgraph"
 	"${PROJECT_SOURCE_DIR}/lib/xsound"
-	"vangers/duktape-2.7.0"
+	"vss/duktape-2.7.0"
 )
 
 SET(vangers_SRCS
@@ -66,8 +66,8 @@ SET(vangers_SRCS
 	uvs/diagen.cpp
 	uvs/screen.cpp
 	uvs/univang.cpp
-	vangers/sys.cpp
-	vangers/duktape-2.7.0/duktape.c
+	vss/sys.cpp
+	vss/duktape-2.7.0/duktape.c
 	xjoystick.cpp
 	xsocket.cpp
 	zmod_client.cpp

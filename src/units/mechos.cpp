@@ -50,7 +50,7 @@
 
 #include "../actint/credits.h"
 
-#include "../vangers/sys.h"
+#include "../vss/sys.h"
 
 #define INSECTOIDS
 
@@ -3316,13 +3316,13 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	if(abs(DistPi(TurnAngle,0)) < 8)
 		TurnAngle = 0;
 
-    if (vangers::sys().getCameraQuantFunction()) {
-        vangers::CameraQuant quant = {
+    if (vss::sys().getCameraQuantFunction()) {
+        vss::CameraQuant quant = {
             .slopeAngle = SlopeAngle,
             .turnAngle = TurnAngle,
         };
 
-        vangers::sys().getCameraQuantFunction()(quant);
+        vss::sys().getCameraQuantFunction()(quant);
         SlopeAngle = quant.slopeAngle;
         TurnAngle = quant.turnAngle;
     }

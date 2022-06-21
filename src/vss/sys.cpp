@@ -8,12 +8,12 @@
 
 #include "xgraph.h"
 
-using namespace vangers;
+using namespace vss;
 
-const char* vangers::SYS_EVENT_READY = "sys_ready";
-const char* vangers::SYS_EVENT_SCALED_RENDERER_CHANGED =
+const char* vss::SYS_EVENT_READY = "sys_ready";
+const char* vss::SYS_EVENT_SCALED_RENDERER_CHANGED =
     "sys_scaled_renderer_changed";
-const char* vangers::SYS_EVENT_RUNTIME_OBJECT_CHANGED =
+const char* vss::SYS_EVENT_RUNTIME_OBJECT_CHANGED =
     "sys_runtime_object_changed";
 
 duk_context* ctx = nullptr;
@@ -68,7 +68,7 @@ void Sys::postEvent(const Event& event) {
   }
 }
 
-Sys& vangers::sys() {
+Sys& vss::sys() {
   static Sys sys;
   return sys;
 }
@@ -76,7 +76,7 @@ Sys& vangers::sys() {
 void sys_postReadyEvent() { sys().postEvent({.type = SYS_EVENT_READY}); }
 
 void sys_postScaledRendererChangedEvent(bool enabled) {
-  sys().postEvent({.type = vangers::SYS_EVENT_SCALED_RENDERER_CHANGED,
+  sys().postEvent({.type = vss::SYS_EVENT_SCALED_RENDERER_CHANGED,
                    .scaledRenderer = enabled});
 }
 
@@ -87,7 +87,7 @@ void sys_postRuntimeObjectChangedEvent(int runtimeObjectId) {
   }
   currentRuntimeObjectId = runtimeObjectId;
   sys().postEvent({
-      .type = vangers::SYS_EVENT_RUNTIME_OBJECT_CHANGED,
+      .type = vss::SYS_EVENT_RUNTIME_OBJECT_CHANGED,
       .runtimeObjectId = runtimeObjectId,
   });
 }

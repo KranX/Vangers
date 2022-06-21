@@ -10,7 +10,7 @@
 
 #include "event.h"
 
-namespace vangers {
+namespace vss {
 struct OptionQuant {
   int optionValue;
   const int optionId;
@@ -43,6 +43,8 @@ class Sys {
  public:
   Sys& operator=(const Sys&) = delete;
   Sys(const Sys&);
+
+  void initScripts(const char* folder);
 
   int rendererWidth();
   int rendererHeight();
