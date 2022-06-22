@@ -7,6 +7,6 @@
 
 #include <duktape.h>
 
-void initSysBridge(duk_context* ctx);
+void initBridge(duk_context* ctx);
 
 #endif  // VANGERS_SYS_BRIDGE_H

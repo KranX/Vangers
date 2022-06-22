@@ -32,7 +32,7 @@ int QuantResult::getInt(const char* name, int defaultValue) {
   }
   int value = defaultValue;
   if (duk_get_prop_string(ctx, -1, name)) {
-    value = duk_require_int(ctx, -1);
+    value = duk_to_int(ctx, -1);
   }
   duk_pop(ctx);
   return value;

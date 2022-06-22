@@ -3,11 +3,12 @@ const global = new Function("return this;")();
 
 export type VssQuantName = keyof VssQuantMap;
 export type VssQuantPayload<K extends keyof VssQuantMap> = VssQuantMap[K][0];
-export type VssQuantResult<K extends keyof VssQuantMap> = undefined | "preventDefault" | VssQuantMap[K][1];
+export type VssQuantResult<K extends keyof VssQuantMap> = void | undefined | "preventDefault" | VssQuantMap[K][1];
 
 interface VssQuantMap {
     "option": [VssOptionQuant, VssOptionQuantResult],
     "camera": [VssCameraQuant, VssCameraQuantResult],
+    "mechos_traction": [VssMechosTractionQuant, VssMechosTractionQuantResult],
 }
 
 export interface VssOptionQuant {
@@ -27,12 +28,45 @@ export interface VssCameraQuantResult {
     slopeAngle?: number;
 }
 
+export interface VssMechosTractionQuant {
+    traction: number,
+    rudder: number,
+    tractionIncrement: number,
+    tractionDecrement: number,
+    tractionMax: number,
+    rudderStep: number,
+    rudderMax: number,
+    unitAngle: number,
+    helicopterStrife: number,
+}
+export interface VssMechosTractionQuantResult {
+    traction?: number,
+    rudder?: number,
+    helicopterStrife?: number,
+}
+
 export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
     stopPropogation: () => void, quant: K) => VssQuantResult<K>;
+
+class VssMath {
+    PI = 1 << 11;
+    PI_2 = this.PI / 2;
+
+    angleToRadians(angle: number) {
+        return angle * Math.PI / this.PI;
+    }
+
+    radiansToAngle(radians: number) {
+        return Math.round(radians * this.PI / Math.PI);
+    }
+}
 
 class Vss {
     // all scripts that available to use in 'require'
     scripts: string[];
+
+    // game math
+    math = new VssMath();
 
     private quantListeners: { [quantName: string]: VssQuantListener<any>[] } = {};
 
@@ -44,7 +78,6 @@ class Vss {
         global.onVssQuant = this.onVssQuant.bind(this);
     }
 
-    // show message and exit game with error
     fatal(msg: string) {
         bridge.fatal("vss: " + msg);
     }

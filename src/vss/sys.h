@@ -14,22 +14,6 @@
 
 namespace vss {
 
-struct JoystickQuant {
-  bool active;
-  int traction;
-  int rudder;
-  bool helicopterStrife;
-
-  const int tractionIncrement;
-  const int tractionDecrement;
-  const int tractionMax;
-  const int rudderStep;
-  const int rudderMax;
-  const int unitAngle;
-};
-
-typedef std::function<void(JoystickQuant&)> JoystickQuantFunction;
-
 class QuantResult {
  public:
   explicit QuantResult(duk_context* ctx);
@@ -65,9 +49,6 @@ class Sys {
 
   QuantBuilder quant(const char* eventName);
 
-  JoystickQuantFunction& getJoystickQuantFunction();
-  void setJoystickQuantFunction(const JoystickQuantFunction& fn);
-
   void postEvent(const Event& event);
   size_t addEventListener(const std::function<void(Event)>& listener);
   void removeEventListener(size_t id);
@@ -79,7 +60,6 @@ class Sys {
 
   duk_context* ctx;
 
-  JoystickQuantFunction joystickQuantFunction;
   std::vector<std::function<void(Event)>> listeners;
 };
 

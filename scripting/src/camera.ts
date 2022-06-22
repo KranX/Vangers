@@ -1,8 +1,10 @@
-// A simple module that redirects all events to console (stdout)
+// A simple module that pin game camera to fornt of mechos
 
 import vss, { iScreenOptionId } from "./vss";
 
 export function init() {
+    let unitAngle = 0;
+
     vss.addQuantListener("option", (payload) => {
         if (payload.id === iScreenOptionId.iCAMERA_TURN) {
             return {
@@ -15,7 +17,11 @@ export function init() {
 
     vss.addQuantListener("camera", () => {
         return {
-            turnAngle: Math.round(Math.random() * 255),
+            turnAngle: -unitAngle - vss.math.PI_2,
         };
+    });
+
+    vss.addQuantListener("mechos_traction", (payload) => {
+        unitAngle = payload.unitAngle;
     });
 }

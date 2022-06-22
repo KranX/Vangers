@@ -22,8 +22,8 @@ Sys::Sys() {
   ctx = duk_create_heap(nullptr, nullptr, nullptr, nullptr,
                         [](void* udata, const char* msg) { ErrH.Abort(msg); });
 
-  initSysModules(ctx);
-  initSysBridge(ctx);
+  initModules(ctx);
+  initBridge(ctx);
 }
 
 Sys::~Sys() { duk_destroy_heap(ctx); }
@@ -39,14 +39,6 @@ QuantBuilder Sys::quant(const char* eventName) {
 int Sys::rendererWidth() { return XGR_Obj.hdWidth; }
 
 int Sys::rendererHeight() { return XGR_Obj.hdHeight; }
-
-JoystickQuantFunction& Sys::getJoystickQuantFunction() {
-  return joystickQuantFunction;
-}
-
-void Sys::setJoystickQuantFunction(const JoystickQuantFunction& fn) {
-  joystickQuantFunction = fn;
-}
 
 size_t Sys::addEventListener(const std::function<void(Event)>& listener) {
   auto id = this->listeners.size();

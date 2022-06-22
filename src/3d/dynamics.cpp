@@ -2746,31 +2746,6 @@ void Object::direct_keyboard_control()
 
 void Object::direct_joystick_control()
 {
-	if (vss::sys().getJoystickQuantFunction()) {
-		int unitAngle = dynamic_cast<ActionUnit*>(this)->Angle;
-		vss::JoystickQuant joystickQuant = {
-			.active = false,
-			.traction = traction,
-			.rudder = rudder,
-			.helicopterStrife = false,
-
-			.tractionIncrement = traction_increment,
-			.tractionDecrement = traction_decrement,
-			.tractionMax = 255,
-			.rudderStep = rudder_step,
-			.rudderMax = rudder_max,
-			.unitAngle = unitAngle,
-		};
-		vss::sys().getJoystickQuantFunction()(joystickQuant);
-		if (!joystickQuant.active) {
-			return;
-		}
-		traction = joystickQuant.traction;
-		rudder = joystickQuant.rudder;
-		helicopter_strife = helicopter_strife && joystickQuant.helicopterStrife;
-		return;
-	}
-
 	if(!XJoystickInput())
 		return;
 
@@ -2874,9 +2849,28 @@ void Object::analysis()
 			entries_control();
 			if(!disable_control){
 				direct_keyboard_control();
-				if(JoystickMode || vss::sys().getJoystickQuantFunction()) {
+				if(JoystickMode) {
 					direct_joystick_control();
 				}
+
+				int unitAngle = dynamic_cast<ActionUnit*>(this)->Angle;
+
+				auto result = vss::sys()
+					.quant(vss::MECHOS_TRACTION_QUANT)
+					.prop("traction", traction)
+					.prop("rudder", rudder)
+					.prop("tractionIncrement", traction_increment)
+					.prop("tractionDecrement", traction_decrement)
+					.prop("tractionMax", 255)
+					.prop("rudderStep", rudder_step)
+					.prop("rudderMax", rudder_max)
+					.prop("unitAngle", unitAngle)
+					.prop("helicopterStrife", helicopter_strife)
+					.send();
+
+				traction = result.getInt("traction", traction);
+				rudder = result.getInt("rudder", rudder);
+				helicopter_strife = result.getInt("helicopterStrife", helicopter_strife);
 			}
 		}
 	}

@@ -13,6 +13,6 @@
 void setScriptsFolder(duk_context* ctx, const char* folder);
 const std::unordered_map<std::string, std::string>& getScriptToPathMapping();
 
-void initSysModules(duk_context* ctx);
+void initModules(duk_context* ctx);
 
 #endif  // VANGERS_SYS_MODULES_H

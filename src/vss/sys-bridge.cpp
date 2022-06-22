@@ -30,7 +30,7 @@ const duk_function_list_entry bridgeFunctions[] = {
     { NULL, NULL, 0 }
 };
 
-void initSysBridge(duk_context* ctx) {
+void initBridge(duk_context* ctx) {
   duk_push_global_object(ctx);
   duk_push_object(ctx);
   duk_put_function_list(ctx, -1, bridgeFunctions);

@@ -86,7 +86,7 @@ const std::unordered_map<std::string, std::string>& getScriptToPathMapping() {
   return scriptToPath;
 }
 
-void initSysModules(duk_context* ctx) {
+void initModules(duk_context* ctx) {
   // init console
   duk_console_init(ctx, 0);
 
