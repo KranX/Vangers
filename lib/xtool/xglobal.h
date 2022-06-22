@@ -17,15 +17,6 @@
 #include <time.h>
 #include <memory>
 
-#ifdef __WORDSIZE
-#else
-#if (defined __LP64__)
-#define __WORDSIZE = 64
-#else
-#define __WORDSIZE = 32
-#endif
-#endif
-
 #ifdef WIN32
 #define snprintf sprintf_s
 #endif
