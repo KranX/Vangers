@@ -2,7 +2,7 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xtool"
 	"${PROJECT_SOURCE_DIR}/lib/xgraph"
 	"${PROJECT_SOURCE_DIR}/lib/xsound"
-	"vss/duktape-2.7.0"
+	"${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0"
 )
 
 SET(vangers_SRCS

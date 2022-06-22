@@ -2853,7 +2853,11 @@ void Object::analysis()
 					direct_joystick_control();
 				}
 
+#ifndef _SURMAP_
 				int unitAngle = dynamic_cast<ActionUnit*>(this)->Angle;
+#else
+				int unitAngle = 0;
+#endif
 
 				auto result = vss::sys()
 					.quant(vss::MECHOS_TRACTION_QUANT)

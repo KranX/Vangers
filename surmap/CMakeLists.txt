@@ -2,6 +2,7 @@ INCLUDE_DIRECTORIES(AFTER
 	"${PROJECT_SOURCE_DIR}/lib/xtool"
 	"${PROJECT_SOURCE_DIR}/lib/xgraph"
 	"${PROJECT_SOURCE_DIR}"
+	"${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0"
 )
 
 SET(surmap_SRCS
@@ -43,6 +44,15 @@ SET(vangers_surmap_SRCS
 	"${PROJECT_SOURCE_DIR}/src/dast/poly3d.cpp"
 
 	"${PROJECT_SOURCE_DIR}/src/rle.cpp"
+
+	# vss
+	"${PROJECT_SOURCE_DIR}/src/vss/sys.cpp"
+	"${PROJECT_SOURCE_DIR}/src/vss/sys-modules.cpp"
+	"${PROJECT_SOURCE_DIR}/src/vss/sys-bridge.cpp"
+	"${PROJECT_SOURCE_DIR}/src/vss/sys-quant.cpp"
+	"${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0/duktape.c"
+	"${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0/extras/console/duk_console.c"
+	"${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0/extras/module-node/duk_module_node.c"
 )
 
 ADD_EXECUTABLE(surmap ${surmap_SRCS} ${vangers_surmap_SRCS})
