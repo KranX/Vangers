@@ -28,6 +28,10 @@ Sys::Sys() {
 
 Sys::~Sys() { duk_destroy_heap(ctx); }
 
+duk_context* Sys::getContext() {
+  return ctx;
+}
+
 void Sys::initScripts(const char* folder) {
   setScriptsFolder(ctx, folder);
 }

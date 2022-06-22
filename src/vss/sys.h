@@ -42,6 +42,7 @@ class Sys {
   Sys& operator=(const Sys&) = delete;
   Sys(const Sys&) = delete;
 
+  duk_context* getContext();
   void initScripts(const char* folder);
 
   int rendererWidth();
