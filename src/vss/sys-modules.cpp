@@ -66,8 +66,8 @@ void setScriptsFolder(duk_context* ctx, const char* folder) {
 
   for (const auto& entry : fs::directory_iterator(scriptsRoot)) {
     if (entry.is_regular_file()) {
-      const char* fileName = entry.path().filename().c_str();
-      const char* filePath = entry.path().c_str();
+      std::string fileName = entry.path().filename().string();
+      std::string filePath = entry.path().string();
       scriptToPath.insert(std::make_pair<>(fileName, filePath));
     }
   }
