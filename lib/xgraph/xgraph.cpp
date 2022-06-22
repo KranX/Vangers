@@ -45,7 +45,7 @@ void XGR_MouseFnc(SDL_Event* p);
 
 #define DD_STATE(a)		{ DDrawState = a; if(DDrawState != DD_OK ) ErrH.Abort("DirectDraw error...",XERR_USER,DDrawState,ddError(DDrawState)); }
 
-extern void sys_postScaledRendererChangedEvent(bool enabled);
+extern void sys_scaledRendererQuant(bool enabled);
 //RECT XGR_Rect;
 
 //LPDIRECTDRAWPALETTE XGR_DDPal = NULL;		// DirectDraw palette...
@@ -341,7 +341,7 @@ void XGR_Screen::set_fullscreen(bool fullscreen) {
 void XGR_Screen::set_is_scaled_renderer(bool is_scaled_renderer)
 {
 	this->is_scaled_renderer = is_scaled_renderer;
-	sys_postScaledRendererChangedEvent(is_scaled_renderer);
+	sys_scaledRendererQuant(is_scaled_renderer);
 }
 
 const bool XGR_Screen::get_is_scaled_renderer()

@@ -6,8 +6,8 @@
 #include "../xgraph/xgraph.h"
 
 extern void sys_initScripts(const char* folder);
-extern void sys_postReadyEvent();
-extern void sys_postRuntimeObjectChangedEvent(int runtimeObjectId);
+extern bool sys_readyQuant();
+extern void sys_runtimeObjectQuant(int runtimeObjectId);
 
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 #include <locale.h>
@@ -193,16 +193,21 @@ int main(int argc, char *argv[])
 		set_signal_handler();
 	#endif
 	id = xtInitApplication();
+
+	if (!sys_readyQuant()) {
+		xtDoneApplication();
+		xtSysFinit();
+		return 0;
+	}
+
 	XObj = xtGetRuntimeObject(id);
-    sys_postRuntimeObjectChangedEvent(XObj->ID);
+	sys_runtimeObjectQuant(XObj->ID);
 #ifdef _RTO_LOG_
 	if(XRec.flags & XRC_PLAY_MODE)
 		xtRTO_Log.open("xt_rto_p.log",XS_OUT);
 	else
 		xtRTO_Log.open("xt_rto_w.log",XS_OUT);
 #endif
-
-	sys_postReadyEvent();
 
 	while(XObj){
 		XObj -> Init(prevID);
@@ -247,7 +252,7 @@ int main(int argc, char *argv[])
 		xtRTO_Log < "\r\nChange RTO: " <= XObj -> ID < " -> " <= id < " frame -> " <= XRec.frameCount;
 #endif
 		XObj = xtGetRuntimeObject(id);
-        sys_postRuntimeObjectChangedEvent(XObj->ID);
+		sys_runtimeObjectQuant(XObj->ID);
 	}
 	xtDoneApplication();
 	xtSysFinit();

@@ -12,12 +12,6 @@
 
 using namespace vss;
 
-const char* vss::SYS_EVENT_READY = "sys_ready";
-const char* vss::SYS_EVENT_SCALED_RENDERER_CHANGED =
-    "sys_scaled_renderer_changed";
-const char* vss::SYS_EVENT_RUNTIME_OBJECT_CHANGED =
-    "sys_runtime_object_changed";
-
 Sys::Sys() {
   ctx = duk_create_heap(nullptr, nullptr, nullptr, nullptr,
                         [](void* udata, const char* msg) { ErrH.Abort(msg); });
@@ -40,28 +34,6 @@ QuantBuilder Sys::quant(const char* eventName) {
   return QuantBuilder(ctx, eventName);
 }
 
-int Sys::rendererWidth() { return XGR_Obj.hdWidth; }
-
-int Sys::rendererHeight() { return XGR_Obj.hdHeight; }
-
-size_t Sys::addEventListener(const std::function<void(Event)>& listener) {
-  auto id = this->listeners.size();
-  this->listeners.push_back(listener);
-  return id;
-}
-
-void Sys::removeEventListener(size_t id) {
-  if (id < this->listeners.size()) {
-    this->listeners.erase(this->listeners.begin() + id);
-  }
-}
-
-void Sys::postEvent(const Event& event) {
-  for (auto& next : this->listeners) {
-    next(event);
-  }
-}
-
 Sys& vss::sys() {
   static Sys sys;
   return sys;
@@ -69,21 +41,31 @@ Sys& vss::sys() {
 
 void sys_initScripts(const char* folder) { sys().initScripts(folder); }
 
-void sys_postReadyEvent() { sys().postEvent({.type = SYS_EVENT_READY}); }
-
-void sys_postScaledRendererChangedEvent(bool enabled) {
-  sys().postEvent({.type = vss::SYS_EVENT_SCALED_RENDERER_CHANGED,
-                   .scaledRenderer = enabled});
+bool sys_readyQuant() {
+  auto result = sys().quant(READY_QUANT).send();
+  return !result.isPreventDefault();
 }
 
-void sys_postRuntimeObjectChangedEvent(int runtimeObjectId) {
+void sys_scaledRendererQuant(bool enabled) {
+  static bool current = false;
+  if (current == enabled) {
+    return;
+  }
+  current = enabled;
+
+  sys().quant(SCALED_RENDERER_QUANT)
+    .prop("enabled", enabled)
+    .send();
+}
+
+void sys_runtimeObjectQuant(int runtimeObjectId) {
   static int currentRuntimeObjectId = -1;
   if (currentRuntimeObjectId == runtimeObjectId) {
     return;
   }
   currentRuntimeObjectId = runtimeObjectId;
-  sys().postEvent({
-      .type = vss::SYS_EVENT_RUNTIME_OBJECT_CHANGED,
-      .runtimeObjectId = runtimeObjectId,
-  });
+
+  sys().quant(RUNTIME_OBJECT_QUANT)
+    .prop("runtimeObjectId", runtimeObjectId)
+    .send();
 }

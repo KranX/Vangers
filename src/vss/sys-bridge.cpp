@@ -4,6 +4,7 @@
 #include "sys-bridge.h"
 
 #include <xerrhand.h>
+#include <SDL_keyboard.h>
 
 #include "sys-modules.h"
 
@@ -27,6 +28,14 @@ const duk_function_list_entry bridgeFunctions[] = {
        return 1;
      },
      1},
+    {"isKeyPressed",
+            [](duk_context* ctx) -> duk_ret_t {
+                auto scancode = duk_require_int(ctx, 0);
+                auto pressed = SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_A] != 0;
+                duk_push_boolean(ctx, pressed);
+                return 1;
+            },
+            1},
     { NULL, NULL, 0 }
 };
 
