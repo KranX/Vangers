@@ -1,4 +1,4 @@
-// A simple module that pin game camera to fornt of mechos
+// A simple module that pin game camera to front of mechos
 
 import vss, { iScreenOptionId } from "./vss";
 
@@ -11,8 +11,6 @@ export function init() {
                 value: 1,
             };
         }
-
-        return undefined;
     });
 
     vss.addQuantListener("camera", () => {

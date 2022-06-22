@@ -11,20 +11,15 @@ using namespace vss;
 
 QuantResult::QuantResult(duk_context* ctx) : ctx(ctx) {
   notHandled = !duk_is_object(ctx, -1);
-  preventDefault = duk_is_string(ctx, -1) && strcmp(duk_get_string(ctx, -1), "preventDefault") == 0;
+  preventDefault = duk_is_string(ctx, -1) &&
+                   strcmp(duk_get_string(ctx, -1), "preventDefault") == 0;
 }
 
-QuantResult::~QuantResult() {
-  duk_pop(ctx);
-}
+QuantResult::~QuantResult() { duk_pop(ctx); }
 
-bool QuantResult::isNotHandled() {
-  return notHandled;
-}
+bool QuantResult::isNotHandled() { return notHandled; }
 
-bool QuantResult::isPreventDefault() {
-  return preventDefault;
-}
+bool QuantResult::isPreventDefault() { return preventDefault; }
 
 int QuantResult::getInt(const char* name, int defaultValue) {
   if (notHandled || preventDefault) {

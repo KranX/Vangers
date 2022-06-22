@@ -5,7 +5,7 @@ export type VssQuantName = keyof VssQuantMap;
 export type VssQuantPayload<K extends keyof VssQuantMap> = VssQuantMap[K][0];
 export type VssQuantResult<K extends keyof VssQuantMap> = void | undefined | "preventDefault" | VssQuantMap[K][1];
 
-interface VssQuantMap {
+export interface VssQuantMap {
     "ready": [void, void],
     "runtime_object": [VssRuntimeObjectQuant, void],
     "scaled_renderer": [VssScaledRendereQuant, void],
@@ -60,7 +60,7 @@ export interface VssMechosTractionQuantResult {
 export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
     stopPropogation: () => void, quant: K) => VssQuantResult<K>;
 
-class VssMath {
+export class VssMath {
     PI = 1 << 11;
     PI_2 = this.PI / 2;
 
@@ -135,6 +135,10 @@ class Vss {
     }
 }
 
+/**
+ * Vangers Scripting Subsystem exports `vss` object as entry point to game API
+ * you must use it to interact with game.
+ */
 const vss = new Vss();
 export default vss;
 

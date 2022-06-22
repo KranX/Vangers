@@ -22,13 +22,9 @@ Sys::Sys() {
 
 Sys::~Sys() { duk_destroy_heap(ctx); }
 
-duk_context* Sys::getContext() {
-  return ctx;
-}
+duk_context* Sys::getContext() { return ctx; }
 
-void Sys::initScripts(const char* folder) {
-  setScriptsFolder(ctx, folder);
-}
+void Sys::initScripts(const char* folder) { setScriptsFolder(ctx, folder); }
 
 QuantBuilder Sys::quant(const char* eventName) {
   return QuantBuilder(ctx, eventName);
@@ -53,9 +49,7 @@ void sys_scaledRendererQuant(bool enabled) {
   }
   current = enabled;
 
-  sys().quant(SCALED_RENDERER_QUANT)
-    .prop("enabled", enabled)
-    .send();
+  sys().quant(SCALED_RENDERER_QUANT).prop("enabled", enabled).send();
 }
 
 void sys_runtimeObjectQuant(int runtimeObjectId) {
@@ -65,7 +59,8 @@ void sys_runtimeObjectQuant(int runtimeObjectId) {
   }
   currentRuntimeObjectId = runtimeObjectId;
 
-  sys().quant(RUNTIME_OBJECT_QUANT)
-    .prop("runtimeObjectId", runtimeObjectId)
-    .send();
+  sys()
+      .quant(RUNTIME_OBJECT_QUANT)
+      .prop("runtimeObjectId", runtimeObjectId)
+      .send();
 }

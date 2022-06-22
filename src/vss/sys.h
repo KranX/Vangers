@@ -5,9 +5,10 @@
 #ifndef VANGERS_SYS_H
 #define VANGERS_SYS_H
 
+#include <duktape.h>
+
 #include <functional>
 #include <vector>
-#include <duktape.h>
 
 #include "quant-names.h"
 
@@ -20,6 +21,7 @@ class QuantResult {
   bool isNotHandled();
   bool isPreventDefault();
   int getInt(const char* name, int defaultValue);
+
  private:
   duk_context* ctx;
   bool notHandled;
@@ -32,6 +34,7 @@ class QuantBuilder {
   QuantBuilder& prop(const char* name, int value);
   QuantBuilder& prop(const char* name, bool value);
   QuantResult send();
+
  private:
   duk_context* ctx;
   bool valid;
@@ -56,7 +59,7 @@ class Sys {
 };
 
 Sys& sys();
-}  // namespace vangers
+}  // namespace vss
 
 // @caiiiycuk: to use without including <vangers/sys.h>
 extern void sys_initScripts(const char* folder);
