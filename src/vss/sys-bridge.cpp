@@ -3,16 +3,22 @@
 //
 #include "sys-bridge.h"
 
+#ifdef _SURMAP_
+void initBridge(duk_context* ctx) {}
+#else
+
 #include <SDL_keyboard.h>
 #include <xerrhand.h>
 
-#include "xgraph.h"
-#include "../iscreen/iscreen.h"
-#include "../actint/item_api.h"
-#include "../actint/actint.h"
-
 #include "sys-modules.h"
 #include "sys.h"
+#include "xgraph.h"
+
+// clang-format off
+#include "../actint/item_api.h"
+#include "../iscreen/iscreen.h"
+#include "../actint/actint.h"
+// clang-format on
 
 extern actIntDispatcher* aScrDisp;
 
@@ -61,7 +67,7 @@ const duk_function_list_entry bridgeFunctions[] = {
     {"isKeyPressed",
      [](duk_context* ctx) -> duk_ret_t {
        auto scancode = duk_require_int(ctx, 0);
-       auto pressed = SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_A] != 0;
+       auto pressed = SDL_GetKeyboardState(nullptr)[scancode] != 0;
        duk_push_boolean(ctx, pressed);
        return 1;
      },
@@ -75,3 +81,5 @@ void initBridge(duk_context* ctx) {
   duk_put_prop_string(ctx, -2, "bridge");
   duk_pop(ctx);
 }
+
+#endif
