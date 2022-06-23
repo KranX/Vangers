@@ -28,14 +28,19 @@ Sys::Sys() : context(nullptr) {}
 
 Sys::~Sys() {}
 
-void Sys::initScripts(const char* folder) {
-  context = std::make_shared<Context>();
+void Sys::initScripts(const char* folder,
+                      void (*init)(std::shared_ptr<Context>&)) {
   scriptsFolder = folder;
 
   if (strlen(folder) == 0) {
+    context = std::shared_ptr<Context>(nullptr);
     return;
   }
 
+  context = std::make_shared<Context>();
+  if (init) {
+    init(context);
+  }
   setScriptsFolder(context->ctx, folder);
 }
 

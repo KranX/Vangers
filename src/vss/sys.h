@@ -7,7 +7,6 @@
 
 #include <duktape.h>
 
-#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -58,7 +57,8 @@ class Sys {
   Sys& operator=(const Sys&) = delete;
   Sys(const Sys&) = delete;
 
-  void initScripts(const char* folder);
+  void initScripts(const char* folder,
+                   void (*init)(std::shared_ptr<Context>&) = nullptr);
   std::string getScriptsFolder();
 
   QuantBuilder quant(const char* eventName);
