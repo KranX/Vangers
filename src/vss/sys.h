@@ -31,6 +31,7 @@ class QuantResult {
   bool isNotHandled();
   bool isPreventDefault();
   int getInt(const char* name, int defaultValue);
+  bool getBool(const char* name, bool defaultValue);
 
  private:
   std::shared_ptr<Context> context;

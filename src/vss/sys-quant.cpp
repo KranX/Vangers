@@ -38,6 +38,18 @@ int QuantResult::getInt(const char* name, int defaultValue) {
   return value;
 }
 
+bool QuantResult::getBool(const char* name, bool defaultValue) {
+  if (notHandled || preventDefault) {
+    return defaultValue;
+  }
+  bool value = defaultValue;
+  if (duk_get_prop_string(ctx, -1, name)) {
+    value = duk_to_boolean(ctx, -1);
+  }
+  duk_pop(ctx);
+  return value;
+}
+
 QuantBuilder::QuantBuilder(std::shared_ptr<Context>& context,
                            const char* eventName)
     : context(context) {

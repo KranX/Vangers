@@ -8,17 +8,19 @@ export type VssQuantResult<K extends keyof VssQuantMap> = void | undefined | "pr
 export interface VssQuantMap {
     "ready": [void, void],
     "runtime_object": [VssRuntimeObjectQuant, void],
-    "scaled_renderer": [VssScaledRendereQuant, void],
+    "scaled_renderer": [VssScaledRendererQuant, void],
     "option": [VssOptionQuant, VssOptionQuantResult],
     "camera": [VssCameraQuant, VssCameraQuantResult],
     "mechos_traction": [VssMechosTractionQuant, VssMechosTractionQuantResult],
+    "send_event": [VssSendEventQuant, void],
+    "set_road_fullscreen": [VssRoadFullScreenQuant, VssRoadFullScreenQuantResult],
 }
 
 export interface VssRuntimeObjectQuant {
     runtimeObjectId: RoadRuntimeObjId,
 }
 
-export interface VssScaledRendereQuant {
+export interface VssScaledRendererQuant {
     enabled: boolean,
 }
 
@@ -51,10 +53,27 @@ export interface VssMechosTractionQuant {
     unitAngle: number,
     helicopterStrife: number,
 }
+
 export interface VssMechosTractionQuantResult {
     traction?: number,
     rudder?: number,
     helicopterStrife?: number,
+}
+
+export interface VssSendEventQuant {
+    code: actintItemEvents | actEventCodes,
+    data: number,
+    ptr: number,
+    asFlags: ASFlag,
+    asMode: ASMode,
+}
+
+export interface VssRoadFullScreenQuant {
+    enabled: boolean,
+}
+
+export interface VssRoadFullScreenQuantResult {
+    enabled?: boolean,
 }
 
 export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
@@ -96,10 +115,8 @@ class Vss {
 
     getScriptsFolder = bridge.getScriptsFolder;
     initScripts = bridge.initScripts;
-
-    isKeyPressed(scanCode: number) {
-        return bridge.isKeyPressed(scanCode);
-    }
+    sendEvent = bridge.sendEvent;
+    isKeyPressed = bridge.isKeyPressed;
 
     addQuantListener<K extends VssQuantName>(quant: K, listener: VssQuantListener<K>) {
         if (this.quantListeners[quant] === undefined) {
@@ -145,16 +162,17 @@ class Vss {
 const vss = new Vss();
 export default vss;
 
+/* eslint-disable no-unused-vars */
+
 // == native bridge
 interface VssNative {
     fatal(msg: string): void;
     scripts(): string[];
     getScriptsFolder(): string;
     initScripts(folder: string): void;
+    sendEvent(code: actEventCodes): void;
     isKeyPressed(scanCode: number): boolean;
 }
-
-/* eslint-disable no-unused-vars */
 
 // == in game definitions
 export enum RoadRuntimeObjId {
@@ -612,3 +630,131 @@ export enum iScreenOptionId {
 
     iMAX_OPTION_ID
 };
+
+export enum actintItemEvents {
+    ACI_PUT_ITEM = 1,
+    ACI_DROP_ITEM,
+    ACI_CHANGE_ITEM_DATA,
+
+    ACI_ACTIVATE_ITEM,
+    ACI_DEACTIVATE_ITEM,
+    ACI_GET_ITEM_DATA,
+    ACI_CHECK_MOUSE,
+    ACI_SET_DROP_LEVEL,
+
+    ACI_PUT_IN_SLOT,
+
+    ACI_LOCK_INTERFACE,
+    ACI_UNLOCK_INTERFACE,
+
+    ACI_SHOW_TEXT,
+    ACI_HIDE_TEXT,
+
+    ACI_SHOW_ITEM_TEXT,
+
+    ACI_DROP_CONFIRM,
+
+    ACI_MAX_EVENT
+};
+
+export enum actEventCodes {
+    EV_CHANGE_MODE = actintItemEvents.ACI_MAX_EVENT + 1,
+    EV_SET_MODE,
+    EV_ACTIVATE_MENU,
+    EV_CHANGE_SCREEN,
+    EV_FULLSCR_CHANGE,
+    EV_ACTIVATE_IINV,
+    EV_DEACTIVATE_IINV,
+    EV_ACTIVATE_MATRIX,
+    EV_DEACTIVATE_MATRIX,
+    EV_EVINCE_PALETTE,
+    EV_INIT_MATRIX_OBJ,
+    EV_INIT_SC_MATRIX_OBJ,
+    EV_REDRAW,
+    EV_CANCEL_MATRIX,
+    EV_AUTO_MOVE_ITEMS,
+    EV_SET_MECH_NAME,
+
+    EV_NEXT_SHOP_AVI,
+    EV_PREV_SHOP_AVI,
+
+    EV_CHANGE_AVI_LIST,
+
+    EV_BUY_ITEM,
+
+    EV_SET_ITM_PICKUP,
+    EV_SET_WPN_PICKUP,
+
+    EV_ACTIVATE_SHOP_MENU,
+    EV_CHOOSE_SHOP_ITEM,
+
+    EV_NEXT_PHRASE,
+    EV_START_SPEECH,
+    EV_SHOW_QUESTS,
+    EV_ASK_QUEST,
+
+    EV_TRY_2_ENTER,
+    EV_GET_CIRT,
+
+    EV_TAKE_ELEECH,
+    EV_GET_ELEECH,
+    EV_ISCR_KEYTRAP,
+
+    EV_LOCK_ISCREEN,
+    EV_UNLOCK_ISCREEN,
+
+    EV_SELL_MOVE_ITEM,
+    EV_CHANGE_AVI_INDEX,
+
+    EV_TELEPORT,
+
+    EV_INIT_BUTTONS,
+
+    EV_ENTER_TEXT_MODE,
+    EV_LEAVE_TEXT_MODE,
+
+    EV_PROTRACTOR_EVENT,
+    EV_MECH_MESSIAH_EVENT,
+
+    EV_GET_BLOCK_PHRASE,
+
+    EV_PAUSE_AML,
+    EV_RESUME_AML,
+
+    EV_ENTER_CHAT,
+    EV_LEAVE_CHAT,
+
+    EV_ITEM_TEXT,
+
+    EV_GET_RUBOX,
+    EV_INIT_AVI_OBJECT,
+
+    EV_MAX_CODE
+};
+
+// actInt modes
+export enum ASMode {
+    AS_INV_MODE = 0x00,
+    AS_INFO_MODE = 0x01,
+}
+
+// actInt flags
+export enum ASFlag {
+    AS_FULL_REDRAW = 0x01,
+    aMS_LEFT_PRESS = 0x02,
+    aMS_RIGHT_PRESS = 0x04,
+    aMS_MOVED = 0x08,
+    aMS_PRESS = aMS_LEFT_PRESS | aMS_RIGHT_PRESS | aMS_MOVED,
+    AS_CHANGE_MODE = 0x10,
+    AS_INV_MOVE_ITEM = 0x20,
+    AS_INV_SET_DROP = 0x40,
+    AS_FULL_FLUSH = 0x80,
+    AS_FULLSCR = 0x100,
+    AS_ISCREEN = 0x200,
+    AS_ISCREEN_INV_MODE = 0x400,
+    AS_EVINCE_PALETTE = 0x800,
+    AS_LOCKED = 0x1000,
+    AS_TEXT_MODE = 0x2000,
+    AS_CHAT_MODE = 0x4000,
+    AS_WORLDS_INIT = 0x8000,
+}

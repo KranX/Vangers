@@ -6,8 +6,15 @@
 #include <SDL_keyboard.h>
 #include <xerrhand.h>
 
+#include "xgraph.h"
+#include "../iscreen/iscreen.h"
+#include "../actint/item_api.h"
+#include "../actint/actint.h"
+
 #include "sys-modules.h"
 #include "sys.h"
+
+extern actIntDispatcher* aScrDisp;
 
 const duk_function_list_entry bridgeFunctions[] = {
     {"fatal",
@@ -42,6 +49,15 @@ const duk_function_list_entry bridgeFunctions[] = {
        return 1;
      },
      0},
+    {"sendEvent",
+     [](duk_context* ctx) -> duk_ret_t {
+       auto code = duk_require_int(ctx, 0);
+       if (aScrDisp) {
+         aScrDisp->send_event(code);
+       }
+       return 0;
+     },
+     1},
     {"isKeyPressed",
      [](duk_context* ctx) -> duk_ret_t {
        auto scancode = duk_require_int(ctx, 0);
