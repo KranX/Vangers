@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "lang.h"
-
+#include "vss/sys.h"
 
 #define SCREENSHOT
 
@@ -1645,6 +1645,9 @@ void KeyCenter(SDL_Event *key)
 				aciSetCameraMenu();
 			}
 			break;
+		case SDL_SCANCODE_F8: {
+			vss::sys().initScripts(vss::sys().getScriptsFolder().c_str());
+		} break;
 		}
 	
 	if (iKeyPressed(iKEY_ZOOM_IN)) {

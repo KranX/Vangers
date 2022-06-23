@@ -59,3 +59,22 @@ export function init() {
 ```
 
 Inside module you can use everything that **ts/js supports**, **vss object** and **console object**.
+
+## Hot-reload
+
+`vss` allows you to reload the scripts without restarting the game. You can load same scrips again (aka *hot-reload*) or
+load another folder with scripts. To do this call:
+
+```ts
+vss.initScripts(<folder>);
+```
+
+You can do hot-reload from scripts by calling: 
+
+```ts
+vss.initScripts(vss.getScriptsFolder());
+```
+
+## Hot-reload from game
+
+Press **F8** key to do hot-reload from game.

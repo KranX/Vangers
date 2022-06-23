@@ -7,6 +7,7 @@
 #include <xerrhand.h>
 
 #include "sys-modules.h"
+#include "sys.h"
 
 const duk_function_list_entry bridgeFunctions[] = {
     {"fatal",
@@ -27,7 +28,20 @@ const duk_function_list_entry bridgeFunctions[] = {
        }
        return 1;
      },
+     0},
+    {"initScripts",
+     [](duk_context* ctx) -> duk_ret_t {
+       const char* folder = duk_require_string(ctx, 0);
+       vss::sys().initScripts(folder);
+       return 0;
+     },
      1},
+    {"getScriptsFolder",
+     [](duk_context* ctx) -> duk_ret_t {
+       duk_push_string(ctx, vss::sys().getScriptsFolder().c_str());
+       return 1;
+     },
+     0},
     {"isKeyPressed",
      [](duk_context* ctx) -> duk_ret_t {
        auto scancode = duk_require_int(ctx, 0);

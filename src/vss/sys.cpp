@@ -6,13 +6,15 @@
 
 #include <duktape.h>
 
+#include <memory>
+
 #include "sys-bridge.h"
 #include "sys-modules.h"
 #include "xgraph.h"
 
 using namespace vss;
 
-Sys::Sys() {
+Context::Context() {
   ctx = duk_create_heap(nullptr, nullptr, nullptr, nullptr,
                         [](void* udata, const char* msg) { ErrH.Abort(msg); });
 
@@ -20,14 +22,27 @@ Sys::Sys() {
   initBridge(ctx);
 }
 
-Sys::~Sys() { duk_destroy_heap(ctx); }
+Context::~Context() { duk_destroy_heap(ctx); }
 
-duk_context* Sys::getContext() { return ctx; }
+Sys::Sys() : context(nullptr) {}
 
-void Sys::initScripts(const char* folder) { setScriptsFolder(ctx, folder); }
+Sys::~Sys() {}
+
+void Sys::initScripts(const char* folder) {
+  context = std::make_shared<Context>();
+  scriptsFolder = folder;
+
+  if (strlen(folder) == 0) {
+    return;
+  }
+
+  setScriptsFolder(context->ctx, folder);
+}
+
+std::string Sys::getScriptsFolder() { return scriptsFolder; }
 
 QuantBuilder Sys::quant(const char* eventName) {
-  return QuantBuilder(ctx, eventName);
+  return QuantBuilder(context, eventName);
 }
 
 Sys& vss::sys() {

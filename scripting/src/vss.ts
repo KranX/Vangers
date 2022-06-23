@@ -84,7 +84,7 @@ class Vss {
 
     constructor() {
         this.scripts = bridge.scripts().filter((value) => {
-            return value !== "vss.js" && value !== "main.js";
+            return value !== "vss.js" && value !== "main.js" && value.endsWith(".js");
         }).map((value) => value.substring(0, value.length - 3));
 
         global.onVssQuant = this.onVssQuant.bind(this);
@@ -93,6 +93,9 @@ class Vss {
     fatal(msg: string) {
         bridge.fatal("vss: " + msg);
     }
+
+    getScriptsFolder = bridge.getScriptsFolder;
+    initScripts = bridge.initScripts;
 
     isKeyPressed(scanCode: number) {
         return bridge.isKeyPressed(scanCode);
@@ -107,7 +110,7 @@ class Vss {
 
     removeQuantListener<K extends VssQuantName>(quant: K, listener: VssQuantListener<K>) {
         const index = this.quantListeners[quant]?.indexOf(listener);
-        if (index && index !== -1) {
+        if (index !== undefined && index !== -1) {
             this.quantListeners[quant].splice(index, 1);
         }
     }
@@ -146,6 +149,8 @@ export default vss;
 interface VssNative {
     fatal(msg: string): void;
     scripts(): string[];
+    getScriptsFolder(): string;
+    initScripts(folder: string): void;
     isKeyPressed(scanCode: number): boolean;
 }
 

@@ -4,15 +4,13 @@ const log = (...args: any[]) => {
     console.log("main.js (loader):", ...args);
 };
 
-log("== loading", vss.scripts.length, "scripts");
+// load all scripts inside scripts folder
+log("== loading", vss.getScriptsFolder(), "scripts");
 for (const next of vss.scripts) {
-    log("starting module", next);
     const initFn = require(next).init;
-    if (initFn === undefined) {
-        log("unable start module, cause init() is not defined!");
-    } else {
+    if (initFn !== undefined) {
         initFn();
-        log("... started");
+        log(next, " started");
     }
 }
 log("== loading ednded");

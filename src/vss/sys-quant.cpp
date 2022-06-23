@@ -9,13 +9,18 @@
 
 using namespace vss;
 
-QuantResult::QuantResult(duk_context* ctx) : ctx(ctx) {
-  notHandled = !duk_is_object(ctx, -1);
-  preventDefault = duk_is_string(ctx, -1) &&
+QuantResult::QuantResult(std::shared_ptr<Context>& context) : context(context) {
+  ctx = context ? context->ctx : nullptr;
+  notHandled = ctx == nullptr || !duk_is_object(ctx, -1);
+  preventDefault = ctx != nullptr && duk_is_string(ctx, -1) &&
                    strcmp(duk_get_string(ctx, -1), "preventDefault") == 0;
 }
 
-QuantResult::~QuantResult() { duk_pop(ctx); }
+QuantResult::~QuantResult() {
+  if (ctx != nullptr) {
+    duk_pop(ctx);
+  }
+}
 
 bool QuantResult::isNotHandled() { return notHandled; }
 
@@ -33,8 +38,11 @@ int QuantResult::getInt(const char* name, int defaultValue) {
   return value;
 }
 
-QuantBuilder::QuantBuilder(duk_context* ctx, const char* eventName) : ctx(ctx) {
-  valid = duk_get_global_string(ctx, "onVssQuant");
+QuantBuilder::QuantBuilder(std::shared_ptr<Context>& context,
+                           const char* eventName)
+    : context(context) {
+  ctx = context ? context->ctx : nullptr;
+  valid = ctx != nullptr && duk_get_global_string(ctx, "onVssQuant");
   if (valid) {
     duk_push_string(ctx, eventName);
     duk_push_object(ctx);
@@ -71,5 +79,5 @@ QuantResult QuantBuilder::send() {
   if (valid) {
     duk_call(ctx, 2);
   }
-  return QuantResult(ctx);
+  return QuantResult(context);
 }

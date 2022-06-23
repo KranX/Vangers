@@ -8,21 +8,33 @@
 #include <duktape.h>
 
 #include <functional>
+#include <memory>
+#include <string>
 #include <vector>
 
 #include "quant-names.h"
 
 namespace vss {
 
+class Context {
+ public:
+  duk_context* ctx;
+  Context();
+  ~Context();
+  Context& operator=(const Context&) = delete;
+  Context(const Context&) = delete;
+};
+
 class QuantResult {
  public:
-  explicit QuantResult(duk_context* ctx);
+  explicit QuantResult(std::shared_ptr<Context>& context);
   ~QuantResult();
   bool isNotHandled();
   bool isPreventDefault();
   int getInt(const char* name, int defaultValue);
 
  private:
+  std::shared_ptr<Context> context;
   duk_context* ctx;
   bool notHandled;
   bool preventDefault;
@@ -30,12 +42,13 @@ class QuantResult {
 
 class QuantBuilder {
  public:
-  QuantBuilder(duk_context* ctx, const char* eventName);
+  QuantBuilder(std::shared_ptr<Context>& context, const char* eventName);
   QuantBuilder& prop(const char* name, int value);
   QuantBuilder& prop(const char* name, bool value);
   QuantResult send();
 
  private:
+  std::shared_ptr<Context> context;
   duk_context* ctx;
   bool valid;
 };
@@ -45,8 +58,8 @@ class Sys {
   Sys& operator=(const Sys&) = delete;
   Sys(const Sys&) = delete;
 
-  duk_context* getContext();
   void initScripts(const char* folder);
+  std::string getScriptsFolder();
 
   QuantBuilder quant(const char* eventName);
 
@@ -55,7 +68,8 @@ class Sys {
   ~Sys();
   friend Sys& sys();
 
-  duk_context* ctx;
+  std::string scriptsFolder;
+  std::shared_ptr<Context> context;
 };
 
 Sys& sys();
