@@ -8,7 +8,7 @@ So, to run your custom addon please do:
 ./vangres -vss <path-to-addon-directory>
 ```
 
-## Camera addon
+## Example: camera addon
 
 This directory contains simple camera addon. The camera addon will lock the camera
 to front of mechos.
@@ -20,7 +20,10 @@ You can compile it using following steps:
 3. Build the code: `yarn run tsc` (--watch for watch mode)
 4. Run the vangers: `./vangers --vss scripting/build`
 
-You can use this addon as template for new addons, just copy it to another location.
+## How to create new addon
+
+The simplest way is to use [template repository](https://github.com/vangers-app/vss-fullscreen-game).
+Make new repository from it, checkout and follow instructions how to develop and publish.
 
 ## The `vss` object
 
