@@ -3,7 +3,7 @@ const global = new Function("return this;")();
 
 export type VssQuantName = keyof VssQuantMap;
 export type VssQuantPayload<K extends keyof VssQuantMap> = VssQuantMap[K][0];
-export type VssQuantResult<K extends keyof VssQuantMap> = void | undefined | "preventDefault" | VssQuantMap[K][1];
+export type VssQuantResult<K extends keyof VssQuantMap> = {} | void | undefined | "preventDefault" | VssQuantMap[K][1];
 
 export interface VssQuantMap {
     "ready": [void, void],
@@ -138,20 +138,31 @@ class Vss {
             return undefined;
         }
 
-        let runNext = true;
-        const stopPropogation = () => {
-            runNext = false;
-        };
 
-        let result = undefined;
+        const resultRef = {
+            result: {
+                preventDefault: false,
+            },
+            runNext: true,
+            preventDefault: false,
+        };
+        const stopPropogation = () => {
+            resultRef.runNext = false;
+        };
         for (const next of listeners) {
-            result = next(payload, stopPropogation, quant);
-            if (!runNext) {
-                return result;
+            const result = next(payload, stopPropogation, quant);
+            if (result === "preventDefault") {
+                resultRef.result.preventDefault = true;
+            } else if (result !== undefined) {
+                resultRef.result = { ...resultRef.result, ...result };
+            }
+
+            if (!resultRef.runNext) {
+                break;
             }
         }
 
-        return result;
+        return resultRef.result;
     }
 }
 

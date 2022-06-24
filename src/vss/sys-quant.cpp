@@ -12,8 +12,7 @@ using namespace vss;
 QuantResult::QuantResult(std::shared_ptr<Context>& context) : context(context) {
   ctx = context ? context->ctx : nullptr;
   notHandled = ctx == nullptr || !duk_is_object(ctx, -1);
-  preventDefault = ctx != nullptr && duk_is_string(ctx, -1) &&
-                   strcmp(duk_get_string(ctx, -1), "preventDefault") == 0;
+  preventDefault = !notHandled && getBool("preventDefault", false);
 }
 
 QuantResult::~QuantResult() {
@@ -27,7 +26,7 @@ bool QuantResult::isNotHandled() { return notHandled; }
 bool QuantResult::isPreventDefault() { return preventDefault; }
 
 int QuantResult::getInt(const char* name, int defaultValue) {
-  if (notHandled || preventDefault) {
+  if (notHandled) {
     return defaultValue;
   }
   int value = defaultValue;
@@ -39,7 +38,7 @@ int QuantResult::getInt(const char* name, int defaultValue) {
 }
 
 bool QuantResult::getBool(const char* name, bool defaultValue) {
-  if (notHandled || preventDefault) {
+  if (notHandled) {
     return defaultValue;
   }
   bool value = defaultValue;
