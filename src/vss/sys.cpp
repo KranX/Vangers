@@ -84,3 +84,13 @@ void sys_runtimeObjectQuant(int runtimeObjectId) {
       .prop("runtimeObjectId", runtimeObjectId)
       .send();
 }
+
+const char* sys_fileOpenQuant(const char* file, unsigned flags) {
+  auto result = sys()
+                    .quant(FILE_OPEN_QUANT)
+                    .prop("file", file)
+                    .prop("flags", (duk_int_t)flags)
+                    .send();
+
+  return result.getString("file", file);
+}

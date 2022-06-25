@@ -14,6 +14,7 @@ export interface VssQuantMap {
     "mechos_traction": [VssMechosTractionQuant, VssMechosTractionQuantResult],
     "send_event": [VssSendEventQuant, void],
     "set_road_fullscreen": [VssRoadFullScreenQuant, VssRoadFullScreenQuantResult],
+    "file_open": [VssFileOpenQuant, VssFileOpenQuantResult],
 }
 
 export interface VssRuntimeObjectQuant {
@@ -76,6 +77,15 @@ export interface VssRoadFullScreenQuantResult {
     enabled?: boolean,
 }
 
+export interface VssFileOpenQuant {
+    file: string,
+    flags: FileOpenFlags,
+}
+
+export interface VssRoadFullScreenQuantResult {
+    file?: string,
+}
+
 export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
     stopPropogation: () => void, quant: K) => VssQuantResult<K>;
 
@@ -117,6 +127,7 @@ class Vss {
     initScripts = bridge.initScripts;
     sendEvent = bridge.sendEvent;
     isKeyPressed = bridge.isKeyPressed;
+    isFileExists = bridge.isFileExists;
 
     addQuantListener<K extends VssQuantName>(quant: K, listener: VssQuantListener<K>) {
         if (this.quantListeners[quant] === undefined) {
@@ -183,6 +194,7 @@ interface VssNative {
     initScripts(folder: string): void;
     sendEvent(code: actEventCodes): void;
     isKeyPressed(scanCode: number): boolean;
+    isFileExists(file: string): boolean;
 }
 
 // == in game definitions
@@ -769,3 +781,14 @@ export enum ASFlag {
     AS_CHAT_MODE = 0x4000,
     AS_WORLDS_INIT = 0x8000,
 }
+
+export enum FileOpenFlags {
+    XS_IN = 0x0001,
+    XS_OUT = 0x0002,
+    XS_NOREPLACE = 0x0004,
+    XS_APPEND = 0x0008,
+    XS_NOBUFFERING = 0x0010,
+    XS_NOSHARING = 0x0020,
+    XS_SHAREREAD = 0x0040,
+    XS_SHAREWRITE = 0x0080,
+};

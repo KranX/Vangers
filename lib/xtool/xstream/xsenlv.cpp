@@ -2,8 +2,11 @@
 #include <iostream>
 #include <fstream>
 
-std::fstream *open_file(const char* name, unsigned f)
+extern const char* sys_fileOpenQuant(const char* file, unsigned flags);
+
+std::fstream *open_file(const char* _name, unsigned f)
 {
+	const char* name = sys_fileOpenQuant(_name, f);
 	std::ios::openmode mode;
 	mode = std::ios::binary;
 	if (f & XS_IN)
@@ -18,7 +21,6 @@ std::fstream *open_file(const char* name, unsigned f)
 
 int XStream::open(const char* name, unsigned f)
 {
-
 	std::string smode;
 	smode+="File name:";
 	smode+=name;

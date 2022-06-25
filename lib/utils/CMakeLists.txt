@@ -3,7 +3,8 @@
 # FIND_PACKAGE(ZLIB REQUIRED)
 
 ADD_EXECUTABLE(zip_convert 
-	zip_convert.cpp 
+	zip_convert.cpp
+	vss-noop.cpp
 	xzip/inzip.cpp 
 	xzip/outzip.cpp 
 	xzip/treezip.cpp

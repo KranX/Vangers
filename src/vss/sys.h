@@ -32,6 +32,7 @@ class QuantResult {
   bool isPreventDefault();
   int getInt(const char* name, int defaultValue);
   bool getBool(const char* name, bool defaultValue);
+  const char* getString(const char* name, const char* defaultValue);
 
  private:
   std::shared_ptr<Context> context;
@@ -45,6 +46,7 @@ class QuantBuilder {
   QuantBuilder(std::shared_ptr<Context>& context, const char* eventName);
   QuantBuilder& prop(const char* name, int value);
   QuantBuilder& prop(const char* name, bool value);
+  QuantBuilder& prop(const char* name, const char* value);
   QuantResult send();
 
  private:
@@ -81,5 +83,6 @@ extern void sys_initScripts(const char* folder);
 extern bool sys_readyQuant();
 extern void sys_runtimeObjectQuant(int runtimeObjectId);
 extern void sys_scaledRendererQuant(int enabled);
+extern const char* sys_fileOpenQuant(const char* file, unsigned flags);
 
 #endif  // VANGERS_SYS_H

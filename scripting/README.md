@@ -25,6 +25,8 @@ You can compile it using following steps:
 The simplest way is to use [template repository](https://github.com/vangers-app/vss-fullscreen-game).
 Make new repository from it, checkout and follow instructions how to develop and publish.
 
+You can get inspiration from looking other addons available under [vangers.app](https://github.com/vangers-app) organization.
+
 ## The `vss` object
 
 Vangers Scripting Subsystem exports `vss` object as entry point to game API.

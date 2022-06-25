@@ -14,6 +14,7 @@ constexpr const char* CAMERA_QUANT = "camera";
 constexpr const char* MECHOS_TRACTION_QUANT = "mechos_traction";
 constexpr const char* SEND_EVENT_QUANT = "send_event";
 constexpr const char* SET_ROAD_FULLSCREEN_QUANT = "set_road_fullscreen";
+constexpr const char* FILE_OPEN_QUANT = "file_open";
 }  // namespace vss
 
 #endif  // VANGERS_QUANT_NAMES_H

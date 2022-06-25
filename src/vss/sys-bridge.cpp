@@ -3,6 +3,8 @@
 //
 #include "sys-bridge.h"
 
+#include <filesystem>
+
 #ifdef _SURMAP_
 void initBridge(duk_context* ctx) {}
 #else
@@ -69,6 +71,13 @@ const duk_function_list_entry bridgeFunctions[] = {
        auto scancode = duk_require_int(ctx, 0);
        auto pressed = SDL_GetKeyboardState(nullptr)[scancode] != 0;
        duk_push_boolean(ctx, pressed);
+       return 1;
+     },
+     1},
+    {"isFileExists",
+     [](duk_context* ctx) -> duk_ret_t {
+       auto file = duk_require_string(ctx, 0);
+       duk_push_boolean(ctx, std::filesystem::exists(file));
        return 1;
      },
      1},

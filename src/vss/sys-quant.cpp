@@ -49,6 +49,18 @@ bool QuantResult::getBool(const char* name, bool defaultValue) {
   return value;
 }
 
+const char* QuantResult::getString(const char* name, const char* defaultValue) {
+  if (notHandled) {
+    return defaultValue;
+  }
+  const char* value = defaultValue;
+  if (duk_get_prop_string(ctx, -1, name)) {
+    value = duk_to_string(ctx, -1);
+  }
+  duk_pop(ctx);
+  return value;
+}
+
 QuantBuilder::QuantBuilder(std::shared_ptr<Context>& context,
                            const char* eventName)
     : context(context) {
@@ -80,6 +92,19 @@ QuantBuilder& QuantBuilder::prop(const char* name, bool value) {
 
   duk_push_string(ctx, name);
   duk_push_boolean(ctx, value);
+  if (duk_put_prop(ctx, -3) != 1) {
+    ErrH.Abort("vss: unable to set property");
+  }
+  return *this;
+}
+
+QuantBuilder& QuantBuilder::prop(const char* name, const char* value) {
+  if (!valid) {
+    return *this;
+  }
+
+  duk_push_string(ctx, name);
+  duk_push_string(ctx, value);
   if (duk_put_prop(ctx, -3) != 1) {
     ErrH.Abort("vss: unable to set property");
   }
