@@ -82,7 +82,7 @@ export interface VssFileOpenQuant {
     flags: FileOpenFlags,
 }
 
-export interface VssRoadFullScreenQuantResult {
+export interface VssFileOpenQuantResult {
     file?: string,
 }
 
