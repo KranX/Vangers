@@ -3,7 +3,7 @@ const global = new Function("return this;")();
 
 export type VssQuantName = keyof VssQuantMap;
 export type VssQuantPayload<K extends keyof VssQuantMap> = VssQuantMap[K][0];
-export type VssQuantResult<K extends keyof VssQuantMap> = {} | void | undefined | "preventDefault" | VssQuantMap[K][1];
+export type VssQuantResult<K extends keyof VssQuantMap> = void | undefined | "preventDefault" | VssQuantMap[K][1];
 
 export interface VssQuantMap {
     "ready": [void, void],
@@ -153,7 +153,7 @@ class Vss {
         const resultRef = {
             result: {
                 preventDefault: false,
-            },
+            } as any,
             runNext: true,
             preventDefault: false,
         };
@@ -173,6 +173,7 @@ class Vss {
             }
         }
 
+        resultRef.result.handled = Object.keys(resultRef.result).length > 1;
         return resultRef.result;
     }
 }
@@ -192,7 +193,7 @@ interface VssNative {
     scripts(): string[];
     getScriptsFolder(): string;
     initScripts(folder: string): void;
-    sendEvent(code: actEventCodes): void;
+    sendEvent(code: actEventCodes, data: number): void;
     isKeyPressed(scanCode: number): boolean;
     isFileExists(file: string): boolean;
 }

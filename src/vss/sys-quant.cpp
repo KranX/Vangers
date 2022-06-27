@@ -11,8 +11,14 @@ using namespace vss;
 
 QuantResult::QuantResult(std::shared_ptr<Context>& context) : context(context) {
   ctx = context ? context->ctx : nullptr;
-  notHandled = ctx == nullptr || !duk_is_object(ctx, -1);
-  preventDefault = !notHandled && getBool("preventDefault", false);
+  bool needsHandledCheck = ctx != nullptr && duk_is_object(ctx, -1);
+  bool handled = false;
+  if (needsHandledCheck) {
+      handled = duk_get_prop_string(ctx, -1, "handled") && duk_to_boolean(ctx, -1);
+      duk_pop(ctx);
+  }
+  notHandled = !handled;
+  preventDefault = getBool("preventDefault", false);
 }
 
 QuantResult::~QuantResult() {

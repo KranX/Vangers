@@ -60,12 +60,13 @@ const duk_function_list_entry bridgeFunctions[] = {
     {"sendEvent",
      [](duk_context* ctx) -> duk_ret_t {
        auto code = duk_require_int(ctx, 0);
+       int data = duk_is_null_or_undefined(ctx, 1) ? 0 : duk_require_int(ctx, 1);
        if (aScrDisp) {
-         aScrDisp->send_event(code);
+         aScrDisp->send_event(code, data);
        }
        return 0;
      },
-     1},
+     2},
     {"isKeyPressed",
      [](duk_context* ctx) -> duk_ret_t {
        auto scancode = duk_require_int(ctx, 0);

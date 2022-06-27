@@ -83,6 +83,6 @@ extern void sys_initScripts(const char* folder);
 extern bool sys_readyQuant();
 extern void sys_runtimeObjectQuant(int runtimeObjectId);
 extern void sys_scaledRendererQuant(int enabled);
-extern const char* sys_fileOpenQuant(const char* file, unsigned flags);
+extern "C" const char* sys_fileOpenQuant(const char* file, unsigned flags);
 
 #endif  // VANGERS_SYS_H
