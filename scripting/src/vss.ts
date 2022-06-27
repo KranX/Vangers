@@ -193,7 +193,7 @@ interface VssNative {
     scripts(): string[];
     getScriptsFolder(): string;
     initScripts(folder: string): void;
-    sendEvent(code: actEventCodes, data: number): void;
+    sendEvent(code: actEventCodes, data?: number): void;
     isKeyPressed(scanCode: number): boolean;
     isFileExists(file: string): boolean;
 }
