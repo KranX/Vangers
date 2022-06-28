@@ -92,6 +92,7 @@ export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload
 export class VssMath {
     PI = 1 << 11;
     PI_2 = this.PI / 2;
+    PIx2 = this.PI * 2;
 
     angleToRadians(angle: number) {
         return angle * Math.PI / this.PI;
