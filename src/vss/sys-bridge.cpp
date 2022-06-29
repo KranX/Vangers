@@ -20,9 +20,11 @@ void initBridge(duk_context* ctx) {}
 #include "../actint/item_api.h"
 #include "../iscreen/iscreen.h"
 #include "../actint/actint.h"
+#include "../actint/a_consts.h"
 // clang-format on
 
 extern actIntDispatcher* aScrDisp;
+extern void aciHandleCameraEvent(int code,int data);
 
 const duk_function_list_entry bridgeFunctions[] = {
     {"fatal",
@@ -61,7 +63,13 @@ const duk_function_list_entry bridgeFunctions[] = {
      [](duk_context* ctx) -> duk_ret_t {
        auto code = duk_require_int(ctx, 0);
        int data = duk_is_null_or_undefined(ctx, 1) ? 0 : duk_require_int(ctx, 1);
-       if (aScrDisp) {
+       if (code == EV_VSS_CAMERA_ROT_EVENT) {
+           aciHandleCameraEvent(BMENU_ITEM_ROT, data);
+       } else if (code == EV_VSS_CAMERA_ZOOM_EVENT) {
+           aciHandleCameraEvent(BMENU_ITEM_ZOOM, data);
+       } else if (code == EV_VSS_CAMERA_PERSP_EVENT) {
+           aciHandleCameraEvent(BMENU_ITEM_PERSP, data);
+       } else if (aScrDisp) {
          aScrDisp->send_event(code, data);
        }
        return 0;
