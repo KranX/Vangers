@@ -15,6 +15,7 @@ export interface VssQuantMap {
     "send_event": [VssSendEventQuant, void],
     "set_road_fullscreen": [VssRoadFullScreenQuant, VssRoadFullScreenQuantResult],
     "file_open": [VssFileOpenQuant, VssFileOpenQuantResult],
+    "pause": [VssPauseQuant, void],
 }
 
 export interface VssRuntimeObjectQuant {
@@ -86,8 +87,19 @@ export interface VssFileOpenQuantResult {
     file?: string,
 }
 
+export interface VssPauseQuant {
+    paused: boolean,
+}
+
 export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
     stopPropogation: () => void, quant: K) => VssQuantResult<K>;
+
+export type VssQuantResultListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
+    result: VssQuantMap[K][1] &
+    {
+        handled: boolean,
+        preventDefault: boolean
+    }) => void;
 
 export class VssMath {
     PI = 1 << 11;
@@ -111,6 +123,7 @@ class Vss {
     math = new VssMath();
 
     private quantListeners: { [quantName: string]: VssQuantListener<any>[] } = {};
+    private quantResultListeners: { [quantName: string]: VssQuantResultListener<any>[] } = {};
 
     constructor() {
         this.scripts = bridge.scripts().filter((value) => {
@@ -141,6 +154,20 @@ class Vss {
         const index = this.quantListeners[quant]?.indexOf(listener);
         if (index !== undefined && index !== -1) {
             this.quantListeners[quant].splice(index, 1);
+        }
+    }
+
+    addQuantResultListener<K extends VssQuantName>(quant: K, listener: VssQuantResultListener<K>) {
+        if (this.quantResultListeners[quant] === undefined) {
+            this.quantResultListeners[quant] = [];
+        }
+        this.quantResultListeners[quant].push(listener);
+    }
+
+    removeQuantResultListener<K extends VssQuantName>(quant: K, listener: VssQuantResultListener<K>) {
+        const index = this.quantResultListeners[quant]?.indexOf(listener);
+        if (index !== undefined && index !== -1) {
+            this.quantResultListeners[quant].splice(index, 1);
         }
     }
 
@@ -175,6 +202,10 @@ class Vss {
         }
 
         resultRef.result.handled = Object.keys(resultRef.result).length > 1;
+        const resultListeners = this.quantResultListeners[quant] || [];
+        for (const next of resultListeners) {
+            next(payload, resultRef.result);
+        }
         return resultRef.result;
     }
 }

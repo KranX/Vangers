@@ -3463,6 +3463,10 @@ void actIntDispatcher::text_redraw(){
 	if(Pause > 1 && NetworkON){
 		if(GameQuantReturnValue || acsQuant()){
 			Pause = 0;
+			vss::sys()
+				.quant(vss::PAUSE_QUANT)
+				.prop("paused", false)
+				.send();
 		}
 		flags |= AS_FULL_FLUSH;
 	}
@@ -3491,6 +3495,10 @@ void actIntDispatcher::text_redraw(){
 	if(Pause > 1 && NetworkON){
 		if(GameQuantReturnValue || acsQuant()){
 			Pause = 0;
+			vss::sys()
+					.quant(vss::PAUSE_QUANT)
+					.prop("paused", false)
+					.send();
 		}
 	}
 

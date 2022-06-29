@@ -1136,6 +1136,10 @@ int GameQuantRTO::Quant(void)
 	else {
 		if(GameQuantReturnValue || acsQuant()){
 			Pause = 0;
+			vss::sys()
+					.quant(vss::PAUSE_QUANT)
+					.prop("paused", false)
+					.send();
 		}
 	}
 
@@ -1591,6 +1595,10 @@ void KeyCenter(SDL_Event *key)
 			std::cout<<"road.KeyCenter:"<<key<<std::endl;
 			if(!Pause) {
 				Pause = 1;
+				vss::sys()
+						.quant(vss::PAUSE_QUANT)
+						.prop("paused", true)
+						.send();
 			}
 				
 //				  GameQuantReturnValue = RTO_LOADING3_ID;
