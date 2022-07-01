@@ -155,17 +155,18 @@ int XGR_Screen::init(int flags_in)
 	int maxWidth = displayMode.w;
 	int maxHeight = displayMode.h;
 
+	const float maxAspect = 1280.0f / 600;
 	float aspect = (float) maxWidth / (float) maxHeight;
 	if (aspect < 4/3.f) {
 		aspect = 4/3.f;
 	}
 
-	if (aspect > 13/6.f /* iPhone */) {
-		aspect = 13/6.f;
+	if (aspect > maxAspect) {
+		aspect = maxAspect;
 	}
 
 	this->hdWidth = 1280;
-	this->hdHeight = 1280 / aspect;
+	this->hdHeight = round(1280 / aspect);
 
 	std::cout<<"SDL_CreateWindowAndRenderer"<<std::endl;
 	if (XGR_FULL_SCREEN) {
