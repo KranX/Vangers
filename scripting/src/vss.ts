@@ -7,6 +7,7 @@ export type VssQuantResult<K extends keyof VssQuantMap> = void | undefined | "pr
 
 export interface VssQuantMap {
     "ready": [void, void],
+    "tick": [void, void],
     "runtime_object": [VssRuntimeObjectQuant, void],
     "scaled_renderer": [VssScaledRendererQuant, void],
     "option": [VssOptionQuant, VssOptionQuantResult],

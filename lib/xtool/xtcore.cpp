@@ -7,6 +7,7 @@
 
 extern void sys_initScripts(const char* folder);
 extern bool sys_readyQuant();
+extern void sys_tickQuant();
 extern void sys_runtimeObjectQuant(int runtimeObjectId);
 
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
@@ -611,6 +612,8 @@ int xtDispatchMessage(SDL_Event* msg)
 
 void xtClearMessageQueue(void)
 {
+	sys_tickQuant();
+
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
 		//std::cout<<"event "<<event.type<<std::endl;

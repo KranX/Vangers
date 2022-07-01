@@ -81,6 +81,7 @@ Sys& sys();
 // @caiiiycuk: to use without including <vangers/sys.h>
 extern void sys_initScripts(const char* folder);
 extern bool sys_readyQuant();
+extern void sys_tickQuant();
 extern void sys_runtimeObjectQuant(int runtimeObjectId);
 extern void sys_scaledRendererQuant(int enabled);
 extern "C" const char* sys_fileOpenQuant(const char* file, unsigned flags);

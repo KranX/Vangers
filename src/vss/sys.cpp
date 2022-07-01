@@ -62,6 +62,10 @@ bool sys_readyQuant() {
   return !result.isPreventDefault();
 }
 
+void sys_tickQuant() {
+  sys().quant(TICK_QUANT).send();
+}
+
 void sys_scaledRendererQuant(bool enabled) {
   static bool current = false;
   if (current == enabled) {
