@@ -44,6 +44,7 @@ class QuantResult {
 class QuantBuilder {
  public:
   QuantBuilder(std::shared_ptr<Context>& context, const char* eventName);
+  QuantBuilder& prop(const char* name, void *value, int size);
   QuantBuilder& prop(const char* name, int value);
   QuantBuilder& prop(const char* name, bool value);
   QuantBuilder& prop(const char* name, const char* value);
@@ -84,6 +85,7 @@ extern bool sys_readyQuant();
 extern void sys_tickQuant();
 extern void sys_runtimeObjectQuant(int runtimeObjectId);
 extern void sys_scaledRendererQuant(int enabled);
+extern void sys_frameQuant(void* frame, int width, int height, int bpp);
 extern "C" const char* sys_fileOpenQuant(const char* file, unsigned flags);
 
 #endif  // VANGERS_SYS_H

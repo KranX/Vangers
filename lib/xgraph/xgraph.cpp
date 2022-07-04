@@ -46,6 +46,7 @@ void XGR_MouseFnc(SDL_Event* p);
 #define DD_STATE(a)		{ DDrawState = a; if(DDrawState != DD_OK ) ErrH.Abort("DirectDraw error...",XERR_USER,DDrawState,ddError(DDrawState)); }
 
 extern void sys_scaledRendererQuant(bool enabled);
+extern void sys_frameQuant(void* frame, int width, int height, int bpp);
 //RECT XGR_Rect;
 
 //LPDIRECTDRAWPALETTE XGR_DDPal = NULL;		// DirectDraw palette...
@@ -948,6 +949,7 @@ void XGR_Screen::flip()
 		int pitch;
 		SDL_LockTexture(sdlTexture, NULL, &pixels, &pitch);
 		blitRgba((uint32_t*)pixels, get_default_render_buffer(), get_2d_rgba_render_buffer(), get_2d_render_buffer());
+		sys_frameQuant(pixels, xgrScreenSizeX, xgrScreenSizeY, 4);
 		SDL_UnlockTexture(sdlTexture);
 		
 		SDL_RenderClear(sdlRenderer);

@@ -78,6 +78,20 @@ QuantBuilder::QuantBuilder(std::shared_ptr<Context>& context,
   }
 }
 
+QuantBuilder& QuantBuilder::prop(const char* name, void *value, int size) {
+  if (!valid) {
+    return *this;
+  }
+
+  duk_push_string(ctx, name);
+  duk_push_external_buffer(ctx);
+  duk_config_buffer(ctx, -1, value, size);
+  if (duk_put_prop(ctx, -3) != 1) {
+    ErrH.Abort("vss: unable to set property");
+  }
+  return *this;
+}
+
 QuantBuilder& QuantBuilder::prop(const char* name, int value) {
   if (!valid) {
     return *this;

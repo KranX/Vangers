@@ -17,6 +17,7 @@ constexpr const char* SET_ROAD_FULLSCREEN_QUANT = "set_road_fullscreen";
 constexpr const char* FILE_OPEN_QUANT = "file_open";
 constexpr const char* PAUSE_QUANT = "pause";
 constexpr const char* TICK_QUANT = "tick";
+constexpr const char* FRAME_QUANT = "frame";
 }  // namespace vss
 
 #endif  // VANGERS_QUANT_NAMES_H

@@ -8,6 +8,7 @@ export type VssQuantResult<K extends keyof VssQuantMap> = void | undefined | "pr
 export interface VssQuantMap {
     "ready": [void, void],
     "tick": [void, void],
+    "frame": [VssFrameQuant, void]
     "runtime_object": [VssRuntimeObjectQuant, void],
     "scaled_renderer": [VssScaledRendererQuant, void],
     "option": [VssOptionQuant, VssOptionQuantResult],
@@ -90,6 +91,13 @@ export interface VssFileOpenQuantResult {
 
 export interface VssPauseQuant {
     paused: boolean,
+}
+
+export interface VssFrameQuant {
+    frame: Uint8Array,
+    width: number,
+    height: number,
+    bpp: number,
 }
 
 export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,

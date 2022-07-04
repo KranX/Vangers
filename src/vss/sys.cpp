@@ -89,6 +89,15 @@ void sys_runtimeObjectQuant(int runtimeObjectId) {
       .send();
 }
 
+void sys_frameQuant(void* frame, int width, int height, int bpp) {
+  sys().quant(FRAME_QUANT)
+    .prop("frame", frame, width * height * bpp)
+    .prop("width", width)
+    .prop("height", height)
+    .prop("bpp", bpp)
+    .send();
+}
+
 extern "C" const char* sys_fileOpenQuant(const char* file, unsigned flags) {
   auto result = sys()
                     .quant(FILE_OPEN_QUANT)
