@@ -24,7 +24,7 @@ void initBridge(duk_context* ctx) {}
 // clang-format on
 
 extern actIntDispatcher* aScrDisp;
-extern void aciHandleCameraEvent(int code,int data);
+extern void aciHandleCameraEvent(int code, int data);
 
 const duk_function_list_entry bridgeFunctions[] = {
     {"fatal",
@@ -62,13 +62,14 @@ const duk_function_list_entry bridgeFunctions[] = {
     {"sendEvent",
      [](duk_context* ctx) -> duk_ret_t {
        auto code = duk_require_int(ctx, 0);
-       int data = duk_is_null_or_undefined(ctx, 1) ? 0 : duk_require_int(ctx, 1);
+       int data =
+           duk_is_null_or_undefined(ctx, 1) ? 0 : duk_require_int(ctx, 1);
        if (code == EV_VSS_CAMERA_ROT_EVENT) {
-           aciHandleCameraEvent(BMENU_ITEM_ROT, data);
+         aciHandleCameraEvent(BMENU_ITEM_ROT, data);
        } else if (code == EV_VSS_CAMERA_ZOOM_EVENT) {
-           aciHandleCameraEvent(BMENU_ITEM_ZOOM, data);
+         aciHandleCameraEvent(BMENU_ITEM_ZOOM, data);
        } else if (code == EV_VSS_CAMERA_PERSP_EVENT) {
-           aciHandleCameraEvent(BMENU_ITEM_PERSP, data);
+         aciHandleCameraEvent(BMENU_ITEM_PERSP, data);
        } else if (aScrDisp) {
          aScrDisp->send_event(code, data);
        }
@@ -87,6 +88,50 @@ const duk_function_list_entry bridgeFunctions[] = {
      [](duk_context* ctx) -> duk_ret_t {
        auto file = duk_require_string(ctx, 0);
        duk_push_boolean(ctx, std::filesystem::exists(file));
+       return 1;
+     },
+     1},
+    {"getRgbaData",
+     [](duk_context* ctx) -> duk_ret_t {
+       duk_size_t len;
+       uint32_t* frame = (uint32_t*)duk_require_buffer(ctx, 0, &len);
+       int frameWidth = duk_require_int(ctx, 1);
+       int startX = duk_require_int(ctx, 2);
+       int startY = duk_require_int(ctx, 3);
+       int width = duk_require_int(ctx, 4);
+       int height = duk_require_int(ctx, 5);
+
+       duk_size_t rgbaLen;
+       uint32_t* rgba = (uint32_t*)duk_require_buffer(ctx, 6, &rgbaLen);
+
+       if (rgbaLen != width * height * 4) {
+         ErrH.Abort(
+             "getRgbaFrame: rgba data size must be greater or equal then width "
+             "* height * 4");
+         return 0;
+       }
+
+       for (int y = 0; y < height; ++y) {
+         memcpy(rgba + y * width, frame + (y + startY) * frameWidth + startX,
+                width * 4);
+       }
+
+       uint32_t* pixel = rgba;
+       uint8_t* data = (uint8_t*)rgba;
+       uint32_t* end = rgba + width * height;
+       while (pixel < end) {
+         std::swap(data[0], data[2]);
+         data[3] = 255;
+         data += 4;
+         ++pixel;
+       }
+
+       return 0;
+     },
+     7},
+    {"toBase64",
+     [](duk_context* ctx) -> duk_ret_t {
+       duk_base64_encode(ctx, 0);
        return 1;
      },
      1},

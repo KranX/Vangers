@@ -151,6 +151,8 @@ class Vss {
     sendEvent = bridge.sendEvent;
     isKeyPressed = bridge.isKeyPressed;
     isFileExists = bridge.isFileExists;
+    getRgbaData = bridge.getRgbaData;
+    toBase64 = bridge.toBase64;
 
     addQuantListener<K extends VssQuantName>(quant: K, listener: VssQuantListener<K>) {
         if (this.quantListeners[quant] === undefined) {
@@ -237,6 +239,14 @@ interface VssNative {
     sendEvent(code: actEventCodes, data?: number): void;
     isKeyPressed(scanCode: number): boolean;
     isFileExists(file: string): boolean;
+    getRgbaData(frame: Uint8Array,
+        frameWidth: number,
+        startX: number,
+        startY: number,
+        width: number,
+        height: number,
+        rgbaData: Uint8Array): void;
+    toBase64(data: Uint8Array): string;
 }
 
 // == in game definitions

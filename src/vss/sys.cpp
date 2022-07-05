@@ -62,9 +62,7 @@ bool sys_readyQuant() {
   return !result.isPreventDefault();
 }
 
-void sys_tickQuant() {
-  sys().quant(TICK_QUANT).send();
-}
+void sys_tickQuant() { sys().quant(TICK_QUANT).send(); }
 
 void sys_scaledRendererQuant(bool enabled) {
   static bool current = false;
@@ -90,12 +88,13 @@ void sys_runtimeObjectQuant(int runtimeObjectId) {
 }
 
 void sys_frameQuant(void* frame, int width, int height, int bpp) {
-  sys().quant(FRAME_QUANT)
-    .prop("frame", frame, width * height * bpp)
-    .prop("width", width)
-    .prop("height", height)
-    .prop("bpp", bpp)
-    .send();
+  sys()
+      .quant(FRAME_QUANT)
+      .prop("frame", frame, width * height * bpp)
+      .prop("width", width)
+      .prop("height", height)
+      .prop("bpp", bpp)
+      .send();
 }
 
 extern "C" const char* sys_fileOpenQuant(const char* file, unsigned flags) {

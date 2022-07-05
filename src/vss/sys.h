@@ -44,7 +44,7 @@ class QuantResult {
 class QuantBuilder {
  public:
   QuantBuilder(std::shared_ptr<Context>& context, const char* eventName);
-  QuantBuilder& prop(const char* name, void *value, int size);
+  QuantBuilder& prop(const char* name, void* value, int size);
   QuantBuilder& prop(const char* name, int value);
   QuantBuilder& prop(const char* name, bool value);
   QuantBuilder& prop(const char* name, const char* value);

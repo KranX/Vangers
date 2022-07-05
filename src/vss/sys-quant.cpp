@@ -14,8 +14,9 @@ QuantResult::QuantResult(std::shared_ptr<Context>& context) : context(context) {
   bool needsHandledCheck = ctx != nullptr && duk_is_object(ctx, -1);
   bool handled = false;
   if (needsHandledCheck) {
-      handled = duk_get_prop_string(ctx, -1, "handled") && duk_to_boolean(ctx, -1);
-      duk_pop(ctx);
+    handled =
+        duk_get_prop_string(ctx, -1, "handled") && duk_to_boolean(ctx, -1);
+    duk_pop(ctx);
   }
   notHandled = !handled;
   preventDefault = getBool("preventDefault", false);
@@ -78,7 +79,7 @@ QuantBuilder::QuantBuilder(std::shared_ptr<Context>& context,
   }
 }
 
-QuantBuilder& QuantBuilder::prop(const char* name, void *value, int size) {
+QuantBuilder& QuantBuilder::prop(const char* name, void* value, int size) {
   if (!valid) {
     return *this;
   }
