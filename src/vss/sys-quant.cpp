@@ -9,17 +9,20 @@
 
 using namespace vss;
 
-QuantResult::QuantResult(std::shared_ptr<Context>& context) : context(context) {
+QuantResult::QuantResult(std::shared_ptr<Context>& context)
+    : context(context), notHandled(true), preventDefault(false) {
   ctx = context ? context->ctx : nullptr;
-  bool needsHandledCheck = ctx != nullptr && duk_is_object(ctx, -1);
-  bool handled = false;
-  if (needsHandledCheck) {
-    handled =
-        duk_get_prop_string(ctx, -1, "handled") && duk_to_boolean(ctx, -1);
-    duk_pop(ctx);
+  bool needObjectCheck = ctx != nullptr && duk_is_object(ctx, -1);
+  if (!needObjectCheck) {
+    return;
   }
-  notHandled = !handled;
-  preventDefault = getBool("preventDefault", false);
+
+  notHandled =
+      !(duk_get_prop_string(ctx, -1, "handled") && duk_to_boolean(ctx, -1));
+  duk_pop(ctx);
+  preventDefault =
+      duk_get_prop_string(ctx, -1, "preventDefault") && duk_to_boolean(ctx, -1);
+  duk_pop(ctx);
 }
 
 QuantResult::~QuantResult() {

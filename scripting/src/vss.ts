@@ -153,6 +153,7 @@ class Vss {
     isFileExists = bridge.isFileExists;
     getRgbaData = bridge.getRgbaData;
     toBase64 = bridge.toBase64;
+    getShopItem = bridge.getShopItem;
 
     addQuantListener<K extends VssQuantName>(quant: K, listener: VssQuantListener<K>) {
         if (this.quantListeners[quant] === undefined) {
@@ -247,9 +248,16 @@ interface VssNative {
         height: number,
         rgbaData: Uint8Array): void;
     toBase64(data: Uint8Array): string;
+    getShopItem(): MechosShopItem;
 }
 
 // == in game definitions
+export interface MechosShopItem {
+    internalId: number;
+    mechosName: string;
+    type: number;
+}
+
 export enum RoadRuntimeObjId {
     RTO_GAME_QUANT_ID = 1,
     RTO_LOADING1_ID, // 2

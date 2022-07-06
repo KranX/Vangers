@@ -25,6 +25,8 @@ void initBridge(duk_context* ctx) {}
 
 extern actIntDispatcher* aScrDisp;
 extern void aciHandleCameraEvent(int code, int data);
+extern iListElement* iShopItem;
+extern int iEvLineID;
 
 const duk_function_list_entry bridgeFunctions[] = {
     {"fatal",
@@ -135,6 +137,24 @@ const duk_function_list_entry bridgeFunctions[] = {
        return 1;
      },
      1},
+    {"getShopItem",
+     [](duk_context* ctx) -> duk_ret_t {
+       auto idx = duk_push_object(ctx);
+       if (iShopItem) {
+         if (iEvLineID == MECHOS_MODE || iEvLineID == MECHOS_LIST_MODE) {
+           // mechos
+           invMatrix* matrix = (invMatrix*)iShopItem;
+           duk_push_int(ctx, matrix->internalID);
+           duk_put_prop_string(ctx, idx, "internalId");
+           duk_push_int(ctx, matrix->type);
+           duk_put_prop_string(ctx, idx, "type");
+           duk_push_string(ctx, matrix->mech_name);
+           duk_put_prop_string(ctx, idx, "mechosName");
+         }
+       }
+       return 1;
+     },
+     0},
     {NULL, NULL, 0}};
 
 void initBridge(duk_context* ctx) {
