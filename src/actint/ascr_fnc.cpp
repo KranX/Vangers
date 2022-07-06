@@ -3,6 +3,7 @@
 #include "../global.h"
 #include "lang.h"
 #include <zlib.h>
+#include "../vss/sys.h"
 
 #if defined(__APPLE__) || __GNUC__ < 9
 #include <sys/stat.h>
@@ -4249,8 +4250,20 @@ void aciShowCamerasMenu(int x,int y,int sx,int sy)
 
 void aciHandleCameraEvent(int code,int data)
 {
+	auto result = vss::sys()
+		.quant(vss::SEND_EVENT_QUANT)
+		.prop("code", code == BMENU_ITEM_ROT ? EV_VSS_CAMERA_ROT_EVENT :
+					  (code == BMENU_ITEM_ZOOM ? EV_VSS_CAMERA_ZOOM_EVENT : EV_VSS_CAMERA_PERSP_EVENT))
+		.prop("data", data)
+		.send();
+
+	if (result.isPreventDefault()) {
+		return;
+	}
+
 	aciBitmapMenu* m;
 	aciBitmapMenuItem* p;
+
 	switch(code){
 		case BMENU_ITEM_ROT:
 			camera_rotate_enable = data;
