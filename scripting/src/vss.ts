@@ -18,6 +18,8 @@ export interface VssQuantMap {
     "set_road_fullscreen": [VssRoadFullScreenQuant, VssRoadFullScreenQuantResult],
     "file_open": [VssFileOpenQuant, VssFileOpenQuantResult],
     "pause": [VssPauseQuant, void],
+    "redraw": [VssRedrawQuant, void],
+    "check_xy": [VssCheckXYQuant, void]
 }
 
 export interface VssRuntimeObjectQuant {
@@ -100,10 +102,17 @@ export interface VssFrameQuant {
     bpp: number,
 }
 
-export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
+export interface VssRedrawQuant {
+    type: "iScreenObject",
+    id: number,
+}
+
+export type VssCheckXYQuant = VssRedrawQuant;
+
+export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K> & { quant: K },
     stopPropogation: () => void, quant: K) => VssQuantResult<K>;
 
-export type VssQuantResultListener<K extends VssQuantName> = (payload: VssQuantPayload<K>,
+export type VssQuantResultListener<K extends VssQuantName> = (payload: VssQuantPayload<K> & { quant: K },
     result: VssQuantMap[K][1] &
     {
         handled: boolean,
@@ -189,6 +198,9 @@ class Vss {
             return undefined;
         }
 
+        if (payload) {
+            (payload as any).quant = quant;
+        }
 
         const resultRef = {
             result: {

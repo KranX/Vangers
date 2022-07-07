@@ -17,6 +17,7 @@
 
 #include "../sound/hsound.h"
 #include "avi.h"
+#include "../vss/sys.h"
 
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
@@ -1671,8 +1672,18 @@ int iScreenObject::CheckXY(int x,int y)
 	x -= PosX;
 	y -= PosY;
 
-	if(x >= 0 && y >= 0 && x <= SizeX && y <= SizeY)
+	if(x >= 0 && y >= 0 && x <= SizeX && y <= SizeY) {
+		auto result = vss::sys()
+				.quant(vss::CHECK_XY_QUANT)
+				.prop("type", "iScreenObject")
+				.prop("id", ID)
+				.send();
+
+		if (result.isPreventDefault()) {
+			return 0;
+		}
 		return 1;
+	}
 	return 0;
 }
 
@@ -1878,6 +1889,16 @@ void iScreenObject::init(void)
 
 void iScreenObject::redraw(int mode)
 {
+	auto result = vss::sys()
+		.quant(vss::REDRAW_QUANT)
+		.prop("type", "iScreenObject")
+		.prop("id", ID)
+		.send();
+
+	if (result.isPreventDefault()) {
+		return;
+	}
+
 	int hide_mode = flags & OBJ_HIDE;
 	iScreenElement* p = (iScreenElement*)ElementList -> last;
 
