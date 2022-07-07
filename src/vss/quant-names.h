@@ -18,8 +18,10 @@ constexpr const char* FILE_OPEN_QUANT = "file_open";
 constexpr const char* PAUSE_QUANT = "pause";
 constexpr const char* TICK_QUANT = "tick";
 constexpr const char* FRAME_QUANT = "frame";
+constexpr const char* REDRAW_BEGIN_QUANT = "redraw_begin";
 constexpr const char* REDRAW_QUANT = "redraw";
 constexpr const char* CHECK_XY_QUANT = "check_xy";
+constexpr const char* REDRAW_END_QUANT = "redraw_end";
 }  // namespace vss
 
 #endif  // VANGERS_QUANT_NAMES_H

@@ -1344,6 +1344,17 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 	if(flags & EL_NO_SCALE && scale != 256)
 		return;
 
+	auto result = vss::sys()
+			.quant(vss::REDRAW_QUANT)
+			.prop("type", "iScreenElement")
+			.prop("id", ID)
+			.prop("elementType", type)
+			.send();
+
+	if (result.isPreventDefault()) {
+		return;
+	}
+
 //	  if(flags & EL_NO_SCALE)
 //		  sc = 256;
 
@@ -3742,6 +3753,14 @@ void iScreenDispatcher::move2screen(iScreen* p,int time)
 
 void iScreenDispatcher::redraw_quant(void)
 {
+	auto result = vss::sys()
+			.quant(vss::REDRAW_BEGIN_QUANT)
+			.send();
+
+	if (result.isPreventDefault()) {
+		return;
+	}
+
 	iListElementPtr* tmp;
 	iScreenObject* obj;
 	tmp = (iListElementPtr*)drwObjHeap -> last;
@@ -3787,6 +3806,10 @@ void iScreenDispatcher::redraw_quant(void)
 	if(flags & SD_END_GETFON){
 		flags &= ~(SD_GETFON | SD_END_GETFON);
 	}
+
+	vss::sys()
+		.quant(vss::REDRAW_END_QUANT)
+		.send();
 }
 
 void iScreenDispatcher::flush_quant(void)

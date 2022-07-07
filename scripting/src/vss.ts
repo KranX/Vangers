@@ -18,8 +18,10 @@ export interface VssQuantMap {
     "set_road_fullscreen": [VssRoadFullScreenQuant, VssRoadFullScreenQuantResult],
     "file_open": [VssFileOpenQuant, VssFileOpenQuantResult],
     "pause": [VssPauseQuant, void],
+    "redraw_begin": [void, void],
     "redraw": [VssRedrawQuant, void],
     "check_xy": [VssCheckXYQuant, void]
+    "redraw_end": [void, void],
 }
 
 export interface VssRuntimeObjectQuant {
@@ -103,8 +105,9 @@ export interface VssFrameQuant {
 }
 
 export interface VssRedrawQuant {
-    type: "iScreenObject",
+    type: "iScreenObject" | "iScreenElement",
     id: number,
+    elementType?: iElementTypes,
 }
 
 export type VssCheckXYQuant = VssRedrawQuant;
@@ -867,4 +870,14 @@ export enum FileOpenFlags {
     XS_NOSHARING = 0x0020,
     XS_SHAREREAD = 0x0040,
     XS_SHAREWRITE = 0x0080,
+};
+
+export enum iElementTypes {
+	I_STRING_ELEM,
+	I_BITMAP_ELEM,
+	I_SCROLLER_ELEM,
+	I_TERRAIN_ELEM,
+	I_S_STRING_ELEM,
+	I_AVI_ELEM,
+	I_AVI_BORDER_ELEM
 };
