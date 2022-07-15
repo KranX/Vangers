@@ -1657,8 +1657,8 @@ static unsigned short XGR_MouseDefFrameHC[240] =
 
 void XGR_Mouse::Init(int x,int y,int sx,int sy,int num,void* p)
 {
-	PosX = x;
-	PosY = y;
+	PosX = x - SpotX;
+	PosY = y - SpotX;
 	SizeX = sx;
 	SizeY = sy;
 	PosZ = LastPosZ = MovementZ = 0;
@@ -1846,8 +1846,8 @@ void XGR_Mouse::InitPos(int x,int y)
 	LastSizeX = SizeX;
 	LastSizeY = SizeY;
 
-	PosX = x;
-	PosY = y;
+	PosX = x - SpotX;
+	PosY = y - SpotY;
 
 	AdjustPos();
 }
@@ -1882,10 +1882,10 @@ void XGR_Mouse::SetPos(int x,int y)
 	LastSizeX = SizeX;
 	LastSizeY = SizeY;
 
-	PosX = x;
-	PosY = y;
+	PosX = x - SpotX;
+	PosY = y - SpotY;
 
-	//AdjustPos();
+	AdjustPos();
 
 //	pt.x = PosX;
 //	pt.y = PosY;
