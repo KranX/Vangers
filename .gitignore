@@ -36,3 +36,6 @@ CMakeSettings.json
 /build
 /clunk
 /vangers
+
+# Server env file
+.env
