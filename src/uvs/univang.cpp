@@ -8025,7 +8025,7 @@ stand < ConTimer.GetTime() < "BOORAWCHICK go home\n";
 
 		count = GamerResult.poponka - ItemCount(Pitem,UVS_ITEM_TYPE::POPONKA );
 		GamerResult.poponka = ItemCount(Pitem,UVS_ITEM_TYPE::POPONKA );
-		if (NetworkON && my_server_data.GameType == MECHOSOMA && Pspot && strcmp(Pspot->name, "ZeePa") == 0) {
+		if (NetworkON && my_server_data.GameType == MECHOSOMA && Pescave && strcmp(Pescave->name, "ZeePa") == 0) {
 			if (GamerResult.poponka_buy - count > uvsQuantity) GamerResult.poponka_buy = uvsQuantity;
 			else GamerResult.poponka_buy -= count;
 		}
@@ -8039,7 +8039,7 @@ stand < ConTimer.GetTime() < "BOORAWCHICK go home\n";
 				}
 				pl = (uvsTradeItem*)pl -> next;
 			}//  end while
-			if (NetworkON && my_server_data.GameType == MECHOSOMA && Pescave && strcmp(Pescave->name, "B-Zone") == 0) {
+			if (NetworkON && my_server_data.GameType == MECHOSOMA && Pspot && strcmp(Pspot->name, "B-Zone") == 0) {
 				my_player_body.MechosomaStat.ItemCount1 += count;
 				send_player_body(my_player_body);
 			}
@@ -8047,7 +8047,7 @@ stand < ConTimer.GetTime() < "BOORAWCHICK go home\n";
 
 		count = GamerResult.toxick - ItemCount(Pitem,UVS_ITEM_TYPE::TOXICK );
 		GamerResult.toxick = ItemCount(Pitem,UVS_ITEM_TYPE::TOXICK );
-		if (NetworkON && my_server_data.GameType == MECHOSOMA && Pescave && strcmp(Pescave->name, "B-Zone") == 0) {
+		if (NetworkON && my_server_data.GameType == MECHOSOMA && Pspot && strcmp(Pspot->name, "B-Zone") == 0) {
 			if (GamerResult.toxick_buy - count > uvsQuantity) GamerResult.toxick_buy = uvsQuantity;
 			else GamerResult.toxick_buy -= count;
 		}
@@ -8061,7 +8061,7 @@ stand < ConTimer.GetTime() < "BOORAWCHICK go home\n";
 				}
 				pl = (uvsTradeItem*)pl -> next;
 			}//  end while
-			if (NetworkON && my_server_data.GameType == MECHOSOMA && Pspot && strcmp(Pspot->name, "ZeePa") == 0) {
+			if (NetworkON && my_server_data.GameType == MECHOSOMA && Pescave && strcmp(Pescave->name, "ZeePa") == 0) {
 				my_player_body.MechosomaStat.ItemCount2 += count;
 				send_player_body(my_player_body);
 			}
