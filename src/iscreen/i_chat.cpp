@@ -468,8 +468,8 @@ void iChatInit(void)
 	int x,y,sx,sy,bsx,col0,col1,bcol;
 	iChatButton* p;
 
-	sx = ICS_HISTORY_SIZE_X + ICS_DELTA + ICS_BUTTON_SIZE_X + (XGR_MAXX - 800);
-	sy = ICS_HISTORY_SIZE_Y + ICS_DELTA * 2 + ICS_BUTTON_SIZE_Y * 2 + (XGR_MAXY - 600);
+	sx = ICS_HISTORY_SIZE_X + ICS_DELTA + ICS_BUTTON_SIZE_X;
+	sy = ICS_HISTORY_SIZE_Y + ICS_DELTA * 2 + ICS_BUTTON_SIZE_Y * 2;
 
 //	  bsx = (sx - ICS_DELTA * 2) / 3;
 	bsx = (ICS_HISTORY_SIZE_X - ICS_DELTA * 2) / 3;
@@ -481,6 +481,8 @@ void iChatInit(void)
 		bcol = ICS_BORDER_COLOR;
 	else {
 		y -= 30;
+		x -= (XGR_MAXX - 800) / 2;
+		y -= (XGR_MAXY - 600) / 2;
 		bcol = ICS_iBORDER_COLOR;
 	}
 
