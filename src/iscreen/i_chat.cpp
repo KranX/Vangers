@@ -488,6 +488,7 @@ void iChatInit(void)
 
 	iChatHistory = new iChatHistoryScreen;
 	iChatHistory -> init(x,y + (ICS_BUTTON_SIZE_Y + ICS_DELTA) * 1,ICS_HISTORY_SIZE_X,ICS_HISTORY_SIZE_Y,bcol,bcol);
+	iChatHistory -> position = std::max(0, message_dispatcher.ListSize - ICS_HISTORY_MAX_MESSAGES);
 
 	iChatInput = new iChatInputField;
 	iChatInput -> init(x,y + ICS_HISTORY_SIZE_Y + ICS_DELTA + (ICS_BUTTON_SIZE_Y + ICS_DELTA) * 1,ICS_HISTORY_SIZE_X,ICS_BUTTON_SIZE_Y,bcol,bcol);
