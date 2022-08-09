@@ -129,9 +129,9 @@ struct XGR_Screen
 	void set_fullscreen(bool fullscreen); 
 	void set_resolution(int width, int height);
 	void set_is_scaled_renderer(bool is_scaled_renderer);
-	const bool get_is_scaled_renderer();
-	const float get_screen_scale_x();
-	const float get_screen_scale_y();
+	bool get_is_scaled_renderer() const;
+	float get_screen_scale_x() const;
+	float get_screen_scale_y() const;
 
 	void setpixel(int x,int y,int col);
 	int getpixel(int x,int y);

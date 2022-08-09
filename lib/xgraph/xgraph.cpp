@@ -297,11 +297,11 @@ void XGR_Screen::set_resolution(int width, int height){
 	create_surfaces(width, height);
 }
 
-const float XGR_Screen::get_screen_scale_x() {
+float XGR_Screen::get_screen_scale_x() const {
 	return screen_scale_x;
 }
 
-const float XGR_Screen::get_screen_scale_y() {
+float XGR_Screen::get_screen_scale_y() const {
 	return screen_scale_y;
 }
 
@@ -343,7 +343,7 @@ void XGR_Screen::set_is_scaled_renderer(bool is_scaled_renderer)
 	this->is_scaled_renderer = is_scaled_renderer;
 }
 
-const bool XGR_Screen::get_is_scaled_renderer()
+bool XGR_Screen::get_is_scaled_renderer() const
 {
 	return this->is_scaled_renderer;
 }
