@@ -253,7 +253,9 @@ int main(int argc, char *argv[])
 		xtRTO_Log < "\r\nChange RTO: " <= XObj -> ID < " -> " <= id < " frame -> " <= XRec.frameCount;
 #endif
 		XObj = xtGetRuntimeObject(id);
-		sys_runtimeObjectQuant(XObj->ID);
+		if (XObj) {
+			sys_runtimeObjectQuant(XObj->ID);
+		}
 	}
 	xtDoneApplication();
 	xtSysFinit();
