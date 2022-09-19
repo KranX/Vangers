@@ -22,6 +22,7 @@ export interface VssQuantMap {
     "redraw": [VssRedrawQuant, void],
     "check_xy": [VssCheckXYQuant, void]
     "redraw_end": [void, void],
+    "network_state": [VssNetworkState, void],
 }
 
 export interface VssRuntimeObjectQuant {
@@ -111,6 +112,10 @@ export interface VssRedrawQuant {
 }
 
 export type VssCheckXYQuant = VssRedrawQuant;
+
+export interface VssNetworkState {
+    on: boolean,
+}
 
 export type VssQuantListener<K extends VssQuantName> = (payload: VssQuantPayload<K> & { quant: K },
     stopPropogation: () => void, quant: K) => VssQuantResult<K>;

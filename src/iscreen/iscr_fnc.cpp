@@ -2423,7 +2423,6 @@ void iHandleExtEvent(int code,int data)
 			break;
 		case iEXT_DISCONNECT:
 			disconnect_from_server();
-			NetworkON = 0;
 			break;
 		case iEXT_INIT_KEEP_OPTIONS:
 			iInitKeepOptions();

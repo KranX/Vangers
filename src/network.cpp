@@ -15,6 +15,8 @@
 #endif
 #include "network.h"
 
+#include "./vss/sys.h"
+
 extern int MP_GAME;
 extern XStream fout;
 extern int frame;
@@ -821,11 +823,19 @@ int connect_to_server(ServerFindChain* p)
 		}
 
 		NetworkON = 1;
+		vss::sys()
+				.quant(vss::NETWORK_STATE_QUANT)
+				.prop("on", true)
+				.send();
 		number_of_reconnection_attempt = 5;
 
 		return GlobalStationID;
 		}
 	NetworkON = 0;
+	vss::sys()
+			.quant(vss::NETWORK_STATE_QUANT)
+			.prop("on", false)
+			.send();
 	return 0;
 }
 int restore_connection()
@@ -867,6 +877,13 @@ void disconnect_from_server()
 	delay(256);
 	events_out.clear();
 	events_in.reset();
+
+	NetworkON = 0;
+	vss::sys()
+			.quant(vss::NETWORK_STATE_QUANT)
+			.prop("on", false)
+			.send();
+
 }
 void set_time_by_server(int n_measures)
 {

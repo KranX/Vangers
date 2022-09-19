@@ -855,7 +855,6 @@ void GeneralSystemFree(void)
 		
 		total_players_data_list_query();
 		disconnect_from_server();
-		NetworkON = 0;
 	};
 //	for(i = 0;i < WORLD_MAX;i++)
 //		delete SKIP_LOCATION_NAME[i];
@@ -3772,8 +3771,7 @@ int NetInit(ServerFindChain* p)
 		return 0;
 
 	std::cout<<"NetInit - [1]"<<std::endl;
-	NetworkON = 1;
-	
+
 	LocalStationID = GlobalStationID << 26;
 	for(i = 0;i < MAX_NID_OBJECT;i++)
 		LocalStationCounter[i] = 0;
