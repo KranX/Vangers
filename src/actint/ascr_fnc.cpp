@@ -62,6 +62,13 @@ namespace fs = std::filesystem;
 extern int aciCompleteGameFlag;
 #endif
 
+#ifdef ANDROID
+// @caiiiycuk: android does not support non ASCII chars in sprintf/printf
+// so we use alternate implementation of it
+// https://github.com/mpaland/printf
+#include "../../../printf/printf.h"
+#endif
+
 extern int aciPrevJumpCount;
 extern PlayerData** iPlayers;
 
