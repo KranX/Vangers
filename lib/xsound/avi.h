@@ -1,3 +1,5 @@
+#ifndef NO_FFMPEG
+
 #ifndef __AVI_H__
 #define __AVI_H__
 
@@ -63,3 +65,5 @@ void AVIPrepareFrame(void *avi);
 void AVIDrawFrame(void *avi, int offsetX, int offsetY, int lineWidth, uint32_t* rgba, float bright = 1.0);
 
 #endif //__AVI_H__
+
+#endif //NO_FFMPEG
