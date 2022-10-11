@@ -29,6 +29,13 @@
 
 #include "../vss/sys.h"
 
+extern bool vss_experimental_menuChangeRequested();
+extern bool vss_experimental_menuUpRequested();
+extern bool vss_experimental_menuDownRequested();
+extern bool vss_experimental_menuResetRequest();
+extern bool vss_experimental_menuWasChanged();
+extern bool vss_experimental_menuActivateRequested();
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -3258,8 +3265,12 @@ void actIntDispatcher::redraw(void)
 				p -> set_redraw();
 
 			if((p -> flags & FM_ACTIVE) && !p -> trigger){
-				p -> curCount --;
-				if(p -> curCount <= 0){
+				if (vss_experimental_menuWasChanged()) {
+                    			p -> curCount = p -> activeCount;
+				} else {
+                    			p -> curCount --;
+				}
+				if(p -> curCount <= 0 || vss_experimental_menuActivateRequested()){
 					if(!(p -> flags & FM_SUBMENU)){
 						p -> flags &= ~FM_ACTIVE;
 						p -> set_redraw();
@@ -4857,12 +4868,12 @@ void actIntDispatcher::KeyQuant(void)
 
 	inv_mouse_move_quant();
 
-	if(flags & aMS_MOVED){
+	if(vss_experimental_menuChangeRequested() || flags & aMS_MOVED){
 		flags &= ~aMS_MOVED;
 		if(curMode == AS_INFO_MODE){
 			m = (fncMenu*)menuList -> last;
 			while(m){
-				if(!(m -> flags & FM_HIDDEN) && m -> check_xy(iMouseX,iMouseY)){
+				if(!(m -> flags & FM_HIDDEN) && (vss_experimental_menuChangeRequested() || m -> check_xy(iMouseX, iMouseY))){
 					if(m -> flags & FM_ACTIVE){
 						m -> change(iMouseX,iMouseY,1);
 					}
@@ -5934,9 +5945,11 @@ int fncMenu::change(int x,int y,int mode)
 
 	init_redraw();
 	if(items -> Size > VItems){
-		if(x >= 0 && x < SizeX && up_obj -> check_y(y)){
-			if(!mode)
-				step_up();
+		if(vss_experimental_menuUpRequested() || (x >= 0 && x < SizeX && up_obj -> check_y(y))){
+			if(vss_experimental_menuUpRequested() || !mode) {
+			    vss_experimental_menuResetRequest();
+                	step_up();
+            	}
 			up_obj -> flags |= FM_SELECTED;
 			set_redraw();
 			if(prefix) set_prefix(prefix);
@@ -5944,9 +5957,11 @@ int fncMenu::change(int x,int y,int mode)
 			curCount = activeCount;
 			return 0;
 		}
-		if(x >= 0 && x < SizeX && down_obj -> check_y(y)){
-			if(!mode)
-				step_down();
+		if(vss_experimental_menuDownRequested() || (x >= 0 && x < SizeX && down_obj -> check_y(y))){
+			if(vss_experimental_menuDownRequested() || !mode) {
+			    vss_experimental_menuResetRequest();
+                	step_down();
+            	}
 			down_obj -> flags |= FM_SELECTED;
 			set_redraw();
 			if(prefix) set_prefix(prefix);
@@ -5955,6 +5970,19 @@ int fncMenu::change(int x,int y,int mode)
 			return 0;
 		}
 	}
+
+	if (vss_experimental_menuChangeRequested() && curItem) {
+	    if (vss_experimental_menuUpRequested() && curItem->prev) {
+            y = ((fncMenuItem* ) curItem->prev)->PosY;
+            iMouseY = y;
+	    }
+        if (vss_experimental_menuDownRequested() && curItem->next) {
+            y = ((fncMenuItem* ) curItem->next)->PosY;
+            iMouseY = y;
+        }
+	    vss_experimental_menuResetRequest();
+	}
+
 	p = (fncMenuItem*)items -> last;
 	while(p){
 		if(p -> flags & FM_VISIBLE && p -> check_y(y)){
