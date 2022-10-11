@@ -40,3 +40,5 @@ CMakeSettings.json
 scripting/yarn-error.log
 scripting/node_modules
 scripting/build
+# Server env file
+.env

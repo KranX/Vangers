@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  server:
+    build: .
+    image: vangers_server
+    container_name: vangers_server
+    restart: unless-stopped
+    ports:
+      - "2197:2197"
+      - "2198:2198"
+    env_file:
+      - .env

@@ -296,6 +296,7 @@ void XGR_Screen::set_resolution(int width, int height){
 	}
 
 	destroy_surfaces();
+	SDL_SetWindowSize(sdlWindow, width, height);
 	create_surfaces(width, height);
 }
 
