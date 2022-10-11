@@ -3280,8 +3280,10 @@ void actIntDispatcher::redraw(void)
 						SOUND_SELECT();
 					}
 					else {
-						if(p -> activeCount)
-							p -> go2upmenu();
+						if(p -> activeCount) {
+							aciHandleSubmenuEvent(p->type, p->curItem);
+							p->go2upmenu();
+						}
 					}
 				}
 			}
