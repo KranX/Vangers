@@ -13,6 +13,7 @@ export interface VssQuantMap {
     "scaled_renderer": [VssScaledRendererQuant, void],
     "option": [VssOptionQuant, VssOptionQuantResult],
     "camera": [VssCameraQuant, VssCameraQuantResult],
+    "camera_zoom": [VssCameraZoomQuant, VssCameraZoomQuantResult],
     "mechos_traction": [VssMechosTractionQuant, VssMechosTractionQuantResult],
     "send_event": [VssSendEventQuant, void],
     "set_road_fullscreen": [VssRoadFullScreenQuant, VssRoadFullScreenQuantResult],
@@ -49,6 +50,13 @@ export interface VssCameraQuant {
 export interface VssCameraQuantResult {
     turnAngle?: number;
     slopeAngle?: number;
+}
+
+export interface VssCameraZoomQuant {
+    z: number,
+}
+export interface VssCameraZoomQuantResult {
+    z?: number;
 }
 
 export interface VssMechosTractionQuant {

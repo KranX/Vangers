@@ -1795,7 +1795,12 @@ void iGameMap::reset(void)
 	prmFlag = 0;
 	SlopeAngle = 0;// -Pi/4;
 	DepthShow = 0;
-	camera_zmin = TurnSecX = xsize / XGR_Obj.get_screen_scale_x();
+	auto zmin = (int) (xsize / XGR_Obj.get_screen_scale_x());
+	auto result = vss::sys()
+		.quant(vss::CAMERA_ZOOM_QUANT)
+		.prop("z", zmin)
+		.send();
+	camera_zmin = TurnSecX = result.getInt("z", zmin);
 	TurnSecY = ysize;
 	TurnSideX = TurnSecX >> 1;
 	TurnSideY = TurnSecY >> 1;
