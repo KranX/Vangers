@@ -9666,10 +9666,13 @@ void aciScreenText::redraw(void)
 		p = (aciScreenTextPage*)p -> next;
 	}
 
-	y = (XGR_MAXY - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
+
+	int screenSizeX = XGR_Obj.get_is_scaled_renderer() ? I_RES_X : XGR_MAXX;
+	int screenSizeY = XGR_Obj.get_is_scaled_renderer() ? I_RES_Y : XGR_MAXY;
+	y = (screenSizeY - (DeltaY + aTextHeight32((void *)"",font,1)) * p -> NumStr)/2;
 	for(i = 0; i < CurStr; i ++){
 		str = p -> StrTable[i];
-		x = (XGR_MAXX - aTextWidth32(str,font,1))/2;
+		x = (screenSizeX - aTextWidth32(str,font,1))/2;
 
 		aOutText32(x,y,color,str,font,1,1);
 		y += DeltaY + aTextHeight32(str,font,1);
