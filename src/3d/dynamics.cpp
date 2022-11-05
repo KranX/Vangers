@@ -956,7 +956,7 @@ inline int get_three_heights(int x,int y)
 		return *p;
 	//64 bit problem
 	uintptr_t ll = *LOW_LEVEL(p);
-	return ll | (ll + (GET_THICKNESS(p) << 8)) | ((uintptr_t)(*HIGH_LEVEL(p)) << 16) | 0xff000000;
+	return ll | ((ll + GET_THICKNESS(p)) << 8) | ((uintptr_t)(*HIGH_LEVEL(p)) << 16) | 0xff000000;
 }
 inline int get_upper_height(int x,int y)
 {
