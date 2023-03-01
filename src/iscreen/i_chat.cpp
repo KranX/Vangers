@@ -939,14 +939,10 @@ void iChatKeyQuant(SDL_Event *k) {
 	iChatInputChar(k);
 	iChatInputEditing(k);
 
-	if (k -> type == SDL_MOUSEWHEEL) {
+	if (k -> type != SDL_KEYDOWN) {
 		return;
 	}
 
-	if (k -> type != SDL_KEYDOWN && k -> type != SDL_TEXTINPUT) {
-		iChatExit = 1;
-		return;
-	}
 	if (iCheckKeyID(iKEY_CHAT, k -> key.keysym.scancode)) {
 		iChatExit = 1;
 		return;
