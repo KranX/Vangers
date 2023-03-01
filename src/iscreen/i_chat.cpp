@@ -945,16 +945,22 @@ void iChatKeyQuant(SDL_Event *k) {
 
 	if (k -> type != SDL_KEYDOWN && k -> type != SDL_TEXTINPUT) {
 		iChatExit = 1;
+		std::cout << "iChatKeyQuant: k -> type != SDL_KEYDOWN && k -> type != SDL_TEXTINPUT" << std::endl;
 		return;
 	}
 	if (iCheckKeyID(iKEY_CHAT, k -> key.keysym.scancode)) {
-		iChatExit = 1;
+		if (k -> key.keysym.scancode) {
+			iChatExit = 1;
+		}
+		std::cout << "iChatKeyQuant: iCheckKeyID(iKEY_CHAT, k -> key.keysym.scancode), scancode: " 
+		<< k -> key.keysym.scancode << ", iKey_CHAT: " << iKEY_CHAT << std::endl;
 		return;
 	}
 
 	switch(k->key.keysym.scancode) {
 		case SDL_SCANCODE_ESCAPE:
 			iChatExit = 1;
+			std::cout << "iChatKeyQuant: SDL_SCANCODE_ESCAPE" << std::endl;
 			break;
 		case SDL_SCANCODE_RETURN:
 			iChatInputFlush();
@@ -981,6 +987,7 @@ void iChatMouseHandler(iChatButton* bt,int bt_id)
 	switch(bt -> ID){
 		case ICS_EXIT_BUTTON:
 			iChatExit = 1;
+			std::cout << "iChatMouseHandler: ICS_EXIT_BUTTON" << std::endl;
 			break;
 		case ICS_UP_BUTTON:
 			if(iChatSkip)
