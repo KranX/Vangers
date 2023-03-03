@@ -77,9 +77,10 @@ SET(vss_SRCS
 		vss/sys-modules.cpp
 		vss/sys-bridge.cpp
 		vss/sys-quant.cpp
+		vss/sys-experimental.cpp
 		vss/duktape-2.7.0/duktape.c
 		vss/duktape-2.7.0/extras/console/duk_console.c
-		vss/duktape-2.7.0/extras/module-node/duk_module_node.c)
+		vss/duktape-2.7.0/extras/module-node/duk_module_node.c vss/sys-experimental.cpp)
 
 if (ANDROID)
 	ADD_LIBRARY(vangers STATIC ${vangers_SRCS} ${vss_SRCS}
