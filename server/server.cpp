@@ -1216,7 +1216,7 @@ int Player::receive() {
 			IN_EVENTS_LOG(ATTACH_TO_GAME);
 
 			if (this->client_version > 1) {
-				long int t = 0;
+				time_t t = 0;
 				time(&t);
 				out_buffer.begin_event(zTIME_RESPONSE);
 				out_buffer < (unsigned int)t;
