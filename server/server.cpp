@@ -3,7 +3,8 @@
 
 #define LAG -3000
 //#define EVENTS_LOG
-#define SERVER_VERSION 1
+#define MIN_SERVER_VERSION 1
+#define MAX_SERVER_VERSION 2
 
 #ifdef EVENTS_LOG
 XStream fout("lst", XS_OUT);
@@ -957,7 +958,13 @@ void Player::identification() {
 			if (len > strlen(request_str) + 1)
 				client_version = ((unsigned char *)string)[len - 1];
 			strcpy(string, response_str);
-			string[strlen(string) + 1] = SERVER_VERSION;
+			if (client_version < MIN_SERVER_VERSION || client_version > MAX_SERVER_VERSION) {
+				// Client is not supported, so indicate the real latest supported protocol version
+				string[strlen(string) + 1] = MAX_SERVER_VERSION;
+			} else {
+				// Client's protocol is within supported range, so send them identical version to prevent crashes
+				string[strlen(string) + 1] = client_version;
+			}
 			socket.send(string, strlen(string) + 2);
 			return;
 		}
@@ -1190,7 +1197,7 @@ int Player::receive() {
 			IN_EVENTS_LOG(GAMES_LIST_QUERY);
 			break;
 
-		case ATTACH_TO_GAME:
+		case ATTACH_TO_GAME: {
 			if (game || ID)
 				SERVER_ERROR_NO_EXIT("Player have already been attached to game", game->ID);
 			if ((game = server->games.search(in_buffer.get_int())) == 0 ||
@@ -1207,7 +1214,16 @@ int Player::receive() {
 			out_buffer.end_event();
 
 			IN_EVENTS_LOG(ATTACH_TO_GAME);
-			break;
+
+			if (this->client_version > 1) {
+				long int t = 0;
+				time(&t);
+				out_buffer.begin_event(zTIME_RESPONSE);
+				out_buffer < (unsigned int)t;
+				out_buffer.end_event();
+				OUT_EVENTS_LOG(zTIME_RESPONSE);
+			}
+		} break;
 
 		case RESTORE_CONNECTION: {
 			Player *p;
@@ -1299,6 +1315,7 @@ int Player::receive() {
 			out_buffer.begin_event(SERVER_TIME);
 			out_buffer < (unsigned int)GLOBAL_CLOCK();
 			out_buffer.end_event();
+
 			IN_EVENTS_LOG(SERVER_TIME_QUERY);
 			OUT_EVENTS_LOG(SERVER_TIME);
 			break;
@@ -1312,7 +1329,7 @@ int Player::receive() {
 			if (size != sizeof(ServerData))
 				SERVER_ERROR_NO_EXIT("Incorrect Server Data", size);
 			in_buffer.read((unsigned char *)&game->data, sizeof(ServerData));
-			game->client_version = client_version;
+			game->client_version = MIN_SERVER_VERSION;
 			IN_EVENTS_LOG(SET_GAME_DATA);
 		} break;
 
@@ -1895,8 +1912,10 @@ void Server::get_games_list(OutputEventBuffer &out_buffer, int client_version) {
 	int num = 0;
 	Game *g = games.first();
 	while (g) {
-		if (g->data.GameType != UNCONFIGURED && g->used_players_IDs != 0x7fffffff &&
-			g->client_version == client_version)
+		if (g->data.GameType != UNCONFIGURED && g->used_players_IDs != 0x7fffffff)
+			// This check isn't needed for now, as both clients' and games' versions are guaranteed to be within supported
+			// range; though later this condition might end up being needed in some adjusted form in case of further updates
+			//g->client_version == client_version)
 			num++;
 		g = g->next;
 	}
@@ -1904,8 +1923,10 @@ void Server::get_games_list(OutputEventBuffer &out_buffer, int client_version) {
 	out_buffer < (unsigned char)num;
 	g = games.first();
 	while (g) {
-		if (g->data.GameType != UNCONFIGURED && g->used_players_IDs != 0x7fffffff &&
-			g->client_version == client_version) {
+		if (g->data.GameType != UNCONFIGURED && g->used_players_IDs != 0x7fffffff) {
+			// This check isn't needed for now, as both clients' and games' versions are guaranteed to be within supported
+			// range; though later this condition might end up being needed in some adjusted form in case of further updates
+			//g->client_version == client_version) {
 			out_buffer < g->ID < g->name < ": " <= g->players.size() < " " <
 				(g->data.GameType == VAN_WAR ? "V" : (g->data.GameType == MECHOSOMA ? "M" : "P"));
 
