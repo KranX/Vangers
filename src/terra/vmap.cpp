@@ -1082,6 +1082,38 @@ void vrtMap::dump_terrain() {
 	//delete[] line_buffer;
 }
 
+void vrtMap::netModify(uchar* p) {
+	//ZMOD 1.18 DYNAMIC WATER
+	//ZMOD 1.20 fix
+	if (NetworkON && zMod_flood_level_delta!=0) {
+		uchar* pa,*pc,*pf,*pa0,*pc0,*pf0;
+		//uchar type,lxVal,rxVal;
+		pa0 = pa = p;
+		pf0 = pf = pa0 + H_SIZE;
+
+		if (zMod_flood_level_delta>0) { //если уровень повысился
+			for(int x = 0;x < H_SIZE; x++, pa++, pf++)
+				if (*(pa0 + x) <= FloodLEVEL) //заливаем всё что ниже уровня
+					*pf &= ~TERRAIN_MASK & ~OBJSHADOW;
+
+		} else { //если уровень понизился
+			for(int x = 0;x < H_SIZE; x++, pa++, pf++)
+				if (*(pa0 + x) > FloodLEVEL) //осушаем всё что выше уровня
+					if(GET_TERRAIN(*pf) == WATER_TERRAIN_INDEX) //и только существующую воду
+						*pf |= MAIN_TERRAIN;
+		}
+	}
+	/*
+	//znfo ficha DRY
+	uchar* pf = p + H_SIZE;
+	for (int x=0;x<H_SIZE; x++,pf++) {
+		if(GET_TERRAIN(*pf) == WATER_TERRAIN_INDEX) {
+			*pf |= MAIN_TERRAIN_INDEX << TERRAIN_OFFSET;
+			}
+		}
+	*/
+}
+
 /*Функция загрузки карт высот и т.д.
 Удалил закомментированный код, смотреть в svn.*/
 void vrtMap::accept(int up,int down) 
@@ -1135,6 +1167,8 @@ void vrtMap::accept(int up,int down)
 				fmap.read(inbuf,sz_table[i]);
 				ExpandBuffer(inbuf,p);
 			}
+
+			netModify(p);
 
 			lineT[i] = p; //znfo lineT compressed //загрузка
 			lineTcolor[i] = use_c();
@@ -1513,37 +1547,7 @@ void vrtMap::linkC(int up,int down,int d)
 				ExpandBuffer(inbuf,p);
 			}
 
-//ZMOD 1.18 DYNAMIC WATER (there is one more in upper)
-//ZMOD 1.20 fix
-if (NetworkON && zMod_flood_level_delta!=0) {
-	uchar* pa,*pc,*pf,*pa0,*pc0,*pf0;
-	uchar type,lxVal,rxVal;
-	pa0 = pa = p;
-	pf0 = pf = pa0 + H_SIZE;
-
-	if (zMod_flood_level_delta>0) { //если уровень повысился
-		for(int x = 0;x < H_SIZE; x++, pa++, pf++)
-			if (*(pa0 + x) <= FloodLEVEL) //заливаем все что ниже уровня
-				*pf &= ~TERRAIN_MASK & ~OBJSHADOW; 
-	
-	} else { //если уровень понизился
-		for(int x = 0;x < H_SIZE; x++, pa++, pf++)
-			if (*(pa0 + x) > FloodLEVEL) //осушаем все что выше уровня 
-				if(GET_TERRAIN(*pf) == WATER_TERRAIN_INDEX) //и только существующую воду
-					*pf |= MAIN_TERRAIN;
-
-	}
-}
-
-/*
-	//znfo ficha DRY (there is one more in upper)
-	uchar* pf = p + H_SIZE;
-	for (int x=0;x<H_SIZE; x++,pf++) {
-		if(GET_TERRAIN(*pf) == WATER_TERRAIN_INDEX) {
-			*pf |= MAIN_TERRAIN_INDEX << TERRAIN_OFFSET;
-			}
-		}
-*/
+			netModify(p);
 
 			lineT[i] = p; //znfo lineT compressed //догрузка
 			lineTcolor[i] = use_c();
