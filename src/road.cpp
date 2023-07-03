@@ -838,6 +838,7 @@ _MEM_STATISTIC_("AFTER LOADING RTO1 FINIT -> ");
 
 void EscaveOutRTO::Init(int id)
 {
+	XGR_Obj.fill(0, XGR_Obj.get_2d_rgba_render_buffer());
 	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef ISCREEN
 	iOutEscaveInit();
@@ -878,6 +879,7 @@ _MEM_STATISTIC_("AFTER ESCAVE FINIT -> ");
 
 void FirstEscaveOutRTO::Init(int id)
 {
+	XGR_Obj.fill(0, XGR_Obj.get_2d_rgba_render_buffer());
 	XGR_Obj.set_is_scaled_renderer(true);
 #ifdef ISCREEN
 #ifndef _ACI_SKIP_SHOP_
