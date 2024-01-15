@@ -74,8 +74,9 @@ add_definitions(-D_USE_MATH_DEFINES)
 add_compile_options(-Werror=shift-negative-value)
 add_compile_options(-Werror=dangling-else)
 add_compile_options(-Werror=parentheses)
-add_compile_options(-Werror=delete-non-virtual-dtor)
+add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=delete-non-virtual-dtor>)
 add_compile_options(-Werror=write-strings)
+add_compile_options(-fsigned-char)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Werror=mismatched-new-delete )
@@ -87,11 +88,38 @@ IF(WIN32)
 	)
 ENDIF(WIN32)
 
+# Get the current working branch
+IF(NOT($ENV{GITHUB_REF_NAME}))
+	execute_process(
+		COMMAND git rev-parse --abbrev-ref HEAD
+		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+		OUTPUT_VARIABLE GIT_BRANCH
+		COMMAND_ECHO STDOUT
+		ECHO_OUTPUT_VARIABLE
+		ECHO_ERROR_VARIABLE
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+ENDIF()
+
+# Get the latest commit hash
+IF(NOT($ENV{GITHUB_SHA}))
+	execute_process(
+		COMMAND git rev-parse HEAD
+		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+		OUTPUT_VARIABLE GIT_COMMIT_HASH
+		COMMAND_ECHO STDOUT
+		ECHO_OUTPUT_VARIABLE
+		ECHO_ERROR_VARIABLE
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+ENDIF()
+
 # subdirs
 ADD_SUBDIRECTORY("src")
 ADD_SUBDIRECTORY("lib/xgraph")
 ADD_SUBDIRECTORY("lib/xsound")
 ADD_SUBDIRECTORY("lib/xtool")
-ADD_SUBDIRECTORY("lib/utils")
-ADD_SUBDIRECTORY("server")
-ADD_SUBDIRECTORY("surmap")
+
+if(NOT ANDROID)
+	ADD_SUBDIRECTORY("lib/utils")
+	ADD_SUBDIRECTORY("server")
+	ADD_SUBDIRECTORY("surmap")
+endif()

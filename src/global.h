@@ -8,6 +8,7 @@
 #include <math.h>
 #include <time.h>
 #include <ctime>
+#include <memory>
 
 #if (defined(__unix__) || defined(__APPLE__))
 #include <dirent.h>

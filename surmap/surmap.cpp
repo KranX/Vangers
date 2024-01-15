@@ -142,7 +142,6 @@ int RestoreLog,CGenLog,BorderLog,MobilityLog,InitLog,SSSLog,ROLog,EncodeLog,Dire
 int ForcedCompressed,ForcedUncompressed;
 int ConvertLog;
 int WaterPrm = -1;
-int videoMode = 2;
 
 const char* mapFName = "wrlds.dat";
 int ColorShow = 1;
@@ -226,18 +225,7 @@ int xtInitApplication(void)
 	sysfont.init(fo);
 
 	emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
-
-	switch(videoMode){
-		case 0:
-			if(XGR_Init(640,480,emode)) ErrH.Abort("Error video initialization");
-			break;
-		case 1:
-			if(XGR_Init(800,600,emode)) ErrH.Abort("Error video initialization");
-			break;
-		case 2:
-			if(XGR_Init(1280,720,emode)) ErrH.Abort("Error video initialization");
-			break;
-		}
+	if(XGR_Init(emode)) ErrH.Abort("Error video initialization");
 
 	XSIDE = XGR_MAXX/2 - 4;
 	YSIDE = (XGR_MAXY - 10 - 22 - 16)/2;
@@ -454,12 +442,6 @@ void ComlineAnalyze(int argc,char** argv)
 					case 'H':
 					case 'h':
 						WHLog = 1;
-						break;
-					case '1':
-						videoMode = 1;
-						break;
-					case '2':
-						videoMode = 2;
 						break;
 					case '#':
 						ConvertLog = 1;

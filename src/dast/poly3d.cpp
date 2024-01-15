@@ -1005,18 +1005,16 @@ void dastPutSpriteOnMapAlt(int x, int y, uchar *data, int x_size, int y_size, un
 
 void dastPutSandOnMapAlt(int x, int y, uchar _z,  uchar newter, uchar wide){
 		uchar **lt = vMap -> lineT;
-		int i, j;
 		uchar _d = 82;
 		newter <<= TERRAIN_OFFSET;
 
 		int x_size = wide;
 		int y_size = wide;
 
-		for( i = y - (y_size>>1); i < y + (y_size>>1); i++)
+		for(int i = y - (y_size>>1); i <= y + (y_size>>1); i++){
 			if (!lt[(i) & clip_mask_y]) return;
 
-		for( i = y - (y_size>>1); i <= y + (y_size>>1); i++)
-			for( j = x - (x_size>>1); j <= x + (x_size>>1); j++){
+			for(int j = x - (x_size>>1); j <= x + (x_size>>1); j++){
 				//uchar *lc = get_down_ground( (j) & clip_mask_x, i );
 			    //uchar *lc = (*pf)( (j) & clip_mask_x, i );
 				uchar *lc = get_up_ground( (j) & clip_mask_x, i );
@@ -1034,6 +1032,7 @@ void dastPutSandOnMapAlt(int x, int y, uchar _z,  uchar newter, uchar wide){
  						*(lc + H_SIZE) += newter; 
 					} 
 				}
+			}
 		}
 		regRender(x - (x_size>>1), y - (y_size>>1), x + (x_size>>1), y + (y_size>>1), 0);
 }
