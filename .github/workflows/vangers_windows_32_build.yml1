@@ -47,7 +47,14 @@ jobs:
         --disable-d3d11va
         --disable-dxva2
         --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
-        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv'
+        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
+        --disable-lto
+        --disable-avx
+        --disable-avx2
+        --disable-avx512
+        --disable-fma4
+        --disable-fma3
+        --disable-inline-asm'
       working-directory: ffmpeg
     - name: ffmpeg -- build and install
       run: |
