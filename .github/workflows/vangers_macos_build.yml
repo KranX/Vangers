@@ -1,6 +1,8 @@
 name: Vangers MacOS Build
 
 on: [push, pull_request]
+env:
+  MACOSX_DEPLOYMENT_TARGET: 11
 
 env: 
   VANGE_RS_REF: adf17c6b563b2b236847a04b5f8df3023b1d1b5b
@@ -16,14 +18,7 @@ jobs:
     #     brew update
     - name: install libs
       run: |
-        brew install ninja yasm dylibbundler
-    - name: install our libs
-      run: |
-        brew reinstall -s ./formulas/libsndfile.rb
-        brew reinstall -s ./formulas/libogg.rb
-        brew reinstall -s ./formulas/libvorbis.rb
-        brew install -s ./formulas/sdl2.rb
-        brew install -s ./formulas/sdl2_net.rb
+        brew install ninja yasm dylibbundler sdl2 sdl2_net libvorbis libogg libsndfile
 
     - name: install rustup toolchain
       uses: actions-rs/toolchain@v1
@@ -67,7 +62,7 @@ jobs:
       run: ./configure --enable-shared --prefix=/usr/local
         --cc=clang
         --arch=x86_64
-        --cpu=ivybridge
+        --cpu=westmere
         --disable-everything
         --enable-swscale
         --enable-zlib
@@ -77,27 +72,20 @@ jobs:
         --enable-protocol=file
         --disable-d3d11va
         --disable-dxva2
+        --disable-avx
         --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
         --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
       working-directory: ffmpeg
-      env:
-        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: ffmpeg -- build and install
       run: |
         make -j4
         sudo make install
       working-directory: ffmpeg
-      env:
-        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: configure
       run: mkdir build && cd build && cmake -G Ninja ..
-      env:
-        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: make
       run: ninja
       working-directory: build
-      env:
-        MACOSX_DEPLOYMENT_TARGET: 10.12
     - name: vangers -- prepare release folder
       run: |
         mkdir Vangers.app/Contents/Frameworks
