@@ -76,6 +76,7 @@ struct vrtMap {
 	void allocHeap(void);
 	void lockHeap(void);
 	void dump_terrain(void);
+	void netModify(uchar* p);
 	void accept(int up,int down);
 	void change(int up,int down);
 	void request(int up,int down,int left, int right);

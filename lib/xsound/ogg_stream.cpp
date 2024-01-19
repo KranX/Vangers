@@ -94,4 +94,6 @@ bool OggStream::read(clunk::Buffer &data, unsigned hint) {
 	return false; //:(
 }
 
-OggStream::~OggStream() {}
+OggStream::~OggStream() {
+	ov_clear(&_ogg_stream);
+}

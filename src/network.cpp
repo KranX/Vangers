@@ -20,8 +20,8 @@ extern XStream fout;
 extern int frame;
 extern int GlobalExit;
 
-#define CLIENT_VERSION	1
-#define SERVER_VERSION	1
+#define CLIENT_VERSION	2
+#define SERVER_VERSION	2
 
 //zmod
 int zserver_version = 0;
@@ -273,7 +273,6 @@ int identification(XSocket& socket)
 		 //   return 0;
 		}
 	}
-
 // /zMod ---------------------------------------------------------
 
 	return 1;
@@ -812,10 +811,9 @@ int connect_to_server(ServerFindChain* p)
 		events_in.ignore_event();
 
 		zGameBirthTime = 0;
-		if (zserver_version > 1) {
-			//std::cout<<"zTIME_RESPONSE"<<std::endl;
-			events_in.receive_waiting_for_event(zTIME_RESPONSE); //ZMOD second network packet
-			//std::cout<<"[ok]"<<std::endl;
+		if (zserver_version > 1 || SERVER_VERSION > 1) {
+			// zMod second network packet, used as a seed for world activity cycles
+			events_in.receive_waiting_for_event(zTIME_RESPONSE);
 			zGameBirthTime = events_in.get_int();
 			events_in.ignore_event();
 		}

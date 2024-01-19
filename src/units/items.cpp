@@ -1,6 +1,6 @@
 #include "../global.h"
 #include "../runtime.h"
-#include "../lang.h"
+#include "lang.h"
 
 //#include "..\win32f.h"
 

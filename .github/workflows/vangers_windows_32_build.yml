@@ -34,7 +34,7 @@ jobs:
         msys2 -c 'ninja install'
       working-directory: clunk/build
     - name: ffmpeg -- download
-      run: git clone --depth 1 --branch n4.2.2 https://git.ffmpeg.org/ffmpeg.git ffmpeg
+      run: git clone --depth 1 --branch release/6.0 https://git.ffmpeg.org/ffmpeg.git ffmpeg
     - name: ffmpeg -- configure
       run: msys2 -c './configure --enable-shared --prefix=/mingw32
         --disable-everything
@@ -47,7 +47,14 @@ jobs:
         --disable-d3d11va
         --disable-dxva2
         --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
-        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv'
+        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
+        --disable-lto
+        --disable-avx
+        --disable-avx2
+        --disable-avx512
+        --disable-fma4
+        --disable-fma3
+        --disable-inline-asm'
       working-directory: ffmpeg
     - name: ffmpeg -- build and install
       run: |
@@ -77,9 +84,9 @@ jobs:
         msys2 -c 'mkdir -p vangers/bin'
         msys2 -c 'cp /mingw32/bin/SDL2.dll vangers/bin/'
         msys2 -c 'cp /mingw32/bin/SDL2_net.dll vangers/bin/'
-        msys2 -c 'cp /mingw32/bin/avcodec-58.dll vangers/bin/'
-        msys2 -c 'cp /mingw32/bin/avformat-58.dll vangers/bin/'
-        msys2 -c 'cp /mingw32/bin/avutil-56.dll vangers/bin/'
+        msys2 -c 'cp /mingw32/bin/avcodec-60.dll vangers/bin/'
+        msys2 -c 'cp /mingw32/bin/avformat-60.dll vangers/bin/'
+        msys2 -c 'cp /mingw32/bin/avutil-58.dll vangers/bin/'
         msys2 -c 'cp /mingw32/bin/libogg-0.dll vangers/bin/'
         msys2 -c 'cp /mingw32/bin/libvorbis-0.dll vangers/bin/'
         msys2 -c 'cp /mingw32/bin/libvorbisfile-3.dll vangers/bin/'

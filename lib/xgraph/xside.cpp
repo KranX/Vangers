@@ -3,6 +3,7 @@
 //
 
 #include "xbmp.h"
+#include <algorithm>
 #include <functional>
 #include <utility>
 
@@ -20,6 +21,7 @@ SDL_Texture *HDRightSideTexture = nullptr;
 std::pair<const char *, const char *> activeSides = std::make_pair<>(nullptr, nullptr);
 int currentRto = 0;
 int currentIScreenId = 0;
+constexpr int contentWidth = 160;
 
 std::pair<const char *, const char *> getSideNames() {
 	int activeRtoId = getCurRtoId();
@@ -82,7 +84,7 @@ std::pair<const char *, const char *> getSideNames() {
 }
 }
 
-void XGR_RenderSides(SDL_Renderer *renderer) {
+void XGR_RenderSides(SDL_Renderer *renderer, int renderWidth) {
 	auto sideNames = getSideNames();
 
 	if (sideNames.first != activeSides.first) {
@@ -99,15 +101,17 @@ void XGR_RenderSides(SDL_Renderer *renderer) {
 		activeSides.second = sideNames.second;
 	}
 
+	int outWidth = (xgrScreenSizeX - renderWidth) / 2;
 	SDL_Rect dst_rect{0, 0, 0, xgrScreenSizeY};
 	if (HDLeftSideTexture != nullptr) {
 		SDL_QueryTexture(HDLeftSideTexture, nullptr, nullptr, &dst_rect.w, nullptr);
+		dst_rect.x = std::max<int>(0, outWidth - contentWidth);
 		SDL_RenderCopy(renderer, HDLeftSideTexture, NULL, &dst_rect);
 	}
 
 	if (HDRightSideTexture != nullptr) {
 		SDL_QueryTexture(HDRightSideTexture, nullptr, nullptr, &dst_rect.w, nullptr);
-		dst_rect.x = xgrScreenSizeX - dst_rect.w;
+		dst_rect.x = xgrScreenSizeX - outWidth - (dst_rect.w - contentWidth);
 		SDL_RenderCopy(renderer, HDRightSideTexture, NULL, &dst_rect);
 	}
 }

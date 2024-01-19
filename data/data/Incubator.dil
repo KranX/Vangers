@@ -46,7 +46,7 @@
 3 5 "Wormaster part note" "5" "0" "0" "data LUCK > 50 data INV_NYMBOS > 3 data HUSKER == 0" " " " " 
 4 5 "Last Moggy part note" "5" "0" "0" "data LUCK > 50 data INV_WEEZYK > 0 data PUT_PUT == 0" " " " " 
 7 7 "Eleerection Reject" "2" "0" "1" "data THIEF_PALOCHKA > 0" " " " " 
-8 7 "Eleerection Participation Question" "2" "0" "1" "visitE I > 1 visitE P > 1 data CYCLE == $PREV_CYCLE_1 cycle_exist 1 > 0 data THIEF_PALOCHKA == 0" " " " " 
+8 7 "Eleerection Participation Question" "2" "0" "1" "visitE I > 1 visitE P > 1 data CYCLE == $PREV_CYCLE_1 cycle_exist 1 > 0 cycle_exist 0 > 0 data THIEF_PALOCHKA == 0" " " " " 
 8 6 "empty" "0" "0" "0" "true" " " " " 
 8 4 "Ark-a-Znoy visit" "5" "0" "0" "visitW A > 0" " " " " 
 9 4 "Khox visit" "5" "0" "0" "visitW K > 0" " " " " 

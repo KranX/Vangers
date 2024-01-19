@@ -10,7 +10,7 @@
 10 0 "Mechanic Messiah in Inventory" "3" "0" "1" "data INV_MESSIAH > 0" "abort" "block" 
 0 8 "Sports Introduction" "1" "1" "0" "data TABUTASKS > 0" " " "continue" 
 11 8 "empty" "0" "0" "0" "true" " " " " 
-12 8 "Kernowar Waiting?" "2" "0" "1" "BSTATUS == 1 data CYCLE == $PREV_CYCLE_2 cycle_exist 2 > 0" " " " " 
+12 8 "Kernowar Waiting?" "2" "0" "1" "BSTATUS == 1 data CYCLE == $PREV_CYCLE_2 cycle_exist 2 > 0 cycle_exist 1 > 0" " " " " 
 0 7 "empty" "0" "0" "0" "true" " " " " 
 0 6 "Protractor in Inventory" "5" "0" "0" "data INV_PROTRACTOR > 0" " " " " 
 12 5 "hMok visit" "5" "0" "0" "visitW h > 0" " " " " 
