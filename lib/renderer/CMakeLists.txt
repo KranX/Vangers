@@ -52,10 +52,11 @@ SET(RENDERER_LIBS
 	${RENDERER_LIBS}
 	userenv
 	bcrypt
-		d3d12
-		d3dcompiler
-			ws2_32
-			)
+	d3d12
+	d3dcompiler
+	ws2_32
+	ntdll
+)
 ENDIF(MINGW)
 
 IF(APPLE)
