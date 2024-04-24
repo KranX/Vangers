@@ -592,7 +592,7 @@ void iQuantFirst(void)
 #ifndef _ACI_SKIP_MAINMENU_
         iSetOptionValueCHR(iPLAYER_NAME2, (lang() == RUSSIAN ? "‚ ­ЈҐа" : "Vanger"));
         iSetOptionValueCHR(iPLAYER_PASSWORD, iSTR_DefaultPassword);
-        iSetOptionValueCHR(iHOST_NAME, "vangers.net");
+        iSetOptionValueCHR(iHOST_NAME, "cloud.kdlab.ru");
         iSetOptionValueCHR(iSERVER_NAME, iSTR_NONE);
         iSetOptionValueCHR(iPROXY_SERVER, "192.1.1.1");
         iSetOptionValueCHR(iPROXY_PORT, "1080");
