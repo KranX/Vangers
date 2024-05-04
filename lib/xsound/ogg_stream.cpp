@@ -37,8 +37,8 @@ static long   stream_tell_func  (void *datasource) {
 	return ftell(file);
 }
 
-OggStream::OggStream(const std::string &fname) {
-	_file = fopen(fname.c_str(), "rb");
+OggStream::OggStream(const std::string_view fname) {
+	_file = fopen(fname.data(), "rb");
 	if (_file == NULL) {
 		perror("fopen");
 		throw std::runtime_error("cannot open file");

@@ -316,7 +316,6 @@ struct DBV {
 
 		DBV();
 		DBV(double u,double v,double t);
-		DBV(const DBV& v);
 		DBV(const Vector& v);
 
 	double operator [](unsigned int i) const { return ((double*)this)[i % 3]; }					   
@@ -408,7 +407,6 @@ struct DBM {
 
 			// Creates I
 		DBM();
-		DBM(const DBM& m);
 		DBM(double a0,double a1,double a2,
 		    double a3,double a4,double a5,
 		    double a6,double a7,double a8);
@@ -867,12 +865,6 @@ inline DBV::DBV(double u,double v,double t)
 	y = v;
 	z = t;
 }
-inline DBV::DBV(const DBV& v)
-{
-	x = v.x;
-	y = v.y;
-	z = v.z;
-}
 inline DBV::DBV(const Vector& v)
 {
 	x = v.x;
@@ -1158,12 +1150,6 @@ inline DBM::DBM()
 	a[0] = 1; a[1] = 0; a[2] = 0;
 	a[3] = 0; a[4] = 1; a[5] = 0;
 	a[6] = 0; a[7] = 0; a[8] = 1;
-}
-inline DBM::DBM(const DBM& m)
-{
-	a[0] = m[0]; a[1] = m[1]; a[2] = m[2];
-	a[3] = m[3]; a[4] = m[4]; a[5] = m[5];
-	a[6] = m[6]; a[7] = m[7]; a[8] = m[8];
 }
 inline DBM::DBM(double a0,double a1,double a2,
 	 double a3,double a4,double a5,
