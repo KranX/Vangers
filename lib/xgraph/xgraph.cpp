@@ -447,7 +447,9 @@ void XGR_Screen::putspr(int x,int y,int sx,int sy,void* p,int mode)
 		for(i = 0; i < _sy; i ++){
 			for(j = 0; j < _sx; j ++){
 				if(memBuf[j]){
-					scrBuf[j] = memBuf[j];
+					if ((mode & XGR_HIDDEN_FON) == 0 || memBuf[j] != 'H') {
+						scrBuf[j] = memBuf[j];
+					}
 				}
 			}
 			scrBuf += yStrOffs;
