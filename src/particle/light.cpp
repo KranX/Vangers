@@ -570,7 +570,7 @@ void LightPoint::FourLightLine(int _dx, int _dy, int _E){
 
 void aWriteHelpString(int count, int* x, int* y, int font, unsigned char **pstr, int timer, int color, int space, unsigned int *pcolor){
 	int i, total_len = 0;
-	int draw_len = CHAR_SPEED*timer;
+	int draw_len = (CHAR_SPEED*timer) / GAME_TIME_COEFF;
 	unsigned char tmp[256];
 	int _x;
 	int _color = color;
@@ -579,7 +579,7 @@ void aWriteHelpString(int count, int* x, int* y, int font, unsigned char **pstr,
 		if (pstr[i]){
 			if (pcolor[i]) _color = pcolor[i];
 
-			total_len += strlen((char*)pstr[i]);	
+			total_len += strlen((char*)pstr[i]);
 			if (total_len <= draw_len){
 				aOutStr(x[i], y[i], font, _color, pstr[i], space );
 			} else {

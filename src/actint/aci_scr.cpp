@@ -319,7 +319,7 @@ aciScreenEvent::aciScreenEvent(void)
 {
 	flags = 0;
 	CurTimer = 0;
-	MaxTimer = 1 * GAME_TIME_COEFF;
+	MaxTimer = 1;
 
 	commSeq = new XList;
 	keyObj = new aciScreenKeyObject;
@@ -957,7 +957,7 @@ void aciScreenEvent::Quant(void)
 	int nextQuant = 1;
 
 	while(p){
-		if(p -> StartTimer == CurTimer){
+		if(static_cast<int>(p -> StartTimer * GAME_TIME_COEFF) == CurTimer) {
 			if(p -> flags & ACS_COMMAND_STARTED){
 				if(!acsEventActive(p))
 					nextQuant = 0;
@@ -972,7 +972,7 @@ void aciScreenEvent::Quant(void)
 	}
 	if(nextQuant){
 		CurTimer ++;
-		if(CurTimer > MaxTimer) Stop();
+		if(CurTimer > MaxTimer * GAME_TIME_COEFF) Stop();
 	}
 }
 

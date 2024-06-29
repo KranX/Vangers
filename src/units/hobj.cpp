@@ -4007,7 +4007,7 @@ void aiMessageType::Send(int speed,int ind,int sf)
 				aiMessageBuffer.TimeBuf[c] = Time[i];
 				aiMessageBuffer.ColBuf[c] = Color[i];
 				c++;
-			};			
+			};
 			ind >>= 1;
 		};
 		aiMessageBuffer.NumStr = c;
@@ -4021,7 +4021,7 @@ int aiMessageType::GetTime(int ind)
 	int c,i;
 	c = 0;
 	for(i = 0;i < Num;i++){
-		if(ind & 1) c += strlen(Data[i]);		
+		if(ind & 1) c += strlen(Data[i]);
 		ind >>= 1;
 	};
 	return c;
@@ -4241,7 +4241,7 @@ void PalPoint::Set(int mode,int time,uchar* p1,uchar* p2)
 			PalCD.PalEnable = 0;
 			for(i =0;i < 768;i++){
 				FirstColor[i] = ((int)(palbuf/*Org*/[i])) << 16;
-				DeltaColor[i] = ((63 << 16) - FirstColor[i]) / Time;					
+				DeltaColor[i] = ((63 << 16) - FirstColor[i]) / Time;
 			};
 			break;
 		case CPAL_PASSAGE_FROM:
@@ -4305,8 +4305,8 @@ void aiMessageList::Send(int ind,int speed,int n,int sf)
 	if(!ActD.Active || !(ActD.Active->ExternalDraw)) return;
 	if(abs(speed) != 0) PrevSpeed = 10;
 	else PrevSpeed--;
-	if(sf && PrevSpeed > MAX_AI_MESSAGE_SPEED) return;	
-	if(abs(aiMessageData[ind].LastFrame - frame) > AI_MESSAGE_DELTA){
+	if(sf && PrevSpeed > MAX_AI_MESSAGE_SPEED) return;
+	if(abs(aiMessageData[ind].LastFrame - frame) > AI_MESSAGE_DELTA * GAME_TIME_COEFF){
 		p = Tail;
 		while(p){
 			if(p->Index == ind) return;
@@ -4477,7 +4477,7 @@ void aiMessageList::Quant(void)
 					Time = (aiMessageData[View->Index].GetTime(View->Mask) / 2 + 10) * GAME_TIME_COEFF;
 					break;
 			};
-		};		
+		};
 	};
 };
 

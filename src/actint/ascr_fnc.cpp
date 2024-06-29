@@ -4932,9 +4932,9 @@ void aciPromptData::quant(void)
 	} else {
 		CurTimer ++;
 	}
-	for(i = 0; i < NumStr; i ++){
-		if(StrBuf[i]){
-			if(CurTimer > TimeBuf[i]){
+	for(i = 0; i < NumStr; i ++) {
+		if(StrBuf[i]) {
+			if(CurTimer > (int)(TimeBuf[i] * GAME_TIME_COEFF)) {
 				delete[] StrBuf[i];
 				StrBuf[i] = NULL;
 			}
