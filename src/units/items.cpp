@@ -2766,13 +2766,13 @@ void HordeObject::Quant(void)
 							
 							d = vTarget.vabs();
 							if(d){
-								vDelta += vTarget*Precision / d;
+								vDelta += (vTarget*Precision / d) * XTCORE_FRAME_NORMAL;
 								d = vDelta.vabs();
 								if(d > Speed) vDelta = vDelta * Speed / d;
-							};						
+							};
 						};
 
-						R_curr += vDelta;
+						R_curr += vDelta * XTCORE_FRAME_NORMAL;
 						cycleTor(R_curr.x,R_curr.y);
 					};
 				}else{
@@ -2784,9 +2784,9 @@ void HordeObject::Quant(void)
 							if(d < PALLADIUM_RADIUS){
 								vDelta = v * Speed;
 								vDelta /= d;
-								R_curr += vDelta;
+								R_curr += (vDelta * XTCORE_FRAME_NORMAL);
 								cycleTor(R_curr.x,R_curr.y);
-							};								
+							};
 							break;
 						};
 						g = g->Next;
@@ -2797,7 +2797,7 @@ void HordeObject::Quant(void)
 
 						d = vTarget.vabs();
 						if(d){
-							vDelta += vTarget*Precision / d;
+							vDelta += (vTarget*Precision / d) * XTCORE_FRAME_NORMAL;
 							d = vDelta.vabs();
 							if(d > Speed) vDelta = vDelta * Speed / d;
 						};
@@ -2825,7 +2825,7 @@ void HordeObject::Quant(void)
 								};
 							};
 							n = (VangerUnit*)(n->NextTypeList);
-						};					
+						};
 					};
 				};
 				break;
@@ -2858,8 +2858,8 @@ void HordeObject::Quant(void)
 						if(d > Speed) vDelta = vDelta * Speed / d;
 					}else vDelta = Vector(0,0,0);
 
-					R_curr += vDelta;
-					cycleTor(R_curr.x,R_curr.y);					
+					R_curr += vDelta * XTCORE_FRAME_NORMAL;
+					cycleTor(R_curr.x,R_curr.y);
 				};
 			}else{
 				vTarget = Vector(getDistX(vZone.x,R_curr.x),getDistY(vZone.y,R_curr.y),vZone.z - R_curr.z);
@@ -2871,7 +2871,7 @@ void HordeObject::Quant(void)
 					if(d > Speed) vDelta = vDelta * Speed / d;
 				}else vDelta = Vector(0,0,0);
 
-				R_curr += vDelta;
+				R_curr += vDelta * XTCORE_FRAME_NORMAL;
 				cycleTor(R_curr.x,R_curr.y);
 			};
 		};
