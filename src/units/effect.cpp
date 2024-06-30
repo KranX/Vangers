@@ -594,8 +594,8 @@ void SimpleParticleType::Quant(void)
 	vR.y += (int)round(vD.y * XTCORE_FRAME_NORMAL);
 	vR.z += (int)round(vD.z * XTCORE_FRAME_NORMAL);
 
-	vR.x &= (int)round(PTrack_mask_x);
-	vR.y &= (int)round(PTrack_mask_y);
+	vR.x &= PTrack_mask_x;
+	vR.y &= PTrack_mask_y;
 	Color += (int)round(dColor * XTCORE_FRAME_NORMAL);
 };
 
