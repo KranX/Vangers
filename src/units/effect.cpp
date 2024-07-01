@@ -94,7 +94,7 @@ void ExplosionObject::Init(StorageType* s)
 void ExplosionObject::Quant(void)
 {
 	GetVisible();
-	Scale += dScale;
+	Scale += dScale * XTCORE_FRAME_NORMAL;
 
 	if(Scale > dScale) radius = (FirstRadius * Scale) >> 15;
 	if(Owner){
@@ -597,7 +597,7 @@ void SimpleParticleType::Quant(void)
 
 	vR.x &= PTrack_mask_x;
 	vR.y &= PTrack_mask_y;
-	Color += (int)round(dColor * XTCORE_FRAME_NORMAL);
+	Color += (int)(dColor / GAME_TIME_COEFF);
 };
 
 const int PARTICLE_MAX_DELTA = 15 << 8;
@@ -605,7 +605,6 @@ const int PARTICLE_MAX_DELTA = 15 << 8;
 void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 {
 	int tx,ty,px,py,d;
-	c *= XTCORE_FRAME_NORMAL;
 	tx = v.x - vR.x;
 	ty = v.y - vR.y;
 
@@ -615,7 +614,7 @@ void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 	if(tx > (SPX_100))
 		tx -= SPTorXSize;
 	else if((tx) < (-SPX_100)) 
-		tx += SPTorXSize;		
+		tx += SPTorXSize;
 
 	if(ty > (SPY_100))
 		ty -= SPTorYSize;
@@ -634,12 +633,12 @@ void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 		vD.y = ty * s / d;
 	};
 	
-	vR += vD;
+	vR += vD * XTCORE_FRAME_NORMAL;
 	vR.z = v.z;
 	
 	vR.x &= PTrack_mask_x;
 //	vR.y &= PTrack_mask_y;
-	Color += (int)round(dColor * XTCORE_FRAME_NORMAL);
+	Color += (int)(dColor / GAME_TIME_COEFF);
 };
 
 //Angry horde animation quant
@@ -747,7 +746,7 @@ void SimpleParticleType::QuantT(int x,int y,int s)
 	// vR += vTrack;
 	vR.x &= PTrack_mask_x;
 	vR.y &= PTrack_mask_y;
-	Color += (int)round(dColor * XTCORE_FRAME_NORMAL);
+	Color += (int)(dColor / GAME_TIME_COEFF);
 };
 
 void ParticleObject::DrawQuant(void)
@@ -760,7 +759,7 @@ void ParticleObject::DrawQuant(void)
 
 	if(Mode){
 		if(Time < LifeTime * GAME_TIME_COEFF){
-			dphi = (Time*PI << 8) / (2*NumParticle * LifeTime * GAME_TIME_COEFF);
+			dphi = (Time*PI << 8) / (2*NumParticle * LifeTime);
 			phi = 0;
 		}else{
 			phi = PI / 2;
@@ -777,7 +776,7 @@ void ParticleObject::DrawQuant(void)
 	//				G2L(vPos.x,vPos.y,tx,ty);
 					if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 //				};
-				phi += dphi;
+				phi += dphi * XTCORE_FRAME_NORMAL;
 			};
 		}else{
 			if(CurrentWorld < MAIN_WORLD_MAX - 1){			
@@ -794,7 +793,7 @@ void ParticleObject::DrawQuant(void)
 
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 	//				};
-					phi +=dphi;
+					phi += dphi * XTCORE_FRAME_NORMAL;
 				};
 			}else{
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
@@ -810,7 +809,7 @@ void ParticleObject::DrawQuant(void)
 
 						if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
 	//				};
-					phi +=dphi;
+					phi += dphi * XTCORE_FRAME_NORMAL;
 				};
 			};
 		};
@@ -936,8 +935,16 @@ void ParticleObject::CreateParticle(ParticleInitDataType* n,const Vector& v1,con
 		SignRadius = Radius << 1;
 		p->Color = FirstColor;
 		p->dColor = DeltaColor;
-		p->vD = Vector(Velocity - effectRND(SignVelocity),Velocity - effectRND(SignVelocity),Velocity - effectRND(SignVelocity));
-		p->vR = vPos + Vector(Radius - effectRND(SignRadius),Radius - effectRND(SignRadius),Radius - effectRND(SignRadius));
+		p->vD = Vector(
+			Velocity - effectRND(SignVelocity),
+			Velocity - effectRND(SignVelocity),
+			Velocity - effectRND(SignVelocity)
+		);
+		p->vR = vPos + Vector(
+			Radius - effectRND(SignRadius),
+			Radius - effectRND(SignRadius),
+			Radius - effectRND(SignRadius)
+		);
 		vPos += vDelta;
 		Radius += DeltaRadius;
 	};
@@ -1783,13 +1790,13 @@ void FireBallObject::Init(StorageType* s)
 void FireBallObject::Quant(void)
 {
 	GetVisible();
-	Scale += dScale;
+	Scale += (int)round(dScale * XTCORE_FRAME_NORMAL);
 	radius = (FirstRadius * Scale) >> 8;
 	if(Owner){
 		if(Owner->Status & SOBJ_DISCONNECT) Owner = NULL;
 		else{
 			R_curr = Owner->R_curr;
-			R_curr.z += EXPLOSION_OFFSET;
+			R_curr.z += (int)round(EXPLOSION_OFFSET * XTCORE_FRAME_NORMAL);
 		};
 	};
 	if(Visibility != VISIBLE){
@@ -1842,7 +1849,7 @@ void ParticleGenerator::CreateGenerator(Vector vC,Vector vT,Vector vD,int mode)
 			Speed = 15;
 			MoveMode = PG_MODE_MOVE_TARGET;
 			TargetMode = PG_RADIUS;
-			Time = 300;
+			Time = 300 * GAME_TIME_COEFF;
 			FlyRadius = 100;
 			radius = FlyRadius;
 			Precision = 5;
@@ -1858,7 +1865,7 @@ void ParticleGenerator::CreateGenerator(Vector vC,Vector vT,Vector vD,int mode)
 			Speed = 8;
 			MoveMode = PG_MODE_TRUE_MASS;
 			TargetMode = PG_RADIUS;
-			Time = 40;
+			Time = 40 * GAME_TIME_COEFF;
 			FlyRadius = RND(50);
 			radius = FlyRadius;
 			Precision = 5;
@@ -1874,7 +1881,7 @@ void ParticleGenerator::CreateGenerator(Vector vC,Vector vT,Vector vD,int mode)
 			Speed = 5;
 			MoveMode = PG_MODE_TRUE_MASS;
 			TargetMode = PG_TARGET_RANDOM | PG_TARGET_RIGHT | PG_TARGET;
-			Time = CHANGE_VANGER_TIME;
+			Time = CHANGE_VANGER_TIME * GAME_TIME_COEFF;
 			FlyRadius = 100;
 			radius = FlyRadius;
 			Precision = 2;
@@ -1927,14 +1934,14 @@ void ParticleGenerator::Quant(void)
 
 	d = vT.vabs();
 	if(d){
-		vDelta += vT * Precision / d;
+		vDelta += (vT * Precision / d) * XTCORE_FRAME_NORMAL;
 		d = vDelta.vabs();
 		if(!(MoveMode & PG_MODE_TRUE_MASS) || d > Speed) vDelta = vDelta * Speed / d;
 	};
 
 	R_prev = R_curr;
-	R_curr += vDelta;
-	cycleTor(R_curr.x,R_curr.y);	
+	R_curr += vDelta * XTCORE_FRAME_NORMAL;
+	cycleTor(R_curr.x,R_curr.y);
 
 	Time--;
 	GetAlt(R_curr,alt);

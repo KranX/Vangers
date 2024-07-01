@@ -1645,7 +1645,8 @@ void BulletObject::DrawQuant(void)
 	Vector vCheck;	
 
 	switch(ShowID){
-		case BULLET_SHOW_TYPE_ID::PARTICLE:			
+		// It's also "flys" on Glorx
+		case BULLET_SHOW_TYPE_ID::PARTICLE:
 			EffD.CreateParticle(ExtShowType,R_prev,R_curr,ShowType);
 			if(BulletScale) 
 				EffD.CreateParticle(ExtShowType,R_prev,R_curr,ShowType);
