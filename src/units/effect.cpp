@@ -393,6 +393,7 @@ void EffectDispatcher::CreateFireBall(const Vector& v,unsigned char _type,BaseOb
 	};
 };
 
+// Something like Fly on Glorx
 void EffectDispatcher::CreateParticle(char _init,const Vector& v1,const Vector& v2,unsigned char _type)
 {
 	ParticleObject* p;
@@ -585,18 +586,18 @@ void ParticleObject::Quant(void)
 		else 
 			Visibility = UNVISIBLE;
 		}
-	if(Time++ >= LifeTime) Status |= SOBJ_DISCONNECT;
+	if(Time++ >= LifeTime * GAME_TIME_COEFF) Status |= SOBJ_DISCONNECT;
 };
 
 void SimpleParticleType::Quant(void)
 {
-	vR.x += (int)round(vD.x / GAME_TIME_COEFF);
-	vR.y += (int)round(vD.y / GAME_TIME_COEFF);
-	vR.z += (int)round(vD.z / GAME_TIME_COEFF);
+	vR.x += (int)round(vD.x * XTCORE_FRAME_NORMAL);
+	vR.y += (int)round(vD.y * XTCORE_FRAME_NORMAL);
+	vR.z += (int)round(vD.z * XTCORE_FRAME_NORMAL);
 
-    vR.x &= (int)round(PTrack_mask_x);
-    vR.y &= (int)round(PTrack_mask_y);
-	Color += dColor;
+	vR.x &= PTrack_mask_x;
+	vR.y &= PTrack_mask_y;
+	Color += (int)round(dColor * XTCORE_FRAME_NORMAL);
 };
 
 const int PARTICLE_MAX_DELTA = 15 << 8;
@@ -638,7 +639,7 @@ void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 	
 	vR.x &= PTrack_mask_x;
 //	vR.y &= PTrack_mask_y;
-	Color += dColor;
+	Color += (int)round(dColor * XTCORE_FRAME_NORMAL);
 };
 
 //Angry horde animation quant
@@ -650,18 +651,18 @@ void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 	tx = -(vR.x - _c.x);
 	ty = -(vR.y - _c.y);
 
-	int SPX_100 = (int)round((SPTorXSize - (300<<8))*XTCORE_FRAME_NORMAL);
-	int SPY_100 = (int)round((SPTorYSize - (300<<8))*XTCORE_FRAME_NORMAL);
+	int SPX_100 = SPTorXSize - (300<<8);
+	int SPY_100 = SPTorYSize - (300<<8);
 
-	if(tx > (SPX_100))
-		tx -= (int)round(SPTorXSize*XTCORE_FRAME_NORMAL);
-	else if((tx) < (-SPX_100)) 
-		tx += (int)round(SPTorXSize*XTCORE_FRAME_NORMAL);
+	if(tx > SPX_100)
+		tx -= SPTorXSize;
+	else if(tx < -SPX_100)
+		tx += SPTorXSize;
 
-	if(ty > (SPY_100) )
-		ty -= (int)round(SPTorYSize*XTCORE_FRAME_NORMAL);
-	else if((ty) < (-SPY_100)) 
-		ty += (int)round(SPTorYSize*XTCORE_FRAME_NORMAL);
+	if(ty > SPY_100)
+		ty -= SPTorYSize;
+	else if(ty < -SPY_100)
+		ty += SPTorYSize;
 
 	/*px = ty*c;
 	py = -tx*c;
@@ -692,7 +693,7 @@ void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 		vD.y += ty * s / d;
 		vD.z += (_n.z - _c.z) * s / d;
 	};*/
-	vR += vD;
+	vR += vD * XTCORE_FRAME_NORMAL;
 
 	vR.x &= PTrack_mask_x;
 	vR.y &= PTrack_mask_y;
@@ -708,18 +709,18 @@ void SimpleParticleType::QuantT(int x,int y,int s)
 	int d;
 	vTrack.x = x - vR.x;
 	vTrack.y = y - vR.y;
-	int SPX_100 = SPTorXSize - (100<<8);
-	int SPY_100 = SPTorYSize - (100<<8);
+	int SPX_100 = SPTorXSize - (100 << 8);
+	int SPY_100 = SPTorYSize - (100 << 8);
 
-	if(vTrack.x > (SPX_100) )
+	if(vTrack.x > SPX_100)
 		vTrack.x -= SPTorXSize;
-	else if((vTrack.x) < (-SPX_100)) 
-		vTrack.x += SPTorXSize;		
+	else if(vTrack.x < -SPX_100)
+		vTrack.x += SPTorXSize;
 
-	if(vTrack.y > (SPY_100) )
+	if(vTrack.y > SPY_100)
 		vTrack.y -= SPTorYSize;
-	else if((vTrack.y) < (-SPY_100)) 
-		vTrack.y += SPTorYSize;		
+	else if(vTrack.y < -SPY_100)
+		vTrack.y += SPTorYSize;
 
 	vTrackP.x = vTrack.y;
 	vTrackP.y = -vTrack.x;
@@ -727,22 +728,26 @@ void SimpleParticleType::QuantT(int x,int y,int s)
 	vTrack.x += vTrackP.x;
 	vTrack.y += vTrackP.y;
 
-	d = (abs(vTrack.x) + abs(vTrack.y))>>2;
+	d = (abs(vTrack.x) + abs(vTrack.y)) >> 2;
 //	d <<= WATER_PARTICLE_DIVISION;
-	if(d){
+	if(d) {
 		vD.x = vTrack.x * s / d;
 		vD.y = vTrack.y * s / d;
-	};
+		vD.x -= vD.x >> 4;
+		vD.y -= vD.y >> 4;
+	} else {
+		vD.x -= (vD.x >> 4) * XTCORE_FRAME_NORMAL;
+		vD.y -= (vD.y >> 4) * XTCORE_FRAME_NORMAL;
+	}
 
 //	d = abs(vD.x) + abs(vD.y);
-	vD.x -= vD.x >> 4;
-	vD.y -= vD.y >> 4;
+	
 
-	vR += vD;
-//	vR += vTrack;
+	vR += vD * XTCORE_FRAME_NORMAL;
+	// vR += vTrack;
 	vR.x &= PTrack_mask_x;
 	vR.y &= PTrack_mask_y;
-	Color += dColor;
+	Color += (int)round(dColor * XTCORE_FRAME_NORMAL);
 };
 
 void ParticleObject::DrawQuant(void)
@@ -754,8 +759,8 @@ void ParticleObject::DrawQuant(void)
 	int phi,dphi;
 
 	if(Mode){
-		if(Time < LifeTime){
-			dphi = (Time*PI << 8) / (2*NumParticle * LifeTime);
+		if(Time < LifeTime * GAME_TIME_COEFF){
+			dphi = (Time*PI << 8) / (2*NumParticle * LifeTime * GAME_TIME_COEFF);
 			phi = 0;
 		}else{
 			phi = PI / 2;
@@ -897,7 +902,7 @@ void ParticleObject::CreateParticle(ParticleInitDataType* n,const Vector& v1,con
 
 	Time = 0;
 
-	LifeTime = (int)round(n->LifeTime * GAME_TIME_COEFF);
+	LifeTime = n->LifeTime;
 
 	FirstColor = n->FirstColor << 8;
 	DeltaColor = ((n->EndColor << 8) - FirstColor) / LifeTime;
@@ -949,7 +954,7 @@ void ParticleObject::CreateParticle(ParticleInitDataType* n,const Vector& v1,con
 	Time = 0;
 	Mode = 0;
 
-	LifeTime = (int)round(n->LifeTime * GAME_TIME_COEFF);
+	LifeTime = n->LifeTime;
 
 	FirstColor = n->FirstColor << 8;
 	DeltaColor = ((n->EndColor << 8) - FirstColor) / LifeTime;
@@ -1002,7 +1007,7 @@ void ParticleObject::CreateParticle(int _LifeTime,int _Velocity,int _FirstRadius
 	Time = 0;
 	Mode = 0;
 
-	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);
+	LifeTime = _LifeTime;
 
 	FirstColor = _FirstColor << 8;
 	DeltaColor = ((_EndColor << 8) - FirstColor) / LifeTime;
@@ -1053,7 +1058,7 @@ void ParticleObject::CreateParticle(int _LifeTime,int _Velocity,int _FirstRadius
 	Time = 0;
 	Mode = 0;
 
-	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);
+	LifeTime = _LifeTime;
 
 	FirstColor = _FirstColor << 8;
 	DeltaColor = ((_EndColor << 8) - FirstColor) / LifeTime;
@@ -1103,7 +1108,7 @@ void ParticleObject::CreateParticle(ParticleInitDataType* n,const Vector& v)
 	int Alpha,StepAlpha;
 
 	Time = 0;
-	LifeTime = (int)round(n->LifeTime * GAME_TIME_COEFF);
+	LifeTime = n->LifeTime;
 
 	Mode = 0;
 
@@ -1181,7 +1186,7 @@ void ParticleObject::CreateDirectParticle(ParticleInitDataType* n,const Vector& 
 	Mode = 0;
 
 	Time = 0;
-	LifeTime = (int)round(n->LifeTime );
+	LifeTime = n->LifeTime;
 
 	FirstColor = n->FirstColor << 8;
 	DeltaColor = ((n->EndColor << 8) - FirstColor) / LifeTime;
@@ -1247,14 +1252,15 @@ void TargetParticleObject::Quant(void)
 	};
 	if(TargetType){
 		if(Time == 0){
-			FadeTime = LifeTime - (TARGET_PARTICLE_FADE_TIME * GAME_TIME_COEFF);
-			FadeNum = CurrParticle / (TARGET_PARTICLE_FADE_TIME * GAME_TIME_COEFF);
+			FadeTime = LifeTime - TARGET_PARTICLE_FADE_TIME;
+			FadeNum = CurrParticle / TARGET_PARTICLE_FADE_TIME;
 		}else{
-			if(Time >= FadeTime) 
-				CurrParticle -= FadeNum;
+			if(Time >= FadeTime * GAME_TIME_COEFF)
+				CurrParticle -= (int)round(FadeNum * XTCORE_FRAME_NORMAL);
 		};
 	};
-	if(++Time > LifeTime) 	Status |= SOBJ_DISCONNECT;	
+	if(++Time > LifeTime * GAME_TIME_COEFF)
+		Status |= SOBJ_DISCONNECT;
 };
 
 
@@ -1350,19 +1356,17 @@ void TargetParticleType::aQuant(void)
 		ty = ty * s / d;
 		tx += (ty >> TARGET_PARTICLE_NORMAL_SHIFT);
 		ty -= (tx >> TARGET_PARTICLE_NORMAL_SHIFT);
-		tx /= GAME_TIME_COEFF;
-		ty /= GAME_TIME_COEFF;
-		vD.x += tx;
-		vD.y += ty;
+		vD.x += (int)round(tx * XTCORE_FRAME_NORMAL);
+		vD.y += (int)round(ty * XTCORE_FRAME_NORMAL);
 
 		if(pDist < d){
 			vD.x -= vD.x >> 4;
 			vD.y -= vD.y >> 4;
 		};
 
-		vR.x += vD.x;
-		vR.y += vD.y;
-		vR.z += vD.z;
+		vR.x += (int)round(vD.x * XTCORE_FRAME_NORMAL);
+		vR.y += (int)round(vD.y * XTCORE_FRAME_NORMAL);
+		vR.z += (int)round(vD.z * XTCORE_FRAME_NORMAL);
 
 		vR.x &= PTrack_mask_x;
 //		vR.y &= PTrack_mask_y;
@@ -1382,7 +1386,7 @@ void TargetParticleObject::CreateParticle(const Vector& _vTarget,int _LifeTime,c
 {
 	Time = 0;
 	CurrParticle = 0;
-	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);
+	LifeTime = _LifeTime;
 	R_curr = _vTarget;
 	cycleTor(R_curr.x,R_curr.y);
 	vTarget.x = R_curr.x << 8;
@@ -1425,15 +1429,15 @@ void TargetParticleObject::AddVertex(const Vector& _vR,int _Color,int _Speed1,in
 
 		d = vCheck.vabs();
 		if(d){
-			vCheck.x = (int)round(_Speed1) * vCheck.x / d;
-			vCheck.y = (int)round(_Speed1) * vCheck.y / d;
+			vCheck.x = _Speed1 * vCheck.x / d;
+			vCheck.y = _Speed1 * vCheck.y / d;
 			p->vD.x = vCheck.x + vCheck.y;
 			p->vD.y = vCheck.y - vCheck.x;
 		}else p->vD = Vector(0,0,0);
 
 		p->vD.z = (vCheck.z << 8) / LifeTime;
 
-		p->s = (int)round(_Speed2);
+		p->s = _Speed2;
 		p->vT = vTarget;
 		p->pDist = d;
 		CurrParticle++;
@@ -1448,9 +1452,9 @@ void TargetParticleType::aQuant2(void)
 	tx = SPGetDistX(vT.x,vR.x);
 	ty = vT.y - vR.y;
 
-	vR.x += tx / pDist;
-	vR.y += ty / pDist;
-	vR.z += s;
+	vR.x += (int)round((tx / pDist) * XTCORE_FRAME_NORMAL);
+	vR.y += (int)round((ty / pDist) * XTCORE_FRAME_NORMAL);
+	vR.z += (int)round(s * XTCORE_FRAME_NORMAL);
 
 	vR.x &= PTrack_mask_x;
 //	vR.y &= PTrack_mask_y;
@@ -1470,7 +1474,7 @@ void TargetParticleType::aQuant2(void)
 	}
 	
 	if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,Color);
-};     
+};
 
 void TargetParticleObject::AddVertex2(const Vector& _vR,const Vector& _vT, int _Color, int _type)
 {
@@ -1491,7 +1495,7 @@ void TargetParticleObject::AddVertex2(const Vector& _vR,const Vector& _vT, int _
 
 		p->Color = _Color;
 		p->type = _type;
-		p->LifeTime = (int)round(LifeTime );
+		p->LifeTime = LifeTime;
 
 		if (_type){
 			p->vT.x = vCheck.x << 8;
@@ -1571,7 +1575,7 @@ void WaterParticleObject::Quant(void)
 		};
 	};
 //	if(z >= (1 << TOUCH_SHIFT)) VsFlag = oUNVISIBLE;
-	if(Time > LifeTime) Status |= SOBJ_DISCONNECT;
+	if(Time > LifeTime * GAME_TIME_COEFF) Status |= SOBJ_DISCONNECT;
 	Time++;
 };
 
@@ -1583,7 +1587,7 @@ void WaterParticleObject::DrawQuant(void)
 	int tx,ty;
 	
 	if(TargetType){
-		if(Time == SetLifeTime){
+		if(Time == SetLifeTime * GAME_TIME_COEFF){
 			if(AdvancedView){
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
 					p->QuantT(vCenter.x,vCenter.y,Velocity);
@@ -1634,7 +1638,7 @@ void WaterParticleObject::DrawQuant(void)
 			};
 		};
 	}else{
-		if(Time == SetLifeTime){
+		if(Time == SetLifeTime * GAME_TIME_COEFF){
 			if(AdvancedView){
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
 					p->Quant();
@@ -1697,8 +1701,8 @@ void WaterParticleObject::CreateParticle(int _LifeTime,int _SetLifeTime,int _Vel
 
 	Time = 0;
 
-	LifeTime = (int)round(_LifeTime * GAME_TIME_COEFF);
-	SetLifeTime = (int)round(_SetLifeTime * GAME_TIME_COEFF);
+	LifeTime = _LifeTime;
+	SetLifeTime = _SetLifeTime;
 
 	FirstColor = _FirstColor << 8;
 	SetColor = _SetColor << 8;
@@ -1741,7 +1745,11 @@ void WaterParticleObject::CreateParticle(int _LifeTime,int _SetLifeTime,int _Vel
 		Radius = RND(radius8);
 		//Radius = radius8 - RND(10);
 		p->vR = vCenter + Vector(round(Cos(phi)*Radius),round(Sin(phi)*Radius),0);
-		p->vD = Vector(_Velocity - effectRND(SignVelocity),_Velocity - effectRND(SignVelocity),_Velocity - effectRND(SignVelocity));
+		p->vD = Vector(
+			_Velocity - effectRND(SignVelocity),
+			_Velocity - effectRND(SignVelocity),
+			_Velocity - effectRND(SignVelocity)
+		);
 	};
 };
 

@@ -1692,7 +1692,7 @@ void DangerDataType::CreateDanger(Vector v,int r,int tp)
 	switch(Type){
 		case DangerTypeList::WHIRLPOOL:
 		case DangerTypeList::TRAIN:
-			Delay = 3 * GAME_TIME_COEFF;
+			Delay = 3;
 			if(CurrentWorld == WORLD_GLORX){
 				if(!RND(1000)) Enable = 0;
 			}else if(!RND(200)) Enable = 0;
@@ -1806,7 +1806,7 @@ void DangerDataType::Quant(void)
 					};
 				}else{
 					Time--;
-					if(!(Time & (int)round(3 * GAME_TIME_COEFF))){
+					if(!(Time % (int)round(4 * GAME_TIME_COEFF))){
 						w = (WaterParticleObject*)(EffD.GetObject(EFF_PARTICLE03));
 						if(w){
 							w->CreateParticle(30,5,1 << 7,radius,10,31,5,R_curr,1);
@@ -1878,22 +1878,22 @@ void DangerDataType::Quant(void)
 			if(Enable){
 //zmod fixed 1.15
 				if (!NetworkON) {
-				Delay = (int)round((70 + RND(30)) * GAME_TIME_COEFF);
+				Delay = (int)round(70 + RND(30));
 				MapD.CreateMapHole(R_curr,radius,Delay,0,0);
 				} else {
 					vPos = Vector(realRND(30)-15,realRND(30)-15,0);
 					vPos += R_curr;
 					vPos.x = XCYCL(vPos.x);
 					vPos.y = YCYCL(vPos.y);
-					Delay = (int)round((realRND(100)) * GAME_TIME_COEFF);
+					Delay = (int)round(realRND(100));
 					MapD.CreateMapHole(vPos,(radius*0.8+realRND(radius*0.4)),Delay,0,0);
 				}
 ///zmod
 				Enable = 0;
 				Time = 0;
-				Delay += (int)round(radius * 2 * GAME_TIME_COEFF);
+				Delay += (int)round(radius * 2);
 			}else{
-				if(Time > Delay)
+				if(Time > Delay * GAME_TIME_COEFF)
 					Enable = 1;
 				Time++;
 			};

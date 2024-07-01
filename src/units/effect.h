@@ -92,7 +92,7 @@ struct SimpleParticleType
 
 struct ParticleInitDataType
 {
-	int LifeTime;																		   
+	int LifeTime;
 	int Velocity;
 	int FirstRadius,EndRadius;
 	int FirstColor,EndColor;

@@ -3796,7 +3796,7 @@ void MapLandHole::Quant(void)
 				SOUND_TEAR(getDistX(ActD.Active->R_curr.x,R_curr.x))
 			break;
 		case 1:
-			if(Time > LifeTime) Mode = 2;
+			if(Time > LifeTime * GAME_TIME_COEFF) Mode = 2;
 			else Time++;
 			break;
 		case 2:
@@ -3819,9 +3819,9 @@ void MapAcidSpot::CreateAcid(Vector v,int fRad,int lRad,int fDelta,int lDelta,in
 
 	Time = lTime;
 	Radius = fRad << 8;
-	dRadius = ((lRad << 8) - Radius) / lTime;	
+	dRadius = ((lRad << 8) - Radius) / lTime;
 	Delta = fDelta << 8;
-	dDelta = ((lDelta << 8) - Delta) / lTime;	
+	dDelta = ((lDelta << 8) - Delta) / lTime;
 };
 
 void MapAcidSpot::Quant(void)
