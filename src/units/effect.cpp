@@ -393,7 +393,7 @@ void EffectDispatcher::CreateFireBall(const Vector& v,unsigned char _type,BaseOb
 	};
 };
 
-// Something like Fly on Glorx
+// Something like Fly on Fostral
 void EffectDispatcher::CreateParticle(char _init,const Vector& v1,const Vector& v2,unsigned char _type)
 {
 	ParticleObject* p;
