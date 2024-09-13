@@ -8169,17 +8169,19 @@ void ActionDispatcher::DrawResource(void)
 	XGR_SetClip(UcutLeft,VcutUp,UcutRight,VcutDown);
 
 	y0 = VcutDown - RES_DRAW_DOWN;
-	x0 = UcutRight - RES_DRAW_LEFT;
+	x0 = UcutRight - RES_DRAW_RIGHT;
 	x1 = UcutLeft + RES_DRAW_LEFT;
+	
 	sx = x0 - x1;
+	int sizeX = sx * DrawResourceValue / DrawResourceMaxValue;
 
 	if(DrawResourceValue > 0){
-		XGR_Rectangle(x0 - sx * DrawResourceValue / DrawResourceMaxValue,y0,sx * DrawResourceValue / DrawResourceMaxValue,RES_DRAW_STEP_Y,228,228,XGR_FILLED);
+		XGR_Rectangle(x0 - sizeX, y0, sizeX, RES_DRAW_STEP_Y, 228, 228, XGR_FILLED);
 		DrawResourceValue = -DrawResourceValue;
 		DrawResourceTime = 130;
 	}else{
 		if(DrawResourceTime > 0){
-			XGR_Rectangle(x0 + sx * DrawResourceValue / DrawResourceMaxValue,y0,-sx * DrawResourceValue / DrawResourceMaxValue,RES_DRAW_STEP_Y,228,228,XGR_FILLED);
+			XGR_Rectangle(x0 + sizeX, y0, -sizeX, RES_DRAW_STEP_Y, 228, 228, XGR_FILLED);
 			DrawResourceTime -= 128 / 20;
 		};
 	};
