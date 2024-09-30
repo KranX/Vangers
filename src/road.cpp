@@ -964,11 +964,10 @@ _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 #ifdef ACTINT
 	if (XGR_Obj.get_screen_scale_x() == 1) {
 		curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
-		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 	} else {
 		curGMap = new iGameMap(XGR_MAXX / 2, XGR_MAXY / 2, XGR_MAXX / 2, XGR_MAXY / 2);
-		COMPAS_RIGHT = HD_COMPAS_RIGHT;
 	}
+	COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 #else
 	curGMap = new iGameMap(XGR_MAXX/2,XGR_MAXY/2,XSIDE,YSIDE);
 #endif
@@ -1697,6 +1696,10 @@ iGameMap::iGameMap(int _x,int _y,int _xside,int _yside)
 	UcutRight = xc + xside;
 	VcutUp = yc - yside;
 	VcutDown = yc + yside;
+	
+	if (XGR_Obj.get_screen_scale_x() == 1.6f) {
+		UcutRight = (XGR_MAXX - (800 - aScrDisp -> curIbs -> SizeX));
+	}
 
 //	  focus = (xside*540)/180;
 	focus_flt = focus = 512;
@@ -1756,6 +1759,10 @@ void iGameMap::change(int Dx,int Dy,int mode,int xcenter,int ycenter)
 	UcutRight = xc + xside;
 	VcutUp = yc - yside;
 	VcutDown = yc + yside;
+	
+	if (XGR_Obj.get_screen_scale_x() == 1.6f) {
+		UcutRight = (XGR_MAXX - (I_RES_X - aScrDisp -> curIbs -> SizeX));
+	}
 
 	TurnSecX = TurnSecX*xsize/xsize_old;
 	camera_zmin = camera_zmin*xsize/xsize_old;
@@ -2485,21 +2492,10 @@ void set_map_to_ibs(ibsObject* ibs)
 			ibs->CenterX,
 			ibs->CenterY);
 		Redraw = 1;
-
-		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
-	} else if (ibs->ID == 2 /* INVENTORY HD*/) {
-		auto inventoryWidth = 800 - ibs->SizeX;
-			curGMap -> change(
-			(XGR_MAXX - inventoryWidth) / 2,
-			XGR_MAXY  / 2,
-			0,
-			(XGR_MAXX - inventoryWidth) / 2,
-			XGR_MAXY / 2);
-		Redraw = 1;
+		
 		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 	} else {
 		set_map_to_fullscreen();
-		COMPAS_RIGHT = HD_COMPAS_RIGHT;
 	}
 }
 
