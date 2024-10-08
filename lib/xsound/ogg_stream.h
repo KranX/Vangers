@@ -1,7 +1,7 @@
 #ifndef __SAMPLE_CLUNK_OGG_STREAM_H__
 #define __SAMPLE_CLUNK_OGG_STREAM_H__
 
-#include <string>
+#include <string_view>
 #include <cstring>
 #include <stdio.h>
 #include <clunk/stream.h>
@@ -18,7 +18,7 @@ namespace clunk {
 
 class OggStream : public clunk::Stream {
 public: 
-	OggStream(const std::string &fname);
+	OggStream(const std::string_view fname);
 	void rewind();
 	bool read(clunk::Buffer &data, unsigned hint);
 	~OggStream();
