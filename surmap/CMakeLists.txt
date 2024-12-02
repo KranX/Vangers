@@ -2,6 +2,7 @@ INCLUDE_DIRECTORIES(AFTER
 	"${PROJECT_SOURCE_DIR}/lib/xtool"
 	"${PROJECT_SOURCE_DIR}/lib/xgraph"
 	"${PROJECT_SOURCE_DIR}"
+	"${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0"
 )
 
 SET(surmap_SRCS
@@ -26,6 +27,15 @@ SET_SOURCE_FILES_PROPERTIES(${surmap_SRCS}
 		"-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-register -Wno-dangling-else \
 		 -Werror=missing-field-initializers -Werror=uninitialized")
 
+SET(vss_SRCS
+		${PROJECT_SOURCE_DIR}/src/vss/sys.cpp
+		${PROJECT_SOURCE_DIR}/src/vss/sys-modules.cpp
+		${PROJECT_SOURCE_DIR}/src/vss/sys-bridge.cpp
+		${PROJECT_SOURCE_DIR}/src/vss/sys-quant.cpp
+		${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0/duktape.c
+		${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0/extras/console/duk_console.c
+		${PROJECT_SOURCE_DIR}/src/vss/duktape-2.7.0/extras/module-node/duk_module_node.c)
+
 SET(vangers_surmap_SRCS
 	"${PROJECT_SOURCE_DIR}/src/3d/3dobject.cpp"
 	"${PROJECT_SOURCE_DIR}/src/3d/3d_math.cpp"
@@ -45,7 +55,7 @@ SET(vangers_surmap_SRCS
 	"${PROJECT_SOURCE_DIR}/src/rle.cpp"
 )
 
-ADD_EXECUTABLE(surmap ${surmap_SRCS} ${vangers_surmap_SRCS})
+ADD_EXECUTABLE(surmap ${surmap_SRCS} ${vangers_surmap_SRCS} ${vss_SRCS})
 SET_SOURCE_FILES_PROPERTIES(${vangers_surmap_SRCS}
 		PROPERTIES COMPILE_FLAGS
 		"-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-dangling-else")

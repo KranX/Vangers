@@ -20,6 +20,8 @@
 #include "i_mem.h"
 #include "ikeys.h"
 
+#include "../vss/sys.h"
+
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
 // MP Game Parameters...
@@ -1079,15 +1081,20 @@ void iScreenOption::SetValueCHR(const char* p)
 
 int iGetOptionValue(int id)
 {
-#ifdef ANDROID
-	if (id == iSCREEN_RESOLUTION) {
-		return 1;
+	int value = 1;
+	if(iScrOpt && iScrOpt[id]) {
+		value = iScrOpt[id]->GetValueINT();
 	}
-#endif
-	if(iScrOpt && iScrOpt[id])
-		return iScrOpt[id] -> GetValueINT();
-	else
-		return 1;
+
+	auto result = vss::sys()
+		.quant(vss::OPTION_QUANT)
+		.prop("id", id)
+		.prop("value", value)
+		.send();
+
+	value = result.getInt("value", value);
+
+	return value;
 }
 
 iListElement* iGetOptionObj(int id)

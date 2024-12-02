@@ -1,0 +1,10 @@
+{
+    "version": "1.0",
+    "addons": [
+        {
+            "id": "vss-camera",
+            "name": "Lock the camera to front of mechos",
+            "enabled": true
+        }
+    ]
+}

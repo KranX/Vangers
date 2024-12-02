@@ -25,9 +25,11 @@ struct ParticleProcess;
 #include "../units/track.h"
 #include "../units/items.h"
 #include "../units/sensor.h"
+#include "../units/mechos.h"
 #include "../dast/poly3d.h"
 
 #include "../iscreen/controls.h"
+#include "../vss/sys.h"
 
 #undef random
 #define random(num) ((int)(((long)_rand()*(num)) >> 15))
@@ -2849,9 +2851,36 @@ void Object::analysis()
 				direct_keyboard_control();
 				/*if(JoystickMode)
 					direct_joystick_control();*/
+
+				if(JoystickMode) {
+					direct_joystick_control();
 				}
+
+#ifndef _SURMAP_
+				int unitAngle = dynamic_cast<ActionUnit*>(this)->Angle;
+#else
+				int unitAngle = 0;
+#endif
+
+				auto result = vss::sys()
+					.quant(vss::MECHOS_TRACTION_QUANT)
+					.prop("traction", traction)
+					.prop("rudder", rudder)
+					.prop("tractionIncrement", traction_increment)
+					.prop("tractionDecrement", traction_decrement)
+					.prop("tractionMax", 255)
+					.prop("rudderStep", rudder_step)
+					.prop("rudderMax", rudder_max)
+					.prop("unitAngle", unitAngle)
+					.prop("helicopterStrife", helicopter_strife)
+					.send();
+
+				traction = result.getInt("traction", traction);
+				rudder = result.getInt("rudder", rudder);
+				helicopter_strife = result.getInt("helicopterStrife", helicopter_strife);
 			}
 		}
+	}
 	if(interpolation_on){
 		import_controls();
 		}

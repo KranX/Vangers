@@ -26,6 +26,8 @@
 
 #include "../sound/hsound.h"
 #include "layout.h"
+
+#include "../vss/sys.h"
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -3460,6 +3462,10 @@ void actIntDispatcher::text_redraw(){
 	if(Pause > 1 && NetworkON){
 		if(GameQuantReturnValue || acsQuant()){
 			Pause = 0;
+			vss::sys()
+				.quant(vss::PAUSE_QUANT)
+				.prop("paused", false)
+				.send();
 		}
 		flags |= AS_FULL_FLUSH;
 	}
@@ -3488,6 +3494,10 @@ void actIntDispatcher::text_redraw(){
 	if(Pause > 1 && NetworkON){
 		if(GameQuantReturnValue || acsQuant()){
 			Pause = 0;
+			vss::sys()
+					.quant(vss::PAUSE_QUANT)
+					.prop("paused", false)
+					.send();
 		}
 	}
 
@@ -5161,6 +5171,19 @@ void actIntDispatcher::iKeyTrap(int cd)
 
 void actIntDispatcher::send_event(int cd,int dt,actintItemData* p)
 {
+	auto result = vss::sys()
+		.quant(vss::SEND_EVENT_QUANT)
+		.prop("code", cd)
+		.prop("data", dt)
+		.prop("ptr", p)
+    	.prop("asFlags", flags)
+		.prop("asMode", curMode)
+		.send();
+
+	if (result.isPreventDefault()) {
+		return;
+	}
+
 	if(cd == EV_CHANGE_MODE || cd == EV_SET_MODE){
 		if(!(flags & AS_CHANGE_MODE)){
 			flags |= AS_CHANGE_MODE;
@@ -5456,6 +5479,13 @@ void actIntDispatcher::EventQuant(void)
 }
 
 void actIntDispatcher::set_fullscreen(bool isEnabled) {
+	auto result =	vss::sys()
+		.quant(vss::SET_ROAD_FULLSCREEN_QUANT)
+		.prop("enabled", isEnabled)
+		.send();
+
+	isEnabled = result.getBool("enabled", isEnabled);
+
 	if(isEnabled){
 		flags |= AS_FULLSCR;
 		set_map_to_fullscreen();

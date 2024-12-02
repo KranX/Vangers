@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 
+extern "C" const char* sys_fileOpenQuant(const char* file, unsigned flags);
+
 std::fstream *open_file(const char* name, unsigned f)
 {
 	std::ios::openmode mode;
@@ -16,9 +18,9 @@ std::fstream *open_file(const char* name, unsigned f)
 	return new std::fstream(name, mode);
 }
 
-int XStream::open(const char* name, unsigned f)
+int XStream::open(const char* _name, unsigned f)
 {
-
+	const char* name = sys_fileOpenQuant(_name, f);
 	std::string smode;
 	smode+="File name:";
 	smode+=name;

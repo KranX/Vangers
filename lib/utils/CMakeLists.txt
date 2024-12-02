@@ -7,6 +7,7 @@ ADD_EXECUTABLE(zip_convert
 	xzip/inzip.cpp 
 	xzip/outzip.cpp 
 	xzip/treezip.cpp
+	${PROJECT_SOURCE_DIR}/src/vss/sys-noop.cpp
 )
 
 #ADD_DEFINITIONS(-e SDL_main )

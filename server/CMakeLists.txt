@@ -12,7 +12,10 @@ SET(server_SRCS
 #win32f.cpp -- candidat to remove
 )
 
-ADD_EXECUTABLE(vangers_server ${server_SRCS})
+ADD_EXECUTABLE(vangers_server
+	${server_SRCS}
+	${PROJECT_SOURCE_DIR}/src/vss/sys-noop.cpp
+)
 
 IF(WIN32)
 	SET(WIN_LIB 

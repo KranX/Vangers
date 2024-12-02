@@ -1,6 +1,7 @@
 //#include "PlayOgg.h"
 
 #include <sstream>
+#include "../vss/sys.h"
 
 #include "../global.h"
 
@@ -14,7 +15,7 @@ extern clunk::Context context;
 static int curTrack = 2;
 static int volume = 128;
 
-const char* getTrackPathName(int track) {
+const char* getOrigTrackPathName(int track) {
 	switch (track) {
 		case ST_INTRO:			//2
 			return "resource/music/track02.ogg";
@@ -39,6 +40,17 @@ const char* getTrackPathName(int track) {
 		default:
 			return "resource/music/track01.ogg";
 	}
+}
+
+const char* getTrackPathName(int track) {
+	auto name = getOrigTrackPathName(track);
+	auto result = vss::sys()
+			.quant(vss::FILE_OPEN_QUANT)
+			.prop("file", name)
+			.prop("flags", 1 /* XS_IN */)
+			.send();
+
+	return result.getString("file", name);
 }
 
 void xsInitMusic(void) {

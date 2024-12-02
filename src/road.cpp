@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "lang.h"
-
+#include "vss/sys.h"
 
 #define SCREENSHOT
 
@@ -1137,6 +1137,10 @@ int GameQuantRTO::Quant(void)
 	else {
 		if(GameQuantReturnValue || acsQuant()){
 			Pause = 0;
+			vss::sys()
+					.quant(vss::PAUSE_QUANT)
+					.prop("paused", false)
+					.send();
 		}
 	}
 
@@ -1592,6 +1596,10 @@ void KeyCenter(SDL_Event *key)
 			std::cout<<"road.KeyCenter:"<<key<<std::endl;
 			if(!Pause) {
 				Pause = 1;
+				vss::sys()
+						.quant(vss::PAUSE_QUANT)
+						.prop("paused", true)
+						.send();
 			}
 				
 //				  GameQuantReturnValue = RTO_LOADING3_ID;
@@ -1793,7 +1801,12 @@ void iGameMap::reset(void)
 	prmFlag = 0;
 	SlopeAngle = 0;// -Pi/4;
 	DepthShow = 0;
-	camera_zmin = TurnSecX = xsize / XGR_Obj.get_screen_scale_x();
+	auto zmin = (int) (xsize / XGR_Obj.get_screen_scale_x());
+	auto result = vss::sys()
+		.quant(vss::CAMERA_ZOOM_QUANT)
+		.prop("z", zmin)
+		.send();
+	camera_zmin = TurnSecX = result.getInt("z", zmin);
 	TurnSecY = ysize;
 	TurnSideX = TurnSecX >> 1;
 	TurnSideY = TurnSecY >> 1;

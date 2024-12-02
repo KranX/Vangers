@@ -17,6 +17,8 @@
 #include <ctype.h>
 #include "iniparser.h"
 
+extern const char* sys_fileOpenQuant(const char* file, unsigned flags);
+
 /*---------------------------- Defines -------------------------------------*/
 #define ASCIILINESZ         (1024)
 #define INI_INVALID_KEY     ((char*)-1)
@@ -526,8 +528,10 @@ static line_status iniparser_line(
   The returned dictionary must be freed using iniparser_freedict().
  */
 /*--------------------------------------------------------------------------*/
-dictionary * iniparser_load(const char * ininame)
+dictionary * iniparser_load(const char * _ininame)
 {
+	const char* ininame = sys_fileOpenQuant(_ininame, /*XS::IN*/ 1);
+
     FILE * in ;
 
     char line    [ASCIILINESZ+1] ;
