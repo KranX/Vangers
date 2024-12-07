@@ -8197,6 +8197,11 @@ void ActionDispatcher::DrawResource(void)
 
 	y0 = VcutDown - RES_DRAW_DOWN;
 	x0 = UcutRight - RES_DRAW_RIGHT;
+	if (XGR_Obj.get_screen_scale_x() != 1) {
+		// Right sidebar size, magic number for HD version.
+		//
+		x0 -= 240;
+	}
 	x1 = UcutLeft + RES_DRAW_LEFT;
 	
 	sx = x0 - x1;
