@@ -98,7 +98,7 @@ jobs:
         msys2 -c 'strip vangers/bin/vangers_server.exe'
         cp build/surmap/surmap.exe vangers/bin/
         cp build/surmap/surmap.pdb vangers/bin/
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       with:
         name: Vangers-Release-64
         path: vangers

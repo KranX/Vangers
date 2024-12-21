@@ -22,3 +22,13 @@ jobs:
     - name: make
       run: make
       working-directory: build
+    - name: prepare release folder
+      run: |
+        mkdir -p vangers/bin
+        cp build/src/vangers vangers/bin/
+        cp build/server/vangers_server vangers/bin/
+        cp build/surmap/surmap vangers/bin/
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Vangers-Release-Linux64
+        path: vangers
