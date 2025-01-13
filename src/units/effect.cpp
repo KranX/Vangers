@@ -663,22 +663,8 @@ void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 	else if(ty < -SPY_100)
 		ty += SPTorYSize;
 
-	/*px = ty*c;
-	py = -tx*c;
-
-	if (RND(3)){
-		tx += px;
-		ty += py;
-	} else {
-		tx = px - tx;
-		ty = py - ty;
-	} */
-
-//	vD.x >>= 1;
-//	vD.y >>= 1;
-
 	d = abs(tx) + abs(ty);
-	if(d > 100 && !RND(4)){
+	if(d > 100 && !RND((int)round(4 / XTCORE_FRAME_NORMAL))){
 		vD.x = tx * s / d;
 		vD.y = ty * s / d;
 	};
@@ -686,20 +672,11 @@ void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 	vD += _n;
 	vD.x += ((3 - RND(7))<<8);
 	vD.y += ((3 - RND(7))<<8);
-	/*d = abs(tx) + abs(ty);
-	if(d){
-		vD.x += tx * s / d;
-		vD.y += ty * s / d;
-		vD.z += (_n.z - _c.z) * s / d;
-	};*/
 	vR += vD * XTCORE_FRAME_NORMAL;
 
 	vR.x &= PTrack_mask_x;
 	vR.y &= PTrack_mask_y;
 	vR.z = _c.z;
-	
-	// vR.x &= PTrack_mask_x;
-	// vR.y &= PTrack_mask_y;
 };
 
 void SimpleParticleType::QuantT(int x,int y,int s)
@@ -1962,7 +1939,7 @@ void EffectDispatcher::CreateParticleGenerator(Vector vC,Vector vT,Vector vD,int
 {
 	ParticleGenerator* pg;
 	pg = (ParticleGenerator*)(UnitStorage[EFF_PARTICLE_GENERATOR].Active());
-	if(pg){		
+	if(pg){
 		pg->CreateGenerator(vC,vT,vD,mode);
 		ConnectTypeList(pg);
 		GameD.ConnectBaseList(pg);
