@@ -2959,12 +2959,42 @@ int InsectUnit::test_objects_collision()
 	int log = 0;	
 	BaseObject* p;
 
+	int d,l,i;
+
+	p = (BaseObject*)(BulletD.Tail);
+	while(p){
+		if(p->Visibility == VISIBLE){
+//			if(p->ID != ID_BULLET)
+//				ErrH.Abort("Big BUG with memory");
+			if(((BulletObject*)(p))->ShowID == BULLET_SHOW_TYPE_ID::CRATER){
+				i = radius + p->radius;
+				l = getDistY(p->R_curr.y,R_curr.y);
+				if(l < i){
+					d = getDistX(p->R_curr.x,R_curr.x);
+					if(d < i && R_curr.z <= p->R_curr.z + i && (d*d + l*l) < i*i){
+						Touch(p);
+						p->Touch(this);
+					};
+				};
+			}else log += test_object_to_baseobject(p);
+		};
+		p = (BaseObject*)(p->NextTypeList);
+	};
+
 	p = (BaseObject*)(ActD.Tail);
 	while(p && p != this){
 		if(p->Visibility == VISIBLE)
 			log += test_object_to_baseobject(p);
 		p = (BaseObject*)(p->NextTypeList);
 	};
+
+	p = (BaseObject*)(JumpD.Tail);
+	while(p){
+		if(p->Visibility == VISIBLE)
+			log += test_object_to_baseobject(p);
+		p = (BaseObject*)(p->NextTypeList);
+	};
+
 	return 0;
 };
 
@@ -3625,7 +3655,7 @@ void InsectUnit::Touch(GeneralObject* p)
 				if (ActD.Active) {
 					Health = Health - uvsInsectTable[BeebType]->DamageFromRam;
 					ActD.Active->BulletCollision((ActD.Active->MaxEnergy + ActD.Active->MaxArmor) / uvsInsectTable[BeebType]->RamDamage,NULL);
-					std::cout<<"    CxDebug: InsectUnit::Touch (ID_VANGER): Damaging player and himself a little, health:"<<Health<<std::endl;
+					std::cout<<" 000 CxDebug: InsectUnit::Touch (ID_VANGER): Damaging player and himself a little, health:"<<Health<<std::endl;
 				}
 			} else {
 				if(p->Status & SOBJ_ACTIVE){
@@ -3661,9 +3691,14 @@ void InsectUnit::Touch(GeneralObject* p)
 			break;
 		case ID_BULLET:
 		case ID_JUMPBALL:
+			if (p->ID == ID_BULLET) {
+				std::cout<<" *** BULLET"<<std::endl;
+			} else if (p->ID == ID_JUMPBALL) {
+				std::cout<<" *** JUMPBALL"<<std::endl;
+			}
 			if (BeebType > 2 && Health > 0) {
 				Health = Health - uvsInsectTable[BeebType]->DamageFromBullet;
-				std::cout<<"    CxDebug: InsectUnit::Touch (ID_BULLET || ID_JUMPBALL): Health:"<<Health<<std::endl;
+				std::cout<<" *** CxDebug: InsectUnit::Touch (ID_BULLET || ID_JUMPBALL): Health:"<<Health<<std::endl;
 			} else {
 				switch(BeebType) {
 					case 0:
@@ -10307,7 +10342,7 @@ void GunSlot::Fire(void)
 		case ACI_CRUSTEST_CANNON:
 			if(ItemData->ActIntBuffer.data1 > 0){
 				GunStatus = GUN_FIRE;
-				ItemData->ActIntBuffer.data1--;
+				//ItemData->ActIntBuffer.data1--;
 				if(NetworkON) NetUpdate();
 				if(ActD.Active)
 					SOUND_CRUSTEST_SHOT(getDistX(ActD.Active->R_curr.x,Owner->R_curr.x));
