@@ -1290,7 +1290,6 @@ extern int XSIDE;
 extern int YSIDE;
 
 extern int TotalDrawFlag;
-
 void GameObjectDispatcher::DrawQuant(void) {
 #ifdef _DEBUG
 	if(!TotalDrawFlag) return;
