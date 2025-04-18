@@ -955,7 +955,7 @@ void uvsWorldReload(int newW){
 			sBunchSend(pb -> id, pb -> cycleTable[pb -> currentStage].cirtQ, pb -> currentStage);	
 		}
 
-		IsCurrentPassPointable = WorldTable[CurrentWorld] -> pssTmax;
+		IsCurrentPassPointable = !!WorldTable[CurrentWorld] -> pssTmax;
 		if(!IsCurrentPassPointable)
 		{
 			SelectCompasTarget(NULL);
