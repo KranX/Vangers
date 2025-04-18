@@ -903,6 +903,8 @@ void uvsRestoreVanger(void){
 #endif
 }
 
+extern bool IsCurrentPassPointable;
+
 void uvsWorldReload(int newW){
 #ifdef _ROAD_
 	uvsElement* p = ETail;
@@ -943,11 +945,21 @@ void uvsWorldReload(int newW){
 		uvsCurrentWorldUnable = 0;
 	}
 
-	if (NetworkON && WorldTable[CurrentWorld]-> escTmax){
-		uvsBunch* pb = WorldTable[CurrentWorld]-> escT[0] -> Pbunch;
+	if (NetworkON)
+	{
+		if (WorldTable[CurrentWorld] -> escTmax)
+		{
+			uvsBunch* pb = WorldTable[CurrentWorld]-> escT[0] -> Pbunch;
 
-		pb -> cycleTable[pb -> currentStage].cirtQ = pb -> cycleTable[pb -> currentStage].cirtMAX;
-		sBunchSend(pb -> id, pb -> cycleTable[pb -> currentStage].cirtQ, pb -> currentStage);
+			pb -> cycleTable[pb -> currentStage].cirtQ = pb -> cycleTable[pb -> currentStage].cirtMAX;
+			sBunchSend(pb -> id, pb -> cycleTable[pb -> currentStage].cirtQ, pb -> currentStage);	
+		}
+
+		IsCurrentPassPointable = !!WorldTable[CurrentWorld] -> pssTmax;
+		if(!IsCurrentPassPointable)
+		{
+			SelectCompasTarget(NULL);
+		}
 	}
 
 	StartWTRACK();
@@ -10846,7 +10858,9 @@ uvsPassage* GetPassage(int fromWID, int toWID){
 	if ( fromWID == toWID ) return NULL;
 
 	if ( fromWID >= MAIN_WORLD_MAX ) {
-		return WorldTable[fromWID] -> pssT[0];
+		if(WorldTable[fromWID] -> pssTmax)
+			return WorldTable[fromWID] -> pssT[0];
+		return NULL;
 	}
 
 	if (toWID >= MAIN_WORLD_MAX ) {
