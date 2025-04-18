@@ -8508,10 +8508,11 @@ void CreateTabutaskTarget(void)
 
 void CreatePhantomTarget(void)
 {
+	bool IsCurrentPassPointable = true;
 	CompasTargetType* n;
 	uvsPassage* pass;
 
-	if(my_server_data.GameType == PASSEMBLOSS && UsedCheckNum < GloryPlaceNum){
+	if(my_server_data.GameType == PASSEMBLOSS && UsedCheckNum < GloryPlaceNum && IsCurrentPassPointable){
 		n = CompasObj.TargetData;
 		while(n){	
 			if(n -> ID == CMP_OBJECT_VECTOR){
@@ -8525,7 +8526,7 @@ void CreatePhantomTarget(void)
 						(n->Data).vT.x = pass->unitPtr.PassageT->ActionLink->R_curr.x;
 						(n->Data).vT.y = pass->unitPtr.PassageT->ActionLink->R_curr.y;
 						(n->Data).vT.z = pass->unitPtr.PassageT->ActionLink->R_curr.z;
-					};
+					}
 				};
 				break;
 			};
