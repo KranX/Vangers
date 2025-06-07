@@ -2898,7 +2898,9 @@ void HordeObject::DrawQuant(void)
 			vPos = p->vR;
 			vPos >>= 8;
 			G2LQ(vPos,tx,ty);
-			if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+			if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+				XGR_SetPixelFast(tx, ty, (int)round(p->Color) >> 8);
+			}
 		};
 	}else{
 		if(CurrentWorld < MAIN_WORLD_MAX - 1){
@@ -2906,14 +2908,18 @@ void HordeObject::DrawQuant(void)
 				p->QuantP(R_curr << 8, vDelta << 8,3 << 8,5);
 				tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 				ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
-				if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+				if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+					XGR_SetPixelFast(tx, ty, (int)round(p->Color) >> 8);
+				}
 			};
 		}else{
 			for(i = 0,p = Data;i < NumParticle;i++,p++){
 				p->QuantP(R_curr << 8, vDelta << 8,3 << 8,5);
 				tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 				ty = ((int)round(SPGetDistY(p->vR.y,SPViewY) * ScaleMapInvFlt) >> 8) + ScreenCY;
-				if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) XGR_SetPixelFast(tx,ty,p->Color >> 8);
+				if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
+					XGR_SetPixelFast(tx, ty, (int)round(p->Color) >> 8);
+				}
 			};
 		};
 	};

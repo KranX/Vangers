@@ -83,7 +83,7 @@ struct SimpleParticleType
 {
 	Vector vR;
 	Vector vD;
-	int Color,dColor;
+	float Color,dColor;
 	void Quant(void);
 	void QuantT(int x,int y,int s);
 	void QuantP(Vector _c, Vector _n, int s,int c);
