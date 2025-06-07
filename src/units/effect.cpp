@@ -1340,17 +1340,21 @@ void TargetParticleType::aQuant(void)
 		ty = ty * s / d;
 		tx += (ty >> TARGET_PARTICLE_NORMAL_SHIFT);
 		ty -= (tx >> TARGET_PARTICLE_NORMAL_SHIFT);
-		vD.x += (int)round(tx * XTCORE_FRAME_NORMAL);
-		vD.y += (int)round(ty * XTCORE_FRAME_NORMAL);
-
-		if(pDist < d){
-			vD.x -= vD.x >> 4;
-			vD.y -= vD.y >> 4;
-		};
 
 		vR.x += (int)round(vD.x * XTCORE_FRAME_NORMAL);
 		vR.y += (int)round(vD.y * XTCORE_FRAME_NORMAL);
 		vR.z += (int)round(vD.z * XTCORE_FRAME_NORMAL);
+
+		int accel_x = tx;
+		int accel_y = ty;
+
+		if(pDist < d){
+			vD.x -= (int)round((vD.x >> 4) * XTCORE_FRAME_NORMAL);
+			vD.y -= (int)round((vD.y >> 4) * XTCORE_FRAME_NORMAL);
+		};
+
+		vD.x += (int)round(accel_x * XTCORE_FRAME_NORMAL);
+		vD.y += (int)round(accel_y * XTCORE_FRAME_NORMAL);
 
 		vR.x &= PTrack_mask_x;
 //		vR.y &= PTrack_mask_y;
@@ -1419,7 +1423,7 @@ void TargetParticleObject::AddVertex(const Vector& _vR,int _Color,int _Speed1,in
 			p->vD.y = vCheck.y - vCheck.x;
 		}else p->vD = Vector(0,0,0);
 
-		p->vD.z = (vCheck.z << 8) / LifeTime;
+		p->vD.z = (vCheck.z << 8) / (LifeTime * GAME_TIME_COEFF);
 
 		p->s = _Speed2;
 		p->vT = vTarget;

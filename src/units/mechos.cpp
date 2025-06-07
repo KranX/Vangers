@@ -4035,7 +4035,8 @@ void VangerUnit::Quant(void)
 		}else{
 			if(aciWorldIndex != -1){
 				if(!(Status & SOBJ_AUTOMAT)){
-					uvsPoint -> Pworld = WorldTable[aciWorldIndex];				
+					//stalkerg here we create effects to switch world
+					uvsPoint -> Pworld = WorldTable[aciWorldIndex];
 					EffD.CreateRingOfLord(EFF_PARTICLE06,R_curr + Vector(0,0,80),radius*2,200,111,111,radius << 7);
 		//			ExternalMode = EXTERNAL_MODE_SIGN_IN;
 		//			ExternalTime = 40;
@@ -6831,7 +6832,6 @@ void VangerUnit::CreateParticleMechos(const Vector& v,int r, int _type)
 
 void VangerUnit::CreateParticleRotor(const Vector& v,int r)
 {
-	// r *= GAME_TIME_COEFF;
 	TargetParticleObject* p;
 	int i,ii, spd1, spd2;
 	Vector vertexTarget;
@@ -6849,13 +6849,15 @@ void VangerUnit::CreateParticleRotor(const Vector& v,int r)
 				color_offset = COLORS_VALUE_TABLE[model->polygons[i].color_id*2];
 				color_shift = COLORS_VALUE_TABLE[model->polygons[i].color_id*2 + 1];
 				vertexTarget = R_curr + (Vector(model->polygons[i].middle_x,model->polygons[i].middle_y,model->polygons[i].middle_z)*(A_scl));
-				// vertexTarget *= GAME_TIME_COEFF;
 				for (ii = 0; ii < 2; ii++) {
 					spd1 = (2 << 8) + realRND(1 << 8);
 					spd2 = (3 << 7) + realRND(1 << 7);
-					p->AddVertex(vertexTarget,
+					p->AddVertex(
+						vertexTarget,
 						color_offset + (((1 << (7 - color_shift)) - 1) & ~1),
-						spd1, spd2);
+						spd1,
+						spd2
+					);
 				}
 			};
 
