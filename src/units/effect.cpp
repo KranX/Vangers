@@ -633,11 +633,11 @@ void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 		vD.y = ty * s / d;
 	};
 	
-	vR += vD * XTCORE_FRAME_NORMAL;
+	vR += vD;
 	vR.z = v.z;
 	
 	vR.x &= PTrack_mask_x;
-//	vR.y &= PTrack_mask_y;
+	vR.y &= PTrack_mask_y;
 	Color += dColor * XTCORE_FRAME_NORMAL;
 };
 
@@ -732,20 +732,21 @@ void ParticleObject::DrawQuant(void)
 	SimpleParticleType* p;
 	Vector vPos;
 	int tx,ty;
-	int phi,dphi;
+	double phi,dphi,spiralSpeed;
 
 	if(Mode){
 		if(Time < LifeTime * GAME_TIME_COEFF){
-			dphi = (Time*PI << 8) / (2*NumParticle * LifeTime);
+			dphi = (Time * XTCORE_FRAME_NORMAL * M_PI) / (2 * NumParticle * LifeTime);
 			phi = 0;
 		}else{
-			phi = PI / 2;
+			phi = M_PI / 2;
 			dphi = 0;
 		};
 
 		if(AdvancedView){
-			for(i = 0,p = Data;i < NumParticle;i++,p++){				
-				p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
+			for(i = 0,p = Data;i < NumParticle;i++,p++){
+				spiralSpeed = round(std::abs(sin(phi)) * 6400.0);
+				p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),(int)spiralSpeed,32);
 				vPos = p->vR;
 				vPos >>= 8;
 //				if(GetAltLevel(vPos)){
@@ -755,12 +756,13 @@ void ParticleObject::DrawQuant(void)
 						XGR_SetPixelFast(tx, ty, (int)round(p->Color) >> 8);
 					}
 //				};
-				phi += dphi * XTCORE_FRAME_NORMAL;
+				phi += dphi;
 			};
 		}else{
-			if(CurrentWorld < MAIN_WORLD_MAX - 1){			
+			if(CurrentWorld < MAIN_WORLD_MAX - 1){
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
-					p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
+					spiralSpeed = round(std::abs(sin(phi)) * 6400.0);
+					p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),(int)spiralSpeed,32);
 					vPos = p->vR;
 					vPos >>= 8;
 	//				if(GetAltLevel(vPos)){
@@ -774,11 +776,12 @@ void ParticleObject::DrawQuant(void)
 							XGR_SetPixelFast(tx, ty, (int)round(p->Color) >> 8);
 						}
 	//				};
-					phi += dphi * XTCORE_FRAME_NORMAL;
+					phi += dphi;
 				};
 			}else{
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
-					p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),abs(25 * SI[rPI(phi >> 8)] >> 8),32);
+					spiralSpeed = round(std::abs(sin(phi)) * 6400.0);
+					p->QuantRingOfLord(Vector(R_curr.x << 8,R_curr.y << 8,R_curr.z << 8),(int)spiralSpeed,32);
 					vPos = p->vR;
 					vPos >>= 8;
 	//				if(GetAltLevel(vPos)){
@@ -792,10 +795,11 @@ void ParticleObject::DrawQuant(void)
 							XGR_SetPixelFast(tx, ty, (int)round(p->Color) >> 8);
 						}
 	//				};
-					phi += dphi * XTCORE_FRAME_NORMAL;
+					phi += dphi;
 				};
 			};
 		};
+		// std::cout<<"Time:"<<Time*XTCORE_FRAME_NORMAL<<" dphi:"<<dphi<<" spiralSpeed:"<<spiralSpeed<<std::endl; 
 	}else{
 		if(AdvancedView){
 			for(i = 0,p = Data;i < NumParticle;i++,p++){
