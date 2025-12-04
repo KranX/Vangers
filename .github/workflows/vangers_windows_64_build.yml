@@ -22,7 +22,7 @@ jobs:
         mingw-w64-x86_64-yasm
         mingw-w64-x86_64-make
         unzip'
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: clunk -- download
       run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
     - name: clunk -- create build dir
@@ -98,7 +98,7 @@ jobs:
         msys2 -c 'strip vangers/bin/vangers_server.exe'
         cp build/surmap/surmap.exe vangers/bin/
         cp build/surmap/surmap.pdb vangers/bin/
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       with:
         name: Vangers-Release-64
         path: vangers

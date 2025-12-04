@@ -94,7 +94,7 @@ jobs:
         install_name_tool -change "/usr/local/lib/libavcodec.58.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
         install_name_tool -change "/usr/local/opt/sdl2/lib/libSDL2-2.0.0.dylib" "@executable_path/../Libs/libSDL2-2.0.0.dylib" Vangers.app/Contents/Libs/libSDL2_net-2.0.0.dylib
         tar -cvf Vangers.app.tar Vangers.app
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: Vangers.app.tar
         path: Vangers.app.tar
