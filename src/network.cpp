@@ -1356,7 +1356,7 @@ void MessageDispatcher::receive()
 	char msg[512];
 	events_in > msg;
 	PlayerData* p = players_list.find(events_in.current_creator());
-	MessageElement* pm = new MessageElement(p ? p -> name : (char *)"Unknown", msg, p -> body.color);
+	MessageElement* pm = new MessageElement(p && p->name ? p -> name : (char *)"Unknown", msg, p -> body.color);
 	AddElement(pm);
 	if(ListSize > max_number_of_messages){
 		RemoveElement(pm = first());

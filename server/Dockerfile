@@ -15,7 +15,7 @@ WORKDIR /opt/vangers
 
 RUN     GIT_SSL_NO_VERIFY=1 git clone https://github.com/novnc/websockify.git websockify
 RUN     cd websockify && \
-        pip3 install setuptools && \
+        pip3 install setuptools --break-system-packages && \
         python3 setup.py install && \
         cd ..
 
