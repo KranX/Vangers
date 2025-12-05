@@ -1384,7 +1384,7 @@ RatingData::RatingData(char* _name,float _rating)
 }
 RatingData::~RatingData()
 {
-	delete name;
+	delete[] name;
 }
 TopList::TopList(int MP_game)
 {
