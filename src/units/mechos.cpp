@@ -153,6 +153,12 @@ static inline int track_relocate_ticks(int legacy_threshold)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int ai_event_check_factor(int legacy_factor)
+{
+	int ticks = (int)round(legacy_factor * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 static inline int prompt_prev_time_threshold_ticks(void)
 {
 	int ticks = (int)round(1500 * GAME_TIME_COEFF);
@@ -10687,6 +10693,8 @@ void VangerUnit::ResolveGenerator(void)
 	StuffObject* s;
 	int q,a;
 	SensorDataType* sns;
+	const int visible_check_factor = ai_event_check_factor(MAX_CHECK_VISIBLE_FACTOR);
+	const int unvisible_check_factor = ai_event_check_factor(MAX_CHECK_UNVISIBLE_FACTOR);
 
 	aiStatus = AI_STATUS_NONE;
 	aiStatus |= AI_STATUS_WHEEL | AI_STATUS_IMPULSE;
@@ -10752,7 +10760,7 @@ void VangerUnit::ResolveGenerator(void)
 
 	if(Visibility == VISIBLE && CoptePoint && !aiAlarmTime) aiStatus |= AI_STATUS_FLY;
 	
-	if((Visibility == VISIBLE && !RND(MAX_CHECK_VISIBLE_FACTOR)) || (Visibility == UNVISIBLE && !RND(MAX_CHECK_UNVISIBLE_FACTOR))){
+	if((Visibility == VISIBLE && !RND(visible_check_factor)) || (Visibility == UNVISIBLE && !RND(unvisible_check_factor))){
 		n = (aiUnitEvent*)(aiEvent.Tail);
 		while(n){
 			if(n->Time < aiMaxView) n->Time += aiAddView;
@@ -10842,7 +10850,7 @@ void VangerUnit::ResolveGenerator(void)
 				aiEvent.Disconnect(n);
 				delete n;
 			}else{
-				if(n->ID == AI_EVENT_VANGER && !RND(MAX_CHECK_VISIBLE_FACTOR)){
+				if(n->ID == AI_EVENT_VANGER && !RND(visible_check_factor)){
 					if(n->Time > aiMainLevel)
 						n->Time += aiDeltaLevel;
 
@@ -10866,7 +10874,7 @@ void VangerUnit::ResolveGenerator(void)
 				aiEvent.Disconnect(n);
 				delete n;
 			}else{
-				if(n->ID == AI_EVENT_VANGER && !RND(MAX_CHECK_UNVISIBLE_FACTOR)){
+				if(n->ID == AI_EVENT_VANGER && !RND(unvisible_check_factor)){
 					if(n->Time > aiMainLevel)
 						n->Time += aiDeltaLevel;
 					if(!aiAlarmTime){
