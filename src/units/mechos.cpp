@@ -5457,7 +5457,7 @@ void VangerUnit::SensorQuant(void)
 		case EXTERNAL_MODE_DARK:
 			ExternalTime--;
 			if(ExternalTime <= 0){
-				ExternalTime = 10;
+				ExternalTime = 10 * GAME_TIME_COEFF;
 				PalCD.Set(CPAL_HIDE_PASSAGE,ExternalTime);
 				ExternalMode = EXTERNAL_MODE_EARTH_PREPARE;
 			};
@@ -5465,7 +5465,7 @@ void VangerUnit::SensorQuant(void)
 		case EXTERNAL_MODE_LIGHT:
 			ExternalTime--;
 			if(ExternalTime <= 0){
-				ExternalTime = 5;
+				ExternalTime = 5 * GAME_TIME_COEFF;
 				PalCD.Set(CPAL_PASSAGE_FROM,ExternalTime);
 				ExternalMode = EXTERNAL_MODE_DARK;
 				for(i = 0;i < 5;i++)
