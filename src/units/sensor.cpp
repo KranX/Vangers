@@ -2867,6 +2867,12 @@ void LandSlideEngine::Touch(GeneralObject* obj,SensorDataType* p)
 	};
 };
 
+static inline int sign_play_delay_ticks(int legacy_delay)
+{
+	int ticks = (int)round(legacy_delay * GAME_TIME_COEFF);
+	return ticks >= 0 ? ticks : 0;
+}
+
 void SignPlayEngine::Open(Parser& in)
 {
 	char* n;
@@ -2910,11 +2916,11 @@ void SignPlayEngine::Quant(void)
 				else{				
 					if(ReplayCount & 1){
 						MLLink->goKeyPhase(ActivePhase);
-						Time = ActiveTime;					
+						Time = sign_play_delay_ticks(ActiveTime);					
 						SoundEvent();
 					}else{
 						MLLink->goKeyPhase(DeactivePhase);
-						Time = DeactiveTime;
+						Time = sign_play_delay_ticks(DeactiveTime);
 						SoundEvent();
 					};
 					ReplayCount++;
@@ -2941,7 +2947,7 @@ void SignPlayEngine::Touch(GeneralObject* obj,SensorDataType* p)
 		Mode = EngineModeList::OPEN;
 		MLLink->goKeyPhase(ActivePhase);
 		ReplayCount = 0;
-		Time = ActivePhase;
+		Time = sign_play_delay_ticks(ActivePhase);
 	};
 };
 
