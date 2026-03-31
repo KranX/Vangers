@@ -1021,6 +1021,14 @@ void DoorEngine::Quant(void) // Animation frame for threall connection point and
 	};
 };
 
+static inline int door_explicit_delay_ticks(int legacy_delay)
+{
+	if(legacy_delay <= 0)
+		return (int)round(GAME_TIME_COEFF);
+
+	return (int)round(legacy_delay * GAME_TIME_COEFF);
+}
+
 void DoorEngine::OpenDoor(void)
 {
 	if(!Enable || !MLLink) return;
@@ -1064,8 +1072,7 @@ void DoorEngine::CloseDoor(void)
 void DoorEngine::OpenDoor(int t)
 {
 	if(!Enable || !MLLink || Time) return;
-	Time = t;
-	if (Time <= 0) { Time = GAME_TIME_COEFF; }
+	Time = door_explicit_delay_ticks(t);
 	Mode = EngineModeList::OPEN;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
@@ -1084,8 +1091,7 @@ void DoorEngine::OpenDoor(int t)
 void DoorEngine::CloseDoor(int t)
 {
 	if(!Enable || !MLLink || Time) return;
-	Time = t;
-	if (Time <= 0) { Time = GAME_TIME_COEFF; }
+	Time = door_explicit_delay_ticks(t);
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 1;
 	if(!MLLink->frozen){
