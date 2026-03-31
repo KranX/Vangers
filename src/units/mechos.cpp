@@ -7002,7 +7002,7 @@ void uvsUnitType::CreateUnitType(uvsVanger* p)
 //	dEnergy = MaxEnergy / sc->DeltaEnergy;
 	dEnergy = ((MaxEnergy / 10) * sc->DeltaEnergy) / (UnitGlobalTime * 100);
 	DropEnergy = MaxEnergy * sc->DropEnergy / 100;
-	DelayDrop = sc->DropTime;
+	DelayDrop = (int)round(sc->DropTime * GAME_TIME_COEFF);
 	ImpulsePower = (MaxEnergy / 100) * sc->MaxFly;
 
 	NumDevice = 0;
@@ -13940,7 +13940,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	MaxEnergy = sc->MaxEnergy << 16;
 	dEnergy = ((MaxEnergy / 10) * sc->DeltaEnergy) / (UnitGlobalTime * 100);
 	DropEnergy = MaxEnergy * sc->DropEnergy / 100;
-	DelayDrop = sc->DropTime;
+		DelayDrop = (int)round(sc->DropTime * GAME_TIME_COEFF);
 	ImpulsePower = (MaxEnergy / 100) * sc->MaxFly;
 	OxigenResource = MaxOxigenResource = sc->MaxOxigen;
 	PowerFlag = sc->MaxFire;
