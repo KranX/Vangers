@@ -111,6 +111,18 @@ static inline int reaction_check_timeout_ticks(int legacy_threshold)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int traction_sample_window_ticks(void)
+{
+	int ticks = (int)round(MAX_TRACTION_CHECK * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline int traction_low_state_ticks(void)
+{
+	int ticks = (int)round((MAX_TRACTION_CHECK_TIME - 1) * GAME_TIME_COEFF) + 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -5831,7 +5843,7 @@ void VangerUnit::Action(void)
 	};
 
 	TrackUnit::Action();
-	if(!(frame % MAX_TRACTION_CHECK)){
+	if(!(frame % traction_sample_window_ticks())){
 		TractionValue = TractionStat / MAX_TRACTION_CHECK;
 		TractionStat = 0;
 	};
@@ -10634,7 +10646,7 @@ void VangerUnit::ResolveGenerator(void)
 	if(dynamic_state & VERTICAL_WALL_COLLISION) WallCollisionTime = wall_collision_ticks();
 	else if(WallCollisionTime > 0) WallCollisionTime--;
 
-	if(abs(TractionValue) < MAX_TRACTION_CHECK_DELTA) DeltaTractionTime = MAX_TRACTION_CHECK_TIME;
+	if(abs(TractionValue) < MAX_TRACTION_CHECK_DELTA) DeltaTractionTime = traction_low_state_ticks();
 	else if(DeltaTractionTime > 0) DeltaTractionTime--;
 
 	if(aiAlarmTime > 0) aiAlarmTime--;
