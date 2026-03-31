@@ -1899,7 +1899,7 @@ void DangerDataType::Quant(void)
 			};
 			break;
 		case DangerTypeList::TRAIN:
-			if(!RND(3)){
+			if(!RND((int)round(3 * GAME_TIME_COEFF))){
 				a = rPI(RND(PI*2));
 				r = RND(radius);
 				x = XCYCL(R_curr.x + (CO[a] * r >> 16));
@@ -2493,7 +2493,7 @@ void TntCreature::NetQuant(void)
 				}else{
 					switch(CurrentWorld){
 						case 0:
-							if(RND(300) < 5){
+							if(RND(300 * GAME_TIME_COEFF) < 5){
 								p = BulletD.CreateBullet();
 								vCheck = Vector(radius,0,0) * DBM((int)(RND(2*PI)),Z_AXIS);
 								p->CreateBullet(R_curr,
@@ -2502,8 +2502,8 @@ void TntCreature::NetQuant(void)
 							};
 							break;
 						case 1:
-							if(RND(1000) < 5)
-								TouchTime = TntLinkDelay;
+							if(RND(1000 * GAME_TIME_COEFF) < 5)
+								TouchTime = TntLinkDelay * GAME_TIME_COEFF;
 							break;
 					};
 				};
