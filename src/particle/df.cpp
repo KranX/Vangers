@@ -3,6 +3,7 @@
 #include "../3d/3d_math.h"
 
 #include "../sqexp.h"
+#include "../runtime.h"
 
 #include "../terra/vmap.h"
 #include "../terra/world.h"
@@ -12,10 +13,22 @@
 #include "df.h"
 
 extern int UcutLeft,UcutRight,VcutUp,VcutDown;
+extern int frame;
 
 uchar* WaterColorTable;
 uchar* FireColorTable;
 extern uchar* TerrainAlphaTable[TERRAIN_MAX];
+
+static inline int df_legacy_step_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool df_legacy_step(void)
+{
+	return (frame % df_legacy_step_ticks()) == 0;
+}
 
 void smart_putspr(unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize,int height,unsigned char* color_table);
 
@@ -442,6 +455,9 @@ void FireBallProcess::Show2(int x,int y,int& frame)
 
 char FireBallProcess::CheckOut(int& f)
 {
+	if(!df_legacy_step())
+		return 0;
+
 	f += FrameSize;
 	if(f >= DataSize){
 		f = 0;
