@@ -141,6 +141,12 @@ static inline int sensor_enable_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int glorx_landslide_null_ticks(void)
+{
+	int ticks = (int)round((80 + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -4055,7 +4061,7 @@ void VangerUnit::Quant(void)
 
 		GetTrackVector();
 		if(CurrentWorld == WORLD_GLORX && !NetworkON){
-			if(NullTime > 80){
+			if(NullTime >= glorx_landslide_null_ticks()){
 				cAlpha = RND(PI*2);
 				for(i = 0;i < 4;i++){
 					vCheck = Vector(radius*2,0,0)*DBM(cAlpha,Z_AXIS);
@@ -4186,7 +4192,7 @@ void VangerUnit::Quant(void)
 			};
 			GetTrackVector();
 			if(CurrentWorld == WORLD_GLORX && !NetworkON){
-				if(NullTime > 80){
+				if(NullTime >= glorx_landslide_null_ticks()){
 					cAlpha = RND(PI*2);
 					for(i = 0;i < 4;i++){
 						vCheck = Vector(radius*2,0,0)*DBM(cAlpha,Z_AXIS);
