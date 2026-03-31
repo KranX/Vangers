@@ -105,6 +105,12 @@ static inline int wall_collision_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int reaction_check_timeout_ticks(int legacy_threshold)
+{
+	int ticks = (int)round((legacy_threshold + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -5791,7 +5797,7 @@ void VangerUnit::Action(void)
 									aiReactionMode = 2;
 									aiReactionCheckTime = 0;
 								}else{
-									if(aiReactionCheckTime > aiReactionCheckTimeMax){
+									if(aiReactionCheckTime >= reaction_check_timeout_ticks(aiReactionCheckTimeMax)){
 										aiMoveFunction = AI_MOVE_FUNCTION_WHEEL;
 										aiReactionMode = 1;
 										aiRelaxTime = 0;
