@@ -129,6 +129,12 @@ static inline int game_over_event_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int ai_alarm_ticks(void)
+{
+	int ticks = (int)round((AI_MAX_ALARM_TIME - 1) * GAME_TIME_COEFF) + 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -10806,7 +10812,7 @@ void VangerUnit::ResolveGenerator(void)
 
 					if(!aiAlarmTime){
 						if(GetAllert(n->Subj) < 0)
-							aiAlarmTime = AI_MAX_ALARM_TIME;
+							aiAlarmTime = ai_alarm_ticks();
 					}else{
 						if(n->Time < aiMaxAlarm)
 							n->Time += aiAddAlarm;
@@ -10829,7 +10835,7 @@ void VangerUnit::ResolveGenerator(void)
 						n->Time += aiDeltaLevel;
 					if(!aiAlarmTime){
 						if(GetAllert(n->Subj) < 0)
-							aiAlarmTime = AI_MAX_ALARM_TIME;
+							aiAlarmTime = ai_alarm_ticks();
 					}else{
 						if(n->Time < aiMaxAlarm)
 							n->Time += aiAddAlarm;					
