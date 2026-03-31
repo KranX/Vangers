@@ -4058,7 +4058,7 @@ void VangerUnit::Quant(void)
 
 			if(aciTeleportEvent != 0){
 				if(!(Status & SOBJ_AUTOMAT)){
-					ExternalTime = CHANGE_VANGER_TIME;
+					ExternalTime = CHANGE_VANGER_TIME * GAME_TIME_COEFF;
 					ExternalLock = 1;
 					ExternalObject = NULL;
 					ExternalMode = EXTERNAL_MODE_IN_VANGER;
@@ -5958,7 +5958,7 @@ void VangerUnit::AddFree(void)
 		if(vSetVangerFlag != -1){
 			ExternalMode = EXTERNAL_MODE_OUT_VANGER;
 			ExternalObject = NULL;
-			ExternalTime = CHANGE_VANGER_TIME;
+			ExternalTime = CHANGE_VANGER_TIME * GAME_TIME_COEFF;
 			ExternalLock = 0;
 			ExternalDraw = 1;
 			switch_analysis(1);
