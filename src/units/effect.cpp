@@ -55,6 +55,17 @@ inline unsigned effectRND(unsigned m)
 	return effectRNDVAL%m;
 }
 
+static inline int particle_generator_ticks(int legacy_ticks)
+{
+	int ticks = (int)round(legacy_ticks * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool particle_generator_legacy_step(int time_left)
+{
+	return time_left > 0 && (time_left % particle_generator_ticks(1)) == 0;
+}
+
 void MakeColorTable(int fc,int lc,uchar* d,uchar* pal)
 {
 	int ind;
@@ -1866,7 +1877,7 @@ void ParticleGenerator::CreateGenerator(Vector vC,Vector vT,Vector vD,int mode)
 			Speed = 15;
 			MoveMode = PG_MODE_MOVE_TARGET;
 			TargetMode = PG_RADIUS;
-			Time = 300 * GAME_TIME_COEFF;
+			Time = particle_generator_ticks(300);
 			FlyRadius = 100;
 			radius = FlyRadius;
 			Precision = 5;
@@ -1882,7 +1893,7 @@ void ParticleGenerator::CreateGenerator(Vector vC,Vector vT,Vector vD,int mode)
 			Speed = 8;
 			MoveMode = PG_MODE_TRUE_MASS;
 			TargetMode = PG_RADIUS;
-			Time = 40 * GAME_TIME_COEFF;
+			Time = particle_generator_ticks(40);
 			FlyRadius = RND(50);
 			radius = FlyRadius;
 			Precision = 5;
@@ -1898,7 +1909,7 @@ void ParticleGenerator::CreateGenerator(Vector vC,Vector vT,Vector vD,int mode)
 			Speed = 5;
 			MoveMode = PG_MODE_TRUE_MASS;
 			TargetMode = PG_TARGET_RANDOM | PG_TARGET_RIGHT | PG_TARGET;
-			Time = CHANGE_VANGER_TIME * GAME_TIME_COEFF;
+			Time = particle_generator_ticks(CHANGE_VANGER_TIME);
 			FlyRadius = 100;
 			radius = FlyRadius;
 			Precision = 2;
@@ -1920,6 +1931,7 @@ void ParticleGenerator::Quant(void)
 	uchar alt;
 	Vector vT;
 	int d;
+	const bool legacy_step = particle_generator_legacy_step(Time);
 
 	vT = Vector(0,0,0);
 
@@ -1936,7 +1948,7 @@ void ParticleGenerator::Quant(void)
 	if(TargetMode & PG_TARGET)
 		vT += Vector(getDistX(vTarget.x,R_curr.x),getDistY(vTarget.y,R_curr.y),0);
 
-	if((TargetMode & PG_TARGET_RANDOM) && RND(100) < 50)
+	if((TargetMode & PG_TARGET_RANDOM) && legacy_step && RND(100) < 50)
 		vT += Vector(BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2));
 
 	if(TargetMode & PG_TARGET_RANDOM)
@@ -1968,7 +1980,8 @@ void ParticleGenerator::Quant(void)
 
 void ParticleGenerator::DrawQuant(void)
 {
-	EffD.CreateParticle(ParticleType,R_prev,R_curr,ParticleStorage);
+	if(particle_generator_legacy_step(Time))
+		EffD.CreateParticle(ParticleType,R_prev,R_curr,ParticleStorage);
 };
 
 void EffectDispatcher::CreateParticleGenerator(Vector vC,Vector vT,Vector vD,int mode)
