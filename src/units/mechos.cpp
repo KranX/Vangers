@@ -5107,7 +5107,7 @@ void VangerUnit::SensorQuant(void)
 							ExternalMode = EXTERNAL_MODE_SPOT_IN;
 							ExternalLock = 1;
 							if(Visibility == VISIBLE){
-								ExternalTime = ExternalSensor->Owner->DeactiveTime;
+								ExternalTime = ExternalSensor->Owner->DeactiveTime * GAME_TIME_COEFF;
 //								SOUND_ENTRANCE();
 							}else ExternalTime = 0;
 							ExternalObject = ExternalSensor;
@@ -5118,7 +5118,7 @@ void VangerUnit::SensorQuant(void)
 						ExternalLock = 1;
 						if(Visibility == VISIBLE){
 //							SOUND_ENTRANCE();
-							ExternalTime = ExternalSensor->Owner->DeactiveTime;
+							ExternalTime = ExternalSensor->Owner->DeactiveTime * GAME_TIME_COEFF;
 						}else ExternalTime = 0;
 						ExternalObject = ExternalSensor;
 						switch_analysis(1);						
@@ -5129,7 +5129,7 @@ void VangerUnit::SensorQuant(void)
 					if(Status & SOBJ_AUTOMAT){
 						if(aiLocalTarget && aiLocalTarget->Type == UNIT_ORDER_ENTER && (aiLocalTarget->Obj).EnterT == ((EnterEngine*)(ExternalSensor->Owner))->Owner){
 							if(Visibility == VISIBLE){
-								ExternalTime = ExternalSensor->Owner->DeactiveTime;
+								ExternalTime = ExternalSensor->Owner->DeactiveTime * GAME_TIME_COEFF;
 //								SOUND_ENTRANCE();
 							}else ExternalTime = 0;
 							ExternalMode = EXTERNAL_MODE_ESCAVE_IN;
@@ -5139,7 +5139,7 @@ void VangerUnit::SensorQuant(void)
 						};
 					}else{
 						if(Visibility == VISIBLE){
-							ExternalTime = ExternalSensor->Owner->DeactiveTime;
+							ExternalTime = ExternalSensor->Owner->DeactiveTime * GAME_TIME_COEFF;
 //							SOUND_ENTRANCE();
 						}else ExternalTime = 0;
 						ExternalMode = EXTERNAL_MODE_ESCAVE_IN;
@@ -6097,7 +6097,7 @@ void VangerUnit::AddEscave(SensorDataType* p)
 {
 	ExternalMode = EXTERNAL_MODE_ESCAVE_OUT;
 	ExternalObject = p;
-	ExternalTime = p->Owner->ActiveTime;
+	ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
 	ExternalLock = 1;
 	ExternalDraw = 1;
 	switch_analysis(1);
@@ -6115,7 +6115,7 @@ void VangerUnit::AddSpot(SensorDataType* p)
 {
 	ExternalMode = EXTERNAL_MODE_SPOT_OUT;
 	ExternalObject = p;
-	ExternalTime = p->Owner->ActiveTime;
+	ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
 	ExternalLock = 1;
 	ExternalDraw = 1;
 	switch_analysis(1);
