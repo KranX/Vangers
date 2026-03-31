@@ -135,6 +135,12 @@ static inline int ai_alarm_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int sensor_enable_ticks(void)
+{
+	int ticks = (int)round((20 - 1) * GAME_TIME_COEFF) + 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -3856,7 +3862,7 @@ void VangerUnit::MapQuant(void)
 	
 	if(LastMole == 256 && mole_on != 256){
 		MolePoint2->set(R_curr,40,radius < 40 ? radius : 40);
-		SensorEnable = 20;
+		SensorEnable = sensor_enable_ticks();
 	}else{
 		if(SensorEnable > 0)
 			SensorEnable--;
