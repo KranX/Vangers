@@ -99,6 +99,12 @@ static inline int should_emit_passing_wave(int ticks_left)
 	return ((ticks_left / legacy_stride) & 3) != 0;
 }
 
+static inline int wall_collision_ticks(void)
+{
+	int ticks = (int)round((MAX_WALL_TIME - 1) * GAME_TIME_COEFF) + 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -10619,7 +10625,7 @@ void VangerUnit::ResolveGenerator(void)
 	aiStatus = AI_STATUS_NONE;
 	aiStatus |= AI_STATUS_WHEEL | AI_STATUS_IMPULSE;
 
-	if(dynamic_state & VERTICAL_WALL_COLLISION) WallCollisionTime = MAX_WALL_TIME;
+	if(dynamic_state & VERTICAL_WALL_COLLISION) WallCollisionTime = wall_collision_ticks();
 	else if(WallCollisionTime > 0) WallCollisionTime--;
 
 	if(abs(TractionValue) < MAX_TRACTION_CHECK_DELTA) DeltaTractionTime = MAX_TRACTION_CHECK_TIME;
