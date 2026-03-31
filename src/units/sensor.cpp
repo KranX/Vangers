@@ -842,6 +842,12 @@ void CyclicEngine::Open(Parser& in)
 	MLLink->goKeyPhase(DeactivePhase);
 };
 
+static inline int cyclic_delay_ticks(int legacy_delay)
+{
+	int ticks = (int)round((legacy_delay + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 void CyclicEngine::Quant(void)
 {
 	int i;
@@ -853,8 +859,7 @@ void CyclicEngine::Quant(void)
 				return;
 			switch(Mode){
 				case EngineModeList::ACCEPT_PROCESS:
-					Time++;
-					if(Time > DeactiveTime){
+					if(++Time >= cyclic_delay_ticks(DeactiveTime)){
 						MLLink->goKeyPhase(ActivePhase);
 						SoundEvent();
 						Time = 0;
@@ -865,8 +870,7 @@ void CyclicEngine::Quant(void)
 					Mode = EngineModeList::ACCEPT_PROCESS_END;
 					break;
 				case EngineModeList::ACCEPT_PROCESS_END:
-					Time++;
-					if(Time > ActiveTime){
+					if(++Time >= cyclic_delay_ticks(ActiveTime)){
 						MLLink->goKeyPhase(DeactivePhase);
 						SoundEvent();
 						Time = 0;
