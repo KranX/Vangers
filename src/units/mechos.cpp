@@ -9426,7 +9426,7 @@ void VangerFunctionType::Quant(void)
 			case PROTRACTOR_PALLADIUM:
 				if(ActD.pfActive){
 					vR = ActD.pfActive->R_curr;
-					if(Time == LifeTime - SIGNATOR_DELAY){
+					if(Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 						SOUND_PR_BARRIER();
 						if(ActD.pfActive == ActD.Active){
 //							SkyQuake3.set(ScreenCX,ScreenCY,PALLADIUM_RADIUS,PALLADIUM_RADIUS);
