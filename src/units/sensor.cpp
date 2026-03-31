@@ -2999,7 +2999,7 @@ void ItemGenerator::Quant(void)
 	int i;
 	if(Mode == EngineModeList::WAIT){
 		if(pLink->Mode != EngineModeList::WAIT){
-			Time = ActiveTime;
+			Time = (int)round(ActiveTime * GAME_TIME_COEFF);
 			Mode = EngineModeList::OPEN;
 		};
 	}else{
