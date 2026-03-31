@@ -147,6 +147,12 @@ static inline int glorx_landslide_null_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int track_relocate_ticks(int legacy_threshold)
+{
+	int ticks = (int)round((legacy_threshold + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -923,7 +929,7 @@ void TrackUnit::GetBranch(void)
 		case TRK_OUT_BRANCH:
 			if(ActiveGetBranch()){
 				CheckPosition++;
-				if(CheckPosition > MaxCheckPosition){
+				if(CheckPosition >= track_relocate_ticks(MaxCheckPosition)){
 					CheckPosition = 0;
 					GetInside();
 				};
@@ -4022,7 +4028,7 @@ void VangerUnit::Quant(void)
 
 		CheckPosition++;
 		if(ActiveGetBranch()){
-			if(CheckPosition > MaxCheckPosition){
+			if(CheckPosition >= track_relocate_ticks(MaxCheckPosition)){
 				CheckPosition = 0;
 				HideTrack.GetPosition(this);
 			};
@@ -4080,7 +4086,7 @@ void VangerUnit::Quant(void)
 				if(aiMoveMode == AI_MOVE_POINT){
 					CheckPosition++;
 					if(ActiveGetBranch()){
-						if(CheckPosition > MaxCheckPosition){
+						if(CheckPosition >= track_relocate_ticks(MaxCheckPosition)){
 							CheckPosition = 0;
 							HideTrack.GetPosition(this);
 						};
@@ -4095,7 +4101,7 @@ void VangerUnit::Quant(void)
 				if(aiMoveMode == AI_MOVE_POINT){
 					CheckPosition++;
 					if(ActiveGetBranch()){
-						if(CheckPosition > MaxCheckPosition){
+						if(CheckPosition >= track_relocate_ticks(MaxCheckPosition)){
 							CheckPosition = 0;
 							HideTrack.GetPosition(this);
 						};
@@ -4154,7 +4160,7 @@ void VangerUnit::Quant(void)
 
 			CheckPosition++;
 			if(ActiveGetBranch()){
-				if(CheckPosition > MaxCheckPosition){
+				if(CheckPosition >= track_relocate_ticks(MaxCheckPosition)){
 					CheckPosition = 0;
 					HideTrack.GetPosition(this);
 				};
