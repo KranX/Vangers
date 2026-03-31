@@ -74,6 +74,13 @@ extern int aciWorldIndex;
 extern int light_modulation;
 //XStream ggg;
 
+static inline int ruffa_gun_wait_ticks(void)
+{
+	int legacy_threshold = (RUFFA_GUN_WAIT * WeaponWaitTime) >> 8;
+	int ticks = (int)round((legacy_threshold + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -4478,7 +4485,7 @@ void VangerUnit::InitEnvironment(void)
 
 					if(aiStatus & AI_STATUS_TNT){
 						if(PowerFlag & VANGER_POWER_RUFFA_GUN){
-							if(RuffaGunTime > (RUFFA_GUN_WAIT * WeaponWaitTime >> 8)){
+							if(RuffaGunTime >= ruffa_gun_wait_ticks()){
 								RuffaGunTime = 0;
 								g = BulletD.CreateBullet();
 								vCheck = Vector(64,0,0)*RotMat;
@@ -6682,7 +6689,7 @@ void VangerUnit::NewKeyHandler(void)
 
 	if(iKeyPressed(iKEY_FIRE_ALL_WEAPONS)){
 		if(PowerFlag & VANGER_POWER_RUFFA_GUN){
-			if(RuffaGunTime > (RUFFA_GUN_WAIT * WeaponWaitTime >> 8)){
+			if(RuffaGunTime >= ruffa_gun_wait_ticks()){
 				RuffaGunTime = 0;
 				g = BulletD.CreateBullet();
 				vCheck = Vector(64,0,0)*RotMat;
@@ -6735,7 +6742,7 @@ void VangerUnit::keyhandler(int key)
 		case SDL_SCANCODE_LCTRL:
 		case SDL_SCANCODE_RCTRL:
 			if(PowerFlag & VANGER_POWER_RUFFA_GUN){
-				if(RuffaGunTime > (RUFFA_GUN_WAIT * WeaponWaitTime >> 8)){
+				if(RuffaGunTime >= ruffa_gun_wait_ticks()){
 					RuffaGunTime = 0;
 					g = BulletD.CreateBullet();
 					vCheck = Vector(64,0,0)*RotMat;
@@ -13412,7 +13419,7 @@ void VangerUnit::ShellNetEvent(int type,int id,int creator,int time,int x,int y,
 
 			NetChanger = ch;
 			NETWORK_IN_STREAM > NetRuffaGunTime;
-			if(!(Status & SOBJ_WAIT_CONFIRMATION) && Visibility == VISIBLE && GetDistTime(NetGlobalTime,NetRuffaGunTime) < 5*256 && RuffaGunTime > (RUFFA_GUN_WAIT * WeaponWaitTime >> 8)){
+			if(!(Status & SOBJ_WAIT_CONFIRMATION) && Visibility == VISIBLE && GetDistTime(NetGlobalTime,NetRuffaGunTime) < 5*256 && RuffaGunTime >= ruffa_gun_wait_ticks()){
 				RuffaGunTime = 0;
 				g = BulletD.CreateBullet();
 				vCheck = Vector(64,0,0)*RotMat;
