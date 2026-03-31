@@ -4914,7 +4914,7 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 		case SensorTypeList::SPOT:
 		case SensorTypeList::TRAP:
 		case SensorTypeList::TRAIN:
-			if(ActD.PassageTouchEnable) ActD.PassageTouchEnable = MAX_PASSAGE_DELAY;
+			if(ActD.PassageTouchEnable) ActD.PassageTouchEnable = MAX_PASSAGE_DELAY * GAME_TIME_COEFF;
 			if(!BeebonationFlag){
 				if(ExternalSensor){
 					if(ExternalSensor == ExternalObject && ExternalObject != p) ExternalSensor = p;
