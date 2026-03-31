@@ -123,6 +123,12 @@ static inline int traction_low_state_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int game_over_event_ticks(void)
+{
+	int ticks = (int)round((GAME_OVER_EVENT_TIME - 1) * GAME_TIME_COEFF) + 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -9524,7 +9530,7 @@ void ActionDispatcher::FunctionQuant(void)
 					break;
 				case ACI_PROTRACTOR_EVENT8:
 					if(!NetworkON)
-						FunctionThreallDestroyActive = GAME_OVER_EVENT_TIME;
+						FunctionThreallDestroyActive = game_over_event_ticks();
 					break;
 			};
 
@@ -9580,7 +9586,7 @@ void ActionDispatcher::FunctionQuant(void)
 					break;
 				case ACI_MECH_MESSIAH_EVENT6:
 					if(!NetworkON){
-						FunctionSpobsDestroyActive = GAME_OVER_EVENT_TIME;
+						FunctionSpobsDestroyActive = game_over_event_ticks();
 						if(ActD.Active){
 							SkyQuake2.set(ActD.Active->R_scr.x,ActD.Active->R_scr.y,20,SKY_QUAKE_RADIUS,SKY_QUAKE_DELTA);
 							SkyQuakeEnable2 = 1;
