@@ -159,6 +159,18 @@ static inline int prompt_prev_time_threshold_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int way_recalc_timeout_ticks(int legacy_threshold)
+{
+	int ticks = (int)round((legacy_threshold + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline int way_recalc_arm_next_quant(int legacy_threshold)
+{
+	int ticks = way_recalc_timeout_ticks(legacy_threshold) - 1;
+	return ticks > 0 ? ticks : 0;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -10703,7 +10715,7 @@ void VangerUnit::ResolveGenerator(void)
 	if(!LowArmor && Armor < ArmorAlarm){
 		sns = GetNearSensor(R_curr.y,SensorTypeList::ARMOR_UPDATE);
 		if(sns && !aiResolveFind.FindResolve(UNIT_ORDER_SENSOR,UnitOrderType(sns))){
-			AddFindResolve(UNIT_ORDER_SENSOR,UnitOrderType(sns),0,AI_RESOLVE_STATUS_TARGET)->Time = MaxWayCount;
+			AddFindResolve(UNIT_ORDER_SENSOR,UnitOrderType(sns),0,AI_RESOLVE_STATUS_TARGET)->Time = way_recalc_arm_next_quant(MaxWayCount);
 			LowArmor = 1;
 		};
 	};
@@ -10939,13 +10951,13 @@ void VangerUnit::GamerOrderInit(void)
 	switch(CompasObj.CurrentTarget->ID){
 		case CMP_OBJECT_ESCAVE:
 		case CMP_OBJECT_SPOT:
-			AddFindResolve(UNIT_ORDER_ENTER,CompasObj.CurrentTarget->Data)->Time = MaxWayCount;
+			AddFindResolve(UNIT_ORDER_ENTER,CompasObj.CurrentTarget->Data)->Time = way_recalc_arm_next_quant(MaxWayCount);
 			break;
 		case CMP_OBJECT_PASSAGE:
-			AddFindResolve(UNIT_ORDER_PASSAGE,CompasObj.CurrentTarget->Data)->Time = MaxWayCount;
+			AddFindResolve(UNIT_ORDER_PASSAGE,CompasObj.CurrentTarget->Data)->Time = way_recalc_arm_next_quant(MaxWayCount);
 			break;
 		case CMP_OBJECT_SENSOR:
-			AddFindResolve(UNIT_ORDER_SENSOR,CompasObj.CurrentTarget->Data)->Time = MaxWayCount;
+			AddFindResolve(UNIT_ORDER_SENSOR,CompasObj.CurrentTarget->Data)->Time = way_recalc_arm_next_quant(MaxWayCount);
 			break;
 	};
 };
@@ -10956,34 +10968,34 @@ void VangerUnit::MainOrderInit(void)
 	aiUnitResolve* p;
 
 	if(aiActionID == AI_ACTION_FARMER && SeedNum < MaxSeed){
-		(p = AddFindResolve(UNIT_ORDER_VECTOR,UnitOrderType(RND(clip_mask_x),300 + RND(clip_mask_y - 600),0),0,AI_RESOLVE_STATUS_VIEW))->Time = MaxWayCount;
+		(p = AddFindResolve(UNIT_ORDER_VECTOR,UnitOrderType(RND(clip_mask_x),300 + RND(clip_mask_y - 600),0),0,AI_RESOLVE_STATUS_VIEW))->Time = way_recalc_arm_next_quant(MaxWayCount);
 	}else{
 		p = NULL;
 		switch(uvsPoint->getOrder(g)){
 			case UVS_TARGET::ESCAVE:
-				(p = AddFindResolve(UNIT_ORDER_ENTER,g->unitPtr))->Time = MaxWayCount;
+				(p = AddFindResolve(UNIT_ORDER_ENTER,g->unitPtr))->Time = way_recalc_arm_next_quant(MaxWayCount);
 				break;
 			case UVS_TARGET::SPOT:
-				(p = AddFindResolve(UNIT_ORDER_ENTER,g->unitPtr))->Time = MaxWayCount;										
+				(p = AddFindResolve(UNIT_ORDER_ENTER,g->unitPtr))->Time = way_recalc_arm_next_quant(MaxWayCount);										
 				break;
 			case UVS_TARGET::PASSAGE:
-				(p = AddFindResolve(UNIT_ORDER_PASSAGE,g->unitPtr))->Time = MaxWayCount;
+				(p = AddFindResolve(UNIT_ORDER_PASSAGE,g->unitPtr))->Time = way_recalc_arm_next_quant(MaxWayCount);
 				break;
 			case UVS_TARGET::DOLLY:
-				(p = AddFindResolve(UNIT_ORDER_DOLL,UnitOrderType((uvsDolly*)(g))))->Time = MaxWayCount;
+				(p = AddFindResolve(UNIT_ORDER_DOLL,UnitOrderType((uvsDolly*)(g))))->Time = way_recalc_arm_next_quant(MaxWayCount);
 				break;
 			case UVS_TARGET::VANGER:
 				if(ActD.Active){
-					(p = AddFindResolve(UNIT_ORDER_VANGER,ActD.Active))->Time = MaxWayCount;
+					(p = AddFindResolve(UNIT_ORDER_VANGER,ActD.Active))->Time = way_recalc_arm_next_quant(MaxWayCount);
 					aiResolveAttack.AddResolve(UNIT_ORDER_VANGER,ActD.Active);
 				}else
-					(p = AddFindResolve(UNIT_ORDER_VECTOR,UnitOrderType(RND(clip_mask_x),300 + RND(clip_mask_y - 600),0),0,AI_RESOLVE_STATUS_VIEW))->Time = MaxWayCount;
+					(p = AddFindResolve(UNIT_ORDER_VECTOR,UnitOrderType(RND(clip_mask_x),300 + RND(clip_mask_y - 600),0),0,AI_RESOLVE_STATUS_VIEW))->Time = way_recalc_arm_next_quant(MaxWayCount);
 				break;
 			case UVS_TARGET::ITEM:
-				(p = AddFindResolve(UNIT_ORDER_PASSAGE,g->unitPtr))->Time = MaxWayCount;			
+				(p = AddFindResolve(UNIT_ORDER_PASSAGE,g->unitPtr))->Time = way_recalc_arm_next_quant(MaxWayCount);			
 				break;				
 			default:
-				(p = AddFindResolve(UNIT_ORDER_VECTOR,UnitOrderType(RND(clip_mask_x),300 + RND(clip_mask_y - 600),0),0,AI_RESOLVE_STATUS_VIEW))->Time = MaxWayCount;
+				(p = AddFindResolve(UNIT_ORDER_VECTOR,UnitOrderType(RND(clip_mask_x),300 + RND(clip_mask_y - 600),0),0,AI_RESOLVE_STATUS_VIEW))->Time = way_recalc_arm_next_quant(MaxWayCount);
 				break;
 		};
 	};
@@ -11252,7 +11264,7 @@ void VangerUnit::ResolveHandlerFind(aiUnitResolve* p)
 
 		if(!(OtherFlag & MECHOS_CALC_WAY)){
 			p->Time++;
-			if(p->Time > MaxWayCount){
+			if(p->Time >= way_recalc_timeout_ticks(MaxWayCount)){
 				HideTrack.GetPosition(&TargetPoint);
 				WayInit();
 				p->Time = 0;
@@ -11711,7 +11723,7 @@ aiUnitEvent* VangerUnit::AddEvent(int id,GeneralObject* obj,VangerUnit* subj)
 
 	switch(id){
 		case AI_EVENT_ITEM:
-			aiResolveFind.AddResolve(UNIT_ORDER_STUFF,UnitOrderType((StuffObject*)(obj)))->Time = MaxWayCount;
+			aiResolveFind.AddResolve(UNIT_ORDER_STUFF,UnitOrderType((StuffObject*)(obj)))->Time = way_recalc_arm_next_quant(MaxWayCount);
 			break;
 	};
 	return l;
@@ -13025,8 +13037,8 @@ void VangerUnit::CalcAiFactor(VangerUnit* p,int time)
 		case AI_FACTOR_ATTACK:
 			if(!AddAttackTime){
 				if(time >= aiFindLevel)
-					AddFindResolve(UNIT_ORDER_VANGER,UnitOrderType(p),round((float)(time)*aiAttackTime) + 10,AI_RESOLVE_STATUS_VAR)->Time = MaxWayCount;
-				aiResolveAttack.AddResolve(UNIT_ORDER_VANGER,UnitOrderType(p),round((float)(time)*aiAttackTime) + 10,AI_RESOLVE_STATUS_VAR)->Time = MaxWayCount;
+					AddFindResolve(UNIT_ORDER_VANGER,UnitOrderType(p),round((float)(time)*aiAttackTime) + 10,AI_RESOLVE_STATUS_VAR)->Time = way_recalc_arm_next_quant(MaxWayCount);
+				aiResolveAttack.AddResolve(UNIT_ORDER_VANGER,UnitOrderType(p),round((float)(time)*aiAttackTime) + 10,AI_RESOLVE_STATUS_VAR)->Time = way_recalc_arm_next_quant(MaxWayCount);
 				AddAttackTime = round((float)(time)*aiAttackTime);
 			};
 			break;
