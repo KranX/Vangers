@@ -2629,7 +2629,7 @@ void TntCreature::NetDestroy(int fl)
 
 		for(i = 0;i < TntNumLink;i++){
 			if(TntLinkData[i]->CurrentHeight > 0 && TouchTime == 0)
-				TntLinkData[i]->TouchTime = TntLinkDelay;
+				TntLinkData[i]->TouchTime = TntLinkDelay * GAME_TIME_COEFF;
 		};
 	};
 };
