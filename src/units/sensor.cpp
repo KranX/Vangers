@@ -1856,16 +1856,16 @@ void DangerDataType::Quant(void)
 		case DangerTypeList::FIRE:
 			switch(CurrentWorld){
 				case WORLD_BOOZEENA:
-					FireWork(200,PI/4);
+					FireWork(200 * GAME_TIME_COEFF,PI/4);
 					break;
 				case WORLD_THREALL:
-					if(!ActD.ThreallDestroy) FireWork(500,PI/8);
+					if(!ActD.ThreallDestroy) FireWork(500 * GAME_TIME_COEFF,PI/8);
 					break;
 				case WORLD_ARKONOY:
-					FireWork(1000,PI/6);
+					FireWork(1000 * GAME_TIME_COEFF,PI/6);
 					break;
 				case WORLD_XPLO:
-					FireWork(800,PI / 6);
+					FireWork(800 * GAME_TIME_COEFF,PI / 6);
 					break;
 			};
 			break;
