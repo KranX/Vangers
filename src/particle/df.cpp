@@ -216,7 +216,8 @@ void WaveProcess::Deform(int x,int y,int& off,char fl)
 		XGR_Obj.clipRight = ccrx;
 		XGR_Obj.clipBottom = ccry;*/
 	};
-	off += size;
+	if(df_legacy_step())
+		off += size;
 };
 
 void WaveProcess::Show(int x,int y)
