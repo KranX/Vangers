@@ -87,6 +87,18 @@ static inline int impulse_sensor_sound_cooldown_frames(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int should_emit_passing_wave(int ticks_left)
+{
+	int legacy_stride = (int)round(GAME_TIME_COEFF);
+	if(legacy_stride <= 1)
+		return (ticks_left & 3) != 0;
+
+	if(ticks_left <= 0 || (ticks_left % legacy_stride))
+		return 0;
+
+	return ((ticks_left / legacy_stride) & 3) != 0;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -5517,7 +5529,7 @@ void VangerUnit::SensorQuant(void)
 			if(Visibility == VISIBLE && ActD.Active) {
 				SOUND_PASSAGE(getDistX(ActD.Active->R_curr.x,R_curr.x));
 			}
-			if(ExternalTime & 3) {
+			if(should_emit_passing_wave(ExternalTime)) {
 				EffD.CreateDeform(
 					ExternalObject->R_curr + Vector(
 						PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),
@@ -5602,7 +5614,7 @@ void VangerUnit::SensorQuant(void)
 			break;
 		case EXTERNAL_MODE_EARTH_IN:
 			if(Visibility == VISIBLE && ActD.Active) SOUND_PASSAGE(getDistX(ActD.Active->R_curr.x,R_curr.x));
-			if(ExternalTime & 3) EffD.CreateDeform(R_curr + Vector(PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),83),1,PASSING_WAVE_PROCESS);
+			if(should_emit_passing_wave(ExternalTime)) EffD.CreateDeform(R_curr + Vector(PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),PASSING_WAVE_RADIUS - realRND(PASSING_WAVE_RADIUS2),83),1,PASSING_WAVE_PROCESS);
 			ExternalTime--;
 			if(ExternalTime <= 0){
 //				ExternalMode = EXTERNAL_MODE_NORMAL;
