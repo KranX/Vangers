@@ -9287,7 +9287,7 @@ void VangerFunctionType::Quant(void)
 					if(Time < LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
 						if(!(ActD.pfActive->mole_on)){
 							ActD.pfActive->Molerizator = 1;
-							if(Time < LifeTime - 2){
+							if(Time < LifeTime - (2 * GAME_TIME_COEFF)){
 								ActD.pfActive->set_3D(SET_3D_DIRECT_PLACE,vR.x,vR.y,-32,0,-((VangerUnit*)(ActD.pfActive))->Angle,0);								
 								SoundFlag |= SoundCrotrig;
 							};
