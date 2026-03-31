@@ -8219,7 +8219,7 @@ void ActionDispatcher::DrawResource(void)
 	if(DrawResourceValue > 0){
 		XGR_Rectangle(x0 - sizeX, y0, sizeX, RES_DRAW_STEP_Y, 228, 228, XGR_FILLED);
 		DrawResourceValue = -DrawResourceValue;
-		DrawResourceTime = 130;
+		DrawResourceTime = 130 * GAME_TIME_COEFF;
 	}else{
 		if(DrawResourceTime > 0){
 			XGR_Rectangle(x0 + sizeX, y0, -sizeX, RES_DRAW_STEP_Y, 228, 228, XGR_FILLED);
