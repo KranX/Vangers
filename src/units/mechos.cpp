@@ -81,6 +81,12 @@ static inline int ruffa_gun_wait_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int impulse_sensor_sound_cooldown_frames(void)
+{
+	int ticks = (int)round((5 + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -4924,7 +4930,7 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 		case SensorTypeList::IMPULSE:
 //			impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),20,0);
 			impulse(p->vData,p->Power,0);
-			if(abs(PrevImpuseFrame - frame) > 5){
+			if(abs(PrevImpuseFrame - frame) >= impulse_sensor_sound_cooldown_frames()){
 				SOUND_KIDPUSH();
 				PrevImpuseFrame = frame;
 			};
