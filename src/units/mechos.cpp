@@ -153,6 +153,12 @@ static inline int track_relocate_ticks(int legacy_threshold)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int prompt_prev_time_threshold_ticks(void)
+{
+	int ticks = (int)round(1500 * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -6391,7 +6397,7 @@ void ActionDispatcher::PromptQuant(void)
 								PromptPrevTime = 0;
 								PromptPrevY = Active->R_curr.y;
 							}else{			
-								if(PromptPrevTime > 1500){
+								if(PromptPrevTime > prompt_prev_time_threshold_ticks()){
 									PromptPrevTime = 0;
 									PromptPrevTime = 0;
 									aiMessageQueue.Send(AI_MESSAGE_INCUBATOR_WAY,0,0xff,0);//aiMessageData[AI_MESSAGE_INCUBATOR_WAY].Send(0,0xff,0);
@@ -6428,7 +6434,7 @@ void ActionDispatcher::PromptQuant(void)
 								PromptPrevTime = 0;
 								PromptPrevY = Active->R_curr.y;
 							}else{
-								if(PromptPrevTime > 1500){
+								if(PromptPrevTime > prompt_prev_time_threshold_ticks()){
 									PromptPrevTime = 0;
 									aiMessageQueue.Send(AI_MESSAGE_PODISH_WAY,0,0xff,0);//aiMessageData[AI_MESSAGE_PODISH_WAY].Send(0,0xff,0);
 									if(!GetCompasTarget()){
