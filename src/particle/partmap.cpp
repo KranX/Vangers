@@ -38,6 +38,12 @@ int ParticleMapProcessMaskTotal = 0;
 unsigned char *FirePaletteTable;
 #define random1(a) (rand() & 1 ? random(a) : -random(a))
 
+static inline int particle_map_deviation_ticks(int legacy_period)
+{
+	int ticks = (int)round(legacy_period * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 void color_line_f(int len,unsigned char* dbuf,int bx,int bKx,int fx,int fy);
 void transparency_line_f(int len,unsigned char* dbuf,int bx,int bKx,int fx,int fy);
 void smart_putspr_f(unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize,int height = 255);
@@ -154,8 +160,10 @@ int ParticleMapProcess::process(char* vb,int Xc,int Yc,int XcS,int turn,int noou
 //	unsigned char* bp = ColorBuf;
 //	  double ph = ProcessTime*2*_PI/DeviationPeriod;
 	double ph;
-	if(DeviationPeriod)
-		ph = 2*M_PI*(frame%DeviationPeriod)/DeviationPeriod;
+	if(DeviationPeriod){
+		const int deviation_ticks = particle_map_deviation_ticks(DeviationPeriod);
+		ph = 2*M_PI*(frame % deviation_ticks)/deviation_ticks;
+	}
 	else
 		ph = (2*M_PI*RND(1025))/1024.0;
 	CurrDev = int(DeviationRadius*cos(ph)) + int(DeviationRadius*sin(ph))*Xmax;
