@@ -1614,6 +1614,14 @@ void ImpulseSpot::Active(void)
 	DoorLink->OpenDoor(0);
 };
 
+static inline int train_delay_ticks(int legacy_delay)
+{
+	if(legacy_delay <= 0)
+		return 0;
+
+	return (int)round(legacy_delay * GAME_TIME_COEFF);
+}
+
 void TrainEngine::CreateTrain(SensorDataType* p1,SensorDataType* p2,int time)
 {
 	Type = EngineTypeList::TRAIN;
@@ -1636,8 +1644,8 @@ void TrainEngine::CreateTrain(SensorDataType* p1,SensorDataType* p2,int time)
 	TrainLink[1]->Enable = 1;
 	TrainLink[1]->Index = 1;
 
-	ActiveTime = time;
-	DeactiveTime = 10;
+	ActiveTime = train_delay_ticks(time);
+	DeactiveTime = train_delay_ticks(10);
 	LockFlag = DOOR_CLOSE_LOCK;	
 };
 
@@ -1646,6 +1654,8 @@ void TrainEngine::Open(Parser& in)
 {
 	char* n;
 	LocationEngine::Open(in);
+	ActiveTime = train_delay_ticks(ActiveTime);
+	DeactiveTime = train_delay_ticks(DeactiveTime);
 
 	Type = EngineTypeList::TRAIN;
 
