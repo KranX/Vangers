@@ -6000,7 +6000,7 @@ void actIntDispatcher::init_submenu(fncMenu* m)
 			bm = get_bmenu(m -> curItem -> submenuID);
 			bm -> upMenu = (iListElement*)m;
 			if(bm -> activeCount)
-				bm -> curCount = bm -> activeCount;
+				bm -> curCount = actint_menu_ticks(bm -> activeCount);
 		}
 	}
 
@@ -8541,7 +8541,7 @@ void aciBitmapMenu::change(int x,int y)
 		if(p -> check_xy(x,y)){
 			p -> change();
 			aciHandleCameraEvent(p -> ID,p -> curState);
-			curCount = activeCount;
+			curCount = actint_menu_ticks(activeCount);
 			flags |= BM_REBUILD;
 			return;
 		}
