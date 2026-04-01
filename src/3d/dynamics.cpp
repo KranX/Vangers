@@ -4076,6 +4076,8 @@ void Object::skyfarmer_end()
 void Object::skyfarmer_analysis(double dt)
 {
 	dt *= XTCORE_FRAME_NORMAL;
+	const double skyfarmer_v_drag = pow(V_drag_skyfarmer, dt);
+	const double skyfarmer_w_drag = pow(W_drag_skyfarmer, dt);
 	DBV F,K;
 	switch(skyfarmer_fly_direction){
 		case 1:
@@ -4115,8 +4117,8 @@ void Object::skyfarmer_analysis(double dt)
 	A_l2g = transpose(A_g2l);
 	V *= A_rot_inv;
 	W *= A_rot_inv;
-	V *= V_drag_skyfarmer;
-	W *= W_drag_skyfarmer;
+	V *= skyfarmer_v_drag;
+	W *= skyfarmer_w_drag;
 	speed = round(V.vabs());
 }
 
