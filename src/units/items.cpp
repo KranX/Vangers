@@ -48,6 +48,12 @@ extern uchar* FireColorTable;
 
 const char DEBRIS_LIFE_TIME = 100;
 
+static inline int debris_lifetime_ticks(void)
+{
+	int ticks = (int)round((DEBRIS_LIFE_TIME + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 extern int frame; // kdsplus.cpp
@@ -497,7 +503,7 @@ void DebrisObject::Quant(void)
 		analysis();
 		cycleTor(R_curr.x,R_curr.y);
 	}else{
-		if(Time > DEBRIS_LIFE_TIME)
+		if(Time >= debris_lifetime_ticks())
 			Status |= SOBJ_DISCONNECT;			
 	};
 };
