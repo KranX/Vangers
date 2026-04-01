@@ -111,6 +111,17 @@ static inline bool skyfarmer_random_legacy_step(void)
 	return !(frame % skyfarmer_random_ticks());
 }
 
+static inline int crypt_quant_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool crypt_quant_legacy_step(void)
+{
+	return !(frame % crypt_quant_ticks());
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 
@@ -4102,7 +4113,7 @@ void ItemsDispatcher::CryptQuant(void)
 	listElem* p;
 	uvsItem* n;
 
-	if(ActD.Active && Num < Total / 4 && !RND(200*ActD.NumVisibleVanger)){
+	if(crypt_quant_legacy_step() && ActD.Active && Num < Total / 4 && !RND(200*ActD.NumVisibleVanger)){
 		if(CreateEnableCrypt() > NumVisibleItem){
 			for(i = 0;i < ProtoCryptTableSize[CurrentWorld];i++){
 				if(ProtoCryptTable[CurrentWorld][i].Enable){
