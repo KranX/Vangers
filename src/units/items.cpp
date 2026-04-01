@@ -66,6 +66,12 @@ static inline bool bullet_random_target_legacy_step(void)
 	return !(frame % bullet_random_target_ticks());
 }
 
+static inline int fish_warrior_attack_ticks(void)
+{
+	int ticks = (int)round(FISH_WARRIOR_ATTACK_TIME * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 
@@ -2457,7 +2463,7 @@ void FishWarrior::Quant(void)
 								Speed = RND(MaxSpeed >> 2);
 							};
 						}else{
-							AttackTime = FISH_WARRIOR_ATTACK_TIME;
+							AttackTime = fish_warrior_attack_ticks();
 							Speed = MaxSpeed;
 						};
 					};
