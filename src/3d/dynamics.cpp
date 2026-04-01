@@ -97,6 +97,27 @@ static inline bool device_transition_legacy_step(void)
 #endif
 }
 
+static inline int traction_control_step_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool traction_control_legacy_step(void)
+{
+#ifdef _SURMAP_
+	return 1;
+#else
+	return !(frame % traction_control_step_ticks());
+#endif
+}
+
+static inline int traction_reverse_delay_ticks(void)
+{
+	int ticks = (int)round((5 - 1) * GAME_TIME_COEFF) + 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 static inline int helicopter_phase_step(int legacy_step)
 {
 	if(!legacy_step)
@@ -2376,6 +2397,9 @@ void Object::set_active(int on)
 *******************************************************************************/
 void Object::motor_control(int dir)
 {
+	if(!traction_control_legacy_step())
+		return;
+
 	int sign = SIGN(traction);
 	if(dir == ADD_POWER)
 		if((traction += traction_increment) > 256)
@@ -2388,8 +2412,9 @@ void Object::motor_control(int dir)
 }
 void Object::brake_on()
 {
-	traction = traction/2;
 	brake = 1;
+	if(traction_control_legacy_step())
+		traction = traction/2;
 }
 void Object::steer(int dir)
 {
@@ -2620,7 +2645,7 @@ void Object::direct_keyboard_control()
 	if(XKey.Pressed(VK_UP)){
 		static int delay;
 		if(traction < 0)
-			delay = 5;
+			delay = traction_reverse_delay_ticks();
 		if(delay-- > 0)
 			controls(CONTROLS::BRAKE_QUANT);
 		else
@@ -2629,7 +2654,7 @@ void Object::direct_keyboard_control()
 	if(XKey.Pressed(VK_DOWN) || XKey.Pressed(VK_OEM_5) || XKey.Pressed('5')){
 		static int delay;
 		if(traction > 0)
-			delay = 5;
+			delay = traction_reverse_delay_ticks();
 		if(delay-- > 0)
 			controls(CONTROLS::BRAKE_QUANT);
 		else
@@ -2712,7 +2737,7 @@ void Object::direct_keyboard_control()
 	if(iKeyPressed(iKEY_MOVE_FORWARD)){
 		static int delay;
 		if(traction < 0)
-			delay = 5;
+			delay = traction_reverse_delay_ticks();
 		if(delay-- > 0)
 			controls(CONTROLS::BRAKE_QUANT);
 		else
@@ -2722,7 +2747,7 @@ void Object::direct_keyboard_control()
 	if(iKeyPressed(iKEY_MOVE_BACKWARD)){
 		static int delay;
 		if(traction > 0)
-			delay = 5;
+			delay = traction_reverse_delay_ticks();
 		if(delay-- > 0)
 			controls(CONTROLS::BRAKE_QUANT);
 		else
@@ -2797,7 +2822,7 @@ void Object::direct_joystick_control()
 				if(dy < 0){
 					static int delay;
 					if(traction < 0)
-						delay = 5;
+						delay = traction_reverse_delay_ticks();
 					if(delay-- > 0)
 						controls(CONTROLS::BRAKE_QUANT);
 					else
@@ -2806,7 +2831,7 @@ void Object::direct_joystick_control()
 				if(dy > 0){
 					static int delay;
 					if(traction > 0)
-						delay = 5;
+						delay = traction_reverse_delay_ticks();
 					if(delay-- > 0)
 						controls(CONTROLS::BRAKE_QUANT);
 					else
@@ -3066,13 +3091,15 @@ void Object::mechous_analysis(double dt)
 	else 
 		archimedean = 0;
 
-	if(abs(traction) > traction_decrement)
-		if(traction > 0)
-			traction -= traction_decrement;
+	if(traction_control_legacy_step()){
+		if(abs(traction) > traction_decrement)
+			if(traction > 0)
+				traction -= traction_decrement;
+			else
+				traction += traction_decrement;
 		else
-			traction += traction_decrement;
-	else
-		traction = 0;
+			traction = 0;
+	}
 
 	MoleInProcess = (mole_on && traction && dynamic_state & (GROUND_COLLISION | WHEELS_TOUCH)) ? 1 : 0;
 
