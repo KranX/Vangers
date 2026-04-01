@@ -1824,7 +1824,7 @@ void FireBallObject::Quant(void)
 		if(Owner->Status & SOBJ_DISCONNECT) Owner = NULL;
 		else{
 			R_curr = Owner->R_curr;
-			R_curr.z += (int)round(EXPLOSION_OFFSET * XTCORE_FRAME_NORMAL);
+			R_curr.z += EXPLOSION_OFFSET;
 		};
 	};
 	if(Visibility != VISIBLE){
