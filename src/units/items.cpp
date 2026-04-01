@@ -66,6 +66,17 @@ static inline bool bullet_random_target_legacy_step(void)
 	return !(frame % bullet_random_target_ticks());
 }
 
+static inline int bullet_particle_draw_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool bullet_particle_draw_legacy_step(void)
+{
+	return !(frame % bullet_particle_draw_ticks());
+}
+
 static inline int fish_warrior_attack_ticks(void)
 {
 	int ticks = (int)round(FISH_WARRIOR_ATTACK_TIME * GAME_TIME_COEFF);
@@ -1682,14 +1693,19 @@ void BulletObject::Touch(GeneralObject* p)
 void BulletObject::DrawQuant(void)
 {
 	int tx,ty,s;
+	int update_prev;
 	Vector vCheck;	
 
+	update_prev = 1;
 	switch(ShowID){
 		// It's also "flys" on Fostral
 		case BULLET_SHOW_TYPE_ID::PARTICLE:
-			EffD.CreateParticle(ExtShowType,R_prev,R_curr,ShowType);
-			if(BulletScale) 
+			if(bullet_particle_draw_legacy_step()){
 				EffD.CreateParticle(ExtShowType,R_prev,R_curr,ShowType);
+				if(BulletScale) 
+					EffD.CreateParticle(ExtShowType,R_prev,R_curr,ShowType);
+			}else
+				update_prev = 0;
 			break;
 		case BULLET_SHOW_TYPE_ID::FIREBALL:
 			if(AdvancedView) s = G2LF(R_curr,tx,ty);
@@ -1740,7 +1756,8 @@ void BulletObject::DrawQuant(void)
 			ScreenLineTrace(R_curr,vCheck,FireColorTable,0);
 			break;
 	};
-	R_prev = vTail;
+	if(update_prev)
+		R_prev = vTail;
 };
 
 
