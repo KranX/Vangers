@@ -3779,7 +3779,7 @@ void Object::basic_debris_analysis(double dt)
 					DBV u0 = V + W % r1;
 					if(u0 * normal > 0){
 						u0 = normal*(u0*normal);
-						DBV P = (calc_collision_matrix(r1,J_inv).inverse()*u0)*(-horizontal_impulse_factor*modulation);
+						DBV P = (calc_collision_matrix(r1,J_inv).inverse()*u0)*(-horizontal_impulse_factor*modulation) * XTCORE_FRAME_NORMAL;
 						V += P;
 						W += J_inv*(r1 % P);
 						}
@@ -3789,7 +3789,7 @@ void Object::basic_debris_analysis(double dt)
 					DBV u0 = V + W % r1;
 					if(u0 * z_axis < 0){
 						u0 = u0*k_friction_impulse + n*((u0*n)*(1 - k_friction_impulse));
-						DBV P = (calc_collision_matrix(r,J_inv).inverse()*u0)*(-vertical_impulse_factor*modulation);
+						DBV P = (calc_collision_matrix(r,J_inv).inverse()*u0)*(-vertical_impulse_factor*modulation) * XTCORE_FRAME_NORMAL;
 						V += P;
 						W += J_inv*(r % P);
 						}
@@ -3822,7 +3822,7 @@ void Object::basic_debris_analysis(double dt)
 					DBV u0 = V + W % r1;
 					if(u0 * normal > 0){
 						u0 = normal*(u0*normal);
-						DBV P = (calc_collision_matrix(r1,J_inv).inverse()*u0)*(-horizontal_impulse_factor*modulation);
+						DBV P = (calc_collision_matrix(r1,J_inv).inverse()*u0)*(-horizontal_impulse_factor*modulation) * XTCORE_FRAME_NORMAL;
 						V += P;
 						W += J_inv*(r1 % P);
 						}
@@ -3833,7 +3833,7 @@ void Object::basic_debris_analysis(double dt)
 					if(u0 * z_axis > 0){
 						//u0 = z_axis*(u0*z_axis); 
 						u0 = n*(u0*n);
-						DBV P = (calc_collision_matrix(r,J_inv).inverse()*u0)*(-vertical_impulse_factor*modulation);
+						DBV P = (calc_collision_matrix(r,J_inv).inverse()*u0)*(-vertical_impulse_factor*modulation) * XTCORE_FRAME_NORMAL;
 						V += P;
 						W += J_inv*(r % P);
 						}
@@ -3880,12 +3880,14 @@ void Object::basic_debris_analysis(double dt)
 		if(y > (int)map_size_y - y_border_field)
 			F += A_g2l*DBV(0,-k_border_field/(map_size_y - y),0);
 		}
-#endif
+	#endif
+	
+	const double debris_step_dt = dt * XTCORE_FRAME_NORMAL;
 
 	F -= z_axis*g;
 
-	V += F*dt;
-	W += (J_inv*K)*dt;
+	V += F*debris_step_dt;
+	W += (J_inv*K)*debris_step_dt;
 
 	if(non_loaded_space) {
 		V *= A_l2g;
@@ -3907,21 +3909,24 @@ void Object::basic_debris_analysis(double dt)
 		W_drag *= W_drag_float;
 		}
 
-	if(!(ID != ID_JUMPBALL && V.vabs()*V_drag < V_abs_stop && W.vabs()*W_drag < W_abs_stop)){
+	const double debris_v_drag = pow(V_drag, XTCORE_FRAME_NORMAL);
+	const double debris_w_drag = pow(W_drag, XTCORE_FRAME_NORMAL);
+
+	if(!(ID != ID_JUMPBALL && V.vabs()*debris_v_drag < V_abs_stop && W.vabs()*debris_w_drag < W_abs_stop)){
 		DBV Vs = V;
 		if(spring_touch)
 			Vs -= (z_axis*(radius*rolling_scale)) % W;
-		R += (A_l2g * Vs ) * dt * XTCORE_FRAME_NORMAL;
+		R += (A_l2g * Vs ) * debris_step_dt;
 
-		DBM A_rot_inv = DBM(W,W.vabs()*(-dt));
+		DBM A_rot_inv = DBM(W,W.vabs()*(-debris_step_dt));
 		A_g2l = A_rot_inv*A_g2l;
 		A_l2g = transpose(A_g2l);
 		V *= A_rot_inv;
 		W *= A_rot_inv;
 		}
 
-	V *= V_drag;
-	W *= W_drag;
+	V *= debris_v_drag;
+	W *= debris_w_drag;
 }
 void Object::set_ground_elastic(double k)
 {
@@ -4214,7 +4219,7 @@ double Lambert_W(double x)
 
 void Object::precise_impulse(Vector source_point,int x_dest,int y_dest)
 {
-	double k = V_drag_stuff;
+	double k = pow(V_drag_stuff, XTCORE_FRAME_NORMAL);
 	double dt = ID & ID_VANGER ? dt0 : dt_debris;
 	dt *= XTCORE_FRAME_NORMAL;
 	double gdt2 = g*dt*dt;
