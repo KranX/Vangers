@@ -165,6 +165,12 @@ int PassageBmpNum;
 int PassageBmpPrev;
 PassageImageType* PassageImageData;
 
+static inline int ai_message_speed_tabu_ticks(void)
+{
+	int ticks = (int)round(10 * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 void OpenCyclicPal(void)
 {
 	int i;
@@ -4303,7 +4309,7 @@ void aiMessageList::Send(int ind,int speed,int n,int sf)
 	aiMessageListElem* p;
 	static int PrevSpeed = 0;
 	if(!ActD.Active || !(ActD.Active->ExternalDraw)) return;
-	if(abs(speed) != 0) PrevSpeed = 10;
+	if(abs(speed) != 0) PrevSpeed = ai_message_speed_tabu_ticks();
 	else PrevSpeed--;
 	if(sf && PrevSpeed > MAX_AI_MESSAGE_SPEED) return;
 	if(abs(aiMessageData[ind].LastFrame - frame) > AI_MESSAGE_DELTA * GAME_TIME_COEFF){
