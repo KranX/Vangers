@@ -78,6 +78,25 @@ struct ParticleProcess;
 
 #define GET_DEVICE_LATENCY() (SDL_GetTicks() + 4000)
 
+#ifndef _SURMAP_
+extern int frame;
+#endif
+
+static inline int device_transition_step_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool device_transition_legacy_step(void)
+{
+#ifdef _SURMAP_
+	return 1;
+#else
+	return !(frame % device_transition_step_ticks());
+#endif
+}
+
 #ifdef MSG_OUT
 #define RESTRICT(v,a)	{ if(v.vabs() > a){ if(active) msg_buf < "Restriction of " #v "\n"; v.norm(a); } else if(active) msg_buf < "\n"; }
 #else
@@ -2516,27 +2535,27 @@ void Object::controls(int mode,int param)
 			if(UsingCopterig(0) && !mole_on){
 				if(!helicopter)
 					helicopter = round(R.z);
-				if((helicopter += helicopter_height_incr) > max_helicopter_height)
+				if(device_transition_legacy_step() && (helicopter += helicopter_height_incr) > max_helicopter_height)
 					helicopter = max_helicopter_height;
 				helicopter_time = max_helicopter_time;
 				rudder = 0;
 				}
 			break;
 		case CONTROLS::HELICOPTER_DOWN:
-			if(helicopter && (helicopter -= helicopter_height_decr) < 0){
+			if(helicopter && device_transition_legacy_step() && (helicopter -= helicopter_height_decr) < 0){
 				helicopter = 0;
 				device_switch_latency = GET_DEVICE_LATENCY();
 				}
 			break;
 
 		case CONTROLS::FLOTATION_UP:
-			if(dynamic_state & TOUCH_OF_WATER && archimedean < 256 && (archimedean += 4) >= 256){
+			if(dynamic_state & TOUCH_OF_WATER && archimedean < 256 && device_transition_legacy_step() && (archimedean += 4) >= 256){
 				archimedean = 256;
 				device_switch_latency = GET_DEVICE_LATENCY();
 				 }
 			break;
 		case CONTROLS::FLOTATION_DOWN:
-			if(dynamic_state & TOUCH_OF_WATER && archimedean && (archimedean -= 16) < 0)
+			if(dynamic_state & TOUCH_OF_WATER && archimedean && device_transition_legacy_step() && (archimedean -= 16) < 0)
 				archimedean = 0;
 			break;
 
@@ -2549,7 +2568,8 @@ void Object::controls(int mode,int param)
 				}
 			break;
 		case CONTROLS::MOLE_UP:
-			mole_on--;
+			if(mole_on && device_transition_legacy_step())
+				mole_on--;
 			device_switch_latency = GET_DEVICE_LATENCY();
 			break;
 
@@ -2970,7 +2990,7 @@ void Object::mechous_analysis(double dt)
 #endif
 
 	if(helicopter) {
-		if(!UsingCopterig((helicopter << 8)/max_helicopter_height))
+		if(device_transition_legacy_step() && !UsingCopterig((helicopter << 8)/max_helicopter_height))
 			controls(CONTROLS::HELICOPTER_DOWN);
 		//if(air_speed_factor < 1 && --helicopter_time < 0)
 		//	helicopter -= helicopter_height_decr;
@@ -3021,7 +3041,7 @@ void Object::mechous_analysis(double dt)
 //		R = R_old;
 	}
 
-	if(mole_on && !UsingCrotrig(mole_on) && !interpolation_on)
+	if(mole_on && device_transition_legacy_step() && !UsingCrotrig(mole_on) && !interpolation_on)
 		controls(CONTROLS::MOLE_UP);
 
 	if(in_water > 32)
