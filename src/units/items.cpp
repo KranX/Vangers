@@ -45,6 +45,7 @@
 extern int RAM16;
 extern iGameMap* curGMap;
 extern uchar* FireColorTable;
+extern int frame; // kdsplus.cpp
 
 const char DEBRIS_LIFE_TIME = 100;
 
@@ -54,9 +55,19 @@ static inline int debris_lifetime_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int bullet_random_target_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool bullet_random_target_legacy_step(void)
+{
+	return !(frame % bullet_random_target_ticks());
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
-extern int frame; // kdsplus.cpp
 
 const int MAX_STUFF_SCATTER = 150;
 
@@ -1521,7 +1532,7 @@ void BulletObject::TimeOutQuant(void)
 				vTarget = Vector(-vDelta.y,vDelta.x,0);
 				break;
 			case BULLET_TARGET_MODE::RANDOM:
-				if(RND(100) < 10) vTarget = Vector(BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2));
+				if(bullet_random_target_legacy_step() && RND(100) < 10) vTarget = Vector(BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2));
 				break;
 			case BULLET_TARGET_MODE::WALL:				
 				v.x = getDistX(R_curr.x,vWallTarget.x);
