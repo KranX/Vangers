@@ -9682,9 +9682,12 @@ void aciScreenText::redraw(void)
 
 void aciScreenText::Quant(void)
 {
+	int ticks = (int)round(StrTimer * GAME_TIME_COEFF);
+	if(ticks <= 0) ticks = 1;
+
 	Timer ++;
 	flags &= ~ACI_TEXT_REDRAW;
-	if(Timer >= StrTimer){
+	if(Timer >= ticks){
 		if(CurStr < (CurPageData -> NumStr - 1)){
 			CurStr ++;
 		}
