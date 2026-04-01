@@ -2433,7 +2433,7 @@ int Object::get_max_jump_distance() {
 	DBV R(0,0,0);
 	while(R.z >= 0) {
 		V.z -= g*dt0;
-		R += V * dt0 * XTCORE_FRAME_NORMAL;
+		R += V * dt0;
 		V *= V_drag_free*pow(V_drag_speed,V.vabs());
 	}
 	return round(R.x);
