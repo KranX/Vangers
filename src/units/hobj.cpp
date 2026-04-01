@@ -171,6 +171,12 @@ static inline int ai_message_speed_tabu_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int ai_message_repeat_delta_ticks(void)
+{
+	int ticks = (int)round((AI_MESSAGE_DELTA + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 void OpenCyclicPal(void)
 {
 	int i;
@@ -4312,7 +4318,7 @@ void aiMessageList::Send(int ind,int speed,int n,int sf)
 	if(abs(speed) != 0) PrevSpeed = ai_message_speed_tabu_ticks();
 	else PrevSpeed--;
 	if(sf && PrevSpeed > MAX_AI_MESSAGE_SPEED) return;
-	if(abs(aiMessageData[ind].LastFrame - frame) > AI_MESSAGE_DELTA * GAME_TIME_COEFF){
+	if(abs(aiMessageData[ind].LastFrame - frame) >= ai_message_repeat_delta_ticks()){
 		p = Tail;
 		while(p){
 			if(p->Index == ind) return;
