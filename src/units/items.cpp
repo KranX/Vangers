@@ -78,6 +78,17 @@ static inline int fish_warrior_state_ticks(int legacy_delay)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int fish_warrior_random_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool fish_warrior_random_legacy_step(void)
+{
+	return !(frame % fish_warrior_random_ticks());
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 
@@ -2462,7 +2473,7 @@ void FishWarrior::Quant(void)
 					if(AttackTime > 0){
 						vTarget = Vector(getDistX(TargetObject->R_curr.x,R_curr.x),getDistY(TargetObject->R_curr.y,R_curr.y),TargetObject->R_curr.z - R_curr.z);
 						AttackTime--;
-					}else{
+					}else if(fish_warrior_random_legacy_step()){
 						if(!RND(15)){
 							if(!RND(4)){
 								vTarget = Vector(BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2));
@@ -2474,7 +2485,7 @@ void FishWarrior::Quant(void)
 						};
 					};
 				}else{
-					if(!RND(50)){
+					if(fish_warrior_random_legacy_step() && !RND(50)){
 						vTarget = Vector(BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2));
 						Speed = RND(MaxSpeed);
 					};
@@ -2485,14 +2496,14 @@ void FishWarrior::Quant(void)
 				if(TargetObject && TargetObject->ExternalDraw && TargetObject->draw_mode == NORMAL_DRAW_MODE && !(TargetObject->BeebonationFlag)) vTarget = Vector(getDistX(TargetObject->R_curr.x,R_curr.x),getDistY(TargetObject->R_curr.y,R_curr.y),TargetObject->R_curr.z - R_curr.z);
 				else{
 					TargetObject = ActD.Active;
-					if(!RND(50)){
+					if(fish_warrior_random_legacy_step() && !RND(50)){
 						vTarget = Vector(BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2));
 						Speed = RND(MaxSpeed);
 					};
 				};
 				break;
 			case FISH_WARRIOR_NONE:
-				if(!RND(50)){
+				if(fish_warrior_random_legacy_step() && !RND(50)){
 					vTarget = Vector(BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2),BMAX_TARGET_VECTOR - RND(BMAX_TARGET_VECTOR2));
 					Speed = RND(MaxSpeed);
 				};
