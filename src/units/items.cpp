@@ -128,6 +128,12 @@ static inline int spobs_destroy_palette_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int threall_destroy_palette_ticks(void)
+{
+	int ticks = (int)round(50 * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 
@@ -659,7 +665,7 @@ void StuffObject::Quant(void)
 							ActD.ThreallDestroy = 1;
 							aciOpenWorldLink(WORLD_HMOK,WORLD_HMOK);
 							aciPrepareWorldsMenu();
-							PalCD.Set(CPAL_THREALL_TO,50);
+							PalCD.Set(CPAL_THREALL_TO,threall_destroy_palette_ticks());
 							start_vibration();
 							SOUND_SPOPS_ALIES();
 							ActD.FunctionThreallDestroyActive = 0;
