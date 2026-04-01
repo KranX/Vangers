@@ -177,6 +177,12 @@ static inline int way_recalc_arm_next_quant(int legacy_threshold)
 	return ticks > 0 ? ticks : 0;
 }
 
+static inline int bunch_cycle_palette_ticks(void)
+{
+	int ticks = (int)round(100 * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 
 int test_block(unsigned char* ptr, int size);
 void camera_impulse(int amplitude_8);
@@ -7796,7 +7802,7 @@ void BunchEvent(int type)
 			WorldPalCurrent = uvsCurrentCycle;
 			if(WorldPalCurrent >= WorldPalNum) WorldPalCurrent = 0;
 //			StartSetColor(100,WorldPalData[WorldPalCurrent]);
-			PalCD.Set(CPAL_CHANGE_CYCLE,100,WorldPalData[WorldPalCurrent]);
+			PalCD.Set(CPAL_CHANGE_CYCLE,bunch_cycle_palette_ticks(),WorldPalData[WorldPalCurrent]);
 			p = FarmerD.Tail;
 			while(p){
 //				if(p->ID != ID_SKYFARMER)
