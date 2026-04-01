@@ -4001,6 +4001,9 @@ void Object::fish_analysis(double dt)
 }
 void Object::insect_analysis()
 {
+	const double insect_dt = XTCORE_FRAME_NORMAL;
+	const double insect_v_drag = pow(V_drag_insect, insect_dt);
+	const double insect_w_drag = pow(W_drag_insect, insect_dt);
 	double f_traction = k_traction_insect*double(traction)/256.;
 
 	dynamic_state = 0;
@@ -4030,17 +4033,17 @@ void Object::insect_analysis()
 	n *= A_g2l;
 	DBV K = -n % DBV(0,0,K_insect);
 
-	V += F;
-	W += J_inv*K;
+	V += F * insect_dt;
+	W += (J_inv*K) * insect_dt;
 
-	V *= V_drag_insect;
-	W *= W_drag_insect;
+	V *= insect_v_drag;
+	W *= insect_w_drag;
 
-	R += A_l2g * V * XTCORE_FRAME_NORMAL;
-	double psi = V.y*sin(GTOR(rudder))/((double)ymax_real); //insect
+	R += A_l2g * V * insect_dt;
+	double psi = V.y*sin(GTOR(rudder))*insect_dt/((double)ymax_real); //insect
 	rudder -= SIGN(rudder)*RTOG(fabs(psi))/2;
 
-	DBM A_rot_inv = DBM(-psi,Z_AXIS)*DBM(W,-(W.vabs()));
+	DBM A_rot_inv = DBM(-psi,Z_AXIS)*DBM(W,W.vabs()*(-insect_dt));
 	A_g2l = A_rot_inv*A_g2l;
 	A_l2g = transpose(A_g2l);
 	V *= A_rot_inv;
