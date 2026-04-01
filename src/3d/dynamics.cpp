@@ -97,6 +97,16 @@ static inline bool device_transition_legacy_step(void)
 #endif
 }
 
+static inline int helicopter_phase_step(int legacy_step)
+{
+	if(!legacy_step)
+		return 0;
+	int step = (int)round(legacy_step * XTCORE_FRAME_NORMAL);
+	if(!step)
+		return legacy_step > 0 ? 1 : -1;
+	return step;
+}
+
 #ifdef MSG_OUT
 #define RESTRICT(v,a)	{ if(v.vabs() > a){ if(active) msg_buf < "Restriction of " #v "\n"; v.norm(a); } else if(active) msg_buf < "\n"; }
 #else
@@ -2997,10 +3007,14 @@ void Object::mechous_analysis(double dt)
 		if(helicopter <= 0)
 			 helicopter = 0;
 
+		const double heli_rudder_drag = pow(heli_rudder_decr, XTCORE_FRAME_NORMAL);
+		const double heli_traction_drag = pow(heli_traction_decr, XTCORE_FRAME_NORMAL);
+		const int helicopter_thrust_step = helicopter_phase_step(helicopter_dphi);
+		const int helicopter_circle_step = helicopter_phase_step(helicopter_circle_dphi);
 		double heli_x_offset = rudder*heli_x_convert;
 		double heli_y_offset = -traction*heli_y_convert;
-		rudder = round(rudder*heli_rudder_decr); //heli
-		traction = round(traction*heli_traction_decr);
+		rudder = round(rudder*heli_rudder_drag); //heli
+		traction = round(traction*heli_traction_drag);
 
 		if(R.z - helicopter > 2*helicopter_height_decr && dynamic_state & TOUCH_OF_GROUND) {
 			helicopter = 0;
@@ -3011,13 +3025,13 @@ void Object::mechous_analysis(double dt)
 		if(dz < 1)
 			dz = 1;
 
-		double fz = g*k_helicopter_thrust*pow(.5,sqr(dz/(double)helicopter))*(1 + helicopter_ampl*Sin(helicopter_thrust_phase += helicopter_dphi));
+		double fz = g*k_helicopter_thrust*pow(.5,sqr(dz/(double)helicopter))*(1 + helicopter_ampl*Sin(helicopter_thrust_phase += helicopter_thrust_step));
 		double fy = -heli_y_offset*air_speed_factor*global_air_speed_factor;
 		F_global.x += A_l2g[1]*fy;
 		F_global.y += A_l2g[4]*fy;
 		F_global.z += fz;
 
-		double dx = heli_x_offset + helicopter_circle_radius_x*Cos(helicopter_circle_phase += helicopter_circle_dphi);
+		double dx = heli_x_offset + helicopter_circle_radius_x*Cos(helicopter_circle_phase += helicopter_circle_step);
 		double dy = heli_y_offset + helicopter_circle_radius_y*Sin(helicopter_circle_phase);
 		K_global.x -= (A_l2g[3]*dx + A_l2g[4]*dy + A_l2g[5]*heli_z_offset)*fz;
 		K_global.y += (A_l2g[0]*dx + A_l2g[1]*dy + A_l2g[2]*heli_z_offset)*fz;
