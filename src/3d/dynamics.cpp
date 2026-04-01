@@ -4038,7 +4038,7 @@ void Object::skyfarmer_analysis(double dt)
 	switch(skyfarmer_fly_direction){
 		case 1:
 			if(scale_size < original_scale_size)
-				scale_size += skyfarmer_scale_incr;
+				scale_size += skyfarmer_scale_incr * XTCORE_FRAME_NORMAL;
 			else
 				skyfarmer_fly_direction = 0;
 			return;
@@ -4060,7 +4060,7 @@ void Object::skyfarmer_analysis(double dt)
 
 		case -1:
 			F += DBV(A_g2l[2],A_g2l[5],A_g2l[8])*(-g);
-			if((scale_size -= skyfarmer_scale_decr) < 0)
+			if((scale_size -= skyfarmer_scale_decr * XTCORE_FRAME_NORMAL) < 0)
 				scale_size = 0;
 			break;
 		}
