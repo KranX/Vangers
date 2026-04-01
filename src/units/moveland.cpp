@@ -3681,6 +3681,17 @@ static char Mask_for_crash[] = {
 
 };
 
+static inline int landslide_noise_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool landslide_noise_legacy_step(void)
+{
+	return !(frame % landslide_noise_ticks());
+}
+
 void LandSlideType::makeLittelNoise(void){
 	int firtst_time = 68 * GAME_TIME_COEFF;
 	int end_time = 55 * GAME_TIME_COEFF;
@@ -3714,6 +3725,8 @@ void LandSlideType::makeLittelNoise(void){
 		Time = 0;
 		return;
 	} else if (Time < end_time)return;
+
+	if(!landslide_noise_legacy_step()) return;
 
 	for( i = 0; i < for_one; i++){ 
 		int rnd1 = RND(259), rnd2 = RND(259);
