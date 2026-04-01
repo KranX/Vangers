@@ -100,6 +100,17 @@ static inline bool fish_warrior_random_legacy_step(void)
 	return !(frame % fish_warrior_random_ticks());
 }
 
+static inline int skyfarmer_random_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool skyfarmer_random_legacy_step(void)
+{
+	return !(frame % skyfarmer_random_ticks());
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 
@@ -2176,7 +2187,7 @@ void SkyFarmerObject::Quant(void)
 	}else{
 		if(d < radius*7) skyfarmer_set_direction(vTrack);
 		else{
-			if(!RND(3)) skyfarmer_set_direction(vTrack);
+			if(skyfarmer_random_legacy_step() && !RND(3)) skyfarmer_set_direction(vTrack);
 		};
 	};
 
