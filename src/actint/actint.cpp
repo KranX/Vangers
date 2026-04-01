@@ -428,6 +428,13 @@ char* aci_ivMapName = NULL;
 char* aci_iScreenID = NULL;
 unsigned char aci_iscrPal[768];
 
+static inline int actint_menu_ticks(int legacy_ticks)
+{
+	if(legacy_ticks <= 0) return 0;
+	int ticks = (int)round(legacy_ticks * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 invMatrix* backupMatrix;
 
 int prevWorld;
@@ -3262,7 +3269,7 @@ void actIntDispatcher::redraw(void)
 						p -> set_redraw();
 						init_menus();
 						init_submenu(p);
-						p -> curCount = p -> activeCount;
+						p -> curCount = actint_menu_ticks(p -> activeCount);
 						SOUND_SELECT();
 					}
 					else {
@@ -4914,8 +4921,8 @@ void actIntDispatcher::KeyQuant(void)
 								if(m -> change(iMouseX,iMouseY)){
 									init_menus();
 									if(!(m -> flags & FM_SUBMENU)){
-										init_submenu(m);
-										m -> curCount = m -> activeCount;
+											init_submenu(m);
+											m -> curCount = actint_menu_ticks(m -> activeCount);
 									}
 									SOUND_SELECT();
 								}
@@ -4929,9 +4936,9 @@ void actIntDispatcher::KeyQuant(void)
 								else {
 									if(!m -> trigger && !(m -> flags & FM_SUBMENU)){
 										if(!(m -> flags & FM_LOCK)){
-											m -> flags |= FM_ACTIVE;
-											m -> curCount = m -> activeCount;
-											m -> set_redraw();
+												m -> flags |= FM_ACTIVE;
+												m -> curCount = actint_menu_ticks(m -> activeCount);
+												m -> set_redraw();
 											SOUND_SELECT();
 										}
 										else {
@@ -5910,7 +5917,7 @@ int fncMenu::change(int x,int y,int mode)
 			set_redraw();
 			if(prefix) set_prefix(prefix);
 			init_redraw();
-			curCount = activeCount;
+			curCount = actint_menu_ticks(activeCount);
 			return 0;
 		}
 		if(x >= 0 && x < SizeX && down_obj -> check_y(y)){
@@ -5920,7 +5927,7 @@ int fncMenu::change(int x,int y,int mode)
 			set_redraw();
 			if(prefix) set_prefix(prefix);
 			init_redraw();
-			curCount = activeCount;
+			curCount = actint_menu_ticks(activeCount);
 			return 0;
 		}
 	}
@@ -5947,7 +5954,7 @@ int fncMenu::change(int x,int y,int mode)
 						return 1;
 					}
 				}
-				curCount = activeCount;
+				curCount = actint_menu_ticks(activeCount);
 			}
 			return 1;
 		}
@@ -5980,7 +5987,7 @@ void actIntDispatcher::init_submenu(fncMenu* m)
 
 		m -> init_submenu(p);
 		p -> init_curItem();
-		p -> curCount = p -> activeCount;
+		p -> curCount = actint_menu_ticks(p -> activeCount);
 		p -> flags |= FM_LOCK;
 
 		if(p -> VItems < p -> items -> Size)
