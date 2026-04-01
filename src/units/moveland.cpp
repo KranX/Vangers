@@ -3812,16 +3812,19 @@ void MapLandHole::Quant(void)
 
 void MapAcidSpot::CreateAcid(Vector v,int fRad,int lRad,int fDelta,int lDelta,int lTime)
 {
+	int ticks = (int)round(lTime * GAME_TIME_COEFF);
+	if(ticks <= 0) ticks = 1;
+
 	R_curr = v;
 	ID = ID_MOBILE_LOCATION;
 	Status = 0;
 	cycleTor(R_curr.x,R_curr.y);
 
-	Time = lTime;
+	Time = ticks;
 	Radius = fRad << 8;
-	dRadius = ((lRad << 8) - Radius) / lTime;
+	dRadius = ((lRad << 8) - Radius) / ticks;
 	Delta = fDelta << 8;
-	dDelta = ((lDelta << 8) - Delta) / lTime;
+	dDelta = ((lDelta << 8) - Delta) / ticks;
 };
 
 void MapAcidSpot::Quant(void)
