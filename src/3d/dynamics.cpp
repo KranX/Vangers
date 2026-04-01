@@ -118,6 +118,12 @@ static inline int traction_reverse_delay_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int after_db_collision_ticks(void)
+{
+	int ticks = (int)round((2 - 1) * GAME_TIME_COEFF) + 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 static inline int helicopter_phase_step(int legacy_step)
 {
 	if(!legacy_step)
@@ -4550,7 +4556,7 @@ int Object::test_object_to_baseobject(BaseObject* bobj)
 		obj -> collision_object = this;
 		int collision_again_log = (after_db_coll > 0 || obj -> after_db_coll > 0);
 		if(ID == ID_VANGER && obj -> ID == ID_VANGER)
-			after_db_coll = obj -> after_db_coll = 2;
+			after_db_coll = obj -> after_db_coll = after_db_collision_ticks();
 
 		DBM A_o2t = A_g2l*obj -> A_l2g;
 
