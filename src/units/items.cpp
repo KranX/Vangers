@@ -72,6 +72,12 @@ static inline int fish_warrior_attack_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int fish_warrior_state_ticks(int legacy_delay)
+{
+	int ticks = (int)round((legacy_delay + 1) * GAME_TIME_COEFF) - 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 
@@ -2545,12 +2551,12 @@ void FishWarrior::Quant(void)
 			switch (zStatus) {
 				case 0:
 					CreateDestroyEffect(R_curr,MAP_POINT_CRATER09,DT_DEFORM02,DEFORM_WATER_ONLY,EFF_EXPLOSION01,-1);
-					Time = 30;
+					Time = fish_warrior_state_ticks(30);
 					zStatus = 1;
 					break;
 				case 1:
 					R_curr = Vector(RND(map_size_x),RND(map_size_y),10);
-					Time = 900 + RND(900);
+					Time = fish_warrior_state_ticks(900 + RND(900));
 					zStatus = 0;
 					break;
 				}
@@ -2568,7 +2574,7 @@ void FishWarrior::CreateFish(Vector v,int _Speed,int Angle,int _Precision,int _T
 {
 	MaxSpeed = Speed = _Speed;
 	Precision = _Precision;
-	Time = _Time;
+	Time = NetworkON ? fish_warrior_state_ticks(_Time) : _Time;
 	Mode = _Mode;
 	vDelta = Vector(Speed,0,0)*DBM(Angle,Z_AXIS);
 
@@ -2606,7 +2612,7 @@ void FishWarrior::Touch(GeneralObject *p)
 	if (!NetworkON) {
 		Status |= SOBJ_DISCONNECT;
 	} else {
-		Time = 30;
+		Time = fish_warrior_state_ticks(30);
 		zStatus = 1;
 	}
 };
