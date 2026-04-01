@@ -3869,6 +3869,11 @@ void Object::fish_analysis(double dt)
 	dt *= XTCORE_FRAME_NORMAL;
 	V_drag = V_drag_float;
 	W_drag = 0.85;
+	const double fish_rudder_drag = pow(15.0 / 16.0, XTCORE_FRAME_NORMAL);
+	const double fish_vy_drag = pow(V_drag, XTCORE_FRAME_NORMAL);
+	const double fish_vx_drag = pow(0.7, XTCORE_FRAME_NORMAL);
+	const double fish_vz_drag = pow(0.2, XTCORE_FRAME_NORMAL);
+	const double fish_w_drag = pow(W_drag, XTCORE_FRAME_NORMAL);
 
 	double dZ_f,dZ_b,df;
 	DBV F,K,h_factor_f,h_factor_b,dF;
@@ -3930,7 +3935,7 @@ void Object::fish_analysis(double dt)
 			}
 		if(traction){
 			K += A_g2l*DBV(0,0,(double)rudder*traction*k_rudder_fish); //fish
-			rudder = rudder*15/16;
+			rudder = round(rudder * fish_rudder_drag);
 			F.y += traction*k_traction_fish;
 			}
 		}
@@ -3954,10 +3959,10 @@ void Object::fish_analysis(double dt)
 		R = R_old;
 		}
 
-	V.y *= V_drag;
-	V.x *= 0.7;
-	V.z *= 0.2;
-	W *= W_drag;
+	V.y *= fish_vy_drag;
+	V.x *= fish_vx_drag;
+	V.z *= fish_vz_drag;
+	W *= fish_w_drag;
 	speed = round(V.vabs());
 }
 void Object::insect_analysis()
