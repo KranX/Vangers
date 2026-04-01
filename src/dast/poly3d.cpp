@@ -884,6 +884,9 @@ int dastPoly3D::make_catch_dolly( dastResourcePoly3D* res ){
 	else if ( dz < 220 ) scale = 1 << 13;
 	else return 0;
 
+	if(!dast_effect_legacy_step(quant))
+		return 1;
+
 
 	for( int i = 1; i < 32; i++, A += dA)
 		if ( !RND(16) ){
