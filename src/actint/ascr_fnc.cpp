@@ -105,6 +105,11 @@ extern int aci_SecondMatrixID;
 extern int curMatrixID;
 
 extern actIntDispatcher* aScrDisp;
+
+int acs_is_legacy_caller(void)
+{
+	return aScrDisp && (aScrDisp -> flags & AS_ISCREEN);
+}
 extern char* aImageBmp;
 
 extern unsigned char* aCellFrame;
