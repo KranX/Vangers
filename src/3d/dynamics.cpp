@@ -3473,8 +3473,9 @@ void Object::basic_mechous_analysis(double dt,int last)
 	if(archimedean && traction){
 		double dFy = device_modulation*(double)traction;
 		double dFx = (double)(traction > 0 ? -rudder : rudder)*dFy*k_water_rudder; 
+		const double water_rudder_drag = pow(15.0 / 16.0, XTCORE_FRAME_NORMAL);
 		dFy *= water_speed_factor*global_water_speed_factor;
-		rudder = rudder*15/16;
+		rudder = (int)(rudder * water_rudder_drag);
 		F.y += dFy;
 		F.x += dFx;
 		K.z -= traction > 0 ? (double)ymax_real*dFx : -(double)ymax_real*dFx;
