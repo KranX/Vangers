@@ -122,6 +122,12 @@ static inline bool crypt_quant_legacy_step(void)
 	return !(frame % crypt_quant_ticks());
 }
 
+static inline int spobs_destroy_palette_ticks(void)
+{
+	int ticks = (int)round(50 * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 
@@ -631,7 +637,7 @@ void StuffObject::Quant(void)
 				if(CurrentWorld == WORLD_XPLO && ActD.FunctionSpobsDestroyActive){
 					if(!ActD.SpobsDestroy && (dynamic_state & GROUND_COLLISION) && GetTouchSensor("Spot1")){
 						ActD.SpobsDestroy = 1;
-						PalCD.Set(CPAL_SPOBS_TO,50);
+						PalCD.Set(CPAL_SPOBS_TO,spobs_destroy_palette_ticks());
 						Status |= SOBJ_DISCONNECT;
 						ActD.XploKeyEnable = 0;
 						aciOpenWorldLink(WORLD_HMOK,WORLD_HMOK);
