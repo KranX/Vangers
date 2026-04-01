@@ -2999,8 +2999,11 @@ void Object::mechous_analysis(double dt)
 	dt *= speed_correction_factor;
 	dt *= XTCORE_FRAME_NORMAL;
 	if(Status & SOBJ_AUTOMAT){
-		if(jump_power && ++jump_power > max_jump_power)
-			jump();
+		if(jump_power){
+			jump_power += 1.0 / GAME_TIME_COEFF;
+			if(jump_power > max_jump_power)
+				jump();
+		}
 	} else {
 		if(jump_power && CheckStartJump(this)){
 			jump();
