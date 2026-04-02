@@ -3901,6 +3901,10 @@ void VangerUnit::MapQuant(void)
 
 	if(MoleInProcess)
 		MoleProcessQuant();
+	else{
+		MoleTrailStep = 0;
+		MoleTrailValid = 0;
+	}
 	
 	if(LastMole == 256 && mole_on != 256){
 		MolePoint2->set(R_curr,40,radius < 40 ? radius : 40);
@@ -3920,6 +3924,9 @@ void Object::StartMoleProcess(void)
 void VangerUnit::StartMoleProcess(void)
 {
 	MolePoint1->set(R_curr,40,radius < 40 ? radius : 40);
+	MoleTrailPrev = Vector(0,0,0);
+	MoleTrailStep = 0;
+	MoleTrailValid = 0;
 };
 
 
@@ -6020,6 +6027,9 @@ void VangerUnit::CreateVangerUnit(void)
 
 	RandomUpdate = -1;
 	LastMole = 0;
+	MoleTrailPrev = Vector(0,0,0);
+	MoleTrailStep = 0;
+	MoleTrailValid = 0;
 
 	CoptePoint = NULL;
 	SwimPoint = NULL;
@@ -8999,15 +9009,43 @@ void CharacterDataType::GetVangerOrder(int d,int a,VangerUnit* p,VangerUnit* n)
 
 extern dastPoly3D terra_moving_tool;
 
+static inline int mole_trail_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
 void VangerUnit::MoleProcessQuant(void)
 {
 	Vector left_border,right_border;
 	double dx = xmax_real;
 	Vector delta(round(A_l2g[0]*dx),round(A_l2g[1]*dx),round(A_l2g[2]*dx));
-	if(sqrt((double)(sqr(R_curr.x - R_prev.x) + sqr(R_curr.y - R_prev.y))) > 2){
+	const int trail_ticks = mole_trail_ticks();
+	if(trail_ticks <= 1){
+		if(sqrt((double)(sqr(R_curr.x - R_prev.x) + sqr(R_curr.y - R_prev.y))) > 2){
+			MoleTool->set(R_curr - delta, R_curr + delta,Vector(0,0,0));
+			MoleTool->make_mole();
+			}
+		return;
+	}
+
+	if(!MoleTrailValid){
+		MoleTrailPrev = R_prev;
+		MoleTrailStep = 1;
+		MoleTrailValid = 1;
+		if(MoleTrailStep < trail_ticks)
+			return;
+	}else{
+		if(++MoleTrailStep < trail_ticks)
+			return;
+	}
+	MoleTrailStep = 0;
+
+	if(sqrt((double)(sqr(R_curr.x - MoleTrailPrev.x) + sqr(R_curr.y - MoleTrailPrev.y))) > 2){
 		MoleTool->set(R_curr - delta, R_curr + delta,Vector(0,0,0));
 		MoleTool->make_mole();
-		}
+	}
+	MoleTrailPrev = R_curr;
 };
 
 void ActionDispatcher::AddFunction(VangerFunctionType* p)
@@ -12061,6 +12099,9 @@ void VangerUnit::InitAI(void)
 			break;		
 	};
 	Molerizator = 0;
+	MoleTrailPrev = Vector(0,0,0);
+	MoleTrailStep = 0;
+	MoleTrailValid = 0;
 	VangerCloneID = 0;	
 };
 

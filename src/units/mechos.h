@@ -756,6 +756,9 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 	dastPoly3D* MolePoint1;
 	dastPoly3D* MolePoint2;
 	int Molerizator;
+	Vector MoleTrailPrev;
+	int MoleTrailStep;
+	int MoleTrailValid;
 	int VangerCloneID;
 
 	VangerUnit* VangerChanger;
