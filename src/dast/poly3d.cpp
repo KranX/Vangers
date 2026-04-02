@@ -147,11 +147,8 @@ int dastPoly3D::quant_make_sign(void){
 	int dx, dy;
 	int _z = p->z;
 
-	quant++;
-	if (quant < GAME_TIME_COEFF) {
-		return (count != dastResSign->poly[n]); //skip frame on high fps
-	}
-	quant = 0;
+	if(!dast_effect_legacy_step(quant))
+		return (count != dastResSign->poly[n]);
 
 	for( int s = 0; s < dastResSign->once[n]; s++){
 
