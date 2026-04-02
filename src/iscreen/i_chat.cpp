@@ -80,6 +80,7 @@ void iInitChatScreen(void);
 
 void iChatInputChar(SDL_Event *code);
 void iChatInputChar(unsigned char* input_char);
+void iChatInputInsertChar(unsigned char chr);
 void iChatInputFlush(void);
 void iChatInputBack(void);
 void iChatInputEditing(SDL_Event *code);
@@ -1152,9 +1153,13 @@ void iChatInputDrawCursor(void) {
 void iChatInputChar(unsigned char* input_char) {
 	unsigned char chr;
 
-	aciFont* hfnt = aScrFonts32[iChatInput->font];
-
 	chr = text::utf8_first_codepoint_to_cp866_lossy((char*)input_char,' ');
+	iChatInputInsertChar(chr);
+}
+
+void iChatInputInsertChar(unsigned char chr)
+{
+	aciFont* hfnt = aScrFonts32[iChatInput->font];
 
 	if(hfnt && chr < hfnt->Size) {
 		int leftSelectionPosition = std::min(iChatInput -> cursorPosition, iChatInput -> selectionPosition);
@@ -1397,10 +1402,9 @@ void iChatInputEditing(SDL_Event *event) {
 			std::string clipboard_cp866 = text::utf8_to_cp866_lossy(clipboard,' ');
 
 			for(unsigned char chr : clipboard_cp866){
-				char input_char[2] = { (char)chr, 0 };
-				if((unsigned char)input_char[0] < 32)
-					input_char[0] = ' ';
-				iChatInputChar((unsigned char*)input_char);
+				if(chr < 32)
+					chr = ' ';
+				iChatInputInsertChar(chr);
 			}
 
 			SDL_free(clipboard);

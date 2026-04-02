@@ -95,6 +95,17 @@ bool TtfFontFace::rasterize_glyph(uint32_t codepoint,GlyphBitmap& glyph)
 		return false;
 
 	glyph.provided = TTF_GlyphIsProvided32(font, codepoint) != 0;
+	if(!glyph.provided){
+		glyph.width = 0;
+		glyph.height = 0;
+		glyph.pitch = 0;
+		glyph.minx = 0;
+		glyph.maxx = 0;
+		glyph.miny = 0;
+		glyph.maxy = 0;
+		glyph.advance = 0;
+		return true;
+	}
 
 	if(TTF_GlyphMetrics32(font, codepoint,
 	                      &glyph.minx,&glyph.maxx,
