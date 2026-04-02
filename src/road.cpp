@@ -29,6 +29,7 @@
 
 #include "xjoystick.h"
 #include "network.h"
+#include "text/font_manager.h"
 #include "text/ttf_runtime.h"
 
 #include "3d/3d_math.h"
@@ -1306,6 +1307,7 @@ void restore(void)
 	memStart = 0;
 #endif
 	RestoreSOUND();
+	text::TtfFontManager::instance().clear();
 	text::shutdown_ttf_runtime();
 	SDL_Quit();
 
