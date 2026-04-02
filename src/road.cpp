@@ -29,6 +29,7 @@
 
 #include "xjoystick.h"
 #include "network.h"
+#include "text/ttf_runtime.h"
 
 #include "3d/3d_math.h"
 #include "3d/3dgraph.h"
@@ -463,6 +464,9 @@ int xtInitApplication(void) {
 
 	actintLowResFlag = 1;
     if (XGR_Init(emode)) ErrH.Abort(ErrorVideoMss);
+
+	if(!text::init_ttf_runtime())
+		std::cerr << "SDL2_ttf init failed: " << text::ttf_runtime_error() << std::endl;
 
 
 //WORK	sWinVideo::Init();
@@ -1302,6 +1306,7 @@ void restore(void)
 	memStart = 0;
 #endif
 	RestoreSOUND();
+	text::shutdown_ttf_runtime();
 	SDL_Quit();
 
 //	  win32_dump_mem();

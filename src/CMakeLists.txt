@@ -41,6 +41,9 @@ SET(vangers_SRCS
 	particle/particle.cpp
 	particle/partmap.cpp
 	particle/pmaptype.cpp
+	text/legacy_codec.cpp
+	text/ttf_runtime.cpp
+	text/unicode.cpp
 	rle.cpp
 	road.cpp
 	sound/music.cpp
@@ -95,6 +98,7 @@ else()
 		${VORBISFILE_LIBRARY}
 		${CLUNK_LIBRARY}
 		${SDL2_NET_LIBRARY}
+		${SDL2_TTF_LIBRARIES}
 		${FFMPEG_LIBRARIES}
 		${ZLIB_LIBRARIES}
 		${OPENGL_LIBRARIES}

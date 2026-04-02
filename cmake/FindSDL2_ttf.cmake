@@ -1,0 +1,59 @@
+# - Find SDL2_ttf library and headers
+#
+# It defines:
+#  SDL2_TTF_INCLUDE_DIRS - location of SDL_ttf.h
+#  SDL2_TTF_LIBRARIES    - libraries to link against
+#  SDL2_TTF_FOUND        - whether SDL2_ttf was found
+#  SDL2_TTF_VERSION_STRING
+#
+# Also for internal use:
+#  SDL2_TTF_INCLUDE_DIR
+#  SDL2_TTF_LIBRARY
+
+find_package(PkgConfig QUIET)
+pkg_check_modules(PC_SDL2_TTF QUIET SDL2_ttf)
+
+find_path(SDL2_TTF_INCLUDE_DIR
+  NAMES SDL_ttf.h
+  HINTS
+    ${PC_SDL2_TTF_INCLUDEDIR}
+    ${PC_SDL2_TTF_INCLUDE_DIRS}
+    /Library/Frameworks
+  PATH_SUFFIXES SDL2
+)
+
+find_library(SDL2_TTF_LIBRARY
+  NAMES SDL2_ttf
+  HINTS
+    ${PC_SDL2_TTF_LIBDIR}
+    ${PC_SDL2_TTF_LIBRARY_DIRS}
+    /Library/Frameworks
+  PATH_SUFFIXES x64 x86
+)
+
+if(SDL2_TTF_INCLUDE_DIR AND EXISTS "${SDL2_TTF_INCLUDE_DIR}/SDL_ttf.h")
+  file(STRINGS "${SDL2_TTF_INCLUDE_DIR}/SDL_ttf.h" SDL2_TTF_VERSION_MAJOR_LINE REGEX "^#define[ \t]+SDL_TTF_MAJOR_VERSION[ \t]+[0-9]+$")
+  file(STRINGS "${SDL2_TTF_INCLUDE_DIR}/SDL_ttf.h" SDL2_TTF_VERSION_MINOR_LINE REGEX "^#define[ \t]+SDL_TTF_MINOR_VERSION[ \t]+[0-9]+$")
+  file(STRINGS "${SDL2_TTF_INCLUDE_DIR}/SDL_ttf.h" SDL2_TTF_VERSION_PATCH_LINE REGEX "^#define[ \t]+SDL_TTF_PATCHLEVEL[ \t]+[0-9]+$")
+  string(REGEX REPLACE "^#define[ \t]+SDL_TTF_MAJOR_VERSION[ \t]+([0-9]+)$" "\\1" SDL2_TTF_VERSION_MAJOR "${SDL2_TTF_VERSION_MAJOR_LINE}")
+  string(REGEX REPLACE "^#define[ \t]+SDL_TTF_MINOR_VERSION[ \t]+([0-9]+)$" "\\1" SDL2_TTF_VERSION_MINOR "${SDL2_TTF_VERSION_MINOR_LINE}")
+  string(REGEX REPLACE "^#define[ \t]+SDL_TTF_PATCHLEVEL[ \t]+([0-9]+)$" "\\1" SDL2_TTF_VERSION_PATCH "${SDL2_TTF_VERSION_PATCH_LINE}")
+  set(SDL2_TTF_VERSION_STRING ${SDL2_TTF_VERSION_MAJOR}.${SDL2_TTF_VERSION_MINOR}.${SDL2_TTF_VERSION_PATCH})
+  unset(SDL2_TTF_VERSION_MAJOR_LINE)
+  unset(SDL2_TTF_VERSION_MINOR_LINE)
+  unset(SDL2_TTF_VERSION_PATCH_LINE)
+  unset(SDL2_TTF_VERSION_MAJOR)
+  unset(SDL2_TTF_VERSION_MINOR)
+  unset(SDL2_TTF_VERSION_PATCH)
+endif()
+
+set(SDL2_TTF_INCLUDE_DIRS ${SDL2_TTF_INCLUDE_DIR})
+set(SDL2_TTF_LIBRARIES ${SDL2_TTF_LIBRARY})
+
+include(FindPackageHandleStandardArgs)
+
+find_package_handle_standard_args(SDL2_ttf
+                                  REQUIRED_VARS SDL2_TTF_INCLUDE_DIRS SDL2_TTF_LIBRARIES
+                                  VERSION_VAR SDL2_TTF_VERSION_STRING)
+
+mark_as_advanced(SDL2_TTF_INCLUDE_DIR SDL2_TTF_LIBRARY)

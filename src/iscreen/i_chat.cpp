@@ -13,10 +13,7 @@
 #include "../actint/actint.h"
 
 #include "../network.h"
-
-#ifndef _WIN32
-#include <arpa/inet.h> // ntohl() FIXME: remove
-#endif
+#include "../text/legacy_codec.h"
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -96,9 +93,6 @@ iChatButton* iGetChatButton(int id);
 iChatButton* iGetChatPlayerButton(int id);
 
 void put_map(int x,int y,int sx,int sy);
-
-unsigned char UTF8toCP866(unsigned short utf);
-unsigned short CP866toUTF8(unsigned char cp866);
 
 int getCharGroup(char chr);
 /* --------------------------- DEFINITION SECTION --------------------------- */
@@ -1155,25 +1149,12 @@ void iChatInputDrawCursor(void) {
 	XGR_Rectangle(iChatInput -> PosX + x - cursorWidth / 2, iChatInput -> PosY, cursorWidth, iChatInput -> SizeY, color, color, XGR_FILLED);
 }
 
-void iChatInputChar(char* input_char) {
+void iChatInputChar(unsigned char* input_char) {
 	unsigned char chr;
 
 	aciFont* hfnt = aScrFonts32[iChatInput->font];
 
-	if ((unsigned char)(input_char[0]) < 128) {
-		chr = input_char[0];
-	}
-	else {
-		unsigned short utf = ((unsigned short*)input_char)[0];
-		utf = ntohs(utf);
-		// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
-		if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
-			chr = UTF8toCP866(utf);
-		}
-		else {
-			chr = ' ';
-		}
-	}
+	chr = text::utf8_first_codepoint_to_cp866_lossy((char*)input_char,' ');
 
 	if(hfnt && chr < hfnt->Size) {
 		int leftSelectionPosition = std::min(iChatInput -> cursorPosition, iChatInput -> selectionPosition);
@@ -1203,7 +1184,7 @@ void iChatInputChar(char* input_char) {
 
 void iChatInputChar(SDL_Event *event) {
 	if (event && event -> type == SDL_TEXTINPUT) {
-		iChatInputChar(event -> text.text);
+		iChatInputChar((unsigned char*)event -> text.text);
 	}
 }
 
@@ -1413,21 +1394,16 @@ void iChatInputEditing(SDL_Event *event) {
 			iChatInputField prevBuf = *iChatInput;
 
 			char* clipboard = SDL_GetClipboardText();
+			std::string clipboard_cp866 = text::utf8_to_cp866_lossy(clipboard,' ');
 
-			for (size_t i = 0; i < strlen(clipboard); i++) {
-				char* chr = new char[2]{ clipboard[i], 0 };
-				if ((unsigned char)(chr[0]) >= 128) {
-					chr[1] = clipboard[i + 1];
-					i++;
-				}
-
-				if (chr[0] < 32 && chr[1] == 0) {
-					chr[0] = ' ';
-				}
-
-				iChatInputChar(chr);
+			for(unsigned char chr : clipboard_cp866){
+				char input_char[2] = { (char)chr, 0 };
+				if((unsigned char)input_char[0] < 32)
+					input_char[0] = ' ';
+				iChatInputChar((unsigned char*)input_char);
 			}
 
+			SDL_free(clipboard);
 			iChatInputPrev = prevBuf;
 		}
 		else if ((keycode == SDLK_c || keycode == SDLK_x) && (keymod & KMOD_CTRL)) {
@@ -1439,17 +1415,7 @@ void iChatInputEditing(SDL_Event *event) {
 			}
 
 			std::string copy_string = (iChatInput -> string).substr(leftSelectionPosition, rightSelectionPosition - leftSelectionPosition);
-			std::string new_string;
-			for (size_t i = 0; i < copy_string.length(); i++) {
-				if ((unsigned char)(copy_string[i]) < 128) {
-					new_string.push_back(copy_string[i]);
-				}
-				else {
-					unsigned short utf = CP866toUTF8((unsigned char)(copy_string[i]));
-					new_string.push_back(utf >> 8);
-					new_string.push_back(utf & 0xFF);
-				}
-			}
+			std::string new_string = text::cp866_to_utf8(copy_string);
 
 			SDL_SetClipboardText(new_string.c_str());
 
@@ -1482,24 +1448,6 @@ int getCharGroup(char chr) {
 		}
 
 		return 2;
-	}
-}
-
-unsigned short CP866toUTF8(unsigned char cp866) {
-	if (cp866 >= 0x80 && cp866 <= 0xAF) {
-		return cp866 + 0xD010;
-	}
-	if (cp866 >= 0xE0 && cp866 <= 0xEF) {
-		return cp866 + 0xD0A0;
-	}
-
-	switch(cp866) {
-		case 0xF0: //Ё
-			return 0xD001;
-		case 0xF1: //ё
-			return 0xD191;
-		default:
-			return 0x20;
 	}
 }
 

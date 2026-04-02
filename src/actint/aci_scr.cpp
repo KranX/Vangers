@@ -14,10 +14,7 @@
 
 #include "../network.h"
 #include "../iscreen/iscreen.h"
-
-#ifndef _WIN32
-#include <arpa/inet.h> // ntohl() FIXME: remove
-#endif
+#include "../text/legacy_codec.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -1609,18 +1606,7 @@ void aciScreenDispatcher::InputQuant(SDL_Event *event)
 				break;
 		}
 	} else if (event != nullptr && event->type == SDL_TEXTINPUT) {
-		if ((unsigned char)event->text.text[0] < 128) {
-			chr = event->text.text[0];
-		} else {
-			unsigned short utf = ((unsigned short *)event->text.text)[0];
-			utf = ntohs(utf);
-			// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
-			if ((utf & (1<<(7))) && !(utf & (1<<(10)))) {
-				chr = UTF8toCP866(utf);
-			} else {
-				chr = ' ';
-			}
-		}
+		chr = text::utf8_first_codepoint_to_cp866_lossy(event->text.text,' ');
 		if(hfnt && chr < (hfnt->StartChar-hfnt->EndChar+1) && (hfnt->data[chr]->Flags & NULL_HCHAR) && chr != ' ')
 			return;
 		sz = strlen((char*)ptr);
@@ -1632,24 +1618,6 @@ void aciScreenDispatcher::InputQuant(SDL_Event *event)
 		}
 	}
 
-}
-
-// Only for russian letters
-unsigned char UTF8toCP866(unsigned short utf) {
-	if (utf >= 0xd090 && utf <= 0xd0bf) {
-		return utf - 0xd010;
-	}
-
-	if (utf >= 0xd180 && utf <= 0xd18f) {
-		return utf - 0xd0a0;
-	}
-	switch(utf) {
-		case 0xd081: //Ё
-			return 0xf0;
-		case 0xd191: //ё
-			return 0xf1;
-	}
-	return 0xdb;
 }
 
 void aciScreenDispatcher::PrepareInput(int obj_id)
