@@ -161,6 +161,20 @@ char* diagen_dup_string(const std::string& value)
 	return buffer;
 }
 
+void strip_utf8_bom_in_buffer(char* buffer,int& size)
+{
+	if(!buffer || size <= 0)
+		return;
+
+	const size_t bom_size = text::utf8_bom_size(std::string_view(buffer, (size_t)size));
+	if(!bom_size)
+		return;
+
+	if((size_t)size > bom_size)
+		memmove(buffer, buffer + bom_size, (size_t)size - bom_size);
+	size -= (int)bom_size;
+}
+
 }
 
 char* ConvertUTF8(const char* s,int back = 0)
@@ -641,6 +655,8 @@ void dgFile::load(char* fname,int _len, bool verbose)
 		index = 0;
 		return;
 	}
+
+	strip_utf8_bom_in_buffer(buf, len);
 
 	int i = 0,mode = 1,j;
 	char c;

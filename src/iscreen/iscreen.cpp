@@ -151,6 +151,20 @@ text::LegacyEncoding iscreen_string_encoding(void)
 	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
 }
 
+void strip_utf8_bom_inplace(char* buffer,int& size)
+{
+	if(!buffer || size <= 0)
+		return;
+
+	const size_t bom_size = text::utf8_bom_size(std::string_view(buffer, (size_t)size));
+	if(!bom_size)
+		return;
+
+	if((size_t)size > bom_size)
+		memmove(buffer, buffer + bom_size, (size_t)size - bom_size);
+	size -= (int)bom_size;
+}
+
 template<class TStringElement>
 void iscreen_set_legacy_string(TStringElement* element,const char* value)
 {
@@ -4251,12 +4265,23 @@ void iTextData::load(void)
 	heap_size = fh.size();
 	mem_heap = new char[heap_size];
 	fh.read(mem_heap,heap_size);
+	strip_utf8_bom_inplace(mem_heap, heap_size);
 
 	fh.close();
+
+	if(heap_size <= 0){
+		numLines = 0;
+		data = NULL;
+		reset();
+		flags |= iTEXT_DATA_LOADED;
+		return;
+	}
 
 	for(i = 0; i < heap_size; i ++){
 		if(mem_heap[i] == '\n') num_len ++;
 	}
+	if(heap_size > 0 && mem_heap[heap_size - 1] != '\n')
+		num_len ++;
 
 	data = new char*[num_len];
 	for(i = 0; i < num_len; i ++)

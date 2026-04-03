@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../text/unicode.h"
 
 #include "hfont.h"
 #include "iscreen.h"
@@ -29,6 +30,26 @@ struct iStack
 	iStack(void);
 	~iStack(void);
 };
+
+namespace
+{
+
+void strip_utf8_bom_inplace(char* buffer,int& size)
+{
+	if(!buffer || size <= 0)
+		return;
+
+	const size_t bom_size = text::utf8_bom_size(std::string_view(buffer, (size_t)size));
+	if(!bom_size)
+		return;
+
+	if((size_t)size > bom_size)
+		memmove(buffer, buffer + bom_size, (size_t)size - bom_size);
+	size -= (int)bom_size;
+	buffer[size] = 0;
+}
+
+}
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -1569,9 +1590,11 @@ void load_text(char* fname)
 		fh.open(fname,XS_IN);
 		// buf = aciLoadPackedFile(fh,sz);
 		sz = fh.size();
-		buf = new char[sz];
+		buf = new char[sz + 1];
+		memset(buf, 0, sz + 1);
 		fh.read(buf,sz);
 		fh.close();
+		strip_utf8_bom_inplace(buf, sz);
 		
 		for(i = 0; i < sz; i ++){
 			if(buf[i] == '\r' || buf[i] == '\n') buf[i] = 0;
@@ -1603,6 +1626,8 @@ void load_text(char* fname)
 				}
 			}
 		}
+
+		delete [] buf;
 	}
 }
 
@@ -1620,6 +1645,7 @@ void load_s_text(char* fname)
 		memset(buf, 0, sz + 1);
 		fh.read(buf,sz);
 		fh.close();
+		strip_utf8_bom_inplace(buf, sz);
 		
 		for(i = 0; i < sz; i ++){
 			if(buf[i] == '\r' || buf[i] == '\n') buf[i] = 0;

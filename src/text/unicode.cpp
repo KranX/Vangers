@@ -102,6 +102,17 @@ bool is_valid_utf8(std::string_view text)
 	return true;
 }
 
+size_t utf8_bom_size(std::string_view text)
+{
+	if(text.size() >= 3 &&
+	   (unsigned char)text[0] == 0xEF &&
+	   (unsigned char)text[1] == 0xBB &&
+	   (unsigned char)text[2] == 0xBF)
+		return 3;
+
+	return 0;
+}
+
 size_t utf8_length(std::string_view text)
 {
 	size_t count = 0;

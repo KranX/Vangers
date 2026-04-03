@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 #include <zlib.h>
 #include "../global.h"
+#include "../text/unicode.h"
 
 
 #include "s_mem.h"
@@ -49,6 +50,20 @@ ScriptFile* script;
 #ifndef _BINARY_SCRIPT_
 scMathExpression* mExpr;
 #endif
+
+static void strip_utf8_bom_in_buffer(char* buffer,int& size)
+{
+	if(!buffer || size <= 0)
+		return;
+
+	const size_t bom_size = text::utf8_bom_size(std::string_view(buffer, (size_t)size));
+	if(!bom_size)
+		return;
+
+	if((size_t)size > bom_size)
+		memmove(buffer, buffer + bom_size, (size_t)size - bom_size);
+	size -= (int)bom_size;
+}
 
 ScriptFileBuffer::ScriptFileBuffer(void)
 {
@@ -143,6 +158,7 @@ void ScriptFileBuffer::load(XStream* fh)
 	size = fh -> size();
 	buffer = new char[size];
 	fh -> read(buffer,size);
+	strip_utf8_bom_in_buffer(buffer, size);
 }
 
 void ScriptFileBuffer::save(XStream* fh)
@@ -181,6 +197,7 @@ void ScriptFile::load(const char* fname)
 
 	buffer = new char[Size];
 	fh.read(buffer,Size);
+	strip_utf8_bom_in_buffer(buffer, Size);
 
 	fh.close();
 	while(process_includes()){
@@ -1232,6 +1249,7 @@ int ScriptFile::process_includes(void)
 	Size = fh.size();
 	buffer = new char[Size];
 	fh.read(buffer,Size);
+	strip_utf8_bom_in_buffer(buffer, Size);
 	fh.close();
 	reset();
 
