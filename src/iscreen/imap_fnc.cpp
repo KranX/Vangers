@@ -21,6 +21,7 @@
 
 extern iScreenDispatcher* iScrDisp;
 extern char* iMouseBMP;
+extern int IsMainMenu;
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
@@ -70,7 +71,14 @@ std::shared_ptr<text::TtfFontFace> iscreen_get_hfont_ttf_face(int fnt)
 	if(!HFntTable || !HFntTable[fnt])
 		return nullptr;
 
-	return text::default_ui_ttf_face(HFntTable[fnt]->SizeY, TTF_HINTING_NORMAL, false, 0);
+	int target_height = HFntTable[fnt]->SizeY;
+	int style = TTF_STYLE_NORMAL;
+	if(IsMainMenu){
+		target_height += 1;
+		style = TTF_STYLE_BOLD;
+	}
+
+	return text::default_ui_ttf_face(target_height, TTF_HINTING_NORMAL, false, 0, style);
 }
 
 int iscreen_hfont_peak_level(HFont* font)

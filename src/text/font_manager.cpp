@@ -8,12 +8,13 @@
 namespace text
 {
 
-TtfFontFace::TtfFontFace(std::string file_name_,int point_size_,int hinting_,bool kerning_,int outline_)
+TtfFontFace::TtfFontFace(std::string file_name_,int point_size_,int hinting_,bool kerning_,int outline_,int style_)
 	: file_name(std::move(file_name_)),
 	  point_size(point_size_),
 	  hinting(hinting_),
 	  kerning(kerning_),
-	  outline(outline_)
+	  outline(outline_),
+	  style(style_)
 {
 }
 
@@ -44,6 +45,7 @@ bool TtfFontFace::load(void)
 	TTF_SetFontHinting(font, hinting);
 	TTF_SetFontKerning(font, kerning ? 1 : 0);
 	TTF_SetFontOutline(font, outline);
+	TTF_SetFontStyle(font, style);
 	return true;
 }
 
@@ -161,23 +163,24 @@ TtfFontManager& TtfFontManager::instance(void)
 	return manager;
 }
 
-std::string TtfFontManager::make_key(const std::string& file_name,int point_size,int hinting,bool kerning,int outline) const
+std::string TtfFontManager::make_key(const std::string& file_name,int point_size,int hinting,bool kerning,int outline,int style) const
 {
 	return file_name + "#" +
 	       std::to_string(point_size) + "#" +
 	       std::to_string(hinting) + "#" +
 	       (kerning ? "1" : "0") + "#" +
-	       std::to_string(outline);
+	       std::to_string(outline) + "#" +
+	       std::to_string(style);
 }
 
-std::shared_ptr<TtfFontFace> TtfFontManager::get_face(const std::string& file_name,int point_size,int hinting,bool kerning,int outline)
+std::shared_ptr<TtfFontFace> TtfFontManager::get_face(const std::string& file_name,int point_size,int hinting,bool kerning,int outline,int style)
 {
-	const std::string key = make_key(file_name, point_size, hinting, kerning, outline);
+	const std::string key = make_key(file_name, point_size, hinting, kerning, outline, style);
 	auto it = faces.find(key);
 	if(it != faces.end())
 		return it->second;
 
-	auto face = std::make_shared<TtfFontFace>(file_name, point_size, hinting, kerning, outline);
+	auto face = std::make_shared<TtfFontFace>(file_name, point_size, hinting, kerning, outline, style);
 	if(!face->load()){
 		last_error = face->get_error();
 		return nullptr;

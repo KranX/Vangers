@@ -12,7 +12,7 @@ namespace text
 {
 
 const std::string& default_ui_ttf_font_path(void);
-std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting = TTF_HINTING_NORMAL,bool kerning = false,int outline = 0);
+std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting = TTF_HINTING_NORMAL,bool kerning = false,int outline = 0,int style = TTF_STYLE_NORMAL);
 
 int measure_legacy_ttf_text_width(std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace);
 int measure_legacy_ttf_text_height(std::string_view text,const TtfFontFace& face,int vspace);

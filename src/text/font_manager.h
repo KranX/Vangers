@@ -34,7 +34,7 @@ struct GlyphBitmap
 class TtfFontFace
 {
 public:
-	TtfFontFace(std::string file_name,int point_size,int hinting = TTF_HINTING_NORMAL,bool kerning = true,int outline = 0);
+	TtfFontFace(std::string file_name,int point_size,int hinting = TTF_HINTING_NORMAL,bool kerning = true,int outline = 0,int style = TTF_STYLE_NORMAL);
 	~TtfFontFace(void);
 
 	TtfFontFace(const TtfFontFace&) = delete;
@@ -49,6 +49,7 @@ public:
 	int get_hinting(void) const { return hinting; }
 	bool get_kerning(void) const { return kerning; }
 	int get_outline(void) const { return outline; }
+	int get_style(void) const { return style; }
 
 	int get_height(void) const;
 	int get_ascent(void) const;
@@ -66,6 +67,7 @@ private:
 	int hinting;
 	bool kerning;
 	int outline;
+	int style;
 
 	std::string last_error;
 	TTF_Font* font = nullptr;
@@ -77,7 +79,7 @@ class TtfFontManager
 public:
 	static TtfFontManager& instance(void);
 
-	std::shared_ptr<TtfFontFace> get_face(const std::string& file_name,int point_size,int hinting = TTF_HINTING_NORMAL,bool kerning = true,int outline = 0);
+	std::shared_ptr<TtfFontFace> get_face(const std::string& file_name,int point_size,int hinting = TTF_HINTING_NORMAL,bool kerning = true,int outline = 0,int style = TTF_STYLE_NORMAL);
 	void clear(void);
 
 	const std::string& get_error(void) const { return last_error; }
@@ -85,7 +87,7 @@ public:
 private:
 	TtfFontManager(void) = default;
 
-	std::string make_key(const std::string& file_name,int point_size,int hinting,bool kerning,int outline) const;
+	std::string make_key(const std::string& file_name,int point_size,int hinting,bool kerning,int outline,int style) const;
 
 	std::string last_error;
 	std::unordered_map<std::string, std::shared_ptr<TtfFontFace>> faces;

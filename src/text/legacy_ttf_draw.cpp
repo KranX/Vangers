@@ -120,13 +120,13 @@ std::vector<std::string> default_ui_font_candidates(void)
 	return candidates;
 }
 
-std::shared_ptr<TtfFontFace> best_face_for_path(const std::string& font_path,int target_height,int hinting,bool kerning,int outline)
+std::shared_ptr<TtfFontFace> best_face_for_path(const std::string& font_path,int target_height,int hinting,bool kerning,int outline,int style)
 {
 	std::shared_ptr<TtfFontFace> best_face;
 	int best_delta = INT_MAX;
 
 	for(int point_size = std::max(6, target_height - 6); point_size <= target_height + 6; point_size++){
-		auto face = TtfFontManager::instance().get_face(font_path, point_size, hinting, kerning, outline);
+		auto face = TtfFontManager::instance().get_face(font_path, point_size, hinting, kerning, outline, style);
 		if(!face)
 			continue;
 
@@ -330,13 +330,14 @@ void draw_text_8bit_impl(int x,int y,int color,TtfFontFace& face,int hspace,int 
 	}
 }
 
-std::string make_default_ui_face_key(const std::string& font_path,int target_height,int hinting,bool kerning,int outline)
+std::string make_default_ui_face_key(const std::string& font_path,int target_height,int hinting,bool kerning,int outline,int style)
 {
 	return font_path + "#" +
 	       std::to_string(target_height) + "#" +
 	       std::to_string(hinting) + "#" +
 	       (kerning ? "1" : "0") + "#" +
-	       std::to_string(outline);
+	       std::to_string(outline) + "#" +
+	       std::to_string(style);
 }
 
 }
@@ -353,7 +354,7 @@ const std::string& default_ui_ttf_font_path(void)
 	return resolved;
 }
 
-std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,bool kerning,int outline)
+std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,bool kerning,int outline,int style)
 {
 	const std::string& font_path = default_ui_ttf_font_path();
 	if(font_path.empty())
@@ -362,7 +363,7 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,b
 	target_height = std::max(6, target_height);
 
 	static std::unordered_map<std::string, std::weak_ptr<TtfFontFace>> face_cache;
-	const std::string key = make_default_ui_face_key(font_path, target_height, hinting, kerning, outline);
+	const std::string key = make_default_ui_face_key(font_path, target_height, hinting, kerning, outline, style);
 	auto cache_it = face_cache.find(key);
 	if(cache_it != face_cache.end()){
 		auto cached_face = cache_it->second.lock();
@@ -370,7 +371,7 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,b
 			return cached_face;
 	}
 
-	std::shared_ptr<TtfFontFace> best_face = best_face_for_path(font_path, target_height, hinting, kerning, outline);
+	std::shared_ptr<TtfFontFace> best_face = best_face_for_path(font_path, target_height, hinting, kerning, outline, style);
 
 	if(best_face){
 		FaceVector fallbacks;
@@ -378,7 +379,7 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,b
 			if(candidate == font_path)
 				continue;
 
-			auto fallback_face = best_face_for_path(candidate, target_height, hinting, kerning, outline);
+			auto fallback_face = best_face_for_path(candidate, target_height, hinting, kerning, outline, style);
 			if(!fallback_face || fallback_face.get() == best_face.get())
 				continue;
 
