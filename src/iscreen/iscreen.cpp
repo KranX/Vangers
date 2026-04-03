@@ -91,8 +91,8 @@ void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space
 void i_terrPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space,int level,int hide_mode,int terr);
 void iPutStr2buf(int x,int y,int fnt,int bsx,int bsy,unsigned char* str,unsigned char* buf_to,int mode,int scale,int space);
 int iUtf8StrLen(std::string_view text_value,int f,int space);
-void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode);
-void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode,int terr);
+void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode,bool strong_relief = false);
+void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode,int terr,bool strong_relief = false);
 void iPutStr2bufUtf8(int x,int y,int fnt,int bsx,int bsy,std::string_view text_value,unsigned char* buf_to,int mode,int scale,int space);
 int aUtf8TextWidth32(std::string_view text_value,int font,int hspace);
 int aUtf8TextHeight32(std::string_view text_value,int font,int vspace);
@@ -1644,10 +1644,11 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 		switch(type){
 			case I_STRING_ELEM:
 				if(use_utf8_text){
+					const bool strong_relief = (flags & EL_TEXT_STRING) != 0;
 					if(terrainNum == -1)
-						iPutStrUtf8(x + lX,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode);
+						iPutStrUtf8(x + lX,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,strong_relief);
 					else
-						i_terrPutStrUtf8(x + lX,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,terrainNum);
+						i_terrPutStrUtf8(x + lX,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,terrainNum,strong_relief);
 				}
 				else {
 					if(terrainNum == -1)
@@ -4365,10 +4366,16 @@ void iTextData::copy(iScreenObject* p)
 			if(!(flags & iTEXT_EOF)){
 				switch(el -> type){
 					case I_STRING_ELEM:
-						((iStringElement*)el) -> set_text_auto(data[curLine]);
+						if(text::language_prefers_utf8_assets())
+							((iStringElement*)el) -> set_text_auto(data[curLine]);
+						else
+							((iStringElement*)el) -> init_string(data[curLine]);
 						break;
 					case I_S_STRING_ELEM:
-						((iS_StringElement*)el) -> set_text_auto(data[curLine]);
+						if(text::language_prefers_utf8_assets())
+							((iS_StringElement*)el) -> set_text_auto(data[curLine]);
+						else
+							((iS_StringElement*)el) -> init_string(data[curLine]);
 						break;
 				}
 				curLine ++;

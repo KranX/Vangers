@@ -1319,7 +1319,10 @@ void iInitText(iScreenObject* obj, char* text, int text_len, int font, int space
 			if(t_sz) {
 				p->string = new char[t_sz];
 				p->string_capacity = t_sz;
-				p->set_text_auto(buf + i);
+				if(text::language_prefers_utf8_assets())
+					p->set_text_auto(buf + i);
+				else
+					p->init_string(buf + i);
 				p->flags |= EL_TEXT_STRING;
 
 				p->font = font;
@@ -1358,7 +1361,10 @@ void iInitS_Text(iScreenObject* obj,char* text,int text_len,int font,int space,i
 				p = new iS_StringElement;
 				p -> string = new char[t_sz];
 				p -> string_capacity = t_sz;
-				p -> set_text_auto(buf + i);
+				if(text::language_prefers_utf8_assets())
+					p -> set_text_auto(buf + i);
+				else
+					p -> init_string(buf + i);
 				p -> flags |= EL_TEXT_STRING;
 
 				p -> font = font;

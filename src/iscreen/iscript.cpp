@@ -2,6 +2,7 @@
 
 #include "../global.h"
 #include "../text/unicode.h"
+#include "../text/language_policy.h"
 
 #include "hfont.h"
 #include "iscreen.h"
@@ -1609,7 +1610,10 @@ void load_text(char* fname)
 				p = new iStringElement;
 				t_sz = strlen(buf + i) + 1;
 				if(t_sz){
-					p -> set_text_auto(buf + i);
+					if(text::language_prefers_utf8_assets())
+						p -> set_text_auto(buf + i);
+					else
+						p -> init_string(buf + i);
 					p -> flags |= EL_TEXT_STRING;
 
 					p -> font = DefFont;
@@ -1660,7 +1664,10 @@ void load_s_text(char* fname)
 				t_sz = strlen(buf + i) + 1;
 				if(t_sz){
 					p = new iS_StringElement;
-					p -> set_text_auto(buf + i);
+					if(text::language_prefers_utf8_assets())
+						p -> set_text_auto(buf + i);
+					else
+						p -> init_string(buf + i);
 					p -> flags |= EL_TEXT_STRING;
 
 					p -> font = DefFont;

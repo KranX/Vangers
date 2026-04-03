@@ -41,7 +41,7 @@ void put_level(int x,int y,int sx,int sy,int lev);
 void get_buf(int x,int y,int sx,int sy,unsigned char* buf);
 void get_col_buf(int x,int y,int sx,int sy,unsigned char* buf);
 void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space,int level,int hide_mode);
-void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode);
+void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode,bool strong_relief);
 int iStrLen(unsigned char* p,int f,int space);
 int iUtf8StrLen(std::string_view text_value,int f,int space);
 
@@ -137,13 +137,34 @@ const text::GlyphBitmap* iscreen_get_renderable_glyph(text::TtfFontFace& face,un
 	return iscreen_get_renderable_codepoint(face, iscreen_decode_legacy_char(ch, encoding));
 }
 
-void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,int legacy_height,int legacy_peak_level,int scale,
+int iscreen_hfont_floor_level(int legacy_peak_level,bool strong_relief)
+{
+	if(!strong_relief)
+		return HFONT_NULL_LEVEL;
+
+	int extra_relief = (legacy_peak_level - HFONT_NULL_LEVEL) / 3;
+	if(extra_relief < 10)
+		extra_relief = 10;
+	if(extra_relief > 20)
+		extra_relief = 20;
+
+	int floor_level = HFONT_NULL_LEVEL + extra_relief;
+	if(floor_level > legacy_peak_level)
+		floor_level = legacy_peak_level;
+
+	return floor_level;
+}
+
+void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,int legacy_height,int legacy_peak_level,int scale,bool strong_relief,
                           std::vector<unsigned char>& cell,int& cell_width,int& cell_height,int& left_offs,int& right_offs)
 {
 	const text::GlyphBitmap* glyph = iscreen_get_renderable_codepoint(face, codepoint);
 	const int advance = glyph ? std::max(glyph->advance, 0) : 0;
 	const int minx = glyph ? glyph->minx : 0;
 	const int maxx = glyph ? glyph->maxx : 0;
+	const int floor_level = iscreen_hfont_floor_level(legacy_peak_level, strong_relief);
+	const int relief_span = std::max(0, legacy_peak_level - floor_level);
+	const int base_relief = std::max(0, floor_level - HFONT_NULL_LEVEL);
 
 	left_offs = std::max(0, -minx);
 	cell_height = std::max(1, legacy_height);
@@ -165,7 +186,13 @@ void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,i
 
 	for(int gy = 0; gy < glyph->height; gy++){
 		for(int gx = 0; gx < glyph->width; gx++){
-			const unsigned int alpha = glyph->alpha[(size_t)gy * (size_t)glyph->pitch + (size_t)gx];
+			unsigned int alpha = glyph->alpha[(size_t)gy * (size_t)glyph->pitch + (size_t)gx];
+			if(strong_relief){
+				if(alpha < 32)
+					continue;
+				if(alpha < 96)
+					alpha = 96;
+			}
 			if(!alpha)
 				continue;
 
@@ -174,8 +201,11 @@ void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,i
 			if(px < 0 || px >= cell_width || py < 0 || py >= cell_height)
 				continue;
 
-			int level = (int)((alpha * (legacy_peak_level - HFONT_NULL_LEVEL) + 127) / 255);
-			level = (level * scale) >> 8;
+			int relief = base_relief;
+			if(relief_span > 0)
+				relief += (int)((alpha * relief_span + 127) / 255);
+
+			int level = (relief * scale) >> 8;
 			level += HFONT_NULL_LEVEL;
 			if(level < 0)
 				level = 0;
@@ -187,10 +217,10 @@ void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,i
 	}
 }
 
-void build_hfont_ttf_cell(text::TtfFontFace& face,unsigned char ch,text::LegacyEncoding encoding,int legacy_height,int legacy_peak_level,int scale,
+void build_hfont_ttf_cell(text::TtfFontFace& face,unsigned char ch,text::LegacyEncoding encoding,int legacy_height,int legacy_peak_level,int scale,bool strong_relief,
                           std::vector<unsigned char>& cell,int& cell_width,int& cell_height,int& left_offs,int& right_offs)
 {
-	build_hfont_ttf_cell_codepoint(face, iscreen_decode_legacy_char(ch, encoding), legacy_height, legacy_peak_level, scale,
+	build_hfont_ttf_cell_codepoint(face, iscreen_decode_legacy_char(ch, encoding), legacy_height, legacy_peak_level, scale, strong_relief,
 	                               cell, cell_width, cell_height, left_offs, right_offs);
 }
 
@@ -875,7 +905,7 @@ void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space
 		}
 
 		if(face){
-			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, scale,
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, scale, false,
 			                     ttf_cell, sx, sy, left_offs, right_offs);
 			put_buf(_x - left_offs,_y,sx,sy,ttf_cell.data(),ttf_cell.data(),level,hide_mode);
 			_x += sx - right_offs - left_offs + space;
@@ -897,7 +927,7 @@ void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space
 	}
 }
 
-void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode)
+void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode,bool strong_relief)
 {
 	HFont* p = HFntTable[fnt];
 	auto face = iscreen_get_hfont_ttf_face(fnt);
@@ -924,7 +954,7 @@ void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int sc
 			continue;
 		}
 
-		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, scale, ttf_cell, sx, sy, left_offs, right_offs);
+		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, scale, strong_relief, ttf_cell, sx, sy, left_offs, right_offs);
 		put_buf(_x - left_offs, _y, sx, sy, ttf_cell.data(), ttf_cell.data(), level, hide_mode);
 		_x += sx - right_offs - left_offs + space;
 	}
@@ -951,7 +981,7 @@ void i_terrPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int 
 		}
 
 		if(face){
-			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, scale,
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, scale, false,
 			                     ttf_cell, sx, sy, left_offs, right_offs);
 			put_tbuf(_x - left_offs,_y,sx,sy,ttf_cell.data(),ttf_cell.data(),level,hide_mode,terr);
 			_x += sx - right_offs - left_offs + space;
@@ -973,7 +1003,7 @@ void i_terrPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int 
 	}
 }
 
-void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode,int terr)
+void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode,int terr,bool strong_relief)
 {
 	HFont* p = HFntTable[fnt];
 	auto face = iscreen_get_hfont_ttf_face(fnt);
@@ -1000,7 +1030,7 @@ void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,i
 			continue;
 		}
 
-		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, scale, ttf_cell, sx, sy, left_offs, right_offs);
+		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, scale, strong_relief, ttf_cell, sx, sy, left_offs, right_offs);
 		put_tbuf(_x - left_offs, _y, sx, sy, ttf_cell.data(), ttf_cell.data(), level, hide_mode, terr);
 		_x += sx - right_offs - left_offs + space;
 	}
@@ -1027,7 +1057,7 @@ void iPutStr2buf(int x,int y,int fnt,int bsx,int bsy,unsigned char* str,unsigned
 		}
 
 		if(face){
-			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, 256,
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, 256, false,
 			                     ttf_cell, sx, sy, left_offs, right_offs);
 			h_put_buf2buf(_x - left_offs,_y,sx,sy,bsx,bsy,ttf_cell.data(),buf_to);
 			_x += sx - right_offs - left_offs + space;
@@ -1073,7 +1103,7 @@ void iPutStr2bufUtf8(int x,int y,int fnt,int bsx,int bsy,std::string_view text_v
 			continue;
 		}
 
-		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, 256, ttf_cell, sx, sy, left_offs, right_offs);
+		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, 256, false, ttf_cell, sx, sy, left_offs, right_offs);
 		h_put_buf2buf(_x - left_offs, _y, sx, sy, bsx, bsy, ttf_cell.data(), buf_to);
 		_x += sx - right_offs - left_offs + space;
 	}
