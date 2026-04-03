@@ -238,6 +238,27 @@ static inline bool actint_small_japanese_kana(uint32_t codepoint)
 	}
 }
 
+static int actint_utf8_leading_trim32(text::TtfFontFace& face,std::string_view text_value)
+{
+	size_t offset = 0;
+	uint32_t codepoint = 0;
+
+	while(text::utf8_next(text_value, offset, codepoint)){
+		if(codepoint == '\r')
+			continue;
+		if(codepoint == '\n')
+			break;
+
+		const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(face, codepoint);
+		if(!glyph)
+			continue;
+
+		return std::max(glyph->minx, 0);
+	}
+
+	return 0;
+}
+
 static void actint_draw_ttf_glyph_screen(int x,int y,const text::GlyphBitmap& glyph,int primary,int secondary)
 {
 	if(glyph.alpha.empty())
@@ -387,7 +408,8 @@ void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_vie
 		const int col_sz2 = (color_size >> 16) & 0xFF;
 		const int ascent = face->get_ascent();
 		const int hspace = space + text::default_ui_text32_extra_hspace();
-		int pen_x = x;
+		const int leading_trim = actint_utf8_leading_trim32(*face, text_value);
+		int pen_x = x - leading_trim;
 		size_t offset = 0;
 		uint32_t codepoint = 0;
 
