@@ -1,0 +1,642 @@
+"何について"
+"知りたい？"
+
+[mechos] [メホス]
+/* Boond */
+"メホスはビューロの装備である。貴様には勤務期間中のみ使用が許可されている。"
+{The Buro}
+/* Commissar */
+"ヴァンガーは自分のメホスについてすべて把握していなければならない。"
+/* Agent */
+"それはバンチ間連絡とビューロ任務遂行のための機械だ。"
+
+[Fostral] [フォストラル]
+/* Boond */
+"フォストラルは貴様には過ぎた場所だ、ヴァンガー。貴様が仕えるのはグロークスだ。余所見せず、忠実に働け。"
+{Glorx}
+/* Commissar */
+"ギールアやオブーリーズから貴様の成果を聞かなくなって久しい。貴様が仕えるのはビーボラットであって、イリーポッドではない。"
+{Geer'ah} {Oboorez}
+/* Agent */
+"フォストラルは粘つくイリーポッドどもの世界だ。グロークスにはフォストラルへつながるパッセージがある。いずれ必ず訪れよ。"
+
+[Eleepods] [イリーポッド]
+/* Boond */
+"愚鈍な獣だ。だが貴様よりは少し賢いかもしれんな。貴様にはイリーポッドの幼生めいたところがある。"
+/* Commissar */
+"脂ぎった獣どもだ。フォストラルで悪臭を放っている。コミッサーが接触することは許可されていない。"
+/* Agent */
+"ビーボラットの消化管に収まるべき産物だ。イリーポッド相手の工作はビューロにとって重要任務である。虫を一匹連れて来れば褒美を与える。"
+
+[Leepky] [リープキー]
+/* Boond */
+"照会は無視された。"
+/* Commissar */
+"グロークスの主敵だ。あいつについて聞く前に、もう少し経験を積んでこい。"
+/* Agent */
+"リープキーはイリーポッド側の指揮者だ。なかなか狡猾でな。他のエージェントによれば、奴は巣穴に怪しい物体を隠しているらしい。調査が必要だ。"
+
+[Podish] [ポディッシュ]
+/* Boond */
+"ポディッシュは遠く、ブーラウチックは近く、ビューロは至る所にある！ 働け、そして恐れよ、スレイブ！"
+{Boorawchick} {The Buro} {Slave}
+/* Commissar */
+"イリーポッドどもの主要な穴だ。コミッサーは安全上の理由からポディッシュへの接近を許可されていない。"
+{Commissar}
+/* Agent */
+"世界の鎖の中でもっとも古いエスケイヴだ。そしてもっとも悪辣でもある。極めて狡猾なイリーポッドどもが棲みついている。気をつけろ、エージェント。"
+
+[escave] [エスケイヴ]
+/* Boond */
+"ヴァンガーおよびビーブはエスケイヴ内部への立ち入りを許可されていない。拘留区画にのみ滞在を許される。"
+/* Commissar */
+"我々はエスケイヴに住み、そこに財産を蓄える。で、それを聞いて何をするつもりだ？"
+/* Agent */
+"ビーボラット征服をたくらむ敵の陰謀を打ち砕くために、ビューロがエスケイヴを発明したのだ。"
+
+[pod] [ポッド]
+/* Boond */
+"この単語は禁止語彙一覧に登録されている。エスケイヴ内で使用してはならない。"
+/* Commissar */
+"私を怒らせるな！ 私はビーボラットの利益を代表している。"
+/* Agent */
+"ポッドとはイリーポッドのテロ組織である。我々は全力でこれに対抗している！"
+
+[bunch] [バンチ]
+/* Boond */
+"ビーボラットのバンチが貴様を育てている。感謝し、勤勉であれ。"
+/* Commissar */
+"この私、ブーラウチックがヴィグブーのビーボラット・バンチを統治している。ゆえに我々のバンチこそグロークスでもっとも権威がある。"
+{VigBoo}
+/* Agent */
+"チェーンのバイオスはすべてバンチへ集約されている。主たるものはビーボラットのバンチである。"
+
+[The Chain] [チェーン]
+/* Boond */
+"グロークスはチェーンの中心にある。スレイブが知ることを許されるのはそこまでだ。"
+{Slave}
+/* Commissar */
+"チェーンとはグロークスに、いくつかの他世界を加えたものだ。それらはパッセージで結ばれている。"
+/* Agent */
+"グロークス、フォストラル、ネクロス、エクスプロ、そしていくつかの放棄世界がチェーンを構成している。ビューロはその全域を支配したがっている。"
+
+[Larvae] [ラーヴァ]
+/* Boond */
+"照会は完全に無視された。ビューロへ追記：過剰に好奇心の強いスレイブに関する情報提供を要請する。"
+{Slave}
+/* Commissar */
+"この情報はビーボラットの安全保障上の利益により、コミッサーには開示できない。"
+/* Agent */
+"ラーヴァはすべてのバイオスにとって万物そのものだ。周期が巡り、英雄が偉業を成し、漂流者が罪を償うのもラーヴァのおかげだ。ラーヴァは地の底、我々の手の届かぬ場所に棲む。だがビューロはその困難を…… ふむ、これ以上は話しすぎだ。"
+
+[Beeboorats] [ビーボラット]
+/* Boond */
+"我らビーボラットはグロークスの誇り、フォストラルの恐怖、ビーブの支配者、ラーヴァに愛されし者、そしてチェーンの装飾である。これで十分ではないか？"
+/* Commissar */
+"この私、ブーラウチックはビューロ認可の模範的ビーボラットである！"
+/* Agent */
+"このエージェントは誰に仕えているのかを不審なほど忘れやすい。ビューロへ報告：忠誠心の低いエージェントを観察中。"
+
+[Glorx] [グロークス]
+/* Boond */
+"貴様はいま、チェーン最高の世界たるグロークスの道を耕している。"
+/* Commissar */
+"グロークスは世界の鎖を飾る至宝である。"
+/* Agent */
+"グロークスはあらゆる世界の中でもっとも湿潤だ。どこへ行ってもグロークスの偉大さを説け！"
+
+[raffa] [ラッファ]
+/* Boond */
+"反逆者どもだ！ ビューロは連中を完全かつ無条件に搾取する政令を準備中である。"
+/* Commissar */
+"ビューロを敬わぬ退廃種だ。我々の作戦の妨げになる。"
+/* Agent */
+"連中と関わるな、エージェント。貴様には別の責務がある。"
+
+[Incubator] [インキュベーター]
+/* Boond */
+"The main Eleepod escave. A Slave doesn't need this information."
+{Slave}
+/* Commissar */
+"The place where Eleepods are born. This top-secret information was delivered by the Buro's Agents."
+/* Agent */
+"An Agent's mission is to keep a good watch over Incubator."
+
+[bios] [バイオス]
+/* Boond */
+"You are not tied to any particular bios, so the Buro limits the time you may spend in escaves."
+{The Buro}
+/* Commissar */
+"All bios obey Larvae, and the best bios is Beeboorats. They obey Larvae and the Buro. Therefore the others are insignificant."
+/* Agent */
+"Three bios have been fixed in the worlds of the Chain: Eleepods, Beeboorats, and Zeexen. There are some rumors going around about the Departed Bios. This information is of interest to the Buro."
+
+[cirt] [サート]
+/* Boond */
+"I'm hereby notifying you of the Buro's decree: To avoid mixing up different sorts of cirt, Slaves are not permitted to bring any rectangular objects that they find on worlds into escaves."
+{The Buro} {Slave}
+/* Commissar */
+"Were it not for cirt, Progress wouldn't happen, the Election of the Castaways would never start, and the time for Heroes' exploits wouldn't come. Time would stop and life would become impossible."
+/* Agent */
+"Cirt is soil collected from the place where a Larva once was. Each Agent's primary mission is to find these places and collect the cirt."
+
+[Feenger] [フィンガー]
+/* Boond */
+"With curiosity like that you'll be hanging around with the castaways in Ogorod pretty soon!"
+{castaway} {Ogorod}
+/* Commissar */
+"A piece of Leepky."
+/* Agent */
+"Go to Incubator and you'll see for yourself."
+
+[Passage] [パッセージ]
+/* Boond */
+"Slaves are not permitted to come close to Passages, to prevent their being spoiled or plugged up."
+{Slave}
+/* Commissar */
+"Passages connect worlds. The Buro knows the secret of traveling through Passages."
+/* Agent */
+"A vanger's mechos can go through a Passage into anther world."
+
+[Zeexen] [ズィークセン]
+/* Boond */
+"Contact with the Zeexen leads Slaves to treachery. Forget about them!"
+{Slave}
+/* Commissar */
+"Inhabitants of Necross, wannabe fliers, with evil tongues and no morals."
+/* Agent */
+"A headache for the Buro. The Zeexen from their upper escave are hatching a plot to poison the Buro and its counselors. Go there and defeat the scoundrels' plot."
+
+[eLeech] [イリーチ]
+/* Boond */
+"Just get it, wheeler! Here is its description: wrinkled, big head, distinct Eleepod smell."
+/* Commissar */
+"A product of Incubator. The Buro's analysts have identified him as an immature Eleepod. He's valuable."
+/* Agent */
+"Many of our Agents have died trying to capture and deliver an eLeech. By now, the Buro and its counselors have forgotten what an eLeech tastes like..."
+
+[nymbos] [ニムボス]
+/* Boond */
+"The Buro has waved your request aside."
+/* Commissar */
+"When an eLeech isn't available, the Buro chows down on nymbos."
+/* Agent */
+"Attention, Agent! Your curiosity oversteps the Buro's general boundaries for Agents."
+
+[Eleection] [イリークション]
+/* Boond */
+"Boorawchick feels sick from this word."
+/* Commissar */
+"The dumb Eleepods couldn't manage Progress or Heroism, so they have the Eleection."
+{Progress} {Heroism}
+/* Agent */
+"If you ever happen to be on Fostral during the Eleection, stay sharp."
+
+[vangers] [ヴァンガー]
+/* Boond */
+"The dregs of the bios. Only the wise Buro could find a use for them, earning even more praise for the Beeboorats."
+{The Buro}
+/* Commissar */
+"Most vangers rust on the worlds. Only the best become Agents and deliver cirt."
+/* Agent */
+"The Buro only recently recognized the vangers' usefulness."
+
+[phlegma] [フレグマ]
+/* Boond */
+"Why do you need phlegma? To grease your mechos? Don't ruin the Buro's equipment!"
+/* Commissar */
+"The crummy Eleepods can only lie in phlegma."
+/* Agent */
+"I don't need phlegma. Geer'ah knows what it's used for - the Heroes in the stadium tumble about in the slime!"
+
+[The Softie] [ソフティー]
+/* Boond */
+"Start picking up Valorins immediately!"
+{Valorin}
+/* Commissar */
+"According to our information from the Zeexen, the Softie are somehow connected to Fostral."
+/* Agent */
+"The Buro believes that all the Passages were built by the Softie. The Agents' mission is to find traces of them. The Buro wants to build Passages also."
+
+[The Cryspo] [クリスポ]
+/* Boond */
+"Where did you hear about the Cryspo, stupid Slave?"
+{Slave}
+/* Commissar */
+"The Cryspo once ruled the whole Chain of Worlds."
+/* Agent */
+"The Buro's analysts believe that Cryspo is another name for the Softie."
+
+[Necross] [ネクロス]
+/* Boond */
+"A source of stink and mold. The most appropriate place for worthless slaves."
+{Slave}
+/* Commissar */
+"Necross is a big world inhabited by Zeexen. One big rebel lair in one big swamp!"
+/* Agent */
+"Necross is a worse place than Fostral! There is unverified information about a buried Passage on Necross. No one has actually seen it, but the Buro is quite interested in any information about it."
+
+[P-beam] [Pビーム]
+/* Boond */
+"Repeat your question louder. To Buro: Boorawchick has been provoked. Keeping cool and alert."
+{The Buro} {Boorawchick}
+/* Commissar */
+"The shadow of the Eleepods' plot. Alas, Commissar, we are all in danger."
+/* Agent */
+"The P-beam is a gang of cunning Eleepods. Using the P-beam, they can see anything in the Chain. The Buro is raising lots of Agents so that they don't catch us unguarded."
+
+[Xplo] [エクスプロ]
+/* Boond */
+"You speak about Xplo but can't even get to Ogorod!"
+{Ogorod}
+/* Commissar */
+"A feeble Commissar wants to know about the world of shifting sands? Better go get to work at PeepShow!"
+/* Agent */
+"The fourth inhabited world. No one can get into its escave. According to the available information, a magical device is needed to get there. Nothing else is known."
+
+[Departed Bios] [去りしバイオス]
+/* Boond */
+"They were too lax with their slaves, which ruined them. But that's not a threat to us."
+{Slave}
+/* Commissar */
+"They left lots of horrible weapons, and their disappearance is a mystery. "
+/* Agent */
+"The Buro knows that this bios once aimed to gain full control over the Larvae, and it seems they succeeded."
+
+[Plump-up] [プランプアップ]
+/* Boond */
+"Don't spoil the Boorawchick's home!"
+{Boorawchick}
+/* Commissar */
+"Eleepods plumped up from stupidity. But Commissars are just as stupid!"
+/* Agent */
+"Agent! About face!"
+
+[Gulp-down] [ガルプダウン]
+/* Boond */
+"To Buro: Requesting information about free space in Ogorod. Need urgent deactivation of an insane Slave."
+{Ogorod} {Slave}
+/* Commissar */
+"An Eleepod cycle. The Beeboorats have no interest in it."
+/* Agent */
+"I order you not to go to Fostral anymore. It has a bad effect on you!"
+
+[beebs] [ビーブ]
+/* Boond */
+"Beebs will even save an abject slave. But for what?"
+{Slave}
+/* Commissar */
+"This is what the Cryspo looked like. Probably."
+/* Agent */
+"We know more about this than the others. For you, it's a reward."
+
+[Creature Soup] [クリーチャー・スープ]
+/* Boond */
+"The Buro tries its best to erase these rumors. But crummy slaves will dig this nonsense up anyway. What a shame..."
+{Slave}
+/* Commissar */
+"Enemy propaganda. The Zeexen broadcast this stuff."
+/* Agent */
+"What I'm going to say will really bother you! According to the Zeexen accounts, the Eleepods and Beeboorats came from the Creature Soup."
+
+[The Clash] [クラッシュ]
+/* Boond */
+"Hmm, you found the Zeexen tablets on Glorx, huh? Shall I remind you about the Manual? There are only two things a Slave needs to know about: Valorins and shrubs!"
+{Manual} {Slave} {Valorin} {shrub}
+/* Commissar */
+"Something from long ago. The Buro has no interest in it."
+/* Agent */
+"Some of our weapons come from the time of the Clash."
+
+[Spiral] [スパイラル]
+/* Boond */
+"Unfortunately we can't take your spiral out of your mechos, scoundrel. Forget about it until we explicitly mention it."
+/* Commissar */
+"You ought to know better."
+/* Agent */
+"Different mechos have spirals of different sizes. You can't get into some of the worlds if you only have a little one."
+
+/*******************  Beeboorat's terms   **************************/
+
+[ruBeecation] [ルビーケーション]
+/* Boond*/
+"ruBeecation is your initiation into the Buro's activity. The most important event in your life. All vangers without Rubbox are subject to ruBeecation."
+{The Buro} {Rubbox}
+/* Commissar */
+"We cure lazy Commissars with ruBeecation. Once they try on Slave gear, they all understand the wisdom and kindness of the Buro."
+/* Agent */
+"ruBeecation of an Agent is an extreme measure. The sapless worlds sometimes affect our servants so badly that they lose their minds and become unsuitable for any position but that of Slave."
+
+[Rubbox] [ラブボックス]
+/* Boond */
+"The Buro exterminates unregistered vangers. You are lucky and are now registered as a Beeboorat slave. Your Rubbox certifies this. From now on, your every step is recorded and evaluated. Losing your Rubbox will lead to deplorable consequences."
+{The Buro} {Slave}
+/* Commissar */
+"Your Rubbox tells me whether to degrade you or whether to promote you to Commissar. Your Rubbox is you. No Rubbox, no you."
+{Agent}
+/* Agent */
+"An Agent that hasn't learned what a Rubbox is yet? Guess that's because of all that shaking and moisture. He's forgotten that he was once a Slave!"
+
+[VigBoo] [ヴィグブー]
+/* Boond */
+"Here in VigBoo you start your difficult yet honorable service to Beeboorats. It's here you must load Valorins and shrubs and ship them to their respective destinations."
+{shrub} {Valorin}
+/* Commissar */
+"In VigBoo, you can find Boorawchick and learn about our laws and the Manual of the Buro."
+{Boorawchick} {Manual} {The Buro}
+/* Agent */
+"The Beeboorats' stone citadel."
+
+[Lampasso] [ランパッソ]
+/* Boond */
+"Remember the main rule, Slave. Lampasso is an escave in the upper part of Glorx. It's where the stadiums are, where the Heroes perform their feats. It's there you must deliver the Valorins which you collect here."
+{Valorin}
+/* Commissar */
+"The stadium is in Lampasso. Commissars bring Nucleobooms to the stadium. If you haven't learned this yet, I'll have carry out ruBeecation again!"
+{Nucleoboom} {ruBeecation}
+/* Agent */
+"If you've forgotten this, don't try to recall it. The stylish Geer'ah will restore your memory."
+
+[Ogorod] [オゴロド]
+/* Boond */
+"The edge of Glorx, on the bottom of the world. Now you'll deliver shrubs there after you get them in the store here. But if you don't do your job, soon you'll be getting to know Ogorod from the inside!"
+{shrub}
+/* Commissar */
+"The place where, by the order of the Buro, we exploit shrubs and dull vangers. You deliver peeperettes there. By the way, do you know what peeperettes are?"
+{peeperette}
+/* Agent */
+"Many fat beebs live near these. But a determined Agent can always earn some money by carrying out the Buro's missions!"
+
+[Valorin] [ヴァロリン]
+/* Boond */
+"You only need know two things: their source and their destination. You take Valorins from here and deliver them to Lampasso."
+{Lampasso}
+/* Commissar */
+"The chosen one. His feats establish the Beeboorats' glory among all the weaker bios."
+/* Agent */
+"It's thanks to the Heroes' feats that the Beeboorats exist!"
+
+[shrub] [シュラブ]
+/* Boond */
+"Shrubs must be taken from VigBoo to Ogorod. A Slave will never become a Commissar without first working as a shrub-shipper!"
+{VigBoo} {Ogorod} {Slave} {Commissar}
+/* Commissar */
+"Rejected by the Buro, this is the last refuge for peeperettes."
+{peeperette}
+/* Agent */
+"The Buro has received information that Eleepods are using our shrubs against us."
+
+[peeperette] [ピーペレット]
+/* Boond */
+"Peeperettes fall from the sky. They're only for Commissars."
+{Commissar}
+/* Commissar */
+"Remember this description. Color: dark. Source: Jablees. Found on the roads of Glorx during the Election of the Castaways. Must be picked up and shipped to Ogorod."
+{Election of the Castaways} {Jablees} {Ogorod}
+/* Agent */
+"Important items. Punishment for castaways."
+
+[Nucleoboom] [ニュークレオブーム]
+/* Boond */
+"The stylish Geer'ah will go crazy if he finds Nucleobooms in your cargo hold. Watch what you pick up!"
+{Geer'ah}
+/* Commissar */
+"The Heroes will not accomplish their feats without Nucleobooms, so gathering Nucleobooms is a Commissar's primary mission. Wait for Heroism, when you'll get additional instructions from Geer'ah."
+{Heroism} {Geer'ah}
+/* Agent */
+"Nucleobooms and peeperettes are related."
+
+[Jablees] [ジャブリーズ]
+/* Boond */
+"Jablees watch over lazy, dull slaves. Yes, your every step is under the control of the Buro!"
+{Jablees} {The Buro}
+/* Commissar */
+"They show up during Heroism and the Election of the Castaways and disseminate Nucleobooms and peeperettes, respectively. Don't try to shoot them. They fly too high."
+{Heroism} {Election of the Castaways} {Nucleoboom} {peeperette}
+/* Agent */
+"Jablees are the pride of the sons of Glorx. When they fly high above us, we are filled with courage and valor."
+
+[Progress] [進捗]
+/* Boond */
+"That's when we decide what to do with slaves."
+{Slave}
+/* Commissar */
+"Boorawchick reports to the Buro about all work completed."
+{Boorawchick}
+/* Agent */
+"It's time for appointments and promotions in the Buro!"
+
+[Heroism] [英雄性]
+/* Boond */
+"The Nucleoboom harvest. Slaves must not interfere with the Commissars' business!"
+{Nucleoboom} {Slave}
+/* Commissar */
+"Jablees sow Nucleobooms on Glorx. A good chance for you to distinguish yourself, Commissar. But remember that Nucleobooms will not survive into the next cycle. Don't linger. Ship your harvest to Lampasso! Then Geer'ah will announce the winner of Nuclear War."
+{Nucleoboom} {Lampasso} {Geer'ah} {Nuclear War}
+/* Agent */
+"Inquiry ignored."
+
+[Election of the Castaways] [漂流者の選定]
+/* Boond */
+"The peeperette harvest. Slaves must not interfere with the Commissars' business!"
+{Slave} {peeperette} {Commissar}
+/* Commissar */
+"The Buro arranges the PeepShow for Commissars during this cycle. Place: roads of Glorx. Objective: peeperettes. Destination: Ogorod."
+{PeepShow} {peeperette} {Ogorod}
+/* Agent */
+"Go take a look around Ogorod, Agent. You'll remember it right away. But take care not to stay there forever!"
+
+[castaway] [漂流者]
+/* Boond */
+"You're risking some unpleasant, direct experience in Ogorod, Slave."
+{Slave} {Ogorod}
+/* Commissar */
+"Alas, Commissar, not only do our enemies surround us, but there are enemies on the inside, too. And they are even more harmful. The Buro successfully roots them out."
+/* Agent */
+"Leepky likes our castaways."
+
+[PeepShow] [ピープショー]
+/* Boond */
+"If you work well, Slave, you'll get to see the amazing PeepShow."
+{Slave}
+/* Commissar */
+"A Commissar's first element. The intense harvesting of peeperettes! Oboorez will tell you the rules."
+{Commissar} {peeperette} {Oboorez}
+/* Agent */
+"The Buro organizes the PeepShow so that the castaways receive proper punishment."
+
+[Nuclear War] [核戦争]
+/* Boond */
+"A careless Slave can be accidentally squashed in Nuclear War."
+/* Commissar */
+"The reaping of the holy Nucleobooms, which are then delivered to the brave Heroes. You'll get instructions from the officer responsible for sports - Geer'ah."
+{Nucleoboom} {Geer'ah}
+/* Agent */
+"Beware, Agent! If not for Nuclear War, many Heroes wouldn't get their Nucleobooms. The Buro would never allow this."
+
+[Geer'ah] [ギールア]
+/* Boond */
+"Geer'ah compels observance of and obedience to the Buro's Manual. Don't goof up in front of him. Bring Valorins to Lampasso, and try not to complain."
+{Manual} {The Buro} {Lampasso} {Valorin}
+/* Commissar */
+"The officer in charge of sports events, a post of great responsibility. He resides in Lampasso."
+/* Agent */
+"The stylish Geer'ah, the hope of all the Beeboorats."
+
+[Boorawchick] [ブーラウチック]
+/* Boond */
+"I'm Boorawchick. It's thanks to my kindness that you've got the opportunity to work for Beeboorats. Be faithful and obedient. I'm keeping an eye on you!"
+/* Commissar */
+"The Buro tells you its decisions through Boorawchick. Hey, don't dig in my burrow! To Buro: I request the cracks in my office be plastered, for my security."
+/* Agent */
+"Boorawchick is the one who got bored with your stupid questions."
+
+[Oboorez] [オブーリーズ]
+/* Boond */
+"He'll receive shrubs from you in Ogorod. Remember that I'm in communication with him."
+{shrub}
+/* Commissar */
+"The officer responsible for the exploitation of shrubs. He is in charge of peeperettes and the PeepShow. Inclined to garbage collection."
+{peeperette} {PeepShow}
+/* Agent */
+"Old and stupid. He is loyal to the Buro, however."
+
+[The Buro] [ビューロ]
+/* Boond */
+"The Buro is concerned about the purpose of your existence. Don't disappoint the Buro."
+/* Commissar */
+"Buro is the power and wisdom of the Beeboorats and the godfather of worthless vangers."
+/* Agent */
+"I am the Buro."
+
+[Slave] [奴隷]
+/* Boond */
+"A shabby wheeler who has just started his service to the Buro to repay the honor the Beeboorats have done him by registering him."
+/* Commissar */
+"Unsuccessful wheelers. You became a Commissar thanks to your hard work, but failure to observe the Manual will make you a slave again."
+/* Agent */
+"Some of them are Agents that have lost their Rubbox."
+
+[Commissar] [コミッサー]
+/* Boond */
+"Commissar is the next level of your service."
+/* Commissar */
+"Commissars take part in PeepShow and Nuclear War."
+{PeepShow} {Nuclear War}
+/* Agent */
+"We value Agents more than Commissars."
+
+[Agent] [エージェント]
+/* Boond */
+"If a Slave asks about Agents, it's probably a good Slave. Serve us well and you'll know everything soon enough."
+/* Commissar */
+"I guess it will take you a long time to rise to the rank of Agent!"
+/* Agent */
+"The hands of Glorx in other worlds."
+
+[Manual] [マニュアル]
+/* Boond */
+"The Buro devised the Manual so that you wouldn't just ramble over the worlds filling your brain with worthless thoughts. Bless fate for giving you the Manual."
+/* Commissar */
+"Whoever follows the Manual strictly will rise to the rank of Agent quickly!"
+/* Agent */
+"Without the Manual, Beeboorat life would be impossible."
+
+/*******************   Zeexen's terms   *******************************/
+
+[ZeePa] [ジーパ]
+"Zeexen's main escave. Many of our best Agents disappeared in ZeePa."
+
+[B-Zone] [Bゾーン]
+"B-Zone is the nest of those Zeexen-poisoners. The Buro has sent many Agents there, but so far all in vain..."
+
+[Zeephra] [ジーフラ]
+"Zeephra is the counselor of ZeePa. She is a very dangerous enemy and is hatching a plot against the Buro. Some say she eats Beeboorats!"
+{ZeePa}
+
+[Zeekatrix] [ジーカトリクス]
+"Zeekatrix is the counselor of B-Zone. She is preparing a poison for Beeboorats, but the Buro will get her!"
+{B-Zone}
+
+[toxick] [トクシック]
+"Don't say that, wheeler! Don't you know that the Zeexen are preparing toxick to kill me? The fiends cook the poison in B-Zone and spread it over all the worlds. Try to defeat their plot and I'll reward you!"
+{B-Zone}
+
+[popon] [ポポン]
+"Zeephra prepares the popons. She is Zeekatrix's accomplice in their dark plots. These tablets may very well contain the recipes of dreadful poisons!"
+{Zeephra} {Zeekatrix}
+
+[ProtoZeek] [プロトジーク]
+"An unknown object. Seems like the Zeexen in B-Zone mix toxick with it to make it more poisonous."
+{B-Zone}
+
+[Spring] [春]
+"Zeexen are crazed about the Softie and all that stuff. Guess that's why these stupid words get into their stupid heads."
+
+[December] [12月]
+"Find it out yourself. That's what the Buro raised you for."
+
+[Saturday] [土曜日]
+"According to the reports of some Agents, this is the time the Zeexen have scheduled their final assault against the Beeboorats. They're going to pour thousands of jars of toxick onto Glorx."
+
+[Zeeklope] [ジークロープ]
+"It has been established that Zeephra sometimes sends vangers to B-Zone with instructions. This is called Zeeklope. Take part in this event and find out what it's about..."
+{B-Zone} {Zeephra}
+
+/*********** Advanced terms ****************************/
+
+[Weexow] [ウィークソウ]
+"Better ask the Eleepods. The Buro hasn't found anything important in that world."
+
+[Boozeena] [ブージーナ]
+"If you're smart, you can try to get a key to the hideout on Boozeena. If you succeed, the Buro will reward you."
+
+[Threall] [スリール]
+"An Agent once served me, a good example Agent for everyone. Then he visited Threall and came back scared to death. Since then, he's remained stupid and never leaves Glorx. I had to degrade the blockheaded Agent to Commissar..."
+
+[hMok] [hMok]
+"A world made of iron, with a hideout on the lower level. Remember that this information is secret! The Buro has declared hMok a hostile and illegal world."
+
+[Khox] [コックス]
+"To get out of Khox, you must be able to handle your mechos better than any Agent. Any lingering on the roads of Khox is fatal!"
+
+[Ark-a-Noi] [アーク・ア・ノイ]
+"By some accounts, Ark-a-Noi looks like Xplo. There's nothing there except death."
+{Xplo}
+
+[Protractor] [プロトラクター]
+"According to our quick-look data, the Protractor is closely related to Xplo and the local escave. Your mission is to investigate this criminal connection."
+{Xplo}
+
+[Mechanical Messiah] [機械の救世主]
+"It has been firmly established that there is a connection between this object and the mysterious voices on Threall. Any vanger who gets the Mechanical Messiah is pulled out of the Buro's control, so take care!"
+{Threall}
+
+[Function-83+] [ファンクション83+]
+"This object would be of great use to our Agents. With it, they could grab many eLeeches from the Eleepods."
+
+[Chomper] [チョンパー]
+"Anyone who picks up Chomper disappears quickly, and no one ever finds even a trace of him!"
+
+[Boot Sector] [ブートセクター]
+"The Boot Sector is not recommended for Agents. The Buro is not responsible for any mechos left unattended and will not accept any claims."
+
+[Flymatic] [フライマティック]
+"A vanger's home-made gadget. I'm not interested."
+
+[The Spectators] [観測者たち]
+"According to Zeexen assertions, these are creatures from the time of the Clash. These are evil rumors which undermine the Buro's authority."
+
+[The Infernals] [インフェルナルズ]
+"The Eleepods believe that the Infernals rule all the worlds. Isn't that nonsense? Everyone knows that the Buro is the ruler here!"
+
+[Spobs] [スポブス]
+"Someone from Necross claims it's an escave on Xplo. It's true that there is some rubble there, but nobody has ever managed to get inside."
+{Xplo}
+
+[Parapheen] [パラフィーン]
+"The Buro has long been awaiting its chance to encounter him and find out if he's eatable!"
+
+[Carmane] [カルメイン]
+"They call Carmane the boss of the Infernals. Someone sort of talked to him once. Well, after the horrors of Threall, some strange voices have been intruding into the heads of vangers."
+{The Infernals} {Threall}
