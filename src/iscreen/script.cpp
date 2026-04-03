@@ -154,7 +154,7 @@ void ScriptLine::init(void)
 
 void ScriptFileBuffer::load(XStream* fh)
 {
-	if(buffer) delete buffer;
+	if(buffer) delete[] buffer;
 	size = fh -> size();
 	buffer = new char[size];
 	fh -> read(buffer,size);
