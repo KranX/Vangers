@@ -12,6 +12,8 @@
 
 #include "../actint/mlconsts.h"
 #include "../actint/credits.h"
+#include "../text/legacy_codec.h"
+#include "../text/unicode.h"
 
 #include "../3d/parser.h"
 #include "../units/uvsapi.h"
@@ -149,97 +151,52 @@ union dual_char {
 	unsigned short sh;
 	};
 
-char* ConvertUTF8(const char* s,int back = 0) {
-	static char* buffer = NULL;
-	int len = strlen(s);
-	buffer = new char[len+2];
-	memset( buffer, 0, len+2);
-	dual_char dc;
-	bool get_dual=false;
-	int i_dual_char=0, i;
-	if (!back)
-		for (i=0;i<len;i++)
-			{
-			//NOT IMPLEMENT NOW
-			/*if((unsigned char)s[i]<128 && !get_dual)
-				std::cout<<" "<<(int)s[i];
-			if((unsigned char)s[i]>127 || get_dual)
-				{
-				dc.c[i_dual_char]=s[i];
-				if(get_dual)
-					{
-					get_dual=false;
-					i_dual_char=0;
-					std::cout<<" "<<std::dec<<dc.sh;
-					std::cout<<"-"<<std::hex<<(int)dc.c[0]<<(int)dc.c[1];
-					}
-				else
-					{
-					get_dual=true;
-					i_dual_char++;
-					}
-				}*/
-			buffer[i]=s[i];
-			}
-	else
-		std::cout<<"ERROR:CP866 to UTF8 not implement!!!"<<std::endl;
-	//std::cout<<std::endl;
-	//std::cout<<"A:"<<(unsigned char*)buffer<<std::endl;
+namespace
+{
+
+char* diagen_dup_string(const std::string& value)
+{
+	char* buffer = new char[value.size() + 1];
+	memcpy(buffer, value.c_str(), value.size() + 1);
 	return buffer;
 }
 
-char* Convert(const char* s,int back = 0) {
-	if(!(lang() == RUSSIAN)) {
-		char* buffer = NULL;
-		int len = strlen(s)+1;
-		buffer = new char[len + 2];
-		memset(buffer, 0, len+2);
-		strcpy(buffer, s);
-		return buffer;
+}
+
+char* ConvertUTF8(const char* s,int back = 0)
+{
+	const char* value = s ? s : "";
+
+	if(back){
+		if(!(lang() == RUSSIAN))
+			return diagen_dup_string(value);
+		if(text::is_valid_utf8(value))
+			return diagen_dup_string(text::utf8_to_legacy_lossy(value, text::LegacyEncoding::CP1251, ' '));
+		return diagen_dup_string(value);
 	}
-	static int len = 0;
-	static char* buffer = NULL;
-	len = strlen(s)+1;
-	buffer = new char[len + 2];
-	memset(buffer, 0, len+2);
-	int i;
-	if (!back) {
-		for (i=0;i<len;i++) {
-			if ((unsigned char)s[i]>=192&&(unsigned char)s[i]<=239)
-				buffer[i]=(char)((unsigned char)s[i]-64);
-			else if ((unsigned char)s[i]>=240&&(unsigned char)s[i]<=255)
-				buffer[i]=(char)((unsigned char)s[i]-16);
-			else if ((unsigned char)s[i]==184)
-				buffer[i]=(char)((unsigned char)241); //маленькое ё
-			else if ((unsigned char)s[i]==168)
-				buffer[i]=(char)((unsigned char)240); //большое Ё
-			else if ((unsigned char)s[i]==185)
-				buffer[i]=(char)((unsigned char)252); //знак №
-			else if ((unsigned char)s[i]<128)
-				buffer[i]=s[i];
-			else
-				buffer[i]=' ';
-			
-		}
-	} else {
-		for (i=0;i<len;i++) {
-			if ((unsigned char)s[i]>=128&&(unsigned char)s[i]<=175)
-				buffer[i]=(char)((unsigned char)s[i]+64);
-			else if ((unsigned char)s[i]>=224&&(unsigned char)s[i]<=239)
-				buffer[i]=(char)((unsigned char)s[i]+16);
-			else if ((unsigned char)s[i]==241)
-				buffer[i]=(char)((unsigned char)184); //маленькое ё
-			else if ((unsigned char)s[i]==240)
-				buffer[i]=(char)((unsigned char)168); //большое Ё
-			else if ((unsigned char)s[i]==252)
-				buffer[i]=(char)((unsigned char)185); //знак №
-			else if ((unsigned char)s[i]<128)
-				buffer[i]=s[i];
-			else
-				buffer[i]=' ';
-		}
-	}
-	return buffer;
+
+	if(text::is_valid_utf8(value))
+		return diagen_dup_string(value);
+	if(!(lang() == RUSSIAN))
+		return diagen_dup_string(value);
+
+	return diagen_dup_string(text::legacy_to_utf8(value, text::LegacyEncoding::CP1251));
+}
+
+char* Convert(const char* s,int back = 0)
+{
+	const char* value = s ? s : "";
+
+	if(text::is_valid_utf8(value))
+		return diagen_dup_string(value);
+	if(!(lang() == RUSSIAN))
+		return diagen_dup_string(value);
+
+	const text::LegacyEncoding src_encoding = back ? text::LegacyEncoding::CP866 : text::LegacyEncoding::CP1251;
+	const text::LegacyEncoding dst_encoding = back ? text::LegacyEncoding::CP1251 : text::LegacyEncoding::CP866;
+
+	const std::string utf8_text = text::legacy_to_utf8(value, src_encoding);
+	return diagen_dup_string(text::utf8_to_legacy_lossy(utf8_text, dst_encoding, ' '));
 }
 
 std::string cp866_to_cp1251(std::string in) {
