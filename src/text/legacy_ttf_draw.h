@@ -13,6 +13,7 @@ namespace text
 
 const std::string& default_ui_ttf_font_path(void);
 std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting = TTF_HINTING_NORMAL,bool kerning = false,int outline = 0,int style = TTF_STYLE_NORMAL);
+std::shared_ptr<TtfFontFace> default_ui_hfont_ttf_face(int legacy_height,int hinting = TTF_HINTING_NORMAL,bool kerning = false,int outline = 0,int style = TTF_STYLE_NORMAL);
 std::shared_ptr<TtfFontFace> default_ui_text32_ttf_face(int legacy_height,int hinting = TTF_HINTING_NORMAL,bool kerning = false,int outline = 0,int style = TTF_STYLE_NORMAL);
 int default_ui_text32_extra_hspace(void);
 

@@ -140,6 +140,27 @@ std::shared_ptr<TtfFontFace> best_face_for_path(const std::string& font_path,int
 	return best_face;
 }
 
+std::shared_ptr<TtfFontFace> best_hfont_face_for_path(const std::string& font_path,int legacy_height,int hinting,bool kerning,int outline,int style)
+{
+	std::shared_ptr<TtfFontFace> best_face;
+	int best_delta = INT_MAX;
+
+	for(int point_size = std::max(6, legacy_height - 12); point_size <= legacy_height + 24; point_size++){
+		auto face = TtfFontManager::instance().get_face(font_path, point_size, hinting, kerning, outline, style);
+		if(!face)
+			continue;
+
+		const int ink_box_height = std::max(1, face->get_ascent() - face->get_descent());
+		const int delta = abs(ink_box_height - legacy_height);
+		if(delta < best_delta){
+			best_delta = delta;
+			best_face = face;
+		}
+	}
+
+	return best_face;
+}
+
 const FaceVector& default_ui_fallback_registry(void)
 {
 	static const FaceVector empty_faces;
@@ -380,6 +401,54 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,b
 				continue;
 
 			auto fallback_face = best_face_for_path(candidate, target_height, hinting, kerning, outline, style);
+			if(!fallback_face || fallback_face.get() == best_face.get())
+				continue;
+
+			bool duplicate = false;
+			for(const auto& existing_face : fallbacks){
+				if(existing_face && existing_face->get_file_name() == fallback_face->get_file_name() &&
+				   existing_face->get_point_size() == fallback_face->get_point_size()){
+					duplicate = true;
+					break;
+				}
+			}
+			if(!duplicate)
+				fallbacks.push_back(fallback_face);
+		}
+
+		default_ui_fallback_faces()[best_face.get()] = std::move(fallbacks);
+		face_cache[key] = best_face;
+	}
+
+	return best_face;
+}
+
+std::shared_ptr<TtfFontFace> default_ui_hfont_ttf_face(int legacy_height,int hinting,bool kerning,int outline,int style)
+{
+	const std::string& font_path = default_ui_ttf_font_path();
+	if(font_path.empty())
+		return nullptr;
+
+	legacy_height = std::max(6, legacy_height);
+
+	static std::unordered_map<std::string, std::weak_ptr<TtfFontFace>> face_cache;
+	const std::string key = std::string("hfont#") + make_default_ui_face_key(font_path, legacy_height, hinting, kerning, outline, style);
+	auto cache_it = face_cache.find(key);
+	if(cache_it != face_cache.end()){
+		auto cached_face = cache_it->second.lock();
+		if(cached_face)
+			return cached_face;
+	}
+
+	std::shared_ptr<TtfFontFace> best_face = best_hfont_face_for_path(font_path, legacy_height, hinting, kerning, outline, style);
+
+	if(best_face){
+		FaceVector fallbacks;
+		for(const std::string& candidate : default_ui_font_candidates()){
+			if(candidate == font_path)
+				continue;
+
+			auto fallback_face = best_hfont_face_for_path(candidate, legacy_height, hinting, kerning, outline, style);
 			if(!fallback_face || fallback_face.get() == best_face.get())
 				continue;
 
