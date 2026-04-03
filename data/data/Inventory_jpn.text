@@ -385,150 +385,155 @@
 報酬: 20000     運: 15    周期: 1"
 
 [Tabutask V1]
-"Some impudent vanger 
-brought some rotten popons from Necross. 
-He managed to escape from Boorawchick somehow... 
-Don't let the cad leave Glorx 
-until our tough Agents arrive. 
-Reward: 4000      Luck: 5     Cycles: 0"
+"生意気なヴァンガーが、
+腐ったポポンをネクロスから持ち込んだ。
+どうにかブーラウチックのところから逃げ延びたらしい……
+こちらの屈強なエージェントが到着するまで、
+そのクズをグロークスから出すな。
+報酬: 4000      運: 5     周期: 0"
 
 [Tabutask V2]
-"Glorx has lately become a hangout "
-"Exterminate three raffas to teach some respect for the Buro! "
+"最近のグロークスは、
+ルビーケーションに逆らう
+さまざまなごろつきどものたまり場になってしまった。
+ラッファを三匹始末し、ビューロへの敬意というものを叩き込め！
+報酬: 4000      運: 8     周期: 1"
 
 [Tabutask V3]
-"As part of our scheduled campaign 
-to exalt the glory of the Buro, 
-you must fire at five vangers 
-from Fostral or Necross before the end of the cycle. 
-Reward: 6000      Luck: 6     Cycles: 0"
+"ビューロの栄光を高めるための
+定期的な宣伝作戦の一環として、
+周期が終わる前にフォストラルかネクロスから来たヴァンガーを
+五人撃たねばならない。
+報酬: 6000      運: 6     周期: 0"
 
 [Tabutask V4]
-"Boorawchick wants to see how nimble the subordinates of the Buro are. 
-Smash 15 beebs before the end of the cycle! 
-Reward: 1800      Luck: 2     Cycles: 0"
+"ブーラウチックは、ビューロの配下がどれほど素早いか見たがっている。
+周期が終わるまでにビーブを15匹踏み潰せ！
+報酬: 1800      運: 2     周期: 0"
 
 [Tabutask V5]
-"Boorawchick needs five glowing beebs 
-to make parade medals 
-for the upcoming Buro assembly. 
-Reward: 2000      Luck: 3     Cycles: 1"
+"ブーラウチックは、近く開かれるビューロ集会の
+式典用メダルを作るために、
+光るビーブを五匹必要としている。
+報酬: 2000      運: 3     周期: 1"
 
 [Tabutask V6]
-"Buzzing insects hamper the work 
-of the scheduled sessions of the Buro. 
-Repel ten swarms so 
-that they stop interfering with the process of making important decisions. 
-Reward: 1400      Luck: 3     Cycles: 0"
+"羽音を立てる虫どもが、
+予定されているビューロ会議の進行を妨げている。
+十の群れを追い払い、
+重要な決定の妨害をやめさせろ！
+報酬: 1400      運: 3     周期: 0"
 
 [Tabutask V7]
-"One very impudent vanger has repeatedly lost his Rubbox. 
-Despite all our warnings, 
-he didn't reform and keeps ignoring the Manual. 
-The Buro doesn't need such vangers. Destroy the useless gadder! 
-Reward: 6000      Luck: 4     Cycles: 3"
+"とびきり図々しいヴァンガーが、何度も何度も自分のラブボックスをなくしている。
+こちらがどれだけ警告しても、
+更生するどころか、いまだにマニュアルを無視し続けている。
+ビューロにそんなヴァンガーは不要だ。役立たずのうろつき野郎を始末しろ！
+報酬: 6000      運: 4     周期: 3"
 
 [Tabutask V8]
-"The Buro has learned that an Agent with 
-a rebellious disposition has visited B-Zone. 
-Wise Boorawchick smells a plot. 
-You have to stop this vanger 
-from entering an escave until the end of the cycle, 
-when the Buro will have taken measures 
-against a possible chemical assault... 
-Reward: 6000      Luck: 5     Cycles: 0"
+"ビューロは、反抗的な気質のエージェントが
+Bゾーンを訪れたことを掴んだ。
+賢明なるブーラウチックは陰謀の匂いを嗅ぎ取っている。
+そのヴァンガーが周期の終わりまで
+いかなるエスケイヴにも入れないよう阻止せよ。
+その頃までにはビューロも、
+想定される化学攻撃への対策を整えているだろう……
+報酬: 6000      運: 5     周期: 0"
 
 [Tabutask V9]
-"Envoys of Necross at Zeekatrix's prompting 
-are trying to pollute the Great Glorx with accursed toxick. 
-You must put an end to this sabotage. 
-Shoot up eight vangers from Necross! 
-Reward: 6500      Luck: 4     Cycles: 2"
+"ジーカトリクスに唆されたネクロスの使いどもが、
+呪われたトクシックで偉大なるグロークスを汚そうとしている。
+この破壊工作に終止符を打たねばならない。
+ネクロスから来たヴァンガーを八人撃ちのめせ！
+報酬: 6500      運: 4     周期: 2"
 
 [Tabutask V10]
-"The Buro's Slaves nearly blocked the last PeepShow, 
-getting in the way of the Commissars, 
-and the Buro got really upset about this. 
-Kill one Glorx raffa 
-so that the rest know their place! 
-Reward: 500       Luck: 2     Cycles: 0"
+"前回のピープショーでは、ビューロの奴隷どもが
+コミッサーの邪魔をして、ほとんど台無しにするところだった。
+ビューロはこの件でひどく機嫌を損ねている。
+グロークスのラッファを一匹始末し、
+残りにも自分の立場を思い出させろ！
+報酬: 500       運: 2     周期: 0"
 
 [Tabutask V11]
-"The Buro is concerned about 
-the increased use of CopteRigs by vangers. 
-At this rate they will all be flying instead of serving Beeboorats. 
-Fire at six flying vangers 
-to remind them of the roads of Glorx. 
-Reward: 5000       Luck: 6     Cycles: 1"
+"ビューロは、
+ヴァンガーたちのコプトリグ使用が増えていることを憂慮している。
+このままでは、みなビーボラットに仕える代わりに空を飛び回るようになってしまう。
+飛行中のヴァンガーを六人撃ち、
+グロークスの道というものを思い出させろ。
+報酬: 5000       運: 6     周期: 1"
 
 [Tabutask V12]
-"The Buro is interested 
-in recruiting additional Slaves and Commissars. 
-Glorx needs a better image, 
-so bombard five participants of the ritual races 
-on Fostral and Necross. 
-Reward: 6000      Luck: 7     Cycles: 2"
+"ビューロは、
+さらなる奴隷とコミッサーの補充に関心を持っている。
+グロークスには、もっと良い印象が必要だ。
+そのため、フォストラルとネクロスの儀式レース参加者を
+五人砲撃せよ。
+報酬: 6000      運: 7     周期: 2"
 
 [Tabutask V13]
-"The Eleepods fear the Buro less and less. 
-To inspire them with respect for us, 
-kill any one of the participants of the ritual race on Fostral. 
-Reward: 8000      Luck: 8    Cycles: 3"
+"イリーポッドどもは、以前ほどビューロを恐れなくなってきている。
+我々への畏敬を思い出させるために、
+フォストラルの儀式レース参加者を誰でも一人殺せ。
+報酬: 8000      運: 8    周期: 3"
 
 [Tabutask V14]
-"The Buro is concerned about 
-the increasing cases of Slaves participating in the Nuclear War and PeepShow. 
-This is a violation of the Manual! 
-To investigate this phenomenon, the Buro is assigning you 
-to win a Nuclear War on a raffa. 
-Reward: 8000      Luck: 10    Cycles: 3"
+"ビューロは、
+奴隷どもが核戦争やピープショーに参加する事例が増えていることを問題視している。
+これはマニュアル違反だ！
+この現象を調査するため、ビューロはお前に
+ラッファで核戦争に勝つことを命じる。
+報酬: 8000      運: 10    周期: 3"
 
 [Tabutask V15]
-"It has been reported by Agents 
-that a celebration is being prepared in ZeePa. 
-You need to ruin Zeephra's mood. 
-Bring her an alien cirt and let her remember the Beeboorats! 
-Reward: 8000      Luck: 8    Cycles: 2"
+"エージェントの報告によれば、
+ジーパでは何やら祝いの準備が進められているらしい。
+お前の仕事はジーフラの機嫌を台無しにすることだ。
+異界のサートをあの女のところへ持っていき、
+ビーボラットのことを思い出させてやれ！
+報酬: 8000      運: 8    周期: 2"
 
 [Tabutask V16]
-"Due to a global cold nip, 
-the harvest of peeperettes has decreased in Ogorod. 
-A triple shipment of seeds must be delivered there. 
-Take 13 peeperettes there in the next PeepShow... 
-Reward: 7000      Luck: 9    Cycles: 3"
+"世界的な冷え込みのせいで、
+オゴロドではピーペレットの収穫量が落ちている。
+そのため、種の三倍輸送が必要になった。
+次のピープショーで、ピーペレットを13個あそこへ運べ……
+報酬: 7000      運: 9    周期: 3"
 
 [Tabutask V17]
-"The damned Zeexen have developed toxick, 
-a poison of great power, to kill Beeboorats. 
-The Buro is planning a proper response for the poisoners, 
-complete with a weapon of vengeance. 
-Tankacid from hMok is one of its components. 
-Secure it for us. 
-Reward: 1000      Luck: 5    Cycles: 0"
+"忌々しいズィークセンどもは、
+ビーボラットを殺すための強力な毒、トクシックを作り上げた。
+ビューロは、その毒使いたちへ相応の報復を準備している。
+復讐の兵器も含めてな。
+hMok のタンクアシッドは、その構成要素の一つだ。
+確保してこい。
+報酬: 1000      運: 5    周期: 0"
 
 [Tabutask V18]
-"The extreme dullness of the Slaves, 
-the laziness of the Commissars, 
-and the disobedience of the Agents 
-have wreaked havoc with Boorawchick's health. 
-To restore his health, 
-you must bring two fleshy eLeeches to VigBoo. 
-Reward: 12000     Luck: 13    Cycles: 3"
+"奴隷どもの甚だしい愚鈍さ、
+コミッサーどもの怠惰、
+そしてエージェントどもの不従順さが、
+ブーラウチックの健康をひどく損ねてしまった。
+その回復のため、
+肉付きのよいイリーチを二匹、ヴィグブーへ運べ。
+報酬: 12000     運: 13    周期: 3"
 
 [Tabutask V19]
-"Boorawchick has been kind of stressed at work recently 
-and gulped a double dose of cirt to relax. 
-The Buro is upset about this. 
-Help Boorawchick get over this by getting as much cirt as it takes 
-to complete one of the nearest cycles! 
-Reward: 12000     Luck: 10    Cycles: 3"
+"ブーラウチックは最近仕事のストレスで参っていて、
+気を落ち着かせるためにサートを二倍量も飲み込んでしまった。
+ビューロはこの件に不満を抱いている。
+最も近い周期のひとつを完了できるだけのサートを集め、
+ブーラウチックがこの状態を乗り越えるのを助けよ！
+報酬: 12000     運: 10    周期: 3"
 
 [Tabutask V20]
-"The Zeexen have strengthened their influence in the Chain 
-by luring many of our slaves away with their fairy tales. 
-Take their Larva to one of the cursed worlds and leave it there. 
-Let Necross quake in fear of Beeboorat anger. 
-Reward: 50000     Luck: 15    Cycles: 5"
+"ズィークセンどもは、おとぎ話のような口車で
+こちらの奴隷を大勢たぶらかし、
+チェーンにおける影響力を強めている。
+やつらのラーヴァを、呪われた世界のどこかへ運んで置き去りにしろ。
+ネクロスを、ビーボラットの怒りに震え上がらせてやれ。
+報酬: 50000     運: 15    周期: 5"
 
 [Tabutask L1]
 "Stylish Geer'ah has come up with a new competition for the Heroes. 
