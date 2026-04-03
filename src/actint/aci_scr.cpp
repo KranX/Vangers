@@ -16,6 +16,7 @@
 #include "../iscreen/iscreen.h"
 #include "../text/legacy_codec.h"
 #include "../text/legacy_ttf_draw.h"
+#include "../text/locale_catalog.h"
 #include "../text/language_policy.h"
 #include "../text/unicode.h"
 
@@ -347,8 +348,11 @@ void aciScreenInputField::sync_legacy_from_utf8(void)
 
 std::string aciScreenInputField::get_display_utf8_string(void) const
 {
-	if(!(flags & ACS_ACTIVE_STRING))
+	if(!(flags & ACS_ACTIVE_STRING)){
+		if(const std::string* translated = text::actint_locale_string(utf8_string))
+			return *translated;
 		return utf8_string;
+	}
 
 	std::string display = utf8_string;
 	display += CursorVisible ? "_" : " ";

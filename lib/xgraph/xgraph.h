@@ -277,8 +277,8 @@ struct XGR_MousePromptData : XListElement
 	char* textData;
 
 	void init(void);
-	void init_text(char* p);
-	void set_text(char* p);
+	void init_text(const char* p);
+	void set_text(const char* p);
 
 	int check_xy(int x,int y);
 

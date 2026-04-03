@@ -26,6 +26,7 @@
 #include "../text/unicode.h"
 #include "../text/legacy_codec.h"
 #include "../text/language_policy.h"
+#include "../text/locale_catalog.h"
 
 #include "../sound/hsound.h"
 #include "layout.h"
@@ -90,12 +91,36 @@ text::LegacyEncoding actint_menu_text_encoding(void)
 	return text::runtime_legacy_encoding();
 }
 
+std::string actint_display_text_to_utf8(std::string_view value)
+{
+	std::string display_text;
+
+	if(text::is_valid_utf8(value))
+		display_text.assign(value);
+	else
+		display_text = text::legacy_to_utf8(value, actint_menu_text_encoding());
+
+	if(const std::string* translated = text::actint_locale_string(display_text))
+		return *translated;
+
+	return display_text;
+}
+
 std::string actint_menu_text_to_utf8(const char* value)
 {
-	const char* src = value ? value : "";
-	if(text::is_valid_utf8(src))
-		return src;
-	return text::legacy_to_utf8(src, actint_menu_text_encoding());
+	return actint_display_text_to_utf8(value ? value : "");
+}
+
+void actint_set_prompt_text(XGR_MousePromptData* prompt,const char* value)
+{
+	if(!prompt)
+		return;
+
+	const std::string display_text = actint_display_text_to_utf8(value ? value : "");
+	if(prompt -> textData && !strcmp(prompt -> textData, display_text.c_str()))
+		return;
+
+	prompt -> init_text(display_text.c_str());
 }
 
 }
@@ -4742,21 +4767,22 @@ void InfoPanel::redraw(void)
 			col = aciCurColorScheme[FM_SELECT_COL];
 #endif
 
+		const std::string display_text = actint_display_text_to_utf8(p -> ID_ptr);
 		if(flags & IP_NO_ALIGN){
 			x = OffsX;
 		}
 		else {
 			if(!(flags & IP_RANGE_FONT))
-				x = OffsX + ((SizeX - aUtf8StrLen(p->ID_ptr, font, hSpace)) >> 1);
+				x = OffsX + ((SizeX - aUtf8StrLen(display_text, font, hSpace)) >> 1);
 			else
-				x = OffsX + ((SizeX - aUtf8TextWidth32(p->ID_ptr, font, hSpace)) >> 1);
+				x = OffsX + ((SizeX - aUtf8TextWidth32(display_text, font, hSpace)) >> 1);
 		}
 		if(y < 0) ErrH.Abort("InfoPanel overflow...");
 		if(!(flags & IP_RANGE_FONT)){
-			aPutStrUtf8(x,y,fnt,col,p->ID_ptr,SizeX,buf,hSpace);
+			aPutStrUtf8(x,y,fnt,col,display_text,SizeX,buf,hSpace);
 		}
 		else {
-			aPutStr32Utf8(x,y,fnt,col,col_sz,p->ID_ptr,SizeX,buf,hSpace);
+			aPutStr32Utf8(x,y,fnt,col,col_sz,display_text,SizeX,buf,hSpace);
 		}
 
 		if(!(flags & IP_RANGE_FONT))
@@ -7357,7 +7383,7 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 			bt_pr1 = XGR_MouseObj.promptData -> getData(ACI_PICKUP_WPN_OFF);
 			if(!bt_pr1){
 				bt_pr1 = new XGR_MousePromptData;
-				bt_pr1 -> set_text(aciSTR_PICKUP_WEAPONS_OFF);
+				actint_set_prompt_text(bt_pr1, aciSTR_PICKUP_WEAPONS_OFF);
 				bt_pr1 -> ID = ACI_PICKUP_WPN_OFF;
 				XGR_MouseObj.promptData -> AddElement((XListElement*)bt_pr1);
 			}
@@ -7388,7 +7414,7 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 			bt_pr1 = XGR_MouseObj.promptData -> getData(ACI_PICKUP_ITM_OFF);
 			if(!bt_pr1){
 				bt_pr1 = new XGR_MousePromptData;
-				bt_pr1 -> set_text(aciSTR_PICKUP_ITEMS_OFF);
+				actint_set_prompt_text(bt_pr1, aciSTR_PICKUP_ITEMS_OFF);
 				bt_pr1 -> ID = ACI_PICKUP_ITM_OFF;
 				XGR_MouseObj.promptData -> AddElement((XListElement*)bt_pr1);
 			}
@@ -7521,7 +7547,7 @@ void actIntDispatcher::inv_mouse_move_quant(void)
 									pr -> ID = ACI_ITEM_PROMPT;
 									XGR_MouseObj.promptData -> AddElement((XListElement*)pr);
 								}
-								pr -> set_text(p -> promptData);
+								actint_set_prompt_text(pr, p -> promptData);
 								curMatrix -> get_item_coords(p,pr -> StartX,pr -> StartY,pr -> SizeX,pr -> SizeY);
 							}
 						}
@@ -7577,7 +7603,7 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 				avi_pr2 = new XGR_MousePromptData;
 				avi_pr2 -> ID = ACI_AVI_PROMPT2;
 				XGR_MouseObj.promptData -> AddElement((XListElement*)avi_pr2);
-				avi_pr2 -> set_text(aciSTR_PutThis);
+				actint_set_prompt_text(avi_pr2, aciSTR_PutThis);
 			}
 			obj = (iScreenObject*)curLocData -> objList[ACI_AVI_OBJ_ID];
 			if(flags & AS_INV_MOVE_ITEM){
@@ -7608,7 +7634,7 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 		pr0 = new XGR_MousePromptData;
 		pr0 -> ID = ACI_NO_CASH_PROMPT2;
 		XGR_MouseObj.promptData -> AddElement((XListElement*)pr0);
-		pr0 -> set_text(aciSTR_NO_CASH);
+		actint_set_prompt_text(pr0, aciSTR_NO_CASH);
 	}
 
 	if(secondMatrix){
@@ -7664,7 +7690,7 @@ void actIntDispatcher::inv_mouse_imove_quant(void)
 				pr = new XGR_MousePromptData;
 				pr -> ID = ACI_NO_CASH_PROMPT;
 				XGR_MouseObj.promptData -> AddElement((XListElement*)pr);
-				pr -> set_text(aciSTR_NO_CASH);
+				actint_set_prompt_text(pr, aciSTR_NO_CASH);
 			}
 			pr -> StartX = curMatrix -> ScreenX + iScreenOffs;
 			pr -> StartY = curMatrix -> ScreenY;
@@ -9472,13 +9498,13 @@ void actIntDispatcher::init_prompt(void)
 		if(ind -> promptData){
 			p = new XGR_MousePromptData;
 			p -> ID = ind -> ID;
-			p -> set_text(ind -> promptData);
+			actint_set_prompt_text(p, ind -> promptData);
 
 			invPrompt -> AddElement((XListElement*)p);
 
 			p = new XGR_MousePromptData;
 			p -> ID = ind -> ID;
-			p -> set_text(ind -> promptData);
+			actint_set_prompt_text(p, ind -> promptData);
 
 			infPrompt -> AddElement((XListElement*)p);
 		}
@@ -9489,12 +9515,12 @@ void actIntDispatcher::init_prompt(void)
 		b -> init();
 		if(b -> promptData){
 			p = new XGR_MousePromptData(b -> PosX,b -> PosY,b -> SizeX,b -> SizeY,0);
-			p -> set_text(b -> promptData);
+			actint_set_prompt_text(p, b -> promptData);
 
 			invPrompt -> AddElement((XListElement*)p);
 
 			p = new XGR_MousePromptData(b -> PosX,b -> PosY,b -> SizeX,b -> SizeY,0);
-			p -> set_text(b -> promptData);
+			actint_set_prompt_text(p, b -> promptData);
 
 			infPrompt -> AddElement((XListElement*)p);
 		}
@@ -9505,7 +9531,7 @@ void actIntDispatcher::init_prompt(void)
 		b -> init();
 		if(b -> promptData){
 			p = new XGR_MousePromptData(b -> PosX,b -> PosY,b -> SizeX,b -> SizeY,0);
-			p -> set_text(b -> promptData);
+			actint_set_prompt_text(p, b -> promptData);
 
 			switch(b -> ID){
 				case ACI_WPN_PICKUP_BUTTON:
@@ -9525,7 +9551,7 @@ void actIntDispatcher::init_prompt(void)
 		b -> init();
 		if(b -> promptData){
 			p = new XGR_MousePromptData(b -> PosX,b -> PosY,b -> SizeX,b -> SizeY,0);
-			p -> set_text(b -> promptData);
+			actint_set_prompt_text(p, b -> promptData);
 
 			infPrompt -> AddElement((XListElement*)p);
 		}

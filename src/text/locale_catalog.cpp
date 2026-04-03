@@ -23,6 +23,10 @@ LocaleCatalog g_iscreen_catalog;
 Language g_iscreen_catalog_language = ENGLISH;
 bool g_iscreen_catalog_loaded = false;
 
+LocaleCatalog g_actint_catalog;
+Language g_actint_catalog_language = ENGLISH;
+bool g_actint_catalog_loaded = false;
+
 std::string trim_copy(std::string_view value)
 {
 	size_t begin = 0;
@@ -121,6 +125,27 @@ void ensure_iscreen_catalog_loaded(void)
 	load_catalog_file(path, g_iscreen_catalog);
 }
 
+void ensure_actint_catalog_loaded(void)
+{
+	const Language current_language = lang();
+	if(g_actint_catalog_loaded && g_actint_catalog_language == current_language)
+		return;
+
+	g_actint_catalog = LocaleCatalog();
+	g_actint_catalog_language = current_language;
+	g_actint_catalog_loaded = true;
+
+	if(!language_prefers_utf8_assets(current_language))
+		return;
+
+	const char* code = language_code(current_language);
+	if(!code || !*code)
+		return;
+
+	const std::string path = std::string("resource/actint/locale/") + code + "/ui.txt";
+	load_catalog_file(path, g_actint_catalog);
+}
+
 const std::string* lookup_catalog_value(const std::unordered_map<std::string,std::string>& values,std::string_view key)
 {
 	const auto it = values.find(std::string(key));
@@ -141,6 +166,12 @@ const std::string* iscreen_locale_text_path(std::string_view source_path)
 {
 	ensure_iscreen_catalog_loaded();
 	return lookup_catalog_value(g_iscreen_catalog.text_paths, source_path);
+}
+
+const std::string* actint_locale_string(std::string_view source_text)
+{
+	ensure_actint_catalog_loaded();
+	return lookup_catalog_value(g_actint_catalog.strings, source_text);
 }
 
 }

@@ -2177,8 +2177,13 @@ XGR_MousePromptData::~XGR_MousePromptData(void)
 	if(textData && flags & XGR_PROMPT_MEM_ALLOC) delete [] textData;
 }
 
-void XGR_MousePromptData::init_text(char* p)
+void XGR_MousePromptData::init_text(const char* p)
 {
+	if(textData && flags & XGR_PROMPT_MEM_ALLOC){
+		delete [] textData;
+		textData = NULL;
+	}
+
 	int sz = strlen(p) + 1;
 	textData = new char[sz];
 	strcpy(textData,p);
@@ -2187,9 +2192,14 @@ void XGR_MousePromptData::init_text(char* p)
 	init();
 }
 
-void XGR_MousePromptData::set_text(char* p)
+void XGR_MousePromptData::set_text(const char* p)
 {
-	textData = p;
+	if(textData && flags & XGR_PROMPT_MEM_ALLOC){
+		delete [] textData;
+		textData = NULL;
+	}
+
+	textData = (char*)p;
 	flags &= ~XGR_PROMPT_MEM_ALLOC;
 
 	init();
