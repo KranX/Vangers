@@ -137,6 +137,9 @@ const text::GlyphBitmap* iscreen_get_renderable_glyph(text::TtfFontFace& face,un
 	return iscreen_get_renderable_codepoint(face, iscreen_decode_legacy_char(ch, encoding));
 }
 
+void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,int legacy_height,int legacy_peak_level,int scale,bool strong_relief,
+                          std::vector<unsigned char>& cell,int& cell_width,int& cell_height,int& left_offs,int& right_offs);
+
 int iscreen_utf8_leading_trim_hfont(text::TtfFontFace& face,std::string_view text_value)
 {
 	size_t offset = 0;
@@ -174,6 +177,54 @@ int iscreen_hfont_floor_level(int legacy_peak_level,bool strong_relief)
 		floor_level = legacy_peak_level;
 
 	return floor_level;
+}
+
+int iscreen_measure_hfont_utf8_width(text::TtfFontFace& face,std::string_view text_value,int legacy_height,int legacy_peak_level,int space)
+{
+	std::vector<unsigned char> ttf_cell;
+	int left_offs = 0,right_offs = 0,sx = 0,sy = 0;
+	int max_width = 0;
+	int line_min_x = 0;
+	int line_max_x = 0;
+	bool line_started = false;
+	int pen_x = 0;
+	size_t offset = 0;
+	uint32_t codepoint = 0;
+
+	while(text::utf8_next(text_value, offset, codepoint)){
+		if(codepoint == '\r')
+			continue;
+		if(codepoint == '\n'){
+			if(line_started)
+				max_width = std::max(max_width, line_max_x - line_min_x);
+			else
+				max_width = std::max(max_width, 0);
+			line_min_x = line_max_x = 0;
+			line_started = false;
+			pen_x = 0;
+			continue;
+		}
+
+		build_hfont_ttf_cell_codepoint(face, codepoint, legacy_height, legacy_peak_level, 256, false,
+		                               ttf_cell, sx, sy, left_offs, right_offs);
+		const int draw_x = pen_x - left_offs;
+		if(!line_started){
+			line_min_x = draw_x;
+			line_max_x = draw_x + sx;
+			line_started = true;
+		}
+		else {
+			if(draw_x < line_min_x) line_min_x = draw_x;
+			if(draw_x + sx > line_max_x) line_max_x = draw_x + sx;
+		}
+
+		pen_x += sx - right_offs - left_offs + space;
+	}
+
+	if(line_started)
+		max_width = std::max(max_width, line_max_x - line_min_x);
+
+	return max_width;
 }
 
 void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,int legacy_height,int legacy_peak_level,int scale,bool strong_relief,
@@ -1146,9 +1197,10 @@ int iStrLen(unsigned char* p,int f,int space)
 
 int iUtf8StrLen(std::string_view text_value,int f,int space)
 {
+	HFont* p = HFntTable[f];
 	auto face = iscreen_get_hfont_ttf_face(f);
 	if(face && text::language_prefers_utf8_assets())
-		return text::measure_utf8_text_width(text_value, *face, space);
+		return iscreen_measure_hfont_utf8_width(*face, text_value, p->SizeY, iscreen_hfont_peak_level(p), space);
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, iscreen_hfont_encoding(), ' ');
 	return iStrLen((unsigned char*)legacy_text.c_str(), f, space);
