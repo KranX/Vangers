@@ -44,6 +44,7 @@
 
 #include "../sound/hsound.h"
 #include "../text/legacy_ttf_draw.h"
+#include "../text/language_policy.h"
 #include "../text/unicode.h"
 
 #include "aci_evnt.h"
@@ -125,7 +126,7 @@ extern aciFont** aScrFonts32;
 
 static text::LegacyEncoding actint_text_encoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
 }
 
 static std::string actint_legacy_literal_to_utf8(const char* text_value)

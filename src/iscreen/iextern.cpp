@@ -17,6 +17,7 @@
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
 #include "../text/legacy_codec.h"
+#include "../text/language_policy.h"
 #include "../text/unicode.h"
 
 #include "i_mem.h"
@@ -1028,9 +1029,7 @@ std::string iScreenOption::GetValueUTF8String(void)
 	if(!objPtr)
 		return "";
 
-	const text::LegacyEncoding encoding = (lang() == RUSSIAN)
-		? text::LegacyEncoding::CP866
-		: text::LegacyEncoding::ASCII;
+	const text::LegacyEncoding encoding = text::runtime_legacy_encoding();
 
 	switch(ObjectType){
 		case iSTRING:{

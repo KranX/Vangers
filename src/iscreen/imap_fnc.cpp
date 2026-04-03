@@ -11,6 +11,7 @@
 #include "i_mem.h"
 #include "ikeys.h"
 #include "../text/legacy_codec.h"
+#include "../text/language_policy.h"
 #include "../text/legacy_ttf_draw.h"
 #include "../text/unicode.h"
 
@@ -57,7 +58,7 @@ namespace
 
 text::LegacyEncoding iscreen_hfont_encoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
 }
 
 std::shared_ptr<text::TtfFontFace> iscreen_get_hfont_ttf_face(int fnt)

@@ -25,6 +25,7 @@
 #include "../uvs/diagen.h"
 #include "../text/unicode.h"
 #include "../text/legacy_codec.h"
+#include "../text/language_policy.h"
 
 #include "../sound/hsound.h"
 #include "layout.h"
@@ -86,7 +87,7 @@ namespace
 
 text::LegacyEncoding actint_menu_text_encoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
 }
 
 std::string actint_menu_text_to_utf8(const char* value)

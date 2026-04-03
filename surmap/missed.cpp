@@ -165,6 +165,7 @@ char* win32_findfirst(const char* cMask) {
 
 
 // unused methods
+Language lang() { return ENGLISH; }
 void setLang(Language lang) {}
 void StartEFFECT(EFFECT_VALUE EffectValue,int loop, int pan) {}
 int iKeyPressed(int id) {

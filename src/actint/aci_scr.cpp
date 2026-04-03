@@ -16,6 +16,7 @@
 #include "../iscreen/iscreen.h"
 #include "../text/legacy_codec.h"
 #include "../text/legacy_ttf_draw.h"
+#include "../text/language_policy.h"
 #include "../text/unicode.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
@@ -128,12 +129,12 @@ static inline int acs_sequence_step_ticks(void)
 
 static inline text::LegacyEncoding acs_hfont_encoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
 }
 
 static inline text::LegacyEncoding acs_text_encoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
 }
 
 static std::shared_ptr<text::TtfFontFace> acs_get_hfont_ttf_face(int fnt)

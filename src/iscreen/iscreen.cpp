@@ -15,6 +15,7 @@
 #include "../actint/mlstruct.h"
 #include "../actint/aci_scr.h"
 #include "../text/legacy_codec.h"
+#include "../text/language_policy.h"
 #include "../text/legacy_ttf_draw.h"
 #include "../text/unicode.h"
 
@@ -148,7 +149,12 @@ namespace
 
 text::LegacyEncoding iscreen_string_encoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
+}
+
+bool iscreen_uses_russian_text_range(void)
+{
+	return text::language_uses_russian_assets();
 }
 
 void strip_utf8_bom_inplace(char* buffer,int& size)
@@ -4421,7 +4427,7 @@ void iScreenDispatcher::next_text(void)
 	int id = 0;
 
 	if(curText) id = curText -> ID + 1;
-	if(lang() != RUSSIAN){
+	if(!iscreen_uses_russian_text_range()){
 		if(!id || id > iTEXT_ENG_MAX)
 			id = iTEXT_ENG1_ID;
 	}
@@ -4439,7 +4445,7 @@ void iScreenDispatcher::prev_text(void)
 	int id = 0;
 
 	if(curText) id = curText -> ID - 1;
-	if(lang() != RUSSIAN){
+	if(!iscreen_uses_russian_text_range()){
 		if(id <= 0)
 			return;
 	}
@@ -4479,7 +4485,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 
 				end_code = (mode) ? iTEXT_END_EVENT_CODE1 : iTEXT_END_EVENT_CODE0;
 				next_code = (mode) ? iTEXT_NEXT_EVENT_CODE1 : iTEXT_NEXT_EVENT_CODE0;
-				if(lang() != RUSSIAN){
+				if(!iscreen_uses_russian_text_range()){
 					if(id > iTEXT_ENG_MAX){
 						key_trap(end_code);
 					}
@@ -4539,7 +4545,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 				ActiveEv = NULL;
 
 				prev_code = (mode) ? iTEXT_PREV_EVENT_CODE1 : iTEXT_PREV_EVENT_CODE0;
-				if((lang() != RUSSIAN && id > 0) || id > iTEXT_RUS1_ID - 1){
+				if((!iscreen_uses_russian_text_range() && id > 0) || id > iTEXT_RUS1_ID - 1){
 					prev_text();
 					if(title_obj){
 						title_obj -> set_text_auto(curText -> objName);

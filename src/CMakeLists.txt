@@ -73,6 +73,7 @@ SET(vangers_SRCS
 
 SET(textcore_SRCS
 	text/font_manager.cpp
+	text/language_policy.cpp
 	text/legacy_ttf_draw.cpp
 	text/legacy_codec.cpp
 	text/ttf_runtime.cpp

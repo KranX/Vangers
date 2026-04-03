@@ -10,6 +10,7 @@
 #include "sound/hsound.h"
 #include "actint/item_api.h"
 #include "text/legacy_codec.h"
+#include "text/language_policy.h"
 #include "text/unicode.h"
 #endif
 
@@ -62,7 +63,7 @@ namespace
 
 text::LegacyEncoding network_text_encoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
 }
 
 std::string network_text_auto_to_utf8(const char* value)
@@ -78,6 +79,21 @@ char* network_dup_string(const std::string& value)
 	char* copy = new char[value.size() + 1];
 	memcpy(copy, value.c_str(), value.size() + 1);
 	return copy;
+}
+
+char* network_dup_c_string(const char* value)
+{
+	const char* text_value = value ? value : "";
+	char* copy = new char[strlen(text_value) + 1];
+	strcpy(copy, text_value);
+	return copy;
+}
+
+void network_replace_c_string(char*& slot,const char* value)
+{
+	char* copy = network_dup_c_string(value);
+	delete[] slot;
+	slot = copy;
 }
 
 }
@@ -1257,17 +1273,8 @@ void PlayersList::single_parsing(int event_ID)
 		case PLAYERS_NAME:{
 			char name[257];
 			events_in > name;
-			if(!p -> name){
-				p -> name = new char[strlen(name) + 1];
-				strcpy(p -> name, name);
-				}
-			else{
-				if(strcmp(p -> name,name)){
-					delete[] p -> name;
-					p -> name = new char[strlen(name) + 1];
-					strcpy(p -> name, name);
-					}
-				}
+			if(!p -> name || strcmp(p -> name,name))
+				network_replace_c_string(p -> name, name);
 			}
 			break;
 		case PLAYERS_POSITION:
@@ -1319,17 +1326,8 @@ void PlayersList::parsing_total_body_query()
 		p -> x = x;
 		p -> y = y;
 		events_in.read(&p -> body,sizeof(PlayerBody));
-		if(!p -> name){
-			p -> name = new char[strlen(name) + 1];
-			strcpy(p -> name, name);
-			}
-		else{
-			if(strcmp(p -> name,name)){
-				delete p -> name;
-				p -> name = new char[strlen(name) + 1];
-				strcpy(p -> name, name);
-				}
-			}
+		if(!p -> name || strcmp(p -> name,name))
+			network_replace_c_string(p -> name, name);
 		if(p -> client_ID == GlobalStationID)
 			my_player_data = p;
 		}
@@ -1406,15 +1404,14 @@ void MessageDispatcher::receive()
 ********************************************************************/
 RatingData::RatingData(char* _name,float _rating)
 {
-	name = new char[strlen(_name) + 1];
-	strcpy(name,_name);
+	name = network_dup_c_string(_name);
 	rating = _rating;
 	next = prev = 0;
 	list = 0;
 }
 RatingData::~RatingData()
 {
-	delete name;
+	delete[] name;
 }
 TopList::TopList(int MP_game)
 {

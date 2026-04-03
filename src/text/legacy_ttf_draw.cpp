@@ -1,5 +1,6 @@
 #include "legacy_ttf_draw.h"
 
+#include "language_policy.h"
 #include "unicode.h"
 #include "xgraph.h"
 
@@ -56,13 +57,21 @@ const std::vector<std::string>& builtin_default_ui_font_candidates(void)
 {
 	static const std::vector<std::string> candidates = {
 		"resource/fonts/ui.ttf",
+		"/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
 		"/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+		"/usr/share/fonts/droid/DroidSansFallback.ttf"
+	};
+
+	return candidates;
+}
+
+const std::vector<std::string>& builtin_japanese_ui_font_candidates(void)
+{
+	static const std::vector<std::string> candidates = {
 		"/usr/share/fonts/opentype/noto/NotoSansCJKJP-Regular.otf",
 		"/usr/share/fonts/opentype/noto/NotoSansJP-Regular.otf",
 		"/usr/share/fonts/opentype/source-han-sans/SourceHanSansJP-Regular.otf",
-		"/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
 		"/usr/share/fonts/truetype/noto/NotoSansJP-Regular.ttf",
-		"/usr/share/fonts/droid/DroidSansFallback.ttf",
 		"/usr/share/fonts/droid/DroidSansJapanese.ttf",
 		"/usr/share/fonts/ja-ipafonts/ipag.ttf",
 		"/usr/share/fonts/takao-fonts/TakaoPGothic.ttf",
@@ -94,6 +103,13 @@ std::vector<std::string> default_ui_font_candidates(void)
 	std::vector<std::string> candidates;
 
 	append_font_candidates_from_env(candidates, std::getenv("VANGERS_UI_TTF_FONT"));
+	if(language_prefers_japanese_fonts()){
+		for(const std::string& candidate : builtin_japanese_ui_font_candidates()){
+			if(file_exists(candidate.c_str()) &&
+			   std::find(candidates.begin(), candidates.end(), candidate) == candidates.end())
+				candidates.push_back(candidate);
+		}
+	}
 	for(const std::string& candidate : builtin_default_ui_font_candidates()){
 		if(file_exists(candidate.c_str()) &&
 		   std::find(candidates.begin(), candidates.end(), candidate) == candidates.end())

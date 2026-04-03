@@ -5,6 +5,7 @@ enum Language {
     ENGLISH = 0,
     RUSSIAN = 1,
     GERMAN = 2,
+    JAPANESE = 3,
 };
 
 Language lang();

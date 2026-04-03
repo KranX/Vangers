@@ -130,6 +130,8 @@ int main(int argc, char *argv[])
             XGR_FULL_SCREEN = true;
         } else if (cmd_key == "-russian") {
             setLang(RUSSIAN);
+        } else if (cmd_key == "-japanese") {
+            setLang(JAPANESE);
         } else if (cmd_key == "-server") {
             if (argc > i) {
                 i++;

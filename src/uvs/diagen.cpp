@@ -13,6 +13,7 @@
 #include "../actint/mlconsts.h"
 #include "../actint/credits.h"
 #include "../text/legacy_codec.h"
+#include "../text/language_policy.h"
 #include "../text/unicode.h"
 
 #include "../3d/parser.h"
@@ -131,7 +132,7 @@ static FileBox* FBox;
 
 const char *DiagenTextName() {
 
-    if (lang() == RUSSIAN) {
+    if (text::language_uses_russian_assets()) {
         return "diagen.text";
     }
 
@@ -182,7 +183,7 @@ char* ConvertUTF8(const char* s,int back = 0)
 	const char* value = s ? s : "";
 
 	if(back){
-		if(!(lang() == RUSSIAN))
+		if(!text::language_uses_russian_assets())
 			return diagen_dup_string(value);
 		if(text::is_valid_utf8(value))
 			return diagen_dup_string(text::utf8_to_legacy_lossy(value, text::LegacyEncoding::CP1251, ' '));
@@ -191,7 +192,7 @@ char* ConvertUTF8(const char* s,int back = 0)
 
 	if(text::is_valid_utf8(value))
 		return diagen_dup_string(value);
-	if(!(lang() == RUSSIAN))
+	if(!text::language_uses_russian_assets())
 		return diagen_dup_string(value);
 
 	return diagen_dup_string(text::legacy_to_utf8(value, text::LegacyEncoding::CP1251));
@@ -203,7 +204,7 @@ char* Convert(const char* s,int back = 0)
 
 	if(text::is_valid_utf8(value))
 		return diagen_dup_string(value);
-	if(!(lang() == RUSSIAN))
+	if(!text::language_uses_russian_assets())
 		return diagen_dup_string(value);
 
 	const text::LegacyEncoding src_encoding = back ? text::LegacyEncoding::CP866 : text::LegacyEncoding::CP1251;
@@ -214,7 +215,7 @@ char* Convert(const char* s,int back = 0)
 }
 
 std::string cp866_to_cp1251(std::string in) {
-	if(lang() != RUSSIAN) {
+	if(!text::language_uses_russian_assets()) {
 		return in;
 	}
 #ifdef WIN32
@@ -241,7 +242,7 @@ std::string cp866_to_cp1251(std::string in) {
 }
 
 std::string cp1251_to_utf8(std::string in_string) {
-	if(lang() != RUSSIAN) {
+	if(!text::language_uses_russian_assets()) {
 		return in_string;
 	}
 #ifdef WIN32
@@ -596,7 +597,7 @@ int getInfernalsTaskStatus(void)
 // ----------------------------------- dgFile ------------------------------------
 
 bool ISEALPHA(char c) {
-    if (lang() == RUSSIAN) {
+    if (text::language_uses_russian_assets()) {
         return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
     } else if (lang() == GERMAN) {
         return 	(c != '#' && !(c >= '0' && c <= '9'));
@@ -749,7 +750,8 @@ void dgFile::load(char* fname,int _len, bool verbose)
 		if(!skip){
 			p2 = detect_text(p);
 			if(!(*p2 == SUBJ_SYMBOL || *p2 == COMMAND_SYMBOL || *p2 == '<' || *p2 == '#')) {
-				if(!((lang() != RUSSIAN && ISEALPHA(*p2)) || (lang() == RUSSIAN && !ISEALPHA(*p2)))) continue;
+				if((!text::language_uses_russian_assets() && !ISEALPHA(*p2)) ||
+				   (text::language_uses_russian_assets() && ISEALPHA(*p2))) continue;
 			}
 			
 		}
@@ -805,7 +807,8 @@ char* dgFile::getElement(int DualElements,int empty_available)
 			return ret;
 		}
 		elem = (*ret2 == LINK_SYMBOL || *ret2 == '<') ? ret2 + 1 : ret2;
-		if((lang() != RUSSIAN && ISEALPHA(*elem)) || (lang() == RUSSIAN && !ISEALPHA(*elem))) {
+		if((!text::language_uses_russian_assets() && ISEALPHA(*elem)) ||
+		   (text::language_uses_russian_assets() && !ISEALPHA(*elem))) {
 			return ret;
 		} else {
 			return getElement(DualElements, empty_available);
@@ -983,7 +986,7 @@ char* dgMolecule::getVarPhrase(char* s)
 	else if(!strcmp(s,"World of Larva1")) ret = dgD -> getWorldName(uvsGetLarvaWorld(1));
 	else if(!strcmp(s,"World of Larva2")) ret = dgD -> getWorldName(uvsGetLarvaWorld(2));
 	else if(!strcmp(s,"Cirt Delivery")) ret = port_itoa(uvsgetDGdata(DG_EXTERNS::CIRT_DELIVERY),nbuf,10);
-	else if(!strcmp(s,"Cycle Name of Locked Larva")) ret = dgD -> CycleName[lang() == RUSSIAN ? 1 : 0][dgD -> currentR -> bios][uvsgetDGdata(DG_EXTERNS::LARVA_CYCLE)];
+	else if(!strcmp(s,"Cycle Name of Locked Larva")) ret = dgD -> CycleName[text::language_uses_russian_assets() ? 1 : 0][dgD -> currentR -> bios][uvsgetDGdata(DG_EXTERNS::LARVA_CYCLE)];
 	else if(!strcmp(s,"Boozeena Secret Code")) ret = StringOfBoozeeniada();
 
 	if(!ret) return s;
@@ -2024,7 +2027,7 @@ void dgRoom::acceptQUERY(void)
 
 		if (lang() == GERMAN) {
             pq -> subj = pq -> subj0;
-		} else if (lang() == RUSSIAN) {
+		} else if (text::language_uses_russian_assets()) {
             pq -> subj = pq -> subj0;
 		} else {
             pq -> subj = pq -> subj1;
@@ -2606,7 +2609,7 @@ void DiagenDispatcher::getStatus(void)
 	std::cout << "\nStatus:\n";
 	if(currentR){
 		std::cout << "\troom: " << currentR -> roomName << "\n";
-		std::cout << "\tperson: " << currentR -> counsillorNames[lang() == RUSSIAN ? 1 : 0] << "\n";
+		std::cout << "\tperson: " << currentR -> counsillorNames[text::language_uses_russian_assets() ? 1 : 0] << "\n";
 		if(dgLevel) std::cout << "\tlevel: " << *dgLevel << "\n";
 		}
 	else
@@ -2748,11 +2751,11 @@ char* DiagenDispatcher::getWorldName(char* name)
 	if(name){
 		dgRoom* r = rtail;
 		while(r){
-			if(!strcmp(name,r -> worldNames[0])) return r -> worldNames[lang() == RUSSIAN ? 1 : 0];
+			if(!strcmp(name,r -> worldNames[0])) return r -> worldNames[text::language_uses_russian_assets() ? 1 : 0];
 			r = r -> next;
 			}
 		for(int i = 0;i < DG_SECRETW_MAX;i++)
-			if(!strcmp(name,SecretWname[0][i])) return SecretWname[lang() == RUSSIAN ? 1 : 0][i];
+			if(!strcmp(name,SecretWname[0][i])) return SecretWname[text::language_uses_russian_assets() ? 1 : 0][i];
 		}
 	ErrH.Abort("dgWorldName not found");
 	return NULL;

@@ -30,6 +30,7 @@
 #include "xjoystick.h"
 #include "network.h"
 #include "text/legacy_codec.h"
+#include "text/language_policy.h"
 #include "text/legacy_ttf_draw.h"
 #include "text/ttf_runtime.h"
 #include "text/unicode.h"
@@ -384,6 +385,9 @@ int xtInitApplication(void) {
     if (lang() == GERMAN) {
         std::cout << "\"" << XGraphWndID << "\" by K-D Lab (SDL Version)\n";
         std::cout << "Release (DE)\n";
+    } else if (lang() == JAPANESE) {
+        std::cout << "\"" << XGraphWndID << ": One For The Road\" by K-D Lab (SDL Version)\n";
+        std::cout << "Release (JPN)\n";
     } else if (lang() == RUSSIAN) {
         std::cout << "\"" << XGraphWndID << "\" by K-D Lab (SDL Version)\n";
         std::cout << "Release (RUS)\n";
@@ -1469,6 +1473,12 @@ void ComlineAnalyze(int argc,char** argv)
 					case 'r':
 						if(!strcmp(argv[i] + 1,"RUSSIAN") || !strcmp(argv[i] + 1,"russian")){
 						    setLang(RUSSIAN);
+						}
+						break;
+					case 'J':
+					case 'j':
+						if(!strcmp(argv[i] + 1,"JAPANESE") || !strcmp(argv[i] + 1,"japanese")){
+						    setLang(JAPANESE);
 						}
 						break;
 					case '&':
@@ -2701,7 +2711,7 @@ namespace
 
 text::LegacyEncoding sq_text_encoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
 }
 
 bool sq_text_should_use_ttf(const char* text)

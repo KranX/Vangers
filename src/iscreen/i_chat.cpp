@@ -16,6 +16,7 @@
 #include "../network.h"
 #include "../text/legacy_codec.h"
 #include "../text/legacy_ttf_draw.h"
+#include "../text/language_policy.h"
 #include "../text/unicode.h"
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -226,7 +227,7 @@ int scrollSizeX = 5;
 
 static text::LegacyEncoding iChatTextEncoding(void)
 {
-	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+	return text::runtime_legacy_encoding();
 }
 
 static std::shared_ptr<text::TtfFontFace> iChatGetTtfFace(int font)
