@@ -1708,22 +1708,18 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 		case I_STRING_ELEM:
 			//std::cout<<"I_STRING_ELEM"<<std::endl;
 			data = (unsigned char*)(((iStringElement*)this) -> string);
-			if(((iStringElement*)this)->Utf8Canonical || ((iStringElement*)this)->CursorVisible >= 0){
-				utf8_data = ((iStringElement*)this)->get_display_utf8_string();
-				use_utf8_text = true;
-				utf8_render_width = iUtf8StrLen(utf8_data, ((iStringElement*)this)->font, ((iStringElement*)this)->space);
-				utf8_render_x = x + lX;
-				if(!iscreen_string_uses_utf8_metrics((iStringElement*)this) && utf8_render_width > 0)
-					utf8_render_x += (SizeX - utf8_render_width) / 2;
-			}
+			utf8_data = ((iStringElement*)this)->get_display_utf8_string();
+			use_utf8_text = true;
+			utf8_render_width = iUtf8StrLen(utf8_data, ((iStringElement*)this)->font, ((iStringElement*)this)->space);
+			utf8_render_x = x + lX;
+			if(!iscreen_string_uses_utf8_metrics((iStringElement*)this) && utf8_render_width > 0)
+				utf8_render_x += (SizeX - utf8_render_width) / 2;
 			break;
 		case I_S_STRING_ELEM:
 			//std::cout<<"I_S_STRING_ELEM"<<std::endl;
 			data = (unsigned char*)(((iS_StringElement*)this) -> string);
-			if(((iS_StringElement*)this)->Utf8Canonical || ((iS_StringElement*)this)->CursorVisible >= 0){
-				utf8_data = ((iS_StringElement*)this)->get_display_utf8_string();
-				use_utf8_text = true;
-			}
+			utf8_data = ((iS_StringElement*)this)->get_display_utf8_string();
+			use_utf8_text = true;
 			if(((iScreenObject*)owner) -> flags & OBJ_SELECTABLE && !(((iScreenObject*)owner) -> flags & OBJ_SELECTED)){
 				col = iS_STR_COL0_START;
 				col_sz = iS_STR_COL0_SIZE;

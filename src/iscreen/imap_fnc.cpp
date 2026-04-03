@@ -1291,7 +1291,7 @@ int iUtf8StrLen(std::string_view text_value,int f,int space)
 {
 	HFont* p = HFntTable[f];
 	auto face = iscreen_get_hfont_ttf_face(f);
-	if(face && text::language_prefers_utf8_assets())
+	if(face)
 		return iscreen_measure_hfont_utf8_width(*face, text_value, p->SizeY, iscreen_hfont_peak_level(p), space);
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, iscreen_hfont_encoding(), ' ');
