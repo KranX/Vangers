@@ -15,6 +15,7 @@
 #include "../network.h"
 #include "../iscreen/iscreen.h"
 #include "../text/legacy_codec.h"
+#include "../text/legacy_ttf_draw.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -118,6 +119,72 @@ static inline int acs_sequence_step_ticks(void)
 {
 	int ticks = (int)round(GAME_TIME_COEFF);
 	return ticks > 0 ? ticks : 1;
+}
+
+static inline text::LegacyEncoding acs_hfont_encoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+static std::shared_ptr<text::TtfFontFace> acs_get_hfont_ttf_face(int fnt)
+{
+	if(fnt < 0 || fnt >= ACS_MAX_FONT)
+		return nullptr;
+	if(!acsFntTable || !acsFntTable[fnt])
+		return nullptr;
+
+	return text::default_ui_ttf_face(acsFntTable[fnt]->SizeY, TTF_HINTING_NORMAL, false, 0);
+}
+
+static bool acs_ttf_supports_char(int fnt,unsigned char chr)
+{
+	auto face = acs_get_hfont_ttf_face(fnt);
+	if(!face)
+		return false;
+
+	uint32_t codepoint = '?';
+	switch(acs_hfont_encoding()){
+		case text::LegacyEncoding::ASCII:
+			codepoint = chr < 0x80 ? chr : '?';
+			break;
+		case text::LegacyEncoding::CP866:
+			codepoint = text::cp866_to_unicode(chr);
+			break;
+		case text::LegacyEncoding::CP1251:
+			codepoint = text::cp1251_to_unicode(chr);
+			break;
+	}
+
+	const text::GlyphBitmap* glyph = face->get_glyph(codepoint);
+	if(glyph && glyph->provided)
+		return true;
+
+	glyph = face->get_glyph('?');
+	return glyph && glyph->provided;
+}
+
+static int acs_ttf_char_advance(text::TtfFontFace& face,unsigned char chr,int space)
+{
+	uint32_t codepoint = '?';
+	switch(acs_hfont_encoding()){
+		case text::LegacyEncoding::ASCII:
+			codepoint = chr < 0x80 ? chr : '?';
+			break;
+		case text::LegacyEncoding::CP866:
+			codepoint = text::cp866_to_unicode(chr);
+			break;
+		case text::LegacyEncoding::CP1251:
+			codepoint = text::cp1251_to_unicode(chr);
+			break;
+	}
+
+	const text::GlyphBitmap* glyph = face.get_glyph(codepoint);
+	if(!(glyph && glyph->provided))
+		glyph = face.get_glyph('?');
+	if(!(glyph && glyph->provided))
+		return space;
+
+	return std::max(glyph->advance, 0) + space;
 }
 
 int acsEventActive(aciScreenEventCommand* p)
@@ -1568,6 +1635,7 @@ void aciScreenDispatcher::InputQuant(SDL_Event *event)
 	unsigned char* ptr = NULL;
 	unsigned char chr;
 	HFont* hfnt = NULL;
+	auto ttf_face = std::shared_ptr<text::TtfFontFace>();
 
 	if(!activeInput) {
 		return;
@@ -1579,6 +1647,7 @@ void aciScreenDispatcher::InputQuant(SDL_Event *event)
 	ptr = (unsigned char*)activeInput -> string;
 	if(activeInput -> flags & ACS_ISCREEN_FONT) {
 		hfnt = acsFntTable[activeInput -> font];
+		ttf_face = acs_get_hfont_ttf_face(activeInput -> font);
 	}
 
 	if (event != nullptr && event->type == SDL_KEYDOWN) {
@@ -1607,7 +1676,10 @@ void aciScreenDispatcher::InputQuant(SDL_Event *event)
 		}
 	} else if (event != nullptr && event->type == SDL_TEXTINPUT) {
 		chr = text::utf8_first_codepoint_to_cp866_lossy(event->text.text,' ');
-		if(hfnt && chr < (hfnt->StartChar-hfnt->EndChar+1) && (hfnt->data[chr]->Flags & NULL_HCHAR) && chr != ' ')
+		if(hfnt && !ttf_face &&
+		   chr < (hfnt->StartChar-hfnt->EndChar+1) && (hfnt->data[chr]->Flags & NULL_HCHAR) && chr != ' ')
+			return;
+		if(ttf_face && !acs_ttf_supports_char(activeInput -> font, chr) && chr != ' ')
 			return;
 		sz = strlen((char*)ptr);
 		if(sz <= activeInput->MaxStrLen) {
@@ -1684,9 +1756,17 @@ void acsOutStr(int x,int y,int fnt,int col,unsigned char* str,int space)
 	HFont* p = acsFntTable[fnt];
 	HChar* ch;
 	unsigned char* ptr;
+	auto face = acs_get_hfont_ttf_face(fnt);
 
 	col_sz = (col >> 8) & 0xFF;
 	col &= 0xFF;
+
+	if(face){
+		text::draw_legacy_ttf_text_8bit(x, y, col | (col_sz << 16),
+		                                (const char*)(str ? str : (unsigned char*)""),
+		                                *face, acs_hfont_encoding(), space, space, false);
+		return;
+	}
 
 	_x = x;
 	_y = y;
@@ -1734,6 +1814,16 @@ int acsStrLen(int fnt,unsigned char* str,int space)
 	int i,sx,sz = strlen((char*)str),len = 0;
 	HFont* p = acsFntTable[fnt];
 	HChar* ch;
+	auto face = acs_get_hfont_ttf_face(fnt);
+
+	if(face){
+		for(i = 0; i < sz; i ++){
+			if(str[i] == '\n')
+				continue;
+			len += acs_ttf_char_advance(*face, str[i], space);
+		}
+		return len;
+	}
 
 	for(i = 0; i < sz; i ++){
 		ch = p -> data[str[i]];
