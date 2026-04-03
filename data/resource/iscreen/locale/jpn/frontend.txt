@@ -1,0 +1,16 @@
+[strings]
+LOAD GAME = ロードゲーム
+MULTIPLAYER = マルチプレイ
+NEW GAME = ニューゲーム
+OPTIONS = オプション
+CREDITS = クレジット
+EXIT = 終了
+MAIN MENU = メインメニュー
+Genesis = 創世
+Prehistory = 前史
+Present = 現在
+
+[text_paths]
+resource/iscreen/text/eng/genesis.txt = resource/iscreen/text/jpn/genesis.txt
+resource/iscreen/text/eng/prehist.txt = resource/iscreen/text/jpn/prehist.txt
+resource/iscreen/text/eng/present.txt = resource/iscreen/text/jpn/present.txt

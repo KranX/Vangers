@@ -76,6 +76,7 @@ SET(textcore_SRCS
 	text/language_policy.cpp
 	text/legacy_ttf_draw.cpp
 	text/legacy_codec.cpp
+	text/locale_catalog.cpp
 	text/ttf_runtime.cpp
 	text/unicode.cpp
 )

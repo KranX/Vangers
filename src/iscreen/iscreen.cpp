@@ -256,6 +256,11 @@ std::string iscreen_get_measure_utf8_string(const TStringElement* element)
 	return display;
 }
 
+static bool iscreen_string_uses_utf8_metrics(const iStringElement* element)
+{
+	return element && (((element->flags & EL_TEXT_STRING) != 0) || element->CursorVisible >= 0);
+}
+
 template<class TStringElement>
 void iscreen_begin_input(TStringElement* element)
 {
@@ -1930,7 +1935,7 @@ void iScreenObject::init(void)
 				((iBitmapElement*)p) -> init_size();
 			}
 			if(p -> type == I_STRING_ELEM){
-				if(((iStringElement*)p)->Utf8Canonical || ((iStringElement*)p)->CursorVisible >= 0)
+				if(iscreen_string_uses_utf8_metrics((iStringElement*)p))
 					p -> SizeX = iUtf8StrLen(iscreen_get_measure_utf8_string((iStringElement*)p),((iStringElement*)p) -> font,((iStringElement*)p) -> space);
 				else
 					p -> SizeX = iStrLen((unsigned char*)((iStringElement*)p) -> string,((iStringElement*)p) -> font,((iStringElement*)p) -> space);
@@ -4220,15 +4225,13 @@ void iScreenDispatcher::key_trap(int sc)
 
 void iStringElement::init_size(void)
 {
-	if((flags & EL_TEXT_STRING) && (Utf8Canonical || CursorVisible >= 0)){
+	if(iscreen_string_uses_utf8_metrics(this)){
 		auto face = iscreen_input_ttf_face(this);
 		if(face)
 			SizeX = text::measure_utf8_text_width(iscreen_get_measure_utf8_string(this), *face, space);
 		else
 			SizeX = iUtf8StrLen(iscreen_get_measure_utf8_string(this),font,space);
 	}
-	else if(Utf8Canonical || CursorVisible >= 0)
-		SizeX = iUtf8StrLen(iscreen_get_measure_utf8_string(this),font,space);
 	else
 		SizeX = iStrLen((unsigned char*)string,font,space);
 	SizeY = HFntTable[font] -> SizeY;
@@ -4266,7 +4269,7 @@ iTextData::~iTextData(void)
 	if(fname) delete[] fname;
 	if(mem_heap) delete mem_heap;
 	if(data) delete data;
-	if(objName) delete objName;
+	if(objName) delete[] objName;
 }
 
 void iTextData::load(void)

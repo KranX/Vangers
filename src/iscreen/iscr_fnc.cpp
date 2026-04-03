@@ -31,6 +31,7 @@
 #include "../actint/acsconst.h"
 #include "../actint/aci_evnt.h"
 #include "../actint/aci_scr.h"
+#include "../text/locale_catalog.h"
 #include "../text/language_policy.h"
 
 #ifndef _WIN32
@@ -50,24 +51,34 @@ static std::string iscreen_localized_asset_path(const char* english_path,const c
 	return text::localized_asset_path(english_path, russian_path, japanese_path);
 }
 
-static const char* iscreen_japanese_ui_string(const std::string& text)
+static void iscreen_replace_owned_string(char*& value,const std::string& replacement)
 {
-	if(text == "LOAD GAME") return "ロードゲーム";
-	if(text == "MULTIPLAYER") return "マルチプレイ";
-	if(text == "NEW GAME") return "ニューゲーム";
-	if(text == "OPTIONS") return "オプション";
-	if(text == "CREDITS") return "クレジット";
-	if(text == "EXIT") return "終了";
-	if(text == "MAIN MENU") return "メインメニュー";
-	if(text == "Genesis") return "創世";
-	if(text == "Prehistory") return "前史";
-	if(text == "Present") return "現在";
-	return nullptr;
+	delete[] value;
+	value = new char[replacement.size() + 1];
+	strcpy(value, replacement.c_str());
 }
 
-static void iscreen_apply_japanese_string_overrides(void)
+static void iscreen_set_translated_display(iStringElement* element,const std::string& translation)
 {
-	if(lang() != JAPANESE || !iScrDisp)
+	if(!element)
+		return;
+
+	element->utf8_string = translation;
+	element->Utf8Canonical = true;
+}
+
+static void iscreen_set_translated_display(iS_StringElement* element,const std::string& translation)
+{
+	if(!element)
+		return;
+
+	element->utf8_string = translation;
+	element->Utf8Canonical = true;
+}
+
+static void iscreen_apply_locale_string_overrides(void)
+{
+	if(!text::language_prefers_utf8_assets() || !iScrDisp)
 		return;
 
 	iScreen* scr = (iScreen*)iScrDisp->last;
@@ -78,15 +89,13 @@ static void iscreen_apply_japanese_string_overrides(void)
 			while(el){
 				if(el->type == I_STRING_ELEM){
 					iStringElement* str = (iStringElement*)el;
-					const char* jp = iscreen_japanese_ui_string(str->get_display_utf8_string());
-					if(jp)
-						str->set_utf8_string(jp);
+					if(const std::string* translated = text::iscreen_locale_string(str->get_display_utf8_string()))
+						iscreen_set_translated_display(str, *translated);
 				}
 				else if(el->type == I_S_STRING_ELEM){
 					iS_StringElement* str = (iS_StringElement*)el;
-					const char* jp = iscreen_japanese_ui_string(str->get_display_utf8_string());
-					if(jp)
-						str->set_utf8_string(jp);
+					if(const std::string* translated = text::iscreen_locale_string(str->get_display_utf8_string()))
+						iscreen_set_translated_display(str, *translated);
 				}
 				el = (iScreenElement*)el->prev;
 			}
@@ -96,35 +105,31 @@ static void iscreen_apply_japanese_string_overrides(void)
 	}
 }
 
-static void iscreen_apply_japanese_text_overrides(void)
+static void iscreen_apply_locale_text_overrides(void)
 {
-	if(lang() != JAPANESE || !iScrDisp || !iScrDisp->texts)
+	if(!text::language_prefers_utf8_assets() || !iScrDisp || !iScrDisp->texts)
 		return;
 
 	iTextData* text_data = (iTextData*)iScrDisp->texts->last;
 	while(text_data){
-		switch(text_data->ID){
-			case iTEXT_ENG1_ID:
-				if(text_data->fname) strcpy(text_data->fname, "resource/iscreen/text/jpn/prehist.txt");
-				if(text_data->objName) strcpy(text_data->objName, "前史");
-				break;
-			case iTEXT_ENG2_ID:
-				if(text_data->fname) strcpy(text_data->fname, "resource/iscreen/text/jpn/genesis.txt");
-				if(text_data->objName) strcpy(text_data->objName, "創世");
-				break;
-			case iTEXT_ENG3_ID:
-				if(text_data->fname) strcpy(text_data->fname, "resource/iscreen/text/jpn/present.txt");
-				if(text_data->objName) strcpy(text_data->objName, "現在");
-				break;
+		if(text_data->objName){
+			if(const std::string* translated = text::iscreen_locale_string(text_data->objName))
+				iscreen_replace_owned_string(text_data->objName, *translated);
 		}
+
+		if(text_data->fname){
+			if(const std::string* localized_path = text::iscreen_locale_text_path(text_data->fname))
+				iscreen_replace_owned_string(text_data->fname, *localized_path);
+		}
+
 		text_data = (iTextData*)text_data->prev;
 	}
 }
 
-static void iscreen_apply_japanese_overrides(void)
+static void iscreen_apply_locale_overrides(void)
 {
-	iscreen_apply_japanese_string_overrides();
-	iscreen_apply_japanese_text_overrides();
+	iscreen_apply_locale_string_overrides();
+	iscreen_apply_locale_text_overrides();
 }
 
 
@@ -592,22 +597,22 @@ void iInit(void)
 	if(!iFirstInit){
 		const std::string script_path = iscreen_localized_asset_path("resource/iscreen/oftr.scb",
 		                                                           "resource/iscreen/oftr2.scb",
-		                                                           "resource/iscreen/oftr_jpn.scb");
+		                                                           nullptr);
 		ParseScript(script_path.c_str());
 	}
 #else
 	if(!iFirstInit){
 		const std::string script_src = iscreen_localized_asset_path("iscreen/oftr.scr",
 		                                                          "iscreen/oftr2.scr",
-		                                                          "iscreen/oftr_jpn.scr");
+		                                                          nullptr);
 		const std::string script_bin = iscreen_localized_asset_path("resource/iscreen/oftr.scb",
 		                                                          "resource/iscreen/oftr2.scb",
-		                                                          "resource/iscreen/oftr_jpn.scb");
+		                                                          nullptr);
 		ParseScript(script_src.c_str(), script_bin.c_str());
 	}
 #endif
 	if(!iFirstInit)
-		iscreen_apply_japanese_overrides();
+		iscreen_apply_locale_overrides();
 
 	if(iFirstInit){
 		iScrDisp -> flags &= ~SD_EXIT;
