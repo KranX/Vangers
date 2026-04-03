@@ -1,3 +1,4 @@
+#include <string_view>
 
 #define _ACI_PACK_SAVES_
 
@@ -749,11 +750,14 @@ struct fncMenuItem : public iListElement
 	aKeyObj* scankey;
 	char* name;
 	int name_len;
+	std::string display_utf8_name;
 
 	actEvent* eventPtr;
 
 	void add_key(int key);
 	void init_name(const char* p);
+	void set_display_name_utf8(const std::string& value);
+	const std::string& get_display_utf8_name(void) const;
 	void init(void);
 
 	int check_y(int y);
@@ -1463,13 +1467,17 @@ struct actIntDispatcher
 };
 
 void aPutStr(int x,int y,int font,int color,unsigned char* str,int bsx,unsigned char* buf,int space = I_STR_SPACE);
+void aPutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int bsx,unsigned char* buf,int space = I_STR_SPACE);
 void aOutStr(int x,int y,int font,int color,unsigned char* str,int space = I_STR_SPACE);
 void aPutStr32(int x,int y,int font,int color,int color_size,void* str,int bsx,void* buf,int space);
+void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_view text_value,int bsx,void* buf,int space = I_STR_SPACE);
 void aPutChar(int x,int y,int font,int color,int str,int bsx,int bsy,unsigned char* buf);
 void aPutChar32(int x,int y,int font,int color,int color_size,int str,int bsx,void* buf);
 void aPutNum(int x,int y,int font,int color,int str,int bsx,unsigned char* buf,int space = I_STR_SPACE);
 int aStrLen(unsigned char* str,int font,int space = I_STR_SPACE);
+int aUtf8StrLen(std::string_view text_value,int font,int space = I_STR_SPACE);
 int aStrLen32(void* str,int font,int space = I_STR_SPACE);
+int aUtf8TextWidth32(std::string_view text_value,int font,int hspace = I_STR_SPACE);
 int aStrHeight(int font);
 int aStrHeight32(int font);
 

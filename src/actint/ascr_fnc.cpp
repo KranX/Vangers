@@ -311,6 +311,39 @@ void aOutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int 
 	aOutStr(x, y, font, color, (unsigned char*)legacy_text.c_str(), space);
 }
 
+void aPutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int bsx,unsigned char* buf,int space)
+{
+	auto face = actint_get_text_ttf_face(font);
+	if(face){
+		const int col1 = color & 0xFF;
+		const int col2 = (color >> 8) & 0xFF;
+		const int ascent = face->get_ascent();
+		int pen_x = x;
+		size_t offset = 0;
+		uint32_t codepoint = 0;
+
+		while(text::utf8_next(text_value, offset, codepoint)){
+			if(codepoint == '\r')
+				continue;
+			if(codepoint == '\n')
+				break;
+
+			const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(*face, codepoint);
+			if(glyph){
+				actint_draw_ttf_glyph_buffer(pen_x + glyph->minx, y + ascent - glyph->maxy,
+				                             bsx, *glyph, buf, col1, col2);
+				pen_x += std::max(glyph->advance, 0) + space;
+			}
+			else
+				pen_x += space;
+		}
+		return;
+	}
+
+	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
+	aPutStr(x, y, font, color, (unsigned char*)legacy_text.c_str(), bsx, buf, space);
+}
+
 void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_view text_value,int bsx,void* buf,int space)
 {
 	auto face = actint_get_text32_ttf_face(font);

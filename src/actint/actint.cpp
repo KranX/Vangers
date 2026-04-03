@@ -23,6 +23,8 @@
 
 #include "../uvs/univang.h"
 #include "../uvs/diagen.h"
+#include "../text/unicode.h"
+#include "../text/legacy_codec.h"
 
 #include "../sound/hsound.h"
 #include "layout.h"
@@ -78,6 +80,24 @@ extern int iChatExit;
 extern int NetworkON;
 
 extern int iMouseX;
+
+namespace
+{
+
+text::LegacyEncoding actint_menu_text_encoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+std::string actint_menu_text_to_utf8(const char* value)
+{
+	const char* src = value ? value : "";
+	if(text::is_valid_utf8(src))
+		return src;
+	return text::legacy_to_utf8(src, actint_menu_text_encoding());
+}
+
+}
 extern int iMouseY;
 
 extern int iMouseLPressFlag;
@@ -2498,6 +2518,7 @@ fncMenuItem::fncMenuItem(void)
 
 	name = NULL;
 	name_len = 0;
+	display_utf8_name.clear();
 
 	eventPtr = NULL;
 }
@@ -2535,6 +2556,17 @@ void fncMenuItem::init_name(const char* p)
 		name_len = sz;
 	}
 	strcpy(name,p);
+	display_utf8_name = actint_menu_text_to_utf8(p);
+}
+
+void fncMenuItem::set_display_name_utf8(const std::string& value)
+{
+	display_utf8_name = value;
+}
+
+const std::string& fncMenuItem::get_display_utf8_name(void) const
+{
+	return display_utf8_name;
 }
 
 fncMenu::fncMenu(void)
@@ -4383,9 +4415,9 @@ void actIntDispatcher::i_finit(void)
 void fncMenuItem::init(void)
 {
 	if(flags & FM_RANGE_FONT)
-		SizeX = aStrLen32((unsigned char*)name,font,space);
+		SizeX = aUtf8TextWidth32(display_utf8_name, font, space);
 	else
-		SizeX = aStrLen((unsigned char*)name,font,space);
+		SizeX = aUtf8StrLen(display_utf8_name, font, space);
 	SizeY = aScrFonts[font] -> SizeY;
 }
 
@@ -4524,9 +4556,9 @@ void fncMenuItem::redraw(int bsx,int bsy,unsigned char* buf,int x,int y)
 	col = (flags & FM_SELECTED) ? aciCurColorScheme[FM_SELECT_COL] : aciCurColorScheme[FM_UNSELECT_COL];
 #endif
 	if(flags & FM_RANGE_FONT)
-		aPutStr32(x,y,font,col,col_sz,name,bsx,buf,space);
+		aPutStr32Utf8(x,y,font,col,col_sz,display_utf8_name,bsx,buf,space);
 	else
-		aPutStr(x,y,font,col,(unsigned char*)name,bsx,buf,space);
+		aPutStrUtf8(x,y,font,col,display_utf8_name,bsx,buf,space);
 }
 
 void fncMenuItem::redraw_str(int bsx,int bsy,unsigned char* buf,int x,int y,unsigned char* str)
@@ -4714,16 +4746,16 @@ void InfoPanel::redraw(void)
 		}
 		else {
 			if(!(flags & IP_RANGE_FONT))
-				x = OffsX + ((SizeX - aStrLen((unsigned char*)p->ID_ptr.c_str(), font,hSpace)) >> 1);
+				x = OffsX + ((SizeX - aUtf8StrLen(p->ID_ptr, font, hSpace)) >> 1);
 			else
-				x = OffsX + ((SizeX - aStrLen32((void*)p->ID_ptr.c_str(), font,hSpace)) >> 1);
+				x = OffsX + ((SizeX - aUtf8TextWidth32(p->ID_ptr, font, hSpace)) >> 1);
 		}
 		if(y < 0) ErrH.Abort("InfoPanel overflow...");
 		if(!(flags & IP_RANGE_FONT)){
-			aPutStr(x,y,fnt,col,(unsigned char*)p->ID_ptr.c_str(),SizeX,buf,hSpace);
+			aPutStrUtf8(x,y,fnt,col,p->ID_ptr,SizeX,buf,hSpace);
 		}
 		else {
-			aPutStr32(x,y,fnt,col,col_sz, (void*)p->ID_ptr.c_str(),SizeX,buf,hSpace);
+			aPutStr32Utf8(x,y,fnt,col,col_sz,p->ID_ptr,SizeX,buf,hSpace);
 		}
 
 		if(!(flags & IP_RANGE_FONT))
@@ -9150,6 +9182,7 @@ void fncMenuItem::clone(fncMenuItem* p)
 
 	p -> name = name;
 	p -> name_len = name_len;
+	p -> display_utf8_name = display_utf8_name;
 
 	p -> flags |= (flags | FM_CLONE) & (~FM_NO_DELETE);
 }
