@@ -95,10 +95,7 @@ std::shared_ptr<text::TtfFontFace> iscreen_get_hfont_ttf_face(int fnt)
 		style = TTF_STYLE_BOLD;
 	}
 
-	if(text::language_prefers_utf8_assets())
-		return text::default_ui_hfont_ttf_face(target_height, TTF_HINTING_NORMAL, false, 0, style);
-
-	return text::default_ui_ttf_face(target_height, TTF_HINTING_NORMAL, false, 0, style);
+	return text::default_ui_hfont_ttf_face(target_height, TTF_HINTING_NORMAL, false, 0, style);
 }
 
 int iscreen_hfont_peak_level(HFont* font)
