@@ -1201,7 +1201,8 @@ void iInitText(iScreenObject* obj, char* text, int text_len, int font, int space
 			t_sz = strlen(buf + i) + 1;
 			if(t_sz) {
 				p->string = new char[t_sz];
-				strcpy(p->string, buf + i);
+				p->string_capacity = t_sz;
+				p->init_string(buf + i);
 				p->flags |= EL_TEXT_STRING;
 
 				p->font = font;
@@ -1239,7 +1240,8 @@ void iInitS_Text(iScreenObject* obj,char* text,int text_len,int font,int space,i
 			if(t_sz){
 				p = new iS_StringElement;
 				p -> string = new char[t_sz];
-				strcpy(p -> string,buf + i);
+				p -> string_capacity = t_sz;
+				p -> init_string(buf + i);
 				p -> flags |= EL_TEXT_STRING;
 
 				p -> font = font;
@@ -2492,15 +2494,18 @@ void iPrepareSaveNames(void)
 
 				fh.read(el -> string,len);
 				el -> string[len] = 0;
+				el -> sync_utf8_from_legacy();
 
 				if(el1){
 					if(time_len){
 						fh.read(el1 -> string,time_len);
 						el1 -> string[time_len] = 0;
+						el1 -> sync_utf8_from_legacy();
 						obj1 -> flags &= ~OBJ_LOCKED;
 					}
 					else {
 						el1 -> string[0] = 0;
+						el1 -> sync_utf8_from_legacy();
 						obj1 -> flags |= OBJ_LOCKED;
 					}
 				}
@@ -2508,10 +2513,11 @@ void iPrepareSaveNames(void)
 				obj -> flags &= ~OBJ_LOCKED;
 			}
 			else {
-				strcpy(el -> string,iSTR_EMPTY_SLOT);
+				el -> init_string(iSTR_EMPTY_SLOT);
 				obj -> flags |= OBJ_LOCKED;
 				if(el1){
 					el1 -> string[0] = 0;
+					el1 -> sync_utf8_from_legacy();
 					obj1 -> flags |= OBJ_LOCKED;
 				}
 			}
@@ -2560,12 +2566,15 @@ void iInitServersList()
 				if(sz > ACI_SERVER_NAME_LEN)
 					memcpy(el -> string,p -> name,ACI_SERVER_NAME_LEN);
 				else
-					strcpy(el -> string,p -> name);
+					el -> init_string(p -> name);
+				el -> sync_utf8_from_legacy();
 				p = p -> next;
 				obj -> flags &= ~OBJ_LOCKED;
 			}
-			else
+			else{
+				el -> sync_utf8_from_legacy();
 				obj -> flags |= (OBJ_LOCKED | OBJ_NOT_UNLOCK);
+			}
 			el -> init_size();
 			el -> init_align();
 			obj -> flags |= OBJ_MUST_REDRAW;
@@ -2737,7 +2746,7 @@ void iDeleteControlKey(int id,int num)
 	index = id * iKEY_OBJECT_SIZE + num;
 
 	if(iControlsStr && iControlsStr[index]){
-		strcpy(iControlsStr[index] -> string,iSTR_NONE);
+		iControlsStr[index]->init_string(iSTR_NONE);
 		obj = (iScreenObject*)iControlsStr[index] -> owner;
 		obj -> flags |= OBJ_REINIT;
 		obj -> flags |= OBJ_MUST_REDRAW;

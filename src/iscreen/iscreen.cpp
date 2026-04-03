@@ -15,6 +15,8 @@
 #include "../actint/mlstruct.h"
 #include "../actint/aci_scr.h"
 #include "../text/legacy_codec.h"
+#include "../text/legacy_ttf_draw.h"
+#include "../text/unicode.h"
 
 #include "../sound/hsound.h"
 #include "avi.h"
@@ -31,6 +33,7 @@ extern int iMouseY;
 extern int actIntLog;
 extern actIntDispatcher* aScrDisp;
 extern unsigned char* aciCurColorScheme;
+extern aciFont** aScrFonts32;
 
 
 extern char* AVInotFound;
@@ -86,6 +89,13 @@ int iStrLen(unsigned char* p,int f,int space);
 void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space,int level,int hide_mode);
 void i_terrPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space,int level,int hide_mode,int terr);
 void iPutStr2buf(int x,int y,int fnt,int bsx,int bsy,unsigned char* str,unsigned char* buf_to,int mode,int scale,int space);
+int iUtf8StrLen(std::string_view text_value,int f,int space);
+void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode);
+void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int scale,int space,int level,int hide_mode,int terr);
+void iPutStr2bufUtf8(int x,int y,int fnt,int bsx,int bsy,std::string_view text_value,unsigned char* buf_to,int mode,int scale,int space);
+int aUtf8TextWidth32(std::string_view text_value,int font,int hspace);
+int aUtf8TextHeight32(std::string_view text_value,int font,int vspace);
+void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_view text_value,int bsx,void* buf,int space);
 
 void i_getpal(unsigned char* p);
 void render_border(iScreenObject* p);
@@ -112,6 +122,7 @@ unsigned iHeapOffs = 0;
 unsigned iHeapSize = 0;
 
 char* BackupStr;
+std::string BackupUtf8;
 
 int iScreenOffs = 0;
 int iScreenOffsDelta = 0;
@@ -130,6 +141,166 @@ int getCurIScreenId() {
 
 int getCurIScreenX() {
 	return iScrDisp == nullptr || iScrDisp->curScr == nullptr ? 0 : iScrDisp->curScr->ScreenOffs;
+}
+
+namespace
+{
+
+text::LegacyEncoding iscreen_string_encoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+template<class TStringElement>
+void iscreen_set_legacy_string(TStringElement* element,const char* value)
+{
+	if(!element || !element->string)
+		return;
+
+	const char* src = value ? value : "";
+	size_t max_copy = element->string_capacity > 0 ? (size_t)element->string_capacity : 0;
+	if(max_copy)
+		max_copy--;
+	strncpy(element->string, src, max_copy);
+	element->string[max_copy] = 0;
+	element->Utf8Canonical = false;
+	element->sync_utf8_from_legacy();
+}
+
+template<class TStringElement>
+void iscreen_set_utf8_string(TStringElement* element,const std::string& value)
+{
+	if(!element)
+		return;
+
+	element->utf8_string = value;
+	element->Utf8Canonical = true;
+	element->sync_legacy_from_utf8();
+}
+
+template<class TStringElement>
+void iscreen_sync_utf8_from_legacy(TStringElement* element)
+{
+	if(!element)
+		return;
+
+	element->utf8_string = text::legacy_to_utf8(element->string ? element->string : "", iscreen_string_encoding());
+}
+
+template<class TStringElement>
+void iscreen_sync_legacy_from_utf8(TStringElement* element)
+{
+	if(!element || !element->string)
+		return;
+
+	std::string legacy = text::utf8_to_legacy_lossy(element->utf8_string, iscreen_string_encoding(), ' ');
+	size_t max_copy = element->string_capacity > 0 ? (size_t)element->string_capacity : 0;
+	if(max_copy)
+		max_copy--;
+	if(legacy.size() > max_copy)
+		legacy.resize(max_copy);
+	memcpy(element->string, legacy.data(), legacy.size());
+	element->string[legacy.size()] = 0;
+}
+
+template<class TStringElement>
+std::string iscreen_get_display_utf8_string(const TStringElement* element)
+{
+	if(!element)
+		return std::string();
+
+	std::string display = element->Utf8Canonical
+	                      ? element->utf8_string
+	                      : text::legacy_to_utf8(element->string ? element->string : "", iscreen_string_encoding());
+
+	if(element->CursorVisible >= 0){
+		display += element->CursorVisible ? "_" : " ";
+	}
+
+	return display;
+}
+
+template<class TStringElement>
+std::string iscreen_get_measure_utf8_string(const TStringElement* element)
+{
+	if(!element)
+		return std::string();
+
+	std::string display = element->Utf8Canonical
+	                      ? element->utf8_string
+	                      : text::legacy_to_utf8(element->string ? element->string : "", iscreen_string_encoding());
+
+	if(element->CursorVisible >= 0)
+		display += "_";
+
+	return display;
+}
+
+template<class TStringElement>
+void iscreen_begin_input(TStringElement* element)
+{
+	if(!element)
+		return;
+
+	element->Utf8Canonical = true;
+	element->sync_utf8_from_legacy();
+	element->CursorVisible = 1;
+}
+
+template<class TStringElement>
+void iscreen_finish_input(TStringElement* element)
+{
+	if(!element)
+		return;
+
+	element->CursorVisible = -1;
+	element->sync_legacy_from_utf8();
+}
+
+template<class TStringElement>
+void iscreen_cancel_input(TStringElement* element,const std::string& backup_utf8)
+{
+	if(!element)
+		return;
+
+	element->utf8_string = backup_utf8;
+	element->Utf8Canonical = true;
+	element->CursorVisible = -1;
+	element->sync_legacy_from_utf8();
+}
+
+std::shared_ptr<text::TtfFontFace> iscreen_input_ttf_face(iScreenElement* element)
+{
+	if(!element)
+		return nullptr;
+
+	switch(element->type){
+		case I_STRING_ELEM:
+			if(!HFntTable || !HFntTable[((iStringElement*)element)->font])
+				return nullptr;
+			return text::default_ui_ttf_face(HFntTable[((iStringElement*)element)->font]->SizeY, TTF_HINTING_NORMAL, false, 0);
+		case I_S_STRING_ELEM:
+			if(!aScrFonts32 || !aScrFonts32[((iS_StringElement*)element)->font])
+				return nullptr;
+			return text::default_ui_ttf_face(aScrFonts32[((iS_StringElement*)element)->font]->SizeY, TTF_HINTING_NORMAL, false, 0);
+		default:
+			return nullptr;
+	}
+}
+
+bool iscreen_ttf_supports_codepoint(iScreenElement* element,uint32_t codepoint)
+{
+	auto face = iscreen_input_ttf_face(element);
+	if(!face)
+		return false;
+
+	if(codepoint == ' ')
+		return true;
+
+	const text::GlyphBitmap* glyph = face->get_glyph(codepoint);
+	return glyph && glyph->provided;
+}
+
 }
 
 iListElement::iListElement(void)
@@ -487,8 +658,17 @@ void iScreenElement::copy(iScreenElement* dest)
 		case I_STRING_ELEM:
 			((iStringElement*)dest) -> font = ((iStringElement*)this) -> font;
 			((iStringElement*)dest) -> space = ((iStringElement*)this) -> space;
-			sz = strlen(((iStringElement*)this) -> string);
-			strcpy(((iStringElement*)dest) -> string,((iStringElement*)this) -> string);
+			if(((iStringElement*)dest)->string_capacity < ((iStringElement*)this)->string_capacity){
+				delete[] ((iStringElement*)dest)->string;
+				((iStringElement*)dest)->string_capacity = ((iStringElement*)this)->string_capacity;
+				((iStringElement*)dest)->string = new char[((iStringElement*)dest)->string_capacity];
+			}
+			((iStringElement*)dest) -> CursorVisible = ((iStringElement*)this) -> CursorVisible;
+			((iStringElement*)dest) -> Utf8Canonical = ((iStringElement*)this) -> Utf8Canonical;
+			if(((iStringElement*)this) -> Utf8Canonical)
+				((iStringElement*)dest) -> set_utf8_string(((iStringElement*)this) -> utf8_string);
+			else
+				((iStringElement*)dest) -> init_string(((iStringElement*)this) -> string);
 			break;
 		case I_BITMAP_ELEM:
 		case I_SCROLLER_ELEM:
@@ -542,9 +722,17 @@ void iScreenElement::copy(iScreenElement* dest)
 		case I_S_STRING_ELEM:
 			((iS_StringElement*)dest) -> font = ((iS_StringElement*)this) -> font;
 			((iS_StringElement*)dest) -> space = ((iS_StringElement*)this) -> space;
-//			  sz = strlen(((iS_StringElement*)this) -> string);
-//			  ((iS_StringElement*)dest) -> string = new char[sz + 1];
-			strcpy(((iS_StringElement*)dest) -> string,((iS_StringElement*)this) -> string);
+			if(((iS_StringElement*)dest)->string_capacity < ((iS_StringElement*)this)->string_capacity){
+				delete[] ((iS_StringElement*)dest)->string;
+				((iS_StringElement*)dest)->string_capacity = ((iS_StringElement*)this)->string_capacity;
+				((iS_StringElement*)dest)->string = new char[((iS_StringElement*)dest)->string_capacity];
+			}
+			((iS_StringElement*)dest) -> CursorVisible = ((iS_StringElement*)this) -> CursorVisible;
+			((iS_StringElement*)dest) -> Utf8Canonical = ((iS_StringElement*)this) -> Utf8Canonical;
+			if(((iS_StringElement*)this) -> Utf8Canonical)
+				((iS_StringElement*)dest) -> set_utf8_string(((iS_StringElement*)this) -> utf8_string);
+			else
+				((iS_StringElement*)dest) -> init_string(((iS_StringElement*)this) -> string);
 			break;
 		case I_AVI_ELEM:
 			((iAVIElement*)dest) -> border_type = ((iAVIElement*)this) -> border_type;
@@ -592,7 +780,10 @@ iStringElement::iStringElement(void)
 	space = I_DEFAULT_SPACE;
 	type = I_STRING_ELEM;
 	string = new char[iSTR_LEN];
+	string_capacity = iSTR_LEN;
 	memset (string, '\0', iSTR_LEN);
+	CursorVisible = -1;
+	Utf8Canonical = false;
 }
 
 iS_StringElement::iS_StringElement(void)
@@ -601,7 +792,10 @@ iS_StringElement::iS_StringElement(void)
 	space = I_DEFAULT_SPACE;
 	type = I_S_STRING_ELEM;
 	string = new char[iS_STR_LEN];
+	string_capacity = iS_STR_LEN;
 	memset (string, '\0', iS_STR_LEN);
+	CursorVisible = -1;
+	Utf8Canonical = false;
 }
 
 iBitmapElement::iBitmapElement(void)
@@ -1336,6 +1530,8 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 	int i,v = 0,maxv = 0,bsx = 0,bsy = 0,bs = 0,sp = 0,pv = 0,offs,lev = 0,col = iS_STR_COL_START,col_sz = iS_STR_COL_SIZE,dx1,dx2,dy1,dy2;
 	int null_lev = null_level;
 	unsigned char* p,*p1,*data = NULL;
+	std::string utf8_data;
+	bool use_utf8_text = false;
 
 	if(flags & EL_NO_SCALE && scale != 256)
 		return;
@@ -1369,10 +1565,18 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 		case I_STRING_ELEM:
 			//std::cout<<"I_STRING_ELEM"<<std::endl;
 			data = (unsigned char*)(((iStringElement*)this) -> string);
+			if(((iStringElement*)this)->Utf8Canonical || ((iStringElement*)this)->CursorVisible >= 0){
+				utf8_data = ((iStringElement*)this)->get_display_utf8_string();
+				use_utf8_text = true;
+			}
 			break;
 		case I_S_STRING_ELEM:
 			//std::cout<<"I_S_STRING_ELEM"<<std::endl;
 			data = (unsigned char*)(((iS_StringElement*)this) -> string);
+			if(((iS_StringElement*)this)->Utf8Canonical || ((iS_StringElement*)this)->CursorVisible >= 0){
+				utf8_data = ((iS_StringElement*)this)->get_display_utf8_string();
+				use_utf8_text = true;
+			}
 			if(((iScreenObject*)owner) -> flags & OBJ_SELECTABLE && !(((iScreenObject*)owner) -> flags & OBJ_SELECTED)){
 				col = iS_STR_COL0_START;
 				col_sz = iS_STR_COL0_SIZE;
@@ -1412,10 +1616,18 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 		//std::cout<<"sm = 0"<<std::endl;
 		switch(type){
 			case I_STRING_ELEM:
-				if(terrainNum == -1)
-					iPutStr(x + lX,y + lY,((iStringElement*)this) -> font,data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode);
-				else
-					i_terrPutStr(x + lX,y + lY,((iStringElement*)this) -> font,data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,terrainNum);
+				if(use_utf8_text){
+					if(terrainNum == -1)
+						iPutStrUtf8(x + lX,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode);
+					else
+						i_terrPutStrUtf8(x + lX,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,terrainNum);
+				}
+				else {
+					if(terrainNum == -1)
+						iPutStr(x + lX,y + lY,((iStringElement*)this) -> font,data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode);
+					else
+						i_terrPutStr(x + lX,y + lY,((iStringElement*)this) -> font,data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,terrainNum);
+				}
 				break;
 			case I_S_STRING_ELEM:
 				dx1 = (x + lX < S_STRING_DELTA) ? (x + lX) : S_STRING_DELTA;
@@ -1431,8 +1643,10 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 
 //				  iPutS_Str(dx1,dy1,((iS_StringElement*)this) -> font,col,data,bsx,bsy,p,((iStringElement*)this) -> space);
 //				  s_smooth_buf(bsx,bsy,p,0,iS_STR_SEG_START_COL);
-
-				aPutStr32(dx1,dy1,((iS_StringElement*)this) -> font,col,col_sz,data,bsx,p,((iStringElement*)this) -> space);
+				if(use_utf8_text)
+					aPutStr32Utf8(dx1,dy1,((iS_StringElement*)this) -> font,col,col_sz,utf8_data,bsx,p,((iStringElement*)this) -> space);
+				else
+					aPutStr32(dx1,dy1,((iS_StringElement*)this) -> font,col,col_sz,data,bsx,p,((iStringElement*)this) -> space);
 				put_buf2col(x + lX - dx1,y + lY - dy1,bsx,bsy,p,lev);
 
 				_iFREE_A_(unsigned char,p,bsx * bsy);
@@ -1641,7 +1855,10 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 		switch(type){
 			case I_STRING_ELEM:
 				memset(p,HFONT_NULL_LEVEL,SizeX * SizeY);
-				iPutStr2buf(0,0,((iStringElement*)this) -> font,SizeX,SizeY,data,p,0,sc,((iStringElement*)this) -> space);
+				if(use_utf8_text)
+					iPutStr2bufUtf8(0,0,((iStringElement*)this) -> font,SizeX,SizeY,utf8_data,p,0,sc,((iStringElement*)this) -> space);
+				else
+					iPutStr2buf(0,0,((iStringElement*)this) -> font,SizeX,SizeY,data,p,0,sc,((iStringElement*)this) -> space);
 				scale_buf(SizeX,SizeY,sc,p,p1);
 				smooth_buf(SizeX,SizeY,p1,sm);
 				if(terrainNum == -1)
@@ -1690,8 +1907,12 @@ void iScreenObject::init(void)
 			if(p -> type == I_BITMAP_ELEM || p -> type == I_SCROLLER_ELEM){
 				((iBitmapElement*)p) -> init_size();
 			}
-			if(p -> type == I_STRING_ELEM)
-				p -> SizeX = iStrLen((unsigned char*)((iStringElement*)p) -> string,((iStringElement*)p) -> font,((iStringElement*)p) -> space);
+			if(p -> type == I_STRING_ELEM){
+				if(((iStringElement*)p)->Utf8Canonical || ((iStringElement*)p)->CursorVisible >= 0)
+					p -> SizeX = iUtf8StrLen(iscreen_get_measure_utf8_string((iStringElement*)p),((iStringElement*)p) -> font,((iStringElement*)p) -> space);
+				else
+					p -> SizeX = iStrLen((unsigned char*)((iStringElement*)p) -> string,((iStringElement*)p) -> font,((iStringElement*)p) -> space);
+			}
 			else {
 				if(p -> type == I_SCROLLER_ELEM){
 					switch(((iScrollerElement*)p) -> dir){
@@ -1707,7 +1928,10 @@ void iScreenObject::init(void)
 				}
 				else {
 					if(p -> type == I_S_STRING_ELEM){
-						p -> SizeX = aStrLen32(((iS_StringElement*)p) -> string,((iS_StringElement*)p) -> font,((iS_StringElement*)p) -> space);
+						if(((iS_StringElement*)p)->Utf8Canonical || ((iS_StringElement*)p)->CursorVisible >= 0)
+							p -> SizeX = aUtf8TextWidth32(iscreen_get_measure_utf8_string((iS_StringElement*)p),((iS_StringElement*)p) -> font,((iS_StringElement*)p) -> space);
+						else
+							p -> SizeX = aStrLen32(((iS_StringElement*)p) -> string,((iS_StringElement*)p) -> font,((iS_StringElement*)p) -> space);
 //						  p -> SizeX = iS_StrLen((unsigned char*)((iS_StringElement*)p) -> string,((iS_StringElement*)p) -> font,((iS_StringElement*)p) -> space);
 					}
 				}
@@ -1730,8 +1954,12 @@ void iScreenObject::init(void)
 					}
 				}
 				else {
-					if(p -> type == I_S_STRING_ELEM)
-						p -> SizeY = aStrHeight32(((iStringElement*)p) -> font);
+					if(p -> type == I_S_STRING_ELEM){
+						if(((iS_StringElement*)p)->Utf8Canonical || ((iS_StringElement*)p)->CursorVisible >= 0)
+							p -> SizeY = aUtf8TextHeight32(iscreen_get_measure_utf8_string((iS_StringElement*)p),((iS_StringElement*)p) -> font,((iS_StringElement*)p) -> space);
+						else
+							p -> SizeY = aStrHeight32(((iStringElement*)p) -> font);
+					}
 //						  p -> SizeY = iScrFontTable[((iS_StringElement*)p) -> font] -> SizeY;
 				}
 			}
@@ -3333,38 +3561,91 @@ void iAVIElement::prev_avi(void)
 
 void iStringElement::init_string(const char* ptr)
 {
-	strcpy(string,ptr);
+	iscreen_set_legacy_string(this, ptr);
 }
 
-void iS_StringElement::init_string(char* ptr)
+void iStringElement::set_utf8_string(const std::string& value)
 {
-	strcpy(string,ptr);
+	iscreen_set_utf8_string(this, value);
+}
+
+void iStringElement::sync_utf8_from_legacy(void)
+{
+	iscreen_sync_utf8_from_legacy(this);
+}
+
+void iStringElement::sync_legacy_from_utf8(void)
+{
+	iscreen_sync_legacy_from_utf8(this);
+}
+
+std::string iStringElement::get_display_utf8_string(void) const
+{
+	return iscreen_get_display_utf8_string(this);
+}
+
+void iS_StringElement::init_string(const char* ptr)
+{
+	iscreen_set_legacy_string(this, ptr);
+}
+
+void iS_StringElement::set_utf8_string(const std::string& value)
+{
+	iscreen_set_utf8_string(this, value);
+}
+
+void iS_StringElement::sync_utf8_from_legacy(void)
+{
+	iscreen_sync_utf8_from_legacy(this);
+}
+
+void iS_StringElement::sync_legacy_from_utf8(void)
+{
+	iscreen_sync_legacy_from_utf8(this);
+}
+
+std::string iS_StringElement::get_display_utf8_string(void) const
+{
+	return iscreen_get_display_utf8_string(this);
 }
 
 void iScreenDispatcher::init_input_string(iScreenElement* p)
 {
-	int sz;
 	iListElementPtr* tmp;
 	iScreenObject* obj;
-	unsigned char* ptr = NULL;
 	switch(p -> type){
-		case I_STRING_ELEM:
-			ptr = (unsigned char*)(((iStringElement*)p) -> string);
+		case I_STRING_ELEM: {
+			auto* string_el = (iStringElement*)p;
+			strncpy(BackupStr, string_el->string ? string_el->string : "", 255);
+			BackupStr[255] = 0;
+			BackupUtf8 = string_el->Utf8Canonical
+			             ? string_el->utf8_string
+			             : text::legacy_to_utf8(string_el->string ? string_el->string : "", iscreen_string_encoding());
+			if(p -> flags & EL_KEY_NAME)
+				string_el->set_utf8_string("");
+			else
+				iscreen_begin_input(string_el);
+			string_el->CursorVisible = 1;
 			break;
-		case I_S_STRING_ELEM:
-			ptr = (unsigned char*)(((iS_StringElement*)p) -> string);
+		}
+		case I_S_STRING_ELEM: {
+			auto* string_el = (iS_StringElement*)p;
+			strncpy(BackupStr, string_el->string ? string_el->string : "", 255);
+			BackupStr[255] = 0;
+			BackupUtf8 = string_el->Utf8Canonical
+			             ? string_el->utf8_string
+			             : text::legacy_to_utf8(string_el->string ? string_el->string : "", iscreen_string_encoding());
+			if(p -> flags & EL_KEY_NAME)
+				string_el->set_utf8_string("");
+			else
+				iscreen_begin_input(string_el);
+			string_el->CursorVisible = 1;
 			break;
+		}
 		default:
 			ErrH.Abort("Bad input string type...");
 			break;
 	}
-	strcpy(BackupStr,(char*)ptr);
-	sz = strlen((char*)ptr);
-	if(p -> flags & EL_KEY_NAME){
-		sz = 0;
-	}
-	ptr[sz] = '_';
-	ptr[sz + 1] = 0;
 	obj = (iScreenObject*)p -> owner;
 	obj -> flags |= OBJ_REINIT;
 	if(!(obj -> flags & OBJ_REDRAW)){
@@ -3381,26 +3662,68 @@ void iScreenDispatcher::init_input_string(iScreenElement* p)
 void iScreenDispatcher::input_string_quant(void)
 {
 	SDL_StartTextInput();
-	int sz,init_flag = 0,redraw_flag = 0;
+	int init_flag = 0,redraw_flag = 0;
 	iListElementPtr* tmp;
 	iScreenObject* obj;
-	unsigned char* ptr = NULL;
 	const char* key_name = NULL;
-	unsigned char code;
 	HFont* hfnt = NULL;
+	iStringElement* string_el = NULL;
+	iS_StringElement* string32_el = NULL;
+	std::string* utf8_string = NULL;
 
 	switch(ActiveEl -> type){
 		case I_STRING_ELEM:
-			ptr = (unsigned char*)(((iStringElement*)ActiveEl) -> string);
-			hfnt = HFntTable[(((iStringElement*)ActiveEl) -> font)];
+			string_el = (iStringElement*)ActiveEl;
+			utf8_string = &string_el->utf8_string;
+			hfnt = HFntTable[(string_el) -> font];
 			break;
 		case I_S_STRING_ELEM:
-			ptr = (unsigned char*)(((iS_StringElement*)ActiveEl) -> string);
+			string32_el = (iS_StringElement*)ActiveEl;
+			utf8_string = &string32_el->utf8_string;
 			break;
 		default:
 			ErrH.Abort("Bad input string type...");
 			break;
 	}
+
+	auto set_cursor_visible = [&](int value){
+		if(string_el)
+			string_el->CursorVisible = value;
+		if(string32_el)
+			string32_el->CursorVisible = value;
+	};
+	auto sync_legacy_from_utf8 = [&](){
+		if(string_el)
+			string_el->sync_legacy_from_utf8();
+		if(string32_el)
+			string32_el->sync_legacy_from_utf8();
+	};
+	auto finish_input = [&](){
+		if(string_el)
+			iscreen_finish_input(string_el);
+		if(string32_el)
+			iscreen_finish_input(string32_el);
+	};
+	auto cancel_input = [&](){
+		if(string_el)
+			iscreen_cancel_input(string_el, BackupUtf8);
+		if(string32_el)
+			iscreen_cancel_input(string32_el, BackupUtf8);
+	};
+
+	auto append_input_text = [&](std::string_view appended_utf8){
+		if(!utf8_string || appended_utf8.empty())
+			return;
+
+		if((int)(text::utf8_length(*utf8_string) + text::utf8_length(appended_utf8)) >= cur_max_input)
+			return;
+
+		utf8_string->append(appended_utf8);
+		sync_legacy_from_utf8();
+		set_cursor_visible(1);
+		init_flag = 1;
+		redraw_flag = 1;
+	};
 
 	while(KeyBuf -> size) {
 		SDL_Event *event = KeyBuf->get();
@@ -3409,15 +3732,9 @@ void iScreenDispatcher::input_string_quant(void)
 		
 		if(!(ActiveEl -> flags & EL_KEY_NAME)){
 			if (event->type == SDL_KEYDOWN) {
-				if (event->key.keysym.sym > 0 && event->key.keysym.sym < 127) {
-					code = event->key.keysym.sym;
-				} else {
-					continue;
-				}
 				switch(event->key.keysym.sym) {
 					case SDLK_RETURN:
-						sz = strlen((char*)ptr);
-						ptr[sz - 1] = 0;
+						finish_input();
 						flags ^= SD_INPUT_STRING;
 						flags |= SD_FINISH_INPUT;
 						init_flag = 1;
@@ -3425,7 +3742,7 @@ void iScreenDispatcher::input_string_quant(void)
 						SDL_StopTextInput();
 						break;
 					case SDLK_ESCAPE:
-						strcpy((char*)ptr,BackupStr);
+						cancel_input();
 						flags ^= SD_INPUT_STRING;
 						flags |= SD_FINISH_INPUT;
 						init_flag = 1;
@@ -3434,10 +3751,11 @@ void iScreenDispatcher::input_string_quant(void)
 						break;
 					case SDLK_LEFT:
 					case SDLK_BACKSPACE:
-						sz = strlen((char*)ptr);
-						if(sz > 1){
-							ptr[sz - 1] = 0;
-							ptr[sz - 2] = '_';
+						if(utf8_string && text::utf8_length(*utf8_string) > 0){
+							*utf8_string = text::utf8_substr_by_codepoints(*utf8_string, 0,
+							                                               text::utf8_length(*utf8_string) - 1);
+							sync_legacy_from_utf8();
+							set_cursor_visible(1);
 							init_flag = 1;
 							redraw_flag = 1;
 						}
@@ -3445,34 +3763,33 @@ void iScreenDispatcher::input_string_quant(void)
 				}
 			}
 			else if (event->type == SDL_TEXTINPUT) {
+				size_t offset = 0;
+				uint32_t codepoint = 0;
+				if(!text::utf8_next(event->text.text, offset, codepoint))
+					continue;
+
 				if(!(ActiveEl -> flags & EL_NUMBER)){
-					code = text::utf8_first_codepoint_to_cp866_lossy(event->text.text,' ');
-					if((hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ') {
-						break;
+					std::string appended_utf8;
+					if(iscreen_ttf_supports_codepoint(ActiveEl, codepoint)){
+						appended_utf8 = text::utf8_from_codepoint(codepoint);
 					}
-					sz = strlen((char*)ptr);
-					if(sz < cur_max_input){
-						ptr[sz - 1] = code;
-						ptr[sz] = '_';
-						ptr[sz + 1] = 0;
-
-						init_flag = 1;
-						redraw_flag = 1;
-					}
-				} else {
-					if((unsigned char)event->text.text[0] >= '0' && (unsigned char)event->text.text[0] <= '9'){
-						code = event->text.text[0];
-						if(hfnt && (hfnt -> data[code] -> Flags & NULL_HCHAR) && code != ' ')
+					else {
+						unsigned char legacy_code = text::unicode_to_legacy_lossy(codepoint, iscreen_string_encoding(), 0);
+						if(!legacy_code)
 							break;
-						sz = strlen((char*)ptr);
-						if(sz < cur_max_input){
-							ptr[sz - 1] = code;
-							ptr[sz] = '_';
-							ptr[sz + 1] = 0;
-
-							init_flag = 1;
-							redraw_flag = 1;
+						if(hfnt && (hfnt -> data[legacy_code] -> Flags & NULL_HCHAR) && legacy_code != ' ')
+							break;
+						appended_utf8 = text::legacy_to_utf8(std::string(1, (char)legacy_code), iscreen_string_encoding());
+					}
+					append_input_text(appended_utf8);
+				} else {
+					if(codepoint >= '0' && codepoint <= '9'){
+						if(!iscreen_ttf_supports_codepoint(ActiveEl, codepoint)){
+							unsigned char legacy_code = (unsigned char)codepoint;
+							if(hfnt && (hfnt -> data[legacy_code] -> Flags & NULL_HCHAR) && legacy_code != ' ')
+								break;
 						}
+						append_input_text(text::utf8_from_codepoint(codepoint));
 					}
 				}
 			}
@@ -3482,7 +3799,7 @@ void iScreenDispatcher::input_string_quant(void)
 			if(!(k & 0x1000)) {
 				switch(k){
 					case SDLK_ESCAPE:
-						strcpy((char*)ptr,BackupStr);
+						cancel_input();
 						flags ^= SD_INPUT_STRING;
 						flags |= SD_FINISH_INPUT;
 						init_flag = 1;
@@ -3500,7 +3817,11 @@ void iScreenDispatcher::input_string_quant(void)
 						key_name = iGetKeyNameText(k, lang());
 						if(flags & SD_INPUT_STRING && key_name){
 							if(!(ActiveEl -> flags & EL_JOYSTICK_KEY) || (k & iJOYSTICK_MASK)){
-								strcpy((char*)ptr,key_name);
+								if(string_el)
+									string_el->init_string(key_name);
+								if(string32_el)
+									string32_el->init_string(key_name);
+								set_cursor_visible(-1);
 								flags ^= SD_INPUT_STRING;
 								flags |= SD_FINISH_INPUT;
 								init_flag = 1;
@@ -3518,15 +3839,13 @@ void iScreenDispatcher::input_string_quant(void)
 		obj -> flags |= OBJ_REINIT;
 	}
 	else {
-		if(iFrameFlag){
-			sz = strlen((char*)ptr);
-			if(ptr[sz - 1] == ' ')
-				ptr[sz - 1] = '_';
-			else
-				ptr[sz - 1] = ' ';
-
-			ptr[sz] = 0;
-
+		if(iFrameFlag && utf8_string){
+			int cursor_visible = 0;
+			if(string_el)
+				cursor_visible = string_el->CursorVisible;
+			else if(string32_el)
+				cursor_visible = string32_el->CursorVisible;
+			set_cursor_visible(cursor_visible ? 0 : 1);
 			redraw_flag = 1;
 		}
 	}
@@ -3861,7 +4180,10 @@ void iScreenDispatcher::key_trap(int sc)
 
 void iStringElement::init_size(void)
 {
-	SizeX = iStrLen((unsigned char*)string,font,space);
+	if(Utf8Canonical || CursorVisible >= 0)
+		SizeX = iUtf8StrLen(iscreen_get_measure_utf8_string(this),font,space);
+	else
+		SizeX = iStrLen((unsigned char*)string,font,space);
 	SizeY = HFntTable[font] -> SizeY;
 }
 
@@ -3869,8 +4191,14 @@ void iS_StringElement::init_size(void)
 {
 //	  SizeX = iS_StrLen((unsigned char*)string,font,space);
 //	  SizeY = iScrFontTable[font] -> SizeY;
-	SizeX = aStrLen32(string,font,space);
-	SizeY = aStrHeight32(font);
+	if(Utf8Canonical || CursorVisible >= 0){
+		SizeX = aUtf8TextWidth32(iscreen_get_measure_utf8_string(this),font,space);
+		SizeY = aUtf8TextHeight32(iscreen_get_measure_utf8_string(this),font,space);
+	}
+	else {
+		SizeX = aStrLen32(string,font,space);
+		SizeY = aStrHeight32(font);
+	}
 }
 
 iTextData::iTextData(void)
@@ -3977,6 +4305,15 @@ void iTextData::copy(iScreenObject* p)
 				read_str(ptr);
 			else
 				strcpy(ptr," ");
+
+			switch(el -> type){
+				case I_STRING_ELEM:
+					((iStringElement*)el) -> sync_utf8_from_legacy();
+					break;
+				case I_S_STRING_ELEM:
+					((iS_StringElement*)el) -> sync_utf8_from_legacy();
+					break;
+			}
 
 			switch(el -> type){
 				case I_STRING_ELEM:
@@ -4096,7 +4433,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 					else {
 						next_text();
 						if(title_obj){
-							strcpy(title_obj -> string,curText -> objName);
+							title_obj -> init_string(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
 						}
@@ -4110,7 +4447,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 					else {
 						next_text();
 						if(title_obj){
-							strcpy(title_obj -> string,curText -> objName);
+							title_obj -> init_string(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
 						}
@@ -4124,7 +4461,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 		if(!curText) return 0;
 
 		if(title_obj){
-			strcpy(title_obj -> string,curText -> objName);
+			title_obj -> init_string(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
 		}
@@ -4152,7 +4489,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 				if((lang() != RUSSIAN && id > 0) || id > iTEXT_RUS1_ID - 1){
 					prev_text();
 					if(title_obj){
-						strcpy(title_obj -> string,curText -> objName);
+						title_obj -> init_string(curText -> objName);
 						title_obj -> init_size();
 						title_obj -> init_align();
 					}
@@ -4179,7 +4516,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 		if(!curText) return 0;
 
 		if(title_obj){
-			strcpy(title_obj -> string,curText -> objName);
+			title_obj -> init_string(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
 		}

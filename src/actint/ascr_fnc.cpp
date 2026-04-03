@@ -224,6 +224,13 @@ static void actint_draw_ttf_glyph_screen(int x,int y,const text::GlyphBitmap& gl
 	}
 }
 
+static void actint_draw_ttf_glyph_buffer(int x,int y,int bsx,const text::GlyphBitmap& glyph,unsigned char* buf,int primary,int secondary);
+int aStrLen(unsigned char* str,int font,int space);
+void aOutStr(int x,int y,int font,int color,unsigned char* str,int space);
+void aPutStr32(int x,int y,int font,int color,int color_size,void* str,int bsx,void* buf,int space);
+int aTextWidth32(void* text,int font,int hspace);
+int aTextHeight32(void* text,int font,int vspace);
+
 std::shared_ptr<text::TtfFontFace> aGetTextTtfFace(int font)
 {
 	return actint_get_text_ttf_face(font);
@@ -245,6 +252,26 @@ int aUtf8StrLen(std::string_view text_value,int font,int space)
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
 	return aStrLen((unsigned char*)legacy_text.c_str(), font, space);
+}
+
+int aUtf8TextWidth32(std::string_view text_value,int font,int hspace)
+{
+	auto face = actint_get_text32_ttf_face(font);
+	if(face)
+		return text::measure_utf8_text_width(text_value, *face, hspace);
+
+	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
+	return aTextWidth32((void*)legacy_text.c_str(), font, hspace);
+}
+
+int aUtf8TextHeight32(std::string_view text_value,int font,int vspace)
+{
+	auto face = actint_get_text32_ttf_face(font);
+	if(face)
+		return text::measure_utf8_text_height(text_value, *face, vspace);
+
+	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
+	return aTextHeight32((void*)legacy_text.c_str(), font, vspace);
 }
 
 void aOutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int space)
@@ -282,6 +309,44 @@ void aOutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int 
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
 	aOutStr(x, y, font, color, (unsigned char*)legacy_text.c_str(), space);
+}
+
+void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_view text_value,int bsx,void* buf,int space)
+{
+	auto face = actint_get_text32_ttf_face(font);
+	if(face){
+		const int col1 = color & 0xFF;
+		const int col2 = (color >> 16) & 0xFF;
+		const int col_sz1 = color_size & 0xFF;
+		const int col_sz2 = (color_size >> 16) & 0xFF;
+		const int ascent = face->get_ascent();
+		int pen_x = x;
+		size_t offset = 0;
+		uint32_t codepoint = 0;
+
+		while(text::utf8_next(text_value, offset, codepoint)){
+			if(codepoint == '\r')
+				continue;
+			if(codepoint == '\n')
+				break;
+
+			const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(*face, codepoint);
+			if(glyph){
+				const bool alt_digit = (codepoint >= '0' && codepoint <= '9') || codepoint == '$';
+				const int primary = (col2 && alt_digit) ? col2 : col1;
+				const int secondary = (col2 && alt_digit) ? col_sz2 : col_sz1;
+				actint_draw_ttf_glyph_buffer(pen_x + glyph->minx, y + ascent - glyph->maxy,
+				                             bsx, *glyph, (unsigned char*)buf, primary, secondary);
+				pen_x += std::max(glyph->advance, 0) + space;
+			}
+			else
+				pen_x += space;
+		}
+		return;
+	}
+
+	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
+	aPutStr32(x, y, font, color, color_size, (void*)legacy_text.c_str(), bsx, buf, space);
 }
 
 static void actint_draw_ttf_glyph_buffer(int x,int y,int bsx,const text::GlyphBitmap& glyph,unsigned char* buf,int primary,int secondary)

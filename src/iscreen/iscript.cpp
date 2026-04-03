@@ -1586,7 +1586,7 @@ void load_text(char* fname)
 				p = new iStringElement;
 				t_sz = strlen(buf + i) + 1;
 				if(t_sz){
-					strcpy(p -> string,buf + i);
+					p -> init_string(buf + i);
 					p -> flags |= EL_TEXT_STRING;
 
 					p -> font = DefFont;
@@ -1634,7 +1634,7 @@ void load_s_text(char* fname)
 				t_sz = strlen(buf + i) + 1;
 				if(t_sz){
 					p = new iS_StringElement;
-					strcpy(p -> string,buf + i);
+					p -> init_string(buf + i);
 					p -> flags |= EL_TEXT_STRING;
 
 					p -> font = DefFont;

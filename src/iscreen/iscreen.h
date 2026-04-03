@@ -4,6 +4,7 @@
 #include "lang.h"
 #include "hfont.h"
 #include "iscreen_options.h"
+#include <string>
 #include <vector>
 //#define iMOVE_MOUSE_OBJECTS
 
@@ -459,8 +460,16 @@ struct iStringElement : public iScreenElement
 	int font;
 	int space;
 	char* string;
+	int string_capacity;
+	std::string utf8_string;
+	int CursorVisible;
+	bool Utf8Canonical;
 
 	void init_string(const char* p);
+	void set_utf8_string(const std::string& value);
+	void sync_utf8_from_legacy(void);
+	void sync_legacy_from_utf8(void);
+	std::string get_display_utf8_string(void) const;
 	void init_size(void);
 	void free_mem(void);
 
@@ -472,8 +481,16 @@ struct iS_StringElement : public iScreenElement
 	int font;
 	int space;
 	char* string;
+	int string_capacity;
+	std::string utf8_string;
+	int CursorVisible;
+	bool Utf8Canonical;
 
-	void init_string(char* p);
+	void init_string(const char* p);
+	void set_utf8_string(const std::string& value);
+	void sync_utf8_from_legacy(void);
+	void sync_legacy_from_utf8(void);
+	std::string get_display_utf8_string(void) const;
 	void init_size(void);
 	void free_mem(void);
 

@@ -931,6 +931,7 @@ void iScreenOption::load(XStream* fh)
 					ptr = ((iStringElement*)objPtr) -> string;
 					fh -> read(ptr,ret);
 					ptr[ret] = ptr[ret + 1] = 0;
+					((iStringElement*)objPtr) -> sync_utf8_from_legacy();
 					((iStringElement*)objPtr) -> init_size();
 					((iStringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iStringElement*)objPtr) -> owner;
@@ -943,6 +944,7 @@ void iScreenOption::load(XStream* fh)
 					ptr = ((iS_StringElement*)objPtr) -> string;
 					fh -> read(ptr,ret);
 					ptr[ret] = ptr[ret + 1] = 0;
+					((iS_StringElement*)objPtr) -> sync_utf8_from_legacy();
 					((iS_StringElement*)objPtr) -> init_size();
 					((iS_StringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iS_StringElement*)objPtr) -> owner;
@@ -1041,9 +1043,8 @@ void iScreenOption::SetValueCHR(const char* p)
 		switch(ObjectType){
 			case iSTRING:
 				if(ValueType == iOPTION_VALUE_CUR){
-					if (((iStringElement*)objPtr)->string != p) {
-						strcpy(((iStringElement*)objPtr) -> string, p);
-					}
+					if (((iStringElement*)objPtr)->string != p)
+						((iStringElement*)objPtr) -> init_string(p);
 					((iStringElement*)objPtr) -> init_size();
 					((iStringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iStringElement*)objPtr) -> owner;
@@ -1053,9 +1054,8 @@ void iScreenOption::SetValueCHR(const char* p)
 				break;
 			case iS_STRING:
 				if(ValueType == iOPTION_VALUE_CUR){
-					if (((iS_StringElement*)objPtr)->string != p) {
-						strcpy(((iS_StringElement*)objPtr) -> string, p);
-					}
+					if (((iS_StringElement*)objPtr)->string != p)
+						((iS_StringElement*)objPtr) -> init_string(p);
 					((iS_StringElement*)objPtr) -> init_size();
 					((iS_StringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iS_StringElement*)objPtr) -> owner;
@@ -1069,7 +1069,7 @@ void iScreenOption::SetValueCHR(const char* p)
 		switch(ptr -> optionPtr -> ObjectType){
 			case iSTRING:
 				if(ptr -> optionPtr -> ValueType == iOPTION_VALUE_CUR){
-					strcpy(((iStringElement*)ptr -> optionPtr -> objPtr) -> string,p);
+					((iStringElement*)ptr -> optionPtr -> objPtr) -> init_string(p);
 					((iStringElement*)ptr -> optionPtr -> objPtr) -> init_size();
 					((iStringElement*)ptr -> optionPtr -> objPtr) -> init_align();
 					obj = (iScreenObject*)((iStringElement*)ptr -> optionPtr -> objPtr) -> owner;
@@ -1079,7 +1079,7 @@ void iScreenOption::SetValueCHR(const char* p)
 				break;
 			case iS_STRING:
 				if(ptr -> optionPtr -> ValueType == iOPTION_VALUE_CUR){
-					strcpy(((iS_StringElement*)ptr -> optionPtr -> objPtr) -> string,p);
+					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> init_string(p);
 					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> init_size();
 					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> init_align();
 					obj = (iScreenObject*)((iS_StringElement*)ptr -> optionPtr -> objPtr) -> owner;
@@ -1201,14 +1201,14 @@ void iInitControlObjects(void)
 				
 				if (str) {
 					if(strcasecmp(iControlsStr[index]->string,str)) {
-						strcpy(iControlsStr[index]->string,str);
+						iControlsStr[index]->init_string(str);
 						obj = (iScreenObject*)iControlsStr[index] -> owner;
 						obj -> flags |= OBJ_REINIT;
 						obj -> flags |= OBJ_MUST_REDRAW;
 					}
 				} else {
 					if(strcasecmp(iControlsStr[index] -> string,iSTR_NONE)) {
-						strcpy(iControlsStr[index] -> string,iSTR_NONE);
+						iControlsStr[index]->init_string(iSTR_NONE);
 						obj = (iScreenObject*)iControlsStr[index] -> owner;
 						obj -> flags |= OBJ_REINIT;
 						obj -> flags |= OBJ_MUST_REDRAW;
@@ -1232,7 +1232,7 @@ void iDeleteControl(int vkey,int id)
 				key = iGetControlCode(i,j);
 				if(key == vkey){
 					iSetControlCode(i,0,j);
-					strcpy(iControlsStr[index] -> string,iSTR_NONE);
+					iControlsStr[index]->init_string(iSTR_NONE);
 					obj = (iScreenObject*)iControlsStr[index] -> owner;
 					obj -> flags |= OBJ_REINIT;
 					obj -> flags |= OBJ_MUST_REDRAW;
@@ -1295,7 +1295,7 @@ void iMultiGameParameter::set_value(int num)
 			*iResBuf <= num;
 			for(i = 0; i < NumObjects; i ++){
 				str = (iStringElement*)objData[i];
-				strcpy(str -> string,iResBuf -> address());
+				str -> init_string(iResBuf -> address());
 				str -> init_size();
 				str -> init_align();
 				obj = (iScreenObject*)str -> owner;
@@ -1942,7 +1942,7 @@ void iMultiResultString::redraw(void)
 		iResBuf -> init();
 		*iResBuf < place;
 
-		strcpy(el -> string,iResBuf -> address());
+		el -> init_string(iResBuf -> address());
 		obj -> flags |= OBJ_REINIT;
 		obj -> flags |= OBJ_MUST_REDRAW;
 	}
@@ -1950,7 +1950,7 @@ void iMultiResultString::redraw(void)
 		el = (iStringElement*)stringPtr;
 		obj = (iScreenObject*)el -> owner;
 
-		strcpy(el -> string,prmString);
+		el -> init_string(prmString);
 		obj -> flags |= OBJ_REINIT;
 		obj -> flags |= OBJ_MUST_REDRAW;
 		if(!strlen(prmString))
@@ -1963,7 +1963,7 @@ void iMultiResultString::redraw(void)
 		iResBuf -> init();
 		*iResBuf < prmNum;
 
-		strcpy(el -> string,iResBuf -> address());
+		el -> init_string(iResBuf -> address());
 		obj -> flags |= OBJ_REINIT;
 		obj -> flags |= OBJ_MUST_REDRAW;
 	}
