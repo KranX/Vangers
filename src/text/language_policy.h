@@ -4,6 +4,8 @@
 #include "legacy_codec.h"
 #include "lang.h"
 
+#include <string>
+
 namespace text
 {
 
@@ -12,6 +14,7 @@ bool language_uses_russian_assets(Language language);
 bool language_prefers_utf8_assets(Language language);
 bool language_prefers_japanese_fonts(Language language);
 const char* language_code(Language language);
+std::string localized_asset_path(const char* english_path,const char* russian_path = nullptr,const char* japanese_path = nullptr);
 
 inline LegacyEncoding runtime_legacy_encoding(void)
 {

@@ -130,13 +130,8 @@ static int eventOUT;
 
 static FileBox* FBox;
 
-const char *DiagenTextName() {
-
-    if (text::language_uses_russian_assets()) {
-        return "diagen.text";
-    }
-
-    return "diagen_eng.text";
+std::string DiagenTextName() {
+    return text::localized_asset_path("diagen_eng.text", "diagen.text", "diagen_jpn.text");
 }
 //DiagenDispatcher* nDD;
 
@@ -2790,10 +2785,12 @@ char* DiagenDispatcher::getInvText(int type,int id,char* from,char* to)
 void FileBox::load(void)
 {
 #ifdef _ROAD_
-	Parser ff(DiagenTextName());
+	const std::string diagen_text_name = DiagenTextName();
+	Parser ff(diagen_text_name.c_str());
 	ff.set(2,XB_BEG);
 #else
-	XStream ff(DiagenTextName(),XS_IN);
+	const std::string diagen_text_name = DiagenTextName();
+	XStream ff(diagen_text_name.c_str(),XS_IN);
 	ff.seek(2,XS_BEG);
 #endif
 	ff > cN;

@@ -134,6 +134,11 @@ static bool actint_uses_russian_assets(void)
 	return text::language_uses_russian_assets();
 }
 
+static std::string actint_localized_asset_path(const char* english_path,const char* russian_path,const char* japanese_path)
+{
+	return text::localized_asset_path(english_path, russian_path, japanese_path);
+}
+
 static std::string actint_legacy_literal_to_utf8(const char* text_value)
 {
 	return text::legacy_to_utf8(text_value ? text_value : "", actint_text_encoding());
@@ -872,45 +877,57 @@ void aInit(void)
 
 #ifdef _BINARY_SCRIPT_
 	if(actintLowResFlag){
-		if(actint_uses_russian_assets()){
-			aParseScript("resource/actint/aci_low2.scb");
-			acsParseScript("resource/actint/acs_low2.scb");
-		}
-		else {
-			aParseScript("resource/actint/aci_low.scb");
-			acsParseScript("resource/actint/acs_low.scb");
-		}
+		const std::string aci_script = actint_localized_asset_path("resource/actint/aci_low.scb",
+		                                                         "resource/actint/aci_low2.scb",
+		                                                         "resource/actint/aci_low_jpn.scb");
+		const std::string acs_script = actint_localized_asset_path("resource/actint/acs_low.scb",
+		                                                         "resource/actint/acs_low2.scb",
+		                                                         "resource/actint/acs_low_jpn.scb");
+		aParseScript(aci_script.c_str());
+		acsParseScript(acs_script.c_str());
 	}
 	else {
-		if(actint_uses_russian_assets()){
-			aParseScript("resource/actint/aci_hi2.scb");
-			acsParseScript("resource/actint/acs_low2.scb");
-		}
-		else {
-			aParseScript("resource/actint/aci_hi.scb");
-			acsParseScript("resource/actint/acs_low.scb");
-		}
+		const std::string aci_script = actint_localized_asset_path("resource/actint/aci_hi.scb",
+		                                                         "resource/actint/aci_hi2.scb",
+		                                                         "resource/actint/aci_hi_jpn.scb");
+		const std::string acs_script = actint_localized_asset_path("resource/actint/acs_low.scb",
+		                                                         "resource/actint/acs_low2.scb",
+		                                                         "resource/actint/acs_low_jpn.scb");
+		aParseScript(aci_script.c_str());
+		acsParseScript(acs_script.c_str());
 	}
 #else
 	if(actintLowResFlag){
-		if(actint_uses_russian_assets()){
-			aParseScript("actint/aci_low2.scr","resource/actint/aci_low2.scb");
-			acsParseScript("actint/acs_low2.scr","resource/actint/acs_low2.scb");
-		}
-		else {
-			aParseScript("actint/aci_low.scr","resource/actint/aci_low.scb");
-			acsParseScript("actint/acs_low.scr","resource/actint/acs_low.scb");
-		}
+		const std::string aci_src = actint_localized_asset_path("actint/aci_low.scr",
+		                                                      "actint/aci_low2.scr",
+		                                                      "actint/aci_low_jpn.scr");
+		const std::string aci_bin = actint_localized_asset_path("resource/actint/aci_low.scb",
+		                                                      "resource/actint/aci_low2.scb",
+		                                                      "resource/actint/aci_low_jpn.scb");
+		const std::string acs_src = actint_localized_asset_path("actint/acs_low.scr",
+		                                                      "actint/acs_low2.scr",
+		                                                      "actint/acs_low_jpn.scr");
+		const std::string acs_bin = actint_localized_asset_path("resource/actint/acs_low.scb",
+		                                                      "resource/actint/acs_low2.scb",
+		                                                      "resource/actint/acs_low_jpn.scb");
+		aParseScript(aci_src.c_str(), aci_bin.c_str());
+		acsParseScript(acs_src.c_str(), acs_bin.c_str());
 	}
 	else {
-		if(actint_uses_russian_assets()){
-			aParseScript("actint/aci_hi2.scr","resource/actint/aci_hi2.scb");
-			acsParseScript("actint/acs_low2.scr","resource/actint/acs_low2.scb");
-		}
-		else {
-			aParseScript("actint/aci_hi.scr","resource/actint/aci_hi.scb");
-			acsParseScript("actint/acs_low.scr","resource/actint/acs_low.scb");
-		}
+		const std::string aci_src = actint_localized_asset_path("actint/aci_hi.scr",
+		                                                      "actint/aci_hi2.scr",
+		                                                      "actint/aci_hi_jpn.scr");
+		const std::string aci_bin = actint_localized_asset_path("resource/actint/aci_hi.scb",
+		                                                      "resource/actint/aci_hi2.scb",
+		                                                      "resource/actint/aci_hi_jpn.scb");
+		const std::string acs_src = actint_localized_asset_path("actint/acs_low.scr",
+		                                                      "actint/acs_low2.scr",
+		                                                      "actint/acs_low_jpn.scr");
+		const std::string acs_bin = actint_localized_asset_path("resource/actint/acs_low.scb",
+		                                                      "resource/actint/acs_low2.scb",
+		                                                      "resource/actint/acs_low_jpn.scb");
+		aParseScript(aci_src.c_str(), aci_bin.c_str());
+		acsParseScript(acs_src.c_str(), acs_bin.c_str());
 	}
 #endif
 	a_calc_tables();

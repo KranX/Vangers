@@ -45,6 +45,11 @@ static bool iscreen_uses_russian_assets(void)
 	return text::language_uses_russian_assets();
 }
 
+static std::string iscreen_localized_asset_path(const char* english_path,const char* russian_path,const char* japanese_path)
+{
+	return text::localized_asset_path(english_path, russian_path, japanese_path);
+}
+
 
 #ifdef _NT
 #define EXTQUIT_VERIFY	if(XWaitWhileInactive()) ErrH.Exit();
@@ -508,17 +513,20 @@ void iInit(void)
 
 #ifdef _BINARY_SCRIPT_
 	if(!iFirstInit){
-		if(iscreen_uses_russian_assets())
-			ParseScript("resource/iscreen/oftr2.scb");
-		else
-			ParseScript("resource/iscreen/oftr.scb");
+		const std::string script_path = iscreen_localized_asset_path("resource/iscreen/oftr.scb",
+		                                                           "resource/iscreen/oftr2.scb",
+		                                                           "resource/iscreen/oftr_jpn.scb");
+		ParseScript(script_path.c_str());
 	}
 #else
 	if(!iFirstInit){
-		if(iscreen_uses_russian_assets())
-			ParseScript("iscreen/oftr2.scr","resource/iscreen/oftr2.scb");
-		else
-			ParseScript("iscreen/oftr.scr","resource/iscreen/oftr.scb");
+		const std::string script_src = iscreen_localized_asset_path("iscreen/oftr.scr",
+		                                                          "iscreen/oftr2.scr",
+		                                                          "iscreen/oftr_jpn.scr");
+		const std::string script_bin = iscreen_localized_asset_path("resource/iscreen/oftr.scb",
+		                                                          "resource/iscreen/oftr2.scb",
+		                                                          "resource/iscreen/oftr_jpn.scb");
+		ParseScript(script_src.c_str(), script_bin.c_str());
 	}
 #endif
 

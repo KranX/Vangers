@@ -10,6 +10,7 @@
 #include "iworld.h"
 #include "ivmap.h"
 #include "../terra/splay.h"
+#include "../text/language_policy.h"
 
 #include <iostream>
 
@@ -108,10 +109,10 @@ void ivMapPrepare(void)
 {
 	if(!ivMap) ivMap = new ivrtMap;
 	if(!actIntLog){
-		if(lang() != RUSSIAN)
-			ivMap -> load("resource/iscreen/mainmenu.ini");
-		else
-			ivMap -> load("resource/iscreen/mainmenu2.ini");
+		const std::string map_path = text::localized_asset_path("resource/iscreen/mainmenu.ini",
+		                                                      "resource/iscreen/mainmenu2.ini",
+		                                                      "resource/iscreen/mainmenu_jpn.ini");
+		ivMap -> load(map_path.c_str());
 		}
 	else {
 		ivMap -> load(aci_ivMapName);
