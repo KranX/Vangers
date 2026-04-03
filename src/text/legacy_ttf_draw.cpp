@@ -68,10 +68,10 @@ const std::vector<std::string>& builtin_default_ui_font_candidates(void)
 const std::vector<std::string>& builtin_japanese_ui_font_candidates(void)
 {
 	static const std::vector<std::string> candidates = {
+		"/usr/share/fonts/droid/DroidSansJapanese.ttf",
 		"/usr/share/fonts/ja-ipafonts/ipag.ttf",
 		"/usr/share/fonts/takao-fonts/TakaoPGothic.ttf",
 		"/usr/share/fonts/takao-fonts/TakaoGothic.ttf",
-		"/usr/share/fonts/droid/DroidSansJapanese.ttf",
 		"/usr/share/fonts/opentype/noto/NotoSansCJKJP-Regular.otf",
 		"/usr/share/fonts/opentype/noto/NotoSansJP-Regular.otf",
 		"/usr/share/fonts/opentype/source-han-sans/SourceHanSansJP-Regular.otf",

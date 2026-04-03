@@ -208,6 +208,35 @@ static inline bool actint_alt_digit_char(unsigned char chr)
 	return (chr >= '0' && chr <= '9') || chr == '$';
 }
 
+static inline bool actint_small_japanese_kana(uint32_t codepoint)
+{
+	switch(codepoint){
+		case 0x3041: // ぁ
+		case 0x3043: // ぃ
+		case 0x3045: // ぅ
+		case 0x3047: // ぇ
+		case 0x3049: // ぉ
+		case 0x3063: // っ
+		case 0x3083: // ゃ
+		case 0x3085: // ゅ
+		case 0x3087: // ょ
+		case 0x308E: // ゎ
+		case 0x30A1: // ァ
+		case 0x30A3: // ィ
+		case 0x30A5: // ゥ
+		case 0x30A7: // ェ
+		case 0x30A9: // ォ
+		case 0x30C3: // ッ
+		case 0x30E3: // ャ
+		case 0x30E5: // ュ
+		case 0x30E7: // ョ
+		case 0x30EE: // ヮ
+			return true;
+		default:
+			return false;
+	}
+}
+
 static void actint_draw_ttf_glyph_screen(int x,int y,const text::GlyphBitmap& glyph,int primary,int secondary)
 {
 	if(glyph.alpha.empty())
@@ -372,7 +401,8 @@ void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_vie
 				const bool alt_digit = (codepoint >= '0' && codepoint <= '9') || codepoint == '$';
 				const int color_base = (col2 && alt_digit) ? col2 : col1;
 				const int color_shift = (col2 && alt_digit) ? col_sz2 : col_sz1;
-				actint_draw_ttf_glyph_buffer32(pen_x + glyph->minx, y + ascent - glyph->maxy,
+				const int y_adjust = (text::language_prefers_japanese_fonts() && actint_small_japanese_kana(codepoint)) ? -1 : 0;
+				actint_draw_ttf_glyph_buffer32(pen_x + glyph->minx, y + ascent - glyph->maxy + y_adjust,
 				                               bsx, *glyph, (unsigned char*)buf, color_base, color_shift);
 				pen_x += std::max(glyph->advance, 0) + hspace;
 			}
