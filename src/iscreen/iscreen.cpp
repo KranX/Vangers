@@ -23,6 +23,7 @@
 #include "avi.h"
 
 #include <cstdlib>
+#include <cstring>
 #include <string>
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -55,6 +56,16 @@ static bool iscreen_debug_text_layout_enabled(void)
 	static int enabled = -1;
 	if(enabled == -1)
 		enabled = std::getenv("VANGERS_DEBUG_TEXT") ? 1 : 0;
+	return enabled != 0;
+}
+
+static bool iscreen_debug_text_full_enabled(void)
+{
+	static int enabled = -1;
+	if(enabled == -1){
+		const char* value = std::getenv("VANGERS_DEBUG_TEXT");
+		enabled = (value && !strcmp(value, "full")) ? 1 : 0;
+	}
 	return enabled != 0;
 }
 
@@ -2166,29 +2177,11 @@ void iScreenObject::init(void)
 		ErrH.Abort("Object PosY out of map...",XERR_USER,PosY,ID_ptr.c_str());
 	}
 
-	if(iscreen_debug_text_object(this)){
+	if(iscreen_debug_text_object(this) && iscreen_debug_text_full_enabled()){
 		fprintf(stderr,
-		        "[VANGERS_DEBUG_TEXT] object=%s Pos=(%d,%d) Size=(%d,%d) align=(%d,%d) auto=%d shadow=%d elems=%d\n",
+		        "[VANGERS_DEBUG_TEXT] init object=%s Pos=(%d,%d) Size=(%d,%d) align=(%d,%d) auto=%d shadow=%d elems=%d\n",
 		        ID_ptr.c_str(), PosX, PosY, SizeX, SizeY, align_x, align_y,
 		        (flags & OBJ_AUTO_SIZE) ? 1 : 0, ShadowSize, ElementList ? ElementList->Size : 0);
-
-		iScreenElement* dbg = (iScreenElement*)ElementList->first;
-		int dbg_index = 0;
-		while(dbg){
-			if((dbg->type == I_STRING_ELEM || dbg->type == I_S_STRING_ELEM) && (dbg->flags & EL_TEXT_STRING)){
-				const std::string preview = iscreen_debug_text_preview(dbg);
-				fprintf(stderr,
-				        "[VANGERS_DEBUG_TEXT]   line[%d] type=%d l=(%d,%d) size=(%d,%d) align=(%d,%d) utf8=%d text=\"%s\"\n",
-				        dbg_index, dbg->type, dbg->lX, dbg->lY, dbg->SizeX, dbg->SizeY,
-				        dbg->align_x, dbg->align_y,
-				        (dbg->type == I_STRING_ELEM)
-				            ? (((iStringElement*)dbg)->Utf8Canonical ? 1 : 0)
-				            : (((iS_StringElement*)dbg)->Utf8Canonical ? 1 : 0),
-				        preview.c_str());
-			}
-			dbg = (iScreenElement*)dbg->next;
-			dbg_index++;
-		}
 	}
 }
 
@@ -4411,6 +4404,15 @@ void iTextData::copy(iScreenObject* p)
 {
 	int i;
 	iScreenElement* el;
+	int text_line_count = 0;
+	int min_lx = 0;
+	int max_rx = 0;
+	int min_width = 0;
+	int max_width = 0;
+	bool stats_initialized = false;
+	std::string first_preview;
+	std::string middle_preview;
+	std::string last_preview;
 
 	char* ptr;
 
@@ -4466,19 +4468,49 @@ void iTextData::copy(iScreenObject* p)
 			}
 			el -> init_align();
 
-			if(iscreen_debug_text_object(p)){
+			if(iscreen_debug_text_object(p) && (el->flags & EL_TEXT_STRING) &&
+			   (el->type == I_STRING_ELEM || el->type == I_S_STRING_ELEM)){
 				const std::string preview = iscreen_debug_text_preview(el);
-				fprintf(stderr,
-				        "[VANGERS_DEBUG_TEXT] copy object=%s line=%d type=%d size=(%d,%d) l=(%d,%d) align=(%d,%d) utf8=%d text=\"%s\"\n",
-				        p->ID_ptr.c_str(), i, el->type, el->SizeX, el->SizeY, el->lX, el->lY,
-				        el->align_x, el->align_y,
-				        (el->type == I_STRING_ELEM)
-				            ? (((iStringElement*)el)->Utf8Canonical ? 1 : 0)
-				            : (((iS_StringElement*)el)->Utf8Canonical ? 1 : 0),
-				        preview.c_str());
+				if(!stats_initialized){
+					min_lx = el->lX;
+					max_rx = el->lX + el->SizeX;
+					min_width = max_width = el->SizeX;
+					first_preview = preview;
+					stats_initialized = true;
+				}
+				else {
+					if(el->lX < min_lx) min_lx = el->lX;
+					if(el->lX + el->SizeX > max_rx) max_rx = el->lX + el->SizeX;
+					if(el->SizeX < min_width) min_width = el->SizeX;
+					if(el->SizeX > max_width) max_width = el->SizeX;
+				}
+
+				if(text_line_count == (p->ElementList->Size / 2))
+					middle_preview = preview;
+				last_preview = preview;
+				text_line_count++;
+
+				if(iscreen_debug_text_full_enabled()){
+					fprintf(stderr,
+					        "[VANGERS_DEBUG_TEXT] copy object=%s line=%d type=%d size=(%d,%d) l=(%d,%d) align=(%d,%d) utf8=%d text=\"%s\"\n",
+					        p->ID_ptr.c_str(), i, el->type, el->SizeX, el->SizeY, el->lX, el->lY,
+					        el->align_x, el->align_y,
+					        (el->type == I_STRING_ELEM)
+					            ? (((iStringElement*)el)->Utf8Canonical ? 1 : 0)
+					            : (((iS_StringElement*)el)->Utf8Canonical ? 1 : 0),
+					        preview.c_str());
+				}
 			}
 		}
 		el = (iScreenElement*)el -> next;
+	}
+
+	if(iscreen_debug_text_object(p) && stats_initialized){
+		fprintf(stderr,
+		        "[VANGERS_DEBUG_TEXT] copy-summary object=%s Pos=(%d,%d) Size=(%d,%d) lines=%d text-span=[%d..%d] width=[%d..%d] first=\"%s\" middle=\"%s\" last=\"%s\"\n",
+		        p->ID_ptr.c_str(), p->PosX, p->PosY, p->SizeX, p->SizeY,
+		        text_line_count, min_lx, max_rx, min_width, max_width,
+		        first_preview.c_str(), middle_preview.c_str(), last_preview.c_str());
 	}
 }
 
