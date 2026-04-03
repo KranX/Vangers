@@ -41,11 +41,6 @@ SET(vangers_SRCS
 	particle/particle.cpp
 	particle/partmap.cpp
 	particle/pmaptype.cpp
-	text/font_manager.cpp
-	text/legacy_ttf_draw.cpp
-	text/legacy_codec.cpp
-	text/ttf_runtime.cpp
-	text/unicode.cpp
 	rle.cpp
 	road.cpp
 	sound/music.cpp
@@ -75,6 +70,16 @@ SET(vangers_SRCS
 	zmod_client.cpp
 	${WINDOWS_RES}
         actint/layout.h)
+
+SET(textcore_SRCS
+	text/font_manager.cpp
+	text/legacy_ttf_draw.cpp
+	text/legacy_codec.cpp
+	text/ttf_runtime.cpp
+	text/unicode.cpp
+)
+
+ADD_LIBRARY(textcore OBJECT ${textcore_SRCS})
 
 if (ANDROID)
 	ADD_LIBRARY(vangers STATIC ${vangers_SRCS}

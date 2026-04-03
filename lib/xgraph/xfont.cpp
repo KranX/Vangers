@@ -1,6 +1,46 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "xgraph.h"
+#include "text/legacy_ttf_draw.h"
+#include "text/unicode.h"
+
+#include <string>
+
+namespace
+{
+
+bool xgr_text_should_use_ttf(const char* text)
+{
+	if(!text || !*text)
+		return false;
+	if(!text::is_valid_utf8(text))
+		return false;
+
+	for(const unsigned char* p = (const unsigned char*)text; *p; ++p)
+		if(*p & 0x80)
+			return true;
+
+	return false;
+}
+
+std::shared_ptr<text::TtfFontFace> xgr_ensure_ttf_face(XGR_Font& font)
+{
+	if(!font.ttf_face)
+		font.ttf_face = text::default_ui_ttf_face(font.SizeY, TTF_HINTING_NORMAL, false, 0);
+
+	return font.ttf_face;
+}
+
+void xgr_draw_ttf_text(int x,int y,int col,const char* text,XGR_Font& font,int hspace,int vspace)
+{
+	std::shared_ptr<text::TtfFontFace> face = xgr_ensure_ttf_face(font);
+	if(!face || !text)
+		return;
+
+	text::draw_utf8_text_8bit(x, y, col, text, *face, hspace, vspace, false);
+}
+
+}
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -468,6 +508,13 @@ void XGR_OutString(int x,int y,int col,void* str,int font,int space,int pr_flag)
 
 void XGR_OutText(int x,int y,int col,void* text,int font,int hspace,int vspace,int pr_flag)
 {
+	if(!(XGR_Obj.flags & XGR_HICOLOR) &&
+	   xgr_text_should_use_ttf((const char*)text) &&
+	   xgr_ensure_ttf_face(*XGR_FontTable[font])){
+		xgr_draw_ttf_text(x, y, col, (const char*)text, *XGR_FontTable[font], hspace, vspace);
+		return;
+	}
+
 	int sx,sy,hcol_flag = 0;
 	int i,j,s,ch,n,count,offs = 0,sz = strlen((char*)text),X = 0,Y = 0;
 
@@ -526,6 +573,12 @@ void XGR_OutText(int x,int y,int col,void* text,int font,int hspace,int vspace,i
 
 int XGR_StrLen(void* str,int font,int space)
 {
+	if(xgr_text_should_use_ttf((const char*)str)){
+		std::shared_ptr<text::TtfFontFace> face = xgr_ensure_ttf_face(*XGR_FontTable[font]);
+		if(face)
+			return text::measure_utf8_text_width((const char*)str, *face, space);
+	}
+
 	unsigned char* p = (unsigned char*)str;
 	int i,s,sx,sz = strlen((char*)str),len = 0,ch = 0,count;
 
@@ -554,6 +607,12 @@ int XGR_StrLen(void* str,int font,int space)
 
 int XGR_TextWidth(void* text,int font,int hspace)
 {
+	if(xgr_text_should_use_ttf((const char*)text)){
+		std::shared_ptr<text::TtfFontFace> face = xgr_ensure_ttf_face(*XGR_FontTable[font]);
+		if(face)
+			return text::measure_utf8_text_width((const char*)text, *face, hspace);
+	}
+
 	unsigned char* p = (unsigned char*)text;
 	int i,sx,s,sz = strlen((char*)text),len = 0,max_len = 0,ch = 0,count;
 
@@ -591,6 +650,12 @@ int XGR_TextWidth(void* text,int font,int hspace)
 
 int XGR_TextHeight(void* text,int font,int vspace)
 {
+	if(xgr_text_should_use_ttf((const char*)text)){
+		std::shared_ptr<text::TtfFontFace> face = xgr_ensure_ttf_face(*XGR_FontTable[font]);
+		if(face)
+			return text::measure_utf8_text_height((const char*)text, *face, vspace);
+	}
+
 	unsigned char* p = (unsigned char*)text;
 	int s,sy,sz = strlen((char*)text),len = 0;
 
@@ -613,6 +678,7 @@ XGR_Font::XGR_Font(void)
 	data = NULL;
 
 	LeftOffs = RightOffs = NULL;
+	ttf_face = nullptr;
 }
 
 void XGR_Font::init(int size,void* p)
@@ -623,6 +689,7 @@ void XGR_Font::init(int size,void* p)
 	data = (unsigned char*)p;
 	SizeX = 8;
 	SizeY = size / 256;
+	ttf_face = text::default_ui_ttf_face(SizeY, TTF_HINTING_NORMAL, false, 0);
 
 	LeftOffs = new unsigned char[256];
 	RightOffs = new unsigned char[256];

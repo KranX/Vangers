@@ -2726,27 +2726,36 @@ std::string sq_text_auto_to_utf8(const char* text)
 	return text::legacy_to_utf8(value, sq_text_encoding());
 }
 
-void sq_draw_ttf_text(int x,int y,const char* text,sqFont& font,int fore,int back)
+std::shared_ptr<text::TtfFontFace> sq_ensure_ttf_face(sqFont& font)
 {
 	if(!font.ttf_face)
+		font.ttf_face = text::default_ui_ttf_face(font.sy, TTF_HINTING_NORMAL, false, 0);
+
+	return font.ttf_face;
+}
+
+void sq_draw_ttf_text(int x,int y,const char* text,sqFont& font,int fore,int back)
+{
+	std::shared_ptr<text::TtfFontFace> face = sq_ensure_ttf_face(font);
+	if(!face)
 		return;
 
 	const std::string utf8_text = sq_text_auto_to_utf8(text);
 	if(back != -1){
-		const int width = text::measure_utf8_text_width(utf8_text, *font.ttf_face, 0);
-		const int height = text::measure_utf8_text_height(utf8_text, *font.ttf_face, 0);
+		const int width = text::measure_utf8_text_width(utf8_text, *face, 0);
+		const int height = text::measure_utf8_text_height(utf8_text, *face, 0);
 		if(width > 0 && height > 0)
 			XGR_Rectangle(x, y, width, height, back, back, XGR_FILLED);
 	}
 
-	text::draw_utf8_text_8bit(x, y, fore, utf8_text, *font.ttf_face, 0, 0, false);
+	text::draw_utf8_text_8bit(x, y, fore, utf8_text, *face, 0, 0, false);
 }
 
 }
 
 void sqFont::draw(int x,int y,unsigned char* s,int fore,int back)
 {
-	if(ttf_face && sq_text_should_use_ttf((const char*)s)){
+	if(sq_text_should_use_ttf((const char*)s) && sq_ensure_ttf_face(*this)){
 		sq_draw_ttf_text(x, y, (const char*)s, *this, fore, back);
 		return;
 	}
@@ -2760,7 +2769,7 @@ void sqFont::draw(int x,int y,unsigned char* s,int fore,int back)
 
 void sqFont::drawtext(int x,int y,char* s,int fore,int back)
 {
-	if(ttf_face && sq_text_should_use_ttf(s)){
+	if(sq_text_should_use_ttf(s) && sq_ensure_ttf_face(*this)){
 		sq_draw_ttf_text(x, y, s, *this, fore, back);
 		return;
 	}

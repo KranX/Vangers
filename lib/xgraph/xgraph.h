@@ -11,7 +11,11 @@
 #ifndef __XGRAPH_H__
 #define __XGRAPH_H__
 
+#include <memory>
+
 #include "xglobal.h"
+
+namespace text { class TtfFontFace; }
 
 // Some defines for 64K modes...
 #define XGR_RGB64K(r,g,b)	(((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
@@ -60,6 +64,7 @@ struct XGR_Font
 	unsigned char* RightOffs;
 
 	unsigned char* data;
+	std::shared_ptr<text::TtfFontFace> ttf_face;
 
 	void init(int size,void* p);
 
