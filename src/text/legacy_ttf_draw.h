@@ -16,6 +16,7 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting =
 std::shared_ptr<TtfFontFace> default_ui_hfont_ttf_face(int legacy_height,int hinting = TTF_HINTING_NORMAL,bool kerning = false,int outline = 0,int style = TTF_STYLE_NORMAL);
 std::shared_ptr<TtfFontFace> default_ui_text32_ttf_face(int legacy_height,int hinting = TTF_HINTING_NORMAL,bool kerning = false,int outline = 0,int style = TTF_STYLE_NORMAL);
 int default_ui_text32_extra_hspace(void);
+const GlyphBitmap* default_ui_renderable_glyph(TtfFontFace& face,uint32_t codepoint);
 
 int measure_legacy_ttf_text_width(std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace);
 int measure_legacy_ttf_text_height(std::string_view text,const TtfFontFace& face,int vspace);

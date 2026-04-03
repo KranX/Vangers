@@ -486,6 +486,12 @@ int default_ui_text32_extra_hspace(void)
 	return language_prefers_japanese_fonts() ? 1 : 0;
 }
 
+const GlyphBitmap* default_ui_renderable_glyph(TtfFontFace& face,uint32_t codepoint)
+{
+	RenderableGlyph glyph = get_renderable_glyph(face, codepoint);
+	return glyph.valid() ? glyph.glyph : nullptr;
+}
+
 int measure_legacy_ttf_text_width(std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace)
 {
 	size_t index = 0;

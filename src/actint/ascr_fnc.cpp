@@ -212,15 +212,7 @@ static uint32_t actint_decode_legacy_char(unsigned char ch)
 
 static const text::GlyphBitmap* actint_get_renderable_codepoint(text::TtfFontFace& face,uint32_t codepoint)
 {
-	const text::GlyphBitmap* glyph = face.get_glyph(codepoint);
-	if(glyph && glyph->provided)
-		return glyph;
-
-	glyph = face.get_glyph('?');
-	if(glyph && glyph->provided)
-		return glyph;
-
-	return nullptr;
+	return text::default_ui_renderable_glyph(face, codepoint);
 }
 
 static const text::GlyphBitmap* actint_get_renderable_glyph(text::TtfFontFace& face,unsigned char ch)
