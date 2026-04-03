@@ -2,6 +2,7 @@
 
 
 #include "../global.h"
+#include "lang.h"
 
 #include "../network.h"
 #include "controls.h"
@@ -14,6 +15,9 @@
 
 #include "../network.h"
 #include "../text/legacy_codec.h"
+#include "../text/legacy_ttf_draw.h"
+
+#include <memory>
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -81,6 +85,9 @@ void iInitChatScreen(void);
 void iChatInputChar(SDL_Event *code);
 void iChatInputChar(unsigned char* input_char);
 void iChatInputInsertChar(unsigned char chr);
+int iChatTextWidth(const char* text,int font,int hspace);
+int iChatTextHeight(const char* text,int font,int vspace);
+void iChatOutText(int x,int y,int color,void* text,int font,int hspace,int vspace);
 void iChatInputFlush(void);
 void iChatInputBack(void);
 void iChatInputEditing(SDL_Event *code);
@@ -218,6 +225,80 @@ int scrollColorI = (6 | (2 << 16)); //aciChatColors0[5] white color for scroll
 int scrollColor = (230 | (2 << 16)); //aciChatColors1[5]
 int scrollSizeX = 5;
 
+static std::weak_ptr<text::TtfFontFace> iChatTtfFaces[AS_NUM_FONTS_32];
+static int iChatTtfFaceTargetHeights[AS_NUM_FONTS_32] = { -1, -1, -1, -1 };
+
+static text::LegacyEncoding iChatTextEncoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+static std::shared_ptr<text::TtfFontFace> iChatGetTtfFace(int font)
+{
+	if(font < 0 || font >= AS_NUM_FONTS_32)
+		return nullptr;
+	if(!aScrFonts32 || !aScrFonts32[font])
+		return nullptr;
+
+	const std::string& font_path = text::default_ui_ttf_font_path();
+	if(font_path.empty())
+		return nullptr;
+
+	const int target_height = std::max(6, aScrFonts32[font] -> SizeY);
+	auto cached_face = iChatTtfFaces[font].lock();
+	if(cached_face && iChatTtfFaceTargetHeights[font] == target_height)
+		return cached_face;
+
+	std::shared_ptr<text::TtfFontFace> best_face;
+	int best_delta = 1 << 30;
+
+	for(int point_size = std::max(6, target_height - 6); point_size <= target_height + 6; point_size++){
+		auto face = text::TtfFontManager::instance().get_face(font_path, point_size, TTF_HINTING_NORMAL, false, 0);
+		if(!face)
+			continue;
+
+		int delta = abs(face -> get_height() - target_height);
+		if(delta < best_delta){
+			best_delta = delta;
+			best_face = face;
+		}
+	}
+
+	iChatTtfFaces[font] = best_face;
+	iChatTtfFaceTargetHeights[font] = target_height;
+	return best_face;
+}
+
+int iChatTextWidth(const char* text,int font,int hspace)
+{
+	auto face = iChatGetTtfFace(font);
+	if(face)
+		return text::measure_legacy_ttf_text_width(text ? text : "", *face, iChatTextEncoding(), hspace);
+
+	return aTextWidth32((void*)(text ? text : ""), font, hspace);
+}
+
+int iChatTextHeight(const char* text,int font,int vspace)
+{
+	auto face = iChatGetTtfFace(font);
+	if(face)
+		return text::measure_legacy_ttf_text_height(text ? text : "", *face, vspace);
+
+	return aTextHeight32((void*)(text ? text : ""), font, vspace);
+}
+
+void iChatOutText(int x,int y,int color,void* text_ptr,int font,int hspace,int vspace)
+{
+	const char* text = text_ptr ? (const char*)text_ptr : "";
+	auto face = iChatGetTtfFace(font);
+	if(face){
+		text::draw_legacy_ttf_text_8bit(x, y, color, text, *face, iChatTextEncoding(), hspace, vspace, false);
+		return;
+	}
+
+	aOutText32(x, y, color, (void*)text, font, hspace, vspace);
+}
+
 static char* iChatWorlds[] = {
 	iSTR_WORLD_NONE_CHAR,
 	iSTR_WORLD_FOSTRAL_CHAR,
@@ -298,7 +379,7 @@ void iChatInputField::redraw(void)
 	XConv -> init();
 	*XConv < CurPlayerName < (char*)((">" + string.substr(leftDrawPosition, rightDrawPosition - leftDrawPosition)).c_str());
 
-	aOutText32(PosX, PosY, color, XConv -> address(), font, 1, 0);
+	iChatOutText(PosX, PosY, color, XConv -> address(), font, 1, 0);
 }
 
 void iChatInputField::selectionRedraw(void) {
@@ -315,11 +396,11 @@ void iChatInputField::selectionRedraw(void) {
 
 	XConv -> init();
 	*XConv < CurPlayerName < (char*)((">" + string.substr(leftDrawPosition, leftSelectionPosition - leftDrawPosition)).c_str());
-	int left_x = aTextWidth32(XConv -> address(), font, 1);
+	int left_x = iChatTextWidth(XConv -> address(), font, 1);
 
 	XConv -> init();
 	*XConv < CurPlayerName < (char*)((">" + string.substr(leftDrawPosition, rightSelectionPosition - leftDrawPosition)).c_str());
-	int right_x = aTextWidth32(XConv -> address(), font, 1);
+	int right_x = iChatTextWidth(XConv -> address(), font, 1);
 
 	XGR_Rectangle(PosX + left_x, PosY, right_x - left_x, SizeY, color, color, XGR_FILLED);
 }
@@ -335,13 +416,13 @@ void iChatInputField::counterRedraw(void) {
 
 	XConv -> init();
 	*XConv < (char*)((std::to_string(ICS_INPUT_MAX_LENGTH)).c_str());
-	int x = aTextWidth32(XConv -> address(), font, 1);
+	int x = iChatTextWidth(XConv -> address(), font, 1);
 
 	XConv -> init();
 	*XConv < (char*)((std::to_string(ICS_INPUT_MAX_LENGTH - (string.length() - 1))).c_str());
 
 	XGR_Rectangle(PosX - x - 10, PosY, x + 10, SizeY, fonColor, fonColor, XGR_FILLED);
-	aOutText32(PosX - x - 10, PosY, color, XConv -> address(), font, 1, 0);
+	iChatOutText(PosX - x - 10, PosY, color, XConv -> address(), font, 1, 0);
 }
 
 int iChatInputField::getLeftDrawPositionByRight(int rightPosition) {
@@ -352,7 +433,7 @@ int iChatInputField::getLeftDrawPositionByRight(int rightPosition) {
 		XConv -> init();
 		*XConv < CurPlayerName < (char*)((">" + string.substr(leftPosition, rightPosition - leftPosition)).c_str());
 
-		if (aTextWidth32(XConv -> address(), font, 1) > SizeX - 10) {
+		if (iChatTextWidth(XConv -> address(), font, 1) > SizeX - 10) {
 			break;
 		}
 
@@ -370,7 +451,7 @@ int iChatInputField::getRightDrawPositionByLeft(int leftPosition) {
 		XConv -> init();
 		*XConv < CurPlayerName < (char*)((">" + string.substr(leftPosition, rightPosition - leftPosition)).c_str());
 
-		if (aTextWidth32(XConv -> address(), font, 1) > SizeX - 10) {
+		if (iChatTextWidth(XConv -> address(), font, 1) > SizeX - 10) {
 			break;
 		}
 
@@ -393,9 +474,9 @@ void iChatHistoryScreen::redraw(void) {
 
 	for(int i = position; i < std::min((int)(data.size()), position + ICS_HISTORY_MAX_MESSAGES); i++){
 		if (data[i].text.length()) {
-			aOutText32(PosX, PosY + y, data[i].color, (char*)(data[i].text.c_str()), font, 1, 0);
+			iChatOutText(PosX, PosY + y, data[i].color, (char*)(data[i].text.c_str()), font, 1, 0);
 		}
-		y += aTextHeight32((char*)(data[i].text.c_str()), font, 0) + 2;
+		y += iChatTextHeight((char*)(data[i].text.c_str()), font, 0) + 2;
 	}
 }
 
@@ -440,10 +521,10 @@ void iChatButton::redraw(void)
 {
 	int dx,dy;
 	iChatScreenObject::redraw();
-	dx = (SizeX - aTextWidth32(string,font,1)) / 2;
-	dy = (SizeY - aTextHeight32(string,font,0)) / 2;
+	dx = (SizeX - iChatTextWidth(string,font,1)) / 2;
+	dy = (SizeY - iChatTextHeight(string,font,0)) / 2;
 
-	aOutText32(PosX + dx,PosY + dy,StateColors[CurState],string,font,1,0);
+	iChatOutText(PosX + dx,PosY + dy,StateColors[CurState],string,font,1,0);
 }
 
 void iChatScreenObject::init(int x,int y,int sx,int sy,int col1,int col2)
@@ -900,6 +981,10 @@ void iChatQuant(int flush)
 void iChatFinit(void)
 {
 	iChatButton* p,*p1;
+	for(int i = 0; i < AS_NUM_FONTS_32; i++){
+		iChatTtfFaces[i].reset();
+		iChatTtfFaceTargetHeights[i] = -1;
+	}
 
 	if(iChatButtons){
 		p = (iChatButton*)iChatButtons -> fPtr;
@@ -1145,7 +1230,7 @@ void iChatInputDrawCursor(void) {
 
 	iChatInput -> XConv -> init();
 	*iChatInput -> XConv < CurPlayerName < (char*)((">" + (iChatInput -> string).substr(iChatInput -> leftDrawPosition, cursorPosition - iChatInput -> leftDrawPosition)).c_str());
-	int x = aTextWidth32(iChatInput -> XConv -> address(), iChatInput -> font, 1);
+	int x = iChatTextWidth(iChatInput -> XConv -> address(), iChatInput -> font, 1);
 
 	XGR_Rectangle(iChatInput -> PosX + x - cursorWidth / 2, iChatInput -> PosY, cursorWidth, iChatInput -> SizeY, color, color, XGR_FILLED);
 }
@@ -1205,7 +1290,7 @@ void iChatInputFlush(void) {
 			iChatInput -> XConv -> init();
 			*iChatInput -> XConv < CurPlayerName < (char*)((": " + string.substr(leftPosition, rightPosition - leftPosition)).c_str());
 
-			if (aTextWidth32(iChatInput -> XConv -> address(), iChatInput -> font, 1) > iChatHistory -> SizeX - 10) {
+			if (iChatTextWidth(iChatInput -> XConv -> address(), iChatInput -> font, 1) > iChatHistory -> SizeX - 10) {
 				message_dispatcher.send((char*)(string.substr(leftPosition, rightPosition - leftPosition - 1).c_str()), iChatFilter, iChatFilterID);
 				leftPosition = rightPosition - 1;
 			}

@@ -42,6 +42,7 @@ SET(vangers_SRCS
 	particle/partmap.cpp
 	particle/pmaptype.cpp
 	text/font_manager.cpp
+	text/legacy_ttf_draw.cpp
 	text/legacy_codec.cpp
 	text/ttf_runtime.cpp
 	text/unicode.cpp
