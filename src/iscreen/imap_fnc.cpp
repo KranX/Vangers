@@ -59,6 +59,16 @@ void map_rectangle(int x,int y,int sx,int sy,int col);
 namespace
 {
 
+bool iscreen_debug_title_metrics_enabled(void)
+{
+	static int enabled = -1;
+	if(enabled == -1){
+		const char* value = std::getenv("VANGERS_DEBUG_TEXT");
+		enabled = (value && (!strcmp(value, "title") || !strcmp(value, "full"))) ? 1 : 0;
+	}
+	return enabled != 0;
+}
+
 text::LegacyEncoding iscreen_hfont_encoding(void)
 {
 	return text::runtime_legacy_encoding();
@@ -210,6 +220,15 @@ int iscreen_measure_hfont_utf8_width(text::TtfFontFace& face,std::string_view te
 
 		build_hfont_ttf_cell_codepoint(face, codepoint, legacy_height, legacy_peak_level, 256, false,
 		                               ttf_cell, sx, sy, left_offs, right_offs);
+		if(iscreen_debug_title_metrics_enabled() && text_value == u8"前史"){
+			const text::GlyphBitmap* glyph = iscreen_get_renderable_codepoint(face, codepoint);
+			fprintf(stderr,
+			        "[VANGERS_DEBUG_TEXT] title-metric cp=U+%04X glyph=(w=%d h=%d minx=%d maxx=%d adv=%d) cell=(sx=%d sy=%d left=%d right=%d) pen=%d draw=[%d..%d)\n",
+			        (unsigned)codepoint,
+			        glyph ? glyph->width : 0, glyph ? glyph->height : 0,
+			        glyph ? glyph->minx : 0, glyph ? glyph->maxx : 0, glyph ? glyph->advance : 0,
+			        sx, sy, left_offs, right_offs, pen_x, pen_x - left_offs, pen_x - left_offs + sx);
+		}
 		const int draw_x = pen_x - left_offs;
 		if(!line_started){
 			line_min_x = draw_x;
@@ -226,6 +245,12 @@ int iscreen_measure_hfont_utf8_width(text::TtfFontFace& face,std::string_view te
 
 	if(line_started)
 		max_width = std::max(max_width, line_max_x - line_min_x);
+
+	if(iscreen_debug_title_metrics_enabled() && text_value == u8"前史"){
+		fprintf(stderr,
+		        "[VANGERS_DEBUG_TEXT] title-width text=\"%s\" result=%d span=[%d..%d]\n",
+		        std::string(text_value).c_str(), max_width, line_min_x, line_max_x);
+	}
 
 	return max_width;
 }
