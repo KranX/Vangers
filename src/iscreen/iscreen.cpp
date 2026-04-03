@@ -22,6 +22,7 @@
 #include "../sound/hsound.h"
 #include "avi.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <string>
@@ -353,7 +354,25 @@ std::string iscreen_get_measure_utf8_string(const TStringElement* element)
 
 static bool iscreen_string_uses_utf8_metrics(const iStringElement* element)
 {
-	return element && (((element->flags & EL_TEXT_STRING) != 0) || element->CursorVisible >= 0);
+	if(!element)
+		return false;
+
+	if((element->flags & EL_TEXT_STRING) != 0 || element->CursorVisible >= 0)
+		return true;
+
+	if(!element->Utf8Canonical || !element->owner)
+		return false;
+
+	if(!text::language_prefers_utf8_assets())
+		return false;
+
+	const std::string utf8_text = element->get_display_utf8_string();
+	const bool has_non_ascii = std::any_of(utf8_text.begin(), utf8_text.end(),
+	                                       [](unsigned char ch){ return ch & 0x80; });
+	if(!has_non_ascii)
+		return false;
+
+	return (((iScreenObject*)element->owner)->flags & OBJ_AUTO_SIZE) != 0;
 }
 
 template<class TStringElement>
