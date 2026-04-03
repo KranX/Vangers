@@ -259,6 +259,11 @@ static int actint_utf8_leading_trim32(text::TtfFontFace& face,std::string_view t
 	return 0;
 }
 
+static int actint_legacy_font_top_pad(const text::TtfFontFace& face,int legacy_height)
+{
+	return std::max(0, (legacy_height - face.get_height()) / 2);
+}
+
 static void actint_draw_ttf_glyph_screen(int x,int y,const text::GlyphBitmap& glyph,int primary,int secondary)
 {
 	if(glyph.alpha.empty())
@@ -334,9 +339,9 @@ void aOutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int 
 	if(face){
 		const int col1 = color & 0xFF;
 		const int col2 = (color >> 8) & 0xFF;
-		const int ascent = face->get_ascent();
+		const int top_pad = (aScrFonts && aScrFonts[font]) ? actint_legacy_font_top_pad(*face, aScrFonts[font] -> SizeY) : 0;
 		int pen_x = x;
-		int pen_y = y;
+		int pen_y = y + top_pad;
 		size_t offset = 0;
 		uint32_t codepoint = 0;
 
@@ -355,7 +360,7 @@ void aOutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int 
 				continue;
 			}
 
-			actint_draw_ttf_glyph_screen(pen_x + glyph->minx, pen_y + ascent - glyph->maxy, *glyph, col1, col2);
+			actint_draw_ttf_glyph_screen(pen_x, pen_y, *glyph, col1, col2);
 			pen_x += std::max(glyph->advance, 0) + space;
 		}
 		return;
@@ -371,8 +376,9 @@ void aPutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int 
 	if(face){
 		const int col1 = color & 0xFF;
 		const int col2 = (color >> 8) & 0xFF;
-		const int ascent = face->get_ascent();
+		const int top_pad = (aScrFonts && aScrFonts[font]) ? actint_legacy_font_top_pad(*face, aScrFonts[font] -> SizeY) : 0;
 		int pen_x = x;
+		const int pen_y = y + top_pad;
 		size_t offset = 0;
 		uint32_t codepoint = 0;
 
@@ -384,7 +390,7 @@ void aPutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int 
 
 			const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(*face, codepoint);
 			if(glyph){
-				actint_draw_ttf_glyph_buffer(pen_x + glyph->minx, y + ascent - glyph->maxy,
+				actint_draw_ttf_glyph_buffer(pen_x, pen_y,
 				                             bsx, *glyph, buf, col1, col2);
 				pen_x += std::max(glyph->advance, 0) + space;
 			}
@@ -406,10 +412,11 @@ void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_vie
 		const int col2 = (color >> 16) & 0xFF;
 		const int col_sz1 = color_size & 0xFF;
 		const int col_sz2 = (color_size >> 16) & 0xFF;
-		const int ascent = face->get_ascent();
 		const int hspace = space + text::default_ui_text32_extra_hspace();
 		const int leading_trim = actint_utf8_leading_trim32(*face, text_value);
+		const int top_pad = (aScrFonts32 && aScrFonts32[font]) ? actint_legacy_font_top_pad(*face, aScrFonts32[font] -> SizeY) : 0;
 		int pen_x = x - leading_trim;
+		const int pen_y = y + top_pad;
 		size_t offset = 0;
 		uint32_t codepoint = 0;
 
@@ -425,7 +432,7 @@ void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_vie
 				const int color_base = (col2 && alt_digit) ? col2 : col1;
 				const int color_shift = (col2 && alt_digit) ? col_sz2 : col_sz1;
 				const int y_adjust = (text::language_prefers_japanese_fonts() && actint_small_japanese_kana(codepoint)) ? -1 : 0;
-				actint_draw_ttf_glyph_buffer32(pen_x + glyph->minx, y + ascent - glyph->maxy + y_adjust,
+				actint_draw_ttf_glyph_buffer32(pen_x, pen_y + y_adjust,
 				                               bsx, *glyph, (unsigned char*)buf, color_base, color_shift);
 				pen_x += std::max(glyph->advance, 0) + hspace;
 			}
@@ -1303,7 +1310,7 @@ void aPutStr(int x,int y,int font,int color,unsigned char* str,int bsx,unsigned 
 
 	auto face = actint_get_text_ttf_face(font);
 	if(face){
-		const int ascent = face->get_ascent();
+		const int top_pad = (aScrFonts && aScrFonts[font]) ? actint_legacy_font_top_pad(*face, aScrFonts[font] -> SizeY) : 0;
 		X = x;
 		for(s = 0; s < sz; s ++){
 			const text::GlyphBitmap* glyph = actint_get_renderable_glyph(*face, str[s]);
@@ -1315,7 +1322,7 @@ void aPutStr(int x,int y,int font,int color,unsigned char* str,int bsx,unsigned 
 					secondary = col4 ? col4 : col2;
 				}
 
-				actint_draw_ttf_glyph_buffer(X + glyph->minx, y + ascent - glyph->maxy,
+				actint_draw_ttf_glyph_buffer(X, y + top_pad,
 				                             bsx, *glyph, buf, primary, secondary);
 				X += std::max(glyph->advance, 0) + space;
 			}
@@ -1427,12 +1434,12 @@ void aOutStr(int x,int y,int font,int color,unsigned char* str,int space)
 
 	auto face = actint_get_text_ttf_face(font);
 	if(face){
-		const int ascent = face->get_ascent();
+		const int top_pad = (aScrFonts && aScrFonts[font]) ? actint_legacy_font_top_pad(*face, aScrFonts[font] -> SizeY) : 0;
 		X = x;
 		for(s = 0; s < sz; s ++){
 			const text::GlyphBitmap* glyph = actint_get_renderable_glyph(*face, str[s]);
 			if(glyph){
-				actint_draw_ttf_glyph_screen(X + glyph->minx, y + ascent - glyph->maxy,
+				actint_draw_ttf_glyph_screen(X, y + top_pad,
 				                             *glyph, col1, col2);
 				X += std::max(glyph->advance, 0) + space;
 			}
@@ -1510,7 +1517,7 @@ void aPutChar(int x,int y,int font,int color,int str,int bsx,int bsy,unsigned ch
 	if(face){
 		const text::GlyphBitmap* glyph = actint_get_renderable_glyph(*face, (unsigned char)str);
 		if(glyph)
-			actint_draw_ttf_glyph_buffer(x + glyph->minx, y + face->get_ascent() - glyph->maxy,
+			actint_draw_ttf_glyph_buffer(x, y + ((aScrFonts && aScrFonts[font]) ? actint_legacy_font_top_pad(*face, aScrFonts[font] -> SizeY) : 0),
 			                             bsx, *glyph, buf, col1, col2);
 		return;
 	}

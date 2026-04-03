@@ -344,8 +344,9 @@ void draw_text_8bit_impl(int x,int y,int color,TtfFontFace& face,int hspace,int 
 		if(!glyph.valid())
 			continue;
 
-		const int draw_x = pen_x + glyph.glyph->minx;
-		const int draw_y = pen_y + glyph.face->get_ascent() - glyph.glyph->maxy;
+		const int glyph_line_height = text_line_height(*glyph.face);
+		const int draw_x = pen_x;
+		const int draw_y = pen_y + std::max(0, (line_height - glyph_line_height) / 2);
 		blit_alpha_mask_8bit(draw_x, draw_y, *glyph.glyph, palette_base, palette_shift, clip);
 		pen_x += std::max(glyph.glyph->advance, 0) + hspace;
 	}
