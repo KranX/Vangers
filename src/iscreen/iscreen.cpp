@@ -375,6 +375,19 @@ bool iscreen_ttf_supports_codepoint(iScreenElement* element,uint32_t codepoint)
 	return glyph && glyph->provided;
 }
 
+static int iscreen_utf8_string_height(const iStringElement* element)
+{
+	if(!element)
+		return 0;
+
+	int legacy_height = (HFntTable && HFntTable[element->font]) ? HFntTable[element->font]->SizeY : 0;
+	auto face = iscreen_input_ttf_face((iScreenElement*)element);
+	if(!face)
+		return legacy_height;
+
+	return std::max(legacy_height, std::max(face->get_line_skip(), face->get_height()));
+}
+
 }
 
 iListElement::iListElement(void)
@@ -2016,7 +2029,7 @@ void iScreenObject::init(void)
 		}
 		if(!p -> SizeY){
 			if(p -> type == I_STRING_ELEM)
-				p -> SizeY = HFntTable[((iStringElement*)p) -> font] -> SizeY;
+				p -> SizeY = iscreen_utf8_string_height((iStringElement*)p);
 			else {
 				if(p -> type == I_SCROLLER_ELEM){
 					switch(((iScrollerElement*)p) -> dir){
@@ -4288,10 +4301,12 @@ void iStringElement::init_size(void)
 			SizeX = text::measure_utf8_text_width(iscreen_get_measure_utf8_string(this), *face, space);
 		else
 			SizeX = iUtf8StrLen(iscreen_get_measure_utf8_string(this),font,space);
+		SizeY = iscreen_utf8_string_height(this);
 	}
 	else
 		SizeX = iStrLen((unsigned char*)string,font,space);
-	SizeY = HFntTable[font] -> SizeY;
+	if(!iscreen_string_uses_utf8_metrics(this))
+		SizeY = HFntTable[font] -> SizeY;
 }
 
 void iS_StringElement::init_size(void)
