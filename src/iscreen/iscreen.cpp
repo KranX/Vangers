@@ -4220,7 +4220,14 @@ void iScreenDispatcher::key_trap(int sc)
 
 void iStringElement::init_size(void)
 {
-	if(Utf8Canonical || CursorVisible >= 0)
+	if((flags & EL_TEXT_STRING) && (Utf8Canonical || CursorVisible >= 0)){
+		auto face = iscreen_input_ttf_face(this);
+		if(face)
+			SizeX = text::measure_utf8_text_width(iscreen_get_measure_utf8_string(this), *face, space);
+		else
+			SizeX = iUtf8StrLen(iscreen_get_measure_utf8_string(this),font,space);
+	}
+	else if(Utf8Canonical || CursorVisible >= 0)
 		SizeX = iUtf8StrLen(iscreen_get_measure_utf8_string(this),font,space);
 	else
 		SizeX = iStrLen((unsigned char*)string,font,space);
