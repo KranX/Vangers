@@ -122,97 +122,99 @@
 報酬: 2000      運: 4     周期: 0"
 
 [Tabutask P7]
-"The Eleepods have just set up a P-beam. 
-They want to see if something has been lost in the world. 
-The focus of the P-beam is temporarily set on your mechos. 
-You have to fly from Podish to Incubator without landing, 
-or else you'll ruin the tune-up! 
-Reward: 4000      Luck: 4     Cycles: 1"
+"イリーポッドたちは、たった今 Pビームを立ち上げた。
+世界のどこかで失われたものがないか確かめたいのだ。
+その Pビームの焦点は、一時的にあなたのメホスへ合わせられている。
+ポディッシュからインキュベーターまで、一度も着地せずに飛び切れ。
+でないと調整が台無しになる！
+報酬: 4000      運: 4     周期: 1"
 
 [Tabutask P8]
-"Leepky is concerned about the recent 
-influx of vangers from other worlds. 
-The worm fears that the scoundrels might rip off all his kusowocks at any minute. 
-You have to shoot up five vangers from Glorx or Necross properly 
-to cool off the aliens' curiosity! 
-Reward: 4000      Luck: 8     Cycles: 0"
+"リープキーは最近の
+他世界からのヴァンガー流入をひどく気にしている。
+あの虫は、よそ者どもがいつ自分のクソウォックを全部さらっていくかと恐れているのだ。
+グロークスかネクロスから来たヴァンガーを五人、
+きっちり撃ちのめして異邦人どもの好奇心を冷ませ！
+報酬: 4000      運: 8     周期: 0"
 
 [Tabutask P9]
-"A bully recently descended on Leepky and was just spouting off about his authority. 
-The scoundrel intimidated the counselor, 
-not letting him say a word, 
-and made him give up a CopteRig for half price. 
-Leepky's fastidious nature doesn't bear such treatment. 
-You have to whip the rebellious cads. 
-Give any three flying vangers a good missile shower to teach the jackanapes how to behave. 
-Reward: 3000      Luck: 6     Cycles: 2"
+"この前、ある乱暴者がリープキーのもとへ押しかけ、
+自分の権威をまくしたてて威張り散らした。
+そのならず者は相談役を脅しつけ、
+一言も口を挟ませないまま、
+コプトリグを半額で手放させた。
+リープキーの神経質な性分は、そんな仕打ちに耐えられない。
+反抗的な阿呆どもを叩きのめせ。
+空を飛ぶヴァンガーを三人、たっぷりミサイルで浴びせて、
+礼儀というものを教えてやれ。
+報酬: 3000      運: 6     周期: 2"
 
 [Tabutask P10]
-"Vangers are now reluctant to take part in the holy Eleection! 
-They spend too much time 
-on the ritual races of other worlds... 
-You have to fire on at least four racers 
-from Glorx or Necross 
-so that they remember the honored Fostral! 
-Reward: 4000      Luck: 8     Cycles: 3"
+"ヴァンガーたちは、もはや神聖なるイリークションへの参加を渋っている！
+あいつらは、
+他世界の儀式レースにばかり時間を使いすぎているのだ……
+グロークスかネクロスから来たレーサーを最低四人撃ち、
+尊きフォストラルの名を思い出させてやれ！
+報酬: 4000      運: 8     周期: 3"
 
 [Tabutask P11]
-"Those damned Beeboorats grabbed lots of nymbos from the shippers! 
-Due to that, we are short on eLeeches in Incubator! 
-Bring 12 jars of nymbos there before the end of the current cycle. 
-Reward: 2000      Luck: 6     Cycles: 0"
+"あの忌々しいビーボラットどもが、運び手からニムボスを大量に奪っていった！
+そのせいでインキュベーターではイリーチが不足している！
+現在の周期が終わる前に、ニムボスを12瓶そこへ運べ。
+報酬: 2000      運: 6     周期: 0"
 
 [Tabutask P12]
-"Leepky is looking for a reliable vanger 
-to ship phlegma to him. 
-He is now busy writing a poem that is important for all the pod, 
-and he needs 30 jars of phlegma 
-to take a poet's bath and draw inspiration.  
-Reward: 2000      Luck: 7    Cycles: 2"
+"リープキーは、自分のもとへフレグマを運んでくれる
+信頼できるヴァンガーを探している。
+今あの虫は、ポッド全体にとって重要な詩を書いている最中で、
+詩人の沐浴をして霊感を得るために、
+フレグマを30瓶必要としている。
+報酬: 2000      運: 7    周期: 2"
 
 [Tabutask P13]
-"The beebs that have bred in large numbers have started 
-to gnaw on the sleeping Eleepods! 
-Leepky believes that Zeexen toxick 
-is a good means of dealing with this plague. 
-You must bring five jars of toxick to Podish on the double! 
-Reward: 7000      Luck: 5    Cycles: 2"
+"大量繁殖したビーブどもが、
+眠っているイリーポッドをかじり始めた！
+リープキーは、ズィークセンのトクシックこそ
+この疫病への最良の対処法だと信じている。
+急いでトクシックを五瓶、ポディッシュへ運べ！
+報酬: 7000      運: 5    周期: 2"
 
 [Tabutask P14]
-"Two main pods bet on whether 
-a raffa can win an Eleection. 
-We're giving you the chance to settle the issue. 
-Get into a raffa and win the ritual race! 
-Reward: 7000      Luck: 10    Cycles: 5"
+"二つの主要ポッドが、
+ラッファでイリークションに勝てるかどうかで賭けをしている。
+その決着をつける機会を、お前に与える。
+ラッファに乗り込み、儀式のレースに勝て！
+報酬: 7000      運: 10    周期: 5"
 
 [Tabutask P15]
-"Leepky is complaining that vangers are sluggish nowadays. 
-They're too dangerous to be entrusted with the tender eLeeches! 
-You have to show your bravery and endurance 
-and ship two eLeeches in a single Eleection... 
-Reward: 4000      Luck: 12    Cycles: 3"
+"リープキーは、最近のヴァンガーは鈍すぎると嘆いている。
+あれでは繊細なイリーチを任せるには危険すぎる！
+勇気と持久力を示し、
+一度のイリークションでイリーチを二匹運んでみせろ……
+報酬: 4000      運: 12    周期: 3"
 
 [Tabutask P16]
-"The vangers are rowdy at the moment. 
-The eLeeches they bring are too often 
-scared by the shooting and that whole nightmare on the road! The infants are shuddering... 
-Show your skills and win the Eleection 
-without using your weapons or even inserting them into the slots! 
-Reward: 7000      Luck: 5    Cycles: 3"
+"今のヴァンガーたちは荒っぽすぎる。
+連中が運んでくるイリーチは、
+道中の発砲やら悪夢みたいな騒ぎやらにすぐ怯えてしまう！ 子どもたちは震えているのだ……
+腕前を見せつけろ。
+武器を使わず、スロットに差し込むことすらせずに、
+イリークションで勝利しろ！
+報酬: 7000      運: 5    周期: 3"
 
 [Tabutask P17]
-"Leepky will be reading a lecture in Podish soon 
-about the dullness and obtuseness of Beeboorats. 
-He wants to use peeperettes as physical models. 
-Bring him seven peeperettes! 
-Reward: 2000      Luck: 4     Cycles: 3"
+"リープキーはまもなくポディッシュで、
+ビーボラットの鈍さと愚かさについて講義を行う予定だ。
+その実物模型としてピーペレットを使いたがっている。
+ピーペレットを七つ持ってこい！
+報酬: 2000      運: 4     周期: 3"
 
 [Tabutask P18]
-"The pod of Feenger and Leepky are having a grand occasion 
-soon: the 5000th Plump-up. 
-They deserve a great gift. ProtoZeek from Necross 
-would be great, as Zeexen are good at making kusowocks! 
-Reward: 15000     Luck: 12    Cycles: 5"
+"フィンガーとリープキーのポッドには、まもなく大きな祝い事がある。
+第5000回プランプアップだ。
+それには盛大な贈り物がふさわしい。ネクロスから来るプロトジークなら最高だろう――
+ズィークセンはクソウォック作りが上手いからな！
+報酬: 15000     運: 12    周期: 5"
 
 [Tabutask P19]
 "The damn vangers have started forgetting the way to Podish. 
