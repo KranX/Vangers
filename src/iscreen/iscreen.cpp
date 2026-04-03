@@ -69,6 +69,16 @@ static bool iscreen_debug_text_full_enabled(void)
 	return enabled != 0;
 }
 
+static bool iscreen_debug_text_title_enabled(void)
+{
+	static int enabled = -1;
+	if(enabled == -1){
+		const char* value = std::getenv("VANGERS_DEBUG_TEXT");
+		enabled = (value && (!strcmp(value, "title") || !strcmp(value, "full"))) ? 1 : 0;
+	}
+	return enabled != 0;
+}
+
 static bool iscreen_debug_text_object(const iScreenObject* obj)
 {
 	return iscreen_debug_text_layout_enabled() && obj && obj->ID_ptr == "Text00";
@@ -2195,7 +2205,7 @@ void iScreenObject::init(void)
 		        (flags & OBJ_AUTO_SIZE) ? 1 : 0, ShadowSize, ElementList ? ElementList->Size : 0);
 	}
 
-	if(iscreen_debug_text_layout_enabled()){
+	if(iscreen_debug_text_title_enabled()){
 		iScreenElement* dbg = (iScreenElement*)ElementList->first;
 		while(dbg){
 			if(iscreen_debug_text_element(dbg) && dbg->ID_ptr == "TextTitle00"){
@@ -4649,7 +4659,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
-							if(iscreen_debug_text_layout_enabled()){
+							if(iscreen_debug_text_title_enabled()){
 								const std::string preview = title_obj->get_display_utf8_string();
 								fprintf(stderr,
 								        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
@@ -4673,7 +4683,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
-							if(iscreen_debug_text_layout_enabled()){
+							if(iscreen_debug_text_title_enabled()){
 								const std::string preview = title_obj->get_display_utf8_string();
 								fprintf(stderr,
 								        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
@@ -4697,7 +4707,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
-			if(iscreen_debug_text_layout_enabled()){
+			if(iscreen_debug_text_title_enabled()){
 				const std::string preview = title_obj->get_display_utf8_string();
 				fprintf(stderr,
 				        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
@@ -4742,7 +4752,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 						title_obj -> set_text_auto(curText -> objName);
 						title_obj -> init_size();
 						title_obj -> init_align();
-						if(iscreen_debug_text_layout_enabled()){
+						if(iscreen_debug_text_title_enabled()){
 							const std::string preview = title_obj->get_display_utf8_string();
 							fprintf(stderr,
 							        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
@@ -4779,7 +4789,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
-			if(iscreen_debug_text_layout_enabled()){
+			if(iscreen_debug_text_title_enabled()){
 				const std::string preview = title_obj->get_display_utf8_string();
 				fprintf(stderr,
 				        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
