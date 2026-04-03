@@ -129,6 +129,11 @@ static text::LegacyEncoding actint_text_encoding(void)
 	return text::runtime_legacy_encoding();
 }
 
+static bool actint_uses_russian_assets(void)
+{
+	return text::language_uses_russian_assets();
+}
+
 static std::string actint_legacy_literal_to_utf8(const char* text_value)
 {
 	return text::legacy_to_utf8(text_value ? text_value : "", actint_text_encoding());
@@ -867,7 +872,7 @@ void aInit(void)
 
 #ifdef _BINARY_SCRIPT_
 	if(actintLowResFlag){
-		if(lang() == RUSSIAN){
+		if(actint_uses_russian_assets()){
 			aParseScript("resource/actint/aci_low2.scb");
 			acsParseScript("resource/actint/acs_low2.scb");
 		}
@@ -877,7 +882,7 @@ void aInit(void)
 		}
 	}
 	else {
-		if(lang() == RUSSIAN){
+		if(actint_uses_russian_assets()){
 			aParseScript("resource/actint/aci_hi2.scb");
 			acsParseScript("resource/actint/acs_low2.scb");
 		}
@@ -888,7 +893,7 @@ void aInit(void)
 	}
 #else
 	if(actintLowResFlag){
-		if(lang() == RUSSIAN){
+		if(actint_uses_russian_assets()){
 			aParseScript("actint/aci_low2.scr","resource/actint/aci_low2.scb");
 			acsParseScript("actint/acs_low2.scr","resource/actint/acs_low2.scb");
 		}
@@ -898,7 +903,7 @@ void aInit(void)
 		}
 	}
 	else {
-		if(lang() == RUSSIAN){
+		if(actint_uses_russian_assets()){
 			aParseScript("actint/aci_hi2.scr","resource/actint/aci_hi2.scb");
 			acsParseScript("actint/acs_low2.scr","resource/actint/acs_low2.scb");
 		}
@@ -4447,7 +4452,7 @@ void aciAddTeleportMenuItem(int id,int fnc_id)
 	if(!mn) return;
 
 	if(id == -1){
-		if (lang() == RUSSIAN) {
+		if (actint_uses_russian_assets()) {
 			if (strcmp(aci_curLocationName, (char*)eCmpPodish) == 0) ptr = rCmpPodish;
 			else if (strcmp(aci_curLocationName, (char*)eCmpVigBoo) == 0) ptr = rCmpVigBoo;
 			else if (strcmp(aci_curLocationName, (char*)eCmpZeePa) == 0) ptr = rCmpZeePa;
@@ -4576,7 +4581,7 @@ void aciChangeAviIndex(void)
 {
 	switch(aciCurAviIndex){
 		case ACI_PICTURE_AVI_ENG:
-			aciCurAviIndex = (lang() == RUSSIAN) ? ACI_TEXT_AVI_RUS : ACI_TEXT_AVI_ENG;
+			aciCurAviIndex = actint_uses_russian_assets() ? ACI_TEXT_AVI_RUS : ACI_TEXT_AVI_ENG;
 			break;
 		case ACI_TEXT_AVI_RUS:
 		case ACI_TEXT_AVI_ENG:
@@ -7186,7 +7191,7 @@ void aciSetRedraw(void)
 
 void aciInitStrings(void)
 {
-	if(lang() != RUSSIAN){
+	if(!actint_uses_russian_assets()){
 		aciSTR_ON = aciSTR_ON1;
 		aciSTR_OFF = aciSTR_OFF1;
 		aciSTR_DAY = aciSTR_DAY1;
@@ -7426,7 +7431,7 @@ void aciInitEndGame(int id)
 	}
 	switch(GameOverID){
 		case GAME_OVER_EXPLOSION:
-			if(lang() == RUSSIAN)
+			if(actint_uses_russian_assets())
 				p -> SetName("img/img7.bmp");
 			else
 				p -> SetName("img/img0.bmp");
@@ -7593,7 +7598,7 @@ void aciPrepareEndImage(void)
 
 	p = (ShowImageRTO*)xtGetRuntimeObject(RTO_SHOW_IMAGE_ID);
 	p -> SetNumFiles(1);
-	if(lang() == RUSSIAN)
+	if(actint_uses_russian_assets())
 		p -> SetName("img/img8.bmp",0);
 	else
 		p -> SetName("img/img6.bmp",0);

@@ -31,6 +31,7 @@
 #include "../actint/acsconst.h"
 #include "../actint/aci_evnt.h"
 #include "../actint/aci_scr.h"
+#include "../text/language_policy.h"
 
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
@@ -38,6 +39,11 @@
 
 #include "../sound/hmusic.h"
 #include "../sound/hsound.h"
+
+static bool iscreen_uses_russian_assets(void)
+{
+	return text::language_uses_russian_assets();
+}
 
 
 #ifdef _NT
@@ -502,14 +508,14 @@ void iInit(void)
 
 #ifdef _BINARY_SCRIPT_
 	if(!iFirstInit){
-		if(lang() == RUSSIAN)
+		if(iscreen_uses_russian_assets())
 			ParseScript("resource/iscreen/oftr2.scb");
 		else
 			ParseScript("resource/iscreen/oftr.scb");
 	}
 #else
 	if(!iFirstInit){
-		if(lang() == RUSSIAN)
+		if(iscreen_uses_russian_assets())
 			ParseScript("iscreen/oftr2.scr","resource/iscreen/oftr2.scb");
 		else
 			ParseScript("iscreen/oftr.scr","resource/iscreen/oftr.scb");
@@ -609,7 +615,7 @@ void iQuantFirst(void)
         iPrepareOptions();
 
 #ifndef _ACI_SKIP_MAINMENU_
-        iSetOptionValueCHR(iPLAYER_NAME2, (lang() == RUSSIAN ? "‚ ­ЈҐа" : "Vanger"));
+        iSetOptionValueCHR(iPLAYER_NAME2, (iscreen_uses_russian_assets() ? "‚ ­ЈҐа" : "Vanger"));
         iSetOptionValueCHR(iPLAYER_PASSWORD, iSTR_DefaultPassword);
         iSetOptionValueCHR(iHOST_NAME, "vangers.net");
         iSetOptionValueCHR(iSERVER_NAME, iSTR_NONE);
@@ -2823,7 +2829,7 @@ void iCreateServer(void)
 
 void iInitStrings(void)
 {
-	if(lang() == RUSSIAN){
+	if(iscreen_uses_russian_assets()){
 		iSTR_WORLD_NONE_CHAR = iSTR_WORLD_NONE_CHAR2;
 		iSTR_WORLD_FOSTRAL_CHAR = iSTR_WORLD_FOSTRAL_CHAR2;
 		iSTR_WORLD_GLORX_CHAR = iSTR_WORLD_GLORX_CHAR2;

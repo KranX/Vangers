@@ -553,7 +553,7 @@ int xtInitApplication(void) {
 //	  siObj -> SetName("resource\\iscreen\\bitmap\\kdlogo.bmp",0);
 //	  siObj -> SetNext(RTO_MAIN_MENU_ID);
 
-    if (lang() == RUSSIAN) {
+    if (text::language_uses_russian_assets()) {
         saObj->SetNumFiles(3);
         //saObj -> SetName("resource\\video\\intro\\logo1.avi",0);
         //saObj -> SetName("resource\\video\\intro\\logo2.avi",1);
@@ -2654,7 +2654,7 @@ void LoadingMessage(int flush)
 	char* str = getRC();
 	sysfont.draw(8,XGR_MAXY - 35,(unsigned char*)str,255,-1);
 	XBuffer buf;
-	if (lang() == RUSSIAN) {
+	if (text::language_uses_russian_assets()) {
         buf < Convert(zSTR_LOADING_800_RU);
 	} else if (lang() == GERMAN) {
         if(XGR_MAXX == 800)
@@ -2892,7 +2892,7 @@ char* getRC(void)
                            "Exodus to Otherworld...",
                            "One for the Road..."
     };
-    if (lang() == RUSSIAN) {
+    if (text::language_uses_russian_assets()) {
         b < ConvertUTF8("Vangers: ");
         b < ConvertUTF8(sub[realRND(5)]);
     } else {
