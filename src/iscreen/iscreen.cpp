@@ -1654,6 +1654,8 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 	unsigned char* p,*p1,*data = NULL;
 	std::string utf8_data;
 	bool use_utf8_text = false;
+	int utf8_render_width = 0;
+	int utf8_render_x = 0;
 
 	if(flags & EL_NO_SCALE && scale != 256)
 		return;
@@ -1690,6 +1692,10 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 			if(((iStringElement*)this)->Utf8Canonical || ((iStringElement*)this)->CursorVisible >= 0){
 				utf8_data = ((iStringElement*)this)->get_display_utf8_string();
 				use_utf8_text = true;
+				utf8_render_width = iUtf8StrLen(utf8_data, ((iStringElement*)this)->font, ((iStringElement*)this)->space);
+				utf8_render_x = x + lX;
+				if(!iscreen_string_uses_utf8_metrics((iStringElement*)this) && utf8_render_width > 0)
+					utf8_render_x += (SizeX - utf8_render_width) / 2;
 			}
 			break;
 		case I_S_STRING_ELEM:
@@ -1741,9 +1747,9 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 				if(use_utf8_text){
 					const bool strong_relief = (flags & EL_TEXT_STRING) != 0;
 					if(terrainNum == -1)
-						iPutStrUtf8(x + lX,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,strong_relief);
+						iPutStrUtf8(utf8_render_x,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,strong_relief);
 					else
-						i_terrPutStrUtf8(x + lX,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,terrainNum,strong_relief);
+						i_terrPutStrUtf8(utf8_render_x,y + lY,((iStringElement*)this) -> font,utf8_data,0,sc,((iStringElement*)this) -> space,null_lev,hide_mode,terrainNum,strong_relief);
 				}
 				else {
 					if(terrainNum == -1)
@@ -1973,22 +1979,32 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 		}
 	}
 	else {
-		_iALLOC_A_(unsigned char,p,SizeX * SizeY);
-		_iALLOC_A_(unsigned char,p1,SizeX * SizeY);
+		int alloc_sx = SizeX;
+		if(type == I_STRING_ELEM && use_utf8_text && utf8_render_width > alloc_sx)
+			alloc_sx = utf8_render_width;
+		_iALLOC_A_(unsigned char,p,alloc_sx * SizeY);
+		_iALLOC_A_(unsigned char,p1,alloc_sx * SizeY);
 		switch(type){
 			case I_STRING_ELEM:
-				memset(p,HFONT_NULL_LEVEL,SizeX * SizeY);
+				{
+				int render_sx = alloc_sx;
+				int render_x = x + lX;
+				if(use_utf8_text && utf8_render_width > SizeX){
+					render_x += (SizeX - render_sx) / 2;
+				}
+				memset(p,HFONT_NULL_LEVEL,render_sx * SizeY);
 				if(use_utf8_text)
-					iPutStr2bufUtf8(0,0,((iStringElement*)this) -> font,SizeX,SizeY,utf8_data,p,0,sc,((iStringElement*)this) -> space);
+					iPutStr2bufUtf8(0,0,((iStringElement*)this) -> font,render_sx,SizeY,utf8_data,p,0,sc,((iStringElement*)this) -> space);
 				else
-					iPutStr2buf(0,0,((iStringElement*)this) -> font,SizeX,SizeY,data,p,0,sc,((iStringElement*)this) -> space);
-				scale_buf(SizeX,SizeY,sc,p,p1);
-				smooth_buf(SizeX,SizeY,p1,sm);
+					iPutStr2buf(0,0,((iStringElement*)this) -> font,render_sx,SizeY,data,p,0,sc,((iStringElement*)this) -> space);
+				scale_buf(render_sx,SizeY,sc,p,p1);
+				smooth_buf(render_sx,SizeY,p1,sm);
 				if(terrainNum == -1)
-					put_buf(x + lX,y + lY,SizeX,SizeY,p1,p1,null_lev,hide_mode);
+					put_buf(render_x,y + lY,render_sx,SizeY,p1,p1,null_lev,hide_mode);
 				else
-					put_tbuf(x + lX,y + lY,SizeX,SizeY,p1,p1,null_lev,hide_mode,terrainNum);
+					put_tbuf(render_x,y + lY,render_sx,SizeY,p1,p1,null_lev,hide_mode,terrainNum);
 				break;
+				}
 			case I_BITMAP_ELEM:
 				scale_buf(SizeX,SizeY,sc,data,p);
 				smooth_buf(SizeX,SizeY,p,sm);
@@ -1998,8 +2014,8 @@ void iScreenElement::redraw(int x,int y,int sc,int sm,int hide_mode)
 					put_tbuf(x + lX,y + lY,SizeX,SizeY,p,data,null_lev,hide_mode,terrainNum);
 				break;
 		}
-		_iFREE_A_(unsigned char,p1,SizeX * SizeY);
-		_iFREE_A_(unsigned char,p,SizeX * SizeY);
+		_iFREE_A_(unsigned char,p1,alloc_sx * SizeY);
+		_iFREE_A_(unsigned char,p,alloc_sx * SizeY);
 	}
 }
 
