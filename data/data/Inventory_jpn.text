@@ -536,434 +536,411 @@ hMok のタンクアシッドは、その構成要素の一つだ。
 報酬: 50000     運: 15    周期: 5"
 
 [Tabutask L1]
-"Stylish Geer'ah has come up with a new competition for the Heroes. 
-To organize it we need you to deliver 20 fresh beebs 
-before the end of the cycle. 
-Reward: 3000      Luck: 3     Cycles: 0"
-
+"粋なるギールアが英雄たちのために新たな競技を思いついた。
+それを開催するには、新鮮なビーブを20匹、
+周期が終わる前に届けねばならない。
+報酬: 3000      運: 3     周期: 0"
 [Tabutask L2]
-"The Slaves have been sluggish lately. 
-We don't know what they have been doing up there on the surface, 
-so you have to fly 
-from Lampasso to Ogorod 
-without landing to check this out. 
-Reward: 2000      Luck: 4     Cycles: 0"
-
+"最近、スレイブどもの動きが鈍い。
+地上で何をしていたのか分からぬゆえ、
+お前はランパッソからオゴロドまで
+一度も着地せずに飛び、その実態を確かめよ。
+報酬: 2000      運: 4     周期: 0"
 [Tabutask L3]
-"To reward the winners of the competition, for the glory of the Buro, 
-and for the most stylish Geer'ah, we need you to bring 
-one live and one dead eLeech. 
-Reward: 10000     Luck: 12    Cycles: 5"
-
+"競技の勝者への褒賞とビューロの栄光、
+そして何より粋なるギールアのために、
+生きたイリーチを一匹、死んだイリーチを一匹
+持ってこい。
+報酬: 10000     運: 12    周期: 5"
 [Tabutask L4]
-"Some scab recently brought a fake Valorin. 
-It looks okay, but it's unfit for deeds of valor, 
-so we can't use it in the stadium. Kill the jackasses 
-who dared cheat Geer'ah. 
-Reward: 4000      Luck: 6     Cycles: 3"
-
+"最近、どこかの瘡蓋野郎が偽物のヴァロリンを持ち込んだ。
+見た目はまともだが勇気ある偉業には使えん。
+こんな代物では競技場で役に立たぬ。
+ギールアを欺こうとした間抜けどもを始末しろ。
+報酬: 4000      運: 6     周期: 3"
 [Tabutask L5]
-"Stylish Geer'ah has heard from Agents about some whirlpools 
-on Glorx. You must check out this information 
-and dive into a whirlpool. The enemies of Glorx may be hiding there. 
-Reward: 1500       Luck: 1    Cycles: 0"
-
+"粋なるギールアは、エージェントどもから
+グロークスに渦潮があるとの報告を聞いた。
+その情報を確かめ、渦潮へ飛び込め。
+グロークスの敵がそこに潜んでいるかもしれん。
+報酬: 1500      運: 1     周期: 0"
 [Tabutask L6]
-"Geer'ah has threatened to send a vanger to the stadium. 
-However, the competitions in Lampasso are currently on a break, 
-so stop that vanger from getting into Lampasso before the end of the cycle 
-so that Geer'ah can prepare to meet 
-the new competition participant. 
-Reward: 6000      Luck: 6     Cycles: 0"
-
+"ギールアはあるヴァンガーを競技場へ送ると脅した。
+だが今のランパッソでは競技は休止中だ。
+周期が終わるまでそいつをランパッソに入れるな。
+そのあいだにギールアが
+新たな競技参加者を迎える準備を整える。
+報酬: 6000      運: 6     周期: 0"
 [Tabutask L7]
-"To eliminate any obstacles 
-to getting the Valorins delivered on time, Geer'ah is assigning you 
-to bombard three vangers from Necross or Fostral 
-so that they don't create traffic jams on the roads of Glorx. 
-Reward: 2000      Luck: 3     Cycles: 0"
-
+"ヴァロリンの定時輸送の障害を取り除くため、
+ギールアはネクロスかフォストラルから来たヴァンガーを
+三人砲撃する任務を与える。
+グロークスの道で渋滞を起こさせるな。
+報酬: 2000      運: 3     周期: 0"
 [Tabutask L8]
-"The Buro has offered the Eleepods unconditional 
-surrender, though because of their stupidity they have refused. 
-You have to make them more amenable. 
-Shoot up six vangers from Fostral. 
-Reward: 4500      Luck: 4     Cycles: 1"
-
+"ビューロはイリーポッドどもに無条件降伏を勧めたが、
+あの愚か者どもはそれを拒んだ。
+もっと従順にさせる必要がある。
+フォストラルから来たヴァンガーを六人撃ちのめせ。
+報酬: 4500      運: 4     周期: 1"
 [Tabutask L9]
-"Raffas have been repeatedly attacking 
-our Valorin couriers lately. This is intolerable 
-and we must take appropriate measures. Exterminate five raffas. 
-Reward: 5000      Luck: 7     Cycles: 2"
-
+"最近、ラッファどもが
+我らのヴァロリン運びを繰り返し襲っている。
+これは到底看過できぬ。
+適切な措置として、ラッファを五匹始末しろ。
+報酬: 5000      運: 7     周期: 2"
 [Tabutask L10]
-"Judging from the latest reports, the time it takes Slaves 
-to deliver Valorins has significantly increased during the last three cycles. 
-To chastise these sluggards, shoot up eight raffas. 
-Reward: 1500      Luck: 3     Cycles: 1"
-
+"最新報告によれば、スレイブどもが
+ヴァロリンを届ける時間はこの三周期で著しく伸びている。
+こののろまどもを懲らしめるため、
+ラッファを八匹撃ち払え。
+報酬: 1500      運: 3     周期: 1"
 [Tabutask L11]
-"Geer'ah sent an Agent on a mission, 
-but later had second thoughts about it. 
-Keep the vanger on Glorx until the end of the cycle 
-so that he doesn't mess up the whole plan. 
-Reward: 5000      Luck: 6     Cycles: 0"
-
+"ギールアはエージェントを任務に送り出したが、
+後になって考え直した。
+周期が終わるまでそのヴァンガーをグロークスに足止めしろ。
+さもないと計画全体が台無しになる。
+報酬: 5000      運: 6     周期: 0"
 [Tabutask L12]
-"Geer'ah recently sent a vanger on an inspection. 
-However, the dolt has lost touch with headquarters. 
-Bombard any two flying vangers 
-and maybe the blockhead will regain his memory. 
-Reward: 4000      Luck: 5     Cycles: 0"
-
+"ギールアは最近、点検のためにヴァンガーを送り出した。
+だがその間抜けは本部との連絡を絶ってしまった。
+空を飛ぶヴァンガーを二人砲撃すれば、
+あの大馬鹿も少しは記憶を取り戻すかもしれん。
+報酬: 4000      運: 5     周期: 0"
 [Tabutask L13]
-"The Buro has decided to form a special troop of vangers 
-to oppose saboteurs. 
-The Commander who trains the troop is conditioning them to hide underwater 
-so that they can ambush the enemy. 
-You must stay underwater until the end of the cycle 
-to prove your fitness, 
-otherwise you risk adding your name to the list of saboteurs. 
-Reward: 3000      Luck: 5     Cycles: 0"
-
+"ビューロは破壊工作員に対抗するため、
+特別部隊のヴァンガーを編成することにした。
+その指揮官は、敵を待ち伏せできるよう
+水中に潜む訓練をさせている。
+お前も適性を示すため、周期が終わるまで水中に留まれ。
+でなければ破壊工作員の名簿に加えられるぞ。
+報酬: 3000      運: 5     周期: 0"
 [Tabutask L14]
-"According to reports from our reliable Commissars, 
-some of the others, having swallowed the bait of the Zeexen's slippery promises, 
-started to participate in the ritual races of Necross. 
-You must put an end to this outrage. 
-Kill two racers on Necross. 
-Reward: 15000     Luck: 13    Cycles: 4"
-
+"信頼すべきコミッサーたちからの報告によれば、
+ジークセンの滑らかな甘言に釣られた者どもが
+ネクロスの儀式レースに参加し始めたという。
+この不届きな振る舞いを止めねばならん。
+ネクロスでレーサーを二人始末しろ。
+報酬: 15000     運: 13    周期: 4"
 [Tabutask L15]
-"For the ceremonial opening of the competitions 
-and the smearing of the pedestal, Geer'ah needs 
-some Eleepod phlegma. Bring 12 jars. 
-Reward: 4000      Luck: 8     Cycles: 1"
-
+"競技の開会式と台座への塗りたくりのために、
+ギールアはイリーポッドのフレグマを必要としている。
+12瓶持ってこい。
+報酬: 4000      運: 8     周期: 1"
 [Tabutask L16]
-"Geer'ah is concerned that 
-the Nucleoboom has been delivered bruised lately. 
-That's because those dull Commissars 
-batter away at each other. Well, the wheelers can go hang, 
-but Nucleobooms need careful handling. 
-You are assigned to win the next Nuclear War 
-with empty weapon slots. 
-Reward: 7000      Luck: 8    Cycles: 3"
-
+"ギールアは、最近ニュークレオブームが
+傷だらけのまま運び込まれていることを憂慮している。
+あの鈍いコミッサーどもが互いを殴り合っているせいだ。
+車輪野郎どもはどうでもよいが、
+ニュークレオブームは丁重に扱わねばならぬ。
+次のニュークリア・ウォーを、
+武器スロットを空のままで勝利せよ。
+報酬: 7000      運: 8     周期: 3"
 [Tabutask L17]
-"To save funds, the Buro is planning 
-to exchange the Commissar mechos for a raffa. To test this idea, 
-the Buro is seeking a vanger 
-who can win a Nuclear War against a raffa. 
-Reward: 7000      Luck: 10    Cycles: 3"
-
+"経費節減のため、ビューロは
+コミッサー用メホスをラッファに置き換えようとしている。
+その試験として、
+ラッファを相手にニュークリア・ウォーで勝てるヴァンガーを求めている。
+報酬: 7000      運: 10    周期: 3"
 [Tabutask L18]
-"Our Agents on Fostral often can't collect cirt due 
-to the hostility of local vangers. 
-Deliver some alien cirt to Leepky in Podish 
-to bring him around. 
-Reward: 8000      Luck: 7    Cycles: 2"
-
+"フォストラルのエージェントたちは、
+現地ヴァンガーの敵意のせいで
+しばしばサートを集められない。
+奴らを懐柔するため、
+異界のサートをポディッシュのリープキーへ届けよ。
+報酬: 8000      運: 7     周期: 2"
 [Tabutask L19]
-"Many Heroes are waiting in the Geer'ah reserve, 
-all eager to take part in the competition. 
-However, the stock of Nucleobooms is not enough for all of them. 
-Bring 13 Nucleobooms during the next Nuclear War. 
-Reward: 5000      Luck: 9    Cycles: 3"
-
+"多くの英雄たちがギールアの予備隊で、
+競技参加の機会を今か今かと待っている。
+だが全員に行き渡るほどニュークレオブームの備蓄がない。
+次のニュークリア・ウォーで、
+ニュークレオブームを13個持ち込め。
+報酬: 5000      運: 9     周期: 3"
 [Tabutask L20]
-"The Buro wants to give the scabby Eleepods a surprise. 
-Deliver 12 jars of toxick to Podish. 
-Let Leepky go bald and forget 
-how to write his insults about stylish Geer'ah. 
-Reward: 8000      Luck: 8    Cycles: 3"
-
+"ビューロは疥癬まみれのイリーポッドどもを驚かせたいらしい。
+トクシックを12瓶、ポディッシュへ届けよ。
+リープキーが禿げ上がり、
+粋なるギールアへの悪口を書き散らすことも忘れるようにな。
+報酬: 8000      運: 8     周期: 3"
 [Tabutask O1]
-"Oboorez has found out that a commission from the Buro is going 
-to stop by to check on the shrub beds. Unfortunately, the timing is all wrong: Oboorez has just started 
-replanting. Delay the mechos with the commission and stop them from entering 
-Ogorod before the end of the cycle so that the counselor can tidy up the garden. 
-Reward: 6000      Luck: 6     Cycles: 0"
-
+"オブーリーズは、ビューロの査察団が
+苗床の点検に立ち寄ると知った。
+だが間の悪いことに、ちょうど植え替えを始めたところだ。
+査察団を乗せたメホスを足止めし、
+周期が終わるまでオゴロドに入らせるな。
+その間に相談役が庭を整える。
+報酬: 6000      運: 6     周期: 0"
 [Tabutask O2]
-"The ever-present beebs have nibbled away some shrubs and Oboorez overlooked it 
-because of his poor vision. To fulfill the plan, 
-the counselor urgently needs 12 shrubs. 
-Reward: 1000      Luck: 5     Cycles: 0"
-
+"そこら中にいるビーブどもが灌木をかじり、
+目の悪いオブーリーズはそれを見落としていた。
+計画達成のため、相談役には
+灌木が12本どうしても必要だ。
+報酬: 1000      運: 5     周期: 0"
 [Tabutask O3]
-"Some rat has blown the whistle on Oboorez for hiding fake 
-peeperettes and the Buro has given the counselor an admonition. Oboorez 
-is asking you to kill the rat 
-for this betrayal. 
-Reward: 3000      Luck: 7     Cycles: 3"
-
+"どこかの鼠野郎が、
+偽物のピーペレットを隠していた件でオブーリーズを密告し、
+ビューロから譴責が下った。
+この裏切り者の鼠を始末してくれと
+オブーリーズは頼んでいる。
+報酬: 3000      運: 7     周期: 3"
 [Tabutask O4]
-"The lazy Slaves amuse themselves by treading down beebs near escaves 
-instead of shipping Valorins and shrubs. This is not what 
-the Buro raised them for. You are to squash ten beebs 
-so that none remain for those slugs and for the Slaves to remember their job. 
-Reward: 1000      Luck: 1     Cycles: 0"
-
+"怠けたスレイブどもはヴァロリンや灌木を運ばず、
+エスケイヴの近くでビーブを踏みつけて遊んでいる。
+ビューロはそんな目的で奴らを育てたのではない。
+ビーブを十匹踏み潰し、
+このナメクジどもに職務を思い出させろ。
+報酬: 1000      運: 1     周期: 0"
 [Tabutask O5]
-"Big swarms of insects are stopping our Jablees from flying out of Ogorod. This 
-could hamper Beeboorat rituals, 
-so you must repel eight swarms before the end of the cycle. 
-Reward: 1500      Luck: 3     Cycles: 0"
-
+"大量の虫の群れが、
+ジャブリーたちのオゴロド離陸を妨げている。
+これではビーボラットの儀式に支障が出る。
+周期が終わる前に群れを八つ追い払え。
+報酬: 1500      運: 3     周期: 0"
 [Tabutask O6]
-"Some dolts have robbed an old hideout and armed themselves 
-with missile launchers. The blockheads can't handle them properly 
-and fire at every passer-by. Give the scoundrels what for, 
-bombarding the five mechos that have missile launchers. 
-Reward: 2500      Luck: 5     Cycles: 1"
-
+"愚か者どもが古い隠れ家を漁り、
+ミサイルランチャーを持ち出して武装した。
+だが使い方も分からず、通りすがりを撃っている。
+その無法者どもに思い知らせるため、
+ミサイルランチャー持ちのメホスを五機砲撃しろ。
+報酬: 2500      運: 5     周期: 1"
 [Tabutask O7]
-"The Commissars say that clumsy freaks from 
-Fostral smashed many peeperettes 
-in the last PeepShow. Glorx is no place for those worms. Fire at five 
-vangers from Fostral to help them forget the way here. 
-Reward: 2000      Luck: 3     Cycles: 1"
-
+"コミッサーどもによれば、
+フォストラルの不器用な変種どもが
+前回のピープショーで多くのピーペレットを台無しにした。
+グロークスはあんな虫けらの来る場所ではない。
+フォストラルのヴァンガーを五人撃ち、
+ここへの道を忘れさせろ。
+報酬: 2000      運: 3     周期: 1"
 [Tabutask O8]
-"Fatso, the chief inspector and Oboorez's best friend, 
-got bogged down in Ogorod, where the inspector's mechos rusted. 
-Bring four CopteRigs into Ogorod 
-right away to see the guest off, 
-since the stock of cirt is running out. 
-Reward: 3000      Luck: 6    Cycles: 1"
-
+"主任監察官でありオブーリーズの親友でもあるファットソーが、
+オゴロドで足を取られ、乗ってきたメホスを錆びつかせてしまった。
+客を見送るため、至急コプトリグを四基オゴロドへ運べ。
+サートの備えも尽きかけている。
+報酬: 3000      運: 6     周期: 1"
 [Tabutask O9]
-"Shipping peeperettes is a delicate task. The main thing is to avoid bruising 
-or spilling them. For research, Oboorez is assigning you to reach 
-Lampasso without taking any damage. 
-Reward: 1000      Luck: 5     Cycles: 0"
-
+"ピーペレット輸送は繊細な仕事だ。
+肝心なのは傷つけず、こぼさぬこと。
+研究のため、オブーリーズはお前に
+一切ダメージを受けずにランパッソへ到達するよう命じる。
+報酬: 1000      運: 5     周期: 0"
 [Tabutask O10]
-"Oboorez has some suspicions about the source of fake peeperettes: 
-the Eleepods plant them in various hidden places 
-to corrupt our Commissars. Check out four underwater hideouts 
-before the end of the cycle. 
-Reward: 500       Luck: 2     Cycles: 0"
-
+"オブーリーズは偽ピーペレットの出所に疑いを抱いている。
+イリーポッドどもが各地の隠れ場所に植え付け、
+我らのコミッサーを堕落させているのだ。
+周期が終わる前に水中の隠れ家を四つ調べろ。
+報酬: 500       運: 2     周期: 0"
 [Tabutask O11]
-"A Zeexen spy has filched a peeperette from Oboorez to 
-take it to B-Zone for analysis. Beeboorats 
-don't give up their secrets so easily; hold the thief on Glorx 
-until the end of the cycle, at which point the peeperette will rot away. 
-Reward: 5000      Luck: 6     Cycles: 0"
-
+"ジークセンの密偵がオブーリーズのピーペレットを盗み出し、
+Bゾーンへ分析に運ぼうとしている。
+ビーボラットはそう簡単に秘密を渡さぬ。
+周期が終わるまでその盗人をグロークスに足止めしろ。
+その頃にはピーペレットも腐ってしまう。
+報酬: 5000      運: 6     周期: 0"
 [Tabutask O12]
-"A long time ago peeperettes were shipped on special mechos 
-called Queen Frogs. What an enjoyment it was to watch them go. 
-Oboorez wants to relive the old days and is asking you 
-to win a PeepShow on Queen Frog. 
-Reward: 10000     Luck: 15    Cycles: 9"
-
+"大昔、ピーペレットはクイーンフロッグと呼ばれる
+特別なメホスで運ばれていた。
+あれが走る姿を見るのは実に楽しかったものだ。
+オブーリーズは昔を懐かしみ、
+クイーンフロッグでピープショーに勝てと命じている。
+報酬: 10000     運: 15    周期: 9"
 [Tabutask O13]
-"Oboorez has decided to celebrate the 1000th cycle of his service in Ogorod. 
-He knows the recipe for a delicious dish, for which you must bring 
-one nymbos, two jars of phlegma, and one dead eLeech. 
-Reward: 500       Luck: 5     Cycles: 3"
-
+"オブーリーズは、オゴロド勤続1000周期を祝うことにした。
+とびきり旨い料理の作り方を知っているそうで、
+そのためにニムボス一匹、フレグマ二瓶、
+それに死んだイリーチ一匹を持ってこい。
+報酬: 500       運: 5     周期: 3"
 [Tabutask O14]
-"Some Eleepod vangers dare to take part in 
-PeepShow. The peeperettes they bring are all dirty 
-and don't sprout well. Kill one vanger 
-from Fostral who is taking part in a PeepShow to keep those worms away from Glorx. 
-Reward: 5000      Luck: 10   Cycles: 4"
-
+"図々しいイリーポッドのヴァンガーどもが
+ピープショーに参加している。
+奴らの持ち込むピーペレットは汚れていて、育ちも悪い。
+グロークスから虫けらどもを遠ざけるため、
+ピープショー参加中のフォストラルのヴァンガーを一人始末しろ。
+報酬: 5000      運: 10    周期: 4"
 [Tabutask O15]
-"Oboorez is complaining that the bosses from the Buro take 
-all the best from the vangers' catch and leave 
-nothing for Ogorod. To cater to old Oboorez, bring him an eLeech. 
-Reward: 1000      Luck: 8     Cycles: 3"
-
+"オブーリーズは、ビューロの上役どもが
+ヴァンガーの戦利品の良いところだけを持って行き、
+オゴロドには何も残さないと嘆いている。
+老いたオブーリーズを喜ばせるため、
+イリーチを一匹持ってこい。
+報酬: 1000      運: 8     周期: 3"
 [Tabutask O16]
-"To save funds, the Buro is planning to change 
-the Commissars' mechos to raffa. To test this idea, the Buro 
-is seeking a vanger who can win a PeepShow on a raffa. 
-Reward: 7000      Luck: 11    Cycles: 3"
-
+"経費節減のため、ビューロは
+コミッサーのメホスをラッファに替えようとしている。
+その試験として、
+ラッファでピープショーに勝てるヴァンガーを探している。
+報酬: 7000      運: 11    周期: 3"
 [Tabutask O17]
-"Oboorez once knew tough vangers 
-who could easily dive into a whirlpool and pull out various 
-objects. Show your talent and dive into a whirlpool 
-to convince Oboorez that the Buro is still going strong. 
-Reward: 500       Luck: 1     Cycles: 0"
-
+"オブーリーズは昔、
+渦潮へ平然と飛び込み、様々な物を引き上げる
+荒くれヴァンガーたちを知っていた。
+その才覚を示すため渦潮へ飛び込み、
+ビューロが今なお健在であることを示せ。
+報酬: 500       運: 1     周期: 0"
 [Tabutask O18]
-"Because of a leaky roof in Ogorod, 
-the emergency supply of peeperettes has rotted away. It was there 
-in case of a siege by the Buro's enemies. Bring ten peeperettes 
-from the next PeepShow to make up for the loss. 
-Reward: 3000      Luck: 8   Cycles: 3"
-
+"オゴロドの屋根が雨漏りし、
+非常用のピーペレット備蓄が腐ってしまった。
+あれはビューロの敵に包囲されたときのための備えだった。
+次のピープショーからピーペレットを十個持ち帰り、
+失われた分を埋め合わせろ。
+報酬: 3000      運: 8     周期: 3"
 [Tabutask O19]
-"For peeperettes to sprout lushly, the shrubs must 
-be softened properly, and phlegma is best for that. 
-Bring eight jars of phlegma before the end of the cycle. 
-Reward: 1000      Luck: 6     Cycles: 0"
-
+"ピーペレットを豊かに芽吹かせるには、
+灌木をうまく柔らかくしてやらねばならず、
+そのためにはフレグマが最適だ。
+周期が終わる前にフレグマを八瓶持ってこい。
+報酬: 1000      運: 6     周期: 0"
 [Tabutask O20]
-"Oboorez has sent dozens of requests to increase 
-his cirt allowance because of his service time. However, the dang burocrats 
-don't give a rotten beeb about the old chap. Bring Boorawchick to Ogorod, where Oboorez 
-will talk to him about life. 
-Reward: 1000      Luck: 12    Cycles: 1"
-
+"オブーリーズは、勤続年数を理由にサート支給増額を求める願書を
+何十通も送ってきた。
+だがくそったれ官僚どもは、
+老いぼれのことなど腐ったビーブほどにも気にしていない。
+ブーラウチックをオゴロドへ連れてこい。
+オブーリーズが人生について語ってやる。
+報酬: 1000      運: 12    周期: 1"
 [Tabutask Z1]
-"Zeephra has suspicions that Zeekatrix is growing flies and sending 
-them here to distract ZeePa dwellers from righteous thoughts. 
-Repel eight swarms just in case. 
-Reward: 500       Luck: 3   Cycles: 0"
-
+"ジーフラは、ジーカトリクスがハエを育てて
+こちらへ送り込み、ジーパの住民を正しい思考から
+そらそうとしているのではと疑っている。
+念のため虫の群れを八つ追い払って。
+報酬: 500       運: 3     周期: 0"
 [Tabutask Z2]
-"Zeephra has started writing a new series of stories 
-about ProtoZeek under the title 'Zeek and Beebs.' 
-The new stories are likely to make B-Zoners repent of their wrongdoing. 
-Bring 25 fresh beebs for inspiration. 
-Reward: 800       Luck: 4     Cycles: 0"
-
+"ジーフラは「ジークとビーブ」という題で
+プロトジークの新しい物語を書き始めたの。
+新しいお話を読めば、Bゾーンの連中も
+きっと自分の過ちを悔いるはず。
+ひらめきのために新鮮なビーブを25匹持ってきて。
+報酬: 800       運: 4     周期: 0"
 [Tabutask Z3]
-"Zeephra wants to grow jablees from Glorx 
-to adapt them for scattering popons over B-Zone. 
-The effect of the propaganda will jump a hundredfold. 
-Bring eight peeperettes right away. 
-Reward: 1000      Luck: 8   Cycles: 3"
-
+"ジーフラはグロークスのジャブリーを育てて
+Bゾーンにポポンを撒くのに慣らしたいの。
+そうすれば布教の効果は百倍になるわ。
+すぐにピーペレットを八つ持ってきて。
+報酬: 1000      運: 8     周期: 3"
 [Tabutask Z4]
-"Zeephra has heard many times about the cruelty of vangers. 
-However, she doesn't believe these tales: 
-vangers are nice and funny, aren't they? 
-To deflate these rumors, you must go from ZeePa to B-Zone 
-without taking any damage. 
-Reward: 1000      Luck: 7     Cycles: 0"
-
+"ジーフラはヴァンガーの残酷さの話を何度も聞いたけれど、
+そんなの信じていないの。
+だってヴァンガーって、楽しくて可愛いものでしょう？
+この噂を打ち消すため、ジーパからBゾーンまで
+一度も傷つかずに行ってきて。
+報酬: 1000      運: 7     周期: 0"
 [Tabutask Z5]
-"Zeephra has been waiting for the real Softie for a long time. 
-She believes that they will come and bless her. 
-You must fly from ZeePa to B-Zone without landing 
-and see if any Softie have come to Necross yet. 
-Reward: 1500      Luck: 4     Cycles: 0"
-
+"ジーフラはずっと、本物のソフティーを待っているの。
+きっとやって来て、彼女を祝福してくれるはず。
+だからジーパからBゾーンまで一度も着地せずに飛んで、
+もうソフティーがネクロスに現れたか確かめてきて。
+報酬: 1500      運: 4     周期: 0"
 [Tabutask Z6]
-"One gross beeboorattish mug 
-has offended Zeephra. 
-He also said there never were and will never be any Softie. 
-This hurt the innermost feelings of the counselor. 
-Kill the offender. 
-Reward: 4000      Luck: 8     Cycles: 3"
-
+"ビーボラットじみた顔の下品なやつが一人、
+ジーフラを侮辱したの。
+そのうえ、ソフティーなんて昔からいなかったし、
+これからも現れないなどと言ったのよ。
+相談役のいちばん深いところを傷つけたんだから、
+その不届き者を始末して。
+報酬: 4000      運: 8     周期: 3"
 [Tabutask Z7]
-"Your playful Zeephra once decided to play a trick 
-on an obtuse vanger 
-and sent him to find a Departed Bios in the hideouts of Fostral. 
-He is on his way back now, all upset. Delay the blockhead 
-and stop him from breaking in here while Zeephra 
-comes up with another story to justify herself. 
-Reward: 3000      Luck: 8     Cycles: 0"
-
+"おちゃめなジーフラは一度、
+鈍いヴァンガーをからかおうとして、
+フォストラルの隠れ家で「去りしバイオス」を探せと送り出したの。
+いまそいつが怒って戻ってくるところよ。
+私が言い訳をもう一つ考えつくまで、
+その馬鹿を足止めして、ここへ入れないで。
+報酬: 3000      運: 8     周期: 0"
 [Tabutask Z8]
-"Zeephra is carrying out research on vanger psychology, 
-studying their reaction to external irritants. 
-Bombard any seven vangers 
-and describe their response. 
-Reward: 2500      Luck: 8     Cycles: 0"
-
+"ジーフラはヴァンガー心理の研究をしていて、
+外的刺激にどう反応するかを調べているの。
+好きなヴァンガーを七人砲撃して、
+どんな反応をしたか報告してちょうだい。
+報酬: 2500      運: 8     周期: 0"
 [Tabutask Z9]
-"Zeephra has heard from vangers that some weird sounds 
-have been coming from the Necross bogs lately. 
-The counselor has suspicions that there are some Softie sitting in the bogs 
-waiting for a chance to come out. 
-You are assigned to peek into two bogs and see what's going on in there. 
-Reward: 500       Luck: 2    Cycles: 0"
-
+"最近ネクロスの沼から妙な音が聞こえるって、
+ヴァンガーたちから聞いたの。
+相談役は、ソフティーが沼に座り込んで
+出てくる機会をうかがっているのではと疑っているわ。
+沼を二つ覗いて、何が起きているか見てきて。
+報酬: 500       運: 2     周期: 0"
 [Tabutask Z10]
-"The vile Zeekatrix likes to spread her toxick 
-around the worlds hoping that they'll inhale this gunk 
-and get sick. Only recently she sent out a courier. 
-Delay him on Necross 
-so that his cargo goes a bit sour and loses its toxicity. 
-Reward: 2000      Luck: 8     Cycles: 0"
-
+"意地悪なジーカトリクスは、トクシックを
+あちこちの世界にばらまいて、みんながそれを吸って
+病気になるのを期待しているの。
+つい最近も運び屋を送り出したばかり。
+ネクロスでそいつを足止めして、
+積荷を少し腐らせ、毒を抜いてしまいましょう。
+報酬: 2000      運: 8     周期: 0"
 [Tabutask Z11]
-"Zeephra has wings, though she can't fly, 
-while some vangers do it easily, 
-something that hurts the counselor deeply. 
-Fire at three flying vangers 
-to calm Zeephra down a little. 
-Reward: 1500      Luck: 7     Cycles: 1"
-
+"ジーフラには羽があるのに飛べなくて、
+それなのに一部のヴァンガーは平気で空を飛ぶ。
+それが相談役の胸をひどく痛めているの。
+飛んでいるヴァンガーを三人撃って、
+少しだけジーフラを落ち着かせてちょうだい。
+報酬: 1500      運: 7     周期: 1"
 [Tabutask Z12]
-"The vangers have forgotten good Zeephra completely 
-and haven't visited her for a long time. 
-B-Zone is drowning in apostasy 
-as there's no one to take ProtoZeek to them. 
-Bombard five vangers participating in the ritual races 
-on Fostral or Glorx to distract them from the vanities of the world. 
-Reward: 3000      Luck: 9    Cycles: 2"
-
+"ヴァンガーたちは善きジーフラのことをすっかり忘れ、
+もう長いこと訪ねても来ない。
+Bゾーンは背教に沈み、
+プロトジークを運ぶ者もいなくなってしまったわ。
+世の空しさから目をそらさせるため、
+フォストラルかグロークスの儀式レース参加者を五人砲撃して。
+報酬: 3000      運: 9     周期: 2"
 [Tabutask Z13]
-"To harden popons, the messages of ProtoZeek 
-to the apostates in B-Zone, Zeephra has developed a new recipe. 
-One of its components is toxick. Bring ten bottles before the end of the cycle. 
-Reward: 600       Luck: 6     Cycles: 0"
-
+"Bゾーンの背教者どもへ送るプロトジークの言葉――
+ポポンをより堅固にするために、
+ジーフラは新しい調合を考え出したの。
+材料の一つはトクシックよ。
+周期が終わる前に十瓶持ってきて。
+報酬: 600       運: 6     周期: 0"
 [Tabutask Z14]
-"Zeephra wants to know how much toxick is left in Zeekatrix's store. 
-Bring 20 bottles of the potion from Zeekatrix here 
-and maybe her treasure will run out. 
-Reward: 1000      Luck: 9   Cycles: 1"
-
+"ジーフラは、ジーカトリクスの倉に
+どれだけトクシックが残っているのか知りたいの。
+あいつのところから薬を20瓶ここへ持ってきて。
+そうすれば宝も底をつくかもしれないわ。
+報酬: 1000      運: 9     周期: 1"
 [Tabutask Z15]
-"Zeephra has heard that Leepky has a statuette. 
-It's surprising that the worms could create anything of value. 
-Bring Leepuringa here so Zeephra can take a look at this marvel. 
-Maybe we'll send it to B-Zone. 
-Reward: 2000      Luck: 13   Cycles: 5"
-
+"ジーフラは、リープキーが小像を持っていると聞いたわ。
+あの虫けらどもが価値あるものを作れるなんて驚きよ。
+リーピュリンガをここへ持ってきて。
+ジーフラがこの奇跡を自分の目で確かめるわ。
+もしかしたらBゾーンへ送るかもしれないもの。
+報酬: 2000      運: 13    周期: 5"
 [Tabutask Z16]
-"You are aware that we send ProtoZeek to B-Zone 
-to convert unbelievers and reassure doubters. 
-To convince them of our peaceful intentions, win a Zeeklope 
-with empty weapon slots. 
-Reward: 6000      Luck: 8   Cycles: 6"
-
+"私たちがプロトジークをBゾーンへ送り、
+不信者を改宗させ、迷う者を安心させているのは知っているでしょう。
+こちらに平和な意思があると信じさせるため、
+武器スロットを空のままでジークロープに勝ちなさい。
+報酬: 6000      運: 8     周期: 6"
 [Tabutask Z17]
-"Zeephra wants to get hold of a live Eleepod. 
-They are good at writing poems 
-and their talent can be used to convince the B-Zone dwellers 
-of the righteousness of our faith. 
-Zeephra intends to raise a little Eleepod herself, 
-so you have to bring her an eLeech. 
-Reward: 5000      Luck: 12   Cycles: 5"
-
+"ジーフラは生きたイリーポッドを手に入れたいの。
+あいつらは詩を書くのが得意で、
+その才能はBゾーンの住民を
+私たちの信仰の正しさへ導くのに使えるわ。
+ジーフラは小さなイリーポッドを自分で育てるつもりだから、
+イリーチを一匹連れてきて。
+報酬: 5000      運: 12    周期: 5"
 [Tabutask Z18]
-"Zeephra thinks that a live Beeboorat 
-is the best object to test popons on. 
-If this dumb creature shows even a slight reaction 
-to the story about ProtoZeek, one can be sure 
-that everyone in B-Zone will drown in tears. 
-For that reason you are assigned to secure a Beeboorat for Zeephra. She'll find a use for him. 
-Reward: 8000      Luck: 10    Cycles: 1"
-
+"ジーフラは、生きたビーボラットこそ
+ポポンの実験台に最適だと思っているの。
+この愚かな生き物がプロトジークのお話に
+ほんの少しでも反応を見せたなら、
+Bゾーンの皆が涙に沈むことは確実よ。
+だからジーフラのためにビーボラットを一匹確保して。
+使い道はちゃんと見つけるから。
+報酬: 8000      運: 10    周期: 1"
 [Tabutask Z19]
-"Zeephra has been waiting a long time for a vanger who could deliver Zeexen 
-from the oppression of Larvae and cirt. His appearance would make B-Zone settlers quiver 
-and join the cause of ZeePa. 
-Bring enough cirt 
-to complete the next cycle 
-and Zeephra will broadcast the joyful news across all the worlds. 
-Reward: 6000      Luck: 12    Cycles: 3"
-
+"ジーフラは長いあいだ、
+ジークセンをラーヴァとサートの圧政から救い出せる
+ヴァンガーを待っていたの。
+そんな存在が現れれば、Bゾーンの入植者たちは震え上がり、
+ジーパの大義に加わるでしょう。
+次の周期を乗り切れるだけのサートを持ってきて。
+そうしたらジーフラがその吉報を全世界に告げるわ。
+報酬: 6000      運: 12    周期: 3"
 [Tabutask Z20]
-"There's gossip afoot that the greedy Beeboorats got themselves two Larvae. 
-Another one and it will be a disaster: the Chain of Worlds will break 
-and the escaves will drown in bogs. To prevent this, 
-take a Beeboorat Larva to one of the cursed worlds and leave it there. 
-Reward: 30000     Luck: 15 Cycles: 5"
-
+"強欲なビーボラットどもが
+ラーヴァを二匹も抱え込んでいるという噂があるわ。
+もう一匹増えたら大惨事よ。
+ワールドの鎖は裂け、エスケイヴは沼に沈んでしまう。
+それを防ぐため、ビーボラットのラーヴァを一匹
+呪われた世界のどこかへ運び、置き去りにしてきて。
+報酬: 30000     運: 15    周期: 5"
 [Tabutask B1]
 "Zeekatrix has decided to cook toxick using a new recipe. 
 The potion should be strong and heady 
