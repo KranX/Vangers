@@ -555,19 +555,27 @@ int xtInitApplication(void) {
 
     if (text::language_uses_russian_assets()) {
         saObj->SetNumFiles(3);
-        //saObj -> SetName("resource\\video\\intro\\logo1.avi",0);
-        //saObj -> SetName("resource\\video\\intro\\logo2.avi",1);
-        //saObj -> SetName("resource\\video\\intro\\intro.avi",2);
+        saObj->SetName("resource/video/intro/logo1.avi", 0);
+        saObj->SetName("resource/video/intro/logo2.avi", 1);
+        saObj->SetName("resource/video/intro/intro.avi", 2);
 
         //	saObj -> SetFlag(0,AVI_RTO_HICOLOR);
 //	saObj -> SetFlag(1,AVI_RTO_HICOLOR);
 //	saObj -> SetFlag(2,AVI_RTO_HICOLOR);
     } else {
         saObj->SetNumFiles(4);
-        saObj->SetName("resource/video/intro/logo0.avi", 0);
-        saObj->SetName("resource/video/intro/logo1.avi", 1);
-        saObj->SetName("resource/video/intro/logo2.avi", 2);
-        saObj->SetName("resource/video/intro/intro.avi", 3);
+        saObj->SetName(text::localized_asset_path("resource/video/intro/logo0.avi",
+                                                  nullptr,
+                                                  "resource/video/intro/logo0_jpn.avi").c_str(), 0);
+        saObj->SetName(text::localized_asset_path("resource/video/intro/logo1.avi",
+                                                  nullptr,
+                                                  "resource/video/intro/logo1_jpn.avi").c_str(), 1);
+        saObj->SetName(text::localized_asset_path("resource/video/intro/logo2.avi",
+                                                  nullptr,
+                                                  "resource/video/intro/logo2_jpn.avi").c_str(), 2);
+        saObj->SetName(text::localized_asset_path("resource/video/intro/intro.avi",
+                                                  nullptr,
+                                                  "resource/video/intro/intro_jpn.avi").c_str(), 3);
     //znfo commented in zmod
     //	saObj -> SetFlag(0,AVI_RTO_HICOLOR);
     //	saObj -> SetFlag(1,AVI_RTO_HICOLOR);

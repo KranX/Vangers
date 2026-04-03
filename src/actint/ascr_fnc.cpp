@@ -7448,15 +7448,16 @@ void aciInitEndGame(int id)
 	}
 	switch(GameOverID){
 		case GAME_OVER_EXPLOSION:
-			if(actint_uses_russian_assets())
-				p -> SetName("img/img7.bmp");
-			else
-				p -> SetName("img/img0.bmp");
+			p -> SetName(actint_localized_asset_path("img/img0.bmp",
+			                                      "img/img7.bmp",
+			                                      "img/img0_jpn.bmp").c_str());
 
 			p -> SetFlag(0,IMG_RTO_CDTRACK_TIME);
 			break;
 		case GAME_OVER_INFERNAL_LOCKED:
-			p -> SetName("img/img1.bmp");
+			p -> SetName(actint_localized_asset_path("img/img1.bmp",
+			                                      nullptr,
+			                                      "img/img1_jpn.bmp").c_str());
 			ptr = dgD -> getInvText(DG_FINAL,3);
 			if(ptr){
 				aciImgText -> alloc(ptr,strlen(ptr));
@@ -7465,7 +7466,9 @@ void aciInitEndGame(int id)
 			p -> SetFlag(0,IMG_RTO_CDTRACK_TIME);
 			break;
 		case GAME_OVER_SPOBS_LOCKED:
-			p -> SetName("img/img2.bmp");
+			p -> SetName(actint_localized_asset_path("img/img2.bmp",
+			                                      nullptr,
+			                                      "img/img2_jpn.bmp").c_str());
 			ptr = dgD -> getInvText(DG_FINAL,4);
 			if(ptr){
 				aciImgText -> alloc(ptr,strlen(ptr));
@@ -7474,7 +7477,9 @@ void aciInitEndGame(int id)
 			p -> SetFlag(0,IMG_RTO_CDTRACK_TIME);
 			break;
 		case GAME_OVER_ALL_LOCKED:
-			p -> SetName("img/img3.bmp");
+			p -> SetName(actint_localized_asset_path("img/img3.bmp",
+			                                      nullptr,
+			                                      "img/img3_jpn.bmp").c_str());
 			ptr = dgD -> getInvText(DG_FINAL,5);
 			if(ptr){
 				aciImgText -> alloc(ptr,strlen(ptr));
@@ -7483,7 +7488,9 @@ void aciInitEndGame(int id)
 			p -> SetFlag(0,IMG_RTO_CDTRACK_TIME);
 			break;
 		case GAME_OVER_LUCKY:
-			p -> SetName("img/img4.bmp");
+			p -> SetName(actint_localized_asset_path("img/img4.bmp",
+			                                      nullptr,
+			                                      "img/img4_jpn.bmp").c_str());
 			ptr = dgD -> getInvText(DG_FINAL,2);
 			if(ptr){
 				aciImgText -> alloc(ptr,strlen(ptr));
@@ -7492,7 +7499,9 @@ void aciInitEndGame(int id)
 			p -> SetFlag(0,IMG_RTO_CDTRACK_TIME);
 			break;
 		case GAME_OVER_LAMPASSO:
-			p -> SetName("img/img5.bmp");
+			p -> SetName(actint_localized_asset_path("img/img5.bmp",
+			                                      nullptr,
+			                                      "img/img5_jpn.bmp").c_str());
 			ptr = dgD -> getInvText(DG_FINAL,1);
 			if(ptr){
 				aciImgText -> alloc(ptr,strlen(ptr));
@@ -7615,10 +7624,9 @@ void aciPrepareEndImage(void)
 
 	p = (ShowImageRTO*)xtGetRuntimeObject(RTO_SHOW_IMAGE_ID);
 	p -> SetNumFiles(1);
-	if(actint_uses_russian_assets())
-		p -> SetName("img/img8.bmp",0);
-	else
-		p -> SetName("img/img6.bmp",0);
+	p -> SetName(actint_localized_asset_path("img/img6.bmp",
+	                                      "img/img8.bmp",
+	                                      "img/img6_jpn.bmp").c_str(),0);
 	p -> SetFlag(0,IMG_RTO_CD_IMAGE);
 	p -> SetNext(XT_TERMINATE_ID);
 }
