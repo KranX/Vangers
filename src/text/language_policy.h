@@ -15,6 +15,7 @@ bool language_prefers_utf8_assets(Language language);
 bool language_prefers_japanese_fonts(Language language);
 const char* language_code(Language language);
 std::string localized_asset_path(const char* english_path,const char* russian_path = nullptr,const char* japanese_path = nullptr);
+std::string localized_asset_variant_path(const char* base_path,const char* japanese_suffix = "_jpn");
 
 inline LegacyEncoding runtime_legacy_encoding(void)
 {

@@ -945,13 +945,14 @@ void iAVIElement::load(void)
 {
 	if(!(flags & EL_DATA_LOADED)){
 		flags &= ~AVI_STOPPED;
+		const std::string localized_avi_name = text::localized_asset_variant_path(avi_name);
 
 		iResBuf -> init();
-		*iResBuf < iVideoPathDefault < avi_name;
+		*iResBuf < iVideoPathDefault < localized_avi_name.c_str();
 
 		if(!AVIopen(iResBuf -> address(),AVI_NOTIMER | AVI_NODRAW | AVI_LOOPING | AVI_NOPALETTE,0,&data)){
 			iResBuf -> init();
-			*iResBuf < iVideoPath < avi_name;
+			*iResBuf < iVideoPath < localized_avi_name.c_str();
 			if(!AVIopen(iResBuf -> address(),AVI_NOTIMER | AVI_NODRAW | AVI_LOOPING | AVI_NOPALETTE,0,&data)){
 				iResBuf -> init();
 				*iResBuf < iVideoPath < iEMPTY_AVI;
@@ -1425,7 +1426,8 @@ void iBitmapElement::load(void)
 			memset(fdata,0,sz);
 		}
 		else {
-			fh.open(fname,XS_IN);
+			const std::string localized_fname = text::localized_asset_variant_path(fname);
+			fh.open(localized_fname.c_str(),XS_IN);
 			fh > bSizeX > bSizeY;
 
 			sz = bSizeX * bSizeY;

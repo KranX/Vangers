@@ -605,7 +605,8 @@ void aciScreenResourceBMP::load(void)
 	int sz;
 
 	if(!fname) return;
-	fh.open(fname,XS_IN);
+	const std::string localized_fname = text::localized_asset_variant_path(fname);
+	fh.open(localized_fname.c_str(),XS_IN);
 
 	fh > sx > sy;
 
@@ -637,7 +638,8 @@ void aciScreenResourceBML::load(void)
 	int i,sz;
 
 	if(!fname) return;
-	fh.open(fname,XS_IN);
+	const std::string localized_fname = text::localized_asset_variant_path(fname);
+	fh.open(localized_fname.c_str(),XS_IN);
 
 	fh > sx > sy > num;
 
@@ -676,7 +678,8 @@ void aciScreenResourceBMO::load(void)
 
 	if(!(flags & ACS_BUILD_RESOURCE)){
 		if(!fname) return;
-		fh.open(fname,XS_IN);
+		const std::string localized_fname = text::localized_asset_variant_path(fname);
+		fh.open(localized_fname.c_str(),XS_IN);
 
 		fh > sx > sy > num > ox > oy;
 
@@ -725,7 +728,8 @@ void aciScreenResourceXBM::load(void)
 	XStream fh;
 	if(!fname) return;
 
-	fh.open(fname,XS_IN);
+	const std::string localized_fname = text::localized_asset_variant_path(fname);
+	fh.open(localized_fname.c_str(),XS_IN);
 	fh > PosX > PosY > bSizeX > bSizeY > SizeX > SizeY > ImageSize;
 	data = new unsigned char[ImageSize];
 	fh.read(data,ImageSize);
