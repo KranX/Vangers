@@ -118,11 +118,22 @@ extern unsigned char* actIntPal;
 
 extern int beebos;
 extern int uvsCurrentWorldUnable;
+extern aciFont** aScrFonts;
 extern aciFont** aScrFonts32;
 
-static text::LegacyEncoding actint_text32_encoding(void)
+static text::LegacyEncoding actint_text_encoding(void)
 {
 	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+static std::shared_ptr<text::TtfFontFace> actint_get_text_ttf_face(int font)
+{
+	if(font < 0 || font >= AS_NUM_FONTS)
+		return nullptr;
+	if(!aScrFonts || !aScrFonts[font])
+		return nullptr;
+
+	return text::default_ui_ttf_face(aScrFonts[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
 }
 
 static std::shared_ptr<text::TtfFontFace> actint_get_text32_ttf_face(int font)
@@ -133,6 +144,84 @@ static std::shared_ptr<text::TtfFontFace> actint_get_text32_ttf_face(int font)
 		return nullptr;
 
 	return text::default_ui_ttf_face(aScrFonts32[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
+}
+
+static uint32_t actint_decode_legacy_char(unsigned char ch)
+{
+	switch(actint_text_encoding()){
+		case text::LegacyEncoding::ASCII:
+			return ch < 0x80 ? ch : '?';
+		case text::LegacyEncoding::CP866:
+			return text::cp866_to_unicode(ch);
+		case text::LegacyEncoding::CP1251:
+			return text::cp1251_to_unicode(ch);
+	}
+
+	return '?';
+}
+
+static const text::GlyphBitmap* actint_get_renderable_glyph(text::TtfFontFace& face,unsigned char ch)
+{
+	const text::GlyphBitmap* glyph = face.get_glyph(actint_decode_legacy_char(ch));
+	if(glyph && glyph->provided)
+		return glyph;
+
+	glyph = face.get_glyph('?');
+	if(glyph && glyph->provided)
+		return glyph;
+
+	return nullptr;
+}
+
+static int actint_ttf_char_advance(text::TtfFontFace& face,unsigned char chr,int space)
+{
+	const text::GlyphBitmap* glyph = actint_get_renderable_glyph(face, chr);
+	if(!glyph)
+		return space;
+
+	return std::max(glyph->advance, 0) + space;
+}
+
+static inline bool actint_alt_digit_char(unsigned char chr)
+{
+	return (chr >= '0' && chr <= '9') || chr == '$';
+}
+
+static void actint_draw_ttf_glyph_screen(int x,int y,const text::GlyphBitmap& glyph,int primary,int secondary)
+{
+	if(glyph.alpha.empty())
+		return;
+
+	for(int gy = 0; gy < glyph.height; gy++){
+		for(int gx = 0; gx < glyph.width; gx++){
+			unsigned alpha = glyph.alpha[(size_t)gy * (size_t)glyph.pitch + (size_t)gx];
+			if(alpha >= 192)
+				XGR_SetPixel(x + gx, y + gy, primary);
+			else if(secondary && alpha >= 64)
+				XGR_SetPixel(x + gx, y + gy, secondary);
+			else if(!secondary && alpha >= 96)
+				XGR_SetPixel(x + gx, y + gy, primary);
+		}
+	}
+}
+
+static void actint_draw_ttf_glyph_buffer(int x,int y,int bsx,const text::GlyphBitmap& glyph,unsigned char* buf,int primary,int secondary)
+{
+	if(glyph.alpha.empty())
+		return;
+
+	for(int gy = 0; gy < glyph.height; gy++){
+		const int row_offs = (y + gy) * bsx;
+		for(int gx = 0; gx < glyph.width; gx++){
+			unsigned alpha = glyph.alpha[(size_t)gy * (size_t)glyph.pitch + (size_t)gx];
+			if(alpha >= 192)
+				buf[row_offs + x + gx] = primary;
+			else if(secondary && alpha >= 64)
+				buf[row_offs + x + gx] = secondary;
+			else if(!secondary && alpha >= 96)
+				buf[row_offs + x + gx] = primary;
+		}
+	}
 }
 
 extern int aCellSize;
@@ -831,6 +920,13 @@ void aPutNum(int x,int y,int font,int color,int str,int bsx,unsigned char* buf,i
 int aStrLen(unsigned char* str,int font,int space)
 {
 	int s,sz = strlen((char*)str),len = 0;
+	auto face = actint_get_text_ttf_face(font);
+	if(face){
+		for(s = 0; s < sz; s ++)
+			len += actint_ttf_char_advance(*face, str[s], space);
+		return len;
+	}
+
 	for(s = 0; s < sz; s ++)
 		len += aScrFonts[font] -> SizeX - (aScrFonts[font] -> LeftOffs[str[s]] + aScrFonts[font] -> RightOffs[str[s]]) + space;
 	return len;
@@ -850,11 +946,19 @@ int aStrLen32(void* str,int font,int space)
 
 int aStrHeight(int font)
 {
+	auto face = actint_get_text_ttf_face(font);
+	if(face)
+		return std::max(face->get_line_skip(), face->get_height());
+
 	return aScrFonts[font] -> SizeY;
 }
 
 int aStrHeight32(int font)
 {
+	auto face = actint_get_text32_ttf_face(font);
+	if(face)
+		return std::max(face->get_line_skip(), face->get_height());
+
 	return aScrFonts32[font] -> SizeY;
 }
 
@@ -921,6 +1025,30 @@ void aPutStr(int x,int y,int font,int color,unsigned char* str,int bsx,unsigned 
 
 	if(aScrFonts[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
+
+	auto face = actint_get_text_ttf_face(font);
+	if(face){
+		const int ascent = face->get_ascent();
+		X = x;
+		for(s = 0; s < sz; s ++){
+			const text::GlyphBitmap* glyph = actint_get_renderable_glyph(*face, str[s]);
+			if(glyph){
+				int primary = col1;
+				int secondary = col2;
+				if((col3 || col4) && actint_alt_digit_char(str[s])){
+					primary = col3 ? col3 : col1;
+					secondary = col4 ? col4 : col2;
+				}
+
+				actint_draw_ttf_glyph_buffer(X + glyph->minx, y + ascent - glyph->maxy,
+				                             bsx, *glyph, buf, primary, secondary);
+				X += std::max(glyph->advance, 0) + space;
+			}
+			else
+				X += space;
+		}
+		return;
+	}
 
 	unsigned char* p = aScrFonts[font] -> data;
 	xs = aScrFonts[font] -> SizeX;
@@ -1022,6 +1150,23 @@ void aOutStr(int x,int y,int font,int color,unsigned char* str,int space)
 	if(aScrFonts[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
 
+	auto face = actint_get_text_ttf_face(font);
+	if(face){
+		const int ascent = face->get_ascent();
+		X = x;
+		for(s = 0; s < sz; s ++){
+			const text::GlyphBitmap* glyph = actint_get_renderable_glyph(*face, str[s]);
+			if(glyph){
+				actint_draw_ttf_glyph_screen(X + glyph->minx, y + ascent - glyph->maxy,
+				                             *glyph, col1, col2);
+				X += std::max(glyph->advance, 0) + space;
+			}
+			else
+				X += space;
+		}
+		return;
+	}
+
 	unsigned char* p = aScrFonts[font] -> data;
 	xs = aScrFonts[font] -> SizeX;
 	ys = aScrFonts[font] -> SizeY;
@@ -1085,6 +1230,15 @@ void aPutChar(int x,int y,int font,int color,int str,int bsx,int bsy,unsigned ch
 
 	if(aScrFonts[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
+
+	auto face = actint_get_text_ttf_face(font);
+	if(face){
+		const text::GlyphBitmap* glyph = actint_get_renderable_glyph(*face, (unsigned char)str);
+		if(glyph)
+			actint_draw_ttf_glyph_buffer(x + glyph->minx, y + face->get_ascent() - glyph->maxy,
+			                             bsx, *glyph, buf, col1, col2);
+		return;
+	}
 
 	unsigned char* p = aScrFonts[font] -> data;
 	xs = aScrFonts[font] -> SizeX;
@@ -6495,7 +6649,7 @@ void aOutText32(int x,int y,int color,void* text,int font,int hspace,int vspace)
 	if(face){
 		text::draw_legacy_ttf_text_8bit(x, y, color,
 		                                text ? (const char*)text : "",
-		                                *face, actint_text32_encoding(),
+		                                *face, actint_text_encoding(),
 		                                hspace, vspace, false);
 		return;
 	}
@@ -6543,7 +6697,7 @@ void aOutText32clip(int x,int y,int color,void* text,int font,int hspace,int vsp
 	if(face){
 		text::draw_legacy_ttf_text_8bit(x, y, color,
 		                                text ? (const char*)text : "",
-		                                *face, actint_text32_encoding(),
+		                                *face, actint_text_encoding(),
 		                                hspace, vspace, true);
 		return;
 	}
@@ -6590,7 +6744,7 @@ int aTextWidth32(void* text,int font,int hspace)
 	auto face = actint_get_text32_ttf_face(font);
 	if(face)
 		return text::measure_legacy_ttf_text_width(text ? (const char*)text : "",
-		                                           *face, actint_text32_encoding(),
+		                                           *face, actint_text_encoding(),
 		                                           hspace);
 
 	xs = aScrFonts32[font] -> SizeX;
