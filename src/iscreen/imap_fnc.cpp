@@ -137,6 +137,27 @@ const text::GlyphBitmap* iscreen_get_renderable_glyph(text::TtfFontFace& face,un
 	return iscreen_get_renderable_codepoint(face, iscreen_decode_legacy_char(ch, encoding));
 }
 
+int iscreen_utf8_leading_trim_hfont(text::TtfFontFace& face,std::string_view text_value)
+{
+	size_t offset = 0;
+	uint32_t codepoint = 0;
+
+	while(text::utf8_next(text_value, offset, codepoint)){
+		if(codepoint == '\r')
+			continue;
+		if(codepoint == '\n')
+			break;
+
+		const text::GlyphBitmap* glyph = iscreen_get_renderable_codepoint(face, codepoint);
+		if(!glyph)
+			continue;
+
+		return std::max(glyph->minx, 0);
+	}
+
+	return 0;
+}
+
 int iscreen_hfont_floor_level(int legacy_peak_level,bool strong_relief)
 {
 	if(!strong_relief)
@@ -940,7 +961,7 @@ void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int sc
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0,sx = 0,sy = 0;
 	const int legacy_peak_level = iscreen_hfont_peak_level(p);
-	int _x = x;
+	int _x = x - iscreen_utf8_leading_trim_hfont(*face, text_value);
 	int _y = y;
 	size_t offset = 0;
 	uint32_t codepoint = 0;
@@ -1016,7 +1037,7 @@ void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,i
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0,sx = 0,sy = 0;
 	const int legacy_peak_level = iscreen_hfont_peak_level(p);
-	int _x = x;
+	int _x = x - iscreen_utf8_leading_trim_hfont(*face, text_value);
 	int _y = y;
 	size_t offset = 0;
 	uint32_t codepoint = 0;
@@ -1089,7 +1110,7 @@ void iPutStr2bufUtf8(int x,int y,int fnt,int bsx,int bsy,std::string_view text_v
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0,sx = 0,sy = 0;
 	const int legacy_peak_level = iscreen_hfont_peak_level(p);
-	int _x = x;
+	int _x = x - iscreen_utf8_leading_trim_hfont(*face, text_value);
 	int _y = y;
 	size_t offset = 0;
 	uint32_t codepoint = 0;
