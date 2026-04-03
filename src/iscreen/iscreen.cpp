@@ -52,97 +52,6 @@ extern XBuffer* iResBuf;
 extern const char* iVideoPath;
 extern const char* iVideoPathDefault;
 
-static bool iscreen_debug_text_layout_enabled(void)
-{
-	static int enabled = -1;
-	if(enabled == -1)
-		enabled = std::getenv("VANGERS_DEBUG_TEXT") ? 1 : 0;
-	return enabled != 0;
-}
-
-static bool iscreen_debug_text_full_enabled(void)
-{
-	static int enabled = -1;
-	if(enabled == -1){
-		const char* value = std::getenv("VANGERS_DEBUG_TEXT");
-		enabled = (value && !strcmp(value, "full")) ? 1 : 0;
-	}
-	return enabled != 0;
-}
-
-static bool iscreen_debug_text_title_enabled(void)
-{
-	static int enabled = -1;
-	if(enabled == -1){
-		const char* value = std::getenv("VANGERS_DEBUG_TEXT");
-		enabled = (value && (!strcmp(value, "title") || !strcmp(value, "full"))) ? 1 : 0;
-	}
-	return enabled != 0;
-}
-
-static bool iscreen_debug_text_object(const iScreenObject* obj)
-{
-	return iscreen_debug_text_layout_enabled() && obj && obj->ID_ptr == "Text00";
-}
-
-static void iscreen_debug_log_title_copy(const iStringElement* title_obj)
-{
-	static std::string last_text;
-	static int last_owner_sx = -1;
-	static int last_owner_sy = -1;
-	static int last_size_x = -1;
-	static int last_size_y = -1;
-	static int last_lx = -1;
-	static int last_ly = -1;
-	if(!iscreen_debug_text_title_enabled() || !title_obj)
-		return;
-
-	const std::string preview = title_obj->get_display_utf8_string();
-	const iScreenObject* owner = title_obj->owner ? (const iScreenObject*)title_obj->owner : nullptr;
-	const int owner_sx = owner ? owner->SizeX : 0;
-	const int owner_sy = owner ? owner->SizeY : 0;
-
-	if(preview == last_text && owner_sx == last_owner_sx && owner_sy == last_owner_sy &&
-	   title_obj->SizeX == last_size_x && title_obj->SizeY == last_size_y &&
-	   title_obj->lX == last_lx && title_obj->lY == last_ly)
-		return;
-
-	last_text = preview;
-	last_owner_sx = owner_sx;
-	last_owner_sy = owner_sy;
-	last_size_x = title_obj->SizeX;
-	last_size_y = title_obj->SizeY;
-	last_lx = title_obj->lX;
-	last_ly = title_obj->lY;
-
-	fprintf(stderr,
-	        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
-	        preview.c_str(), title_obj->SizeX, title_obj->SizeY, title_obj->lX, title_obj->lY,
-	        owner ? owner->ID_ptr.c_str() : "<null>", owner_sx, owner_sy);
-}
-
-static std::string iscreen_debug_text_preview(const iScreenElement* el)
-{
-	if(!el)
-		return {};
-
-	std::string text_value;
-	switch(el->type){
-		case I_STRING_ELEM:
-			text_value = ((const iStringElement*)el)->get_display_utf8_string();
-			break;
-		case I_S_STRING_ELEM:
-			text_value = ((const iS_StringElement*)el)->get_display_utf8_string();
-			break;
-		default:
-			return {};
-	}
-
-	if(text_value.size() > 96)
-		text_value.resize(96);
-	return text_value;
-}
-
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
 void aci_setMatrixBorder(void);
@@ -2252,13 +2161,6 @@ void iScreenObject::init(void)
 	}
 	if(PosY < 0 || PosY >= I_RES_Y - SizeY){
 		ErrH.Abort("Object PosY out of map...",XERR_USER,PosY,ID_ptr.c_str());
-	}
-
-	if(iscreen_debug_text_object(this) && iscreen_debug_text_full_enabled()){
-		fprintf(stderr,
-		        "[VANGERS_DEBUG_TEXT] init object=%s Pos=(%d,%d) Size=(%d,%d) align=(%d,%d) auto=%d shadow=%d elems=%d\n",
-		        ID_ptr.c_str(), PosX, PosY, SizeX, SizeY, align_x, align_y,
-		        (flags & OBJ_AUTO_SIZE) ? 1 : 0, ShadowSize, ElementList ? ElementList->Size : 0);
 	}
 
 }
@@ -4478,15 +4380,6 @@ void iTextData::copy(iScreenObject* p)
 {
 	int i;
 	iScreenElement* el;
-	int text_line_count = 0;
-	int min_lx = 0;
-	int max_rx = 0;
-	int min_width = 0;
-	int max_width = 0;
-	bool stats_initialized = false;
-	std::string first_preview;
-	std::string middle_preview;
-	std::string last_preview;
 
 	char* ptr;
 
@@ -4542,49 +4435,8 @@ void iTextData::copy(iScreenObject* p)
 			}
 			el -> init_align();
 
-			if(iscreen_debug_text_object(p) && (el->flags & EL_TEXT_STRING) &&
-			   (el->type == I_STRING_ELEM || el->type == I_S_STRING_ELEM)){
-				const std::string preview = iscreen_debug_text_preview(el);
-				if(!stats_initialized){
-					min_lx = el->lX;
-					max_rx = el->lX + el->SizeX;
-					min_width = max_width = el->SizeX;
-					first_preview = preview;
-					stats_initialized = true;
-				}
-				else {
-					if(el->lX < min_lx) min_lx = el->lX;
-					if(el->lX + el->SizeX > max_rx) max_rx = el->lX + el->SizeX;
-					if(el->SizeX < min_width) min_width = el->SizeX;
-					if(el->SizeX > max_width) max_width = el->SizeX;
-				}
-
-				if(text_line_count == (p->ElementList->Size / 2))
-					middle_preview = preview;
-				last_preview = preview;
-				text_line_count++;
-
-				if(iscreen_debug_text_full_enabled()){
-					fprintf(stderr,
-					        "[VANGERS_DEBUG_TEXT] copy object=%s line=%d type=%d size=(%d,%d) l=(%d,%d) align=(%d,%d) utf8=%d text=\"%s\"\n",
-					        p->ID_ptr.c_str(), i, el->type, el->SizeX, el->SizeY, el->lX, el->lY,
-					        el->align_x, el->align_y,
-					        (el->type == I_STRING_ELEM)
-					            ? (((iStringElement*)el)->Utf8Canonical ? 1 : 0)
-					            : (((iS_StringElement*)el)->Utf8Canonical ? 1 : 0),
-					        preview.c_str());
-				}
-			}
 		}
 		el = (iScreenElement*)el -> next;
-	}
-
-	if(iscreen_debug_text_object(p) && stats_initialized){
-		fprintf(stderr,
-		        "[VANGERS_DEBUG_TEXT] copy-summary object=%s Pos=(%d,%d) Size=(%d,%d) lines=%d text-span=[%d..%d] width=[%d..%d] first=\"%s\" middle=\"%s\" last=\"%s\"\n",
-		        p->ID_ptr.c_str(), p->PosX, p->PosY, p->SizeX, p->SizeY,
-		        text_line_count, min_lx, max_rx, min_width, max_width,
-		        first_preview.c_str(), middle_preview.c_str(), last_preview.c_str());
 	}
 }
 
@@ -4701,7 +4553,6 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
-							iscreen_debug_log_title_copy(title_obj);
 							request_text_object_layout((iScreenObject*)title_obj -> owner);
 						}
 						key_trap(next_code);
@@ -4717,7 +4568,6 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
-							iscreen_debug_log_title_copy(title_obj);
 							request_text_object_layout((iScreenObject*)title_obj -> owner);
 						}
 						key_trap(next_code);
@@ -4733,7 +4583,6 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
-			iscreen_debug_log_title_copy(title_obj);
 			request_text_object_layout((iScreenObject*)title_obj -> owner);
 		}
 		curText -> copy(obj);
@@ -4770,7 +4619,6 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 						title_obj -> set_text_auto(curText -> objName);
 						title_obj -> init_size();
 						title_obj -> init_align();
-						iscreen_debug_log_title_copy(title_obj);
 						request_text_object_layout((iScreenObject*)title_obj -> owner);
 					}
 					curText -> curLine = curText -> numLines - (curText -> numLines % obj -> ElementList -> Size) + obj -> ElementList -> Size * 2;
@@ -4799,7 +4647,6 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
-			iscreen_debug_log_title_copy(title_obj);
 			request_text_object_layout((iScreenObject*)title_obj -> owner);
 		}
 		curText -> flags &= ~iTEXT_EOF;

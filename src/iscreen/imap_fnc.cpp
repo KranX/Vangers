@@ -59,23 +59,6 @@ void map_rectangle(int x,int y,int sx,int sy,int col);
 namespace
 {
 
-bool iscreen_debug_title_metrics_enabled(void)
-{
-	static int enabled = -1;
-	if(enabled == -1){
-		const char* value = std::getenv("VANGERS_DEBUG_TEXT");
-		enabled = (value && (!strcmp(value, "title") || !strcmp(value, "full"))) ? 1 : 0;
-	}
-	return enabled != 0;
-}
-
-bool iscreen_debug_title_candidate(std::string_view text_value)
-{
-	return iscreen_debug_title_metrics_enabled() &&
-	       text_value.find('\n') == std::string_view::npos &&
-	       text::utf8_length(text_value) <= 8;
-}
-
 text::LegacyEncoding iscreen_hfont_encoding(void)
 {
 	return text::runtime_legacy_encoding();
@@ -149,62 +132,8 @@ const text::GlyphBitmap* iscreen_get_renderable_codepoint(text::TtfFontFace& fac
 	return nullptr;
 }
 
-const text::GlyphBitmap* iscreen_get_renderable_glyph(text::TtfFontFace& face,unsigned char ch,text::LegacyEncoding encoding)
-{
-	return iscreen_get_renderable_codepoint(face, iscreen_decode_legacy_char(ch, encoding));
-}
-
 void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,int legacy_height,int legacy_peak_level,int scale,bool strong_relief,
                           std::vector<unsigned char>& cell,int& cell_width,int& cell_height,int& left_offs,int& right_offs);
-
-void iscreen_debug_log_hfont_title_render_once(const char* entry,std::string_view text_value,text::TtfFontFace& face,
-                                               int legacy_height,int legacy_peak_level,int scale,int space,bool strong_relief)
-{
-	static bool logged_direct = false;
-	static bool logged_terr = false;
-	static bool logged_buf = false;
-
-	bool* logged = nullptr;
-	if(!strcmp(entry, "direct"))
-		logged = &logged_direct;
-	else if(!strcmp(entry, "terrain"))
-		logged = &logged_terr;
-	else if(!strcmp(entry, "buffer"))
-		logged = &logged_buf;
-
-	if(!logged || *logged || !iscreen_debug_title_candidate(text_value))
-		return;
-
-	*logged = true;
-
-	fprintf(stderr,
-	        "[VANGERS_DEBUG_TEXT] title-render entry=%s text=\"%s\" face=\"%s\" pt=%d height=%d ascent=%d descent=%d legacy_h=%d scale=%d space=%d relief=%d\n",
-	        entry, std::string(text_value).c_str(), face.get_file_name().c_str(), face.get_point_size(),
-	        face.get_height(), face.get_ascent(), face.get_descent(), legacy_height, scale, space, strong_relief ? 1 : 0);
-
-	size_t offset = 0;
-	uint32_t codepoint = 0;
-	int pen_x = 0;
-	std::vector<unsigned char> ttf_cell;
-	int left_offs = 0,right_offs = 0,sx = 0,sy = 0;
-
-	while(text::utf8_next(text_value, offset, codepoint)){
-		if(codepoint == '\r' || codepoint == '\n')
-			continue;
-
-		const text::GlyphBitmap* glyph = iscreen_get_renderable_codepoint(face, codepoint);
-		build_hfont_ttf_cell_codepoint(face, codepoint, legacy_height, legacy_peak_level, scale, strong_relief,
-		                               ttf_cell, sx, sy, left_offs, right_offs);
-		fprintf(stderr,
-		        "[VANGERS_DEBUG_TEXT] title-glyph cp=U+%04X glyph=(w=%d h=%d minx=%d maxx=%d adv=%d) cell=(sx=%d sy=%d left=%d right=%d) pen=%d draw=[%d..%d)\n",
-		        (unsigned)codepoint,
-		        glyph ? glyph->width : 0, glyph ? glyph->height : 0,
-		        glyph ? glyph->minx : 0, glyph ? glyph->maxx : 0, glyph ? glyph->advance : 0,
-		        sx, sy, left_offs, right_offs, pen_x, pen_x - left_offs, pen_x - left_offs + sx);
-		pen_x += sx - right_offs - left_offs + space;
-	}
-	fprintf(stderr, "[VANGERS_DEBUG_TEXT] title-pen-width entry=%s result=%d\n", entry, pen_x);
-}
 
 int iscreen_utf8_leading_trim_hfont(text::TtfFontFace& face,std::string_view text_value)
 {
@@ -273,15 +202,6 @@ int iscreen_measure_hfont_utf8_width(text::TtfFontFace& face,std::string_view te
 
 		build_hfont_ttf_cell_codepoint(face, codepoint, legacy_height, legacy_peak_level, 256, false,
 		                               ttf_cell, sx, sy, left_offs, right_offs);
-		if(iscreen_debug_title_metrics_enabled() && text_value == u8"前史"){
-			const text::GlyphBitmap* glyph = iscreen_get_renderable_codepoint(face, codepoint);
-			fprintf(stderr,
-			        "[VANGERS_DEBUG_TEXT] title-metric cp=U+%04X glyph=(w=%d h=%d minx=%d maxx=%d adv=%d) cell=(sx=%d sy=%d left=%d right=%d) pen=%d draw=[%d..%d)\n",
-			        (unsigned)codepoint,
-			        glyph ? glyph->width : 0, glyph ? glyph->height : 0,
-			        glyph ? glyph->minx : 0, glyph ? glyph->maxx : 0, glyph ? glyph->advance : 0,
-			        sx, sy, left_offs, right_offs, pen_x, pen_x - left_offs, pen_x - left_offs + sx);
-		}
 		const int draw_x = pen_x - left_offs;
 		if(!line_started){
 			line_min_x = draw_x;
@@ -298,12 +218,6 @@ int iscreen_measure_hfont_utf8_width(text::TtfFontFace& face,std::string_view te
 
 	if(line_started)
 		max_width = std::max(max_width, line_max_x - line_min_x);
-
-	if(iscreen_debug_title_metrics_enabled() && text_value == u8"前史"){
-		fprintf(stderr,
-		        "[VANGERS_DEBUG_TEXT] title-width text=\"%s\" result=%d span=[%d..%d]\n",
-		        std::string(text_value).c_str(), max_width, line_min_x, line_max_x);
-	}
 
 	return max_width;
 }
@@ -1100,8 +1014,6 @@ void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int sc
 	size_t offset = 0;
 	uint32_t codepoint = 0;
 
-	iscreen_debug_log_hfont_title_render_once("direct", text_value, *face, p->SizeY, legacy_peak_level, scale, space, strong_relief);
-
 	while(text::utf8_next(text_value, offset, codepoint)){
 		if(codepoint == '\r')
 			continue;
@@ -1178,8 +1090,6 @@ void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,i
 	size_t offset = 0;
 	uint32_t codepoint = 0;
 
-	iscreen_debug_log_hfont_title_render_once("terrain", text_value, *face, p->SizeY, legacy_peak_level, scale, space, strong_relief);
-
 	while(text::utf8_next(text_value, offset, codepoint)){
 		if(codepoint == '\r')
 			continue;
@@ -1252,8 +1162,6 @@ void iPutStr2bufUtf8(int x,int y,int fnt,int bsx,int bsy,std::string_view text_v
 	int _y = y;
 	size_t offset = 0;
 	uint32_t codepoint = 0;
-
-	iscreen_debug_log_hfont_title_render_once("buffer", text_value, *face, p->SizeY, legacy_peak_level, 256, space, false);
 
 	while(text::utf8_next(text_value, offset, codepoint)){
 		if(codepoint == '\r')
