@@ -8,6 +8,7 @@ void iSetOptionValue(int id,int val);
 char* iGetOptionValueCHR(int id);
 std::string iGetOptionValueUTF8String(int id);
 void iSetOptionValueCHR(int id, const char* p);
+void iSetOptionValueUTF8String(int id, const std::string& value);
 void iUpdateOptionValue(int id);
 
 enum iScreenOptionID

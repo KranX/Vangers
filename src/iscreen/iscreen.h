@@ -906,6 +906,8 @@ struct iScreenOption
 
 	char* GetValueCHR(void);
 	void SetValueCHR(const char* p);
+	std::string GetValueUTF8String(void);
+	void SetValueUTF8(const std::string& value);
 
 	void save(XStream* fh);
 	void load(XStream* fh);

@@ -1023,6 +1023,40 @@ char* iScreenOption::GetValueCHR(void)
 	return NULL;
 }
 
+std::string iScreenOption::GetValueUTF8String(void)
+{
+	if(!objPtr)
+		return "";
+
+	const text::LegacyEncoding encoding = (lang() == RUSSIAN)
+		? text::LegacyEncoding::CP866
+		: text::LegacyEncoding::ASCII;
+
+	switch(ObjectType){
+		case iSTRING:{
+			iStringElement* element = (iStringElement*)objPtr;
+			if(element -> Utf8Canonical)
+				return element -> utf8_string;
+			return text::legacy_to_utf8(element -> string ? element -> string : "", encoding);
+		}
+		case iS_STRING:{
+			iS_StringElement* element = (iS_StringElement*)objPtr;
+			if(element -> Utf8Canonical)
+				return element -> utf8_string;
+			return text::legacy_to_utf8(element -> string ? element -> string : "", encoding);
+		}
+		default:
+			break;
+	}
+
+	char* value = GetValueCHR();
+	if(!value)
+		return "";
+	if(text::is_valid_utf8(value))
+		return value;
+	return text::legacy_to_utf8(value, encoding);
+}
+
 void iScreenOption::update(void)
 {
 	int value_int;
@@ -1036,9 +1070,20 @@ void iScreenOption::update(void)
 				SetValueINT(value_int);
 				break;
 			case iSTRING:
+				if(((iStringElement*)objPtr)->Utf8Canonical)
+					SetValueUTF8(((iStringElement*)objPtr)->utf8_string);
+				else {
+					value_ptr = GetValueCHR();
+					SetValueCHR(value_ptr);
+				}
+				break;
 			case iS_STRING:
-				value_ptr = GetValueCHR();
-				SetValueCHR(value_ptr);
+				if(((iS_StringElement*)objPtr)->Utf8Canonical)
+					SetValueUTF8(((iS_StringElement*)objPtr)->utf8_string);
+				else {
+					value_ptr = GetValueCHR();
+					SetValueCHR(value_ptr);
+				}
 				break;
 		}
 	}
@@ -1101,6 +1146,61 @@ void iScreenOption::SetValueCHR(const char* p)
 	}
 }
 
+void iScreenOption::SetValueUTF8(const std::string& value)
+{
+	iScreenObject* obj;
+	iScreenOptionPtr* ptr = (iScreenOptionPtr*)pLinks -> fPtr;
+	if(objPtr){
+		switch(ObjectType){
+			case iSTRING:
+				if(ValueType == iOPTION_VALUE_CUR){
+					((iStringElement*)objPtr) -> set_utf8_string(value);
+					((iStringElement*)objPtr) -> init_size();
+					((iStringElement*)objPtr) -> init_align();
+					obj = (iScreenObject*)((iStringElement*)objPtr) -> owner;
+					obj -> flags |= OBJ_REINIT;
+					obj -> flags |= OBJ_MUST_REDRAW;
+				}
+				break;
+			case iS_STRING:
+				if(ValueType == iOPTION_VALUE_CUR){
+					((iS_StringElement*)objPtr) -> set_utf8_string(value);
+					((iS_StringElement*)objPtr) -> init_size();
+					((iS_StringElement*)objPtr) -> init_align();
+					obj = (iScreenObject*)((iS_StringElement*)objPtr) -> owner;
+					obj -> flags |= OBJ_REINIT;
+					obj -> flags |= OBJ_MUST_REDRAW;
+				}
+				break;
+		}
+	}
+	while(ptr){
+		switch(ptr -> optionPtr -> ObjectType){
+			case iSTRING:
+				if(ptr -> optionPtr -> ValueType == iOPTION_VALUE_CUR){
+					((iStringElement*)ptr -> optionPtr -> objPtr) -> set_utf8_string(value);
+					((iStringElement*)ptr -> optionPtr -> objPtr) -> init_size();
+					((iStringElement*)ptr -> optionPtr -> objPtr) -> init_align();
+					obj = (iScreenObject*)((iStringElement*)ptr -> optionPtr -> objPtr) -> owner;
+					obj -> flags |= OBJ_REINIT;
+					obj -> flags |= OBJ_MUST_REDRAW;
+				}
+				break;
+			case iS_STRING:
+				if(ptr -> optionPtr -> ValueType == iOPTION_VALUE_CUR){
+					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> set_utf8_string(value);
+					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> init_size();
+					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> init_align();
+					obj = (iScreenObject*)((iS_StringElement*)ptr -> optionPtr -> objPtr) -> owner;
+					obj -> flags |= OBJ_REINIT;
+					obj -> flags |= OBJ_MUST_REDRAW;
+				}
+				break;
+		}
+		ptr = (iScreenOptionPtr*)ptr -> next;
+	}
+}
+
 int iGetOptionValue(int id)
 {
 #ifdef ANDROID
@@ -1146,43 +1246,19 @@ std::string iGetOptionValueUTF8String(int id)
 	if(!(iScrOpt && iScrOpt[id]))
 		return "";
 
-	iScreenOption* option = iScrOpt[id];
-	if(!(option -> objPtr))
-		return "";
-
-	const text::LegacyEncoding encoding = (lang() == RUSSIAN)
-		? text::LegacyEncoding::CP866
-		: text::LegacyEncoding::ASCII;
-
-	switch(option -> ObjectType){
-		case iSTRING:{
-			iStringElement* element = (iStringElement*)option -> objPtr;
-			if(element -> Utf8Canonical)
-				return element -> utf8_string;
-			return text::legacy_to_utf8(element -> string ? element -> string : "", encoding);
-		}
-		case iS_STRING:{
-			iS_StringElement* element = (iS_StringElement*)option -> objPtr;
-			if(element -> Utf8Canonical)
-				return element -> utf8_string;
-			return text::legacy_to_utf8(element -> string ? element -> string : "", encoding);
-		}
-		default:
-			break;
-	}
-
-	char* value = option -> GetValueCHR();
-	if(!value)
-		return "";
-	if(text::is_valid_utf8(value))
-		return value;
-	return text::legacy_to_utf8(value, encoding);
+	return iScrOpt[id] -> GetValueUTF8String();
 }
 
 void iSetOptionValueCHR(int id, const char* p)
 {
 	if(iScrOpt && iScrOpt[id])
 		iScrOpt[id] -> SetValueCHR(p);
+}
+
+void iSetOptionValueUTF8String(int id, const std::string& value)
+{
+	if(iScrOpt && iScrOpt[id])
+		iScrOpt[id] -> SetValueUTF8(value);
 }
 
 void iPrepareControls(void)
@@ -1923,26 +1999,32 @@ void iSetMultiGameParameters(void)
 
 void iUpdateMultiGameName(void)
 {
-	char* name = NULL;
+	std::string name;
+	int has_name = 0;
 	switch(iCurMultiGame){
 		case 0:
-			name = iGetOptionValueCHR(iMPGAME0_ID);
+			name = iGetOptionValueUTF8String(iMPGAME0_ID);
+			has_name = 1;
 			break;
 		case 1:
-			name = iGetOptionValueCHR(iMPGAME1_ID);
+			name = iGetOptionValueUTF8String(iMPGAME1_ID);
+			has_name = 1;
 			break;
 		case 2:
-			name = iGetOptionValueCHR(iMPGAME2_ID);
+			name = iGetOptionValueUTF8String(iMPGAME2_ID);
+			has_name = 1;
 			break;
 		case 3:
-			name = iGetOptionValueCHR(iMPGAME3_ID);
+			name = iGetOptionValueUTF8String(iMPGAME3_ID);
+			has_name = 1;
 			break;
 		case 4:
-			name = iGetOptionValueCHR(iMPGAME4_ID);
+			name = iGetOptionValueUTF8String(iMPGAME4_ID);
+			has_name = 1;
 			break;
 	}
-	if(!name) return;
-	iSetOptionValueCHR(iCUR_MPGAME_ID,name);
+	if(!has_name) return;
+	iSetOptionValueUTF8String(iCUR_MPGAME_ID,name);
 }
 
 void iLockMultiGameParameters(void)

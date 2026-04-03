@@ -294,6 +294,25 @@ uchar* iscrPal;
 const char* CurServerName = "Server";
 const char* CurPlayerName = "Vanger";
 
+namespace
+{
+
+void iscreen_copy_option_utf8_to_buffer(int option_id, char* dest, size_t dest_size)
+{
+	if(!dest || !dest_size)
+		return;
+
+	std::string utf8_value = iGetOptionValueUTF8String(option_id);
+	size_t copy_size = utf8_value.size();
+	if(copy_size >= dest_size)
+		copy_size = dest_size - 1;
+
+	memcpy(dest, utf8_value.data(), copy_size);
+	dest[copy_size] = 0;
+}
+
+}
+
 int iMouseX = 0;
 int iMouseY = 0;
 int iMousePrevX = 0;
@@ -2339,17 +2358,22 @@ void iHandleExtEvent(int code,int data)
 			break;
 		case iEXT_CHECK_SERVER_CONFIG:
 //zmod fixed
-			if(is_current_server_configured(iGetOptionValueCHR(iSERVER_NAME),&my_server_data, &z_my_server_data)){
-				iUpdateOptionValue(iSERVER_NAME);
-				iSetMultiGameParameters();
-				iUpdateMultiGameName();
-				iEvLineID = 3;
+			{
+				char server_name_buf[256];
+				iscreen_copy_option_utf8_to_buffer(iSERVER_NAME, server_name_buf, sizeof(server_name_buf));
+				if(is_current_server_configured(server_name_buf,&my_server_data, &z_my_server_data)){
+					iSetOptionValueCHR(iSERVER_NAME, server_name_buf);
+					iSetMultiGameParameters();
+					iUpdateMultiGameName();
+					iEvLineID = 3;
+				}
+				else {
+					iSetOptionValueCHR(iSERVER_NAME, server_name_buf);
+					iUpdateMultiGameName();
+					iEvLineID = 4;
+				}
 			}
-			else {
-				iUpdateMultiGameName();
-				iEvLineID = 4;
-			}
-//#ifdef ZMOD_BETA
+//ifdef ZMOD_BETA
 			NetRnd.Init(my_server_data.InitialRND);
 //#endif
 			break;
@@ -2392,18 +2416,22 @@ void iHandleExtEvent(int code,int data)
 		case iEXT_SEND_CONFIG_DATA:
 			iGetMultiGameParameters();
 //zmod fixed
-			if(!send_server_data(iGetOptionValueCHR(iSERVER_NAME),&my_server_data,&z_my_server_data)){
-				iUpdateOptionValue(iSERVER_NAME);
-				iUpdateMultiGameName();
-				iSetMultiGameParameters();
-				iEvLineID = 3;
+			{
+				char server_name_buf[256];
+				iscreen_copy_option_utf8_to_buffer(iSERVER_NAME, server_name_buf, sizeof(server_name_buf));
+				if(!send_server_data(server_name_buf,&my_server_data,&z_my_server_data)){
+					iSetOptionValueCHR(iSERVER_NAME, server_name_buf);
+					iUpdateMultiGameName();
+					iSetMultiGameParameters();
+					iEvLineID = 3;
+				}
+				else {
+					iSetOptionValueCHR(iSERVER_NAME, server_name_buf);
+					iUpdateMultiGameName();
+					iEvLineID = 4;
+				}
 			}
-			else {
-				iUpdateOptionValue(iSERVER_NAME);
-				iUpdateMultiGameName();
-				iEvLineID = 4;
-			}
-//#ifdef ZMOD_BETA
+//ifdef ZMOD_BETA
 			NetRnd.Init(my_server_data.InitialRND);
 //#endif
 			break;

@@ -8,6 +8,7 @@
 #include "lang.h"
 #include "3d/3d_math.h"
 #include "sound/hsound.h"
+#include "actint/item_api.h"
 #include "text/legacy_codec.h"
 #include "text/unicode.h"
 #endif
@@ -1367,7 +1368,9 @@ void MessageDispatcher::send(const char* message,int mode,int parameter)
 	events_out.end_body();
 	events_out.send(1);
 
-	MessageElement* p = new MessageElement(CurPlayerName, message, my_player_body.color);
+	const std::string player_name_utf8 = aciGetPlayerNameUTF8();
+	const char* player_name = player_name_utf8.empty() ? CurPlayerName : player_name_utf8.c_str();
+	MessageElement* p = new MessageElement(player_name, message, my_player_body.color);
 	AddElement(p);
 	if(ListSize > max_number_of_messages){
 		RemoveElement(p = first());
