@@ -88,6 +88,36 @@ unsigned char unicode_to_cp866_lossy(uint32_t codepoint,unsigned char fallback)
 	}
 }
 
+unsigned char unicode_to_cp1251_lossy(uint32_t codepoint,unsigned char fallback)
+{
+	if(codepoint < 0x80)
+		return (unsigned char)codepoint;
+
+	if(codepoint >= 0x0410 && codepoint <= 0x044F)
+		return (unsigned char)(codepoint - 0x0410 + 0xC0);
+
+	switch(codepoint){
+		case 0x0401: return 0xA8;
+		case 0x0451: return 0xB8;
+		case 0x2116: return 0xB9;
+		default: return fallback;
+	}
+}
+
+unsigned char unicode_to_legacy_lossy(uint32_t codepoint,LegacyEncoding encoding,unsigned char fallback)
+{
+	switch(encoding){
+		case LegacyEncoding::ASCII:
+			return codepoint < 0x80 ? (unsigned char)codepoint : fallback;
+		case LegacyEncoding::CP866:
+			return unicode_to_cp866_lossy(codepoint, fallback);
+		case LegacyEncoding::CP1251:
+			return unicode_to_cp1251_lossy(codepoint, fallback);
+	}
+
+	return fallback;
+}
+
 std::string cp866_to_utf8(std::string_view text)
 {
 	return legacy_to_utf8_impl(text, LegacyEncoding::CP866);
@@ -103,16 +133,21 @@ std::string legacy_to_utf8(std::string_view text,LegacyEncoding encoding)
 	return legacy_to_utf8_impl(text, encoding);
 }
 
-std::string utf8_to_cp866_lossy(std::string_view text,unsigned char fallback)
+std::string utf8_to_legacy_lossy(std::string_view text,LegacyEncoding encoding,unsigned char fallback)
 {
 	std::string result;
 	size_t offset = 0;
 	uint32_t codepoint = 0;
 
 	while(utf8_next(text, offset, codepoint))
-		result.push_back((char)unicode_to_cp866_lossy(codepoint, fallback));
+		result.push_back((char)unicode_to_legacy_lossy(codepoint, encoding, fallback));
 
 	return result;
+}
+
+std::string utf8_to_cp866_lossy(std::string_view text,unsigned char fallback)
+{
+	return utf8_to_legacy_lossy(text, LegacyEncoding::CP866, fallback);
 }
 
 unsigned char utf8_first_codepoint_to_cp866_lossy(std::string_view text,unsigned char fallback)

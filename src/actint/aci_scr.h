@@ -2,6 +2,7 @@
 #define __ACI_SCR_H__
 
 #include <SDL.h>
+#include <string>
 
 // aciScreenResource::type values...
 #define ACS_NONE	0
@@ -278,7 +279,9 @@ struct aciScreenObject : XListElement
 struct aciScreenInputField : aciScreenObject
 {
 	char* string;
+	std::string utf8_string;
 	int MaxStrLen;
+	int CursorVisible;
 
 	int font;
 	int Color;
@@ -298,7 +301,11 @@ struct aciScreenInputField : aciScreenObject
 
 	virtual void Quant(void);
 
-	void set_string(char* p){ strcpy(string,p); }
+	void set_string(char* p);
+	void set_utf8_string(const std::string& value);
+	void sync_utf8_from_legacy(void);
+	void sync_legacy_from_utf8(void);
+	std::string get_display_utf8_string(void) const;
 
 	aciScreenInputField(void);
 	~aciScreenInputField(void);

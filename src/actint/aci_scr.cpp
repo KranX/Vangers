@@ -16,6 +16,7 @@
 #include "../iscreen/iscreen.h"
 #include "../text/legacy_codec.h"
 #include "../text/legacy_ttf_draw.h"
+#include "../text/unicode.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -47,6 +48,9 @@ int acsGetMaxFrame(int res_id);
 
 void aOutStr(int x,int y,int font,int color,unsigned char* str,int space = 1);
 int aStrLen(unsigned char* str,int font,int space = 1);
+std::shared_ptr<text::TtfFontFace> aGetTextTtfFace(int font);
+int aUtf8StrLen(std::string_view text_value,int font,int space);
+void aOutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int space);
 
 void acsOutStr(int x,int y,int fnt,int col,unsigned char* str,int space);
 void aciPutSpr32(int x,int y,int sx,int sy,void* buf,int col,int col_sz);
@@ -81,6 +85,7 @@ int acsInputFlag = 0;
 int acsFirstRedraw = 0;
 
 char* acsBackupStr = NULL;
+std::string acsBackupUtf8;
 aciScreenDispatcher* acsScrD;
 
 HFont** acsFntTable = NULL;
@@ -126,6 +131,11 @@ static inline text::LegacyEncoding acs_hfont_encoding(void)
 	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
 }
 
+static inline text::LegacyEncoding acs_text_encoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
 static std::shared_ptr<text::TtfFontFace> acs_get_hfont_ttf_face(int fnt)
 {
 	if(fnt < 0 || fnt >= ACS_MAX_FONT)
@@ -134,33 +144,6 @@ static std::shared_ptr<text::TtfFontFace> acs_get_hfont_ttf_face(int fnt)
 		return nullptr;
 
 	return text::default_ui_ttf_face(acsFntTable[fnt]->SizeY, TTF_HINTING_NORMAL, false, 0);
-}
-
-static bool acs_ttf_supports_char(int fnt,unsigned char chr)
-{
-	auto face = acs_get_hfont_ttf_face(fnt);
-	if(!face)
-		return false;
-
-	uint32_t codepoint = '?';
-	switch(acs_hfont_encoding()){
-		case text::LegacyEncoding::ASCII:
-			codepoint = chr < 0x80 ? chr : '?';
-			break;
-		case text::LegacyEncoding::CP866:
-			codepoint = text::cp866_to_unicode(chr);
-			break;
-		case text::LegacyEncoding::CP1251:
-			codepoint = text::cp1251_to_unicode(chr);
-			break;
-	}
-
-	const text::GlyphBitmap* glyph = face->get_glyph(codepoint);
-	if(glyph && glyph->provided)
-		return true;
-
-	glyph = face->get_glyph('?');
-	return glyph && glyph->provided;
 }
 
 static int acs_ttf_char_advance(text::TtfFontFace& face,unsigned char chr,int space)
@@ -260,6 +243,8 @@ aciScreenInputField::aciScreenInputField(void)
 
 	MaxStrLen = 0;
 	string = NULL;
+	utf8_string.clear();
+	CursorVisible = 0;
 	Color = 140;
 	Space = 1;
 
@@ -273,6 +258,100 @@ aciScreenInputField::aciScreenInputField(void)
 aciScreenInputField::~aciScreenInputField(void)
 {
 	if(string) delete[] string;
+}
+
+static text::LegacyEncoding acs_input_encoding(const aciScreenInputField* field)
+{
+	return (field && (field->flags & ACS_ISCREEN_FONT)) ? acs_hfont_encoding() : acs_text_encoding();
+}
+
+static std::shared_ptr<text::TtfFontFace> acs_input_ttf_face(const aciScreenInputField* field)
+{
+	if(!field)
+		return nullptr;
+	return (field->flags & ACS_ISCREEN_FONT) ? acs_get_hfont_ttf_face(field->font) : aGetTextTtfFace(field->font);
+}
+
+static int acs_input_utf8_width(const aciScreenInputField* field,std::string_view text)
+{
+	auto face = acs_input_ttf_face(field);
+	if(face){
+		if(field->flags & ACS_ISCREEN_FONT)
+			return text::measure_utf8_text_width(text, *face, field->Space);
+		return aUtf8StrLen(text, field->font, field->Space);
+	}
+
+	std::string legacy_text = text::utf8_to_legacy_lossy(text, acs_input_encoding(field), ' ');
+	return (field->flags & ACS_ISCREEN_FONT)
+	       ? acsStrLen(field->font, (unsigned char*)legacy_text.c_str(), field->Space)
+	       : aStrLen((unsigned char*)legacy_text.c_str(), field->font, field->Space);
+}
+
+static void acs_input_draw_utf8(const aciScreenInputField* field,int x,int y,int color,std::string_view text_value)
+{
+	auto face = acs_input_ttf_face(field);
+	if(face){
+		if(field->flags & ACS_ISCREEN_FONT){
+			int col = color & 0xFF;
+			int col_sz = (color >> 8) & 0xFF;
+			text::draw_utf8_text_8bit(x, y, col | (col_sz << 16), text_value, *face, field->Space, field->Space, false);
+			return;
+		}
+		aOutStrUtf8(x, y, field->font, color, text_value, field->Space);
+		return;
+	}
+
+	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, acs_input_encoding(field), ' ');
+	if(field->flags & ACS_ISCREEN_FONT)
+		acsOutStr(x, y, field->font, color, (unsigned char*)legacy_text.c_str(), field->Space);
+	else
+		aOutStr(x, y, field->font, color, (unsigned char*)legacy_text.c_str(), field->Space);
+}
+
+void aciScreenInputField::set_string(char* p)
+{
+	if(!string)
+		return;
+	strcpy(string, p ? p : "");
+	sync_utf8_from_legacy();
+}
+
+void aciScreenInputField::set_utf8_string(const std::string& value)
+{
+	utf8_string = value;
+	size_t max_len = MaxStrLen > 0 ? (size_t)MaxStrLen : 0;
+	if(max_len && text::utf8_length(utf8_string) > max_len)
+		utf8_string = text::utf8_substr_by_codepoints(utf8_string, 0, max_len);
+	sync_legacy_from_utf8();
+}
+
+void aciScreenInputField::sync_utf8_from_legacy(void)
+{
+	utf8_string = text::legacy_to_utf8(string ? string : "", acs_input_encoding(this));
+}
+
+void aciScreenInputField::sync_legacy_from_utf8(void)
+{
+	if(!string)
+		return;
+
+	std::string legacy = text::utf8_to_legacy_lossy(utf8_string, acs_input_encoding(this), ' ');
+	size_t copy_len = legacy.size();
+	if(MaxStrLen > 0)
+		copy_len = std::min(copy_len, (size_t)MaxStrLen);
+
+	memcpy(string, legacy.data(), copy_len);
+	string[copy_len] = 0;
+}
+
+std::string aciScreenInputField::get_display_utf8_string(void) const
+{
+	if(!(flags & ACS_ACTIVE_STRING))
+		return utf8_string;
+
+	std::string display = utf8_string;
+	display += CursorVisible ? "_" : " ";
+	return display;
 }
 
 aciScreen::aciScreen(void)
@@ -1228,7 +1307,7 @@ int aciScreenDispatcher::redraw(void)
 
 int aciScreenDispatcher::Quant(int flush_log)
 {
-	int sz,obj_flag = 0;
+	int obj_flag = 0;
 
 	EventQuant();
 	FlushEvents();
@@ -1241,11 +1320,7 @@ int aciScreenDispatcher::Quant(int flush_log)
 			acsInputFlag = 1;
 		}
 		if(acsInputFlag){
-			sz = strlen(activeInput -> string);
-			if(activeInput -> string[sz - 1] == '_')
-				activeInput -> string[sz - 1] = ' ';
-			else
-				activeInput -> string[sz - 1] = '_';
+			activeInput -> CursorVisible ^= 1;
 			activeInput -> flags |= ACS_REDRAW_OBJECT;
 			acsInputFlag = 0;
 		}
@@ -1584,21 +1659,13 @@ void aciScreenInputField::redraw(void)
 {
 	int sz;
 	aciScreenObject::redraw();
+	const std::string display_text = get_display_utf8_string();
 	if(!(flags & ACS_ALIGN_CENTER)){
-		if(flags & ACS_ISCREEN_FONT)
-			acsOutStr(PosX,PosY,font,Color,(unsigned char*)string,Space);
-		else
-			aOutStr(PosX,PosY,font,Color,(unsigned char*)string,Space);
+		acs_input_draw_utf8(this, PosX, PosY, Color, display_text);
 	}
 	else {
-		if(flags & ACS_ISCREEN_FONT){
-			sz = acsStrLen(font,(unsigned char*)string,Space);
-			acsOutStr(PosX + (SizeX - sz)/2,PosY,font,Color,(unsigned char*)string,Space);
-		}
-		else {
-			sz = aStrLen((unsigned char*)string,font,Space);
-			aOutStr(PosX + (SizeX - sz)/2,PosY,font,Color,(unsigned char*)string,Space);
-		}
+		sz = acs_input_utf8_width(this, display_text);
+		acs_input_draw_utf8(this, PosX + (SizeX - sz)/2, PosY, Color, display_text);
 	}
 }
 
@@ -1631,12 +1698,6 @@ void aciScreenScroller::init(void)
 
 void aciScreenDispatcher::InputQuant(SDL_Event *event)
 {
-	int sz;
-	unsigned char* ptr = NULL;
-	unsigned char chr;
-	HFont* hfnt = NULL;
-	auto ttf_face = std::shared_ptr<text::TtfFontFace>();
-
 	if(!activeInput) {
 		return;
 	}
@@ -1644,19 +1705,10 @@ void aciScreenDispatcher::InputQuant(SDL_Event *event)
 	if (!(event != nullptr && (event->type == SDL_KEYDOWN || event->type == SDL_TEXTINPUT)))
 		return;
 
-	ptr = (unsigned char*)activeInput -> string;
-	if(activeInput -> flags & ACS_ISCREEN_FONT) {
-		hfnt = acsFntTable[activeInput -> font];
-		ttf_face = acs_get_hfont_ttf_face(activeInput -> font);
-	}
+	auto ttf_face = acs_input_ttf_face(activeInput);
+	HFont* hfnt = (activeInput -> flags & ACS_ISCREEN_FONT) ? acsFntTable[activeInput -> font] : NULL;
 
 	if (event != nullptr && event->type == SDL_KEYDOWN) {
-		if (event->key.keysym.sym > 0 && event->key.keysym.sym < 127) {
-			chr = event->key.keysym.sym;
-		} else {
-			return;
-		}
-
 		switch(event->key.keysym.sym) {
 			case SDLK_RETURN:
 				DoneInput();
@@ -1666,26 +1718,53 @@ void aciScreenDispatcher::InputQuant(SDL_Event *event)
 				break;
 			case SDLK_LEFT:
 			case SDLK_BACKSPACE:
-				sz = strlen((char*)ptr);
-				if(sz > 1) {
-					ptr[sz - 1] = 0;
-					ptr[sz - 2] = '_';
+				if(text::utf8_length(activeInput -> utf8_string) > 0) {
+					activeInput -> utf8_string = text::utf8_substr_by_codepoints(activeInput -> utf8_string, 0,
+					                                                            text::utf8_length(activeInput -> utf8_string) - 1);
+					activeInput -> sync_legacy_from_utf8();
+					activeInput -> CursorVisible = 1;
 					activeInput->flags |= ACS_REDRAW_OBJECT;
 				}
 				break;
 		}
 	} else if (event != nullptr && event->type == SDL_TEXTINPUT) {
-		chr = text::utf8_first_codepoint_to_cp866_lossy(event->text.text,' ');
-		if(hfnt && !ttf_face &&
-		   chr < (hfnt->StartChar-hfnt->EndChar+1) && (hfnt->data[chr]->Flags & NULL_HCHAR) && chr != ' ')
-			return;
-		if(ttf_face && !acs_ttf_supports_char(activeInput -> font, chr) && chr != ' ')
-			return;
-		sz = strlen((char*)ptr);
-		if(sz <= activeInput->MaxStrLen) {
-			ptr[sz - 1] = chr;
-			ptr[sz] = '_';
-			ptr[sz + 1] = 0;
+		std::string appended_utf8;
+
+		if(ttf_face){
+			size_t offset = 0;
+			uint32_t codepoint = 0;
+			while(text::utf8_next(event->text.text, offset, codepoint)){
+				if(codepoint < 32)
+					codepoint = ' ';
+				if(codepoint != ' '){
+					const text::GlyphBitmap* glyph = ttf_face->get_glyph(codepoint);
+					if(!(glyph && glyph->provided))
+						continue;
+				}
+				text::append_utf8(appended_utf8, codepoint);
+			}
+		}
+		else {
+			std::string legacy_text = text::utf8_to_legacy_lossy(event->text.text, acs_input_encoding(activeInput), ' ');
+			std::string accepted_legacy;
+			for(unsigned char chr : legacy_text){
+				if(chr < 32)
+					chr = ' ';
+				if(hfnt &&
+				   chr < (hfnt->StartChar - hfnt->EndChar + 1) &&
+				   (hfnt->data[chr]->Flags & NULL_HCHAR) &&
+				   chr != ' ')
+					continue;
+				accepted_legacy.push_back((char)chr);
+			}
+			appended_utf8 = text::legacy_to_utf8(accepted_legacy, acs_input_encoding(activeInput));
+		}
+
+		if(!appended_utf8.empty() &&
+		   (int)(text::utf8_length(activeInput -> utf8_string) + text::utf8_length(appended_utf8)) <= activeInput->MaxStrLen) {
+			activeInput -> utf8_string += appended_utf8;
+			activeInput -> sync_legacy_from_utf8();
+			activeInput -> CursorVisible = 1;
 			activeInput -> flags |= ACS_REDRAW_OBJECT;
 		}
 	}
@@ -1694,21 +1773,21 @@ void aciScreenDispatcher::InputQuant(SDL_Event *event)
 
 void aciScreenDispatcher::PrepareInput(int obj_id)
 {
-	int sz;
 	aciScreenInputField* p = (aciScreenInputField*)GetObject(obj_id);
 	if(p){
 		if(activeInput){
 			activeInput -> StopEvents();
 			CancelInput();
 		}
-		sz = strlen(p -> string) + 1;
 		if(!acsBackupStr){
+			size_t sz = strlen(p -> string) + 1;
 			acsBackupStr = new char[sz];
 			strcpy(acsBackupStr,p -> string);
+			acsBackupUtf8 = p -> utf8_string;
 		}
-		p -> string[sz - 1] = '_';
-		p -> string[sz] = 0;
+		p -> CursorVisible = 1;
 		p -> flags |= ACS_ACTIVE_STRING;
+		p -> flags |= ACS_REDRAW_OBJECT;
 		activeInput = p;
 		SDL_StartTextInput();
 	}
@@ -1718,6 +1797,8 @@ void aciScreenInputField::alloc_str(void)
 {
 	string = new char[MaxStrLen + 2];
 	memset(string,0,MaxStrLen + 2);
+	utf8_string.clear();
+	CursorVisible = 0;
 }
 
 void acsLoadFonts(void)
@@ -1838,25 +1919,28 @@ int acsStrLen(int fnt,unsigned char* str,int space)
 
 void aciScreenDispatcher::CancelInput(void)
 {
-	strcpy(activeInput -> string,acsBackupStr);
+	activeInput -> utf8_string = acsBackupUtf8;
+	activeInput -> sync_legacy_from_utf8();
+	activeInput -> CursorVisible = 0;
 	activeInput -> flags |= ACS_REDRAW_OBJECT;
 	activeInput -> flags &= ~ACS_ACTIVE_STRING;
 	activeInput = NULL;
 	delete[] acsBackupStr;
 	acsBackupStr = NULL;
+	acsBackupUtf8.clear();
 	SDL_StopTextInput();
 }
 
 void aciScreenDispatcher::DoneInput(void)
 {
-	int sz;
-	sz = strlen(activeInput -> string);
-	activeInput -> string[sz - 1] = 0;
+	activeInput -> CursorVisible = 0;
+	activeInput -> sync_legacy_from_utf8();
 	activeInput -> flags |= ACS_REDRAW_OBJECT;
 	activeInput -> flags &= ~ACS_ACTIVE_STRING;
 	activeInput = NULL;
 	delete[] acsBackupStr;
 	acsBackupStr = NULL;
+	acsBackupUtf8.clear();
 	SDL_StopTextInput();
 }
 
@@ -1879,15 +1963,16 @@ void aciScreenInputField::init(void)
 {
 	Color = Color0;
 	flags &= ~ACS_ACTIVE_STRING;
+	CursorVisible = 0;
 }
 
 void aciScreenInputField::change_state(void)
 {
 	if(!strcmp(string,aciSTR_OFF)){
-		strcpy(string,aciSTR_ON);
+		set_string((char*)aciSTR_ON);
 	}
 	else {
-		strcpy(string,aciSTR_OFF);
+		set_string((char*)aciSTR_OFF);
 	}
 	flags |= ACS_REDRAW_OBJECT;
 }
@@ -1895,10 +1980,10 @@ void aciScreenInputField::change_state(void)
 void aciScreenInputField::set_state(int v)
 {
 	if(v){
-		strcpy(string,aciSTR_ON);
+		set_string((char*)aciSTR_ON);
 	}
 	else {
-		strcpy(string,aciSTR_OFF);
+		set_string((char*)aciSTR_OFF);
 	}
 	flags |= ACS_REDRAW_OBJECT;
 }

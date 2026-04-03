@@ -86,6 +86,22 @@ bool utf8_next(std::string_view text, size_t& offset, uint32_t& codepoint)
 	return true;
 }
 
+bool is_valid_utf8(std::string_view text)
+{
+	size_t offset = 0;
+	uint32_t codepoint = 0;
+
+	while(offset < text.size()){
+		size_t prev_offset = offset;
+		if(!utf8_next(text, offset, codepoint))
+			return false;
+		if(codepoint == 0xFFFD && offset == prev_offset + 1 && (unsigned char)text[prev_offset] >= 0x80)
+			return false;
+	}
+
+	return true;
+}
+
 size_t utf8_length(std::string_view text)
 {
 	size_t count = 0;

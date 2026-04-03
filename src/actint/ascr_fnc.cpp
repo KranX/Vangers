@@ -44,6 +44,7 @@
 
 #include "../sound/hsound.h"
 #include "../text/legacy_ttf_draw.h"
+#include "../text/unicode.h"
 
 #include "aci_evnt.h"
 #include "acsconst.h"
@@ -75,6 +76,7 @@ extern int aciCurDominance;
 extern int aciPrevDominance;
 
 extern char* acsBackupStr;
+extern std::string acsBackupUtf8;
 extern unsigned char* palbuf;
 
 extern int RAM16;
@@ -126,6 +128,18 @@ static text::LegacyEncoding actint_text_encoding(void)
 	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
 }
 
+static std::string actint_legacy_literal_to_utf8(const char* text_value)
+{
+	return text::legacy_to_utf8(text_value ? text_value : "", actint_text_encoding());
+}
+
+static std::string actint_trim_utf8_to_byte_limit(std::string text_value,size_t max_bytes)
+{
+	while(text_value.size() > max_bytes && !text_value.empty())
+		text_value = text::utf8_substr_by_codepoints(text_value, 0, text::utf8_length(text_value) - 1);
+	return text_value;
+}
+
 static std::shared_ptr<text::TtfFontFace> actint_get_text_ttf_face(int font)
 {
 	if(font < 0 || font >= AS_NUM_FONTS)
@@ -160,9 +174,9 @@ static uint32_t actint_decode_legacy_char(unsigned char ch)
 	return '?';
 }
 
-static const text::GlyphBitmap* actint_get_renderable_glyph(text::TtfFontFace& face,unsigned char ch)
+static const text::GlyphBitmap* actint_get_renderable_codepoint(text::TtfFontFace& face,uint32_t codepoint)
 {
-	const text::GlyphBitmap* glyph = face.get_glyph(actint_decode_legacy_char(ch));
+	const text::GlyphBitmap* glyph = face.get_glyph(codepoint);
 	if(glyph && glyph->provided)
 		return glyph;
 
@@ -171,6 +185,11 @@ static const text::GlyphBitmap* actint_get_renderable_glyph(text::TtfFontFace& f
 		return glyph;
 
 	return nullptr;
+}
+
+static const text::GlyphBitmap* actint_get_renderable_glyph(text::TtfFontFace& face,unsigned char ch)
+{
+	return actint_get_renderable_codepoint(face, actint_decode_legacy_char(ch));
 }
 
 static int actint_ttf_char_advance(text::TtfFontFace& face,unsigned char chr,int space)
@@ -203,6 +222,66 @@ static void actint_draw_ttf_glyph_screen(int x,int y,const text::GlyphBitmap& gl
 				XGR_SetPixel(x + gx, y + gy, primary);
 		}
 	}
+}
+
+std::shared_ptr<text::TtfFontFace> aGetTextTtfFace(int font)
+{
+	return actint_get_text_ttf_face(font);
+}
+
+int aUtf8StrLen(std::string_view text_value,int font,int space)
+{
+	auto face = actint_get_text_ttf_face(font);
+	if(face){
+		size_t offset = 0;
+		uint32_t codepoint = 0;
+		int len = 0;
+		while(text::utf8_next(text_value, offset, codepoint)){
+			const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(*face, codepoint);
+			len += std::max(glyph ? glyph->advance : 0, 0) + space;
+		}
+		return len;
+	}
+
+	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
+	return aStrLen((unsigned char*)legacy_text.c_str(), font, space);
+}
+
+void aOutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int space)
+{
+	auto face = actint_get_text_ttf_face(font);
+	if(face){
+		const int col1 = color & 0xFF;
+		const int col2 = (color >> 8) & 0xFF;
+		const int ascent = face->get_ascent();
+		int pen_x = x;
+		int pen_y = y;
+		size_t offset = 0;
+		uint32_t codepoint = 0;
+
+		while(text::utf8_next(text_value, offset, codepoint)){
+			if(codepoint == '\r')
+				continue;
+			if(codepoint == '\n'){
+				pen_x = x;
+				pen_y += std::max(face->get_line_skip(), face->get_height()) + space;
+				continue;
+			}
+
+			const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(*face, codepoint);
+			if(!glyph){
+				pen_x += space;
+				continue;
+			}
+
+			actint_draw_ttf_glyph_screen(pen_x + glyph->minx, pen_y + ascent - glyph->maxy, *glyph, col1, col2);
+			pen_x += std::max(glyph->advance, 0) + space;
+		}
+		return;
+	}
+
+	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
+	aOutStr(x, y, font, color, (unsigned char*)legacy_text.c_str(), space);
 }
 
 static void actint_draw_ttf_glyph_buffer(int x,int y,int bsx,const text::GlyphBitmap& glyph,unsigned char* buf,int primary,int secondary)
@@ -5388,12 +5467,18 @@ void acsPrepareSlotName(int id,int slot_num)
 		time_len = (len >> 16) & 0xFF;
 		len &= 0xFF;
 
-		memset(p -> string,0,p -> MaxStrLen + 2);
-		fh.read(p -> string,len);
+		std::string stored_name((size_t)len, '\0');
+		if(len)
+			fh.read(stored_name.data(),len);
 		fh.close();
+
+		if(text::is_valid_utf8(stored_name))
+			p -> set_utf8_string(stored_name);
+		else
+			p -> set_string((char*)stored_name.c_str());
 	}
 	else
-		strcpy(p -> string,aciSTR_EMPTY_SLOT);
+		p -> set_string((char*)aciSTR_EMPTY_SLOT);
 }
 
 void acsPrepareSlotNameInput(int id,int slot_num)
@@ -5405,11 +5490,13 @@ void acsPrepareSlotNameInput(int id,int slot_num)
 		acsScrD -> activeInput -> StopEvents();
 		acsScrD -> CancelInput();
 	}
-	if(!strcmp(p -> string,aciSTR_EMPTY_SLOT) || !strcmp(p -> string,aciSTR_UNNAMED_SAVE)){
+	if(p -> utf8_string == actint_legacy_literal_to_utf8(aciSTR_EMPTY_SLOT) ||
+	   p -> utf8_string == actint_legacy_literal_to_utf8(aciSTR_UNNAMED_SAVE)){
 		sz = strlen(p -> string) + 1;
 		acsBackupStr = new char[sz];
 		strcpy(acsBackupStr,p -> string);
-		memset(p -> string,0,p -> MaxStrLen + 2);
+		acsBackupUtf8 = p -> utf8_string;
+		p -> set_utf8_string("");
 	}
 	acsCurrentSlotID = id;
 	acsCurrentSlotNum = slot_num;
@@ -5450,30 +5537,32 @@ void acsSaveData(void)
 
 	const char* ptr = NULL;
 	aciScreenInputField* p;
+	std::string save_name_utf8;
 
 	if(aciAutoSaveFlag){
 		ptr = aciSTR_AUTOSAVE;
 		slot = ACS_NUM_SLOTS;
+		save_name_utf8 = actint_legacy_literal_to_utf8(ptr);
 	}
 	else {
 		if(acsScrD -> activeInput) acsScrD -> DoneInput();
 		p = (aciScreenInputField*)acsScrD -> GetObject(acsCurrentSlotID);
-		ptr = p -> string;
+		save_name_utf8 = p -> utf8_string;
 	}
 	createDirIfNotExist("savegame");
-	if(slot != -1 && ptr){
+	if(slot != -1){
 		XBuf < "savegame/save";
 		if(slot < 10) XBuf < "0";
 		XBuf <= slot < ".dat";
-		len = strlen(ptr);
-		for(i = 0; i < len; i ++){
-			if(ptr[i] && ptr[i] != ' ')
+		for(char ch : save_name_utf8){
+			if(ch && ch != ' ')
 				null_flag = 0;
 		}
 		if(null_flag){
-			ptr = aciSTR_UNNAMED_SAVE;
-			len = strlen(ptr);
+			save_name_utf8 = actint_legacy_literal_to_utf8(aciSTR_UNNAMED_SAVE);
 		}
+		save_name_utf8 = actint_trim_utf8_to_byte_limit(save_name_utf8, 0xFF);
+		len = save_name_utf8.size();
 
 		if(aScrDisp -> flags & AS_INV_MOVE_ITEM && aScrDisp -> curItem -> uvsDataPtr){
 			((uvsActInt*)aScrDisp -> curItem -> uvsDataPtr) -> pos_x = aScrDisp -> curItem -> MatrixX = -1;
@@ -5495,8 +5584,8 @@ void acsSaveData(void)
 		time_len = aciXConv -> tell();
 
 		fh < (len | (time_len << 16));
-		
-		fh.write(ptr,len);
+
+		fh.write(save_name_utf8.data(),len);
 		
 		fh.write(aciXConv -> address(),time_len);
 		

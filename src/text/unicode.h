@@ -10,6 +10,7 @@ namespace text
 {
 
 bool utf8_next(std::string_view text, size_t& offset, uint32_t& codepoint);
+bool is_valid_utf8(std::string_view text);
 size_t utf8_length(std::string_view text);
 size_t utf8_codepoint_to_byte_offset(std::string_view text, size_t codepoint_index);
 size_t utf8_byte_to_codepoint_index(std::string_view text, size_t byte_offset);
