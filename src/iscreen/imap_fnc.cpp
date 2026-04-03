@@ -1040,9 +1040,6 @@ int iStrLen(unsigned char* p,int f,int space)
 	unsigned char s;
 
 	HFont* fnt = HFntTable[f];
-	auto face = iscreen_get_hfont_ttf_face(f);
-	if(face)
-		return text::measure_legacy_ttf_text_width((const char*)(p ? p : (unsigned char*)""), *face, iscreen_hfont_encoding(), space);
 
 	for(i = 0; i < sz; i ++){
 		s = p[i];

@@ -203,15 +203,6 @@ static const text::GlyphBitmap* actint_get_renderable_glyph(text::TtfFontFace& f
 	return actint_get_renderable_codepoint(face, actint_decode_legacy_char(ch));
 }
 
-static int actint_ttf_char_advance(text::TtfFontFace& face,unsigned char chr,int space)
-{
-	const text::GlyphBitmap* glyph = actint_get_renderable_glyph(face, chr);
-	if(!glyph)
-		return space;
-
-	return std::max(glyph->advance, 0) + space;
-}
-
 static inline bool actint_alt_digit_char(unsigned char chr)
 {
 	return (chr >= '0' && chr <= '9') || chr == '$';
@@ -1121,12 +1112,6 @@ void aPutNum(int x,int y,int font,int color,int str,int bsx,unsigned char* buf,i
 int aStrLen(unsigned char* str,int font,int space)
 {
 	int s,sz = strlen((char*)str),len = 0;
-	auto face = actint_get_text_ttf_face(font);
-	if(face){
-		for(s = 0; s < sz; s ++)
-			len += actint_ttf_char_advance(*face, str[s], space);
-		return len;
-	}
 
 	for(s = 0; s < sz; s ++)
 		len += aScrFonts[font] -> SizeX - (aScrFonts[font] -> LeftOffs[str[s]] + aScrFonts[font] -> RightOffs[str[s]]) + space;
@@ -6963,12 +6948,6 @@ int aTextWidth32(void* text,int font,int hspace)
 	if(aScrFonts32[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
 
-	auto face = actint_get_text32_ttf_face(font);
-	if(face)
-		return text::measure_legacy_ttf_text_width(text ? (const char*)text : "",
-		                                           *face, actint_text_encoding(),
-		                                           hspace);
-
 	xs = aScrFonts32[font] -> SizeX;
 	ys = aScrFonts32[font] -> SizeY;
 
@@ -6999,11 +6978,6 @@ int aTextHeight32(void* text,int font,int vspace)
 
 	if(aScrFonts32[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
-
-	auto face = actint_get_text32_ttf_face(font);
-	if(face)
-		return text::measure_legacy_ttf_text_height(text ? (const char*)text : "",
-		                                            *face, vspace);
 
 	xs = aScrFonts32[font] -> SizeX;
 	ys = aScrFonts32[font] -> SizeY;
