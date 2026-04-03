@@ -838,26 +838,26 @@ void aInit(void)
 	if(!aIndArrowBML){
 		aIndArrowBML = new bmlObject;
 		aIndArrowBML -> flags |= BML_NO_OFFSETS;
-		if(actintLowResFlag)
-			aIndArrowBML -> load("resource/actint/640x480/ind_data/arrow.bml");
-		else
-			aIndArrowBML -> load("resource/actint/800x600/ind_data/arrow.bml");
+		const std::string arrow_path = text::localized_asset_variant_path(actintLowResFlag
+			? "resource/actint/640x480/ind_data/arrow.bml"
+			: "resource/actint/800x600/ind_data/arrow.bml");
+		aIndArrowBML -> load(arrow_path.c_str());
 	}
 	if(!aIndDataBML){
 		aIndDataBML = new bmlObject;
 		aIndDataBML -> flags |= BML_NO_OFFSETS;
-		if(actintLowResFlag)
-			aIndDataBML -> load("resource/actint/640x480/ind_data/data.bml");
-		else
-			aIndDataBML -> load("resource/actint/800x600/ind_data/data.bml");
+		const std::string data_path = text::localized_asset_variant_path(actintLowResFlag
+			? "resource/actint/640x480/ind_data/data.bml"
+			: "resource/actint/800x600/ind_data/data.bml");
+		aIndDataBML -> load(data_path.c_str());
 	}
 	if(!aIndBackBML){
 		aIndBackBML = new bmlObject;
 		aIndBackBML -> flags |= BMP_FLAG;
-		if(actintLowResFlag)
-			aIndBackBML -> load("resource/actint/640x480/ind_data/back.bmp");
-		else
-			aIndBackBML -> load("resource/actint/800x600/ind_data/back.bmp");
+		const std::string back_path = text::localized_asset_variant_path(actintLowResFlag
+			? "resource/actint/640x480/ind_data/back.bmp"
+			: "resource/actint/800x600/ind_data/back.bmp");
+		aIndBackBML -> load(back_path.c_str());
 	}
 	if(!aciSpeechSeq){
 		aciSpeechSeq = new aciML_EventSeq;
@@ -872,7 +872,8 @@ void aInit(void)
 
 	if(!aciTreeData){
 		aciTreeData = new aciCHTree;
-		aciTreeData -> load("resource/iscreen/ldata/l7/border.xbm");
+		const std::string tree_path = text::localized_asset_variant_path("resource/iscreen/ldata/l7/border.xbm");
+		aciTreeData -> load(tree_path.c_str());
 	}
 
 #ifdef _BINARY_SCRIPT_
@@ -2254,16 +2255,17 @@ void aci_LocationQuantFinit(void)
 void loadMouseFrames(void)
 {
 	XStream fh;
-	if(actintLowResFlag)
-		fh.open("resource/actint/640x480/mouse.bml",XS_IN);
-	else
-		fh.open("resource/actint/800x600/mouse.bml",XS_IN);
+	const std::string actint_mouse_path = text::localized_asset_variant_path(actintLowResFlag
+		? "resource/actint/640x480/mouse.bml"
+		: "resource/actint/800x600/mouse.bml");
+	fh.open(actint_mouse_path.c_str(),XS_IN);
 	fh > aMouseSizeX > aMouseSizeY > aMouseSize;
 	aMouseFrames = new unsigned char[aMouseSizeX * aMouseSizeY * aMouseSize];
 	fh.read(aMouseFrames,aMouseSizeX * aMouseSizeY * aMouseSize);
 	fh.close();
 
-	fh.open("resource/iscreen/mouse.bml");
+	const std::string iscreen_mouse_path = text::localized_asset_variant_path("resource/iscreen/mouse.bml");
+	fh.open(iscreen_mouse_path.c_str());
 	fh > iMouseSizeX > iMouseSizeY > iMouseSize;
 	iMouseFrames = new unsigned char[iMouseSizeX * iMouseSizeY * iMouseSize];
 	fh.read(iMouseFrames,iMouseSizeX * iMouseSizeY * iMouseSize);
