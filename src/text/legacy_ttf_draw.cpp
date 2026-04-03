@@ -7,13 +7,24 @@
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
+#include <sstream>
 #include <unordered_map>
 
 namespace text
 {
 
+struct RenderableGlyph
+{
+	TtfFontFace* face = nullptr;
+	const GlyphBitmap* glyph = nullptr;
+
+	bool valid(void) const { return face && glyph; }
+};
+
 namespace
 {
+
+using FaceVector = std::vector<std::shared_ptr<TtfFontFace>>;
 
 bool file_exists(const char* file_name)
 {
@@ -41,17 +52,138 @@ uint32_t decode_legacy_char(unsigned char ch,LegacyEncoding encoding)
 	return '?';
 }
 
-const GlyphBitmap* get_renderable_glyph(TtfFontFace& face,uint32_t codepoint)
+const std::vector<std::string>& builtin_default_ui_font_candidates(void)
+{
+	static const std::vector<std::string> candidates = {
+		"resource/fonts/ui.ttf",
+		"/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+		"/usr/share/fonts/opentype/noto/NotoSansCJKJP-Regular.otf",
+		"/usr/share/fonts/opentype/noto/NotoSansJP-Regular.otf",
+		"/usr/share/fonts/opentype/source-han-sans/SourceHanSansJP-Regular.otf",
+		"/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+		"/usr/share/fonts/truetype/noto/NotoSansJP-Regular.ttf",
+		"/usr/share/fonts/droid/DroidSansFallback.ttf",
+		"/usr/share/fonts/droid/DroidSansJapanese.ttf",
+		"/usr/share/fonts/ja-ipafonts/ipag.ttf",
+		"/usr/share/fonts/takao-fonts/TakaoPGothic.ttf",
+		"/usr/share/fonts/takao-fonts/TakaoGothic.ttf"
+	};
+
+	return candidates;
+}
+
+void append_font_candidates_from_env(std::vector<std::string>& out,const char* env_value)
+{
+	if(!env_value || !*env_value)
+		return;
+
+	std::stringstream stream(env_value);
+	std::string candidate;
+	while(std::getline(stream, candidate, ':')){
+		if(candidate.empty())
+			continue;
+		if(!file_exists(candidate.c_str()))
+			continue;
+		if(std::find(out.begin(), out.end(), candidate) == out.end())
+			out.push_back(candidate);
+	}
+}
+
+std::vector<std::string> default_ui_font_candidates(void)
+{
+	std::vector<std::string> candidates;
+
+	append_font_candidates_from_env(candidates, std::getenv("VANGERS_UI_TTF_FONT"));
+	for(const std::string& candidate : builtin_default_ui_font_candidates()){
+		if(file_exists(candidate.c_str()) &&
+		   std::find(candidates.begin(), candidates.end(), candidate) == candidates.end())
+			candidates.push_back(candidate);
+	}
+	append_font_candidates_from_env(candidates, std::getenv("VANGERS_UI_TTF_FALLBACK"));
+
+	return candidates;
+}
+
+std::shared_ptr<TtfFontFace> best_face_for_path(const std::string& font_path,int target_height,int hinting,bool kerning,int outline)
+{
+	std::shared_ptr<TtfFontFace> best_face;
+	int best_delta = INT_MAX;
+
+	for(int point_size = std::max(6, target_height - 6); point_size <= target_height + 6; point_size++){
+		auto face = TtfFontManager::instance().get_face(font_path, point_size, hinting, kerning, outline);
+		if(!face)
+			continue;
+
+		const int delta = abs(face->get_height() - target_height);
+		if(delta < best_delta){
+			best_delta = delta;
+			best_face = face;
+		}
+	}
+
+	return best_face;
+}
+
+const FaceVector& default_ui_fallback_registry(void)
+{
+	static const FaceVector empty_faces;
+	return empty_faces;
+}
+
+std::unordered_map<const TtfFontFace*, FaceVector>& default_ui_fallback_faces(void)
+{
+	static std::unordered_map<const TtfFontFace*, FaceVector> fallback_faces;
+	return fallback_faces;
+}
+
+const FaceVector& lookup_fallback_faces(TtfFontFace& face)
+{
+	auto& registry = default_ui_fallback_faces();
+	auto it = registry.find(&face);
+	if(it != registry.end())
+		return it->second;
+
+	return default_ui_fallback_registry();
+}
+
+RenderableGlyph find_face_glyph(TtfFontFace& face,uint32_t codepoint)
 {
 	const GlyphBitmap* glyph = face.get_glyph(codepoint);
 	if(glyph && glyph->provided)
+		return RenderableGlyph{ &face, glyph };
+
+	return {};
+}
+
+RenderableGlyph get_renderable_glyph(TtfFontFace& face,uint32_t codepoint)
+{
+	RenderableGlyph glyph = find_face_glyph(face, codepoint);
+	if(glyph.valid())
 		return glyph;
 
-	glyph = face.get_glyph('?');
-	if(glyph && glyph->provided)
+	for(const auto& fallback_face : lookup_fallback_faces(face)){
+		if(!fallback_face)
+			continue;
+
+		glyph = find_face_glyph(*fallback_face, codepoint);
+		if(glyph.valid())
+			return glyph;
+	}
+
+	glyph = find_face_glyph(face, '?');
+	if(glyph.valid())
 		return glyph;
 
-	return nullptr;
+	for(const auto& fallback_face : lookup_fallback_faces(face)){
+		if(!fallback_face)
+			continue;
+
+		glyph = find_face_glyph(*fallback_face, '?');
+		if(glyph.valid())
+			return glyph;
+	}
+
+	return {};
 }
 
 int text_line_height(const TtfFontFace& face)
@@ -116,11 +248,11 @@ int measure_text_width_impl(TtfFontFace& face,int hspace,DecodeFn&& decode_next)
 			continue;
 		}
 
-		const GlyphBitmap* glyph = get_renderable_glyph(face, codepoint);
-		if(glyph){
-			line_min_x = std::min(line_min_x, pen_x + glyph->minx);
-			line_max_x = std::max(line_max_x, pen_x + glyph->maxx);
-			pen_x += std::max(glyph->advance, 0) + hspace;
+		RenderableGlyph glyph = get_renderable_glyph(face, codepoint);
+		if(glyph.valid()){
+			line_min_x = std::min(line_min_x, pen_x + glyph.glyph->minx);
+			line_max_x = std::max(line_max_x, pen_x + glyph.glyph->maxx);
+			pen_x += std::max(glyph.glyph->advance, 0) + hspace;
 			line_end_x = pen_x;
 		}
 	}
@@ -152,7 +284,6 @@ void draw_text_8bit_impl(int x,int y,int color,TtfFontFace& face,int hspace,int 
 {
 	const int palette_shift = (color >> 16) & 0xFF;
 	const int palette_base = color & 0xFFFF;
-	const int ascent = face.get_ascent();
 	const int line_height = text_line_height(face);
 
 	int pen_x = x;
@@ -172,14 +303,14 @@ void draw_text_8bit_impl(int x,int y,int color,TtfFontFace& face,int hspace,int 
 			continue;
 		}
 
-		const GlyphBitmap* glyph = get_renderable_glyph(face, codepoint);
-		if(!glyph)
+		RenderableGlyph glyph = get_renderable_glyph(face, codepoint);
+		if(!glyph.valid())
 			continue;
 
-		const int draw_x = pen_x + glyph->minx;
-		const int draw_y = pen_y + ascent - glyph->maxy;
-		blit_alpha_mask_8bit(draw_x, draw_y, *glyph, palette_base, palette_shift, clip);
-		pen_x += std::max(glyph->advance, 0) + hspace;
+		const int draw_x = pen_x + glyph.glyph->minx;
+		const int draw_y = pen_y + glyph.face->get_ascent() - glyph.glyph->maxy;
+		blit_alpha_mask_8bit(draw_x, draw_y, *glyph.glyph, palette_base, palette_shift, clip);
+		pen_x += std::max(glyph.glyph->advance, 0) + hspace;
 	}
 }
 
@@ -197,30 +328,9 @@ std::string make_default_ui_face_key(const std::string& font_path,int target_hei
 const std::string& default_ui_ttf_font_path(void)
 {
 	static const std::string resolved = []() -> std::string {
-		const char* env_font = std::getenv("VANGERS_UI_TTF_FONT");
-		if(file_exists(env_font))
-			return env_font;
-
-		static const char* candidates[] = {
-			"resource/fonts/ui.ttf",
-			"/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-			"/usr/share/fonts/opentype/noto/NotoSansCJKJP-Regular.otf",
-			"/usr/share/fonts/opentype/noto/NotoSansJP-Regular.otf",
-			"/usr/share/fonts/opentype/source-han-sans/SourceHanSansJP-Regular.otf",
-			"/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
-			"/usr/share/fonts/truetype/noto/NotoSansJP-Regular.ttf",
-			"/usr/share/fonts/droid/DroidSansFallback.ttf",
-			"/usr/share/fonts/droid/DroidSansJapanese.ttf",
-			"/usr/share/fonts/ja-ipafonts/ipag.ttf",
-			"/usr/share/fonts/takao-fonts/TakaoPGothic.ttf",
-			"/usr/share/fonts/takao-fonts/TakaoGothic.ttf"
-		};
-
-		for(const char* candidate : candidates){
-			if(file_exists(candidate))
-				return candidate;
-		}
-
+		std::vector<std::string> candidates = default_ui_font_candidates();
+		if(!candidates.empty())
+			return candidates.front();
 		return std::string();
 	}();
 
@@ -244,23 +354,33 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,b
 			return cached_face;
 	}
 
-	std::shared_ptr<TtfFontFace> best_face;
-	int best_delta = INT_MAX;
+	std::shared_ptr<TtfFontFace> best_face = best_face_for_path(font_path, target_height, hinting, kerning, outline);
 
-	for(int point_size = std::max(6, target_height - 6); point_size <= target_height + 6; point_size++){
-		auto face = TtfFontManager::instance().get_face(font_path, point_size, hinting, kerning, outline);
-		if(!face)
-			continue;
+	if(best_face){
+		FaceVector fallbacks;
+		for(const std::string& candidate : default_ui_font_candidates()){
+			if(candidate == font_path)
+				continue;
 
-		const int delta = abs(face->get_height() - target_height);
-		if(delta < best_delta){
-			best_delta = delta;
-			best_face = face;
+			auto fallback_face = best_face_for_path(candidate, target_height, hinting, kerning, outline);
+			if(!fallback_face || fallback_face.get() == best_face.get())
+				continue;
+
+			bool duplicate = false;
+			for(const auto& existing_face : fallbacks){
+				if(existing_face && existing_face->get_file_name() == fallback_face->get_file_name() &&
+				   existing_face->get_point_size() == fallback_face->get_point_size()){
+					duplicate = true;
+					break;
+				}
+			}
+			if(!duplicate)
+				fallbacks.push_back(fallback_face);
 		}
-	}
 
-	if(best_face)
+		default_ui_fallback_faces()[best_face.get()] = std::move(fallbacks);
 		face_cache[key] = best_face;
+	}
 
 	return best_face;
 }
