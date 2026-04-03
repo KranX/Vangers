@@ -353,19 +353,7 @@ std::string iscreen_get_measure_utf8_string(const TStringElement* element)
 
 static bool iscreen_string_uses_utf8_metrics(const iStringElement* element)
 {
-	if(!element)
-		return false;
-
-	if(element->CursorVisible >= 0)
-		return true;
-
-	if(!element->Utf8Canonical)
-		return false;
-
-	if(text::language_prefers_utf8_assets())
-		return true;
-
-	return (element->flags & EL_TEXT_STRING) != 0;
+	return element && (((element->flags & EL_TEXT_STRING) != 0) || element->CursorVisible >= 0);
 }
 
 template<class TStringElement>
