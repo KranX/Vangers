@@ -50,6 +50,83 @@ static std::string iscreen_localized_asset_path(const char* english_path,const c
 	return text::localized_asset_path(english_path, russian_path, japanese_path);
 }
 
+static const char* iscreen_japanese_ui_string(const std::string& text)
+{
+	if(text == "LOAD GAME") return "ロードゲーム";
+	if(text == "MULTIPLAYER") return "マルチプレイ";
+	if(text == "NEW GAME") return "ニューゲーム";
+	if(text == "OPTIONS") return "オプション";
+	if(text == "CREDITS") return "クレジット";
+	if(text == "EXIT") return "終了";
+	if(text == "MAIN MENU") return "メインメニュー";
+	if(text == "Genesis") return "創世";
+	if(text == "Prehistory") return "前史";
+	if(text == "Present") return "現在";
+	return nullptr;
+}
+
+static void iscreen_apply_japanese_string_overrides(void)
+{
+	if(lang() != JAPANESE || !iScrDisp)
+		return;
+
+	iScreen* scr = (iScreen*)iScrDisp->last;
+	while(scr){
+		iScreenObject* obj = (iScreenObject*)scr->objList->last;
+		while(obj){
+			iScreenElement* el = (iScreenElement*)obj->ElementList->last;
+			while(el){
+				if(el->type == I_STRING_ELEM){
+					iStringElement* str = (iStringElement*)el;
+					const char* jp = iscreen_japanese_ui_string(str->get_display_utf8_string());
+					if(jp)
+						str->set_utf8_string(jp);
+				}
+				else if(el->type == I_S_STRING_ELEM){
+					iS_StringElement* str = (iS_StringElement*)el;
+					const char* jp = iscreen_japanese_ui_string(str->get_display_utf8_string());
+					if(jp)
+						str->set_utf8_string(jp);
+				}
+				el = (iScreenElement*)el->prev;
+			}
+			obj = (iScreenObject*)obj->prev;
+		}
+		scr = (iScreen*)scr->prev;
+	}
+}
+
+static void iscreen_apply_japanese_text_overrides(void)
+{
+	if(lang() != JAPANESE || !iScrDisp || !iScrDisp->texts)
+		return;
+
+	iTextData* text_data = (iTextData*)iScrDisp->texts->last;
+	while(text_data){
+		switch(text_data->ID){
+			case iTEXT_ENG1_ID:
+				if(text_data->fname) strcpy(text_data->fname, "resource/iscreen/text/jpn/prehist.txt");
+				if(text_data->objName) strcpy(text_data->objName, "前史");
+				break;
+			case iTEXT_ENG2_ID:
+				if(text_data->fname) strcpy(text_data->fname, "resource/iscreen/text/jpn/genesis.txt");
+				if(text_data->objName) strcpy(text_data->objName, "創世");
+				break;
+			case iTEXT_ENG3_ID:
+				if(text_data->fname) strcpy(text_data->fname, "resource/iscreen/text/jpn/present.txt");
+				if(text_data->objName) strcpy(text_data->objName, "現在");
+				break;
+		}
+		text_data = (iTextData*)text_data->prev;
+	}
+}
+
+static void iscreen_apply_japanese_overrides(void)
+{
+	iscreen_apply_japanese_string_overrides();
+	iscreen_apply_japanese_text_overrides();
+}
+
 
 #ifdef _NT
 #define EXTQUIT_VERIFY	if(XWaitWhileInactive()) ErrH.Exit();
@@ -529,6 +606,8 @@ void iInit(void)
 		ParseScript(script_src.c_str(), script_bin.c_str());
 	}
 #endif
+	if(!iFirstInit)
+		iscreen_apply_japanese_overrides();
 
 	if(iFirstInit){
 		iScrDisp -> flags &= ~SD_EXIT;
