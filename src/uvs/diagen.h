@@ -151,9 +151,10 @@ struct dgFile {
 	char* buf;
 	int len,index;
 	int external;
+	bool localized_utf8_single_language;
 
-		dgFile(char* fname,int _len = 0, bool verbose=false){ load(fname, _len, verbose); }
-		dgFile(void){ buf = NULL; len = index = -1; external = 0; }
+		dgFile(char* fname,int _len = 0, bool verbose=false){ localized_utf8_single_language = false; load(fname, _len, verbose); }
+		dgFile(void){ buf = NULL; len = index = -1; external = 0; localized_utf8_single_language = false; }
 		~dgFile(void){ if(!external && buf) delete buf; }
 
 	void load(char* fname,int _len, bool verbose=false);

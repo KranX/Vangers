@@ -171,6 +171,15 @@ void strip_utf8_bom_in_buffer(char* buffer,int& size)
 	size -= (int)bom_size;
 }
 
+bool is_localized_utf8_diagen_asset_path(const char* path)
+{
+	if(!text::language_prefers_utf8_assets() || !path || !*path)
+		return false;
+
+	std::string marker = std::string("_") + text::language_code(lang()) + ".";
+	return strstr(path, marker.c_str()) != nullptr;
+}
+
 }
 
 char* ConvertUTF8(const char* s,int back = 0)
@@ -627,6 +636,7 @@ void dgFile::load(char* fname,int _len, bool verbose)
 {
 	static char mss[] = "Wrong dgFile format";
 	int handle = 0;
+	localized_utf8_single_language = is_localized_utf8_diagen_asset_path(fname);
 	if(!_len){
 #ifdef DIAGEN_TEST
 		external = 0;
@@ -786,6 +796,9 @@ char* dgFile::getElement(int DualElements,int empty_available)
 	
 	
 	while(index < len && *p) p++, index++;
+
+	if(DualElements == DGF_DUAL && localized_utf8_single_language)
+		return ret;
 
 #if defined(DIAGEN_TEST) || !defined(SINGLE_LANGUAGE)
 	char* ret2 = ret; //(stalkerg) Для определения символа по которому можно понять язык
