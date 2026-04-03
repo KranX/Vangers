@@ -124,6 +124,7 @@ extern int beebos;
 extern int uvsCurrentWorldUnable;
 extern aciFont** aScrFonts;
 extern aciFont** aScrFonts32;
+extern const char* aciSTR_PRICE;
 
 static text::LegacyEncoding actint_text_encoding(void)
 {
@@ -173,6 +174,42 @@ static std::string actint_trim_utf8_to_byte_limit(std::string text_value,size_t 
 	while(text_value.size() > max_bytes && !text_value.empty())
 		text_value = text::utf8_substr_by_codepoints(text_value, 0, text::utf8_length(text_value) - 1);
 	return text_value;
+}
+
+static std::string actint_label_text_to_utf8(const char* text_value)
+{
+	return actint_display_text_to_utf8(text_value ? text_value : "");
+}
+
+static std::string actint_format_pattern_or_fallback(const char* format_key,std::string_view fallback,std::initializer_list<std::string_view> args)
+{
+	if(const std::string* localized = text::actint_locale_format(format_key))
+		return text::apply_locale_format(*localized, args);
+	return text::apply_locale_format(fallback, args);
+}
+
+static std::string actint_format_price_text(int price)
+{
+	return actint_format_pattern_or_fallback("price_amount", "{0}{1} $",
+		{ actint_label_text_to_utf8(aciSTR_PRICE), std::to_string(price) });
+}
+
+static std::string actint_format_label_value(const char* label,std::string_view value)
+{
+	return actint_format_pattern_or_fallback("label_value", "{0} {1}",
+		{ actint_label_text_to_utf8(label), value });
+}
+
+static std::string actint_format_label_value_unit(const char* label,std::string_view value,const char* unit)
+{
+	return actint_format_pattern_or_fallback("label_value_unit", "{0} {1} {2}",
+		{ actint_label_text_to_utf8(label), value, actint_label_text_to_utf8(unit) });
+}
+
+static std::string actint_format_two_label_values(const char* label0,std::string_view value0,const char* label1,std::string_view value1)
+{
+	return actint_format_pattern_or_fallback("two_label_values", "{0} {1} {2} {3}",
+		{ actint_label_text_to_utf8(label0), value0, actint_label_text_to_utf8(label1), value1 });
 }
 
 static std::shared_ptr<text::TtfFontFace> actint_get_text_ttf_face(int font)
@@ -4360,16 +4397,13 @@ char* aciGetPrice(iListElement* p,int mode,int sell_mode)
 	aciXConv -> init();
 
 	if(!u){
-		*aciXConv < aciSTR_UNDEFINED_PRICE;
+		const std::string undefined_price = actint_display_text_to_utf8(aciSTR_UNDEFINED_PRICE);
+		strcpy(aciXConv -> address(), undefined_price.c_str());
 		return aciXConv -> address();
 	}
 
-	*aciXConv < aciSTR_PRICE;
-
-	if(sell_mode)
-		*aciXConv <= u -> sell_price < " $";
-	else
-		*aciXConv <= u -> price < " $";
+	const std::string price_text = actint_format_price_text(sell_mode ? u -> sell_price : u -> price);
+	strcpy(aciXConv -> address(), price_text.c_str());
 	ptr = aciXConv -> address();
 
 	return ptr;
@@ -6612,77 +6646,44 @@ void aciInitPricePanel(InfoPanel* ip,iListElement* p,int mode,int sell_mode)
 	aciXConv -> init();
 	if(!uvsCurrentWorldUnable){
 		if(mode != MECHOS_MODE || !(m -> flags & IM_NOT_COMPLETE)){
-			if(sell_mode)
-				*aciXConv < aciSTR_PRICE <= u -> sell_price < " $";
-			else
-				*aciXConv < aciSTR_PRICE <= u -> price < " $";
-
-			ip -> add_item(aciXConv -> address(),-1,col);
+			const std::string price_text = actint_format_price_text(sell_mode ? u -> sell_price : u -> price);
+			ip -> add_item(price_text.c_str(),-1,col);
 		}
 	}
 
 	if(mode == MECHOS_MODE){
 		m = (invMatrix*)p;
 		if(!sell_mode && m -> pData){
-			aciXConv -> init();
-			*aciXConv < aciSTR_ENERGY_SHIELD < " " < (m -> pData + ACI_MECHOS_ENERGY_SHIELD * ACI_MAX_PRM_LEN);
-			ip -> add_item(aciXConv -> address(),-1,col);
-
-			aciXConv -> init();
-			*aciXConv < aciSTR_RESTORING_SPEED < " " < (m -> pData + ACI_MECHOS_RESTORING_SPEED * ACI_MAX_PRM_LEN);
-			ip -> add_item(aciXConv -> address(),-1,col);
-
-			aciXConv -> init();
-			*aciXConv < aciSTR_MECHANIC_ARMOR < " " < (m -> pData + ACI_MECHOS_MECHANIC_ARMOR * ACI_MAX_PRM_LEN) < " " < aciSTR_VELOCITY < " " < (m -> pData + ACI_MECHOS_VELOCITY * ACI_MAX_PRM_LEN);
-			ip -> add_item(aciXConv -> address(),-1,col);
-
-			aciXConv -> init();
-			*aciXConv < aciSTR_SPIRAL_CAPACITY < " " < (m -> pData + ACI_MECHOS_SPIRAL_CAPACITY * ACI_MAX_PRM_LEN);
-			ip -> add_item(aciXConv -> address(),-1,col);
-
-			aciXConv -> init();
-			*aciXConv < aciSTR_AIR_RESERVE < " " < (m -> pData + ACI_MECHOS_AIR_RESERVE * ACI_MAX_PRM_LEN);
-			ip -> add_item(aciXConv -> address(),-1,col);
+			ip -> add_item(actint_format_label_value(aciSTR_ENERGY_SHIELD, m -> pData + ACI_MECHOS_ENERGY_SHIELD * ACI_MAX_PRM_LEN).c_str(),-1,col);
+			ip -> add_item(actint_format_label_value(aciSTR_RESTORING_SPEED, m -> pData + ACI_MECHOS_RESTORING_SPEED * ACI_MAX_PRM_LEN).c_str(),-1,col);
+			ip -> add_item(actint_format_two_label_values(aciSTR_MECHANIC_ARMOR, m -> pData + ACI_MECHOS_MECHANIC_ARMOR * ACI_MAX_PRM_LEN,
+			                                             aciSTR_VELOCITY, m -> pData + ACI_MECHOS_VELOCITY * ACI_MAX_PRM_LEN).c_str(),-1,col);
+			ip -> add_item(actint_format_label_value(aciSTR_SPIRAL_CAPACITY, m -> pData + ACI_MECHOS_SPIRAL_CAPACITY * ACI_MAX_PRM_LEN).c_str(),-1,col);
+			ip -> add_item(actint_format_label_value(aciSTR_AIR_RESERVE, m -> pData + ACI_MECHOS_AIR_RESERVE * ACI_MAX_PRM_LEN).c_str(),-1,col);
 		}
 	}
 	else {
 		it = (invItem*)p;
 		if(it -> pData && !sell_mode){
 			if(it -> slotType == AS_WEAPON_SLOT || it -> slotType == AS_TWEAPON_SLOT){
-				aciXConv -> init();
-				*aciXConv < aciSTR_DAMAGE < " " < (it -> pData + ACI_WEAPON_DAMAGE * ACI_MAX_PRM_LEN);
-				ip -> add_item(aciXConv -> address(),-1,col);
+				ip -> add_item(actint_format_label_value(aciSTR_DAMAGE, it -> pData + ACI_WEAPON_DAMAGE * ACI_MAX_PRM_LEN).c_str(),-1,col);
 
 				if(!uvsCurrentWorldUnable){
-					aciXConv -> init();
-					*aciXConv < aciSTR_LOAD < " " < (it -> pData + ACI_WEAPON_LOAD * ACI_MAX_PRM_LEN);
-					ip -> add_item(aciXConv -> address(),-1,col);
+					ip -> add_item(actint_format_label_value(aciSTR_LOAD, it -> pData + ACI_WEAPON_LOAD * ACI_MAX_PRM_LEN).c_str(),-1,col);
 				}
 
-				aciXConv -> init();
-				*aciXConv < aciSTR_SHOTS < " " < (it -> pData + ACI_WEAPON_SHOTS_SEC * ACI_MAX_PRM_LEN);
-				ip -> add_item(aciXConv -> address(),-1,col);
-
-				aciXConv -> init();
-				*aciXConv < aciSTR_BURST < " " < (it -> pData + ACI_WEAPON_RANGE * ACI_MAX_PRM_LEN);
-				ip -> add_item(aciXConv -> address(),-1,col);
+				ip -> add_item(actint_format_label_value(aciSTR_SHOTS, it -> pData + ACI_WEAPON_SHOTS_SEC * ACI_MAX_PRM_LEN).c_str(),-1,col);
+				ip -> add_item(actint_format_label_value(aciSTR_BURST, it -> pData + ACI_WEAPON_RANGE * ACI_MAX_PRM_LEN).c_str(),-1,col);
 			}
 			else {
 				if(it -> slotType == AS_DEVICE_SLOT){
 					if(!uvsCurrentWorldUnable){
-						aciXConv -> init();
-						*aciXConv < aciSTR_WORKING_TIME < " " < (it -> pData + ACI_DEVICE_WORKING_TIME * ACI_MAX_PRM_LEN) < aciSTR_SECONDS;
-						ip -> add_item(aciXConv -> address(),-1,col);
+						ip -> add_item(actint_format_label_value_unit(aciSTR_WORKING_TIME, it -> pData + ACI_DEVICE_WORKING_TIME * ACI_MAX_PRM_LEN, aciSTR_SECONDS).c_str(),-1,col);
 					}
 				}
 				else {
-					aciXConv -> init();
-					*aciXConv < aciSTR_DAMAGE < " " < (it -> pData + ACI_AMMO_DAMAGE * ACI_MAX_PRM_LEN);
-					ip -> add_item(aciXConv -> address(),-1,col);
-
-					aciXConv -> init();
-					*aciXConv < aciSTR_IN_PACK < " " < (it -> pData + ACI_AMMO_IN_PACK * ACI_MAX_PRM_LEN);
-					ip -> add_item(aciXConv -> address(),-1,col);
+					ip -> add_item(actint_format_label_value(aciSTR_DAMAGE, it -> pData + ACI_AMMO_DAMAGE * ACI_MAX_PRM_LEN).c_str(),-1,col);
+					ip -> add_item(actint_format_label_value(aciSTR_IN_PACK, it -> pData + ACI_AMMO_IN_PACK * ACI_MAX_PRM_LEN).c_str(),-1,col);
 				}
 			}
 		}

@@ -17,6 +17,7 @@ struct LocaleCatalog
 {
 	std::unordered_map<std::string,std::string> strings;
 	std::unordered_map<std::string,std::string> text_paths;
+	std::unordered_map<std::string,std::string> formats;
 };
 
 LocaleCatalog g_iscreen_catalog;
@@ -50,7 +51,8 @@ void load_catalog_file(const std::string& path,LocaleCatalog& catalog)
 	{
 		None,
 		Strings,
-		TextPaths
+		TextPaths,
+		Formats
 	};
 
 	Section section = Section::None;
@@ -82,6 +84,11 @@ void load_catalog_file(const std::string& path,LocaleCatalog& catalog)
 			continue;
 		}
 
+		if(trimmed == "[formats]"){
+			section = Section::Formats;
+			continue;
+		}
+
 		const size_t eq = trimmed.find('=');
 		if(eq == std::string::npos)
 			continue;
@@ -97,6 +104,9 @@ void load_catalog_file(const std::string& path,LocaleCatalog& catalog)
 				break;
 			case Section::TextPaths:
 				catalog.text_paths[key] = value;
+				break;
+			case Section::Formats:
+				catalog.formats[key] = value;
 				break;
 			default:
 				break;
@@ -172,6 +182,41 @@ const std::string* actint_locale_string(std::string_view source_text)
 {
 	ensure_actint_catalog_loaded();
 	return lookup_catalog_value(g_actint_catalog.strings, source_text);
+}
+
+const std::string* actint_locale_format(std::string_view format_key)
+{
+	ensure_actint_catalog_loaded();
+	return lookup_catalog_value(g_actint_catalog.formats, format_key);
+}
+
+std::string apply_locale_format(std::string_view pattern,std::initializer_list<std::string_view> args)
+{
+	std::string result;
+	result.reserve(pattern.size() + args.size() * 8);
+
+	for(size_t i = 0; i < pattern.size(); i++){
+		if(pattern[i] == '{' && i + 2 < pattern.size() && pattern[i + 2] == '}'){
+			const char placeholder = pattern[i + 1];
+			if(placeholder >= '0' && placeholder <= '9'){
+				const size_t index = (size_t)(placeholder - '0');
+				size_t arg_index = 0;
+				for(std::string_view arg : args){
+					if(arg_index == index){
+						result.append(arg.data(), arg.size());
+						break;
+					}
+					arg_index++;
+				}
+				i += 2;
+				continue;
+			}
+		}
+
+		result.push_back(pattern[i]);
+	}
+
+	return result;
 }
 
 }

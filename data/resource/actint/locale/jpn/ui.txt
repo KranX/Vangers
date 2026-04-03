@@ -58,3 +58,9 @@ Beebsospy = ビーブソスパイ
 Firework = 花火
 Shake-Up = シェイクアップ
 Blackada = ブラックアダ
+
+[formats]
+price_amount = 価格：{1} $
+label_value = {0} {1}
+label_value_unit = {0} {1}{2}
+two_label_values = {0} {1}  {2} {3}
