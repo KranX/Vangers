@@ -237,7 +237,7 @@ static std::shared_ptr<text::TtfFontFace> iChatGetTtfFace(int font)
 	if(!aScrFonts32 || !aScrFonts32[font])
 		return nullptr;
 
-	return text::default_ui_ttf_face(aScrFonts32[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
+	return text::default_ui_text32_ttf_face(aScrFonts32[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
 }
 
 static int iChatUtf8Length(const std::string& text)
@@ -277,7 +277,7 @@ static int iChatUtf8TextWidth(const std::string& text,int font,int hspace)
 {
 	auto face = iChatGetTtfFace(font);
 	if(face)
-		return text::measure_utf8_text_width(text, *face, hspace);
+		return text::measure_utf8_text_width(text, *face, hspace + text::default_ui_text32_extra_hspace());
 
 	std::string legacy_text = text::utf8_to_cp866_lossy(text,' ');
 	return iChatTextWidth(legacy_text.c_str(), font, hspace);
@@ -297,7 +297,7 @@ static void iChatUtf8OutText(int x,int y,int color,const std::string& text,int f
 {
 	auto face = iChatGetTtfFace(font);
 	if(face){
-		text::draw_utf8_text_8bit(x, y, color, text, *face, hspace, vspace, false);
+		text::draw_utf8_text_8bit(x, y, color, text, *face, hspace + text::default_ui_text32_extra_hspace(), vspace, false);
 		return;
 	}
 

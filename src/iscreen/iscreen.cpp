@@ -307,7 +307,7 @@ std::shared_ptr<text::TtfFontFace> iscreen_input_ttf_face(iScreenElement* elemen
 		case I_S_STRING_ELEM:
 			if(!aScrFonts32 || !aScrFonts32[((iS_StringElement*)element)->font])
 				return nullptr;
-			return text::default_ui_ttf_face(aScrFonts32[((iS_StringElement*)element)->font]->SizeY, TTF_HINTING_NORMAL, false, 0);
+			return text::default_ui_text32_ttf_face(aScrFonts32[((iS_StringElement*)element)->font]->SizeY, TTF_HINTING_NORMAL, false, 0);
 		default:
 			return nullptr;
 	}

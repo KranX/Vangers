@@ -68,14 +68,14 @@ const std::vector<std::string>& builtin_default_ui_font_candidates(void)
 const std::vector<std::string>& builtin_japanese_ui_font_candidates(void)
 {
 	static const std::vector<std::string> candidates = {
+		"/usr/share/fonts/ja-ipafonts/ipag.ttf",
+		"/usr/share/fonts/takao-fonts/TakaoPGothic.ttf",
+		"/usr/share/fonts/takao-fonts/TakaoGothic.ttf",
+		"/usr/share/fonts/droid/DroidSansJapanese.ttf",
 		"/usr/share/fonts/opentype/noto/NotoSansCJKJP-Regular.otf",
 		"/usr/share/fonts/opentype/noto/NotoSansJP-Regular.otf",
 		"/usr/share/fonts/opentype/source-han-sans/SourceHanSansJP-Regular.otf",
-		"/usr/share/fonts/truetype/noto/NotoSansJP-Regular.ttf",
-		"/usr/share/fonts/droid/DroidSansJapanese.ttf",
-		"/usr/share/fonts/ja-ipafonts/ipag.ttf",
-		"/usr/share/fonts/takao-fonts/TakaoPGothic.ttf",
-		"/usr/share/fonts/takao-fonts/TakaoGothic.ttf"
+		"/usr/share/fonts/truetype/noto/NotoSansJP-Regular.ttf"
 	};
 
 	return candidates;
@@ -400,6 +400,20 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,b
 	}
 
 	return best_face;
+}
+
+std::shared_ptr<TtfFontFace> default_ui_text32_ttf_face(int legacy_height,int hinting,bool kerning,int outline,int style)
+{
+	int target_height = std::max(6, legacy_height);
+	if(language_prefers_japanese_fonts())
+		target_height += 1;
+
+	return default_ui_ttf_face(target_height, hinting, kerning, outline, style);
+}
+
+int default_ui_text32_extra_hspace(void)
+{
+	return language_prefers_japanese_fonts() ? 1 : 0;
 }
 
 int measure_legacy_ttf_text_width(std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace)

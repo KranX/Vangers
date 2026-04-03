@@ -168,7 +168,7 @@ static std::shared_ptr<text::TtfFontFace> actint_get_text32_ttf_face(int font)
 	if(!aScrFonts32 || !aScrFonts32[font])
 		return nullptr;
 
-	return text::default_ui_ttf_face(aScrFonts32[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
+	return text::default_ui_text32_ttf_face(aScrFonts32[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
 }
 
 static uint32_t actint_decode_legacy_char(unsigned char ch)
@@ -261,7 +261,7 @@ int aUtf8TextWidth32(std::string_view text_value,int font,int hspace)
 {
 	auto face = actint_get_text32_ttf_face(font);
 	if(face && text::language_prefers_utf8_assets())
-		return text::measure_utf8_text_width(text_value, *face, hspace);
+		return text::measure_utf8_text_width(text_value, *face, hspace + text::default_ui_text32_extra_hspace());
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
 	return aTextWidth32((void*)legacy_text.c_str(), font, hspace);
@@ -356,6 +356,7 @@ void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_vie
 		const int col_sz1 = color_size & 0xFF;
 		const int col_sz2 = (color_size >> 16) & 0xFF;
 		const int ascent = face->get_ascent();
+		const int hspace = space + text::default_ui_text32_extra_hspace();
 		int pen_x = x;
 		size_t offset = 0;
 		uint32_t codepoint = 0;
@@ -373,10 +374,10 @@ void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_vie
 				const int color_shift = (col2 && alt_digit) ? col_sz2 : col_sz1;
 				actint_draw_ttf_glyph_buffer32(pen_x + glyph->minx, y + ascent - glyph->maxy,
 				                               bsx, *glyph, (unsigned char*)buf, color_base, color_shift);
-				pen_x += std::max(glyph->advance, 0) + space;
+				pen_x += std::max(glyph->advance, 0) + hspace;
 			}
 			else
-				pen_x += space;
+				pen_x += hspace;
 		}
 		return;
 	}
@@ -6879,7 +6880,7 @@ void aOutText32(int x,int y,int color,void* text,int font,int hspace,int vspace)
 		text::draw_legacy_ttf_text_8bit(x, y, color,
 		                                text ? (const char*)text : "",
 		                                *face, actint_text_encoding(),
-		                                hspace, vspace, false);
+		                                hspace + text::default_ui_text32_extra_hspace(), vspace, false);
 		return;
 	}
 
@@ -6927,7 +6928,7 @@ void aOutText32clip(int x,int y,int color,void* text,int font,int hspace,int vsp
 		text::draw_legacy_ttf_text_8bit(x, y, color,
 		                                text ? (const char*)text : "",
 		                                *face, actint_text_encoding(),
-		                                hspace, vspace, true);
+		                                hspace + text::default_ui_text32_extra_hspace(), vspace, true);
 		return;
 	}
 
