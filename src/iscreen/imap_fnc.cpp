@@ -120,9 +120,14 @@ void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,i
 	if(!glyph || glyph->alpha.empty())
 		return;
 
-	const int top_pad = std::max(0, (legacy_height - face.get_height()) / 2);
+	const int face_box_height = std::max(1, face.get_ascent() - face.get_descent());
+	const int top_pad = std::max(0, (legacy_height - face_box_height) / 2);
 	const int draw_x = left_offs + glyph->minx;
-	const int draw_y = top_pad + face.get_ascent() - glyph->maxy;
+	int draw_y = top_pad + face.get_ascent() - glyph->maxy;
+	if(draw_y + glyph->height > cell_height)
+		draw_y = cell_height - glyph->height;
+	if(draw_y < 0)
+		draw_y = 0;
 
 	for(int gy = 0; gy < glyph->height; gy++){
 		for(int gx = 0; gx < glyph->width; gx++){
