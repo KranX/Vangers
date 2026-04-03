@@ -160,6 +160,14 @@ static std::string actint_display_text_to_utf8(std::string_view text_value)
 	return display_text;
 }
 
+static bool actint_debug_escave_text_enabled(void)
+{
+	static int cached = -1;
+	if(cached == -1)
+		cached = getenv("VANGERS_DEBUG_ESCAVE_TEXT") ? 1 : 0;
+	return cached != 0;
+}
+
 static std::string actint_trim_utf8_to_byte_limit(std::string text_value,size_t max_bytes)
 {
 	while(text_value.size() > max_bytes && !text_value.empty())
@@ -4021,6 +4029,7 @@ void aciInitPanel(InfoPanel* p,unsigned char* str)
 
 	const int col = (aciCurColorScheme[FM_SELECT_BORDER_COL] << 8) | aciCurColorScheme[FM_SELECT_BORDER_COL];
 	const std::string source_text = actint_display_text_to_utf8((char*)str);
+	const size_t initial_items = p -> items -> Size;
 
 	auto measure_line = [p](std::string_view line_text) -> int {
 		if(p -> flags & IP_RANGE_FONT)
@@ -4121,6 +4130,13 @@ void aciInitPanel(InfoPanel* p,unsigned char* str)
 
 	if(truncated)
 		std::cout<<"Dialog phrase too long..."<<std::endl;
+
+	if(actint_debug_escave_text_enabled()){
+		std::string preview = source_text.substr(0, std::min<size_t>(source_text.size(), 80));
+		std::cout << "[VANGERS_DEBUG_ESCAVE_TEXT] panel size=(" << p->SizeX << "," << p->SizeY
+		          << ") items+=" << (p->items->Size - initial_items)
+		          << " text=\"" << preview << "\"\n";
+	}
 }
 
 void aciStartSpeech(void)
@@ -4235,6 +4251,14 @@ void aciNextPhrase(void)
 	p -> free_list();
 
 	str = (unsigned char*)dgD -> getNextPhrase();
+	if(actint_debug_escave_text_enabled()){
+		const char* dbg = (const char*)str;
+		std::string display_text = dbg ? actint_display_text_to_utf8(dbg) : std::string();
+		std::string preview = dbg ? display_text.substr(0, std::min<size_t>(display_text.size(), 80)) : std::string("<null>");
+		std::cout << "[VANGERS_DEBUG_ESCAVE_TEXT] next-phrase="
+		          << (dbg ? "non-null" : "null")
+		          << " text=\"" << preview << "\"\n";
+	}
 
 	if(aciEndSpeech){
 		if(!dgD -> isEnd()){
