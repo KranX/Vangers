@@ -22,6 +22,9 @@
 #include "../sound/hsound.h"
 #include "avi.h"
 
+#include <cstdlib>
+#include <string>
+
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
 #ifdef _DEBUG
@@ -46,6 +49,41 @@ extern iScreenOption** iScrOpt;
 extern XBuffer* iResBuf;
 extern const char* iVideoPath;
 extern const char* iVideoPathDefault;
+
+static bool iscreen_debug_text_layout_enabled(void)
+{
+	static int enabled = -1;
+	if(enabled == -1)
+		enabled = std::getenv("VANGERS_DEBUG_TEXT") ? 1 : 0;
+	return enabled != 0;
+}
+
+static bool iscreen_debug_text_object(const iScreenObject* obj)
+{
+	return iscreen_debug_text_layout_enabled() && obj && obj->ID_ptr == "Text00";
+}
+
+static std::string iscreen_debug_text_preview(const iScreenElement* el)
+{
+	if(!el)
+		return {};
+
+	std::string text_value;
+	switch(el->type){
+		case I_STRING_ELEM:
+			text_value = ((const iStringElement*)el)->get_display_utf8_string();
+			break;
+		case I_S_STRING_ELEM:
+			text_value = ((const iS_StringElement*)el)->get_display_utf8_string();
+			break;
+		default:
+			return {};
+	}
+
+	if(text_value.size() > 96)
+		text_value.resize(96);
+	return text_value;
+}
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
@@ -2126,6 +2164,31 @@ void iScreenObject::init(void)
 	}
 	if(PosY < 0 || PosY >= I_RES_Y - SizeY){
 		ErrH.Abort("Object PosY out of map...",XERR_USER,PosY,ID_ptr.c_str());
+	}
+
+	if(iscreen_debug_text_object(this)){
+		fprintf(stderr,
+		        "[VANGERS_DEBUG_TEXT] object=%s Pos=(%d,%d) Size=(%d,%d) align=(%d,%d) auto=%d shadow=%d elems=%d\n",
+		        ID_ptr.c_str(), PosX, PosY, SizeX, SizeY, align_x, align_y,
+		        (flags & OBJ_AUTO_SIZE) ? 1 : 0, ShadowSize, ElementList ? ElementList->Size : 0);
+
+		iScreenElement* dbg = (iScreenElement*)ElementList->first;
+		int dbg_index = 0;
+		while(dbg){
+			if((dbg->type == I_STRING_ELEM || dbg->type == I_S_STRING_ELEM) && (dbg->flags & EL_TEXT_STRING)){
+				const std::string preview = iscreen_debug_text_preview(dbg);
+				fprintf(stderr,
+				        "[VANGERS_DEBUG_TEXT]   line[%d] type=%d l=(%d,%d) size=(%d,%d) align=(%d,%d) utf8=%d text=\"%s\"\n",
+				        dbg_index, dbg->type, dbg->lX, dbg->lY, dbg->SizeX, dbg->SizeY,
+				        dbg->align_x, dbg->align_y,
+				        (dbg->type == I_STRING_ELEM)
+				            ? (((iStringElement*)dbg)->Utf8Canonical ? 1 : 0)
+				            : (((iS_StringElement*)dbg)->Utf8Canonical ? 1 : 0),
+				        preview.c_str());
+			}
+			dbg = (iScreenElement*)dbg->next;
+			dbg_index++;
+		}
 	}
 }
 
@@ -4402,6 +4465,18 @@ void iTextData::copy(iScreenObject* p)
 					break;
 			}
 			el -> init_align();
+
+			if(iscreen_debug_text_object(p)){
+				const std::string preview = iscreen_debug_text_preview(el);
+				fprintf(stderr,
+				        "[VANGERS_DEBUG_TEXT] copy object=%s line=%d type=%d size=(%d,%d) l=(%d,%d) align=(%d,%d) utf8=%d text=\"%s\"\n",
+				        p->ID_ptr.c_str(), i, el->type, el->SizeX, el->SizeY, el->lX, el->lY,
+				        el->align_x, el->align_y,
+				        (el->type == I_STRING_ELEM)
+				            ? (((iStringElement*)el)->Utf8Canonical ? 1 : 0)
+				            : (((iS_StringElement*)el)->Utf8Canonical ? 1 : 0),
+				        preview.c_str());
+			}
 		}
 		el = (iScreenElement*)el -> next;
 	}
