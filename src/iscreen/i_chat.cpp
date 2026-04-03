@@ -17,8 +17,6 @@
 #include "../text/legacy_codec.h"
 #include "../text/legacy_ttf_draw.h"
 
-#include <memory>
-
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
 extern XBuffer* iResBuf;
@@ -225,9 +223,6 @@ int scrollColorI = (6 | (2 << 16)); //aciChatColors0[5] white color for scroll
 int scrollColor = (230 | (2 << 16)); //aciChatColors1[5]
 int scrollSizeX = 5;
 
-static std::weak_ptr<text::TtfFontFace> iChatTtfFaces[AS_NUM_FONTS_32];
-static int iChatTtfFaceTargetHeights[AS_NUM_FONTS_32] = { -1, -1, -1, -1 };
-
 static text::LegacyEncoding iChatTextEncoding(void)
 {
 	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
@@ -240,33 +235,7 @@ static std::shared_ptr<text::TtfFontFace> iChatGetTtfFace(int font)
 	if(!aScrFonts32 || !aScrFonts32[font])
 		return nullptr;
 
-	const std::string& font_path = text::default_ui_ttf_font_path();
-	if(font_path.empty())
-		return nullptr;
-
-	const int target_height = std::max(6, aScrFonts32[font] -> SizeY);
-	auto cached_face = iChatTtfFaces[font].lock();
-	if(cached_face && iChatTtfFaceTargetHeights[font] == target_height)
-		return cached_face;
-
-	std::shared_ptr<text::TtfFontFace> best_face;
-	int best_delta = 1 << 30;
-
-	for(int point_size = std::max(6, target_height - 6); point_size <= target_height + 6; point_size++){
-		auto face = text::TtfFontManager::instance().get_face(font_path, point_size, TTF_HINTING_NORMAL, false, 0);
-		if(!face)
-			continue;
-
-		int delta = abs(face -> get_height() - target_height);
-		if(delta < best_delta){
-			best_delta = delta;
-			best_face = face;
-		}
-	}
-
-	iChatTtfFaces[font] = best_face;
-	iChatTtfFaceTargetHeights[font] = target_height;
-	return best_face;
+	return text::default_ui_ttf_face(aScrFonts32[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
 }
 
 int iChatTextWidth(const char* text,int font,int hspace)
@@ -981,10 +950,6 @@ void iChatQuant(int flush)
 void iChatFinit(void)
 {
 	iChatButton* p,*p1;
-	for(int i = 0; i < AS_NUM_FONTS_32; i++){
-		iChatTtfFaces[i].reset();
-		iChatTtfFaceTargetHeights[i] = -1;
-	}
 
 	if(iChatButtons){
 		p = (iChatButton*)iChatButtons -> fPtr;

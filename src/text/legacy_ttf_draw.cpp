@@ -6,6 +6,7 @@
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
+#include <unordered_map>
 
 namespace text
 {
@@ -55,6 +56,15 @@ const GlyphBitmap* get_renderable_glyph(TtfFontFace& face,uint32_t codepoint)
 int text_line_height(const TtfFontFace& face)
 {
 	return std::max(face.get_line_skip(), face.get_height());
+}
+
+std::string make_default_ui_face_key(const std::string& font_path,int target_height,int hinting,bool kerning,int outline)
+{
+	return font_path + "#" +
+	       std::to_string(target_height) + "#" +
+	       std::to_string(hinting) + "#" +
+	       (kerning ? "1" : "0") + "#" +
+	       std::to_string(outline);
 }
 
 void blit_alpha_mask_8bit(int x,int y,const GlyphBitmap& glyph,int palette_base,int palette_shift,bool clip)
@@ -111,6 +121,44 @@ const std::string& default_ui_ttf_font_path(void)
 	}();
 
 	return resolved;
+}
+
+std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,bool kerning,int outline)
+{
+	const std::string& font_path = default_ui_ttf_font_path();
+	if(font_path.empty())
+		return nullptr;
+
+	target_height = std::max(6, target_height);
+
+	static std::unordered_map<std::string, std::weak_ptr<TtfFontFace>> face_cache;
+	const std::string key = make_default_ui_face_key(font_path, target_height, hinting, kerning, outline);
+	auto cache_it = face_cache.find(key);
+	if(cache_it != face_cache.end()){
+		auto cached_face = cache_it->second.lock();
+		if(cached_face)
+			return cached_face;
+	}
+
+	std::shared_ptr<TtfFontFace> best_face;
+	int best_delta = INT_MAX;
+
+	for(int point_size = std::max(6, target_height - 6); point_size <= target_height + 6; point_size++){
+		auto face = TtfFontManager::instance().get_face(font_path, point_size, hinting, kerning, outline);
+		if(!face)
+			continue;
+
+		const int delta = abs(face->get_height() - target_height);
+		if(delta < best_delta){
+			best_delta = delta;
+			best_face = face;
+		}
+	}
+
+	if(best_face)
+		face_cache[key] = best_face;
+
+	return best_face;
 }
 
 int measure_legacy_ttf_text_width(std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace)

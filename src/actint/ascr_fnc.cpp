@@ -43,6 +43,7 @@
 #include "../iscreen/ext_evnt.h"
 
 #include "../sound/hsound.h"
+#include "../text/legacy_ttf_draw.h"
 
 #include "aci_evnt.h"
 #include "acsconst.h"
@@ -117,6 +118,22 @@ extern unsigned char* actIntPal;
 
 extern int beebos;
 extern int uvsCurrentWorldUnable;
+extern aciFont** aScrFonts32;
+
+static text::LegacyEncoding actint_text32_encoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+static std::shared_ptr<text::TtfFontFace> actint_get_text32_ttf_face(int font)
+{
+	if(font < 0 || font >= AS_NUM_FONTS_32)
+		return nullptr;
+	if(!aScrFonts32 || !aScrFonts32[font])
+		return nullptr;
+
+	return text::default_ui_ttf_face(aScrFonts32[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
+}
 
 extern int aCellSize;
 extern int iCellSize;
@@ -6474,6 +6491,15 @@ void aOutText32(int x,int y,int color,void* text,int font,int hspace,int vspace)
 	if(aScrFonts32[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
 
+	auto face = actint_get_text32_ttf_face(font);
+	if(face){
+		text::draw_legacy_ttf_text_8bit(x, y, color,
+		                                text ? (const char*)text : "",
+		                                *face, actint_text32_encoding(),
+		                                hspace, vspace, false);
+		return;
+	}
+
 	color_size = (color >> 16) & 0xFF;
 	color &= 0xFFFF;
 
@@ -6512,6 +6538,15 @@ void aOutText32clip(int x,int y,int color,void* text,int font,int hspace,int vsp
 
 	if(aScrFonts32[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
+
+	auto face = actint_get_text32_ttf_face(font);
+	if(face){
+		text::draw_legacy_ttf_text_8bit(x, y, color,
+		                                text ? (const char*)text : "",
+		                                *face, actint_text32_encoding(),
+		                                hspace, vspace, true);
+		return;
+	}
 
 	color_size = (color >> 16) & 0xFF;
 	color &= 0xFFFF;
@@ -6552,6 +6587,12 @@ int aTextWidth32(void* text,int font,int hspace)
 	if(aScrFonts32[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
 
+	auto face = actint_get_text32_ttf_face(font);
+	if(face)
+		return text::measure_legacy_ttf_text_width(text ? (const char*)text : "",
+		                                           *face, actint_text32_encoding(),
+		                                           hspace);
+
 	xs = aScrFonts32[font] -> SizeX;
 	ys = aScrFonts32[font] -> SizeY;
 
@@ -6582,6 +6623,11 @@ int aTextHeight32(void* text,int font,int vspace)
 
 	if(aScrFonts32[font] == NULL)
 		ErrH.Abort("MISSING FONT...");
+
+	auto face = actint_get_text32_ttf_face(font);
+	if(face)
+		return text::measure_legacy_ttf_text_height(text ? (const char*)text : "",
+		                                            *face, vspace);
 
 	xs = aScrFonts32[font] -> SizeX;
 	ys = aScrFonts32[font] -> SizeY;
