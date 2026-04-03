@@ -227,6 +227,7 @@ static void actint_draw_ttf_glyph_screen(int x,int y,const text::GlyphBitmap& gl
 }
 
 static void actint_draw_ttf_glyph_buffer(int x,int y,int bsx,const text::GlyphBitmap& glyph,unsigned char* buf,int primary,int secondary);
+static void actint_draw_ttf_glyph_buffer32(int x,int y,int bsx,const text::GlyphBitmap& glyph,unsigned char* buf,int color_base,int color_shift);
 int aStrLen(unsigned char* str,int font,int space);
 void aOutStr(int x,int y,int font,int color,unsigned char* str,int space);
 void aPutStr32(int x,int y,int font,int color,int color_size,void* str,int bsx,void* buf,int space);
@@ -368,10 +369,10 @@ void aPutStr32Utf8(int x,int y,int font,int color,int color_size,std::string_vie
 			const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(*face, codepoint);
 			if(glyph){
 				const bool alt_digit = (codepoint >= '0' && codepoint <= '9') || codepoint == '$';
-				const int primary = (col2 && alt_digit) ? col2 : col1;
-				const int secondary = (col2 && alt_digit) ? col_sz2 : col_sz1;
-				actint_draw_ttf_glyph_buffer(pen_x + glyph->minx, y + ascent - glyph->maxy,
-				                             bsx, *glyph, (unsigned char*)buf, primary, secondary);
+				const int color_base = (col2 && alt_digit) ? col2 : col1;
+				const int color_shift = (col2 && alt_digit) ? col_sz2 : col_sz1;
+				actint_draw_ttf_glyph_buffer32(pen_x + glyph->minx, y + ascent - glyph->maxy,
+				                               bsx, *glyph, (unsigned char*)buf, color_base, color_shift);
 				pen_x += std::max(glyph->advance, 0) + space;
 			}
 			else
@@ -399,6 +400,27 @@ static void actint_draw_ttf_glyph_buffer(int x,int y,int bsx,const text::GlyphBi
 				buf[row_offs + x + gx] = secondary;
 			else if(!secondary && alpha >= 96)
 				buf[row_offs + x + gx] = primary;
+		}
+	}
+}
+
+static void actint_draw_ttf_glyph_buffer32(int x,int y,int bsx,const text::GlyphBitmap& glyph,unsigned char* buf,int color_base,int color_shift)
+{
+	if(glyph.alpha.empty())
+		return;
+
+	for(int gy = 0; gy < glyph.height; gy++){
+		const int row_offs = (y + gy) * bsx;
+		for(int gx = 0; gx < glyph.width; gx++){
+			unsigned alpha = glyph.alpha[(size_t)gy * (size_t)glyph.pitch + (size_t)gx];
+			if(alpha < 16)
+				continue;
+
+			unsigned shade = 1 + ((alpha * 31u) / 255u);
+			unsigned color = color_base + (color_shift ? (shade >> color_shift) : shade);
+			unsigned char& dst = buf[row_offs + x + gx];
+			if(color > dst)
+				dst = (unsigned char)color;
 		}
 	}
 }
