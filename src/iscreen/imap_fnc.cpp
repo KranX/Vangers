@@ -2,6 +2,7 @@
 
 #include "../global.h"
 
+#include "lang.h"
 #include "ivmap.h"
 #include "iworld.h"
 
@@ -9,6 +10,8 @@
 #include "iscreen.h"
 #include "i_mem.h"
 #include "ikeys.h"
+#include "../text/legacy_codec.h"
+#include "../text/legacy_ttf_draw.h"
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -45,6 +48,98 @@ void map_rectangle(int x,int y,int sx,int sy,int col);
 #endif
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
+
+namespace
+{
+
+text::LegacyEncoding iscreen_hfont_encoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+std::shared_ptr<text::TtfFontFace> iscreen_get_hfont_ttf_face(int fnt)
+{
+	if(fnt < 0 || fnt >= iNumFonts)
+		return nullptr;
+	if(!HFntTable || !HFntTable[fnt])
+		return nullptr;
+
+	return text::default_ui_ttf_face(HFntTable[fnt]->SizeY, TTF_HINTING_NORMAL, false, 0);
+}
+
+uint32_t iscreen_decode_legacy_char(unsigned char ch,text::LegacyEncoding encoding)
+{
+	switch(encoding){
+		case text::LegacyEncoding::ASCII:
+			return ch < 0x80 ? ch : '?';
+		case text::LegacyEncoding::CP866:
+			return text::cp866_to_unicode(ch);
+		case text::LegacyEncoding::CP1251:
+			return text::cp1251_to_unicode(ch);
+	}
+
+	return '?';
+}
+
+const text::GlyphBitmap* iscreen_get_renderable_glyph(text::TtfFontFace& face,unsigned char ch,text::LegacyEncoding encoding)
+{
+	const text::GlyphBitmap* glyph = face.get_glyph(iscreen_decode_legacy_char(ch, encoding));
+	if(glyph && glyph->provided)
+		return glyph;
+
+	glyph = face.get_glyph('?');
+	if(glyph && glyph->provided)
+		return glyph;
+
+	return nullptr;
+}
+
+void build_hfont_ttf_cell(text::TtfFontFace& face,unsigned char ch,text::LegacyEncoding encoding,int legacy_height,int scale,
+                          std::vector<unsigned char>& cell,int& cell_width,int& cell_height,int& left_offs,int& right_offs)
+{
+	const text::GlyphBitmap* glyph = iscreen_get_renderable_glyph(face, ch, encoding);
+	const int advance = glyph ? std::max(glyph->advance, 0) : 0;
+	const int minx = glyph ? glyph->minx : 0;
+	const int maxx = glyph ? glyph->maxx : 0;
+
+	left_offs = std::max(0, -minx);
+	cell_height = std::max(1, legacy_height);
+	cell_width = std::max(1, left_offs + std::max(advance, maxx));
+	right_offs = std::max(0, cell_width - left_offs - advance);
+	cell.assign((size_t)cell_width * (size_t)cell_height, HFONT_NULL_LEVEL);
+
+	if(!glyph || glyph->alpha.empty())
+		return;
+
+	const int top_pad = std::max(0, (legacy_height - face.get_height()) / 2);
+	const int draw_x = left_offs + glyph->minx;
+	const int draw_y = top_pad + face.get_ascent() - glyph->maxy;
+
+	for(int gy = 0; gy < glyph->height; gy++){
+		for(int gx = 0; gx < glyph->width; gx++){
+			const unsigned int alpha = glyph->alpha[(size_t)gy * (size_t)glyph->pitch + (size_t)gx];
+			if(!alpha)
+				continue;
+
+			const int px = draw_x + gx;
+			const int py = draw_y + gy;
+			if(px < 0 || px >= cell_width || py < 0 || py >= cell_height)
+				continue;
+
+			int level = (int)((alpha * (255 - HFONT_NULL_LEVEL) + 127) / 255);
+			level = (level * scale) >> 8;
+			level += HFONT_NULL_LEVEL;
+			if(level < 0)
+				level = 0;
+			else if(level > 255)
+				level = 255;
+
+			cell[(size_t)py * (size_t)cell_width + (size_t)px] = (unsigned char)level;
+		}
+	}
+}
+
+}
 
 void map_init(void)
 {
@@ -710,10 +805,27 @@ void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space
 	HFont* p = HFntTable[fnt];
 	HChar* ch;
 	unsigned char* ptr,*ptr1;
+	auto face = iscreen_get_hfont_ttf_face(fnt);
+	std::vector<unsigned char> ttf_cell;
+	int left_offs = 0,right_offs = 0;
 
 	_x = x;
 	_y = y;
 	for(i = 0; i < sz; i ++){
+		if(str[i] == '\n'){
+			_x = x;
+			_y += p -> SizeY + space;
+			continue;
+		}
+
+		if(face){
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, scale,
+			                     ttf_cell, sx, sy, left_offs, right_offs);
+			put_buf(_x - left_offs,_y,sx,sy,ttf_cell.data(),ttf_cell.data(),level,hide_mode);
+			_x += sx - right_offs - left_offs + space;
+			continue;
+		}
+
 		ch = p -> data[str[i]];
 		ptr = ch -> HeightMap;
 
@@ -721,17 +833,11 @@ void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space
 		sy = ch -> SizeY;
 		ss = sx * sy;
 
-		if(str[i] == '\n'){
-			_x = x;
-			_y += sy + space;
-		}
-		else {
-			_iALLOC_A_(unsigned char,ptr1,ss);
-			scale_buf(sx,sy,scale,ptr,ptr1);
-			put_buf(_x - ch -> LeftOffs,_y,sx,sy,ptr1,ptr,level,hide_mode);
-			_iFREE_A_(unsigned char,ptr1,ss);
-			_x += sx - ch -> RightOffs - ch -> LeftOffs + space;
-		}
+		_iALLOC_A_(unsigned char,ptr1,ss);
+		scale_buf(sx,sy,scale,ptr,ptr1);
+		put_buf(_x - ch -> LeftOffs,_y,sx,sy,ptr1,ptr,level,hide_mode);
+		_iFREE_A_(unsigned char,ptr1,ss);
+		_x += sx - ch -> RightOffs - ch -> LeftOffs + space;
 	}
 }
 
@@ -741,10 +847,27 @@ void i_terrPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int 
 	HFont* p = HFntTable[fnt];
 	HChar* ch;
 	unsigned char* ptr,*ptr1;
+	auto face = iscreen_get_hfont_ttf_face(fnt);
+	std::vector<unsigned char> ttf_cell;
+	int left_offs = 0,right_offs = 0;
 
 	_x = x;
 	_y = y;
 	for(i = 0; i < sz; i ++){
+		if(str[i] == '\n'){
+			_x = x;
+			_y += p -> SizeY + space;
+			continue;
+		}
+
+		if(face){
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, scale,
+			                     ttf_cell, sx, sy, left_offs, right_offs);
+			put_tbuf(_x - left_offs,_y,sx,sy,ttf_cell.data(),ttf_cell.data(),level,hide_mode,terr);
+			_x += sx - right_offs - left_offs + space;
+			continue;
+		}
+
 		ch = p -> data[str[i]];
 		ptr = ch -> HeightMap;
 
@@ -752,17 +875,11 @@ void i_terrPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int 
 		sy = ch -> SizeY;
 		ss = sx * sy;
 
-		if(str[i] == '\n'){
-			_x = x;
-			_y += sy + space;
-		}
-		else {
-			_iALLOC_A_(unsigned char,ptr1,ss);
-			scale_buf(sx,sy,scale,ptr,ptr1);
-			put_tbuf(_x - ch -> LeftOffs,_y,sx,sy,ptr1,ptr,level,hide_mode,terr);
-			_iFREE_A_(unsigned char,ptr1,ss);
-			_x += sx - ch -> RightOffs - ch -> LeftOffs + space;
-		}
+		_iALLOC_A_(unsigned char,ptr1,ss);
+		scale_buf(sx,sy,scale,ptr,ptr1);
+		put_tbuf(_x - ch -> LeftOffs,_y,sx,sy,ptr1,ptr,level,hide_mode,terr);
+		_iFREE_A_(unsigned char,ptr1,ss);
+		_x += sx - ch -> RightOffs - ch -> LeftOffs + space;
 	}
 }
 
@@ -772,10 +889,27 @@ void iPutStr2buf(int x,int y,int fnt,int bsx,int bsy,unsigned char* str,unsigned
 	HFont* p = HFntTable[fnt];
 	HChar* ch;
 	unsigned char* ptr;
+	auto face = iscreen_get_hfont_ttf_face(fnt);
+	std::vector<unsigned char> ttf_cell;
+	int left_offs = 0,right_offs = 0;
 
 	_x = x;
 	_y = y;
 	for(i = 0; i < sz; i ++){
+		if(str[i] == '\n'){
+			_x = x;
+			_y += p -> SizeY + space;
+			continue;
+		}
+
+		if(face){
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, 256,
+			                     ttf_cell, sx, sy, left_offs, right_offs);
+			h_put_buf2buf(_x - left_offs,_y,sx,sy,bsx,bsy,ttf_cell.data(),buf_to);
+			_x += sx - right_offs - left_offs + space;
+			continue;
+		}
+
 		ch = p -> data[str[i]];
 		ptr = ch -> HeightMap;
 
@@ -783,14 +917,8 @@ void iPutStr2buf(int x,int y,int fnt,int bsx,int bsy,unsigned char* str,unsigned
 		sy = ch -> SizeY;
 		ss = sx * sy;
 
-		if(str[i] == '\n'){
-			_x = x;
-			_y += sy + space;
-		}
-		else {
-			h_put_buf2buf(_x - ch -> LeftOffs,_y,sx,sy,bsx,bsy,ptr,buf_to);
-			_x += sx - ch -> RightOffs - ch -> LeftOffs + space;
-		}
+		h_put_buf2buf(_x - ch -> LeftOffs,_y,sx,sy,bsx,bsy,ptr,buf_to);
+		_x += sx - ch -> RightOffs - ch -> LeftOffs + space;
 	}
 }
 
@@ -800,6 +928,9 @@ int iStrLen(unsigned char* p,int f,int space)
 	unsigned char s;
 
 	HFont* fnt = HFntTable[f];
+	auto face = iscreen_get_hfont_ttf_face(f);
+	if(face)
+		return text::measure_legacy_ttf_text_width((const char*)(p ? p : (unsigned char*)""), *face, iscreen_hfont_encoding(), space);
 
 	for(i = 0; i < sz; i ++){
 		s = p[i];
