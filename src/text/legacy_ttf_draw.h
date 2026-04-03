@@ -17,6 +17,9 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting =
 int measure_legacy_ttf_text_width(std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace);
 int measure_legacy_ttf_text_height(std::string_view text,const TtfFontFace& face,int vspace);
 void draw_legacy_ttf_text_8bit(int x,int y,int color,std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace,int vspace,bool clip);
+int measure_utf8_text_width(std::string_view text,TtfFontFace& face,int hspace);
+int measure_utf8_text_height(std::string_view text,const TtfFontFace& face,int vspace);
+void draw_utf8_text_8bit(int x,int y,int color,std::string_view text,TtfFontFace& face,int hspace,int vspace,bool clip);
 
 }
 

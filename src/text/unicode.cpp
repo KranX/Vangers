@@ -125,6 +125,30 @@ size_t utf8_byte_to_codepoint_index(std::string_view text, size_t byte_offset)
 	return count;
 }
 
+uint32_t utf8_codepoint_at(std::string_view text, size_t codepoint_index, uint32_t fallback)
+{
+	size_t offset = utf8_codepoint_to_byte_offset(text, codepoint_index);
+	uint32_t codepoint = fallback;
+	if(!utf8_next(text, offset, codepoint))
+		return fallback;
+	return codepoint;
+}
+
+std::string utf8_substr_by_codepoints(std::string_view text, size_t start_codepoint, size_t codepoint_count)
+{
+	const size_t start = utf8_codepoint_to_byte_offset(text, start_codepoint);
+	if(start >= text.size())
+		return std::string();
+
+	size_t end = text.size();
+	if(codepoint_count != std::string_view::npos)
+		end = utf8_codepoint_to_byte_offset(text.substr(start), codepoint_count) + start;
+
+	if(end > text.size())
+		end = text.size();
+	return std::string(text.substr(start, end - start));
+}
+
 bool append_utf8(std::string& out, uint32_t codepoint)
 {
 	if(codepoint <= 0x7F){

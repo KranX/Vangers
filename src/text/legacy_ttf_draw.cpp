@@ -1,5 +1,6 @@
 #include "legacy_ttf_draw.h"
 
+#include "unicode.h"
 #include "xgraph.h"
 
 #include <algorithm>
@@ -58,15 +59,6 @@ int text_line_height(const TtfFontFace& face)
 	return std::max(face.get_line_skip(), face.get_height());
 }
 
-std::string make_default_ui_face_key(const std::string& font_path,int target_height,int hinting,bool kerning,int outline)
-{
-	return font_path + "#" +
-	       std::to_string(target_height) + "#" +
-	       std::to_string(hinting) + "#" +
-	       (kerning ? "1" : "0") + "#" +
-	       std::to_string(outline);
-}
-
 void blit_alpha_mask_8bit(int x,int y,const GlyphBitmap& glyph,int palette_base,int palette_shift,bool clip)
 {
 	if(glyph.alpha.empty())
@@ -94,6 +86,112 @@ void blit_alpha_mask_8bit(int x,int y,const GlyphBitmap& glyph,int palette_base,
 	}
 }
 
+template<typename DecodeFn>
+int measure_text_width_impl(TtfFontFace& face,int hspace,DecodeFn&& decode_next)
+{
+	int max_width = 0;
+	int pen_x = 0;
+	int line_min_x = INT_MAX;
+	int line_max_x = 0;
+	int line_end_x = 0;
+
+	for(;;){
+		uint32_t codepoint = 0;
+		if(!decode_next(codepoint))
+			break;
+
+		if(codepoint == '\r')
+			continue;
+
+		if(codepoint == '\n'){
+			if(line_min_x != INT_MAX)
+				max_width = std::max(max_width, std::max(line_max_x, line_end_x) - std::min(0, line_min_x));
+			else
+				max_width = std::max(max_width, 0);
+
+			pen_x = 0;
+			line_min_x = INT_MAX;
+			line_max_x = 0;
+			line_end_x = 0;
+			continue;
+		}
+
+		const GlyphBitmap* glyph = get_renderable_glyph(face, codepoint);
+		if(glyph){
+			line_min_x = std::min(line_min_x, pen_x + glyph->minx);
+			line_max_x = std::max(line_max_x, pen_x + glyph->maxx);
+			pen_x += std::max(glyph->advance, 0) + hspace;
+			line_end_x = pen_x;
+		}
+	}
+
+	if(line_min_x != INT_MAX)
+		max_width = std::max(max_width, std::max(line_max_x, line_end_x) - std::min(0, line_min_x));
+
+	return max_width;
+}
+
+template<typename DecodeFn>
+int measure_text_height_impl(TtfFontFace const& face,int vspace,DecodeFn&& decode_next)
+{
+	int lines = 1;
+
+	for(;;){
+		uint32_t codepoint = 0;
+		if(!decode_next(codepoint))
+			break;
+		if(codepoint == '\n')
+			lines++;
+	}
+
+	return lines * text_line_height(face) + lines * vspace;
+}
+
+template<typename DecodeFn>
+void draw_text_8bit_impl(int x,int y,int color,TtfFontFace& face,int hspace,int vspace,bool clip,DecodeFn&& decode_next)
+{
+	const int palette_shift = (color >> 16) & 0xFF;
+	const int palette_base = color & 0xFFFF;
+	const int ascent = face.get_ascent();
+	const int line_height = text_line_height(face);
+
+	int pen_x = x;
+	int pen_y = y;
+
+	for(;;){
+		uint32_t codepoint = 0;
+		if(!decode_next(codepoint))
+			break;
+
+		if(codepoint == '\r')
+			continue;
+
+		if(codepoint == '\n'){
+			pen_x = x;
+			pen_y += line_height + vspace;
+			continue;
+		}
+
+		const GlyphBitmap* glyph = get_renderable_glyph(face, codepoint);
+		if(!glyph)
+			continue;
+
+		const int draw_x = pen_x + glyph->minx;
+		const int draw_y = pen_y + ascent - glyph->maxy;
+		blit_alpha_mask_8bit(draw_x, draw_y, *glyph, palette_base, palette_shift, clip);
+		pen_x += std::max(glyph->advance, 0) + hspace;
+	}
+}
+
+std::string make_default_ui_face_key(const std::string& font_path,int target_height,int hinting,bool kerning,int outline)
+{
+	return font_path + "#" +
+	       std::to_string(target_height) + "#" +
+	       std::to_string(hinting) + "#" +
+	       (kerning ? "1" : "0") + "#" +
+	       std::to_string(outline);
+}
+
 }
 
 const std::string& default_ui_ttf_font_path(void)
@@ -105,6 +203,12 @@ const std::string& default_ui_ttf_font_path(void)
 
 		static const char* candidates[] = {
 			"resource/fonts/ui.ttf",
+			"/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+			"/usr/share/fonts/opentype/noto/NotoSansCJKJP-Regular.otf",
+			"/usr/share/fonts/opentype/noto/NotoSansJP-Regular.otf",
+			"/usr/share/fonts/opentype/source-han-sans/SourceHanSansJP-Regular.otf",
+			"/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+			"/usr/share/fonts/truetype/noto/NotoSansJP-Regular.ttf",
 			"/usr/share/fonts/droid/DroidSansFallback.ttf",
 			"/usr/share/fonts/droid/DroidSansJapanese.ttf",
 			"/usr/share/fonts/ja-ipafonts/ipag.ttf",
@@ -163,84 +267,59 @@ std::shared_ptr<TtfFontFace> default_ui_ttf_face(int target_height,int hinting,b
 
 int measure_legacy_ttf_text_width(std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace)
 {
-	int max_width = 0;
-	int pen_x = 0;
-	int line_min_x = INT_MAX;
-	int line_max_x = 0;
-	int line_end_x = 0;
-
-	for(unsigned char ch : text){
-		if(ch == '\r')
-			continue;
-
-		if(ch == '\n'){
-			if(line_min_x != INT_MAX)
-				max_width = std::max(max_width, std::max(line_max_x, line_end_x) - std::min(0, line_min_x));
-			else
-				max_width = std::max(max_width, 0);
-
-			pen_x = 0;
-			line_min_x = INT_MAX;
-			line_max_x = 0;
-			line_end_x = 0;
-			continue;
-		}
-
-		const GlyphBitmap* glyph = get_renderable_glyph(face, decode_legacy_char(ch, encoding));
-		if(glyph){
-			line_min_x = std::min(line_min_x, pen_x + glyph->minx);
-			line_max_x = std::max(line_max_x, pen_x + glyph->maxx);
-			pen_x += std::max(glyph->advance, 0) + hspace;
-			line_end_x = pen_x;
-		}
-	}
-
-	if(line_min_x != INT_MAX)
-		max_width = std::max(max_width, std::max(line_max_x, line_end_x) - std::min(0, line_min_x));
-
-	return max_width;
+	size_t index = 0;
+	return measure_text_width_impl(face, hspace, [&](uint32_t& codepoint) -> bool {
+		if(index >= text.size())
+			return false;
+		codepoint = decode_legacy_char((unsigned char)text[index++], encoding);
+		return true;
+	});
 }
 
 int measure_legacy_ttf_text_height(std::string_view text,const TtfFontFace& face,int vspace)
 {
-	int lines = 1;
-	for(unsigned char ch : text){
-		if(ch == '\n')
-			lines++;
-	}
-
-	return lines * text_line_height(face) + lines * vspace;
+	size_t index = 0;
+	return measure_text_height_impl(face, vspace, [&](uint32_t& codepoint) -> bool {
+		if(index >= text.size())
+			return false;
+		codepoint = decode_legacy_char((unsigned char)text[index++], LegacyEncoding::ASCII);
+		return true;
+	});
 }
 
 void draw_legacy_ttf_text_8bit(int x,int y,int color,std::string_view text,TtfFontFace& face,LegacyEncoding encoding,int hspace,int vspace,bool clip)
 {
-	const int palette_shift = (color >> 16) & 0xFF;
-	const int palette_base = color & 0xFFFF;
-	const int ascent = face.get_ascent();
-	const int line_height = text_line_height(face);
+	size_t index = 0;
+	draw_text_8bit_impl(x, y, color, face, hspace, vspace, clip, [&](uint32_t& codepoint) -> bool {
+		if(index >= text.size())
+			return false;
+		codepoint = decode_legacy_char((unsigned char)text[index++], encoding);
+		return true;
+	});
+}
 
-	int pen_x = x;
-	int pen_y = y;
+int measure_utf8_text_width(std::string_view text,TtfFontFace& face,int hspace)
+{
+	size_t offset = 0;
+	return measure_text_width_impl(face, hspace, [&](uint32_t& codepoint) -> bool {
+		return utf8_next(text, offset, codepoint);
+	});
+}
 
-	for(unsigned char ch : text){
-		if(ch == '\r')
-			continue;
+int measure_utf8_text_height(std::string_view text,const TtfFontFace& face,int vspace)
+{
+	size_t offset = 0;
+	return measure_text_height_impl(face, vspace, [&](uint32_t& codepoint) -> bool {
+		return utf8_next(text, offset, codepoint);
+	});
+}
 
-		if(ch == '\n'){
-			pen_x = x;
-			pen_y += line_height + vspace;
-			continue;
-		}
-
-		const GlyphBitmap* glyph = get_renderable_glyph(face, decode_legacy_char(ch, encoding));
-		if(!glyph)
-			continue;
-
-		const int draw_x = pen_x + glyph->minx;
-		const int draw_y = pen_y + ascent - glyph->maxy;
-		blit_alpha_mask_8bit(draw_x, draw_y, *glyph, palette_base, palette_shift, clip);
-		pen_x += std::max(glyph->advance, 0) + hspace;
-	}
+void draw_utf8_text_8bit(int x,int y,int color,std::string_view text,TtfFontFace& face,int hspace,int vspace,bool clip)
+{
+	size_t offset = 0;
+	draw_text_8bit_impl(x, y, color, face, hspace, vspace, clip, [&](uint32_t& codepoint) -> bool {
+		return utf8_next(text, offset, codepoint);
+	});
 }
 
 }
