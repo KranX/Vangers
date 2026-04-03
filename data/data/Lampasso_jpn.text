@@ -1,0 +1,359 @@
+[quotha]
+"ギールアは忙しい。うろつき野郎は失せなさい！"
+
+[Empty Question]
+"腰が抜けたのか？ 舌でもなくしたか、この泡立つ粘液の塊め？ そう、そのままギールアを恐れていなさい……"
+
+[Empty Molecule]
+"もうお前にはうんざりだ、この鉄くず。さっさと消えてくれないか？"
+
+[Block Molecule:B]
+"図太いやつだな。ギールアが通達する――止まって聞け！"
+
+[Out Molecule:B]
+"ここから出ていけ！"
+
+[Dead Molecule]
+"死んだエスケイヴ"
+
+[empty]
+"e"
+
+[DEAD w/o Rubbox:B]
+"はっ！ なんという幸運だ――逃亡奴隷が現れた…… ラブボックスも持たずにな、このクズめ！"
+{Rubbox}
+"やあ、この間抜け！ よくぞギールアを訪ねてきた。お前に仕事を与えてやろう。まもなく英雄たちが競技場へ出る。お前はその手助けをするのだ。"
+{Geer'ah}
+
+[Kernowar Win (Boond):B]
+"核戦争で奴隷が勝つとは、我々の教育体系に欠陥があるということだ。ブーラウチックには叱責が下るだろう！ 本来ならお前は処刑ものだが、名誉を回復する機会を一度だけ与えてやる。"
+{Slave} {Nuclear War} {The Buro} {Boorawchick}
+
+[Kernowar Participation (Boond):B]
+"ニュークレオブームを持って現れるとは、身の程知らずの奴隷め！ お前が一度でも触れれば、ニュークレオブームは永久に穢れる。お前はすでにビューロの敵名簿に載っている。次にやらかしたら、英雄たちが競技場じゅうでお前の頭を蹴り回すだろう。"
+{Nucleoboom} {Slave} {The Buro}
+
+[Kernowar Win (Commissar):G]
+"コミッサー！ この記念すべき機会に、核戦争での勝利を祝福しよう！ その勇敢さは競技場の英雄たちにも比肩するものだ。"
+{Commissar} {Nuclear War}
+"ブーラウチックも、お前の成功を確認した。ビューロはすでに昇進書類の準備に入っている。"
+{Boorawchick} {The Buro}
+
+[Kernowar Participation (Commissar):G]
+"勇敢なる英雄のための、聖なるニュークレオブーム！ それこそがお前の奉仕と、お前の無価値な人生に与えられた唯一の意味だ。英雄たちは、自らの勝利を支えた卑しい働き手に感謝するだろう！"
+{Nucleoboom}
+
+[Kernowar Win (Agent)]
+"エージェント、お前は自分の力も私の忍耐も無駄にしている。核戦争で勝った？ それは鈍いコミッサー向きの仕事だ。ビューロはあらゆる小虫に役目を定めているし、物事がどうあるべきかは我々のほうがよく知っている。"
+{Agent} {Nuclear War} {Commissar}
+
+[Kernowar Participation (Agent)]
+"後方に引っ込んでニュークレオブームを運ぶほうを選んだのか、この瘡蓋だらけの腰抜けエージェントめ？ その間にも勇敢な英雄たちは競技場で武勇を示しているというのに？"
+{Nucleoboom} {Agent}
+"コミッサーの階級に落ちたいということか？ お前の『武勲』について、私は今から詳細な報告書をビューロに送る。降格処分もすぐ下るだろう。"
+
+[Boond Arrival]
+"奴隷が来たか。どいつもこいつも惨めな奴隷ばかりだ……"
+{Slave}
+
+[Commissar Arrival]
+"コミッサー！ 私がギールア、お前の偉大なる兄だ。お前の面倒を見るのはこの私だ。"
+{Commissar} {Geer'ah}
+
+[Agent Arrival]
+"ようこそ、エージェント！ ギールアに何か手伝えることはあるか？"
+{Agent} {Geer'ah}
+
+[Shrub in Inventory (Boond):B]
+"Slave, your monkey tricks make me laugh! This is Lampasso; Geer'ah is here and shrubs aren't my business! Turn your crate around and get out of here and into Ogorod!"
+{Slave} {Lampasso} {Geer'ah} {Ogorod}
+
+[+Shrub in Inventory (Boond):B]
+"Slave! You are obstinate in your error. You disappointed the Buro and they declared your existence meaningless. I am assigned to carry out the appropriate procedure. "
+"However, the merciful Buro is giving you a chance to die and wash away your guilt. You will take part in the Competition! "
+"Dear Slave, a message just arrived about a new record in the Zeppelins competition. The hero produced such a powerful pop that it caused a series of rock slides that blocked three approaches to the stadium. This is great news! I am granting you a pardon: live on for the benefit of the Buro. Your property, however, is confiscated to reward the hero."
+
+[Heroin in Inventory (Boond):G]
+"Handle Valorins with care, you clumsy freak!"
+{Valorin}
+
+[Pipetka in Inventory (Boond):B]
+"Haw-haw, the zealous mite brought me peeperettes. You're getting on my nerves! Listen, you crummy grub, our Heroes don't need peeperettes! This is a famous place and I won't let you dirty it!"
+{peeperette}
+"Drive the peeperettes to Ogorod! If Oboorez doesn't report your arrival to me soon, our fury will get at you wherever you are."
+{Ogorod} {Oboorez}
+
+[+Pipetka in Inventory (Boond):B]
+"The scabby Slave came with peeperettes again! You didn't heed our instructions and ignored the Manual. Well, we'll show you the purpose of peeperettes. I just wish the seeds weren't wasted on a scab like you. But at least this is going to be a lesson to other slaves! "
+"All right, you dumb creature, live on - today is your lucky day. A message from VigBoo just arrived about a planned shipment of Valorins. All available Slaves must get down to loading and shipping. Get over there quickly. I'll empty your bay so that it has more room for cargo."
+
+[Shrub in Inventory (Commissar):B]
+"Commissar! We weren't expecting anyone with shrubs here. Don't expect a warm welcome. Your stumble may screw up our sporting events!"
+{Commissar} {shrub}
+"I'll send an inquiry to the Buro to check your personal file."
+
+[+Shrub in Inventory (Commissar):B]
+"Your crimes against the Beeboorats have exhausted all patience. Your promotion to Commissar was definitely premature. However, the Buro can correct their mistake: hand in your Rubbox, you've brought enough shame upon it!"
+
+[Heroin in Inventory (Commissar):G]
+"Commissar, you're always welcome here with Valorin. Work hard, but remember that the Heroes need Nucleoboom... Don't make them wait too long!"
+{Valorin} {Nucleoboom}
+
+[Pipetka in Inventory (Commissar):B]
+"The Commissar brought a peeperette. The stylish Geer'ah is stunned! Slipshod Commissars like you could ruin the Beeboorats to the joy of our numerous enemies. Think better of it before it's too late!"
+{Geer'ah} {peeperette}
+
+[+Pipetka in Inventory (Commissar):B]
+"You must've stolen your Rubbox, scoundrel! The Beeboorats' Commissars have never been so stupid: the Buro keeps close tabs on them! Get lost, Slave! Go wash away your guilt!"
+
+[Shrub in Inventory (Agent):B]
+"I must've lost my vision, what with all this heavy duty. Pink elephants and now Agents with shrubs... But I KNOW this can't be. Begone vision!"
+{Agent} {shrub}
+
+[+Shrub in Inventory (Agent):B]
+"The worst guest is an Agent with a shrub. It's a pity... Your gripe is with the Beeboorats... Guess that's because of your idleness. But it can be fixed. Commissar, you now have many things to do."
+
+[Heroin in Inventory (Agent)]
+"I'm always glad to get Valorin... But not from an Agent! In these rugged times our best soldiers waste time on trifles. It makes me bitter just thinking about it..."
+{Valorin} {Agent}
+
+[Pipetka in Inventory (Agent):B]
+"A brave Agent brought a trifling peeperette. An odd case... Let's take a look at your Rubbox. Well, well... The Agent is new and green. Okay, since it's your first time I'll just give you a reprimand."
+{peeperette} {Agent} {Rubbox}
+
+[+Pipetka in Inventory (Agent):B]
+"An Agent with a peeperette again! And with a reprimand on his Rubbox! The Agent failed! It's a disaster, we must remove all traces! My duty is to liquidate the loser Agent! "
+"All right, I've been too hasty. Your medical file has just been brought from VigBoo. It appears you're overworked and got hung up on peeperettes. Live on, poor thing. I'll take your belongings and you go have some carefree fun. Maybe you'll calm down..."
+
+[Sports Introduction]
+"Well, wheeler, it's time to tell you about our rites, or else you will perish in the darkness. The feats of our brave heroes are the cornerstone of Beeboorat existence and are performed in the stadium under my guidance. "
+"The valor of our heroes is high, and so is their glory. Stylish Geer'ah is only a humble helper to those who host the competitions. Here are some of them."
+{Geer'ah}
+
+[B-Sport 00]
+"The Breakneck Rush competition opens the season, and spectators just love it. Listen and remember. Here are the rules: "
+"The fearless hero rips off his head and the referee replaces it with a sacred Nucleoboom. Even with this inconvenience, the hero must reach the finish line without  letting the Nucleoboom fall. "
+"Only a few are able to do this, but their names are engraved on the Stone of Fame forever."
+
+[B-Sport 01]
+"Listen, you wretched little scrub, and admire the utter bravery of the heroes who take part in Gorodki. Here are the rules: "
+"This competition is for true heroes. They spend a lot of time preparing for it, thinking of eternal glory. "
+"Sacred Nucleobooms are piled up in front of the competitor, and he must break them using only parts of his own body. Some lack of accuracy is compensated by extreme bravery. "
+"Everybody still remembers the feat of one hero who managed to complete the competition using his head, having lost all his limbs!"
+
+[B-Sport 02]
+"The Diggers competition demonstrates Beeboorat endurance and their ability to deliver an abrupt and smashing strike at the enemy. Here are the rules: "
+"Having tanked themselves up on Nucleoboom juice (to increase muscle activity), two teams of courageous souls lie in a trench in several layers, all trying to be the one on the bottom. "
+"Then they are buried under stones and clay, accompanied by sports anthems. After a certain period of time that is needed to allow the clay to contract, the competition starts. "
+"The team with the most members to break through the surface within a set period of time wins."
+
+[B-Sport 03]
+"The Zeppelins competition concludes the Olympics, and all remaining heroes take part in it. Here are the rules: "
+"Cheerful heroes eat enormous amounts of the finest Nucleoboom shells, which causes increased gas in their bellies. "
+"Having plumped up to three times their normal size, the competitors jump down from the tower onto sharp objects, trying to produce the loudest pop. "
+"One hero once made such a loud pop that it caused two rock slides near the stadium."
+
+[B-Sport 04]
+"The Shrubs on a Bed competition demonstrates the destiny of our enemies. Here are the rules: "
+"While buried in the ground up to his neck, the hero must cheer on the participants who throw Nucleoboom at him. "
+"The competitors are given three attempts with three Nucleobooms per attempt, with the goal of scoring the best hits. "
+"The best snipers replace those who for some reason leave the action."
+
+[B-Sport 05]
+"The Larvae competition demonstrates the Beeboorat resolve to own all the Larvae in the world. Here are the rules: "
+"After a short warm-up the heroes rub themselves with the juice of ripe Nucleoboom, which softens their skin. Then they play a Larva in its eternal movement. "
+"Other participants tie their limbs and start dragging them across a very harsh surface. The winning team is the one that gets rid of their Larva first."
+{Larvae}
+
+[B-Sport 06]
+"The Bombs competition demonstrates the unstoppable vengeance of Beeboorats upon their enemies for their crimes. Here are the rules:"
+"This competition is for the most accurate heroes. They jump blindfolded from the tower down onto strong Nucleoboom densely scattered on the ground by strict referees. "
+"The winner is the one who smashes the most Nucleobooms, with an unlimited number of attempts. Those who make fewer than three attempts are kicked out and converted into shrubs."
+
+[B-Sport 07]
+"The Greedy Eleepods competition satirizes the depraved and degenerate bios of the Eleepods, revealing all the dirt and filth of their vicious society. Here are the rules:"
+"The brave heroes plunge pointed metallic rods into themselves, with the bravest ones ready to lose some of their limbs to make room for more rods. "
+"Then they start rolling around the arena trying to pick up the most Nucleobooms, which are scattered around by the referees."
+
+[B-Sport 08]
+"This one is the spectators' favorite. The Pods competition was recently invented by the stylish Geer'ah. Here are the rules: "
+"Each team initially consists of three heroes who set themselves on a rod well-greased with the oil of sacred Nucleoboom. This is the pod starter. "
+"Then the teams start tearing around the crowd picking up new members for the pods by impaling them with their rods. "
+"Those impaled on a rod must actively help the pod."
+
+[B-Sport 09]
+"The Squeeze competition symbolizes the Beeboorats' tight cohesion under the wise guidance of the Buro. Here are the rules:"
+"The heroes, after a good warm-up, rub themselves with Nucleoboom juice to soften their bodies, after which they start squeezing into a narrow cave. "
+"The winner is the team whose members manage to pack themselves in faster and better. Those who show the best results are then rubbed off the walls."
+
+[Kernowar Waiting?]
+"Commissar, you can stay here with the charming Geer'ah and listen to his wise advice to expand your mind. When the Nuclear War begins, you'll go for Nucleoboom. The more you collect, the better for you!"
+{Geer'ah} {Nuclear War} {Heroism} {Nucleoboom}
+"Okay, Geer'ah, I'll wait, but not for long... "
+"Jablees is in the air, go for Nucleoboom now! I'll prepare the brave Heroes for their exploits in the meantime."
+{Jablees}
+"Anything else, you rickety beast? I'll get by without your advice! "
+"Give me none of your lip! Go get a basket of Nucleoboom, or I'll tell the Buro about your mischief!"
+
+[Nymbos in Inventory:G]
+"I see nymbos and I'm very proud of our plain workers' outstanding performance."
+
+[Phlegma in Inventory:G]
+"Hee! Eleepod mucus. All right, have some beebs for your pain, mucus shipper..."
+
+[Poponka in Inventory:B]
+"Halt! Where are you taking those Zeexen squiggles? That's subversive stuff! Scattering it around Glorx, huh? Wheeler, your cargo is being confiscated for a check and investigation in the name of the Beeboorats!"
+{popon}
+
+[Toxick in Inventory:B]
+"Alarm! Help! Diversion! Where's security!? They're poisoning me with toxick! It hurts like hell! You want to deprive the Beeboorats of the stylish Geer'ah, sworn enemy? There's no crime worse than that! The Buro sentences you to death!"
+{toxick}
+
+[eLeech in Inventory:G]
+"Come to me, lip-smacking eLeech! What a joy! I'm so proud of my nursling. The Buro will make note of your services! I know, anyone can become a regular hero!"
+
+[WeeZyk in Inventory:B]
+"Seems you have an ugly statue. Do you think it can inspire the Heroes to greater feats? You're wrong, damn saboteur! "
+"Get a smaller mechos, as I believe this will get rid of your habit of picking up garbage..."
+{ProtoZeek}
+
+[MP0 Start]
+"Vanger! The VAN-WAR has started on Glorx! The pluckiest ones have started getting into it up there, and they're anxious to take your life. Go up and meet them, and try to take more than you give. Beeboorats like watching rumbles and gun fights, so don't disappoint us..."
+
+[MP1 Start]
+"Hey you, scavenger, the vangers have started the MECHOSOMA! You must deliver the predetermined amount of shrubs and Valorins. Load the cargo quickly, but take care that your crate doesn't collapse under the weight. The time of merchants and traffickers has come on Glorx; rock us with your carrying capacity."
+
+[MP2 Start]
+"Hold the wheel tight, vanger! The PASSEMBLOSS has started! Show us how you can drive fast and throw your competitors into ditches. To help the dumb vangers, the route goes through checkpoints that are seen as glowing circles on the road. Don't mix them up with whirlpools!"
+
+[MP3 Start]
+"HUNTAGE started!"
+
+[MP4 Start]
+"MUSTODONT started!"
+
+[MP0 Comment]
+"Okay, yellow belly, the VAN-WAR is in full swing! Get yourself a big gun, maybe you'll feel more confident then. You can still get at the jackanapes who dared take you on in his craggy buggy. Blow the scab up so that nearby bridges collapse and beebs fall legs up!"
+
+[MP1 Comment]
+"The MECHOSOMA is going full blast... Tired of shipping shrubs and Valorins, huh? That's all right, but isn't it a good way to save up for a new mechos? Show the others who's the best merchant on Glorx! And if a couple of oafs end up in the water, never mind. Only tough vangers can ship goods!"
+
+[MP2 Comment]
+"I know it isn't that easy to win the PASSEMBLOSS. The main thing here is to not go astray or skip a checkpoint in the heat of the moment. Remember, they are those glowing circles. If an oaf lingers in front of you, throw him into a ditch without hesitating. Speed is the name of the game!"
+
+[MP3 Comment]
+"HUNTAGE in progress..."
+
+[MP4 Comment]
+"MUSTODONT in progress..."
+
+[Cirt in Inventory]
+"Gee whiz! The flabby vanger pulled his wimpy muscles together and secured some cirt... That's good. I'm glad you are taking the way of a loyal servant of the Buro. The Heroes perform their feats in the stadium and Nucleoboom falls from the sky for a good cause."
+{vangers} {cirt} {Nucleoboom} {Geer'ah} {VigBoo} {Boorawchick}
+"Praise the stylish Geer'ah, who beat some useful and practical thoughts into your dull head. Now fly to VigBoo and hand the cirt to Boorawchick. He'll weigh it and evaluate it properly."
+
+[BadCirt in Inventory:B]
+"It's not usually so hard to bear my honorable duty. This is worse than when I smell toxick... Need to take some choice cirt... But where can I get it?"
+{toxick} {cirt}
+
+[GoodCirt in Inventory:G]
+"Oh la la, what clearness in my head! I was inspired! I remembered the multiplication table! What joy! Now I can devise a few new competitions for the Heroes! Want to take part? Just a joke, midget. Your cherished Geer'ah feels really good today."
+{cirt}
+
+[Larva in Inventory]
+"Oh, my sensitive nature is on the edge of collapse! Something interesting is sitting in this conlarver! And what can sit in a conlarver? A Larva can sit in a conlarver! You understand what you've brought, you peeperette tail? I think I'm going to weep... "
+"At last, another vanger who listened to the wise mentoring of stylish Geer'ah and brought glory on his Rubbox forever. If you only knew how many vangers must be converted into shrubs before you come across a gifted one... "
+"All right. I hope you haven't forgotten the way to VigBoo after all this joy. Boorawchick will take charge of his trophy. Our trophy, to be precise. Any vanger will tell you that you can't get a Larva without the wise mentoring of Geer'ah, even if you ride a conlarver!"
+
+[Protractor in Inventory:G]
+"You are bloody lucky, bungler! You got the Protractor! For a long time I've been dreaming of getting it for the stadium... "
+"I have a lot of clever thoughts in my wide and clear mind on how to use the Protractor. Oh, by the way, do you want to use this thing yourself? Or sell it to me!!!"
+{Protractor}
+
+[Mechanic Messiah in Inventory:B]
+"Whoa... whoa... whoa... stop right there. You thought your Mechanical Messiah would make me happy? What a dumb, sweet creature you are... But Geer'ah has seen something even scarier, so he won't be trembling in fear of your toy... "
+"My barbell is heavier, how about that?! I'll smash it into your forehead and you'll forget the way here at once. Get lost, you freak!"
+{Mechanical Messiah}
+
+[Function-83 in Inventory]
+"Let me take a look at your Function-83+... Stylish Geer'ah can't understand how this tin can with all its holes can get through Passages... Maybe it's just a jar for phlegma? I'll give you ten beebs for it, think about it... Or even thirteen. It's a good bargain!"
+{Function-83+}
+
+[Spummy in Inventory:B]
+"What's wrong with my glorious heroes?! They are frozen, looking at the ceiling... What about the competitions, the feats? It's sabotage! I know where the evil is from: the Chomper! Right, and my tame beebs have panicked... "
+"Hey you, damned wheeler, I fear nothing! I have the Medal of Fearlessness and Inflexibility. I personally destroy the toxick that we confiscate! I'll tie you up in knots with this Chomper! You stopped our Competition of Valorins, what else are you going to ruin? Get out while you still can!"
+{Chomper}
+
+[Boot Sector in Inventory]
+"You dug up Boot Sector? You wasted your time. Today's vangers will filch your spare mechos piece by piece before you set up this rusty old thing... Better give it to me to use in our competitions..."
+{Boot Sector}
+
+[Peelot in Inventory]
+"If the Buro could produce Flymatics in bulk, the Slaves would become unnecessary. The mechos would ship Valorins and shrubs continuously and without much trouble. Unfortunately, as there's only one Flymatic, it's an absolutely useless widget. Better sell it to me. I'll give you some beebs for it!"
+{Flymatic}
+
+[Fake Kernoboo found]
+"Wait, what's wrong with these Nucleobooms? They're a strange color and their weight is different... I got it! They're counterfeit! You dusty sack, you wanted to cheat Geer'ah? You're wasting your time. I can notice even the slightest deviation from the rules here in the stadium. "
+"I can see right through you, you pilferers. Geer'ah will never allow fake Nucleoboom in the stadiums. The heroes need only the best for their farewell performance! "
+"You kerno-forger, dump your plunder there, near the bench. I'll check to see if there's anything else illegal there!"
+{Nucleoboom}
+
+[Boorawchick in Inventory]
+"Hi Boorawchick, my colleague! Stylish Geer'ah is on duty. Watch my heroes, see how they act as one: when they start digging, nothing can be seen through the flying dirt! "
+"Your Valorins are very good; I have no complaints. But the cirt's been arriving mixed with clay lately. Stealing little by little? Just a joke... Report to the Buro that Geer'ah himself praised you!"
+
+[Last Moggy part note]
+"It's been a while since I've seen as pushy a vanger as you. You can help us! I'm planning to relocate to VigBoo soon... But that's a secret! I need a really tough mechos for the trip, for proper protection... "
+"So listen up: Box is a part of Last Moggy. Go ahead, put the machine together and hold your tongue. When I whistle, you come here to die for me! If they torture you, you say nothing..."
+
+[Wormaster part note]
+"You make me laugh, vanger. A soldier like you should be the greatest hero in the stadium. But the mechos are your business, wheelers. So, let's talk mechos. "
+"The Cogged Widget is a part of Wormaster, our secret weapon against the Eleepods, so keep an eye on it!"
+
+[Weexow visit]
+"So, good-for-nothing, did your crate get rusty after Weexow? You'd better watch it: should your wagon fall apart somewhere on Necross, the local wild beebs will gnaw you away to nothing, poor thing..."
+{Weexow}
+
+[Boozeena visit]
+"Tell me, is there any vegetation on Boozeena that would be good for our competitions? It would be good to surprise our heroes with something special... The Buro is sending you there on a business trip to collect the flora..."
+{Boozeena}
+
+[Ark-a-Znoy visit]
+"What, you dodger, you've been to Ark-a-Noi? Get a couple of those local light-worms for me the next time you're there, will you? I'm thinking of a new sport for our heroes. They're kinda big, you say? That's a pity... I'll try to think of something else..."
+{Ark-a-Noi}
+
+[Khox visit]
+"It's been a long time since I last saw survivors from Khox. You are the first in many cycles who has gotten through. The last one who returned from there complained about the darkness... I advised the dolt to take a torch with him, and that was the last I saw of him..."
+{Khox}
+
+[hMok visit]
+"So what's going on over there on hMok? They say the local beebs are made of stainless steel and eat mechos... Did you notice who delivers jars with acid there? They must be pretty wicked and criminal subjects like the Zeexen..."
+{hMok}
+
+[Threall visit]
+"You brought something from Threall, you nut? Enemy instructions for sabotaging our competitions, I guess? The Buro's been thinking of plugging that Passage to Threall for ages, but can't find the time..."
+{Threall}
+
+[Eleepod in Inventory]
+"Oh, Geer'ah sees an Eleepod! I guess I'll place him among the heroes as a team captain. No, that's too much honor for the worm. He'd be better as equipment... "
+"You'll like our competitions, worm. Imagine how a big fat sack full of Fostral waters like you would pop from a Nucleoboom hit, accompanied by a storm of applause... "
+"That would be a show! The spectators would praise the initiative of stylish Geer'ah, the Show Creator!"
+
+[Beeboorat in Inventory]
+"Hey, Beeboorat! Salute stylish Geer'ah! Why are you here? Hero registration is closed and the teams have been formed. We have vacancies for a Nucleoboom squeezer and an arena cleaner. Or are you on a secret mission? Then come this way..."
+
+[Zeex in Inventory]
+"Aha, an acid Zeex is here! To personally see the legendary valor and rigidity of the Beeboorats with your popped eyes, I guess? Good for you! "
+"Looks like you hornets from Necross have finally started to recognize the superiority of the Buro and are even trying to get under our command. Keep it up, you're on the right path!"
+
+[Zyklope warning]
+"Wheeler! You've entertained stylish Geer'ah well and I would like to pay you back in kind. I'll tell you what the Zeexen do to you ramblers. Mad Zeephra, who lives in ZeePa, envelops all the vangers that she catches in clay and sends them to B-Zone as souvenirs. "
+"Funny, huh? So don't go to ZeePa, go to B-Zone instead. The local Zeexen are not that crazy..."
+{ZeePa} {B-Zone} {Zeephra}
+
+[Boozeena Code]
+"Hey, vanger! You are a SUPERAGENT, aren't you? Your passenger asked me to give you a message: $(Boozeena Secret Code)... That's without doubt a cipher from the Buro. But don't be afraid, I'll hold my tongue..."
+
+[Larvae Vision note:G]
+"Hey, wheeler! Your Dominance has reached 50% of the level of a Buro Superagent. Well done! You are being granted access to information about Larva movement. Keep an eye on the map!"
+{Larvae}
