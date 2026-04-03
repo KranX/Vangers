@@ -241,7 +241,7 @@ std::shared_ptr<text::TtfFontFace> aGetTextTtfFace(int font)
 int aUtf8StrLen(std::string_view text_value,int font,int space)
 {
 	auto face = actint_get_text_ttf_face(font);
-	if(face){
+	if(face && text::language_prefers_utf8_assets()){
 		size_t offset = 0;
 		uint32_t codepoint = 0;
 		int len = 0;
@@ -259,7 +259,7 @@ int aUtf8StrLen(std::string_view text_value,int font,int space)
 int aUtf8TextWidth32(std::string_view text_value,int font,int hspace)
 {
 	auto face = actint_get_text32_ttf_face(font);
-	if(face)
+	if(face && text::language_prefers_utf8_assets())
 		return text::measure_utf8_text_width(text_value, *face, hspace);
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
@@ -269,7 +269,7 @@ int aUtf8TextWidth32(std::string_view text_value,int font,int hspace)
 int aUtf8TextHeight32(std::string_view text_value,int font,int vspace)
 {
 	auto face = actint_get_text32_ttf_face(font);
-	if(face)
+	if(face && text::language_prefers_utf8_assets())
 		return text::measure_utf8_text_height(text_value, *face, vspace);
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
