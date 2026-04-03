@@ -15,6 +15,8 @@
 #include "../text/legacy_ttf_draw.h"
 #include "../text/unicode.h"
 
+#include <unordered_map>
+
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
 extern iScreenDispatcher* iScrDisp;
@@ -71,6 +73,30 @@ std::shared_ptr<text::TtfFontFace> iscreen_get_hfont_ttf_face(int fnt)
 	return text::default_ui_ttf_face(HFntTable[fnt]->SizeY, TTF_HINTING_NORMAL, false, 0);
 }
 
+int iscreen_hfont_peak_level(HFont* font)
+{
+	static std::unordered_map<const HFont*, int> cache;
+
+	if(!font)
+		return HFONT_NULL_LEVEL;
+
+	auto it = cache.find(font);
+	if(it != cache.end())
+		return it->second;
+
+	int peak_level = HFONT_NULL_LEVEL;
+	for(int i = 0; i < font->NumChars; i++){
+		HChar* ch = font->data[i];
+		if(!ch)
+			continue;
+		if(ch->MaxHeight > peak_level)
+			peak_level = ch->MaxHeight;
+	}
+
+	cache.emplace(font, peak_level);
+	return peak_level;
+}
+
 uint32_t iscreen_decode_legacy_char(unsigned char ch,text::LegacyEncoding encoding)
 {
 	switch(encoding){
@@ -103,7 +129,7 @@ const text::GlyphBitmap* iscreen_get_renderable_glyph(text::TtfFontFace& face,un
 	return iscreen_get_renderable_codepoint(face, iscreen_decode_legacy_char(ch, encoding));
 }
 
-void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,int legacy_height,int scale,
+void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,int legacy_height,int legacy_peak_level,int scale,
                           std::vector<unsigned char>& cell,int& cell_width,int& cell_height,int& left_offs,int& right_offs)
 {
 	const text::GlyphBitmap* glyph = iscreen_get_renderable_codepoint(face, codepoint);
@@ -140,7 +166,7 @@ void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,i
 			if(px < 0 || px >= cell_width || py < 0 || py >= cell_height)
 				continue;
 
-			int level = (int)((alpha * (255 - HFONT_NULL_LEVEL) + 127) / 255);
+			int level = (int)((alpha * (legacy_peak_level - HFONT_NULL_LEVEL) + 127) / 255);
 			level = (level * scale) >> 8;
 			level += HFONT_NULL_LEVEL;
 			if(level < 0)
@@ -153,10 +179,10 @@ void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,i
 	}
 }
 
-void build_hfont_ttf_cell(text::TtfFontFace& face,unsigned char ch,text::LegacyEncoding encoding,int legacy_height,int scale,
+void build_hfont_ttf_cell(text::TtfFontFace& face,unsigned char ch,text::LegacyEncoding encoding,int legacy_height,int legacy_peak_level,int scale,
                           std::vector<unsigned char>& cell,int& cell_width,int& cell_height,int& left_offs,int& right_offs)
 {
-	build_hfont_ttf_cell_codepoint(face, iscreen_decode_legacy_char(ch, encoding), legacy_height, scale,
+	build_hfont_ttf_cell_codepoint(face, iscreen_decode_legacy_char(ch, encoding), legacy_height, legacy_peak_level, scale,
 	                               cell, cell_width, cell_height, left_offs, right_offs);
 }
 
@@ -829,6 +855,7 @@ void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space
 	auto face = iscreen_get_hfont_ttf_face(fnt);
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0;
+	const int legacy_peak_level = iscreen_hfont_peak_level(p);
 
 	_x = x;
 	_y = y;
@@ -840,7 +867,7 @@ void iPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int space
 		}
 
 		if(face){
-			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, scale,
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, scale,
 			                     ttf_cell, sx, sy, left_offs, right_offs);
 			put_buf(_x - left_offs,_y,sx,sy,ttf_cell.data(),ttf_cell.data(),level,hide_mode);
 			_x += sx - right_offs - left_offs + space;
@@ -874,6 +901,7 @@ void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int sc
 
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0,sx = 0,sy = 0;
+	const int legacy_peak_level = iscreen_hfont_peak_level(p);
 	int _x = x;
 	int _y = y;
 	size_t offset = 0;
@@ -888,7 +916,7 @@ void iPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,int sc
 			continue;
 		}
 
-		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, scale, ttf_cell, sx, sy, left_offs, right_offs);
+		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, scale, ttf_cell, sx, sy, left_offs, right_offs);
 		put_buf(_x - left_offs, _y, sx, sy, ttf_cell.data(), ttf_cell.data(), level, hide_mode);
 		_x += sx - right_offs - left_offs + space;
 	}
@@ -903,6 +931,7 @@ void i_terrPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int 
 	auto face = iscreen_get_hfont_ttf_face(fnt);
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0;
+	const int legacy_peak_level = iscreen_hfont_peak_level(p);
 
 	_x = x;
 	_y = y;
@@ -914,7 +943,7 @@ void i_terrPutStr(int x,int y,int fnt,unsigned char* str,int mode,int scale,int 
 		}
 
 		if(face){
-			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, scale,
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, scale,
 			                     ttf_cell, sx, sy, left_offs, right_offs);
 			put_tbuf(_x - left_offs,_y,sx,sy,ttf_cell.data(),ttf_cell.data(),level,hide_mode,terr);
 			_x += sx - right_offs - left_offs + space;
@@ -948,6 +977,7 @@ void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,i
 
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0,sx = 0,sy = 0;
+	const int legacy_peak_level = iscreen_hfont_peak_level(p);
 	int _x = x;
 	int _y = y;
 	size_t offset = 0;
@@ -962,7 +992,7 @@ void i_terrPutStrUtf8(int x,int y,int fnt,std::string_view text_value,int mode,i
 			continue;
 		}
 
-		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, scale, ttf_cell, sx, sy, left_offs, right_offs);
+		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, scale, ttf_cell, sx, sy, left_offs, right_offs);
 		put_tbuf(_x - left_offs, _y, sx, sy, ttf_cell.data(), ttf_cell.data(), level, hide_mode, terr);
 		_x += sx - right_offs - left_offs + space;
 	}
@@ -977,6 +1007,7 @@ void iPutStr2buf(int x,int y,int fnt,int bsx,int bsy,unsigned char* str,unsigned
 	auto face = iscreen_get_hfont_ttf_face(fnt);
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0;
+	const int legacy_peak_level = iscreen_hfont_peak_level(p);
 
 	_x = x;
 	_y = y;
@@ -988,7 +1019,7 @@ void iPutStr2buf(int x,int y,int fnt,int bsx,int bsy,unsigned char* str,unsigned
 		}
 
 		if(face){
-			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, 256,
+			build_hfont_ttf_cell(*face, str[i], iscreen_hfont_encoding(), p -> SizeY, legacy_peak_level, 256,
 			                     ttf_cell, sx, sy, left_offs, right_offs);
 			h_put_buf2buf(_x - left_offs,_y,sx,sy,bsx,bsy,ttf_cell.data(),buf_to);
 			_x += sx - right_offs - left_offs + space;
@@ -1019,6 +1050,7 @@ void iPutStr2bufUtf8(int x,int y,int fnt,int bsx,int bsy,std::string_view text_v
 
 	std::vector<unsigned char> ttf_cell;
 	int left_offs = 0,right_offs = 0,sx = 0,sy = 0;
+	const int legacy_peak_level = iscreen_hfont_peak_level(p);
 	int _x = x;
 	int _y = y;
 	size_t offset = 0;
@@ -1033,7 +1065,7 @@ void iPutStr2bufUtf8(int x,int y,int fnt,int bsx,int bsy,std::string_view text_v
 			continue;
 		}
 
-		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, 256, ttf_cell, sx, sy, left_offs, right_offs);
+		build_hfont_ttf_cell_codepoint(*face, codepoint, p->SizeY, legacy_peak_level, 256, ttf_cell, sx, sy, left_offs, right_offs);
 		h_put_buf2buf(_x - left_offs, _y, sx, sy, bsx, bsy, ttf_cell.data(), buf_to);
 		_x += sx - right_offs - left_offs + space;
 	}
