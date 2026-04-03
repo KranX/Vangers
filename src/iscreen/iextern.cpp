@@ -881,7 +881,10 @@ void iScreenOption::save(XStream* fh)
 				break;
 			case iSTRING:
 				if(ValueType == iOPTION_VALUE_CUR){
-					ptr = ((iStringElement*)objPtr) -> string;
+					if(((iStringElement*)objPtr)->Utf8Canonical)
+						ptr = (char*)((iStringElement*)objPtr)->utf8_string.c_str();
+					else
+						ptr = ((iStringElement*)objPtr) -> string;
 					ret = strlen(ptr);
 					*fh < ret;
 					fh -> write(ptr,ret);
@@ -889,7 +892,10 @@ void iScreenOption::save(XStream* fh)
 				break;
 			case iS_STRING:
 				if(ValueType == iOPTION_VALUE_CUR){
-					ptr = ((iS_StringElement*)objPtr) -> string;
+					if(((iS_StringElement*)objPtr)->Utf8Canonical)
+						ptr = (char*)((iS_StringElement*)objPtr)->utf8_string.c_str();
+					else
+						ptr = ((iS_StringElement*)objPtr) -> string;
 					ret = strlen(ptr);
 					*fh < ret;
 					fh -> write(ptr,ret);
@@ -902,7 +908,6 @@ void iScreenOption::save(XStream* fh)
 void iScreenOption::load(XStream* fh)
 {
 	int ret = 0;
-	char* ptr;
 	iScreenObject* obj;
 
 	if(flags & iOPTION_NO_SAVE) return;
@@ -928,10 +933,11 @@ void iScreenOption::load(XStream* fh)
 			case iSTRING:
 				if(ValueType == iOPTION_VALUE_CUR){
 					*fh > ret;
-					ptr = ((iStringElement*)objPtr) -> string;
-					fh -> read(ptr,ret);
-					ptr[ret] = ptr[ret + 1] = 0;
-					((iStringElement*)objPtr) -> sync_utf8_from_legacy();
+					{
+						std::string text_value((size_t)ret, '\0');
+						fh -> read(text_value.data(),ret);
+						((iStringElement*)objPtr) -> set_text_auto(text_value.c_str());
+					}
 					((iStringElement*)objPtr) -> init_size();
 					((iStringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iStringElement*)objPtr) -> owner;
@@ -941,10 +947,11 @@ void iScreenOption::load(XStream* fh)
 			case iS_STRING:
 				if(ValueType == iOPTION_VALUE_CUR){
 					*fh > ret;
-					ptr = ((iS_StringElement*)objPtr) -> string;
-					fh -> read(ptr,ret);
-					ptr[ret] = ptr[ret + 1] = 0;
-					((iS_StringElement*)objPtr) -> sync_utf8_from_legacy();
+					{
+						std::string text_value((size_t)ret, '\0');
+						fh -> read(text_value.data(),ret);
+						((iS_StringElement*)objPtr) -> set_text_auto(text_value.c_str());
+					}
 					((iS_StringElement*)objPtr) -> init_size();
 					((iS_StringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iS_StringElement*)objPtr) -> owner;
@@ -1044,7 +1051,7 @@ void iScreenOption::SetValueCHR(const char* p)
 			case iSTRING:
 				if(ValueType == iOPTION_VALUE_CUR){
 					if (((iStringElement*)objPtr)->string != p)
-						((iStringElement*)objPtr) -> init_string(p);
+						((iStringElement*)objPtr) -> set_text_auto(p);
 					((iStringElement*)objPtr) -> init_size();
 					((iStringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iStringElement*)objPtr) -> owner;
@@ -1055,7 +1062,7 @@ void iScreenOption::SetValueCHR(const char* p)
 			case iS_STRING:
 				if(ValueType == iOPTION_VALUE_CUR){
 					if (((iS_StringElement*)objPtr)->string != p)
-						((iS_StringElement*)objPtr) -> init_string(p);
+						((iS_StringElement*)objPtr) -> set_text_auto(p);
 					((iS_StringElement*)objPtr) -> init_size();
 					((iS_StringElement*)objPtr) -> init_align();
 					obj = (iScreenObject*)((iS_StringElement*)objPtr) -> owner;
@@ -1069,7 +1076,7 @@ void iScreenOption::SetValueCHR(const char* p)
 		switch(ptr -> optionPtr -> ObjectType){
 			case iSTRING:
 				if(ptr -> optionPtr -> ValueType == iOPTION_VALUE_CUR){
-					((iStringElement*)ptr -> optionPtr -> objPtr) -> init_string(p);
+					((iStringElement*)ptr -> optionPtr -> objPtr) -> set_text_auto(p);
 					((iStringElement*)ptr -> optionPtr -> objPtr) -> init_size();
 					((iStringElement*)ptr -> optionPtr -> objPtr) -> init_align();
 					obj = (iScreenObject*)((iStringElement*)ptr -> optionPtr -> objPtr) -> owner;
@@ -1079,7 +1086,7 @@ void iScreenOption::SetValueCHR(const char* p)
 				break;
 			case iS_STRING:
 				if(ptr -> optionPtr -> ValueType == iOPTION_VALUE_CUR){
-					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> init_string(p);
+					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> set_text_auto(p);
 					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> init_size();
 					((iS_StringElement*)ptr -> optionPtr -> objPtr) -> init_align();
 					obj = (iScreenObject*)((iS_StringElement*)ptr -> optionPtr -> objPtr) -> owner;
@@ -1201,14 +1208,14 @@ void iInitControlObjects(void)
 				
 				if (str) {
 					if(strcasecmp(iControlsStr[index]->string,str)) {
-						iControlsStr[index]->init_string(str);
+						iControlsStr[index]->set_text_auto(str);
 						obj = (iScreenObject*)iControlsStr[index] -> owner;
 						obj -> flags |= OBJ_REINIT;
 						obj -> flags |= OBJ_MUST_REDRAW;
 					}
 				} else {
 					if(strcasecmp(iControlsStr[index] -> string,iSTR_NONE)) {
-						iControlsStr[index]->init_string(iSTR_NONE);
+						iControlsStr[index]->set_text_auto(iSTR_NONE);
 						obj = (iScreenObject*)iControlsStr[index] -> owner;
 						obj -> flags |= OBJ_REINIT;
 						obj -> flags |= OBJ_MUST_REDRAW;
@@ -1232,7 +1239,7 @@ void iDeleteControl(int vkey,int id)
 				key = iGetControlCode(i,j);
 				if(key == vkey){
 					iSetControlCode(i,0,j);
-					iControlsStr[index]->init_string(iSTR_NONE);
+					iControlsStr[index]->set_text_auto(iSTR_NONE);
 					obj = (iScreenObject*)iControlsStr[index] -> owner;
 					obj -> flags |= OBJ_REINIT;
 					obj -> flags |= OBJ_MUST_REDRAW;
@@ -1950,7 +1957,7 @@ void iMultiResultString::redraw(void)
 		el = (iStringElement*)stringPtr;
 		obj = (iScreenObject*)el -> owner;
 
-		el -> init_string(prmString);
+		el -> set_text_auto(prmString);
 		obj -> flags |= OBJ_REINIT;
 		obj -> flags |= OBJ_MUST_REDRAW;
 		if(!strlen(prmString))

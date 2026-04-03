@@ -1202,7 +1202,7 @@ void iInitText(iScreenObject* obj, char* text, int text_len, int font, int space
 			if(t_sz) {
 				p->string = new char[t_sz];
 				p->string_capacity = t_sz;
-				p->init_string(buf + i);
+				p->set_text_auto(buf + i);
 				p->flags |= EL_TEXT_STRING;
 
 				p->font = font;
@@ -1241,7 +1241,7 @@ void iInitS_Text(iScreenObject* obj,char* text,int text_len,int font,int space,i
 				p = new iS_StringElement;
 				p -> string = new char[t_sz];
 				p -> string_capacity = t_sz;
-				p -> init_string(buf + i);
+				p -> set_text_auto(buf + i);
 				p -> flags |= EL_TEXT_STRING;
 
 				p -> font = font;
@@ -2560,19 +2560,13 @@ void iInitServersList()
 		el = (iStringElement*)scr -> get_object(XBuf.address());
 		if(el){
 			obj = (iScreenObject*)el -> owner;
-			memset(el -> string,0,ACI_SERVER_NAME_LEN + 1);
 			if(p){
-				sz = strlen(p -> name);
-				if(sz > ACI_SERVER_NAME_LEN)
-					memcpy(el -> string,p -> name,ACI_SERVER_NAME_LEN);
-				else
-					el -> init_string(p -> name);
-				el -> sync_utf8_from_legacy();
+				el -> set_text_auto(p -> name);
 				p = p -> next;
 				obj -> flags &= ~OBJ_LOCKED;
 			}
 			else{
-				el -> sync_utf8_from_legacy();
+				el -> init_string("");
 				obj -> flags |= (OBJ_LOCKED | OBJ_NOT_UNLOCK);
 			}
 			el -> init_size();

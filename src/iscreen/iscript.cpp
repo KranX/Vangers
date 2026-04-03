@@ -863,11 +863,11 @@ void ParseScript(const char* fname,const char* bname)
 					if(iCurObjType == I_ELEMENT){
 						script -> prepare_pdata();
 						if(iElem -> type == I_STRING_ELEM){
-							iElStr -> init_string(script -> get_conv_ptr());
+							iElStr -> set_text_auto(script -> get_conv_ptr());
 						}
 						else {
 							if(iElem -> type == I_S_STRING_ELEM){
-								iElS_Str -> init_string(script -> get_conv_ptr());
+								iElS_Str -> set_text_auto(script -> get_conv_ptr());
 							}
 							else {
 								handle_error("Misplaced option",OptIDs[id]);
@@ -1586,7 +1586,7 @@ void load_text(char* fname)
 				p = new iStringElement;
 				t_sz = strlen(buf + i) + 1;
 				if(t_sz){
-					p -> init_string(buf + i);
+					p -> set_text_auto(buf + i);
 					p -> flags |= EL_TEXT_STRING;
 
 					p -> font = DefFont;
@@ -1634,7 +1634,7 @@ void load_s_text(char* fname)
 				t_sz = strlen(buf + i) + 1;
 				if(t_sz){
 					p = new iS_StringElement;
-					p -> init_string(buf + i);
+					p -> set_text_auto(buf + i);
 					p -> flags |= EL_TEXT_STRING;
 
 					p -> font = DefFont;

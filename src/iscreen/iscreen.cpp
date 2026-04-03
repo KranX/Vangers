@@ -3569,6 +3569,15 @@ void iStringElement::set_utf8_string(const std::string& value)
 	iscreen_set_utf8_string(this, value);
 }
 
+void iStringElement::set_text_auto(const char* value)
+{
+	const char* src = value ? value : "";
+	if(text::is_valid_utf8(src))
+		set_utf8_string(src);
+	else
+		init_string(src);
+}
+
 void iStringElement::sync_utf8_from_legacy(void)
 {
 	iscreen_sync_utf8_from_legacy(this);
@@ -3592,6 +3601,15 @@ void iS_StringElement::init_string(const char* ptr)
 void iS_StringElement::set_utf8_string(const std::string& value)
 {
 	iscreen_set_utf8_string(this, value);
+}
+
+void iS_StringElement::set_text_auto(const char* value)
+{
+	const char* src = value ? value : "";
+	if(text::is_valid_utf8(src))
+		set_utf8_string(src);
+	else
+		init_string(src);
 }
 
 void iS_StringElement::sync_utf8_from_legacy(void)
@@ -3818,9 +3836,9 @@ void iScreenDispatcher::input_string_quant(void)
 						if(flags & SD_INPUT_STRING && key_name){
 							if(!(ActiveEl -> flags & EL_JOYSTICK_KEY) || (k & iJOYSTICK_MASK)){
 								if(string_el)
-									string_el->init_string(key_name);
+									string_el->set_text_auto(key_name);
 								if(string32_el)
-									string32_el->init_string(key_name);
+									string32_el->set_text_auto(key_name);
 								set_cursor_visible(-1);
 								flags ^= SD_INPUT_STRING;
 								flags |= SD_FINISH_INPUT;
@@ -4301,18 +4319,28 @@ void iTextData::copy(iScreenObject* p)
 				break;
 		}
 		if(ptr){
-			if(!(flags & iTEXT_EOF))
-				read_str(ptr);
-			else
-				strcpy(ptr," ");
-
-			switch(el -> type){
-				case I_STRING_ELEM:
-					((iStringElement*)el) -> sync_utf8_from_legacy();
-					break;
-				case I_S_STRING_ELEM:
-					((iS_StringElement*)el) -> sync_utf8_from_legacy();
-					break;
+			if(!(flags & iTEXT_EOF)){
+				switch(el -> type){
+					case I_STRING_ELEM:
+						((iStringElement*)el) -> set_text_auto(data[curLine]);
+						break;
+					case I_S_STRING_ELEM:
+						((iS_StringElement*)el) -> set_text_auto(data[curLine]);
+						break;
+				}
+				curLine ++;
+				if(curLine >= numLines)
+					flags |= iTEXT_EOF;
+			}
+			else {
+				switch(el -> type){
+					case I_STRING_ELEM:
+						((iStringElement*)el) -> init_string(" ");
+						break;
+					case I_S_STRING_ELEM:
+						((iS_StringElement*)el) -> init_string(" ");
+						break;
+				}
 			}
 
 			switch(el -> type){
@@ -4433,7 +4461,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 					else {
 						next_text();
 						if(title_obj){
-							title_obj -> init_string(curText -> objName);
+							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
 						}
@@ -4447,7 +4475,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 					else {
 						next_text();
 						if(title_obj){
-							title_obj -> init_string(curText -> objName);
+							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
 						}
@@ -4461,7 +4489,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 		if(!curText) return 0;
 
 		if(title_obj){
-			title_obj -> init_string(curText -> objName);
+			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
 		}
@@ -4489,7 +4517,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 				if((lang() != RUSSIAN && id > 0) || id > iTEXT_RUS1_ID - 1){
 					prev_text();
 					if(title_obj){
-						title_obj -> init_string(curText -> objName);
+						title_obj -> set_text_auto(curText -> objName);
 						title_obj -> init_size();
 						title_obj -> init_align();
 					}
@@ -4516,7 +4544,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 		if(!curText) return 0;
 
 		if(title_obj){
-			title_obj -> init_string(curText -> objName);
+			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
 		}

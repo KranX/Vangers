@@ -2302,9 +2302,9 @@ void aciSetMechName(void)
 	if(!obj || !str) return;
 
 	if(aScrDisp -> secondMatrix -> mech_name)
-		strcpy(str -> string,aScrDisp -> secondMatrix -> mech_name);
+		str -> set_text_auto(aScrDisp -> secondMatrix -> mech_name);
 	else
-		strcpy(str -> string," ");
+		str -> init_string(" ");
 
 	str -> SizeX = str -> SizeY = 0;
 	str -> lX = str -> lY = 0;

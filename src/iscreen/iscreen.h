@@ -466,6 +466,7 @@ struct iStringElement : public iScreenElement
 	bool Utf8Canonical;
 
 	void init_string(const char* p);
+	void set_text_auto(const char* p);
 	void set_utf8_string(const std::string& value);
 	void sync_utf8_from_legacy(void);
 	void sync_legacy_from_utf8(void);
@@ -487,6 +488,7 @@ struct iS_StringElement : public iScreenElement
 	bool Utf8Canonical;
 
 	void init_string(const char* p);
+	void set_text_auto(const char* p);
 	void set_utf8_string(const std::string& value);
 	void sync_utf8_from_legacy(void);
 	void sync_legacy_from_utf8(void);

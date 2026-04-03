@@ -5,6 +5,7 @@
 
 #include "../iscreen/s_mem.h"
 #include "../iscreen/iscript.h"
+#include "../text/unicode.h"
 
 #include "aci_evnt.h"
 #include "aci_scr.h"
@@ -490,7 +491,10 @@ void acsParseScript(const char* fname,const char* bname)
 				case ACS_SET_STRING:
 					if(acsScriptMode == ACS_INIT_OBJECT && acsObj -> type == ACS_INPUT_FIELD_OBJ){
 						script -> prepare_pdata();
-						((aciScreenInputField*)acsObj) -> set_string(script -> get_conv_ptr());
+						if(text::is_valid_utf8(script -> get_conv_ptr()))
+							((aciScreenInputField*)acsObj) -> set_utf8_string(script -> get_conv_ptr());
+						else
+							((aciScreenInputField*)acsObj) -> set_string(script -> get_conv_ptr());
 					}
 					else {
 						handle_error("Misplaced option",acsOptIDs[id]);
