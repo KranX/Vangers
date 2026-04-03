@@ -72,8 +72,8 @@ struct Message {
 	std::string text;
 	int color;
 
-	Message(const char* text, int color) {
-		this -> text = std::string(text);
+	Message(const std::string& text, int color) {
+		this -> text = text;
 		this -> color = color;
 	}
 };
@@ -103,6 +103,7 @@ struct iChatHistoryScreen : iChatScreenObject
 struct iChatButton : iChatScreenObject
 {
 	char* string;
+	std::string utf8_string;
 
 	int NumState;
 	int CurState;
@@ -113,7 +114,8 @@ struct iChatButton : iChatScreenObject
 
 	virtual void redraw(void);
 
-	void set_string(const char* p){ strcpy(string,p); }
+	void set_string(const char* p);
+	void set_utf8_string(const std::string& value);
 	void set_color(int id,int col){ StateColors[id] = col; }
 
 	iChatButton(int num_state);

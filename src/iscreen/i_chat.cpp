@@ -256,6 +256,14 @@ static std::string iChatPlayerNameUtf8(void)
 	return text::legacy_to_utf8(CurPlayerName ? CurPlayerName : "", iChatTextEncoding());
 }
 
+static std::string iChatTextAutoToUtf8(const char* text_value)
+{
+	const char* text = text_value ? text_value : "";
+	if(text::is_valid_utf8(text))
+		return text;
+	return text::legacy_to_utf8(text, iChatTextEncoding());
+}
+
 static std::string iChatInputDisplayUtf8(int start_position,int end_position)
 {
 	return iChatPlayerNameUtf8() + iChatUtf8Substr(iChatInput -> string, start_position, end_position);
@@ -269,6 +277,16 @@ static int iChatUtf8TextWidth(const std::string& text,int font,int hspace)
 
 	std::string legacy_text = text::utf8_to_cp866_lossy(text,' ');
 	return iChatTextWidth(legacy_text.c_str(), font, hspace);
+}
+
+static int iChatUtf8TextHeight(const std::string& text,int font,int vspace)
+{
+	auto face = iChatGetTtfFace(font);
+	if(face)
+		return text::measure_utf8_text_height(text, *face, vspace);
+
+	std::string legacy_text = text::utf8_to_cp866_lossy(text,' ');
+	return iChatTextHeight(legacy_text.c_str(), font, vspace);
 }
 
 static void iChatUtf8OutText(int x,int y,int color,const std::string& text,int font,int hspace,int vspace)
@@ -479,9 +497,9 @@ void iChatHistoryScreen::redraw(void) {
 
 	for(int i = position; i < std::min((int)(data.size()), position + ICS_HISTORY_MAX_MESSAGES); i++){
 		if (data[i].text.length()) {
-			iChatOutText(PosX, PosY + y, data[i].color, (char*)(data[i].text.c_str()), font, 1, 0);
+			iChatUtf8OutText(PosX, PosY + y, data[i].color, data[i].text, font, 1, 0);
 		}
-		y += iChatTextHeight((char*)(data[i].text.c_str()), font, 0) + 2;
+		y += iChatUtf8TextHeight(data[i].text, font, 0) + 2;
 	}
 }
 
@@ -514,6 +532,7 @@ iChatButton::iChatButton(int num_state)
 
 	string = new char[ISC_MAX_STRING_LEN];
 	memset(string,0,ISC_MAX_STRING_LEN);
+	utf8_string.clear();
 }
 
 iChatButton::~iChatButton(void)
@@ -522,14 +541,29 @@ iChatButton::~iChatButton(void)
 	delete[] string;
 }
 
+void iChatButton::set_string(const char* p)
+{
+	strcpy(string, p ? p : "");
+	utf8_string = iChatTextAutoToUtf8(p);
+}
+
+void iChatButton::set_utf8_string(const std::string& value)
+{
+	utf8_string = value;
+	std::string legacy = text::utf8_to_legacy_lossy(value, iChatTextEncoding(), ' ');
+	size_t copy_len = std::min(legacy.size(), (size_t)ISC_MAX_STRING_LEN - 1);
+	memcpy(string, legacy.data(), copy_len);
+	string[copy_len] = 0;
+}
+
 void iChatButton::redraw(void)
 {
 	int dx,dy;
 	iChatScreenObject::redraw();
-	dx = (SizeX - iChatTextWidth(string,font,1)) / 2;
-	dy = (SizeY - iChatTextHeight(string,font,0)) / 2;
+	dx = (SizeX - iChatUtf8TextWidth(utf8_string,font,1)) / 2;
+	dy = (SizeY - iChatUtf8TextHeight(utf8_string,font,0)) / 2;
 
-	iChatOutText(PosX + dx,PosY + dy,StateColors[CurState],string,font,1,0);
+	iChatUtf8OutText(PosX + dx,PosY + dy,StateColors[CurState],utf8_string,font,1,0);
 }
 
 void iChatScreenObject::init(int x,int y,int sx,int sy,int col1,int col2)
@@ -1670,5 +1704,5 @@ void iChatClearLog(void)
 void iChatHistoryScreen::add_str(char* str, int col)
 {
 	int color = (iScreenChat) ? aciChatColors0[col] : aciChatColors1[col];
-	data.push_back(Message(str, color));
+	data.push_back(Message(iChatTextAutoToUtf8(str), color));
 }
