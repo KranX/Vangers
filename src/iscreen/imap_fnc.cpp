@@ -240,8 +240,10 @@ void build_hfont_ttf_cell_codepoint(text::TtfFontFace& face,uint32_t codepoint,i
 
 	left_offs = std::max(0, -minx);
 	cell_height = std::max(1, legacy_height);
-	cell_width = std::max(1, left_offs + std::max(advance, maxx));
-	right_offs = std::max(0, cell_width - left_offs - advance);
+	const int advance_right = left_offs + advance;
+	const int ink_right = glyph ? (left_offs + std::max(maxx, minx + glyph->width)) : advance_right;
+	cell_width = std::max(1, std::max(advance_right, ink_right));
+	right_offs = std::max(0, cell_width - advance_right);
 	cell.assign((size_t)cell_width * (size_t)cell_height, HFONT_NULL_LEVEL);
 
 	if(!glyph || glyph->alpha.empty())
