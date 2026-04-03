@@ -1,0 +1,287 @@
+[quotha]
+"ちょっと聞いてよ、この気違いさん。言いたいことがあるの……まあ理由は分からないけど、もうあなたなんて必要ないわ。まだ無事なうちにさっさと消えたほうがいいわよ……"
+"そのまま止まらずに行きなさい、ヴァンガー。ズィークセンは今のあなたなんて必要としていないの。"
+
+[Empty Question]
+"聞こえなかったわ！ 何て言ったの、このゴミみたいなの？"
+
+[Empty Molecule]
+"ああもう、おかしくてお腹が痛いわ。さっさと自分の仕事に戻りなさい。"
+
+[Block Molecule:B]
+"待ちなさい、この気合いだけは一人前の戦士さん。まだ話は終わっていないわ！"
+
+[Out Molecule:B]
+"さっさと出ていきなさい！"
+
+[Dead Molecule]
+"私たちを忘れないで、ヴァンガー…… かつてここにはジーカトリクスがいたのよ……"
+
+[empty]
+"e"
+
+[WeeZykVanger Arrival]
+"ほら見て、またあの妄信的なジーポどもが、粘土の中で焼き上げた気違いヴァンガーを送り込んできたわ…… やっぱり春なのね。土曜日の夜にはヴァンガーがぎゅうぎゅうになるって言うでしょう？"
+"まあまあ、あの腎臓壊しの像がそんなに怖かったの？ いいじゃない、こっちは優しいんだから…… またプロトジーク様のお出まし？ ごきげんよう、実験台閣下。ジーフラはいったいどこからあなたみたいな間抜けを掘り出してくるのかしら！"
+"でも、粘土の中からヴァンガーを引っぱり出すのって案外楽しいのよ。中には、あの忌まわしいインナー・ヴォイスを真似しようとするのもいるし、ビーボラットに鍛えられた連中は暴れもせず、ようやく世の中ってものを分かっているしね！"
+"それで、あの脳みそゼーポ向けの安っぽい像の中を旅した気分はどうだった？ 何も覚えていない？ そりゃそうよ、中は真っ暗だったでしょうし。あなたから面白い話が聞けるなんて期待していないもの。"
+"でも、これからのことは話しておきましょう。Bゾーンは慈善エスケイヴじゃないし、おばさまたちに騙されて流れ着いた新入りヴァンガー全員に、立派なメホスを配る余裕もないの。悪いけど、それはあなたの問題よ。"
+"だからといって沼に捨てるのも無意味なのよね。あなたみたいな頭の回る子は、うちの巣穴に色々いいものを運び込んでくれるし。あの建材――ポポン――を私たちに持ってきてくれるのは誰だと思ってるの？"
+"私たちはあれで色々便利なピラミッドを建てるのが好きなの。あの粘土くずに、ほかに何の使い道があるっていうの？ ただ残念なのは、ポポンってすぐ乾いてしまって、土曜日には埃とぬかるみしか残らないことね。"
+"というわけで決まり。はい、あなたに贈り物よ――丈夫で上等なメホス。たまには顔を出して、誰があなたを助けたのか忘れないことね！ たしかに機体は小さいけれど、その代わり素早くて跳ねるでしょう？ あなたみたいな利口なヴァンガーなら、瞬きする間にチェーンの半分くらい走り回れるわ。"
+"ああ、そうそう。どこへ行っていたのか聞かれたら、ジーカトリクスのところにいたって答えなさい。あの古狸の名はみんな知っているべきだもの。さあ、もう行きなさい、旅人さん……"
+{ZeePa} {B-Zone} {Zeephra} {Zeekatrix} {ProtoZeek} {Spring} {Saturday} {December}
+
+[HolyVanger Arrival I:G]
+"やあ、車輪くん！ その顔には見覚えがないわね。覚えていないわ。"
+"まあ、あなたって聖なるお方なのね！ なんて運がいいのかしら！ ほら、急いで金持ちのジーフラのところへ行きなさい。あの女なら、あなたという贈り物にきっと大金を払うわ。唯一無二のあなたにふさわしい、巨大でぴかぴかのメホスをもらって戻ってきたら、また会いましょう。さあ、ジーパへお行き！"
+{ZeePa} {B-Zone} {Zeephra} {Zeekatrix} {ProtoZeek} {Spring} {Saturday} {December}
+
+[HolyVanger Arrival II:G]
+"またあなた？ どうしてジーフラのところへ行かなかったの？ ネクロスで道に迷ったのかしら、かわいそうに。もっとしっかりしなさい、せっかくの幸運から逃げるんじゃないわ！ あなたが珍重されるのは今だけよ。周期が変わったら、ジーフラは腐ったビーブ一匹分だって払わないわ！"
+{Zeephra} {Necross}
+"好機を逃しちゃだめ。寄り道せずにジーパへ急いで、自分の運命に会いに行きなさい。早ければ、その後光に見合うだけのビーブを山ほどもらえるわ。"
+{ZeePa}
+
+[HolyVanger Arrival III:G]
+"なかなか底が知れない放浪者ね！ やあ、二度死んだヴァンガーさん。私はジーカトリクス……"
+"私の言葉に罠があると見抜いたのは賢かったわ。あなたたちって、利口なのか単純なのか本当に見分けがつかないのよね。だから私は欲深いヴァンガーをジーフラの下品な爪の中へ送り込んで、あの女に少しは思い知らせてもらうの。"
+"そうしてあの愚か者たちは次のジークロープでまた私のところへ戻ってくる。私にできるのはラッファを一台あてがうくらいだけど、一見するとあまり儲からないわね。"
+"つまりね、どれだけお互い嫌い合っていても、私とジーフラの間には暗黙の取り決めがあるのよ。私が送り込んだ木偶の坊一人につき、ちゃんと口利き料が入るってわけ。"
+"哀れなビーブのために私が間抜けを騙しているなんて思わないでちょうだい。そんなわけないでしょう！ 私たちは、簡単に手に入ったメホスや武器を愚かなヴァンガーから取り上げて、チェーンの資源を公平に回しているだけよ。"
+"棚ぼたで手に入れたものは、またすぐ消える。そうでしょう？ でなければ、誰があなたたちポンコツの面倒を見るの？ 気取ったビーボラットでも、太っちょイリーポッドでもない。あいつらはヴァンガーのことなんてビーブ一匹分も気にしていないもの。"
+"あいつらは、自分たちを支配しているのが誰なのか気づくには鈍すぎるのよ。サートや品物を運んでくる者たちがいるからこそ、ほかの連中はエスケイヴに座って夏を待っていられるんだから。"
+"ただでもらえるビーブを目当てにヴァンガーが突っ走って、そのみじめな代物をゴミの山から引きずり出す様子を見るのが、どれほど愉快かあなたには分からないでしょうね…… まだチェーンの掟を知らない子も多いもの。"
+"ジーカトリクスを恨まないで。あなたがストライヴァーの一員になりさえすれば、私は力を貸してあげるわ。あの醜いジーポどもは匂いで新参者を見分けるから、柔らかくしたポポンの特製粘土をメホスに塗っておいてあげる。"
+"はい、これでいいわ。これであの狂信者どもも、あなたを仲間だと勘違いして、キスつきで飛びついてくるはずよ。でも安心して。あの馬鹿どもは、古いソフティーの言葉を意味も知らずに真似しているだけだから……"
+"とはいえ、永遠に私の味方だと思わないことね。まだ自分でそれを勝ち取らないと。ヴァンガーって本当に奇妙な種族よ。私はあなたたちを見る目には自信があるし、はっきり言うわ――地下で暮らす者は、気ままに走り回る者を決して理解できない。私たちはクリーチャー・スープによって永遠に分かたれてしまったのよ。"
+{Zeekatrix} {Zeeklope} {Zeephra} {The Chain} {The Creature Soup} {vangers} {beebs}
+
+[Poponka Delivery:G]
+"ポポンを持ってきてくれてありがとう、本当に感謝するわ、ヴァンガー。私たちの使い方は少し違うけれど、そんなことどうでもいいでしょう？ 腕のいい者の手にかかれば、ポポンはいくらでも役に立つもの。もっとも、12月になると妙にもの悲しくなって、つい最初から最後まで読みふけってしまうこともあるのよね！"
+"それに、あの物語にもそれなりの美しさはあるわ。たとえ中身が、あの鈍くて時代遅れなジーポどもの妄想にすぎないとしてもね。まあ、この辺りの連中だって大差ないけれど。"
+{popon} {December}
+
+[Toxick in Inventory:B]
+"勘違いしているわよ、旅人さん。私たちはここでトクシックを煮詰めて、ジーパの押しつぶすように退屈な連中を皆殺しにするために送ろうとしているの。トクシックは愚かさに効く良薬なのよ。だから急いでジーフラのところへ持っていきなさい！"
+{toxick} {ZeePa} {Zeephra}
+
+[Zyklope Winner I:G]
+"Hi, ProtoZeek's master. We are just finishing up construction on another exit from B-Zone, so such a huge lump of clay will come in handy. "
+"Let me just extract the vanger caught by Zeephra out of this statuette. You know that your pal, the poor thing, was baked inside this heap by the zeepos? I don't think you feel bad for him, though. You vangers don't give a fig about others, you don't have bunches... "
+"You are nimble, aren't you! Zeephra likes holding Zeeklope, a race with that ProtoZeek. And she always sends several vangers hoping that that way the load will be delivered safer and faster... "
+"We make little profit off this cargo, but I have never made a mistake when staking the wheeler who won the Necross race. Even without knowing, the zeepos help us select true vangers."
+
+[Key to Xplo Gift:G]
+"I see that you tried hard and for that I will reward you with the key to the last abandoned world: Xplo. Mostly Larvae live there, you see what I am hinting at? All of us are slaves to cirt, such is the legacy of our ancestors. Although Zeexen's mind is alive, our body serves these underground skunks. "
+"Take cirt to ZeePa, as they alone can distill it into a special concentrate. Did you ever think about why only the main escaves need cirt? Chain dwellers prefer to keep mum rather than disclose their intimate secrets to rough creatures like you... "
+"And I don't plan on it either. Be happy with what you have: you can get to Xplo, the world of Departed Bios..."
+{ProtoZeek} {B-Zone} {Xplo} {Departed Bios}
+
+[Zyklope Winner II:G]
+"Well, vanger, you like playing around with ProtoZeek, I see. It proves again that you are unique: not everyone can win Zeeklope, and you've done it twice now! "
+"Now I see that you are not a simpleton. Here in the escave you feel that there is no one to talk and open your heart to. Having a laugh or tittle-tattle, yes you are welcome... Few Zeexen are interested in what's going on up there. or even inside. "
+"As for cirt, the secret of distilling cirt into a ready-to-use concentrate was invented by one of the first Departed Bios. Then it got into several escaves, which later became the bases for bunches. It's only there that they need cirt, and the rest of the escaves directly depend on the will of their centers. "
+"The main escaves feed their neighbors, otherwise they would have died out long ago. B-Zone is no exception. Unfortunately, we are dependent on these pseudo-softie: the secret of the Chain is that from time to time the main escaves pass portions of precious cirt concentrate over to their brethren. "
+"But this is too precious a secret to be told to dodgy vangers. That's why it's done secretly: usually passengers who ask to be taken to the other end of the world are used for that. They are the ones who carry the medicine along... "
+"I hear that sometimes Beeboorats hide secret parcels in the cheeks of their heroes and shrubs."
+
+[Zyklope Winner III:G]
+"You brought ProtoZeek again? Maybe you are a maniac and I shouldn't have spilled the beans to you. Tough guys you are, indeed."
+
+[Zyklope Loser:B]
+"Couldn't bring the present from those nutty zeepos, could you, loser vanger? Try again; we love amusing ourselves. "
+"Zeeklope is the funniest event on Necross. Loads of the so-called Zeephra's 'husbands' get onto the road and start quarreling, trying to rob each other of the zeepo Zeexen's nonsensical fruit of imagination, the symbol of their ProtoZeek. "
+"I have to admit, though: you have to be quite a skillful mechos driver to snatch away that chunk of clay from the greedy suitors of that goggle-eyed Zeex. "
+"And now you are of no use, sad sack. Nobody in the Chain needs a dunce like you. There's a terrific swamp nearby, a nice place for you to have a rest in."
+{Zeeklope} {Zeephra} {ZeePa} {ProtoZeek}
+
+[Zyklope Harrier:B]
+"Got lost, duffer? You are so puffed out that there's no mistaking it: you are in the Zeeklope. But ProtoZeek hasn't reached us yet, blast him! "
+"You must have been so scared of your rivals that you dashed here without a backward glance. But it's not just a race, you slob: you must deliver that funny statuette here. It has a silly vanger inside that you must have been like once. March, botcher!"
+{Zeeklope} {ProtoZeek}
+
+[MP0 Start]
+"Hey man, wake up! Vangers have arranged a VAN-WAR on Necross and are kicking each other around like crazy! It's a cool show this time, almost like a mini Clash. But I'm sure that without a plucky guy like you it's kinda boring up there. Get out of this hole and scatter all those wretches with your awe-inspiring appearance!"
+
+[MP1 Start]
+"Go load toxick and popons into your crate and remember the shortcuts between the Necross escaves. The MECHOSOMA has started! Whoever delivers his wads of goods first will be the winner. You can get it anywhere, even in the bogs, and the clever Zeexen will calculate everything."
+
+[MP2 Start]
+"Are you frozen in place? We're having a PASSEMBLOSS here! Rip your wheels off the clay, crank up your rattletrap, and catch up to the big race. Don't think they'll wait for you at a checkpoint. It's a glowing circle on the road, in case you've forgotten..."
+
+[MP3 Start]
+"HUNTAGE started!"
+
+[MP4 Start]
+"MUSTODONT started!"
+
+[MP0 Comment]
+"The VAN-WAR is in full swing while you're sitting here, yellow belly. See how clay is crumbling from the shots and yells? Come on, go up there quickly and give it to them hot. And take a bigger gun. Should they by any chance take you down, your faithful wife will seek revenge for you upon the scoundrels."
+
+[MP1 Comment]
+"The MECHOSOMA is going full blast. My store is full and those traffickers keep bringing more and more. Are you tired? Cheer up, victory is near! Another lot and my escave will fall apart from all the goods..."
+
+[MP2 Comment]
+"How's the PASSEMBLOSS going? You're not the only one who went astray; it's as easy as shelling peas. The PASSEMBLOSS isn't for greenhorns that can only hang around near escaves and trample beebs. The glowing circles on the road are hard to notice, I agree. But you must try hard. Once you've reached one checkpoint, go to the next. Your compass will show you the way - not a big deal, huh?"
+
+[MP3 Comment]
+"HUNTAGE in progress..."
+
+[MP4 Comment]
+"MUSTODONT in progress..."
+
+[Cirt in Inventory]
+"Wow, cirt has been brought for us to try. Where did you get it, you plucky guy? Must have scared a poor raffa stiff with your gun. Come on, I'm kidding. But we can't take the cirt, we aren't authorized. We have a rare disease that we caught from you, you Zeexen killer. We may die soon... "
+"Take the cirt to ZeePa and give our last regards to Zeephra. Her dream has come true at last, let her rest from copying popons: we decided to lay our hands on our chests and turn up our toes like the glorious Softie. Remember to remind her: she should send a companion to assume the post, or at least it's high time she did."
+{ZeePa} {Zeephra}
+
+[BadCirt in Inventory:B]
+"Hold on, wheeler, I'd like to say something important to you. You've been making a bad impression lately, like a sapless ProtoZeek. After you dropped in on us, our spirits drooped and we don't feel like making fun of popons anymore... "
+"Do something with yourself, would you? Paint your mechos with polka-dots or something. Or catch a mischievous beeb."
+
+[GoodCirt in Inventory:G]
+"You are a good sport - Zeekatrix knows what's what with vangers. She can sense what amuses and what abuses. It's because I've grown under the supervision of a great vanger. He used to bring such loads of cirt that one could feed a whole hatch of greedy zeepos on it for a whole cycle. "
+"Zeekatrix knows her cirt, and has been invited as a counselor to ZeePa more than once. But there are such killjoys there! She'd rather live here and chat with nice vangers like you."
+
+[Larva in Inventory]
+"Hey, vanger, didn't you notice that a Larva jumped into your mechos?! What a gawk you are! Must have been hiccupping or scratching yourself non-stop. But you are lucky, nitwit. Larvae seldom crawl up onto the curb. Normally they sit in the bog and chirp away. "
+"What should I do now? Take this precious booty to Zeephra quickly. She is an expert in Larvae, even though she is from ZeePa. You know where her talent stems from? Oh, that's an edifying story: when Zeephra was little, the very first Larva was brought to her family. "
+"But she ground through the conlarver, broke out, and managed to bite everyone who was there. Poor Zeephra got the worst of it, so she never forgot the lesson. She knows what's what with Larvae like no one else in the Chain. Go now, but watch the load carefully. Good luck!"
+
+[Nymbos in Inventory]
+"Oh, vanger, take care. If nymbos stays too long in your bay, huge vile beebs will hatch from it and eat you up, lock, stock, and barrel. Forewarned is forearmed, you know, and I love you. Loads of vangers have perished because they forgot to clean up the bay. Cleanliness breeds security."
+
+[Phlegma in Inventory:G]
+"Hooray, the phlegma is here. A new toxick will soon surprise everyone in ZeePa, Zeephra especially. She's lost her trust in Zeekatrix's ability to play tricks, and with this Fostral stuff she'll be scared out of her wits and wings."
+
+[Heroin in Inventory]
+"How did you manage to pinch this pet, the favorite of Geer'ah? What a deft vanger you are! You should know though, that Valorins are to Geer'ah as vangers are to Zeephra. He is very upset and is busy hiring killers to get even with the thief. You can stay at my place until it's over, I won't betray you. "
+"Let's have fun in the meantime. See that wart on him? If you press it hard, a hole opens on the other side. Drip some fresh toxick in there. "
+"Hear that? What a sound! I am crazy about such shrill notes, they make me think of the sense of the universe... Another drop... O-oh, what a burst of memories from my childhood. Beeboorat heroes are so romantic, I think..."
+
+[Shrub in Inventory:G]
+"Oh, what a wonderful shrub! His moans are so melodic! I've been dreaming for so long of planting one at the entrance to B-Zone to gladden the vangers who come here with its petals. But the shrubs don't grow well here on Necross, we have to use fertilizers. Bring me some phlegma, will you?"
+
+[eLeech in Inventory]
+"Let me have a look at your eLeech, vanger. No mistake, Leepky's gross snout shows. Thanks for the worm, trader. It'll be great bait for the local bog monsters. One of them is driving us crazy with its croaking on Saturdays; it's time we caught the stinker..."
+
+[Kernoboo in Inventory]
+"Stoked up with victuals for the road, tramp? In fact, Nucleobooms are no good for such a plucky warrior like you to feed on. Give them to me, I'll soak the fruit in toxick. Zeekatrix knows what's what in cooking! All your sorrows and gloomy desires will vanish in a trice."
+
+[Pipetka in Inventory]
+"Mind you, farmer, if you've made up your mind to grow peeperettes, I can offer some advice! The main thing is: don't attempt to plant them on Necross, as they won't sprout. "
+"First you must erect fortifications made from mechos debris to protect peeperettes from greedy beebs. Then in the spring dig deep underground and dump your peeperettes there. Start dancing around like jablees flying by, otherwise the peeperettes will smell a rat..."
+
+[Protractor in Inventory]
+"Zeekatrix can see the glorious Protractor. Did you decide to paint all the worlds with its intricate symbols? Or are you setting up a farm to grow beebs? What I wouldn't advise is for you to go to Spobs... I hear a crazy lone Larva lives there, gobbling up mechos like mad."
+{Protractor}
+
+[Mechanic Messiah in Inventory:B]
+"What a disgusting toy you've brought, vanger. That's Mechanical Messiah! I don't feel like playing with it. It's as nasty as you are, jack pudding."
+{Mechanical Messiah}
+"There's hearsay that this thingy has something to do with the Clash and the Creature Soup, which mutilated our world. Take Zeekatrix's advice and get rid of this pest. "
+"I can't let you into the escave with this nightmare or you'll curse our entire bunch. Bug off before you bring disaster."
+
+[Function-83 in Inventory:G]
+"Oh, Function-83+! This thing excites and exhilarates me so much! Once a vanger took me about in his mechos and he had this thingy in his bay. Wow, did we go places and see some wonders! "
+"In one world my driver was even elected King of the bunch, and I was sent home in a coach with a heap of presents to boot. What fun we had!"
+{Function-83+}
+
+[Spummy in Inventory:B]
+"Hey, dope, wake up! Can't you see that the Chomper has settled in your mechos? Get rid of it quickly before the pest sneaks into our escave and gets into some mischief. How did the Chomper manage to lure you? No wonder, though, if you wander around rubbish dumps. "
+"Chompers are fond of waylaying absent-minded slobs like you, after which they sneak into defenseless bunches. Don't you know that many from the Departed Bios were eaten by Chompers? Chowed down and left our world... That's why they were called the Departed. No, vice versa, it was the bios who gobbled and the Chompers who left... Or the other way around... "
+"Well, now I'm confused! My head is spinning and I feel terrible. The long and the short of it is: your find won't leave you in peace, not until you kick the bucket in a ditch or somewhere. There's no room for you in B-Zone, so find somewhere else. Bug off!"
+{Chomper}
+
+[Boot Sector in Inventory:B]
+"Have you brought Boot Sector, gadder? Once it's started, it gives me a headache, and a splitting one, worse than the one the nasty popons give you when you read too many of them. Zeephra must be scribbling her screeds with Boot Sector."
+{Boot Sector}
+"You don't spare my health, dear heart. I've worn myself out on toxick with clottish vangers hanging around with their rusty, harmful gadgets along with them."
+
+[Peelot in Inventory]
+"Hey, vanger, are you sure your Flymatic is real? I'll spill the beans to you: Beeboorats make fake Flymatics from mechos wreckage, peeperettes, and seaweed, and then sell them to all sorts of nitwits for a fortune."
+{Flymatic}
+"Many a twit has woken up in a ditch or a bog after being set up. But nice kind Zeekatrix can carry out an independent assessment just to please your beautiful eyes. Will you leave them to me when you die? Chill out, I know you don't have beautiful eyes. Pity. No eyes, no assessment. Do as you please."
+
+[Zeefick Story I]
+"Look here, vanger, I have to tell you something confidential. I've been watching you for quite a time now and my conclusion is that you are just the one to execute my grand plan. "
+"Once when tidying up my burrow I came across a toxick jar with something disgusting in it... "
+"The jar was labeled: 'ZEEFICK. SOFTIE INSIDE.' It occurred to me at once that there was real true Softie spawn inside! Any Zeex would confirm that long ago that the Softie used to spawn in Necross swamps."
+"But Departed Bios were fond of their spawn, which is why the Softie died out in the end. "
+"Now this jar is all that's left. So I thought, why not breed Softies again? It would be great! Each of us would be presented with an escave by the powerful Softie. "
+"All the zeepos would creep up to us, cap in hand, and we would make them gulp their popons without even washing them down with a drink. Wouldn't that be great? And not a big deal, either. We only need to hatch the spawn. "
+"The thing is, I have no time for it, and the temperature here is wrong, too. So you go to Ark-a-Noi with Zeefick, which is in just the right climate for hatching Softies."
+{Ark-a-Noi}
+"Enjoy yourself there for three cycles or so, but don't stand still like a zombie or the spawn will thicken! As soon as little Softies hatch out come back to me at once. And watch the bumps; don't shake the babies. Got it? Come on, take Zeefick and off you go."
+
+[Zeefick Story II]
+"Failed to hatch Softies? Come on, cheer up. Nothing ventured, nothing gained. If something is to be gained, it can be gained at the Eleepods'. They have an incubator in which they hatch eLeeches. Ain't I smart and shrewd? You just have to take Zeefick to the incubator. "
+"Oh, yeah, take a couple popons with you. The moment Feenger sees them, he'll go mad with joy. "
+"At the same time leave the Zeefick there. Like my plan? The Softies are sure to hatch in the incubator, there's no doubt about it. No way out for them, anyway. Remember to pop into the incubator as often as possible, though: we can't miss the big event. "
+"Otherwise the impertinent Eleepods will claim the credit, in which case you'll be the one kneeling before them, hat in hand, while they spit down on you with chewed phlegma. Don't forget it, fitter!"
+
+[Boorawchick in Inventory:G]
+"At last Boorawchick is here! I'm tired of waiting for you. I hear you are my most fervent admirer in all the worlds and a toxick connoisseur. I'm pleased to see you here in B-Zone and I'm ready to share my cooking secrets with you. "
+"Isn't that why you you've come? I'll tell you this: you get the best toxick from Beeboorat counselors. "
+"First you stretch them out on Necross to dry, then soak them in the bog, then spread them along the road for vangers to strip into fibers with their wheels. "
+"After that it's Zeekatrix's turn to go to work. I see, Boorawchick, you are itching to get started. Come on, be honest, do you want to take part in the next boiling in person? Don't shiver, you'll do it all right. "
+"You'll damage my whole store with your shaking, you brute! Hey, driver, take the client away, he's too boisterous. And the smell! Up you go, and be quick!"
+
+[Lawn Mower part note]
+"I want to tell you my story, truth-seeker. Only the most intimate vangers are permitted to know it, the ones who are experts at their trade. "
+"I used to be a vanger once too - don't be surprised. I was known in the worlds as the Damned Hornet. Beeboorats feared me like the plague. "
+"I could easily take out a truck with just a MacHOTine! But then I had to retire, as I sprained a finger by pulling the trigger - this one."
+"In those days I had the Lawn Mower mechos. It's gone now, filched piece by piece and taken to different worlds by ill-wishers. "
+"Wheezer fits it, or at least a part of it does. Get a load of me! Zeekatrix knows a thing or two about mechos!"
+
+[Wormaster part note]
+"I'll tell you a grave and scary secret. Once, the walls of our escave began shuddering and then collapsed. When I came down I saw a strangely-designed mechos stuck in the breach. It was called Wormaster. It turned out that, nutty Zeephra hired some moonlighter to sneak into B-Zone and destroy everything in the hole with toxick. But something failed and the burglar gave up. We kept his mechos to make up for the damage. Then we sold it in bits and pieces so that no other idiot could get hold of it. The only thing I remember is that Husker is one of its parts."
+
+[Weexow visit]
+"You must have been bugged by Eleepods, that's why you were in Weexow. It looks like some underwater kusowocks are growing there; the worms go crazy around them."
+{Weexow}
+"Have mercy on the fatties: don't pander to their bad habits, and don't take them any wet kusowocks."
+
+[Boozeena visit]
+"What did you bring me from Boozeena? Nothing special... Did you know that all those symbols and letters used to hang over the entrance to B-Zone to give all sorts of useful information?"
+{Boozeena}
+"But pilfering vangers ripped them off, taking them away to their beloved Boozeena and their ancient vanger gods. Bring it all back to me and you'll be rewarded!"
+
+[Ark-a-Znoy visit]
+"I see you've been to Ark-a-Noi already. Did anybody send their regards to me? No? Strange... Are you sure you were in that glowing world?"
+{Ark-a-Noi}
+"A charming little glow-worm lives there. We would discuss the meaning of life with him."
+
+[Khox visit]
+"Congratulations, vanger. Welcome back from Khox. Its dwellers, the invisible Beeboorats, trick strangers into traps and then cause a blackout. When it gets pitch dark, they attack the mechos. Savages they are, indeed."
+{Khox}
+
+[hMok visit]
+"Well, a corpse has come from hMok. Don't be surprised! You may think you are alive, but it's an illusion. Try going into a bog, as those who return from hMok don't sink, seeing as how they can't be killed. But they ain't alive either."
+{hMok}
+
+[Threall visit]
+"Oh, the best friend of the Infernals has come from Threall. Slightly smoked, though. Never mind, it's just what Infernals love... eating! They can even boil you in lava to soften the mechos. Go back soon, they are tired of waiting for you there on Threall. They're using searchlights to look for you."
+{Threall} {The Infernals}
+
+[Eleepod in Inventory]
+"Hey, vanger, spare your mechos! Just fancy him carrying a heavy Eleepod through two worlds! But the worm seems to have enjoyed it: look how he rolled his eyes. "
+"Never mind, guy. I'll bring you back to life. Stay with me and stir toxick with your tail... And when it comes off we'll sew on some good long seaweed, imported from Glorx, instead."
+
+[Beeboorat in Inventory]
+"Hey, vanger, sell me the Beeboorat from your bay. What a wonderful specimen; I can't tear my eyes off him. He'll be the pride and glory of my Glorx Studies Lab. I have a vast research plan! "
+"To begin with, I will soak the Beeboorat in toxick, that's the most important  thing. After that, I can start studying reflexes. The equipment is ready."
+
+[Zeex in Inventory]
+"An edifying mission from ZeePa, that's what it is! There's no calming Zeephra down. Even toxick won't work on the pest. Well, what do you want, mate? To preach a sermon? Come on, go ahead. I'll gather a meeting for you, we haven't had fun in ages. ZeePa alone saves us from boredom. "
+"On second thought, maybe you're here on a secret mission? That would be great, because we are not busy. In that case, come this way, into this hole. We'll have a talk there."
+
+[Boozeena Code]
+"Hold on, you daredevil of a vanger. Look how you've worn out your passenger. She can hardly move a paw or raise her eyes. "
+"Murmuring something... $(Boozeena Secret Code)... Well, that sounds like a tinker's cussing. Yeah, Zeexen are good at that kind of lingo. Something about Boozeena, too. She's on her last legs!"
+{Boozeena}
+
+[Larvae Vision note:G]
+"Well, hearse-rider, congrats! Your high Dominance has become a scary story that the wheelers tell each other. By the way, now your mechos can see Larvae as well as the other vangers. Watch out: don't ride over her tail, as you can't sew it back on..."
+{Larvae}

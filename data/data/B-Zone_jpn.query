@@ -1,0 +1,336 @@
+"何について"
+"知りたい？"
+
+[mechos] [メホス]
+"ただのガラクタの山よ！ それを乗り回すヴァンガーもいるけれどね。聞いたことくらいはあるでしょう？ まあ、歴史上のソフティーはそんなものとは何の関係もなかったわ。ソフティーが捨てた廃棄物を、あとになってヴァンガーが寄せ集めてメホスにしただけよ。"
+{vangers} {The Softie}
+
+[Fostral] [フォストラル]
+"フォストラルは、昔ソフティーが作った巨大なゴミ捨て場だったの。というより、そのためだけに開かれた世界だったのよ。あまりにゴミが多すぎて、パッセージを通ってほかの世界にまであふれ出していたくらい。だから掃除係たちは、秘密の合言葉でパッセージを閉ざすしかなかったの。"
+{The Softie} {Eleepods} {Passage}
+
+[Eleepods] [イリーポッド]
+"そうね、フォストラルは巨大な廃棄場だったの。ソフティーはそこへ、とんでもなく有毒な汚泥を捨てていた。ゴミ山をあさっていた虫どもは膨れ上がり、引っかき爪まで生やして、長い時間のあとにイリーポッドになったのよ。あの獣どもの落書き好きは、中毒の最悪の後遺症ね。"
+{The Softie} {Fostral}
+
+[Leepky] [リープキー]
+"リープキーがどうやって相談役になったか、教えてあげる。ある時、ほかのイリーポッドたちが、あいつの悪口に腹を立てて袋叩きにしようとしたの。恐ろしくなったあいつは相談役の洞穴へ逃げ込んで、そこに貯めてあったフレグマを全部食べてしまった。それ以来、あそこから動けなくなったのよ。だから今じゃ、ヴァンガーたちもあの思い上がった顔を見るだけでうんざりしているわ。"
+
+[Podish] [ポディッシュ]
+"ポディッシュは、最悪のヴァンガーを生み出す場所に違いないわ。誰も彼もが偉大な詩人を気取っていて、掃除をする者も、子どもを見ている者もいないんだから。しかもあの騒がしさ！ みんなが互いに怒鳴り合って、爪をばたつかせ、フレグマをあちこちに吐き散らしているところを想像してごらんなさい……"
+
+[escave] [エスケイヴ]
+"エスケイヴ？ 正直に言えば、もううんざりよ。素敵なヴァンガーと一緒に外へ出て世界を見るほうが、よほど気持ちがいいもの。昔のエスケイヴは、ソフティーが建てた狂人収容所だったの。いちばん危ない連中を閉じ込めていたから、できるだけ地中深くに押し込めようとしたわけ。"
+{The Softie}
+
+[pod] [ポッド]
+"この宇宙でポッドほど恐ろしいものはないわ――狂ったイリーポッドの群れよ。あいつらは地中に通路や落とし穴を掘ってばかりいるの。あなたが何も考えずに歩いていると、突然――ずどん！"
+"足元の地面が崩れて、気づいた時にはよだれまみれの顎でむしゃむしゃ噛まれているのよ。ほら、そんなに震えないの。ここまではポッドも来ないから。"
+
+[bunch] [バンチ]
+"バンチっていうのは、あの忌々しいエスケイヴ住民どもの集まりのことよ。あいつらの楽しみなんて、争いごととサート、あとは運がよければラーヴァくらい。けれど自由なヴァンガーはまったく別よ。バンチなんてビーブ一匹分も気にしないし、それで正しいの。"
+{escave} {Larvae} {cirt}
+
+[The Chain] [チェーン]
+"世界のチェーンは、ジーフラの愚かさくらい果てしなく広いの。フォストラルもグロークスもネクロスも、その半分にもならないわ。気づく前に皮まで剥がされるような場所だってあるんだから！ でも、それでもエスケイヴに座っているより、旅に出るほうがずっと面白いのよ。もしできるなら、今すぐメホスに乗って、行けるところまで行ってしまいたいくらい。"
+{Zeephra} {Fostral} {Glorx} {Necross}
+
+[Larvae] [ラーヴァ]
+"ラーヴァ？ あれは素晴らしい生きものよ。本当に素晴らしいの！ ヴァンガーたちが私たちのためにラーヴァを捕まえてきてくれる。ラーヴァは私たちのためにサートを生み出すでしょう？ どうやってそうしているのかは分からないけれど、私なりの想像はちょっと口にするには品がなさすぎるわ。"
+{cirt}
+
+[Beeboorats] [ビーボラット]
+"ビーボラットを知らないの？ ビーボラットっていうのは、つまりビーブなのよ。生まれた時は大きくて太っているけれど、グロークスには食べるものがないから、飢えてどんどん痩せ細って、ついにはビーブくらいの大きさまで縮んでしまうの。そうなったら群れに紛れ込んで逃げるから、そこで踏み潰してしまえばいいのよ。"
+{beebs}
+
+[Glorx] [グロークス]
+"グロークスは、昔ソフティーの汚物集積場だったの。あいつらはあまりに大量のゴミを出したから、その処理のためだけに一つの世界が丸ごと必要になったのよ！"
+"その後、あるクリスポが排水穴を塞いでしまって、ソフティーは汚物に飲み込まれた。あの時の戦いぶりといったらひどいものだったわ！ でも結局どうにもならなくて、最後には退くしかなかったの。"
+{The Cryspo} {The Softie}
+
+[raffa] [ラッファ]
+"本当に鈍いのね。大きなバイオスがいて、大きなヴァンガーがいる。ビーブがいて、それから……そう、ラッファがいるのよ！ あれは虫どもに雇われているの。小さいままでいるのって大変なのよ、分かる？ どうしてビーボラットがあなたたちにラッファを運転させると思う？ ビーブどもを喜ばせるために決まってるでしょう！"
+{beebs} {Beeboorats} {bios}
+
+[Incubator] [インキュベーター]
+"インキュベーターは、喧嘩っぱやいイリーポッドどもの巣よ。あいつらはポディッシュをひどく妬んでいて、あの居心地のいい場所から追い出すことばかり考えている。だから、ポディッシュの連中にはいつも意地の悪いいたずらを仕掛けているの。"
+"そのインキュベーターの悪党どもは、大きな歯を持つヒル――イリーチ――を捕まえて、ポディッシュへ送り込むの。ポディッシュの連中はそれを我慢して、インキュベーターを皮肉る詩を書いているのよ。"
+{Podish} {eLeech} {bunch}
+
+[bios] [バイオス]
+"ソフティーが、自分たちの廃棄場や繁殖実験の行き着く先を見られたなら、どんな顔をしたかしらね！ バイオスなんて、あの連中の愚かな行いの産物にすぎないわ。でもズィークセンの血筋は違う。私たちの祖先にはクリスポもいるのよ！"
+{The Softie} {The Cryspo}
+
+[cirt] [サート]
+"サートはなくてはならないものよ。灰色の人生に少しだけ輝きを与えてくれる。ラーヴァが体のどこかを地面にこすりつけると、そこに残ったサートを集めて、くんくん嗅いで喜ぶバンチへ持っていくの。あとは次のサートが届くまで時間をつぶすだけ。"
+{Larvae}
+
+[Feenger] [フィンガー]
+"Eleepod counselors usually end up as counselors in the most absurd and silly ways you can imagine. An eLeech that was supposed to be sent to Podish hid himself away in a crack."
+"He was growing bigger and bigger, nibbling the old counselor bit by bit. The oaf never noticed it, and the eLeech grew, so eventually Incubator couldn't keep from taking him on as a counselor."
+{eLeech}
+
+[Passage] [パッセージ]
+"You do know that the Chain of Worlds used to be a huge dump, don't you? Well, the Passages served as holes to let rubbish out. They were made large on purpose so that there wouldn't be any need to saw up the huge lumps of waste into pieces."
+
+[Zeexen] [ズィークセン]
+"Zeexen are the only ones who will tell you the whole truth without fleecing you or splashing you with phlegma. I'm the most righteous of all the Zeexen, so you can trust me! See my wings? No other bios have wings this big! They're proof that the Cryspo are our ancestors!"
+{The Cryspo}
+
+[eLeech] [イリーチ]
+"All you've heard about eLeeches so far is gibberish. Here's the scientific truth: the eLeech is a species of Crooked Crawling Leech Vulgare that inhabits ditches and feeds on old Eleepods. I once dissected an eLeech in the lab. Incubator sends them in swarms to Podish, as a symbol of friendship, haha."
+
+[nymbos] [ニムボス]
+"I once prepared a specimen in the lab. And what do you think I found out? Nymbos are the fruit of a certain water mold. Once placed in darkness, they burst, producing a stinky gas. Eleepods start craving for it, poor things. The Podish bunch sends them to Incubator along with their best regards."
+
+[Eleection] [イリークション]
+"Now's the time when the large-toothed eLeeches begin to swarm, and the Incubator Eleepods grab them and put them into sacks. They are then packed and given to vangers to be taken to Podish."
+"This is the most exciting event of the worms' lives. Imagining what a stir the eLeeches will cause in Podish delights the Eleepods and inspires them to start their malicious munching."
+
+[vangers] [ヴァンガー]
+"Vangers are very useful animals, able to cope with a mechos all by themselves. Vangers' grubs live only in rusted scrap metal in pools of machine oil, so the best place for them is a destroyed mechos. It's a pretty lucky day for you if you find a vanger! That's enough for now; I'll tell you more later."
+{The Softie} {The Cryspo}
+"After a vanger's grub is brought into an escave, it's the bunch counselor's turn to be in charge of it. He feeds the young vanger and raises it. When the youngster grows up, it is put into a mechos and kicked into action. I've raised quite a few vangers, so I've seen them every step of the way."
+
+[phlegma] [フレグマ]
+"A Phlegma is not as cruel as an eLeech. The Incubator bunch sends slime for the Podish Eleepods to slip on and sprain their scratchers. An Eleepod with a sprained scratcher is an unbearable sight, believe me. Every time phlegma is delivered, all of Podish shakes with the Eleepods' whining and moaning!"
+{eLeech}
+
+[The Softie] [ソフティー]
+"There once lived an enormous wild tribe, greedy and untidy. After they had eaten all they could, including the rotten mire, they began eating another tribe, the Cryspo, out of house and home. The Cryspo put up with this for a while, but once their eggs became the latest victims, they clashed with the Softie. Hence 'the Clash.'"
+{The Cryspo} {The Clash}
+
+[The Cryspo] [クリスポ]
+"An ancient tribe that lived next to the Softie. It wasn't as big as the Softie, but it was decent and cultured. However, the Cryspo were the victims of bad luck. They were partly eaten by the Softie and partly buried under rubbish, and the rest were trampled down in the Clash. The Zeexen are all that is left of the Cryspo."
+{The Softie} {The Clash}
+
+[Necross] [ネクロス]
+"Necross is the world where the Softie were stuck. In their new home, they began dumping their waste, as usual. But this time either the climate was wrong or the Cryspo had done their bit, and the stuff went sour and began to thicken. And so the Softie perished in pools of mud and slurry. One of the prouder moments in our history."
+{The Softie} {The Cryspo}
+
+[P-beam] [Pビーム]
+"While studying an Eleepod, I discovered an enigmatic hole with a counterclockwise thread in its side. What a strange phenomenon! It looks like Eleepods can fasten to each other like mechos parts. I'll call this Eleepod structure the P-beam!"
+
+[Xplo] [エクスプロ]
+"When they discovered this world, the Softie found it too small for their waste, and their interest in it soon flagged. There they set up a strong escave, a nuthouse for those who had gone bananas during world exploration."
+{The Softie}
+
+[Departed Bios] [去りしバイオス]
+"Oh, they're real nutcakes! Every single one in the bios eventually comes up with the idea that they can collect more cirt from the world than the vangers bring in. The poor morons pour out of their escave and wander around the world until the beebs turn them into dinner. Then their place is later taken by others."
+
+[Plump-up] [プランプアップ]
+"It looks like the Podish Eleepods in Plump-up go for the nymbos. They crawl out by a ditch, set their scratchers in the water, and start fishing for nymbos. They're all puffing and pushing since there's not quite enough room. It's quite a sight! Go and see what happens if you push one of the worms into water."
+
+[Gulp-down] [ガルプダウン]
+"The Gulp-down starts when the eLeeches come to Podish. The worms start panicking. They use the oldest, fattest Eleepod to block the entrance to the escave, and the eLeeches start chomping him. The real fun begins once that Eleepod has been eaten through!"
+
+[beebs] [ビーブ]
+"Beebs are degenerated Beeboorats. Their life isn't so bad, though, since it's easier for small creatures to find food. They dig out escaves for themselves and can even hire raffa to do the job for them. A vanger might do some of them in now and then, but that's not a big deal: the Beeboorats make up for it."
+
+[The Creature Soup] [クリーチャー・スープ]
+"Well, you see, when the bogs began to thicken on Necross, everyone got stuck in them. The Cryspo, the Softie - everyone got all mixed up, with a Softie's paw or a Cryspo's head sticking out here and there or there and here. Whole bogs were packed with body parts jammed together. They called it Creature Soup!"
+
+[The Clash] [クラッシュ]
+"A long, long time ago, the Softie and the Cryspo fought in the Clash: the former were trying to bury the latter under their rubbish, and the latter were jabbing the former with their stingers. Both the parties succeeded in nearly destroying the other. And the survivors ended up in the Creature Soup, so even they died, too."
+{The Softie} {The Cryspo} {The Creature Soup}
+
+[Spiral] [スパイラル]
+"The Softie used spirals to lock Passages and keep others from hanging around. The bios put spirals in mechos so that the vangers could make their cirt deliveries."
+
+/*******************   Beeboorat's terms   *******************************/
+
+[ruBeecation] [ルビーケーション]
+"An unpleasant procedure, to say the least! But that's what the Beeboorats are like, darn them. They ruBeecate even stray beebs. That's the terrible legacy of the perverted Softie. Beeboorats exhibit all kinds of Softie habits and customs."
+
+[Rubbox] [ラブボックス]
+"You've got one of those things on you, too? When I came to the Beeboorats for the first time I was ruBeecated, too. Robbed of my toxick and got this awful Rubbox hung on me. I had to wear it around VigBoo like a fool! I'm pretty sure the Softie marked mechanisms meant for waste with this piece of scrap metal."
+{ruBeecation}
+
+[VigBoo] [ヴィグブー]
+"The capital of the Beeboorat kingdom. I was inside and came to the ultimate conclusion that the Softie once had a sewage system observation post in that spot."
+
+[Lampasso] [ランパッソ]
+"Oh, I once spent six cycles in Lampasso studying Beeboorat behavior. There I collected lots and lots of information. Crowds of Beeboorats gather together in the local stadiums to act in a way that's both strange and harmful to their health..."
+
+[Ogorod] [オゴロド]
+"A curious place. It's got the largest peeperette plantations in the whole Chain of Worlds. The place is full of sweet smells and the chirping of beebs! And if I ever get sick of B-Zone, I'll move to Ogorod and become a counselor."
+{peeperette} {B-Zone}
+
+[Valorin] [ヴァロリン]
+"Remember, nitwit, that Valorin is a Beeboorat. You know that Beeboorats shrink with time until they ultimately become as small as beebs. Those failing or unwilling to do so are not worth feeding. They are caught, packed, and taken to Lampasso to be reduced and exploited by force."
+
+[shrub] [シュラブ]
+"Planting shrubs is a beautiful custom that I'd like to introduce here in B-Zone! Sometimes Beeboorats all of a sudden start to imagine they're plants and require watering and tending. Then, they're tearfully and carefully packed and sent to Ogorod, where they are 'welcomed' by the peeperettes."
+
+[peeperette] [ピーペレット]
+"As you know, Beeboorats have inherited many of the Softie habits, such as planting all sorts of plants in all sorts of places. Sometimes the right places, but usually the wrong ones. They like to plant various kinds of seeds, but the most popular Beeboorat plant is the peeperette, which grows alongside shrubs."
+
+[Nucleoboom] [ニュークレオブーム]
+"Nucleoboom is a popular means of forced miniaturization of Beeboorats, especially in Lampasso. A Beeboorat treated with Nucleoboom may tear its limbs off, crumple, and fold. Geer'ah is very knowledgeable about the ways of using Nucleobooms."
+{Geer'ah} {Lampasso}
+
+[Jablees] [ジャブリーズ]
+"The Jablees are enigmatic thingies. I think they're Beeboorats germinated in Ogorod. They must have been either improperly looked after or overwatered, which makes them spoil, swell, and fly away with an armful of peeperettes, scattering them around Glorx."
+{Ogorod} {peeperette}
+
+[Progress] [進捗]
+"You'd better keep away from Boorawchick for a while, or you're asking for trouble. It's time for him to pick subjects for forced miniaturization."
+{Boorawchick}
+
+[Heroism] [英雄性]
+"This is the rotation that Geer'ah from Lampasso has been wanting to come so badly. Oodles of convicts thirsty for Nucleobooms have been gathering in his stadiums."
+{Geer'ah} {Lampasso} {Nucleoboom}
+
+[Election of the Castaways] [漂流者の選定]
+"I don't remember, exactly. But that's when the peeperettes reach maturity."
+
+[castaway] [漂流者]
+"A castaway is a Beeboorat who has started to think he's a plant. He bugs the bunch to such an extent that they have no choice but to get rid of him. Vangers take these specimens to Ogorod as shrubs, having to listen to their nagging and sighing the whole way."
+
+[PeepShow] [ピープショー]
+"The PeepShow is a ritual race on Glorx. I once took part in it, and boy was it fun! My driver followed the Jablees, speeding like mad, while I was busy grabbing peeperettes and tossing them in. They said we were the best crew in Ogorod!"
+{peeperette} {Jablees} {Ogorod}
+
+[Nuclear War] [核戦争]
+"Nuclear War was the Softie's favorite tactic to use against the Cryspo. They would collect the worst of harmful, smelly rubbish and dump it on their enemies' heads. There were never any survivors..."
+{The Softie} {The Cryspo}
+
+[Geer'ah] [ギールア]
+"Geer'ah is the most inquisitive, educated Beeboorat, and we came to an agreement with him quite quickly. The noble researcher studies the possibilities of physical therapy in his stadiums in Lampasso."
+{Lampasso}
+
+[Boorawchick] [ブーラウチック]
+"This poor thing has had the worst luck! Like every adult Beeboorat, he began to shrink when the time came. Once he had shrunk to half-size, an absent-minded vanger slammed him in a door, interrupting the natural process so that now Boorawchick is neither a beeb nor a Beeboorat."
+
+[Oboorez] [オブーリーズ]
+"Let me tell you something confidential: Oboorez used to be a shrub! He was brought here to Ogorod, planted and watered, and had a peeperette inserted. I spilled some toxick nearby, just for the sake of an experiment, and the peeperette failed to sprout! Oboorez's wrappings had to be removed, and he was left in Ogorod."
+
+[The Buro] [ビューロ]
+"The Buro is Boorawchick's invention. It's a big iron barrel, painted brightly and decorated with seaweed. Boorawchick gets inside and starts yelling crazy orders everywhere, and the silly Beeboorats prostrate themselves in terror and obey!"
+{Boorawchick}
+
+[Slave] [奴隷]
+"Ask the one who paints and gives out the Rubboxes."
+{Rubbox}
+
+[Commissar] [コミッサー]
+"I think the Softie used to use this name for their chief dump investigators. The Beeboorats must have discovered some ancient scribbling and decided to show off their knowledge..."
+
+[Agent] [エージェント]
+"As far as I know, an agent is a vanger who once tried Nucleoboom without any snacks to go with it. The Beeboorats notice him immediately, give him a special label, and start assigning him the craziest tasks."
+
+[Manual] [マニュアル]
+"Everything that Boorawchick yells from his barrel, as the stern Buro, is written down, decorated with beautiful pictures, and proclaimed as compulsory. It's the smartest hoax in the Chain of Worlds, other than the popons and ProtoZeek."
+{The Buro} {Boorawchick} {popon} {ProtoZeek}
+
+/*******************   Zeexen's terms   *******************************/
+
+[ZeePa] [ジーパ]
+"ZeePa is the escave of the stupid zeepo. All of them, including their mommy Zeephra, are just crazy about the Softie. While I was trying to find out the reason for this disorder, I picked up a specimen of earth at the entrance to ZeePa, and you know what? It's got a high concentration of bog gasses!"
+{Zeephra} {The Softie} {ProtoZeek}
+
+[B-Zone] [Bゾーン]
+"If you take a careful look around, you'll realize you're B-Zone, you wandering dimwit. You can tell our escave by the smell of fresh toxick. It's the happiest place in the Chain of Worlds! By the way, the last of the Cryspo hid out here for quite a while, towards the end..."
+{The Cryspo}
+
+[Zeephra] [ジーフラ]
+"What do you see in that deranged nag? Has she been boasting of her Softie origin or trying to dress you up as ProtoZeek? Once, on a trip, Zeephra made a vanger so sick with her squeaking that he threw her out in the end."
+"She strayed into the bogs and came back completely crazy, scratching herself, giggling, and murmuring something about the Softie."
+{The Softie} {ProtoZeek}
+
+[Zeekatrix] [ジーカトリクス]
+"Zeekatrix, a vanger's best friend and a friend to anyone silly and carefree! In my escave, you can find a good piece of advice, ultimate truth, or the perfect toxick. Follow my advice and you'll be safe!"
+
+[toxick] [トクシック]
+"Well, in ZeePa, the anxious Zeephra has driven everyone mad with her tales about the Softie and such nonsense. The zeepo spend all day kneading clay and making popons, the poor things."
+"I want to help them with toxick, so I keep boiling it for them, putting my health at risk. I send the medicine to ZeePa for free. I just hope they don't get sick!"
+{ZeePa} {Zeephra} {The Softie}
+"It was me who invented the recipe for toxick. It has so many ingredients that now and then I forget to put something into the mixture. But I can't make it without phlegma, that's for sure."
+
+[popon] [ポポン]
+"ZeePa, the nuthouse in the bogs, provides us with oodles of the thingies. Zeephra thinks that the scribblings on the popons tell tales about ProtoZeek. That's a load of rubbish, but the things are actually quite useful. You can use them to pave roads or plug holes!"
+{Zeephra} {ZeePa} {ProtoZeek}
+
+[ProtoZeek] [プロトジーク]
+"Arriving in ZeePa, a vanger is astonished to learn that ProtoZeek is none other than himself! Alas, that's the gist of Zeephra's madness. She believes herself to be Softie refuse, and that ProtoZeek is the idol of the ideal Softie. So as a boast they take the vanger, coat him with clay, and send him off to us. It's hilarious!"
+
+[Spring] [春]
+"I love this merry cycle. Spring comes, and ProtoZeek is sure to follow soon. It's great fun watching the clay being removed from a vanger. The poor thing doesn't understand anything, just blinks and hiccups. Then all of B-Zone praises Zeephra for the treat and prepares a thanksgiving toxick for her."
+{ProtoZeek} {B-Zone} {Zeephra} {toxick}
+
+[December] [12月]
+"Well, ask Zeephra about it. She's the one who calls everything here by words she imagines to be Softie words. She thinks them up, no doubt. But I don't care what they call the cycles as long as regular cirt deliveries continue."
+{Zeephra} {The Softie}
+
+[Saturday] [土曜日]
+"I once happened to be in ZeePa on Saturday. What a disgusting sight. Everyone is sitting still, mumbling praise to ProtoZeek. Zeephra, hopping around among them, punishes those lacking enthusiasm with a huge club. Remembering that picture makes me work twice as hard at boiling toxick. Zeephra is really sick in the head!"
+{ZeePa} {Zeephra} {toxick} {ProtoZeek}
+
+[Zeeklope] [ジークロープ]
+"This is the greatest nonsense on Necross! Just imagine a mob of vangers trying to snatch a lopsided statue of ProtoZeek away from each other. That idiot Zeephra can't give every vanger what they need. Zeeklope's so senseless it's hilarious!"
+{ProtoZeek} {B-Zone} {Zeephra} {ZeePa}
+"I would like to organize something similar to take some All-Healing Toxick to ZeePa. The race will be called ToxickoZ. You'll become the first Toxickman, so start practicing in Zeeklope! My race will reach all of the worlds, and the vangers will flood into B-Zone in anticipation of ToxickoZ!"
+
+/********* Advanced terms *****************/
+
+[Weexow] [ウィークソウ]
+"I performed an experiment by releasing half a mechos of beebs there. For one reason or another, they grew up ugly. But they still remember their mommy Zeekatrix! Now whenever they see a mechos, they hope to find me inside. Whenever you're on Weexow, please give them my love."
+
+[Boozeena] [ブージーナ]
+"It looks like Boozeena is the world where the vangers breed. I witnessed a funny scene there, oodles of vangers jostling around inside a circle of idiotic symbols. The wheelers were rubbing against each other as they drove on two wheels. The moment they noticed me, the whole crowd scattered in all directions."
+
+[Threall] [スリール]
+"A terrible world. Zeephra says some Infernals live there and drive the vangers mad, tricking them into getting themselves trapped, then eating them up. But I didn't see anybody. Only the crazy Zeephra can sit in the middle of the lava, and the Infernals are just another fruit of her fantasy, her way to fool the vangers."
+{The Softie} {The Infernals}
+
+[hMok] [hMok]
+"hMok is the final refuge of the dead vangers. Their souls migrate to the gloomy world, and there they groan and moan. There, if you've run over too many innocent beebs, added mold to the cirt, or were rude to the counselors, you'll be tormented by the Chomper. Only decent vangers can escape hMok."
+{Chomper}
+
+[Khox] [コックス]
+"A vanger once begged me to accompany him on his voyage to hMok, but I'm no fool! I don't feel like feeding the dwellers of that place with my own flesh. If your mechos starts playing pranks, you're done for. They say that only the Softie who have gone wild are still on Khox, and if that's true, there's no place for me there! I'm a Cryspo!"
+{The Softie} {The Cryspo}
+
+[Ark-a-Noi] [アーク・ア・ノイ]
+"Eh, I love taking rides around Ark-a-Noi on a jaunty vanger. You forget everything there, even Zeephra. I'm trying to persuade the local dwellers to move to Necross. It would just take strewing some popons over a couple of bogs to make a dry spot. Necross would become a happier place right away!"
+
+[Protractor] [プロトラクター]
+"The Departed Bios used to organize ritual races. The rules were very strange. A protractor is put into a vanger's cargo hold, and the vanger has to drive backwards to the finish, collecting beebs along the way. What a silly custom..."
+
+[Mechanical Messiah] [機械の救世主]
+"I think the Mechanical Messiah is a dried-up Softie left over from the time of the Clash. He must have fallen into the lava of Threall and gotten baked to a crisp. This whole thing just makes me sick. You can ask him to play some dirty trick on your fellow vangers, if you want."
+{The Clash} {Threall}
+
+[Function-83+] [ファンクション83+]
+"This is a great gadget! The Spectators used Function-83+ to tunnel Passages and open new worlds, and the cunning Softie promised them that they would behave themselves in the new lands. But they were lying, of course, so the Spectators left the Softie behind, taking Function-83+ with them."
+{The Spectators}
+
+[Chomper] [チョンパー]
+"Oh, Chomper is a very enigmatic creature. It hangs around on hMok, where it tortures bad vangers. Sometimes it gets onto other worlds, where it wreaks its mischievous havoc. It's probably a mythical creature that lives on its own. Don't you even think of bringing it here!"
+{hMok}
+
+[Boot Sector] [ブートセクター]
+"Another enigmatic object. First you think that a vanger is in one mechos, then suddenly it's on a different world, in a new hearse! Once I was so frightened when they left me alone in an empty mechos. Vangers are such scoundrels I thought I'd never get back home!"
+
+[Flymatic] [フライマティック]
+"Flymatic, sweetie, I made you with my very own hands, ages ago. Hmm, I can see by your face that you don't believe Zeekatrix. Don't I know Vangers! Worth about as much as a length of seaweed, an Eleepod's tail, and some sour toxick, the stuff I used to make Flymatic."
+
+[The Spectators] [観測者たち]
+"Those were pretty smart guys. They were able to build Passages to other worlds, but the tricky Softie cheated and exploited them. The Spectators fled to Xplo, though, shortly before the Clash, and wouldn't let anybody in. You can go to Spobs and see everything for yourself!"
+{The Softie} {Xplo} {The Clash} {Spobs}
+
+[Spobs] [スポブス]
+"Spobs is the refuge of the Spectators. The Softie set up a nuthouse there before, which is why it has such thick walls and odd customs. It looks like you have to carry three cans of toxick with you if you want to get in there. Spectators adore toxick, especially Parapheen."
+{The Spectators} {Parapheen}
+
+[The Infernals] [インフェルナルズ]
+"The story of the Infernals was devised by Zeephra to fool the vangers. An unfortunate creature goes to Threall, takes a bath in the lava, and goes home beside himself with fear. And Zeephra is there like a shot, with her false sympathy and old tales. Personally, I don't think the Infernals exist at all!"
+{Threall}
+
+[Parapheen] [パラフィーン]
+"Parapheen, my dear, is the main Spectator. I've talked to him through the escave window before. Since the Softie duped his kinsmen, he's been scared stiff and won't trust anybody. But he has a story to tell."
+{The Spectators} {Spobs}
+
+[Carmane] [カルメイン]
+"It's the kind of sound lava produces when it gurgles. For some especially dumb brains, the phenomenon has bred belief in mysterious Infernals who rule the Chain of Worlds. And Zeephra uses this belief to her advantage..."
+{The Infernals}
