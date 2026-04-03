@@ -123,6 +123,14 @@ void actint_set_prompt_text(XGR_MousePromptData* prompt,const char* value)
 	prompt -> init_text(display_text.c_str());
 }
 
+bool actint_debug_escave_text_enabled(void)
+{
+	static int cached = -1;
+	if(cached == -1)
+		cached = getenv("VANGERS_DEBUG_ESCAVE_TEXT") ? 1 : 0;
+	return cached != 0;
+}
+
 }
 extern int iMouseY;
 
@@ -4810,6 +4818,30 @@ void InfoPanel::redraw(void)
 	if(!iScreenOwner){
 		XGR_PutSpr(PosX,PosY,SizeX,SizeY,buf,XGR_BLACK_FON);
 		delete[] buf;
+	}
+	else if(actint_debug_escave_text_enabled() && type == ACI_ANSWER_PANEL){
+		int ink_pixels = 0;
+		for(i = 0; i < SizeX * SizeY; i ++){
+			if(buf[i] != b_col)
+				ink_pixels++;
+		}
+
+		std::string signature;
+		signature.reserve(128);
+		signature += std::to_string(items -> Size);
+		signature += ':';
+		if(items -> first)
+			signature += ((InfoPanelItem*)items -> first) -> ID_ptr;
+
+		static std::string last_signature;
+		if(signature != last_signature){
+			last_signature = signature;
+			std::cout << "[VANGERS_DEBUG_ESCAVE_TEXT] redraw items=" << items->Size
+			          << " ink=" << ink_pixels
+			          << " bg=" << b_col
+			          << " size=(" << SizeX << "," << SizeY << ")"
+			          << " first=\"" << (items->first ? ((InfoPanelItem*)items->first)->ID_ptr : std::string()) << "\"\n";
+		}
 	}
 
 	if(ibs) ibs -> show();
