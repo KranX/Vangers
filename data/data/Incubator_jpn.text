@@ -1,0 +1,287 @@
+[quotha]
+"世界の様子はどうだ、放浪者？"
+
+[Empty Question]
+"何か聞きたいのか？ もっとはっきり言え……"
+
+[Empty Molecule]
+"話は終わりだ、いじり屋め。忙しいんだ、放っておけ……"
+
+[Block Molecule:B]
+"そこで止まれ、小さな虫けら。俺の話を聞け！"
+
+[Out Molecule:B]
+"失せろ！"
+
+[Dead Molecule]
+"俺たちだけで満ち足りている。フォストラルに別れを告げるがいい。"
+
+[empty]
+"e"
+
+[Feenger Introduction]
+"ははぁ、また青二才のヴァンガーか！ 上で道にでも迷ってきたのか、このお行儀の悪い放浪者め？"
+{vangers}
+"まあいい、まあいい、お前もすでに運命の犠牲者ってわけだ…… 溺れもせず、『お友達』にも食われずにここまで来られて何よりだ……"
+"一応名乗っておこう…… しばらくでも体と魂をつなぎ止められるならな…… 俺はフィンガー。宿主はリープキー――同じポッドの中にいる……"
+{Feenger} {Leepky} {pod}
+"もっとも、お前にはまだ理解できんだろうが、一つだけ覚えておけ。俺は本当の意味では存在していない。フィンガーとはポッドの機能の一つにすぎん……"
+{Feenger} {pod}
+"俺の考えはすべて奴の考えだ。たとえば俺が体をかけば、奴も同じようにかいている。宿主――お前にとってのリープキーだ――は俺のことを何もかも知っているし、それ以上のことまで知っている。実際のところ、ある意味では俺は奴そのものなんだ……"
+{Leepky}
+"ポッドはイリーポッドの生の土台だ。あまりにも居心地がよくてな、外でひとりぼっちのお前を見ると気の毒になるくらいだ――外側なんて恐ろしいものさ……"
+{pod} {Eleepods}
+"お前たちにイリーチを渡すたび、あの子をポディッシュに残してくれ、イリーポッドのバンチから引き離さないでくれと奴に願うんだ。だが、悲しいかな……"
+{eLeech} {Podish} {bunch} {Eleepods}
+"さて、無駄話はこのくらいにしておこう。お前は上へ戻る時間だ――インキュベーターはお前の家じゃない。これでフォストラルの成り立ちくらいは分かっただろうし、ポディッシュへも自力で下っていけるはずだ……"
+{Incubator} {Fostral} {Podish}
+"お前の任務は、柔らかいフレグマをメホスに積むことだ。ポディッシュで必要としている。フレグマは俺の左手の店で手に入る。運んでくれたぶんはきちんと払う。さあ、お前の奇妙な世界へ戻れ……"
+{mechos} {phlegma} {escave}
+
+[Eleerection Story]
+"そろそろイリーポッドの日々の営みを教えてやる時だ。お前ももうインキュベーターの新米ではない。そろそろイリーチを預けてもよかろう。よく聞け……"
+{Eleepods} {Incubator} {eLeech}
+"All living creatures in the Chain are subject to the laws of flesh, and every bunch has its own cycle. We're all under the thrall of the creepy Creature Soup, and those who couldn't make their way to Larvae are now dead and no more..."
+{The Chain} {bunch} {The Creature Soup} {Larvae}
+"Our essence is in taking our cherished eLeeches to Podish. And here's a rough plan of our rotation; you'd better learn it, or you'll be a beggar or die somewhere in a ditch from brutal vangers or, what would be even worse, raffa..."
+{Eleepods} {eLeech} {Podish} {vangers} {raffa}
+"In the beginning is Plump-up - that's what we call it. Some pods select a low chord, his body starts to plump (everyone gets a kick out of that). The nymbos moves and bubbles inside the chosen Eleepod, and now this pod's all nervous and uptight..."
+{Plump-up} {pod} {nymbos}
+"The tension is eternal, and we are at the climax! The sound of the low chord now surges higher and higher... Whizz, bang... and silence: the chord is cut short... The ripe nymbos is now ready for delivery into Incubator, its rightful place..."
+{nymbos} {Incubator}
+"How eLeeches are born is our secret. Just wait until the new cycle of our rotation, the Eleection, my friend. You will be in your element in this crazy race..."
+{eLeech} {Eleection}
+"You'll take an eLeech, the jewel of the pod. Take care of him, as nature's set things up in such a way that the eLeech is defenseless and doesn't live long."
+{eLeech}
+{pod}
+"You are the ones who take them back to Podish. That's why we keep you around, fitters of the roads, pilots of Fostral..."
+{Fostral}
+"Our rite is harsh yet sweet for you. The one who proves to be the smartest and comes to Podish with the eLeech first will be greatly rewarded and will gain our favor."
+"The one who fails and ruins the eLeech will pay for it. The cost will be high, and you will fear us then..."
+{eLeech}
+{Podish}
+"At the end is the Gulp-down. The dapper eLeeches finally reach the bodies, which have cooled off after the Plump-up, and now are awaiting revival. The eLeeches then are taken into their cool embrace and take the pulpy gift: Eleepod flesh."
+{Gulp-down}
+{eLeech} {Plump-up} {Eleepods}
+"And soon the pod will hear the newborn chord, just like the chosen one, who gave the nymbos..."
+{pod} {nymbos}
+"The Eleepods are the masters of Fostral. You must have seen the change of colors up there, on the ground: this is the way you see our cycle, the way we govern you. You have some knowledge now about Eleepods, and you can cater to us. Test your fate..."
+{Eleepods} {Fostral}
+
+[Passages Story]
+"Hello, tireless vanger. We Eleepods approve of the way you drive your mechos, machine of life and death..."
+{vangers} {Eleepods} {mechos}
+"Do you want to know what the greatest mechos add-on is? A way to see the entire Chain, as plain as the nose on your face, where (F) is for Fostral and (G) is for Glorx our neighbor? Then listen..."
+{mechos} {The Chain} {Fostral} {Glorx}
+"Ages ago, the Softie, an extinct race, built the first Passage into the new world, one different from their own. And that new world was Fostral."
+{The Softie} {Passage} {Fostral}
+"They didn't stop there, going on into the jungle of pipes they opened the way to Glorx, then Xplo, Necross..."
+{Glorx} {Xplo} {Necross}
+"Then there was the Clash, and then the Creature Soup... But they're very likely Zeexen's fabrications, so you shouldn't trust them..."
+{The Clash} {The Creature Soup} {Zeexen}
+"What matters is there are Passages up there that you must have noticed, as they're very distinct. You might have tried to get into them, genius..."
+{Passage}
+"They are eternal. Even if everything were to change, they would still be here, under control of the Eleepods, connecting the worlds of the Chain..."
+{Passage} {The Chain}
+{Eleepods}
+"Every mechos is more than just a machine for wandering; they all hold a Spiral, which allows fearless travelers to go through Passages."
+{mechos} {Spiral}
+{Passage}
+"But the Passages don't let just anyone through: each one is unique, with its own key."
+{Passage}
+"The Softie were a bit strange in how they tried to hide everything from everyone, and created spell cyphers without which it is impossible to get to other worlds."
+{Spiral}
+{Spiral}
+"We Eleepods know one key that unlocks the Passage from Fostral to Glorx. And you will get it if you win the Eleection, a deadly game..."
+{Eleepods} {Glorx} {Fostral}
+{Eleection}
+"The pods are anxious for their virgin eLeeches to come back and join them. And if you help them, vanger, you'll get the key to Glorx, crossroads of the worlds..."
+{pod} {eLeech} {vangers} {Glorx}
+
+[eLeech in Inventory:B]
+"You're crazy, wheeler! I sense an exceedingly delicate chord: you, unlucky as you are, have returned with an eLeech. Eleection is in full swing, so quickly race to the top and into Podish. The eLeech won't want to wait!"
+{The Chain} {Podish} {Eleection}
+
+[Nymbos in Inventory:G]
+"Your choice of cargo was a good one, wheelman, you have a bright future... Nymbos is what the Eleepods need here, in wonderful Incubator..."
+{eLeech} {nymbos} {Eleepods}
+
+[Vangers Killing Comments]
+"What, did you kill something, you wild hearse-rider? On the other hand, just like the wild vangers, life for us holds no meaning. That's where fear takes you outside a pod..."
+{Incubator} {vangers} {pod}
+
+[Eleerection Participation Question]
+"Vanger, the Eleection is coming up. The Eleepods are giving you the chance to participate in something holy. Do you agree to wait here until the abundant Plump-up and eLeeches emerge from the abyss of dreams?"
+{Eleection} {vangers} {Eleepods} {eLeech} {Plump-up}
+"Ok, worm, I'll wait... "
+"The inevitable has happened! The eLeeches have come. Take him and bring him to Podish, but remember: the eLeech is very fragile. As soon as the Gulp-down starts, he'll die forever. Hurry up, charioteer! "
+"I have something more important to do."
+"We are not forcing you, cowardly dungler. Every eLeech is a miracle meant for the silent world of Eleepods. You go and find yourself a stinking heap of scrap to live in, where you can hunt for beebs..."
+
+[Cirt in Inventory]
+"I can smell the cirt in your bay, you fortune trader. But it's Leepky who takes the cirt from you. Go to Podish; the heart of Eleepods is there!"
+
+[BadCirt in Inventory:B]
+"Although I'm just an appendage, I can feel that something is wrong here... But I don't understand what... My head is swirling and my scratchers are depressed..."
+
+[GoodCirt in Inventory:G]
+"I'm not a taster, just an appendage, but still I would like to ride with you to Podish and guard your smelly cargo. Take care of it!"
+
+[Larva in Inventory]
+"Wow, wheeler, your cargo has me more worried than ever before... My pod is strung up and you have a conlarver in your bay... And it's full... "
+"A Larva is in there... I feel the breath of eternity, a great event is coming... But I'm not up for opening the trap, you know. Leepky is the master of Eleepods. Fly over to him quickly and take care of your precious cargo!"
+
+[MP0 Start]
+"Pluck up your courage, vanger: the VAN-WAR has started! You'll show your prowess and taste the fury of the brave in the rage of battle. Kill them all and die many times, reviving for revenge. I, a canny Eleepod, will count all the bodies and name the winner."
+
+[MP1 Start]
+"Hey wheeler, the MECHOSOMA has begun! You must bring us wads of sundry wares. Now go and load up, as the others are already on their way, anticipating their profits. If you prove to be an effective merchant, you'll get your due reward: a new mechos and glory throughout the Chain."
+
+[MP2 Start]
+"The PASSEMBLOSS has begun! Hit the road, wheeler! Step on the gas and push the others; rush to your goal and don't look back. You'll soon meet your fate. Don't be afraid of those glowing circles, as you have to go from one to the next, your compass guiding you through."
+
+[MP3 Start]
+"HUNTAGE started!"
+
+[MP4 Start]
+"MUSTODONT started!"
+
+[MP0 Comment]
+"The VAN-WAR is in full swing and you are quaking in an escave, you stinking coward! Go up into the world and find the chump who dared offend you. Show him what the anger of a real hero means. You want to take a decent gun to shoot up those drips? I'll sell it for half the price if you disappear quick!"
+
+[MP1 Comment]
+"The MECHOSOMA is going full blast... And what about you, brave wheeler, are you shipping wares? How much phlegma and precious nymbos have you brought into our escaves? Work hard and don't drive your rusty mechos empty..."
+
+[MP2 Comment]
+"The PASSEMBLOSS is in full fling up there... It's unbecoming to a true racer to sit out in an escave, so hurry up and catch up to your competitors while you still can... Don't forget: you have to go from circle to circle, following your compass..."
+
+[MP3 Comment]
+"HUNTAGE in progress..."
+
+[MP4 Comment]
+"MUSTODONT in progress..."
+
+[Protractor in Inventory]
+"I see you have Protractor, you pushy wheeler. Legends speak volumes about it. So, you decided to try the ancient toy yourself? Take care, it's a dangerous artifact."
+{Protractor}
+
+[Mechanic Messiah in Inventory:B]
+"Get out, you plague carrier! The holy eLeeches live and ripen here. The evil vibrations, the streams of fear that your Messiah pours out will surely harm them. Remember, vanger, your way is now crooked and dark, ending in hell. Quiver with fear..."
+{Mechanical Messiah}
+
+[Function-83 in Inventory]
+"Every vanger dreams of a personal Passage in his hold... You are the luckiest! But know this: it won't save you from the anger of Eleepods, should you decide, for example, to steal an eLeech!"
+{Function-83+}
+
+[Spummy in Inventory:B]
+"Oh, what's happening to me?... My scratchers have hardened and I can't move them... I can hear eLeeches inwardly scream with horror... And crowds of newly hatched fears excruciate my soul... The vision of the Clash... "
+"Damn, the Chomper have come! I beg you, vanger, take your terrifying cargo away, don't torture me. We didn't bring you up to see the horror of the universe in our burrows. Vanish, limb of the devil!"
+{Chomper}
+
+[Boot Sector in Inventory]
+"Oh, you picked up Boot Sector? I have to say, you are invulnerable now. The ultramundane powers prepared this gift for you. I don't know why..."
+{Boot Sector}
+
+[Peelot in Inventory]
+"You picked up a substitute for yourself? Secured the Flymatic? That's funny. You, stupid creature, will trust your mechos and life to some strange, stupid gadget. Isn't that the paradox of the universe?"
+{Flymatic}
+
+[Heroin in Inventory:B]
+"I'm trembling, and I feel Leepky's trembling far away! A barbarous Beeboorat appeared among our tender eLeeches. You must have sold your mind for a couple of beebs, vanger. Get lost, and take your cargo with you!"
+
+[Shrub in Inventory]
+"Here's a shrub. Have you learned now, my friend, how mean and cunning Beeboorats are? It could be you sitting there wrapped in rags, cursing your fate, and regretting that you didn't listen to Eleepods."
+{shrub}
+
+[Poponka in Inventory:G]
+"What's this I see? The vanger who can scare up a few popons for the thrifty Eleepods is honored! We, poets of the burrows, value various fables. I've read all my popons and have them hidden away. You brought me something new; today is my lucky day!"
+{popon}
+
+[Toxick in Inventory]
+"Your diligence is excessive, and you've come a long way in vain, carrying that stinking toxick and risking damage to your mechos. But you're pushy, I can tell. I hope to see some kusowocks from you soon..."
+{toxick}
+
+[Kernoboo in Inventory]
+"Some dolt brought me some Nucleobooms... What am I going to do with this treasure? Feed it to the eLeeches? No, I'm afraid they would choke on them..."
+{Nucleoboom}
+
+[Pipetka in Inventory]
+"A peeperette from Glorx? How interesting! What are you shipping this rubbish for, doltish wheeler? Looking for a place to plant it? I'll tell you what: no peeperette will grow on Fostral even if you stand on your head..."
+{peeperette}
+
+[WeeZyk in Inventory:G]
+"I hear the whole gamut of the pod! ProtoZeek came to Fostral! You've outwitted the saucy Zeexen and brought us a beautiful gift. The pods did not teach you life in vain, and now we are reaping the fruits of our efforts. Grand is the bios that had such good fortune!"
+{ProtoZeek}
+
+[Eleerection Reject:B]
+"Aha, I still remember you. You're a thief and a scab! Sadness has settled in my scratchers since you stole my Stick from me. "
+"I suppose you want to take an eLeech? You've got it wrong, filthy piece of trash. What will my pod say when they find out who I trusted the jewel of Fostral to? Get lost, you motor bandit. Bring my Stick, then we'll talk..."
+
+[Palochka Return (Good):G]
+"Greetings to you, the hero who saved Feenger from the depths of boredom! Oh, my Paloch'ka, we are together at last, and this is the glorious vanger who brought us together. What a sweet joy! Take the beebs, honored wheeler, don't be shy. Today is my high day! "
+"I'll give you some secret knowledge for your trouble: go to the belt on Fostral where the Passage to Weexow is, because an underground crypt is there. It will be open to you from now on. Don't miss your chance..."
+
+[Palochka Return (Bad):B]
+"Well, I knew you'd be back with my Paloch'ka, because the anger of the pods razes the mounts to the ground and makes the Chain of Worlds quake. But we go easy on penitents. So, give me the thing (you know what) and regain the protection of Eleepods."
+
+[Boorawchick in Inventory:B]
+"Aha, the thug has come to the scene of the crime! So, Boorawchick, you beeboorattish hellhound, today is not your day. The eLeeches are under close watch and you are in an iron jar! You, vanger, check the latches of your bay and the bolts, making sure the packaging is firm. "
+"You can't trust a scoundrel that looks around greedily, anxious for a wholesale slaughter... Get him out of the Temple of Wisdom, you're the very image of stupidity!"
+
+[Wormaster part note]
+"You are the real master of the rattly mechos, vanger. They heed you. You served Incubator well, you guarded us and brought us gifts. For that, I'll tell you a secret we've been keeping for ages. "
+"Learn now that Husker is a part of Wormaster. We believe that you'll do a lot for Eleepods when you assemble those dreadful machines."
+
+[Last Moggy part note]
+"You are the real master of rattly mechos, vanger. They heed you. You served Incubator well, you guarded us and brought us gifts. For that, I'll tell you a secret we've been keeping for ages. "
+"The last Moggy will take Put-put to hit the dusty road and ramble around the worlds, scaring the next man and shaking the ground..."
+
+[Weexow visit]
+"Your superior bravery is only outweighed by your inherent stupidity. Why did you peek into Weexow, you rotten mechos filling? You've had enough of Fostral, wheeler? Well, well..."
+{Weexow}
+
+[Boozeena visit]
+"You came from Boozeena, I know. So, did you solve that puzzle of the gleaming symbols? Guess not. You're too inexperienced for that..."
+{Boozeena}
+
+[Ark-a-Znoy visit]
+"Looks like it's been real torture, your stroll on sandy Ark-a-Noi... But you came back and I'm glad. We need dashing vangers like you!"
+{Ark-a-Noi}
+
+[Khox visit]
+"Been tooling up and down the roads of Khox? You're the real master of the wheels, admit it! You have your swiftness and driving skills thanks to Eleepods."
+{Khox}
+
+[hMok visit]
+"You, who went down into the well of darkness, the wanderer enfolded in silence, tell me what you felt there, on the bare metal of hMok. The claws of fury? That's scary, so scary!"
+{hMok}
+
+[Threall visit]
+"You've been to the world of raging flame? Where alien mana dwells in lava? What did the voice tell you, unlucky one? It didn't tell you to terminate me or Leepky, did it? No? There, my scratchers can relax. Phew..."
+{Threall}
+
+[Eleepod in Inventory:G]
+"I see an Eleepod! My greetings to you, envoy of the pod! Say, did the rude wheeler insult you? You didn't bruise your scratchers, I hope? I've been worried sick about all the hardships on your way... But the nightmare is over and we'll write a poem about this adventure sometime!"
+
+[Beeboorat in Inventory:B]
+"I see a Beeboorat! You didn't expect to get here, you dastardly bandit? An end has come to your misdeeds. You won't chow down on infants anymore! I'll dissect you and make a 3D model for the course 'DANGER: Evil Beeboorat' to teach young eLeeches. And I'll write a dissertation on the same subject!"
+
+[Zeex in Inventory]
+"I see a Zeex! Okay, you featherheaded creation. You came here to set off a hot dispute, I guess? Fine! My pod is ready. We'll teach you the canons of poetry - your giggling at the universe is over!"
+
+[Ark-a-Znoy key]
+"You have subdued your mechos, you've jumped through hoops for Eleepods - well done, nimble fitter! We won't throw obstacles in your difficult way, instead we'll even help you. Now you'll be able to get to Ark-a-Noi, the cursed world. Here's the key."
+{Ark-a-Noi}
+
+[ruBeecation warning]
+"You've served us well, vanger, and the wet wasteland of Glorx is looming in the distance. But don't be afraid. Despite the evil and dullness of Beeboorats, we've figured out their secret. You'd better learn it: every vanger that falls into the clutches of these wicked beasts will be shorn like a lamb. "
+"He'll lose his mechos and get a raffa in exchange. Don't even think about peeking into the central escave or Lampasso. They'll capture you there and... "
+"A better way to go is by that ugly Beeboorat with the elongated snout... And dig a little there..."
+{ruBeecation} {Lampasso}
+
+[Boozeena Code]
+"Your passenger is asking to give you a message, wheeler. Some nonsense: $(Boozeena Secret Code)... He asked that you remember this. But I'll give you some other advice: Leepky is your mentor, heed what HE says!"
+
+[Larvae Vision note:G]
+"You are so tough and nasty, you authoritative wanderer, that it has me quaking a bit. You are halfway down the road to glory. The secret Larva will now show up on your map, and you won't be mixing her up with anything else. She knows no routes, the whole world is hers..."
+{Larvae}

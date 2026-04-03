@@ -1,0 +1,352 @@
+"何について"
+"知りたい？"
+
+[mechos] [メホス]
+"今やお前はそいつの奴隷だ。メホスはお前のしもべでもある――従わせろ！"
+"生と死の機械だ。世界を越えて走り、陸でも水中でも、空でも地下でも進める……"
+
+[Fostral] [フォストラル]
+"今お前がいるのはフォストラル、俺たちの世界だ。チェーンの理を知るまでは意味は分からんだろう。さあ上へ出てフォストラルに触れてこい――お前のメホスが待っている。"
+{mechos}
+"フォストラルはイリーポッドの世界で、五つのベルトから成る。俺たちのエスケイヴ、ポディッシュは最下層の第一ベルトにある。インキュベーターは最上層の第五ベルトだ。第二と第四のベルトには、お前も見たことがあるだろうパッセージがある。"
+{Eleepods} {escave} {Passage} {Podish} {Incubator}
+
+[Eleepods] [イリーポッド]
+"イリーポッドはお前の恩人だ、この糞虫め。そしてこの俺、フィンガーもその一人だ。"
+{Feenger}
+"イリーポッドは頭たるバイオスだ。俺たちはフォストラルに住み、ポディッシュをエスケイヴとしている。他の連中はいずれ滅びるが、俺たちは永遠にここに残る……"
+{bios} {Fostral} {Podish} {escave}
+
+[Leepky] [リープキー]
+"その錆びついた頭のままで走り回れると思うなよ、棺桶乗り。リープキーはお前の面倒を見てやっているんだ……"
+"リープキーは俺のポッドに響く大きなコード、俺の主だ。リープキーが誰か忘れたのか？ どこかで殴られて脳みそを潰されたに違いないな……"
+{pod}
+
+[Podish] [ポディッシュ]
+"地下にある、恵み深きイリーポッドのエスケイヴだ。フォストラルの最下層ベルトにある……"
+{escave} {Eleepods} {Fostral}
+"お前は道を失っているな、哀れな兵隊め。メホスでも売り払い、車椅子でも買って上へ行け。そこにポディッシュがある……そしてお前の墓もな。"
+{mechos}
+
+[escave] [エスケイヴ]
+"エスケイヴとは、バンチが宝を隠して暮らす地下の巣のことだ。ありがたいことに、フォストラルにはいくつかエスケイヴがある――壮麗なポディッシュとインキュベーターとかな……"
+{bunch} {Fostral} {Podish}
+"チェーンのバンチはみな、世界に隠された都市エスケイヴに住む。そこで品物やメホスを売り買いできるのさ……"
+{The Chain} {bunch} {mechos}
+
+[pod] [ポッド]
+"お前にはまだ早い。忘れておけ、あれはお前のためのものじゃない……"
+"俺たちイリーポッドはポッドに住む。今のところ覚えるべきことはそれだけだ……"
+{Eleepods}
+
+[bunch] [バンチ]
+"どのバンチだと？ お前はどこのバンチにも属していない。ビーブ漁りめ。"
+{beebs}
+"どのバイオスにも、暮らしをともにする共同体――バンチがある。俺たちにとってバンチこそがすべて、生きる意味そのものだ……"
+{bios}
+
+[The Chain] [チェーン]
+"失われた世界の鎖……"
+"フォストラルだけが世界じゃない。他にもいくつもあり、パッセージを通って行ける。隣はグロークスや……いや、今はそこまででいい。"
+{Fostral} {Passage} {Glorx}
+
+[Larvae] [ラーヴァ]
+"まだお前には早い。永遠なるラーヴァを語るには、あまりに幼すぎる。"
+"ラーヴァとは何かだと？ 俺ももっと知りたいくらいだ。あれはチェーンの支配者だし、その噂を聞くだけで胸が騒ぐ。ラーヴァを一匹持ってこい！ せめて、そこから取れたサートでもいい……"
+{The Chain} {cirt}
+
+[Beeboorats] [ビーボラット]
+"尊大な連中だ。ズィークセンより百倍たちが悪い。俺たちのイリーチをむさぼり、ニムボスまで振りかける野蛮人どもめ！ 奴らに近づこうなどと思うな。濡れた触手が見えただけでイリーポッドを食い尽くす。だが、いつか必ず思い知らせてやる……"
+{Zeexen} {Glorx} {Eleepods} {eLeech} {nymbos}
+"グロークスはビーボラットの世界だ。あんな連中が棲む場所には近づかないほうがいい……"
+{Glorx}
+
+[Glorx] [グロークス]
+"なぜグロークスのことを知りたがる？ お前にとっては、ただの忌まわしい言葉でしかない。"
+"フォストラルにはグロークスへ通じるパッセージがある。水の世界で旅人には危険だが、あいにくあそこはすべての世界の十字路でもある。忌々しいチェーンの造り手どもめ！ それにビーボラットどももまとめて呪ってやる……"
+{Passage} {Fostral} {The Chain} {Beeboorats}
+
+[raffa] [ラッファ]
+"軽々しく口にするな、小僧。いずれ嫌でも目にすることになる――上にはうじゃうじゃいるからな……"
+"ラッファについて多くは語れん。あいつらはどこにでもいて、イリーポッドに罠を仕掛ける。お前も気づいているだろうし、向こうもお前に気づいているはずだ……"
+{Eleepods}
+
+[Incubator] [インキュベーター]
+"また道に迷ったいじり屋か！ そうだ、フォストラルは広い。インキュベーターが何かだと？ どこにあるかだと？ いまお前のまわり全部がそうだ、この車輪つきエビめ。そして俺がフィンガー本人だ！"
+{Fostral} {Feenger}
+"お前はいまインキュベーターの中にいる。ここはイリーポッドにとって重要な場所で、イリーチが最初にこの世へ現れるところだ。"
+{Eleepods} {eLeech}
+
+[bios] [バイオス]
+"バイオスだと？ 俺たちのバイオスこそ至高で、他の連中など塵にすぎん……"
+"チェーンには今、三つのバイオスがある。イリーポッド、ズィークセン、そして大食らいのビーボラットだ……"
+{The Chain} {Eleepods} {Zeexen} {Beeboorats}
+
+[cirt] [サート]
+"サートこそ俺たちに必要なすべてだ……"
+"見つけて持ってくれば買ってやる。だが一つだけ忘れるな――俺たちが受け取るのは、俺たちのラーヴァからのサートだけだ……"
+{Larvae}
+
+[Feenger] [フィンガー]
+"フィンガーとは俺のことだ……"
+
+[Passage] [パッセージ]
+"パッセージだと？ どこでそんな言葉を聞いた？"
+"パッセージは他の世界へ行く道だ。フォストラルにはいくつもあって、その一つはグロークスへ通じている。"
+{Fostral} {Glorx}
+
+[Zeexen] [ズィークセン]
+"ズィークセンだと？ うへっ、嫌な言葉だ。お前は俺をいらつかせに来ただけか、棺桶乗り……"
+"ズィークセン、ズィークセン……妙な連中だ……俺たちは好かん……近づくな……"
+
+[eLeech] [イリーチ]
+"イリーチはすばらしい生き物だ。お前もほんの短い間とはいえ、かつてはイリーチだった。"
+"イリーチはインキュベーターでこの世に現れる。イリーチの命を奪ったり、イリークションの最中に駄目にしたヴァンガーは、自分自身が死に値する……"
+{vangers} {Incubator} {Eleection}
+
+[nymbos] [ニムボス]
+"お前のニムボスは二度と目覚めはせんぞ、放浪者め。"
+"それをポディッシュからインキュベーターへ運べば、イリーポッドはきちんと報いてやる……"
+{Eleepods} {Podish} {Incubator}
+
+[Eleection] [イリークション]
+"この儀式こそイリーポッドの生の礎だ！ その掟をよく学べ……"
+"お前も参加できるし、勝てば褒美がある。だがイリーチの扱いには気をつけろ。さもないと……"
+{eLeech}
+
+[vangers] [ヴァンガー]
+"ヴァンガーが何者かだと？ その質問をよりにもよって相談役の俺にするのか。まったく、面倒な馬鹿ばかり相手にさせられる……"
+"お前こそがヴァンガーだ、この間抜け。外なる機械に仕える卑しい奴隷の一人だ。お前らは皆、俺たちのしもべなんだよ！"
+
+[phlegma] [フレグマ]
+"The blood of Incubator..."
+{Incubator}
+"Mucus for the good of the Eleepods. We love to smear ourselves with it and plump ourselves up in the peace and quiet of our burrows..."
+{Eleepods}
+
+[The Softie] [ソフティー]
+"Ask the Zeexen, the tale-tellers. We don't like tales..."
+{Zeexen}
+
+[The Cryspo] [クリスポ]
+"Are you a vanger? Or a collector of tales about those who are long gone? Time for you to head up. They'll set you straight, the hard way!"
+{vangers}
+
+[Necross] [ネクロス]
+"We've never been there. Ask your vanger friends, if you have any. Or go there yourself!"
+{vangers}
+
+[P-beam] [Pビーム]
+"That's our secret - with it we can perceive the whole world as it is, regardless of distance. Fear us, scum, for we know all there is to know..."
+
+[Xplo] [エクスプロ]
+"Xplo... You're too curious, my friend. For now, it's nothing more than a word."
+
+[Departed Bios] [去りしバイオス]
+"Humph... One of the mysteries of the Chain. We don't really believe in them."
+{The Chain}
+
+[Plump-up] [プランプアップ]
+"The beginning of the Eleepod rotation. Ecstasy for the pods, and abeyance for the elder chords. Floods of nymbos..."
+{Eleepods} {pod} {nymbos}
+
+[Gulp-down] [ガルプダウン]
+"The final stage of our sacral rotation. The eLeeches reach Podish and start to gobble sweetly, slowly absorbing the chord of the chosen one, who has been waiting for his eLeech while staying in the mind of the pod..."
+{Eleepods} {eLeech} {Podish} {pod}
+
+[beebs] [ビーブ]
+"You are a slave to the beebs, you wheeled huckster. You'll kill anyone for the beebs! That's just your fate as a mercenary vanger."
+{vangers}
+
+[The Creature Soup] [クリーチャー・スープ]
+"Don't swear!"
+
+[The Clash] [クラッシュ]
+"That's a Zeexen tale. Go ask them!"
+{Zeexen}
+
+[Spiral] [スパイラル]
+"A mechos part, used to travel to other worlds through Passages. But remember: the Spiral doesn't last forever, so you must recharge it at a special station before you can enter a Passage..."
+{mechos} {Passage}
+
+/*******************   Beeboorat's terms   *******************************/
+
+[ruBeecation] [ルビーケーション]
+"Ooh, that's a horrible Beeboorat rite. Every wheeler that falls into the claws of those filthy beasts has to go through it."
+
+[Rubbox] [ラブボックス]
+"Don't peek into the Beeboorat escaves without a Rubbox. You'll lose your beebs and mechos in a flash! But Leepky collects those marks of universal stupidity..."
+
+[VigBoo] [ヴィグブー]
+"You've visited the cursed VigBoo, the evil casemate and nest of the bandits? And you're still alive? Fate favors you, wheeler... That's where Eleepods go and disappear without a trace!"
+
+[Lampasso] [ランパッソ]
+"An escave on Glorx. The capital of stupid games. There you'll see what the Beeboorat are like."
+{Glorx}
+
+[Ogorod] [オゴロド]
+"An escave among water and silence. Life stands there in deep thought, trying to comprehend the extremes of dementia, but all in vain..."
+
+[Valorin] [ヴァロリン]
+"Don't you dare bring it here, you stupid carcass. Once you're a slave of Beeboorats, you'd better forget the way to Fostral!"
+
+[shrub] [シュラブ]
+"You can find calm, plump Beeboorats inside shrubs. They're no longer dangerous after eating their fill of humble pie!"
+
+[peeperette] [ピーペレット]
+"Peeperettes are rubbish from the Glorx, the rot that came down from the sky. Only the Beeboorats and their grungy existence need them."
+{Glorx}
+
+[Nucleoboom] [ニュークレオブーム]
+"A Nucleoboom can cheer up a Beeboorat, but around here it's nothing but garbage."
+
+[Jablees] [ジャブリーズ]
+"Jablees are the spawn of the Glorx, the source of all rubbish and rot."
+{Glorx}
+
+[Progress] [進捗]
+"Just a set of weird sounds, nothing more."
+
+[Heroism] [英雄性]
+"We don't care. The way of wisdom is beyond the Glorx."
+{Glorx}
+
+[Election of the Castaways] [漂流者の選定]
+"The only thing we know is that it's one of the Beeboorats' cycles."
+
+[castaway] [漂流者]
+"The journey of a castaway ends in Ogorod, among the moldy peeperettes..."
+{Ogorod}
+
+[PeepShow] [ピープショー]
+"You should see the PeepShow if you want to see how worthless the Beeboorats really are..."
+
+[Nuclear War] [核戦争]
+"Hoards of dolts run after a Jablee, trying to steal its fruits..."
+{Glorx} {Jablees}
+
+[Geer'ah] [ギールア]
+"A Beeboorat who sits in Lampasso. Stuffed with straw and given a very ugly paint job. Bombastic and loud-mouthed."
+{Lampasso}
+
+[Boorawchick] [ブーラウチック]
+"I guess you've met the pudgy beast, and I also guess it wasn't fun. He's the Beeboorats' top boss, the source of all that horror."
+
+[Oboorez] [オブーリーズ]
+"You'll find him in Ogorod. He's not that mean, but he's terribly dull-he has seen a lot but learned very little."
+{Ogorod}
+
+[The Buro] [ビューロ]
+"The Buro strives to exterminate all Eleepods."
+
+[Slave] [奴隷]
+"Unfortunately, you can't get out of Glorx without serving as a Slave first."
+{Glorx}
+
+[Commissar] [コミッサー]
+"You'd better ask that in VigBoo. They invented all that for their gain and the vangers' pain."
+{VigBoo}
+
+[Agent] [エージェント]
+"Once the Beeboorats start calling you an Agent, your deliverance is on its way. But you should keep your Rubbox, just in case..."
+{Rubbox}
+
+[Manual] [マニュアル]
+"The Manual is on Glorx, but here there is freedom for wise thoughts."
+{Glorx}
+
+/*******************   Zeexen's terms   *******************************/
+
+[ZeePa] [ジーパ]
+"Necross is covered in bogs, but there are still escaves there. ZeePa is the most important, but you'd better think twice before going in there..."
+{Necross}
+
+[B-Zone] [Bゾーン]
+"B-Zone is a Zeexen city. It's far away, but you should still visit it sometime."
+
+[Zeephra] [ジーフラ]
+"Zeephra could talk about the Softie all cycle long, forgetting about everything else. But don't take the bait!"
+
+[Zeekatrix] [ジーカトリクス]
+"She's the greatest master of the art of cooking poisonous stuff."
+
+[toxick] [トクシック]
+"Beeboorats fear toxick terribly. Just bring some to Glorx and you'll see for yourself how much it makes the evil beasts tremble..."
+
+[popon] [ポポン]
+"The poets of the burrows value the fruit of thought, no matter how feeble. But that foolish Zeephra thinks they want popons in B-Zone..."
+{Zeephra} {B-Zone}
+
+[ProtoZeek] [プロトジーク]
+"To bring kusowock from Necross here, use our sacred phlegma. Three jars will keep the precious thing from rotting when the cycles change."
+
+[Spring] [春]
+"The word means something to the silly Zeexen, but for us, it's just some stupid mumbling from the bogs..."
+
+[December] [12月]
+"This word is of little use to a vanger, and of even less use to us..."
+
+[Saturday] [土曜日]
+"Go to Necross to find out..."
+
+[Zeeklope] [ジークロープ]
+"Zeeklope is a big race. If luck is on your side, ProtoZeek is yours, but if not, you have to guess which rascal ended up with the valuable item!"
+
+/*********** Advanced terms ****************************/
+
+[Weexow] [ウィークソウ]
+"The stormy whirlpools get in the way of the one who has been chosen to find the Holy Grail."
+
+[Boozeena] [ブージーナ]
+"You'll find some symbols are inscribed in a big circle, with a secret cave at their center. Hints which tell you what each symbol means are scattered throughout the evil jungle."
+
+[Threall] [スリール]
+"That strange, nearly incomprehensible symbol is your goal on Threall. If you should ever reach it, be ready for a real mind-quake!"
+
+[hMok] [hMok]
+"A jar of liquid that can eat through steelwork will hasten your doom."
+
+[Khox] [コックス]
+"Just steer your mechos to where the arrows point, and you'll find what you want in the end. But be careful - much darkness lies along that precarious route..."
+
+[Ark-a-Noi] [アーク・ア・ノイ]
+"Sand and stones, skull and bones. Comb this world well, and you'll find something to fill your cargo hold with."
+
+[Protractor] [プロトラクター]
+"This will reveal the mystery of Xplo to you. The living entity that dwells in Spobs commands the Protractor, giving it its power."
+{Xplo} {Spobs}
+
+[Mechanical Messiah] [機械の救世主]
+"The will of Threall dwells in this fiendish thing. The power of mysterious floods alters the world and all things in it. And so its owner's freedom is nothing but a temporary illusion..."
+
+[Function-83+] [ファンクション83+]
+"This can take you to any world in the Chain which you have visited before."
+
+[Chomper] [チョンパー]
+"This fiendish thing originated in some dark series of events in the past. We have been unable to trace its history, as the deadly horror penetrates our consciousness, supplanting our very minds..."
+
+[Boot Sector] [ブートセクター]
+"The Boot Sector helps us understand both the real character of the vangers and their ultimate objective. And all traces lead to Threall..."
+{Threall}
+
+[Flymatic] [フライマティック]
+"This'll take your place in the outside world, wheeler."
+
+[The Spectators] [観測者たち]
+"That brook of theirs is a little tributary of the flood of Threall, which wrecks the fates of living beings and drives events to unprecedented extremes..."
+{Threall}
+
+[The Infernals] [インフェルナルズ]
+"We are a little afraid of them. With our P-beam we can sense an alien mind on Threall, watching the other worlds and directing the other species. You'd better keep away from Threall, my youthful friend."
+{Threall}
+
+[Spobs] [スポブス]
+"The One Who Has Left has settled in the heart of Xplo. He fights against the unknown, for reasons also unknown."
+{Xplo}
+
+[Parapheen] [パラフィーン]
+"The master of the Protractor. He has seen many things."
+{Protractor}
+
+[Carmane] [カルメイン]
+"The guard of the Chain, born of terror. Compared to him, we are but specks of dust."
