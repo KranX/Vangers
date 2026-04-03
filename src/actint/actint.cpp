@@ -278,6 +278,8 @@ void aciChangeAviIndex(void);
 void aciBuyItem(void);
 
 void aciInitShopButtons(void);
+int aUtf8LineHeight(int font);
+int aUtf8LineHeight32(int font);
 
 void aciGetEleech(void);
 void aciGetRubox(void);
@@ -4717,10 +4719,23 @@ void InfoPanel::redraw(void)
 	int b_col = (bCol == -1) ? aciCurColorScheme[ACI_BACK_COL] : bCol;
 	memset(buf,b_col,SizeX * SizeY);
 
-	if(!(flags & IP_RANGE_FONT))
-		y = OffsY + ((SizeY - items -> Size * (aScrFonts[font] -> SizeY + vSpace)) >> 1);
-	else
-		y = OffsY + ((SizeY - items -> Size * (aScrFonts32[font] -> SizeY + vSpace)) >> 1);
+	int total_height = 0;
+	InfoPanelItem* measure_item = (InfoPanelItem*)items -> first;
+	for(i = 0; i < items -> Size; i ++){
+		if(measure_item -> font == -1)
+			fnt = font;
+		else
+			fnt = measure_item -> font;
+
+		if(!(flags & IP_RANGE_FONT))
+			total_height += aUtf8LineHeight(fnt) + vSpace;
+		else
+			total_height += aUtf8LineHeight32(fnt) + vSpace;
+
+		measure_item = (InfoPanelItem*)measure_item -> next;
+	}
+
+	y = OffsY + ((SizeY - total_height) >> 1);
 
 	for(i = 0; i < items -> Size; i ++){
 		if(p -> font == -1)
@@ -4786,9 +4801,9 @@ void InfoPanel::redraw(void)
 		}
 
 		if(!(flags & IP_RANGE_FONT))
-			y += aScrFonts[font] -> SizeY + vSpace;
+			y += aUtf8LineHeight(fnt) + vSpace;
 		else
-			y += aScrFonts32[font] -> SizeY + vSpace;
+			y += aUtf8LineHeight32(fnt) + vSpace;
 
 		p = (InfoPanelItem*)p -> next;
 	}

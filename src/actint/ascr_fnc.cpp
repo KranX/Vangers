@@ -313,6 +313,8 @@ void aOutStr(int x,int y,int font,int color,unsigned char* str,int space);
 void aPutStr32(int x,int y,int font,int color,int color_size,void* str,int bsx,void* buf,int space);
 int aTextWidth32(void* text,int font,int hspace);
 int aTextHeight32(void* text,int font,int vspace);
+int aUtf8LineHeight(int font);
+int aUtf8LineHeight32(int font);
 
 std::shared_ptr<text::TtfFontFace> aGetTextTtfFace(int font)
 {
@@ -355,6 +357,26 @@ int aUtf8TextHeight32(std::string_view text_value,int font,int vspace)
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
 	return aTextHeight32((void*)legacy_text.c_str(), font, vspace);
+}
+
+int aUtf8LineHeight(int font)
+{
+	auto face = actint_get_text_ttf_face(font);
+	if(face)
+		return std::max(face->get_line_skip(), face->get_height());
+	if(aScrFonts && aScrFonts[font])
+		return aScrFonts[font] -> SizeY;
+	return 0;
+}
+
+int aUtf8LineHeight32(int font)
+{
+	auto face = actint_get_text32_ttf_face(font);
+	if(face)
+		return std::max(face->get_line_skip(), face->get_height());
+	if(aScrFonts32 && aScrFonts32[font])
+		return aScrFonts32[font] -> SizeY;
+	return 0;
 }
 
 void aOutStrUtf8(int x,int y,int font,int color,std::string_view text_value,int space)
@@ -4036,6 +4058,7 @@ void aciInitPanel(InfoPanel* p,unsigned char* str)
 			return aUtf8TextWidth32(line_text, ACI_PHRASE_FONT, p -> hSpace);
 		return aUtf8StrLen(line_text, ACI_PHRASE_FONT, p -> hSpace);
 	};
+	const int phrase_line_height = (p -> flags & IP_RANGE_FONT) ? aUtf8LineHeight32(ACI_PHRASE_FONT) : aUtf8LineHeight(ACI_PHRASE_FONT);
 
 	auto trim_spaces = [](std::string_view value) -> std::string_view {
 		size_t begin = 0;
@@ -4135,6 +4158,7 @@ void aciInitPanel(InfoPanel* p,unsigned char* str)
 		std::string preview = source_text.substr(0, std::min<size_t>(source_text.size(), 80));
 		std::cout << "[VANGERS_DEBUG_ESCAVE_TEXT] panel size=(" << p->SizeX << "," << p->SizeY
 		          << ") items+=" << (p->items->Size - initial_items)
+		          << " line_h=" << phrase_line_height
 		          << " text=\"" << preview << "\"\n";
 	}
 }
