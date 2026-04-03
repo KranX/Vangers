@@ -2054,12 +2054,19 @@ void dgRoom::acceptQUERY(void)
 		p = pf -> getElement(DGF_DUAL);
 		pq -> subj1 = getSubj(p,m);//problem
 
-		if (lang() == GERMAN) {
+		if(text::language_prefers_utf8_assets() && pf -> localized_utf8_single_language){
+			pq -> subj = pq -> subj0;
+			pq -> display_subj = pq -> subj1 ? pq -> subj1 : pq -> subj0;
+		}
+		else if (lang() == GERMAN) {
             pq -> subj = pq -> subj0;
+            pq -> display_subj = pq -> subj0;
 		} else if (text::language_uses_russian_assets()) {
             pq -> subj = pq -> subj0;
+            pq -> display_subj = pq -> subj0;
 		} else {
             pq -> subj = pq -> subj1;
+            pq -> display_subj = pq -> subj1;
 		}
 
 		pq -> mood = m;
@@ -2255,7 +2262,7 @@ dgQuery* dgRoom::seekQvisible(char* _subj)
 	if(!_subj) return NULL;
 	dgQuery* q = qVtail;
 	while(q){
-		if(!strcmp(q -> subj,_subj)) return q;
+		if((q -> display_subj && !strcmp(q -> display_subj,_subj)) || !strcmp(q -> subj,_subj)) return q;
 		q = q -> next;
 		}
 //#ifndef DIAGEN_TEST
@@ -2484,7 +2491,7 @@ char* DiagenDispatcher::findQfirst(void)
 	else {
 		if(!currentR) return NULL;
 		cqp = currentR -> qVtail;
-		return cqp ? Convert(cqp -> subj) : NULL;
+		return cqp ? Convert(cqp -> display_subj ? cqp -> display_subj : cqp -> subj) : NULL;
 		}
 }
 
@@ -2496,7 +2503,7 @@ char* DiagenDispatcher::findQnext(void)
 		}
 	else {
 		cqp = cqp -> next;
-		return cqp ? Convert(cqp -> subj) : NULL;
+		return cqp ? Convert(cqp -> display_subj ? cqp -> display_subj : cqp -> subj) : NULL;
 		}
 }
 

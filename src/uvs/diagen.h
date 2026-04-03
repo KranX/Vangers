@@ -190,7 +190,7 @@ struct dgAtom {
 	};
 
 struct dgQuery {
-	char* subj,*subj0,*subj1;
+	char* subj,*display_subj,*subj0,*subj1;
 	dgAtom** answers;		// таблица ответов размером N
 	int* levels;				//таблица уровней ответов
 	int nanswer;				// общее количество возможных ответов
@@ -202,7 +202,7 @@ struct dgQuery {
 	dgQuery* next;
 	dgQuery* prev;
 
-		dgQuery(void){ subj = subj0 = subj1 = NULL; answers = NULL; nanswer = 0; lindex = 0; mood = 0; }
+		dgQuery(void){ subj = display_subj = subj0 = subj1 = NULL; answers = NULL; nanswer = 0; lindex = 0; mood = 0; }
 		~dgQuery(void){ for(int i = 0;i < nanswer;i++) delete answers[i]; if(answers) delete answers; }
 
 	void link(dgQuery*& tail);
