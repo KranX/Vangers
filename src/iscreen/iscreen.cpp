@@ -4599,6 +4599,12 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 	int id,end_code,next_code;
 	iScreenObject* obj = (iScreenObject*)scr -> get_object("Text00");
 	iStringElement* title_obj = (iStringElement*)scr -> get_object("TextTitle00");
+	auto request_text_object_layout = [&](iScreenObject* target){
+		if(!target)
+			return;
+		target -> flags |= OBJ_REINIT;
+		set_obj_redraw(target);
+	};
 	if(obj){
 		if(!curText){
 			next_text();
@@ -4621,6 +4627,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
+							request_text_object_layout((iScreenObject*)title_obj -> owner);
 						}
 						key_trap(next_code);
 					}
@@ -4635,6 +4642,7 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
+							request_text_object_layout((iScreenObject*)title_obj -> owner);
 						}
 						key_trap(next_code);
 					}
@@ -4649,8 +4657,10 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
+			request_text_object_layout((iScreenObject*)title_obj -> owner);
 		}
 		curText -> copy(obj);
+		request_text_object_layout(obj);
 	}
 	return 0;
 }
@@ -4660,6 +4670,12 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 	int id,prev_code;
 	iScreenObject* obj = (iScreenObject*)scr -> get_object("Text00");
 	iStringElement* title_obj = (iStringElement*)scr -> get_object("TextTitle00");
+	auto request_text_object_layout = [&](iScreenObject* target){
+		if(!target)
+			return;
+		target -> flags |= OBJ_REINIT;
+		set_obj_redraw(target);
+	};
 	if(obj){
 		if(!curText){
 			next_text();
@@ -4677,6 +4693,7 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 						title_obj -> set_text_auto(curText -> objName);
 						title_obj -> init_size();
 						title_obj -> init_align();
+						request_text_object_layout((iScreenObject*)title_obj -> owner);
 					}
 					curText -> curLine = curText -> numLines - (curText -> numLines % obj -> ElementList -> Size) + obj -> ElementList -> Size * 2;
 					key_trap(prev_code);
@@ -4704,9 +4721,11 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
+			request_text_object_layout((iScreenObject*)title_obj -> owner);
 		}
 		curText -> flags &= ~iTEXT_EOF;
 		curText -> copy(obj);
+		request_text_object_layout(obj);
 	}
 	return 0;
 }
