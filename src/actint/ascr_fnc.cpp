@@ -33,6 +33,7 @@
 #include "actint.h"
 #include "credits.h"
 #include "aci_str.h"
+#include "../text/locale_catalog.h"
 
 #include "mlconsts.h"
 #include "mlstruct.h"
@@ -142,6 +143,21 @@ static std::string actint_localized_asset_path(const char* english_path,const ch
 static std::string actint_legacy_literal_to_utf8(const char* text_value)
 {
 	return text::legacy_to_utf8(text_value ? text_value : "", actint_text_encoding());
+}
+
+static std::string actint_display_text_to_utf8(std::string_view text_value)
+{
+	std::string display_text;
+
+	if(text::is_valid_utf8(text_value))
+		display_text.assign(text_value);
+	else
+		display_text = text::legacy_to_utf8(text_value, actint_text_encoding());
+
+	if(const std::string* translated = text::actint_locale_string(display_text))
+		return *translated;
+
+	return display_text;
 }
 
 static std::string actint_trim_utf8_to_byte_limit(std::string text_value,size_t max_bytes)
@@ -4000,54 +4016,111 @@ int aciBadPhraseFlag = 0;
 //TODO need fast malloc and need rewrite!
 void aciInitPanel(InfoPanel* p,unsigned char* str)
 {
-	int i = 0,quit_log = 0,sz = strlen((char*)str),str_len,len,col;
-	unsigned char* dest_str,*ptr,*tmp_ptr;
+	if(!p || !str)
+		return;
 
-	dest_str = new unsigned char[sz + 1];
-	ptr = new unsigned char[sz + 1];
-	tmp_ptr = ptr;
+	const int col = (aciCurColorScheme[FM_SELECT_BORDER_COL] << 8) | aciCurColorScheme[FM_SELECT_BORDER_COL];
+	const std::string source_text = actint_display_text_to_utf8((char*)str);
 
-	str_len = sz;
-	strcpy((char*)ptr,(char*)str);
-	col = (aciCurColorScheme[FM_SELECT_BORDER_COL] << 8) | aciCurColorScheme[FM_SELECT_BORDER_COL];
-
-	while(!quit_log){
-		strcpy((char*)dest_str,(char*)tmp_ptr);
-		
+	auto measure_line = [p](std::string_view line_text) -> int {
 		if(p -> flags & IP_RANGE_FONT)
-			len = aStrLen32(dest_str,ACI_PHRASE_FONT,p->hSpace);
-		else
-			len = aStrLen(dest_str,ACI_PHRASE_FONT,p->hSpace);
-		if(len < p->SizeX){
-			if(p -> items -> Size >= p -> MaxStr){
-				std::cout<<"Dialog phrase too long..."<<std::endl;
-				quit_log = 1;
-			} else {
-				p->add_item((char*)dest_str,-1,col);
-				sz -= strlen((char*)dest_str);
-				strcpy((char*)ptr, (char*)str);
-				if(sz <= 0) {
-					quit_log = 1;
-				} else {
-					tmp_ptr = ptr + (str_len - sz);
+			return aUtf8TextWidth32(line_text, ACI_PHRASE_FONT, p -> hSpace);
+		return aUtf8StrLen(line_text, ACI_PHRASE_FONT, p -> hSpace);
+	};
+
+	auto trim_spaces = [](std::string_view value) -> std::string_view {
+		size_t begin = 0;
+		size_t end = value.size();
+
+		while(begin < end && (value[begin] == ' ' || value[begin] == '\t' || value[begin] == '\r'))
+			begin++;
+		while(end > begin && (value[end - 1] == ' ' || value[end - 1] == '\t' || value[end - 1] == '\r'))
+			end--;
+
+		return value.substr(begin, end - begin);
+	};
+
+	size_t paragraph_begin = 0;
+	bool truncated = false;
+
+	while(paragraph_begin <= source_text.size()){
+		const size_t paragraph_end = source_text.find('\n', paragraph_begin);
+		const size_t end = (paragraph_end == std::string::npos) ? source_text.size() : paragraph_end;
+		std::string_view paragraph = trim_spaces(std::string_view(source_text).substr(paragraph_begin, end - paragraph_begin));
+
+		if(paragraph.empty()){
+			if(p -> items -> Size < p -> MaxStr)
+				p -> add_item("", -1, col);
+			else
+				truncated = true;
+		}
+		else {
+			size_t line_begin = 0;
+			while(line_begin < paragraph.size()){
+				while(line_begin < paragraph.size() && (paragraph[line_begin] == ' ' || paragraph[line_begin] == '\t'))
+					line_begin++;
+				if(line_begin >= paragraph.size())
+					break;
+
+				size_t offset = line_begin;
+				size_t prev_offset = line_begin;
+				size_t best_break = line_begin;
+				size_t last_space_break = std::string::npos;
+				bool overflow = false;
+
+				while(offset < paragraph.size()){
+					prev_offset = offset;
+					uint32_t codepoint = 0;
+					if(!text::utf8_next(paragraph, offset, codepoint))
+						break;
+
+					std::string_view candidate = trim_spaces(paragraph.substr(line_begin, offset - line_begin));
+					if(measure_line(candidate) >= p -> SizeX){
+						overflow = true;
+						best_break = (last_space_break != std::string::npos && last_space_break > line_begin) ? last_space_break : prev_offset;
+						if(best_break <= line_begin)
+							best_break = offset;
+						break;
+					}
+
+					best_break = offset;
+					if(codepoint == ' ' || codepoint == '\t')
+						last_space_break = prev_offset;
 				}
-			}
-		} else {
-			i = sz;
-			while(dest_str[i] != ' '){
-				i --;
-				if(i <= 0){
-					quit_log = 1;
+
+				if(!overflow)
+					best_break = offset;
+
+				if(best_break <= line_begin)
+					break;
+
+				std::string_view line = trim_spaces(paragraph.substr(line_begin, best_break - line_begin));
+				if(line.empty()){
+					line_begin = best_break;
+					continue;
+				}
+
+				if(p -> items -> Size >= p -> MaxStr){
+					truncated = true;
 					break;
 				}
+
+				p -> add_item(std::string(line).c_str(), -1, col);
+
+				line_begin = best_break;
+				while(line_begin < paragraph.size() && (paragraph[line_begin] == ' ' || paragraph[line_begin] == '\t'))
+					line_begin++;
 			}
-			if(!quit_log)
-				tmp_ptr[i] = 0;
 		}
+
+		if(truncated || paragraph_end == std::string::npos)
+			break;
+
+		paragraph_begin = paragraph_end + 1;
 	}
 
-	delete[] dest_str;
-	delete[] ptr;
+	if(truncated)
+		std::cout<<"Dialog phrase too long..."<<std::endl;
 }
 
 void aciStartSpeech(void)

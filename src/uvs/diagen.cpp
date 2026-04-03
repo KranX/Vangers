@@ -445,11 +445,12 @@ void diagenEventHandle(int code)
 
 char* getDGname(const char* name, const char* ext)
 {
-	static char buf[256];
-	strcpy(buf,"data/");
-	strcat(buf,name);
-	strcat(buf,ext);
-	return buf;
+	static std::string path;
+	path = "data/";
+	path += name ? name : "";
+	path += ext ? ext : "";
+	path = text::localized_asset_variant_path(path.c_str());
+	return path.data();
 }
 
 void dgLog(char* string)
