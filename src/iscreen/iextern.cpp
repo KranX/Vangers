@@ -16,6 +16,8 @@
 #include "../actint/item_api.h"
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
+#include "../text/legacy_codec.h"
+#include "../text/unicode.h"
 
 #include "i_mem.h"
 #include "ikeys.h"
@@ -1137,6 +1139,44 @@ char* iGetOptionValueCHR(int id)
 		return iScrOpt[id] -> GetValueCHR();
 	else
 		return NULL;
+}
+
+std::string iGetOptionValueUTF8String(int id)
+{
+	if(!(iScrOpt && iScrOpt[id]))
+		return "";
+
+	iScreenOption* option = iScrOpt[id];
+	if(!(option -> objPtr))
+		return "";
+
+	const text::LegacyEncoding encoding = (lang() == RUSSIAN)
+		? text::LegacyEncoding::CP866
+		: text::LegacyEncoding::ASCII;
+
+	switch(option -> ObjectType){
+		case iSTRING:{
+			iStringElement* element = (iStringElement*)option -> objPtr;
+			if(element -> Utf8Canonical)
+				return element -> utf8_string;
+			return text::legacy_to_utf8(element -> string ? element -> string : "", encoding);
+		}
+		case iS_STRING:{
+			iS_StringElement* element = (iS_StringElement*)option -> objPtr;
+			if(element -> Utf8Canonical)
+				return element -> utf8_string;
+			return text::legacy_to_utf8(element -> string ? element -> string : "", encoding);
+		}
+		default:
+			break;
+	}
+
+	char* value = option -> GetValueCHR();
+	if(!value)
+		return "";
+	if(text::is_valid_utf8(value))
+		return value;
+	return text::legacy_to_utf8(value, encoding);
 }
 
 void iSetOptionValueCHR(int id, const char* p)

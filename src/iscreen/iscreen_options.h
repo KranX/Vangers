@@ -1,9 +1,12 @@
 #ifndef __ISCREEN_OPTIONS_H__
 #define __ISCREEN_OPTIONS_H__
 
+#include <string>
+
 int iGetOptionValue(int id);
 void iSetOptionValue(int id,int val);
 char* iGetOptionValueCHR(int id);
+std::string iGetOptionValueUTF8String(int id);
 void iSetOptionValueCHR(int id, const char* p);
 void iUpdateOptionValue(int id);
 

@@ -108,7 +108,7 @@ struct MessageElement : XListElement {
 	char* message;
 	int color;
 	int time; //zmod
-	MessageElement(const char* player_name, char* msg,int color = 0);
+	MessageElement(const char* player_name, const char* msg,int color = 0);
 	~MessageElement(){ delete[] message; }
 	};
 
@@ -118,7 +118,7 @@ struct MessageDispatcher : XList {
 	MessageDispatcher(int max_num_messages = 100) : XList() { max_number_of_messages = max_num_messages; }
 	MessageElement* first(){ return (MessageElement*)fPtr; }
 	MessageElement* last(){ return (MessageElement*)lPtr; }
-	void send(char* message,int mode,int parameter);
+	void send(const char* message,int mode,int parameter);
 	void receive();
 	};
 
@@ -172,7 +172,7 @@ public:
 
 	void end_body();
 
-	void register_name(char* name, char* password);
+	void register_name(const char* name, const char* password);
 	void set_world(int world,int y_size_of_world);
 	void set_position(int x,int y,int y_half_size_of_screen);
 	void set_player_body(PlayerBody& body);

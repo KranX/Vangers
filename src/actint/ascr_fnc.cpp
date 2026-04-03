@@ -5985,9 +5985,19 @@ char* aciGetPlayerName(void)
 	return iGetOptionValueCHR(iPLAYER_NAME2);
 }
 
+std::string aciGetPlayerNameUTF8(void)
+{
+	return iGetOptionValueUTF8String(iPLAYER_NAME2);
+}
+
 char* aciGetPlayerPassword(void)
 {
 	return iGetOptionValueCHR(iPLAYER_PASSWORD);
+}
+
+std::string aciGetPlayerPasswordUTF8(void)
+{
+	return iGetOptionValueUTF8String(iPLAYER_PASSWORD);
 }
 
 int aciGetPlayerColor(void)

@@ -3807,8 +3807,15 @@ int NetInit(ServerFindChain* p)
 	set_time_by_server(10);
 	std::cout<<"NetInit - [1.5]"<<std::endl;
 	my_player_body.clear();
-	
-	NETWORK_OUT_STREAM.register_name((char*)(aciGetPlayerName() ? aciGetPlayerName() : "Finger"), (char*)(aciGetPlayerPassword() ? aciGetPlayerPassword() : "Password"));
+
+	std::string player_name_utf8 = aciGetPlayerNameUTF8();
+	std::string player_password_utf8 = aciGetPlayerPasswordUTF8();
+	if(player_name_utf8.empty())
+		player_name_utf8 = "Finger";
+	if(player_password_utf8.empty())
+		player_password_utf8 = "Password";
+
+	NETWORK_OUT_STREAM.register_name(player_name_utf8.c_str(), player_password_utf8.c_str());
 	std::cout<<"NetInit - [2]"<<std::endl;
 	//NETWORK_OUT_STREAM.register_name(aciGetPlayerName() ? aciGetPlayerName() : "Finger", "Password");
 	my_player_body.color = aciGetPlayerColor();

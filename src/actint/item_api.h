@@ -1,3 +1,4 @@
+#include <string>
 
 enum actintItemTypes
 {
@@ -299,6 +300,8 @@ void aciClearTeleportMenu(void);
 
 char* aciGetPlayerName(void);
 char* aciGetPlayerPassword(void);
+std::string aciGetPlayerNameUTF8(void);
+std::string aciGetPlayerPasswordUTF8(void);
 int aciGetPlayerColor(void);
 
 void aciRefreshTargetsMenu(void);

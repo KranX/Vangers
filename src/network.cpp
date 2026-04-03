@@ -8,6 +8,8 @@
 #include "lang.h"
 #include "3d/3d_math.h"
 #include "sound/hsound.h"
+#include "text/legacy_codec.h"
+#include "text/unicode.h"
 #endif
 
 #ifndef _WIN32
@@ -53,6 +55,31 @@ NetRndType NetRnd;
 
 const int IN_BUFFER_SIZE = 128000;
 const int OUT_BUFFER_SIZE = 256000;
+
+namespace
+{
+
+text::LegacyEncoding network_text_encoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+std::string network_text_auto_to_utf8(const char* value)
+{
+	const char* text_value = value ? value : "";
+	if(text::is_valid_utf8(text_value))
+		return text_value;
+	return text::legacy_to_utf8(text_value, network_text_encoding());
+}
+
+char* network_dup_string(const std::string& value)
+{
+	char* copy = new char[value.size() + 1];
+	memcpy(copy, value.c_str(), value.size() + 1);
+	return copy;
+}
+
+}
 
 #ifdef _ROAD_
 extern int iProxyUsage;
@@ -428,7 +455,7 @@ void OutputEventBuffer::set_position(int x,int y,int y_half_size_of_screen)
 		}
 }
 
-void OutputEventBuffer::register_name(char* name, char* password)
+void OutputEventBuffer::register_name(const char* name, const char* password)
 {
 	n_event++;
 	*this < short(1 + strlen(name) + 1 + strlen(password) + 1) < (unsigned char)(REGISTER_NAME) < name < char(0) < password < char(0);
@@ -1310,18 +1337,18 @@ void PlayersList::parsing_total_body_query()
 /*******************************************************************************
 			Chat Tool
 *******************************************************************************/
-MessageElement::MessageElement(const char* player_name, char* msg,int col)
+MessageElement::MessageElement(const char* player_name, const char* msg,int col)
 {
-	message = new char[strlen(player_name) + strlen(msg) + 3];
-	strcpy(message,player_name);
-	strcat(message,": ");
-	strcat(message,msg);
+	std::string utf8_message = network_text_auto_to_utf8(player_name);
+	utf8_message += ": ";
+	utf8_message += network_text_auto_to_utf8(msg);
+	message = network_dup_string(utf8_message);
 	color = col;
 	//zmod
     time = SDL_GetTicks();
 }
 
-void MessageDispatcher::send(char* message,int mode,int parameter)
+void MessageDispatcher::send(const char* message,int mode,int parameter)
 {
 	unsigned int cors;
 	switch(mode){

@@ -253,6 +253,9 @@ static std::string iChatUtf8Substr(const std::string& text,int start_position,in
 
 static std::string iChatPlayerNameUtf8(void)
 {
+	std::string player_name = aciGetPlayerNameUTF8();
+	if(!player_name.empty())
+		return player_name;
 	return text::legacy_to_utf8(CurPlayerName ? CurPlayerName : "", iChatTextEncoding());
 }
 
@@ -1325,14 +1328,14 @@ void iChatInputFlush(void) {
 			std::string display_line = iChatPlayerNameUtf8() + ": " + iChatUtf8Substr(string, leftPosition, rightPosition);
 
 			if (iChatUtf8TextWidth(display_line, iChatInput -> font, 1) > iChatHistory -> SizeX - 10) {
-				std::string send_text = text::utf8_to_cp866_lossy(iChatUtf8Substr(string, leftPosition, rightPosition - 1),' ');
-				message_dispatcher.send((char*)send_text.c_str(), iChatFilter, iChatFilterID);
+				std::string send_text = iChatUtf8Substr(string, leftPosition, rightPosition - 1);
+				message_dispatcher.send(send_text.c_str(), iChatFilter, iChatFilterID);
 				leftPosition = rightPosition - 1;
 			}
 		}
 
-		std::string send_text = text::utf8_to_cp866_lossy(iChatUtf8Substr(string, leftPosition, iChatUtf8Length(string)),' ');
-		message_dispatcher.send((char*)send_text.c_str(), iChatFilter, iChatFilterID);
+		std::string send_text = iChatUtf8Substr(string, leftPosition, iChatUtf8Length(string));
+		message_dispatcher.send(send_text.c_str(), iChatFilter, iChatFilterID);
 	}
 
 	iChatInput -> string = ">";
