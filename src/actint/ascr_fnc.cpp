@@ -168,7 +168,8 @@ static std::shared_ptr<text::TtfFontFace> actint_get_text32_ttf_face(int font)
 	if(!aScrFonts32 || !aScrFonts32[font])
 		return nullptr;
 
-	return text::default_ui_text32_ttf_face(aScrFonts32[font] -> SizeY, TTF_HINTING_NORMAL, false, 0);
+	const int hinting = text::language_prefers_japanese_fonts() ? TTF_HINTING_LIGHT : TTF_HINTING_NORMAL;
+	return text::default_ui_text32_ttf_face(aScrFonts32[font] -> SizeY, hinting, false, 0);
 }
 
 static uint32_t actint_decode_legacy_char(unsigned char ch)
@@ -441,20 +442,25 @@ static void actint_draw_ttf_glyph_buffer32(int x,int y,int bsx,const text::Glyph
 		return;
 
 	const unsigned max_step = color_base < 255 ? (unsigned)(255 - color_base) : 0u;
+	const unsigned alpha_threshold = text::language_prefers_japanese_fonts() ? 24u : 16u;
 
 	for(int gy = 0; gy < glyph.height; gy++){
 		const int row_offs = (y + gy) * bsx;
 		for(int gx = 0; gx < glyph.width; gx++){
 			unsigned alpha = glyph.alpha[(size_t)gy * (size_t)glyph.pitch + (size_t)gx];
-			if(alpha < 16)
+			if(alpha < alpha_threshold)
 				continue;
 
-			unsigned shade = 1 + ((alpha * 31u) / 255u);
+			unsigned shade = (alpha * 31u + 127u) / 255u;
+			if(!shade)
+				continue;
 			unsigned step = color_shift ? (shade >> color_shift) : shade;
 			if(!step)
-				step = 1;
+				continue;
 			if(step > max_step)
 				step = max_step;
+			if(!step)
+				continue;
 
 			unsigned color = color_base + step;
 			unsigned char& dst = buf[row_offs + x + gx];
