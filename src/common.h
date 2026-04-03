@@ -1,6 +1,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
+#include <memory>
 
 #define MIN(a,b)	(((a) < (b))?(a):(b))
 #define MAX(a,b)	(((a) > (b))?(a):(b))
@@ -120,6 +121,8 @@ char* GetTargetName(const char* name);
 #define COL5		251
 
 #ifdef _ROAD_
+namespace text { class TtfFontFace; }
+
 #define CLOCK()		(SDL_GetTicks()*18/1000)
 
 const int SQ_SYSCOLOR = 256 - 8;
@@ -130,6 +133,7 @@ struct sqFont {
 	unsigned char first,last;
 	short sx,sy;
 	void** data;
+	std::shared_ptr<text::TtfFontFace> ttf_face;
 
 	void init(void* d);
 	void draw(int x,int y,unsigned char* s,int fore = SQ_SYSCOLOR,int back = SQ_SYSCOLOR + 5);

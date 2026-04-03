@@ -29,8 +29,10 @@
 
 #include "xjoystick.h"
 #include "network.h"
-#include "text/font_manager.h"
+#include "text/legacy_codec.h"
+#include "text/legacy_ttf_draw.h"
 #include "text/ttf_runtime.h"
+#include "text/unicode.h"
 
 #include "3d/3d_math.h"
 #include "3d/3dgraph.h"
@@ -2675,14 +2677,80 @@ void theEND(void)
 void sqFont::init(void* d)
 {
 	char* p = (char*)d;
-	memcpy(this,p,8);
+	struct sqFontHeader {
+		short num;
+		unsigned char first,last;
+		short sx,sy;
+	};
+
+	sqFontHeader header;
+	memcpy(&header,p,sizeof(header));
+	num = header.num;
+	first = header.first;
+	last = header.last;
+	sx = header.sx;
+	sy = header.sy;
 	data = new void*[num];
 	for(int i = 0;i < num;i++)
 		data[i] = p + 8 + sy*i;
+	ttf_face = text::default_ui_ttf_face(sy, TTF_HINTING_NORMAL, false, 0);
+}
+
+namespace
+{
+
+text::LegacyEncoding sq_text_encoding(void)
+{
+	return lang() == RUSSIAN ? text::LegacyEncoding::CP866 : text::LegacyEncoding::ASCII;
+}
+
+bool sq_text_should_use_ttf(const char* text)
+{
+	if(!text || !*text)
+		return false;
+	if(!text::is_valid_utf8(text))
+		return false;
+
+	for(const unsigned char* p = (const unsigned char*)text; *p; ++p)
+		if(*p & 0x80)
+			return true;
+
+	return false;
+}
+
+std::string sq_text_auto_to_utf8(const char* text)
+{
+	const char* value = text ? text : "";
+	if(text::is_valid_utf8(value))
+		return value;
+	return text::legacy_to_utf8(value, sq_text_encoding());
+}
+
+void sq_draw_ttf_text(int x,int y,const char* text,sqFont& font,int fore,int back)
+{
+	if(!font.ttf_face)
+		return;
+
+	const std::string utf8_text = sq_text_auto_to_utf8(text);
+	if(back != -1){
+		const int width = text::measure_utf8_text_width(utf8_text, *font.ttf_face, 0);
+		const int height = text::measure_utf8_text_height(utf8_text, *font.ttf_face, 0);
+		if(width > 0 && height > 0)
+			XGR_Rectangle(x, y, width, height, back, back, XGR_FILLED);
+	}
+
+	text::draw_utf8_text_8bit(x, y, fore, utf8_text, *font.ttf_face, 0, 0, false);
+}
+
 }
 
 void sqFont::draw(int x,int y,unsigned char* s,int fore,int back)
 {
+	if(ttf_face && sq_text_should_use_ttf((const char*)s)){
+		sq_draw_ttf_text(x, y, (const char*)s, *this, fore, back);
+		return;
+	}
+
 	while(*s){
 		drawchar(x,y,*s,fore,back);
 		s++;
@@ -2692,6 +2760,11 @@ void sqFont::draw(int x,int y,unsigned char* s,int fore,int back)
 
 void sqFont::drawtext(int x,int y,char* s,int fore,int back)
 {
+	if(ttf_face && sq_text_should_use_ttf(s)){
+		sq_draw_ttf_text(x, y, s, *this, fore, back);
+		return;
+	}
+
 	char c;
 	int i = x;
 	while((c = *s) != 0){
