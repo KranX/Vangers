@@ -440,6 +440,8 @@ static void actint_draw_ttf_glyph_buffer32(int x,int y,int bsx,const text::Glyph
 	if(glyph.alpha.empty())
 		return;
 
+	const unsigned max_step = color_base < 255 ? (unsigned)(255 - color_base) : 0u;
+
 	for(int gy = 0; gy < glyph.height; gy++){
 		const int row_offs = (y + gy) * bsx;
 		for(int gx = 0; gx < glyph.width; gx++){
@@ -448,7 +450,13 @@ static void actint_draw_ttf_glyph_buffer32(int x,int y,int bsx,const text::Glyph
 				continue;
 
 			unsigned shade = 1 + ((alpha * 31u) / 255u);
-			unsigned color = color_base + (color_shift ? (shade >> color_shift) : shade);
+			unsigned step = color_shift ? (shade >> color_shift) : shade;
+			if(!step)
+				step = 1;
+			if(step > max_step)
+				step = max_step;
+
+			unsigned color = color_base + step;
 			unsigned char& dst = buf[row_offs + x + gx];
 			if(color > dst)
 				dst = (unsigned char)color;
