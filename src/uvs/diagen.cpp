@@ -640,6 +640,15 @@ void dgFile::load(char* fname,int _len, bool verbose)
 #else
 		external = 1;
 		buf = FBox -> get(fname,len);
+		if(!buf){
+			external = 0;
+			XStream ff(fname,XS_IN);
+			buf = new char[(len = ff.size()) + 1];
+			ff.read(buf,len);
+			ff.close();
+			buf[len] = '\0';
+			handle = 1;
+		}
 #endif
 	} else {
 		external = 1;
@@ -2819,7 +2828,7 @@ char* FileBox::get(char* fname,int& len)
 			}
 	}
 
-	ErrH.Abort("FileBox: entry not found",XERR_USER,-1,fname);
+	len = 0;
 	return NULL;
 }
 
