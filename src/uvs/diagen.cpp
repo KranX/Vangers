@@ -16,6 +16,8 @@
 #include "../text/language_policy.h"
 #include "../text/unicode.h"
 
+#include <vector>
+
 #include "../3d/parser.h"
 #include "../units/uvsapi.h"
 #include "../units/compas.h"
@@ -150,6 +152,8 @@ union dual_char {
 namespace
 {
 
+std::vector<char*> g_persistent_external_diagen_buffers;
+
 char* diagen_dup_string(const std::string& value)
 {
 	char* buffer = new char[value.size() + 1];
@@ -178,6 +182,12 @@ bool is_localized_utf8_diagen_asset_path(const char* path)
 
 	std::string marker = std::string("_") + text::language_code(lang()) + ".";
 	return strstr(path, marker.c_str()) != nullptr;
+}
+
+void remember_external_diagen_buffer(char* buffer)
+{
+	if(buffer)
+		g_persistent_external_diagen_buffers.push_back(buffer);
 }
 
 }
@@ -651,12 +661,13 @@ void dgFile::load(char* fname,int _len, bool verbose)
 		external = 1;
 		buf = FBox -> get(fname,len);
 		if(!buf){
-			external = 0;
+			external = 1;
 			XStream ff(fname,XS_IN);
 			buf = new char[(len = ff.size()) + 1];
 			ff.read(buf,len);
 			ff.close();
 			buf[len] = '\0';
+			remember_external_diagen_buffer(buf);
 			handle = 1;
 		}
 #endif

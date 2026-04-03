@@ -48,6 +48,9 @@
 #include "../text/language_policy.h"
 #include "../text/unicode.h"
 
+#include <iomanip>
+#include <sstream>
+
 #include "aci_evnt.h"
 #include "acsconst.h"
 #include "aci_scr.h"
@@ -4308,8 +4311,20 @@ void aciNextPhrase(void)
 		const char* dbg = (const char*)str;
 		std::string display_text = dbg ? actint_display_text_to_utf8(dbg) : std::string();
 		std::string preview = dbg ? display_text.substr(0, std::min<size_t>(display_text.size(), 80)) : std::string("<null>");
+		std::ostringstream raw_hex;
+		if(dbg){
+			const size_t dbg_len = strlen(dbg);
+			for(size_t i = 0; i < dbg_len && i < 12; i++){
+				if(i) raw_hex << ' ';
+				raw_hex << std::hex << std::uppercase << std::setw(2) << std::setfill('0')
+				        << (unsigned int)(unsigned char)dbg[i];
+			}
+		}
 		std::cout << "[VANGERS_DEBUG_ESCAVE_TEXT] next-phrase="
 		          << (dbg ? "non-null" : "null")
+		          << " raw-len=" << (dbg ? strlen(dbg) : 0)
+		          << " utf8=" << (dbg && text::is_valid_utf8(dbg) ? 1 : 0)
+		          << " raw=[" << raw_hex.str() << "]"
 		          << " text=\"" << preview << "\"\n";
 	}
 
