@@ -74,6 +74,17 @@ static bool iscreen_debug_text_object(const iScreenObject* obj)
 	return iscreen_debug_text_layout_enabled() && obj && obj->ID_ptr == "Text00";
 }
 
+static bool iscreen_debug_text_element(const iScreenElement* el)
+{
+	if(!iscreen_debug_text_layout_enabled() || !el || !el->owner)
+		return false;
+
+	if(el->type == I_STRING_ELEM && el->ID_ptr == "TextTitle00")
+		return true;
+
+	return iscreen_debug_text_object((const iScreenObject*)el->owner);
+}
+
 static std::string iscreen_debug_text_preview(const iScreenElement* el)
 {
 	if(!el)
@@ -2182,6 +2193,21 @@ void iScreenObject::init(void)
 		        "[VANGERS_DEBUG_TEXT] init object=%s Pos=(%d,%d) Size=(%d,%d) align=(%d,%d) auto=%d shadow=%d elems=%d\n",
 		        ID_ptr.c_str(), PosX, PosY, SizeX, SizeY, align_x, align_y,
 		        (flags & OBJ_AUTO_SIZE) ? 1 : 0, ShadowSize, ElementList ? ElementList->Size : 0);
+	}
+
+	if(iscreen_debug_text_layout_enabled()){
+		iScreenElement* dbg = (iScreenElement*)ElementList->first;
+		while(dbg){
+			if(iscreen_debug_text_element(dbg) && dbg->ID_ptr == "TextTitle00"){
+				const std::string preview = iscreen_debug_text_preview(dbg);
+				fprintf(stderr,
+				        "[VANGERS_DEBUG_TEXT] title-init object=%s Pos=(%d,%d) Size=(%d,%d) el-l=(%d,%d) el-size=(%d,%d) align=(%d,%d) text=\"%s\"\n",
+				        ID_ptr.c_str(), PosX, PosY, SizeX, SizeY,
+				        dbg->lX, dbg->lY, dbg->SizeX, dbg->SizeY,
+				        dbg->align_x, dbg->align_y, preview.c_str());
+			}
+			dbg = (iScreenElement*)dbg->next;
+		}
 	}
 }
 
@@ -4623,6 +4649,15 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
+							if(iscreen_debug_text_layout_enabled()){
+								const std::string preview = title_obj->get_display_utf8_string();
+								fprintf(stderr,
+								        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
+								        preview.c_str(), title_obj->SizeX, title_obj->SizeY, title_obj->lX, title_obj->lY,
+								        title_obj->owner ? ((iScreenObject*)title_obj->owner)->ID_ptr.c_str() : "<null>",
+								        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeX : 0,
+								        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeY : 0);
+							}
 							request_text_object_layout((iScreenObject*)title_obj -> owner);
 						}
 						key_trap(next_code);
@@ -4638,6 +4673,15 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 							title_obj -> set_text_auto(curText -> objName);
 							title_obj -> init_size();
 							title_obj -> init_align();
+							if(iscreen_debug_text_layout_enabled()){
+								const std::string preview = title_obj->get_display_utf8_string();
+								fprintf(stderr,
+								        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
+								        preview.c_str(), title_obj->SizeX, title_obj->SizeY, title_obj->lX, title_obj->lY,
+								        title_obj->owner ? ((iScreenObject*)title_obj->owner)->ID_ptr.c_str() : "<null>",
+								        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeX : 0,
+								        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeY : 0);
+							}
 							request_text_object_layout((iScreenObject*)title_obj -> owner);
 						}
 						key_trap(next_code);
@@ -4653,6 +4697,15 @@ int iScreenDispatcher::copy_text_next(iScreen* scr,int mode)
 			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
+			if(iscreen_debug_text_layout_enabled()){
+				const std::string preview = title_obj->get_display_utf8_string();
+				fprintf(stderr,
+				        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
+				        preview.c_str(), title_obj->SizeX, title_obj->SizeY, title_obj->lX, title_obj->lY,
+				        title_obj->owner ? ((iScreenObject*)title_obj->owner)->ID_ptr.c_str() : "<null>",
+				        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeX : 0,
+				        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeY : 0);
+			}
 			request_text_object_layout((iScreenObject*)title_obj -> owner);
 		}
 		curText -> copy(obj);
@@ -4689,6 +4742,15 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 						title_obj -> set_text_auto(curText -> objName);
 						title_obj -> init_size();
 						title_obj -> init_align();
+						if(iscreen_debug_text_layout_enabled()){
+							const std::string preview = title_obj->get_display_utf8_string();
+							fprintf(stderr,
+							        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
+							        preview.c_str(), title_obj->SizeX, title_obj->SizeY, title_obj->lX, title_obj->lY,
+							        title_obj->owner ? ((iScreenObject*)title_obj->owner)->ID_ptr.c_str() : "<null>",
+							        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeX : 0,
+							        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeY : 0);
+						}
 						request_text_object_layout((iScreenObject*)title_obj -> owner);
 					}
 					curText -> curLine = curText -> numLines - (curText -> numLines % obj -> ElementList -> Size) + obj -> ElementList -> Size * 2;
@@ -4717,6 +4779,15 @@ int iScreenDispatcher::copy_text_prev(iScreen* scr,int mode)
 			title_obj -> set_text_auto(curText -> objName);
 			title_obj -> init_size();
 			title_obj -> init_align();
+			if(iscreen_debug_text_layout_enabled()){
+				const std::string preview = title_obj->get_display_utf8_string();
+				fprintf(stderr,
+				        "[VANGERS_DEBUG_TEXT] title-copy text=\"%s\" size=(%d,%d) l=(%d,%d) owner=%s owner-size=(%d,%d)\n",
+				        preview.c_str(), title_obj->SizeX, title_obj->SizeY, title_obj->lX, title_obj->lY,
+				        title_obj->owner ? ((iScreenObject*)title_obj->owner)->ID_ptr.c_str() : "<null>",
+				        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeX : 0,
+				        title_obj->owner ? ((iScreenObject*)title_obj->owner)->SizeY : 0);
+			}
 			request_text_object_layout((iScreenObject*)title_obj -> owner);
 		}
 		curText -> flags &= ~iTEXT_EOF;
