@@ -52,10 +52,9 @@
 {Glorx}
 
 [Glorx] [グロークス]
-"なぜグロークスのことを知りたがる？ お前にとっては、ただの忌まわしい言葉でしかない。"
-"フォストラルにはグロークスへ通じるパッセージがある。水の世界で旅人には危険だが、あいにくあそこはすべての世界の十字路でもある。忌々しいチェーンの造り手どもめ！ それにビーボラットどももまとめて呪ってやる……"
+"なぜお前がグロークスなど知りたがる？ お前にとっては、ただの言葉で十分だ――それも悪態の一つとしてな…"
+"フォストラルには、グロークスへ抜けるコリドールがある。あそこは水の世界、歩き回るには危険な場所だ… しかも厄介なことに、グロークスはあらゆる世界の十字路でもある。呪われろ、チェーンをこしらえた連中… そして連中と一緒に、地獄の落とし子たるビーボラットどももな…"
 {Passage} {Fostral} {The Chain} {Beeboorats}
-
 [raffa] [ラッファ]
 "軽々しく口にするな、小僧。いずれ嫌でも目にすることになる――上にはうじゃうじゃいるからな……"
 "ラッファについて多くは語れん。あいつらはどこにでもいて、イリーポッドに罠を仕掛ける。お前も気づいているだろうし、向こうもお前に気づいているはずだ……"
@@ -75,35 +74,31 @@
 "バイオスだと？ 我らのバイオスこそ第一で、他は塵だ…"
 "いまチェーンには三つのバイオスがある――我らイリーポッド、ズィークセン、そして大喰らいのビーボラットどもだ…"
 {The Chain} {Eleepods} {Zeexen} {Beeboorats}
-[cirt] [サート]
-"サートこそ俺たちに必要なすべてだ……"
-"見つけて持ってくれば買ってやる。だが一つだけ忘れるな――俺たちが受け取るのは、俺たちのラーヴァからのサートだけだ……"
+[cirt] [ニューハ]
+"ニューハこそ、我らに必要なすべてだ…"
+"探してこい――買ってやる。ただし取り違えるなよ。我らが欲しいのは、我らのククラたちのニューハだけだ…"
 {Larvae}
-
 [Feenger] [フィンガー]
 "フィンガーは俺の影みたいなものだ。会いに行ってみろ。"
 "まだインキュベーターに行っていないのか、放浪者め？ フィンガーは俺と同じポッドにいる。今だってフレグマに尻尾を浸している音が聞こえるぞ、このならず者め……"
 {Incubator} {pod} {phlegma}
 
-[Passage] [パッセージ]
-"パッセージだと？ どこでそんな言葉を聞いた？"
-"パッセージは他の世界へ行く道だ。フォストラルにはいくつもあって、その一つはグロークスへ通じている。"
+[Passage] [コリドール]
+"コリドールだと？ そんな言葉をどこで覚えてきた？"
+"コリドールを抜ければ、旅人は別の世界へ出る… フォストラルにはコリドールがいくつもある――たとえばグロークスへ続くものもな…"
 {Fostral} {Glorx}
-
 [Zeexen] [ズィークセン]
-"ズィークセンだと？ うへっ、嫌な言葉だ。お前は俺をいらつかせに来ただけか、棺桶乗り……"
-"ズィークセン、ズィークセン……妙な連中だ……俺たちは好かん……近づくな……"
-
+"ツィクどもだと？ ふう、なんとも嫌な響きの言葉だ… どうやらお前は、それで私を苛立たせに来たらしいな、この棺桶引きめ…"
+"ツィク、ツィク… 奇妙な生き物どもだ… 我らはあれを好かん… ツィクどもには用心しろ…"
 [eLeech] [イリーチ]
 "イリーチはすばらしい生き物だ。お前もほんの短い間とはいえ、かつてはイリーチだった。"
 "イリーチはインキュベーターでこの世に現れる。イリーチの命を奪ったり、イリークションの最中に駄目にしたヴァンガーは死に値する。"
 {vangers} {Incubator} {Eleection}
 
 [nymbos] [ニムボス]
-"お前のニムボスは二度と目覚めはせんぞ、放浪者め。"
-"それをポディッシュからインキュベーターへ運べば、イリーポッドはきちんと報いてやる……"
-{Eleepods} {Podish} {Incubator}
-
+"お前のニムボスは、二度と目を覚ますことはないぞ、車輪野郎…"
+"それをポディッシュからインキュベーターへ運べば、イリーポッドどもはお前に報いを払うだろう…"
+{Podish} {Incubator} {Eleepods}
 [Eleection] [イリークション]
 "これはイリーポッドの種を存えさせるための儀式だ。プランプアップの次に来る周期で、足の速いヴァンガーどもが腕を見せる時だ。"
 "お前も参加できるし、勝てば褒美がある。だがイリーチの扱いには気をつけろ。さもないと……"
@@ -124,19 +119,16 @@
 {Zeexen}
 
 [The Cryspo] [クリスポ]
-"お前はヴァンガーか？ それとも、とっくに消えた連中の昔話を集める奴か？ さっさと上へ行け。嫌でも思い知らされるだろう……"
+"お前はヴァンガーなのか？ それとも、とうに消え失せた連中の作り話を集めて回る手合いか？ さっさと上へ行け――上でこそ、その頭の悪さを叩き直されるだろう…"
 {vangers}
-
 [Necross] [ネクロス]
-"We've never been there. Ask your vanger friends, if you have any. Or go there yourself!"
+"我らはそこへ行ったことがない。友だちのヴァンガーがいるなら、そいつに聞け。そんなものが本当にいるならな。あるいは、自分でたどり着くことだ…"
 {vangers}
-
 [P-beam] [Pビーム]
 "That's our secret - with it we can perceive the whole world as it is, regardless of distance. Fear us, scum, for we know all there is to know!"
 
-[Xplo] [エクスプロ]
-"Xplo... You're too curious, my friend. For now, it's nothing more than a word."
-
+[Xplo] [イクスプロ]
+"イクスプロか… お前は少しばかり詮索好きが過ぎるな、友よ。今のお前には、イクスプロはただの言葉にすぎん…"
 [Departed Bios] [去りしバイオス]
 "Humph... One of the mysteries of the Chain. We don't really believe in them."
 {The Chain}
@@ -161,11 +153,10 @@
 {Zeexen}
 
 [Spiral] [スパイラル]
-"A mechos part, used to travel to other worlds through Passages. But remember: the Spiral doesn't last forever, so you must recharge it at a special station before you can enter a Passage..."
+"どのメホスにも組み込まれている部品だ――それがあればコリドールを抜け、他の世界へ渡れる。だが覚えておけ、車輪野郎。スパイラルは永遠ではない。上へ出たら、入り口へ入る前に、決まった場所で充填しなければならん…"
 {mechos} {Passage}
 
 /*******************   Beeboorat's terms   *******************************/
-
 [ruBeecation] [ルビーケーション]
 "You've learned the wickedness of the Beeboorats and now, I'm sure, you abhor your fate. Well, bite the bullet, wheeler. It's your destiny to bear the yoke branded upon you with disgrace, the sign of the tyrants of the wet Glorx."
 {Beeboorats} {Glorx}
@@ -186,8 +177,7 @@
 {The Buro}
 
 [Valorin] [ヴァロリン]
-"If they put this stuff in your bay, be afraid - your doom is coming. This is a filthy Beeboorat on the way to the stadium. He'll unscrew his head there or take off his limb, an appropriate fate for the doltish beast."
-
+"もしこんな厄介物をトランクにねじ込まれたなら、死期が近いと覚悟しろ。これは、スタジアムへ送られていく薄汚いビーボラットだ。向こうでは自分で頭をねじ飛ばすか、足をもぎ取られるかするだろう。愚かなビーボラットには、それがまことにふさわしい末路だ。"
 [shrub] [シュラブ]
 "I'll tell you a secret. The doltish Beeboorats bring them to Ogorod and leave them there to rot. We, the blessed Eleepods, have found a better use for shrubs."
 {Ogorod}
@@ -266,11 +256,9 @@
 {B-Zone}
 
 [toxick] [トクシック]
-"Be careful with it, wheeler, or you'll lose your mechos immediately!"
-
-[popon] [ポポン]
-"Despite the Zeexen's dullness, they write well. We find the fables and tales on those tablets very funny at times. We value popons, wheeler, so they won't go to waste here."
-
+"気をつけて運べ、車輪野郎。でなければ、あっという間にメホスを失うぞ。"
+[popon] [ポポンカ]
+"ツィクどもは愚かだが、作り話をでっち上げることにかけては妙に達者だ。あの板切れには、時に実におかしな話や与太話が刻まれている。我らはポポンカを重んじている、車輪野郎――ここへ持ってくれば、無駄にはなるまい。"
 [ProtoZeek] [プロトジーク]
 "Oh, the dream of every Eleepod. Our scratchers cling to the strange figurine and stroke it endlessly... Just bring it to me. Your reward will be massive!"
 
