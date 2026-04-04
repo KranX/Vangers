@@ -205,13 +205,13 @@
 "おおおっ！ ついに我が夢が叶った！ どれほど長く、このクソウォックスのことを夢見ていたことか――エスケイヴの静けさの中でフレグマに浸かりながら、ずっと思い描いていたのだ。フォストラルでは滅多に見られぬ客だ、我らも最大限の敬意をもって迎えよう。多くのビーブに値するぞ、勇敢なるヴァンガー！"
 
 [MP0 Start]
-"Pluck up your courage, vanger: the VAN-WAR has started! You'll show your prowess and taste the fury of the brave in the rage of battle. Kill them all and die many times, reviving for revenge. I, a canny Eleepod, will count all the bodies and name the winner."
+"腹を括れ、ヴァンガー。ヴァン・ヴァールが始まった！ そこでお前は己の胆力を示し、戦いの煙と、悪臭を噴き上げるメホスの山の中で、勇者どもの怒りを思い知ることになる。奴らを皆殺しにしろ、そしてお前自身も何度も死ね――復讐のために蘇りながらな。私、この慎み深きイリーポッドが、死骸を一つ残らず数え上げ、勝者を指し示してやろう！"
 
 [MP1 Start]
-"Hey wheeler, the MECHOSOMA has begun! You must bring us wads of sundry wares. Now go and load up, as the others are already on their way, anticipating their profits. If you prove to be an effective merchant, you'll get your due reward: a new mechos and glory throughout the Chain."
+"おい、車輪持ち、メホソーマが始まったぞ！ お前は上等な品を、しかもたっぷり運び込まねばならん。さあ急げ、メホスに荷を詰め込め。他の連中はもうフォストラルの道を駆け、頭の中で儲けを弾いている。よく働け、そして溝で日向ぼっこなどするな。そうすれば新しいメホスと、チェーンじゅうに轟く名声が手に入る。"
 
 [MP2 Start]
-"The PASSEMBLOSS has begun! Hit the road, wheeler! Step on the gas and push the others; rush to your goal and don't look back. You'll meet your fate around a bend. Don't be afraid of those glowing circles, as you have to go from one to the next, your compass guiding you through."
+"パッセンブロスが始まった！ 行け、車輪持ち、道へ出ろ。踏み込め、他の連中を溝へ突き落とせ、振り返らずに飛ばせ。そうすればどこか急な曲がり角で、お前の幸運に追いつけるだろう。道に瞬く輪が見えても恐れるな。お前は輪から輪へ渡って進むのだ――コンパスがお前の案内役だ。"
 
 [MP3 Start]
 "HUNTAGE started!"
@@ -220,13 +220,13 @@
 "MUSTODONT started!"
 
 [MP0 Comment]
-"The VAN-WAR is in full swing and you are quaking in an escave, you stinking coward! Go up into the world and find the chump who dared offend you. Show him what the anger of a real hero means. You want to take a decent gun to shoot up those drips? I'll sell it for half the price if you disappear quick!"
+"ヴァン・ヴァールは熾烈の極みだというのに……お前はエスケイヴの静けさに縮こまり、震えて泣いているつもりか、臭い臆病者め！ さっさと上へ出ろ。お前を虚仮にしたあの醜い野郎を見つけ、本物の英雄の怒りがどういうものか教えてやれ。どうせなら景気のいい銃でも持って行って、無礼者どもを粉々にしたいか？ 半値で譲ってやるから、とっとと失せろ……"
 
 [MP1 Comment]
-"The MECHOSOMA is going full blast... And what about you, brave wheeler, are you shipping wares? How much phlegma and precious nymbos have you brought into our escaves? Work hard and don't drive your rusty mechos empty..."
+"メホソーマは真っ盛りだ……さて、勇ましき車輪持ちよ、品運びの具合はどうだ？ どれほどのフレグマや貴きニムボスを、我らのエスケイヴへ運び込めた？ 励め、素早きヴァンガー。錆びたメホスを空荷のまま走らせるな……"
 
 [MP2 Comment]
-"The PASSEMBLOSS is in full fling up there... It's unbecoming to a true racer to sit out in an escave, so hurry up and catch up to your competitors while you still can... Don't forget: you have to go from circle to circle, following your compass..."
+"上ではパッセンブロスが荒れ狂っている…… それなのにエスケイヴに座り込んでいるとは、真の走り屋、チェーンの王たる者にはあまりに見苦しい。急げ、まだ間に合ううちに他の連中へ追いつけ…… 覚えておけ、走るべきは標から標へ、ひとつも飛ばさず、コンパスに従って、だ……"
 
 [MP3 Comment]
 "HUNTAGE in progress..."
@@ -244,90 +244,90 @@
 "$(World of Larva2) is where the Larva is, the Queen of Gulp-down!"
 
 [Protractor in Inventory]
-"It's been a long time since my pod last saw the Protractor... That mysterious object, beyond time and space. It works wonders and captivates beebs. The guide of the roads..."
+"久しく、我がポッドはこの始界者を見ていなかった…… 時も作用も超えた、得体の知れぬ品。こいつは奇蹟を起こし、ビーブを魅了し、道という道を導いていく……"
 {Protractor}
 
 [Mechanic Messiah in Inventory:B]
-"I don't fear you, Mechanical Messiah! A pod of glossy and chubby Eleepods is behind me, we'll survive! Find yourself other prey: the stupid wheeler you caught. No one really needs him, besides the beebs who are waiting for the chance to gnaw at his remains in a ditch..."
+"機械仕掛けのメサイアよ、私はお前など恐れぬ！ 私の背後には、緑に艶めく、ふくよかなイリーポッドのポッドが控えている――我らは耐え抜く！ 別の獲物を探すがいい。お前が掴まえたあの愚かな車輪持ちをな。あれを必要としている者などいない――どこかの溝で、その残骸を齧る機会を待つビーブどもを除けば……"
 {Mechanical Messiah}
 
 [Function-83 in Inventory:G]
-"Oh, you've secured the mysterious device... That's good. Your Function will surely help us get some kusowocks from distant worlds. Take care of it, don't drop it in a ditch, and don't show it to the Beeboorats or they'll grab the jewel of the Chain, the barbarians..."
+"おお、謎めいた装置を手に入れたか…… 結構なことだ。お前のこの《方法》は、遠き世界からクソウォックスを掻き集める助けになるに違いない。溝へ落とすな、粗末に扱うな、そしてビーボラットどもには見せるな――あの野蛮人ども、世界の宝を力ずくで奪い去ろうとするだろうからな……"
 {Function-83+}
 
 [Spummy in Inventory:B]
-"I feel the Chomper... The horror left its cage and came to Leepky. I didn't think I'd see the dreadful thing again. Oh, I won't survive this! It seems I'm dying, and YOU are to blame, scavenger! "
-"How dare you, crummy hearse-rider, bring the curse of the Softie here? I know whose plan this is! It's a plot of the evil Beeboorats! No, I won't die. Get out of Podish, you heap of dung, and die in a hole, clutching at your filthy cargo..."
+"スプミィの気配がする…… あの悪夢が檻を抜け出して、このリープキーのところへ戻ってきた。まさか、再びこの忌まわしい品を見ることになるとは…… ああ、これはもう耐えられん！ どうやら私は死ぬ、そしてその原因はお前だ、この漁り屋め！"
+"どういう了見だ、このひん曲がった霊柩車引きめ。ソフティの呪いをここへ持ち込むとは！ 誰の差し金かはわかっている――邪悪なビーボラットどもの企みだ！ ……いや、やはり私は死なん。今すぐポディッシュから出て行け、この糞の山め。そしてその汚らわしい荷を抱えたまま、どこかの溝で無様に死ぬがいい……"
 {Chomper}
 
 [Boot Sector in Inventory:G]
-"You don't have Boot Sector by accident, explorer. You want to own a dozen mechos, little rogue? Your dream has come true! Kind Leepky will take care of your gear while you're out in another mechos combing the worlds for kusowocks..."
+"ブート・セクターを手にしたのは、ただの偶然ではあるまいな、探索屋。十台ばかりのメホスを抱え込みたかったのか、この小悪党め？ その夢、叶ったぞ！ お前が別のメホスで世界じゅうを回り、クソウォックスを探しているあいだは、この親切なリープキーが、お前の財産をちゃんと見張っていてやる……"
 {Boot Sector}
 
 [Peelot in Inventory]
-"If you take part in the Eleection, don't use your Flymatic. It's a low-tech widget that knows the way, all right, but isn't really fast... An amusing doodad..."
+"イリークションに出るつもりなら、そのピーロットは使わないことだ。代物としては愚鈍で、速くもない。道を知っているのは確かだが、自分から急いではくれん…… もっとも、玩具としては悪くないがな……"
 {Flymatic}
 
 [Leepuringa Return (Good):G]
-"At last! Leepuringa returned to its burrow! It's a stroke of luck, my pod is ringing the bells! I'll be writing poems again, feasting my eyes on the wonderful kusowock... You are the savior of the Eleepods, nimble vanger. I'll give you treasure! "
-"You probably think you know Fostral backwards and forwards, but I'll tell you something new: near the Passage to Glorx there is a secret place... It's open to you... I Don't know what's in it..."
+"ついにだ！ リープリンガが巣穴へ帰ってきた！ なんという幸運の瞬間、我がポッドは祝祭に沸いている。私はまた詩を書ける、あの見事なクソウォックスを眺めながらな…… お前はイリーポッドの救い手だ、手際のよいヴァンガーよ。褒美として財を与えてやろう！"
+"お前はきっと、フォストラルを隅まで知り尽くしたと思っているのだろう。だが、さらに知識を足してやる。グロークスへ通じるコリドールの近くに、ひとつ隠された場所がある…… そこへはもう行ける…… 中に何があるか、私も知らぬがな……"
 
 [Leepuringa Return (Bad)]
-"What we have here is a rare case of remorse. The motor-bandit, thief, and tough guy returning the stolen goods. Well, I'll forgive you, wheeler. To tell the truth, I was saddened by your knavish betrayal; there are no words for it... "
-"All right, I hope you didn't do it with evil intentions; your mechos wasn't that smart... Go away, greenhorn, and don't steal things any more!"
+"ほほう、珍しい悔悟の実例を見せてもらった。車輪の盗賊にして乱暴者が、盗んだ品を返しに来るとはな。よかろう、車輪持ちよ、お前を赦してやる。正直に言えば、その狡猾な裏切りには心底打ちのめされていた――言葉もないほどにな……"
+"まあいい、悪意からやったわけではあるまい。お前のメホスは、そこまで利口ではなかったようだしな…… 行け、この青二才。もう二度と盗みは働くな！"
 
 [Boorawchick in Inventory]
-"Oooh, Boorawchick paid us, the humble Eleepods, a visit. What an honor! You beeboorattish freak, you came to plead for our forgiveness? Felt your doom coming on after eating a dozen eLeeches? "
-"All right, you filthy sample of the hellish progeny of Glorx. I know, it's not your mind that steers you; your stomach does, which is always as empty as your head... Go and ride your slave..."
+"おおお、あのブーラウチックが、我ら慎ましきイリーポッドのもとへわざわざお越しとは。なんという光栄だろう！ この震えるビーボラットの落とし胤め、我らに赦しを乞いに来たのか？ イリーチを何十も喰らったせいで、ようやく自分の最期が見えてきたか？"
+"よかろう、グロークスの地獄の血筋、その穢れた見本よ。わかっている、お前を動かしているのは理性ではない。頭の中と同じく年中空っぽの腹のほうだ…… さあ行け、お前の奴隷にでも乗ってな……"
 
 [Queen Frog part note]
-"You are a pushy vanger, friend of the wheels, and you handle your mechos flawlessly. The hardware in your hands fulfills our wishes and requests. And now, a new mechos is waiting for you! I'll tell you some secrets of the art of building mechos. "
-"From now on you'll know that Heavy Iron is an aquatic mechos that Queen Frog once lost..."
+"お前は抜け目のないヴァンガー、車輪の友だ。そしてメホスの扱いは見事なものだ。お前の手にかかれば、鉄屑どもも我らの望みと掟をそのまま形にする。さあ、新たなメホスがお前を待っている！ メホス創造の技について、ひとつ秘密を教えてやろう。"
+"これで知ったな――ヘヴィ・アイアンとは、かつてクイーン・フロッグが失った、水棲のメホスなのだ……"
 
 [Lawn Mover part note]
-"You are a pushy vanger, friend of the wheels, and you handle your mechos flawlessly. The hardware in your hands fulfills our wishes and requests. And now a new mechos is waiting for you! I'll tell you some secrets of the art of building mechos. "
-"From now on you'll know that Star is a part of Lawn Mower, the ruler of the sky..."
+"お前は抜け目のないヴァンガー、車輪の友だ。そしてメホスの扱いは見事なものだ。お前の手にかかれば、鉄屑どもも我らの望みと掟をそのまま形にする。さあ、新たなメホスがお前を待っている！ メホス創造の技について、ひとつ秘密を教えてやろう。"
+"これで知ったな――スターとは、空の支配者ローン・ムーヴァーを形づくる一部なのだ……"
 
 [Weexow visit]
-"The drops from Weexow are still glittering on your mechos alongside the scratches made by the sharks there... A brave vanger is standing before me, that's for sure. And expecting a reward, I suppose? However, your quests far away from the Larvae are of little use to us, roamer."
+"お前のメホスには、まだヴィクソフの雫が光っている。あそこの鮫どもが残した傷も、まだ見える…… まったく、目の前に立っているのは勇敢なヴァンガーに違いない。で、褒美でも待っているのか？ だが、ククラから遠く離れたところでのお前の放浪は、我らには大して役立たんのだよ、旅籠虫め。"
 {Weexow}
 
 [Boozeena visit]
-"Aha, a rambler from Boozeena. So, naughty rover, have you by any chance lost your marbles among the magnificent corals and evil statues?"
+"ほう、ブージーナから流れてきたか。どうだ、いたずらな道漁りめ、あの見事な珊瑚や凶悪な石像どものあいだで、頭でも落としてきたのではあるまいな？"
 {Boozeena}
 
 [Ark-a-Znoy visit]
-"Been seeking your fate among the sands and beasts of Ark-a-Noi, vanger? Yeah, it was a long, long trip to your doom... But you survived, nimble warrior!"
+"アルク・ア・ズノイの砂と魔物のあいだで、自分の終わりでも探していたのか、ヴァンガー？ まったく、死に場所を求めてずいぶん遠くまで出かけたものだ…… だが生きて戻ったな、このすばしこい戦士め！"
 {Ark-a-Noi}
 
 [Khox visit]
-"You've been to Khox, I see. And did you see the city, did you try the darkness? Say, is it true that there's a lot of wrecked mechos on the sides of the roads that tried to push through to the light... in vain...? Not that I care, though. I've never been and don't plan on going there!"
+"ほう、コックスに行ってきたのか。あの街を見たか、闇にも降りてみたか？ なあ、本当なのか――あの世界の道沿いには、光へ抜け出そうとして果てたメホスの残骸が山ほど転がっている、と…… 無論、私にはどうでもよいことだがな。私は行ったこともないし、これから行く気もない！"
 {Khox}
 
 [hMok visit]
-"Oh, you've been to the ancient curse on hMok. Say, how did the conversation go? What did you gather from it? How did hMok greet you?.. You won't say? I know, you're sorry for being so stupid as to engage in that crazy adventure..."
+"ほう、ひモックにあるあの太古の呪いに、わざわざ会いに行ったか。どうだった、会話は？ 何を持ち帰った？ ひモックはお前をどう迎えた？ ……黙るか。わかっている、自分の愚かさを呪っているのだろう――あんな無茶な道へ踏み込んだことをな……"
 {hMok}
 
 [Threall visit]
-"Say, loony, what drove you to suicide? Someone's evil will, I guess... Nobody in his right mind would go there, into the lakes of lava, into the hell of the Chain... My pod is giving you advice: don't get even close to the Passage to Threall."
+"聞かせろ、気違い。何がお前を自殺へ駆り立てた？ きっと誰かの悪しき意志だろう…… 正気の者なら、あの溶岩の湖、チェーンの地獄へなど足を向けはしない。我がポッドから忠告してやる――呪われたスリオールへ通じるコリドールには、近づくことすらするな。"
 {Threall}
 
 [Eleepod in Inventory:G]
-"Greetings to you, envoy of Incubator! How is my Feenger getting on? I felt he chilled his scratcher while stirring phlegma. Are the eLeeches growing up well? Do the Beeboorats annoy them?"
+"インキュベーターの使いよ、ようこそ来た。私のフィンガーは息災か？ フレグマをかき混ぜながら、あいつは掻き手を冷やした気がしてな。イリーチたちは順調に育っているか？ ビーボラットどもに煩わされてはいないか？"
 
 [Beeboorat in Inventory]
-"Oh, vanger, you caught a Beeboorat for me? That's good! Beebs have bred in large amounts, and Podish is so rife with them that I stumble over the little scabs. This brave one will help us. You hear me, dweller of Glorx? You are an insect killer from now on. You'll live on a chain and eat phlegma..."
+"おお、ヴァンガー、私のためにビーボラットを捕まえてきたのか？ 結構だ！ 近ごろビーブどもがひどく増え、ポディッシュじゅうに湧き返って、私はしょっちゅう小さな瘡蓋どもに足を取られている。この勇ましい一匹には役立ってもらうとしよう。聞こえるか、グロークスの住人よ？ 今日からお前は小虫どもの駆除役だ。鎖につながれ、フレグマを啜って生きるのだ……"
 
 [Zeex in Inventory]
-"Aha, envoy of Necross! You came to pick up tales and rumors, saucebox? Or you want to laugh me out of Podish? Don't even think about it. Your tongue is sharp, all right, but your head is empty."
+"ははあ、ネクロスの使いか！ どうした、厚かましいおしゃべりめ、また噂話や作り話でも拾いに来たのか？ それとも、この私をポディッシュから笑い飛ばそうというのか？ そうはさせん。舌はたしかに鋭いが、頭の中身は空っぽだ。"
 
 [Key to Weexow Gift:G]
-"All my scratchers may not be enough to count your great deeds. You've earned the key to Weexow. It seems there is a precious object buried in that world. It will help you on your long quests..."
+"お前の偉業を数え上げるには、私の掻き手だけでは足りぬかもしれんな。ヴィクソフへの鍵を授けよう。あの世界には、どうやら貴重な品が埋もれているらしい。長き旅路で、お前の助けになるだろう……"
 {Weexow}
 
 [ruBeecation warning]
-"You caught my fancy with your diligence, vanger, and I want to save you from the dreadful fate that awaits you on Glorx. The first escave you come to must be Ogorod, the lowest on Glorx. "
-"You'll get the sacramental object from a dull counselor there in one of the cycles. Don't even peek into the other Beeboorat escaves without it!"
+"お前の働きぶりは、なかなか私の気に入っている、ヴァンガー。だからこそ、グロークスで待つ恐ろしい運命から救ってやりたい。まず最初に行くべきは、グロークス最下層のエスケイヴ、オゴロドだ……"
+"あそこの鈍い相談役から、いずれかのサイクルで肝心の品を受け取れる。そいつを持たぬまま、他のビーボラットのエスケイヴには近づくことすらするな！"
 {ruBeecation} {Ogorod}
 
 [Spummy Death]
