@@ -313,35 +313,35 @@
 "石ころに砂粒――骨の折れる一日になるだろう。この世界をくまなく探れ。そうすれば船倉を満たす何かを、きっと見つけられる。"
 
 [Protractor] [プロトラクター]
-"This will reveal the mystery of Xplo to you. The living entity that dwells in Spobs commands the Protractor, giving it its power."
+"始界者は、お前の目にイクスプロの秘密を開いてくれる。その力を与えているのは、スポブスに棲む者――あれを意のままに操る存在だ。"
 {Xplo} {Spobs}
 
 [Mechanical Messiah] [機械の救世主]
-"The will of Threall dwells in this fiendish thing. The power of mysterious floods alters the world and all things in it. And so its owner's freedom is nothing but a temporary illusion..."
+"この忌まわしい品には、スリールの意志が宿っている。得体の知れぬ奔流の力が、世界とその中のあらゆるものを変えてしまう。ゆえに、その持ち主の自由など、ふと生まれた幻にすぎん……"
 
 [Function-83+] [ファンクション83+]
 "This can take you to any world in the Chain which you have visited before."
 
 [Chomper] [チョンパー]
-"This fiendish thing originated in some dark series of events in the past. We have been unable to trace its history, as the deadly horror penetrates our consciousness, supplanting our very minds..."
+"この忌まわしい品は、遠い昔の暗い出来事の地層に、その起こりを持つ。我らはその来歴を辿ることができぬ――死の恐怖が意識へ染み込み、理性そのものを押しのけてしまうからだ……"
 
 [Boot Sector] [ブートセクター]
-"The Boot Sector helps us understand both the real character of the vangers and their ultimate objective. And all traces lead to Threall..."
+"ブート・セクターは、ヴァンガーの本性と、その究極の役目を見極める助けとなる。そして辿れば辿るほど、痕跡はすべてスリールへ通じている……"
 {Threall}
 
 [Flymatic] [フライマティック]
 "This'll take your place in the outside world, wheeler."
 
 [The Spectators] [観測者たち]
-"That brook of theirs is a little tributary of the flood of Threall, which wrecks the fates of living beings and drives events to unprecedented extremes..."
+"あいつらの細い流れは、スリールの大奔流から分かれた、かすかな支流にすぎぬ。生きものの運命を洗い流し、出来事を誰も知らぬ極限へ押し流す、あの流れのな……"
 {Threall}
 
 [The Infernals] [インフェルナルズ]
-"We are a little afraid of them. With our P-beam we can sense an alien mind on Threall, watching the other worlds and directing the other species. You'd better keep away from Threall, my youthful friend."
+"我らも、あれらは少し恐れている。リンザを通せば、スリールの上に、他世界を見張り、他種族を操っている異質な理性を感じるのだ。若き友よ、スリールには近づかぬほうがいい。"
 {Threall}
 
 [Spobs] [スポブス]
-"The One Who Has Left has settled in the heart of Xplo. He fights against the unknown, for reasons also unknown."
+"《去りし者》はイクスプロの中心に根を下ろし、そこから、名も知れぬ何かを相手に、目的もまた知れぬ戦いを続けている。"
 {Xplo}
 
 [Parapheen] [パラフィーン]
@@ -349,4 +349,4 @@
 {Protractor}
 
 [Carmane] [カルメイン]
-"The guard of the Chain, born of terror. Compared to him, we are but specks of dust."
+"恐怖より生まれた、チェーンの番人だ。あれの前では、我らなどただの塵にも等しい。"
