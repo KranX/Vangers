@@ -119,9 +119,9 @@
 "お前こそがヴァンガーだ、この間抜け。外なる機械に仕える卑しい奴隷の一人だ。お前らは皆、俺たちのしもべなんだよ！"
 
 [phlegma] [フレグマ]
-"The blood of Incubator..."
+"インキュベーターの血だ……"
 {Incubator}
-"Mucus for the good of the Eleepods. We love to smear ourselves with it and plump ourselves up in the peace and quiet of our burrows..."
+"イリーポッドの益となる粘液。我らはこれを体に塗り込み、地下の静けさの中でふくらみ育つのを好む……"
 {Eleepods}
 
 [The Softie] [ソフティー]
@@ -129,33 +129,33 @@
 {Zeexen}
 
 [The Cryspo] [クリスポ]
-"Are you a vanger? Or a collector of tales about those who are long gone? Time for you to head up. They'll set you straight, the hard way!"
+"お前はヴァンガーか？ それとも、とっくに失せた連中についての作り話を集め歩く蒐集家か？ そんな暇があるなら上へ行け――すぐにその頭の中身を叩き直されるぞ……"
 {vangers}
 
 [Necross] [ネクロス]
-"We've never been there. Ask your vanger friends, if you have any. Or go there yourself!"
+"我らはあそこへ行ったことがない。ヴァンガーの友がいるのなら、そいつらに聞け。いないなら、自分の足で行ってみることだ……"
 {vangers}
 
 [P-beam] [Pビーム]
-"That's our secret - with it we can perceive the whole world as it is, regardless of distance. Fear us, scum, for we know all there is to know..."
+"それは我らの秘密だ――リンザを介して、我らは距離というものを捨て、世界をあるがままに知覚する…… 畏れよ、ちっぽけな虫けらめ、我らはこの世のあらゆることを知っているのだからな……"
 
 [Xplo] [エクスプロ]
 "Xplo... You're too curious, my friend. For now, it's nothing more than a word."
 
 [Departed Bios] [去りしバイオス]
-"Humph... One of the mysteries of the Chain. We don't really believe in them."
+"ふむ…… チェーンに残る謎の一つだ。我らはあまり、本気では信じておらぬ。"
 {The Chain}
 
 [Plump-up] [プランプアップ]
-"The beginning of the Eleepod rotation. Ecstasy for the pods, and abeyance for the elder chords. Floods of nymbos..."
+"イリーポッドの《命の輪》の始まりだ…… ポッドには恍惚を、年老いた弦たちには待機をもたらす…… ニムボスの濁流……"
 {Eleepods} {pod} {nymbos}
 
 [Gulp-down] [ガルプダウン]
-"The final stage of our sacral rotation. The eLeeches reach Podish and start to gobble sweetly, slowly absorbing the chord of the chosen one, who has been waiting for his eLeech while staying in the mind of the pod..."
+"我らの聖なる《命の輪》を締めくくる段階だ。イリーチはポディッシュへ辿り着き、甘やかに咀嚼を始める。ポッドの潜在意識の中で自分のイリーチを待ち続けていた選ばれし者の弦を、少しずつ内へ取り込んでいくのだ……"
 {Eleepods} {eLeech} {Podish} {pod}
 
 [beebs] [ビーブ]
-"You are a slave to the beebs, you wheeled huckster. You'll kill anyone for the beebs! That's just your fate as a mercenary vanger."
+"お前はビーブの奴隷だ、車輪の商売人め。ビーブのためなら誰でも殺す――それが、お前のような売り渡されたヴァンガーの宿命なのだ。"
 {vangers}
 
 [The Creature Soup] [クリーチャー・スープ]
@@ -166,16 +166,16 @@
 {Zeexen}
 
 [Spiral] [スパイラル]
-"A mechos part, used to travel to other worlds through Passages. But remember: the Spiral doesn't last forever, so you must recharge it at a special station before you can enter a Passage..."
+"どのメホスにも仕込まれている部品だ――それがあればコリドールを抜け、他の世界へ渡れる。だが覚えておけ、車輪持ち。スパイラルは永遠ではない。上へ出たなら、コリドールへ入る前に、決まった場所で充填してやらねばならん……"
 {mechos} {Passage}
 
 /*******************   Beeboorat's terms   *******************************/
 
 [ruBeecation] [ルビーケーション]
-"Ooh, that's a horrible Beeboorat rite. Every wheeler that falls into the claws of those filthy beasts has to go through it."
+"おおお…… あれは恐るべきビーボラットの儀式だ。あの忌まわしい獣どもの爪に落ちた車輪持ちは、皆あれを味わわされる。"
 
 [Rubbox] [ラブボックス]
-"Don't peek into the Beeboorat escaves without a Rubbox. You'll lose your beebs and mechos in a flash! But Leepky collects those marks of universal stupidity..."
+"ラブボックスを持たぬままビーボラットのエスケイヴへ近づくな。一瞬でメホスもビーブも剥ぎ取られるぞ！ ……もっとも、リープキーはああいう『宇宙的愚鈍さの印』をせっせと蒐めているのだがな……"
 
 [VigBoo] [ヴィグブー]
 "You've visited the cursed VigBoo, the evil casemate and nest of the bandits? And you're still alive? Fate favors you, wheeler... That's where Eleepods go and disappear without a trace!"
