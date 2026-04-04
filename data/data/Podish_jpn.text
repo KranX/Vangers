@@ -120,54 +120,54 @@
 "何もないだろう、この阿呆！ 誰の役にも立たぬ土を詰め込んで、得意げに引きずり回していただけだ。あれがニューハだと思ったのか？ 違うな、間抜けめ、ただの塵だ。ククラの息は、お前の荷には一度たりとも触れていない……"
 
 [Nymbos in Inventory:B]
-"You were wrong, vanger, to come back to Podish with the nymbos. It's needed in Incubator, so get over there now..."
+"浅はかだな、ヴァンガー。ニムボスを積んだままポディッシュへ戻ってくるとは。それはインキュベーターに要るものだ――さっさとそちらへ行け……"
 {vangers} {nymbos} {Podish} {Incubator}
 
 [Phlegma in Inventory:G]
-"I see our talks are not in vain, vanger: you brought us phlegma. We Eleepods like to wallow in it..."
+"どうやら我らの話も少しは役に立ったようだな、ヴァンガー。フレグマを持ち帰ったか。我らイリーポッドは、その中で浴びるのが好きなのだ……"
 {vangers} {Eleepods} {phlegma}
 
 [Vangers Killing Comments]
-"Rumors have reached me that you terminated someone's life up there. I hope it wasn't on purpose. "
-"Eleepods don't care much about you ramblers, but I'll give you some advice: no one will give a beeb for your life if you become too bold and keep killing other vangers, the slaves of bunches, on a whim. Think about it..."
+"お前が上で誰かの道行きを終わらせた、という話はすでに耳に入っている。故意ではないと願いたいが……"
+"イリーポッドはお前たち車輪持ちに大した関心はない。だが忠告はしておく――増長して、気まぐれでバンチの下僕どもを奪い続けるなら、お前の命にビーブ一つ賭ける者さえいなくなる。よく考えろ……"
 {Eleepods} {beebs} {bunch}
 
 [eLeech Loss (with body):B]
-"How dare you come to Podish after that!? Did you even look in your bay? Death is there: the eLeech is dead!"
+"糞虫め、よくもそのざまでポディッシュへ顔を出せたものだ。自分の船倉を覗いたか、この溝で死ぬために生まれた屑め？ そこにあるのは死だ――死んだイリーチだ！"
 {Podish} {eLeech}
-"Oh grief, I hear silence: his pod is crippled. They are now doomed to keep the bodiless - do you know that is? You're a dead man now. Buzz off, cursed one..."
+"ああ、なんということだ、沈黙が聞こえる――あのポッドは麻痺してしまった。これであいつらは《身なきもの》を抱えて生きるしかない。何のことかわかるか？ いや、どのみちお前はもう死者だ。失せろ、この忌まわしい落とし子め……"
 {pod}
 
 [eLeech Loss (w/o body):B]
-"I wonder what you could have done with the precious cargo we entrusted to you? Oh, sweet eLeech, where are you? Blockhead Feenger! How could he trust a fragile eLeech to such a freak? Where is the baby, you scat? You'll pay for this, green-fly. Now bug off!"
+"どこへやったのか、考えるだけで凍りつく。我らが託した荷を、お前はどこへ消した？ ああ、甘きイリーチよ、どこへ行った？ 間抜けなフィンガーめ、どうしてこんな薄のろに繊細なイリーチを預けたのだ。下衆め、小さき者はどこだ？ この損失の代価は払ってもらうぞ、車輪のシラミめ、居候め。消え失せろ……"
 {Feenger} {eLeech}
 
 [eLeech Delivery (2-(n-1)):G]
-"So, nimble fighter, you handle your mechos well. You have preserved the little eLeech, that's good. Your beebs are waiting..."
+"よろしい、素早き戦士よ。お前はなかなかメホスを扱える。小さきイリーチを無事に守ったのは喜ばしい。ビーブが待っているぞ……"
 {mechos} {eLeech} {beebs}
 
 [eLeech Delivery (n)]
-"At last! We already started the lament for the poor eLeech we entrusted to you. It's good you've come to Podish before our little treasure died an untimely death... You should practice, vanger. Don't mess up!"
+"ようやくだ。お前に託した哀れなイリーチに、もう別れの嘆きを始めたところだった。ポディッシュまで辿り着くまでに我らの貴い荷が死なずに済んだのは、まことに喜ばしい…… もっと鍛えろ、ヴァンガー。次はしくじるな……"
 {Podish} {eLeech} {vangers}
 
 [Eleerection Win I:G]
-"Gee, fitter! You got here FIRST! You're now the hero of the Eleection, something the Eleepods will remember. We know how to separate the grain from the chaff..."
+"機械屋！ お前が一番乗りだ！ これでお前はイリークションの英雄――イリーポッドはそれを忘れぬ。我らは籾殻と粒を見分ける術を知っている……"
 {Eleection} {Eleepods}
 
 [Beebos Prize Gift:G]
-"We Eleepods appreciate smart and efficient vangers, and we are granting you a handful of beebs for your pain. Know our generosity, cunning hearse-rider. And keep on serving us as well..."
+"我らイリーポッドは、器用で利口なヴァンガーを値打ちあるものとして扱う。労苦の褒美に、立派なビーブをひとつかみくれてやろう。我らの気前を覚えておけ、このずる賢い霊柩車引きめ。そして今後も同じように仕え続けろ……"
 {Eleepods} {beebs} {vangers}
 
 [Eleerection Win II:G]
-"You won again, charioteer of golden eLeeches! The Eleection is your element. We have some plans for you... Eleepods don't favor all vangers, as I'm sure you know there are a lot of crooks among you. But you have won our trust and are in the saddle..."
+"また勝ったな、美しきイリーチの御者よ！ イリークションはお前の領分らしい。お前については、我らにも少し考えができた…… イリーポッドは、ヴァンガーなら誰にでも愛想を振りまくわけではない。お前たちの中には愚かな山師が多いからな。だが、お前は我らを納得させた。今や鞍の上の者だ……"
 {Eleection} {Eleepods} {eLeech} {vangers}
 
 [Key to Glorx Gift:G]
-"My pod has decided to give you a secret of other worlds. Fostral is big, but we need cirt hunters. You know the key to Glorx now, as I taught your Spiral. Try and visit that world, and if you come back alive, we'll talk about our plans..."
+"我がポッドは、お前に他世界の秘密をひとつ明かすことに決めた。フォストラルは広い。だが我らにはニューハ狩りが要る。これでお前はグロークスへの鍵を知った――お前のスパイラルにそれを教え込んでおいた。あの世界へ行け。無事に戻れたなら、その先の計画を話してやろう……"
 {pod} {Fostral} {cirt} {Glorx} {Spiral}
 
 [Eleerection Win III+:G]
-"Vanger, you are the best! The Eleection is yours; there's nothing for the others to catch here. But what are you still doing in our world? The time has come to go to Glorx, the world of the brutal Beeboorats..."
+"ヴァンガー、お前は無敵だ。イリークションはお前のもの――他の連中には、もうここで漁るものなどない。だが、まだ我らの世界で何をしている？ とっくにグロークスへ向かうべき時だ――あの粗暴なビーボラットどものところへな……"
 {Eleection} {Glorx} {Beeboorats}
 
 [Bad Larva Delivery:B]
