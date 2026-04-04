@@ -65,99 +65,99 @@
 {Agent} {Geer'ah}
 
 [Shrub in Inventory (Boond):B]
-"Slave, your monkey tricks make me laugh! This is Lampasso; Geer'ah is here and shrubs aren't my business! Turn your crate around and get out of here and into Ogorod!"
+"スレイブめ、その罪深い真似には思わず見入ってしまう。ここはランパッソ、ギールアの場だ。シュラブなど要らん。霊柩車を向け直し、俺の視界から消えてオゴロドへ行け！"
 {Slave} {Lampasso} {Geer'ah} {Ogorod}
 
 [+Shrub in Inventory (Boond):B]
-"Slave! You are obstinate in your error. You disappointed the Buro and they declared your existence meaningless. I am assigned to carry out the appropriate procedure. "
-"However, the merciful Buro is giving you a chance to die and wash away your guilt. You will take part in the Competition! "
-"Dear Slave, a message just arrived about a new record in the Zeppelins competition. The hero produced such a powerful pop that it caused a series of rock slides that blocked three approaches to the stadium. This is great news! I am granting you a pardon: live on for the benefit of the Buro. Your property, however, is confiscated to reward the hero."
+"スレイブ！ お前は誤りにしがみついている。ビューロはお前に失望し、その存在を無意味と宣告した。俺は相応の処置を執行する権限を持つ。"
+"だが慈悲深きビューロは、罪をすすいで死ぬ機会を与える。お前は競技会に参加だ！……"
+"親愛なるスレイブよ、たった今『エアロスタット』で記録更新の報せが届いた。英雄はあまりに強烈に破裂し、競技場へのトンネル三本が塞がった！ これは大いなる喜びだ。恩赦を与える。ビューロの役に立つよう生き延びろ。だが財産は英雄への褒美として没収する。"
 
 [Heroin in Inventory (Boond):G]
 "Handle Valorins with care, you clumsy freak!"
 {Valorin}
 
 [Pipetka in Inventory (Boond):B]
-"Haw-haw, the zealous mite brought me peeperettes. You're getting on my nerves! Listen, you crummy grub, our Heroes don't need peeperettes! This is a famous place and I won't let you dirty it!"
+"せわしない小虫がピーペレットを運んできたか。まったく忍耐の試練だ。よく聞け、みすぼらしい屑め！ 我らの英雄にピーペレットは不要だ！ ここは栄えある場所、汚させはしない！"
 {peeperette}
-"Drive the peeperettes to Ogorod! If Oboorez doesn't report your arrival to me soon, our fury will get at you wherever you are."
+"ピーペレットはオゴロドへ運べ！ すぐにオブーレツから到着の報せが来なければ、ビューロの怒りはどこにいてもお前に追いつく。"
 {Ogorod} {Oboorez}
 
 [+Pipetka in Inventory (Boond):B]
-"The scabby Slave came with peeperettes again! You didn't heed our instructions and ignored the Manual. Well, we'll show you the purpose of peeperettes. I just wish the seeds weren't wasted on a scab like you. But at least this is going to be a lesson to other slaves! "
-"All right, you dumb creature, live on - today is your lucky day. A message from VigBoo just arrived about a planned shipment of Valorins. All available Slaves must get down to loading and shipping. Get over there quickly. I'll empty your bay so that it has more room for cargo."
+"腐れスレイブめ、またしてもピーペレットを運び、諭しにも耳を貸さずウスタフも踏みにじった。よかろう、ビーボラットにとってピーペレットが何のためにあるか、お前の身で教えてやる。こんな屑に種を費やすのは惜しいが、ほかのスレイブへの見せしめにはなる。"
+"生きろ、この愚鈍な生き物め。今日は運のいい日だ。ヴィグブーから、ヴァロリン搬送の準備完了と知らせが来た。手の空いているスレイブは全員、輸送作業に動員される。さっさと失せろ。俺はお前の貨物室を空にして、より多くのヴァロリンが積めるようにしてやる。"
 
 [Shrub in Inventory (Commissar):B]
-"Commissar! We weren't expecting anyone with shrubs here. Don't expect a warm welcome. Your stumble may screw up our sporting events!"
+"コミッサーよ、シュラブ持ちなどここでは誰も待っていない。暖かい歓迎など期待するな。お前のしくじりは、我らの競技行事を台無しにしかねん！"
 {Commissar} {shrub}
-"I'll send an inquiry to the Buro to check your personal file."
+"ビューロへ照会を飛ばし、お前の個人記録を確かめさせてもらう！"
 
 [+Shrub in Inventory (Commissar):B]
-"Your crimes against the Beeboorats have exhausted all patience. Your promotion to Commissar was definitely premature. However, the Buro can correct their mistake: hand in your Rubbox, you've brought enough shame upon it!"
+"お前のビーボラットに対する罪は、ついに忍耐の杯を満たした。お前をコミッサーに任じたのは、明らかに性急すぎた。だがビューロは自らの誤りを正せる。汚したラブボックスを差し出せ！"
 
 [Heroin in Inventory (Commissar):G]
-"Commissar, you're always welcome here with Valorin. Work hard, but remember that the Heroes need Nucleoboom... Don't make them wait too long!"
+"コミッサー、ヴァロリンはいつだって歓迎だ。働け。だが忘れるな、英雄どもはニュークレオブームを待っている……あまり長く待たせるな！"
 {Valorin} {Nucleoboom}
 
 [Pipetka in Inventory (Commissar):B]
-"The Commissar brought a peeperette. The stylish Geer'ah is stunned! Slipshod Commissars like you could ruin the Beeboorats to the joy of our numerous enemies. Think better of it before it's too late!"
+"コミッサーがピーペレットを持ち込んだ。しゃれ者ギールアも打ちひしがれている！ お前のような杜撰なコミッサーは、多くの敵を喜ばせつつビーボラットを破滅させかねん。遅くならぬうちに目を覚ませ！"
 {Geer'ah} {peeperette}
 
 [+Pipetka in Inventory (Commissar):B]
-"You must've stolen your Rubbox, scoundrel! The Beeboorats' Commissars have never been so stupid: the Buro keeps close tabs on them! Get lost, Slave! Go wash away your guilt!"
+"貴様、そのラブボックスを盗んだのだろう！ ビーボラットのコミッサーが、ここまで馬鹿だったためしはない。ビューロはそこを厳しく見ている！ 失せろ、スレイブ！ 行って罪を償え！"
 
 [Shrub in Inventory (Agent):B]
-"I must've lost my vision, what with all this heavy duty. Pink elephants and now Agents with shrubs... But I KNOW this can't be. Begone vision!"
+"この厳しい任地で、どうやら目までやられたらしい。シュラブを抱えたエージェントまで見えるとは……だが、そんなものが本当にあるはずがない。消えろ、幻め！"
 {Agent} {shrub}
 
 [+Shrub in Inventory (Agent):B]
-"The worst guest is an Agent with a shrub. It's a pity... Your gripe is with the Beeboorats... Guess that's because of your idleness. But it can be fixed. Commissar, you now have many things to do."
+"俺にとって最悪の客は、シュラブ持ちのエージェントだ。嘆かわしい……エージェントの鬱憤が指導者に向いている……どうやら暇を持て余しているせいだな。だがそれも直せる。コミッサー、お前にはこれから広い仕事場が与えられる。"
 
 [Heroin in Inventory (Agent)]
-"I'm always glad to get Valorin... But not from an Agent! In these rugged times our best soldiers waste time on trifles. It makes me bitter just thinking about it..."
+"ヴァロリンはいつだって俺を幸福にする。だが、それを運んだのがエージェントとは！ こんな苦しい時に、最良の奉仕者が肝心な仕事をさぼっているとは。実に苦々しい……"
 {Valorin} {Agent}
 
 [Pipetka in Inventory (Agent):B]
-"A brave Agent brought a trifling peeperette. An odd case... Let's take a look at your Rubbox. Well, well... The Agent is new and green. Okay, since it's your first time I'll just give you a reprimand."
+"忌々しいピーペレットを、よりによって勇敢なエージェントが運んできた。珍しい事態だ……ちょっとラブボックスを見せろ。ほう……若いエージェントだな、まだ未熟だ。よし、今回はラブボックスに厳重注意を記すだけで済ませてやる。"
 {peeperette} {Agent} {Rubbox}
 
 [+Pipetka in Inventory (Agent):B]
-"An Agent with a peeperette again! And with a reprimand on his Rubbox! The Agent failed! It's a disaster, we must remove all traces! My duty is to liquidate the loser Agent! "
-"All right, I've been too hasty. Your medical file has just been brought from VigBoo. It appears you're overworked and got hung up on peeperettes. Live on, poor thing. I'll take your belongings and you go have some carefree fun. Maybe you'll calm down..."
+"何だと、またピーペレット持ちのエージェントだと！ しかもラブボックスには厳重注意付き！ こいつは完全に失格だ！ 大惨事だ、急いで痕跡を断たねば！ 俺の義務は、この落伍エージェントを始末することだ！"
+"……いや、早計だった。ヴィグブーからお前の医療記録が届いた。どうやらビューロへの奉仕で働きすぎ、ピーペレットに頭が囚われたらしい。生きろ、哀れな奴よ。荷物は俺が引き取る。お前は身軽になって世界を走り回り、頭を冷やしてこい……"
 
 [Sports Introduction]
-"Well, wheeler, it's time to tell you about our rites, or else you will perish in the darkness. The feats of our brave heroes are the cornerstone of Beeboorat existence and are performed in the stadium under my guidance. "
-"The valor of our heroes is high, and so is their glory. Stylish Geer'ah is only a humble helper to those who host the competitions. Here are some of them."
+"さて、車輪野郎よ、そろそろ我らの儀式について教えてやる時だ。無知のまま死なれては困る。ビーボラットの礎とは、勇敢な英雄たちの偉業であり、それはこの俺の見守る競技場で成し遂げられる。"
+"英雄たちの勇気は偉大、その栄光もまた偉大。しゃれ者ギールアは、新たな競技を考え出しつつ、ささやかにそれを助けている。いくつか聞かせてやろう。"
 {Geer'ah}
 
 [B-Sport 00]
-"The Breakneck Rush competition opens the season, and spectators just love it. Listen and remember. Here are the rules: "
-"The fearless hero rips off his head and the referee replaces it with a sacred Nucleoboom. Even with this inconvenience, the hero must reach the finish line without  letting the Nucleoboom fall. "
-"Only a few are able to do this, but their names are engraved on the Stone of Fame forever."
+"競技『首飛ばし疾走』が、今季の幕を開ける。観客はこれを愛してやまない。よく覚えておけ。規則はこうだ："
+"勇敢な英雄はきっぱりと自分の頭を引きちぎり、その場所に審判が神聖なニュークレオブームを据える。そんな難儀な姿のまま、競技者はニュークレオブームを落とさずにゴールまで駆け抜けねばならん。"
+"成功できる者は多くない。だが成し遂げた英雄の名は、永遠に栄光の碑へ刻まれる。"
 
 [B-Sport 01]
-"Listen, you wretched little scrub, and admire the utter bravery of the heroes who take part in Gorodki. Here are the rules: "
-"This competition is for true heroes. They spend a lot of time preparing for it, thinking of eternal glory. "
-"Sacred Nucleobooms are piled up in front of the competitor, and he must break them using only parts of his own body. Some lack of accuracy is compensated by extreme bravery. "
-"Everybody still remembers the feat of one hero who managed to complete the competition using his head, having lost all his limbs!"
+"聞け、ちっぽけな屑め。そして『ゴロドキ』の参加者たちの、前代未聞の勇気に震えろ。規則はこうだ："
+"これは真の英雄のための競技であり、彼らは永遠の栄光を思いながら長い準備を重ねる。競技者の前には、念願のニュークレオブームで積んだ山が置かれ、"
+"それを己の身体の部位だけを使って打ち砕かねばならない。多少の不正確さは、圧倒的な勇気で十分に補われる。誰もが覚えている――"
+"四肢をすべて失いながら、最後は自らの頭で競技を完遂した英雄の偉業を。"
 
 [B-Sport 02]
-"The Diggers competition demonstrates Beeboorat endurance and their ability to deliver an abrupt and smashing strike at the enemy. Here are the rules: "
-"Having tanked themselves up on Nucleoboom juice (to increase muscle activity), two teams of courageous souls lie in a trench in several layers, all trying to be the one on the bottom. "
-"Then they are buried under stones and clay, accompanied by sports anthems. After a certain period of time that is needed to allow the clay to contract, the competition starts. "
-"The team with the most members to break through the surface within a set period of time wins."
+"競技『埋蔵探索』は、ビーボラットの忍耐と、敵へ突然かつ粉砕的な報復を加える用意を示す。規則はこうだ："
+"芳醇なニュークレオブームの汁を浴びるほど飲み込み（筋肉活動を高めるためだ）、二隊の勇士たちは穴へ何層にもなって横たわり、誰もが最下層の位置を奪おうとする。"
+"その後、連中は石と粘土で埋められ、競技歌の斉唱が響く。粘土がほどよく締まるまでしばし待ち、そこで開始の合図だ。"
+"制限時間内に、より多くの選手を地表へ押し出せた隊の勝ちとなる。"
 
 [B-Sport 03]
-"The Zeppelins competition concludes the Olympics, and all remaining heroes take part in it. Here are the rules: "
-"Cheerful heroes eat enormous amounts of the finest Nucleoboom shells, which causes increased gas in their bellies. "
-"Having plumped up to three times their normal size, the competitors jump down from the tower onto sharp objects, trying to produce the loudest pop. "
-"One hero once made such a loud pop that it caused two rock slides near the stadium."
+"競技『エアロスタット』は、オリンピックの掉尾を飾る。残った英雄はすべてこれに参加する。規則はこうだ："
+"元気な英雄どもは、上質なニュークレオブームの殻を冗談を言い合いながら山ほど食らう。それにより、体内のガス生成が何倍にも高まる。"
+"通常の三倍にまで膨れ上がった競技者は、高所から鋭い物へ身を投げ出し、破裂音の大きさを競う。"
+"かつて最も巨大な破裂が記録された時には、競技場へ通じるトンネルが二本も崩れた。エアロスタットの轟きは、我らの心に勇気と決意を吹き込むのだ。"
 
 [B-Sport 04]
-"The Shrubs on a Bed competition demonstrates the destiny of our enemies. Here are the rules: "
-"While buried in the ground up to his neck, the hero must cheer on the participants who throw Nucleoboom at him. "
-"The competitors are given three attempts with three Nucleobooms per attempt, with the goal of scoring the best hits. "
-"The best snipers replace those who for some reason leave the action."
+"競技『オゴロドのシュラブ』は、我らの敵にどんな末路が待つかを分かりやすく示す。規則はこうだ："
+"英雄たちの一団は、方形植えのごとく地面に埋められる。地上に残るのは頭だけで、その埋められた者は投擲役を絶えず鼓舞し続けねばならない。"
+"参加者には三本のニュークレオブームと三回の試技が与えられ、シュラブへ可能な限り多く命中させることが求められる。"
+"ラウンドの成績が最もよい者は、何らかの理由で戦列を離れた英雄に代わって次を担う。"
 
 [B-Sport 05]
 "The Larvae competition demonstrates the Beeboorat resolve to own all the Larvae in the world. Here are the rules: "
