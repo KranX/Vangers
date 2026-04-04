@@ -513,124 +513,121 @@
 
 [Commissar] [コミッサー]
 /* Boond */
-"Commissar is the next level of your service."
+"コミッサーとは、お前の奉仕が進んだ次の段階のことだ。"
 /* Commissar */
-"Commissars take part in PeepShow and Nuclear War."
+"ビーボラットのコミッサーは、ピープショーと核戦争に参加する。"
 {PeepShow} {Nuclear War}
 /* Agent */
-"We value Agents more than Commissars."
+"我々はコミッサーよりエージェントを高く評価している。"
 
 [Agent] [エージェント]
 /* Boond */
-"If a Slave asks about Agents, it's probably a good Slave. Serve us well and you'll know everything soon enough."
+"奴隷がエージェントについて尋ねるなら、それは見込みのある奴隷だ。よく仕えろ。いずれ全部分かる。"
 /* Commissar */
-"I guess it will take you a long time to rise to the rank of Agent!"
+"お前がエージェントにまで昇るのは、どうやらまだずっと先だな……"
 /* Agent */
-"The hands of Glorx in other worlds."
+"他世界に伸びたグロークスの手だ。"
 
 [Manual] [マニュアル]
 /* Boond */
-"The Buro devised the Manual so that you wouldn't just ramble over the worlds filling your brain with worthless thoughts. Bless fate for giving you the Manual."
+"マニュアルはビューロが考案した。お前が世界を無駄にうろついて、頭の中の空虚をくだらない考えで埋めないようにするためだ。マニュアルを得た運命に感謝しろ。"
 /* Commissar */
-"Whoever follows the Manual strictly will rise to the rank of Agent quickly!"
+"マニュアルを守る者こそ、やがてエージェントへ育つ。"
 /* Agent */
-"Without the Manual, Beeboorat life would be impossible."
-
-/*******************   Zeexen's terms   *******************************/
+"マニュアルなしでは、ビーボラットの暮らしは成り立たん。"
 
 [ZeePa] [ジーパ]
 "Zeexen's main escave. Many of our best Agents disappeared in ZeePa."
 
 [B-Zone] [Bゾーン]
-"B-Zone is the nest of those Zeexen-poisoners. The Buro has sent many Agents there, but so far all in vain..."
+"Bゾーンは、毒を盛るズィークセンどもの巣だ。ビューロはそこへ多くのエージェントを送り込んできた。だが今のところ、努力はすべて空回りだ……"
 
 [Zeephra] [ジーフラ]
-"Zeephra is the counselor of ZeePa. She is a very dangerous enemy and is hatching a plot against the Buro. Some say she eats Beeboorats!"
+"ジーフラとはジーパの相談役だ。ビューロへの陰謀を編み続ける、きわめて危険な敵だ。ビーボラットを喰っているという疑いまである。"
 {ZeePa}
 
 [Zeekatrix] [ジーカトリクス]
-"Zeekatrix is the counselor of B-Zone. She is preparing a poison for Beeboorats, but the Buro will get her!"
+"ジーカトリクスとはBゾーンの相談役だ。ビーボラットを滅ぼすための毒を煮ている。だがいずれビューロが奴にも手を伸ばす。"
 {B-Zone}
 
 [toxick] [トクシック]
-"Don't say that, wheeler! Don't you know that the Zeexen are preparing toxick to kill me? The fiends cook the poison in B-Zone and spread it over all the worlds. Try to defeat their plot and I'll reward you!"
+"黙れ、車輪野郎！ ズィークセンどもが私を殺すためにトクシックを作っていると知らんのか。Bゾーンで奴らは毒を煮て、あらゆる世界へばら撒いている。あの邪悪な企みを阻止できれば、褒美をやろう。"
 {B-Zone}
 
 [popon] [ポポン]
-"Zeephra prepares the popons. She is Zeekatrix's accomplice in their dark plots. These tablets may very well contain the recipes of dreadful poisons!"
+"ポポンを作っているのはジーフラだ。ジーカトリクスの黒い企みに手を貸している共犯者だからな。その石板には、恐るべき毒の調合法が刻まれているに違いない。"
 {Zeephra} {Zeekatrix}
 
 [ProtoZeek] [プロトジーク]
-"An unknown object. Seems like the Zeexen in B-Zone mix toxick with it to make it more poisonous."
+"それが何なのかは分かっていない。ただ、Bゾーンでズィークセンどもがトクシックをもっと毒々しくするために、それでかき混ぜているようだ。"
 {B-Zone}
 
 [Spring] [春]
-"Zeexen are crazed about the Softie and all that stuff. Guess that's why these stupid words get into their stupid heads."
+"ズィークセンどもはソフティーと、その周辺のあらゆるものに取り憑かれている。だから、こうした妙な言葉があいつらの空っぽ頭に湧くのだろう。"
 
 [December] [12月]
 "Find it out yourself. That's what the Buro raised you for."
 
 [Saturday] [土曜日]
-"According to the reports of some Agents, this is the time the Zeexen have scheduled their final assault against the Beeboorats. They're going to pour thousands of jars of toxick onto Glorx."
+"エージェントどもの報告によれば、その時こそズィークセンどもがビーボラットに対する決定的攻勢へ出る刻だ。何千ものトクシックの瓶をグロークスへぶちまけるつもりらしい。"
 
 [Zeeklope] [ジークロープ]
-"It has been established that Zeephra sometimes sends vangers to B-Zone with instructions. This is called Zeeklope. Take part in this event and find out what it's about..."
+"ビューロは掴んでいる。ジーフラは時おりヴァンガーをBゾーンへ使いに出す。それがジークロープと呼ばれるものだ。お前もその催しに加わって、何がどうなっているか探ってこい……"
 {B-Zone} {Zeephra}
 
-/*********** Advanced terms ****************************/
-
 [Weexow] [ウィークソウ]
-"Better ask the Eleepods. The Buro hasn't found anything important in that world."
+"イリーポッドどもにでも聞いてみるがいい。ビューロはその世界で何ひとつ重要なものを見つけていない。"
 
 [Boozeena] [ブージーナ]
-"If you're smart, you can try to get a key to the hideout on Boozeena. If you succeed, the Buro will reward you."
+"物知りぶりたいなら、ブージーナの隠し場の鍵を解いてみるがいい。うまくやれれば、ビューロが褒美を出す。"
 
 [Threall] [スリール]
-"An Agent once served me, a good example Agent for everyone. Then he visited Threall and came back scared to death. Since then, he's remained stupid and never leaves Glorx. I had to degrade the blockheaded Agent to Commissar..."
+"かつて私のところに一人のエージェントがいた。誰の手本にもなる者だった。ところがスリールを訪れて以来、半死半生で戻り、恐怖で骨抜きになった。それからはグロークスを離れようともしない。あの愚か者はコミッサーに落とすしかなかった……"
 
 [hMok] [hMok]
-"A world made of iron, with a hideout on the lower level. Remember that this information is secret! The Buro has declared hMok a hostile and illegal world."
+"鉄でできた世界だ。下層には隠れ家がある。よく覚えておけ、これは最高機密だ！ ビューロはhMokを違法かつ敵対的な世界と宣言している。"
 
 [Khox] [コックス]
-"To get out of Khox, you must be able to handle your mechos better than any Agent. Any lingering on the roads of Khox is fatal!"
+"コックスから脱け出すには、どのエージェントよりも巧みにメホスを扱えなくてはならん。コックスの道では、わずかな逡巡が死を招く。"
 
 [Ark-a-Noi] [アーク・ア・ノイ]
-"By some accounts, Ark-a-Noi looks like Xplo. There's nothing there except death."
+"報告によれば、アーク・ア・ノイはイクスプロに似ているらしい。だが、そこにあるのは死だけだ。"
 {Xplo}
 
 [Protractor] [プロトラクター]
-"According to our quick-look data, the Protractor is closely related to Xplo and the local escave. Your mission is to investigate this criminal connection."
+"急報によれば、プロトラクターはイクスプロと、そこにあるエスケイヴと密接につながっている。お前の任務は、その犯罪的な結びつきを突き止めることだ。"
 {Xplo}
 
 [Mechanical Messiah] [機械の救世主]
-"It has been firmly established that there is a connection between this object and the mysterious voices on Threall. Any vanger who gets the Mechanical Messiah is pulled out of the Buro's control, so take care!"
+"この物体がスリールの怪しい声と結びついていることは、もはや確実だ。機械の救世主を手にしたヴァンガーは、ビューロの統制から外れてしまう。用心しろ！"
 {Threall}
 
 [Function-83+] [ファンクション83+]
-"This object would be of great use to our Agents. With it, they could grab many eLeeches from the Eleepods."
+"これは我らのエージェントにとって実に役立つ品だろう。こんなものがあれば、イリーポッドどもからイリーチを山ほどかっさらえるのだからな。"
 
 [Chomper] [チョンパー]
-"Anyone who picks up Chomper disappears quickly, and no one ever finds even a trace of him!"
+"チョンパーを拾った者は、ほどなく姿を消す。痕跡すら見つからない。"
 
 [Boot Sector] [ブートセクター]
-"The Boot Sector is not recommended for Agents. The Buro is not responsible for any mechos left unattended and will not accept any claims."
+"ブートセクターをエージェントが持つことは推奨されていない。置き去りにされたメホスの安全について、ビューロは一切責任を負わず、苦情も受けつけない。"
 
 [Flymatic] [フライマティック]
 "A vanger's home-made gadget. I'm not interested."
 
 [The Spectators] [観測者たち]
-"According to Zeexen assertions, these are creatures from the time of the Clash. These are evil rumors which undermine the Buro's authority."
+"ズィークセンどもの言い分では、それはクラッシュの時代から残った存在だという。ビューロの権威を傷つける有害な作り話だ。"
 
 [The Infernals] [インフェルナルズ]
-"The Eleepods believe that the Infernals rule all the worlds. Isn't that nonsense? Everyone knows that the Buro is the ruler here!"
+"イリーポッドどもを信じるなら、あらゆる世界を支配しているのはインフェルナルズらしい。笑える話だろう？ ここで一番偉いのがビューロであることは、今や誰の目にも明らかだ。"
 
 [Spobs] [スポブス]
-"Someone from Necross claims it's an escave on Xplo. It's true that there is some rubble there, but nobody has ever managed to get inside."
+"ネクロスのある者たちは、それをイクスプロのエスケイヴだと言い張っている。たしかに何かの廃墟はある。だが、まだ誰一人その中には入れていない。"
 {Xplo}
 
 [Parapheen] [パラフィーン]
-"The Buro has long been awaiting its chance to encounter him and find out if he's eatable!"
+"ビューロは、いつかそいつと対面し、食用になるかどうか確かめたくてたまらないのだ。"
 
 [Carmane] [カルメイン]
-"They call Carmane the boss of the Infernals. Someone sort of talked to him once. Well, after the horrors of Threall, some strange voices have been intruding into the heads of vangers."
+"カルメインとはインフェルナルズの頭目の名だという。誰かが話した、ともっぱらの噂だ。だが、まあ……スリールの恐怖を味わった後なら、ヴァンガーの頭に妙な声が響き出しても不思議ではあるまい。"
 {The Infernals} {Threall}
+
