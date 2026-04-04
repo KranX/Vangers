@@ -100,6 +100,18 @@ std::string actint_display_text_to_utf8(std::string_view value)
 	else
 		display_text = text::legacy_to_utf8(value, actint_menu_text_encoding());
 
+	for(size_t i = 0; i < display_text.size(); i++){
+		unsigned char ch = (unsigned char)display_text[i];
+		if(ch == 0x1E){
+			display_text.replace(i, 1, u8"▲");
+			i += strlen(u8"▲") - 1;
+		}
+		else if(ch == 0x1F){
+			display_text.replace(i, 1, u8"▼");
+			i += strlen(u8"▼") - 1;
+		}
+	}
+
 	if(const std::string* translated = text::actint_locale_string(display_text))
 		return *translated;
 
