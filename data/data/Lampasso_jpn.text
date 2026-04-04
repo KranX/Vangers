@@ -160,71 +160,72 @@
 "ラウンドの成績が最もよい者は、何らかの理由で戦列を離れた英雄に代わって次を担う。"
 
 [B-Sport 05]
-"The Larvae competition demonstrates the Beeboorat resolve to own all the Larvae in the world. Here are the rules: "
-"After a short warm-up the heroes rub themselves with the juice of ripe Nucleoboom, which softens their skin. Then they play a Larva in its eternal movement. "
-"Other participants tie their limbs and start dragging them across a very harsh surface. The winning team is the one that gets rid of their Larva first."
+"競技『ククラ』は、世界中すべてのククラを我らが手に収めようというビーボラットの決意を示す。規則はこうだ："
+"準備運動の後、せっかちな英雄どもは熟れたニュークレオブームの汁を身体に塗り込み、皮膚をぐずぐずに柔らかくする。そして永遠に動き続けるククラを演じ、その残る痕をニューハと見なす。"
+"仲間の選手たちはその手足を縛り、ひどくざらついた床の上を引きずり回す。最も早く『ククラ』を始末できた組の勝ちだ。"
 {Larvae}
 
 [B-Sport 06]
-"The Bombs competition demonstrates the unstoppable vengeance of Beeboorats upon their enemies for their crimes. Here are the rules:"
-"This competition is for the most accurate heroes. They jump blindfolded from the tower down onto strong Nucleoboom densely scattered on the ground by strict referees. "
-"The winner is the one who smashes the most Nucleobooms, with an unlimited number of attempts. Those who make fewer than three attempts are kicked out and converted into shrubs."
+"競技『ボム』は、ビューロの敵どもが犯した罪に対し、ビーボラットの報復が逃れがたいことを示す。規則はこうだ："
+"これは最も正確無比な英雄のための競技だ。選手は目隠しをされ、高所から飛び降り、厳格な審判が大量にばら撒いた頑丈なニュークレオブームめがけて身を落とす。"
+"試技回数に上限はなく、最も多くのニュークレオブームを踏み砕いた者が勝つ。ただし二回までしか試さなかった者は不名誉のうちに失格し、シュラブにされる。"
 
 [B-Sport 07]
-"The Greedy Eleepods competition satirizes the depraved and degenerate bios of the Eleepods, revealing all the dirt and filth of their vicious society. Here are the rules:"
-"The brave heroes plunge pointed metallic rods into themselves, with the bravest ones ready to lose some of their limbs to make room for more rods. "
-"Then they start rolling around the arena trying to pick up the most Nucleobooms, which are scattered around by the referees."
+"競技『強欲なイリーポッド』は、堕落しきったイリーポッドというバイオスを嘲笑し、その腐敗社会の膿を容赦なくさらけ出す。規則はこうだ："
+"勇敢な英雄どもは、両刃の尖った棒を身体じゅうへ突き立てる。より多くの棘を差し込むためなら、四肢のいくつかを失うことさえ厭わぬ者が最も勇敢とされる。"
+"その後、選手たちは審判が撒いたニュークレオブームをできるだけ多く棘に引っかけようと、競技場を転げ回る。"
 
 [B-Sport 08]
-"This one is the spectators' favorite. The Pods competition was recently invented by the stylish Geer'ah. Here are the rules: "
-"Each team initially consists of three heroes who set themselves on a rod well-greased with the oil of sacred Nucleoboom. This is the pod starter. "
-"Then the teams start tearing around the crowd picking up new members for the pods by impaling them with their rods. "
-"Those impaled on a rod must actively help the pod."
+"観客にたいへん愛されているのが競技『ストルチキ』だ。これは、そう、このしゃれ者ギールアが最近考案した。規則はこうだ："
+"各チームはまず三人の英雄で構成される。彼らは神聖なニュークレオブームの油をたっぷり塗った長い尖棒へ、自らを串刺しにする。これが最初の『さや』だ。"
+"その後、チームは右往左往する大群の中を駆け回り、突き刺して自分たちの『さや』により多くの員数を加えようとする。"
+"さやに加わった者は、その活動に積極的に参加する義務を負う。"
 
 [B-Sport 09]
-"The Squeeze competition symbolizes the Beeboorats' tight cohesion under the wise guidance of the Buro. Here are the rules:"
-"The heroes, after a good warm-up, rub themselves with Nucleoboom juice to soften their bodies, after which they start squeezing into a narrow cave. "
-"The winner is the team whose members manage to pack themselves in faster and better. Those who show the best results are then rubbed off the walls."
+"競技『梱包』は、ビーボラットがビューロの導きのもと、どんな偉業も果たせる緊密な塊であることを象徴する。規則はこうだ："
+"十分に身体を温めた選手たちは、熟したニュークレオブームの汁をこすりつけ、身体を完全に柔らかくする。その後、英雄どもは狭い洞穴へぎゅうぎゅうに詰め込まれていく。"
+"最も素早く、最も巧みに自らを梱包し終えた組の勝ちだ。記録級の者たちは、後で壁や床や天井から長々とこそげ落とされる羽目になる。"
 
 [Kernowar Waiting?]
-"Commissar, you can stay here with the charming Geer'ah and listen to his wise advice to expand your mind. When the Nuclear War begins, you'll go for Nucleoboom. The more you collect, the better for you!"
+"コミッサーよ、ここで愛らしきギールアとしばし過ごし、その助言を聞いて知恵を身につけるがいい。そのうち核戦争も始まる。ニュークレオブームを集めろ――多く、そして速く。お前のためになる。"
 {Geer'ah} {Nuclear War} {Heroism} {Nucleoboom}
-"Okay, Geer'ah, I'll wait, but not for long... "
-"Jablees is in the air, go for Nucleoboom now! I'll prepare the brave Heroes for their exploits in the meantime."
+@? 2		6 0
+"分かった、ギールア。だが待つのは長くても少しの間だけだ……"
+"ジャブリーズが飛んでいる、今すぐニュークレオブームを運べ！ その間、俺は勇敢なる英雄たちを、巧みなる偉業へと送り出してやろう……"
 {Jablees}
-"Anything else, you rickety beast? I'll get by without your advice! "
-"Give me none of your lip! Go get a basket of Nucleoboom, or I'll tell the Buro about your mischief!"
+"いや結構だ、この貧相な畜生め。お前の助言などなくてもやっていける。"
+"口答えするな、コミッサー。ニュークレオブームを籠いっぱい運べ。でなければお前の悪さをビューロへ報告する！"
 
 [Nymbos in Inventory:G]
-"I see nymbos and I'm very proud of our plain workers' outstanding performance."
+"ニムボスを見ると、我らの素朴な働き手たちの労働に対して、胸の底から深い満足を覚える。"
 
 [Phlegma in Inventory:G]
 "Hee! Eleepod mucus. All right, have some beebs for your pain, mucus shipper..."
 
 [Poponka in Inventory:B]
-"Halt! Where are you taking those Zeexen squiggles? That's subversive stuff! Scattering it around Glorx, huh? Wheeler, your cargo is being confiscated for a check and investigation in the name of the Beeboorats!"
+"止まれ！ そのズィークセンの落書きをどこへ運ぶつもりだ？ これは破壊的文書だ！ まさかグロークス中へ撒き散らそうというのではあるまいな？ 車輪野郎、その積荷はビーボラットの安全のため、検査と捜索を名目に没収する！"
 {popon}
 
 [Toxick in Inventory:B]
-"Alarm! Help! Diversion! Where's security!? They're poisoning me with toxick! It hurts like hell! You want to deprive the Beeboorats of the stylish Geer'ah, sworn enemy? There's no crime worse than that! The Buro sentences you to death!"
+"警報だ！ 誰か来い！ 警備はどこだ!? 毒で命を狙ってきやがる！ トクシックでやられる！ 何ということだ！ この敵め、しゃれ者ギールアをビーボラットから奪う気か？ これ以上に恐ろしい罪はない！ ビューロはお前に死刑を宣告する！"
 {toxick}
 
 [eLeech in Inventory:G]
-"Come to me, lip-smacking eLeech! What a joy! I'm so proud of my nursling. The Buro will make note of your services! I know, anyone can become a regular hero!"
+"唇鳴らしのイリーチが俺のもとへ来た！ なんという明るい祭りだ！ 自分が育てた者を、これほど誇らしく思うことはない。ビューロもお前の功績を記すだろう！ 誰だって本物の英雄になれる――俺はそう知っている。"
 
 [WeeZyk in Inventory:B]
-"Seems you have an ugly statue. Do you think it can inspire the Heroes to greater feats? You're wrong, damn saboteur! "
-"Get a smaller mechos, as I believe this will get rid of your habit of picking up garbage..."
+"どうやら卑猥な彫像を見ているらしい。お前、害虫め、この醜怪さを見た英雄がますます偉業に燃えるとでも思ったのか？ 大間違いだ！"
+"もっと小さなメホスに乗り換えるんだな。そうすれば、くだらんガラクタを拾い歩く癖も治るだろう……"
 {ProtoZeek}
 
 [MP0 Start]
-"Vanger! The VAN-WAR has started on Glorx! The pluckiest ones have started getting into it up there, and they're anxious to take your life. Go up and meet them, and try to take more than you give. Beeboorats like watching rumbles and gun fights, so don't disappoint us..."
+"ヴァンガー！ グロークスでヴァン・ウォーが始まった！ 上では、お前から魂を叩き出そうとする連中がうずうずして走り回っている。迎え撃ちに行け。そして、そのどうしようもない命を少しでも高く売れ。ビーボラットは喧嘩や撃ち合いを見るのが大好きだ。期待を裏切るな……"
 
 [MP1 Start]
-"Hey you, scavenger, the vangers have started the MECHOSOMA! You must deliver the predetermined amount of shrubs and Valorins. Load the cargo quickly, but take care that your crate doesn't collapse under the weight. The time of merchants and traffickers has come on Glorx; rock us with your carrying capacity."
+"おい、ガラクタ運び屋、ヴァンガーどもがメホソマを始めたぞ！ 決められた量のシュラブかヴァロリンを運び切れ。急いで船倉を詰め込め、ただし重さでメホスがばらばらにならぬよう気をつけろ。今のグロークスは商売人と運び屋の時代だ。その積載力で皆を驚かせてみろ！"
 
 [MP2 Start]
-"Hold the wheel tight, vanger! The PASSEMBLOSS has started! Show us how you can drive fast and throw your competitors into ditches. To help the dumb vangers, the route goes through checkpoints that are seen as glowing circles on the road. Don't mix them up with whirlpools!"
+"もっとしっかりハンドルを握れ、車輪野郎。パッセムブロスの開始だ！ どれほど速く走り、相手を溝へ突き落とせるか見せてみろ。愚かなヴァンガーどもが道に迷わぬよう、競技はチェックポイント制になっている。道に浮かぶ、あの光る輪だ。渦と見間違えるなよ！"
 
 [MP3 Start]
 "HUNTAGE started!"
@@ -233,13 +234,13 @@
 "MUSTODONT started!"
 
 [MP0 Comment]
-"Okay, yellow belly, the VAN-WAR is in full swing! Get yourself a big gun, maybe you'll feel more confident then. You can still get at the jackanapes who dared take you on in his craggy buggy. Blow the scab up so that nearby bridges collapse and beebs fall legs up!"
+"どうした、腰抜けめ。ヴァン・ウォーはまだ続いているぞ！ もっといい武器を手に入れろ、そうすれば少しは自信もつく。歪んだメホスでお前に挑んだあの無礼者にも、まだ追いつける。叩きのめしてやれ――近くの橋が崩れ、ビーブが腹を上にして転がるほどにな！"
 
 [MP1 Comment]
-"The MECHOSOMA is going full blast... Tired of shipping shrubs and Valorins, huh? That's all right, but isn't it a good way to save up for a new mechos? Show the others who's the best merchant on Glorx! And if a couple of oafs end up in the water, never mind. Only tough vangers can ship goods!"
+"メホソマはまだ真っ最中だ……シュラブとヴァロリン運びに疲れたか？ まあ構わん、だが新しいメホスを稼ぐには悪くないだろう。誰がグロークス一の商人か、他の連中に思い知らせてやれ！ 多少の間抜けが水へ落ちたところで知ったことか。荷を運べるのは、腕の立つヴァンガーだけだ！"
 
 [MP2 Comment]
-"I know it isn't that easy to win the PASSEMBLOSS. The main thing here is to not go astray or skip a checkpoint in the heat of the moment. Remember, they are those glowing circles. If an oaf lingers in front of you, throw him into a ditch without hesitating. Speed is the name of the game!"
+"パッセムブロスに勝つのは簡単ではない、分かっている。肝心なのは道に迷わず、勢い余ってチェックポイントを飛ばさぬことだ。あの光る輪だ、忘れるな。のろのろしたヴァンガーが前にいたら、ためらわず溝へ突き落とせ。パッセムブロスで大事なのは速度だ！"
 
 [MP3 Comment]
 "HUNTAGE in progress..."
@@ -248,112 +249,113 @@
 "MUSTODONT in progress..."
 
 [Cirt in Inventory]
-"Gee whiz! The flabby vanger pulled his wimpy muscles together and secured some cirt... That's good. I'm glad you are taking the way of a loyal servant of the Buro. The Heroes perform their feats in the stadium and Nucleoboom falls from the sky for a good cause."
+"これは何としたことだ！ だらしないヴァンガーが全力で奮い立ち、ついにサートを手に入れた……よろしい。お前は忠実なるビューロの僕への道を歩み始めた。英雄が競技場で偉業を成し、ニュークレオブームが天から降るのも無駄ではなかったと、俺も嬉しいぞ。"
 {vangers} {cirt} {Nucleoboom} {Geer'ah} {VigBoo} {Boorawchick}
-"Praise the stylish Geer'ah, who beat some useful and practical thoughts into your dull head. Now fly to VigBoo and hand the cirt to Boorawchick. He'll weigh it and evaluate it properly."
+"その空っぽの頭に、実用的で役立つ考えを叩き込んだしゃれ者ギールアに感謝しろ。さあヴィグブーへ飛べ。そしてサートをブーラウチックへ渡せ。奴がきちんと秤にかけ、値踏みしてくれる。"
 
 [BadCirt in Inventory:B]
-"It's not usually so hard to bear my honorable duty. This is worse than when I smell toxick... Need to take some choice cirt... But where can I get it?"
+"どうも今日の俺は、この栄誉ある務めを背負うのが妙につらい。トクシックを嗅いだ時以上だ……上等なサートをひと嗅ぎせねば……だが、いったいどこで手に入れればいい？"
 {toxick} {cirt}
 
 [GoodCirt in Inventory:G]
-"Oh la la, what clearness in my head! I was inspired! I remembered the multiplication table! What joy! Now I can devise a few new competitions for the Heroes! Want to take part? Just a joke, midget. Your cherished Geer'ah feels really good today."
+"おおララ、頭がなんと明るい！ 霊感が湧いてきた！ 九九まで思い出せるぞ！ なんと素晴らしい。これで英雄どものために新しい競技をいくつも考えつける！ お前も参加したいか？ 冗談だよ、小虫め。今日の大好きなギールアは、なんとも上機嫌なのだ！"
 {cirt}
 
 [Larva in Inventory]
-"Oh, my sensitive nature is on the edge of collapse! Something interesting is sitting in this conlarver! And what can sit in a conlarver? A Larva can sit in a conlarver! You understand what you've brought, you peeperette tail? I think I'm going to weep... "
-"At last, another vanger who listened to the wise mentoring of stylish Geer'ah and brought glory on his Rubbox forever. If you only knew how many vangers must be converted into shrubs before you come across a gifted one... "
-"All right. I hope you haven't forgotten the way to VigBoo after all this joy. Boorawchick will take charge of his trophy. Our trophy, to be precise. Any vanger will tell you that you can't get a Larva without the wise mentoring of Geer'ah, even if you ride a conlarver!"
+"ああ、繊細な俺の心が震えで壊れそうだ！ このクッキシュの中には何か面白いものがいる！ クッキシュに入るものといえば何だ？ ククラだ！ 分かったか、ピーペレット尻尾め、自分が何を持ってきたのか！ ……泣きそうだ。"
+"ついにまた一人、しゃれ者ギールアの教えに耳を傾け、自らのラブボックスに永遠の栄光を刻むヴァンガーが現れた。お前のような出来のいい奴に出会うまで、どれだけのヴァンガーをシュラブにせねばならぬか、お前には分かるまい……"
+"さて。喜びのあまりヴィグブーへの道を忘れていないことを願うぞ。ブーラウチックがその獲物を引き取るだろう。いや、我々の獲物だ。しゃれ者ギールアの教えなしにククラは手に入らぬ――メホスではなくクッキシュにまたがっていようとな！"
 
 [Protractor in Inventory:G]
-"You are bloody lucky, bungler! You got the Protractor! For a long time I've been dreaming of getting it for the stadium... "
-"I have a lot of clever thoughts in my wide and clear mind on how to use the Protractor. Oh, by the way, do you want to use this thing yourself? Or sell it to me!!!"
+"ついているじゃないか、この肥溜め野郎。プロトラクターを手に入れたのか！ 俺はずっと、あれを競技場へ持ち込みたくてたまらなかった……"
+"この明るく広々した頭の中には、プロトラクターの使い道について実に数多くの妙案が巣くっている。ところでお前自身、これを使ってみる気はあるか？ それとも俺に売るか!!!"
 {Protractor}
 
 [Mechanic Messiah in Inventory:B]
-"Whoa... whoa... whoa... stop right there. You thought your Mechanical Messiah would make me happy? What a dumb, sweet creature you are... But Geer'ah has seen something even scarier, so he won't be trembling in fear of your toy... "
-"My barbell is heavier, how about that?! I'll smash it into your forehead and you'll forget the way here at once. Get lost, you freak!"
+"待て待て待て……お前はその機械の救世主で、俺を喜ばせるつもりだったのか？ なんと愛らしく愚かな生き物だ……だが、しゃれ者ギールアはこんなものより恐ろしい物をいくらでも見てきた。お前の玩具ごときで震えたりはせん……"
+"俺の鉄亜鈴のほうがよほど重いぞ、どうだ！ それをお前の額へ叩き込み、ここへの道を忘れさせてやる。失せろ、この紛い物の脅しめ！"
 {Mechanical Messiah}
 
 [Function-83 in Inventory]
-"Let me take a look at your Function-83+... Stylish Geer'ah can't understand how this tin can with all its holes can get through Passages... Maybe it's just a jar for phlegma? I'll give you ten beebs for it, think about it... Or even thirteen. It's a good bargain!"
+"そのファンクション83+とやらを見せてみろ……しゃれ者ギールアには、穴だらけのこの缶でどうやってコリドールを作るのかさっぱり分からん……ひょっとして、これはフレグマ用の壺なのか？ 12ビーブで買ってやる、よく考えろ……いや、13ビーブでもいい。上々の取り引きだ！"
 {Function-83+}
 
 [Spummy in Inventory:B]
-"What's wrong with my glorious heroes?! They are frozen, looking at the ceiling... What about the competitions, the feats? It's sabotage! I know where the evil is from: the Chomper! Right, and my tame beebs have panicked... "
-"Hey you, damned wheeler, I fear nothing! I have the Medal of Fearlessness and Inflexibility. I personally destroy the toxick that we confiscate! I'll tie you up in knots with this Chomper! You stopped our Competition of Valorins, what else are you going to ruin? Get out while you still can!"
+"俺の立派な英雄どもに何が起きた？！ 天井を見上げて身動きもしない……競技は、偉業はどうなる？ 破壊工作だ！ 悪の元凶が見えるぞ。スポミヤだ！ そうだ、手懐けたビーブどもまで逃げ出した……"
+"おい車輪野郎、この俺は何も恐れん！ 俺には『恐れ知らずと不撓不屈』の勲章がある。没収したトクシックだって自ら処分している！ このスポミヤごと、お前を羊の角みたいにねじ曲げてやる！ お前はただでさえ『勇士の開幕戦』を台無しにした。これ以上何を壊す気だ？ 無事なうちに失せろ！"
 {Chomper}
 
 [Boot Sector in Inventory]
-"You dug up Boot Sector? You wasted your time. Today's vangers will filch your spare mechos piece by piece before you set up this rusty old thing... Better give it to me to use in our competitions..."
+"ブートセクターを掘り出したのか？ 無駄骨だったな。今どきのヴァンガーは、その錆びついた装置を据え付ける前に、予備のメホスを部品単位でかっぱらっていく。俺に渡せ――競技に使ってやるから。"
 {Boot Sector}
 
 [Peelot in Inventory]
-"If the Buro could produce Flymatics in bulk, the Slaves would become unnecessary. The mechos would ship Valorins and shrubs continuously and without much trouble. Unfortunately, as there's only one Flymatic, it's an absolutely useless widget. Better sell it to me. I'll give you some beebs for it!"
+"もしビューロがピーロットを量産できたなら、スレイブなど不要になるだろう。メホスが途切れなくヴァロリンやシュラブを運んでくれるのだからな。だが一つしかない以上、こんなものはまるで役立たずだ。俺に売れ――ビーブを何匹かやろう！"
 {Flymatic}
 
 [Fake Kernoboo found]
-"Wait, what's wrong with these Nucleobooms? They're a strange color and their weight is different... I got it! They're counterfeit! You dusty sack, you wanted to cheat Geer'ah? You're wasting your time. I can notice even the slightest deviation from the rules here in the stadium. "
-"I can see right through you, you pilferers. Geer'ah will never allow fake Nucleoboom in the stadiums. The heroes need only the best for their farewell performance! "
-"You kerno-forger, dump your plunder there, near the bench. I'll check to see if there's anything else illegal there!"
+"待て、何かお前のニュークレオブームはおかしい！ 品質が違う、重さもおかしい、色合いまで規格外だ……そうか、偽物だ！ この埃袋め、しゃれ者ギールアをだませると思ったのか？ 無駄だ。競技場では、規則のほんのわずかな乱れすら俺は見逃さん。"
+"盗人どもめ、俺にはお見通しだ。ギールアは、質の悪いニュークレオブームが競技場へ入ることを許さない。英雄は最上の材料でこそ死ぬべきなのだ！"
+"この偽ニュークレオブーム屋め、お前の持ち物はベンチの横に積んでおけ。ほかにも違法な物がないか、あとでじっくり調べてやる！"
 {Nucleoboom}
 
 [Boorawchick in Inventory]
-"Hi Boorawchick, my colleague! Stylish Geer'ah is on duty. Watch my heroes, see how they act as one: when they start digging, nothing can be seen through the flying dirt! "
-"Your Valorins are very good; I have no complaints. But the cirt's been arriving mixed with clay lately. Stealing little by little? Just a joke... Report to the Buro that Geer'ah himself praised you!"
+"おお、同僚ブーラウチック！ しゃれ者ギールアは持ち場にいるぞ。見てみろ、俺の英雄たちを。選りすぐりだ、地面を掘り返し、耳から煙を噴かせてな！"
+"お前のヴァロリンには文句なしだ。だが近頃サートに粘土が混ざって届く。少しずつくすねているのか？ いや冗談だ……ビューロには、ギールア自らお前を褒めたと報告しておけ！"
 
 [Last Moggy part note]
-"It's been a while since I've seen as pushy a vanger as you. You can help us! I'm planning to relocate to VigBoo soon... But that's a secret! I need a really tough mechos for the trip, for proper protection... "
-"So listen up: Box is a part of Last Moggy. Go ahead, put the machine together and hold your tongue. When I whistle, you come here to die for me! If they torture you, you say nothing..."
+"ここまで図太いヴァンガーを見たのは久しぶりだ。お前は役に立つかもしれん！ 俺は近いうちにヴィグブーへ移るつもりでな……だがこれは秘密だ！ そのためには、とびきり頑丈なメホスが要る――俺を守らせるためにな……"
+"だからよく聞け。箱は『最後のモギー』の一部だ。動け、機構を組み上げ、黙っていろ。俺が口笛を吹いたら、ここへ来て俺のために死ね！ 拷問されても耐えろ……"
 
 [Wormaster part note]
-"You make me laugh, vanger. A soldier like you should be the greatest hero in the stadium. But the mechos are your business, wheelers. So, let's talk mechos. "
-"The Cogged Widget is a part of Wormaster, our secret weapon against the Eleepods, so keep an eye on it!"
+"ヴァンガーよ、お前は今なおしゃれ者ギールアを喜ばせている。そんな戦士なら、競技場で敏捷と英雄性の奇跡を見せるべきだ。だが車輪野郎の本分はメホスだ。だからメホスの話をしてやろう。"
+"歯付きのがらくたは、チェルヴォネツ型メホスの一部だ。イリーポッドに対する我らの秘密兵器でもある。しっかり見張れ！"
 
 [Weexow visit]
-"So, good-for-nothing, did your crate get rusty after Weexow? You'd better watch it: should your wagon fall apart somewhere on Necross, the local wild beebs will gnaw you away to nothing, poor thing..."
+"どうだ、ろくでなし。ウィークソウ帰りでお前のポンコツは錆びついていないか？ 気をつけろよ、どこかネクロスでメホスがばらけたら、あそこの野生ビーブどもに食い尽くされる。哀れな奴を救う者などおらん。"
 {Weexow}
 
 [Boozeena visit]
-"Tell me, is there any vegetation on Boozeena that would be good for our competitions? It would be good to surprise our heroes with something special... The Buro is sending you there on a business trip to collect the flora..."
+"なあ、ブージーナには英雄的競技に向いた植物が何か生えているんじゃないのか？ 勇ましい英雄どもを、何か特別なもので驚かせたくてな……そういうことならビューロも、お前の出張を喜んで認めるだろう。"
 {Boozeena}
 
 [Ark-a-Znoy visit]
-"What, you dodger, you've been to Ark-a-Noi? Get a couple of those local light-worms for me the next time you're there, will you? I'm thinking of a new sport for our heroes. They're kinda big, you say? That's a pity... I'll try to think of something else..."
+"どうした、すばしこい奴め、アーク・ア・ズノイへ行ってきたのか？ 次に行く時は、あそこの発光虫を二匹ばかり持ち帰ってくれんか。英雄どものために新しい競技を考えていてな……何、でかすぎる？ それは残念だ……また考え直すとしよう。"
 {Ark-a-Noi}
 
 [Khox visit]
-"It's been a long time since I last saw survivors from Khox. You are the first in many cycles who has gotten through. The last one who returned from there complained about the darkness... I advised the dolt to take a torch with him, and that was the last I saw of him..."
+"コックスをくぐり抜けて生きて戻った者など、久しく見ていない。お前は何周期ぶりかの一人だ。前に戻った奴は、あまりに暗いと泣き言をこぼしていた……俺はその馬鹿に懐中灯でも持っていけと勧めたが、それきり姿を見ていない……"
 {Khox}
 
 [hMok visit]
-"So what's going on over there on hMok? They say the local beebs are made of stainless steel and eat mechos... Did you notice who delivers jars with acid there? They must be pretty wicked and criminal subjects like the Zeexen..."
+"で、hMokでは何が起きている？ あそこのビーブは錆びない鋼でできていて、メホスを食うと聞く……それから、酸の瓶を誰が運び込んでいるか見たか？ あれはズィークセンみたいに、かなり不吉で犯罪的な連中に違いない。"
 {hMok}
 
 [Threall visit]
-"You brought something from Threall, you nut? Enemy instructions for sabotaging our competitions, I guess? The Buro's been thinking of plugging that Passage to Threall for ages, but can't find the time..."
+"何をトリールから運んできた、気違いめ。競技妨害のための敵の指令書か？ ビューロは、トリールへのあのコリドールを前から埋めてしまいたがっているが、なかなか手が回らなくてな……"
 {Threall}
 
 [Eleepod in Inventory]
-"Oh, Geer'ah sees an Eleepod! I guess I'll place him among the heroes as a team captain. No, that's too much honor for the worm. He'd be better as equipment... "
-"You'll like our competitions, worm. Imagine how a big fat sack full of Fostral waters like you would pop from a Nucleoboom hit, accompanied by a storm of applause... "
-"That would be a show! The spectators would praise the initiative of stylish Geer'ah, the Show Creator!"
+"おお、ギールアはイリーポッドを見たぞ！ こいつは英雄として登録し、チームの主将に任じてやろうか……いや、主将では栄誉が過ぎるな。備品扱いくらいでちょうどいい。"
+"気に入るぞ、虫けら。競技場でお前は大活躍だ。想像してみろ、グロークスの水をたっぷり詰めた巨大な袋のお前が、拍手喝采の中、狙い澄ましたニュークレオブーム一撃で盛大に破裂するのを……"
+"実に見ものだ！ 観客は、見世物発明家たるしゃれ者ギールアの機知を歓声で讃えるだろう！"
 
 [Beeboorat in Inventory]
-"Hey, Beeboorat! Salute stylish Geer'ah! Why are you here? Hero registration is closed and the teams have been formed. We have vacancies for a Nucleoboom squeezer and an arena cleaner. Or are you on a secret mission? Then come this way..."
+"おい、ビーボラット！ しゃれ者ギールアに敬礼しろ！ 何しに来た？ 英雄の登録もチーム分けも、もう終わっている。ニュークレオブーム絞り係と競技場掃除なら空きがある。……それとも秘密任務か？ ならこちらへどうぞ。"
 
 [Zeex in Inventory]
-"Aha, an acid Zeex is here! To personally see the legendary valor and rigidity of the Beeboorats with your popped eyes, I guess? Good for you! "
-"Looks like you hornets from Necross have finally started to recognize the superiority of the Buro and are even trying to get under our command. Keep it up, you're on the right path!"
+"ほう、毒っぽいツィクが来たか！ その飛び出た目で、ビーボラット伝説の勇気と不屈ぶりを自分の目で確かめに来たわけだな。感心なことだ！"
+"ネクロスではついに、ビューロの偉大さが染み渡り始め、我らの細やかな指導下に入ろうとする気配まで見える。いい傾向だ――我らと共にあれば道を誤らぬ！"
 
 [Zyklope warning]
-"Wheeler! You've entertained stylish Geer'ah well and I would like to pay you back in kind. I'll tell you what the Zeexen do to you ramblers. Mad Zeephra, who lives in ZeePa, envelops all the vangers that she catches in clay and sends them to B-Zone as souvenirs. "
-"Funny, huh? So don't go to ZeePa, go to B-Zone instead. The local Zeexen are not that crazy..."
+"車輪野郎、お前はしゃれ者ギールアを十分楽しませてくれた。だから礼に、ズィークセンどもがヴァンガーに何をするか教えてやろう。ジーパの気狂いジーフラは、捕まえたヴァンガーを粘土で塗り固め、Bゾーンへ土産として送りつけるのだ。"
+"滑稽だろう？ だからジーパには行くな。Bゾーンへ行け。あそこのズィークセンは、まだそこまで狂ってはいない……"
 {ZeePa} {B-Zone} {Zeephra}
 
 [Boozeena Code]
-"Hey, vanger! You are a SUPERAGENT, aren't you? Your passenger asked me to give you a message: $(Boozeena Secret Code)... That's without doubt a cipher from the Buro. But don't be afraid, I'll hold my tongue..."
+"おい、ヴァンガー。どうやらお前、スーパーエージェントらしいな！ お前の乗客がこの言葉を託していった――$(Boozeena Secret Code)…… こいつは間違いなくビューロからの暗号だ。だが安心しろ、俺はこの秘密を黙って守ってやる……"
 
 [Larvae Vision note:G]
-"Hey, wheeler! Your Dominance has reached 50% of the level of a Buro Superagent. Well done! You are being granted access to information about Larva movement. Keep an eye on the map!"
+"おい、車輪の走り手よ。お前の権勢は、ビューロ超特命官に相当する段階の半分に達した。たいしたものだ。これよりククラの移動情報へのアクセスを許可する。地図をよく見ろ！"
 {Larvae}
+
