@@ -208,69 +208,71 @@
 "その行いは褒賞に値する。もちろん私への、だ。お前の荷物は、私の苦労に対するささやかな礼金として受け取ろう。"
 
 [Nymbos in Inventory:G]
-"A wheeler brought nymbos. To the Buro: Vangers' pushiness keeps increasing due to Boorawchick's educational work. Boorawchick out."
+"車輪野郎がニムボスを運び込んだ。ビューロへ。ブーラウチックによる行き届いた教導のおかげで、ヴァンガーどもの押しの強さは着実に増している。報告終了、ブーラウチック。"
 
 [Phlegma in Inventory:G]
-"Phlegma... It's a plus for you, vanger, that you visit the sapless worlds, but have you completed your solemn duty on Glorx?"
+"フレグマか……乾いた世界へ足を運んでいる点は評価できる、ヴァンガー。だが、ここグロークスで果たすべき義務は最後までやり遂げたのか？"
 
 [Poponka in Inventory:B]
-"To the Buro: Confiscated popons from an irresponsible vanger. Carrying out further confiscation and investigation. Boorawchick out."
+"ビューロへ。不心得者からポポンを没収した。さらなる没収と事情聴取を継続中。報告終了、ブーラウチック。"
 {popon}
 
 [Toxick in Inventory:B]
-"To the Buro: Alarm! Total mobilization! All personnel of the Buro must take cover! Our enemies sneaked toxick into VigBoo. Boorawchick, as usual, is on the ball and taking the appropriate measures!"
+"ビューロへ！ 警報発令、総動員！ ビューロ所属員は全員ただちに遮蔽壕へ入れ！ 敵はトクシックをヴィグブーへ持ち込むことに成功した。警戒を怠らぬブーラウチックが対処に当たる！"
 {toxick}
-"Vanger! For your lack of vigilance, and for unintentionally aiding and abetting the enemy you deserve a demotion. Hand your Rubbox in for modification!"
+"ヴァンガー！ 警戒を怠り、意図せず敵に加担した罪により、お前は降格に値する。ラブボックスを改修のため提出しろ！"
 
 [eLeech in Inventory:G]
-"To the Buro: At the instruction of the loyal Boorawchick, a pushy vanger quickly delivered an eLeech. This great success was possible due to my wise mentoring. Boorawchick out. "
-"Vanger! The Buro will remember your services. Struggle on!"
+"ビューロへ。忠実なるブーラウチックの指示により、押しの強いヴァンガーが短期間でイリーチを搬入した。この大成功は、ひとえに私の細やかな指導の賜物である。報告終了、ブーラウチック。"
+"ヴァンガー！ お前の功績をビューロは忘れない。励め！"
 
 [WeeZyk in Inventory:B]
-"Oh, you brought a souvenir from rotting Necross! Garbage collector, do you know about the Buro's recent decree entitled 'On Counteracting the Pernicious Influence of the Sapless Worlds'? You risk getting into huge trouble!"
+"おやおや、腐りきったネクロス土産か！ ゴミ漁りめ、ビューロの最新布告『乾いた世界の腐敗した影響との闘争について』を知っているか？ お前にはとてつもない厄介事が待っているぞ！"
 {ProtoZeek}
-"However, I can give you advice on our fair laws for a reasonable fee..."
+"もっとも、相応の礼を払うなら、我らが公正なる法について助言してやらんでもないが……"
 
 [Kernowar Waiting?]
-"Commissar! Will you stay in VigBoo and wait for Heroism to go for Nucleoboom when the jablees fly up?"
+"コミッサー！ ヴィグブーにとどまり、英雄性を待って、ジャブリーズが飛来したらニュークレオブームを取りに出るつもりか？"
 {Heroism} {Progress} {Nucleoboom} {Jablees}
-"Yes, Boorawchick, I'll wait... "
-"It's time, the jablees have started sowing. Go for Nucleoboom now. The one who picks up the most Nucleoboom and brings it to Lampasso before the end of the cycle will gain the Buro's favor."
-"I don't need to wait, I'll manage myself... "
-"Don't miss your chance, Commissar."
+@? 2		6 0
+"はい、ブーラウチック。ここで待機します……"
+"ジャブリーズはもう種まきを始めた――急いで上へ行け。誰より多くニュークレオブームを集め、周期の終わりまでにランパッソへ届けた者こそ、ビューロの寵愛を受ける。"
+"待つ必要などありません。自分でうまくやります……"
+"好機を逃すなよ、コミッサー。"
 
 [Pipiska Waiting?]
-"Commissar! Will you stay in VigBoo and wait for the Election of the Castaways to go for peeperettes?"
+"コミッサー！ ヴィグブーに残って、漂流者選定――ピーペレット収集の時を待つつもりか？"
 {Election of the Castaways} {peeperette}
-"Okay, Boorawchick, I'll wait... "
-"The cycle is here. Go pick up peeperettes and bring them to Oboorez. He'll be thrilled. "
-"That's balderdash, you doltish scab! I'll go... "
-"Well, well, Commissar. The PeepShow is coming up..."
+@? 2		6 0
+"そうだな、ぶーらうちっく。少しお前のところにいてやる……"
+"周期が始まった。ピーペレットを集めて、オブーリーズのもとへ急げ――あいつはきっと喜ぶ。"
+"臭うぞ、この愚鈍な屑め。私は行く……"
+"そうだ、その調子だコミッサー。ピープショーはもうすぐだ……"
 
 [Bad Cirt Delivery:B]
-"What did you drag your rotten mechos through, little cretin? Ah, I see. You brought alien cirt! You came to the wrong escave, you worm sprout... No, that's clearly sabotage aimed at hampering the work of the Buro! I'll check all your connections and contacts, scab!"
+"この薄汚いメホスを、いったい何にまみれさせてきた、間抜けめ？ ……ああ、そうか。よそのニューハを持ち込んだな！ エスケイヴを取り違えたのか、この虫の芽みたいな奴め……いや、これは明白な破壊工作だ。ビューロの会合を妨害するつもりだな！ お前のつながりも接触先も、全部洗ってやる、この悪党！"
 {mechos} {cirt}
-"What if I put YOU into a cirtainer and send it to Ogorod for planting? You deserve that. Next time watch where you pick cirt, you brainless pupa on wheels..."
+"いっそ、お前自身をニューハ・コンテナに丸ごと詰めてオゴロドへ送って、発芽させてやりたいくらいだ！ 次からは、どこでニューハを集めているのか、もっとよく見ろ。この車輪つきの愚か者め……"
 
 [Good Cirt Delivery:G]
-"To the Buro: Cirtainer delivered to my Cirt Reception Department. The sniff test confirmed the Beebooratness of the contents. "
-"The cirt has been registered and sent to the Distribution Department. Boorawchick out. My request for increased cirt allowance included. "
-"Vanger! Your push has risen to the rated level. As of today, you've brought us $(Cirt Delivery) portions of cirt. Continue harvesting!"
+"ビューロへ。私の率いるニューハ受入委員会にニューハ・コンテナが到着した。鼻孔による嗅ぎ分けの結果、内容物のビーボラット性が確認された。"
+"ニューハは登録され、分配部門へ送付された。報告終了、ブーラウチック。追加支給申請を添付する。"
+"ヴァンガー！ お前の押しの強さは設計目標に達した。現時点で、お前は我々に $(Cirt Delivery) ポーション分のニューハを届けた。探索を続けろ！"
 {cirt}
 
 [NO-Cirt Delivery]
-"Hehe, what did you fill your cirtainer with, dungler? With your brains, I bet, that your 'friends' beat out of you! There's no use for that stuff in your box... What I see is a lazy and dumb vanger who didn't find time to study the Buro's instructions for cirt harvesting and decided not to worry about it."
+"へへっ、お前はこのニューハ・コンテナに何を詰めたんだ、糞転がし？ どうせ仲間に叩き出された脳味噌でも詰めたんだろう！ お前の箱の中身にはまったく使い道がない……"
 {cirt}
-"I'm afraid your exploitation, even as a slave, will trigger reasonable objections from some members of the Buro..."
+"私の目には、ビューロのニューハ採取指示を学ぶ気もなく、ただ怠けることにした、のろまで愚かなヴァンガーがいるだけだ。お前を奴隷としてさえ運用することに、ビューロの幾人かがもっともな疑義を抱きかねん……"
 
 [MP0 Start]
-"Vanger! The VAN-WAR has started on Glorx! The pluckiest ones have started getting into it up there, and they're anxious to take your life. Go up and meet them, and try to take more than you give. Beeboorats like watching rumbles and gun fights, so don't disappoint us..."
+"ヴァンガー！ グロークスでヴァン・ウォーが始まった！ 上では、お前の命を抜き取ってやろうと息巻く連中が走り回っている。迎え撃ちに行け。そして自分のろくでなしの命を少しでも高く売れ。ビーボラットは乱闘や銃撃戦を見るのが大好きだ。期待を裏切るな……"
 
 [MP1 Start]
-"Hey you, scavenger, the vangers have started the MECHOSOMA! You must deliver the predetermined amount of shrubs and Valorins. Load the cargo quickly, but take care that your crate doesn't collapse under the weight. The time of merchants and traffickers has come on Glorx; rock us with your carrying capacity."
+"おい、がらくた運び！ ヴァンガーどもがメホソーマを始めた。お前は決められた量のシュラブかヴァロリンを運ばねばならん。急いで船倉を満たせ、ただし重みでメホスが壊れぬよう気をつけろ。今のグロークスは商人と運び屋の季節だ。積載力で全員を震え上がらせてみせろ！"
 
 [MP2 Start]
-"Hold the wheel tight, vanger! The PASSEMBLOSS has started! Show us how you can drive fast and throw your competitors into ditches. To help the dumb vangers, the route goes through checkpoints that are seen as glowing circles on the road. Don't mix them up with whirlpools!"
+"しっかり舵を握れ、車輪野郎。パッセンブロスが始まった！ どれだけ速く走れ、どれだけ相手を溝へ叩き落せるか見せてみろ。愚かなヴァンガーが道に迷わぬよう、この競走はチェックポイントを通る形式になっている。道路上で明滅する輪がそれだ。渦と見間違えるなよ！"
 
 [MP3 Start]
 "HUNTAGE started!"
@@ -279,13 +281,13 @@
 "MUSTODONT started!"
 
 [MP0 Comment]
-"Okay, yellow belly, the VAN-WAR is high! Get yourself a big gun, maybe you'll feel more confident then. You can still get at the jackanapes who dared take you on in his craggy buggy. Blow the scab up so that nearby bridges collapse and beebs fall legs up!"
+"おい臆病者、ヴァン・ウォーはまだ続いているぞ！ もっとでかい武器を持て。そうすれば少しは自信も湧くだろう。歪んだメホスでお前に挑みかかったあの無礼者に、まだ追いつく機会はある。周囲の橋が崩れ、ビーブどもが腹を上にして転がるくらい吹き飛ばしてやれ！"
 
 [MP1 Comment]
-"The MECHOSOMA is going full blast... Tired of shipping shrubs and Valorins, huh? That's all right, but isn't it a good way to save up for a new mechos? Show the others who's the best merchant on Glorx! And if a couple of oafs end up in the water, never mind. Only tough vangers can ship goods!"
+"メホソーマはまだまだ真っ最中だ……シュラブとヴァロリン運びに飽きたか？ だが、これほどメホス購入資金を貯めやすい催しもないだろう。グロークス一の商人が誰か、他の連中に思い知らせてやれ！ 何人かの間抜けが水へ落ちたところで構うものか。荷を運べるのは、強いヴァンガーだけだ！"
 
 [MP2 Comment]
-"I know it isn't that easy to win the PASSEMBLOSS. The main thing here is to not go astray or skip a checkpoint in the heat of the moment. Remember, they are those glowing circles. If an oaf lingers in front of you, throw him into a ditch without hesitating. Speed is the name of the game!"
+"パッセムブロスで勝つのは簡単ではない、分かっている。だが肝心なのは迷わず、勢い余ってチェックポイントを通り過ぎないことだ。覚えておけ、あの明滅する輪がそうだ。前でぼんやりしているヴァンガーを見つけたら、躊躇せず溝へ突き落せ。パッセムブロスで物を言うのは速度だ！"
 
 [MP3 Comment]
 "HUNTAGE in progress..."
@@ -294,141 +296,142 @@
 "MUSTODONT in progress..."
 
 [Larva 0 Note]
-"Agent, remember: the Larva responsible for Progress is temporarily residing in a zone of the Chain codenamed $(World of Larva0)..."
+"覚えておけ、エージェント。進捗を司るククラは、現在 $(World of Larva0) という暗号名で呼ばれるチェーンの区域に一時滞在している……"
 
 [Larva 1 Note]
-"Agent, remember: the Larva responsible for the Election of the Castaways is temporarily residing in a zone of the Chain codenamed $(World of Larva1)..."
+"覚えておけ、エージェント。漂流者選定を司るククラは、現在 $(World of Larva1) という暗号名で呼ばれるチェーンの区域に一時滞在している……"
 
 [Larva 2 Note]
-"Agent, remember: the Larva responsible for Heroism is temporarily residing in a zone of the Chain codenamed $(World of Larva2)..."
+"覚えておけ、エージェント。英雄性を司るククラは、現在 $(World of Larva2) という暗号名で呼ばれるチェーンの区域に一時滞在している……"
 
 [Bad Larva Delivery:B]
-"Oh, I feel so bad... It seems the doom of Glorx has come. Oh, well, I've done my duty to the Beeboorats faithfully and I will face my death without fear... What's going on? I see nothing but a pile of garbage picked up by another pile of garbage!"
-"What's going on? I see nothing but a pile of garbage picked up by another pile of garbage!"
+"お、おお……気分が悪い……どうやらグロークスの終わりが来たらしい。まあいい、私はビューロへの義務を誠実に果たした。ゆえに死も堂々と迎えよう……"
+"……で、いったい何が起こっている？ 私の目に映るのは、腐りかけた屑が、さらにおぞましい何かをククラで拾ってきたという事実だけだ！"
 {Glorx} {The Buro}
-"Hey you, pile of offal! You must know that a Beeboorat would rather convert himself into a castaway shrub than even look at an alien Larva! They'd rather tank themselves up with toxick or dry a fleshy eLeech than touch this underground filth!"
+"この臓物の山め、よく覚えておけ。どのビーボラットも、 よそのククラを見るくらいなら自ら漂流シュラブになった方がましだと思っている！ こんな地下の悪夢に触れるくらいなら、誰だってトクシックを浴び、瑞々しいイリーチを干からびさせる方を選ぶ！"
 {Beeboorats} {shrub} {Larvae} {toxick} {eLeech}
-"I'm anxious to read out your sentence. For your outrageous transgression of the laws of the Buro and the principles of Beeboorats, and for your attempt to advocate Eleepod morals and Zeexen truths, you will be deprived of all your beebs."
+"判決を読み上げるのが待ちきれんな、死に損ないめ。ビューロの法とビーボラットの原則を怪物じみた形で踏みにじり、イリーポッド流の価値観を押しつけ、ズィークセン風の生き方を吹き込もうとした罪により、お前のビーブは全没収とする。"
 {The Buro} {Beeboorats} {beebs}
-"They will be spent on the sanitation and disinfection of VigBoo, for road signs reading 'No entry with alien Larvae!', and for cirt for the victims of the assassination. Get out of here, scoundrel! And forget about Larvae forever!"
+"そのビーブはヴィグブーの浄化と消毒、『 よそのククラを積んでの進入厳禁！』という道路標識の製造、そしてビューロ暗殺未遂で被害を受けた者へのニューハ支給に回される。さっさと消え失せろ、この下種め！ そしてククラなどというものは永遠に忘れろ！"
 {VigBoo} {Larvae} {cirt}
 
 [Good Larva Delivery:G]
-"Whee! It finally happened! The old dream of the common Beeboorats "
-"about the final settlement of $(Cycle Name of Locked Larva) came true."
+"ついに！ ついに成し遂げられた！ $(Cycle Name of Locked Larva) の完全かつ最終的な決着――それこそは、平凡なビーボラットたちが幾世代にもわたって夢見てきたものだ。"
+"競技場で死んでいった英雄たちもそれを夢見た。矯正用のシュラブを送り出す私もそれを夢見た。エージェントを鍛え続けたビューロ自身もまた、それを夢見ていた……"
 {Beeboorats} {shrub} {The Buro} {Agent}
-"Heroes dreamed of it as they died in the stadium; I dreamed of it when sending shrubs for correction; even the Buro dreamed of it when training Agents... And now, as our enemies started raising their heads, as clouds of dark plots started gathering above us, and as toxick was about to flow into the virgin waters of Glorx, a plain vanger came who was once given the shelter and care of the Buro."
+"そして今、敵どもが頭をもたげ、陰謀と反乱の雲が我らの上に垂れ込み、トクシックがグロークスの清き水へ流れ込もうとしたその時、かつてビューロに保護され、庇護を受けた一人の平凡なヴァンガーが現れた。"
 {toxick} {Glorx} {vangers} {The Buro}
-"All the plots of our enemies and traitors fail at once, and all that is left for them is to flop their scratchers in impotent anger and crash their popons against their popped eyes. "
-"Jablees flew high above Glorx again and Beeboorats thundered their loud NO to the plots of the sapless carcasses."
-"Jablees flew high above Glorx again and Beeboorats thundered their loud NO to the plots of the sapless carcasses."
-{Jablees} {Glorx} {Beeboorats}
-"How much effort and patience the legendary Boorawchick displayed in developing this committed fighter for the Beeboorats' cause. "
+"その瞬間、敵どもと不逞の徒の企みは一斉に崩れ落ちた。奴らに残されたのは、無力な怒りに爪をばたつかせ、飛び出した目玉にポポンを叩きつけることだけだった。"
+"再びジャブリーズはグロークスの空高く舞い、ビーボラットたちは乾いた屍どもの陰謀に向かって断固たる『NO!』を叩きつけた。"
+{popon} {Jablees} {Glorx} {Beeboorats}
+"この熱きビーボラットの闘士を育て上げるために、伝説のブーラウチックがどれほどの労力と忍耐を費やしたことか。マニュアルと諸規則への揺るぎない愛をその胸に刻み、この精密なる作戦を計画し実行に移せるようになるまでには、実に多くの周期が過ぎ去った。"
 {Boorawchick} {Beeboorats} {Manual}
-"So many cycles passed before his nursling developed a firm love of the Manual and instructions, before it finally became possible to plan and implement this delicate operation. The strategic genius of Boorawchick and the outstanding push of an Agent nurtured by Boorawchick have brought happiness to the escaves of Glorx. March on, Agent, and make your way to great feats and accomplishments under the guidance of the Buro and me!"
+"ブーラウチックの戦略的天才と、やはりブーラウチックに鍛えられた配下のエージェントの止めがたい押しの強さが、グロークスのエスケイヴに幸福をもたらしたのだ。進め、ヴァンガーよ。ビューロと私の導きのもと、偉業と達成の高みへ駆け上がれ！"
 {Boorawchick} {Agent} {escave} {Glorx} {The Buro}
-"The Buro is giving us the highest awards! Boorawchick receives the All-Glorx Beeborat Award and a permanent pass to the cirt bunker. "
-"One of the rockslides of Glorx will be named after Boorawchick. Ten raffa offenders will be drowned in honor of me. "
-"You receive the Certificate of Participation in the 'Farewell to $(Cycle Name of Locked Larva)' operation. Be proud of that, Agent. You've had the good fortune to take part in an operation with Boorawchick! You are now a veteran vanger and will have something to write home about!"
+"ビューロは、我々に最高勲章を授与する！ ブーラウチックには全グロークス・ビーボラット賞と、ニューハ保管庫への永久通行証が与えられる。グロークスの崩落地の一つは、今後ブーラウチックの名で呼ばれるだろう。"
+"さらにブーラウチックを讃え、犯罪的ラッファを十匹、荘厳に溺死させるものとする。"
+"お前には『さようなら、$(Cycle Name of Locked Larva)!』作戦参加証が授与される。誇るがいい、エージェントよ――お前は、このブーラウチックと同じ作戦に関わる幸運を得たのだ！ これでお前も、旅の途中で語れる思い出を持つに足る古強者ヴァンガーだ。"
 
 [Protractor in Inventory]
-"Stop right there, you dungler! Open your bay for inspection. Aha, I thought so: you acquired the Protractor from disloyal subjects. Not to discredit Boorawchick, I hope? Like, that he arranges picnics during working hours... This won't do!"
+"止まれ、この糞転がしめ！ 船倉を開けて検査を受けろ。……ほう、やはりな。不忠の輩どもからプロトラクターを手に入れたか。まさかブーラウチックの名を汚すためではあるまいな？ 仕事中に見世物を開いている、とでも言いふらすつもりか……そんなものは通らん！"
 {Protractor}
 
 [Mechanic Messiah in Inventory:B]
-"Freeze, culprit! You've come too close to the line of becoming a Buro-killer! The Mechanical Messiah in clumsy hands would do great mischief! "
-"I couldn't even put on my helmet as the Buro instructions require... Get out, you muff, and forget the way here!"
+"動くな、犯罪者！ 貴様は『ビューロ殺し』の境界線にあまりに近づきすぎた！ 機械の救世主が不器用な手に渡れば、どれほどの災厄を招くか知れたものではない！"
+"ビューロの指示通りにヘルメットをかぶる暇すらなかった……さっさと失せろ、この石頭め。そして二度とここへ来るな！"
 {Mechanical Messiah}
 
 [Function-83 in Inventory]
-"Brought Function-83+, huh? This object can inspire the Slaves with the idea to refuse the Buro's care. The Manual prescribes the confiscation of appliances like this."
-"However, I think that an eLeech secured with the help of this device will calm the Buro's censors. So I'll overlook this offense on behalf of the Beeboorats. Appreciate me, you piece of iron!"
+"ほう、ファンクション83+を持ってきたか？ こんな代物が現れれば、奴隷どもの頭に『ビューロの養育を拒む』などという有害な考えが入りかねん。マニュアルでは、この種の装置は没収と定められている。"
+"だが、この装置を使って確保したイリーチがあれば、ビューロの口うるさい連中も黙るだろう。ゆえに私は、ビーボラットのためを思って今回の違反は見逃してやる。ありがたく思え、この鉄くずめ！"
 {Function-83+}
 
 [Spummy in Inventory:B]
-"The time has come for the final test of my loyalty to the Buro. The renegade and criminal has brought the Chomper to VigBoo to inspire the Beeboorats with horror and distrust of the Buro. I'd like to go under cover, but I must stay at my post!"
+"ついに来た――私のビューロへの忠誠が最後の試練を受ける刻が。背信者にして犯罪者は、ビーボラットの心に恐怖とビューロへの不信を植えつけるため、スポミヤをヴィグブーへ持ち込んだ。私はすぐにでも勤務用洞穴へ身を隠したい。だが、自らの持ち場を離れるわけにはいかん！"
 {Chomper}
-"I must frustrate the enemy's plans of demoralizing Glorx and seducing Beeboorats off the right path. My valor is immense and my deed will never be forgotten! Attention! Orders! The vanger with the Chomper aboard must leave VigBoo before the end of the cycle!"
+"敵どもの、グロークスを士気喪失と混乱へ引きずり込む企みを私は必ず阻止する。まことに我が勇気は限りなく、我が偉業は不滅である！ 命令！ 船内にチョンパーを積むヴァンガーは、周期の終わりまでにグロークスの領域から退去せよ！"
 
 [Boot Sector in Inventory]
-"Where in the bogs did you find Boot Sector, you piece of garbage? I thought it was buried forever. An Agent once served me who'd gotten himself eight mechos. The dodger wanted to violate the rules of subordination. "
-"Later he got completely mixed up with his motor pool and went nuts. The generous Buro gave him a rebuilt raffa and now he's shipping mail to earn his pension. That's what excessive push leads to."
+"そのブートセクターを、どこの泥沼ですくい上げてきた、この屑め？ とっくに完全処分されたと思っていたぞ。かつて私の下に一人のエージェントがいたが、あれを使ってメホスを八台も抱え込んだ。帳簿管理を乱そうとした抜け目ない裏切り者だった。"
+"やがて自分の車両群の中で完全に頭がこんがらがり、ついには気が触れた。だが寛大なるビューロは、 大修理を終えたラッファ製メホスをあいつに一台与えた。今では年金稼ぎに郵便運びをしている。あまりに抜け目がありすぎると、こうなるのだ。"
 {Boot Sector}
 
 [Peelot in Inventory]
-"Flymatic will drive you into a ditch or a whirlpool one day. I don't trust this doodad and you shouldn't either. A righteous vanger must oppose nature itself."
+"そのフライマティックとやらは、いつかお前を溝か渦へ真っ逆さまに突っ込ませるだろう。私はあの蛇腹めいた代物が信用できんし、お前も信用すべきではない。正しきヴァンガーたるもの、自然そのものに逆らってこそだ。"
 {Flymatic}
 
 [Boorawchick absent]
-"Boorawchick is away on a trip to the provinces. The reception for personal affairs is canceled."
+"ブーラウチックは地方巡察の旅に出ている。個人的案件に関する面会受付は停止された。"
 
 [Boorawchick Return (Good):G]
-"Vanger! The Buro acknowledges you for your excellent service as Boorawchick's driver. This is a great honor for you, as Boorawchick is the Beeboorats' most valuable asset after the Buro. "
-"However, to check on the progress of planned tasks, I must personally go on these risky trips, otherwise the other counselors will get out of hand. "
-"For your diligence I'm rewarding you by granting you access to one of the sealed Glorx stores near the Rig Station. Remember that the store and its contents is the property of the Beeboorats!"
+"ヴァンガー！ ブーラウチック専属運転手としての職責を模範的に果たしたことに対し、ビューロはお前に感謝を与える。これは大いなる名誉だ。というのも、ブーラウチックの身柄は、ビューロの次にビーボラットが重んじる財産だからだ。"
+"だが、計画された任務が規定通り遂行されているかを見届けるためには、私自身がこうした危険な巡察へ赴かねばならん。そうしなければ、他の相談役どもは完全に好き放題してしまう。"
+"お前の勤勉さへの褒賞として、リグ・ステーション近くにあるグロークスの封鎖保管庫の一つへの立ち入り許可を与える。忘れるな、その保管庫も中身も、すべてビーボラットの財産である！"
 
 [Boorawchick Return (Bad):B]
-"I got you, you cursed traitor! You wretched piece of offal, how dare you leave your precious leader in a hostile environment? The Buro sat for many cycles discussing this situation... The disappearance of Boorawchick left Glorx on the brink of disaster! It was only thinking about the fate of the Beeboorats that gave me the power to reach VigBoo by myself, crawling through the hostile jungle. The damned beebs nearly gnawed me away! By offending me you offended all the Beeboorats. I was crawling and thinking about taking revenge on the ratfink who neglected his duty of guarding Boorawchick. Only your ruBeecation will wipe out this disgrace from Glorx and my medals."
-"The disappearance of Boorawchick left Glorx on the brink of disaster! "
-"It was only thinking about the fate of the Beeboorats that gave me the power to reach VigBoo by myself, crawling through the hostile jungle. The damned beebs nearly gnawed me away! By offending me you offended all the Beeboorats. "
-"I was crawling and thinking about taking revenge on the ratfink who neglected his duty of guarding Boorawchick. Only your ruBeecation will wipe out this disgrace from Glorx and my medals."
+"ついに尻尾を掴んだぞ、この忌まわしい裏切り者め！ 腐った臓物の塊にすぎぬお前が、どういう了見で敬愛すべき指導者を敵地に置き去りにした？ ビューロはこの件を巡って幾周期にもわたり連続会議を開いたのだ……"
+"ブーラウチック失踪は、グロークスを破局の淵へ追い込んだ！"
+"ビーボラットの運命への思いだけが、苦痛と屈辱に耐えつつ、自力でヴィグブーまで這い戻る力を私に与えた。呪われたビーブどもは、危うく私を食い尽くすところだった！ 私を侮辱したということは、すなわち全ビーボラットを侮辱したということだ。"
+"私は這いながら考えていた――ブーラウチック護衛の責務を怠った鼠野郎へ、いかなる報復を下すべきかを。お前の完全かつ無条件のルビーケーションだけが、この汚辱をグロークスと私の勲章から洗い流すのだ。"
 
 [Sandoll part note]
-"Vanger! By looking at your Rubbox I have concluded that your push is higher than it has ever been. We favor Agents like you. I'm going to tell you top secret information from our archive:"
-"Cart is a spare part of Sandoll. Our Agents risked their lives to secure this data, so don't betray our trust in you and tell this secret to the sapless worlds!"
+"ヴァンガー！ お前のラブボックスを調べた結果、これまでになく押しの強い個体だと分かって、私は喜ばしい結論に達した。そういうエージェントは、我々が厚遇する。だからこそ、保管庫の超機密情報を教えてやる。"
+"カートは、解体されたメホス『サンドール』の部品だ。この情報はエージェントどもが命を賭して手に入れた。お前に与えた信頼を裏切るな。そしてこの秘密を乾いた世界に漏らすような真似はするな！"
 
 [Last Moggy part note]
-"To the Buro: Observing a vanger with extraordinary push. According to the Manual he has access to security level 2 archives. Boorawchick is acquainting the subject with the materials. The non-disclosure agreement was not signed due to the illiteracy of the subject. Vanger, listen to Boorawchick! Putt-putt is a spare part of Last Moggy. Prove that you are qualified and return this mechos to the Buro's service."
+"ビューロへ。異常なまでに押しの強いヴァンガーを至近距離で観察中。マニュアルによれば、当該個体には機密区分第二群の保管庫閲覧が認められる。資料説明はブーラウチックが実施中。なお、当人が文盲のため守秘誓約書への署名は取得していない。"
+"ヴァンガーよ、ブーラウチックの言葉を聞け。モーターはメホス『最後のモギー』の部品だ。お前の適格性を証明し、そのメホスをビューロの奉仕へ取り戻せ！"
 
 [Weexow visit]
-"So did you find traces of the Buro's enemies there on Weexow? No? You should have searched better. Survey the bottom of the local reservoir thoroughly."
+"どうだ、ウィークソウでビューロの敵の痕跡を見つけたか？ 見つからなかった？ なら探し方が甘い。あそこの貯水池の底まで、もっと徹底的に洗え！"
 {Weexow}
 
 [Boozeena visit]
-"So, what do you think about Boozeena? The Buro supposes that the symbols in the circle are an insult to Glorx. This affair requires investigation and the villains must be punished for their disrespect..."
+"さて、ブージーナはどうだった？ あの円の中の奇妙な記号は、グロークスを侮辱する文句ではないかとビューロは考えている。もっとよく調べる必要があるし、不敬の輩には罰を下さねばなるまい……"
 {Boozeena}
 
 [Ark-a-Znoy visit]
-"Give me some advice, Agent. The Buro is planning to set up a penitentiary on Ark-a-Noi for the Buro's enemies and my ill-wishers. Do you think it will be easy for convicts to escape from there? I agree, it's the right place for them..."
+"意見を聞かせろ、エージェント。ビューロはアーク・ア・ノイに、ビューロの敵や私怨ある連中のための矯正植民地を築こうとしている。どう思う、囚人どもはあそこから逃げ出せるか？ 私も同感だ、あそこはあいつらにぴったりの場所だ……"
 {Ark-a-Noi}
 
 [Khox visit]
-"Have you been to Khox? Good. This world neighbors Glorx. You must visit it often so that you can quickly detect any threat coming from that strange rubble..."
+"コックスへ行ってきたのか？ それは結構。この世界はグロークスの隣だ。安全保障上、お前には今後もたびたび訪れてもらい、あの奇怪な廃墟どもからビューロへ向かう脅威をすばやく察知してもらわねばならん……"
 {Khox}
 
 [hMok visit]
-"You finally got to hMok, you piece of dung? Well, in that case the Buro washes their hands of you. Your education and mental health is up to you now. Don't forget to mention your cherished Boorawchick in your will."
+"この乾ききった泡野郎め、ついにhMokまでたどり着いたか。よし、その場合ビューロはお前の教育と正気について、一切の責任を放棄する。遺言には、愛しのブーラウチックの名を書くのを忘れるなよ……"
 {hMok}
 
 [Threall visit]
-"What did you see there on Threall, you fried piece of garbage? Did you by chance hear any voices? If so, you must undergo a physical examination! These hallucinations are dangerous to an Agent's health!"
+"スリールで何を見た、この焼け焦げた内臓袋め？ 声でも聞こえたか？ もしそうなら、直ちに医療審査を受けろ！ そうした幻聴はエージェントの健康にとってきわめて危険だ！"
 {Threall}
 
 [Eleepod in Inventory]
-"To the Buro: Operation to deliver an Eleepod to VigBoo for interrogation completed successfully. The culprit arrived under guard. "
-"The investigative commission under my command is beginning the examination of the suspect. Agenda: disposition of eLeeches and access codes to Incubator. Boorawchick out."
+"ビューロへ。尋問のためイリーポッドをヴィグブーへ連行する作戦は成功裏に完了した。容疑者は護送下で到着。"
+"私の指揮する調査委員会は、これより被拘束者の取り調べを開始する。議題はイリーチの所在、およびインキュベーターへの認証符号だ。報告終了、ブーラウチック。"
 
 [Beeboorat in Inventory]
-"Aha, a delegation from the country has arrived... Have you come to ask for beebs to repair an escave? Or to get cirt with your coupons? We're short on it, comrade. All right, join the line, I'll see you when I have free time..."
+"ほう、地方からの使節団か……またエスケイヴ修理用のビーブをせびりに来たのか？ それとも割当券でニューハを受け取りに来たのか？ こっちだって不足気味なんだ、同志よ。まあいい、面会簿に名前を書いて待て。空いた周期があれば相手をしてやる……"
 
 [Zeex in Inventory]
-"A new headache: a poisoner Zeex has come to VigBoo. You wicked enemy! Thought you'd catch us with our pants down? Don't even think of reading your popons in the escave! And don't scribble on the walls! "
-"Do your business and get out quickly, or else I'll put you into a cell to feed beebs and the Pact on a Permissive Environment for Passengers won't help you!"
+"まったく厄介なことだ、毒使いのズィークがヴィグブーへ来やがった。敵性分子め、ビューロの不意を突けると思うなよ！ エスケイヴでポポンを読み上げることも許さん！ 壁に落書きもするな！"
+"用が済んだらさっさと消え失せろ。さもないと『乗客寛容協定』など知ったことかと、即座に営倉へ放り込んでビーブの餌やり係にしてやる！"
 
 [Key to Boozeena Gift:G]
-"You've proven your loyalty to the Buro and personally to Boorawchick. We can entrust you with our secret: I'm giving you the key to Khox, a neighboring world. Now you'll be able to visit it now and then and signal us if you find our enemies."
+"お前は、ビューロとブーラウチック個人の双方に忠実なヴァンガーであると証明してみせた。ならば我らの安全を託してよい。ここに、隣接世界コックスの鍵を授ける。今後はときおりあそこへ赴き、敵の接近を発見したら合図を送れ。"
 {Khox}
 
 [Zyklope warning]
-"Agent, the growth of your utility to the Buro exceeds all the Statistics Department's forecasts. We don't want to lose such a useful Agent, so you will receive instructions on the tactics to use on Necross shortly. "
-"You must not under any circumstances peek into ZeePa before you visit B-Zone!"
+"エージェントよ、お前のビューロへの有用性の伸びは、統計部門の予測と計算のすべてを上回っている。我々は、そんな貴重なエージェントを失うわけにはいかん。これよりネクロスでの行動方針を伝える。"
+"Bゾーンへ赴く前に、絶対にジーパへ顔を出してはならん！"
 {ZeePa} {B-Zone}
 
 [Hideout Open]
-"Agent! For your achievements in the struggle against the enemies of the Buro you are assigned to conduct an audit in one of the Buro's underground sealed stores. It was built in case of war with the cunning Zeexen. "
-"It's near the residence of Geer'ah and stocked for the accommodation of an important counselor in case of emergency."
+"エージェント！ ビューロの敵との闘争における功績により、お前にはビーボラットの封鎖地下倉庫の一つを監査する任務が与えられる。あれは狡猾なズィークセンどもとの戦争に備えて築かれたものだ！"
+"そこはギールアの居所の近くにあり、緊急時に重要相談役を避難させるための設備も整っている。"
 
 [Larvae Vision note:G]
-"To the Buro: Your request on the Dominance level of this vanger is confirmed. Current status: category A50. Analysis carried out by Boorawchick... Vanger, your push, as it was predicted by the Buro, allows you to get in direct visual contact with a Larva. "
-"Watch its movement on the map integrated into your mechos. You can start purposeful cirt harvesting activity. I hereby commend you."
+"ビューロへ。当該ヴァンガーの支配力水準に関する照会を確認した。現状ステータスはA50級。分析担当はブーラウチック……ヴァンガーよ、お前の押しの強さはビューロの予測どおり、ククラとの間接的視覚接触を可能にする段階へ達している。"
+"メホスに組み込まれた地図上で、その動きを追跡せよ。これより目的を持ったニューハ採集活動を開始できる。個人的にも、ブーラウチックとお前に感謝を表明する。"
 {Larvae}
+
