@@ -57,67 +57,67 @@
 {kusowocks}
 
 [Eleepods Story]
-"So, rover, it's time to tell you about the basis of the universe: about us, the profound Eleepods..."
+"さて、道漁りめ、そろそろ万物すべての基について聞かせてやる時だ――我ら、深奥なるイリーポッドについてな……"
 {Eleepods}
-"The story of the Chain is cloudy to us; we don't like fairy tales like the Zeexen do..."
+"失われたチェーンの来歴は、我らにも闇の中だ。ツィクどものように、面白おかしい作り話をかき集める趣味はない……"
 {The Chain} {Zeexen}
-"That's why all the various rumors about ancient Softie and cursed Cryspo mean nothing to us. And if you are a fan of bedtime stories, go to Necross, where you'll have your ears stuffed with phlegma..."
+"だから古のソフティだの、呪われたクリスポだのという噂に、我らはさして心を動かされぬ。おとぎ話が好きならネクロスへ行け。あそこなら、痰まみれの作り話で耳の穴まで埋めてくれるだろう……"
 {The Softie} {The Cryspo} {Necross} {phlegma}
-"We Eleepods are not bound by time and real deeds. For us there is no past, and we do not care about tomorrow. However, we have studied the current moment at length and know everything about the present..."
+"我らイリーポッドは時間の外、現し世の雑事の外にいる。過去などなく、明日がどうなろうと痛くも痒くもない。だが今この瞬間だけは、我らは隅々まで舐め尽くし、現在のすべてを知っている……"
 {Eleepods}
-"None of the inhabitants of the Chain have been allowed the feeling of Knowledge about the Condition of All Things that we have. We need but to collect all the chords from the pods into a unified harmony, at which point we will see all the worlds in our consciousness as a unified, motionless mold."
+"チェーンの住人どもには、我らが持つ《万事の状態》の知を味わうことは許されぬ。どれか一つのポッドの弦をすべて一つの調べに束ねるだけで、あらゆる世界は我らの意識のうちに、一つの動かぬ鋳型として現れる……"
 {The Chain} {pod}
-"We are quietly stewing deep in Fostral and the happiness of dipping a comb in sticky phlegma and running it through protuberances swollen with nymbos, slipping the P-beam through vain worlds, is not for you or any other of the luckless to know, be they Beeboorats or Zeexen..."
+"我らはフォストラルの深みで静かに熟れ、粘るフレグマに掻き手を浸し、ニムボスでふくれた瘤を梳き、リンザをせわしない世界の上に滑らせる――その幸福は、お前にも、他の哀れな連中にも、ビーボラットであれツィクであれ、決してわかるまい……"
 {Fostral} {phlegma} {nymbos} {P-beam} {Beeboorats} {Zeexen}
-"The essence of the Eleepods is all in pods and the feeling of unity. We do not have loneliness or the fear of the nubbin of life before the real, immense world, as our subconscious is wrapped up in pods... Then again, you probably don't need to know that, cirt hunter..."
+"イリーポッドの本質はポッドにあり、一体であるという感覚にある。我らには孤独もないし、ちっぽけな命の塊が現実の果てなき世界の前で抱く怯えもない――我らの無意識はポッドの中で結ばれているのだから…… もっとも、ニューハ掘りのお前に知る必要があるとも思えんがな……"
 {Eleepods} {pod} {cirt}
-"We will explain later the connection between pods and the P-beam. Not every vanger survives up above, and not every vanger is needed by the Eleepods. Remember: information about the current instant in all the universe is ours, and you are just the executor of our will..."
+"いずれ、ポッドとリンザの繋がりも教えてやろう。だが上で生き残るヴァンガーは多くないし、イリーポッドに必要とされるヴァンガーはなお少ない。覚えておけ――宇宙のこの瞬間すべてに関する情報は我らの手にあり、お前はただ我らの意志を執行するだけの者だ……"
 {pod} {Eleepods} {P-beam} {vangers}
 
 [Cirt Story]
-"Well, wimble fitter, we now see your zeal, so we can tell you a bit more. You want to be our agent vanger, correct?"
+"さて、手早い機械屋よ。お前の励みは見えた。ならば、もう少しだけ話してやろう――お前も我らのエージェント・ヴァンガーになりたいのだろう？"
 {vangers}
-"What I'm going to tell you now will reveal much inside the Chain. And if you understand me, and see what cirt is about, you'll settle down here for good. Not only on Fostral..."
+"今から話すことは、チェーンの脈動のかなり深いところまで暴いてしまう。もしそれを理解し、ニューハの定めまで掴めたなら、お前はこの世界に根を下ろせる――フォストラルに限らず、な……"
 {The Chain} {cirt} {Fostral}
-"Remember: our sovereigns are Larvae. What is a Larva, you ask? Alas, we know very little, as our bunch hasn't been able to snag one..."
+"覚えておけ――我らを支配するのはククラだ。ククラとは何か、だと？ 残念ながら、我ら自身にもまだはっきりとはわからん。我らのバンチはいまだ一体たりとも手に入れておらんのだから……"
 {Larvae} {bunch}
-"Damn! It's rumored the Zeexen have a Larva... We know nothing about the Beeboorats, as for all their stupidity we cannot pry into the inner space of Glorx. Perhaps you'll find that out yourself..."
+"忌々しいことに、ツィクどもは一匹持っているという噂がある…… ビーボラットについては知らん。あの愚鈍さではグロークスの奥底にまで潜り込めまい――そこは自分で確かめるがいい。リンザのことを聞きたいのか？ そうだ、我らは万事を知る――だがククラだけは見えぬ。あれらは我らの外を滑っていく……"
 {Zeexen} {Beeboorats} {Glorx} {Larvae}
-"You are wondering about the P-beam? You're right, we know everything, but Larvae are beyond us and pass unnoticed... Another rumor says there's a hidden Departed Bios on Xplo that has realized all dreams about the Larvae. The lucky guys, they don't have to yearn any more..."
+"さらに、イクスプロには一人の《去りしバイオス》が隠れ棲み、ククラへの夢をすべて叶えたとも囁かれている。幸運な奴め――もはや待ち焦がれる必要もないのだからな……"
 {Xplo} {Departed Bios} {Larvae}
-"Now our cycles are dead without Larvae, and only their spirit enables us to go all the way through the Eleection, from Plump-up to Gulp-down, and then start over..."
+"ともかく、ククラの気配がなければ我らのサイクルは死んでいる。あの霊の臨在があってこそ、イリーポッドはイリークションを、プランプアップからガルプダウンまで貫き、また初めから巡り直すことができる……"
 {Larvae} {Eleepods} {Plump-up} {Gulp-down}
-"We get the Larva's spirit through cirt, plain soil taken from the worlds where our lords live. The problem is, the Larvae are unseen to you, the wheelers."
+"ククラの霊はニューハによってもたらされる――我らの神々が棲む他世界から掻き取られた、ただの土くれによってだ。問題は、お前たち車輪持ちにはククラそのものが見えぬことだ……"
 {Larvae} {cirt}
-"They crawl deep underground, much deeper than escaves. And their being is still a mystery to us..."
+"ククラは地の底、どんなエスケイヴよりもさらに深い地下で生き、そこで自らの道を噛み穿っている。何のためにそうしているのか――それはいまだに我らにもわからん……"
 {escave}
-"All Larvae are different, and every cycle of our rotation requires a specific cirt: the only cirt from a unique Larva. We'll pay you well for the delivery of this specific cirt, you hucksters of fortune..."
+"ククラは一つとして同じではない。ゆえに《命の輪》における我らの各サイクルには、それぞれ固有の、唯一のククラから取れた唯一のニューハが要る。そのイリーポッドのニューハを届けてくれれば、我らはたっぷり払ってやるぞ、幸運を商う商人ども……"
 {Larvae} {cirt}
-"You only have to take the cirtainer, find the smelly soil and fill it up, and take it back to Podish and our bunch..."
+"お前がすることは一つだ――ニューハコンテナを持ち、匂う土を見つけ、それを詰めて、ここポディッシュの我らのバンチまで運んでくること……"
 {bunch} {Podish}
 
 [Cirt Story Add]
-"However, I see no value coming from you in this affair yet, you lucky carter of eLeech. You can't get to Glorx through the Passage and reach our Larvae there yet. You know, only aliens live here on Fostral, and they're loathsome to us..."
+"とはいえ、今のお前にはこの件でまだ大した役は期待できん、イリーチ運びの幸運屋め。お前はまだコリドールを抜けてグロークスへは行けぬ。つまり我らのククラにも辿り着けんということだ――フォストラルにいるのは、あの不快な異邦の連中だけだからな……"
 {eLeech} {Passage} {Glorx} {Larvae} {Fostral}
-"So serve us and you'll get the key to Glorx, you apostle of beebs..."
+"だから我らに仕えろ。そうすればグロークスへの鍵をくれてやる、ビーブの信徒め……"
 {Glorx} {beebs}
 
 [Bad Cirt Delivery:B]
-"What's that stinking stuff in your mechos, you crummy roamer? Where did you get THAT? Before you bring alien cirt here, you'd better think about whether or not we need it, you rusty bearing."
+"お前のメホスの中で、なんだこの嫌な臭いは。生き残り損ねた車輪野郎め、どこでこんなモノを拾ってきた？ 他所のニューハをここへ運び込む前に、我らに要るものかどうかくらい考えろ、この錆びた軸受けめ。"
 {mechos} {Beeboorats} {Zeexen} {cirt} {beebs}
-"That's cirt from boneheaded Beeboorats or gabby Zeexen. Don't do that anymore or we will punish you..."
+"こんなのは愚かなビーボラットか、喋りすぎるツィクどものニューハだ。二度とやるな。さもなくば罰してやる……"
 
 [Good Cirt Delivery:G]
-"Gee whiz, fitter! Where did you get that precious cirt? You must have tickled the other vangers to death. Or did you really get to the Eleepods' Larva? All by yourself? "
-"As of today, you've brought us $(Cirt Delivery) portions of tastiest Eleepods' cirt. Keep serving us well, peaceful prospector!"
+"これは驚いたな、機械屋。どこで我らにこれほど要るニューハを掘り当てた？ まさか他のヴァンガーどもをくすぐり殺して奪ったわけでもあるまいな、この抜け目ない野郎…… それとも本当に、イリーポッドのククラまで辿り着いたのか？ お前ひとりで？"
+"今日までに、お前はすでに $(Cirt Delivery) 回分もの極上のイリーポッドのニューハを運び込んだ――この調子で仕え続けろ、平和な掘り師よ！"
 {cirt} {Larvae} {vangers}
 
 [FIRST-Good Cirt Delivery:G]
-"What a rustler, full of zeal! Looks like you're going to be a famous cirt digger when you discover the worlds where our Larvae live..."
+"なかなかのやり手だ、熱まである！ 我らのククラが棲む世界を見つけ出した暁には、ニューハ運びの名うてとして名を馳せることになるだろう……"
 
 [NO-Cirt Delivery]
-"Yeah, it's been a long time since I've seen a vanger as stupid as you. Look deep inside yourself, what do you see? In the container! So, what's there? "
-"Nothing is there, you blockhead! You crammed it full of useless soil and schlepped it around. You thought that was cirt? Wrong, you retard! It's just dust. The breath of Larvae hasn't touched your cargo..."
+"まったく、ここまで愚かなヴァンガーを見たのは久しぶりだ。自分の中を覗き込め――コンテナの中だ！ ほら、何が入っている？"
+"何もないだろう、この阿呆！ 誰の役にも立たぬ土を詰め込んで、得意げに引きずり回していただけだ。あれがニューハだと思ったのか？ 違うな、間抜けめ、ただの塵だ。ククラの息は、お前の荷には一度たりとも触れていない……"
 
 [Nymbos in Inventory:B]
 "You were wrong, vanger, to come back to Podish with the nymbos. It's needed in Incubator, so get over there now..."
