@@ -132,13 +132,13 @@
 "中にはククラがいる…… 永遠の息吹が伝わってくる、大きな出来事が近い…… だが、その罠を開く役目は私には重すぎる。イリーポッドの師はリープキーだ。急いであいつのところへ飛べ、この時代を背負う荷を大切にな！"
 
 [MP0 Start]
-"Pluck up your courage, vanger: the VAN-WAR has started! You'll show your prowess and taste the fury of the brave in the rage of battle. Kill them all and die many times, reviving for revenge. I, a canny Eleepod, will count all the bodies and name the winner."
+"腹を括れ、ヴァンガー。ヴァン・ヴァールが始まった！ そこでお前は己の胆力を示し、戦いの煙と、悪臭を噴き上げるメホスの山の中で、勇者どもの怒りを思い知ることになる。奴らを皆殺しにしろ、そしてお前自身も何度も死ね――復讐のために蘇りながらな。私、この慎み深きイリーポッドが、死骸を一つ残らず数え上げ、勝者を指し示してやろう！"
 
 [MP1 Start]
-"Hey wheeler, the MECHOSOMA has begun! You must bring us wads of sundry wares. Now go and load up, as the others are already on their way, anticipating their profits. If you prove to be an effective merchant, you'll get your due reward: a new mechos and glory throughout the Chain."
+"おい、車輪持ち、メホソーマが始まったぞ！ お前は上等な品を、しかもたっぷり運び込まねばならん。さあ急げ、メホスに荷を詰め込め。他の連中はもうフォストラルの道を駆け、頭の中で儲けを弾いている。よく働け、そして溝で日向ぼっこなどするな。そうすれば新しいメホスと、チェーンじゅうに轟く名声が手に入る。"
 
 [MP2 Start]
-"The PASSEMBLOSS has begun! Hit the road, wheeler! Step on the gas and push the others; rush to your goal and don't look back. You'll soon meet your fate. Don't be afraid of those glowing circles, as you have to go from one to the next, your compass guiding you through."
+"パッセンブロスが始まった！ 行け、車輪持ち、道へ出ろ。踏み込め、他の連中を溝へ突き落とせ、振り返らずに飛ばせ。そうすればどこか急な曲がり角で、お前の幸運に追いつけるだろう。道に瞬く輪が見えても恐れるな。お前は輪から輪へ渡って進むのだ――コンパスがお前の案内役だ。"
 
 [MP3 Start]
 "HUNTAGE started!"
@@ -147,13 +147,13 @@
 "MUSTODONT started!"
 
 [MP0 Comment]
-"The VAN-WAR is in full swing and you are quaking in an escave, you stinking coward! Go up into the world and find the chump who dared offend you. Show him what the anger of a real hero means. You want to take a decent gun to shoot up those drips? I'll sell it for half the price if you disappear quick!"
+"ヴァン・ヴァールは熾烈の極みだというのに……お前はエスケイヴの静けさに縮こまり、震えて泣いているつもりか、臭い臆病者め！ さっさと上へ出ろ。お前を虚仮にしたあの醜い野郎を見つけ、本物の英雄の怒りがどういうものか教えてやれ。どうせなら景気のいい銃でも持って行って、無礼者どもを粉々にしたいか？ 半値で譲ってやるから、とっとと失せろ……"
 
 [MP1 Comment]
-"The MECHOSOMA is going full blast... And what about you, brave wheeler, are you shipping wares? How much phlegma and precious nymbos have you brought into our escaves? Work hard and don't drive your rusty mechos empty..."
+"メホソーマは真っ盛りだ……さて、勇ましき車輪持ちよ、品運びの具合はどうだ？ どれほどのフレグマや貴きニムボスを、我らのエスケイヴへ運び込めた？ 励め、素早きヴァンガー。錆びたメホスを空荷のまま走らせるな……"
 
 [MP2 Comment]
-"The PASSEMBLOSS is in full fling up there... It's unbecoming to a true racer to sit out in an escave, so hurry up and catch up to your competitors while you still can... Don't forget: you have to go from circle to circle, following your compass..."
+"上ではパッセンブロスが荒れ狂っている…… それなのにエスケイヴに座り込んでいるとは、真の走り屋、チェーンの王たる者にはあまりに見苦しい。急げ、まだ間に合ううちに他の連中へ追いつけ…… 覚えておけ、走るべきは標から標へ、ひとつも飛ばさず、コンパスに従って、だ……"
 
 [MP3 Comment]
 "HUNTAGE in progress..."
@@ -162,28 +162,28 @@
 "MUSTODONT in progress..."
 
 [Protractor in Inventory]
-"I see you have Protractor, you pushy wheeler. Legends speak volumes about it. So, you decided to try the ancient toy yourself? Take care, it's a dangerous artifact."
+"始界者を手に入れたのか、抜け目のない車輪持ちめ。あれについては、古い伝承がいやというほど語っている。つまりお前、自分でその太古の玩具を試す気になったわけだな？ 気をつけろ、あれは危うい遺物だ。"
 {Protractor}
 
 [Mechanic Messiah in Inventory:B]
-"Get out, you plague carrier! The holy eLeeches live and ripen here. The evil vibrations, the streams of fear that your Messiah pours out will surely harm them. Remember, vanger, your way is now crooked and dark, ending in hell. Quiver with fear..."
+"失せろ、疫病の担い手め！ ここでは聖なるイリーチが生き、育っている。お前のメサイアが垂れ流す邪悪な流れ、恐怖の奔流は、きっとあの子らを傷つける。覚えておけ、ヴァンガー――お前の道は今や危うく、ねじれ、暗い。行き着く先は破滅だ。震えていろ……"
 {Mechanical Messiah}
 
 [Function-83 in Inventory]
-"Every vanger dreams of a personal Passage in his hold... You are the luckiest! But know this: it won't save you from the anger of Eleepods, should you decide, for example, to steal an eLeech!"
+"自分専用のパッセージを船倉に抱えることは、どのヴァンガーも夢見るものだ…… お前はその中でも飛び抜けた幸運者だ！ だが覚えておけ――たとえばイリーチを盗み出そうなどと企んだ時、それがイリーポッドの怒りからお前を救ってくれると思うなよ！"
 {Function-83+}
 
 [Spummy in Inventory:B]
-"Oh, what's happening to me?... My scratchers have hardened and I can't move them... I can hear eLeeches inwardly scream with horror... And crowds of newly hatched fears excruciate my soul... The vision of the Clash... "
-"Damn, the Chomper have come! I beg you, vanger, take your terrifying cargo away, don't torture me. We didn't bring you up to see the horror of the universe in our burrows. Vanish, limb of the devil!"
+"ああ、私はどうしてしまった…… 掻き手が硬直し、もう曲がらぬ…… イリーチたちが胸の奥で絶叫しているのが聞こえる…… 今まで潜んでいた恐怖の群れが、魂をずたずたに引き裂く…… クラッシュの幻視だ……"
+"忌々しい、スプミィだ！ 頼む、ヴァンガー、その恐ろしい荷を早くどこかへ持って行ってくれ。これ以上私を苦しめるな。お前を育てたのは、我らの巣穴で世界の悪夢を見せつけられるためではない。消え失せろ、悪魔の手足め！"
 {Chomper}
 
 [Boot Sector in Inventory]
-"Oh, you picked up Boot Sector? I have to say, you are invulnerable now. The ultramundane powers prepared this gift for you. I don't know why..."
+"おや、ブート・セクターを拾ったのか？ 言っておくが、これでお前はずいぶん傷つきにくくなった。得体の知れぬ力どもが、お前のためにこんな贈り物を用意していたのだ。何のためかは、私にもわからんが……"
 {Boot Sector}
 
 [Peelot in Inventory]
-"You picked up a substitute for yourself? Secured the Flymatic? That's funny. You, stupid creature, will trust your mechos and life to some strange, stupid gadget. Isn't that the paradox of the universe?"
+"自分の代わりを拾ってきたのか？ ピーロットを確保したと？ これは愉快だ。お前のような愚かな生き物が、自分の運命とメホスの舵を、あんな奇妙でさして賢くもない代物に委ねるとは。これぞ宇宙的逆説ではないか？"
 {Flymatic}
 
 [Heroin in Inventory:B]
