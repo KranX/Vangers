@@ -178,27 +178,27 @@
 "ラブボックスを持たぬままビーボラットのエスケイヴへ近づくな。一瞬でメホスもビーブも剥ぎ取られるぞ！ ……もっとも、リープキーはああいう『宇宙的愚鈍さの印』をせっせと蒐めているのだがな……"
 
 [VigBoo] [ヴィグブー]
-"You've visited the cursed VigBoo, the evil casemate and nest of the bandits? And you're still alive? Fate favors you, wheeler... That's where Eleepods go and disappear without a trace!"
+"呪われたヴィグブーを訪ねたのか――あの盗賊どもの巣窟、陰気な牢獄を？ それでまだ生きているとはな。運命はどうやら、お前という車輪持ちを可愛がっているらしい…… あそこはイリーポッドが跡形もなく消えていく場所だ。"
 
 [Lampasso] [ランパッソ]
-"An escave on Glorx. The capital of stupid games. There you'll see what the Beeboorat are like."
+"グロークスにあるエスケイヴだ。愚かな遊戯どもの都ともいえる。そこでお前は、ビーボラットという連中がどれほどのものか思い知ることになる。"
 {Glorx}
 
 [Ogorod] [オゴロド]
-"An escave among water and silence. Life stands there in deep thought, trying to comprehend the extremes of dementia, but all in vain..."
+"水と泥の中に立つエスケイヴだ。そこでは生が考え込み、狂気の果てがどこにあるのかを悟ろうとしている。だが、すべては徒労に終わる……"
 
 [Valorin] [ヴァロリン]
-"Don't you dare bring it here, you stupid carcass. Once you're a slave of Beeboorats, you'd better forget the way to Fostral!"
+"それをここへ持ち込むことは考えるな、この愚かな肉袋め。ひとたびビーボラットの奴隷になったなら、フォストラルへの道など忘れてしまうがいい！"
 
 [shrub] [シュラブ]
-"You can find calm, plump Beeboorats inside shrubs. They're no longer dangerous after eating their fill of humble pie!"
+"シュラブの中には、静まり返り、でっぷりと太ったビーボラットが潜んでいる。運命に従いきったあとは、もうさほど危険でもない……"
 
 [peeperette] [ピーペレット]
-"Peeperettes are rubbish from the Glorx, the rot that came down from the sky. Only the Beeboorats and their grungy existence need them."
+"ピーペレットはグロークスの屑、空から落ちてきた腐れ塊だ。あれを必要とするのは、垢まみれの生に埋もれたビーボラットどもだけだ。"
 {Glorx}
 
 [Nucleoboom] [ニュークレオブーム]
-"A Nucleoboom can cheer up a Beeboorat, but around here it's nothing but garbage."
+"ヤドロブスならビーボラットを喜ばせることもできる。だがこのあたりでは、ただの屑でしかない。"
 
 [Jablees] [ジャブリーズ]
 "Jablees are the spawn of the Glorx, the source of all rubbish and rot."
@@ -215,44 +215,44 @@
 "The only thing we know is that it's one of the Beeboorats' cycles."
 
 [castaway] [漂流者]
-"The journey of a castaway ends in Ogorod, among the moldy peeperettes..."
+"漂流者の旅路はオゴロドで終わる――かび臭いピーペレットのあいだでな……"
 {Ogorod}
 
 [PeepShow] [ピープショー]
-"You should see the PeepShow if you want to see how worthless the Beeboorats really are..."
+"ビーボラットどもがどれほど取るに足らぬか、さっさと忘れたくば、ピープショーでも見てくるがいい……"
 
 [Nuclear War] [核戦争]
-"Hoards of dolts run after a Jablee, trying to steal its fruits..."
+"グロークスでは、馬鹿どもの群れがジャブリーを追い回し、その実を奪おうと血眼になっている……"
 {Glorx} {Jablees}
 
 [Geer'ah] [ギールア]
-"A Beeboorat who sits in Lampasso. Stuffed with straw and given a very ugly paint job. Bombastic and loud-mouthed."
+"ランパッソに居座っているビーボラットだ。藁でも詰められているような中身で、見苦しく塗りたくられ、尊大で騒々しい。"
 {Lampasso}
 
 [Boorawchick] [ブーラウチック]
-"I guess you've met the pudgy beast, and I also guess it wasn't fun. He's the Beeboorats' top boss, the source of all that horror."
+"あの膨れた化け物には、もう会ったのだろう。しかも、ろくでもない出会いだったに違いない。あれはビーボラットどもの総元締め、恐怖の源だ。"
 
 [Oboorez] [オブーリーズ]
-"You'll find him in Ogorod. He's not that mean, but he's terribly dull-he has seen a lot but learned very little."
+"あいつならオゴロドで見つかる。そこまで悪辣ではないが、とてつもなく鈍い。いろいろ見てきたくせに、ほとんど何も身につけていない。"
 {Ogorod}
 
 [The Buro] [ビューロ]
 "The Buro strives to exterminate all Eleepods."
 
 [Slave] [奴隷]
-"Unfortunately, you can't get out of Glorx without serving as a Slave first."
+"残念ながら、一度は奴隷にならなければ、グロークスから抜け出すことはできん。"
 {Glorx}
 
 [Commissar] [コミッサー]
-"You'd better ask that in VigBoo. They invented all that for their gain and the vangers' pain."
+"それについては、ヴィグブーで訊くのがいい。あんな仕組みをでっち上げたのは、奴らが自分たちの利益を吸い上げ、ヴァンガーには苦痛を味わわせるためなのだから。"
 {VigBoo}
 
 [Agent] [エージェント]
-"Once the Beeboorats start calling you an Agent, your deliverance is on its way. But you should keep your Rubbox, just in case..."
+"ビーボラットどもがお前を《エージェント》と呼び始めたなら、解放は近い。だが念のため、ラブボックスは手放さずに持っておくがいい……"
 {Rubbox}
 
 [Manual] [マニュアル]
-"The Manual is on Glorx, but here there is freedom for wise thoughts."
+"ウスタフはグロークスにある――だがここには、賢い思索の自由がある。"
 {Glorx}
 
 /*******************   Zeexen's terms   *******************************/
