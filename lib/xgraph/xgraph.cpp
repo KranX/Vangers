@@ -142,6 +142,9 @@ int XGR_Screen::init(int flags_in)
 			ErrH.Abort(SDL_GetError(),XERR_USER, 0);
 		}
 		SDL_AddTimer(100, CursorAnim, NULL);
+		const char* video_driver = SDL_GetCurrentVideoDriver();
+		std::cout << "SDL current video driver: "
+		          << (video_driver ? video_driver : "<null>") << std::endl;
 	} else {
 		SDL_DestroyTexture(sdlTexture);
 
