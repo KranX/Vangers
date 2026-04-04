@@ -315,6 +315,75 @@ static int actint_utf8_leading_trim32(text::TtfFontFace& face,std::string_view t
 	return 0;
 }
 
+static int actint_utf8_leading_trim32(text::TtfFontFace& face,std::string_view text_value,size_t start_offset)
+{
+	size_t offset = start_offset;
+	uint32_t codepoint = 0;
+
+	while(text::utf8_next(text_value, offset, codepoint)){
+		if(codepoint == '\r')
+			continue;
+		if(codepoint == '\n')
+			break;
+
+		const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(face, codepoint);
+		if(!glyph)
+			continue;
+
+		return std::max(glyph->minx, 0);
+	}
+
+	return 0;
+}
+
+static int actint_measure_utf8_text32_draw_width(text::TtfFontFace& face,std::string_view text_value,int hspace)
+{
+	int max_width = 0;
+	int line_min_x = INT_MAX;
+	int line_max_x = 0;
+	int line_end_x = 0;
+	size_t line_start = 0;
+	int pen_x = -actint_utf8_leading_trim32(face, text_value, line_start);
+
+	size_t offset = 0;
+	uint32_t codepoint = 0;
+	while(text::utf8_next(text_value, offset, codepoint)){
+		if(codepoint == '\r')
+			continue;
+
+		if(codepoint == '\n'){
+			if(line_min_x != INT_MAX)
+				max_width = std::max(max_width, std::max(line_max_x, line_end_x) - std::min(0, line_min_x));
+			else
+				max_width = std::max(max_width, 0);
+
+			line_start = offset;
+			pen_x = -actint_utf8_leading_trim32(face, text_value, line_start);
+			line_min_x = INT_MAX;
+			line_max_x = 0;
+			line_end_x = 0;
+			continue;
+		}
+
+		const text::GlyphBitmap* glyph = actint_get_renderable_codepoint(face, codepoint);
+		if(!glyph){
+			pen_x += hspace;
+			line_end_x = pen_x;
+			continue;
+		}
+
+		line_min_x = std::min(line_min_x, pen_x);
+		line_max_x = std::max(line_max_x, pen_x + glyph->width);
+		pen_x += std::max(glyph->advance, 0) + hspace;
+		line_end_x = pen_x;
+	}
+
+	if(line_min_x != INT_MAX)
+		max_width = std::max(max_width, std::max(line_max_x, line_end_x) - std::min(0, line_min_x));
+
+	return max_width;
+}
+
 static int actint_legacy_font_top_pad(const text::TtfFontFace& face,int legacy_height)
 {
 	return std::max(0, (legacy_height - face.get_height()) / 2);
@@ -375,7 +444,8 @@ int aUtf8TextWidth32(std::string_view text_value,int font,int hspace)
 {
 	auto face = actint_get_text32_ttf_face(font);
 	if(face)
-		return text::measure_utf8_text_width(text_value, *face, hspace + text::default_ui_text32_extra_hspace());
+		return actint_measure_utf8_text32_draw_width(*face, text_value,
+		                                            hspace + text::default_ui_text32_extra_hspace());
 
 	std::string legacy_text = text::utf8_to_legacy_lossy(text_value, actint_text_encoding(), ' ');
 	return aTextWidth32((void*)legacy_text.c_str(), font, hspace);
