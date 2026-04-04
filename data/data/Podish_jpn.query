@@ -125,46 +125,37 @@
 "我らはそこへ行ったことがない。友だちのヴァンガーがいるなら、そいつに聞け。そんなものが本当にいるならな。あるいは、自分でたどり着くことだ…"
 {vangers}
 [P-beam] [Pビーム]
-"That's our secret - with it we can perceive the whole world as it is, regardless of distance. Fear us, scum, for we know all there is to know!"
-
+"これは我らの秘儀だ――リンザを介せば、距離など無いも同然に、世界をあるがままに知覚できる… 震え上がれ、小虫め、我らは世のあらゆることを知っているのだから…"
 [Xplo] [イクスプロ]
 "イクスプロか… お前は少しばかり詮索好きが過ぎるな、友よ。今のお前には、イクスプロはただの言葉にすぎん…"
 [Departed Bios] [去りしバイオス]
-"Humph... One of the mysteries of the Chain. We don't really believe in them."
+"ふむむ… チェーンにとっての謎の一つだ。我らは、あれをあまり本気では信じておらん…"
 {The Chain}
-
 [Plump-up] [プランプアップ]
-"The beginning of the Eleepod rotation. Ecstasy for the pods and abeyance for the elder chords. Floods of nymbos..."
+"イリーポッドの循環の輪、その始まりだ… ポッドには恍惚を、年長の弦たちには待機をもたらす… ニムボスの奔流…"
 {Eleepods} {pod} {nymbos}
-
 [Gulp-down] [ガルプダウン]
-"The final stage of our sacral rotation. The eLeeches reach Podish and start to gobble sweetly, slowly absorbing the chord of the chosen one, who has been waiting for his eLeech while staying in the mind of the pod..."
+"イリーポッドにとって、聖なる循環の輪の終わりの段階だ。イリーチたちはポディッシュへ到達し、甘やかに咀嚼を始める。ポッドの潜在意識の中でイリーチの身体を待ち続けた選ばれし者の弦を、少しずつ自らの内へ取り込んでいくのだ…"
 {Eleepods} {eLeech} {Podish} {pod}
-
 [beebs] [ビーブ]
-"You are a slave to the beebs, you wheeled huckster. You'll kill anyone for the beebs! That's just your fate as a mercenary vanger."
+"お前はビーブの奴隷だ、車輪の行商人め。ビーブのためなら誰だって殺すのだろう、この身売りヴァンガーめ。それがお前の定めというものだ…"
 {vangers}
-
 [Creature Soup] [クリーチャー・スープ]
-"Don't swear!"
-
+"汚い言葉を口にするな…"
 [The Clash] [クラッシュ]
-"That's a Zeexen tale. Go ask them!"
+"それはツィクどものお伽話だ――知りたければ、あいつらのところへ行け…"
 {Zeexen}
-
 [Spiral] [スパイラル]
 "どのメホスにも組み込まれている部品だ――それがあればコリドールを抜け、他の世界へ渡れる。だが覚えておけ、車輪野郎。スパイラルは永遠ではない。上へ出たら、入り口へ入る前に、決まった場所で充填しなければならん…"
 {mechos} {Passage}
 
 /*******************   Beeboorat's terms   *******************************/
 [ruBeecation] [ルビーケーション]
-"You've learned the wickedness of the Beeboorats and now, I'm sure, you abhor your fate. Well, bite the bullet, wheeler. It's your destiny to bear the yoke branded upon you with disgrace, the sign of the tyrants of the wet Glorx."
+"ビーボラットどもの忌まわしさを知ったお前は、いまや自分の運命を呪っている――私はそう見ている。だが諦めろ、車輪野郎。それがお前らの定めなのだ。恥辱の刻印たる首輪をつけ、湿ったグロークスの暴君どもの印をぶら下げて生きるしかないのだ…"
 {Beeboorats} {Glorx}
-
 [Rubbox] [ラブボックス]
-"The stupidity of the Beeboorats is immense. They pick on poor vangers with these crooked tins. When we, the wise Eleepods, read what is written on them, we are horrified by the abyss of wickedness into which the Beeboorats have sunk..."
+"ビーボラットどもの愚かしさには果てがない。奴らは哀れなヴァンガーに、歪んだ缶切れを記念品みたいにくくりつける。我ら賢きイリーポッドは、その書きつけを読むたびに震え上がる――ビーボラットどもが沈み込んでいった暗愚と邪気の底知れぬ深みに、だ…"
 {Beeboorats}
-
 [VigBoo] [ヴィグブー]
 "グロークスにあるエスケイヴだ――ビーボラットどもの最大のたまり場。底なしの愚かさの泥沼から湧き出す悪意の源だ。そこへ転がり込んだヴァンガーは哀れとしか言いようがない。だが、それもまた放浪する車輪野郎の定めなのだ…"
 {Beeboorats} {Glorx}
