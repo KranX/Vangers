@@ -171,38 +171,38 @@
 {Eleection} {Glorx} {Beeboorats}
 
 [Bad Larva Delivery:B]
-"I see a loaded conlarver. Opening it... "
-"ALARM! ALL ELEEPODS GET DOWN! Alien Larva in Podish! Disaster!!! Everybody hold your breath, I'm closing the filthy conlarver! Phew... Did it... Breathing... "
-"So, damn saboteur, you wanted to ruin the revered Eleepods with an alien Larva? We got you, freak! What shall we do with you? We are not like the Beeboorats who would torture a vanger for less... "
-"The danger is over, and I'm feeling friendly again. You got away with one this time, nasty screw. I'll just fine you ten thousand beebs for my fright..."
+"よし――満ちたクッキシュが見える。開けるぞ……"
+"エリーポッド全員、下へ潜れ！ 異邦のククラがポディッシュに来た――イリーポッドの大災厄だ！！！ 全員、息を止めろ、この不埒なクッキシュを閉じる！ ふうっ…… 間に合った…… いま息をする……"
+"さてさて、破壊工作員め。異界のククラを運び込んで、誉れ高きイリーポッドを滅ぼすつもりだったのか？ 捕まったな、この湿っぽい出来損ないが。お前をどうしてくれよう？ もっとも、我らはビーボラットではない――たとえこれほど罪深いヴァンガー相手でも、そうむき出しに甚振ったりはせぬ……"
+"危難は去った――このリープキーも、また少し柔らかくなった。今回は軽く済んだと思え、この醜い螺子くれめ。驚かされた代として、せいぜい一万ビーブ取り上げるだけにしておいてやる……"
 
 [Good Larva Delivery:G]
-"I see a loaded conlarver. Opening... "
-"Oh, it's heaven on Fostral: our Larva is here!!! I'm plumping! It's a MIRACLE! I think I'm gonna burst... Ecstasy... Oh, my queen, eat all of me! The Eleepods have won: all the pods are petrified with delight. Wait, Your Majesty Vanger......................................... "
-"Well, not all of my scratchers have awoken from the wonderful ambrosia. Be proud, wheeler, you have won my favor. The Eleepods are your friends forever! "
-"There's no feat greater than securing an Eleepod Larva. I noticed you long ago, vanger, and have been waiting and hoping for your strong mind and heroic ways! Fortune came to us with you, the best pilgrim of the Chain, the Eleepods' apostle. "
-"From now on $(Cycle Name of Locked Larva) is an extinct word. $(Cycle Name of Locked Larva) is inside Eleepods now. We have the Larva now, and when the time comes, we'll lick her passionately. Down with the cirt for $(Cycle Name of Locked Larva), we don't need it anymore. Ecstasy is ours!"
+"よし――満ちたクッキシュが見える。開くぞ……"
+"ああ、フォストラルに至福が訪れた――我らのククラがここにいる！！！ 私は見る間に肥え太る！ 奇蹟が成就したのだ！ はち切れそうだ…… 恍惚…… おお、我が女王よ、どうか私を丸ごと食らってくれ！ イリーポッドの勝利だ――すべてのポッドが歓喜のあまり凍りついている。しばし待て、偉大なるヴァンガーよ……………………………………"
+"ふむ、まだ私の掻き手すべてが、この甘美なるアンブロシアから覚めきってはいないようだ。誇るがいい、車輪持ちよ――お前は私を征服した。イリーポッドは永遠にお前の友だ！"
+"必要なククラを手に入れること以上の偉業はない。私はずっと以前からお前に目をつけていた、ヴァンガー。お前の苛烈な知恵と英雄の道に、ずっと望みを託していたのだ！ 幸運はお前とともに我らへ来た、チェーン最高の巡礼者にして、イリーポッドの奉仕者よ。"
+"今この時より、$(Cycle Name of Locked Larva) という言葉は死語だ。今この時より、$(Cycle Name of Locked Larva) はイリーポッドの内にある！ このククラはいまや我らのもの、必要とあらば情熱のままに舐め尽くしてやろう――このサイクルの無用なニューハなど、もはや要らぬ。恍惚は我らのものだ！"
 
 [Heroin in Inventory:B]
-"Oh, grief to my pod! My scratchers are drying out from horror and disgust. The dumb wheeler brought something, and that something is a vile Beeboorat! Get out of here, lame duck! Don't multiply my anger."
+"ああ、我がポッドに災いあれ！ 私の掻き手は恐怖と嫌悪で干からびそうだ。愚かな車輪持ちが何かを運んできた――そしてその何かとは、忌まわしきビーボラットではないか！ 失せろ、出来損ないめ。これ以上、私の怒りを増やすな！"
 
 [Shrub in Inventory]
-"Ah, you little rogue! Give me the shrub quickly! I'll put it in my cellar to enjoy in my spare time. My pod will be famous among the Eleepods for its zoo!"
+"おお、この悪戯者め！ そのシュラブを早くよこせ！ 暇な折の楽しみとして、私の貯蔵庫に入れて愛でてやろう。我がポッドはこの動物園のおかげで、イリーポッドのあいだで名を馳せることになるぞ！"
 
 [Poponka in Inventory:G]
-"Oh, you have kusowocks! You haven't forgotten my lessons, brave soldier. My scratchers are shuddering and flopping from joy, anticipating the miracle of possessing this marvelous gift!"
+"おお、クソウォックスか！ 私の教えを忘れてはいなかったのだな、勇ましき戦士、車輪の兄弟よ。喜びに私はぶくぶくと泡立ち、掻き手は震え、揺れ、この素晴らしき贈り物を手にする歓びを今から味わっているぞ！"
 
 [Toxick in Inventory]
-"Hello, dust picker. I see you've been to the world of the worthless Zeexen, which shows your bravery and savvy. But you shouldn't have come here with that gunk, only those dumb beasts need it. Better bring me some kusowocks. I know you can get them..."
+"よう、塵集め。どうやらお前、あの取るに足らぬツィクどもの世界まで足を延ばしたらしいな――そのこと自体は、お前の胆力と機転の証だ。だが、そんな屑を抱えてここへ急いでくる必要はなかった。そんなものを欲しがるのは、あの愚獣どもだけだ。代わりにクソウォックスを持ってこい。お前なら、きっと掘り出せるだろう……"
 
 [Kernoboo in Inventory]
-"Ugh, what's that smell? The stink of Glorx is all around, evoking the vicious Beeboorats... You should have left their stupid toys there, let the dull beasts choke on them. But with your courage you'll be sure to get some beebs and maybe even some kusowocks for me..."
+"うっ、何だこの臭いは？ グロークスの悪臭があたり一面に満ちている――あの憎たらしいビーボラットどもを思い出させるではないか…… 奴らの馬鹿げた玩具など、向こうに置いてくればよかったものを。鈍い獣どもには、それでむせ返らせておけばよい。だが、その勇気があるなら、お前はきっと自分の取り分のビーブを手にし、ついでに私にはクソウォックスでも持ってこられるだろう……"
 
 [Pipetka in Inventory]
-"Oh, an alien peeperette... The rotten winds of Glorx carry them like the thoughts of the doltish Beeboorats and throw them to and fro, dropping them into water... But I digress. You're a brave, crazy mechos rider, and I'll give you some beebs for your trouble. Try your luck again!"
+"おお、我らに異なるピペトカか…… グロークスの腐れ風は、愚かなビーボラットどもの考えそのもののように、それらを吹き流し、あちこちへ放り投げ、水へと叩き落とす…… だが、少し話が逸れたな。お前は勇敢で狂ったメホス乗りだ。その骨折りにはビーブをくれてやる。さらに運試しをしてみるがいい！"
 
 [WeeZyk in Inventory]
-"O-o-o! My dream has come true. For so long I've been dreaming about this kusowock, sitting in the still of the escave and swimming in phlegma. It's a rare guest on Fostral, and we greet it with all due respect. You deserve many beebs, brave vanger!"
+"おおおっ！ ついに我が夢が叶った！ どれほど長く、このクソウォックスのことを夢見ていたことか――エスケイヴの静けさの中でフレグマに浸かりながら、ずっと思い描いていたのだ。フォストラルでは滅多に見られぬ客だ、我らも最大限の敬意をもって迎えよう。多くのビーブに値するぞ、勇敢なるヴァンガー！"
 
 [MP0 Start]
 "Pluck up your courage, vanger: the VAN-WAR has started! You'll show your prowess and taste the fury of the brave in the rage of battle. Kill them all and die many times, reviving for revenge. I, a canny Eleepod, will count all the bodies and name the winner."
