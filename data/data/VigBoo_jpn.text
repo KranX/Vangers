@@ -33,26 +33,26 @@
 "ビューロへ報告。新規スレイブの順応を確認。ブーラウチック、以上。"
 
 [Commissar ruBeecation:B]
-"To the Buro: Boorawchick reporting. Observed a Commissar that lost the Buro's trust. Initiating ruBeecation."
+"ビューロへ。ビューロの信頼を失ったコミッサーを視認。ブーラウチック、ルビーケーション手続きに着手する。"
 {The Buro} {Commissar} {Boorawchick} {ruBeecation}
-"Ex-Commissar! You dared bring shame upon your Rubbox! The Fugitive Vangers Enslaving Department is now taking charge of you. All your property has been confiscated."
+"元コミッサーめ！ 貴様は自分のラブボックスに泥を塗った！ これより逃亡ヴァンガー鎮圧部門が貴様を扱う。全財産は没収だ。"
 {Rubbox}
-"I am your esteemed Beeboorat instructor. I'm re-registering your Rubbox. Take care of it, it's the color of our banner! "
-"Everything you do is totally controlled by the Buro. Always fear. "
-"Pay attention to orders! Drive Valorins to Lampasso. All your previous services have been annulled. The Buro doesn't favor slobs."
+"この私、ビーボラットに愛されし貴様の教導係が、貴様のラブボックスを登録し直してやる。大事に持て。あれは我らの旗と同じ色だからな。"
+"貴様の行動はすべてビューロの完全管理下にある。絶えず恐れていろ。"
+"命令だ。ヴァロリンを積んでランパッソへ向かえ。これまでの手柄はすべて無効だ。ビューロはだらしない奴を好まん。"
 {Lampasso} {Valorin}
-"To the Buro: Conversion of Commissar complete. New Slave added to the heap. Boorawchick out."
+"ビューロへ。コミッサーの転換処置完了。新たな奴隷を山に追加した。報告終了、ブーラウチック。"
 
 [Agent ruBeecation:B]
-"To the Buro: Boorawchick reporting. An Agent arrived that doubted the integrity of the Buro. Initializing ruBeecation."
+"ビューロへ。ビューロのご威光に疑いを抱いたエージェントが到着。ブーラウチック、ルビーケーション手続きを起動した。"
 {The Buro} {Agent} {ruBeecation} {Boorawchick}
-"Ineffective Agent! Losing your Rubbox means losing the Buro's trust. You are being put under the command of the Fugitive Vangers Enslaving Department. All your property has been confiscated."
+"出来損ないのエージェントめ！ ラブボックスを失うとは、ビューロの信頼を失うということだ。これより逃亡ヴァンガー鎮圧部門の管理下に入る。全財産は没収だ。"
 {Rubbox}
-"I am your esteemed Beeboorat instructor. I'm re-registering your Rubbox. Take care of it, it's the color of our banner! "
-"As usual, everything you do is totally controlled by the Buro. Always fear. "
-"Pay attention to orders! Drive Valorins to Lampasso. All your previous services have been erased. The Buro doesn't need experimenters."
+"この私、ビーボラットに生まれついた貴様の教導係が、貴様のラブボックスを再構成してやる。大事に持て。あれは我らの旗と同じ色だからな。"
+"貴様の行動は、これまで通りすべてビューロの完全管理下にある。絶えず恐れていろ。"
+"命令だ。ヴァロリンを積んでランパッソへ向かえ。これまでの功績はすべて抹消された。ビューロは実験好きなど必要としていない。"
 {Lampasso} {Valorin}
-"To the Buro: Agent found to be insane. Started slavery therapy. Boorawchick out."
+"ビューロへ。当該エージェントを精神異常と認定し、奴隷療法を開始した。報告終了、ブーラウチック。"
 
 [Commissar Promotion:G]
 "ビューロへ報告。高い有用性を示すスレイブが到着。各エスケイヴからのデータ照合完了。登録手続きを開始する。"
@@ -88,51 +88,51 @@
 {The Buro} {Agent} {Boorawchick}
 
 [Shrub in Inventory (Boond):B]
-"Slave! Shrubs must be shipped to Ogorod!"
+"奴隷！ シュラブはオゴロドへ運ぶのだ！"
 {Slave} {shrub} {Ogorod}
-"Slave! Ogorod is where you must ship the shrubs you have with you! Slave! What you have in your bay must be driven to Oboorez!"
+"奴隷！ オゴロドこそ、お前の積んでいるシュラブを運ぶ先だ！ 奴隷！ その船倉の中身はオブーリーズのもとへ届けろ！"
 {Oboorez}
-"Slave! You must take to Oboorez what you have in your bay! "
-"To the Buro: Requesting an increase in my cirt allowance for the hazardous work, since Slaves are obtuse nowadays."
-"To the Buro: Requesting an increase in my cirt allowance for the hazardous work, since Slaves are obtuse nowadays."
+"奴隷！ お前の船倉に入っているものは、オブーリーズに運んでやるといい！"
+"ビューロへ。危険手当としてニューハ割増しを要請する。最近の奴隷はあまりに愚鈍だ。"
+"ビューロへ。危険手当としてニューハ割増しを要請する。最近の奴隷はあまりに愚鈍だ。"
 
 [+Shrub in Inventory (Boond):B]
-"To the Buro: The newly arrived Slave has an IQ below the minimum. According to the instructions, exploitation of the slave is prohibited. "
-"Slave, by order of the Buro you are being put into the reserve of the Sports Events Commander in Lampasso... YOU ARE DEAD, DUNCE!!! "
-"A dried beeb was found in the IQ meter, something that caused a measurement error. The technicians to blame for this gross dereliction of duty were sent to Lampasso instead of you. At your expense... "
-"Praise the fair Buro! In honor of your providential escape you are assigned to learn by heart the new edition of the Manual with its additions and corrections. Your beebs will go toward publishing it."
+"ビューロへ。到着した奴隷の知能係数は許容下限を下回っている。規定により、この状態の奴隷の運用は禁止されている。"
+"奴隷よ、ビューロの要求により、お前はランパッソ競技運営部門長の予備戦力へ回される……お前は終わりだ、この間抜けめ！！！"
+"お前の知能を測った計器の中から、乾燥ビーブが見つかった。あれが計測値を歪めていたのだ。怠慢の責任者どもは、お前の代わりにランパッソ送りにされた。もちろん、お前の負担でな……"
+"ビューロの公正を讃えよ！ 奇跡的に助かった記念として、補遺と注釈つき新版マニュアルを暗記しろ。お前のビーブは、その新版の印刷費に回される。"
 {Lampasso}
 
 [Heroin in Inventory (Boond):B]
-"Slave! According to the Buro's instructions, the final destination for Valorins is Lampasso. Don't forget!"
+"奴隷！ ビューロの指令により、ヴァロリンの最終搬入先はランパッソと定められている。骨の髄まで覚えておけ！"
 {Slave} {The Buro} {Valorin} {Lampasso}
-"I will report to the Buro if you come here again with Valorins. Actively fear."
+"ヴァロリンを積んだまま再びここへ現れた事実は、ビューロへ報告される。積極的に震え上がれ。"
 
 [+Heroin in Inventory (Boond):B]
-"Slave! According to the Buro's decree entitled 'On Counteracting Sabotage during Sporting Events,' you are sentenced to death along with the confiscation of all your property. "
-"The Buro rides roughshod over its enemies! "
-"Slave! Listen to the latest news! Because of a Jablee crash near VigBoo the Buro is declaring a general amnesty for all offenders. Your beebs are confiscated and will be spent on printing fliers with popularized extracts from the Manual... For your own benefit!"
+"奴隷！ ビューロ布告『競技行事における破壊工作対策について』に基づき、貴様を全財産没収のうえ死刑に処す。"
+"ビューロは敵に容赦しない！"
+"奴隷！ 恩赦の知らせを聞け。ヴィグブー近郊でジャブリーズが墜落した件を受け、ビューロは全犯罪者に対し大赦を宣言した。貴様のビーブは没収され、マニュアルの要点を分かりやすく解説したビラの印刷に使われる。――すべてはお前のためだ！"
 {Jablees}
 
 [Pipetka in Inventory (Boond):B]
-"Slave! Everything you do is completely controlled by the Beeboorats. You are not allowed to collect or ship peeperettes."
+"奴隷！ 貴様の行動はビーボラットの完全監視下にある。ピーペレットを集めたり運んだりすることは許されない。"
 {Slave} {peeperette} {Beeboorats}
-"A repeat offense will be punished by confiscation of your mechos. Return the peeperettes immediately!"
+"同じ過ちを繰り返せば、メホスを没収する。拾ったピーペレットは直ちに元の場所へ戻せ！"
 
 [+Pipetka in Inventory (Boond):B]
-"Slave! Your actions could seriously impair the Buro's Castaway utilization procedures. Your mechos is being confiscated in favor of vangers who are quicker on the uptake."
+"奴隷！ 貴様の行いは、ビューロによる漂流者利用計画を深刻に損なうおそれがある。貴様のメホスは、より飲み込みの良いヴァンガーの奨励品として没収する。"
 {castaway}
 
 [Kernoboo in Inventory (Boond):B]
-"Slave! Under penalty of forced conversion into a shrub I forbid you to touch the holy Nucleobooms!"
+"奴隷！ 強制的にシュラブへ変換されたいのでなければ、聖なるニュークレオブームに触れることを禁ずる！"
 {Slave} {shrub} {Nucleoboom}
-"Return them home quickly, you feeble, doltish midget, or else the Heroes' anger will be wild."
+"ただちに元の場所へ戻せ。さもなくば英雄たちの怒りは凄まじいものになるぞ、この哀れで愚鈍なちび助め。"
 
 [+Kernoboo in Inventory (Boond):B]
-"Slave! Because of your outrageous insubordination, we ran short of Nucleoboom at the competition! This calamity has forced us to take strong measures. "
-"You are being put under the command of the Utilization Commander in Ogorod. "
-"A cipher just arrived from Ogorod about a lack of free places for the accommodation of shrubs. You got away with it this time, wretched Slave. Live on, but if you bring a Nucleoboom here one more time, I'll drown you with my own hands. "
-"Even donating all your property to the Buro, like you're doing today, will not save you."
+"奴隷！ 貴様の甚だしい規律違反のせいで、競技では一部の英雄にニュークレオブームが行き渡らなかった！ この非常事態ゆえ、我々は厳しい措置を取らざるをえない。"
+"貴様はオゴロドの利用責任者の指揮下へ送られる。"
+"オゴロドから、シュラブ収容の空きがないとの暗号電報が届いた。今回はどうにか命拾いしたな、この屑奴隷め。生き延びるがいい。だが、もしもう一度ここへニュークレオブームを持ち込めば、この手で溺れさせてやる。"
+"今日みたいに全財産をビューロへ差し出したところで、お前は助からん。"
 
 [Shrub in Inventory (Commissar):B]
 "Looks like you decided to give the shrubs a ride in your mechos, Commissar? This is an irrational waste of work time! I am giving you a reprimand..."

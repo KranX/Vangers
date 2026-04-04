@@ -139,38 +139,38 @@
 "サートとは、かつてラーヴァがいた場所から採取される土だ。エージェントの第一任務は、その場所を見つけてサートを集めることにある。"
 [Feenger] [フィンガー]
 /* Boond */
-"With curiosity like that you'll be hanging around with the castaways in Ogorod pretty soon!"
+"そんな好奇心じゃ、すぐオゴロドで根無しどもの仲間入りだ。"
 {castaway} {Ogorod}
 /* Commissar */
-"A piece of Leepky."
+"リープキーの切れ端だ。"
 /* Agent */
-"Go to Incubator and you'll see for yourself."
+"インキュベーターへ行け。見れば分かる。"
 
-[Passage] [パッセージ]
+[Passage] [コリドール]
 /* Boond */
-"Slaves are not permitted to come close to Passages, to prevent their being spoiled or plugged up."
+"奴隷がコリドールに近づくことは禁止だ。傷めたり、詰まらせたりしないためにな。"
 {Slave}
 /* Commissar */
-"Passages connect worlds. The Buro knows the secret of traveling through Passages."
+"コリドールは世界と世界をつないでいる。ビューロはコリドールを渡る術を知っている。"
 /* Agent */
-"A vanger's mechos can go through a Passage into anther world."
+"ヴァンガーのメホスは、コリドールをくぐって別の世界へ抜けられる。"
 
 [Zeexen] [ズィークセン]
 /* Boond */
-"Contact with the Zeexen leads Slaves to treachery. Forget about them!"
+"ツィクどもと関われば、奴隷はたちまち裏切り者になる。だから忘れていろ。"
 {Slave}
 /* Commissar */
-"Inhabitants of Necross, wannabe fliers, with evil tongues and no morals."
+"ネクロスの住人だ。飛び損ねた連中で、口は悪く、品性もない。"
 /* Agent */
-"A headache for the Buro. The Zeexen from their upper escave are hatching a plot to poison the Buro and its counselors. Go there and defeat the scoundrels' plot."
+"ビューロの悩みの種だ。上のエスケイヴにいるズィークセンどもは、ビューロと相談役を毒殺しようと企んでいる。行って、あの悪党どもの計画を潰してこい。"
 
 [eLeech] [イリーチ]
 /* Boond */
-"Just get it, wheeler! Here is its description: wrinkled, big head, distinct Eleepod smell."
+"とにかく手に入れろ、車輪野郎。特徴を教えてやる――縮れた姿、大きな頭、そして鼻につくイリーポッド臭だ。"
 /* Commissar */
-"A product of Incubator. The Buro's analysts have identified him as an immature Eleepod. He's valuable."
+"インキュベーター産の代物だ。ビューロの分析官どもは、こいつを未熟なイリーポッドだと見抜いた。価値がある。"
 /* Agent */
-"Many of our Agents have died trying to capture and deliver an eLeech. By now, the Buro and its counselors have forgotten what an eLeech tastes like..."
+"イリーチを捕え、ここまで運ぼうとして多くのエージェントがくたばった。今ではビューロもその相談役どもも、あの味を忘れかけている……"
 
 [nymbos] [ニムボス]
 /* Boond */
@@ -181,337 +181,335 @@
 "注意せよ、エージェント！ その好奇心は、エージェントに許されたビューロの一般的な境界を越えている。"
 [Eleection] [イリークション]
 /* Boond */
-"Boorawchick feels sick from this word."
+"ブーラウチックは、その言葉を聞くだけで虫唾が走る。"
 /* Commissar */
-"The dumb Eleepods couldn't manage Progress or Heroism, so they have the Eleection."
+"愚かなイリーポッドどもは進捗も英雄性も成し遂げられなかった。だからイリークションなどという真似をするのだ。"
 {Progress} {Heroism}
 /* Agent */
-"If you ever happen to be on Fostral during the Eleection, stay sharp."
+"イリークションの最中にフォストラルへ行くことがあれば、気を緩めるな。"
 
 [vangers] [ヴァンガー]
 /* Boond */
-"The dregs of the bios. Only the wise Buro could find a use for them, earning even more praise for the Beeboorats."
+"バイオスの屑だ。そんな連中に役目を与えられたのは、賢きビューロがいたからこそだ。ゆえにビーボラットを称えよ。"
 {The Buro}
 /* Commissar */
-"Most vangers rust on the worlds. Only the best become Agents and deliver cirt."
+"たいていのヴァンガーは世界の上で錆びついて終わる。最良の者だけがエージェントとなり、ニューハを運ぶ。"
 /* Agent */
-"The Buro only recently recognized the vangers' usefulness."
+"ビューロがヴァンガーの有用性を認めたのは、つい最近のことだ。"
 
 [phlegma] [フレグマ]
 /* Boond */
-"Why do you need phlegma? To grease your mechos? Don't ruin the Buro's equipment!"
+"フレグマだと？ メホスにでも塗るつもりか？ ビューロの備品を駄目にするな。"
 /* Commissar */
-"The crummy Eleepods can only lie in phlegma."
+"みじめなイリーポッドどもは、フレグマの中で寝転がることしかできん。"
 /* Agent */
-"I don't need phlegma. Geer'ah knows what it's used for - the Heroes in the stadium tumble about in the slime!"
+"私にフレグマは不要だ。あれの使い道ならギールアがよく知っている――競技場の英雄どもは、あのぬめりの上を転げ回るのさ。"
 
 [The Softie] [ソフティー]
 /* Boond */
-"Start picking up Valorins immediately!"
+"今すぐヴァロリンを拾いに行け。"
 {Valorin}
 /* Commissar */
-"According to our information from the Zeexen, the Softie are somehow connected to Fostral."
+"ズィークセンどもから得た情報によれば、ソフティーはどうやらフォストラルと関わりがあるらしい。"
 /* Agent */
-"The Buro believes that all the Passages were built by the Softie. The Agents' mission is to find traces of them. The Buro wants to build Passages also."
+"ビューロは、あらゆるコリドールをソフティーが築いたと考えている。エージェントには、その痕跡を探す任務が課される。ビューロ自身もまた、コリドールを造りたいのだ。"
 
 [The Cryspo] [クリスポ]
 /* Boond */
-"Where did you hear about the Cryspo, stupid Slave?"
+"クリスポのことをどこで聞きつけた、役立たずの奴隷め。"
 {Slave}
 /* Commissar */
-"The Cryspo once ruled the whole Chain of Worlds."
+"かつてクリスポは、世界の鎖全体を支配していた。"
 /* Agent */
-"The Buro's analysts believe that Cryspo is another name for the Softie."
+"ビューロの分析官どもの見立てでは、クリスポとはソフティーの別名だ。"
 
 [Necross] [ネクロス]
 /* Boond */
-"A source of stink and mold. The most appropriate place for worthless slaves."
+"悪臭と黴の源だ。役立たずの奴隷には、まことにふさわしい場所だな。"
 {Slave}
 /* Commissar */
-"Necross is a big world inhabited by Zeexen. One big rebel lair in one big swamp!"
+"ネクロスは広大な世界で、ズィークセンどもが住みついている。沼地だらけで、陰謀屋の巣窟だ。"
 /* Agent */
-"Necross is a worse place than Fostral! There is unverified information about a buried Passage on Necross. No one has actually seen it, but the Buro is quite interested in any information about it."
+"ネクロスは、たとえばフォストラルなどよりもひどい場所だ。ネクロスには埋もれたコリドールがあるという情報がある。誰も見た者はいないが、その情報をビューロは強く欲している。"
 
 [P-beam] [Pビーム]
 /* Boond */
-"Repeat your question louder. To Buro: Boorawchick has been provoked. Keeping cool and alert."
+"もっと大きな声で言ってみろ。その質問はビューロへの挑発として記録する。ブーラウチックは平静と冷静を保っている。"
 {The Buro} {Boorawchick}
 /* Commissar */
-"The shadow of the Eleepods' plot. Alas, Commissar, we are all in danger."
+"イリーポッドの陰謀が落とす黒い影だ。ああ、コミッサーよ、我々は皆危険の中にある。"
 /* Agent */
-"The P-beam is a gang of cunning Eleepods. Using the P-beam, they can see anything in the Chain. The Buro is raising lots of Agents so that they don't catch us unguarded."
+"Pビームとは、狡猾なイリーポッドどもの一団だ。あれを使えば連中はチェーンの出来事を何でも見通せる。ビューロが多数のエージェントを育てているのは、不意を突かれぬためだ。"
 
-[Xplo] [エクスプロ]
+[Xplo] [イクスプロ]
 /* Boond */
-"You speak about Xplo but can't even get to Ogorod!"
+"オゴロドにすらたどり着けないくせに、イクスプロの話か。"
 {Ogorod}
 /* Commissar */
-"A feeble Commissar wants to know about the world of shifting sands? Better go get to work at PeepShow!"
+"痩せこけたコミッサーが流砂の世界について知りたいだと？ そんな暇があればピープショーで働け。"
 /* Agent */
-"The fourth inhabited world. No one can get into its escave. According to the available information, a magical device is needed to get there. Nothing else is known."
+"人の住む世界としては四番目だ。そのエスケイヴに入れた者はいない。今ある情報では、そこへ入るには何か謎めいた品が要るらしい。分かっているのはそれだけだ。"
 
 [Departed Bios] [去りしバイオス]
 /* Boond */
-"They were too lax with their slaves, which ruined them. But that's not a threat to us."
+"あいつらは自分の奴隷に優しすぎた。それで滅んだ。だが我々にその心配はない。"
 {Slave}
 /* Commissar */
-"They left lots of horrible weapons, and their disappearance is a mystery. "
+"連中は恐るべき武器を大量に残した。その消滅は今なお謎だ。"
 /* Agent */
-"The Buro knows that this bios once aimed to gain full control over the Larvae, and it seems they succeeded."
+"ビューロは知っている。あのバイオスは、かつてククラを完全支配しようとしていた。そして、どうやら成功したらしい。"
 
 [Plump-up] [プランプアップ]
 /* Boond */
-"Don't spoil the Boorawchick's home!"
+"ブーラウチックの巣穴で臭いを撒くな。"
 {Boorawchick}
 /* Commissar */
-"Eleepods plumped up from stupidity. But Commissars are just as stupid!"
+"イリーポッドは愚かさゆえに太る。コミッサーもまた、愚かさゆえに堕ちる。"
 /* Agent */
-"Agent! About face!"
+"エージェント、回れ右だ。"
 
 [Gulp-down] [ガルプダウン]
 /* Boond */
-"To Buro: Requesting information about free space in Ogorod. Need urgent deactivation of an insane Slave."
+"ビューロへ。オゴロドの空き収容枠について報告を要請する。気の触れた奴隷の緊急停止が必要だ。"
 {Ogorod} {Slave}
 /* Commissar */
-"An Eleepod cycle. The Beeboorats have no interest in it."
+"イリーポッドの周期だ。ビーボラットには何の関心もない。"
 /* Agent */
-"I order you not to go to Fostral anymore. It has a bad effect on you!"
+"フォストラルにはもう近づくな。あの世界はお前に悪い影響を与える。"
 
 [beebs] [ビーブ]
 /* Boond */
-"Beebs will even save an abject slave. But for what?"
+"ビーブは、みじめな奴隷すら見捨てはしない。もっとも、何のためにだかな。"
 {Slave}
 /* Commissar */
-"This is what the Cryspo looked like. Probably."
+"特別に教えてやろう。クリスポはたぶん、こんな姿をしていた。"
 /* Agent */
-"We know more about this than the others. For you, it's a reward."
+"これが何かについては、我々のほうが他よりよく知っている。お前にとっては褒美みたいなものだ。"
 
 [Creature Soup] [クリーチャー・スープ]
 /* Boond */
-"The Buro tries its best to erase these rumors. But crummy slaves will dig this nonsense up anyway. What a shame..."
+"ビューロはそうした噂をせっせと根絶やしにしている。だが禿げた奴隷は、どうせまたそんな腐臭を掘り返してくる。実に嘆かわしい……"
 {Slave}
 /* Commissar */
-"Enemy propaganda. The Zeexen broadcast this stuff."
+"敵の宣伝だ。ズィークセンどもの仕業だ。"
 /* Agent */
-"What I'm going to say will really bother you! According to the Zeexen accounts, the Eleepods and Beeboorats came from the Creature Soup."
+"これから話すことには、さすがのお前もぞっとするだろう。ズィークセンどもの話では、イリーポッドもビーボラットもクリーチャー・スープから生まれたというのだ。"
 
 [The Clash] [クラッシュ]
 /* Boond */
-"Hmm, you found the Zeexen tablets on Glorx, huh? Shall I remind you about the Manual? There are only two things a Slave needs to know about: Valorins and shrubs!"
+"グロークスでズィークセンの石板でも拾ったのか？ マニュアルを思い出させてやろうか？ 奴隷が知ってよいのは、ヴァロリンとシュラブのことだけだ！"
 {Manual} {Slave} {Valorin} {shrub}
 /* Commissar */
-"Something from long ago. The Buro has no interest in it."
+"大昔の出来事だ。ビューロにとっては関心の外だ。"
 /* Agent */
-"Some of our weapons come from the time of the Clash."
+"我々の兵器の一部は、クラッシュの時代から伝わっている。"
 
 [Spiral] [スパイラル]
 /* Boond */
-"Unfortunately we can't take your spiral out of your mechos, scoundrel. Forget about it until we explicitly mention it."
+"残念ながら、お前のメホスからスパイラルを抜き取ることはできん。次の命令があるまで、そのことは忘れていろ。"
 /* Commissar */
-"You ought to know better."
+"その程度のことは、貴様のほうが知っていて然るべきだ。"
 /* Agent */
-"Different mechos have spirals of different sizes. You can't get into some of the worlds if you only have a little one."
-
-/*******************  Beeboorat's terms   **************************/
+"メホスによってスパイラルの大きさは違う。小さなスパイラルでは入れない世界もある。"
 
 [ruBeecation] [ルビーケーション]
 /* Boond*/
-"ruBeecation is your initiation into the Buro's activity. The most important event in your life. All vangers without Rubbox are subject to ruBeecation."
+"ルビーケーションとは、貴様をビューロの仕事に組み込むことだ。お前の生涯でもっとも重大な出来事だ。ラブボックスを持たぬヴァンガーは、例外なくルビーケーションの対象になる。"
 {The Buro} {Rubbox}
 /* Commissar */
-"We cure lazy Commissars with ruBeecation. Once they try on Slave gear, they all understand the wisdom and kindness of the Buro."
+"我々はルビーケーションによって怠け者のコミッサーを治療する。奴隷の皮をかぶらせてやれば、どいつもビューロの知恵とビーボラットの慈悲を理解するのだ。"
 /* Agent */
-"ruBeecation of an Agent is an extreme measure. The sapless worlds sometimes affect our servants so badly that they lose their minds and become unsuitable for any position but that of Slave."
+"エージェントのルビーケーションは痛ましい出来事だ。乾いた世界は時として我らの僕に悪影響を及ぼし、正気を失わせる。そうなれば奴隷以外の務めはもう果たせん。"
 
 [Rubbox] [ラブボックス]
 /* Boond */
-"The Buro exterminates unregistered vangers. You are lucky and are now registered as a Beeboorat slave. Your Rubbox certifies this. From now on, your every step is recorded and evaluated. Losing your Rubbox will lead to deplorable consequences."
+"ビューロは、登録されていないヴァンガーを抹殺する。貴様は運がよかった。今やビーボラットの奴隷としてビューロに記録されている。その証がラブボックスだ。これからは貴様の一歩一歩が記録され、査定される。ラブボックスを失えば、先に待つのは悲惨な運命だけだ。"
 {The Buro} {Slave}
 /* Commissar */
-"Your Rubbox tells me whether to degrade you or whether to promote you to Commissar. Your Rubbox is you. No Rubbox, no you."
+"ラブボックスを見れば、貴様を降格させるべきか、それともエージェントへ昇格させるべきかが分かる。ラブボックスこそ貴様そのものだ。ラブボックスがなければ、貴様も存在しない。"
 {Agent}
 /* Agent */
-"An Agent that hasn't learned what a Rubbox is yet? Guess that's because of all that shaking and moisture. He's forgotten that he was once a Slave!"
+"ラブボックスが何かも理解していないエージェントだと？ きっと揺れと湿気で、かつて自分が奴隷だったことまで忘れたのだろう。"
 
 [VigBoo] [ヴィグブー]
 /* Boond */
-"Here in VigBoo you start your difficult yet honorable service to Beeboorats. It's here you must load Valorins and shrubs and ship them to their respective destinations."
+"ここヴィグブーで、貴様はビーボラットへの辛くも名誉ある奉仕を始める。ここでシュラブかヴァロリンを積み込み、それぞれの届け先へ運ぶのだ。"
 {shrub} {Valorin}
 /* Commissar */
-"In VigBoo, you can find Boorawchick and learn about our laws and the Manual of the Buro."
+"ヴィグブーへ来れば、いつでもブーラウチックに会って、ビューロの法とマニュアルを聞かされる。"
 {Boorawchick} {Manual} {The Buro}
 /* Agent */
-"The Beeboorats' stone citadel."
+"ビーボラットの石の砦だ。"
 
 [Lampasso] [ランパッソ]
 /* Boond */
-"Remember the main rule, Slave. Lampasso is an escave in the upper part of Glorx. It's where the stadiums are, where the Heroes perform their feats. It's there you must deliver the Valorins which you collect here."
+"覚えておけ、奴隷。何より大事なのはこれだ。ランパッソはグロークス上部の町だ。そこには競技場があり、英雄たちが偉業を遂げる。お前がここで受け取ったヴァロリンは、すべてそこへ運ばねばならん。"
 {Valorin}
 /* Commissar */
-"The stadium is in Lampasso. Commissars bring Nucleobooms to the stadium. If you haven't learned this yet, I'll have carry out ruBeecation again!"
+"ランパッソには競技場がある。コミッサーはその競技場へニュークレオブームを運ぶ。まだ分かっていないなら、もう一度ルビーケーションを受けさせてやるぞ。"
 {Nucleoboom} {ruBeecation}
 /* Agent */
-"If you've forgotten this, don't try to recall it. The stylish Geer'ah will restore your memory."
+"もしそれを忘れたのなら、思い出そうとする必要はない。洒落者のギールアが、すぐに思い出させてくれる。"
 
 [Ogorod] [オゴロド]
 /* Boond */
-"The edge of Glorx, on the bottom of the world. Now you'll deliver shrubs there after you get them in the store here. But if you don't do your job, soon you'll be getting to know Ogorod from the inside!"
+"グロークスの果て、世界の最下層だ。ここで店から受け取ったシュラブは、これからオゴロドへ運ぶことになる。仕事をさぼれば、すぐにオゴロドの内側を知る羽目になるぞ。"
 {shrub}
 /* Commissar */
-"The place where, by the order of the Buro, we exploit shrubs and dull vangers. You deliver peeperettes there. By the way, do you know what peeperettes are?"
+"ビューロの命令により、シュラブと愚鈍なヴァンガーを利用する場所だ。お前はピーペレットをそこへ運ぶ。ところで、そのピーペレットが何か、ちゃんと分かっているのか？"
 {peeperette}
 /* Agent */
-"Many fat beebs live near these. But a determined Agent can always earn some money by carrying out the Buro's missions!"
+"この近くには大きなビーブが多い。だが野心あるエージェントなら、ビューロの仕事に加わることでいつだって稼げる。"
 
 [Valorin] [ヴァロリン]
 /* Boond */
-"You only need know two things: their source and their destination. You take Valorins from here and deliver them to Lampasso."
+"貴様が知るべきは二つだけだ。どこで手に入り、どこへ運ぶか。それだけだ。ヴァロリンはここで受け取り、ランパッソへ届ける。"
 {Lampasso}
 /* Commissar */
-"The chosen one. His feats establish the Beeboorats' glory among all the weaker bios."
+"ビューロに選ばれし者だ。その働きは、弱きバイオスどもの間にまでビーボラットの栄光を広める。"
 /* Agent */
-"It's thanks to the Heroes' feats that the Beeboorats exist!"
+"英雄どもの偉業があるからこそ、ビーボラットのバイオスは成り立っている。"
 
 [shrub] [シュラブ]
 /* Boond */
-"Shrubs must be taken from VigBoo to Ogorod. A Slave will never become a Commissar without first working as a shrub-shipper!"
+"シュラブはヴィグブーからオゴロドへ運ばねばならん。シュラブ運びを務めずして、奴隷がコミッサーになれることはない。"
 {VigBoo} {Ogorod} {Slave} {Commissar}
 /* Commissar */
-"Rejected by the Buro, this is the last refuge for peeperettes."
+"ビューロに見放された連中の末路だ。ピーペレットどもの逃げ場でもある。"
 {peeperette}
 /* Agent */
-"The Buro has received information that Eleepods are using our shrubs against us."
+"ビューロは、イリーポッドどもが敵対的な目的でシュラブを使っているという情報を掴んでいる。"
 
 [peeperette] [ピーペレット]
 /* Boond */
-"Peeperettes fall from the sky. They're only for Commissars."
+"ピーペレットは上から降ってくる。扱いが許されるのはコミッサーだけだ。"
 {Commissar}
 /* Commissar */
-"Remember this description. Color: dark. Source: Jablees. Found on the roads of Glorx during the Election of the Castaways. Must be picked up and shipped to Ogorod."
+"特徴を覚えておけ。色は暗い。現れるのはジャブリーズから。グロークスの道に現れ、漂流者選定の最中に採集される。回収し、オゴロドへ運べ。"
 {Election of the Castaways} {Jablees} {Ogorod}
 /* Agent */
-"Important items. Punishment for castaways."
+"重要物資だ。漂流者どもへの処罰でもある。"
 
 [Nucleoboom] [ニュークレオブーム]
 /* Boond */
-"The stylish Geer'ah will go crazy if he finds Nucleobooms in your cargo hold. Watch what you pick up!"
+"洒落者のギールアは、お前の貨物室にニュークレオブームを見つけたら怒り狂う。何を拾っているのか、よく注意しておけ。"
 {Geer'ah}
 /* Commissar */
-"The Heroes will not accomplish their feats without Nucleobooms, so gathering Nucleobooms is a Commissar's primary mission. Wait for Heroism, when you'll get additional instructions from Geer'ah."
+"英雄たちはニュークレオブームなしでは偉業を成せない。だからニュークレオブームの収集は、コミッサーにとって最重要の務めだ。英雄性を待て。そのときギールアから追加の指示が下る。"
 {Heroism} {Geer'ah}
 /* Agent */
-"Nucleobooms and peeperettes are related."
+"ニュークレオブームとピーペレットには関連がある。"
 
 [Jablees] [ジャブリーズ]
 /* Boond */
-"Jablees watch over lazy, dull slaves. Yes, your every step is under the control of the Buro!"
+"ジャブリーズは、怠け者で愚かな奴隷を見張っている。そうだ、貴様の一挙手一投足はビューロの監視下にある。"
 {Jablees} {The Buro}
 /* Commissar */
-"They show up during Heroism and the Election of the Castaways and disseminate Nucleobooms and peeperettes, respectively. Don't try to shoot them. They fly too high."
+"連中が現れるのは英雄性と漂流者選定の時だ。つまり、ニュークレオブームとピーペレットの供給源というわけだ。撃ち落とそうなどと思うな。ジャブリーズは高く飛びすぎている。"
 {Heroism} {Election of the Castaways} {Nucleoboom} {peeperette}
 /* Agent */
-"Jablees are the pride of the sons of Glorx. When they fly high above us, we are filled with courage and valor."
+"ジャブリーズはグロークスの子らの誇りだ。あれが高く舞うとき、我らの内には勇気と武勇が満ちる。"
 
 [Progress] [進捗]
 /* Boond */
-"That's when we decide what to do with slaves."
+"奴隷どもの次の配置が決まる時だ。"
 {Slave}
 /* Commissar */
-"Boorawchick reports to the Buro about all work completed."
+"ブーラウチックが、これまでの働きについてビューロへ報告を上げる時だ。"
 {Boorawchick}
 /* Agent */
-"It's time for appointments and promotions in the Buro!"
+"ビューロにおける任命と配置換えの時だ。"
 
 [Heroism] [英雄性]
 /* Boond */
-"The Nucleoboom harvest. Slaves must not interfere with the Commissars' business!"
+"ニュークレオブームの収穫期だ。奴隷に求められるのは、コミッサーの仕事へ口を出さぬことだけだ。"
 {Nucleoboom} {Slave}
 /* Commissar */
-"Jablees sow Nucleobooms on Glorx. A good chance for you to distinguish yourself, Commissar. But remember that Nucleobooms will not survive into the next cycle. Don't linger. Ship your harvest to Lampasso! Then Geer'ah will announce the winner of Nuclear War."
+"ジャブリーズはグロークスへニュークレオブームを撒く。コミッサーにとっては手柄を立てる好機だ。だが忘れるな、ニュークレオブームは次の周期までは保たん。ぐずぐずするな。集めたものはランパッソへ運べ。そこでギールアが核戦争の勝者を決める。"
 {Nucleoboom} {Lampasso} {Geer'ah} {Nuclear War}
 /* Agent */
-"Inquiry ignored."
+"照会は無視された。"
 
-[Election of the Castaways] [漂流者の選定]
+[Election of the Castaways] [漂流者選定]
 /* Boond */
-"The peeperette harvest. Slaves must not interfere with the Commissars' business!"
+"ピーペレットの収穫期だ。奴隷に求められるのは、コミッサーの仕事へ手を出さぬことだ。"
 {Slave} {peeperette} {Commissar}
 /* Commissar */
-"The Buro arranges the PeepShow for Commissars during this cycle. Place: roads of Glorx. Objective: peeperettes. Destination: Ogorod."
+"この周期、ビューロはコミッサーのためにピープショーを催す。舞台はグロークスの道。回収目標はピーペレット。届け先はオゴロドだ。"
 {PeepShow} {peeperette} {Ogorod}
 /* Agent */
-"Go take a look around Ogorod, Agent. You'll remember it right away. But take care not to stay there forever!"
+"オゴロドを見て来い、エージェント。見ればすぐ思い出すはずだ。ただし、うっかり永住するなよ。"
 
 [castaway] [漂流者]
 /* Boond */
-"You're risking some unpleasant, direct experience in Ogorod, Slave."
+"そのままでは、オゴロドで嫌というほど身をもって学ぶ羽目になるぞ、奴隷。"
 {Slave} {Ogorod}
 /* Commissar */
-"Alas, Commissar, not only do our enemies surround us, but there are enemies on the inside, too. And they are even more harmful. The Buro successfully roots them out."
+"悲しいことに、コミッサーよ、我らを取り巻く敵は外だけではない。内部にもいる。そしてそちらの方がなお悪質だ。ビューロは、そうした連中を着実に根こそぎにしている。"
 /* Agent */
-"Leepky likes our castaways."
+"リープキーは、我々の漂流者どもが気に入っている。"
 
 [PeepShow] [ピープショー]
 /* Boond */
-"If you work well, Slave, you'll get to see the amazing PeepShow."
+"よく働けば、奴隷にも素晴らしいピープショーを見る機会が与えられる。"
 {Slave}
 /* Commissar */
-"A Commissar's first element. The intense harvesting of peeperettes! Oboorez will tell you the rules."
+"コミッサーにとって最初の本分だ。激しいピーペレット収穫戦だな。規則はオブーリーズから聞け。"
 {Commissar} {peeperette} {Oboorez}
 /* Agent */
-"The Buro organizes the PeepShow so that the castaways receive proper punishment."
+"ビューロがピープショーを催すのは、漂流者どもに相応の罰を与えるためだ。"
 
 [Nuclear War] [核戦争]
 /* Boond */
-"A careless Slave can be accidentally squashed in Nuclear War."
+"核戦争では、不注意な奴隷がうっかり踏み潰されることがある。"
 /* Commissar */
-"The reaping of the holy Nucleobooms, which are then delivered to the brave Heroes. You'll get instructions from the officer responsible for sports - Geer'ah."
+"聖なるニュークレオブームを刈り取り、勇敢な英雄たちへ捧げる催しだ。指示は競技担当の責任者――ギールアから受けろ。"
 {Nucleoboom} {Geer'ah}
 /* Agent */
-"Beware, Agent! If not for Nuclear War, many Heroes wouldn't get their Nucleobooms. The Buro would never allow this."
+"覚えておけ、エージェント。核戦争がなければ、多くの英雄にはニュークレオブームが行き渡らない。そんなことをビューロが許すはずがない。"
 
 [Geer'ah] [ギールア]
 /* Boond */
-"Geer'ah compels observance of and obedience to the Buro's Manual. Don't goof up in front of him. Bring Valorins to Lampasso, and try not to complain."
+"ギールアは、ビューロのマニュアルを守らせることに容赦がない。あの前でしくじるな。ヴァロリンをランパッソへ運び、余計な文句は言うな。"
 {Manual} {The Buro} {Lampasso} {Valorin}
 /* Commissar */
-"The officer in charge of sports events, a post of great responsibility. He resides in Lampasso."
+"競技開催部門の責任者だ。重大な役職であり、ランパッソに居を構えている。"
 /* Agent */
-"The stylish Geer'ah, the hope of all the Beeboorats."
+"洒落者ギールア――それは全ビーボラットの希望だ。"
 
 [Boorawchick] [ブーラウチック]
 /* Boond */
-"I'm Boorawchick. It's thanks to my kindness that you've got the opportunity to work for Beeboorats. Be faithful and obedient. I'm keeping an eye on you!"
+"ブーラウチックとはこの私だ。貴様がビーボラットのために働く機会を得たのは、この私の慈悲のおかげだ。忠実で従順であれ。常に見ているぞ。"
 /* Commissar */
-"The Buro tells you its decisions through Boorawchick. Hey, don't dig in my burrow! To Buro: I request the cracks in my office be plastered, for my security."
+"ビューロはブーラウチックを通して貴様に意志を伝える。おい、私の巣穴をほじくり返すな！ ビューロへ。身辺警護のため、執務室の亀裂封鎖を要請する。"
 /* Agent */
-"Boorawchick is the one who got bored with your stupid questions."
+"ブーラウチックとは、貴様の愚かな質問にうんざりしている者のことだ。"
 
 [Oboorez] [オブーリーズ]
 /* Boond */
-"He'll receive shrubs from you in Ogorod. Remember that I'm in communication with him."
+"オゴロドで、お前のシュラブを受け取るのがあいつだ。覚えておけ、私は彼と連絡を取り合っている。"
 {shrub}
 /* Commissar */
-"The officer responsible for the exploitation of shrubs. He is in charge of peeperettes and the PeepShow. Inclined to garbage collection."
+"シュラブ利用部門の責任者だ。ピーペレットとピープショーも奴の管轄にある。がらくたを集めたがる癖がある。"
 {peeperette} {PeepShow}
 /* Agent */
-"Old and stupid. He is loyal to the Buro, however."
+"年寄りの愚か者だ。だがビューロへの忠誠だけは本物だ。"
 
 [The Buro] [ビューロ]
 /* Boond */
-"The Buro is concerned about the purpose of your existence. Don't disappoint the Buro."
+"ビューロは、貴様の存在に少しでも意味を与えようと苦心している。ビューロを失望させるな。"
 /* Commissar */
-"Buro is the power and wisdom of the Beeboorats and the godfather of worthless vangers."
+"ビューロとは、ビーボラットの力であり知恵だ。取るに足らぬヴァンガーどもの恩人でもある。"
 /* Agent */
-"I am the Buro."
+"ビューロとは私のことだ。"
 
 [Slave] [奴隷]
 /* Boond */
-"A shabby wheeler who has just started his service to the Buro to repay the honor the Beeboorats have done him by registering him."
+"ビューロの栄光のために奉仕を始めたばかりの、みすぼらしい車輪野郎だ。ビーボラットに登録してもらった恩を返すためにな。"
 /* Commissar */
-"Unsuccessful wheelers. You became a Commissar thanks to your hard work, but failure to observe the Manual will make you a slave again."
+"出来の悪い車輪野郎だ。勤勉さがお前をコミッサーにしたのなら、マニュアル違反は再びお前を奴隷へ落とす。"
 /* Agent */
-"Some of them are Agents that have lost their Rubbox."
+"ラブボックスを失った元エージェントも、その中には含まれる。"
 
 [Commissar] [コミッサー]
 /* Boond */
