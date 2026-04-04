@@ -4450,11 +4450,18 @@ void actIntDispatcher::i_finit(void)
 
 void fncMenuItem::init(void)
 {
-	if(flags & FM_RANGE_FONT)
+	if(flags & FM_RANGE_FONT){
 		SizeX = aUtf8TextWidth32(display_utf8_name, font, space);
-	else
+		SizeY = aUtf8LineHeight32(font);
+		if(!SizeY && aScrFonts32 && aScrFonts32[font])
+			SizeY = aScrFonts32[font] -> SizeY;
+	}
+	else {
 		SizeX = aUtf8StrLen(display_utf8_name, font, space);
-	SizeY = aScrFonts[font] -> SizeY;
+		SizeY = aUtf8LineHeight(font);
+		if(!SizeY && aScrFonts && aScrFonts[font])
+			SizeY = aScrFonts[font] -> SizeY;
+	}
 }
 
 void InfoPanel::init(void)
