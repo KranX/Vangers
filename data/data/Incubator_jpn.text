@@ -41,95 +41,95 @@
 [Eleerection Story]
 "そろそろイリーポッドの日々の営みを教えてやる時だ。お前ももうインキュベーターの新米ではない。そろそろイリーチを預けてもよかろう。よく聞け……"
 {Eleepods} {Incubator} {eLeech}
-"All living creatures in the Chain are subject to the laws of flesh, and every bunch has its own cycle. We're all under the thrall of the creepy Creature Soup, and those who couldn't make their way to Larvae are now dead and no more..."
+"生きとし生けるものは皆、肉の法に従っている。そしてどのバンチにも、それぞれの巡りがある。我らすべての上には、おぞましきクリーチャー・スープが垂れ込めている。ククラへ至る道を見つけられなかった者どもは、とっくの昔に自然の静けさの中へ呑み込まれ、もうどこにもいない……"
 {The Chain} {bunch} {The Creature Soup} {Larvae}
-"Our essence is in taking our cherished eLeeches to Podish. And here's a rough plan of our rotation; you'd better learn it, or you'll be a beggar or die somewhere in a ditch from brutal vangers or, what would be even worse, raffa..."
+"イリーポッドの要は、この愛しきイリーチをポディッシュへ還すことにある。これが《命の輪》の粗筋だ――よく叩き込んでおけ、車輪持ちよ。さもなくばお前は貧しい放浪者のまま、どこかの溝で手荒なヴァンガーか、あるいはそれ以上に始末の悪いラッファに喰われて終わる……"
 {Eleepods} {eLeech} {Podish} {vangers} {raffa}
-"In the beginning is Plump-up - that's what we call it. Some pods select a low chord, his body starts to plump (everyone gets a kick out of that). The nymbos moves and bubbles inside the chosen Eleepod, and now this pod's all nervous and uptight..."
+"始まりはプランプアップ――我らはそう呼ぶ。いくつものポッドが低い弦を選び、その体はむくむくと膨らみ始める――それは皆にとって歓びそのものだ。選ばれたイリーポッドの内ではニムボスが蠢き、泡立ち、その瞬間からそのポッドは不安と震えに満たされる……"
 {Plump-up} {pod} {nymbos}
-"The tension is eternal, and we are at the climax! The sound of the low chord now surges higher and higher... Whizz, bang... and silence: the chord is cut short... The ripe nymbos is now ready for delivery into Incubator, its rightful place..."
+"緊張は永遠のように長く続き、我らは恍惚の極みに達する！ 低き弦の響きは最後の最後に高まり、軋み、押し寄せ――その直後に静寂が来る。弦は断たれたのだ…… 熟したニムボスは、ただちにインキュベーターへ運ばれる支度を終える――そこだけが、そのあるべき場所だからだ……"
 {nymbos} {Incubator}
-"How eLeeches are born is our secret. Just wait until the new cycle of our rotation, the Eleection, my friend. You will be in your element in this crazy race..."
+"イリーチがいかに現れるか――それはイリーポッドの秘密だ。お前が待つべきは、《命の輪》の次の相、イリークションだけでいい、友よ。あの慌ただしい競走こそ、お前の本分なのだから……"
 {eLeech} {Eleection}
-"You'll take an eLeech, the jewel of the pod. Take care of him, as nature's set things up in such a way that the eLeech is defenseless and doesn't live long."
+"お前はイリーチを受け取る――ポッドの宝をな。大切に扱え。自然はこう取り決めているのだ、イリーチは無防備で、ほんの短いあいだしか生きられぬと。"
 {eLeech}
 {pod}
-"You are the ones who take them back to Podish. That's why we keep you around, fitters of the roads, pilots of Fostral..."
+"それをポディッシュまで運び戻すためにこそ、お前たちを飼っているのだ――道を渡る機械屋、フォストラルの案内人たるお前たちをな……"
 {Fostral}
-"Our rite is harsh yet sweet for you. The one who proves to be the smartest and comes to Podish with the eLeech first will be greatly rewarded and will gain our favor."
-"The one who fails and ruins the eLeech will pay for it. The cost will be high, and you will fear us then..."
+"この儀式は、お前たちにとっては厳しくもあり、甘くもある。最も機敏で、誰より早くイリーチをポディッシュへ届けた者には、豊かな報いと我らの寵愛が与えられる。"
+"だが、イリーチを駄目にした者には痛烈な償いが待つ。その代価は重く、その時お前は我らを恐れることになる……"
 {eLeech}
 {Podish}
-"At the end is the Gulp-down. The dapper eLeeches finally reach the bodies, which have cooled off after the Plump-up, and now are awaiting revival. The eLeeches then are taken into their cool embrace and take the pulpy gift: Eleepod flesh."
+"終わりに来るのがガルプダウンだ。生き生きとしたイリーチたちは、ついにプランプアップのあと冷え切り、再生を待つ身体へ辿り着く。そこでイリーチはその冷たい抱擁に迎え入れられ、肉の贈り物――イリーポッドの柔らかな身を受け取る。"
 {Gulp-down}
 {eLeech} {Plump-up} {Eleepods}
-"And soon the pod will hear the newborn chord, just like the chosen one, who gave the nymbos..."
+"やがてポッドは、新たに生まれた弦の響きを耳にする――ニムボスを産み落とした、あのかつての選ばれし者にほとんど等しい響きを……"
 {pod} {nymbos}
-"The Eleepods are the masters of Fostral. You must have seen the change of colors up there, on the ground: this is the way you see our cycle, the way we govern you. You have some knowledge now about Eleepods, and you can cater to us. Test your fate..."
+"イリーポッドはフォストラルの主だ。上の地表で色が変わるのを、お前もきっと見てきたはずだ――あれこそがお前の目に映る我らの周期であり、我らがいかにお前たちを支配しているかの印だ。これでお前もイリーポッドについて少しは知った。ならば我らに取り入ることもできよう。運命を試してみるがいい……"
 {Eleepods} {Fostral}
 
 [Passages Story]
-"Hello, tireless vanger. We Eleepods approve of the way you drive your mechos, machine of life and death..."
+"よう、不屈のヴァンガー。イリーポッドは、お前がその《生と死の機械》――メホスを扱う流儀を悪く思っていない……"
 {vangers} {Eleepods} {mechos}
-"Do you want to know what the greatest mechos add-on is? A way to see the entire Chain, as plain as the nose on your face, where (F) is for Fostral and (G) is for Glorx our neighbor? Then listen..."
+"お前は知りたいのだろう、メホスの奇妙な付属図が何を映しているのかを。あの、チェーン全体を掌の上に置いたような図――(F) が我らのフォストラルで、(G) が隣のグロークスを指している、あの仕組みを。ならば聞け……"
 {mechos} {The Chain} {Fostral} {Glorx}
-"Ages ago, the Softie, an extinct race, built the first Passage into the new world, one different from their own. And that new world was Fostral."
+"かつて、絶滅した種族ソフティが、自らの故郷とは異なる新世界へ通じる最初のパッセージを開いた。その新しき世界こそ、巧まれたフォストラルだった。"
 {The Softie} {Passage} {Fostral}
-"They didn't stop there, going on into the jungle of pipes they opened the way to Glorx, then Xplo, Necross..."
+"それで終わりではなかった。奴らは管の森の奥へ奥へと進み、グロークス、イクスプロ、ネクロスへと道を切り開いていった……"
 {Glorx} {Xplo} {Necross}
-"Then there was the Clash, and then the Creature Soup... But they're very likely Zeexen's fabrications, so you shouldn't trust them..."
+"そのあとに来たのがクラッシュで、さらにクリーチャー・スープが煮え立った…… だが、そんなものは十中八九ツィクどもの作り話だ。真に受ける必要はない……"
 {The Clash} {The Creature Soup} {Zeexen}
-"What matters is there are Passages up there that you must have noticed, as they're very distinct. You might have tried to get into them, genius..."
+"大事なのは、お前が上でパッセージを見てきたということだ。あれは他の何とも見間違えようがない。ひょっとすると、もう潜り込もうと試したのかもしれんな、この間抜けめ……"
 {Passage}
-"They are eternal. Even if everything were to change, they would still be here, under control of the Eleepods, connecting the worlds of the Chain..."
+"パッセージは永遠だ。周りのものがすべて変わろうと、それだけは崩れずに立ち、イリーポッドの監視のもとで、チェーンの諸世界を結び続ける……"
 {Passage} {The Chain}
 {Eleepods}
-"Every mechos is more than just a machine for wandering; they all hold a Spiral, which allows fearless travelers to go through Passages."
+"どのメホスも、ただの放浪機械ではない。そのすべてにはスパイラルが組み込まれており、それがあるからこそ、恐れを知らぬ旅人はパッセージを抜けられる。"
 {mechos} {Spiral}
 {Passage}
-"But the Passages don't let just anyone through: each one is unique, with its own key."
+"だがパッセージは、誰でも通すわけではない。それぞれが唯一であり、それぞれに固有の鍵がある。"
 {Passage}
-"The Softie were a bit strange in how they tried to hide everything from everyone, and created spell cyphers without which it is impossible to get to other worlds."
+"ソフティは、あらゆるものを万人から隠そうとする点で、少々奇妙だった。だから奴らは呪文めいた暗号を作り上げた――スパイラルの知識であり、それなしでは他世界へは渡れない。"
 {Spiral}
 {Spiral}
-"We Eleepods know one key that unlocks the Passage from Fostral to Glorx. And you will get it if you win the Eleection, a deadly game..."
+"我らイリーポッドは、フォストラルからグロークスへ抜けるパッセージの鍵を知っている。そしてそれをお前に授けよう――お前が死の遊戯たるイリークションに勝てたなら、な……"
 {Eleepods} {Glorx} {Fostral}
 {Eleection}
-"The pods are anxious for their virgin eLeeches to come back and join them. And if you help them, vanger, you'll get the key to Glorx, crossroads of the worlds..."
+"ポッドは、穢れなきイリーチが戻り、再び自らと結び合うことを待ち焦がれている。もしそれを助けるなら、ヴァンガーよ、お前にはグロークスを与えよう――世界と世界の交差路をな……"
 {pod} {eLeech} {vangers} {Glorx}
 
 [eLeech in Inventory:B]
-"You're crazy, wheeler! I sense an exceedingly delicate chord: you, unlucky as you are, have returned with an eLeech. Eleection is in full swing, so quickly race to the top and into Podish. The eLeech won't want to wait!"
+"気でも違ったか、車輪持ち！ 私は極めて繊細な弦を感じる――お前、よりによってイリーチを連れたまま戻ってきたな、この不運者め。イリークションは真っ最中だ、急いで上へ戻り、そのままポディッシュへ走れ。イリーチは待ってはくれん！"
 {The Chain} {Podish} {Eleection}
 
 [Nymbos in Inventory:G]
-"Your choice of cargo was a good one, wheelman, you have a bright future... Nymbos is what the Eleepods need here, in wonderful Incubator..."
+"よい荷を選んだな、車輪持ち。お前には先がありそうだ…… ニムボスこそ、ここ、麗しきインキュベーターでイリーポッドが必要としているものなのだ……"
 {eLeech} {nymbos} {Eleepods}
 
 [Vangers Killing Comments]
-"What, did you kill something, you wild hearse-rider? On the other hand, just like the wild vangers, life for us holds no meaning. That's where fear takes you outside a pod..."
+"おい、お前、何か殺したのか？ この野蛮な霊柩車引きめ。もっとも、乱暴なヴァンガーどもと同じく、お前たちにとって命など何の重みもないのだろう。ポッドの外で怯えていると、そうなっていくものだ……"
 {Incubator} {vangers} {pod}
 
 [Eleerection Participation Question]
-"Vanger, the Eleection is coming up. The Eleepods are giving you the chance to participate in something holy. Do you agree to wait here until the abundant Plump-up and eLeeches emerge from the abyss of dreams?"
+"ヴァンガー、イリークションが近い。イリーポッドは、お前にこの聖なる営みに加わる機会を与える。豊かなプランプアップが満ち、イリーチが夢の深みから現れるまで、ここで待つ気はあるか？"
 {Eleection} {vangers} {Eleepods} {eLeech} {Plump-up}
-"Ok, worm, I'll wait... "
-"The inevitable has happened! The eLeeches have come. Take him and bring him to Podish, but remember: the eLeech is very fragile. As soon as the Gulp-down starts, he'll die forever. Hurry up, charioteer! "
-"I have something more important to do."
-"We are not forcing you, cowardly dungler. Every eLeech is a miracle meant for the silent world of Eleepods. You go and find yourself a stinking heap of scrap to live in, where you can hunt for beebs..."
+"よし、待ってやろう、この芋虫め……"
+"成るべきことが成った！ イリーチは現れた。そいつを受け取り、ポディッシュへ運べ。だが忘れるな――イリーチはひどく脆い。ガルプダウンが始まった瞬間、永遠に死ぬ。急げ、御者よ！"
+"もっと大事な用がある……"
+"無理強いはせんさ、怯えた糞漁りめ。イリーチはどれも、静かなるイリーポッドの世界へ迎えられるべき奇蹟だ。お前はお前で、悪臭のする屑山でも見つけて住み着き、そこでビーブでも漁っていればいい……"
 
 [Cirt in Inventory]
-"I can smell the cirt in your bay, you fortune trader. But it's Leepky who takes the cirt from you. Go to Podish; the heart of Eleepods is there!"
+"お前の懐からはニューハの匂いがするぞ、幸運商人め。だがそれを受け取るのはリープキーだ。ポディッシュへ行け――あそこがイリーポッドの心臓部なのだから！"
 
 [BadCirt in Inventory:B]
-"Although I'm just an appendage, I can feel that something is wrong here... But I don't understand what... My head is swirling and my scratchers are depressed..."
+"ただの付属物にすぎぬこの私にも、何かがおかしいことだけはわかる…… だが、何がおかしいのかまでは掴めん…… 頭はくらくらし、掻き手はしおれていく……"
 
 [GoodCirt in Inventory:G]
-"I'm not a taster, just an appendage, but still I would like to ride with you to Podish and guard your smelly cargo. Take care of it!"
+"私は味見役ではない、ただの付属物だ。だがそれでも、お前と一緒にポディッシュまで乗っていって、その匂う荷を守りたいくらいだ。大事に扱えよ！"
 
 [Larva in Inventory]
-"Wow, wheeler, your cargo has me more worried than ever before... My pod is strung up and you have a conlarver in your bay... And it's full... "
-"A Larva is in there... I feel the breath of eternity, a great event is coming... But I'm not up for opening the trap, you know. Leepky is the master of Eleepods. Fly over to him quickly and take care of your precious cargo!"
+"おいおい、車輪持ち、お前の荷はこれまでになく私をざわつかせる…… 我がポッドは張り詰め、お前の船倉にはクッキシュがある…… しかも満ちている……"
+"中にはククラがいる…… 永遠の息吹が伝わってくる、大きな出来事が近い…… だが、その罠を開く役目は私には重すぎる。イリーポッドの師はリープキーだ。急いであいつのところへ飛べ、この時代を背負う荷を大切にな！"
 
 [MP0 Start]
 "Pluck up your courage, vanger: the VAN-WAR has started! You'll show your prowess and taste the fury of the brave in the rage of battle. Kill them all and die many times, reviving for revenge. I, a canny Eleepod, will count all the bodies and name the winner."
