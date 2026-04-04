@@ -83,64 +83,57 @@
 
 [Larvae] [ラーヴァ]
 /* Boond */
-"You don't need to know all that. It doesn't concern you vangers."
+"そんなことを知る必要はない。ヴァンガーごときには関わりのない話だ。"
 /* Commissar */
-"All our lives are dictated by the Larvae. We get their signals through the cirt. They crawl around so deep underground that we wouldn't ever get their messages if it weren't for the vangers."
+"我々の生はすべてラーヴァによって定められている。サートを通じてその信号を受け取るのだ。連中はあまりにも深い地下を這っているので、ヴァンガーがいなければ我々はその声を決して受け取れん。"
 /* Agent */
-"A vanger stopped by at my place a long time ago. The Buro had sent him to catch a Larva. He had a big box with him. But I haven't seen him ever since. You'd better keep away from Larvae!"
-
+"昔、あるヴァンガーが私のところへ立ち寄った。ビューロにラーヴァを捕らえよと命じられていて、大きな箱まで持っていた。だがそれきり二度と見ていない。ラーヴァには近づかんほうがいいぞ！"
 [Beeboorats] [ビーボラット]
 /* Boond */
-"We Beeboorats are nice guys. Take Boorawchick. He is worth the world! You pull for us and we take care of you."
+"我らビーボラットは善良な連中だ。ブーラウチックを見てみろ、あれだけで一世界の価値がある！ 我らに尽くせば、こちらも面倒を見てやる。"
 {Boorawchick}
 /* Commissar */
-"Beeboorats are the most righteous bios. All the others are jealous."
+"ビーボラットはもっとも正しきバイオスだ。他の連中は皆それを妬んでいる。"
 /* Agent */
-"Well, Agent. What a shame that you aren't a Beeboorat."
-
+"ふむ、エージェント。貴様がビーボラットでないのが実に惜しい。"
 [Glorx] [グロークス]
 /* Boond */
-"You, buddy, have been on Glorx for a long time now. It is time you got used to it and started enjoying it. Here we have the cleanest water and the nicest bios."
+"おい相棒、貴様はもう長いことグロークスにいる。そろそろこの世界に慣れ、楽しみ方を覚える頃だ。ここにはもっとも澄んだ水と、もっとも上等なバイオスがある。"
 /* Commissar */
-"There are a lot of worlds, but Glorx is the wettest. You won't find whirlpools like that anywhere else!"
+"世界は数あれど、グロークスほど湿ったものはない。あんな渦潮は他ではお目にかかれんぞ！"
 /* Agent */
-"You're an Agent from Glorx, aren't you, crackpot?"
-
+"貴様もグロークスのエージェントなのだろう、変わり者め？"
 [raffa] [ラッファ]
 /* Boond */
-"Useless chuckleheads. You used to be like them before you went over to Boorawchick's command."
+"役立たずの笑い種どもだ。ブーラウチックの指揮下に入る前の貴様も、あんなものだった。"
 {Boorawchick}
 /* Commissar */
-"Sometimes these blockheads go on the rampage. Then the Buro starts taking measures to clean them up."
+"時折あの馬鹿どもは暴れ出す。するとビューロが浄化措置を始めるのだ。"
 /* Agent */
-"All of them are thieves and charlatans. But an Agent shouldn't be scared of them!"
-
+"どいつもこいつも盗人で山師だ。だがエージェントたるもの、あんな連中を恐れてはならん！"
 [Incubator] [インキュベーター]
 /* Boond */
-"You, greenhorn, stop blowing bubbles and get busy with the shrubs."
+"そこの青二才、泡を吹いてないでシュラブの世話でもしていろ。"
 {shrub}
 /* Commissar */
-"A hole on Fostral flooded with mucus."
+"フォストラルにある、粘液で満たされた穴だ。"
 /* Agent */
-"That's where they get eLeeches for the gluttonous Boorawchick."
-
+"あそこで、食い意地の張ったブーラウチック用のイリーチを育てている。"
 [bios] [バイオス]
 /* Boond */
-"Those from the same bios live together in the same escave. Anyone could tell that you are not from a bios."
+"同じバイオスの者は同じエスケイヴで暮らす。見れば分かるが、貴様はどのバイオスにも属しておらん。"
 /* Commissar */
-"Well, Beeboorats, for example. And those from Fostral - they might be blunder-headed, but they are bios."
+"例えばビーボラットだ。そしてフォストラルの連中も――頭は鈍いが、一応バイオスではある。"
 /* Agent */
-"I remember one dodger who was sent by the Buro to look for the Departed Bios. Never came back."
-
+"昔、ビューロに『去りしバイオス』を探せと送られた山師がいたのを覚えている。結局戻っては来なかった。"
 [cirt] [サート]
 /* Boond */
-"Cirt, you deflated dolt, is not for your crooked paws. It's delicate stuff!"
+"サートはな、このしぼんだ阿呆め、貴様の曲がった手で触ってよいものではない。繊細な代物なんだ！"
 /* Commissar */
-"We use cirt to go from Heroism to the Election of the Castaways, and then to Progress, and then back to Heroism. Eleepods call all of these different things, which is why we have different cirt."
+"我々はサートを使って、英雄性から漂流者選定へ、そこから進捗へ、そしてまた英雄性へと移る。イリーポッドどもはそれぞれを別の名で呼ぶので、サートにも種類が分かれているのだ。"
 {Heroism} {Election of the Castaways} {Progress}
 /* Agent */
-"Soil taken from the place where a Larva has crawled. The main thing is not to mistake our Larva for an Eleepod one. But an Agent would know more about that than I do."
-
+"ラーヴァが這った場所から取られる土だ。大事なのは、我らのラーヴァとイリーポッド側のものを取り違えぬことだな。だがその手のことは、私よりエージェントのほうが詳しいだろう。"
 [Feenger] [フィンガー]
 /* Boond */
 "Slave! You shouldn't know anyone called Feenger. No Beeboorat would ever call himself that."

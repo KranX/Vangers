@@ -115,31 +115,28 @@
 
 [Incubator] [インキュベーター]
 /* Boond */
-"The main Eleepod escave. A Slave doesn't need this information."
+"イリーポッドどもの主要エスケイヴだ。スレイブが知る必要のない情報だ。"
 {Slave}
 /* Commissar */
-"The place where Eleepods are born. This top-secret information was delivered by the Buro's Agents."
+"イリーポッドが生まれる場所だ。この極秘情報は、ビューロのエージェントによってもたらされた。"
 /* Agent */
-"An Agent's mission is to keep a good watch over Incubator."
-
+"エージェントの任務は、インキュベーターを厳重に監視することにある。"
 [bios] [バイオス]
 /* Boond */
-"You are not tied to any particular bios, so the Buro limits the time you may spend in escaves."
+"貴様はどのバイオスにも固く結びついていない。ゆえにビューロは、エスケイヴに滞在できる時間を制限している。"
 {The Buro}
 /* Commissar */
-"All bios obey Larvae, and the best bios is Beeboorats. They obey Larvae and the Buro. Therefore the others are insignificant."
+"すべてのバイオスはラーヴァに従い、最高のバイオスはビーボラットだ。ラーヴァにもビューロにも従うゆえ、他は取るに足らん。"
 /* Agent */
-"Three bios have been fixed in the worlds of the Chain: Eleepods, Beeboorats, and Zeexen. There are some rumors going around about the Departed Bios. This information is of interest to the Buro."
-
+"チェーンの諸世界で確認されているバイオスは三つ――イリーポッド、ビーボラット、ズィークセンだ。去りしバイオスについての噂もある。この情報はビューロの関心事だ。"
 [cirt] [サート]
 /* Boond */
-"I'm hereby notifying you of the Buro's decree: To avoid mixing up different sorts of cirt, Slaves are not permitted to bring any rectangular objects that they find on worlds into escaves."
+"ここにビューロの布告を通達する。異なる種類のサートを混同せぬよう、スレイブは世界で見つけた長方形の物体をエスケイヴへ持ち込むことを禁ずる。"
 {The Buro} {Slave}
 /* Commissar */
-"Were it not for cirt, Progress wouldn't happen, the Election of the Castaways would never start, and the time for Heroes' exploits wouldn't come. Time would stop and life would become impossible."
+"サートがなければ進捗は起こらず、漂流者選定も始まらず、英雄たちの偉業の時も訪れない。時間は止まり、生命は成り立たなくなる。"
 /* Agent */
-"Cirt is soil collected from the place where a Larva once was. Each Agent's primary mission is to find these places and collect the cirt."
-
+"サートとは、かつてラーヴァがいた場所から採取される土だ。エージェントの第一任務は、その場所を見つけてサートを集めることにある。"
 [Feenger] [フィンガー]
 /* Boond */
 "With curiosity like that you'll be hanging around with the castaways in Ogorod pretty soon!"
@@ -177,12 +174,11 @@
 
 [nymbos] [ニムボス]
 /* Boond */
-"The Buro has waved your request aside."
+"ビューロは貴様の照会を却下した。"
 /* Commissar */
-"When an eLeech isn't available, the Buro chows down on nymbos."
+"イリーチが手に入らぬときは、ビューロはニムボスを喰らう。"
 /* Agent */
-"Attention, Agent! Your curiosity oversteps the Buro's general boundaries for Agents."
-
+"注意せよ、エージェント！ その好奇心は、エージェントに許されたビューロの一般的な境界を越えている。"
 [Eleection] [イリークション]
 /* Boond */
 "Boorawchick feels sick from this word."

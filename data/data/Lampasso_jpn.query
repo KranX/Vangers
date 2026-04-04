@@ -87,58 +87,52 @@
 
 [Larvae] [ラーヴァ]
 /* Boond */
-"Shut up, you stinky piece of garbage! Get to VigBoo, double-time! I need heroes!"
+"黙れ、この悪臭まみれの屑鉄め！ 二倍の速さでヴィグブーへ行け。私は英雄どもを必要としているのだ！"
 {VigBoo}
 /* Commissar */
-"Commissar! Fear the Buro! This is under his authority. The Larvae are the most important thing in the Chain."
+"コミッサー！ ビューロを恐れろ！ これはビューロの管轄下にある。ラーヴァはチェーンでもっとも重要な存在だ。"
 /* Agent */
-"The Buro never gives out that information. Only the best Agents are allowed to work with the Larva. But every bunch follows her instructions, so the Buro's current objective is to catch this Larva."
-
+"ビューロはその情報を決して簡単には渡さない。ラーヴァに関わることを許されるのは、最良のエージェントだけだ。だが、どのバンチも彼女らの指示に従っている。ゆえに今のビューロの目的は、そのラーヴァを捕らえることにある。"
 [Beeboorats] [ビーボラット]
 /* Boond */
-"It's us, your benefactors. Our mercy on the defective Slaves has already become a legend throughout the Chain."
+"我らこそ貴様の恩人だ。不出来なスレイブどもに対する我らの慈悲は、すでにチェーン全体で伝説になっている。"
 {Slave}
 /* Commissar */
-"To serve Beeboorats is a great honor. Fear the Beeboorats!"
+"ビーボラットに仕えるのは偉大なる栄誉だ。ビーボラットを畏れよ！"
 /* Agent */
-"The Beeboorats are the main bios in the Chain, and our forces are immense. Serve the Beeboorats with all you've got and you'll become the best of the vangers in the universe!"
-
+"ビーボラットはチェーンの主要バイオスであり、我らの勢力は莫大だ。力の限りビーボラットに仕えれば、宇宙でもっとも優れたヴァンガーになれるだろう！"
 [Glorx] [グロークス]
 /* Boond */
-"A lovely water world inhabited by cheerful creatures. Where else would the locals put up with the ravings of an ignorant Slave?"
+"陽気な生き物どもが棲む、愛すべき水の世界だ。無知なスレイブの妄言にここまで寛容でいられる土地が他にあるか？"
 {Slave}
 /* Commissar */
-"Are you lost, you stupid Commissar? Look around! You're on Glorx."
+"道に迷ったのか、この愚かなコミッサーめ？ まわりを見ろ！ ここがグロークスだ。"
 {Commissar}
 /* Agent */
-"Glorx is not the best place for an Agent."
-
+"グロークスは、エージェントにとって決して最良の場所というわけではない。"
 [raffa] [ラッファ]
 /* Boond */
-"Morons who exist only thanks to our kindness. You're one of them, most likely."
+"我らの慈悲がなければ生きていけぬ阿呆どもだ。おそらく貴様もその一匹だろう。"
 /* Commissar */
-"Many of them are negligent Commissars. Don't you forget it!"
+"あいつらの多くは怠慢なコミッサーだ。忘れるなよ！"
 {Commissar}
 /* Agent */
-"Forget them. Unless you want your mind to be overloaded!"
-
+"忘れてしまえ。頭を無駄に疲れさせたくないならな！"
 [Incubator] [インキュベーター]
 /* Boond */
-"A place any Beeboorat would love to visit. It's not a Slave's place to know anything about it."
+"どんなビーボラットでも一度は訪れてみたい場所だ。だがスレイブごときが知る必要はない。"
 {Slave}
 /* Commissar */
-"A nice, cozy place belonging to the Eleepods. You can find some pretty interesting things there."
+"イリーポッドどもが持つ、居心地の良さそうな穴だ。なかなか面白い品も見つかる。"
 /* Agent */
-"Every serious Agent just has to spend some time there. eLeeches are bred in Incubator, and so the Buro keeps close watch over the place."
-
+"本物のエージェントなら、あそこでしばらく過ごさねばならん。インキュベーターではイリーチが育てられているから、ビューロはそこを厳重に監視している。"
 [bios] [バイオス]
 /* Boond */
-"Our bios has learned the essence of your existence."
+"我らのバイオスは、すでに貴様の存在の本質を見抜いている。"
 /* Commissar */
-"The Buro has counted three bios in the Chain: the Beeboorats, the Eleepods, and the Zeexen. All under control!"
+"ビューロはチェーンに三つのバイオスを数えている。ビーボラット、イリーポッド、ズィークセンだ。すべて管理下にある！"
 /* Agent */
-"The Beeboorats are the dominant bios in the Chain, and we have the best Agents."
-
+"ビーボラットはチェーンの支配的バイオスであり、我らには最良のエージェントが揃っている。"
 [cirt] [サート]
 /* Boond */
 "Your head is too small for that kind of knowledge. But finding the cirt we need will be really good for you."
