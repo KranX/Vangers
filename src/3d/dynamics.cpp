@@ -3092,12 +3092,13 @@ void Object::mechous_analysis(double dt)
 	if(mole_on && device_transition_legacy_step() && !UsingCrotrig(mole_on) && !interpolation_on)
 		controls(CONTROLS::MOLE_UP);
 
-	if(in_water > 32)
-		if(UsingCutterig(dynamic_state & TOUCH_OF_AIR))
+	if(in_water > 32){
+		int cutterig_active = UsingCutterig(device_transition_legacy_step() ? (dynamic_state & TOUCH_OF_AIR) : 0);
+		if(cutterig_active)
 			controls(CONTROLS::FLOTATION_UP);
 		else
 			controls(CONTROLS::FLOTATION_DOWN);
-	else 
+	}else 
 		archimedean = 0;
 
 	if(traction_control_legacy_step()){
