@@ -77,6 +77,24 @@ static inline bool bullet_particle_draw_legacy_step(void)
 	return !(frame % bullet_particle_draw_ticks());
 }
 
+static inline int bullet_target_steer_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool bullet_target_steer_legacy_step(int& delay)
+{
+	int ticks = bullet_target_steer_ticks();
+	if(ticks <= 1) return 1;
+	if(delay > 0){
+		delay--;
+		return 0;
+	}
+	delay = ticks - 1;
+	return 1;
+}
+
 static inline int fish_warrior_attack_ticks(void)
 {
 	int ticks = (int)round(FISH_WARRIOR_ATTACK_TIME * GAME_TIME_COEFF);
@@ -1318,6 +1336,7 @@ void BulletObject::Init(void)
 	ID = ID_BULLET;
 	Status = SOBJ_DISCONNECT;
 	radius = 1;
+	TargetSteerDelay = 0;
 };
 
 void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldBulletTemplate* p,GeneralObject* _Owner,int _speed)
@@ -1353,6 +1372,7 @@ void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldB
 	
 	vDelta = vTarget = Vector(0,0,0);
 	FrameCount = 0;
+	TargetSteerDelay = 0;
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = p->Speed + _speed;
@@ -1402,6 +1422,7 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 
 	vDelta = vTarget = Vector(0,0,0);
 	FrameCount = 0;
+	TargetSteerDelay = 0;
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = n->Speed;
@@ -1612,7 +1633,7 @@ void BulletObject::TimeOutQuant(void)
 		};
 
 		d = vTarget.vabs();
-		if(d){
+		if(d && bullet_target_steer_legacy_step(TargetSteerDelay)){
 			vDelta += vTarget * Precision / d;
 			d = vDelta.vabs();
 			if(d > Speed) vDelta = vDelta * Speed / d;

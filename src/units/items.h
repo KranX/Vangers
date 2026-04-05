@@ -219,6 +219,7 @@ struct BulletObject : BaseObject , BulletControlType
 	Vector vDelta,vTarget;
 	GeneralObject* TargetObject;
 	int FrameCount;
+	int TargetSteerDelay;
 	GeneralObject* Owner;	
 	Vector vTail;		
 	LightPoint* LightData;
