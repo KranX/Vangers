@@ -12669,17 +12669,23 @@ void CheckPlayerList(void)
 
 	p = players_list.first();
 	while(p){
-		if(p->client_ID != GlobalStationID && p->name && p->status == GAMING_STATUS){
-			if(p->CreatePlayerFlag == 3 && p->body.NetID == 0)
-				p->CreatePlayerFlag = 0;
-			if(p->body.world == CurrentWorld && p->body.NetID != 0 && p->body.CarIndex != 255 && p->CreatePlayerFlag == 0)
-				NetEvent4Uvs(p);
-			if(p->CreatePlayerFlag == 1){
-				if(!((uvsVanger*)(p->uvsPoint))->Pescave && !((uvsVanger*)(p->uvsPoint))->Pspot && !((uvsVanger*)(p->uvsPoint))->Ppassage)
-					v = addVanger((uvsVanger*)(p->uvsPoint),p->body.Data0,p->body.Data1);
-				else 
-					v = addVanger((uvsVanger*)(p->uvsPoint),((uvsVanger*)(p->uvsPoint))->Ppassage);
-				if(v) v->InitPlayerPoint(p);
+		if(p->client_ID != GlobalStationID && p->name){
+			if(p->status == GAMING_STATUS){
+				if(p->CreatePlayerFlag == 3 && p->body.NetID == 0)
+					p->CreatePlayerFlag = 0;
+				if(p->body.world == CurrentWorld && p->body.NetID != 0 && p->body.CarIndex != 255 && p->CreatePlayerFlag == 0)
+					NetEvent4Uvs(p);
+				if(p->CreatePlayerFlag == 1){
+					if(!((uvsVanger*)(p->uvsPoint))->Pescave && !((uvsVanger*)(p->uvsPoint))->Pspot && !((uvsVanger*)(p->uvsPoint))->Ppassage)
+						v = addVanger((uvsVanger*)(p->uvsPoint),p->body.Data0,p->body.Data1);
+					else
+						v = addVanger((uvsVanger*)(p->uvsPoint),((uvsVanger*)(p->uvsPoint))->Ppassage);
+					if(v) v->InitPlayerPoint(p);
+				};
+			}else{
+				if(p->status == INITIAL_STATUS && (p->world || p->body.world || p->body.NetID || p->body.CarIndex != 255))
+					request_total_players_data_list_query_async();
+				if(ActD.Active) ActD.Active->pNetPlayer = p;
 			};
 		}else{
 			if(ActD.Active) ActD.Active->pNetPlayer = p;

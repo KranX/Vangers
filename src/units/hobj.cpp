@@ -3778,9 +3778,18 @@ void GameObjectDispatcher::NetEvent(void)
 					NETWORK_IN_STREAM.ignore_event();
 					break;
 			};
+		}else{
+			switch(type){
+				case TOTAL_LIST_OF_PLAYERS_DATA:
+					players_list.merge_total_body_query();
+					break;
+				default:
+					NETWORK_IN_STREAM.ignore_event();
+					break;
+			};
 		};
 		NETWORK_IN_STREAM.next_event();
-	};	
+	};
 	NETWORK_OUT_STREAM.send();
 };
 

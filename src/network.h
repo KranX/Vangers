@@ -68,15 +68,17 @@ struct PlayerData {
 
 struct PlayersList : XTList<PlayerData> {
 	int NumGamingPeople;
-		
+
 		PlayersList(){ NumGamingPeople = 0; }
 
+	PlayerData* find_any(int client_id);
 	PlayerData* find(int client_id);
 	void single_parsing(int event_ID);
 	void reset_states();
 	void delete_old_players();
 	void parsing_names_query();
 	void parsing_total_body_query();
+	void merge_total_body_query();
 	unsigned int get_team_mask(int color);
 	};
 
@@ -242,6 +244,7 @@ void set_time_by_server(int n_measures = 16);
 int set_world(int world,int world_y_size);
 void leave_world();
 void total_players_data_list_query();
+void request_total_players_data_list_query_async();
 
 void send_player_body(PlayerBody& body);
 

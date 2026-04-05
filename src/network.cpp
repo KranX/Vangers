@@ -104,6 +104,10 @@ PlayerBody my_player_body;
 PlayerData* my_player_data = 0;
 PlayersList players_list;
 
+static unsigned int total_players_data_list_query_last_time = 0;
+static int total_players_data_list_query_pending = 0;
+static const unsigned int TOTAL_PLAYERS_DATA_LIST_QUERY_RETRY_MS = 1000;
+
 MessageDispatcher message_dispatcher;
 
 XSocket main_socket;
@@ -920,10 +924,23 @@ void leave_world()
 }
 void total_players_data_list_query()
 {
+	total_players_data_list_query_pending = 1;
+	total_players_data_list_query_last_time = SDL_GetTicks();
 	events_out.send_simple_query(TOTAL_PLAYERS_DATA_QUERY);
 	events_in.receive_waiting_for_event(TOTAL_LIST_OF_PLAYERS_DATA);
 	players_list.parsing_total_body_query();
 	events_in.ignore_event();
+}
+
+void request_total_players_data_list_query_async()
+{
+	unsigned int now = SDL_GetTicks();
+	if(total_players_data_list_query_pending && now - total_players_data_list_query_last_time < TOTAL_PLAYERS_DATA_LIST_QUERY_RETRY_MS)
+		return;
+
+	total_players_data_list_query_pending = 1;
+	total_players_data_list_query_last_time = now;
+	events_out.send_simple_query(TOTAL_PLAYERS_DATA_QUERY);
 }
 void send_player_body(PlayerBody& body)
 {
@@ -1206,7 +1223,18 @@ PlayerData::PlayerData(int client_id)
 		SlotNetID[i] = 0;
 		SlotStuffNetID[i] = 0;
 		SlotFireCount[i] = 0;
-		}
+			}
+}
+
+PlayerData* PlayersList::find_any(int client_id)
+{
+	PlayerData* p = first();
+	while(p){
+		if(p -> client_ID == client_id)
+			return p;
+		p = p -> next;
+	}
+	return NULL;
 }
 
 PlayerData* PlayersList::find(int client_id)
@@ -1222,6 +1250,21 @@ PlayerData* PlayersList::find(int client_id)
 	append(p);
 	return p;
 }
+
+static void assign_player_name(PlayerData* p,const char* name)
+{
+	if(!p -> name){
+		p -> name = new char[strlen(name) + 1];
+		strcpy(p -> name, name);
+	}else{
+		if(strcmp(p -> name,name)){
+			delete[] p -> name;
+			p -> name = new char[strlen(name) + 1];
+			strcpy(p -> name, name);
+		}
+	}
+}
+
 void PlayersList::single_parsing(int event_ID)
 {
 	PlayerData* p = find(events_in.get_byte());
@@ -1229,17 +1272,7 @@ void PlayersList::single_parsing(int event_ID)
 		case PLAYERS_NAME:{
 			char name[257];
 			events_in > name;
-			if(!p -> name){
-				p -> name = new char[strlen(name) + 1];
-				strcpy(p -> name, name);
-				}
-			else{
-				if(strcmp(p -> name,name)){
-					delete[] p -> name;
-					p -> name = new char[strlen(name) + 1];
-					strcpy(p -> name, name);
-					}
-				}
+			assign_player_name(p,name);
 			}
 			break;
 		case PLAYERS_POSITION:
@@ -1302,9 +1335,87 @@ void PlayersList::parsing_total_body_query()
 				strcpy(p -> name, name);
 				}
 			}
-		if(p -> client_ID == GlobalStationID)
-			my_player_data = p;
+			if(p -> client_ID == GlobalStationID)
+				my_player_data = p;
+			}
+	total_players_data_list_query_pending = 0;
+}
+
+void PlayersList::merge_total_body_query()
+{
+	unsigned char client_ID,status,world;
+	short x,y;
+	char name[257];
+	PlayerBody body;
+	PlayerData* p;
+	PlayerData* current_player_data = NULL;
+	int num = events_in.get_byte();
+
+	p = first();
+	while(p){
+		p -> GamingFlag = 0;
+		p = (PlayerData*)(p -> next);
+	}
+
+	for(int i = 0;i < num;i++){
+		events_in > client_ID > status > world > x > y > name;
+		events_in.read(&body,sizeof(PlayerBody));
+
+		p = NULL;
+		if(status != FINISHED_STATUS){
+			PlayerData* n = first();
+			while(n){
+				if(!n -> GamingFlag && n -> client_ID == client_ID && n -> status != FINISHED_STATUS){
+					p = n;
+					break;
+				}
+				n = (PlayerData*)(n -> next);
+			}
+		}else{
+			PlayerData* candidate = NULL;
+			PlayerData* n = first();
+			while(n){
+				if(!n -> GamingFlag && n -> client_ID == client_ID){
+					if(n -> status == FINISHED_STATUS){
+						p = n;
+						break;
+					}
+					if(!candidate)
+						candidate = n;
+				}
+				n = (PlayerData*)(n -> next);
+			}
+			if(!p)
+				p = candidate;
 		}
+
+		if(!p){
+			p = new PlayerData(client_ID);
+			append(p);
+		}
+
+		int prev_status = p -> status;
+		p -> GamingFlag = 1;
+		p -> status = status;
+		p -> world = world;
+		p -> x = x;
+		p -> y = y;
+		assign_player_name(p,name);
+		p -> body = body;
+
+		if(prev_status != FINISHED_STATUS && p -> status == FINISHED_STATUS)
+			PLAYER_REMOVAL_EVENT(p);
+
+		if(p -> client_ID == GlobalStationID){
+			if(p -> status != FINISHED_STATUS || !current_player_data)
+				current_player_data = p;
+		}
+	}
+
+	if(current_player_data)
+		my_player_data = current_player_data;
+
+	total_players_data_list_query_pending = 0;
 }
 
 /*******************************************************************************
