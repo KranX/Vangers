@@ -1587,7 +1587,7 @@ Object::Object() {
 
 Object::~Object() {
 	if (body)
-		delete body;
+		delete[] body;
 }
 
 /***********************************************************************

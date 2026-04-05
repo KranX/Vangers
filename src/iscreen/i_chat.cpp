@@ -415,8 +415,11 @@ void iChatHistoryScreen::redrawScroll(void) {
 		color = scrollColor;
 	}
 
-	int messages_num = std::max(ICS_HISTORY_MAX_MESSAGES, (int)(data.size()));
-	float percent = (float)position / messages_num;
+	int dataSize = (int)(data.size());
+	int messages_num = std::max(ICS_HISTORY_MAX_MESSAGES, dataSize);
+	int maxPosition = std::max(0, dataSize - ICS_HISTORY_MAX_MESSAGES);
+	int safePosition = std::max(0, std::min(position, maxPosition));
+	float percent = (float)safePosition / messages_num;
 	float percentSizeY = (float)ICS_HISTORY_MAX_MESSAGES / messages_num;
 
 	XGR_Rectangle(PosX + SizeX, PosY, scrollSizeX, SizeY, bgColor, bgColor, XGR_FILLED);
@@ -1558,6 +1561,8 @@ void iInitChatScreen(void)
 			el = (MessageElement*)el -> next;
 		}
 	}
+	int maxPosition = std::max(0, (int)(iChatHistory -> data.size()) - ICS_HISTORY_MAX_MESSAGES);
+	iChatHistory -> position = std::max(0, std::min(iChatHistory -> position, maxPosition));
 }
 
 void iInitChatButtons(void)
