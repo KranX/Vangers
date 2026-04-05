@@ -9441,7 +9441,7 @@ void VangerFunctionType::Quant(void)
 					SOUND_PR_FUNCTION_START();
 					((VangerUnit*)(ActD.pfActive))->ExternalDraw = 0;
 					ActD.pfActive->switch_analysis(1);
-					ActD.pfActive->CreateParticleMechos(ActD.pfActive->R_curr,300,LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF));
+					ActD.pfActive->CreateParticleMechos(ActD.pfActive->R_curr,300,(LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)) / GAME_TIME_COEFF);
 				};
 				break;
 			case MECHANIC_ITEM_FALL:
