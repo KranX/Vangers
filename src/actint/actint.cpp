@@ -5283,6 +5283,7 @@ void actIntDispatcher::EventQuant(void)
 				aciShowScMatrix();
 				break;
 			case EV_DEACTIVATE_MATRIX:
+				if(flags & AS_INV_MOVE_ITEM) break;
 				aciBuyItem();
 				aciSwapMatrices();
 				aciInitShopAvi();

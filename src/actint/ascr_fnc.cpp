@@ -3748,6 +3748,7 @@ int aciCheckCredits(void)
 	}
 
 	if(aScrDisp -> flags & AS_INV_MOVE_ITEM){
+		if(iEvLineID == MECHOS_MODE || iEvLineID == MECHOS_LIST_MODE) return 0;
 		if(aScrDisp -> curItem -> partData) return 1;
 		if(!((uvsActInt*)aScrDisp -> curItem -> uvsDataPtr) -> sell_price) return 0;
 		return 1;
