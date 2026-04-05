@@ -151,6 +151,8 @@ static inline int sensor_enable_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static StuffObject* resolve_stuff_owner(uvsUnitType* owner, actintItemData* d);
+
 static inline int glorx_landslide_null_ticks(void)
 {
 	int ticks = (int)round((80 + 1) * GAME_TIME_COEFF);
@@ -7212,6 +7214,7 @@ void uvsUnitType::AddDevice(StuffObject* p)
 
 void uvsUnitType::DelDevice(StuffObject* p)
 {
+	p->ActIntBuffer.stuffOwner = NULL;
 	if((!p->PrevDeviceList) && (!p->NextDeviceList)) DeviceData = NULL;
 	else{
 		if(p->PrevDeviceList) p->PrevDeviceList->NextDeviceList = p->NextDeviceList;
@@ -7734,7 +7737,8 @@ void VangerUnit::ItemQuant(void)
 								if(DeviceData){
 									if(Status & SOBJ_ACTIVE){
 										n = aciGetLast();
-										if((StuffObject*)(n->stuffOwner)) DischargeItem((StuffObject*)(n->stuffOwner));
+										p = resolve_stuff_owner(this,n);
+										if(p) DischargeItem(p);
 									}else DischargeItem(DeviceData);
 								};
 							};
@@ -8075,6 +8079,37 @@ void ActionDispatcher::CreateActive(VangerUnit* p)
 };
 
 char* uvsGetNameByID(int type, int& ID);
+static StuffObject* resolve_stuff_owner(uvsUnitType* owner, actintItemData* d)
+{
+	StuffObject* p;
+	StuffObject* hint;
+
+	if(!owner || !d) return NULL;
+
+	hint = (StuffObject*)(d->stuffOwner);
+	if(hint){
+		p = owner->DeviceData;
+		while(p){
+			if(p == hint && &(p->ActIntBuffer) == d){
+				d->stuffOwner = (void*)(p);
+				return p;
+			};
+			p = (StuffObject*)(p->NextDeviceList);
+		};
+	};
+
+	p = owner->DeviceData;
+	while(p){
+		if(&(p->ActIntBuffer) == d){
+			d->stuffOwner = (void*)(p);
+			return p;
+		};
+		p = (StuffObject*)(p->NextDeviceList);
+	};
+
+	d->stuffOwner = NULL;
+	return NULL;
+};
 void aciSendEvent2itmdsp(int code,actintItemData* p,int data)
 {
 	Vector vCheck;
@@ -8082,81 +8117,98 @@ void aciSendEvent2itmdsp(int code,actintItemData* p,int data)
 	int what,id;
 	char* name_from;
 	char* name_to;
+	StuffObject* dev;
+	VangerUnit* active;
 	if(ActD.Active){
+		active = (VangerUnit*)(ActD.Active);
 		switch(code){
 			case ACI_DROP_ITEM:
-				((VangerUnit*)(ActD.Active))->CheckOutDevice((StuffObject*)(p->stuffOwner));
-				ActD.CheckDevice((StuffObject*)(p->stuffOwner));
-				((StuffObject*)(p->stuffOwner))->DeviceOut(ActD.Active->R_curr + Vector(0,0,ActD.Active->radius*3));
+				dev = resolve_stuff_owner(active,p);
+				if(!dev) break;
+				active->CheckOutDevice(dev);
+				ActD.CheckDevice(dev);
+				dev->DeviceOut(active->R_curr + Vector(0,0,active->radius*3));
 				break;
 			case ACI_ACTIVATE_ITEM:
 				switch(p->type){
 					case ACI_EMPTY_CIRTAINER:
-						if(ActD.Active->dynamic_state & (GROUND_COLLISION | WHEELS_TOUCH)){
-							ActD.Active->uvsPoint->gatherCirt(ActD.Active->R_curr.x,ActD.Active->R_curr.y,((StuffObject*)(p->stuffOwner))->ActIntBuffer.data0,((StuffObject*)(p->stuffOwner))->ActIntBuffer.data1);
-							p->type = uvsSetItemType(((StuffObject*)(p->stuffOwner))->uvsDeviceType,((StuffObject*)(p->stuffOwner))->ActIntBuffer.data0,((StuffObject*)(p->stuffOwner))->ActIntBuffer.data1);
+						dev = resolve_stuff_owner(active,p);
+						if(!dev) break;
+						if(active->dynamic_state & (GROUND_COLLISION | WHEELS_TOUCH)){
+							active->uvsPoint->gatherCirt(active->R_curr.x,active->R_curr.y,dev->ActIntBuffer.data0,dev->ActIntBuffer.data1);
+							p->type = uvsSetItemType(dev->uvsDeviceType,dev->ActIntBuffer.data0,dev->ActIntBuffer.data1);
 							aciChangeItem(p);
 						};
 						break;
-					case ACI_CIRTAINER:						
-						((StuffObject*)(p->stuffOwner))->ActIntBuffer.data0 = 0;
-						((StuffObject*)(p->stuffOwner))->ActIntBuffer.data1 = 0;
-						p->type = uvsSetItemType(((StuffObject*)(p->stuffOwner))->uvsDeviceType,((StuffObject*)(p->stuffOwner))->ActIntBuffer.data0,((StuffObject*)(p->stuffOwner))->ActIntBuffer.data1);
-						aciChangeItem(p);						
+					case ACI_CIRTAINER:
+						dev = resolve_stuff_owner(active,p);
+						if(!dev) break;
+						dev->ActIntBuffer.data0 = 0;
+						dev->ActIntBuffer.data1 = 0;
+						p->type = uvsSetItemType(dev->uvsDeviceType,dev->ActIntBuffer.data0,dev->ActIntBuffer.data1);
+						aciChangeItem(p);
 						break;
 					case ACI_PEELOT:
-						if(ActD.Active->Status & SOBJ_AUTOMAT)
+						if(active->Status & SOBJ_AUTOMAT)
 							aiMessageQueue.Send(AI_MESSAGE_AUTOMATIC_OFF,0,0xff,0);
-						else							
+						else
 							aiMessageQueue.Send(AI_MESSAGE_AUTOMATIC_ON,0,0xff,0);
-						ActD.Active->Status ^= SOBJ_AUTOMAT;
+						active->Status ^= SOBJ_AUTOMAT;
 						break;
 					case ACI_GLUEK:
-						(ActD.Active)->Armor += 10 << 16;
-						ObjectDestroy((StuffObject*)(p->stuffOwner));
-						(ActD.Active)->CheckOutDevice((StuffObject*)(p->stuffOwner));
-						ActD.CheckDevice((StuffObject*)(p->stuffOwner));
-						((StuffObject*)(p->stuffOwner))->Storage->Deactive((StuffObject*)(p->stuffOwner));
-						(ActD.Active)->DelDevice((StuffObject*)(p->stuffOwner));
+						dev = resolve_stuff_owner(active,p);
+						if(!dev) break;
+						active->Armor += 10 << 16;
+						ObjectDestroy(dev);
+						active->CheckOutDevice(dev);
+						ActD.CheckDevice(dev);
+						dev->Storage->Deactive(dev);
+						active->DelDevice(dev);
 						aciSendEvent2actint(ACI_DROP_ITEM,p);
-						break;				
+						break;
 					case ACI_TANKACID:
-						ObjectDestroy((StuffObject*)(p->stuffOwner));
+						dev = resolve_stuff_owner(active,p);
+						if(!dev) break;
+						ObjectDestroy(dev);
 						for(i = 0;i < 3;i++){
 							vCheck = Vector(40,0,0)*DBM(i*PI / 3,Z_AXIS);
-							vCheck += ActD.Active->R_curr;
+							vCheck += active->R_curr;
 							cycleTor(vCheck.x,vCheck.y);
-							MapD.CreateAcidSpot(vCheck,40,60,0,-16,40);	
+							MapD.CreateAcidSpot(vCheck,40,60,0,-16,40);
 						};
-						MapD.CreateAcidSpot(ActD.Active->R_curr,40,60,0,-16,40);
-						(ActD.Active)->CheckOutDevice((StuffObject*)(p->stuffOwner));
-						ActD.CheckDevice((StuffObject*)(p->stuffOwner));
-						((StuffObject*)(p->stuffOwner))->Storage->Deactive((StuffObject*)(p->stuffOwner));
-						(ActD.Active)->DelDevice((StuffObject*)(p->stuffOwner));
-						aciSendEvent2actint(ACI_DROP_ITEM,p);					
-						SOUND_ACID() 
+						MapD.CreateAcidSpot(active->R_curr,40,60,0,-16,40);
+						active->CheckOutDevice(dev);
+						ActD.CheckDevice(dev);
+						dev->Storage->Deactive(dev);
+						active->DelDevice(dev);
+						aciSendEvent2actint(ACI_DROP_ITEM,p);
+						SOUND_ACID()
 						break;
 					default:
+						dev = resolve_stuff_owner(active,p);
+						if(!dev) break;
 						p->flags |= ACI_ACTIVE;
-						ActD.SlotIn(data,(StuffObject*)(p->stuffOwner));
+						ActD.SlotIn(data,dev);
 						break;
 				};
 				break;
 			case ACI_DEACTIVATE_ITEM:
+				dev = resolve_stuff_owner(active,p);
+				if(!dev) break;
 				p->flags &= ~ACI_ACTIVE;
-				ActD.SlotOut((StuffObject*)(p->stuffOwner));
+				ActD.SlotOut(dev);
 				break;
 			case ACI_SHOW_ITEM_TEXT:
 				if(p->type == ACI_TABUTASK_SUCCESSFUL){
 					RaceTxtBuff.init();
 					if(lang() == RUSSIAN){
-//GERMAN
+	//GERMAN
 						RaceTxtBuff < uvsGetNameByID(p->data1 & 0xffff,i);
 						RaceTxtBuff < rFirstTabuTaskMessage;
 						RaceTxtBuff < rSecondTabuTaskMessage;
 						RaceTxtBuff <= TabuTable[p->data1 & 0xffff]->cash < "$";
-//ENGLISH
-/*
+	//ENGLISH
+	/*
 						RaceTxtBuff < rFirstTabuTaskMessage;
 						RaceTxtBuff < uvsGetNameByID(p->data1 & 0xffff,i);
 						RaceTxtBuff < rSecondTabuTaskMessage;
@@ -8169,7 +8221,8 @@ void aciSendEvent2itmdsp(int code,actintItemData* p,int data)
 					};
 					aciPrepareText(RaceTxtBuff.address());
 				}else{
-					if(uvsPrepareItemToDiagen(((StuffObject*)(p->stuffOwner))->uvsDeviceType,p->data0,p->data1,what,id,name_from,name_to))
+					dev = resolve_stuff_owner(active,p);
+					if(dev && uvsPrepareItemToDiagen(dev->uvsDeviceType,p->data0,p->data1,what,id,name_from,name_to))
 						aciPrepareText(dgD->getInvText(what,id,name_from,name_to));
 				};
 				break;
@@ -12782,6 +12835,8 @@ void ObjectDestroy(GeneralObject* n,int mode)
 			p = (VangerUnit*)(p->NextTypeList);
 		};		
 	}else{
+		if(n->ID == ID_STUFF)
+			((StuffObject*)(n))->ActIntBuffer.stuffOwner = NULL;
 		if(NetworkON){
 			if(((StuffObject*)(n))->Owner){
 				if(((StuffObject*)(n))->Owner->Status & SOBJ_ACTIVE){
