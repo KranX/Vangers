@@ -8251,6 +8251,8 @@ actintItemData::actintItemData(void)
 	data0 = data1 = maxData = -1;
 	flags = 0;
 	slot = -1;
+	actintOwner = NULL;
+	stuffOwner = NULL;
 };
 
 actintItemData::actintItemData(int tp)
@@ -8260,6 +8262,8 @@ actintItemData::actintItemData(int tp)
 
 	flags = 0;
 	slot = -1;
+	actintOwner = NULL;
+	stuffOwner = NULL;
 
 //	if(tp <= ACI_TERMINATOR) flags |= ACI_WEAPON;
 };
@@ -14062,7 +14066,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	aiResolveFind.Free();
 	aiResolveAttack.Free();
 
-	delete ItemMatrixData;
+	delete[] ItemMatrixData;
 
 //!!!!	
 

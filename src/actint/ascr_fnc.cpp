@@ -1944,6 +1944,8 @@ void aciKillLinks(void)
 	if(!aScrDisp -> curMatrix) return;
 	invItem* p = (invItem*)aScrDisp -> curMatrix -> items -> last;
 	while(p){
+		if(p -> item_ptr)
+			p -> item_ptr -> actintOwner = NULL;
 		p -> item_ptr = NULL;
 		p = (invItem*)p -> prev;
 	}
@@ -3335,7 +3337,8 @@ void aciChangeItem(actintItemData* p)
 	else
 		it = aScrDisp -> get_iitem(p -> type);
 
-	p1 = (invItem*)p -> actintOwner;
+	p1 = aScrDisp -> resolve_item_owner(p);
+	if(!p1) return;
 	it -> clone(p1);
 
 	if(!(aScrDisp -> flags & AS_ISCREEN) && aScrDisp -> curMode == AS_INV_MODE)
@@ -4699,7 +4702,12 @@ void mem_rectangle(int x,int y,int sx,int sy,int bsx,int col_in,int col_out,int 
 
 void aciGetItemCoords(actintItemData* p,int& x,int& y)
 {
-	invItem* itm = (invItem*)p -> actintOwner;
+	invItem* itm = aScrDisp -> resolve_item_owner(p);
+	if(!itm){
+		x = 0;
+		y = 0;
+		return;
+	}
 
 	x = itm -> MatrixX;
 	y = itm -> MatrixY;

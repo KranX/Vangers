@@ -6164,12 +6164,15 @@ int actIntDispatcher::put_item_xy(invItem* p,int x,int y,int sflag)
 
 void actIntDispatcher::remove_item(actintItemData* d)
 {
-	invItem* p = (invItem*)d -> actintOwner;
+	invItem* p = resolve_item_owner(d);
+	if(!p) return;
 	curMatrix -> remove_item(p);
 
 	if(p -> menu){
 		remove_menu_item((fncMenu*)p -> menu);
 	}
+	p -> item_ptr = NULL;
+	d -> actintOwner = NULL;
 	free_item(p);
 
 	if(curMode == AS_INV_MODE)
@@ -8026,6 +8029,10 @@ void actIntDispatcher::free_matrix(invMatrix* p)
 	itm = (invItem*)p -> items -> last;
 	while(itm){
 		itm1 = (invItem*)itm -> prev;
+		if(itm -> item_ptr){
+			itm -> item_ptr -> actintOwner = NULL;
+			itm -> item_ptr = NULL;
+		}
 		p -> items -> dconnect((iListElement*)itm);
 		free_item(itm);
 		itm = itm1;
@@ -8050,12 +8057,29 @@ invItem* actIntDispatcher::get_item_ptr_xy(int id,int x,int y)
 {
 	if(!curMatrix) return NULL;
 	invItem* p = (invItem*)curMatrix -> items -> last;
-	
+
 	while(p){
 		if(p -> ID == id && !p -> item_ptr && p -> MatrixX == x && p -> MatrixY == y)
 			return p;
 		p = (invItem*)p -> prev;
 	}
+	return NULL;
+}
+
+invItem* actIntDispatcher::resolve_item_owner(actintItemData* d)
+{
+	if(!curMatrix || !d) return NULL;
+
+	invItem* p = (invItem*)curMatrix -> items -> last;
+	while(p){
+		if(p -> item_ptr == d){
+			d -> actintOwner = p;
+			return p;
+		}
+		p = (invItem*)p -> prev;
+	}
+
+	d -> actintOwner = NULL;
 	return NULL;
 }
 
@@ -8384,19 +8408,20 @@ int actIntDispatcher::get_locdata_id(const char* name)
 /*TODO*/
 void actIntDispatcher::put_in_slot(actintItemData* d)
 {
-	int x,y,index = 0,px,py,id;
+	int x,y,index = 0,px,py,id,offs;
 	int ms_flag = 0;
 	invItem* dvc;
-	invItem* p = (invItem*)d -> actintOwner;
+	invItem* p = resolve_item_owner(d);
+	if(!p) return;
 
 	//std::cout<<"actIntDispatcher::put_in_slot "<<p->fname<<std::endl;
-	
+
 	if(flags & AS_INV_MOVE_ITEM && curItem == p){
 		ms_flag = 1;
 	}
 	else {
-		id = curMatrix -> get_item_slot(p);
-		if(id == AS_DEVICE_SLOT) return;
+		offs = p -> MatrixX + p -> MatrixY * curMatrix -> SizeX;
+		if(curMatrix -> matrix[offs] -> slotType == AS_DEVICE_SLOT) return;
 	}
 
 	for(y = 0; y < curMatrix -> SizeY; y ++){

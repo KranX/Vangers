@@ -1412,6 +1412,7 @@ struct actIntDispatcher
 
 	invItem* get_item_ptr(int id);
 	invItem* get_item_ptr_xy(int id,int x,int y);
+	invItem* resolve_item_owner(actintItemData* d);
 
 	invItem* alloc_item(void);
 	fncMenuItem* alloc_menu_item(void);

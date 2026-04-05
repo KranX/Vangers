@@ -618,6 +618,10 @@ void StuffObject::Init(StorageType* s)
 	Status = SOBJ_DISCONNECT;
 	Owner = NULL;
 	CreateMode = STUFF_CREATE_NONE;
+	ActIntBuffer.flags = 0;
+	ActIntBuffer.slot = -1;
+	ActIntBuffer.actintOwner = NULL;
+	ActIntBuffer.stuffOwner = NULL;
 };
 
 void aciPrepareWorldsMenu(void);
@@ -1325,6 +1329,9 @@ void StuffObject::GetDevice(StuffObject* p)
 	ModelID = p->ModelID;
 	uvsDeviceType = p->uvsDeviceType;
 	ActIntBuffer.type = p->ActIntBuffer.type;
+	ActIntBuffer.flags = 0;
+	ActIntBuffer.slot = -1;
+	ActIntBuffer.actintOwner = NULL;
 	ActIntBuffer.stuffOwner = (void*)(this);
 	SizeID = p->SizeID;
 };
