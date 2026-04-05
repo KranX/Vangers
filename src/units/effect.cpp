@@ -644,7 +644,7 @@ void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 		vD.y = ty * s / d;
 	};
 	
-	vR += vD; // Here not need XTCORE_FRAME_NORMAL becasue it's partialy part of dphi
+	vR += vD * XTCORE_FRAME_NORMAL;
 	vR.z = v.z;
 	
 	vR.x &= PTrack_mask_x;
