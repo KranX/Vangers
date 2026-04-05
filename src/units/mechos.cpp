@@ -129,6 +129,16 @@ static inline int game_over_event_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int fire_garden_spawn_legacy_step(int time_left)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	if(ticks <= 1)
+		return 1;
+	if(time_left <= 0)
+		return 0;
+	return !(time_left % ticks);
+}
+
 static inline int ai_alarm_ticks(void)
 {
 	int ticks = (int)round((AI_MAX_ALARM_TIME - 1) * GAME_TIME_COEFF) + 1;
@@ -9463,17 +9473,19 @@ void VangerFunctionType::Quant(void)
 							};
 						};
 					}else{
-						SOUND_MES_FIRE();
-						a = 2*PI * Time / (LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF));
-						n = BulletD.CreateBullet();
-						vCheck = Vector(ActD.mfActive->radius*4,0,0) * DBM(a,Z_AXIS);
-						vCheck += ActD.mfActive->R_curr;
-						cycleTor(vCheck.x,vCheck.y);
+						if(fire_garden_spawn_legacy_step(Time)){
+							SOUND_MES_FIRE();
+							a = 2*PI * Time / (LifeTime - (SKY_QUAKE_DELAY * GAME_TIME_COEFF));
+							n = BulletD.CreateBullet();
+							vCheck = Vector(ActD.mfActive->radius*4,0,0) * DBM(a,Z_AXIS);
+							vCheck += ActD.mfActive->R_curr;
+							cycleTor(vCheck.x,vCheck.y);
 
-						vTrack = Vector(ActD.mfActive->radius*3,0,0) * DBM(a,Z_AXIS);
-						vTrack += ActD.mfActive->R_curr;					
-						cycleTor(vTrack.x,vTrack.y);
-						n->CreateBullet(vTrack,vCheck,NULL,&GameBulletData[WD_BULLET_FIRE_GARDEN],NULL);
+							vTrack = Vector(ActD.mfActive->radius*3,0,0) * DBM(a,Z_AXIS);
+							vTrack += ActD.mfActive->R_curr;
+							cycleTor(vTrack.x,vTrack.y);
+							n->CreateBullet(vTrack,vCheck,NULL,&GameBulletData[WD_BULLET_FIRE_GARDEN],NULL);
+						};
 					};
 				};
 				break;
