@@ -10632,6 +10632,31 @@ void uvsDomChangeFromItem( int type, int what, int where){
 	}
 }
 
+static void uvsRefreshCompletedTabuTaskSellPrice(uvsActInt* pa)
+{
+	int param2;
+
+	if(!pa) return;
+
+	param2 = pa -> param2 & 0x0000FFFF;
+	pa -> sell_price = 0;
+
+	if(!Gamer) return;
+
+	if(Gamer -> Pescave){
+		if((Gamer -> Pescave -> TabuTaskID <= param2) &&
+		   (Gamer -> Pescave -> TabuTaskCount + Gamer -> Pescave -> TabuTaskID > param2))
+			pa -> sell_price = TabuTable[param2] -> cash;
+		return;
+	}
+
+	if(Gamer -> Pspot){
+		if((Gamer -> Pspot -> TabuTaskID <= param2) &&
+		   (Gamer -> Pspot -> TabuTaskCount + Gamer -> Pspot -> TabuTaskID > param2))
+			pa -> sell_price = TabuTable[param2] -> cash;
+	}
+}
+
 void uvsChangeGoodsInList(int world ){
 	uvsActInt *pa = GGamer;
 	if (GGamer){
@@ -10642,18 +10667,9 @@ void uvsChangeGoodsInList(int world ){
 //				uvs_aciChangeOneItem(pa -> type, uvsSetItemType(type, pa -> param1, pa -> param2), pa);
 				uvs_aciChangeOneItem(pa -> type, uvsSetItemType(type, pa -> param1, pa -> param2), pa -> pos_x, pa -> pos_y);
 				if (uvsSetItemType(type, pa -> param1, pa -> param2) == TABUTASK_GOOD){
-					int param2 = (pa -> param2 & 0x0000FFFF);
-
 					SOUND_SUCCESS();
 					pa -> type = TABUTASK_GOOD;
-
-					if (Gamer -> Pescave){
-						if ( (Gamer -> Pescave -> TabuTaskID <= param2) && (Gamer -> Pescave -> TabuTaskCount +Gamer -> Pescave -> TabuTaskID > param2))
-							pa -> sell_price = TabuTable[param2] -> cash;
-					} else {
-						if ( (Gamer -> Pspot -> TabuTaskID <= param2) && (Gamer -> Pspot -> TabuTaskCount +Gamer -> Pspot -> TabuTaskID > param2))
-							pa -> sell_price = TabuTable[param2] -> cash;
-					}
+					uvsRefreshCompletedTabuTaskSellPrice(pa);
 				} else {
 					SOUND_FAILED();
 					pa -> type = TABUTASK_BAD;
@@ -11396,16 +11412,7 @@ void uvsChangeTabuTask(int type, int status){
 					uvs_aciChangeOneItem(pa -> type, TABUTASK_GOOD, pa -> pos_x, pa -> pos_y);
 
 					pa -> type = TABUTASK_GOOD;
-
-					int param2 = pa -> param2 & 0x0000FFFF;
-
-					if (Gamer -> Pescave){
-						if ( (Gamer -> Pescave -> TabuTaskID <= param2) && (Gamer -> Pescave -> TabuTaskCount +Gamer -> Pescave -> TabuTaskID > param2))
-							pa -> sell_price = TabuTable[param2] -> cash;
-					} else {
-						if ( (Gamer -> Pspot -> TabuTaskID <= param2) && (Gamer -> Pspot -> TabuTaskCount +Gamer -> Pspot -> TabuTaskID > param2))
-							pa -> sell_price = TabuTable[param2] -> cash;
-					}
+					uvsRefreshCompletedTabuTaskSellPrice(pa);
 				} else {
 					SOUND_FAILED()
 					uvs_aciChangeOneItem(pa -> type, TABUTASK_BAD, pa -> pos_x, pa -> pos_y);
