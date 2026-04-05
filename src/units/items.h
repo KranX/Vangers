@@ -220,8 +220,9 @@ struct BulletObject : BaseObject , BulletControlType
 	GeneralObject* TargetObject;
 	int FrameCount;
 	int TargetSteerDelay;
-	GeneralObject* Owner;	
-	Vector vTail;		
+	int LegacyLaserDraw;
+	GeneralObject* Owner;
+	Vector vTail;
 	LightPoint* LightData;
 	Vector vWallTarget;
 	int DataID;

@@ -77,6 +77,22 @@ static inline bool bullet_particle_draw_legacy_step(void)
 	return !(frame % bullet_particle_draw_ticks());
 }
 
+static inline int bullet_laser_draw_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool bullet_laser_draw_legacy_step(void)
+{
+	return !(frame % bullet_laser_draw_ticks());
+}
+
+static inline int machotine_laser_random_spread(void)
+{
+	return (int)round((3 - (int)RND(6)) / GAME_TIME_COEFF);
+}
+
 static inline int bullet_target_steer_ticks(void)
 {
 	int ticks = (int)round(GAME_TIME_COEFF);
@@ -1344,6 +1360,7 @@ void BulletObject::Init(void)
 	Status = SOBJ_DISCONNECT;
 	radius = 1;
 	TargetSteerDelay = 0;
+	LegacyLaserDraw = 0;
 };
 
 void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldBulletTemplate* p,GeneralObject* _Owner,int _speed)
@@ -1380,6 +1397,7 @@ void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldB
 	vDelta = vTarget = Vector(0,0,0);
 	FrameCount = 0;
 	TargetSteerDelay = 0;
+	LegacyLaserDraw = 0;
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = p->Speed + _speed;
@@ -1430,14 +1448,18 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	vDelta = vTarget = Vector(0,0,0);
 	FrameCount = 0;
 	TargetSteerDelay = 0;
+	LegacyLaserDraw = 0;
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = n->Speed;
 	if(BulletMode & BULLET_CONTROL_MODE::SPEED) Speed += (int)round(p->RealSpeed / GAME_TIME_COEFF);
 
 	if(BulletID == BULLET_TYPE_ID::LASER)
-		vDelta = Vector(Speed,(3 - (int)(RND(6))),0)*p->mFire; //machotine bullet dispersion
-	else 
+	{
+		LegacyLaserDraw = 1;
+		vDelta = Vector(Speed,machotine_laser_random_spread(),0)*p->mFire; //machotine bullet dispersion
+	}
+	else
 		vDelta = Vector(Speed,0,0)*p->mFire;
 
 	if(TargetObject && (BulletMode & BULLET_CONTROL_MODE::AIM)){
@@ -1807,6 +1829,10 @@ void BulletObject::DrawQuant(void)
 			};				
 			break;
 		case BULLET_SHOW_TYPE_ID::LASER:
+			if(LegacyLaserDraw && !bullet_laser_draw_legacy_step()){
+				update_prev = 0;
+				break;
+			}
 			vCheck = Vector(getDistX(R_prev.x,R_curr.x),getDistY(R_prev.y,R_curr.y),R_prev.z - R_curr.z);
 
 			vCheck.x = 2*vCheck.x / 3;
