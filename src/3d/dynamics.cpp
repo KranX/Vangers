@@ -2425,14 +2425,15 @@ void Object::brake_on()
 void Object::steer(int dir)
 {
 	int delta = rudder_step << 1;
+	double steer_delta = mole_on ? (double)delta : delta * XTCORE_FRAME_NORMAL;
 	//zmod 1.17
 	//if (!hand_brake && traction>0 && abs(rudder)<delta) delta = delta/2;
 	if(dir == LEFT_SIDE)
-		if((rudder += delta * XTCORE_FRAME_NORMAL) > rudder_max)
+		if((rudder += steer_delta) > rudder_max)
 			rudder = rudder_max;
 
 	if(dir == RIGHT_SIDE)
-		if((rudder -= delta * XTCORE_FRAME_NORMAL) < -rudder_max)
+		if((rudder -= steer_delta) < -rudder_max)
 			rudder = -rudder_max;
 }
 void Object::impulse(int side)
