@@ -159,7 +159,7 @@
 
 /* ------------------------ Graphics Screen Defines ------------------------- */
 
-#define GRAPHICS_SCR_START_Y	100
+#define GRAPHICS_SCR_START_Y	50
 #define GRAPHICS_SCR_DELTA_Y	50
 
 #define TUTORIAL_STR_X		220
