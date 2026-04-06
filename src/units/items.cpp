@@ -2465,7 +2465,8 @@ void WorldBulletTemplate::Init(Parser& in)
 		in.search_name("TapeSize");
 		TapeSize = in.get_int();
 		in.search_name("WaitTime");
-		WaitTime = (int)round((WeaponWaitTime * in.get_int() >> 8) * GAME_TIME_COEFF); // fps fix
+		int legacy_wait_time = (WeaponWaitTime * in.get_int() >> 8);
+		WaitTime = (legacy_wait_time + 1) * GAME_TIME_COEFF - 1; // preserve legacy Time++ / > WaitTime cooldown
 	};
 	Time = 0;
 };
