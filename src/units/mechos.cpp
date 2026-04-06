@@ -2959,6 +2959,7 @@ void ActionDispatcher::Quant(void)
 				}else{
 					if(p->pNetPlayer){
 						p->pNetPlayer->CreatePlayerFlag = 3;
+						p->pNetPlayer->LastDestroyedNetID = p->NetID;
 						p->pNetPlayer->uvsPoint = NULL;
 						for(i = 0;i < MAX_ACTIVE_SLOT;i++){
 							p->pNetPlayer->SlotNetID[i] = 0;
@@ -12736,8 +12737,17 @@ void CheckPlayerList(void)
 	while(p){
 		if(p->client_ID != GlobalStationID && p->name){
 			if(p->status == GAMING_STATUS){
-				if(p->CreatePlayerFlag == 3 && p->body.NetID == 0)
-					p->CreatePlayerFlag = 0;
+				if(p->CreatePlayerFlag == 3){
+					if(p->body.NetID == 0){
+						p->CreatePlayerFlag = 0;
+						p->LastDestroyedNetID = 0;
+					}else{
+						if(p->body.world == CurrentWorld && p->body.CarIndex != 255 && p->body.NetID != p->LastDestroyedNetID){
+							p->CreatePlayerFlag = 0;
+							p->LastDestroyedNetID = 0;
+						};
+					};
+				};
 				if(p->body.world == CurrentWorld && p->body.NetID != 0 && p->body.CarIndex != 255 && p->CreatePlayerFlag == 0)
 					NetEvent4Uvs(p);
 				if(p->CreatePlayerFlag == 1){

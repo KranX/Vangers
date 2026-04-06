@@ -1222,6 +1222,7 @@ PlayerData::PlayerData(int client_id)
 	next = prev = 0;
 	list = 0;
 	CreatePlayerFlag = 0;
+	LastDestroyedNetID = 0;
 	uvsPoint = NULL;
 	for(int i = 0;i < MAX_ACTIVE_SLOT;i++){
 		SlotNetID[i] = 0;

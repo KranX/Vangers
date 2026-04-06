@@ -54,6 +54,7 @@ struct PlayerData {
 	XTList<PlayerData>* list;
 
 	int CreatePlayerFlag;
+	int LastDestroyedNetID;
 	void* uvsPoint;
 
 	int SlotNetID[MAX_ACTIVE_SLOT];
