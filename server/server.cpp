@@ -1275,14 +1275,25 @@ int Player::receive() {
 		}
 
 		case SET_WORLD: {
-			if (world) {
-				SERVER_ERROR_NO_EXIT("Duplicated set world", ID);
-				in_buffer.ignore_event();
-				break;
-			}
 			int world_ID = in_buffer.get_byte();
 			int world_y_size = in_buffer.get_short();
 			int world_status = 0;
+			if (world) {
+				if (world->ID == world_ID) {
+					SERVER_ERROR_NO_EXIT("Duplicated set world", ID);
+					out_buffer.begin_event(SET_WORLD_RESPONSE);
+					out_buffer < (unsigned char)world_ID;
+					out_buffer < (unsigned char)0;
+					out_buffer.end_event();
+
+					IN_EVENTS_LOG(SET_WORLD);
+					OUT_EVENTS_LOG1(SET_WORLD_RESPONSE, 0);
+					break;
+				}
+
+				SERVER_ERROR_NO_EXIT("Set world without leave", ID);
+				world->detach_player(this);
+			}
 			if ((world = game->worlds.search(world_ID)) == 0) {
 				world = new World(world_ID, world_y_size);
 				game->worlds.append(world);
