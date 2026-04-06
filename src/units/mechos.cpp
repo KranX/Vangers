@@ -4309,7 +4309,7 @@ void VangerUnit::Quant(void)
 			last_send_time = SDL_GetTicks();
 			NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
 			int scr_size = round((fabs(curGMap -> xsize*sinTurnInvFlt) + fabs(curGMap -> ysize*cosTurnInvFlt))*.5);
-			NETWORK_OUT_STREAM < (unsigned char)(scr_size < 255 ? scr_size : 255);
+			NETWORK_OUT_STREAM < (unsigned short)(scr_size < 0xffff ? scr_size : 0xffff);
 			Send();
 			NETWORK_OUT_STREAM.end_body();
 			need_to_send_vanger = 0;
@@ -12669,7 +12669,7 @@ void VangerUnit::NetCreateVanger(uvsPassage* pp,uvsEscave* pe,uvsSpot* ps)
 	//NETWORK_OUT_STREAM.set_position(ViewX,ViewY,round(2.*(fabs(curGMap -> xsize*sinTurnInvFlt) + fabs(curGMap -> ysize*cosTurnInvFlt))*0.5));
 	NETWORK_OUT_STREAM.create_permanent_object(NetID,R_curr.x,R_curr.y,radius);
 	int scr_size = round((fabs(curGMap -> xsize*sinTurnInvFlt) + fabs(curGMap -> ysize*cosTurnInvFlt))*.5);
-	NETWORK_OUT_STREAM < (unsigned char)(scr_size < 255 ? scr_size : 255);
+	NETWORK_OUT_STREAM < (unsigned short)(scr_size < 0xffff ? scr_size : 0xffff);
 	Send();
 	NETWORK_OUT_STREAM.end_body();
 
@@ -14416,7 +14416,8 @@ void NetCheckRemovePlayer(PlayerData* p)
 
 		switch(my_server_data.GameType){
 			case MECHOSOMA:
-				if((p->body.MechosomaStat.ItemCount1 + p->body.MechosomaStat.ItemCount2) >= (my_server_data.Mechosoma.ProductQuantity1 + my_server_data.Mechosoma.ProductQuantity2)){
+				if(p->body.MechosomaStat.ItemCount1 >= my_server_data.Mechosoma.ProductQuantity1 &&
+				   p->body.MechosomaStat.ItemCount2 >= my_server_data.Mechosoma.ProductQuantity2){
 					RaceTxtBuff < p->name;
 					if(lang() == RUSSIAN) RaceTxtBuff < rPlayerWinnerSecondMessage;
 					else RaceTxtBuff < PlayerWinnerSecondMessage;

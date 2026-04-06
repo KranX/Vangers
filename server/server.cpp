@@ -1067,8 +1067,8 @@ int Player::receive() {
 			if (GET_OBJECT_TYPE(obj_ID) == NID_VANGER) {
 				x = obj->x;
 				y = obj->y;
-				y_half_size_of_screen = in_buffer.get_byte() << 1;
-				obj->body_size = in_buffer.event_size() - 16;
+				y_half_size_of_screen = in_buffer.get_word();
+				obj->body_size = in_buffer.event_size() - 17;
 				obj->body = new unsigned char[obj->body_size];
 				in_buffer.read(obj->body, obj->body_size);
 				world->process_create(!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj);
@@ -1148,8 +1148,8 @@ int Player::receive() {
 			if (GET_OBJECT_TYPE(obj_ID) == NID_VANGER) {
 				x = obj->x;
 				y = obj->y;
-				y_half_size_of_screen = in_buffer.get_byte() << 1;
-				int update_size = in_buffer.event_size() - 14;
+				y_half_size_of_screen = in_buffer.get_word();
+				int update_size = in_buffer.event_size() - 15;
 				if (update_size > obj->body_size)
 					SERVER_ERROR_NO_EXIT("Update body size is greater than create size", obj_ID);
 				in_buffer.read(obj->body, update_size);
