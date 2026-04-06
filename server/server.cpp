@@ -3,8 +3,8 @@
 
 #define LAG -3000
 //#define EVENTS_LOG
-#define MIN_SERVER_VERSION 1
-#define MAX_SERVER_VERSION 2
+#define MIN_SERVER_VERSION 3
+#define MAX_SERVER_VERSION 3
 
 #ifdef EVENTS_LOG
 XStream fout("lst", XS_OUT);
