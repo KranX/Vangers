@@ -139,9 +139,21 @@ static inline int track_front_step_runtime(int radius,double& accum)
 	return step;
 }
 
-static inline int hidden_turn_step_runtime(int move_angle)
+static inline int hidden_turn_step_runtime(int move_angle,double& accum)
 {
-	return (int)round(move_angle * XTCORE_FRAME_NORMAL);
+	if(!move_angle)
+		return 0;
+
+	accum += move_angle * XTCORE_FRAME_NORMAL;
+	int step;
+
+	if(accum > 0.0)
+		step = (int)floor(accum);
+	else
+		step = (int)ceil(accum);
+
+	accum -= step;
+	return step;
 }
 
 static inline int game_over_event_ticks(void)
@@ -666,6 +678,7 @@ void ActionUnit::CreateActionUnit(int nmodel/*Object& _model*/,int _status,const
 	NumCalcUnit = 0;
 
 	Count = 0;
+	HideTurnAccum = 0.0;
 	DeltaTraction = 128;
 
 	wProcess = &(EffD.DeformData[MECHOS_WATER_WAVE]);
@@ -782,7 +795,7 @@ void ActionUnit::HideAction(void)
 		if(MoveAngle < -MECHOS_ROT_DELTA) MoveAngle = -MECHOS_ROT_DELTA;
 	};
 
-	d_angle = hidden_turn_step_runtime(MoveAngle);
+	d_angle = hidden_turn_step_runtime(MoveAngle,HideTurnAccum);
 	Angle = rPI(Angle + d_angle);
 	vDirect = Vector(CurrSpeed,0,0) * DBM(Angle,Z_AXIS);
 
@@ -13601,7 +13614,7 @@ void InsectUnit::HideAction(void)
 		if(MoveAngle < -MECHOS_ROT_DELTA) MoveAngle = -MECHOS_ROT_DELTA;
 	};
 
-	d_angle = (int)round(MoveAngle * XTCORE_FRAME_NORMAL);
+	d_angle = hidden_turn_step_runtime(MoveAngle,HideTurnAccum);
 	Angle = rPI(Angle + d_angle);
 	vDirect = Vector(CurrSpeed,0,0) * DBM(Angle,Z_AXIS);
 

@@ -223,6 +223,7 @@ struct ActionUnit : Object
 	int PrevVisibility;
 
 	int Count;
+	double HideTurnAccum;
 
 	int WavePhase;
 	WaveProcess* wProcess;
