@@ -3480,7 +3480,7 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 					: camera_slope_min;
 	camera_vs += (double)(s - SlopeAngle)*camera_mis * XTCORE_FRAME_NORMAL;
 	camera_vs *= camera_drags*pow(0.97,camera_vs_min/(fabs(camera_vs) + 1e-10));
-	camera_s += camera_vs * XTCORE_FRAME_NORMAL;
+	camera_s += camera_vs;
 	SlopeAngle += (t = round(camera_s));
 	if(SlopeAngle < -SLOPE_MAX)
 		SlopeAngle = -SLOPE_MAX;
@@ -3494,7 +3494,7 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	camera_vt += (double)DistPi(camera_rotate_enable ? Turn : 0,TurnAngle)*camera_mit * XTCORE_FRAME_NORMAL;
 	camera_vt *= camera_dragt*pow(0.97,camera_vt_min/(fabs(camera_vt) + 1e-10));
 	camera_vi *= camera_dragi*pow(0.97,camera_vt_min/(fabs(camera_vi) + 1e-10));
-	camera_t += camera_vt * XTCORE_FRAME_NORMAL + camera_vi;
+	camera_t += camera_vt + camera_vi;
 	TurnAngle += (t = round(camera_t));
 	camera_t -= t;
 	if(RAM16 && (TurnSecX > curGMap -> xsize || SlopeAngle) && TurnAngle)
