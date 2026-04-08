@@ -4174,7 +4174,7 @@ void Object::skyfarmer_analysis(double dt)
 
 	V += F*dt;
 	W += (J_inv*K)*dt;
-	R += A_l2g * V;
+	R += A_l2g * V * dt;
 	DBM A_rot_inv = DBM(W,W.vabs()*(-dt));
 	A_g2l = A_rot_inv*A_g2l;
 	A_l2g = transpose(A_g2l);
