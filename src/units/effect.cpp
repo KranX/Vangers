@@ -1237,6 +1237,7 @@ void TargetParticleObject::InitParicle(int num)
 	NumParticle = num;
 	Data = new TargetParticleType[num];
 	FadeTime = FadeNum = 0;
+	FadeAccum = 0.0;
 };
 
 void TargetParticleObject::Free(void)
@@ -1270,9 +1271,16 @@ void TargetParticleObject::Quant(void)
 		if(Time == 0){
 			FadeTime = LifeTime - TARGET_PARTICLE_FADE_TIME;
 			FadeNum = CurrParticle / TARGET_PARTICLE_FADE_TIME;
+			FadeAccum = 0.0;
 		}else{
-			if(Time >= FadeTime * GAME_TIME_COEFF)
-				CurrParticle -= (int)round(FadeNum * XTCORE_FRAME_NORMAL);
+			if(Time >= FadeTime * GAME_TIME_COEFF){
+				FadeAccum += FadeNum * XTCORE_FRAME_NORMAL;
+				int fade_step = (int)floor(FadeAccum);
+				if(fade_step){
+					CurrParticle -= fade_step;
+					FadeAccum -= fade_step;
+				}
+			}
 		};
 	};
 	if(++Time > LifeTime * GAME_TIME_COEFF)
@@ -1417,6 +1425,7 @@ void TargetParticleObject::CreateParticle(const Vector& _vTarget,int _LifeTime,c
 	MapLevel = 1;
 	TargetType = type;
 	FadeTime = FadeNum = 0;
+	FadeAccum = 0.0;
 };
 
 void TargetParticleObject::AddVertex(const Vector& _vR,int _Color,int _Speed1,int _Speed2)

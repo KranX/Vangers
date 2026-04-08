@@ -165,6 +165,7 @@ struct TargetParticleObject : BaseObject
 	TargetParticleType* Data;
 	Vector vTarget;
 	int FadeTime,FadeNum;
+	double FadeAccum;
 
 	void InitParicle(int num);
 	void Init(StorageType* s);
