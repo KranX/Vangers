@@ -3585,6 +3585,8 @@ void InsectUnit::CreateInsect(void)
 	MaxHideSpeed = 3;
 	VisibleTargetAccumX = 0.0;
 	VisibleTargetAccumY = 0.0;
+	VisibleSeparationAccumX = 0.0;
+	VisibleSeparationAccumY = 0.0;
 	Target = R_curr + Vector(INSECT_RADIUS - RND(INSECT_RADIUS2),INSECT_RADIUS - RND(INSECT_RADIUS2),0);
 	if(!RND(InsectD.NumInsect[2]*INSECT_PRICE_DATA[2])) BeebType = 2;
 	else{
@@ -3667,6 +3669,9 @@ void InsectUnit::InitEnvironment(void)
 	ActionUnit* p;
 	int dx,dy;
 	int d,r,f;
+	int tx,ty;
+	double separation_dx = 0.0;
+	double separation_dy = 0.0;
 
 	ActionUnit::InitEnvironment();
 
@@ -3689,8 +3694,8 @@ void InsectUnit::InitEnvironment(void)
 						r = p->radius * 5;
 						if(d < r && r > 0){
 							f = MaxSpeed - MaxSpeed * d / r;
-							vDirect.x += (int)round(dx * (double)f / d * XTCORE_FRAME_NORMAL);
-							vDirect.y += (int)round(dy * (double)f / d * XTCORE_FRAME_NORMAL);
+							separation_dx += dx * (double)f / d * XTCORE_FRAME_NORMAL;
+							separation_dy += dy * (double)f / d * XTCORE_FRAME_NORMAL;
 							NumCalcUnit++;
 						};
 					};
@@ -3711,8 +3716,8 @@ void InsectUnit::InitEnvironment(void)
 							r = p->radius * 5;
 							if(d < r && r > 0){
 								f = MaxSpeed - MaxSpeed * d / r;
-								vDirect.x += (int)round(dx * (double)f / d * XTCORE_FRAME_NORMAL);
-								vDirect.y += (int)round(dy * (double)f / d * XTCORE_FRAME_NORMAL);
+								separation_dx += dx * (double)f / d * XTCORE_FRAME_NORMAL;
+								separation_dy += dy * (double)f / d * XTCORE_FRAME_NORMAL;
 								NumCalcUnit++;
 							};
 						};
@@ -3721,6 +3726,18 @@ void InsectUnit::InitEnvironment(void)
 			};
 			p = (ActionUnit*)(p->NextTypeList);
 		};
+
+		VisibleSeparationAccumX += separation_dx;
+		VisibleSeparationAccumY += separation_dy;
+
+		tx = VisibleSeparationAccumX > 0.0 ? (int)floor(VisibleSeparationAccumX) : (int)ceil(VisibleSeparationAccumX);
+		ty = VisibleSeparationAccumY > 0.0 ? (int)floor(VisibleSeparationAccumY) : (int)ceil(VisibleSeparationAccumY);
+
+		VisibleSeparationAccumX -= tx;
+		VisibleSeparationAccumY -= ty;
+
+		vDirect.x += tx;
+		vDirect.y += ty;
 	};
 };
 
@@ -3744,6 +3761,8 @@ void InsectUnit::Touch(GeneralObject* p)
 			R_curr.y = clip_mask_y/2 - RND(clip_mask_y);
 			VisibleTargetAccumX = 0.0;
 			VisibleTargetAccumY = 0.0;
+			VisibleSeparationAccumX = 0.0;
+			VisibleSeparationAccumY = 0.0;
 			cycleTor(R_curr.x,R_curr.y);
 			set_3D(SET_3D_CHOOSE_LEVEL,R_curr.x,R_curr.y,R_curr.z,0,-Angle,0);
 		case ID_BULLET:
@@ -3753,6 +3772,8 @@ void InsectUnit::Touch(GeneralObject* p)
 			R_curr.y = clip_mask_y/2 - RND(clip_mask_y);
 			VisibleTargetAccumX = 0.0;
 			VisibleTargetAccumY = 0.0;
+			VisibleSeparationAccumX = 0.0;
+			VisibleSeparationAccumY = 0.0;
 			cycleTor(R_curr.x,R_curr.y);
 			set_3D(SET_3D_CHOOSE_LEVEL,R_curr.x,R_curr.y,R_curr.z,0,-Angle,0);
 			break;
