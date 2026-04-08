@@ -88,6 +88,21 @@ static inline bool bullet_laser_draw_legacy_step(void)
 	return !(frame % bullet_laser_draw_ticks());
 }
 
+static inline void accumulate_runtime_vector_step(const Vector& legacy_step,double& accum_x,double& accum_y,double& accum_z,Vector& out_step)
+{
+	accum_x += legacy_step.x * XTCORE_FRAME_NORMAL;
+	accum_y += legacy_step.y * XTCORE_FRAME_NORMAL;
+	accum_z += legacy_step.z * XTCORE_FRAME_NORMAL;
+
+	out_step.x = accum_x > 0.0 ? (int)floor(accum_x) : (int)ceil(accum_x);
+	out_step.y = accum_y > 0.0 ? (int)floor(accum_y) : (int)ceil(accum_y);
+	out_step.z = accum_z > 0.0 ? (int)floor(accum_z) : (int)ceil(accum_z);
+
+	accum_x -= out_step.x;
+	accum_y -= out_step.y;
+	accum_z -= out_step.z;
+}
+
 static inline int machotine_laser_random_spread(void)
 {
 	return 3 - (int)RND(6);
@@ -2868,6 +2883,9 @@ void HordeObject::Quant(void)
 		switch(Mode){
 			case HORDE_RESTORE_MODE:
 				vDelta = Vector(0,0,0);
+				SteerAccumX = 0.0;
+				SteerAccumY = 0.0;
+				SteerAccumZ = 0.0;
 				radius8 = radius << 8;
 				vTarget = R_curr << 8;
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
@@ -2916,7 +2934,10 @@ void HordeObject::Quant(void)
 							
 							d = vTarget.vabs();
 							if(d){
-								vDelta += (vTarget*Precision / d) * XTCORE_FRAME_NORMAL;
+								Vector legacy_step, steer_step;
+								legacy_step = vTarget * Precision / d;
+								accumulate_runtime_vector_step(legacy_step,SteerAccumX,SteerAccumY,SteerAccumZ,steer_step);
+								vDelta += steer_step;
 								d = vDelta.vabs();
 								if(d > Speed) vDelta = vDelta * Speed / d;
 							};
@@ -2947,7 +2968,10 @@ void HordeObject::Quant(void)
 
 						d = vTarget.vabs();
 						if(d){
-							vDelta += (vTarget*Precision / d) * XTCORE_FRAME_NORMAL;
+							Vector legacy_step, steer_step;
+							legacy_step = vTarget * Precision / d;
+							accumulate_runtime_vector_step(legacy_step,SteerAccumX,SteerAccumY,SteerAccumZ,steer_step);
+							vDelta += steer_step;
 							d = vDelta.vabs();
 							if(d > Speed) vDelta = vDelta * Speed / d;
 						};
@@ -3003,7 +3027,10 @@ void HordeObject::Quant(void)
 
 					d = vTarget.vabs();
 					if(d){
-						vDelta += (vTarget*Precision / d) * XTCORE_FRAME_NORMAL;
+						Vector legacy_step, steer_step;
+						legacy_step = vTarget * Precision / d;
+						accumulate_runtime_vector_step(legacy_step,SteerAccumX,SteerAccumY,SteerAccumZ,steer_step);
+						vDelta += steer_step;
 						d = vDelta.vabs();
 						if(d > Speed) vDelta = vDelta * Speed / d;
 					}else vDelta = Vector(0,0,0);
@@ -3016,7 +3043,10 @@ void HordeObject::Quant(void)
 
 				d = vTarget.vabs();
 				if(d){
-					vDelta += (vTarget*Precision / d) * XTCORE_FRAME_NORMAL;
+					Vector legacy_step, steer_step;
+					legacy_step = vTarget * Precision / d;
+					accumulate_runtime_vector_step(legacy_step,SteerAccumX,SteerAccumY,SteerAccumZ,steer_step);
+					vDelta += steer_step;
 					d = vDelta.vabs();
 					if(d > Speed) vDelta = vDelta * Speed / d;
 				}else vDelta = Vector(0,0,0);
@@ -3083,6 +3113,9 @@ void HordeObject::CreateHorde(Vector v,int r,int z,int cZ,VangerUnit* own)
 	Mode = HORDE_RESTORE_MODE;
 	NumParticle = HORDE_PARTICLE_NUM;
 	vDelta = Vector(0,0,0);
+	SteerAccumX = 0.0;
+	SteerAccumY = 0.0;
+	SteerAccumZ = 0.0;
 	R_curr = v;
 	cycleTor(R_curr.x,R_curr.y);
 	GetVisible();

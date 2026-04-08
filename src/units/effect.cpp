@@ -66,6 +66,21 @@ static inline bool particle_generator_legacy_step(int time_left)
 	return time_left > 0 && (time_left % particle_generator_ticks(1)) == 0;
 }
 
+static inline void accumulate_runtime_vector_step(const Vector& legacy_step,double& accum_x,double& accum_y,double& accum_z,Vector& out_step)
+{
+	accum_x += legacy_step.x * XTCORE_FRAME_NORMAL;
+	accum_y += legacy_step.y * XTCORE_FRAME_NORMAL;
+	accum_z += legacy_step.z * XTCORE_FRAME_NORMAL;
+
+	out_step.x = accum_x > 0.0 ? (int)floor(accum_x) : (int)ceil(accum_x);
+	out_step.y = accum_y > 0.0 ? (int)floor(accum_y) : (int)ceil(accum_y);
+	out_step.z = accum_z > 0.0 ? (int)floor(accum_z) : (int)ceil(accum_z);
+
+	accum_x -= out_step.x;
+	accum_y -= out_step.y;
+	accum_z -= out_step.z;
+}
+
 void MakeColorTable(int fc,int lc,uchar* d,uchar* pal)
 {
 	int ind;
@@ -1931,6 +1946,9 @@ void ParticleGenerator::CreateGenerator(Vector vC,Vector vT,Vector vD,int mode)
 			break;
 	};
 	R_prev = R_curr;
+	SteerAccumX = 0.0;
+	SteerAccumY = 0.0;
+	SteerAccumZ = 0.0;
 	Status = 0;
 };
 
@@ -1977,7 +1995,10 @@ void ParticleGenerator::Quant(void)
 
 	d = vT.vabs();
 	if(d){
-		vDelta += (vT * Precision / d) * XTCORE_FRAME_NORMAL;
+		Vector legacy_step, steer_step;
+		legacy_step = vT * Precision / d;
+		accumulate_runtime_vector_step(legacy_step,SteerAccumX,SteerAccumY,SteerAccumZ,steer_step);
+		vDelta += steer_step;
 		d = vDelta.vabs();
 		if(!(MoveMode & PG_MODE_TRUE_MASS) || d > Speed) vDelta = vDelta * Speed / d;
 	};

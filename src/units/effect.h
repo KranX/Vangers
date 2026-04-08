@@ -194,6 +194,7 @@ const int PG_STYLE_REINCAR = 2;
 struct ParticleGenerator : BaseObject
 {
 	Vector vTarget,vDelta;
+	double SteerAccumX,SteerAccumY,SteerAccumZ;
 	int Speed,Precision;
 	int MoveMode,TargetMode;
 	int ParticleStorage,ParticleType;
