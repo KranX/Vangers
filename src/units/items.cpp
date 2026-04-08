@@ -697,7 +697,7 @@ void StuffObject::Quant(void)
 					if(ActD.ThreallDestroy){
 						if(LightData) LightData->set_position(R_curr.x,R_curr.y,512);
 						else LightData = MapD.CreateLight(R_curr.x,R_curr.y,512,80,63,LIGHT_TYPE::DYNAMIC);
-						if(R_curr.z < 255) impulse(Vector(0,0,64),RND(15),RND(8));
+						if(R_curr.z < 255) continuous_impulse(Vector(0,0,64),RND(15),RND(8));
 					}else{
 						if((dynamic_state & GROUND_COLLISION) && GetTouchSensor("SIGN") && ActD.FunctionThreallDestroyActive){
 							ActD.ThreallDestroy = 1;
@@ -1757,9 +1757,9 @@ void BulletObject::Touch(GeneralObject* p)
 
 		if(BulletMode & BULLET_CONTROL_MODE::IMPULSE){
 			if(/*(BulletMode & BULLET_CONTROL_MODE::FLY) && */(ShowID != BULLET_SHOW_TYPE_ID::CRATER))
-				((VangerUnit*)(p))->impulse(vDelta,Power / BULLET_IMPULSE_POWER,Power / BULLET_IMPULSE_ARM);
+				((VangerUnit*)(p))->instant_impulse(vDelta,Power / BULLET_IMPULSE_POWER,Power / BULLET_IMPULSE_ARM);
 			else{
-				((VangerUnit*)(p))->impulse(Vector(0,0,64),4*Power / BULLET_IMPULSE_POWER,4*Power / BULLET_IMPULSE_ARM);
+				((VangerUnit*)(p))->instant_impulse(Vector(0,0,64),4*Power / BULLET_IMPULSE_POWER,4*Power / BULLET_IMPULSE_ARM);
 			};
 		};
 
@@ -2012,7 +2012,7 @@ void JumpBallObject::Quant(void)
 				vCheck = Vector(getDistX(R_curr.x,g->vR.x),getDistY(R_curr.y,g->vR.y),R_curr.z - g->vR.z);
 				l = vCheck.vabs();
 				if(l < PALLADIUM_RADIUS)
-					impulse(vCheck,30 * (PALLADIUM_RADIUS - l) / PALLADIUM_RADIUS,0);
+					continuous_impulse(vCheck,30 * (PALLADIUM_RADIUS - l) / PALLADIUM_RADIUS,0);
 				break;
 			};
 			g = g->Next;
@@ -2069,7 +2069,7 @@ void JumpBallObject::Touch(GeneralObject* p)
 			SOUND_BARREL_DESTROY(getDistX(ActD.Active->R_curr.x,R_curr.x))
 		if(Mode == BULLET_TARGET_MODE::CONTROL){
 			EffD.CreateExplosion(R_curr + Vector(0,0,20),EFF_EXPLOSION02);
-			((VangerUnit*)(p))->impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),8 + RND(15),20);
+			((VangerUnit*)(p))->instant_impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),8 + RND(15),20);
 			if(ActD.Active)
 				SOUND_BARREL_DESTROY(getDistX(ActD.Active->R_curr.x,R_curr.x))
 		}else{
@@ -2629,7 +2629,7 @@ void FishWarrior::Quant(void)
 				v = Vector(getDistX(R_curr.x,g->vR.x),getDistY(R_curr.y,g->vR.y),R_curr.z - g->vR.z);
 				d = v.vabs();
 				if(d < PALLADIUM_RADIUS)
-					impulse(v,30 * (PALLADIUM_RADIUS - d) / PALLADIUM_RADIUS,0);
+					continuous_impulse(v,30 * (PALLADIUM_RADIUS - d) / PALLADIUM_RADIUS,0);
 				break;
 			};
 			g = g->Next;

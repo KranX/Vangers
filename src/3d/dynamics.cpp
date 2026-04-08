@@ -2461,12 +2461,31 @@ void Object::impulse(int side)
 		V += F_nitro;
 	}
 }
-void Object::impulse(int angle,int distance,int slope,int lever_arm)
+void Object::instant_impulse(int angle,int distance,int slope,int lever_arm)
 {
-	impulse(DBV(-Sin(slope)*Sin(angle),-Sin(slope)*Cos(angle),Cos(slope)),distance,lever_arm);
+	instant_impulse(DBV(-Sin(slope)*Sin(angle),-Sin(slope)*Cos(angle),Cos(slope)),distance,lever_arm);
 }
 
-void Object::impulse(const DBV& direct,int distance,int lever_arm) {
+void Object::instant_impulse(const DBV& direct,int distance,int lever_arm) {
+	if(R.z > 450)
+		return;
+	DBV F = A_g2l*direct;
+	F.norm((double)distance*k_distance_to_force*dt_impulse/sqrt(m));
+	V += F;
+	if(lever_arm) {
+		DBV r = DBV(random(2*lever_arm) - lever_arm,
+					random(2*lever_arm) - lever_arm,
+					random(2*lever_arm) - lever_arm);
+		W += J_inv*(r % F);
+	}
+}
+
+void Object::continuous_impulse(int angle,int distance,int slope,int lever_arm)
+{
+	continuous_impulse(DBV(-Sin(slope)*Sin(angle),-Sin(slope)*Cos(angle),Cos(slope)),distance,lever_arm);
+}
+
+void Object::continuous_impulse(const DBV& direct,int distance,int lever_arm) {
 	if(R.z > 450)
 		return;
 	DBV F = A_g2l*direct;
@@ -4958,4 +4977,3 @@ DBV interpolation_factors(double t,double x[3])
 			  (-t22+t23)*t7*t13+(-(t20-t1)*t7*t13+(x[2]-x[0])*t25*t)*t,
 			(t2-t4)*t7*t13+(-(-t3+t1)*t7*t13+(-x[1]+x[0])*t25*t)*t);
 }
-

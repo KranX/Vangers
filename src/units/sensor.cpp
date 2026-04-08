@@ -2304,7 +2304,7 @@ void TntCreature::Destroy(void)
 						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
 						d = vCheck.vabs();
 						if(d < TNT_POWER_RADIUS && d > 0){
-							p->impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
+							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
 							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
 						};
 					};		
@@ -2326,7 +2326,7 @@ void TntCreature::Destroy(void)
 						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
 						d = vCheck.vabs();
 						if(d < TNT_POWER_RADIUS && d > 0){
-							p->impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
+							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
 							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
 						};
 					};		
@@ -2348,7 +2348,7 @@ void TntCreature::Destroy(void)
 						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
 						d = vCheck.vabs();
 						if(d < TNT_POWER_RADIUS && d > 0){
-							p->impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
+							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
 							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
 						};
 					};		
@@ -2574,7 +2574,7 @@ void TntCreature::NetDestroy(int fl)
 						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
 						d = vCheck.vabs();
 						if(d < 2*TNT_POWER_RADIUS && d > 0){
-							p->impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS*2 - d) / d,0);
+							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS*2 - d) / d,0);
 							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
 						};
 					};		
@@ -2596,7 +2596,7 @@ void TntCreature::NetDestroy(int fl)
 						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
 						d = vCheck.vabs();
 						if(d < TNT_POWER_RADIUS && d > 0){
-							p->impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
+							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
 							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
 						};
 					};		
@@ -2618,7 +2618,7 @@ void TntCreature::NetDestroy(int fl)
 						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
 						d = vCheck.vabs();
 						if(d < TNT_POWER_RADIUS && d > 0){
-							p->impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
+							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
 							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
 						};
 					};		
@@ -2708,7 +2708,7 @@ void TntStaticObject::Touch(GeneralObject* obj)
 							k = dist < 30 ? impulse_of_tuns_explosion : impulse_of_tuns_explosion*30/dist;
 							// Tun's explosion impulse
 #ifndef TEST_TRACK
-							p->impulse(vDir,k,0);
+							p->instant_impulse(vDir,k,0);
 #endif
 						};
 					};
@@ -2827,7 +2827,7 @@ void CheckPointEngine::Touch(GeneralObject* obj,SensorDataType* p)
 			MainLocation->Enable = 1;
 	}else{
 		if(WrongCheckMode & CHECK_POINT_IMPULSE)
-			v->impulse(DBV(32 - RND(64),32 - RND(64),32 - RND(64)),RND(5),RND(5));
+			v->instant_impulse(DBV(32 - RND(64),32 - RND(64),32 - RND(64)),RND(5),RND(5));
 		if(WrongCheckMode & CHECK_POINT_RESET){
 			for(i = 0;i < NumCheckSensor;i++){
 				if(CheckLocation[i]->Type == EngineTypeList::TIRISTOR) ((TiristorEngine*)(CheckLocation[i]))->CloseDoor();

@@ -4941,7 +4941,7 @@ void VangerUnit::AutomaticTouchSensor(SensorDataType* p) //znfo !!!
 				};
 				break;
 			case SensorTypeList::IMPULSE:
-				impulse(p->vData,p->Power,0);				
+				continuous_impulse(p->vData,p->Power,0);
 				break;
 			case SensorTypeList::SENSOR:
 				if(!(Status & SOBJ_ACTIVE)){
@@ -5000,7 +5000,7 @@ void VangerUnit::StopTouchSensor(SensorDataType* p)
 				}else ExternalSensor = p;
 				break;
 			case SensorTypeList::IMPULSE:
-				impulse(p->vData,p->Power,0);
+				continuous_impulse(p->vData,p->Power,0);
 				break;
 		};
 	}else{
@@ -5044,8 +5044,8 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 			};
 			break;
 		case SensorTypeList::IMPULSE:
-//			impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),20,0);
-			impulse(p->vData,p->Power,0);
+//			continuous_impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),20,0);
+			continuous_impulse(p->vData,p->Power,0);
 			if(abs(PrevImpuseFrame - frame) >= impulse_sensor_sound_cooldown_frames()){
 				SOUND_KIDPUSH();
 				PrevImpuseFrame = frame;
@@ -5328,8 +5328,8 @@ void VangerUnit::SensorQuant(void)
 									uvsCheckKronIventTabuTask(UVS_KRON_EVENT::ARK_NOY,0);
 							};
 						}else{
-							impulse(Vector(32 - RND(64),32 - RND(64),64),30,0);
-							SOUND_FAILEDPASS() 
+							instant_impulse(Vector(32 - RND(64),32 - RND(64),64),30,0);
+							SOUND_FAILEDPASS()
 						};
 					};
 					break;
@@ -5367,8 +5367,8 @@ void VangerUnit::SensorQuant(void)
 						ExternalObject = ExternalSensor;
 						switch_analysis(1);
 						StopCDTRACK();
-					}else impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),RND(30),RND(10));					
-					break;				
+					}else instant_impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),RND(30),RND(10));
+					break;
 			};
 		};
 	};
@@ -5522,7 +5522,7 @@ void VangerUnit::SensorQuant(void)
 					ExternalSensor = ExternalObject;
 				}else{
 					if(ExternalTime < EXTERNAL_IMPULSE_TIME)
-						impulse(ExternalAngle,8 * ExternalTime / EXTERNAL_IMPULSE_TIME);
+						continuous_impulse(ExternalAngle,8 * ExternalTime / EXTERNAL_IMPULSE_TIME);
 				};
 			};
 			break;
@@ -9395,8 +9395,8 @@ void VangerFunctionType::Quant(void)
 		switch(ID){
 			case PROTRACTOR_JESTEROID:
 				if(ActD.pfActive && Time < LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)){
-					if(ActD.pfActive->R_curr.z < 400) ActD.pfActive->impulse(Vector(0,0,64),RND(25),0);
-					else ActD.pfActive->impulse(Vector(0,0,0),1,RND(50));
+					if(ActD.pfActive->R_curr.z < 400) ActD.pfActive->continuous_impulse(Vector(0,0,64),RND(25),0);
+					else ActD.pfActive->continuous_impulse(Vector(0,0,0),1,RND(50));
 					SoundFlag |= SoundCopterig;
 				};
 				break;
@@ -12509,7 +12509,7 @@ void VangerUnit::DestroyEnvironment(void)
 			vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
 			d = vCheck.vabs();
 			if(d < ml){
-				p->impulse(vCheck,30*(ml - d) / ml,0);
+				p->instant_impulse(vCheck,30*(ml - d) / ml,0);
 				p->BulletCollision((MaxEnergy / ml)*(ml - d),NULL);
 			};
 		};		

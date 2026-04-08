@@ -388,8 +388,10 @@ struct Object : BaseObject {
 	void set_active(int on);
 	void controls(int mode,int param = 0);
 	void set_3D(int mode,int x,int y,int z,int dz,int angle,int speed);
-	void impulse(int angle,int distance,int slope = Pi/4,int lever_arm = 0);
-	void impulse(const DBV& direct,int distance,int lever_arm = 0);
+	void instant_impulse(int angle,int distance,int slope = Pi/4,int lever_arm = 0);
+	void instant_impulse(const DBV& direct,int distance,int lever_arm = 0);
+	void continuous_impulse(int angle,int distance,int slope = Pi/4,int lever_arm = 0);
+	void continuous_impulse(const DBV& direct,int distance,int lever_arm = 0);
 	void jump();
 	void direct_keyboard_control();
 	void direct_joystick_control();
@@ -410,6 +412,9 @@ struct Object : BaseObject {
 
 	void steer(int dir);
 	void motor_control(int dir);
+	// Dedicated control-side impulse helper for mech side/front boosts.
+	// Unlike instant_impulse()/continuous_impulse(), this is not a generic
+	// directional knockback API and should stay scoped to movement controls.
 	void impulse(int side);
 	void brake_on();
 
