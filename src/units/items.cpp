@@ -3008,7 +3008,7 @@ void HordeObject::Quant(void)
 						if(d > Speed) vDelta = vDelta * Speed / d;
 					}else vDelta = Vector(0,0,0);
 
-					R_curr += vDelta * XTCORE_FRAME_NORMAL;
+					R_curr += vDelta;
 					cycleTor(R_curr.x,R_curr.y);
 				};
 			}else{
@@ -3016,12 +3016,12 @@ void HordeObject::Quant(void)
 
 				d = vTarget.vabs();
 				if(d){
-					vDelta += vTarget*Precision / d;
+					vDelta += (vTarget*Precision / d) * XTCORE_FRAME_NORMAL;
 					d = vDelta.vabs();
 					if(d > Speed) vDelta = vDelta * Speed / d;
 				}else vDelta = Vector(0,0,0);
 
-				R_curr += vDelta * XTCORE_FRAME_NORMAL;
+				R_curr += vDelta;
 				cycleTor(R_curr.x,R_curr.y);
 			};
 		};
