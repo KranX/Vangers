@@ -656,7 +656,9 @@ void SimpleParticleType::QuantRingOfLord(Vector v,int s,int c)
 void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 {
 	int tx,ty,d;
+	Vector local_drift;
 	vD = Vector(0,0,0);
+	local_drift = Vector(0,0,0);
 
 	tx = -(vR.x - _c.x);
 	ty = -(vR.y - _c.y);
@@ -675,15 +677,16 @@ void SimpleParticleType::QuantP(Vector _c, Vector _n, int s,int c)
 		ty += SPTorYSize;
 
 	d = abs(tx) + abs(ty);
-	if(d > 100 && !RND((int)round(4 / XTCORE_FRAME_NORMAL))){
-		vD.x = tx * s / d;
-		vD.y = ty * s / d;
+	if(d > 100 && !RND(4)){
+		local_drift.x = tx * s / d;
+		local_drift.y = ty * s / d;
 	};
-	
-	vD += _n;
-	vD.x += ((3 - RND(7))<<8);
-	vD.y += ((3 - RND(7))<<8);
-	vR += vD * XTCORE_FRAME_NORMAL;
+
+	local_drift.x += ((3 - RND(7))<<8);
+	local_drift.y += ((3 - RND(7))<<8);
+	vD = _n + local_drift;
+	vR += _n;
+	vR += local_drift * XTCORE_FRAME_NORMAL;
 
 	vR.x &= PTrack_mask_x;
 	vR.y &= PTrack_mask_y;
