@@ -3583,6 +3583,8 @@ void InsectUnit::CreateInsect(void)
 {
 	MaxSpeed = 5;
 	MaxHideSpeed = 3;
+	VisibleTargetAccumX = 0.0;
+	VisibleTargetAccumY = 0.0;
 	Target = R_curr + Vector(INSECT_RADIUS - RND(INSECT_RADIUS2),INSECT_RADIUS - RND(INSECT_RADIUS2),0);
 	if(!RND(InsectD.NumInsect[2]*INSECT_PRICE_DATA[2])) BeebType = 2;
 	else{
@@ -3635,8 +3637,19 @@ void InsectUnit::Quant(void)
 		d = (int)(sqrt(dx*(double)dx + dy*(double)dy));
 		d <<= 2;
 		if(d){
-			vDirect.x += dx * MaxSpeed / d * XTCORE_FRAME_NORMAL;
-			vDirect.y += dy * MaxSpeed / d * XTCORE_FRAME_NORMAL;
+			int tx,ty;
+
+			VisibleTargetAccumX += dx * (double)MaxSpeed / d * XTCORE_FRAME_NORMAL;
+			VisibleTargetAccumY += dy * (double)MaxSpeed / d * XTCORE_FRAME_NORMAL;
+
+			tx = VisibleTargetAccumX > 0.0 ? (int)floor(VisibleTargetAccumX) : (int)ceil(VisibleTargetAccumX);
+			ty = VisibleTargetAccumY > 0.0 ? (int)floor(VisibleTargetAccumY) : (int)ceil(VisibleTargetAccumY);
+
+			VisibleTargetAccumX -= tx;
+			VisibleTargetAccumY -= ty;
+
+			vDirect.x += tx;
+			vDirect.y += ty;
 		};
 
 		if(NumCalcUnit) vDirect /= NumCalcUnit;
@@ -3729,6 +3742,8 @@ void InsectUnit::Touch(GeneralObject* p)
 			MapD.CreateCrater(R_curr,MAP_POINT_CRATER03,Angle);
 			R_curr.x = clip_mask_x/2 - RND(clip_mask_x);
 			R_curr.y = clip_mask_y/2 - RND(clip_mask_y);
+			VisibleTargetAccumX = 0.0;
+			VisibleTargetAccumY = 0.0;
 			cycleTor(R_curr.x,R_curr.y);
 			set_3D(SET_3D_CHOOSE_LEVEL,R_curr.x,R_curr.y,R_curr.z,0,-Angle,0);
 		case ID_BULLET:
@@ -3736,6 +3751,8 @@ void InsectUnit::Touch(GeneralObject* p)
 			MapD.CreateCrater(R_curr,MAP_POINT_CRATER03,Angle);
 			R_curr.x = clip_mask_x/2 - RND(clip_mask_x);
 			R_curr.y = clip_mask_y/2 - RND(clip_mask_y);
+			VisibleTargetAccumX = 0.0;
+			VisibleTargetAccumY = 0.0;
 			cycleTor(R_curr.x,R_curr.y);
 			set_3D(SET_3D_CHOOSE_LEVEL,R_curr.x,R_curr.y,R_curr.z,0,-Angle,0);
 			break;
