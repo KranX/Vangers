@@ -90,7 +90,7 @@ static inline bool bullet_laser_draw_legacy_step(void)
 
 static inline int machotine_laser_random_spread(void)
 {
-	return (int)round((3 - (int)RND(6)) / GAME_TIME_COEFF);
+	return 3 - (int)RND(6);
 }
 
 static inline int bullet_target_steer_ticks(void)
@@ -1452,7 +1452,7 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = n->Speed;
-	if(BulletMode & BULLET_CONTROL_MODE::SPEED) Speed += (int)round(p->RealSpeed / GAME_TIME_COEFF);
+	if(BulletMode & BULLET_CONTROL_MODE::SPEED) Speed += p->RealSpeed;
 
 	if(BulletID == BULLET_TYPE_ID::LASER)
 	{
@@ -1592,7 +1592,7 @@ void BulletObject::Event(int type)
 		case BULLET_EVENT_ID::TOUCH:
 			switch(ShowID){
 				case BULLET_SHOW_TYPE_ID::PARTICLE:
-					R_prev = R_curr - vDelta;
+					R_prev = R_curr - vDelta * XTCORE_FRAME_NORMAL;
 					R_prev.x = XCYCL(R_prev.x);
 					R_prev.y = YCYCL(R_prev.y);
 					for(i = 0;i < 6;i++){
@@ -1670,7 +1670,7 @@ void BulletObject::TimeOutQuant(void)
 	};
 
 	vTail = R_curr;
-	R_curr += vDelta;
+	R_curr += vDelta * XTCORE_FRAME_NORMAL;
 	cycleTor(R_curr.x,R_curr.y);	
 
 	Time--;
@@ -1685,7 +1685,7 @@ void BulletObject::TimeOutQuant(void)
 				if(d < PALLADIUM_RADIUS){
 					vDelta = Vector(Speed,0,0)*DBM(PI/2 + v.psi(),Z_AXIS);
 					R_curr = vTail;
-					R_curr += vDelta;
+					R_curr += vDelta * XTCORE_FRAME_NORMAL;
 					cycleTor(R_curr.x,R_curr.y);
 				};
 				break;
@@ -1799,7 +1799,10 @@ void BulletObject::DrawQuant(void)
 			EffD.FireBallData[ShowType].Show(tx,ty,R_curr.z,s,FrameCount);
 			EffD.FireBallData[ShowType].CheckOut(FrameCount);
 			if(LightData) 
-				LightData->set_position(XCYCL(R_curr.x + vDelta.x),YCYCL(R_curr.y + vDelta.y),R_curr.z);
+			{
+				Vector step = vDelta * XTCORE_FRAME_NORMAL;
+				LightData->set_position(XCYCL(R_curr.x + step.x),YCYCL(R_curr.y + step.y),R_curr.z);
+			}
 			else 
 				LightData = MapD.CreateLight(R_curr.x,R_curr.y,R_curr.z,40,32,LIGHT_TYPE::DYNAMIC);
 			break;
@@ -1984,9 +1987,9 @@ void JumpBallObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	}else{
 		vCheck = Vector(n->Speed,0,0)*p->mFire;
 	};
-	vCheck *= n->LifeTime + Owner->Speed;
+	int legacy_lifetime = (int)round(n->LifeTime * XTCORE_FRAME_NORMAL);
+	vCheck *= legacy_lifetime + Owner->Speed;
 	vCheck /= n->Speed;
-	vCheck /= (int)GAME_TIME_COEFF;
 	precise_impulse(R_curr,XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y));
 };
 
@@ -2443,7 +2446,7 @@ void WorldBulletTemplate::Init(Parser& in)
 
 	if(BulletID != BULLET_TYPE_ID::CHAIN_GUN){
 		in.search_name("Speed");
-		Speed = (int)round(in.get_int() / GAME_TIME_COEFF); // fps fix
+		Speed = in.get_int();
 		in.search_name("ShowID");
 		name = in.get_name();
 		ShowID = Name2Int(name,BULLET_SHOW_ID_NAME,MAX_BULLET_SHOW_ID_NAME);
@@ -2452,7 +2455,7 @@ void WorldBulletTemplate::Init(Parser& in)
 		in.search_name("ExtentionShowType");
 		ExtShowType = in.get_int();
 		in.search_name("Precision");
-		Precision = (int)round(in.get_int() / GAME_TIME_COEFF); // fps fix
+		Precision = in.get_int();
 		in.search_name("TargetMode");
 		name = in.get_name();
 		TargetMode = Name2Int(name,BULLET_TARGET_MODE_NAME,MAX_BULLET_TARGET_MODE_NAME);

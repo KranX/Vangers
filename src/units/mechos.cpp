@@ -11701,7 +11701,7 @@ void VangerUnit::WeaponGenerator(void)
 				GunSlotData[ItemMatrix->nSlot[i]].OpenGun(pp);
 				if(pp->pData->WaitTime) WeaponDelta += pp->pData->Power / pp->pData->WaitTime;
 				else WeaponDelta += pp->pData->Power;
-				d = pp->pData->LifeTime * pp->pData->Speed;
+				d = (int)round(pp->pData->LifeTime * XTCORE_FRAME_NORMAL * pp->pData->Speed);
 				if(d < AttackRadius) AttackRadius = d;
 			};
 		};
@@ -11779,7 +11779,7 @@ int GunSlot::CheckTarget(ActionUnit* p)
 	if(pData->BulletMode & BULLET_CONTROL_MODE::SPEED) v = pData->Speed + Owner->Speed;
 	else v = pData->Speed;
 
-	d = v * pData->LifeTime;
+	d = (int)round(v * pData->LifeTime * XTCORE_FRAME_NORMAL);
 	vStart = Owner->R_curr;
 
 	aiTargetObject = NULL;
