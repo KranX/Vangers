@@ -275,6 +275,7 @@ struct TrackUnit : ActionUnit , TrackLinkType
 	int EnvirReaction,TargetReaction;
 
 	int NullTime;
+	double FrontStepAccum;
 
 	char MoveDir,FrontDir;
 	BranchType* PrevBranch;

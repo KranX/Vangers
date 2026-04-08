@@ -123,15 +123,19 @@ static inline int traction_low_state_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
-static inline int track_front_step_runtime(int radius)
+static inline int track_front_step_runtime(int radius,double& accum)
 {
 	int legacy_step = radius / 12;
 	if(!legacy_step)
+	{
+		accum = 0.0;
 		return 0;
+	}
 
-	int step = (int)round(legacy_step * XTCORE_FRAME_NORMAL);
-	if(!step)
-		return legacy_step > 0 ? 1 : -1;
+	accum += legacy_step * XTCORE_FRAME_NORMAL;
+	int step = (int)floor(accum);
+	if(step > 0)
+		accum -= step;
 	return step;
 }
 
@@ -1866,6 +1870,7 @@ void TrackUnit::CreateTrackUnit(void)
 	FrontPoint.pPrevLink = pPrevLink;
 	FrontPoint.pBranch = pBranch;
 	FrontPoint.pNode = pNode;
+	FrontStepAccum = 0.0;
 
 	PrevBranch = pBranch;
 
@@ -1967,6 +1972,7 @@ void TrackUnit::TrackQuant(void)
 			};
 			FrontPoint.PointStatus = TRK_IN_NODE;
 		};
+		FrontStepAccum = 0.0;
 		if(SpeedDir != 0) OtherFlag &= ~MECHOS_RECALC_FRONT;
 	};
 };
@@ -1974,7 +1980,7 @@ void TrackUnit::TrackQuant(void)
 void TrackUnit::DirectQuant(void)
 {
 	int d;
-	const int front_step = track_front_step_runtime(radius);
+	const int front_step = track_front_step_runtime(radius,FrontStepAccum);
 	if(SpeedDir != 0){
 //		if(MoveDir == -1) ErrH.Abort("Bad Move Direction");
 //		if(pNode != pBranch->pBeg && pNode != pBranch->pEnd) ErrH.Abort("Bad Branch Link");
@@ -1986,13 +1992,15 @@ void TrackUnit::DirectQuant(void)
 				FrontPoint.pBranch = pBranch;
 				FrontPoint.pNode = pNode;
 
-					if(SpeedDir > 0){
-						if(MoveDir) FrontPoint.AddLink(front_step);
-						else FrontPoint.DecLink(front_step);
-					}else{
-						if(MoveDir) FrontPoint.DecLink(front_step);
-						else FrontPoint.AddLink(front_step);
-					};
+					if(front_step){
+						if(SpeedDir > 0){
+							if(MoveDir) FrontPoint.AddLink(front_step);
+							else FrontPoint.DecLink(front_step);
+						}else{
+							if(MoveDir) FrontPoint.DecLink(front_step);
+							else FrontPoint.AddLink(front_step);
+						};
+					}
 
 				if((TargetPoint.PointStatus & TRK_BRANCH_MASK) && pBranch == TargetPoint.pBranch){
 					if(TargetPoint.pNextLink <= FrontPoint.pNextLink){
@@ -2040,32 +2048,36 @@ void TrackUnit::DirectQuant(void)
 						pPrevLink = FrontPoint.pPrevLink;
 						pBranch = FrontPoint.pBranch;
 
-					if(SpeedDir > 0){
-						if(MoveDir) FrontPoint.AddLink(front_step);
-						else FrontPoint.DecLink(front_step);
-					}else{
-						if(MoveDir) FrontPoint.DecLink(front_step);
-						else FrontPoint.AddLink(front_step);
-					};
+					if(front_step){
+						if(SpeedDir > 0){
+							if(MoveDir) FrontPoint.AddLink(front_step);
+							else FrontPoint.DecLink(front_step);
+						}else{
+							if(MoveDir) FrontPoint.DecLink(front_step);
+							else FrontPoint.AddLink(front_step);
+						};
+					}
 						FrontPoint.PointStatus = TRK_WAIT_BRANCH;
 					}else FrontPoint.PointStatus = TRK_IN_NODE;
 				}else{
 //					if(pBranch != PrevBranch)
 //						ErrH.Abort("Bad Prev Branch");
 
-					if(SpeedDir > 0){
-						if(MoveDir){
-							if(CheckAddLink(pNextLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+					if(front_step){
+						if(SpeedDir > 0){
+							if(MoveDir){
+								if(CheckAddLink(pNextLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							}else{
+								if(CheckDecLink(pPrevLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							};
 						}else{
-							if(CheckDecLink(pPrevLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							if(MoveDir){
+								if(CheckDecLink(pPrevLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							}else{
+								if(CheckAddLink(pNextLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							};
 						};
-					}else{
-						if(MoveDir){
-							if(CheckDecLink(pPrevLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
-						}else{
-							if(CheckAddLink(pNextLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
-						};
-					};
+					}
 				};
 				break;
 			case TRK_WAIT_BRANCH:
@@ -2091,13 +2103,15 @@ void TrackUnit::DirectQuant(void)
 						pPrevLink = FrontPoint.pPrevLink;
 						pBranch = FrontPoint.pBranch;
 
-						if(SpeedDir > 0){
-							if(MoveDir) FrontPoint.AddLink(front_step);
-							else FrontPoint.DecLink(front_step);
-						}else{
-							if(MoveDir) FrontPoint.DecLink(front_step);
-							else FrontPoint.AddLink(front_step);
-						};
+						if(front_step){
+							if(SpeedDir > 0){
+								if(MoveDir) FrontPoint.AddLink(front_step);
+								else FrontPoint.DecLink(front_step);
+							}else{
+								if(MoveDir) FrontPoint.DecLink(front_step);
+								else FrontPoint.AddLink(front_step);
+							};
+						}
 						FrontPoint.PointStatus = TRK_WAIT_BRANCH;
 					};
 				};
@@ -14310,6 +14324,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	FrontPoint.pPrevLink = pPrevLink;
 	FrontPoint.pBranch = pBranch;
 	FrontPoint.pNode = pNode;
+	FrontStepAccum = 0.0;
 	PrevBranch = pBranch;
 	OtherFlag = MECHOS_RECALC_FRONT | MECHOS_TARGET_MOVE;
 	CheckWayCount = MaxWayCount = 50;
