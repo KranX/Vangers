@@ -3078,7 +3078,7 @@ void HordeObject::CreateHorde(Vector v,int r,int z,int cZ,VangerUnit* own)
 {
 	ID = ID_HORDE;
 	Speed = 10 / GAME_TIME_COEFF;
-	Precision = 7 / GAME_TIME_COEFF;
+	Precision = 7;
 	Power = (int)round(((50 << 16) / UnitGlobalTime) / GAME_TIME_COEFF);
 	Mode = HORDE_RESTORE_MODE;
 	NumParticle = HORDE_PARTICLE_NUM;
