@@ -3456,28 +3456,28 @@ void camera_impulse(int amplitude_8)
 void camera_quant()
 {
 	int t, t2;
-	camera_x += camera_vx;
-	ViewX += (t = round(camera_x)) * XTCORE_FRAME_NORMAL;
+	camera_x += camera_vx * XTCORE_FRAME_NORMAL;
+	ViewX += (t = round(camera_x));
 	camera_x -= t;
 
-	camera_y += camera_vy;
-	ViewY += (t = round(camera_y)) * XTCORE_FRAME_NORMAL;
+	camera_y += camera_vy * XTCORE_FRAME_NORMAL;
+	ViewY += (t = round(camera_y));
 	camera_y -= t;
 
-	camera_z += camera_vz;
-	TurnSecX += (t = round(camera_z)) * XTCORE_FRAME_NORMAL;
+	camera_z += camera_vz * XTCORE_FRAME_NORMAL;
+	TurnSecX += (t = round(camera_z));
 	if (TurnSecX < MIN_ZOOM) {
 		TurnSecX = MIN_ZOOM;
 	}
 	camera_z -= t;
 
-	camera_s += camera_vs;
+	camera_s += camera_vs * XTCORE_FRAME_NORMAL;
 	SlopeAngle += t = round(camera_s);
 	if(SlopeAngle < -SLOPE_MAX)
 		SlopeAngle = -SLOPE_MAX;
 	camera_s -= t;
 
-	camera_t += camera_vt;
+	camera_t += camera_vt * XTCORE_FRAME_NORMAL;
 	TurnAngle += t = round(camera_t);
 	camera_t -= t;
 
