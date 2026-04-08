@@ -3332,6 +3332,8 @@ double camera_vt=0;
 double camera_vi=0;
 double camera_s=0;
 double camera_vs=0;
+double camera_vibration_x=0;
+double camera_vibration_y=0;
 int stop_camera = 0;
 int camera_moving_log = 0;
 int camera_X_prev;
@@ -3364,7 +3366,9 @@ void camera_reset() {
 	camera_vi=0;
 	camera_s=0;
 	camera_vs=0;
-	
+	camera_vibration_x=0;
+	camera_vibration_y=0;
+
 	camera_moving_log = 0;
 
 	camera_moving_xy_enable = camera_moving_z_enable = iGetOptionValue(iCAMERA_SCALE);
@@ -3403,9 +3407,13 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 	if(time_vibration) {
 		static int phase_vibration;
 		double k = A_vibration*exp(-alpha_vibration*time_vibration);
-		double t = oscillar_vibration*(time_vibration + phase_vibration);
-		ViewX += round(k*sin(1.276*t)+.8*sin(2.878*t)+0.3*sin(23.876*t)) * XTCORE_FRAME_NORMAL;
-		ViewY += round(k*sin(0.981*t)+.8*sin(2.98*t)+0.3*sin(20.82*t)) * XTCORE_FRAME_NORMAL;
+		double vibration_t = oscillar_vibration*(time_vibration + phase_vibration);
+		camera_vibration_x += (k*sin(1.276*vibration_t)+.8*sin(2.878*vibration_t)+0.3*sin(23.876*vibration_t)) * XTCORE_FRAME_NORMAL;
+		ViewX += (t = round(camera_vibration_x));
+		camera_vibration_x -= t;
+		camera_vibration_y += (k*sin(0.981*vibration_t)+.8*sin(2.98*vibration_t)+0.3*sin(20.82*vibration_t)) * XTCORE_FRAME_NORMAL;
+		ViewY += (t = round(camera_vibration_y));
+		camera_vibration_y -= t;
 		if(time_vibration++ > max_time_vibration) {
 			time_vibration = 0;
 			phase_vibration = realRND(1367339);
