@@ -3620,8 +3620,8 @@ void InsectUnit::InitEnvironment(void)
 						r = p->radius * 5;
 						if(d < r && r > 0){
 							f = MaxSpeed - MaxSpeed * d / r;
-							vDirect.x += dx * f / d;
-							vDirect.y += dy * f / d;
+							vDirect.x += (int)round(dx * (double)f / d * XTCORE_FRAME_NORMAL);
+							vDirect.y += (int)round(dy * (double)f / d * XTCORE_FRAME_NORMAL);
 							NumCalcUnit++;
 						};
 					};
@@ -3642,8 +3642,8 @@ void InsectUnit::InitEnvironment(void)
 							r = p->radius * 5;
 							if(d < r && r > 0){
 								f = MaxSpeed - MaxSpeed * d / r;
-								vDirect.x += dx * f / d;
-								vDirect.y += dy * f / d;
+								vDirect.x += (int)round(dx * (double)f / d * XTCORE_FRAME_NORMAL);
+								vDirect.y += (int)round(dy * (double)f / d * XTCORE_FRAME_NORMAL);
 								NumCalcUnit++;
 							};
 						};
