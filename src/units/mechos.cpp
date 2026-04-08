@@ -3587,6 +3587,8 @@ void InsectUnit::CreateInsect(void)
 	VisibleTargetAccumY = 0.0;
 	VisibleSeparationAccumX = 0.0;
 	VisibleSeparationAccumY = 0.0;
+	HideMoveAccumX = 0.0;
+	HideMoveAccumY = 0.0;
 	Target = R_curr + Vector(INSECT_RADIUS - RND(INSECT_RADIUS2),INSECT_RADIUS - RND(INSECT_RADIUS2),0);
 	if(!RND(InsectD.NumInsect[2]*INSECT_PRICE_DATA[2])) BeebType = 2;
 	else{
@@ -3763,6 +3765,8 @@ void InsectUnit::Touch(GeneralObject* p)
 			VisibleTargetAccumY = 0.0;
 			VisibleSeparationAccumX = 0.0;
 			VisibleSeparationAccumY = 0.0;
+			HideMoveAccumX = 0.0;
+			HideMoveAccumY = 0.0;
 			cycleTor(R_curr.x,R_curr.y);
 			set_3D(SET_3D_CHOOSE_LEVEL,R_curr.x,R_curr.y,R_curr.z,0,-Angle,0);
 		case ID_BULLET:
@@ -3774,6 +3778,8 @@ void InsectUnit::Touch(GeneralObject* p)
 			VisibleTargetAccumY = 0.0;
 			VisibleSeparationAccumX = 0.0;
 			VisibleSeparationAccumY = 0.0;
+			HideMoveAccumX = 0.0;
+			HideMoveAccumY = 0.0;
 			cycleTor(R_curr.x,R_curr.y);
 			set_3D(SET_3D_CHOOSE_LEVEL,R_curr.x,R_curr.y,R_curr.z,0,-Angle,0);
 			break;
@@ -13630,7 +13636,7 @@ int isSpummyDeath(void)
 
 void InsectUnit::HideAction(void)
 {
-	int d_angle;
+	int d_angle,dx,dy;
 
 	dynamic_state = WHEELS_TOUCH;
 	if(SpeedDir == 0) return;
@@ -13656,8 +13662,17 @@ void InsectUnit::HideAction(void)
 	Angle = rPI(Angle + d_angle);
 	vDirect = Vector(CurrSpeed,0,0) * DBM(Angle,Z_AXIS);
 
-	R_curr.x += (int)round(vDirect.x * XTCORE_FRAME_NORMAL);
-	R_curr.y += (int)round(vDirect.y * XTCORE_FRAME_NORMAL);
+	HideMoveAccumX += vDirect.x * XTCORE_FRAME_NORMAL;
+	HideMoveAccumY += vDirect.y * XTCORE_FRAME_NORMAL;
+
+	dx = HideMoveAccumX > 0.0 ? (int)floor(HideMoveAccumX) : (int)ceil(HideMoveAccumX);
+	dy = HideMoveAccumY > 0.0 ? (int)floor(HideMoveAccumY) : (int)ceil(HideMoveAccumY);
+
+	HideMoveAccumX -= dx;
+	HideMoveAccumY -= dy;
+
+	R_curr.x += dx;
+	R_curr.y += dy;
 	cycleTor(R_curr.x,R_curr.y);
 };
 

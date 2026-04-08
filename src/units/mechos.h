@@ -904,6 +904,7 @@ struct InsectUnit : ActionUnit
 	int BeebType;
 	double VisibleTargetAccumX,VisibleTargetAccumY;
 	double VisibleSeparationAccumX,VisibleSeparationAccumY;
+	double HideMoveAccumX,HideMoveAccumY;
 
 	void Init(void);
 
