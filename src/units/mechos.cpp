@@ -123,6 +123,23 @@ static inline int traction_low_state_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int track_front_step_runtime(int radius)
+{
+	int legacy_step = radius / 12;
+	if(!legacy_step)
+		return 0;
+
+	int step = (int)round(legacy_step * XTCORE_FRAME_NORMAL);
+	if(!step)
+		return legacy_step > 0 ? 1 : -1;
+	return step;
+}
+
+static inline int hidden_turn_step_runtime(int move_angle)
+{
+	return (int)round(move_angle * XTCORE_FRAME_NORMAL);
+}
+
 static inline int game_over_event_ticks(void)
 {
 	int ticks = (int)round((GAME_OVER_EVENT_TIME - 1) * GAME_TIME_COEFF) + 1;
@@ -738,7 +755,9 @@ void ActionUnit::Action(void)
 };
 
 void ActionUnit::HideAction(void)
-{	
+{
+	int d_angle;
+
 	dynamic_state = WHEELS_TOUCH;
 	if(SpeedDir == 0) return;
 	else{
@@ -759,7 +778,8 @@ void ActionUnit::HideAction(void)
 		if(MoveAngle < -MECHOS_ROT_DELTA) MoveAngle = -MECHOS_ROT_DELTA;
 	};
 
-	Angle = rPI(Angle + MoveAngle);
+	d_angle = hidden_turn_step_runtime(MoveAngle);
+	Angle = rPI(Angle + d_angle);
 	vDirect = Vector(CurrSpeed,0,0) * DBM(Angle,Z_AXIS);
 
 	R_curr.x += vDirect.x;
@@ -1954,6 +1974,7 @@ void TrackUnit::TrackQuant(void)
 void TrackUnit::DirectQuant(void)
 {
 	int d;
+	const int front_step = track_front_step_runtime(radius);
 	if(SpeedDir != 0){
 //		if(MoveDir == -1) ErrH.Abort("Bad Move Direction");
 //		if(pNode != pBranch->pBeg && pNode != pBranch->pEnd) ErrH.Abort("Bad Branch Link");
@@ -1965,13 +1986,13 @@ void TrackUnit::DirectQuant(void)
 				FrontPoint.pBranch = pBranch;
 				FrontPoint.pNode = pNode;
 
-				if(SpeedDir > 0){
-					if(MoveDir) FrontPoint.AddLink(radius / 12);
-					else FrontPoint.DecLink(radius / 12);
-				}else{
-					if(MoveDir) FrontPoint.DecLink(radius / 12);
-					else FrontPoint.AddLink(radius / 12);
-				};
+					if(SpeedDir > 0){
+						if(MoveDir) FrontPoint.AddLink(front_step);
+						else FrontPoint.DecLink(front_step);
+					}else{
+						if(MoveDir) FrontPoint.DecLink(front_step);
+						else FrontPoint.AddLink(front_step);
+					};
 
 				if((TargetPoint.PointStatus & TRK_BRANCH_MASK) && pBranch == TargetPoint.pBranch){
 					if(TargetPoint.pNextLink <= FrontPoint.pNextLink){
@@ -2019,13 +2040,13 @@ void TrackUnit::DirectQuant(void)
 						pPrevLink = FrontPoint.pPrevLink;
 						pBranch = FrontPoint.pBranch;
 
-						if(SpeedDir > 0){
-							if(MoveDir) FrontPoint.AddLink(radius / 12);
-							else FrontPoint.DecLink(radius / 12);
-						}else{
-							if(MoveDir) FrontPoint.DecLink(radius / 12);
-							else FrontPoint.AddLink(radius / 12);
-						};
+					if(SpeedDir > 0){
+						if(MoveDir) FrontPoint.AddLink(front_step);
+						else FrontPoint.DecLink(front_step);
+					}else{
+						if(MoveDir) FrontPoint.DecLink(front_step);
+						else FrontPoint.AddLink(front_step);
+					};
 						FrontPoint.PointStatus = TRK_WAIT_BRANCH;
 					}else FrontPoint.PointStatus = TRK_IN_NODE;
 				}else{
@@ -2034,15 +2055,15 @@ void TrackUnit::DirectQuant(void)
 
 					if(SpeedDir > 0){
 						if(MoveDir){
-							if(CheckAddLink(pNextLink,pBranch,radius / 12)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							if(CheckAddLink(pNextLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
 						}else{
-							if(CheckDecLink(pPrevLink,pBranch,radius / 12)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							if(CheckDecLink(pPrevLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
 						};
 					}else{
 						if(MoveDir){
-							if(CheckDecLink(pPrevLink,pBranch,radius / 12)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							if(CheckDecLink(pPrevLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
 						}else{
-							if(CheckAddLink(pNextLink,pBranch,radius / 12)) FrontPoint.PointStatus = TRK_IN_BRANCH;
+							if(CheckAddLink(pNextLink,pBranch,front_step)) FrontPoint.PointStatus = TRK_IN_BRANCH;
 						};
 					};
 				};
@@ -2071,11 +2092,11 @@ void TrackUnit::DirectQuant(void)
 						pBranch = FrontPoint.pBranch;
 
 						if(SpeedDir > 0){
-							if(MoveDir) FrontPoint.AddLink(radius / 12);
-							else FrontPoint.DecLink(radius / 12);
+							if(MoveDir) FrontPoint.AddLink(front_step);
+							else FrontPoint.DecLink(front_step);
 						}else{
-							if(MoveDir) FrontPoint.DecLink(radius / 12);
-							else FrontPoint.AddLink(radius / 12);
+							if(MoveDir) FrontPoint.DecLink(front_step);
+							else FrontPoint.AddLink(front_step);
 						};
 						FrontPoint.PointStatus = TRK_WAIT_BRANCH;
 					};
