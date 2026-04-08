@@ -1968,7 +1968,6 @@ void ParticleGenerator::Quant(void)
 		if(!(MoveMode & PG_MODE_TRUE_MASS) || d > Speed) vDelta = vDelta * Speed / d;
 	};
 
-	R_prev = R_curr;
 	R_curr += vDelta * XTCORE_FRAME_NORMAL;
 	cycleTor(R_curr.x,R_curr.y);
 
@@ -1980,8 +1979,10 @@ void ParticleGenerator::Quant(void)
 
 void ParticleGenerator::DrawQuant(void)
 {
-	if(particle_generator_legacy_step(Time))
+	if(particle_generator_legacy_step(Time)){
 		EffD.CreateParticle(ParticleType,R_prev,R_curr,ParticleStorage);
+		R_prev = R_curr;
+	}
 };
 
 void EffectDispatcher::CreateParticleGenerator(Vector vC,Vector vT,Vector vD,int mode)
