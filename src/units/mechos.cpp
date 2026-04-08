@@ -13535,7 +13535,9 @@ int isSpummyDeath(void)
 };
 
 void InsectUnit::HideAction(void)
-{	
+{
+	int d_angle;
+
 	dynamic_state = WHEELS_TOUCH;
 	if(SpeedDir == 0) return;
 	else{
@@ -13556,11 +13558,12 @@ void InsectUnit::HideAction(void)
 		if(MoveAngle < -MECHOS_ROT_DELTA) MoveAngle = -MECHOS_ROT_DELTA;
 	};
 
-	Angle = rPI(Angle + MoveAngle);
+	d_angle = (int)round(MoveAngle * XTCORE_FRAME_NORMAL);
+	Angle = rPI(Angle + d_angle);
 	vDirect = Vector(CurrSpeed,0,0) * DBM(Angle,Z_AXIS);
 
-	R_curr.x += vDirect.x;
-	R_curr.y += vDirect.y;
+	R_curr.x += (int)round(vDirect.x * XTCORE_FRAME_NORMAL);
+	R_curr.y += (int)round(vDirect.y * XTCORE_FRAME_NORMAL);
 	cycleTor(R_curr.x,R_curr.y);
 };
 
