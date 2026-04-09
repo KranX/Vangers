@@ -1415,7 +1415,7 @@ void TargetParticleType::aQuant(void)
 //		vR.y &= PTrack_mask_y;
 		pDist = d;
 		if (AdvancedView) {
-			G2LQ(Vector(vR.x >> 8, vR.y >> 8, vR.z), tx, ty);
+			G2LQ(Vector(vR.x >> 8, vR.y >> 8, vR.z >> 8), tx, ty);
 		} else {
 			tx = ((int)round(SPGetDistX(vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 			ty = ((int)round((vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
@@ -1515,7 +1515,7 @@ void TargetParticleType::aQuant2(void)
 	}
 
 	if (AdvancedView) {
-		G2LQ(Vector(vR.x >> 8, vR.y >> 8, vR.z), tx, ty);
+		G2LQ(Vector(vR.x >> 8, vR.y >> 8, vR.z >> 8), tx, ty);
 	} else {
 		tx = ((int)round(SPGetDistX(vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 		ty = ((int)round((vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
