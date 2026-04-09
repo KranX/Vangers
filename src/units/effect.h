@@ -195,6 +195,7 @@ struct ParticleGenerator : BaseObject
 {
 	Vector vTarget,vDelta;
 	double SteerAccumX,SteerAccumY,SteerAccumZ;
+	double MoveAccumX,MoveAccumY,MoveAccumZ;
 	int Speed,Precision;
 	int MoveMode,TargetMode;
 	int ParticleStorage,ParticleType;

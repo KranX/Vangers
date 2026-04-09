@@ -1949,6 +1949,9 @@ void ParticleGenerator::CreateGenerator(Vector vC,Vector vT,Vector vD,int mode)
 	SteerAccumX = 0.0;
 	SteerAccumY = 0.0;
 	SteerAccumZ = 0.0;
+	MoveAccumX = 0.0;
+	MoveAccumY = 0.0;
+	MoveAccumZ = 0.0;
 	Status = 0;
 };
 
@@ -2003,7 +2006,11 @@ void ParticleGenerator::Quant(void)
 		if(!(MoveMode & PG_MODE_TRUE_MASS) || d > Speed) vDelta = vDelta * Speed / d;
 	};
 
-	R_curr += vDelta * XTCORE_FRAME_NORMAL;
+	{
+		Vector move_step;
+		accumulate_runtime_vector_step(vDelta,MoveAccumX,MoveAccumY,MoveAccumZ,move_step);
+		R_curr += move_step;
+	}
 	cycleTor(R_curr.x,R_curr.y);
 
 	Time--;
