@@ -435,6 +435,18 @@ static inline int actint_menu_ticks(int legacy_ticks)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline bool actint_button_anim_legacy_step()
+{
+	static int countdown = 0;
+	if(countdown <= 0){
+		int ticks = (int)round(GAME_TIME_COEFF);
+		countdown = ticks > 1 ? ticks - 1 : 0;
+		return true;
+	}
+	countdown --;
+	return false;
+}
+
 invMatrix* backupMatrix;
 
 int prevWorld;
@@ -3704,12 +3716,14 @@ void actIntDispatcher::flush(void)
 		p = (fncMenu*)p -> prev;
 	}
 
+	bool button_anim_step = actint_button_anim_legacy_step();
+
 	b = (aButton*)intButtons -> last;
 	while(b){
 		if(b -> flags & B_FLUSH){
 			b -> flush();
 		}
-		if(b -> flags & B_ACTIVE){
+		if(button_anim_step && (b -> flags & B_ACTIVE)){
 			b -> press();
 		}
 		if(b -> activeCount && b -> flags & B_PRESSED){
@@ -3727,7 +3741,7 @@ void actIntDispatcher::flush(void)
 		if(b -> flags & B_FLUSH){
 			b -> flush();
 		}
-		if(b -> flags & B_ACTIVE){
+		if(button_anim_step && (b -> flags & B_ACTIVE)){
 			b -> press();
 		}
 		if(curMode == AS_INV_MODE){
@@ -3747,7 +3761,7 @@ void actIntDispatcher::flush(void)
 		if(b -> flags & B_FLUSH){
 			b -> flush();
 		}
-		if(b -> flags & B_ACTIVE){
+		if(button_anim_step && (b -> flags & B_ACTIVE)){
 			b -> press();
 		}
 		if(curMode == AS_INFO_MODE){
