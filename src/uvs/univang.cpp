@@ -11030,10 +11030,15 @@ void uvsCheckVangerTabuTask(uvsVanger* pv, int how){
 
 void uvsCheckKronIventTabuTask(int KronType, int KronCount,  int MYresult, int MYitem ){
 	int i;
+	int gamer_mechos_type;
 #ifdef TABU_REPORT
 	tabu < ConTimer.GetTime();
 	tabu < " Kron Type " <= KronType < "KronCount " <= KronCount < "MYresult " <= MYresult < "MYitem " <= MYitem < "\n";
 #endif
+	if (Gamer && Gamer -> Pmechos)
+		gamer_mechos_type = Gamer -> Pmechos -> type;
+	else
+		gamer_mechos_type = lastMechos;
 	for( i = 0; i < MAX_TABUTASK; i++){
 		if ( TabuTable[i] -> status == UVS_TABUTASK_STATUS::ACTIVE){
 			switch(TabuTable[i] -> target){
@@ -11239,12 +11244,12 @@ void uvsCheckKronIventTabuTask(int KronType, int KronCount,  int MYresult, int M
 
 					if (TabuTable[i] -> work_on_target != UVS_TABUTASK_WORK::END_RACE_RAFFA){
 
-						if ((TabuTable[i] -> param == -1) || (Gamer -> Pmechos -> type == TabuTable[i] -> param)){
+						if ((TabuTable[i] -> param == -1) || (gamer_mechos_type >= 0 && gamer_mechos_type == TabuTable[i] -> param)){
 							uvsChangeTabuTask(i, UVS_TABUTASK_STATUS::GOOD);
 							uvsChangeTownTabuTask(i);
 							TabuTable[i]  -> status = UVS_TABUTASK_STATUS::OK;
 						}
-					} else if (uvsMechosTable[Gamer -> Pmechos -> type] -> type == UVS_CAR_TYPE::RAFFA){
+					} else if (gamer_mechos_type >= 0 && uvsMechosTable[gamer_mechos_type] -> type == UVS_CAR_TYPE::RAFFA){
 						uvsChangeTabuTask(i, UVS_TABUTASK_STATUS::GOOD);
 						uvsChangeTownTabuTask(i);
 						TabuTable[i]  -> status = UVS_TABUTASK_STATUS::OK;
