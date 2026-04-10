@@ -2206,7 +2206,8 @@ void TrackUnit::Quant(void)
 	vPoint = R_curr;
 	cycleTor(vPoint.x,vPoint.y);
 
-	for(i = 0;i < n_wheels;i++) if(!PrevWheelFlag[i]) PrevWheelY[i] = 0;
+	if(frame % (int)GAME_TIME_COEFF == 0)
+		for(i = 0;i < n_wheels;i++) if(!PrevWheelFlag[i]) PrevWheelY[i] = 0;
 //	if(!PrevWheelFlag[0]) PrevWheelY[0] = 0;
 //	if(!PrevWheelFlag[1]) PrevWheelY[1] = 0;
 };

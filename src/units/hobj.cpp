@@ -1808,30 +1808,36 @@ void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 			if(level){
 				trn = GET_REAL_TERRAIN(TypeMap,x);
 				if(trn == 1){
-					if(PrevWheelY[n] != 0)
-						MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,1);
-					PrevWheelX[n] = x;
-					PrevWheelY[n] = y;
 					PrevWheelFlag[n] = 1;
+					if(frame % (int)GAME_TIME_COEFF == 0){
+						if(PrevWheelY[n] != 0)
+							MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,1);
+						PrevWheelX[n] = x;
+						PrevWheelY[n] = y;
+					}
 				};
 			}else{
 				trn = GET_REAL_DOWNTERRAIN(TypeMap,x);
 				if(trn == 1){
-					if(PrevWheelY[n] != 0)
-						MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,0);
-					PrevWheelX[n] = x;
-					PrevWheelY[n] = y;
 					PrevWheelFlag[n] = 1;
+					if(frame % (int)GAME_TIME_COEFF == 0){
+						if(PrevWheelY[n] != 0)
+							MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,0);
+						PrevWheelX[n] = x;
+						PrevWheelY[n] = y;
+					}
 				};
 			};
 		}else{
 			trn = GET_TERRAIN(*TypeMap);
 			if(trn == 1){
-				if(PrevWheelY[n] != 0)
-					MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,1);
-				PrevWheelX[n] = x;
-				PrevWheelY[n] = y;
 				PrevWheelFlag[n] = 1;
+				if(frame % (int)GAME_TIME_COEFF == 0){
+					if(PrevWheelY[n] != 0)
+						MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,1);
+					PrevWheelX[n] = x;
+					PrevWheelY[n] = y;
+				}
 			};
 		};
 
