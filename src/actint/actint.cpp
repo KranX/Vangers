@@ -3726,7 +3726,7 @@ void actIntDispatcher::flush(void)
 		if(button_anim_step && (b -> flags & B_ACTIVE)){
 			b -> press();
 		}
-		if(b -> activeCount && b -> flags & B_PRESSED){
+		if(button_anim_step && b -> activeCount && b -> flags & B_PRESSED){
 			if(b -> curCount >= b -> activeCount){
 				b -> press();
 				send_event(b -> eventCode,b -> eventData);
@@ -3745,7 +3745,7 @@ void actIntDispatcher::flush(void)
 			b -> press();
 		}
 		if(curMode == AS_INV_MODE){
-			if(b -> activeCount && b -> flags & B_PRESSED){
+			if(button_anim_step && b -> activeCount && b -> flags & B_PRESSED){
 				if(b -> curCount >= b -> activeCount){
 					b -> press();
 					send_event(b -> eventCode,b -> eventData);
@@ -3765,7 +3765,7 @@ void actIntDispatcher::flush(void)
 			b -> press();
 		}
 		if(curMode == AS_INFO_MODE){
-			if(b -> activeCount && b -> flags & B_PRESSED){
+			if(button_anim_step && b -> activeCount && b -> flags & B_PRESSED){
 				if(b -> curCount >= b -> activeCount){
 					b -> press();
 					send_event(b -> eventCode,b -> eventData);
