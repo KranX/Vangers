@@ -1376,6 +1376,9 @@ void BulletObject::Init(void)
 	radius = 1;
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
+	MoveAccumX = 0.0;
+	MoveAccumY = 0.0;
+	MoveAccumZ = 0.0;
 };
 
 void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldBulletTemplate* p,GeneralObject* _Owner,int _speed)
@@ -1410,6 +1413,9 @@ void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldB
 	vTail = R_curr;
 	
 	vDelta = vTarget = Vector(0,0,0);
+	MoveAccumX = 0.0;
+	MoveAccumY = 0.0;
+	MoveAccumZ = 0.0;
 	FrameCount = 0;
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
@@ -1461,6 +1467,9 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	vTail = R_curr;
 
 	vDelta = vTarget = Vector(0,0,0);
+	MoveAccumX = 0.0;
+	MoveAccumY = 0.0;
+	MoveAccumZ = 0.0;
 	FrameCount = 0;
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
@@ -1684,8 +1693,15 @@ void BulletObject::TimeOutQuant(void)
 		};
 	};
 
+	Vector runtime_step;
+	double prevMoveAccumX,prevMoveAccumY,prevMoveAccumZ;
+
 	vTail = R_curr;
-	R_curr += vDelta * XTCORE_FRAME_NORMAL;
+	prevMoveAccumX = MoveAccumX;
+	prevMoveAccumY = MoveAccumY;
+	prevMoveAccumZ = MoveAccumZ;
+	accumulate_runtime_vector_step(vDelta,MoveAccumX,MoveAccumY,MoveAccumZ,runtime_step);
+	R_curr += runtime_step;
 	cycleTor(R_curr.x,R_curr.y);	
 
 	Time--;
@@ -1700,7 +1716,11 @@ void BulletObject::TimeOutQuant(void)
 				if(d < PALLADIUM_RADIUS){
 					vDelta = Vector(Speed,0,0)*DBM(PI/2 + v.psi(),Z_AXIS);
 					R_curr = vTail;
-					R_curr += vDelta * XTCORE_FRAME_NORMAL;
+					MoveAccumX = prevMoveAccumX;
+					MoveAccumY = prevMoveAccumY;
+					MoveAccumZ = prevMoveAccumZ;
+					accumulate_runtime_vector_step(vDelta,MoveAccumX,MoveAccumY,MoveAccumZ,runtime_step);
+					R_curr += runtime_step;
 					cycleTor(R_curr.x,R_curr.y);
 				};
 				break;

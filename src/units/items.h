@@ -217,6 +217,7 @@ struct GunSlot;
 struct BulletObject : BaseObject , BulletControlType
 {
 	Vector vDelta,vTarget;
+	double MoveAccumX,MoveAccumY,MoveAccumZ;
 	GeneralObject* TargetObject;
 	int FrameCount;
 	int TargetSteerDelay;
