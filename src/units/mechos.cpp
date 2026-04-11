@@ -5022,11 +5022,6 @@ void VangerUnit::InitEnvironment(void)
 	};*/
 };
 
-static inline bool suppress_external_exit_impulse(const VangerUnit* p)
-{
-	return p->ExternalLock && (p->ExternalMode == EXTERNAL_MODE_ESCAVE_OUT || p->ExternalMode == EXTERNAL_MODE_SPOT_OUT);
-}
-
 void VangerUnit::AutomaticTouchSensor(SensorDataType* p) //znfo !!!
 {
 	int etype;
@@ -5047,8 +5042,7 @@ void VangerUnit::AutomaticTouchSensor(SensorDataType* p) //znfo !!!
 				};
 				break;
 			case SensorTypeList::IMPULSE:
-				if(!suppress_external_exit_impulse(this))
-					continuous_impulse(p->vData,p->Power,0);
+				continuous_impulse(p->vData,p->Power,0);
 				break;
 			case SensorTypeList::SENSOR:
 				if(!(Status & SOBJ_ACTIVE)){
@@ -5107,8 +5101,7 @@ void VangerUnit::StopTouchSensor(SensorDataType* p)
 				}else ExternalSensor = p;
 				break;
 			case SensorTypeList::IMPULSE:
-				if(!suppress_external_exit_impulse(this))
-					continuous_impulse(p->vData,p->Power,0);
+				continuous_impulse(p->vData,p->Power,0);
 				break;
 		};
 	}else{
@@ -5153,8 +5146,6 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 			break;
 		case SensorTypeList::IMPULSE:
 //			continuous_impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),20,0);
-			if(suppress_external_exit_impulse(this))
-				break;
 			continuous_impulse(p->vData,p->Power,0);
 			if(abs(PrevImpuseFrame - frame) >= impulse_sensor_sound_cooldown_frames()){
 				SOUND_KIDPUSH();
