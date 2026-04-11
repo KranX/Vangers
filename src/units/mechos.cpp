@@ -8575,11 +8575,8 @@ void uvsUnitType::UseOxigenResource(void)
 		OxigenResource--;
 		if(ActD.Active && ActD.Active->Status & SOBJ_ACTIVE) ActD.DrawResourceValue = OxigenResource;
 	}else{
-		if (Energy > 0) {
-			Energy-= MaxEnergy / 10;
-		} else if (Armor > 0) {
-			Armor-= MaxArmor / 10;
-		}
+		Armor = 0;
+		Energy = 0;
 	};
 };
 
