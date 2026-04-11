@@ -9397,7 +9397,7 @@ int ActionDispatcher::NewFunction(int id,int tp)
 void VangerFunctionType::SoundQuant(void)
 {
 	if(ID <= PROTRACTOR_PREPASSAGE) {
-		if(Time <= LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)) {
+		if(Time == LifeTime - (SIGNATOR_DELAY * GAME_TIME_COEFF)) {
 			SOUND_PROCTRACTOR_STOP();
 		}
 	};
