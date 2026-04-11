@@ -1402,11 +1402,12 @@ void TargetParticleType::aQuant(void)
 
 		tx = tx * s / d;
 		ty = ty * s / d;
-		tx += (ty >> TARGET_PARTICLE_NORMAL_SHIFT);
-		ty -= (tx >> TARGET_PARTICLE_NORMAL_SHIFT);
 
-		vD.x += accumulate_runtime_scalar_step(tx,AccelAccumX);
-		vD.y += accumulate_runtime_scalar_step(ty,AccelAccumY);
+		int legacy_dx = tx + (ty >> TARGET_PARTICLE_NORMAL_SHIFT);
+		int legacy_dy = ty - (tx >> TARGET_PARTICLE_NORMAL_SHIFT);
+
+		vD.x += accumulate_runtime_scalar_step(legacy_dx,AccelAccumX);
+		vD.y += accumulate_runtime_scalar_step(legacy_dy,AccelAccumY);
 
 		if(pDist < d){
 			vD.x -= accumulate_runtime_scalar_step(vD.x >> 4,DragAccumX);
