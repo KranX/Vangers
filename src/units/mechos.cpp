@@ -4288,6 +4288,7 @@ void VangerUnit::Quant(void)
 					ExternalDraw = 0;
 					switch_analysis(1);
 					StopCDTRACK();
+					SOUND_PR_FUNCTION_START();
 					NetFunction83Time = NetGlobalTime;
 					ShellUpdateFlag = 1;
 				};
@@ -5807,6 +5808,7 @@ void VangerUnit::SensorQuant(void)
 			ExternalTime--;
 			if(Visibility == VISIBLE && ActD.Active) SOUND_PASSAGE(getDistX(ActD.Active->R_curr.x,R_curr.x));
 			if(ExternalTime <= 0){
+				if((Status & SOBJ_ACTIVE) && !ExternalObject) SOUND_PR_FUNCTION_STOP();
 				ExternalMode = EXTERNAL_MODE_NORMAL;
 				ExternalLock = 0;
 				Go2Universe();
