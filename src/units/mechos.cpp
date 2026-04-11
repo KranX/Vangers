@@ -679,6 +679,8 @@ void ActionUnit::CreateActionUnit(int nmodel/*Object& _model*/,int _status,const
 
 	Count = 0;
 	HideTurnAccum = 0.0;
+	ActionTurnAccum = 0.0;
+	ActionSpeedAccum = 0.0;
 	DeltaTraction = 128;
 
 	wProcess = &(EffD.DeformData[MECHOS_WATER_WAVE]);
@@ -719,6 +721,9 @@ void ActionUnit::Action(void)
 {
 	int d;
 	Vector vCheck;
+	int raw_move_angle;
+	int steer_angle;
+	int speed_step;
 
 	if(!SpeedDir){
 		brake_on();
@@ -727,10 +732,8 @@ void ActionUnit::Action(void)
 
 	if(SpeedDir > 0){
 		MoveAngle = rPI(MoveAngle - Angle);
-		CurrSpeed += DeltaSpeed;
 	}else{
 		MoveAngle = rPI(MoveAngle - Angle + PI);
-		CurrSpeed += DeltaSpeed;
 	};
 
 	if(MoveAngle > PI) MoveAngle -= 2*PI;
@@ -741,8 +744,13 @@ void ActionUnit::Action(void)
 		if(MoveAngle < -MECHOS_ROT_DELTA) MoveAngle = -MECHOS_ROT_DELTA;
 	};
 
-	if(abs(MoveAngle) < PI / 10) controls(CONTROLS::TURBO_QUANT,83);
+	raw_move_angle = MoveAngle;
+	steer_angle = hidden_turn_step_runtime(raw_move_angle,ActionTurnAccum);
+	speed_step = hidden_turn_step_runtime(DeltaSpeed,ActionSpeedAccum);
 
+	if(abs(raw_move_angle) < PI / 10) controls(CONTROLS::TURBO_QUANT,83);
+
+	CurrSpeed += speed_step;
 	if(CurrSpeed > MaxSpeed) CurrSpeed = MaxSpeed;
 	if(CurrSpeed < -MaxSpeed) CurrSpeed = -MaxSpeed;
 
@@ -767,8 +775,8 @@ void ActionUnit::Action(void)
 		controls(CONTROLS::TRACTION_DECREASE,83);
 	};
 
-	if(Speed >= 0) controls(CONTROLS::STEER_BY_ANGLE,-MoveAngle);
-	else controls(CONTROLS::STEER_BY_ANGLE,MoveAngle);
+	if(Speed >= 0) controls(CONTROLS::STEER_BY_ANGLE,-steer_angle);
+	else controls(CONTROLS::STEER_BY_ANGLE,steer_angle);
 };
 
 void ActionUnit::HideAction(void)
