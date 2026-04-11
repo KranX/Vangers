@@ -681,6 +681,8 @@ void ActionUnit::CreateActionUnit(int nmodel/*Object& _model*/,int _status,const
 	HideTurnAccum = 0.0;
 	ActionTurnAccum = 0.0;
 	ActionSpeedAccum = 0.0;
+	ActionHideMoveAccumX = 0.0;
+	ActionHideMoveAccumY = 0.0;
 	DeltaTraction = 128;
 
 	wProcess = &(EffD.DeformData[MECHOS_WATER_WAVE]);
@@ -807,8 +809,17 @@ void ActionUnit::HideAction(void)
 	Angle = rPI(Angle + d_angle);
 	vDirect = Vector(CurrSpeed,0,0) * DBM(Angle,Z_AXIS);
 
-	R_curr.x += vDirect.x;
-	R_curr.y += vDirect.y;
+	ActionHideMoveAccumX += vDirect.x * XTCORE_FRAME_NORMAL;
+	ActionHideMoveAccumY += vDirect.y * XTCORE_FRAME_NORMAL;
+
+	int dx = ActionHideMoveAccumX > 0.0 ? (int)floor(ActionHideMoveAccumX) : (int)ceil(ActionHideMoveAccumX);
+	int dy = ActionHideMoveAccumY > 0.0 ? (int)floor(ActionHideMoveAccumY) : (int)ceil(ActionHideMoveAccumY);
+
+	ActionHideMoveAccumX -= dx;
+	ActionHideMoveAccumY -= dy;
+
+	R_curr.x += dx;
+	R_curr.y += dy;
 	cycleTor(R_curr.x,R_curr.y);
 };
 
@@ -818,7 +829,11 @@ void ActionUnit::Quant(void)
 	DeltaSpeed = 0;
 
 	if(Visibility == VISIBLE){
-		if(PrevVisibility == UNVISIBLE) Hide2Show();
+		if(PrevVisibility == UNVISIBLE){
+			ActionHideMoveAccumX = 0.0;
+			ActionHideMoveAccumY = 0.0;
+			Hide2Show();
+		}
 		analysis();
 
 		RotMat = A_l2g*DBM(PI/2,Z_AXIS);
@@ -12081,7 +12096,7 @@ void VangerUnit::InitAI(void)
 
 	uvsMaxSpeed = round((double)(TotalVangerSpeed)*speed_factor / GAME_TIME_COEFF);
 
-	MaxHideSpeed = uvsMaxSpeed;
+	MaxHideSpeed = round((double)(TotalVangerSpeed)*speed_factor);
 	MakeTrackDist();
 	NoWayEnable = AI_NO_WAY_NONE;
 

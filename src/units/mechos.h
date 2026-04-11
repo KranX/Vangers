@@ -226,6 +226,8 @@ struct ActionUnit : Object
 	double HideTurnAccum;
 	double ActionTurnAccum;
 	double ActionSpeedAccum;
+	double ActionHideMoveAccumX;
+	double ActionHideMoveAccumY;
 
 	int WavePhase;
 	WaveProcess* wProcess;
