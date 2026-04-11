@@ -107,7 +107,7 @@ struct ParticleObject : BaseObject
 	int Mode,Phase,dPhase;
 
 	SimpleParticleType* Data;
-	
+
 	void InitParicle(int num);
 	void Init(StorageType* s);
 	void Free(void);
@@ -134,7 +134,7 @@ struct WaterParticleObject : BaseObject
 	int Velocity;
 
 	SimpleParticleType* Data;
-	
+
 	void InitParicle(int num);
 	void Init(StorageType* s);
 	void Free(void);
@@ -150,6 +150,9 @@ struct TargetParticleType
 	Vector vR,vT,vD;
 	int s;
 	int pDist, LifeTime;
+	double MoveAccumX,MoveAccumY,MoveAccumZ;
+	double AccelAccumX,AccelAccumY;
+	double DragAccumX,DragAccumY;
 	void aQuant(void);
 	void aQuant2(void);
 
@@ -199,7 +202,7 @@ struct ParticleGenerator : BaseObject
 	int Speed,Precision;
 	int MoveMode,TargetMode;
 	int ParticleStorage,ParticleType;
-	int Time;	
+	int Time;
 	int FlyRadius;
 
 	void Init(StorageType* s);
