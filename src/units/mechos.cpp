@@ -4839,7 +4839,7 @@ void VangerUnit::InitEnvironment(void)
 						if(ActD.SpobsEntrance){
 							if(!ActD.CameraModifier){
 								camera_direct(1650,820,1 << 8,0,0,20*GAME_TIME_COEFF);
-								ActD.CameraModifier = 20;
+								ActD.CameraModifier = 20 * GAME_TIME_COEFF;
 							}else{								
 								if(ActD.CameraModifier == 1){
 									camera_direct(1650,820,1 << 8,0,0,1*GAME_TIME_COEFF);
