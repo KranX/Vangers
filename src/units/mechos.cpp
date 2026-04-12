@@ -748,7 +748,11 @@ void ActionUnit::Action(void)
 
 	raw_move_angle = MoveAngle;
 	steer_angle = hidden_turn_step_runtime(raw_move_angle,ActionTurnAccum);
-	speed_step = hidden_turn_step_runtime(DeltaSpeed,ActionSpeedAccum);
+	if(ID == ID_INSECT){
+		speed_step = DeltaSpeed;
+		ActionSpeedAccum = 0.0;
+	}else
+		speed_step = hidden_turn_step_runtime(DeltaSpeed,ActionSpeedAccum);
 
 	if(abs(raw_move_angle) < PI / 10) controls(CONTROLS::TURBO_QUANT,83);
 
