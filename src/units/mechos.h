@@ -804,9 +804,10 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 	int CheckPointCount;
 	int MaxKhoxPoison,KhoxPoison;
 
-	int PlayerDestroyFlag;		
+	int PlayerDestroyFlag;
 
 	int PrevImpuseFrame;
+	int SpotExitImpulseBlockUntilFrame;
 
 	void Init(StorageType* s);
 	void Free(void);

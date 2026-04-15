@@ -87,6 +87,35 @@ static inline int impulse_sensor_sound_cooldown_frames(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int spot_out_min_lock_frames(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 1 ? ticks : 2;
+}
+
+static inline int spot_out_post_unlock_impulse_cooldown_frames(void)
+{
+	int ticks = (int)round(2 * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline int spot_out_delay_ticks(int legacy_delay)
+{
+	int ticks = (int)round(legacy_delay * GAME_TIME_COEFF);
+	if(ticks <= 0)
+		return spot_out_min_lock_frames();
+
+	return ticks;
+}
+
+static inline bool should_ignore_spot_exit_impulse(const VangerUnit* v)
+{
+	return v && (
+		(v->ExternalMode == EXTERNAL_MODE_SPOT_OUT && v->ExternalLock) ||
+		frame <= v->SpotExitImpulseBlockUntilFrame
+	);
+}
+
 static inline int should_emit_passing_wave(int ticks_left)
 {
 	int legacy_stride = (int)round(GAME_TIME_COEFF);
@@ -5072,6 +5101,8 @@ void VangerUnit::AutomaticTouchSensor(SensorDataType* p) //znfo !!!
 				};
 				break;
 			case SensorTypeList::IMPULSE:
+				if(should_ignore_spot_exit_impulse(this))
+					break;
 				continuous_impulse(p->vData,p->Power,0);
 				break;
 			case SensorTypeList::SENSOR:
@@ -5131,6 +5162,8 @@ void VangerUnit::StopTouchSensor(SensorDataType* p)
 				}else ExternalSensor = p;
 				break;
 			case SensorTypeList::IMPULSE:
+				if(should_ignore_spot_exit_impulse(this))
+					break;
 				continuous_impulse(p->vData,p->Power,0);
 				break;
 		};
@@ -5176,6 +5209,8 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 			break;
 		case SensorTypeList::IMPULSE:
 //			continuous_impulse(Vector(32 - RND(64),32 - RND(64),RND(64)),20,0);
+			if(should_ignore_spot_exit_impulse(this))
+				break;
 			continuous_impulse(p->vData,p->Power,0);
 			if(abs(PrevImpuseFrame - frame) >= impulse_sensor_sound_cooldown_frames()){
 				SOUND_KIDPUSH();
@@ -5676,6 +5711,7 @@ void VangerUnit::SensorQuant(void)
 				ExternalMode = EXTERNAL_MODE_NORMAL;
 				ExternalLock = 0;
 				switch_analysis(0);
+				SpotExitImpulseBlockUntilFrame = frame + spot_out_post_unlock_impulse_cooldown_frames();
 				ExternalSensor = ExternalObject;
 				if(Status & SOBJ_ACTIVE) {
 					aciSendEvent2actint(ACI_UNLOCK_INTERFACE, NULL);
@@ -6210,6 +6246,7 @@ void VangerUnit::CreateVangerUnit(void)
 	NetworkEnergy = Energy;
 	NetRuffaGunTime = 0;
 	PrevImpuseFrame = 0;	
+	SpotExitImpulseBlockUntilFrame = 0;
 	PrevNetFunction83Time = NetFunction83Time = NetProtractorFunctionTime = NetMessiahFunctionTime = 0;
 };
 
@@ -6378,7 +6415,8 @@ void VangerUnit::AddSpot(SensorDataType* p)
 {
 	ExternalMode = EXTERNAL_MODE_SPOT_OUT;
 	ExternalObject = p;
-	ExternalTime = p->Owner->ActiveTime * GAME_TIME_COEFF;
+	ExternalTime = p->Owner ? spot_out_delay_ticks(p->Owner->ActiveTime) : spot_out_min_lock_frames();
+	SpotExitImpulseBlockUntilFrame = 0;
 	ExternalLock = 1;
 	ExternalDraw = 1;
 	switch_analysis(1);
@@ -14545,6 +14583,7 @@ void VangerUnit::ChangeVangerProcess(void)
 	NetworkEnergy = Energy;
 	NetRuffaGunTime = 0;
 	PrevImpuseFrame = 0;
+	SpotExitImpulseBlockUntilFrame = 0;
 };
 
 extern aciPromptData aiMessageBuffer;
