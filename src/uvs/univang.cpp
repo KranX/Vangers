@@ -11185,10 +11185,19 @@ void uvsCheckKronIventTabuTask(int KronType, int KronCount,  int MYresult, int M
 						break;
 					case UVS_KRON_EVENT::FLY_ONLINE:
 						if (TabuTable[i] -> work_on_target == UVS_TABUTASK_WORK::GO_FLY){
-							uvsChangeTabuTask(i, UVS_TABUTASK_STATUS::GOOD);
-							TabuTable[i]  -> status = UVS_TABUTASK_STATUS::OK;
-							uvsChangeTownTabuTask(i);
-							*TabuTable[i]  -> real_count = 0;
+							uvsTarget* pt;
+
+							if (Gamer -> Pescave)
+								pt = (uvsTarget*)Gamer -> Pescave;
+							else
+								pt = (uvsTarget*)Gamer -> Pspot;
+
+							if (pt == TabuTable[i] -> Ptarget){
+								uvsChangeTabuTask(i, UVS_TABUTASK_STATUS::GOOD);
+								TabuTable[i]  -> status = UVS_TABUTASK_STATUS::OK;
+								uvsChangeTownTabuTask(i);
+								*TabuTable[i]  -> real_count = 0;
+							}
 						}
 						break;
 					case UVS_KRON_EVENT::GRIB:
