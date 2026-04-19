@@ -906,8 +906,7 @@ struct InsectUnit : ActionUnit
 {
 	Vector Target;
 	int BeebType;
-	double VisibleTargetAccumX,VisibleTargetAccumY;
-	double VisibleSeparationAccumX,VisibleSeparationAccumY;
+	double VisibleDirectSpeedAccum;
 	double HideMoveAccumX,HideMoveAccumY;
 
 	void Init(void);

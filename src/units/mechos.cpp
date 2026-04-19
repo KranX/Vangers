@@ -156,6 +156,23 @@ static inline int hidden_turn_step_runtime(int move_angle,double& accum)
 	return step;
 }
 
+static inline int runtime_accumulated_scalar_step(double amount,double& accum)
+{
+	if(!amount)
+		return 0;
+
+	accum += amount;
+	int step;
+
+	if(accum > 0.0)
+		step = (int)floor(accum);
+	else
+		step = (int)ceil(accum);
+
+	accum -= step;
+	return step;
+}
+
 static inline int game_over_event_ticks(void)
 {
 	int ticks = (int)round((GAME_OVER_EVENT_TIME - 1) * GAME_TIME_COEFF) + 1;
@@ -3614,10 +3631,7 @@ void InsectUnit::CreateInsect(void)
 {
 	MaxSpeed = 5;
 	MaxHideSpeed = 3;
-	VisibleTargetAccumX = 0.0;
-	VisibleTargetAccumY = 0.0;
-	VisibleSeparationAccumX = 0.0;
-	VisibleSeparationAccumY = 0.0;
+	VisibleDirectSpeedAccum = 0.0;
 	HideMoveAccumX = 0.0;
 	HideMoveAccumY = 0.0;
 	Target = R_curr + Vector(INSECT_RADIUS - RND(INSECT_RADIUS2),INSECT_RADIUS - RND(INSECT_RADIUS2),0);
@@ -3651,6 +3665,8 @@ void InsectUnit::Quant(void)
 	ActionUnit::Quant();
 	int dx,dy;
 	int d;
+	Vector legacy_direct;
+	DBV runtime_direct;
 
 	if(Status & SOBJ_AUTOMAT){
 		vDirect.z = 0;
@@ -3669,28 +3685,20 @@ void InsectUnit::Quant(void)
 			cycleTor(Target.x,Target.y);
 		};*/
 
+		legacy_direct = vDirect;
 		d = (int)(sqrt(dx*(double)dx + dy*(double)dy));
 		d <<= 2;
 		if(d){
-			int tx,ty;
-
-			VisibleTargetAccumX += dx * (double)MaxSpeed / d * XTCORE_FRAME_NORMAL;
-			VisibleTargetAccumY += dy * (double)MaxSpeed / d * XTCORE_FRAME_NORMAL;
-
-			tx = VisibleTargetAccumX > 0.0 ? (int)floor(VisibleTargetAccumX) : (int)ceil(VisibleTargetAccumX);
-			ty = VisibleTargetAccumY > 0.0 ? (int)floor(VisibleTargetAccumY) : (int)ceil(VisibleTargetAccumY);
-
-			VisibleTargetAccumX -= tx;
-			VisibleTargetAccumY -= ty;
-
-			vDirect.x += tx;
-			vDirect.y += ty;
+			legacy_direct.x += dx * MaxSpeed / d;
+			legacy_direct.y += dy * MaxSpeed / d;
 		};
 
-		if(NumCalcUnit) vDirect /= NumCalcUnit;
+		if(NumCalcUnit) legacy_direct /= NumCalcUnit;
 
-		MoveAngle = vDirect.psi();
-		DeltaSpeed = vDirect.vabs();
+		runtime_direct = DBV(legacy_direct) * XTCORE_FRAME_NORMAL;
+
+		MoveAngle = runtime_direct() ? rPI((int)RTOG(runtime_direct.psi())) : 0;
+		DeltaSpeed = runtime_accumulated_scalar_step((double)legacy_direct.vabs() * XTCORE_FRAME_NORMAL,VisibleDirectSpeedAccum);
 
 		if(Visibility == VISIBLE) Action();
 		else HideAction();
@@ -3702,9 +3710,8 @@ void InsectUnit::InitEnvironment(void)
 	ActionUnit* p;
 	int dx,dy;
 	int d,r,f;
-	int tx,ty;
-	double separation_dx = 0.0;
-	double separation_dy = 0.0;
+	int separation_step_x = 0;
+	int separation_step_y = 0;
 
 	ActionUnit::InitEnvironment();
 
@@ -3727,8 +3734,8 @@ void InsectUnit::InitEnvironment(void)
 						r = p->radius * 5;
 						if(d < r && r > 0){
 							f = MaxSpeed - MaxSpeed * d / r;
-							separation_dx += dx * (double)f / d * XTCORE_FRAME_NORMAL;
-							separation_dy += dy * (double)f / d * XTCORE_FRAME_NORMAL;
+							separation_step_x += dx * f / d;
+							separation_step_y += dy * f / d;
 							NumCalcUnit++;
 						};
 					};
@@ -3749,8 +3756,8 @@ void InsectUnit::InitEnvironment(void)
 							r = p->radius * 5;
 							if(d < r && r > 0){
 								f = MaxSpeed - MaxSpeed * d / r;
-								separation_dx += dx * (double)f / d * XTCORE_FRAME_NORMAL;
-								separation_dy += dy * (double)f / d * XTCORE_FRAME_NORMAL;
+								separation_step_x += dx * f / d;
+								separation_step_y += dy * f / d;
 								NumCalcUnit++;
 							};
 						};
@@ -3760,17 +3767,8 @@ void InsectUnit::InitEnvironment(void)
 			p = (ActionUnit*)(p->NextTypeList);
 		};
 
-		VisibleSeparationAccumX += separation_dx;
-		VisibleSeparationAccumY += separation_dy;
-
-		tx = VisibleSeparationAccumX > 0.0 ? (int)floor(VisibleSeparationAccumX) : (int)ceil(VisibleSeparationAccumX);
-		ty = VisibleSeparationAccumY > 0.0 ? (int)floor(VisibleSeparationAccumY) : (int)ceil(VisibleSeparationAccumY);
-
-		VisibleSeparationAccumX -= tx;
-		VisibleSeparationAccumY -= ty;
-
-		vDirect.x += tx;
-		vDirect.y += ty;
+		vDirect.x += separation_step_x;
+		vDirect.y += separation_step_y;
 	};
 };
 
@@ -3792,10 +3790,7 @@ void InsectUnit::Touch(GeneralObject* p)
 			MapD.CreateCrater(R_curr,MAP_POINT_CRATER03,Angle);
 			R_curr.x = clip_mask_x/2 - RND(clip_mask_x);
 			R_curr.y = clip_mask_y/2 - RND(clip_mask_y);
-			VisibleTargetAccumX = 0.0;
-			VisibleTargetAccumY = 0.0;
-			VisibleSeparationAccumX = 0.0;
-			VisibleSeparationAccumY = 0.0;
+			VisibleDirectSpeedAccum = 0.0;
 			HideMoveAccumX = 0.0;
 			HideMoveAccumY = 0.0;
 			cycleTor(R_curr.x,R_curr.y);
@@ -3805,10 +3800,7 @@ void InsectUnit::Touch(GeneralObject* p)
 			MapD.CreateCrater(R_curr,MAP_POINT_CRATER03,Angle);
 			R_curr.x = clip_mask_x/2 - RND(clip_mask_x);
 			R_curr.y = clip_mask_y/2 - RND(clip_mask_y);
-			VisibleTargetAccumX = 0.0;
-			VisibleTargetAccumY = 0.0;
-			VisibleSeparationAccumX = 0.0;
-			VisibleSeparationAccumY = 0.0;
+			VisibleDirectSpeedAccum = 0.0;
 			HideMoveAccumX = 0.0;
 			HideMoveAccumY = 0.0;
 			cycleTor(R_curr.x,R_curr.y);
