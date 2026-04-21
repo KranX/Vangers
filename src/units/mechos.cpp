@@ -2484,7 +2484,7 @@ void ActionDispatcher::Open(Parser& in)
 			break;
 		case WORLD_GLORX:
 			FlyTaskFirstY = 2600;
-			FlyTaskLastY = 14830;
+			FlyTaskLastY = 13400;
 			FlyTaskDirect = 1;
 			break;
 		case WORLD_NECROSS:
@@ -4157,6 +4157,19 @@ void VangerUnit::Quant(void)
 			case 1:
 				if(dynamic_state & TOUCH_OF_GROUND)
 					ActD.FlyTaskEnable = 2;
+				else{
+					if(ActD.FlyTaskDirect){
+						if(R_curr.y > ActD.FlyTaskLastY){
+							uvsCheckKronIventTabuTask(UVS_KRON_EVENT::FLY_ONLINE,0);
+							ActD.FlyTaskEnable = 2;
+						};
+					}else{
+						if(R_curr.y < ActD.FlyTaskLastY){
+							uvsCheckKronIventTabuTask(UVS_KRON_EVENT::FLY_ONLINE,0);
+							ActD.FlyTaskEnable = 2;
+						};
+					};
+				};
 				break;
 			case 2:
 				if(ActD.FlyTaskDirect){
@@ -5668,10 +5681,6 @@ void VangerUnit::SensorQuant(void)
 				ExternalLock = 0;
 				uvsPoint -> Pspot = (uvsSpot*)(((EnterEngine*)(ExternalObject->Owner))->Owner->Owner);
 				uvsPoint -> Pescave = NULL;
-				if((Status & SOBJ_ACTIVE) && ActD.FlyTaskEnable == 1){
-					uvsCheckKronIventTabuTask(UVS_KRON_EVENT::FLY_ONLINE,0);
-					ActD.FlyTaskEnable = 2;
-				}
 				Go2Universe();
 				uvsPoint -> Event(UVS_EVENT::SPOT_ARRIVAL);
 				Status |= SOBJ_DISCONNECT;
@@ -5688,10 +5697,6 @@ void VangerUnit::SensorQuant(void)
 				ExternalLock = 0;
 				uvsPoint -> Pescave = (uvsEscave*)(((EnterEngine*)(ExternalObject->Owner))->Owner->Owner);
 				uvsPoint -> Pspot = NULL;
-				if((Status & SOBJ_ACTIVE) && ActD.FlyTaskEnable == 1){
-					uvsCheckKronIventTabuTask(UVS_KRON_EVENT::FLY_ONLINE,0);
-					ActD.FlyTaskEnable = 2;
-				}
 				Go2Universe();
 				uvsPoint -> Event(UVS_EVENT::ESCAVE_ARRIVAL);
 				Status |= SOBJ_DISCONNECT;
