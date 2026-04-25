@@ -380,8 +380,13 @@ void Polygon::draw_pixel()
 
 #define X_PREC		8
 #define COLOR(I)	(((unsigned int)(color_offset + I)) << X_PREC)
-#define DIV_I(x,y)	((int)div_table_short[((x) & 0xFF) | ((y << 8) & 0xFF00)])
-#define DIV_X(x,y)	((int)div_table_short[((x) & 0xFF) | (((y) << 8) & 0xFF00)])
+static inline int div_8_8(int x,int y)
+{
+	return y ? ((x << 8) / y) : 0;
+}
+
+#define DIV_I(x,y)	div_8_8((x),(y))
+#define DIV_X(x,y)	div_8_8((x),(y))
 #define SHL_8(x)	(((unsigned int)(x) << 8) + (1 << 7))
 
 #define NO_SHIFT_Z() {				\
