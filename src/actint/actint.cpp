@@ -2229,7 +2229,7 @@ void invMatrix::fill(invItem* p)
 							ic1 -> put_item(p);
 						}
 					}
-					if(y < SizeY - SizeX){
+					if(y < SizeY - 1){
 						ic1 = matrix[index + SizeX];
 						if(ic1 -> slotNumber == ic -> slotNumber && !(ic1 -> flags & AS_BUSY_CELL)){
 							flag = 1;
