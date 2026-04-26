@@ -41,7 +41,6 @@
 #include "../sound/hsound.h"
 #include "magnum.h"
 
-
 extern int RAM16;
 extern iGameMap* curGMap;
 extern uchar* FireColorTable;
@@ -83,9 +82,16 @@ static inline int bullet_laser_draw_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
-static inline bool bullet_laser_draw_legacy_step(void)
+static inline bool bullet_laser_draw_local_step(int& delay)
 {
-	return !(frame % bullet_laser_draw_ticks());
+	int ticks = bullet_laser_draw_ticks();
+	if(ticks <= 1) return 1;
+	if(delay < ticks - 1){
+		delay++;
+		return 0;
+	}
+	delay = 0;
+	return 1;
 }
 
 static inline void accumulate_runtime_vector_step(const Vector& legacy_step,double& accum_x,double& accum_y,double& accum_z,Vector& out_step)
@@ -183,6 +189,27 @@ static inline int threall_destroy_palette_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int runtime_toggle_scale_counter(int value,double old_coeff,double new_coeff)
+{
+	if(value <= 0 || old_coeff <= 0.0 || new_coeff <= 0.0) return value;
+	return (int)round(value * new_coeff / old_coeff);
+}
+
+static inline int runtime_toggle_scale_velocity(int value,double old_coeff,double new_coeff)
+{
+	if(value == 0 || old_coeff <= 0.0 || new_coeff <= 0.0) return value;
+	return (int)round(value * old_coeff / new_coeff);
+}
+
+static inline void apply_world_bullet_runtime_scale(WorldBulletTemplate& p)
+{
+	p.LifeTime = (int)round(p.LegacyLifeTime * GAME_TIME_COEFF);
+	if(p.LifeTime <= 0) p.LifeTime = 1;
+	p.DeltaPower = (p.LastPower - p.Power) / p.LifeTime;
+	if(p.BulletID != BULLET_TYPE_ID::CHAIN_GUN)
+		p.WaitTime = (p.LegacyWaitTime + 1) * GAME_TIME_COEFF - 1;
+}
+
 //extern XStream MechosLst;
 extern int AdvancedView;
 
@@ -242,6 +269,53 @@ int SkyFarmerWayTableSize;
 SensorDataType* SkyFarmerWayTable;
 
 int WeaponWaitTime;
+
+void reconfigure_runtime_fps_scaled_state(double old_coeff,double new_coeff)
+{
+	int i;
+	BaseObject* p;
+	ActionUnit* a;
+
+	if(old_coeff <= 0.0 || new_coeff <= 0.0 || old_coeff == new_coeff)
+		return;
+
+	for(i = 0; i < GameBulletNum; i++)
+		apply_world_bullet_runtime_scale(GameBulletData[i]);
+
+	p = (BaseObject*)(BulletD.Tail);
+	while(p){
+		BulletObject* b = (BulletObject*)p;
+		if(!(b->Status & SOBJ_DISCONNECT)){
+			b->Time = runtime_toggle_scale_counter(b->Time,old_coeff,new_coeff);
+			if(b->DataID >= 0 && b->DataID < GameBulletNum)
+				b->DeltaPower = GameBulletData[b->DataID].DeltaPower;
+			b->LegacyLaserDrawDelay = 0;
+			b->LegacyLaserDrawAccum = Vector(0,0,0);
+			if(b->BulletID == BULLET_TYPE_ID::LASER)
+				b->LegacyLaserDrawCached = Vector(-b->vDelta.x,-b->vDelta.y,-b->vDelta.z);
+		}
+		p = (BaseObject*)(p->NextTypeList);
+	}
+
+	a = (ActionUnit*)(ActD.Tail);
+	while(a){
+		a->MaxHideSpeed = a->MaxSpeed = (int)round(50 / GAME_TIME_COEFF);
+		a->MaxVelocity = (int)round(200 / GAME_TIME_COEFF);
+		a->Speed = runtime_toggle_scale_velocity(a->Speed,old_coeff,new_coeff);
+		a->CurrSpeed = runtime_toggle_scale_velocity(a->CurrSpeed,old_coeff,new_coeff);
+
+		if(a->ID == ID_VANGER){
+			VangerUnit* v = (VangerUnit*)a;
+			for(i = 0; i < MAX_ACTIVE_SLOT; i++){
+				GunSlot& slot = v->GunSlotData[i];
+				if(slot.pData && slot.GunStatus == GUN_WAIT)
+					slot.Time = runtime_toggle_scale_counter(slot.Time,old_coeff,new_coeff);
+			}
+		}
+
+		a = (ActionUnit*)(a->NextTypeList);
+	}
+}
 
 extern int ProtoCryptTableSize[WORLD_MAX];
 extern SensorDataType* ProtoCryptTable[WORLD_MAX];
@@ -1376,6 +1450,9 @@ void BulletObject::Init(void)
 	radius = 1;
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
+	LegacyLaserDrawDelay = 0;
+	LegacyLaserDrawCached = Vector(0,0,0);
+	LegacyLaserDrawAccum = Vector(0,0,0);
 	MoveAccumX = 0.0;
 	MoveAccumY = 0.0;
 	MoveAccumZ = 0.0;
@@ -1419,6 +1496,9 @@ void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldB
 	FrameCount = 0;
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
+	LegacyLaserDrawDelay = 0;
+	LegacyLaserDrawCached = Vector(0,0,0);
+	LegacyLaserDrawAccum = Vector(0,0,0);
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = p->Speed + _speed;
@@ -1436,6 +1516,10 @@ void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldB
 //	};
 
 	DataID = p->ID;
+	if(BulletID == BULLET_TYPE_ID::LASER){
+		LegacyLaserDrawCached = Vector(-vDelta.x,-vDelta.y,-vDelta.z);
+		LegacyLaserDrawAccum = Vector(0,0,0);
+	}
  };
 
 
@@ -1473,6 +1557,9 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	FrameCount = 0;
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
+	LegacyLaserDrawDelay = 0;
+	LegacyLaserDrawCached = Vector(0,0,0);
+	LegacyLaserDrawAccum = Vector(0,0,0);
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
 
 	Speed = n->Speed;
@@ -1498,6 +1585,11 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	AltOffset = n->AltOffset;
 	vWallTarget = R_curr;
 	DataID = n->ID;
+
+	if(BulletID == BULLET_TYPE_ID::LASER){
+		LegacyLaserDrawCached = Vector(-vDelta.x,-vDelta.y,-vDelta.z);
+		LegacyLaserDrawAccum = Vector(0,0,0);
+	}
 
 	LightData = NULL;
 };
@@ -1867,11 +1959,22 @@ void BulletObject::DrawQuant(void)
 			};				
 			break;
 		case BULLET_SHOW_TYPE_ID::LASER:
-			if(LegacyLaserDraw && !bullet_laser_draw_legacy_step()){
-				update_prev = 0;
-				break;
-			}
-			vCheck = Vector(getDistX(R_prev.x,R_curr.x),getDistY(R_prev.y,R_curr.y),R_prev.z - R_curr.z);
+		{
+			Vector motionDraw = Vector(getDistX(R_prev.x,R_curr.x),getDistY(R_prev.y,R_curr.y),R_prev.z - R_curr.z);
+			Vector rawDraw;
+
+			if(LegacyLaserDraw){
+				LegacyLaserDrawAccum += motionDraw;
+				if(bullet_laser_draw_local_step(LegacyLaserDrawDelay)){
+					if(LegacyLaserDrawAccum.x || LegacyLaserDrawAccum.y || LegacyLaserDrawAccum.z)
+						LegacyLaserDrawCached = LegacyLaserDrawAccum;
+					LegacyLaserDrawAccum = Vector(0,0,0);
+				}
+				rawDraw = LegacyLaserDrawCached;
+			}else
+				rawDraw = motionDraw;
+
+			vCheck = rawDraw;
 
 			vCheck.x = 2*vCheck.x / 3;
 			vCheck.y = 2*vCheck.y / 3;
@@ -1881,6 +1984,7 @@ void BulletObject::DrawQuant(void)
 			cycleTor(vCheck.x,vCheck.y);
 			ScreenLineTrace(R_curr,vCheck,FireColorTable,0);
 			break;
+		}
 	};
 	if(update_prev)
 		R_prev = vTail;
@@ -2457,16 +2561,17 @@ void WorldBulletTemplate::Init(Parser& in)
 	BulletID = Name2Int(name,BULLET_ID_NAME,MAX_BULLET_ID);
 
 	in.search_name("LifeTime");
-	LifeTime = (int)round(in.get_int() * GAME_TIME_COEFF);
+	LegacyLifeTime = in.get_int();
 
 	in.search_name("FirstPower");
 	Power = (in.get_int() << 16) / 100;
 
 	in.search_name("LastPower");
-	DeltaPower = (((in.get_int() << 16) / 100) - Power) / LifeTime;
+	LastPower = (in.get_int() << 16) / 100;
 
 	in.search_name("CraterType");
 	CraterType = in.get_int();
+	LegacyWaitTime = 0;
 
 	in.search_name("BulletMode");
 	name = in.get_name();
@@ -2503,9 +2608,9 @@ void WorldBulletTemplate::Init(Parser& in)
 		in.search_name("TapeSize");
 		TapeSize = in.get_int();
 		in.search_name("WaitTime");
-		int legacy_wait_time = (WeaponWaitTime * in.get_int() >> 8);
-		WaitTime = (legacy_wait_time + 1) * GAME_TIME_COEFF - 1; // preserve legacy Time++ / > WaitTime cooldown
+		LegacyWaitTime = (WeaponWaitTime * in.get_int() >> 8);
 	};
+	apply_world_bullet_runtime_scale(*this);
 	Time = 0;
 };
 

@@ -38,6 +38,8 @@
 #include "actint/item_api.h"
 #include "units/uvsapi.h"
 
+void reconfigure_runtime_fps_scaled_state(double old_coeff,double new_coeff);
+
 #include "terra/world.h"
 #include "terra/vmap.h"
 #include "terra/render.h"
@@ -1640,6 +1642,7 @@ void KeyCenter(SDL_Event *key)
 		case SDL_SCANCODE_G:
 			mod = SDL_GetModState();
 			if (mod&KMOD_CTRL) {
+				double old_game_time_coeff = GAME_TIME_COEFF;
 				if (GAME_TIME_COEFF == 1) {
 					RTO_GAME_QUANT_TIMER = 1000 / 60;
 					GAME_TIME_COEFF = 3;
@@ -1649,6 +1652,7 @@ void KeyCenter(SDL_Event *key)
 				}
 				GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
 				p -> SetTimer(RTO_GAME_QUANT_TIMER);
+				reconfigure_runtime_fps_scaled_state(old_game_time_coeff,GAME_TIME_COEFF);
 				//Toggle FPS
 			}
 			break;

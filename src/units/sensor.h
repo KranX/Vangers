@@ -380,6 +380,9 @@ struct WorldBulletTemplate : BulletControlType
 	int WaitTime;
 	int LifeTime;
 	int BulletRadius;
+	int LegacyLifeTime;
+	int LegacyWaitTime;
+	int LastPower;
 	void Init(Parser& in);
 };
 

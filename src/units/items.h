@@ -218,10 +218,13 @@ struct BulletObject : BaseObject , BulletControlType
 {
 	Vector vDelta,vTarget;
 	double MoveAccumX,MoveAccumY,MoveAccumZ;
+	Vector LegacyLaserDrawCached;
+	Vector LegacyLaserDrawAccum;
 	GeneralObject* TargetObject;
 	int FrameCount;
 	int TargetSteerDelay;
 	int LegacyLaserDraw;
+	int LegacyLaserDrawDelay;
 	GeneralObject* Owner;
 	Vector vTail;
 	LightPoint* LightData;
@@ -456,6 +459,8 @@ const int CHECK_DEVICE_ADD = 2;
 const int CHECK_DEVICE_OUT = 3;
 
 extern int WeaponWaitTime;
+
+void reconfigure_runtime_fps_scaled_state(double old_coeff,double new_coeff);
 
 struct BulletList : UnitBaseListType
 {
