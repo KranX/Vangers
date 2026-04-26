@@ -3056,7 +3056,40 @@ char getObjectPosition(int& x,int& y)
 	return -1;
 };
 
-void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
+static inline int ScreenLaserTraceRadius(void)
+{
+	return (XGR_MAXX > 800 || XGR_MAXY > 600) ? 1 : 0;
+}
+
+static inline int ScreenTraceClip(int x,int y)
+{
+	return x > UcutLeft && x < UcutRight && y > VcutUp && y < VcutDown;
+}
+
+static inline void ScreenTracePutPixel(int x,int y,uchar* ColorTable,int offset,int laserGlow)
+{
+	int sideOffset;
+
+	XGR_SetPixel(x,y,ColorTable[XGR_GetPixel(x,y) + offset]);
+
+	if(!laserGlow || !ScreenLaserTraceRadius())
+		return;
+
+	sideOffset = (offset >> 1) & 0xffffff00;
+	if(sideOffset <= 0)
+		return;
+
+	if(ScreenTraceClip(x - 1,y))
+		XGR_SetPixel(x - 1,y,ColorTable[XGR_GetPixel(x - 1,y) + sideOffset]);
+	if(ScreenTraceClip(x + 1,y))
+		XGR_SetPixel(x + 1,y,ColorTable[XGR_GetPixel(x + 1,y) + sideOffset]);
+	if(ScreenTraceClip(x,y - 1))
+		XGR_SetPixel(x,y - 1,ColorTable[XGR_GetPixel(x,y - 1) + sideOffset]);
+	if(ScreenTraceClip(x,y + 1))
+		XGR_SetPixel(x,y + 1,ColorTable[XGR_GetPixel(x,y + 1) + sideOffset]);
+}
+
+static void ScreenLineTraceImpl(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag,int laserGlow)
 {
 	int x0,y0,x1,y1;
 	int dx,dy,k,cx,cy;
@@ -3071,8 +3104,8 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 		G2LQ(v0,x0,y0);
 		G2LQ(v1,x1,y1);
 	}else{
-		G2LP(v0,x0,y0);
-		G2LP(v1,x1,y1);
+		G2LS(v0,x0,y0);
+		G2LS(v1,x1,y1);
 	};
 
 	dx = x1 - x0;
@@ -3113,7 +3146,7 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 						vC.x >> FIXED_SHIFT,
 						vC.y >> FIXED_SHIFT,
 						vC.z >> FIXED_SHIFT))
-					){ XGR_SetPixel(cx,ty,ColorTable[XGR_GetPixel(cx,ty) + l]); };
+					){ ScreenTracePutPixel(cx,ty,ColorTable,l,laserGlow); };
 				};
 				cx++;
 				cy += k;
@@ -3152,7 +3185,7 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 						vC.x >> FIXED_SHIFT,
 						vC.y >> FIXED_SHIFT,
 						vC.z >> FIXED_SHIFT))
-					){ XGR_SetPixel(tx,cy,ColorTable[XGR_GetPixel(tx,cy) + l]); };
+					){ ScreenTracePutPixel(tx,cy,ColorTable,l,laserGlow); };
 				};
 				cy++;
 				cx += k;
@@ -3197,7 +3230,7 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 						vC.x >> FIXED_SHIFT,
 						vC.y >> FIXED_SHIFT,
 						vC.z >> FIXED_SHIFT))
-					){ XGR_SetPixel(cx,ty,ColorTable[XGR_GetPixel(cx,ty) + (l & 0xffffff00)]); };
+					){ ScreenTracePutPixel(cx,ty,ColorTable,l & 0xffffff00,laserGlow); };
 				};
 
 				cx++;
@@ -3244,7 +3277,7 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 						vC.x >> FIXED_SHIFT,
 						vC.y >> FIXED_SHIFT,
 						vC.z >> FIXED_SHIFT))
-					){ XGR_SetPixel(tx,cy,ColorTable[XGR_GetPixel(tx,cy) + (l & 0xffffff00)]); };
+					){ ScreenTracePutPixel(tx,cy,ColorTable,l & 0xffffff00,laserGlow); };
 				};
 				cy++;
 				cx += k;
@@ -3254,7 +3287,18 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 			};
 		};
 	};
+
 };
+
+void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
+{
+	ScreenLineTraceImpl(v0,v1,ColorTable,flag,0);
+}
+
+void ScreenLaserTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
+{
+	ScreenLineTraceImpl(v0,v1,ColorTable,flag,1);
+}
 
 int GlobalFuryLevel;
 

@@ -3518,7 +3518,7 @@ void camera_quant(int X,int Y,int Turn,double V_abs) {
 		TurnSecX = t;
 	if(RAM16 && (SlopeAngle || TurnAngle) && TurnSecX > curGMap -> xsize)
 		TurnSecX = TurnSecX_old;
-	if(abs(TurnSecX - curGMap -> xsize) < 4)
+	if(abs(TurnSecX - curGMap -> xsize) < 4 && abs(z - curGMap -> xsize) < 4)
 		TurnSecX = curGMap -> xsize;
 
 	int s = camera_slope_enable ? (V_abs < camera_vmax ? camera_slope_min + (-SLOPE_MAX - camera_slope_min)*V_abs/camera_vmax : -SLOPE_MAX)

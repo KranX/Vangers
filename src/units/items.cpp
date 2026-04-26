@@ -1977,7 +1977,7 @@ void BulletObject::DrawQuant(void)
 
 			vCheck += R_curr;
 			cycleTor(vCheck.x,vCheck.y);
-			ScreenLineTrace(R_curr,vCheck,FireColorTable,0);
+			ScreenLaserTrace(R_curr,vCheck,FireColorTable,0);
 			break;
 		}
 	};
