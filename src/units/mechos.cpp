@@ -687,16 +687,15 @@ void ActionUnit::CreateActionUnit(int nmodel/*Object& _model*/,int _status,const
 	EnvirAngle = EnvirLen = 0;
 
 	SpeedDir = 1;
-	MaxHideSpeed = MaxSpeed = (int)round(50 / GAME_TIME_COEFF);
+	MaxHideSpeed = MaxSpeed = 50;
 
-	MaxVelocity = (int)round(200 / GAME_TIME_COEFF);
+	MaxVelocity = 200;
 	CurrSpeed = 0;
 
 	NumCalcUnit = 0;
 
 	Count = 0;
 	HideTurnAccum = 0.0;
-	ActionTurnAccum = 0.0;
 	ActionSpeedAccum = 0.0;
 	ActionHideMoveAccumX = 0.0;
 	ActionHideMoveAccumY = 0.0;
@@ -764,13 +763,11 @@ void ActionUnit::Action(void)
 	};
 
 	raw_move_angle = MoveAngle;
+	steer_angle = raw_move_angle;
 	if(ID == ID_INSECT){
-		steer_angle = raw_move_angle;
-		ActionTurnAccum = 0.0;
 		speed_step = DeltaSpeed;
 		ActionSpeedAccum = 0.0;
 	}else{
-		steer_angle = hidden_turn_step_runtime(raw_move_angle,ActionTurnAccum);
 		speed_step = hidden_turn_step_runtime(DeltaSpeed,ActionSpeedAccum);
 	}
 

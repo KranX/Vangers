@@ -195,12 +195,6 @@ static inline int runtime_toggle_scale_counter(int value,double old_coeff,double
 	return (int)round(value * new_coeff / old_coeff);
 }
 
-static inline int runtime_toggle_scale_velocity(int value,double old_coeff,double new_coeff)
-{
-	if(value == 0 || old_coeff <= 0.0 || new_coeff <= 0.0) return value;
-	return (int)round(value * old_coeff / new_coeff);
-}
-
 static inline void apply_world_bullet_runtime_scale(WorldBulletTemplate& p)
 {
 	p.LifeTime = (int)round(p.LegacyLifeTime * GAME_TIME_COEFF);
@@ -299,18 +293,19 @@ void reconfigure_runtime_fps_scaled_state(double old_coeff,double new_coeff)
 
 	a = (ActionUnit*)(ActD.Tail);
 	while(a){
-		a->MaxHideSpeed = a->MaxSpeed = (int)round(50 / GAME_TIME_COEFF);
-		a->MaxVelocity = (int)round(200 / GAME_TIME_COEFF);
-		a->Speed = runtime_toggle_scale_velocity(a->Speed,old_coeff,new_coeff);
-		a->CurrSpeed = runtime_toggle_scale_velocity(a->CurrSpeed,old_coeff,new_coeff);
+		a->MaxSpeed = 50;
+		a->MaxVelocity = 200;
 
 		if(a->ID == ID_VANGER){
 			VangerUnit* v = (VangerUnit*)a;
+			v->MaxHideSpeed = (int)round((double)(TotalVangerSpeed)*v->speed_factor);
 			for(i = 0; i < MAX_ACTIVE_SLOT; i++){
 				GunSlot& slot = v->GunSlotData[i];
 				if(slot.pData && slot.GunStatus == GUN_WAIT)
 					slot.Time = runtime_toggle_scale_counter(slot.Time,old_coeff,new_coeff);
 			}
+		}else{
+			a->MaxHideSpeed = 50;
 		}
 
 		a = (ActionUnit*)(a->NextTypeList);

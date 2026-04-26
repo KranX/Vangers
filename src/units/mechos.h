@@ -224,7 +224,6 @@ struct ActionUnit : Object
 
 	int Count;
 	double HideTurnAccum;
-	double ActionTurnAccum;
 	double ActionSpeedAccum;
 	double ActionHideMoveAccumX;
 	double ActionHideMoveAccumY;
