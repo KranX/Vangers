@@ -167,6 +167,7 @@ ServerFindChain* iGetCurServer(void);
 
 void SetSoundVolume(int);
 void EffectsOff(void);
+void iSetFPS(int state);
 
 int acsQuant(void);
 void acsHandleExtEvent(int code,int data0 = 0,int data1 = 0,int data2 = 0);
@@ -2250,10 +2251,7 @@ void iHandleExtEvent(int code,int data)
 				XGR_MouseObj.EnablePrompt();
 			break;
 		case iEXT_UPDATE_FPS_MODE:
-			if(iGetOptionValue(iFPS_60))
-				XGR_MouseObj.DisablePrompt();
-			else
-				XGR_MouseObj.EnablePrompt();
+			iSetFPS(iGetOptionValue(iFPS_60));
 			break;
 		case iEXT_UPDATE_MUSIC_MODE:
 #ifndef _NO_CDAUDIO_
