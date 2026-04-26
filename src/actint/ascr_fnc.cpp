@@ -2937,6 +2937,8 @@ void aciBuyItem(void)
 
 				if(!u) ErrH.Abort("Bad shop item...");
 				u -> delink(GMechos);
+				u -> next = NULL;
+				u -> prev = NULL;
 				if(aScrDisp -> curMatrix){
 					if(GGamerMechos){
 						el = GMechos;
