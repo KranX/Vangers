@@ -262,6 +262,7 @@ struct Object : BaseObject {
 	double W_drag;
 	Object* collision_object;
 	int after_db_coll;
+	int after_ram_damage_coll;
 
 	int interpolation_on;
 	DBV dR_corr;

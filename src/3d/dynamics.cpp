@@ -124,6 +124,12 @@ static inline int after_db_collision_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int ram_damage_collision_ticks(void)
+{
+	int ticks = (int)round((2 + 1) * GAME_TIME_COEFF) - 1;
+	return ticks > 0 ? ticks : 1;
+}
+
 static inline int helicopter_phase_step(int legacy_step)
 {
 	if(!legacy_step)
@@ -2268,6 +2274,7 @@ void Object::dynamics_init(char* name)
 	helicopter_circle_phase = 0;
 
 	after_db_coll = 0;
+	after_ram_damage_coll = 0;
 	stuff_phase = 0;
 	
 	k_elastic_modulation = 1;
@@ -3172,6 +3179,7 @@ void Object::mechous_analysis(double dt)
 	}
 
 	after_db_coll--;
+	after_ram_damage_coll--;
 	side_impulse_enable++;
 	hand_brake = turbo = brake = 0;
 	if(rudder && dynamic_state & WHEELS_TOUCH){
@@ -4581,9 +4589,11 @@ int Object::test_object_to_baseobject(BaseObject* bobj)
 
 		collision_object = obj;
 		obj -> collision_object = this;
-		int collision_again_log = (after_db_coll > 0 || obj -> after_db_coll > 0);
-		if(ID == ID_VANGER && obj -> ID == ID_VANGER)
+		int ram_damage_again_log = (after_ram_damage_coll > 0 || obj -> after_ram_damage_coll > 0);
+		if(ID == ID_VANGER && obj -> ID == ID_VANGER){
 			after_db_coll = obj -> after_db_coll = after_db_collision_ticks();
+			after_ram_damage_coll = obj -> after_ram_damage_coll = ram_damage_collision_ticks();
+			}
 
 		DBM A_o2t = A_g2l*obj -> A_l2g;
 
@@ -4610,7 +4620,7 @@ int Object::test_object_to_baseobject(BaseObject* bobj)
 		obj -> V -= A_t2o*(P/m2);
 		obj -> W -= (obj -> J_inv/m2)*A_t2o*(R2 % P);
 
-		if(ID != ID_VANGER || obj -> ID != ID_VANGER || collision_again_log)
+		if(ID != ID_VANGER || obj -> ID != ID_VANGER || ram_damage_again_log)
 			return 1;
 
 		double Pabs = P.vabs();
