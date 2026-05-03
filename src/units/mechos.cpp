@@ -8980,7 +8980,7 @@ void CompasObject::Quant(void)
 		if(d) vMove = vMove * (MAX_COMPAS_SPEED * XTCORE_FRAME_NORMAL / d);
 	};
 
-	v = Vector(ActD.Active->Speed,0,0)*ActD.Active->RotMat;
+	v = (Vector(ActD.Active->Speed,0,0)*ActD.Active->RotMat) * XTCORE_FRAME_NORMAL;
 	x = XCYCL(x + vMove.x + v.x);
 	y = YCYCL(y + vMove.y + v.y);
 
