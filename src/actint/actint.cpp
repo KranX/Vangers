@@ -193,6 +193,7 @@ void iChatQuant(int flush = 0);
 void iChatFinit(void);
 void iChatKeyQuant(SDL_Event *k);
 void iChatMouseQuant(int x,int y,int bt);
+extern int iChatON;
 
 void LoadResourceSOUND(const char *path_name, int surface);
 void SoundEscaveOff(void);
@@ -4852,6 +4853,13 @@ void actIntDispatcher::KeyQuant(void)
 
 	if(flags & AS_LOCKED){
 		if(flags & AS_CHAT_MODE){
+			if(!iChatON){
+				flags &= ~AS_CHAT_MODE;
+				unlock();
+				flags &= ~aMS_PRESS;
+				KeyBuf -> clear();
+				return;
+			}
 			while(KeyBuf -> size) iChatKeyQuant(KeyBuf -> get());
 			if(flags & aMS_LEFT_PRESS || flags & aMS_RIGHT_PRESS){
 				iChatMouseQuant(XGR_MouseObj.PosX + XGR_MouseObj.SpotX,XGR_MouseObj.PosY + XGR_MouseObj.SpotY,1);
