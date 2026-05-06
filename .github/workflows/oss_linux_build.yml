@@ -1,26 +1,115 @@
 name: OSS Linux Build
 
 on:
+  push:
+    branches:
+      - master
+      - alpha
+  pull_request:
+    branches:
+      - master
+      - alpha
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oss-linux-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     if: ${{ github.repository == 'KranX/Vangers' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
+    env:
+      BUILD_TYPE: RelWithDebInfo
+
     steps:
-    - uses: actions/checkout@v2
-    - name: update repos
-      run: sudo apt-get update
-    - name: install libs
-      run: sudo apt-get install cmake libsdl2-dev libsdl2-net-dev libogg-dev libvorbis-dev libavcodec-dev libavformat-dev libavutil-dev
-    - name: clunk download lib
-      run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
-      working-directory: /tmp
-    - name: clunk build and install
-      run: cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_COMPILER=/usr/bin/gcc-9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 . && make && sudo make install
-      working-directory: /tmp/clunk
-    - name: configure
-      run: mkdir build && cd build && cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 ..
-    - name: make
-      run: make
-      working-directory: build
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            git \
+            ninja-build \
+            pkg-config \
+            python3-venv \
+            libsdl2-dev \
+            libsdl2-net-dev \
+            libogg-dev \
+            libvorbis-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libavutil-dev \
+            libswscale-dev \
+            zlib1g-dev
+
+      - name: Install latest CMake 4
+        run: |
+          python3 -m venv .ci-cmake
+          .ci-cmake/bin/python -m pip install --upgrade pip
+          .ci-cmake/bin/python -m pip install --upgrade "cmake>=4.0.0"
+          echo "$PWD/.ci-cmake/bin" >> "$GITHUB_PATH"
+
+      - name: Show tool versions
+        run: |
+          cmake --version
+          ninja --version
+          c++ --version
+
+      - name: Download Clunk
+        id: clunk-source
+        run: |
+          mkdir -p external
+          git clone --depth 1 https://github.com/stalkerg/clunk.git external/clunk
+          echo "sha=$(git -C external/clunk rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Clunk build
+        id: cache-clunk
+        uses: actions/cache@v5
+        with:
+          path: external/clunk/build
+          key: oss-linux-clunk-${{ runner.os }}-${{ steps.clunk-source.outputs.sha }}
+
+      - name: Build Clunk
+        if: steps.cache-clunk.outputs.cache-hit != 'true'
+        run: |
+          cmake -S external/clunk -B external/clunk/build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr/local
+          cmake --build external/clunk/build --parallel
+
+      - name: Install Clunk
+        run: |
+          sudo cmake --install external/clunk/build
+          sudo ldconfig
+
+      - name: Configure Vangers
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE="${BUILD_TYPE}"
+
+      - name: Build Vangers
+        run: cmake --build build --parallel
+
+      - name: Show built binaries
+        run: |
+          file build/src/vangers
+          file build/server/vangers_server
+          file build/surmap/surmap
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: Vangers-OSS-linux-x86_64
+          path: |
+            build/src/vangers
+            build/server/vangers_server
+            build/surmap/surmap

@@ -1,106 +1,115 @@
 name: OSS Windows 64bit Build
 
 on:
+  push:
+    branches:
+      - master
+      - alpha
+  pull_request:
+    branches:
+      - master
+      - alpha
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oss-windows-64-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     if: ${{ github.repository == 'KranX/Vangers' }}
     runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    env:
+      BUILD_TYPE: RelWithDebInfo
+
     steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        msystem: MINGW64
-    - name: install libs
-      run: msys2 -c 'pacman --noconfirm -S
-        mingw-w64-x86_64-ninja
-        mingw-w64-x86_64-gcc
-        mingw-w64-x86_64-SDL2
-        mingw-w64-x86_64-SDL2_net
-        mingw-w64-x86_64-cmake
-        mingw-w64-x86_64-libogg
-        mingw-w64-x86_64-libvorbis
-        mingw-w64-x86_64-nasm
-        mingw-w64-x86_64-yasm
-        mingw-w64-x86_64-make
-        unzip'
-    - uses: actions/checkout@v1
-    - name: clunk -- download
-      run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
-    - name: clunk -- create build dir
-      run: msys2 -c 'mkdir clunk/build'
-    - name: clunk -- build and install
-      run: |
-        msys2 -c 'cmake -DCMAKE_INSTALL_PREFIX=/mingw64 -G Ninja ..'
-        msys2 -c 'ninja'
-        msys2 -c 'ninja install'
-      working-directory: clunk/build
-    - name: ffmpeg -- download
-      run: git clone --depth 1 --branch release/6.0 https://git.ffmpeg.org/ffmpeg.git ffmpeg
-    - name: ffmpeg -- configure
-      run: msys2 -c './configure --enable-shared --prefix=/mingw64
-        --disable-everything
-        --enable-swscale
-        --enable-zlib
-        --enable-demuxer=avi,rawvideo
-        --enable-decoder=png,rawvideo,h264
-        --enable-parser=png
-        --enable-protocol=file
-        --disable-d3d11va
-        --disable-dxva2
-        --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
-        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv'
-      working-directory: ffmpeg
-    - name: ffmpeg -- build and install
-      run: |
-        msys2 -c 'mingw32-make -j4'
-        msys2 -c 'mingw32-make install'
-      working-directory: ffmpeg
-    - name: vangers -- create build dir
-      run: msys2 -c 'mkdir build'
-    - name: vangers -- configure
-      run: msys2 -c 'cmake -DCMAKE_BUILD_TYPE=Debug -G Ninja ..'
-      working-directory: build
-    - name: vangers -- make
-      run: msys2 -c 'ninja'
-      working-directory: build
-    - name: vangers -- pdb
-      run: |
-        msys2 -c 'wget https://github.com/rainers/cv2pdb/releases/download/v0.50/cv2pdb-0.50.zip'
-        msys2 -c 'unzip cv2pdb-0.50.zip'
-        .\cv2pdb.exe vangers.exe
-      working-directory: build/src
-    - name: surmap -- pdb
-      run: |
-        ..\src\cv2pdb.exe surmap.exe
-      working-directory: build/surmap
-    - name: vangers -- prepare release folder
-      run: |
-        msys2 -c 'mkdir -p vangers/bin'
-        msys2 -c 'cp /mingw64/bin/SDL2.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/SDL2_net.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/avcodec-60.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/avformat-60.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/avutil-58.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/libogg-0.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/libvorbis-0.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/libvorbisfile-3.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/zlib1.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/libgcc_s_dw2-1.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/libgcc_s_seh-1.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/libstdc++-6.dll vangers/bin/'
-        msys2 -c 'cp /mingw64/bin/libwinpthread-1.dll vangers/bin/'
-        cp clunk/build/libclunk.dll vangers/bin/
-        cp build/src/vangers.exe vangers/bin/
-        cp build/src/vangers.pdb vangers/bin/
-        cp build/src/vangers.exe vangers/bin/vangers_debug.exe
-        msys2 -c 'strip vangers/bin/vangers.exe'
-        cp build/server/vangers_server.exe vangers/bin/
-        cp build/server/vangers_server.exe vangers/bin/vangers_server_debug.exe
-        msys2 -c 'strip vangers/bin/vangers_server.exe'
-        cp build/surmap/surmap.exe vangers/bin/
-        cp build/surmap/surmap.pdb vangers/bin/
-    - uses: actions/upload-artifact@v1
-      with:
-        name: Vangers-Release-64
-        path: vangers
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          path-type: inherit
+          install: |
+            diffutils
+            git
+          pacboy: |
+            cmake:p
+            ffmpeg:p
+            gcc:p
+            libogg:p
+            libvorbis:p
+            ninja:p
+            pkg-config:p
+            SDL2:p
+            SDL2_net:p
+            zlib:p
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Show tool versions
+        run: |
+          cmake --version
+          ninja --version
+          c++ --version
+
+      - name: Download Clunk
+        id: clunk-source
+        run: |
+          mkdir -p external
+          git clone --depth 1 https://github.com/stalkerg/clunk.git external/clunk
+          echo "sha=$(git -C external/clunk rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Clunk build
+        id: cache-clunk
+        uses: actions/cache@v5
+        with:
+          path: external/clunk/build
+          key: oss-windows-clunk-${{ runner.os }}-ucrt64-${{ steps.clunk-source.outputs.sha }}
+
+      - name: Build Clunk
+        if: steps.cache-clunk.outputs.cache-hit != 'true'
+        run: |
+          cmake -S external/clunk -B external/clunk/build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX"
+          cmake --build external/clunk/build --parallel
+
+      - name: Install Clunk
+        run: cmake --install external/clunk/build
+
+      - name: Configure Vangers
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE="${BUILD_TYPE}"
+
+      - name: Build Vangers
+        run: cmake --build build --parallel
+
+      - name: Prepare artifact folder
+        run: |
+          mkdir -p artifacts
+          cp build/src/vangers.exe artifacts/
+          cp build/server/vangers_server.exe artifacts/
+          cp build/surmap/surmap.exe artifacts/
+
+          for exe in artifacts/*.exe; do
+            ldd "$exe" | awk '/ucrt64/ { print $3 }' | sort -u | while read -r dll; do
+              cp -n "$dll" artifacts/
+            done
+          done
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: Vangers-OSS-windows-x86_64
+          path: artifacts

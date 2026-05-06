@@ -1,102 +1,109 @@
 name: OSS MacOS Build
 
 on:
+  push:
+    branches:
+      - master
+      - alpha
+  pull_request:
+    branches:
+      - master
+      - alpha
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oss-macos-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
-  MACOSX_DEPLOYMENT_TARGET: 11
+  BUILD_TYPE: RelWithDebInfo
+  MACOSX_DEPLOYMENT_TARGET: "13"
 
 jobs:
   build:
     if: ${{ github.repository == 'KranX/Vangers' }}
-    runs-on: macos-11
+    runs-on: macos-15-intel
+
     steps:
-    - uses: actions/checkout@v2
-    # - name: update repos
-    #   run: |
-    #     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-    #     brew update
-    - name: install libs
-      run: |
-        brew install ninja yasm dylibbundler
-    - name: install our libs
-      run: |
-          # brew reinstall -s ./formulas/libsndfile.rb --force --verbose --debug
-          # brew reinstall -s ./formulas/libogg.rb --force --verbose --debug
-          # brew reinstall -s ./formulas/libvorbis.rb --force --verbose --debug
-          # brew install -s ./formulas/sdl2.rb --force --verbose --debug
-          # brew install -s ./formulas/sdl2_net.rb --force --verbose --debug
-          brew install sdl2 sdl2_net libvorbis libogg libsndfile
-    - name: clunk -- download lib
-      run: git clone --depth 1 https://github.com/stalkerg/clunk.git clunk
-    - name: clunk -- create build dir
-      run: mkdir clunk/build
-    - name: clunk -- build and install
-      run: cmake -DCMAKE_INSTALL_PREFIX=/usr/local -G Ninja .. && ninja && sudo ninja install
-      working-directory: clunk/build
-      env:
-        MACOSX_DEPLOYMENT_TARGET: 10.12
-    - name: ffmpeg -- download
-      run: git clone --depth 1 --branch n4.2.3 https://git.ffmpeg.org/ffmpeg.git ffmpeg
-    - name: ffmpeg -- configure
-      run: ./configure --enable-shared --prefix=/usr/local
-        --cc=clang
-        --arch=x86_64
-        --cpu=westmere
-        --disable-everything
-        --enable-swscale
-        --enable-zlib
-        --enable-demuxer=avi,rawvideo
-        --enable-decoder=png,rawvideo,h264
-        --enable-parser=png
-        --enable-protocol=file
-        --disable-d3d11va
-        --disable-dxva2
-        --disable-avx
-        --disable-doc --disable-ffplay --disable-ffprobe --disable-ffmpeg
-        --disable-static --disable-bzlib --disable-libopenjpeg --disable-iconv
-      working-directory: ffmpeg
-    - name: ffmpeg -- build and install
-      run: |
-        make -j4
-        sudo make install
-      working-directory: ffmpeg
-    - name: configure
-      run: mkdir build && cd build && cmake -G Ninja ..
-    - name: make
-      run: ninja
-      working-directory: build
-    - name: vangers -- prepare release folder
-      run: |
-        mkdir Vangers.app/Contents/Frameworks
-        mkdir Vangers.app/Contents/Libs
-        cp -L /usr/local/lib/libSDL2-2.0.0.dylib Vangers.app/Contents/Libs/
-        cp -L /usr/local/lib/libSDL2_net-2.0.0.dylib Vangers.app/Contents/Libs/
-        cp -L /usr/local/lib/libavcodec.58.54.100.dylib Vangers.app/Contents/Libs/
-        cp -L /usr/local/lib/libavformat.58.29.100.dylib Vangers.app/Contents/Libs/
-        cp -L /usr/local/lib/libavutil.56.31.100.dylib Vangers.app/Contents/Libs/
-        cp -L /usr/local/lib/libogg.0.dylib Vangers.app/Contents/Libs/
-        cp -L /usr/local/lib/libvorbis.0.dylib Vangers.app/Contents/Libs/
-        cp -L /usr/local/lib/libvorbisfile.3.dylib Vangers.app/Contents/Libs/
-        cp clunk/build/libclunk.dylib Vangers.app/Contents/Libs/
-        cp build/src/vangers Vangers.app/Contents/MacOS/Vangers
-        dylibbundler -x Vangers.app/Contents/MacOS/Vangers
-        strip Vangers.app/Contents/MacOS/Vangers
-        sudo chmod 777 Vangers.app/Contents/Libs/*
-        install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib "@executable_path/../Libs/libogg.0.dylib" Vangers.app/Contents/Libs/libvorbis.0.dylib
-        install_name_tool -change /usr/local/Cellar/libvorbis/1.3.6/lib/libvorbis.0.dylib "@executable_path/../Libs/libvorbis.0.dylib" Vangers.app/Contents/Libs/libvorbisfile.3.dylib
-        install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib "@executable_path/../Libs/libogg.0.dylib" Vangers.app/Contents/Libs/libvorbisfile.3.dylib
-        mv Vangers.app/Contents/Libs/libavcodec.58.54.100.dylib Vangers.app/Contents/Libs/libavcodec.58.dylib
-        mv Vangers.app/Contents/Libs/libavformat.58.29.100.dylib Vangers.app/Contents/Libs/libavformat.58.dylib
-        mv Vangers.app/Contents/Libs/libavutil.56.31.100.dylib Vangers.app/Contents/Libs/libavutil.56.dylib
-        install_name_tool -change "@executable_path/../libs/libavcodec.58.54.100.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/MacOS/Vangers
-        install_name_tool -change "@executable_path/../libs/libavformat.58.29.100.dylib" "@executable_path/../Libs/libavformat.58.dylib" Vangers.app/Contents/MacOS/Vangers
-        install_name_tool -change "@executable_path/../libs/libavutil.56.31.100.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/MacOS/Vangers
-        install_name_tool -change "/usr/local/lib/libavutil.56.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/Libs/libavcodec.58.dylib
-        install_name_tool -change "/usr/local/lib/libavutil.56.dylib" "@executable_path/../Libs/libavutil.56.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
-        install_name_tool -change "/usr/local/lib/libavcodec.58.dylib" "@executable_path/../Libs/libavcodec.58.dylib" Vangers.app/Contents/Libs/libavformat.58.dylib
-        install_name_tool -change "/usr/local/opt/sdl2/lib/libSDL2-2.0.0.dylib" "@executable_path/../Libs/libSDL2-2.0.0.dylib" Vangers.app/Contents/Libs/libSDL2_net-2.0.0.dylib
-        tar -cvf Vangers.app.tar Vangers.app
-    - uses: actions/upload-artifact@v2
-      with:
-        name: Vangers.app.tar
-        path: Vangers.app.tar
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install system dependencies
+        run: |
+          brew install \
+            ffmpeg \
+            libogg \
+            libvorbis \
+            ninja \
+            pkg-config \
+            sdl2 \
+            sdl2_net
+
+      - name: Install latest CMake 4
+        run: |
+          python3 -m venv .ci-cmake
+          .ci-cmake/bin/python -m pip install --upgrade pip
+          .ci-cmake/bin/python -m pip install --upgrade "cmake>=4.0.0"
+          echo "$PWD/.ci-cmake/bin" >> "$GITHUB_PATH"
+
+      - name: Show tool versions
+        run: |
+          cmake --version
+          ninja --version
+          c++ --version
+
+      - name: Download Clunk
+        id: clunk-source
+        run: |
+          mkdir -p external
+          git clone --depth 1 https://github.com/stalkerg/clunk.git external/clunk
+          echo "sha=$(git -C external/clunk rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Clunk build
+        id: cache-clunk
+        uses: actions/cache@v5
+        with:
+          path: external/clunk/build
+          key: oss-macos-clunk-${{ runner.os }}-${{ steps.clunk-source.outputs.sha }}-${{ env.MACOSX_DEPLOYMENT_TARGET }}
+
+      - name: Build Clunk
+        if: steps.cache-clunk.outputs.cache-hit != 'true'
+        run: |
+          cmake -S external/clunk -B external/clunk/build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET}"
+          cmake --build external/clunk/build --parallel
+
+      - name: Install Clunk
+        run: sudo cmake --install external/clunk/build
+
+      - name: Configure Vangers
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET}"
+
+      - name: Build Vangers
+        run: cmake --build build --parallel
+
+      - name: Show built binaries
+        run: |
+          file build/src/vangers
+          file build/server/vangers_server
+          file build/surmap/surmap
+          otool -L build/src/vangers
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: Vangers-OSS-macos-x86_64
+          path: |
+            build/src/vangers
+            build/server/vangers_server
+            build/surmap/surmap
