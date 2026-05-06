@@ -27,7 +27,7 @@ modules:
       - chmod -R u=rwX,go=rX /app/lib/vangers/lib
       - install -Dm644 org.kranx.vangers.desktop /app/share/applications/org.kranx.vangers.desktop
       - install -Dm644 org.kranx.vangers.metainfo.xml /app/share/metainfo/org.kranx.vangers.metainfo.xml
-      - install -Dm644 org.kranx.vangers.png /app/share/icons/hicolor/128x128/apps/org.kranx.vangers.png
+      - install -Dm644 org.kranx.vangers.png /app/share/icons/hicolor/256x256/apps/org.kranx.vangers.png
     sources:
       - type: dir
         path: flatpak-payload
