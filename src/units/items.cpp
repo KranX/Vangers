@@ -3012,6 +3012,8 @@ void HordeObject::Quant(void)
 
 	if(Status & SOBJ_DISCONNECT) return;
 
+	vMove = Vector(0,0,0);
+
 	lv = Visibility;
 	GetVisible();
 
@@ -3030,6 +3032,9 @@ void HordeObject::Quant(void)
 				SteerAccumX = 0.0;
 				SteerAccumY = 0.0;
 				SteerAccumZ = 0.0;
+				MoveAccumX = 0.0;
+				MoveAccumY = 0.0;
+				MoveAccumZ = 0.0;
 				radius8 = radius << 8;
 				vTarget = R_curr << 8;
 				for(i = 0,p = Data;i < NumParticle;i++,p++){
@@ -3087,7 +3092,8 @@ void HordeObject::Quant(void)
 							};
 						};
 
-						R_curr += vDelta;
+						accumulate_runtime_vector_step(vDelta,MoveAccumX,MoveAccumY,MoveAccumZ,vMove);
+						R_curr += vMove;
 						cycleTor(R_curr.x,R_curr.y);
 					};
 				}else{
@@ -3099,7 +3105,8 @@ void HordeObject::Quant(void)
 							if(d < PALLADIUM_RADIUS){
 								vDelta = v * Speed;
 								vDelta /= d;
-								R_curr += vDelta;
+								accumulate_runtime_vector_step(vDelta,MoveAccumX,MoveAccumY,MoveAccumZ,vMove);
+								R_curr += vMove;
 								cycleTor(R_curr.x,R_curr.y);
 							};
 							break;
@@ -3120,7 +3127,8 @@ void HordeObject::Quant(void)
 							if(d > Speed) vDelta = vDelta * Speed / d;
 						};
 
-						R_curr += vDelta;
+						accumulate_runtime_vector_step(vDelta,MoveAccumX,MoveAccumY,MoveAccumZ,vMove);
+						R_curr += vMove;
 						cycleTor(R_curr.x,R_curr.y);
 
 						md = AttackRadius - radius;
@@ -3177,9 +3185,15 @@ void HordeObject::Quant(void)
 						vDelta += steer_step;
 						d = vDelta.vabs();
 						if(d > Speed) vDelta = vDelta * Speed / d;
-					}else vDelta = Vector(0,0,0);
+					}else{
+						vDelta = Vector(0,0,0);
+						MoveAccumX = 0.0;
+						MoveAccumY = 0.0;
+						MoveAccumZ = 0.0;
+					};
 
-					R_curr += vDelta;
+					accumulate_runtime_vector_step(vDelta,MoveAccumX,MoveAccumY,MoveAccumZ,vMove);
+					R_curr += vMove;
 					cycleTor(R_curr.x,R_curr.y);
 				};
 			}else{
@@ -3193,9 +3207,15 @@ void HordeObject::Quant(void)
 					vDelta += steer_step;
 					d = vDelta.vabs();
 					if(d > Speed) vDelta = vDelta * Speed / d;
-				}else vDelta = Vector(0,0,0);
+				}else{
+					vDelta = Vector(0,0,0);
+					MoveAccumX = 0.0;
+					MoveAccumY = 0.0;
+					MoveAccumZ = 0.0;
+				};
 
-				R_curr += vDelta;
+				accumulate_runtime_vector_step(vDelta,MoveAccumX,MoveAccumY,MoveAccumZ,vMove);
+				R_curr += vMove;
 				cycleTor(R_curr.x,R_curr.y);
 			};
 		};
@@ -3207,6 +3227,7 @@ void HordeObject::DrawQuant(void)
 	int i;
 	SimpleParticleType* p;
 	Vector vPos;
+	Vector carrier;
 	int tx,ty;
 
 	//std::cout<<"HordeObject::DrawQuant "<<ActD.Active<<std::endl;
@@ -3215,9 +3236,11 @@ void HordeObject::DrawQuant(void)
 	if(ActD.Active)
 		SOUND_HORDE(getDistX(ActD.Active->R_curr.x,R_curr.x));
 
+	carrier = vDelta * (XTCORE_FRAME_NORMAL * (double)(1 << 8));
+
 	if(AdvancedView){
 		for(i = 0,p = Data;i < NumParticle;i++,p++){
-			p->QuantP(R_curr << 8, vDelta << 8,3 << 8,5);
+			p->QuantP(R_curr << 8, carrier,3 << 8,5);
 			vPos = p->vR;
 			vPos >>= 8;
 			G2LQ(vPos,tx,ty);
@@ -3228,7 +3251,7 @@ void HordeObject::DrawQuant(void)
 	}else{
 		if(CurrentWorld < MAIN_WORLD_MAX - 1){
 			for(i = 0,p = Data;i < NumParticle;i++,p++){
-				p->QuantP(R_curr << 8, vDelta << 8,3 << 8,5);
+				p->QuantP(R_curr << 8, carrier,3 << 8,5);
 				tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 				ty = ((int)round((p->vR.y - SPViewY) * ScaleMapInvFlt) >> 8)+ ScreenCY;
 				if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
@@ -3237,7 +3260,7 @@ void HordeObject::DrawQuant(void)
 			};
 		}else{
 			for(i = 0,p = Data;i < NumParticle;i++,p++){
-				p->QuantP(R_curr << 8, vDelta << 8,3 << 8,5);
+				p->QuantP(R_curr << 8, carrier,3 << 8,5);
 				tx = ((int)round(SPGetDistX(p->vR.x,SPViewX) * ScaleMapInvFlt) >> 8) + ScreenCX;
 				ty = ((int)round(SPGetDistY(p->vR.y,SPViewY) * ScaleMapInvFlt) >> 8) + ScreenCY;
 				if(tx > UcutLeft && tx < UcutRight && ty > VcutUp && ty < VcutDown) {
@@ -3257,9 +3280,13 @@ void HordeObject::CreateHorde(Vector v,int r,int z,int cZ,VangerUnit* own)
 	Mode = HORDE_RESTORE_MODE;
 	NumParticle = HORDE_PARTICLE_NUM;
 	vDelta = Vector(0,0,0);
+	vMove = Vector(0,0,0);
 	SteerAccumX = 0.0;
 	SteerAccumY = 0.0;
 	SteerAccumZ = 0.0;
+	MoveAccumX = 0.0;
+	MoveAccumY = 0.0;
+	MoveAccumZ = 0.0;
 	R_curr = v;
 	cycleTor(R_curr.x,R_curr.y);
 	GetVisible();

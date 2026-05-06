@@ -265,8 +265,9 @@ struct HordeObject : BaseObject
 	int NumParticle;
 	SimpleParticleType* Data;
 	int Power;
-	Vector vDelta;
+	Vector vDelta,vMove;
 	double SteerAccumX,SteerAccumY,SteerAccumZ;
+	double MoveAccumX,MoveAccumY,MoveAccumZ;
 	int zAttackRadius,AttackRadius;
 	GeneralObject* Owner;
 	int zCruiser;
