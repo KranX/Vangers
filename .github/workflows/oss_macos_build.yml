@@ -148,9 +148,12 @@ jobs:
           for dylib in "$APP/Contents/Libs/"*.dylib; do
             [ -f "$dylib" ] || continue
             dylib_name="$(basename "$dylib")"
+            codesign --remove-signature "$dylib" 2>/dev/null || true
             install_name_tool -id "@executable_path/../Libs/$dylib_name" "$dylib" || true
             fix_install_names "$dylib"
           done
+
+          codesign --force --deep --sign - "$APP"
 
           cp build/server/vangers_server artifacts/bin/
           cp build/surmap/surmap artifacts/bin/

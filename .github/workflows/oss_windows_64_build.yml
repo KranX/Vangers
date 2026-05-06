@@ -46,7 +46,7 @@ jobs:
             libogg:p
             libvorbis:p
             ninja:p
-            pkg-config:p
+            pkgconf:p
             SDL2:p
             SDL2_net:p
             zlib:p
