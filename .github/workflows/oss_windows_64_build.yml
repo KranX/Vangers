@@ -108,7 +108,7 @@ jobs:
             done
           done
 
-      - name: Upload binaries
+      - name: Upload runtime artifact
         uses: actions/upload-artifact@v7
         with:
           name: Vangers-OSS-windows-x86_64

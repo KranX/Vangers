@@ -105,11 +105,31 @@ jobs:
           file build/server/vangers_server
           file build/surmap/surmap
 
-      - name: Upload binaries
+      - name: Prepare runtime artifact
+        run: |
+          rm -rf artifacts
+          mkdir -p artifacts/bin artifacts/lib
+
+          cp build/src/vangers artifacts/bin/
+          cp build/server/vangers_server artifacts/bin/
+          cp build/surmap/surmap artifacts/bin/
+
+          for exe in artifacts/bin/*; do
+            ldd "$exe" | awk '/=>/ { if ($3 ~ /^\//) print $3; next } $1 ~ /^\// { print $1 }'
+          done | sort -u | while read -r lib; do
+            [ -f "$lib" ] || continue
+            case "$lib" in
+              /lib*/ld-linux*|/lib*/libc.so*|/lib*/libm.so*|/lib*/libpthread.so*|/lib*/libdl.so*|/lib*/librt.so*)
+                continue
+                ;;
+            esac
+            cp -L "$lib" artifacts/lib/
+          done
+
+          chmod +x artifacts/bin/*
+
+      - name: Upload runtime artifact
         uses: actions/upload-artifact@v7
         with:
           name: Vangers-OSS-linux-x86_64
-          path: |
-            build/src/vangers
-            build/server/vangers_server
-            build/surmap/surmap
+          path: artifacts

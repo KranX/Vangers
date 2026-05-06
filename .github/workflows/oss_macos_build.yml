@@ -34,6 +34,7 @@ jobs:
       - name: Install system dependencies
         run: |
           brew install \
+            dylibbundler \
             ffmpeg \
             libogg \
             libvorbis \
@@ -99,11 +100,56 @@ jobs:
           file build/surmap/surmap
           otool -L build/src/vangers
 
-      - name: Upload binaries
+      - name: Prepare runtime artifact
+        run: |
+          rm -rf artifacts
+
+          APP="artifacts/bin/Vangers.app"
+          mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Libs" "$APP/Contents/Resources"
+
+          cp Vangers.app/Contents/Info.plist "$APP/Contents/Info.plist"
+          cp Vangers.app/Contents/Resources/iconfile.icns "$APP/Contents/Resources/iconfile.icns"
+          cp Vangers.app/Contents/MacOS/start "$APP/Contents/MacOS/start"
+          cp build/src/vangers "$APP/Contents/MacOS/Vangers"
+
+          chmod +x "$APP/Contents/MacOS/start" "$APP/Contents/MacOS/Vangers"
+
+          dylibbundler \
+            -od \
+            -b \
+            -x "$APP/Contents/MacOS/Vangers" \
+            -d "$APP/Contents/Libs" \
+            -p "@executable_path/../Libs/"
+
+          fix_install_names() {
+            local target="$1"
+            otool -L "$target" \
+              | awk '$1 ~ /^\/usr\/local\// || $1 ~ /^\/opt\/homebrew\// { print $1 }' \
+              | while read -r dep; do
+                local dep_name
+                dep_name="$(basename "$dep")"
+                if [ -f "$APP/Contents/Libs/$dep_name" ]; then
+                  install_name_tool -change "$dep" "@executable_path/../Libs/$dep_name" "$target"
+                fi
+              done
+          }
+
+          fix_install_names "$APP/Contents/MacOS/Vangers"
+          for dylib in "$APP/Contents/Libs/"*.dylib; do
+            [ -f "$dylib" ] || continue
+            dylib_name="$(basename "$dylib")"
+            install_name_tool -id "@executable_path/../Libs/$dylib_name" "$dylib" || true
+            fix_install_names "$dylib"
+          done
+
+          cp build/server/vangers_server artifacts/bin/
+          cp build/surmap/surmap artifacts/bin/
+          chmod +x artifacts/bin/vangers_server artifacts/bin/surmap
+
+          otool -L "$APP/Contents/MacOS/Vangers"
+
+      - name: Upload runtime artifact
         uses: actions/upload-artifact@v7
         with:
           name: Vangers-OSS-macos-x86_64
-          path: |
-            build/src/vangers
-            build/server/vangers_server
-            build/surmap/surmap
+          path: artifacts
