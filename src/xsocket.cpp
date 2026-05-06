@@ -112,7 +112,16 @@ int XSocket::tcp_open() {
 	}
 
 	socketSet = SDLNet_AllocSocketSet(64);
-	SDLNet_TCP_AddSocket(socketSet, tcpSock);
+	if (!socketSet) {
+		XSOCKET_ERROR("TCP socket set allocation failed", SDLNet_GetError());
+		close();
+		return 0;
+	}
+	if (SDLNet_TCP_AddSocket(socketSet, tcpSock) == -1) {
+		XSOCKET_ERROR("TCP socket set add failed", SDLNet_GetError());
+		close();
+		return 0;
+	}
 
 	return 1;
 }
@@ -193,25 +202,27 @@ int XSocket::send(const char *buffer, int size) {
 }
 
 int XSocket::receive(char *buffer, int size_of_buffer, int ms_time) {
+	if (!tcpSock || !socketSet || size_of_buffer <= 0)
+		return 0;
+
 	if (ms_time == 0) {
 		int n;
 
 		n = SDLNet_CheckSockets(socketSet, 0);
 		if (n == -1) {
-			printf("SDLNet_CheckSockets: %s\n", SDLNet_GetError());
-			// most of the time this is a system error, where perror might help you.
-			perror("SDLNet_CheckSockets");
+			close();
+			return 0;
 		} else if (n == 0) {
 			return 0;
 		}
+
+		if (!tcpSock)
+			return 0;
 
 		if (!SDLNet_SocketReady(tcpSock)) {
 			return 0;
 		}
 	}
-
-	if (!tcpSock)
-		return 0;
 
 	int status = SDLNet_TCP_Recv(tcpSock, buffer, size_of_buffer);
 	if (status <= 0) {

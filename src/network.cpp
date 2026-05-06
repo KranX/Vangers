@@ -13,6 +13,7 @@
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
 #endif
+#include <vector>
 #include "network.h"
 
 extern int MP_GAME;
@@ -599,18 +600,38 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 {
 	//std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
 	receive(sock);
+	if(!sock) {
+		if(!skip_if_aint)
+			{
+			if (lang() == RUSSIAN) {
+				ErrH.Abort("Сервер не отвечает", XERR_USER, event);
+			} else {
+				ErrH.Abort("Time out of Server's response receiving", XERR_USER, event);
+			}
+			}
+		event_ID = 0;
+		offset = next_event_pointer = 0;
+		return 0;
+	}
 	START_TIMER(120*1000);
 	for(;;) {
 		while(current_event()) {
 			//std::cout<<"current_event:"<<(int)current_event()<<" clock:"<<SDL_GetTicks()<<" _end_time_:"<<_end_time_<<std::endl;
 			if(current_event() == event) {
 				//std::cout<<"ok"<<std::endl;
-				int size = event_size + 2;
-				int prefix = next_event_pointer - size;
+				unsigned int size = (unsigned int)event_size + 2;
+				if(next_event_pointer < size || next_event_pointer > filled_size) {
+					ErrH.Abort("Bad network event buffer", XERR_USER, event);
+					event_ID = 0;
+					offset = next_event_pointer = 0;
+					return 0;
+				}
+				unsigned int prefix = next_event_pointer - size;
 				if(prefix > 0) {
-					memmove(buf + size,buf,filled_size);
-					memmove(buf,buf + size + prefix,size);
-					memmove(buf + size + prefix,buf + 2*size + prefix,filled_size - size - prefix);
+					std::vector<char> event_copy(size);
+					memcpy(event_copy.data(), buf + prefix, size);
+					memmove(buf + size, buf, prefix);
+					memcpy(buf, event_copy.data(), size);
 					//offset = next_event_pointer = size - body_size;
 					offset = next_event_pointer = 0;
 					return next_event();
@@ -625,6 +646,8 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 			break;
 
 		receive(sock,1);
+		if(!sock)
+			break;
 	}
 	if(!skip_if_aint)
         {
@@ -693,7 +716,10 @@ int InputEventBuffer::next_event() {
 				body_size = event_size - 14;
 				if(GET_OBJECT_TYPE(object_ID) == NID_VANGER) {
 					PlayerData* p = players_list.find(client_ID);
-					p -> x = x; p -> y = y;
+					if(p) {
+						p -> x = x;
+						p -> y = y;
+					}
 				}
 				delay_time += GLOBAL_CLOCK() - time;
 				delay_time_counter++;
@@ -912,9 +938,21 @@ int set_world(int world,int world_y_size) //znfo - send set_world event
 {
 	events_out.set_world(world,world_y_size);
 	events_out.send(1);
-	events_in.receive_waiting_for_event(SET_WORLD_RESPONSE);
-	events_in.get_byte(); //resp_world
+	int got = events_in.receive_waiting_for_event(SET_WORLD_RESPONSE);
+	if(got != SET_WORLD_RESPONSE)
+        {
+	    if (lang() == RUSSIAN) {
+            ErrH.Abort("Сервер не отвечает", XERR_USER, SET_WORLD_RESPONSE);
+        } else {
+            ErrH.Abort("Time out of Server's response receiving", XERR_USER, SET_WORLD_RESPONSE);
+        }
+        }
+	if(events_in.current_body_size() < 2)
+		ErrH.Abort("Bad SET_WORLD_RESPONSE", XERR_USER, events_in.current_body_size());
+	int resp_world = events_in.get_byte();
 	int resp_status = events_in.get_byte();
+	if(resp_world != world)
+		ErrH.Abort("Incorrect SET_WORLD_RESPONSE", XERR_USER, resp_world);
 	events_in.ignore_event();
 	set_world_status = resp_status;
 	enable_transferring = 1;
