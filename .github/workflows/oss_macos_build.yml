@@ -1,11 +1,13 @@
-name: Vangers MacOS Build
+name: OSS MacOS Build
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
 env:
   MACOSX_DEPLOYMENT_TARGET: 11
 
 jobs:
   build:
+    if: ${{ github.repository == 'KranX/Vangers' }}
     runs-on: macos-11
     steps:
     - uses: actions/checkout@v2

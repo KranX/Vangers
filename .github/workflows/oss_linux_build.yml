@@ -1,9 +1,11 @@
-name: Vangers Linux Build
+name: OSS Linux Build
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
 
 jobs:
   build:
+    if: ${{ github.repository == 'KranX/Vangers' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
