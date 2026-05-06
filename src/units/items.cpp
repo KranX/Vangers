@@ -48,6 +48,30 @@ extern int frame; // kdsplus.cpp
 
 const char DEBRIS_LIFE_TIME = 100;
 
+static int CheckLiveVangerPointer(VangerUnit* p)
+{
+	GeneralObject* n;
+	VangerUnit* v;
+
+	if(!p) return 0;
+
+	n = ActD.Tail;
+	while(n){
+		if(n == (GeneralObject*)p){
+			if(n->ID != ID_VANGER) return 0;
+			if(n->Status & SOBJ_DISCONNECT) return 0;
+
+			v = (VangerUnit*)n;
+			if(!v->uvsPoint || !v->uvsPoint->Pmechos) return 0;
+
+			return 1;
+		};
+		n = n->NextTypeList;
+	};
+
+	return 0;
+};
+
 static inline int debris_lifetime_ticks(void)
 {
 	int ticks = (int)round((DEBRIS_LIFE_TIME + 1) * GAME_TIME_COEFF);
@@ -1088,7 +1112,7 @@ void GunDevice::DeviceIn(void)
 				break;
 			case ACI_MECHOSCOPE:
 				if(NetworkON){
-					if(PrevOwner && PrevOwner != Owner && (Owner->Status & SOBJ_ACTIVE) && PrevOwner->Visibility == VISIBLE && !(PrevOwner->Status & SOBJ_WAIT_CONFIRMATION)){
+					if(CheckLiveVangerPointer(Owner) && CheckLiveVangerPointer(PrevOwner) && PrevOwner != Owner && (Owner->Status & SOBJ_ACTIVE) && PrevOwner->Visibility == VISIBLE && !(PrevOwner->Status & SOBJ_WAIT_CONFIRMATION)){
 						if(!(Owner->VangerChanger) && !(PrevOwner->VangerChanger)){
 							Owner->NetChanger = GET_STATION(PrevOwner->NetID);
 							Owner->ShellUpdateFlag = 1;
@@ -1103,7 +1127,7 @@ void GunDevice::DeviceIn(void)
 						};
 					};
 				}else{
-					if(PrevOwner && PrevOwner != Owner && PrevOwner->Visibility == VISIBLE && Owner->Visibility == VISIBLE && ((PrevOwner->Status & SOBJ_ACTIVE) || (Owner->Status & SOBJ_ACTIVE))){
+					if(CheckLiveVangerPointer(Owner) && CheckLiveVangerPointer(PrevOwner) && PrevOwner != Owner && PrevOwner->Visibility == VISIBLE && Owner->Visibility == VISIBLE && ((PrevOwner->Status & SOBJ_ACTIVE) || (Owner->Status & SOBJ_ACTIVE))){
 						if(ActD.Active)
 							SOUND_INCARNATOR_SHOT(getDistX(ActD.Active->R_curr.x,Owner->R_curr.x));
 						Owner->VangerChanger = PrevOwner;

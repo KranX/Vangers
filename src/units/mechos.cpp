@@ -203,6 +203,41 @@ static inline int sensor_enable_ticks(void)
 
 static StuffObject* resolve_stuff_owner(uvsUnitType* owner, actintItemData* d);
 
+static int CheckLiveVangerPointer(VangerUnit* p)
+{
+	GeneralObject* n;
+	VangerUnit* v;
+
+	if(!p) return 0;
+
+	n = ActD.Tail;
+	while(n){
+		if(n == (GeneralObject*)p){
+			if(n->ID != ID_VANGER) return 0;
+			if(n->Status & SOBJ_DISCONNECT) return 0;
+
+			v = (VangerUnit*)n;
+			if(!v->uvsPoint || !v->uvsPoint->Pmechos) return 0;
+
+			return 1;
+		};
+		n = n->NextTypeList;
+	};
+
+	return 0;
+};
+
+static void ClearVangerChangerLink(VangerUnit* p,int update_network)
+{
+	p->VangerChanger = NULL;
+	p->VangerChangerCount = 0;
+
+	if(update_network){
+		p->NetChanger = 0;
+		p->ShellUpdateFlag = 1;
+	};
+};
+
 static inline int glorx_landslide_null_ticks(void)
 {
 	int ticks = (int)round((80 + 1) * GAME_TIME_COEFF);
@@ -4455,22 +4490,18 @@ void VangerUnit::Quant(void)
 		};
 
 		if(VangerChanger){
-			if(VangerChanger->VangerChanger){
+			if(!CheckLiveVangerPointer(VangerChanger)){
+				ClearVangerChangerLink(this,1);
+			}else if(VangerChanger->VangerChanger){
 				if(VangerChanger->VangerChanger != this){
-					VangerChanger = NULL;
-					VangerChangerCount = 0;
-					NetChanger = 0;
-					ShellUpdateFlag = 1;
+					ClearVangerChangerLink(this,1);
 				}else{
 					if(NetChanger == GET_STATION(VangerChanger->NetID) && VangerChanger->NetChanger == GlobalStationID && VangerChangerCount == 2)
 						VangerChangerCount = 1;
 				};
 			}else{
 				if(NetChanger == 0xff){
-					VangerChanger = NULL;
-					VangerChangerCount = 0;
-					NetChanger = 0;
-					ShellUpdateFlag = 1;
+					ClearVangerChangerLink(this,1);
 				};
 			};		
 		};
@@ -4587,7 +4618,9 @@ void VangerUnit::InitEnvironment(void)
 
 	if(NetworkON){
 		if(VangerChanger){			
-			if(Status & SOBJ_ACTIVE){
+			if(!CheckLiveVangerPointer(VangerChanger)){
+				ClearVangerChangerLink(this,Status & SOBJ_ACTIVE);
+			}else if(Status & SOBJ_ACTIVE){
 				switch(VangerChangerCount){
 					case 3:
 						OutCarNator();
@@ -4596,12 +4629,8 @@ void VangerUnit::InitEnvironment(void)
 					case 1:
 						if(NetChanger == 0xff){
 							if(VangerChanger->NetChanger == 0xff){
-								VangerChanger->VangerChanger = NULL;
-								VangerChanger->VangerChangerCount = 0;
-								VangerChanger = NULL;
-								VangerChangerCount = 0;
-								NetChanger = 0;
-								ShellUpdateFlag = 1;
+								ClearVangerChangerLink(VangerChanger,0);
+								ClearVangerChangerLink(this,1);
 							};
 						}else{
 							ChangeVangerProcess();
@@ -4616,6 +4645,9 @@ void VangerUnit::InitEnvironment(void)
 		if(pNetPlayer && pNetPlayer->body.CarIndex != uvsPoint->Pmechos->type && !(Status & SOBJ_ACTIVE))
 			ChangeVangerProcess();
 	}else{
+		if(VangerChanger && !CheckLiveVangerPointer(VangerChanger))
+			ClearVangerChangerLink(this,0);
+
 		if(VangerChanger && VangerChangerCount > 0){
 			VangerChangerCount--;
 			switch(VangerChangerCount){
@@ -12932,12 +12964,13 @@ void ObjectDestroy(GeneralObject* n,int mode)
 		};
 		
 		if(((VangerUnit*)(n))->VangerChanger){
-			if(((VangerUnit*)(n))->VangerChanger->VangerChanger == n){
-				((VangerUnit*)(n))->VangerChanger->VangerChanger = NULL;
-				((VangerUnit*)(n))->VangerChanger->VangerChangerCount = 0;
-				if(NetworkON && (((VangerUnit*)(n))->VangerChanger->Status & SOBJ_ACTIVE)){
-					((VangerUnit*)(n))->VangerChanger->NetChanger = 0;
-					((VangerUnit*)(n))->VangerChanger->ShellUpdateFlag = 1;
+			p = ((VangerUnit*)(n))->VangerChanger;
+			if(CheckLiveVangerPointer(p) && p->VangerChanger == n){
+				p->VangerChanger = NULL;
+				p->VangerChangerCount = 0;
+				if(NetworkON && (p->Status & SOBJ_ACTIVE)){
+					p->NetChanger = 0;
+					p->ShellUpdateFlag = 1;
 				};
 			};
 			((VangerUnit*)(n))->VangerChanger = NULL;
@@ -14177,6 +14210,11 @@ void VangerUnit::OutCarNator(void)
 	StuffObject* p;
 	StuffObject* pp;
 	uvsItem* g;			
+
+	if(!CheckLiveVangerPointer(VangerChanger)){
+		ClearVangerChangerLink(this,NetworkON && (Status & SOBJ_ACTIVE));
+		return;
+	};
 	
 	if(NetworkON){
 		FreeList(uvsPoint->Pitem);
