@@ -33,6 +33,10 @@ CMakeSettings.json
 /build
 /clunk
 /vangers
+/artifacts-flatpak
+/flatpak-build
+/flatpak-repo
+/packaging/flatpak/flatpak-payload
 
 # Server env file
 .env

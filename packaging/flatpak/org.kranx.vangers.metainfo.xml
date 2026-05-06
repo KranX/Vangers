@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.kranx.vangers</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <name>Vangers</name>
+  <summary>Mind-altering sandbox game</summary>
+  <developer id="org.kranx">
+    <name>KranX Productions</name>
+  </developer>
+  <description>
+    <p>
+      Vangers is an open-world racing and role-playing game. This package contains
+      the open-source Linux binaries; game data must be provided separately.
+    </p>
+  </description>
+  <launchable type="desktop-id">org.kranx.vangers.desktop</launchable>
+  <url type="homepage">https://github.com/KranX/Vangers</url>
+  <releases>
+    <release version="alpha" date="2026-05-06" />
+  </releases>
+  <content_rating type="oars-1.1" />
+</component>

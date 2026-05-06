@@ -1,0 +1,31 @@
+#!/bin/sh
+set -eu
+
+program="$(basename "$0")"
+case "$program" in
+  vangers|vangers_server|surmap) ;;
+  *) program="vangers" ;;
+esac
+
+export LD_LIBRARY_PATH="/app/lib/vangers/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+has_vangers_data() {
+  [ -f "$1/worlds.prm" ] && [ -f "$1/car.prm" ] && [ -f "$1/item.prm" ]
+}
+
+if [ -n "${VANGERS_DATA_DIR:-}" ]; then
+  cd "$VANGERS_DATA_DIR"
+elif has_vangers_data "$PWD"; then
+  :
+elif has_vangers_data "$HOME/.local/share/vangers"; then
+  cd "$HOME/.local/share/vangers"
+elif has_vangers_data "$HOME/Games/Vangers"; then
+  cd "$HOME/Games/Vangers"
+elif has_vangers_data "$HOME/games/Vangers"; then
+  cd "$HOME/games/Vangers"
+else
+  echo "Vangers data directory was not found." >&2
+  echo "Run from the game data directory or set VANGERS_DATA_DIR before flatpak run." >&2
+fi
+
+exec "/app/lib/vangers/bin/$program" "$@"

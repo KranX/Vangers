@@ -35,6 +35,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             build-essential \
+            flatpak \
+            flatpak-builder \
             git \
             ninja-build \
             pkg-config \
@@ -128,8 +130,47 @@ jobs:
 
           chmod +x artifacts/bin/*
 
+      - name: Install Flatpak runtime
+        run: |
+          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install --noninteractive -y flathub \
+            org.freedesktop.Platform//24.08 \
+            org.freedesktop.Sdk//24.08
+
+      - name: Build Flatpak bundle
+        run: |
+          rm -rf \
+            artifacts-flatpak \
+            flatpak-build \
+            flatpak-repo \
+            packaging/flatpak/flatpak-payload
+
+          mkdir -p packaging/flatpak/flatpak-payload artifacts-flatpak
+          cp -a artifacts/bin packaging/flatpak/flatpak-payload/
+          cp -a artifacts/lib packaging/flatpak/flatpak-payload/
+
+          flatpak-builder \
+            --force-clean \
+            --disable-rofiles-fuse \
+            --default-branch=stable \
+            --repo=flatpak-repo \
+            flatpak-build \
+            packaging/flatpak/org.kranx.vangers.yml
+
+          flatpak build-bundle \
+            flatpak-repo \
+            artifacts-flatpak/Vangers-OSS-linux-x86_64.flatpak \
+            org.kranx.vangers \
+            stable
+
       - name: Upload runtime artifact
         uses: actions/upload-artifact@v7
         with:
           name: Vangers-OSS-linux-x86_64
           path: artifacts
+
+      - name: Upload Flatpak bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: Vangers-OSS-linux-x86_64-flatpak
+          path: artifacts-flatpak
