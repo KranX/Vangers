@@ -33,13 +33,23 @@ jobs:
 
       - name: Install system dependencies
         run: |
-          brew install \
+          install_if_missing() {
+            for formula in "$@"; do
+              if brew list --formula "$formula" >/dev/null 2>&1; then
+                echo "$formula is already installed"
+              else
+                brew install "$formula"
+              fi
+            done
+          }
+
+          install_if_missing \
             dylibbundler \
             ffmpeg \
             libogg \
             libvorbis \
             ninja \
-            pkg-config \
+            pkgconf \
             sdl2 \
             sdl2_net
 
