@@ -654,6 +654,31 @@ extern int RealNumLocation[WORLD_MAX];
 extern char** SkipLocationName[WORLD_MAX];
 extern int* NumLocationData[WORLD_MAX];
 
+#ifdef _ROAD_
+static int MLLoadRuntimeScale = 0;
+
+static inline int ml_scale_legacy_interval(int legacy_interval)
+{
+	int ticks = (int)round(legacy_interval * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline int ml_scale_legacy_phase(int legacy_phase)
+{
+	if(legacy_phase <= 0)
+		return legacy_phase;
+	return ml_scale_legacy_interval(legacy_phase);
+}
+
+static inline int ml_rescale_runtime_counter(int value,double old_coeff,double new_coeff)
+{
+	if(value <= 0 || old_coeff <= 0.0 || new_coeff <= 0.0)
+		return value;
+	int scaled = (int)round(value * new_coeff / old_coeff);
+	return scaled > 0 ? scaled : 1;
+}
+#endif
+
 void MLload(void)
 {
 	int i,j,t;
@@ -924,12 +949,18 @@ void MobileLocation::load(char* fname,int direct)
 	table = new MLFrame[maxFrame];
 	memset(steps = new int[maxFrame],0,maxFrame*sizeof(int));
 	isAlt = 0;
+#ifdef _ROAD_
+	MLLoadRuntimeScale = !direct;
+#endif
 	for(i = 0;i < maxFrame;i++){
 		table[i].load(ff,mode);
 		if(table[i].sx > altSx) altSx = table[i].sx;
 		if(table[i].sy > altSy) altSy = table[i].sy;
 		if(table[i].period > 1) isAlt = 1;
 		}
+#ifdef _ROAD_
+	MLLoadRuntimeScale = 0;
+#endif
 #ifdef _ROAD_
 	if(isAlt)
 #endif
@@ -1023,6 +1054,10 @@ void MobileLocation::save(int reserve)
 void MLFrame::load(XStream& ff,int mode)
 {
 	ff > x0 > y0 > sx > sy > period > surfType;
+#ifdef _ROAD_
+	if(MLLoadRuntimeScale)
+		period = ml_scale_legacy_interval(period);
+#endif
 	ff > csd > cst;
 #if defined(_SURMAP_) && !defined(_SURMAP_ROUGH_)
 	if(csd || cst)
@@ -1643,8 +1678,58 @@ void MobileLocation::goPhase(int nPhase)
 #ifdef _SURMAP_
 	if(nPhase > maxFrame - 1) nPhase = maxFrame - 1;
 #endif
+#ifdef _ROAD_
+	nPhase = ml_scale_legacy_phase(nPhase);
+#endif
 	goPh = nPhase;
 };
+
+#ifdef _ROAD_
+void MobileLocation::scaleRuntime(double old_coeff,double new_coeff)
+{
+	if(old_coeff <= 0.0 || new_coeff <= 0.0 || old_coeff == new_coeff)
+		return;
+
+	maxStage = 0;
+	int needAlt = 0;
+	for(int i = 0;i < maxFrame;i++){
+		table[i].period = ml_rescale_runtime_counter(table[i].period,old_coeff,new_coeff);
+		if(table[i].period > 1)
+			needAlt = 1;
+		if(steps[i] > 0){
+			steps[i] = ml_rescale_runtime_counter(steps[i],old_coeff,new_coeff);
+			if(steps[i] > table[i].period)
+				steps[i] = table[i].period;
+		}
+		maxStage += table[i].period;
+	}
+	if(needAlt && !isAlt){
+		alt = new MLAtype[altSx*altSy];
+		isAlt = 1;
+		memset(steps,0,maxFrame*sizeof(int));
+	}
+
+	if(cStage >= 0){
+		cStage = ml_rescale_runtime_counter(cStage + 1,old_coeff,new_coeff) - 1;
+		if(cStage >= maxStage)
+			cStage = maxStage - 1;
+	}
+	if(goPh > 0){
+		goPh = ml_rescale_runtime_counter(goPh,old_coeff,new_coeff);
+		if(goPh >= maxStage)
+			goPh = maxStage - 1;
+	}
+}
+
+void reconfigure_moveland_runtime_fps_scaled_state(double old_coeff,double new_coeff)
+{
+	if(old_coeff <= 0.0 || new_coeff <= 0.0 || old_coeff == new_coeff)
+		return;
+
+	for(int i = 0;i < MLTableSize;i++)
+		MLTable[i]->scaleRuntime(old_coeff,new_coeff);
+}
+#endif
 
 const int MaxAddDanger[WORLD_MAX] = {0,11,0,0,0 ,0,0,0,0,0};
 extern int NumAddDanger;

@@ -170,6 +170,7 @@ void uvsRestoreVanger(void);
 
 void MLload(void);
 int MLquant(void);
+void reconfigure_moveland_runtime_fps_scaled_state(double old_coeff,double new_coeff);
 
 #ifdef ACTINT
 void aciLoadData(void);
@@ -205,7 +206,7 @@ char* host_name = 0;
 int host_port = DEFAULT_SERVER_PORT;
 
 int network_log = 0;
-int fps_frame,fps_start,uvsQuantFrame,gameDQuantFrame,actQuantFrame,MLQuantFrame;
+int fps_frame,fps_start,uvsQuantFrame,gameDQuantFrame,actQuantFrame;
 char fps_string[20];
 
 int stop_all_except_me = 0;
@@ -1653,6 +1654,7 @@ void KeyCenter(SDL_Event *key)
 				GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
 				p -> SetTimer(RTO_GAME_QUANT_TIMER);
 				reconfigure_runtime_fps_scaled_state(old_game_time_coeff,GAME_TIME_COEFF);
+				reconfigure_moveland_runtime_fps_scaled_state(old_game_time_coeff,GAME_TIME_COEFF);
 				//Toggle FPS
 			}
 			break;
@@ -1945,11 +1947,8 @@ void iGameMap::draw(int self)
 	if(GeneralSystemSkip && !ChangeWorldSkipQuant){
 		if(curGMap) {
 			BackD.restore();
-			
-			if (++MLQuantFrame >= (int)round(GAME_TIME_COEFF)) {
-				MLquant(); // Moveland animation frame is here!!!
-				MLQuantFrame = 0;
-			}
+
+			MLquant(); // Moveland animation frame is internally stretched for the active runtime FPS
 			//try {
 			GameD.Quant();
 			/*} catch (...) {

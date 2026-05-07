@@ -223,6 +223,7 @@ struct MobileLocation {
 	int maxStage;
 	int NetID;
 	char GetVisible(void);
+	void scaleRuntime(double old_coeff,double new_coeff);
 #endif
 #ifdef _SURMAP_
 	char* fileName;
