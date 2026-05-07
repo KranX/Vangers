@@ -9007,7 +9007,7 @@ void CompasObject::Quant(void)
 
 	d = v.vabs();
 	if(d){
-		vMove += v * (MAX_COMPAS_DELTA * XTCORE_FRAME_NORMAL / d);
+		vMove += v * (MAX_COMPAS_DELTA * XTCORE_FRAME_NORMAL * XTCORE_FRAME_NORMAL / d);
 		d = vMove.vabs();
 		if(d) vMove = vMove * (MAX_COMPAS_SPEED * XTCORE_FRAME_NORMAL / d);
 	};
