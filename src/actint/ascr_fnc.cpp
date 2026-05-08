@@ -6200,12 +6200,36 @@ void aciDropMoveItem(void)
 	}
 }
 
+// Old cheat strings are kept decodable, but disabled by default.
+static const int aciCheatsTemporarilyEnabled = 0;
+
+static int aciCheatKeyToChar(int key)
+{
+	if(key >= SDL_SCANCODE_A && key <= SDL_SCANCODE_Z)
+		return 'a' + key - SDL_SCANCODE_A;
+	if(key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_9)
+		return '1' + key - SDL_SCANCODE_1;
+	if(key == SDL_SCANCODE_0)
+		return '0';
+	if(key == SDL_SCANCODE_MINUS)
+		return '-';
+	return 0;
+}
+
 //znfo key handler
 void aciCHandler(int key)
 {
-	return;
 	int code = 0,cr;
+	if(!aciCheatsTemporarilyEnabled)
+		return;
 	if(NetworkON || key > 256 || key <= 0) return;
+
+	key = aciCheatKeyToChar(key);
+	if(!key){
+		if(aciTreeData)
+			aciTreeData -> reset();
+		return;
+	}
 
 	if(aciTreeData) {
 		code = aciTreeData -> quant(key);
