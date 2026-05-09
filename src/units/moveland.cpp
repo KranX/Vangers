@@ -1196,25 +1196,23 @@ int MobileLocation::quant(int render,int skipVZ,int skipCheck)
 	if(!skipCheck){
 		checked = table[cFrame].check(dy);
 		if(checked && frozen){
+#ifdef _ROAD_
+			frozen = 0;
+#else
 			steps[cFrame] = 0;
 			cFrame = 0;
 			frozen = 0;
-#ifdef _ROAD_
-			cStage = -1;
-			setPhase(0,1);
-			goPh = 0;
 #endif
 			return 0;
 			}
 		else {
 			if(!checked && !frozen){
+#ifdef _ROAD_
+				frozen = 1;
+#else
 				steps[cFrame] = 0;
 				cFrame = 0;
 				frozen = 1;
-#ifdef _ROAD_		
-				cStage = -1;
-				goPh = 0;
-//				vMap->delink(YCYCL(y0 - altSy),YCYCL(y0 + altSy));
 #endif
 				return 0;
 				}
