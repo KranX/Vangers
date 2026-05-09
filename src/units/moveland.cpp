@@ -655,6 +655,15 @@ extern char** SkipLocationName[WORLD_MAX];
 extern int* NumLocationData[WORLD_MAX];
 
 #ifdef _ROAD_
+static int should_load_world_mobile_location(const char* fname)
+{
+	for(int j = 0;j < NumSkipLocation[CurrentWorld];j++){
+		if(!strcmp(fname,SkipLocationName[CurrentWorld][NumLocationData[CurrentWorld][j]]))
+			return j < RealNumLocation[CurrentWorld];
+	}
+	return 1;
+}
+
 static int MLLoadRuntimeScale = 0;
 
 static inline int ml_scale_legacy_interval(int legacy_interval)
@@ -735,13 +744,17 @@ MLTableSize = 0;
 	if (n < 0) 
 		perror("scandir"); 
 	else { 
-		while(n--) { 
+		while(n--) {
 			std::string name = namelist[n]->d_name;
-			if (name.find(".vot")!=std::string::npos)
+			if (name.find(".vot")!=std::string::npos
+#ifdef _ROAD_
+				&& should_load_world_mobile_location(name.c_str())
+#endif
+				)
 				MLTableSize++;
-			free(namelist[n]); 
-		} 
-	free(namelist); 
+			free(namelist[n]);
+		}
+	free(namelist);
 	} 
 	
 
@@ -760,13 +773,7 @@ MLTableSize = 0;
 	while(fn){
 		t = 1;
 #ifdef _ROAD_
-		for(j = 0;j < NumSkipLocation[CurrentWorld];j++){
-			if(!strcmp(fn,SkipLocationName[CurrentWorld][NumLocationData[CurrentWorld][j]])){
-				if(j >= RealNumLocation[CurrentWorld])
-					t = 0;
-				break;
-				}
-			}
+		t = should_load_world_mobile_location(fn);
 #endif
 		if(t){
 			(MLTable[i] = new MobileLocation) -> load(fn);
@@ -779,19 +786,23 @@ MLTableSize = 0;
 	n = scandir(tmp.c_str(), &namelist2, 0, alphasort); 
 	if (n < 0) 
 		perror("scandir"); 
-	else { 
-		while(n--) { 
+	else {
+		while(n--) {
 			std::string name = namelist2[n]->d_name;
-			if (name.find(".vot")!=std::string::npos)
-				{
+			if (name.find(".vot")!=std::string::npos){
+				t = 1;
+#ifdef _ROAD_
+				t = should_load_world_mobile_location(name.c_str());
+#endif
+				if(t){
 				(MLTable[i] = new MobileLocation) -> load(namelist2[n]->d_name);
 				i++;
 				}
-			else
-				free(namelist2[n]); 
-		} 
-	//free(namelist2); 
-	} 
+			}
+			free(namelist2[n]);
+		}
+	free(namelist2);
+	}
 #endif
 	VLload();
 	ML_FRAME_DELTA = new uchar[ML_FRAME_SIZE];
