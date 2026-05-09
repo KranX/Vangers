@@ -6194,6 +6194,7 @@ void aciTheEnd(void)
 void aciDropMoveItem(void)
 {
 	if(aScrDisp -> flags & AS_INV_MOVE_ITEM){
+		aciUpdateScreenMousePoint(iMouseX,iMouseY);
 		aciSendEvent2itmdsp(ACI_DROP_ITEM,aScrDisp -> curItem -> item_ptr);
 		aScrDisp -> flags &= ~AS_INV_MOVE_ITEM;
 		aScrDisp -> free_item(aScrDisp -> curItem);

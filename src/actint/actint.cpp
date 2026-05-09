@@ -4183,6 +4183,7 @@ void actIntDispatcher::i_init(void)
 		if(flags & AS_INV_MOVE_ITEM){
 			flags ^= AS_INV_MOVE_ITEM;
 			if(!curMatrix -> auto_put_item(curItem)){
+				aciUpdateScreenMousePoint(iMouseX,iMouseY);
 				aciSendEvent2itmdsp(ACI_DROP_ITEM,curItem -> item_ptr);
 				restore_mouse_cursor();
 				free_item(curItem);
@@ -6264,6 +6265,7 @@ void actIntDispatcher::inv_mouse_quant_l(void)
 	else {
 		if(!(flags & AS_ISCREEN)){
 			if(flags & AS_INV_MOVE_ITEM){
+				aciUpdateScreenMousePoint(iMouseX,iMouseY);
 				aciSendEvent2itmdsp(ACI_DROP_ITEM,curItem -> item_ptr);
 				restore_mouse_cursor();
 				if(curItem -> menu){
@@ -6386,6 +6388,7 @@ void actIntDispatcher::inv_mouse_quant_r(void)
 	else {
 		if(!(flags & AS_ISCREEN)){
 			if(flags & AS_INV_MOVE_ITEM){
+				aciUpdateScreenMousePoint(iMouseX,iMouseY);
 				aciSendEvent2itmdsp(ACI_DROP_ITEM,curItem -> item_ptr);
 				restore_mouse_cursor();
 				if(curItem -> menu){

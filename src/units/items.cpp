@@ -2317,6 +2317,19 @@ void ChangerDevice::DeviceOut(Vector v,int flag,Vector v2)
 
 const int ACI_CHECK_RADIUS = 1;
 
+static void aciUpdateWorldMousePoint(int tx,int ty)
+{
+	if(ActD.Active)
+		GeneralMousePoint = Vector(getDistX(tx,ActD.Active->R_curr.x),getDistY(ty,ActD.Active->R_curr.y),0);
+}
+
+void aciUpdateScreenMousePoint(int x,int y)
+{
+	int tx,ty;
+	S2G(x,y,tx,ty);
+	aciUpdateWorldMousePoint(tx,ty);
+}
+
 int aciGetScreenItem(int x,int y)
 {
 	BaseObject* p;
@@ -2328,10 +2341,7 @@ int aciGetScreenItem(int x,int y)
 	mp = NULL;
 	rz = -1;
 	S2G(x,y,tx,ty);
-	
-	if (ActD.Active) {
-		GeneralMousePoint = Vector(getDistX(tx, ActD.Active->R_curr.x), getDistY(ty, ActD.Active->R_curr.y), 0);
-	}
+	aciUpdateWorldMousePoint(tx,ty);
 
 	p = (BaseObject*)(ItemD.Tail);
 	while(p){
