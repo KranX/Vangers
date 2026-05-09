@@ -225,6 +225,7 @@ struct BulletObject : BaseObject , BulletControlType
 	int TargetSteerDelay;
 	int LegacyLaserDraw;
 	int LegacyLaserDrawDelay;
+	int LegacyCraterDrawDelay;
 	GeneralObject* Owner;
 	Vector vTail;
 	LightPoint* LightData;

@@ -118,6 +118,24 @@ static inline bool bullet_laser_draw_local_step(int& delay)
 	return 1;
 }
 
+static inline int bullet_crater_draw_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool bullet_crater_draw_local_step(int& delay)
+{
+	int ticks = bullet_crater_draw_ticks();
+	if(ticks <= 1) return 1;
+	if(delay > 0){
+		delay--;
+		return 0;
+	}
+	delay = ticks - 1;
+	return 1;
+}
+
 static inline void accumulate_runtime_vector_step(const Vector& legacy_step,double& accum_x,double& accum_y,double& accum_z,Vector& out_step)
 {
 	accum_x += legacy_step.x * XTCORE_FRAME_NORMAL;
@@ -308,6 +326,7 @@ void reconfigure_runtime_fps_scaled_state(double old_coeff,double new_coeff)
 			if(b->DataID >= 0 && b->DataID < GameBulletNum)
 				b->DeltaPower = GameBulletData[b->DataID].DeltaPower;
 			b->LegacyLaserDrawDelay = 0;
+			b->LegacyCraterDrawDelay = 0;
 			b->LegacyLaserDrawAccum = Vector(0,0,0);
 			if(b->BulletID == BULLET_TYPE_ID::LASER)
 				b->LegacyLaserDrawCached = Vector(-b->vDelta.x,-b->vDelta.y,-b->vDelta.z);
@@ -1470,6 +1489,7 @@ void BulletObject::Init(void)
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
 	LegacyLaserDrawDelay = 0;
+	LegacyCraterDrawDelay = 0;
 	LegacyLaserDrawCached = Vector(0,0,0);
 	LegacyLaserDrawAccum = Vector(0,0,0);
 	MoveAccumX = 0.0;
@@ -1516,6 +1536,7 @@ void BulletObject::CreateBullet(Vector fv,Vector tv,GeneralObject* target,WorldB
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
 	LegacyLaserDrawDelay = 0;
+	LegacyCraterDrawDelay = 0;
 	LegacyLaserDrawCached = Vector(0,0,0);
 	LegacyLaserDrawAccum = Vector(0,0,0);
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
@@ -1577,6 +1598,7 @@ void BulletObject::CreateBullet(GunSlot* p,WorldBulletTemplate* n)
 	TargetSteerDelay = 0;
 	LegacyLaserDraw = 0;
 	LegacyLaserDrawDelay = 0;
+	LegacyCraterDrawDelay = 0;
 	LegacyLaserDrawCached = Vector(0,0,0);
 	LegacyLaserDrawAccum = Vector(0,0,0);
 //	OwnerTouchFlag = BULLET_OWNER_TOUCH | BULLET_OWNER_CHECK;
@@ -1964,19 +1986,25 @@ void BulletObject::DrawQuant(void)
 			}			
 			break;
 		case BULLET_SHOW_TYPE_ID::CRATER:
+		{
 			if(MapLevel && (vDelta.x != 0 || vDelta.y != 0 || vDelta.z != 0)){
+				bool create_crater_spot = bullet_crater_draw_local_step(LegacyCraterDrawDelay);
 				if(ExtShowType){
 					if(BulletScale){
-						if(LightData) 
+						if(LightData)
 							LightData->set_position(R_prev.x,R_prev.y,R_prev.z + 63);
-						else 
+						else
 							LightData = MapD.CreateLight(R_curr.x,R_curr.y,R_curr.z,20,32,LIGHT_TYPE::STATIC);
 
-						MapD.CreateLavaSpot(R_curr,5,5,20,10,0,0,1,8,83,0,4,1,ExtShowType);
-					}else MapD.CreateLavaSpot(R_curr,5,2,10,7,0,0,2,7,83,0,4,1,ExtShowType);
-				}else MapD.CreateLavaSpot(R_curr,5,2,10,7,0,0,2,7,83,0,4,1,83);
-			};				
+						if(create_crater_spot)
+							MapD.CreateLavaSpot(R_curr,5,5,20,10,0,0,1,8,83,0,4,1,ExtShowType);
+					}else if(create_crater_spot)
+						MapD.CreateLavaSpot(R_curr,5,2,10,7,0,0,2,7,83,0,4,1,ExtShowType);
+				}else if(create_crater_spot)
+					MapD.CreateLavaSpot(R_curr,5,2,10,7,0,0,2,7,83,0,4,1,83);
+			};
 			break;
+		}
 		case BULLET_SHOW_TYPE_ID::LASER:
 		{
 			Vector motionDraw = Vector(getDistX(R_prev.x,R_curr.x),getDistY(R_prev.y,R_curr.y),R_prev.z - R_curr.z);
