@@ -3159,7 +3159,7 @@ void Object::mechous_analysis(double dt)
 //			}
 		
 		SoundFlag = 0;
-		if(helicopter && air_speed_factor < 1)
+		if(helicopter)
 			SoundFlag |= SoundCopterig;
 		if(mole_on)
 			SoundFlag |= SoundCrotrig;
