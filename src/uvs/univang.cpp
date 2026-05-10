@@ -6591,8 +6591,6 @@ int uvsVanger::sellCirt(void){
 	GamerResult.cirt_bad = -1;
 	GamerResult.cirt_good = -1;
 
-	if (dgAbortStatus) return 0;
-
 	while( pi ){
 		tmp_good = 0;
 		tmp_bad = 0;
@@ -6620,6 +6618,11 @@ int uvsVanger::sellCirt(void){
 					}
 				}
 
+
+			if (dgAbortStatus && tmp_good >= tmp_bad && tmp_good > 0){
+				tmp_good = 0;
+				tmp_bad = 0;
+			}
 
 			if (tmp_good >= tmp_bad && tmp_good > 0){
 				tmp_good = 0;
