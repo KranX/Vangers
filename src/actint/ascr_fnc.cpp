@@ -1869,6 +1869,7 @@ void aci_LocationQuantPrepare(void)
 
 	aScrDisp -> i_init();
 	iScrQuantPrepare();
+	iKeyClear();
 }
 
 void aci_LocationQuantFinit(void)
