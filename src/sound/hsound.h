@@ -155,6 +155,7 @@ void SoundQuant(void);
 void SoundEscaveOff(void);
 void SetMotorSound(int speed);
 void SetMotorFile( int type );
+void SetMotorFileIfChanged( int type );
 
 void StartSPEECH(SPEECH_VALUE SpeechValue);
 void StartEFFECT(EFFECT_VALUE EffectValue,int loop = 0, int pan = 0);

@@ -2276,10 +2276,7 @@ void uvsVanger::get_list_from_ActInt( uvsActInt*& Item, uvsActInt*& Mechos){
 			Pmechos = new uvsMechos(Mechos -> type);
 		}
 
-		if (strcmp(uvsMechosTable[Pmechos -> type] -> name, "LawnMower"))
-			SetMotorFile(uvsMechosTable[Pmechos -> type] -> type);
-		else
-			SetMotorFile(6);
+		SetMotorFile(uvsMechosTable[Pmechos -> type] -> type);
 #ifndef _DEMO_
 		Pmechos -> color = Mechos -> param1;
 #else

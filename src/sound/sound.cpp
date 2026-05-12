@@ -47,6 +47,7 @@ struct SndParameters {
 	};
 
 static int *TrackCDTime = 0;
+static int CurrentMotorFileType = -1;
 
 static const char* SndMotorFileName[7*2] = {
 	"raffa",  "raffa2",
@@ -227,11 +228,18 @@ void RestoreSOUND(void)
 }
 
 void SetMotorFile( int type ){
+	CurrentMotorFileType = type;
 	SndData[EFF_DRIVING].fname = SndMotorFileName[type*2];
 //	SndData[EFF_START].fname = SndMotorFileName[type*3+1];
 	SndData[EFF_STOP].fname = SndMotorFileName[type*2+1];
 
 	LoadMotorSound();
+	lastSoundFlag &= ~SoundMotor;
+}
+
+void SetMotorFileIfChanged( int type ){
+	if(CurrentMotorFileType != type)
+		SetMotorFile(type);
 }
 
 void SetMotorSound(int speed){

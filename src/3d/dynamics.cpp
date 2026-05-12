@@ -32,6 +32,14 @@ struct ParticleProcess;
 #undef random
 #define random(num) ((int)(((long)_rand()*(num)) >> 15))
 
+static inline int is_lawn_mower_prm(const char* name)
+{
+	return !strcmp(name, "resource/m3d/mechous/u4.prm");
+}
+
+const int LAWN_MOWER_GROUND_MOTOR_TYPE = 5;
+const int LAWN_MOWER_FLIGHT_MOTOR_TYPE = 6;
+
 #ifdef SICHER_DEBUG
 #define NO_BORDER_FIELD
 #define UsingCopterig(t)	1
@@ -3158,8 +3166,12 @@ void Object::mechous_analysis(double dt)
 //			terra_moving_tool.make_dast();
 //			}
 		
+		const int lawn_mower = is_lawn_mower_prm(prm_name);
+		if(lawn_mower)
+			SetMotorFileIfChanged(helicopter ? LAWN_MOWER_FLIGHT_MOTOR_TYPE : LAWN_MOWER_GROUND_MOTOR_TYPE);
+
 		SoundFlag = 0;
-		if(helicopter)
+		if(helicopter && !lawn_mower && air_speed_factor < 1)
 			SoundFlag |= SoundCopterig;
 		if(mole_on)
 			SoundFlag |= SoundCrotrig;
@@ -3174,7 +3186,7 @@ void Object::mechous_analysis(double dt)
 			}
 		}
 
-		if(!(SoundFlag & (~SoundUnderWater)) && traction)
+		if(!(SoundFlag & (~SoundUnderWater)) && (traction || (lawn_mower && helicopter)))
 			SoundFlag |= SoundMotor;
 	}
 
