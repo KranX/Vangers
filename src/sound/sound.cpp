@@ -8,6 +8,7 @@
 //#define EFFECT_KHZ	22050
 #define SPEECH_KHZ	22050
 #define DELTA_KHZ	2000
+#define MOTOR_SOUND_NATIVE_KHZ	22050
 
 #define DISTANCE_TO_TOWN 2000
 #define DISTANCE_TO_SICRET 512
@@ -48,6 +49,8 @@ struct SndParameters {
 
 static int *TrackCDTime = 0;
 static int CurrentMotorFileType = -1;
+static int CurrentMotorFrequency = MOTOR_SOUND_NATIVE_KHZ;
+static int CurrentMotorFrequencyMode = 0;
 
 static const char* SndMotorFileName[7*2] = {
 	"raffa",  "raffa2",
@@ -234,6 +237,8 @@ void SetMotorFile( int type ){
 	SndData[EFF_STOP].fname = SndMotorFileName[type*2+1];
 
 	LoadMotorSound();
+	CurrentMotorFrequency = MOTOR_SOUND_NATIVE_KHZ;
+	CurrentMotorFrequencyMode = 0;
 	lastSoundFlag &= ~SoundMotor;
 }
 
@@ -244,14 +249,23 @@ void SetMotorFileIfChanged( int type ){
 
 static void SetMotorSoundFrequency(int frequency)
 {
+	int mode = frequency == MOTOR_SOUND_NATIVE_KHZ ? 0 : 1;
+	if(CurrentMotorFrequency == frequency && CurrentMotorFrequencyMode == mode)
+		return;
+
 	if(SndData[EffectInFrequence].lpDSB)
 		SetSoundFrequency(SndData[EffectInFrequence].lpDSB, frequency);
 	if(SndData[EffectInFrequence + 1].lpDSB)
 		SetSoundFrequency(SndData[EffectInFrequence + 1].lpDSB, frequency);
+
+	if(CurrentMotorFrequencyMode != mode)
+		lastSoundFlag &= ~SoundMotor;
+	CurrentMotorFrequency = frequency;
+	CurrentMotorFrequencyMode = mode;
 }
 
 void ResetMotorSoundFrequency(void){
-	SetMotorSoundFrequency(EFFECT_KHZ);
+	SetMotorSoundFrequency(MOTOR_SOUND_NATIVE_KHZ);
 }
 
 void SetMotorSound(int speed){
