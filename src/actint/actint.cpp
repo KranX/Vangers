@@ -5201,6 +5201,15 @@ void actIntDispatcher::send_event(int cd,int dt,actintItemData* p)
 		events -> put(cd,dt,p);
 }
 
+static void aciResetMatrixVisualState(invMatrix* m)
+{
+	if(!m)
+		return;
+
+	m -> clear_shadow_cells();
+	m -> flags &= ~(IM_REDRAW | IM_FLUSH | IM_REDRAW_SHADOW);
+}
+
 void actIntDispatcher::EventQuant(void)
 {
 	actEvent* p;
@@ -5294,7 +5303,11 @@ void actIntDispatcher::EventQuant(void)
 				flags |= AS_ISCREEN_INV_MODE;
 				break;
 			case EV_DEACTIVATE_IINV:
+				aciResetMatrixVisualState(curMatrix);
+				aciResetMatrixVisualState(secondMatrix);
 				flags &= ~AS_ISCREEN_INV_MODE;
+				flags &= ~AS_FULL_REDRAW;
+				flags |= AS_FULL_FLUSH;
 				break;
 			case EV_ACTIVATE_MATRIX:
 				secondMatrix = alloc_matrix(aci_SecondMatrixID,1);
