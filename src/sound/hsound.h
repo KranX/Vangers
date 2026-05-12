@@ -154,6 +154,7 @@ void SetSoundVolume(int value);
 void SoundQuant(void);
 void SoundEscaveOff(void);
 void SetMotorSound(int speed);
+void ResetMotorSoundFrequency(void);
 void SetMotorFile( int type );
 void SetMotorFileIfChanged( int type );
 

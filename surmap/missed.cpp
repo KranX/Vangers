@@ -174,6 +174,7 @@ int XJoystickInput() {
 	return 0;
 }
 void SetMotorSound(int speed) {}
+void ResetMotorSoundFrequency(void) {}
 void SetMotorFileIfChanged(int type) {}
 InputEventBuffer::InputEventBuffer(unsigned int size): XBuffer(size) {}
 OutputEventBuffer::OutputEventBuffer(unsigned int size): XBuffer(size) {}

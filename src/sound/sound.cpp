@@ -242,12 +242,21 @@ void SetMotorFileIfChanged( int type ){
 		SetMotorFile(type);
 }
 
+static void SetMotorSoundFrequency(int frequency)
+{
+	if(SndData[EffectInFrequence].lpDSB)
+		SetSoundFrequency(SndData[EffectInFrequence].lpDSB, frequency);
+	if(SndData[EffectInFrequence + 1].lpDSB)
+		SetSoundFrequency(SndData[EffectInFrequence + 1].lpDSB, frequency);
+}
+
+void ResetMotorSoundFrequency(void){
+	SetMotorSoundFrequency(EFFECT_KHZ);
+}
+
 void SetMotorSound(int speed){
 	if ((speed > 0) && (speed < 11)){
-		if(SndData[EffectInFrequence].lpDSB)
-			SetSoundFrequency(SndData[EffectInFrequence].lpDSB, EFFECT_KHZ + DELTA_KHZ*speed);
-		if(SndData[EffectInFrequence + 1].lpDSB)
-			SetSoundFrequency(SndData[EffectInFrequence + 1].lpDSB, EFFECT_KHZ + DELTA_KHZ*speed);
+		SetMotorSoundFrequency(EFFECT_KHZ + DELTA_KHZ*speed);
 		}
 }
 
