@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "../global.h"
 #include "../runtime.h"
 #include "general.h"
@@ -402,6 +404,63 @@ int non_loaded_space;
 
 DBM A_g2l_old;
 Vector R_old;
+
+static inline bool finite_value(double value)
+{
+	return std::isfinite(value);
+}
+
+static inline double valid_world_coord_or_zero(int value,uint size)
+{
+	return value >= 0 && (uint)value < size ? value : 0.0;
+}
+
+static inline double wrap_world_coord(double value,uint size,double fallback)
+{
+	if(!size || !finite_value(value))
+		return fallback;
+
+	double result = std::fmod(value,(double)size);
+	if(!finite_value(result))
+		return fallback;
+
+	if(result < 0)
+		result += size;
+	if(result >= (double)size)
+		result -= size;
+
+	return result;
+}
+
+static inline int floor_world_coord(double value,uint size)
+{
+	double coord = wrap_world_coord(value,size,0.0);
+	int result = (int)std::floor(coord);
+	if(result < 0)
+		return 0;
+	if((uint)result >= size)
+		return (int)size - 1;
+	return result;
+}
+
+static inline double world_border_force_y(double y)
+{
+#ifndef NO_BORDER_FIELD
+	if(!WorldBorderEnable || !map_size_y || y_border_field <= 0)
+		return 0.0;
+
+	int border = y_border_field;
+	if(border > (int)map_size_y)
+		border = (int)map_size_y;
+
+	int y_coord = floor_world_coord(y,map_size_y);
+	if(y_coord < border)
+		return k_border_field / (double)(y_coord + 1);
+	if(y_coord > (int)map_size_y - border)
+		return -k_border_field / (double)((int)map_size_y - y_coord);
+#endif
+	return 0.0;
+}
 
 #ifndef _SURMAP_
 dastPoly3D terra_moving_tool(Vector(0,0,0),Vector(0,0,0),Vector(0,0,0));
@@ -2310,14 +2369,16 @@ void Object::update_coord(int camera_correction)
 	if(!camera_correction)
 		R_prev = R_curr;
 	if(!interpolation_on) {
-		xx = R.x = fmod(R.x + map_size_x, map_size_x);
-		yy = R.y = fmod(R.y + map_size_y, map_size_y);
+		xx = R.x = wrap_world_coord(R.x,map_size_x,valid_world_coord_or_zero(R_curr.x,map_size_x));
+		yy = R.y = wrap_world_coord(R.y,map_size_y,valid_world_coord_or_zero(R_curr.y,map_size_y));
 		R_curr = R;
 		A_scl = A_g2sZ*A_l2g;
 	} else {
 		DBV R_corr = R + dR_corr;
-		xx = R_corr.x = fmod(R_corr.x + map_size_x, map_size_x);
-		yy = R_corr.y = fmod(R_corr.y + map_size_y, map_size_y);
+		xx = R_corr.x = wrap_world_coord(R_corr.x,map_size_x,valid_world_coord_or_zero(R_curr.x,map_size_x));
+		yy = R_corr.y = wrap_world_coord(R_corr.y,map_size_y,valid_world_coord_or_zero(R_curr.y,map_size_y));
+		if(!finite_value(R_corr.z))
+			R_corr.z = R.z;
 		R_curr = R_corr;
 		A_scl = A_g2sZ*DBM(1,-1,1,DIAGONAL)*DBM(dQ_corr)*DBM(1,-1,1,DIAGONAL)*A_l2g;
 		dR_corr *= correction_tau;
@@ -3060,11 +3121,7 @@ void Object::mechous_analysis(double dt)
 
 #ifndef NO_BORDER_FIELD
 	if(WorldBorderEnable){
-		int y = round(R.y);
-		if(y < y_border_field)
-			F_global.y += k_border_field/(y + 1);
-		if(y > (int)map_size_y - y_border_field)
-			F_global.y -= k_border_field/(map_size_y - y);
+		F_global.y += world_border_force_y(R.y);
 	}
 #endif
 
@@ -3927,11 +3984,7 @@ void Object::basic_debris_analysis(double dt)
 
 #ifndef NO_BORDER_FIELD
 	if(WorldBorderEnable){
-		int y = round(R.y);
-		if(y < y_border_field)
-			F += A_g2l*DBV(0,k_border_field/(y + 1),0);
-		if(y > (int)map_size_y - y_border_field)
-			F += A_g2l*DBV(0,-k_border_field/(map_size_y - y),0);
+		F += A_g2l*DBV(0,world_border_force_y(R.y),0);
 		}
 	#endif
 	
