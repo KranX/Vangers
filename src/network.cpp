@@ -867,7 +867,8 @@ int restore_connection()
 	//std::cout<<"restore_connection:Connection lost"<<std::endl;
 	DOUT("Connection lost");
 	current_server_addr.connect(main_socket);
-	if(!main_socket){
+	if(!main_socket || !identification(main_socket)){
+		main_socket.close();
 		if(number_of_reconnection_attempt-- <= 0)
             {
 		    if (lang() == RUSSIAN) {
@@ -878,16 +879,26 @@ int restore_connection()
             }
 		return 0;
 	}
-	number_of_reconnection_attempt = 5;
 	events_out.clear();
 	events_in.reset();
 	events_out.begin_event(RESTORE_CONNECTION);
 	events_out < current_server_addr.game_ID < (unsigned char)GlobalStationID;
 	events_out.end_body();
 	events_out.send(1);
-	events_in.receive_waiting_for_event(RESTORE_CONNECTION_RESPONSE);
+	int got = events_in.receive_waiting_for_event(RESTORE_CONNECTION_RESPONSE);
+	if(got != RESTORE_CONNECTION_RESPONSE) {
+		main_socket.close();
+		return 0;
+	}
+	if(events_in.current_body_size() < 1)
+		ErrH.Abort("Bad RESTORE_CONNECTION_RESPONSE", XERR_USER, events_in.current_body_size());
 	int resp = events_in.get_byte();
 	events_in.ignore_event();
+	if(!resp) {
+		main_socket.close();
+		return 0;
+	}
+	number_of_reconnection_attempt = 5;
 	DOUT1("Connection restore",resp);
 	return resp;
 }
