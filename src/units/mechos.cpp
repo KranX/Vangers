@@ -5206,6 +5206,10 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 		case SensorTypeList::ARMOR_UPDATE:
 			if(Armor < MaxArmor){
 				Armor = MaxArmor;
+				if(Status & SOBJ_ACTIVE){
+					ChangeArmor = Armor;
+					ChangeEnergy = Energy;
+				};
 				aiMessageQueue.Send(AI_MESSAGE_ARMOR,Speed,2,0);//aiMessageData[AI_MESSAGE_ARMOR].Send(Speed,2,0);
 				SOUND_CHARGE_REPARE();
 			};
