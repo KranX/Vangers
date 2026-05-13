@@ -13846,7 +13846,10 @@ void ActionDispatcher::ShellNetEvent(int type,int id)
 	p = (VangerUnit*)(ActD.Tail);
 	while(p){
 		if(p->ShellNetID == id){
-			if(p->Status & (SOBJ_DISCONNECT | SOBJ_ACTIVE))	NETWORK_IN_STREAM.ignore_event();
+			if(p->Status & (SOBJ_DISCONNECT | SOBJ_ACTIVE)){
+				network_log_object_event("IN",type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_time(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y(),NETWORK_IN_STREAM.current_radius(),NETWORK_IN_STREAM.current_body_size(),"ignored_shell_owner_inactive_or_local");
+				NETWORK_IN_STREAM.ignore_event();
+			}
 			else{
 				p->ShellNetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_time(),
 					 NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y(),NETWORK_IN_STREAM.current_radius());
@@ -13856,7 +13859,10 @@ void ActionDispatcher::ShellNetEvent(int type,int id)
 		p = (VangerUnit*)(p->NextTypeList);
 	};
 
-	if(!p) NETWORK_IN_STREAM.ignore_event();
+	if(!p){
+		network_log_object_event("IN",type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_time(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y(),NETWORK_IN_STREAM.current_radius(),NETWORK_IN_STREAM.current_body_size(),"ignored_missing_shell_owner");
+		NETWORK_IN_STREAM.ignore_event();
+	}
 };
 
 void ActionDispatcher::NetEvent(int type,int id)
@@ -13865,12 +13871,18 @@ void ActionDispatcher::NetEvent(int type,int id)
 
 	p = (VangerUnit*)(GetNetObject(id));
 	if(p){
-		if(p->Status & (SOBJ_DISCONNECT | SOBJ_ACTIVE)) NETWORK_IN_STREAM.ignore_event();
+		if(p->Status & (SOBJ_DISCONNECT | SOBJ_ACTIVE)){
+			network_log_object_event("IN",type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_time(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y(),NETWORK_IN_STREAM.current_radius(),NETWORK_IN_STREAM.current_body_size(),"ignored_vanger_inactive_or_local");
+			NETWORK_IN_STREAM.ignore_event();
+		}
 		else{
 			p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_time(),
 				 NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y(),NETWORK_IN_STREAM.current_radius());
 		};
-	}else NETWORK_IN_STREAM.ignore_event();
+	}else{
+		network_log_object_event("IN",type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_time(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y(),NETWORK_IN_STREAM.current_radius(),NETWORK_IN_STREAM.current_body_size(),"ignored_missing_vanger");
+		NETWORK_IN_STREAM.ignore_event();
+	}
 };
 
 int UnitItemMatrix::CheckSize(int sz,int*& p)

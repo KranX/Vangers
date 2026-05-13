@@ -41,6 +41,8 @@
 #include "../sound/hsound.h"
 #include "magnum.h"
 
+#include <cstdio>
+
 extern int RAM16;
 extern iGameMap* curGMap;
 extern uchar* FireColorTable;
@@ -71,6 +73,26 @@ static int CheckLiveVangerPointer(VangerUnit* p)
 
 	return 0;
 };
+
+static void NetworkLogStuffObject(const char* tag,StuffObject* p,const char* extra)
+{
+	if(!p)
+		return;
+	network_log_item_event(tag,
+		p->NetID,
+		p->NetDeviceID,
+		p->NetOwner,
+		p->Owner ? p->Owner->NetID : 0,
+		p->DataID,
+		p->ActIntBuffer.type,
+		p->ActIntBuffer.data0,
+		p->ActIntBuffer.data1,
+		p->CreateMode,
+		p->OutFlag,
+		p->Status,
+		p->Visibility,
+		extra);
+}
 
 static inline int debris_lifetime_ticks(void)
 {
@@ -1022,8 +1044,9 @@ void StuffObject::CreateStuff(const Vector& _v,StuffObject* p,int cMode)
 		NETWORK_OUT_STREAM < (short)(R_curr.x);
 		NETWORK_OUT_STREAM < (short)(R_curr.y);
 		NETWORK_OUT_STREAM < (int)(NetOwner);
-		NETWORK_OUT_STREAM.end_body();		
+		NETWORK_OUT_STREAM.end_body();
 	};
+	NetworkLogStuffObject("StuffObject::CreateStuff",this,"phase=after_create");
 };
 
 void StuffObject::CreateDevice(Vector v,VangerUnit* own,StuffObject* p)
@@ -1062,8 +1085,9 @@ void StuffObject::CreateDevice(Vector v,VangerUnit* own,StuffObject* p)
 		NETWORK_OUT_STREAM < (short)(R_curr.x);
 		NETWORK_OUT_STREAM < (short)(R_curr.y);
 		NETWORK_OUT_STREAM < (int)(NetOwner);
-		NETWORK_OUT_STREAM.end_body();		
+		NETWORK_OUT_STREAM.end_body();
 	};
+	NetworkLogStuffObject("StuffObject::CreateDevice",this,"phase=after_create");
 };
 
 void StuffObject::DeviceIn(void)
@@ -1112,6 +1136,7 @@ void StuffObject::DeviceIn(void)
 		NETWORK_OUT_STREAM < (int)(NetOwner);
 		NETWORK_OUT_STREAM.end_body();
 	};
+	NetworkLogStuffObject("StuffObject::DeviceIn",this,"phase=after_device_in");
 };
 
 void GunDevice::DeviceIn(void)
@@ -1419,7 +1444,8 @@ void StuffObject::DeviceOut(Vector v1,int flag,Vector v2)
 		NETWORK_OUT_STREAM < (short)(R_curr.y);
 		NETWORK_OUT_STREAM < (int)(NetOwner);
 		NETWORK_OUT_STREAM.end_body();
-	};	
+	};
+	NetworkLogStuffObject("StuffObject::DeviceOut",this,"phase=after_device_out");
 	Owner = NULL;
 };
 
@@ -3658,6 +3684,10 @@ void StuffObject::NetOwnerQuant(int impulse)
 {
 	StuffObject* p;
 	VangerUnit* n;
+	char net_owner_extra[64];
+
+	snprintf(net_owner_extra,sizeof(net_owner_extra),"phase=begin impulse=%d",impulse);
+	NetworkLogStuffObject("StuffObject::NetOwnerQuant",this,net_owner_extra);
 
 	if(NetOwner){
 		if(Owner){
@@ -3726,6 +3756,8 @@ void StuffObject::NetOwnerQuant(int impulse)
 			Status &= ~SOBJ_WAIT_CONFIRMATION;
 		};
 	};
+	snprintf(net_owner_extra,sizeof(net_owner_extra),"phase=end impulse=%d",impulse);
+	NetworkLogStuffObject("StuffObject::NetOwnerQuant",this,net_owner_extra);
 };
 
 void StuffObject::NetEvent(int type,int id,int creator,int x,int y)
@@ -3733,6 +3765,10 @@ void StuffObject::NetEvent(int type,int id,int creator,int x,int y)
 	char ch;
 	short st;
 	int t;
+	char net_event_extra[256];
+
+	snprintf(net_event_extra,sizeof(net_event_extra),"phase=begin event_type=%d id=0x%08X creator=%d x=%d y=%d body_size=%d",type,(unsigned int)id,creator,x,y,NETWORK_IN_STREAM.current_body_size());
+	NetworkLogStuffObject("StuffObject::NetEvent",this,net_event_extra);
 
 	switch(type){
 		case UPDATE_OBJECT:
@@ -3790,6 +3826,8 @@ void StuffObject::NetEvent(int type,int id,int creator,int x,int y)
 //			if(Owner && !NetOwner) NetStuffLog < "\nBad Update Owner";
 			Status |= SOBJ_WAIT_CONFIRMATION;
 			NetOwnerQuant(1);
+			snprintf(net_event_extra,sizeof(net_event_extra),"phase=after_update event_type=%d id=0x%08X creator=%d x=%d y=%d",type,(unsigned int)id,creator,x,y);
+			NetworkLogStuffObject("StuffObject::NetEvent",this,net_event_extra);
 			break;
 		case CREATE_OBJECT:
 			NETWORK_IN_STREAM > t;
@@ -3895,6 +3933,8 @@ void StuffObject::NetEvent(int type,int id,int creator,int x,int y)
 //				R_curr.y = yImpulse;				
 			};
 //			if(Owner && !NetOwner) NetStuffLog < "\nBad Create Owner";
+			snprintf(net_event_extra,sizeof(net_event_extra),"phase=after_create event_type=%d id=0x%08X creator=%d x=%d y=%d",type,(unsigned int)id,creator,x,y);
+			NetworkLogStuffObject("StuffObject::NetEvent",this,net_event_extra);
 			break;
 		case DELETE_OBJECT:
 			if(NETWORK_IN_STREAM.current_body_size())
@@ -3903,6 +3943,7 @@ void StuffObject::NetEvent(int type,int id,int creator,int x,int y)
 				ch = 0;
 			if(!ch){
 				if(Owner){
+					NetworkLogStuffObject("StuffObject::NetEvent",this,"event_type=DELETE_OBJECT delete_reason=remove_from_owner_inventory");
 					Owner->CheckOutDevice(this);
 					if(Owner->Status & SOBJ_ACTIVE){
 						ActD.CheckDevice(this);
@@ -3910,10 +3951,15 @@ void StuffObject::NetEvent(int type,int id,int creator,int x,int y)
 					};
 					Owner->DelDevice(this);
 					Storage->Deactive(this);
-				}else 
+				}else{
+					NetworkLogStuffObject("StuffObject::NetEvent",this,"event_type=DELETE_OBJECT delete_reason=disconnect_world_object");
 					Status |= SOBJ_DISCONNECT;
-			}else Status |= SOBJ_WAIT_CONFIRMATION;
-			break;		
+				}
+			}else{
+				Status |= SOBJ_WAIT_CONFIRMATION;
+				NetworkLogStuffObject("StuffObject::NetEvent",this,"event_type=DELETE_OBJECT delete_reason=wait_confirmation");
+			}
+			break;
 	};
 };
 
@@ -3922,6 +3968,8 @@ void ItemsDispatcher::NetDevice(int type,int id)
 	StuffObject* p;
 	VangerUnit* v;
 	uchar t;
+
+	network_log_printf("ItemsDispatcher::NetDevice","phase=begin event_type=%d id=0x%08X creator=%d body_size=%d",type,(unsigned int)id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_body_size());
 
 	p = NULL;
 	v = (VangerUnit*)(ActD.Tail);
@@ -3936,8 +3984,10 @@ void ItemsDispatcher::NetDevice(int type,int id)
 	};
 
 	if(p){
-		if(p->Status & SOBJ_DISCONNECT)	NETWORK_IN_STREAM.ignore_event();
-		else p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());
+		if(p->Status & SOBJ_DISCONNECT){
+			NetworkLogStuffObject("ItemsDispatcher::NetDevice",p,"decision=ignored_disconnected");
+			NETWORK_IN_STREAM.ignore_event();
+		}else p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());
 	}else{
 		p = (StuffObject*)(ItemD.Tail);
 		while(p){
@@ -3946,17 +3996,26 @@ void ItemsDispatcher::NetDevice(int type,int id)
 		};
 		
 		if(p){
-			if(p->Status & SOBJ_DISCONNECT)	NETWORK_IN_STREAM.ignore_event();
-			else p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());
+			if(p->Status & SOBJ_DISCONNECT){
+				NetworkLogStuffObject("ItemsDispatcher::NetDevice",p,"decision=ignored_disconnected");
+				NETWORK_IN_STREAM.ignore_event();
+			}else p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());
 		}else{
 			if(type == UPDATE_OBJECT){
 				NETWORK_IN_STREAM > t;
 				p = (StuffObject*)(ItemD.GetObject(DevicetStorageID[ItemD.DeviceTypeData[t]->StuffType]));
 				if(p){
 					p->DataID = t;
+					NetworkLogStuffObject("ItemsDispatcher::NetDevice",p,"decision=create_missing_from_update");
 					p->NetEvent(CREATE_OBJECT,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());
-				}else NETWORK_IN_STREAM.ignore_event();
-			}else NETWORK_IN_STREAM.ignore_event();
+				}else{
+					network_log_printf("ItemsDispatcher::NetDevice","event_type=%d id=0x%08X delete_reason=ignored_missing_object decision=ignored_missing_object",type,(unsigned int)id);
+					NETWORK_IN_STREAM.ignore_event();
+				}
+			}else{
+				network_log_printf("ItemsDispatcher::NetDevice","event_type=%d id=0x%08X delete_reason=ignored_missing_object decision=ignored_missing_object",type,(unsigned int)id);
+				NETWORK_IN_STREAM.ignore_event();
+			}
 		};
 	};
 };
@@ -3967,10 +4026,14 @@ void ItemsDispatcher::NetEvent(int type,int id)
 	uchar t;
 	VangerUnit* v;
 
+	network_log_printf("ItemsDispatcher::NetEvent","phase=begin event_type=%d id=0x%08X creator=%d body_size=%d",type,(unsigned int)id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_body_size());
+
 	p = (StuffObject*)(GetNetObject(id));
 	if(p){
-		if(p->Status & SOBJ_DISCONNECT)	NETWORK_IN_STREAM.ignore_event();
-		else p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());		
+		if(p->Status & SOBJ_DISCONNECT){
+			NetworkLogStuffObject("ItemsDispatcher::NetEvent",p,"decision=ignored_disconnected");
+			NETWORK_IN_STREAM.ignore_event();
+		}else p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());
 	}else{
 		v = (VangerUnit*)(ActD.Tail);
 		while(v){
@@ -3984,17 +4047,26 @@ void ItemsDispatcher::NetEvent(int type,int id)
 		};
 
 		if(p){
-			if(p->Status & SOBJ_DISCONNECT)	NETWORK_IN_STREAM.ignore_event();
-			else p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());		
+			if(p->Status & SOBJ_DISCONNECT){
+				NetworkLogStuffObject("ItemsDispatcher::NetEvent",p,"decision=ignored_disconnected");
+				NETWORK_IN_STREAM.ignore_event();
+			}else p->NetEvent(type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());
 		}else{
 			if(type == UPDATE_OBJECT){
 				NETWORK_IN_STREAM > t;
 				p = (StuffObject*)(ItemD.GetObject(DevicetStorageID[ItemD.DeviceTypeData[t]->StuffType]));
 				if(p){
 					p->DataID = t;
+					NetworkLogStuffObject("ItemsDispatcher::NetEvent",p,"decision=create_missing_from_update");
 					p->NetEvent(CREATE_OBJECT,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y());
-				}else NETWORK_IN_STREAM.ignore_event();
-			}else NETWORK_IN_STREAM.ignore_event();
+				}else{
+					network_log_printf("ItemsDispatcher::NetEvent","event_type=%d id=0x%08X delete_reason=ignored_missing_object decision=ignored_missing_object",type,(unsigned int)id);
+					NETWORK_IN_STREAM.ignore_event();
+				}
+			}else{
+				network_log_printf("ItemsDispatcher::NetEvent","event_type=%d id=0x%08X delete_reason=ignored_missing_object decision=ignored_missing_object",type,(unsigned int)id);
+				NETWORK_IN_STREAM.ignore_event();
+			}
 		};
 	};
 };

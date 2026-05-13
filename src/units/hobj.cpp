@@ -3819,12 +3819,13 @@ void GameObjectDispatcher::NetEvent(void)
 					break;
 				default:
 #ifdef _DEBUG
-				
+
 					fout.SetRadix(16);
 					fout < "Ignore:  Type:" <= type;
 					fout.SetRadix(10);
 					fout < "  EvID:" <= id < "  nID:" <= GET_NETWORK_ID(id) < "\n";
 #endif
+					network_log_object_event("IN",type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_time(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y(),NETWORK_IN_STREAM.current_radius(),NETWORK_IN_STREAM.current_body_size(),"ignored_unknown_network_id");
 					NETWORK_IN_STREAM.ignore_event();
 					break;
 			};
@@ -3834,6 +3835,7 @@ void GameObjectDispatcher::NetEvent(void)
 					players_list.merge_total_body_query();
 					break;
 				default:
+					network_log_printf("IN","%s decision=ignored_aux_in_dispatcher body_size=%d",type == 0 ? "UNKNOWN_EVENT" : "AUX_EVENT",NETWORK_IN_STREAM.current_body_size());
 					NETWORK_IN_STREAM.ignore_event();
 					break;
 			};

@@ -253,6 +253,12 @@ void short_network_analysis(XBuffer& out);
 void network_analysis(XBuffer& out,int integral);
 void delay(int msec);
 
+// Persistent multiplayer diagnostics.  These functions are intentionally
+// no-ops until a multiplayer connection opens network-client.log.
+void network_log_printf(const char* tag,const char* fmt,...);
+void network_log_object_event(const char* direction,int event_ID,int object_ID,int creator,int time,int x,int y,int radius,int body_size,const char* decision = 0);
+void network_log_item_event(const char* tag,int NetID,int NetDeviceID,int NetOwner,int OwnerNetID,int DataID,int actint_type,int actint_data0,int actint_data1,int CreateMode,int OutFlag,int Status,int Visibility,const char* extra = 0);
+
 //zmod
 int send_server_data(char* name, ServerData* data, zServerData* zdata); // returns 1 if _You_'ve configured server, otherwise data and name will be changed
 int is_current_server_configured(char* name, ServerData* data, zServerData* zdata);  // changes name and data if server is configured
