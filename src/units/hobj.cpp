@@ -3865,7 +3865,7 @@ int NetInit(ServerFindChain* p)
 
 	LocalNetEnvironment  =  0;
 
-	set_time_by_server(10);
+	set_time_by_server(3);
 	std::cout<<"NetInit - [1.5]"<<std::endl;
 	my_player_body.clear();
 	
