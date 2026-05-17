@@ -6868,26 +6868,15 @@ void VangerUnit::NewKeyHandler(void)
 	if(iKeyPressed(iKEY_USE_VECTOR)){
 		if(!UseVectorFlag){
 			UseVectorFlag++;
-			p = NULL;
-			for(i = 0;i < MAX_ACTIVE_SLOT;i++){
-				if(ActD.Slot[i]){
-					p = ActD.Slot[i];
-					aciSendEvent2itmdsp(ACI_DEACTIVATE_ITEM,&(p->ActIntBuffer));
-					aciSendEvent2actint(ACI_DROP_ITEM,&(p->ActIntBuffer));
-					if(p->ActIntBuffer.type != ACI_RADAR_DEVICE){
-						n = GetStuffObject(this,ACI_RADAR_DEVICE);
-						if(n)
-							aciSendEvent2actint(ACI_PUT_IN_SLOT,&(n->ActIntBuffer));
-					};
-					aciSendEvent2actint(ACI_PUT_ITEM,&(p->ActIntBuffer));
-					break;
+			n = GetStuffObject(this,ACI_RADAR_DEVICE);
+			if(n){
+				for(i = 0;i < MAX_ACTIVE_SLOT;i++){
+					if(ActD.Slot[i] == n)
+						break;
 				};
-			};
-			if(!p){
-				n = GetStuffObject(this,ACI_RADAR_DEVICE);
-				if(n)
+				if(i == MAX_ACTIVE_SLOT)
 					aciSendEvent2actint(ACI_PUT_IN_SLOT,&(n->ActIntBuffer));
-			};	
+			};
 		};
 	}else UseVectorFlag = 0;
 
