@@ -6855,6 +6855,7 @@ void VangerUnit::NewKeyHandler(void)
 			for(i = 0;i < MAX_ACTIVE_SLOT;i++){
 				if(ActD.Slot[i]){
 					p = ActD.Slot[i];
+					aciSendEvent2itmdsp(ACI_DEACTIVATE_ITEM,&(p->ActIntBuffer));
 					aciSendEvent2actint(ACI_DROP_ITEM,&(p->ActIntBuffer));
 					if(p->ActIntBuffer.type != ACI_RADAR_DEVICE){
 						n = GetStuffObject(this,ACI_RADAR_DEVICE);
