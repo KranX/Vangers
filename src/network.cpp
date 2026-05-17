@@ -521,20 +521,58 @@ int identification(XSocket& socket)
 	char string[256] = "";
 	memset(string,0,256);
 	unsigned int len,identificated = 0;
+	int server_protocol = -1;
+	int server_replied = 0;
+	int unexpected_response = 0;
 	START_TIMER(60*1000);
 	const char* request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
+	const char* response_str = "Enter, my son, please...";
 	strcpy(string, request_str);
 	string[strlen(string) + 1] = CLIENT_VERSION;
 	socket.send(string,strlen(string) + 2);
-	while(CHECK_TIMER())
-		if((len = socket.receive(string, 255, 1000)) != 0 && !strcmp(string,"Enter, my son, please...")){
-			if(!SERVER_VERSION || (len > strlen(string) + 1 && string[strlen(string) + 1] == SERVER_VERSION))
+	while(CHECK_TIMER()){
+		memset(string,0,256);
+		if((len = socket.receive(string, 255, 1000)) != 0){
+			server_replied = 1;
+			if(strcmp(string,response_str)){
+				unexpected_response = 1;
+				break;
+			}
+			if(len > strlen(response_str) + 1)
+				server_protocol = (unsigned char)string[strlen(response_str) + 1];
+			if(!SERVER_VERSION || server_protocol == SERVER_VERSION)
 				identificated = 1;
 			break;
-			}
+		}
+	}
 	if(!identificated) {
-		std::cout<<"Network:identificated is wrong! SV:"<<SERVER_VERSION<<" SV2:"<<(int)string[strlen(string)+1]<<std::endl;
+		char error_message[512];
+		if(server_replied && !unexpected_response && server_protocol >= 0) {
+			snprintf(
+				error_message,
+				sizeof(error_message),
+				"Версия сетевого протокола не совпадает. Клиент ожидает protocol %d, сервер ответил protocol %d. Обновите клиент и сервер.",
+				SERVER_VERSION,
+				server_protocol
+			);
+		} else if(server_replied) {
+			snprintf(
+				error_message,
+				sizeof(error_message),
+				"Сервер отклонил сетевое подключение до handshake. Проверьте, что клиент и сервер обновлены до protocol %d.",
+				SERVER_VERSION
+			);
+		} else {
+			snprintf(
+				error_message,
+				sizeof(error_message),
+				"Сервер не отвечает во время сетевого handshake. Проверьте адрес сервера и версию protocol %d.",
+				SERVER_VERSION
+			);
+		}
+		std::cout<<"Network:identificated is wrong! SV:"<<SERVER_VERSION<<" SV2:"<<server_protocol<<" response:"<<string<<std::endl;
 		socket.close();
+		ErrH.Abort(error_message, XERR_USER);
 		return 0;
 	}
 // zMod fixed ---------------------------------------------------------
