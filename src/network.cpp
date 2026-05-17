@@ -551,7 +551,7 @@ int identification(XSocket& socket)
 			snprintf(
 				error_message,
 				sizeof(error_message),
-				"Версия сетевого протокола не совпадает. Клиент ожидает protocol %d, сервер ответил protocol %d. Обновите клиент и сервер.",
+				"Multiplayer protocol mismatch. The client expects protocol %d, but the server replied with protocol %d. Please update both the game client and the server.",
 				SERVER_VERSION,
 				server_protocol
 			);
@@ -559,14 +559,14 @@ int identification(XSocket& socket)
 			snprintf(
 				error_message,
 				sizeof(error_message),
-				"Сервер отклонил сетевое подключение до handshake. Проверьте, что клиент и сервер обновлены до protocol %d.",
+				"The server rejected the multiplayer handshake. Please make sure both the game client and the server use protocol %d.",
 				SERVER_VERSION
 			);
 		} else {
 			snprintf(
 				error_message,
 				sizeof(error_message),
-				"Сервер не отвечает во время сетевого handshake. Проверьте адрес сервера и версию protocol %d.",
+				"The server did not answer the multiplayer handshake. Please check the server address and make sure it uses protocol %d.",
 				SERVER_VERSION
 			);
 		}
