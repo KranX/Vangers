@@ -4470,12 +4470,21 @@ void VangerUnit::Quant(void)
 			NETWORK_OUT_STREAM.end_body();
 			need_to_send_vanger = 0;
 
-			if(lag_averaging_t0.tell() < 20){
+			static const unsigned int SERVER_TIME_QUERY_TIMEOUT = 20000;
+			static unsigned int last_server_time_query = 0;
+			unsigned int now = SDL_GetTicks();
+			if(!lag_averaging_t0.empty() && IS_PAST(last_server_time_query + SERVER_TIME_QUERY_TIMEOUT)){
+				network_log_printf("LAG","SERVER_TIME_QUERY timeout pending=%d timeout_ms=%u",lag_averaging_t0.tell(),SERVER_TIME_QUERY_TIMEOUT);
+				lag_averaging_t0.clear();
+				}
+
+			if(lag_averaging_t0.empty()){
 				//zmod
 				z_time_init();
 				NETWORK_OUT_STREAM.begin_event(SERVER_TIME_QUERY);
 				NETWORK_OUT_STREAM.end_body();
-				lag_averaging_t0.put(SDL_GetTicks());
+				lag_averaging_t0.put(now);
+				last_server_time_query = now;
 				}
 			}	
 	
