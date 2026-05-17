@@ -4461,7 +4461,15 @@ void VangerUnit::Quant(void)
 		static int need_to_send_vanger = 0;
 		if(prev_controls != current_controls || dynamic_state & ITS_MOVING || IS_PAST(last_send_time + 2000))
 			need_to_send_vanger = 1;
-		if(need_to_send_vanger && IS_PAST(last_send_time + average_lag)){
+		static const int VANGER_SEND_MIN_INTERVAL = 50;
+		static const int VANGER_SEND_MAX_INTERVAL = 150;
+		int vanger_send_interval = average_lag;
+		if(vanger_send_interval < VANGER_SEND_MIN_INTERVAL)
+			vanger_send_interval = VANGER_SEND_MIN_INTERVAL;
+		else if(vanger_send_interval > VANGER_SEND_MAX_INTERVAL)
+			vanger_send_interval = VANGER_SEND_MAX_INTERVAL;
+
+		if(need_to_send_vanger && IS_PAST(last_send_time + vanger_send_interval)){
 			last_send_time = SDL_GetTicks();
 			NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
 			int scr_size = round((fabs(curGMap -> xsize*sinTurnInvFlt) + fabs(curGMap -> ysize*cosTurnInvFlt))*.5);
