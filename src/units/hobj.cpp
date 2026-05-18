@@ -3834,6 +3834,20 @@ void GameObjectDispatcher::NetEvent(void)
 				case TOTAL_LIST_OF_PLAYERS_DATA:
 					players_list.merge_total_body_query();
 					break;
+				case WORLD_SNAPSHOT_BEGIN:
+				case WORLD_SNAPSHOT_END:
+					NETWORK_IN_STREAM.ignore_event();
+					break;
+				case ITEM_STATE:
+					ItemD.NetItemState(NETWORK_IN_STREAM.current_item_state(),
+						NETWORK_IN_STREAM.current_item_previous_ID(),
+						NETWORK_IN_STREAM.current_ID());
+					break;
+				case ITEM_REMOVED:
+					ItemD.NetItemRemoved(NETWORK_IN_STREAM.current_ID(),
+						NETWORK_IN_STREAM.current_item_removed_paired_ID(),
+						NETWORK_IN_STREAM.current_item_removed_reason());
+					break;
 				default:
 					network_log_printf("IN","%s decision=ignored_aux_in_dispatcher body_size=%d",type == 0 ? "UNKNOWN_EVENT" : "AUX_EVENT",NETWORK_IN_STREAM.current_body_size());
 					NETWORK_IN_STREAM.ignore_event();

@@ -411,6 +411,8 @@ struct ItemsDispatcher : UnitList
 	void DeleteItem(StuffObject* p);
 	void NetEvent(int type,int id);
 	void NetDevice(int type,int id);
+	void NetItemState(int item_state,int previous_id,int item_id);
+	void NetItemRemoved(int item_id,int paired_id,int reason);
 
 	int CreateEnableCrypt(void);
 	void CryptQuant(void);

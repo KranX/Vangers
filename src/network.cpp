@@ -27,8 +27,8 @@ extern XStream fout;
 extern int frame;
 extern int GlobalExit;
 
-#define CLIENT_VERSION	4
-#define SERVER_VERSION	4
+#define CLIENT_VERSION	5
+#define SERVER_VERSION	5
 
 //zmod
 int zserver_version = 0;
@@ -94,6 +94,15 @@ int delay_time,delay_time_global;
 int delay_time_counter,delay_time_counter_global;
 int now_unsent_size,global_unsent_size = 0;
 int set_world_status = 0;
+
+enum NetworkSnapshotState {
+	NETWORK_SNAPSHOT_IDLE = 0,
+	NETWORK_SNAPSHOT_WAIT_BEGIN = 1,
+	NETWORK_SNAPSHOT_LOADING = 2
+};
+
+static int network_snapshot_state = NETWORK_SNAPSHOT_IDLE;
+static int network_snapshot_world = -1;
 
 
 XBuffer network_analysis_buffer(10000);
@@ -165,6 +174,7 @@ static const char* network_event_name(int event_ID)
 		case GET_GAME_DATA: return "GET_GAME_DATA";
 		case SET_PLAYER_DATA: return "SET_PLAYER_DATA";
 		case DIRECT_SENDING: return "DIRECT_SENDING";
+		case ITEM_TRANSFER: return "ITEM_TRANSFER";
 		case GAMES_LIST_RESPONSE: return "GAMES_LIST_RESPONSE";
 		case TOP_LIST_RESPONSE: return "TOP_LIST_RESPONSE";
 		case TOTAL_LIST_OF_PLAYERS_DATA: return "TOTAL_LIST_OF_PLAYERS_DATA";
@@ -181,6 +191,10 @@ static const char* network_event_name(int event_ID)
 		case PLAYERS_STATUS: return "PLAYERS_STATUS";
 		case PLAYERS_DATA: return "PLAYERS_DATA";
 		case PLAYERS_RATING: return "PLAYERS_RATING";
+		case WORLD_SNAPSHOT_BEGIN: return "WORLD_SNAPSHOT_BEGIN";
+		case WORLD_SNAPSHOT_END: return "WORLD_SNAPSHOT_END";
+		case ITEM_STATE: return "ITEM_STATE";
+		case ITEM_REMOVED: return "ITEM_REMOVED";
 		case zSERVER_VERSION_RESPONSE: return "zSERVER_VERSION_RESPONSE";
 		case zGAME_DATA_RESPONSE: return "zGAME_DATA_RESPONSE";
 		case zTIME_RESPONSE: return "zTIME_RESPONSE";
@@ -406,6 +420,135 @@ void network_log_item_event(const char* tag,int NetID,int NetDeviceID,int NetOwn
 		Visibility,
 		CurrentWorld,
 		extra ? extra : "");
+}
+
+static const char* network_snapshot_state_name(int state)
+{
+	switch(state){
+		case NETWORK_SNAPSHOT_IDLE:
+			return "idle";
+		case NETWORK_SNAPSHOT_WAIT_BEGIN:
+			return "wait_begin";
+		case NETWORK_SNAPSHOT_LOADING:
+			return "loading";
+		default:
+			return "unknown";
+	}
+}
+
+static void network_snapshot_reset(const char* reason)
+{
+	if(network_snapshot_state != NETWORK_SNAPSHOT_IDLE || network_snapshot_world != -1){
+		network_log_printf("SNAPSHOT","state=%s world=%d decision=reset reason=%s",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			reason ? reason : "unknown");
+	}
+	network_snapshot_state = NETWORK_SNAPSHOT_IDLE;
+	network_snapshot_world = -1;
+}
+
+static void network_snapshot_wait_for_world(int world,const char* reason)
+{
+	network_snapshot_state = NETWORK_SNAPSHOT_WAIT_BEGIN;
+	network_snapshot_world = world;
+	network_log_printf("SNAPSHOT","state=%s world=%d decision=wait_for_begin reason=%s",
+		network_snapshot_state_name(network_snapshot_state),
+		network_snapshot_world,
+		reason ? reason : "unknown");
+}
+
+static int network_snapshot_waiting_for_begin()
+{
+	return network_snapshot_state == NETWORK_SNAPSHOT_WAIT_BEGIN;
+}
+
+static int network_snapshot_loading()
+{
+	return network_snapshot_state == NETWORK_SNAPSHOT_LOADING;
+}
+
+static int network_snapshot_should_ignore_before_begin()
+{
+	return network_snapshot_state == NETWORK_SNAPSHOT_WAIT_BEGIN;
+}
+
+static void network_snapshot_begin(int world)
+{
+	if(world != CurrentWorld){
+		network_log_printf("SNAPSHOT","state=%s expected_world=%d marker_world=%d current_world=%d decision=ignored_wrong_world marker=begin",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world,
+			CurrentWorld);
+		return;
+	}
+
+	if(network_snapshot_state == NETWORK_SNAPSHOT_LOADING){
+		network_log_printf("SNAPSHOT","state=%s world=%d marker_world=%d decision=duplicate_begin",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world);
+		return;
+	}
+
+	if(network_snapshot_state == NETWORK_SNAPSHOT_IDLE){
+		network_log_printf("SNAPSHOT","state=%s world=%d marker_world=%d decision=unexpected_begin_but_accept",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world);
+	}
+
+	if(network_snapshot_state == NETWORK_SNAPSHOT_WAIT_BEGIN && network_snapshot_world != world){
+		network_log_printf("SNAPSHOT","state=%s expected_world=%d marker_world=%d current_world=%d decision=unexpected_begin_world_but_accept_current",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world,
+			CurrentWorld);
+	}
+
+	network_snapshot_state = NETWORK_SNAPSHOT_LOADING;
+	network_snapshot_world = world;
+	network_log_printf("SNAPSHOT","state=%s world=%d decision=begin",
+		network_snapshot_state_name(network_snapshot_state),
+		network_snapshot_world);
+}
+
+static void network_snapshot_end(int world)
+{
+	if(network_snapshot_state == NETWORK_SNAPSHOT_IDLE){
+		network_log_printf("SNAPSHOT","state=%s world=%d marker_world=%d decision=unexpected_end_ignored",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world);
+		return;
+	}
+
+	if(world != CurrentWorld || (network_snapshot_world != -1 && network_snapshot_world != world)){
+		network_log_printf("SNAPSHOT","state=%s expected_world=%d marker_world=%d current_world=%d decision=unexpected_end_wrong_world",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world,
+			CurrentWorld);
+		return;
+	}
+
+	network_log_printf("SNAPSHOT","state=%s world=%d marker_world=%d decision=end",
+		network_snapshot_state_name(network_snapshot_state),
+		network_snapshot_world,
+		world);
+	network_snapshot_state = NETWORK_SNAPSHOT_IDLE;
+	network_snapshot_world = -1;
+}
+
+static void network_snapshot_log_marker(int event_ID,int body_size,int marker_world)
+{
+	network_log_printf("IN","%s body_size=%d marker_world=%d snapshot_state=%s snapshot_world=%d",
+		network_event_name(event_ID),
+		body_size,
+		marker_world,
+		network_snapshot_state_name(network_snapshot_state),
+		network_snapshot_world);
 }
 
 
@@ -717,6 +860,18 @@ void OutputEventBuffer::delete_object(int ID)
 	*this < short(0) < (unsigned char)DELETE_OBJECT < ID < (unsigned int)GLOBAL_CLOCK();
 	OUT_EVENTS_LOG1(DELETE_OBJECT,ID);
 }
+void OutputEventBuffer::begin_item_transfer(int transfer_type,int oldID,int newID,int x,int y,int radius,int)
+{
+	n_event++;
+	pointer_to_size_of_event = tell();
+	unsigned int time = GLOBAL_CLOCK();
+	*this < short(0) < (unsigned char)ITEM_TRANSFER < (unsigned char)transfer_type;
+	*this < oldID < time < (unsigned char)1;
+	*this < newID < time < (unsigned short)x < (unsigned short)y < (unsigned short)radius;
+	OUT_EVENTS_LOG1(ITEM_TRANSFER,newID);
+	network_log_printf("OUT","ITEM_TRANSFER transfer_type=%d old_id=0x%08X new_id=0x%08X x=%d y=%d radius=%d",
+		transfer_type,(unsigned int)oldID,(unsigned int)newID,x,y,radius);
+}
 void OutputEventBuffer::begin_create_z_object(int Type, int ID)
 {
 	n_event++;
@@ -807,6 +962,19 @@ static void network_log_out_event_from_buffer(char* event_ptr)
 			int object_ID = *((int*)(event_ptr + 3));
 			unsigned int time = *((unsigned int*)(event_ptr + 7));
 			network_log_object_event("OUT",event,object_ID,GlobalStationID,(int)time,-1,-1,-1,event_size - 9,"queued");
+			break;
+		}
+		case ITEM_TRANSFER:{
+			unsigned char transfer_type = *((unsigned char*)(event_ptr + 3));
+			int old_ID = *((int*)(event_ptr + 4));
+			unsigned int old_time = *((unsigned int*)(event_ptr + 8));
+			int new_ID = *((int*)(event_ptr + 13));
+			unsigned int new_time = *((unsigned int*)(event_ptr + 17));
+			unsigned short x = *((unsigned short*)(event_ptr + 21));
+			unsigned short y = *((unsigned short*)(event_ptr + 23));
+			unsigned short radius = *((unsigned short*)(event_ptr + 25));
+			network_log_printf("OUT","ITEM_TRANSFER transfer_type=%d old_id=0x%08X new_id=0x%08X old_time=%u new_time=%u x=%d y=%d radius=%d body_size=%d decision=queued",
+				(int)transfer_type,(unsigned int)old_ID,(unsigned int)new_ID,old_time,new_time,(int)x,(int)y,(int)radius,event_size - 25);
 			break;
 		}
 		default:
@@ -941,6 +1109,13 @@ void InputEventBuffer::reset()
 	next_event_pointer = 0;
 	filled_size = 0;
 	offset = 0;
+	event_ID = 0;
+	client_ID = 0;
+	item_state = 0;
+	item_previous_ID = 0;
+	item_removed_paired_ID = 0;
+	item_removed_reason = 0;
+	object_ID = 0;
 }
 
 int InputEventBuffer::receive(XSocket& sock,int dont_free) {
@@ -1097,6 +1272,39 @@ int InputEventBuffer::next_event() {
 			case UPDATE_OBJECT:
 				*this  > client_ID > time > x  > y;
 				body_size = event_size - 14;
+				break;
+			case HIDE_OBJECT:
+				body_size = 0;
+				client_ID = 0;
+				time = 0;
+				x = y = 0;
+				break;
+			case DELETE_OBJECT:
+				*this  > client_ID > time;
+				body_size = event_size - 10;
+				break;
+			default:
+				ErrH.Abort("Received unknown event",XERR_USER,event_ID);
+		}
+
+		if(network_snapshot_should_ignore_before_begin()) {
+			network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,"ignored_before_snapshot_begin");
+			ignore_event();
+		}
+		if(event_ID && NON_GLOBAL_OBJECT(object_ID)) {
+			if(!enable_transferring) {
+				IN_EVENTS_LOG1(Disable_query,object_ID);
+				network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,"ignored_disable_transferring");
+				ignore_event();
+			}
+			if(event_ID && GET_WORLD(object_ID) != CurrentWorld) {
+				IN_EVENTS_LOG1(Receive_from_another_world,object_ID);
+				network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,"ignored_wrong_world");
+				ignore_event();
+			}
+		}
+		if(event_ID) {
+			if(event_ID == UPDATE_OBJECT) {
 				if(GET_OBJECT_TYPE(object_ID) == NID_VANGER) {
 					PlayerData* p = players_list.find(client_ID);
 					if(p) {
@@ -1107,36 +1315,14 @@ int InputEventBuffer::next_event() {
 				delay_time += GLOBAL_CLOCK() - time;
 				delay_time_counter++;
 				IN_EVENTS_LOG1(UPDATE_OBJECT,object_ID);
-				network_log_object_event("IN",event_ID,object_ID,client_ID,time,x,y,-1,body_size,"parsed");
-				break;
-			case HIDE_OBJECT:
-				body_size = 0;
-				IN_EVENTS_LOG1(HIDE_OBJECT,object_ID);
-				network_log_object_event("IN",event_ID,object_ID,-1,0,-1,-1,-1,body_size,"parsed");
-				break;
-			case DELETE_OBJECT:
-				*this  > client_ID > time;
-				body_size = event_size - 10;
+			}else if(event_ID == DELETE_OBJECT) {
 				delay_time += GLOBAL_CLOCK() - time;
 				delay_time_counter++;
 				IN_EVENTS_LOG1(DELETE_OBJECT,object_ID);
-				network_log_object_event("IN",event_ID,object_ID,client_ID,time,-1,-1,-1,body_size,"parsed");
-				break;
-			default:
-				ErrH.Abort("Received unknown event",XERR_USER,event_ID);
-		}
-
-		if(NON_GLOBAL_OBJECT(object_ID)) {
-			if(!enable_transferring) {
-				IN_EVENTS_LOG1(Disable_query,object_ID);
-				network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,"ignored_disable_transferring");
-				ignore_event();
+			}else if(event_ID == HIDE_OBJECT) {
+				IN_EVENTS_LOG1(HIDE_OBJECT,object_ID);
 			}
-			if(GET_WORLD(object_ID) != CurrentWorld) {
-				IN_EVENTS_LOG1(Receive_from_another_world,object_ID);
-				network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,"ignored_wrong_world");
-				ignore_event();
-			}
+			network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,network_snapshot_loading() ? "snapshot_entry" : "parsed");
 		}
 	} else {
 		IN_EVENTS_LOG1(AXILIARY_EVENT,event_ID);
@@ -1162,11 +1348,100 @@ int InputEventBuffer::next_event() {
 			case SET_WORLD_RESPONSE:
 			case RESTORE_CONNECTION_RESPONSE:
 			case TOP_LIST_RESPONSE:
-			case TOTAL_LIST_OF_PLAYERS_DATA:
 			case zGAME_DATA_RESPONSE: //zmod
 			case zTIME_RESPONSE: //zmod
 				body_size = event_size - 1;
 				network_log_printf("IN","%s body_size=%d",network_event_name(event_ID),body_size);
+				break;
+			case TOTAL_LIST_OF_PLAYERS_DATA:
+				body_size = event_size - 1;
+				network_log_printf("IN","%s body_size=%d",network_event_name(event_ID),body_size);
+				if(network_snapshot_waiting_for_begin()){
+					network_log_printf("SNAPSHOT","event=%s body_size=%d state=%s snapshot_world=%d decision=ignored_before_snapshot_begin",
+						network_event_name(event_ID),
+						body_size,
+						network_snapshot_state_name(network_snapshot_state),
+						network_snapshot_world);
+					ignore_event();
+				}
+				break;
+			case WORLD_SNAPSHOT_BEGIN:
+			case WORLD_SNAPSHOT_END:{
+				body_size = event_size - 1;
+				int marker_world = -1;
+				if(body_size >= 1)
+					marker_world = get_byte();
+				network_snapshot_log_marker(event_ID,body_size,marker_world);
+				if(marker_world < 0){
+					network_log_printf("SNAPSHOT","state=%s expected_world=%d marker=%s decision=malformed_missing_world",
+						network_snapshot_state_name(network_snapshot_state),
+						network_snapshot_world,
+						network_event_name(event_ID));
+				}else if(event_ID == WORLD_SNAPSHOT_BEGIN){
+					network_snapshot_begin(marker_world);
+				}else{
+					network_snapshot_end(marker_world);
+				}
+				body_size = 0;
+				break;
+			}
+			case ITEM_STATE:
+				if(event_size < 19)
+					ErrH.Abort("Bad ITEM_STATE",XERR_USER,event_size);
+				*this > item_state;
+				*this > item_previous_ID;
+				*this > object_ID;
+				*this > client_ID;
+				*this > time;
+				*this > x;
+				*this > y;
+				body_size = event_size - 19;
+				if(network_snapshot_should_ignore_before_begin()){
+					network_log_object_event("IN",event_ID,object_ID,client_ID,time,x,y,-1,body_size,"ignored_before_snapshot_begin");
+					ignore_event();
+				}
+				if(NON_GLOBAL_OBJECT(object_ID)){
+					if(event_ID && !enable_transferring){
+						network_log_object_event("IN",event_ID,object_ID,client_ID,time,x,y,-1,body_size,"ignored_disable_transferring");
+						ignore_event();
+					}else if(event_ID && GET_WORLD(object_ID) != CurrentWorld){
+						network_log_object_event("IN",event_ID,object_ID,client_ID,time,x,y,-1,body_size,"ignored_wrong_world");
+						ignore_event();
+					}
+				}
+				if(event_ID){
+					delay_time += GLOBAL_CLOCK() - time;
+					delay_time_counter++;
+					network_log_printf("IN","ITEM_STATE state=%d previous_id=0x%08X item_id=0x%08X creator=%d time=%d x=%d y=%d body_size=%d decision=%s",
+						(int)item_state,(unsigned int)item_previous_ID,(unsigned int)object_ID,(int)client_ID,time,(int)x,(int)y,(int)body_size,
+						network_snapshot_loading() ? "snapshot_entry" : "parsed");
+				}
+				break;
+			case ITEM_REMOVED:
+				if(event_size < 10)
+					ErrH.Abort("Bad ITEM_REMOVED",XERR_USER,event_size);
+				*this > object_ID;
+				*this > item_removed_paired_ID;
+				*this > item_removed_reason;
+				client_ID = 0;
+				time = 0;
+				x = y = 0;
+				body_size = 0;
+				if(network_snapshot_should_ignore_before_begin()){
+					network_log_object_event("IN",event_ID,object_ID,client_ID,time,-1,-1,-1,body_size,"ignored_before_snapshot_begin");
+					ignore_event();
+				}
+				if(event_ID && NON_GLOBAL_OBJECT(object_ID) && GET_WORLD(object_ID) != CurrentWorld){
+					network_log_object_event("IN",event_ID,object_ID,client_ID,time,-1,-1,-1,body_size,"ignored_wrong_world");
+					ignore_event();
+				}
+				if(event_ID){
+					network_log_printf("IN","ITEM_REMOVED item_id=0x%08X paired_id=0x%08X reason=%d decision=%s",
+						(unsigned int)object_ID,
+						(unsigned int)item_removed_paired_ID,
+						(int)item_removed_reason,
+						network_snapshot_loading() ? "snapshot_entry" : "parsed");
+				}
 				break;
 
 			case PLAYERS_NAME:
@@ -1176,9 +1451,19 @@ int InputEventBuffer::next_event() {
 			case PLAYERS_DATA:
 			case PLAYERS_RATING:
 				network_log_printf("IN","%s body_size=%d",network_event_name(event_ID),event_size - 1);
-				players_list.single_parsing(event_ID);
-				body_size = 0;
-				next_event();
+				if(network_snapshot_waiting_for_begin()){
+					body_size = event_size - 1;
+					network_log_printf("SNAPSHOT","event=%s body_size=%d state=%s snapshot_world=%d decision=ignored_before_snapshot_begin",
+						network_event_name(event_ID),
+						body_size,
+						network_snapshot_state_name(network_snapshot_state),
+						network_snapshot_world);
+					ignore_event();
+				}else{
+					players_list.single_parsing(event_ID);
+					body_size = 0;
+					next_event();
+				}
 				//ignore_event();
 				break;
 
@@ -1221,6 +1506,7 @@ int connect_to_server(ServerFindChain* p)
 
 		events_out.clear();
 		events_in.reset();
+		network_snapshot_reset("connect_to_server");
 
 		events_out.begin_event(ATTACH_TO_GAME);
 		events_out < current_server_addr.game_ID;
@@ -1361,6 +1647,7 @@ void set_time_by_server(int n_measures)
 }
 int set_world(int world,int world_y_size) //znfo - send set_world event
 {
+	network_snapshot_wait_for_world(world,"set_world_request");
 	events_out.set_world(world,world_y_size);
 	events_out.send(1);
 	int got = events_in.receive_waiting_for_event(SET_WORLD_RESPONSE);
@@ -1392,6 +1679,7 @@ void leave_world()
 	network_log_printf("OUT","LEAVE_WORLD");
 	events_out.send_simple_query(LEAVE_WORLD);
 	enable_transferring = 0;
+	network_snapshot_reset("leave_world");
 	network_log_printf("CONTEXT","enable_transferring changed value=%d CurrentWorld=%d",enable_transferring,CurrentWorld);
 }
 void total_players_data_list_query()

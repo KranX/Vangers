@@ -1118,11 +1118,7 @@ void StuffObject::DeviceIn(void)
 	};
 
 	if(NetworkON && (Owner->Status & SOBJ_ACTIVE)){
-		NETWORK_OUT_STREAM.delete_object(NetID);
-		NETWORK_OUT_STREAM < (uchar)(1);
-		NETWORK_OUT_STREAM.end_body();
-
-		NETWORK_OUT_STREAM.create_permanent_object(NetDeviceID,xImpulse,yImpulse,radius);
+		NETWORK_OUT_STREAM.begin_item_transfer(ITEM_TRANSFER_PICKUP,NetID,NetDeviceID,xImpulse,yImpulse,radius);
 		NETWORK_OUT_STREAM < (uchar)(DataID);
 		NETWORK_OUT_STREAM < (int)(NetID);
 		NETWORK_OUT_STREAM < (short)(R_curr.z);
@@ -1427,11 +1423,7 @@ void StuffObject::DeviceOut(Vector v1,int flag,Vector v2)
 	OutFlag = flag;
 
 	if(NetworkON && (Owner->Status & SOBJ_ACTIVE)){
-		NETWORK_OUT_STREAM.delete_object(NetDeviceID);
-		NETWORK_OUT_STREAM < (uchar)(1);
-		NETWORK_OUT_STREAM.end_body();
-
-		NETWORK_OUT_STREAM.create_permanent_object(NetID,xImpulse,yImpulse,radius);
+		NETWORK_OUT_STREAM.begin_item_transfer(ITEM_TRANSFER_DROP,NetDeviceID,NetID,xImpulse,yImpulse,radius);
 		NETWORK_OUT_STREAM < (uchar)(DataID);
 		NETWORK_OUT_STREAM < (int)(NetDeviceID);
 		NETWORK_OUT_STREAM < (short)(R_curr.z);
@@ -3962,6 +3954,111 @@ void StuffObject::NetEvent(int type,int id,int creator,int x,int y)
 			break;
 	};
 };
+
+static StuffObject* FindNetworkStuffObject(int id)
+{
+	StuffObject* p;
+	VangerUnit* v;
+	int net_type = GET_NETWORK_ID(id);
+
+	v = (VangerUnit*)(ActD.Tail);
+	while(v){
+		p = v->DeviceData;
+		while(p){
+			if((net_type == NID_DEVICE && p->NetDeviceID == id) ||
+			   (net_type != NID_DEVICE && p->NetID == id))
+				return p;
+			p = p->NextDeviceList;
+		};
+		v = (VangerUnit*)(v->NextTypeList);
+	};
+
+	p = (StuffObject*)(ItemD.Tail);
+	while(p){
+		if((net_type == NID_DEVICE && p->NetDeviceID == id) ||
+		   (net_type != NID_DEVICE && p->NetID == id))
+			return p;
+		p = (StuffObject*)(p->NextTypeList);
+	};
+
+	return NULL;
+}
+
+void ItemsDispatcher::NetItemState(int item_state,int previous_id,int item_id)
+{
+	StuffObject* p;
+
+	network_log_printf("ItemsDispatcher::NetItemState","phase=begin item_state=%d previous_id=0x%08X item_id=0x%08X creator=%d body_size=%d",
+		item_state,(unsigned int)previous_id,(unsigned int)item_id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_body_size());
+
+	if(previous_id){
+		p = FindNetworkStuffObject(previous_id);
+		if(p){
+			if(p->Status & SOBJ_DISCONNECT){
+				NetworkLogStuffObject("ItemsDispatcher::NetItemState",p,"decision=previous_object_already_disconnected");
+			}else{
+				// A non-zero previous id means the authoritative item state is
+				// switching between paired STUFF/DEVICE forms.  Keep the local
+				// StuffObject alive and let the following state update convert it.
+				p->Status |= SOBJ_WAIT_CONFIRMATION;
+				NetworkLogStuffObject("ItemsDispatcher::NetItemState",p,"decision=previous_object_marked_wait_confirmation");
+			}
+		}else{
+			network_log_printf("ItemsDispatcher::NetItemState","item_state=%d previous_id=0x%08X item_id=0x%08X decision=previous_object_missing",
+				item_state,(unsigned int)previous_id,(unsigned int)item_id);
+		}
+	}
+
+	switch(GET_NETWORK_ID(item_id)){
+		case NID_DEVICE:
+			NetDevice(UPDATE_OBJECT,item_id);
+			break;
+		case NID_STUFF:
+			NetEvent(UPDATE_OBJECT,item_id);
+			break;
+		default:
+			network_log_printf("ItemsDispatcher::NetItemState","item_state=%d previous_id=0x%08X item_id=0x%08X decision=ignored_bad_item_type",
+				item_state,(unsigned int)previous_id,(unsigned int)item_id);
+			NETWORK_IN_STREAM.ignore_event();
+			break;
+	}
+
+	network_log_printf("ItemsDispatcher::NetItemState","phase=end item_state=%d previous_id=0x%08X item_id=0x%08X",
+		item_state,(unsigned int)previous_id,(unsigned int)item_id);
+}
+
+void ItemsDispatcher::NetItemRemoved(int item_id,int paired_id,int reason)
+{
+	StuffObject* p = FindNetworkStuffObject(item_id);
+	if(!p && paired_id)
+		p = FindNetworkStuffObject(paired_id);
+
+	network_log_printf("ItemsDispatcher::NetItemRemoved","phase=begin item_id=0x%08X paired_id=0x%08X reason=%d found=%d",
+		(unsigned int)item_id,(unsigned int)paired_id,reason,p ? 1 : 0);
+
+	if(!p){
+		network_log_printf("ItemsDispatcher::NetItemRemoved","item_id=0x%08X paired_id=0x%08X reason=%d delete_reason=ignored_missing_object decision=ignored_missing_object",
+			(unsigned int)item_id,(unsigned int)paired_id,reason);
+		return;
+	}
+
+	if(p->Owner){
+		NetworkLogStuffObject("ItemsDispatcher::NetItemRemoved",p,"delete_reason=remove_from_owner_inventory");
+		p->Owner->CheckOutDevice(p);
+		if(p->Owner->Status & SOBJ_ACTIVE){
+			ActD.CheckDevice(p);
+			aciRemoveItem(&p->ActIntBuffer);
+		}
+		p->Owner->DelDevice(p);
+		p->Storage->Deactive(p);
+	}else{
+		NetworkLogStuffObject("ItemsDispatcher::NetItemRemoved",p,"delete_reason=disconnect_world_object");
+		p->Status |= SOBJ_DISCONNECT;
+	}
+
+	network_log_printf("ItemsDispatcher::NetItemRemoved","phase=end item_id=0x%08X paired_id=0x%08X reason=%d",
+		(unsigned int)item_id,(unsigned int)paired_id,reason);
+}
 
 void ItemsDispatcher::NetDevice(int type,int id)
 {

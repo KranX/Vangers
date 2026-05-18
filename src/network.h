@@ -166,6 +166,7 @@ public:
 	void create_permanent_object(int ID,int x,int y,int radius,int flags = 0);
 	void update_object(int ID,int x,int y,int flags = 0);
 	void delete_object(int ID);
+	void begin_item_transfer(int transfer_type,int oldID,int newID,int x,int y,int radius,int flags = 0);
 
 	void begin_create_z_object(int Type, int ID);
 
@@ -190,9 +191,13 @@ public:
 
 class InputEventBuffer : public XBuffer {
 	unsigned char event_ID,client_ID,world;
+	unsigned char item_state;
+	unsigned char item_removed_reason;
 	unsigned short event_size,body_size;
 	unsigned short x,y,radius;
 	int time,object_ID;
+	int item_previous_ID;
+	int item_removed_paired_ID;
 
 	unsigned int next_event_pointer;
 	unsigned int filled_size;
@@ -212,6 +217,10 @@ public:
 	int current_y(){ return y; }
 	int current_radius(){ return radius; }
 	int current_body_size(){ return body_size; }
+	int current_item_state(){ return item_state; }
+	int current_item_previous_ID(){ return item_previous_ID; }
+	int current_item_removed_paired_ID(){ return item_removed_paired_ID; }
+	int current_item_removed_reason(){ return item_removed_reason; }
 	// 1. If there isn't such a datum in the event (x,y for delete_object), no error will be generated
 	// 2. To read body use > or read() of XBuffer.
 	void ignore_event(); // Skip body, if any
