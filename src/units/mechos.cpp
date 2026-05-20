@@ -4637,6 +4637,7 @@ void VangerUnit::InitEnvironment(void)
 	aiUnitResolve* pp;
 
 	if(Status & SOBJ_WAIT_CONFIRMATION) return;
+	UpdateStationTouched = 0;
 	nDoorFlag = DoorFlag;
 	ActionUnit::InitEnvironment();
 	vTarget = Vector(0,0,0);
@@ -5071,6 +5072,8 @@ void VangerUnit::InitEnvironment(void)
 			};
 		};
 	};
+	if(!UpdateStationTouched)
+		UpdateStationActive = 0;
 
 /*	if(Visibility == VISIBLE){
 		p = (ActionUnit*)(ActD.Tail);
@@ -5249,7 +5252,9 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 			break;
 		case SensorTypeList::RANDOMIZE_UPDATE:
 			aiMessageQueue.Send(AI_MESSAGE_RANDOM_UPDATE,Speed,1);//aiMessageData[AI_MESSAGE_RANDOM_UPDATE].Send(Speed,1);
-			if(RandomUpdate != frame - 1){
+			UpdateStationTouched = 1;
+			if(!UpdateStationActive){
+				UpdateStationActive = 1;
 				r_log = 0;
 				while(!r_log){
 					switch(RND(6)){
@@ -5301,7 +5306,6 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 					};
 				};
 			};
-			RandomUpdate = frame;
 			break;
 		case SensorTypeList::OXIGEN_UPDATE:
 			if(p->data5 == CheckPointCount){
@@ -5315,14 +5319,15 @@ void VangerUnit::TouchSensor(SensorDataType* p)
 			break;
 		case SensorTypeList::FLY_UPDATE:
 			aiMessageQueue.Send(AI_MESSAGE_COPTER,Speed,1);//aiMessageData[AI_MESSAGE_COPTER].Send(Speed,1);
-			if(RandomUpdate != frame - 1){	
+			UpdateStationTouched = 1;
+			if(!UpdateStationActive){
+				UpdateStationActive = 1;
 				ChargeDevice(this,ACI_EMPTY_COPTE_RIG,1);			
 				ChargeDevice(this,ACI_EMPTY_CROT_RIG,1);
 				ChargeDevice(this,ACI_EMPTY_CUTTE_RIG,1);
 				ChargeDevice(this,ACI_COPTE_RIG,1);
 				ChargeDevice(this,ACI_CROT_RIG,1);
 				ChargeDevice(this,ACI_CUTTE_RIG,1);
-				RandomUpdate = frame;
 			};
 			break;
 		case SensorTypeList::FIRE_UPDATE:			
@@ -6220,7 +6225,8 @@ void VangerUnit::CreateVangerUnit(void)
 	VangerChangerEnergy = 0;
 	VangerChangerColor = 0;
 
-	RandomUpdate = -1;
+	UpdateStationActive = 0;
+	UpdateStationTouched = 0;
 	LastMole = 0;
 	MoleTrailPrev = Vector(0,0,0);
 	MoleTrailStep = 0;
