@@ -8912,23 +8912,34 @@ void CreatePhantomTarget(void)
 {
 	CompasTargetType* n;
 	uvsPassage* pass;
+	Vector target;
+	int target_found = 0;
 
 	if(my_server_data.GameType == PASSEMBLOSS && UsedCheckNum < GloryPlaceNum){
+		if(GloryPlaceData[UsedCheckNum].World == CurrentWorld){
+			target.x = GloryPlaceData[UsedCheckNum].R_curr.x;
+			target.y = GloryPlaceData[UsedCheckNum].R_curr.y;
+			target.z = GloryPlaceData[UsedCheckNum].R_curr.z;
+			target_found = 1;
+		}else{
+			pass = GetPassage(CurrentWorld,GloryPlaceData[UsedCheckNum].World);
+			if(pass && pass->unitPtr.PassageT && pass->unitPtr.PassageT->ActionLink){
+				target.x = pass->unitPtr.PassageT->ActionLink->R_curr.x;
+				target.y = pass->unitPtr.PassageT->ActionLink->R_curr.y;
+				target.z = pass->unitPtr.PassageT->ActionLink->R_curr.z;
+				target_found = 1;
+			};
+		};
+
+		if(!target_found)
+			return;
+
 		n = CompasObj.TargetData;
 		while(n){	
 			if(n -> ID == CMP_OBJECT_VECTOR){
-				if(GloryPlaceData[UsedCheckNum].World == CurrentWorld){
-					(n->Data).vT.x = GloryPlaceData[UsedCheckNum].R_curr.x;
-					(n->Data).vT.y = GloryPlaceData[UsedCheckNum].R_curr.y;
-					(n->Data).vT.z = GloryPlaceData[UsedCheckNum].R_curr.z;					
-				}else{
-					pass = GetPassage(CurrentWorld,GloryPlaceData[UsedCheckNum].World);
-					if(pass){
-						(n->Data).vT.x = pass->unitPtr.PassageT->ActionLink->R_curr.x;
-						(n->Data).vT.y = pass->unitPtr.PassageT->ActionLink->R_curr.y;
-						(n->Data).vT.z = pass->unitPtr.PassageT->ActionLink->R_curr.z;
-					};
-				};
+				(n->Data).vT.x = target.x;
+				(n->Data).vT.y = target.y;
+				(n->Data).vT.z = target.z;
 				break;
 			};
 			n = n->Next;
@@ -8936,10 +8947,10 @@ void CreatePhantomTarget(void)
 
 		if(!n){
 			if(lang() == RUSSIAN){
-				CompasObj.AddTarget(CMP_OBJECT_VECTOR,UnitOrderType(GloryPlaceData[UsedCheckNum].R_curr.x,GloryPlaceData[UsedCheckNum].R_curr.y,GloryPlaceData[UsedCheckNum].R_curr.z),NULL,rCheckPointCompasTarget);
+				CompasObj.AddTarget(CMP_OBJECT_VECTOR,UnitOrderType(target.x,target.y,target.z),NULL,rCheckPointCompasTarget);
 				SelectCompasTarget(rCheckPointCompasTarget);
 			}else{
-				CompasObj.AddTarget(CMP_OBJECT_VECTOR,UnitOrderType(GloryPlaceData[UsedCheckNum].R_curr.x,GloryPlaceData[UsedCheckNum].R_curr.y,GloryPlaceData[UsedCheckNum].R_curr.z),NULL,CheckPointCompasTarget);
+				CompasObj.AddTarget(CMP_OBJECT_VECTOR,UnitOrderType(target.x,target.y,target.z),NULL,CheckPointCompasTarget);
 				SelectCompasTarget(CheckPointCompasTarget);
 			};
 			aciRefreshTargetsMenu();
@@ -8997,17 +9008,19 @@ void CompasObject::Quant(void)
 			break;
 		case CMP_OBJECT_VANGER:
 			tt = (uvsVanger*)(CurrentTarget->Data.TargetT);
+			if(!tt || !tt->Pworld)
+				return;
 			if(tt ->Pworld->gIndex == CurrentWorld){
 				R_curr.x = tt->pos_x;
 				R_curr.y = tt->pos_y;
 				R_curr.z = 0;
 			}else{
 				pass = GetPassage(CurrentWorld,tt ->Pworld->gIndex);
-				if(pass){
+				if(pass && pass->unitPtr.PassageT && pass->unitPtr.PassageT->ActionLink){
 					R_curr.x = pass->unitPtr.PassageT->ActionLink->R_curr.x;
 					R_curr.y = pass->unitPtr.PassageT->ActionLink->R_curr.y;
 					R_curr.z = pass->unitPtr.PassageT->ActionLink->R_curr.z;
-				};
+				}else return;
 			};
 			break;
 		case CMP_OBJECT_VECTOR:

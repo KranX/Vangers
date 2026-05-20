@@ -10861,18 +10861,31 @@ uvsPassage* GetPassage(int fromWID, int toWID){
 	uvsWorld *nextW;
 	uvsWorld *fromW;
 
+	if(fromWID < 0 || fromWID >= WORLD_MAX || toWID < 0 || toWID >= WORLD_MAX)
+		return NULL;
+
+	if(!WorldTable[fromWID] || !WorldTable[toWID])
+		return NULL;
+
 	if ( fromWID == toWID ) return NULL;
 
 	if ( fromWID >= MAIN_WORLD_MAX ) {
+		if(WorldTable[fromWID] -> pssTmax <= 0 || !WorldTable[fromWID] -> pssT || !WorldTable[fromWID] -> pssT[0])
+			return NULL;
 		return WorldTable[fromWID] -> pssT[0];
 	}
 
 	if (toWID >= MAIN_WORLD_MAX ) {
 		int lastID = toWID;
+		if(WorldTable[toWID] -> pssTmax <= 0 || !WorldTable[toWID] -> pssT || !WorldTable[toWID] -> pssT[0] || !WorldTable[toWID] -> pssT[0] -> Poutput)
+			return NULL;
 		toWID = WorldTable[toWID] -> pssT[0] -> Poutput -> gIndex;
 
 		if (fromWID == toWID) return WorldTable[fromWID] -> getPassage( getWorld(lastID) );;
 	}
+
+	if(toWID < 0 || toWID >= MAIN_WORLD_MAX)
+		return NULL;
 
 	unsigned int linkage = ChainMap[toWID + fromWID*MAIN_WORLD_MAX],mI;
 
@@ -10882,6 +10895,8 @@ uvsPassage* GetPassage(int fromWID, int toWID){
 
 	if(!nextW) nextW = getWorld(toWID);
 	fromW = getWorld(fromWID);
+	if(!fromW || !nextW)
+		return NULL;
 
 	return	fromW -> getPassage(nextW);
 }
