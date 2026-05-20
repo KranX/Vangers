@@ -369,6 +369,42 @@ Status: **implemented for item transfer semantics**.
 The following can be done after multiplayer tests without another protocol
 bump:
 
+- add a reliable live-join replay for players that are already in the world
+  when another player enters that world. The `SET_WORLD` snapshot currently
+  protects the joining client, but logs from 2026-05-19 still show a short
+  window on existing clients where `UPDATE_OBJECT VANGER` can arrive before the
+  local remote `VangerUnit` is fully available (`ignored_missing_vanger`). This
+  should be fixed with a small ordered spawn/snapshot bundle to the existing
+  world clients:
+
+  ```text
+  PLAYERS_DATA for the entering player
+  VANGER state
+  SLOT state
+  DEVICE/ITEM_STATE state
+  SHELL state if needed
+  then live UPDATE_OBJECT
+  ```
+
+  The important point is semantic ordering, not a new packet family. Reuse
+  existing protocol-5 packets and make the server send them reliably before the
+  entering player's replaceable realtime updates can overtake them. This should
+  address the remaining "remote player exists but weapons/shot visuals are
+  missing" class of bugs without another protocol bump;
+- investigate `UPDATE_OBJECT` for missing static type-14 objects. The
+  2026-05-19 server log contains several harmless-but-noisy
+  `ignored_missing` updates such as `0x880E02E4`, all decoded as
+  `static_object=true`, `type_id=14`. These are not item-transfer objects and
+  did not break the session, but the server currently reports them as errors.
+  We need to decide whether type-14 objects should be accepted/created as
+  replicated static world state, or whether missing updates for that class are
+  expected and should be downgraded to an ignored/rate-limited diagnostic;
+- make client diagnostic logs unambiguous when several local clients are run
+  from the same `data/` directory. The 2026-05-19 local test had `station=1`
+  and `station=2` writing into the same `network-client.log`, which is useful
+  enough for rough analysis but makes exact ordering harder. A future
+  diagnostic-only cleanup can include the process id, connection id, or final
+  station id in the file name;
 - improve Rust server internals by replacing paired-id decoding with a real
   logical item table while keeping the same wire packets;
 - extend snapshot contents if logs show a missing object class, as long as
