@@ -2234,7 +2234,7 @@ void TntCreature::Quant(void)
 			}else{
 				switch(CurrentWorld){
 					case 0:
-						if(RND(300 * GAME_TIME_COEFF) < 5){
+						if(RND(300) < 5){
 							p = BulletD.CreateBullet();
 							vCheck = Vector(radius,0,0) * DBM((int)(RND(2*PI)),Z_AXIS);
 							p->CreateBullet(R_curr,
@@ -2243,8 +2243,8 @@ void TntCreature::Quant(void)
 						};
 						break;
 					case 1:
-						if(RND(1000 * GAME_TIME_COEFF) < 5 && abs(getDistY(R_curr.y,ViewY)) - (radius << 1) < TurnSideY && abs(getDistX(R_curr.x,ViewX)) - (radius << 1) < TurnSideX)
-							TouchTime = TntLinkDelay * GAME_TIME_COEFF;
+						if(RND(1000) < 5 && abs(getDistY(R_curr.y,ViewY)) - (radius << 1) < TurnSideY && abs(getDistX(R_curr.x,ViewX)) - (radius << 1) < TurnSideX)
+							TouchTime = TntLinkDelay;
 						break;
 				};
 			};
