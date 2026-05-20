@@ -201,6 +201,12 @@ static inline int sensor_enable_ticks(void)
 	return ticks > 0 ? ticks : 1;
 }
 
+static inline int threall_lava_damage_tick(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks <= 1 || !(frame % ticks);
+}
+
 static StuffObject* resolve_stuff_owner(uvsUnitType* owner, actintItemData* d);
 
 static int CheckLiveVangerPointer(VangerUnit* p)
@@ -3863,8 +3869,10 @@ void VangerUnit::DrawQuant(void)
 
 			if(dynamic_state & TOUCH_OF_WATER){
 				if(CurrentWorld == WORLD_THREALL){
-					if(NetworkON) BulletCollision((MaxEnergy + MaxArmor) / 150,NULL);
-					else BulletCollision((MaxEnergy + MaxArmor) / 20,NULL);
+					if(threall_lava_damage_tick()){
+						if(NetworkON) BulletCollision((MaxEnergy + MaxArmor) / 150,NULL);
+						else BulletCollision((MaxEnergy + MaxArmor) / 20,NULL);
+					}
 				}else{
 					if(!(dynamic_state & TOUCH_OF_AIR)){
 						ChargeWeapon(this,ACI_MACHOTINE_GUN_LIGHT,1);
@@ -3882,9 +3890,10 @@ void VangerUnit::DrawQuant(void)
 			};
 		}else{
 			if(dynamic_state & TOUCH_OF_WATER){
-				if(CurrentWorld == WORLD_THREALL)
-					BulletCollision(Energy / 20,NULL);
-				else{
+				if(CurrentWorld == WORLD_THREALL){
+					if(threall_lava_damage_tick())
+						BulletCollision(Energy / 20,NULL);
+				}else{
 					if(Speed){
 						p = (WaterParticleObject*)(EffD.GetObject(EFF_PARTICLE03));
 						if(p){
