@@ -381,19 +381,20 @@ void StaticQuant(void) //world animation quant
 	} else {
 		sensorStaticFrame++;
 	}
+	const bool legacy_static_tick = sensorStaticFrame == 1;
 	if(NetworkON){
 		for(i = 0;i < TntTableSize;i++)
 		{
 			if(lt[TntObjectData[i]->R_curr.y]) {
-				TntObjectData[i]->NetQuant();
+				TntObjectData[i]->NetQuant(legacy_static_tick);
 			} else
 				TntObjectData[i]->NetHideEvent();
 		}
 	}else{
 		for(i = 0;i < TntTableSize;i++)
-		{		
+		{
 			if(lt[TntObjectData[i]->R_curr.y]) {
-				if (sensorStaticFrame == 1)
+				if(legacy_static_tick)
 					TntObjectData[i]->Quant(); //animate mushroom grow
 			} else
 				TntObjectData[i]->HideEvent();
@@ -2473,7 +2474,7 @@ void TntCreature::NetEvent(void)
 		NetDestroy(0);
 };
 
-void TntCreature::NetQuant(void)
+void TntCreature::NetQuant(bool legacy_static_tick)
 {
 	BulletObject* p;
 	Vector vCheck;
@@ -2494,22 +2495,24 @@ void TntCreature::NetQuant(void)
 				TntClone->setPhase(0,1);
 				if(CurrentWorld == WORLD_GLORX) ClearBarell(R_curr.x,R_curr.y,radius,83,R_curr.z);
 				else ClearBarell(R_curr.x,R_curr.y,radius,7,R_curr.z);
-				TntClone->setPhase(CurrentHeight,0);					
+				TntClone->setPhase(CurrentHeight,0);
 			};
 			HideFlag = 0;
 		};
-		
+
 		if(TouchTime > 0){
 			TouchTime--;
 			if(TouchTime <= 0) NetDestroy();
 		}else{
 			if(NetTime < NetGlobalTime){
 				if(CurrentHeight < MaxHeight){
-					if(Time <= 0){
-						Time =  DelayHeight;
-						CurrentHeight++;
-						TntClone->setPhase(CurrentHeight,0);
-					}else Time--;
+					if(legacy_static_tick){
+						if(Time <= 0){
+							Time =  DelayHeight;
+							CurrentHeight++;
+							TntClone->setPhase(CurrentHeight,0);
+						}else Time--;
+					}
 				}else{
 					switch(CurrentWorld){
 						case 0:

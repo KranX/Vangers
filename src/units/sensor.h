@@ -448,7 +448,7 @@ struct TntCreature : StaticObject
 	void NetEvent(void);
 	void NetUpdate(void);
 	void ClearUpdate(void);	
-	void NetQuant(void);
+	void NetQuant(bool legacy_static_tick);
 	void NetDestroy(int fl = 1);	
 
 	void NetHideEvent(void){
