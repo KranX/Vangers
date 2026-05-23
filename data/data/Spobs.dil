@@ -6,7 +6,7 @@
 4 2 "Threall Killing Waiting" "2" "0" "1" "enter_SSTATUS == 3" " " " " 
 0 0 "Protractor is Absent" "3" "0" "1" "data INV_PROTRACTOR == 0" "abort" "block clear" 
 3 2 "Spectors Task Waiting" "2" "0" "1" "enter_SSTATUS == 2" " " " " 
-4 1 "Add Protractor InfernalsKill Function" "1" "1" "0" "visitE T > 0 spectors_task > 0" " " "sPromotion addProtractorKill clear" 
+4 1 "Add Protractor InfernalsKill Function" "1" "1" "0" "enter_SSTATUS == 2 visitE T > 0 spectors_task > 0" " " "sPromotion addProtractorKill clear"
 3 1 "Global Spectors Task" "1" "1" "0" "visitE T > 0" " " "sPromotion clear" 
 1 1 "Instruction to get Key2Threall" "5" "0" "0" "true" " " " " 
 0 1 "Introduction" "5" "0" "0" "true" " " " " 

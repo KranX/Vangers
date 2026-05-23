@@ -2106,6 +2106,21 @@ void dgRoom::nextState(int x,int y)
 	if(getSTATUS(x,y) == DG_CELLSTATUS::DORMANT){
 		setSTATUS(x,y,DG_CELLSTATUS::WAITING);
 		if(!getGRID(x,y) -> isWaiting) explodeState(x,y);
+			}
+	}
+
+static void recoverSpobsSpectorsTask(dgRoom* room)
+{
+	static const char protractorKillCellName[] = "Add Protractor InfernalsKill Function";
+
+	if(checkStatus || strcmp(room -> roomName,"Spobs") || room -> owner -> sStatus != 2 || !getSpectorsTaskStatus())
+		return;
+
+	for(int i = 0;i < room -> gridSX*room -> gridSY;i++){
+		if(room -> grid[i] && room -> status[i] == DG_CELLSTATUS::USED && !strcmp(room -> grid[i] -> Name,protractorKillCellName)){
+			room -> status[i] = DG_CELLSTATUS::WAITING;
+			break;
+			}
 		}
 }
 
@@ -2113,6 +2128,7 @@ void dgRoom::startSession(void)
 {
 	currentM = NULL;
 	Qcode = eventOUT = 0;
+	recoverSpobsSpectorsTask(this);
 	owner -> endSessionLog = isEmptySession();
 	cIndex = -1;
 	if(!isLoading){
