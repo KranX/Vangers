@@ -1788,6 +1788,11 @@ void DangerDataType::Quant(void)
 //			fDanger < "\nFastSand : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <= R_curr.z;
 //#endif
 			if(Enable){
+				if(radius <= 0){
+					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
+					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
+					break;
+				};
 				if(rActive > radius - abs(dActive) || rActive <= abs(dActive)) dActive = -dActive;
 				rActive += dActive;
 
@@ -1850,6 +1855,10 @@ void DangerDataType::Quant(void)
 //			fDanger < "\nSwamp : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <= R_curr.z;
 //#endif
 			if(Enable){
+				if(radius <= 0){
+					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
+					break;
+				};
 				if(rActive > radius - abs(dActive) || rActive <= abs(dActive)) dActive = -dActive;
 				rActive += dActive;
 

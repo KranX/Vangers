@@ -462,6 +462,26 @@ static inline double world_border_force_y(double y)
 	return 0.0;
 }
 
+static inline double swamp_field_modulation(double rf_x,double rf_y,int field_radius,int fallback_radius)
+{
+	int effective_radius = field_radius > 0 ? field_radius : fallback_radius;
+	if(effective_radius <= 0)
+		effective_radius = 1;
+
+	double base = (sqr(rf_x) + sqr(rf_y))/sqr((double)effective_radius);
+	if(!finite_value(base))
+		return 1.0;
+
+	double result = pow(base,modulation_power);
+	if(!finite_value(result))
+		return 1.0;
+	if(result > 1)
+		return 1;
+	if(result < 0)
+		return 0;
+	return result;
+}
+
 #ifndef _SURMAP_
 dastPoly3D terra_moving_tool(Vector(0,0,0),Vector(0,0,0),Vector(0,0,0));
 #endif
@@ -3339,10 +3359,7 @@ void Object::basic_mechous_analysis(double dt,int last)
 			case DangerTypeList::SWAMP:
 			case DangerTypeList::FASTSAND:
 				if(!mole_on){
-					modulation = (sqr(rf_x) + sqr(rf_y))/sqr(closest_field_object -> radius);
-					modulation = pow(modulation,modulation_power);
-					if(modulation > 1)
-						modulation = 1;
+					modulation = swamp_field_modulation(rf_x,rf_y,closest_field_object -> radius,radius);
 					device_modulation = terrain_immersion < 20 ? 1 : (terrain_immersion < 200 ? (200 - terrain_immersion)/200 : 0);
 					if(modulation > device_modulation)
 						modulation = device_modulation;
@@ -3813,10 +3830,7 @@ void Object::basic_debris_analysis(double dt)
 				break;
 			case DangerTypeList::SWAMP:
 			case DangerTypeList::FASTSAND:
-				modulation = (sqr(rf_x) + sqr(rf_y))/sqr(closest_field_object -> radius);
-				modulation = pow(modulation,modulation_power);
-				if(modulation > 1)
-					modulation = 1;
+				modulation = swamp_field_modulation(rf_x,rf_y,closest_field_object -> radius,radius);
 				device_modulation = terrain_immersion < 20 ? 1 : (terrain_immersion < 200 ? (200 - terrain_immersion)/200 : 0);
 				if(modulation > device_modulation)
 					modulation = device_modulation;
