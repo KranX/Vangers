@@ -1790,7 +1790,6 @@ void DangerDataType::Quant(void)
 			if(Enable){
 				if(radius <= 0){
 					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
-					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
 					break;
 				};
 				if(rActive > radius - abs(dActive) || rActive <= abs(dActive)) dActive = -dActive;
