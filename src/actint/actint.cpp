@@ -1263,6 +1263,7 @@ actIntDispatcher::actIntDispatcher(void)
 {
 	int i;
 	flags = 0;
+	invMoveItemCloseLockFrame = -1;
 
 	curIbsID = 0;
 
@@ -5210,6 +5211,8 @@ static void aciResetMatrixVisualState(invMatrix* m)
 	m -> flags &= ~(IM_REDRAW | IM_FLUSH | IM_REDRAW_SHADOW);
 }
 
+static const int ACI_IINV_MOVE_CLOSE_LOCK_FRAMES = 16;
+
 void actIntDispatcher::EventQuant(void)
 {
 	actEvent* p;
@@ -5303,6 +5306,8 @@ void actIntDispatcher::EventQuant(void)
 				flags |= AS_ISCREEN_INV_MODE;
 				break;
 			case EV_DEACTIVATE_IINV:
+				if((flags & AS_INV_MOVE_ITEM) || aciCurFrame <= invMoveItemCloseLockFrame)
+					break;
 				aciResetMatrixVisualState(curMatrix);
 				aciResetMatrixVisualState(secondMatrix);
 				flags &= ~AS_ISCREEN_INV_MODE;
@@ -5529,7 +5534,7 @@ void actIntDispatcher::change_mode(void)
 	fncMenu* p;
 	switch(curMode){
 		case AS_INV_MODE:
-			if(flags & AS_INV_MOVE_ITEM) break;
+			if((flags & AS_INV_MOVE_ITEM) || aciCurFrame <= invMoveItemCloseLockFrame) break;
 			curMode = AS_INFO_MODE;
 			XGR_MouseSetPromptData(infPrompt);
 			change_screen(prevScrMode);
@@ -6172,6 +6177,7 @@ int actIntDispatcher::put_item_xy(invItem* p,int x,int y,int sflag)
 		m -> put_item(x,y,p);
 		m -> clear_shadow_cells();
 		m -> set_redraw();
+		invMoveItemCloseLockFrame = aciCurFrame + ACI_IINV_MOVE_CLOSE_LOCK_FRAMES;
 		if(flags & AS_INV_MOVE_ITEM)
 			restore_mouse_cursor();
 		flags &= ~AS_INV_MOVE_ITEM;
@@ -6562,6 +6568,7 @@ void actIntDispatcher::set_move_item(int index,int sflag)
 		}
 		iP -> set_redraw();
 	}
+	invMoveItemCloseLockFrame = aciCurFrame + ACI_IINV_MOVE_CLOSE_LOCK_FRAMES;
 	flags |= AS_INV_MOVE_ITEM;
 }
 

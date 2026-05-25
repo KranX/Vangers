@@ -1265,6 +1265,7 @@ const int 	AS_WORLDS_INIT		= 0x8000;
 struct actIntDispatcher
 {
 	int flags;
+	int invMoveItemCloseLockFrame;
 	int curMode;
 
 	int curScrMode;
