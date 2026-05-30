@@ -5211,7 +5211,7 @@ static void aciResetMatrixVisualState(invMatrix* m)
 	m -> flags &= ~(IM_REDRAW | IM_FLUSH | IM_REDRAW_SHADOW);
 }
 
-static const int ACI_IINV_MOVE_CLOSE_LOCK_FRAMES = 16;
+static const int ACI_IINV_MOVE_CLOSE_LOCK_FRAMES = 1;
 
 void actIntDispatcher::EventQuant(void)
 {
@@ -6568,7 +6568,6 @@ void actIntDispatcher::set_move_item(int index,int sflag)
 		}
 		iP -> set_redraw();
 	}
-	invMoveItemCloseLockFrame = aciCurFrame + ACI_IINV_MOVE_CLOSE_LOCK_FRAMES;
 	flags |= AS_INV_MOVE_ITEM;
 }
 
