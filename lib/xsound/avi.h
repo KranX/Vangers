@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include <string>
 
+#include "xtcore.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
