@@ -1,4 +1,11 @@
 
+#ifndef __ITEM_API_H__
+#define __ITEM_API_H__
+
+#include <cstddef>
+
+struct XStream;
+
 enum actintItemTypes {
 	// Weapons...
 	ACI_MACHOTINE_GUN_LIGHT = 1,
@@ -335,3 +342,5 @@ void XpeditionOFF(int type);
 void FakeOfMight(void);
 
 void GetNetworkGameTime(int &day, int &hour, int &min, int &sec);
+
+#endif

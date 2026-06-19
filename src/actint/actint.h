@@ -1,6 +1,9 @@
 
 #define _ACI_PACK_SAVES_
 
+#include "../iscreen/iscreen.h"
+#include "item_api.h"
+
 /* ----------------------------- Debug options ------------------------------ */
 
 #define _ACI_CHECK_DIALOGS_
