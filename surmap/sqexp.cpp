@@ -9,11 +9,11 @@
 
 #include "../src/common.h"
 
-#include "../src/terra/vmap.h"
-#include "impass.h"
-#include "../src/terra/world.h"
 #include "../src/terra/render.h"
+#include "../src/terra/vmap.h"
+#include "../src/terra/world.h"
 #include "../src/units/moveland.h"
+#include "impass.h"
 
 #include "sqexp.h"
 #include "tools.h"

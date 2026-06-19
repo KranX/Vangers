@@ -26,8 +26,8 @@
 #include "../network.h"
 // #include "..\win32f.h"
 
-#include "../actint/item_api.h"
 #include "../actint/credits.h"
+#include "../actint/item_api.h"
 
 #ifdef _ROAD_
 #	include "../units/uvsapi.h"
@@ -38,10 +38,10 @@
 #endif
 
 #include "../3d/3d_math.h"
-#include "../3d/parser.h"
 #include "../3d/3dobject.h"
-#include "../terra/vmap.h"
+#include "../3d/parser.h"
 #include "../sound/hsound.h"
+#include "../terra/vmap.h"
 #include "diagen.h"
 #include "univang.h"
 

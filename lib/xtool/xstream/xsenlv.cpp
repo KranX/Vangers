@@ -1,6 +1,6 @@
 #include "xglobal.h"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 std::fstream *open_file(const char *name, unsigned f) {
 	std::ios::openmode mode;

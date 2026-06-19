@@ -3,8 +3,8 @@
 
 #include "../global.h"
 
-#include "../iscreen/s_mem.h"
 #include "../iscreen/iscript.h"
+#include "../iscreen/s_mem.h"
 
 #include "aci_evnt.h"
 #include "aci_scr.h"

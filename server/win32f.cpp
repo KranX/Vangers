@@ -1,10 +1,10 @@
 #include <windows.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <process.h>
 #include <crtdbg.h>
 #include <malloc.h>
+#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef _DEBUG
 int __GlobalSize__;

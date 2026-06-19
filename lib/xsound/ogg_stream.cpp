@@ -1,7 +1,7 @@
 #include "ogg_stream.h"
-#include <clunk/sample.h>
-#include <clunk/locker.h>
 #include <assert.h>
+#include <clunk/locker.h>
+#include <clunk/sample.h>
 #include <stdexcept>
 
 static size_t stream_read_func(void *ptr, size_t size, size_t nmemb, void *datasource) {

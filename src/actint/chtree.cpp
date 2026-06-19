@@ -1,6 +1,6 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
-#include <zlib.h>
 #include "../global.h"
+#include <zlib.h>
 
 #include "chtree.h"
 

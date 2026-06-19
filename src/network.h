@@ -2,8 +2,8 @@
 #define __NETWORK_H__
 #include "zmod_client.h"
 
-#include "xsocket.h"
 #include "multiplayer.h"
+#include "xsocket.h"
 
 #define DEFAULT_SERVER_PORT 2197
 

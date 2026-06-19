@@ -1,9 +1,9 @@
 #ifndef __ISCREEN_H__
 #define __ISCREEN_H__
 
-#include "lang.h"
 #include "hfont.h"
 #include "iscreen_options.h"
+#include "lang.h"
 #include <vector>
 // #define iMOVE_MOUSE_OBJECTS
 

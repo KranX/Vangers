@@ -121,16 +121,16 @@
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
 
-#include <windows.h>
+#include <bfd.h>
 #include <excpt.h>
 #include <imagehlp.h>
-#include <bfd.h>
 #include <psapi.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <stdarg.h>
-#include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <windows.h>
 
 #define BUFFER_MAX (16 * 1024)
 

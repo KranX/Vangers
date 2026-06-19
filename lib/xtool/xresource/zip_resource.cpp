@@ -1,8 +1,8 @@
 
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
-#include "xglobal.h"
 #include "zip_resource.h"
+#include "xglobal.h"
 #include "zip_headers.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */

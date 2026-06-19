@@ -6,8 +6,8 @@
 
 #include "../src/global.h"
 
-#include "sqint.h"
 #include "missed.h"
+#include "sqint.h"
 
 /* ---------------------------- EXTERN SECTION ----------------------------- */
 /* --------------------------- PROTOTYPE SECTION --------------------------- */

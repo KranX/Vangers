@@ -4,10 +4,10 @@
 
 #include "../xjoystick.h"
 
-#include "hfont.h"
-#include "iscreen.h"
-#include "ikeys.h"
 #include "controls.h"
+#include "hfont.h"
+#include "ikeys.h"
+#include "iscreen.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 

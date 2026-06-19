@@ -6,9 +6,9 @@
 #include "../common.h"
 #include "../sound/hsound.h"
 
-#include "../terra/world.h"
-#include "../terra/vmap.h"
 #include "../terra/render.h"
+#include "../terra/vmap.h"
+#include "../terra/world.h"
 
 #define MIN_SHADOW_dZ 4
 #define OBJSHADOW_H 50

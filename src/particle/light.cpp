@@ -6,21 +6,21 @@
 #include "../3d/3dobject.h"
 #include "../3d/parser.h"
 
-#include "../sqexp.h"
 #include "../backg.h"
+#include "../sqexp.h"
 
+#include "../dast/poly3d.h"
+#include "../terra/render.h"
 #include "../terra/vmap.h"
 #include "../terra/world.h"
-#include "../terra/render.h"
-#include "../dast/poly3d.h"
 
-#include "../particle/particle.h"
-#include "../particle/partmap.h"
 #include "../particle/df.h"
 #include "../particle/light.h"
+#include "../particle/particle.h"
+#include "../particle/partmap.h"
 
-#include "../units/hobj.h"
 #include "../units/effect.h"
+#include "../units/hobj.h"
 
 uchar *light_table_pal = NULL;
 uchar *invisible_table;

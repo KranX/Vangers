@@ -3,9 +3,9 @@
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
 
+#include "render.h"
 #include "vmap.h"
 #include "world.h"
-#include "render.h"
 #ifdef _SURMAP_
 #	include "surmap/tools.h"
 #endif

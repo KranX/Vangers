@@ -1,8 +1,8 @@
 
 #ifndef __XTCORE_H
 #define __XTCORE_H
-#include <iostream>
 #include <SDL.h>
+#include <iostream>
 
 #ifndef NULL
 #	define NULL 0L

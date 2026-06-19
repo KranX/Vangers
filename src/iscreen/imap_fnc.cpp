@@ -6,9 +6,9 @@
 #include "iworld.h"
 
 #include "hfont.h"
-#include "iscreen.h"
 #include "i_mem.h"
 #include "ikeys.h"
+#include "iscreen.h"
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 

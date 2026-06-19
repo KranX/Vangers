@@ -2,9 +2,9 @@
 
 #include "../3d/3d_math.h"
 
-#include "../sqexp.h"
-#include "../backg.h"
 #include "../3d/3dgraph.h"
+#include "../backg.h"
+#include "../sqexp.h"
 
 #include "../terra/vmap.h"
 

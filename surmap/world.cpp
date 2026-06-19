@@ -1,11 +1,11 @@
 #include "../src/global.h"
 
-#include "sqint.h"
 #include "../src/common.h"
+#include "sqint.h"
 
+#include "../src/terra/render.h"
 #include "../src/terra/vmap.h"
 #include "../src/terra/world.h"
-#include "../src/terra/render.h"
 
 #include "missed.h"
 

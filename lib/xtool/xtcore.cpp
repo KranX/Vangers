@@ -1,9 +1,9 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
+#include "../xgraph/xgraph.h"
 #include "lang.h"
 #include "xglobal.h"
 #include "xt_list.h"
-#include "../xgraph/xgraph.h"
 
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 #	include <locale.h>

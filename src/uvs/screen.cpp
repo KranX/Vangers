@@ -3,8 +3,8 @@
 #include "../common.h"
 
 #include "../units/uvsapi.h"
-#include "univang.h"
 #include "screen.h"
+#include "univang.h"
 
 #undef COL1
 #undef COL2

@@ -20,13 +20,13 @@ typedef unsigned char uchar;
 #include "../src/actint/item_api.h"
 #include "../src/common.h"
 #include "../src/dast/poly3d.h"
-#include "../src/units/hobj.h"
-#include "../src/units/uvsapi.h"
-#include "../src/units/items.h"
-#include "lang.h"
 #include "../src/network.h"
 #include "../src/sound/hsound.h"
+#include "../src/units/hobj.h"
+#include "../src/units/items.h"
+#include "../src/units/uvsapi.h"
 #include "../src/xjoystick.h"
+#include "lang.h"
 
 #include "missed.h"
 

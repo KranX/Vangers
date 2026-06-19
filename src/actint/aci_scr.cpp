@@ -1,9 +1,9 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
-#include "lang.h"
 #include "../iscreen/hfont.h"
 #include "../runtime.h"
+#include "lang.h"
 
 #include "aci_evnt.h"
 #include "aci_scr.h"
@@ -11,8 +11,8 @@
 #include "a_consts.h"
 #include "acsconst.h"
 
-#include "../network.h"
 #include "../iscreen/iscreen.h"
+#include "../network.h"
 
 #ifndef _WIN32
 #	include <arpa/inet.h> // ntohl() FIXME: remove

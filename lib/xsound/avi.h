@@ -14,8 +14,8 @@ extern "C" {
 #	define UINT64_C(c) (c##ULL)
 #endif
 
-#include <avformat.h>
 #include <avcodec.h>
+#include <avformat.h>
 #ifdef __cplusplus
 }
 #endif

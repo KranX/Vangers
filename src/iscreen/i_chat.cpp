@@ -2,14 +2,14 @@
 
 #include "../global.h"
 
+#include "../actint/actint.h"
+#include "../actint/item_api.h"
 #include "../network.h"
 #include "controls.h"
+#include "hfont.h"
 #include "i_chat.h"
 #include "i_str.h"
-#include "hfont.h"
 #include "iscreen.h"
-#include "../actint/item_api.h"
-#include "../actint/actint.h"
 
 #include "../network.h"
 

@@ -13,14 +13,14 @@
 #ifndef _WIN32
 #	include <arpa/inet.h> // ntohl() FIXME: remove
 #endif
+#include "network.h"
+#include "runtime.h"
+#include "xgraph.h"
 #include <chrono>
 #include <cstdarg>
 #include <cstdio>
 #include <ctime>
 #include <vector>
-#include "runtime.h"
-#include "xgraph.h"
-#include "network.h"
 
 extern int MP_GAME;
 extern XStream fout;

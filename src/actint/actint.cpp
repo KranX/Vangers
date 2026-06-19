@@ -4,25 +4,25 @@
 
 #include "../runtime.h"
 
+#include "../iscreen/controls.h"
 #include "../iscreen/hfont.h"
+#include "../iscreen/ikeys.h"
 #include "../iscreen/iscreen.h"
-#include "item_api.h"
-#include "actint.h"
+#include "a_consts.h"
+#include "aci_evnt.h"
 #include "aci_scr.h"
 #include "aci_str.h"
-#include "aci_evnt.h"
-#include "a_consts.h"
+#include "actint.h"
 #include "credits.h"
-#include "../iscreen/ikeys.h"
-#include "../iscreen/controls.h"
+#include "item_api.h"
 
 #include "mlconsts.h"
 #include "mlstruct.h"
 
 #include "../units/uvsapi.h"
 
-#include "../uvs/univang.h"
 #include "../uvs/diagen.h"
+#include "../uvs/univang.h"
 
 #include "../sound/hsound.h"
 #include "layout.h"

@@ -1,10 +1,10 @@
-#include "xerrhand.h"
 #include "port.h"
+#include "xerrhand.h"
 #include <stdlib.h>
 
 #include <SDL.h>
-#include <iostream>
 #include <ctime>
+#include <iostream>
 
 XErrorHandler ErrH;
 

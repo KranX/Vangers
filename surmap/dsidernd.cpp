@@ -1,10 +1,10 @@
 #include "../src/global.h"
 
-#include "../src/common.h"
 #include "../src/3d/3d_math.h"
+#include "../src/common.h"
+#include "../src/terra/render.h"
 #include "../src/terra/vmap.h"
 #include "../src/terra/world.h"
-#include "../src/terra/render.h"
 
 #define MEMSET(a, b, c) memset(a, b, c)
 

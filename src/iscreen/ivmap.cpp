@@ -6,9 +6,9 @@
 
 // #include "..\win32f.h"
 
-#include "iworld.h"
-#include "ivmap.h"
 #include "../terra/splay.h"
+#include "ivmap.h"
+#include "iworld.h"
 
 #include <iostream>
 

@@ -4,15 +4,15 @@
 
 #include "../iscreen/hfont.h"
 #include "../iscreen/iscreen.h"
-#include "item_api.h"
-#include "actint.h"
-#include "a_consts.h"
 #include "../iscreen/s_mem.h"
+#include "a_consts.h"
+#include "actint.h"
+#include "item_api.h"
 
 #include "../iscreen/iscript.h"
 
-#include "mlstruct.h"
 #include "layout.h"
+#include "mlstruct.h"
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 

@@ -1,9 +1,9 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
-#include <zlib.h>
 #include "../global.h"
+#include <zlib.h>
 
-#include "s_mem.h"
 #include "iscript.h"
+#include "s_mem.h"
 
 #if defined(_BINARY_SCRIPT_) || defined(_SAVE_BINARY_SCRIPT_)
 #	include "zip.h"

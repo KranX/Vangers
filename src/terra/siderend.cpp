@@ -33,9 +33,9 @@
 #include "../global.h"
 
 #include "../3d/3d_math.h"
+#include "render.h"
 #include "vmap.h"
 #include "world.h"
-#include "render.h"
 
 #define MEMSET(a, b, c) memset(a, b, c)
 

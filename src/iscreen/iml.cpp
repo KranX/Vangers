@@ -1,10 +1,10 @@
 #include "../global.h"
 
-#include "iworld.h"
-#include "ivmap.h"
-#include "iml.h"
-#include "../rle.h"
 #include "../actint/mlconsts.h"
+#include "../rle.h"
+#include "iml.h"
+#include "ivmap.h"
+#include "iworld.h"
 
 #define FLUSH_DELTA 48
 

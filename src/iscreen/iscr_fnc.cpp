@@ -6,30 +6,30 @@
 #include "../network.h"
 #include "../xjoystick.h"
 
+#include "i_str.h"
 #include "ivmap.h"
 #include "iworld.h"
-#include "i_str.h"
 
 #include "hfont.h"
-#include "iscreen.h"
-#include "iscript.h"
 #include "i_mem.h"
 #include "ikeys.h"
+#include "iscreen.h"
+#include "iscript.h"
 
 #include "controls.h"
 
 #include "ext_evnt.h"
 
-#include "../actint/item_api.h"
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
+#include "../actint/item_api.h"
 
 #include "../actint/mlconsts.h"
 #include "../actint/mlstruct.h"
 
-#include "../actint/acsconst.h"
 #include "../actint/aci_evnt.h"
 #include "../actint/aci_scr.h"
+#include "../actint/acsconst.h"
 
 #ifndef _WIN32
 #	include <arpa/inet.h> // ntohl() FIXME: remove

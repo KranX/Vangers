@@ -7,40 +7,40 @@
 #include "../3d/3dobject.h"
 #include "../3d/parser.h"
 
+#include "../backg.h"
 #include "../common.h"
 #include "../sqexp.h"
-#include "../backg.h"
 
 #include "../actint/item_api.h"
-#include "uvsapi.h"
 #include "../network.h"
+#include "uvsapi.h"
 
+#include "../terra/render.h"
 #include "../terra/vmap.h"
 #include "../terra/world.h"
-#include "../terra/render.h"
 
-#include "../particle/particle.h"
-#include "../particle/partmap.h"
 #include "../particle/df.h"
 #include "../particle/light.h"
+#include "../particle/particle.h"
+#include "../particle/partmap.h"
 
 #include "../uvs/univang.h"
 
 #include "../dast/poly3d.h"
 
-#include "track.h"
 #include "hobj.h"
-#include "moveland.h"
 #include "items.h"
+#include "moveland.h"
+#include "track.h"
 
-#include "sensor.h"
 #include "effect.h"
 #include "mechos.h"
+#include "sensor.h"
 
 #include "compas.h"
 
-#include "../sound/hsound.h"
 #include "../palette.h"
+#include "../sound/hsound.h"
 #include "magnum.h"
 
 const int TOUCH_SHIFT = 11;

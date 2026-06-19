@@ -1,8 +1,8 @@
 #ifndef _XSOCKET_H
 #define _XSOCKET_H
 
-#include "xglobal.h"
 #include "SDL_net.h"
+#include "xglobal.h"
 
 #include "xcontainers.h"
 

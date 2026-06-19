@@ -1,10 +1,10 @@
 #ifndef __SAMPLE_CLUNK_OGG_STREAM_H__
 #define __SAMPLE_CLUNK_OGG_STREAM_H__
 
-#include <string>
+#include <clunk/stream.h>
 #include <cstring>
 #include <stdio.h>
-#include <clunk/stream.h>
+#include <string>
 
 #include <ogg/ogg.h>
 #include <vorbis/codec.h>

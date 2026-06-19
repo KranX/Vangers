@@ -12,9 +12,9 @@
 
 #include "../sound/hsound.h"
 
+#include "../terra/render.h"
 #include "../terra/vmap.h"
 #include "../terra/world.h"
-#include "../terra/render.h"
 
 #include "../actint/item_api.h"
 #include "../units/uvsapi.h"
@@ -23,11 +23,11 @@
 
 #include "../units/hobj.h"
 struct ParticleProcess;
-#include "../units/moveland.h"
-#include "../units/track.h"
-#include "../units/items.h"
-#include "../units/sensor.h"
 #include "../dast/poly3d.h"
+#include "../units/items.h"
+#include "../units/moveland.h"
+#include "../units/sensor.h"
+#include "../units/track.h"
 
 #include "../iscreen/controls.h"
 

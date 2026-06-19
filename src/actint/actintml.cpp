@@ -3,14 +3,14 @@
 #include "../global.h"
 
 #include "../iscreen/hfont.h"
+#include "../iscreen/iml.h"
 #include "../iscreen/iscreen.h"
 #include "../iscreen/iworld.h"
-#include "../iscreen/iml.h"
 
-#include "item_api.h"
-#include "actint.h"
-#include "a_consts.h"
 #include "../iscreen/ikeys.h"
+#include "a_consts.h"
+#include "actint.h"
+#include "item_api.h"
 
 #include "../uvs/diagen.h"
 

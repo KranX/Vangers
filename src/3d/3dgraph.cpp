@@ -1,5 +1,5 @@
-#include <zlib.h>
 #include "../global.h"
+#include <zlib.h>
 
 #include "general.h"
 

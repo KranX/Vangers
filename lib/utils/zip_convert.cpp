@@ -1,8 +1,8 @@
-#include <zlib.h>
-#include <iostream>
-#include <fstream>
-#include "xzip/xzip.h"
 #include "../xtool/xglobal.h"
+#include "xzip/xzip.h"
+#include <fstream>
+#include <iostream>
+#include <zlib.h>
 // #include "../xtool/zip_resource.h"
 
 inline unsigned crt(unsigned &VAL) {

@@ -2,9 +2,9 @@
 #define __DAST__POLY3D_H__
 
 #include "../3d/3d_math.h"
+#include "../terra/render.h"
 #include "../terra/vmap.h"
 #include "../terra/world.h"
-#include "../terra/render.h"
 
 struct dastResourcePoly3D;
 struct dastResourceSign;

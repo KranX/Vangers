@@ -4,9 +4,9 @@
 // #include <SDL_mixer.h>
 #include <clunk/clunk.h>
 
+#include "_xsound.h"
 #include "xglobal.h"
 #include "xgraph.h"
-#include "_xsound.h"
 // #include "XCritical.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */

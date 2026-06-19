@@ -1,14 +1,14 @@
 #ifndef __GLOBAL_H
 #define __GLOBAL_H
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <ctime>
 #include <ctype.h>
 #include <math.h>
-#include <time.h>
-#include <ctime>
 #include <memory>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #if (defined(__unix__) || defined(__APPLE__))
 #	include <dirent.h>

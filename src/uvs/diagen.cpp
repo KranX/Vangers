@@ -10,12 +10,12 @@
 #include "../common.h"
 #include "diagen.h"
 
-#include "../actint/mlconsts.h"
 #include "../actint/credits.h"
+#include "../actint/mlconsts.h"
 
 #include "../3d/parser.h"
-#include "../units/uvsapi.h"
 #include "../units/compas.h"
+#include "../units/uvsapi.h"
 #include "univang.h"
 
 /*#ifdef DIAGEN_TEST

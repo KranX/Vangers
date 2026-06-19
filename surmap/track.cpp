@@ -7,10 +7,10 @@
 #include "tools.h"
 #include "track.h"
 
-#include "impass.h"
+#include "../src/terra/render.h"
 #include "../src/terra/vmap.h"
 #include "../src/terra/world.h"
-#include "../src/terra/render.h"
+#include "impass.h"
 
 #include "port.h"
 #define itoa port_itoa

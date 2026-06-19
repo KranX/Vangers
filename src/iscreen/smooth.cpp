@@ -2,8 +2,8 @@
 #include "../global.h"
 
 #include "hfont.h"
-#include "iscreen.h"
 #include "i_mem.h"
+#include "iscreen.h"
 
 const int MAX_SMOOTH_INDEX = 20;
 const int START_VAL = 255;

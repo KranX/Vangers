@@ -17,22 +17,22 @@
 #include "../terra/world.h"
 
 #include "../iscreen/hfont.h"
+#include "../iscreen/iml.h"
 #include "../iscreen/iscreen.h"
 #include "../iscreen/iscript.h"
-#include "../iscreen/iml.h"
 
-#include "item_api.h"
-#include "../units/uvsapi.h"
 #include "../units/magnum.h"
+#include "../units/uvsapi.h"
+#include "item_api.h"
 
-#include "../uvs/univang.h"
 #include "../uvs/diagen.h"
+#include "../uvs/univang.h"
 
 #include "a_consts.h"
 
+#include "aci_str.h"
 #include "actint.h"
 #include "credits.h"
-#include "aci_str.h"
 
 #include "mlconsts.h"
 #include "mlstruct.h"
@@ -45,8 +45,8 @@
 #include "../sound/hsound.h"
 
 #include "aci_evnt.h"
-#include "acsconst.h"
 #include "aci_scr.h"
+#include "acsconst.h"
 #include "chtree.h"
 
 #if defined(__APPLE__) || __GNUC__ < 9

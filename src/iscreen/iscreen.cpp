@@ -1,19 +1,19 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
-#include "../global.h"
 #include "../common.h"
+#include "../global.h"
 
 #include "ikeys.h"
 
 #include "hfont.h"
-#include "iscreen.h"
 #include "i_mem.h"
+#include "iscreen.h"
 
-#include "../actint/item_api.h"
 #include "../actint/a_consts.h"
-#include "../actint/actint.h"
-#include "../actint/mlstruct.h"
 #include "../actint/aci_scr.h"
+#include "../actint/actint.h"
+#include "../actint/item_api.h"
+#include "../actint/mlstruct.h"
 
 #include "../sound/hsound.h"
 #include "avi.h"

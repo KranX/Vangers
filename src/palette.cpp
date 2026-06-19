@@ -1,8 +1,8 @@
 #include "global.h"
 #include "runtime.h"
 
-#include "terra/world.h"
 #include "palette.h"
+#include "terra/world.h"
 #ifdef _ROAD_
 #	include "sound/hsound.h"
 #endif

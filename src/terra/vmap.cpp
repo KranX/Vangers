@@ -13,9 +13,9 @@
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
 
+#include "render.h"
 #include "vmap.h"
 #include "world.h"
-#include "render.h"
 // #include "..\win32f.h"
 // #include "cpuid.h"
 #include "../palette.h"

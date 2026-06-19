@@ -1,7 +1,7 @@
 #include "zmod_client.h"
 
-#include <time.h>
 #include <SDL.h>
+#include <time.h>
 
 int z_time = 0;
 int z_time_tic = 0;

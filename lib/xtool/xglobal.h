@@ -8,13 +8,12 @@
 #endif
 
 #include <SDL.h>
-#include <stdio.h>
 #include <ctype.h>
+#include <memory>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <time.h>
-#include <memory>
 
 #ifdef __WORDSIZE
 #else
@@ -35,15 +34,15 @@
 #include "xtcore.h"
 // #include "xconsole.h"
 // #include "xkey.h"
-#include "xerrhand.h"
 #include "xbuffer.h"
-#include "xstream.h"
-#include "xrec.h"
-#include "xutl.h"
 #include "xcpuid.h"
+#include "xerrhand.h"
 #include "xmsgbuf.h"
-#include "xzip.h"
+#include "xrec.h"
+#include "xstream.h"
 #include "xt_list.h"
+#include "xutl.h"
+#include "xzip.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

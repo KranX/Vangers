@@ -15,12 +15,12 @@
 #include "tools.h"
 #include "track.h"
 
-#include "impass.h"
+#include "../src/palette.h"
+#include "../src/terra/render.h"
 #include "../src/terra/vmap.h"
 #include "../src/terra/world.h"
-#include "../src/terra/render.h"
 #include "../src/units/moveland.h"
-#include "../src/palette.h"
+#include "impass.h"
 
 #include "../src/3d/3d_math.h"
 #include "../src/3d/3dgraph.h"

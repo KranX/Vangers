@@ -1,6 +1,6 @@
 #include "port.h"
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 char *strupr(char *string) {
 	char *s;

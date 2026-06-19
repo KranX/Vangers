@@ -11,39 +11,39 @@
 #include "../3d/3dobject.h"
 #include "../3d/parser.h"
 
+#include "../backg.h"
 #include "../common.h"
 #include "../sqexp.h"
-#include "../backg.h"
 
+#include "../terra/render.h"
 #include "../terra/vmap.h"
 #include "../terra/world.h"
-#include "../terra/render.h"
 
 #include "../iscreen/controls.h"
 #include "../iscreen/iscreen_options.h"
 
 #include "../actint/item_api.h"
-#include "uvsapi.h"
 #include "../network.h"
+#include "uvsapi.h"
 
 #include "../uvs/univang.h"
 
 #include "../dast/poly3d.h"
 
-#include "../particle/particle.h"
-#include "../particle/partmap.h"
 #include "../particle/df.h"
 #include "../particle/light.h"
+#include "../particle/particle.h"
+#include "../particle/partmap.h"
 
-#include "track.h"
-#include "hobj.h"
-#include "moveland.h"
-#include "items.h"
-#include "sensor.h"
-#include "effect.h"
-#include "mechos.h"
-#include "compas.h"
 #include "../sound/hsound.h"
+#include "compas.h"
+#include "effect.h"
+#include "hobj.h"
+#include "items.h"
+#include "mechos.h"
+#include "moveland.h"
+#include "sensor.h"
+#include "track.h"
 
 #include "../uvs/diagen.h"
 #include "magnum.h"

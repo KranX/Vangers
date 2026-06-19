@@ -22,11 +22,11 @@
 #define DEFINE_GAME_RTO_TIMERS
 #include "runtime.h"
 
-#include "sqexp.h"
 #include "backg.h"
+#include "sqexp.h"
 
-#include "xjoystick.h"
 #include "network.h"
+#include "xjoystick.h"
 
 #include "3d/3d_math.h"
 #include "3d/3dgraph.h"
@@ -38,29 +38,29 @@
 
 void reconfigure_runtime_fps_scaled_state(double old_coeff, double new_coeff);
 
-#include "terra/world.h"
-#include "terra/vmap.h"
 #include "terra/render.h"
+#include "terra/vmap.h"
+#include "terra/world.h"
 
-#include "particle/particle.h"
-#include "particle/light.h"
-#include "particle/partmap.h"
 #include "particle/df.h"
+#include "particle/light.h"
+#include "particle/particle.h"
+#include "particle/partmap.h"
 
-#include "uvs/univang.h"
-#include "uvs/screen.h"
 #include "uvs/diagen.h"
+#include "uvs/screen.h"
+#include "uvs/univang.h"
 
 #include "dast/poly3d.h"
 
-#include "units/track.h"
-#include "units/hobj.h"
-#include "units/moveland.h"
-#include "units/effect.h"
-#include "units/items.h"
-#include "units/sensor.h"
-#include "units/mechos.h"
 #include "terra/cpuid.h"
+#include "units/effect.h"
+#include "units/hobj.h"
+#include "units/items.h"
+#include "units/mechos.h"
+#include "units/moveland.h"
+#include "units/sensor.h"
+#include "units/track.h"
 
 #ifdef ACTINT
 #	include "iscreen/ikeys.h"

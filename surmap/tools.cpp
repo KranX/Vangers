@@ -7,14 +7,14 @@
 #include "sqint.h"
 
 #include "../src/common.h"
-#include "tools.h"
 #include "sqexp.h"
+#include "tools.h"
 
+#include "../src/terra/render.h"
 #include "../src/terra/vmap.h"
 #include "../src/terra/world.h"
-#include "../src/terra/render.h"
-#include "impass.h"
 #include "../src/units/moveland.h"
+#include "impass.h"
 
 /* ----------------------------- EXTERN SECTION ---------------------------- */
 extern int LayerStatus;

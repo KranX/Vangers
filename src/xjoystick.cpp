@@ -9,14 +9,14 @@
 
 #define KDWIN
 #define __ROUND__
-#include <time.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "xjoystick.h"
+#include "xglobal.h"
 #include <ctype.h>
 #include <math.h>
-#include "xglobal.h"
-#include "xjoystick.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 SDL_GameController *ctrl = NULL;
 SDL_Joystick *joy = NULL;

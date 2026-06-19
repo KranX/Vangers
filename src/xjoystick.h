@@ -1,6 +1,8 @@
 #ifndef _XJOYSTICK_H
 #define _XJOYSTICK_H
 
+#include <SDL.h>
+
 //---------------------------------------------------------------------------
 
 struct XJOYSTATE {

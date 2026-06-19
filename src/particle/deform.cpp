@@ -2,8 +2,8 @@
 
 #include "../3d/3d_math.h"
 
-#include "../common.h"
 #include "../backg.h"
+#include "../common.h"
 #include "../sqexp.h"
 
 #include "../terra/vmap.h"

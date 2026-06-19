@@ -4,8 +4,8 @@
 
 #include "../global.h"
 
-#include "hsound.h"
 #include "../../lib/xsound/ogg_stream.h"
+#include "hsound.h"
 
 extern clunk::Context context;
 // static MpegSound* music = 0;
