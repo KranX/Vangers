@@ -1,5 +1,15 @@
 #ifndef __3D__3D_MATH_H__
 #define __3D__3D_MATH_H__
+
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "xutl.h"
+
+struct XBuffer;
+struct XStream;
+
 /******************************************************************************
 			 3D MATHEMATICS FUNCTION.
 			 KD_Lab::Alexander "Sicher" Kotliar (C) 1995 - 1997
