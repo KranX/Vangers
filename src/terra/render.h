@@ -1,6 +1,9 @@
 #ifndef __TERRA__RENDER_H__
 #define __TERRA__RENDER_H__
 
+#include "../common.h"
+#include "world.h"
+
 const int CLR_MAX_SIDE = 255;
 const int CLR_MAX = 2 * CLR_MAX_SIDE + 1;
 const uchar H_CORRECTION = 1;
