@@ -13,6 +13,13 @@
 #ifndef _WIN32
 #include <arpa/inet.h> // ntohl() FIXME: remove
 #endif
+#include <chrono>
+#include <cstdarg>
+#include <cstdio>
+#include <ctime>
+#include <vector>
+#include "runtime.h"
+#include "xgraph.h"
 #include "network.h"
 
 extern int MP_GAME;
@@ -20,8 +27,8 @@ extern XStream fout;
 extern int frame;
 extern int GlobalExit;
 
-#define CLIENT_VERSION	2
-#define SERVER_VERSION	2
+#define CLIENT_VERSION	5
+#define SERVER_VERSION	5
 
 //zmod
 int zserver_version = 0;
@@ -88,6 +95,15 @@ int delay_time_counter,delay_time_counter_global;
 int now_unsent_size,global_unsent_size = 0;
 int set_world_status = 0;
 
+enum NetworkSnapshotState {
+	NETWORK_SNAPSHOT_IDLE = 0,
+	NETWORK_SNAPSHOT_WAIT_BEGIN = 1,
+	NETWORK_SNAPSHOT_LOADING = 2
+};
+
+static int network_snapshot_state = NETWORK_SNAPSHOT_IDLE;
+static int network_snapshot_world = -1;
+
 
 XBuffer network_analysis_buffer(10000);
 InputEventBuffer events_in(IN_BUFFER_SIZE);
@@ -104,6 +120,10 @@ PlayerBody my_player_body;
 PlayerData* my_player_data = 0;
 PlayersList players_list;
 
+static unsigned int total_players_data_list_query_last_time = 0;
+static int total_players_data_list_query_pending = 0;
+static const unsigned int TOTAL_PLAYERS_DATA_LIST_QUERY_RETRY_MS = 1000;
+
 MessageDispatcher message_dispatcher;
 
 XSocket main_socket;
@@ -111,6 +131,425 @@ ServerFindChain current_server_addr;
 int number_of_reconnection_attempt = 5;
 
 int object_ID_offsets[16];
+
+#ifndef GIT_COMMIT_HASH
+#define GIT_COMMIT_HASH "unknown"
+#endif
+#ifndef GITHUB_COMMIT_HASH
+#define GITHUB_COMMIT_HASH ""
+#endif
+#ifndef GIT_BRANCH
+#define GIT_BRANCH "unknown"
+#endif
+#ifndef GITHUB_BRANCH
+#define GITHUB_BRANCH ""
+#endif
+
+static FILE* network_log_file = NULL;
+static unsigned int network_log_last_flush = 0;
+static unsigned int network_log_skipped_update_count = 0;
+static unsigned int network_log_skipped_update_last_ms = 0;
+static int network_log_last_world = -1000000;
+
+static const char* network_event_name(int event_ID)
+{
+	int event = (event_ID & AUXILIARY_EVENT) ? event_ID : (event_ID & (~ECHO_EVENT));
+	switch(event){
+		case CREATE_OBJECT: return "CREATE_OBJECT";
+		case DELETE_OBJECT: return "DELETE_OBJECT";
+		case UPDATE_OBJECT: return "UPDATE_OBJECT";
+		case HIDE_OBJECT: return "HIDE_OBJECT";
+		case GAMES_LIST_QUERY: return "GAMES_LIST_QUERY";
+		case TOP_LIST_QUERY: return "TOP_LIST_QUERY";
+		case ATTACH_TO_GAME: return "ATTACH_TO_GAME";
+		case RESTORE_CONNECTION: return "RESTORE_CONNECTION";
+		case CLOSE_SOCKET: return "CLOSE_SOCKET";
+		case REGISTER_NAME: return "REGISTER_NAME";
+		case SERVER_TIME_QUERY: return "SERVER_TIME_QUERY";
+		case SET_WORLD: return "SET_WORLD";
+		case LEAVE_WORLD: return "LEAVE_WORLD";
+		case SET_POSITION: return "SET_POSITION";
+		case TOTAL_PLAYERS_DATA_QUERY: return "TOTAL_PLAYERS_DATA_QUERY";
+		case SET_GAME_DATA: return "SET_GAME_DATA";
+		case GET_GAME_DATA: return "GET_GAME_DATA";
+		case SET_PLAYER_DATA: return "SET_PLAYER_DATA";
+		case DIRECT_SENDING: return "DIRECT_SENDING";
+		case ITEM_TRANSFER: return "ITEM_TRANSFER";
+		case GAMES_LIST_RESPONSE: return "GAMES_LIST_RESPONSE";
+		case TOP_LIST_RESPONSE: return "TOP_LIST_RESPONSE";
+		case TOTAL_LIST_OF_PLAYERS_DATA: return "TOTAL_LIST_OF_PLAYERS_DATA";
+		case ATTACH_TO_GAME_RESPONSE: return "ATTACH_TO_GAME_RESPONSE";
+		case RESTORE_CONNECTION_RESPONSE: return "RESTORE_CONNECTION_RESPONSE";
+		case SERVER_TIME: return "SERVER_TIME";
+		case SERVER_TIME_RESPONSE: return "SERVER_TIME_RESPONSE";
+		case SET_WORLD_RESPONSE: return "SET_WORLD_RESPONSE";
+		case GAME_DATA_RESPONSE: return "GAME_DATA_RESPONSE";
+		case DIRECT_RECEIVING: return "DIRECT_RECEIVING";
+		case PLAYERS_NAME: return "PLAYERS_NAME";
+		case PLAYERS_POSITION: return "PLAYERS_POSITION";
+		case PLAYERS_WORLD: return "PLAYERS_WORLD";
+		case PLAYERS_STATUS: return "PLAYERS_STATUS";
+		case PLAYERS_DATA: return "PLAYERS_DATA";
+		case PLAYERS_RATING: return "PLAYERS_RATING";
+		case WORLD_SNAPSHOT_BEGIN: return "WORLD_SNAPSHOT_BEGIN";
+		case WORLD_SNAPSHOT_END: return "WORLD_SNAPSHOT_END";
+		case ITEM_STATE: return "ITEM_STATE";
+		case ITEM_REMOVED: return "ITEM_REMOVED";
+		case zSERVER_VERSION_RESPONSE: return "zSERVER_VERSION_RESPONSE";
+		case zGAME_DATA_RESPONSE: return "zGAME_DATA_RESPONSE";
+		case zTIME_RESPONSE: return "zTIME_RESPONSE";
+		case zCREATE_OBJECT_BY_CLIENT: return "zCREATE_OBJECT_BY_CLIENT";
+		case zCREATE_OBJECT_BY_SERVER: return "zCREATE_OBJECT_BY_SERVER";
+		default: return "UNKNOWN_EVENT";
+	}
+}
+
+static const char* network_object_type_name(int object_ID)
+{
+	switch(GET_NETWORK_ID(object_ID)){
+		case NID_GLOBAL: return "GLOBAL";
+		case NID_DEVICE: return "DEVICE";
+		case NID_SLOT: return "SLOT";
+		case NID_SHELL: return "SHELL";
+		case NID_VANGER: return "VANGER";
+		case NID_STUFF: return "STUFF";
+		case NID_SENSOR: return "SENSOR";
+		case NID_TNT: return "TNT";
+		case NID_TERRAIN: return "TERRAIN";
+		default: return "UNKNOWN";
+	}
+}
+
+static int network_log_should_log_object_event(int event_ID,int object_ID)
+{
+	int event = event_ID & (~ECHO_EVENT);
+	if(event != UPDATE_OBJECT)
+		return 1;
+
+	switch(GET_NETWORK_ID(object_ID)){
+		case NID_GLOBAL:
+		case NID_DEVICE:
+		case NID_SLOT:
+		case NID_VANGER:
+		case NID_STUFF:
+			return 1;
+		default:
+			return 0;
+	}
+}
+
+static void network_log_timestamp(char* buf,size_t size)
+{
+	using namespace std::chrono;
+	system_clock::time_point now = system_clock::now();
+	time_t tt = system_clock::to_time_t(now);
+	int ms = (int)(duration_cast<milliseconds>(now.time_since_epoch()).count() % 1000);
+	struct tm tmv;
+#ifdef _WIN32
+	gmtime_s(&tmv,&tt);
+#else
+	gmtime_r(&tt,&tmv);
+#endif
+	snprintf(buf,size,"%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
+		tmv.tm_year + 1900,tmv.tm_mon + 1,tmv.tm_mday,
+		tmv.tm_hour,tmv.tm_min,tmv.tm_sec,ms);
+}
+
+static void network_log_server_address(const ServerFindChain* p,char* buf,size_t size)
+{
+	if(!p){
+		snprintf(buf,size,"<unknown>");
+		return;
+	}
+	if(p->domain_name)
+		snprintf(buf,size,"%s:%d",p->domain_name,p->port);
+	else
+		snprintf(buf,size,"%d.%d.%d.%d:%d",
+			p->IP & 0xff,(p->IP >> 8) & 0xff,(p->IP >> 16) & 0xff,(p->IP >> 24) & 0xff,p->port);
+}
+
+static const char* network_build_hash()
+{
+	return GITHUB_COMMIT_HASH[0] ? GITHUB_COMMIT_HASH : GIT_COMMIT_HASH;
+}
+
+static const char* network_build_branch()
+{
+	return GITHUB_BRANCH[0] ? GITHUB_BRANCH : GIT_BRANCH;
+}
+
+static void network_log_vprintf(const char* tag,const char* fmt,va_list args)
+{
+	if(!network_log_file)
+		return;
+
+	char ts[64];
+	network_log_timestamp(ts,sizeof(ts));
+	if(network_log_last_world != CurrentWorld){
+		fprintf(network_log_file,"[%s tick=%d frame=%d world=%d station=%d] CONTEXT CurrentWorld changed old=%d new=%d\n",
+			ts,(int)GLOBAL_CLOCK(),frame,CurrentWorld,GlobalStationID,network_log_last_world,CurrentWorld);
+		network_log_last_world = CurrentWorld;
+	}
+	fprintf(network_log_file,"[%s tick=%d frame=%d world=%d station=%d] %s ",
+		ts,(int)GLOBAL_CLOCK(),frame,CurrentWorld,GlobalStationID,tag ? tag : "NET");
+	vfprintf(network_log_file,fmt,args);
+	fputc('\n',network_log_file);
+
+	unsigned int now = SDL_GetTicks();
+	if(now - network_log_last_flush > 1000){
+		fflush(network_log_file);
+		network_log_last_flush = now;
+	}
+}
+
+void network_log_printf(const char* tag,const char* fmt,...)
+{
+	va_list args;
+	va_start(args,fmt);
+	network_log_vprintf(tag,fmt,args);
+	va_end(args);
+}
+
+static void network_log_open(const ServerFindChain* p,const char* reason)
+{
+	if(network_log_file){
+		fflush(network_log_file);
+		fclose(network_log_file);
+		network_log_file = NULL;
+	}
+
+	network_log_file = fopen("network-client.log","w");
+	network_log_last_flush = SDL_GetTicks();
+	network_log_skipped_update_count = 0;
+	network_log_skipped_update_last_ms = network_log_last_flush;
+	network_log_last_world = CurrentWorld;
+	if(!network_log_file)
+		return;
+
+	char server[256];
+	network_log_server_address(p,server,sizeof(server));
+	network_log_printf("client_start",
+		"reason=%s build_hash=%s branch=%s protocol_version=%d/%d zserver_version=%d fps_mode=%.0ffps fps_coeff=%.3f resolution=%dx%d server_address=%s game_id=%d player_name=\"%s\" GlobalStationID=%d CurrentWorld=%d",
+		reason ? reason : "connect",
+		network_build_hash(),
+		network_build_branch(),
+		CLIENT_VERSION,
+		SERVER_VERSION,
+		zserver_version,
+		GAME_TIME_COEFF > 1.5 ? 60.0 : 20.0,
+		GAME_TIME_COEFF,
+		XGR_MAXX,
+		XGR_MAXY,
+		server,
+		p ? p->game_ID : current_server_addr.game_ID,
+		CurPlayerName ? CurPlayerName : "",
+		GlobalStationID,
+		CurrentWorld);
+}
+
+static void network_log_close(const char* reason)
+{
+	if(!network_log_file)
+		return;
+	network_log_printf("client_stop","reason=%s",reason ? reason : "close");
+	fflush(network_log_file);
+	fclose(network_log_file);
+	network_log_file = NULL;
+}
+
+void network_log_object_event(const char* direction,int event_ID,int object_ID,int creator,int time,int x,int y,int radius,int body_size,const char* decision)
+{
+	int event = event_ID & (~ECHO_EVENT);
+	if(!network_log_should_log_object_event(event,object_ID)){
+		network_log_skipped_update_count++;
+		unsigned int now = SDL_GetTicks();
+		if(now - network_log_skipped_update_last_ms > 5000){
+			network_log_printf(direction ? direction : "OBJ",
+				"%s summary skipped_ordinary_updates=%u",
+				network_event_name(event),
+				network_log_skipped_update_count);
+			network_log_skipped_update_count = 0;
+			network_log_skipped_update_last_ms = now;
+		}
+		return;
+	}
+
+	network_log_printf(direction ? direction : "OBJ",
+		"%s id=0x%08X id_dec=%d station=%d world=%d type=%s type_id=%d counter=%d is_global=%d is_private=%d is_players_object=%d is_static=%d creator=%d time=%d x=%d y=%d radius=%d body_size=%d current_world=%d decision=%s",
+		network_event_name(event),
+		(unsigned int)object_ID,
+		object_ID,
+		GET_STATION(object_ID),
+		GET_WORLD(object_ID),
+		network_object_type_name(object_ID),
+		(object_ID >> 16) & 63,
+		object_ID & 0xffff,
+		!NON_GLOBAL_OBJECT(object_ID),
+		!!PRIVATE_OBJECT(object_ID),
+		!!PLAYERS_OBJECT(object_ID),
+		!NON_STATIC(object_ID),
+		creator,
+		time,
+		x,
+		y,
+		radius,
+		body_size,
+		CurrentWorld,
+		decision ? decision : "parsed");
+}
+
+void network_log_item_event(const char* tag,int NetID,int NetDeviceID,int NetOwner,int OwnerNetID,int DataID,int actint_type,int actint_data0,int actint_data1,int CreateMode,int OutFlag,int Status,int Visibility,const char* extra)
+{
+	network_log_printf(tag ? tag : "ITEM",
+		"NetID=0x%08X NetID_dec=%d NetDeviceID=0x%08X NetDeviceID_dec=%d NetOwner=0x%08X NetOwner_dec=%d OwnerNetID=0x%08X OwnerNetID_dec=%d DataID=%d ActIntBuffer.type=%d ActIntBuffer.data0=%d ActIntBuffer.data1=%d CreateMode=%d OutFlag=%d Status=0x%X Visibility=%d current_world=%d %s",
+		(unsigned int)NetID,
+		NetID,
+		(unsigned int)NetDeviceID,
+		NetDeviceID,
+		(unsigned int)NetOwner,
+		NetOwner,
+		(unsigned int)OwnerNetID,
+		OwnerNetID,
+		DataID,
+		actint_type,
+		actint_data0,
+		actint_data1,
+		CreateMode,
+		OutFlag,
+		Status,
+		Visibility,
+		CurrentWorld,
+		extra ? extra : "");
+}
+
+static const char* network_snapshot_state_name(int state)
+{
+	switch(state){
+		case NETWORK_SNAPSHOT_IDLE:
+			return "idle";
+		case NETWORK_SNAPSHOT_WAIT_BEGIN:
+			return "wait_begin";
+		case NETWORK_SNAPSHOT_LOADING:
+			return "loading";
+		default:
+			return "unknown";
+	}
+}
+
+static void network_snapshot_reset(const char* reason)
+{
+	if(network_snapshot_state != NETWORK_SNAPSHOT_IDLE || network_snapshot_world != -1){
+		network_log_printf("SNAPSHOT","state=%s world=%d decision=reset reason=%s",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			reason ? reason : "unknown");
+	}
+	network_snapshot_state = NETWORK_SNAPSHOT_IDLE;
+	network_snapshot_world = -1;
+}
+
+static void network_snapshot_wait_for_world(int world,const char* reason)
+{
+	network_snapshot_state = NETWORK_SNAPSHOT_WAIT_BEGIN;
+	network_snapshot_world = world;
+	network_log_printf("SNAPSHOT","state=%s world=%d decision=wait_for_begin reason=%s",
+		network_snapshot_state_name(network_snapshot_state),
+		network_snapshot_world,
+		reason ? reason : "unknown");
+}
+
+static int network_snapshot_waiting_for_begin()
+{
+	return network_snapshot_state == NETWORK_SNAPSHOT_WAIT_BEGIN;
+}
+
+static int network_snapshot_loading()
+{
+	return network_snapshot_state == NETWORK_SNAPSHOT_LOADING;
+}
+
+static int network_snapshot_should_ignore_before_begin()
+{
+	return network_snapshot_state == NETWORK_SNAPSHOT_WAIT_BEGIN;
+}
+
+static void network_snapshot_begin(int world)
+{
+	if(world != CurrentWorld){
+		network_log_printf("SNAPSHOT","state=%s expected_world=%d marker_world=%d current_world=%d decision=ignored_wrong_world marker=begin",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world,
+			CurrentWorld);
+		return;
+	}
+
+	if(network_snapshot_state == NETWORK_SNAPSHOT_LOADING){
+		network_log_printf("SNAPSHOT","state=%s world=%d marker_world=%d decision=duplicate_begin",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world);
+		return;
+	}
+
+	if(network_snapshot_state == NETWORK_SNAPSHOT_IDLE){
+		network_log_printf("SNAPSHOT","state=%s world=%d marker_world=%d decision=unexpected_begin_but_accept",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world);
+	}
+
+	if(network_snapshot_state == NETWORK_SNAPSHOT_WAIT_BEGIN && network_snapshot_world != world){
+		network_log_printf("SNAPSHOT","state=%s expected_world=%d marker_world=%d current_world=%d decision=unexpected_begin_world_but_accept_current",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world,
+			CurrentWorld);
+	}
+
+	network_snapshot_state = NETWORK_SNAPSHOT_LOADING;
+	network_snapshot_world = world;
+	network_log_printf("SNAPSHOT","state=%s world=%d decision=begin",
+		network_snapshot_state_name(network_snapshot_state),
+		network_snapshot_world);
+}
+
+static void network_snapshot_end(int world)
+{
+	if(network_snapshot_state == NETWORK_SNAPSHOT_IDLE){
+		network_log_printf("SNAPSHOT","state=%s world=%d marker_world=%d decision=unexpected_end_ignored",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world);
+		return;
+	}
+
+	if(world != CurrentWorld || (network_snapshot_world != -1 && network_snapshot_world != world)){
+		network_log_printf("SNAPSHOT","state=%s expected_world=%d marker_world=%d current_world=%d decision=unexpected_end_wrong_world",
+			network_snapshot_state_name(network_snapshot_state),
+			network_snapshot_world,
+			world,
+			CurrentWorld);
+		return;
+	}
+
+	network_log_printf("SNAPSHOT","state=%s world=%d marker_world=%d decision=end",
+		network_snapshot_state_name(network_snapshot_state),
+		network_snapshot_world,
+		world);
+	network_snapshot_state = NETWORK_SNAPSHOT_IDLE;
+	network_snapshot_world = -1;
+}
+
+static void network_snapshot_log_marker(int event_ID,int body_size,int marker_world)
+{
+	network_log_printf("IN","%s body_size=%d marker_world=%d snapshot_state=%s snapshot_world=%d",
+		network_event_name(event_ID),
+		body_size,
+		marker_world,
+		network_snapshot_state_name(network_snapshot_state),
+		network_snapshot_world);
+}
 
 
 
@@ -225,20 +664,58 @@ int identification(XSocket& socket)
 	char string[256] = "";
 	memset(string,0,256);
 	unsigned int len,identificated = 0;
+	int server_protocol = -1;
+	int server_replied = 0;
+	int unexpected_response = 0;
 	START_TIMER(60*1000);
 	const char* request_str = "Vivat Sicher, Rock'n'Roll forever!!!";
+	const char* response_str = "Enter, my son, please...";
 	strcpy(string, request_str);
 	string[strlen(string) + 1] = CLIENT_VERSION;
 	socket.send(string,strlen(string) + 2);
-	while(CHECK_TIMER())
-		if((len = socket.receive(string, 255, 1000)) != 0 && !strcmp(string,"Enter, my son, please...")){
-			if(!SERVER_VERSION || (len > strlen(string) + 1 && string[strlen(string) + 1] == SERVER_VERSION))
+	while(CHECK_TIMER()){
+		memset(string,0,256);
+		if((len = socket.receive(string, 255, 1000)) != 0){
+			server_replied = 1;
+			if(strcmp(string,response_str)){
+				unexpected_response = 1;
+				break;
+			}
+			if(len > strlen(response_str) + 1)
+				server_protocol = (unsigned char)string[strlen(response_str) + 1];
+			if(!SERVER_VERSION || server_protocol == SERVER_VERSION)
 				identificated = 1;
 			break;
-			}
+		}
+	}
 	if(!identificated) {
-		std::cout<<"Network:identificated is wrong! SV:"<<SERVER_VERSION<<" SV2:"<<(int)string[strlen(string)+1]<<std::endl;
+		char error_message[512];
+		if(server_replied && !unexpected_response && server_protocol >= 0) {
+			snprintf(
+				error_message,
+				sizeof(error_message),
+				"Multiplayer protocol mismatch. The client expects protocol %d, but the server replied with protocol %d. Please update both the game client and the server.",
+				SERVER_VERSION,
+				server_protocol
+			);
+		} else if(server_replied) {
+			snprintf(
+				error_message,
+				sizeof(error_message),
+				"The server rejected the multiplayer handshake. Please make sure both the game client and the server use protocol %d.",
+				SERVER_VERSION
+			);
+		} else {
+			snprintf(
+				error_message,
+				sizeof(error_message),
+				"The server did not answer the multiplayer handshake. Please check the server address and make sure it uses protocol %d.",
+				SERVER_VERSION
+			);
+		}
+		std::cout<<"Network:identificated is wrong! SV:"<<SERVER_VERSION<<" SV2:"<<server_protocol<<" response:"<<string<<std::endl;
 		socket.close();
+		ErrH.Abort(error_message, XERR_USER);
 		return 0;
 	}
 // zMod fixed ---------------------------------------------------------
@@ -383,6 +860,18 @@ void OutputEventBuffer::delete_object(int ID)
 	*this < short(0) < (unsigned char)DELETE_OBJECT < ID < (unsigned int)GLOBAL_CLOCK();
 	OUT_EVENTS_LOG1(DELETE_OBJECT,ID);
 }
+void OutputEventBuffer::begin_item_transfer(int transfer_type,int oldID,int newID,int x,int y,int radius,int)
+{
+	n_event++;
+	pointer_to_size_of_event = tell();
+	unsigned int time = GLOBAL_CLOCK();
+	*this < short(0) < (unsigned char)ITEM_TRANSFER < (unsigned char)transfer_type;
+	*this < oldID < time < (unsigned char)1;
+	*this < newID < time < (unsigned short)x < (unsigned short)y < (unsigned short)radius;
+	OUT_EVENTS_LOG1(ITEM_TRANSFER,newID);
+	network_log_printf("OUT","ITEM_TRANSFER transfer_type=%d old_id=0x%08X new_id=0x%08X x=%d y=%d radius=%d",
+		transfer_type,(unsigned int)oldID,(unsigned int)newID,x,y,radius);
+}
 void OutputEventBuffer::begin_create_z_object(int Type, int ID)
 {
 	n_event++;
@@ -409,12 +898,14 @@ void OutputEventBuffer::set_world(int world,int y_size_of_world)
 	n_event++;
 	*this < short(4) < (unsigned char)SET_WORLD < (unsigned char)world < (unsigned short)y_size_of_world;
 	OUT_EVENTS_LOG1(SET_WORLD,world);
+	network_log_printf("OUT","SET_WORLD requested_world=%d world_y_size=%d",world,y_size_of_world);
 }
 void OutputEventBuffer::set_position(int x,int y,int y_half_size_of_screen)
 {
 	n_event++;
 	*this < short(7) < (unsigned char)SET_POSITION < (unsigned short)x < (unsigned short)y < (unsigned short)y_half_size_of_screen;
 	OUT_EVENTS_LOG1(SET_POSITION,y);
+	network_log_printf("OUT","SET_POSITION x=%d y=%d y_half_size_of_screen=%d",x,y,y_half_size_of_screen);
 	for(int i = pointer_to_the_first_event;i < pointer_to_the_last_event;i += full_event_size(i)){
 		if(*((unsigned char*)(address() + i + 2)) == SET_POSITION){
 			int event_size = full_event_size(i);
@@ -433,6 +924,7 @@ void OutputEventBuffer::register_name(char* name, char* password)
 	n_event++;
 	*this < short(1 + strlen(name) + 1 + strlen(password) + 1) < (unsigned char)(REGISTER_NAME) < name < char(0) < password < char(0);
 	OUT_EVENTS_LOG(REGISTER_NAME);
+	network_log_printf("OUT","REGISTER_NAME player_name=\"%s\"",name ? name : "");
 }
 void OutputEventBuffer::begin_event(int event_ID)
 {
@@ -441,6 +933,56 @@ void OutputEventBuffer::begin_event(int event_ID)
 	pointer_to_size_of_event = offset;
 	*this < short(0) < (unsigned char)event_ID;
 }
+
+static void network_log_out_event_from_buffer(char* event_ptr)
+{
+	short event_size = *((short*)event_ptr);
+	unsigned char event_ID = *((unsigned char*)(event_ptr + 2));
+	int event = event_ID & (~ECHO_EVENT);
+
+	switch(event){
+		case CREATE_OBJECT:{
+			int object_ID = *((int*)(event_ptr + 3));
+			unsigned int time = *((unsigned int*)(event_ptr + 7));
+			unsigned short x = *((unsigned short*)(event_ptr + 11));
+			unsigned short y = *((unsigned short*)(event_ptr + 13));
+			unsigned short radius = *((unsigned short*)(event_ptr + 15));
+			network_log_object_event("OUT",event,object_ID,GlobalStationID,(int)time,(int)x,(int)y,(int)radius,event_size - 15,"queued");
+			break;
+		}
+		case UPDATE_OBJECT:{
+			int object_ID = *((int*)(event_ptr + 3));
+			unsigned int time = *((unsigned int*)(event_ptr + 7));
+			unsigned short x = *((unsigned short*)(event_ptr + 11));
+			unsigned short y = *((unsigned short*)(event_ptr + 13));
+			network_log_object_event("OUT",event,object_ID,GlobalStationID,(int)time,(int)x,(int)y,-1,event_size - 13,"queued");
+			break;
+		}
+		case DELETE_OBJECT:{
+			int object_ID = *((int*)(event_ptr + 3));
+			unsigned int time = *((unsigned int*)(event_ptr + 7));
+			network_log_object_event("OUT",event,object_ID,GlobalStationID,(int)time,-1,-1,-1,event_size - 9,"queued");
+			break;
+		}
+		case ITEM_TRANSFER:{
+			unsigned char transfer_type = *((unsigned char*)(event_ptr + 3));
+			int old_ID = *((int*)(event_ptr + 4));
+			unsigned int old_time = *((unsigned int*)(event_ptr + 8));
+			int new_ID = *((int*)(event_ptr + 13));
+			unsigned int new_time = *((unsigned int*)(event_ptr + 17));
+			unsigned short x = *((unsigned short*)(event_ptr + 21));
+			unsigned short y = *((unsigned short*)(event_ptr + 23));
+			unsigned short radius = *((unsigned short*)(event_ptr + 25));
+			network_log_printf("OUT","ITEM_TRANSFER transfer_type=%d old_id=0x%08X new_id=0x%08X old_time=%u new_time=%u x=%d y=%d radius=%d body_size=%d decision=queued",
+				(int)transfer_type,(unsigned int)old_ID,(unsigned int)new_ID,old_time,new_time,(int)x,(int)y,(int)radius,event_size - 25);
+			break;
+		}
+		default:
+			network_log_printf("OUT","%s body_size=%d raw_event=0x%02X",network_event_name(event),event_size - 1,event_ID);
+			break;
+	}
+}
+
 void OutputEventBuffer::end_body()
 {
 	int i;
@@ -449,6 +991,7 @@ void OutputEventBuffer::end_body()
 
 	//std::cout<<"OutputEventBuffer::end_body size:"<<tell() - pointer_to_size_of_event - sizeof(short int)<<std::endl;
 	*(short*)(address() + pointer_to_size_of_event) = tell() - pointer_to_size_of_event - sizeof(short int);
+	network_log_out_event_from_buffer(address() + pointer_to_size_of_event);
 
 	int ev_ID,event_ID = *(unsigned char*)(address() + pointer_to_size_of_event + 2);
 	if((event_ID & (~ECHO_EVENT)) == UPDATE_OBJECT) {
@@ -484,6 +1027,8 @@ int OutputEventBuffer::send(int system_send, XSocket& sock)
 		}
 	int unsent_size = tell() - sent_size;
 	n_sended_bytes += sent_size;
+	if(sent_size == 0 && tell() > 0)
+		network_log_printf("SOCKET_ERROR","send_failed requested_size=%d sent_size=%d socket_alive=%d",tell(),sent_size,sock());
 #ifdef _FOUT_
 	if(sent_size)
 		fout < "Send: " <= SDL_GetTicks() < "\t" <= sent_size < "\t" <= unsent_size < "\t" <= n_event < "\n";
@@ -497,6 +1042,7 @@ int OutputEventBuffer::send(int system_send, XSocket& sock)
 		}
 	else{
 		OUT_EVENTS_LOG1(Send_would_block,unsent_size);
+		network_log_printf("SOCKET_ERROR","send_would_block sent_size=%d unsent_size=%d n_event=%d",sent_size,unsent_size,n_event);
 		now_unsent_size = unsent_size;
 
 		while(pointer_to_the_first_event < sent_size){
@@ -521,6 +1067,7 @@ int OutputEventBuffer::send_simple_query(int event,XSocket& sock)
 	n_event++;
 	*this < short(1) < (unsigned char)event;
 	OUT_EVENTS_LOG1(send_simple_query,event);
+	network_log_printf("OUT","%s body_size=0",network_event_name(event));
 	return send(1,sock);
 }
 int OutputEventBuffer::send_simple_query(int event, unsigned char data,XSocket& sock)
@@ -528,6 +1075,7 @@ int OutputEventBuffer::send_simple_query(int event, unsigned char data,XSocket& 
 	n_event++;
 	*this < short(2) < (unsigned char)event < data;
 	OUT_EVENTS_LOG1(send_simple_query,event);
+	network_log_printf("OUT","%s data0=%d body_size=1",network_event_name(event),(int)data);
 	return send(1,sock);
 }
 int OutputEventBuffer::send_simple_query(int event, unsigned char data1, unsigned char data2,XSocket& sock)
@@ -535,6 +1083,7 @@ int OutputEventBuffer::send_simple_query(int event, unsigned char data1, unsigne
 	n_event++;
 	*this < short(3) < (unsigned char)event < data1 < data2;
 	OUT_EVENTS_LOG1(send_simple_query,event);
+	network_log_printf("OUT","%s data0=%d data1=%d body_size=2",network_event_name(event),(int)data1,(int)data2);
 	return send(1,sock);
 }
 void OutputEventBuffer::set_player_body(PlayerBody& body)
@@ -543,6 +1092,7 @@ void OutputEventBuffer::set_player_body(PlayerBody& body)
 	*this < short(1 + sizeof(PlayerBody)) < (unsigned char)SET_PLAYER_DATA;
 	write(&body,sizeof(PlayerBody));
 	OUT_EVENTS_LOG(SET_PLAYER_DATA);
+	network_log_printf("OUT","SET_PLAYER_DATA body_size=%d NetID=0x%08X world=%d color=%d", (int)sizeof(PlayerBody), (unsigned int)body.NetID, body.world, body.color);
 }
 
 /***********************************************************************
@@ -559,6 +1109,13 @@ void InputEventBuffer::reset()
 	next_event_pointer = 0;
 	filled_size = 0;
 	offset = 0;
+	event_ID = 0;
+	client_ID = 0;
+	item_state = 0;
+	item_previous_ID = 0;
+	item_removed_paired_ID = 0;
+	item_removed_reason = 0;
+	object_ID = 0;
 }
 
 int InputEventBuffer::receive(XSocket& sock,int dont_free) {
@@ -583,6 +1140,10 @@ int InputEventBuffer::receive(XSocket& sock,int dont_free) {
 	n_received_bytes += add_size;
 	if(add_size)
 		enable_send = 1;
+	if(!add_size && !sock){
+		network_log_printf("SOCKET_ERROR","receive_failed filled_size=%u next_event_pointer=%u",filled_size,next_event_pointer);
+		network_log_printf("SOCKET_CLOSED","reason=receive_failed filled_size=%u next_event_pointer=%u",filled_size,next_event_pointer);
+	}
 #ifdef _FOUT_
 	if(add_size)
 		fout < "Receive: " <= SDL_GetTicks() < "\t" <= add_size < "\n";
@@ -595,18 +1156,39 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 {
 	//std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
 	receive(sock);
+	if(!sock) {
+		network_log_printf("WAIT","receive_waiting_for_event event=%s result=socket_closed",network_event_name(event));
+		if(!skip_if_aint)
+			{
+			if (lang() == RUSSIAN) {
+				ErrH.Abort("Сервер не отвечает", XERR_USER, event);
+			} else {
+				ErrH.Abort("Time out of Server's response receiving", XERR_USER, event);
+			}
+			}
+		event_ID = 0;
+		offset = next_event_pointer = 0;
+		return 0;
+	}
 	START_TIMER(120*1000);
-	while(current_event() || CHECK_TIMER()) {
-		do {
+	for(;;) {
+		while(current_event()) {
 			//std::cout<<"current_event:"<<(int)current_event()<<" clock:"<<SDL_GetTicks()<<" _end_time_:"<<_end_time_<<std::endl;
 			if(current_event() == event) {
 				//std::cout<<"ok"<<std::endl;
-				int size = event_size + 2;
-				int prefix = next_event_pointer - size;
+				unsigned int size = (unsigned int)event_size + 2;
+				if(next_event_pointer < size || next_event_pointer > filled_size) {
+					ErrH.Abort("Bad network event buffer", XERR_USER, event);
+					event_ID = 0;
+					offset = next_event_pointer = 0;
+					return 0;
+				}
+				unsigned int prefix = next_event_pointer - size;
 				if(prefix > 0) {
-					memmove(buf + size,buf,filled_size);
-					memmove(buf,buf + size + prefix,size);
-					memmove(buf + size + prefix,buf + 2*size + prefix,filled_size - size - prefix);
+					std::vector<char> event_copy(size);
+					memcpy(event_copy.data(), buf + prefix, size);
+					memmove(buf + size, buf, prefix);
+					memcpy(buf, event_copy.data(), size);
 					//offset = next_event_pointer = size - body_size;
 					offset = next_event_pointer = 0;
 					return next_event();
@@ -614,12 +1196,19 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket& sock,int ski
 				return event;
 			}
 			ignore_event();
-		} while(next_event());
+			next_event();
+		}
+
+		if(!CHECK_TIMER())
+			break;
 
 		receive(sock,1);
+		if(!sock)
+			break;
 	}
 	if(!skip_if_aint)
         {
+	    network_log_printf("WAIT","receive_waiting_for_event event=%s result=timeout",network_event_name(event));
 	    if (lang() == RUSSIAN) {
             ErrH.Abort("Сервер не отвечает", XERR_USER, event);
         } else {
@@ -683,38 +1272,57 @@ int InputEventBuffer::next_event() {
 			case UPDATE_OBJECT:
 				*this  > client_ID > time > x  > y;
 				body_size = event_size - 14;
-				if(GET_OBJECT_TYPE(object_ID) == NID_VANGER) {
-					PlayerData* p = players_list.find(client_ID);
-					p -> x = x; p -> y = y;
-				}
-				delay_time += GLOBAL_CLOCK() - time;
-				delay_time_counter++;
-				IN_EVENTS_LOG1(UPDATE_OBJECT,object_ID);
 				break;
 			case HIDE_OBJECT:
 				body_size = 0;
-				IN_EVENTS_LOG1(HIDE_OBJECT,object_ID);
+				client_ID = 0;
+				time = 0;
+				x = y = 0;
 				break;
 			case DELETE_OBJECT:
 				*this  > client_ID > time;
 				body_size = event_size - 10;
-				delay_time += GLOBAL_CLOCK() - time;
-				delay_time_counter++;
-				IN_EVENTS_LOG1(DELETE_OBJECT,object_ID);
 				break;
 			default:
 				ErrH.Abort("Received unknown event",XERR_USER,event_ID);
 		}
 
-		if(NON_GLOBAL_OBJECT(object_ID)) {
+		if(network_snapshot_should_ignore_before_begin()) {
+			network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,"ignored_before_snapshot_begin");
+			ignore_event();
+		}
+		if(event_ID && NON_GLOBAL_OBJECT(object_ID)) {
 			if(!enable_transferring) {
 				IN_EVENTS_LOG1(Disable_query,object_ID);
+				network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,"ignored_disable_transferring");
 				ignore_event();
 			}
-			if(GET_WORLD(object_ID) != CurrentWorld) {
+			if(event_ID && GET_WORLD(object_ID) != CurrentWorld) {
 				IN_EVENTS_LOG1(Receive_from_another_world,object_ID);
+				network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,"ignored_wrong_world");
 				ignore_event();
 			}
+		}
+		if(event_ID) {
+			if(event_ID == UPDATE_OBJECT) {
+				if(GET_OBJECT_TYPE(object_ID) == NID_VANGER) {
+					PlayerData* p = players_list.find(client_ID);
+					if(p) {
+						p -> x = x;
+						p -> y = y;
+					}
+				}
+				delay_time += GLOBAL_CLOCK() - time;
+				delay_time_counter++;
+				IN_EVENTS_LOG1(UPDATE_OBJECT,object_ID);
+			}else if(event_ID == DELETE_OBJECT) {
+				delay_time += GLOBAL_CLOCK() - time;
+				delay_time_counter++;
+				IN_EVENTS_LOG1(DELETE_OBJECT,object_ID);
+			}else if(event_ID == HIDE_OBJECT) {
+				IN_EVENTS_LOG1(HIDE_OBJECT,object_ID);
+			}
+			network_log_object_event("IN",event_ID,object_ID,client_ID,time,event_ID == UPDATE_OBJECT ? x : -1,event_ID == UPDATE_OBJECT ? y : -1,-1,body_size,network_snapshot_loading() ? "snapshot_entry" : "parsed");
 		}
 	} else {
 		IN_EVENTS_LOG1(AXILIARY_EVENT,event_ID);
@@ -733,16 +1341,107 @@ int InputEventBuffer::next_event() {
 					}
 				}
 				body_size = 0;
+				network_log_printf("IN","SERVER_TIME server_time=%d average_lag=%d",time,average_lag);
 				break;
 			case ATTACH_TO_GAME_RESPONSE:
 			case GAME_DATA_RESPONSE:
 			case SET_WORLD_RESPONSE:
 			case RESTORE_CONNECTION_RESPONSE:
 			case TOP_LIST_RESPONSE:
-			case TOTAL_LIST_OF_PLAYERS_DATA:
 			case zGAME_DATA_RESPONSE: //zmod
 			case zTIME_RESPONSE: //zmod
 				body_size = event_size - 1;
+				network_log_printf("IN","%s body_size=%d",network_event_name(event_ID),body_size);
+				break;
+			case TOTAL_LIST_OF_PLAYERS_DATA:
+				body_size = event_size - 1;
+				network_log_printf("IN","%s body_size=%d",network_event_name(event_ID),body_size);
+				if(network_snapshot_waiting_for_begin()){
+					network_log_printf("SNAPSHOT","event=%s body_size=%d state=%s snapshot_world=%d decision=ignored_before_snapshot_begin",
+						network_event_name(event_ID),
+						body_size,
+						network_snapshot_state_name(network_snapshot_state),
+						network_snapshot_world);
+					ignore_event();
+				}
+				break;
+			case WORLD_SNAPSHOT_BEGIN:
+			case WORLD_SNAPSHOT_END:{
+				body_size = event_size - 1;
+				int marker_world = -1;
+				if(body_size >= 1)
+					marker_world = get_byte();
+				network_snapshot_log_marker(event_ID,body_size,marker_world);
+				if(marker_world < 0){
+					network_log_printf("SNAPSHOT","state=%s expected_world=%d marker=%s decision=malformed_missing_world",
+						network_snapshot_state_name(network_snapshot_state),
+						network_snapshot_world,
+						network_event_name(event_ID));
+				}else if(event_ID == WORLD_SNAPSHOT_BEGIN){
+					network_snapshot_begin(marker_world);
+				}else{
+					network_snapshot_end(marker_world);
+				}
+				body_size = 0;
+				break;
+			}
+			case ITEM_STATE:
+				if(event_size < 19)
+					ErrH.Abort("Bad ITEM_STATE",XERR_USER,event_size);
+				*this > item_state;
+				*this > item_previous_ID;
+				*this > object_ID;
+				*this > client_ID;
+				*this > time;
+				*this > x;
+				*this > y;
+				body_size = event_size - 19;
+				if(network_snapshot_should_ignore_before_begin()){
+					network_log_object_event("IN",event_ID,object_ID,client_ID,time,x,y,-1,body_size,"ignored_before_snapshot_begin");
+					ignore_event();
+				}
+				if(NON_GLOBAL_OBJECT(object_ID)){
+					if(event_ID && !enable_transferring){
+						network_log_object_event("IN",event_ID,object_ID,client_ID,time,x,y,-1,body_size,"ignored_disable_transferring");
+						ignore_event();
+					}else if(event_ID && GET_WORLD(object_ID) != CurrentWorld){
+						network_log_object_event("IN",event_ID,object_ID,client_ID,time,x,y,-1,body_size,"ignored_wrong_world");
+						ignore_event();
+					}
+				}
+				if(event_ID){
+					delay_time += GLOBAL_CLOCK() - time;
+					delay_time_counter++;
+					network_log_printf("IN","ITEM_STATE state=%d previous_id=0x%08X item_id=0x%08X creator=%d time=%d x=%d y=%d body_size=%d decision=%s",
+						(int)item_state,(unsigned int)item_previous_ID,(unsigned int)object_ID,(int)client_ID,time,(int)x,(int)y,(int)body_size,
+						network_snapshot_loading() ? "snapshot_entry" : "parsed");
+				}
+				break;
+			case ITEM_REMOVED:
+				if(event_size < 10)
+					ErrH.Abort("Bad ITEM_REMOVED",XERR_USER,event_size);
+				*this > object_ID;
+				*this > item_removed_paired_ID;
+				*this > item_removed_reason;
+				client_ID = 0;
+				time = 0;
+				x = y = 0;
+				body_size = 0;
+				if(network_snapshot_should_ignore_before_begin()){
+					network_log_object_event("IN",event_ID,object_ID,client_ID,time,-1,-1,-1,body_size,"ignored_before_snapshot_begin");
+					ignore_event();
+				}
+				if(event_ID && NON_GLOBAL_OBJECT(object_ID) && GET_WORLD(object_ID) != CurrentWorld){
+					network_log_object_event("IN",event_ID,object_ID,client_ID,time,-1,-1,-1,body_size,"ignored_wrong_world");
+					ignore_event();
+				}
+				if(event_ID){
+					network_log_printf("IN","ITEM_REMOVED item_id=0x%08X paired_id=0x%08X reason=%d decision=%s",
+						(unsigned int)object_ID,
+						(unsigned int)item_removed_paired_ID,
+						(int)item_removed_reason,
+						network_snapshot_loading() ? "snapshot_entry" : "parsed");
+				}
 				break;
 
 			case PLAYERS_NAME:
@@ -751,14 +1450,26 @@ int InputEventBuffer::next_event() {
 			case PLAYERS_STATUS:
 			case PLAYERS_DATA:
 			case PLAYERS_RATING:
-				players_list.single_parsing(event_ID);
-				body_size = 0;
-				next_event();
+				network_log_printf("IN","%s body_size=%d",network_event_name(event_ID),event_size - 1);
+				if(network_snapshot_waiting_for_begin()){
+					body_size = event_size - 1;
+					network_log_printf("SNAPSHOT","event=%s body_size=%d state=%s snapshot_world=%d decision=ignored_before_snapshot_begin",
+						network_event_name(event_ID),
+						body_size,
+						network_snapshot_state_name(network_snapshot_state),
+						network_snapshot_world);
+					ignore_event();
+				}else{
+					players_list.single_parsing(event_ID);
+					body_size = 0;
+					next_event();
+				}
 				//ignore_event();
 				break;
 
 			case DIRECT_RECEIVING:
 				*this > client_ID;
+				network_log_printf("IN","DIRECT_RECEIVING creator=%d body_size=%d",client_ID,event_size - 2);
 				if(get_byte()) {
 					--*this;
 					message_dispatcher.receive();
@@ -787,12 +1498,15 @@ void InputEventBuffer::ignore_event()
 ***********************************************************************/
 int connect_to_server(ServerFindChain* p)
 {
+	network_log_open(p,"connect_to_server");
+	network_log_printf("CONNECT","server_game_id=%d",p ? p->game_ID : 0);
 	p->connect(main_socket);
 	if(main_socket() && identification(main_socket)){
 		current_server_addr = *p;
 
 		events_out.clear();
 		events_in.reset();
+		network_snapshot_reset("connect_to_server");
 
 		events_out.begin_event(ATTACH_TO_GAME);
 		events_out < current_server_addr.game_ID;
@@ -808,6 +1522,7 @@ int connect_to_server(ServerFindChain* p)
 		GlobalStationID = events_in.get_byte();
 		for(int i = 0;i < 16;i++)
 			object_ID_offsets[i] = events_in.get_word();
+		network_log_printf("ATTACH_TO_GAME_RESPONSE","game_id=%d configured=%d game_birth_time=%u GlobalStationID=%d",current_server_addr.game_ID,current_server_addr.configured,game_birth_time_offset,GlobalStationID);
 		events_in.ignore_event();
 
 		zGameBirthTime = 0;
@@ -820,10 +1535,15 @@ int connect_to_server(ServerFindChain* p)
 
 		NetworkON = 1;
 		number_of_reconnection_attempt = 5;
+		network_log_printf("CONNECT_OK","game_id=%d configured=%d GlobalStationID=%d CurrentWorld=%d",current_server_addr.game_ID,current_server_addr.configured,GlobalStationID,CurrentWorld);
 
 		return GlobalStationID;
 		}
 	NetworkON = 0;
+	network_log_printf("CONNECT_FAIL","socket_alive=%d",main_socket());
+	if(!main_socket())
+		network_log_printf("SOCKET_CLOSED","reason=connect_failed");
+	network_log_close("connect_failed");
 	return 0;
 }
 int restore_connection()
@@ -832,8 +1552,12 @@ int restore_connection()
 		return 1;
 	//std::cout<<"restore_connection:Connection lost"<<std::endl;
 	DOUT("Connection lost");
+	network_log_printf("RECONNECT_START","attempts_left=%d",number_of_reconnection_attempt);
 	current_server_addr.connect(main_socket);
-	if(!main_socket){
+	if(!main_socket || !identification(main_socket)){
+		main_socket.close();
+		network_log_printf("SOCKET_CLOSED","reason=reconnect_failed stage=connect_or_identification");
+		network_log_printf("RECONNECT_FAIL","stage=connect_or_identification attempts_left=%d",number_of_reconnection_attempt);
 		if(number_of_reconnection_attempt-- <= 0)
             {
 		    if (lang() == RUSSIAN) {
@@ -844,27 +1568,47 @@ int restore_connection()
             }
 		return 0;
 	}
-	number_of_reconnection_attempt = 5;
 	events_out.clear();
 	events_in.reset();
 	events_out.begin_event(RESTORE_CONNECTION);
 	events_out < current_server_addr.game_ID < (unsigned char)GlobalStationID;
 	events_out.end_body();
 	events_out.send(1);
-	events_in.receive_waiting_for_event(RESTORE_CONNECTION_RESPONSE);
+	int got = events_in.receive_waiting_for_event(RESTORE_CONNECTION_RESPONSE);
+	if(got != RESTORE_CONNECTION_RESPONSE) {
+		main_socket.close();
+		network_log_printf("SOCKET_CLOSED","reason=reconnect_failed stage=wait_response");
+		network_log_printf("RECONNECT_FAIL","stage=wait_response got=%s",network_event_name(got));
+		return 0;
+	}
+	if(events_in.current_body_size() < 1)
+		ErrH.Abort("Bad RESTORE_CONNECTION_RESPONSE", XERR_USER, events_in.current_body_size());
 	int resp = events_in.get_byte();
 	events_in.ignore_event();
+	if(!resp) {
+		main_socket.close();
+		network_log_printf("SOCKET_CLOSED","reason=reconnect_failed stage=server_refused");
+		network_log_printf("RESTORE_CONNECTION_RESPONSE","status=%d",resp);
+		network_log_printf("RECONNECT_FAIL","stage=server_refused");
+		return 0;
+	}
+	number_of_reconnection_attempt = 5;
 	DOUT1("Connection restore",resp);
+	network_log_printf("RESTORE_CONNECTION_RESPONSE","status=%d",resp);
+	network_log_printf("RECONNECT_OK","game_id=%d GlobalStationID=%d CurrentWorld=%d",current_server_addr.game_ID,GlobalStationID,CurrentWorld);
 	return resp;
 }
 void disconnect_from_server()
 {
+	network_log_printf("CLOSE_SOCKET","reason=disconnect_from_server");
 	events_out.send_simple_query(CLOSE_SOCKET);
 	delay(256);
 	main_socket.close();
+	network_log_printf("SOCKET_CLOSED","reason=disconnect_from_server");
 	delay(256);
 	events_out.clear();
 	events_in.reset();
+	network_log_close("disconnect_from_server");
 }
 void set_time_by_server(int n_measures)
 {
@@ -899,31 +1643,66 @@ void set_time_by_server(int n_measures)
 	time_synchronization_sigma = sqrt((dtau2 - N*sqr(tau))/N/(N-1))/256.;
 	std::cout<<"set_time_by_server time_synchronization_sigma:"<<time_synchronization_sigma
 			 <<" average_lag:"<<average_lag<<" t2:"<<t2<<std::endl;
+	network_log_printf("LAG","set_time_by_server measures=%d average_lag=%d response_time=%.6f sigma=%.6f",n_measures,average_lag,response_time,time_synchronization_sigma);
 }
 int set_world(int world,int world_y_size) //znfo - send set_world event
 {
+	network_snapshot_wait_for_world(world,"set_world_request");
 	events_out.set_world(world,world_y_size);
 	events_out.send(1);
-	events_in.receive_waiting_for_event(SET_WORLD_RESPONSE);
-	events_in.get_byte(); //resp_world
+	int got = events_in.receive_waiting_for_event(SET_WORLD_RESPONSE);
+	if(got != SET_WORLD_RESPONSE)
+        {
+	    network_log_printf("SET_WORLD_RESPONSE","requested_world=%d got=%s status=missing",world,network_event_name(got));
+	    if (lang() == RUSSIAN) {
+            ErrH.Abort("Сервер не отвечает", XERR_USER, SET_WORLD_RESPONSE);
+        } else {
+            ErrH.Abort("Time out of Server's response receiving", XERR_USER, SET_WORLD_RESPONSE);
+        }
+        }
+	if(events_in.current_body_size() < 2)
+		ErrH.Abort("Bad SET_WORLD_RESPONSE", XERR_USER, events_in.current_body_size());
+	int resp_world = events_in.get_byte();
 	int resp_status = events_in.get_byte();
+	if(resp_world != world)
+		ErrH.Abort("Incorrect SET_WORLD_RESPONSE", XERR_USER, resp_world);
 	events_in.ignore_event();
 	set_world_status = resp_status;
 	enable_transferring = 1;
+	network_log_printf("SET_WORLD_RESPONSE","requested_world=%d response_world=%d status=%d",world,resp_world,resp_status);
+	network_log_printf("CONTEXT","enable_transferring changed value=%d CurrentWorld=%d",enable_transferring,CurrentWorld);
 	lag_averaging_t0.clear();
 	return resp_status;
 }
 void leave_world()
 {
+	network_log_printf("OUT","LEAVE_WORLD");
 	events_out.send_simple_query(LEAVE_WORLD);
 	enable_transferring = 0;
+	network_snapshot_reset("leave_world");
+	network_log_printf("CONTEXT","enable_transferring changed value=%d CurrentWorld=%d",enable_transferring,CurrentWorld);
 }
 void total_players_data_list_query()
 {
+	total_players_data_list_query_pending = 1;
+	total_players_data_list_query_last_time = SDL_GetTicks();
+	network_log_printf("OUT","TOTAL_PLAYERS_DATA_QUERY blocking=1");
 	events_out.send_simple_query(TOTAL_PLAYERS_DATA_QUERY);
 	events_in.receive_waiting_for_event(TOTAL_LIST_OF_PLAYERS_DATA);
 	players_list.parsing_total_body_query();
 	events_in.ignore_event();
+}
+
+void request_total_players_data_list_query_async()
+{
+	unsigned int now = SDL_GetTicks();
+	if(total_players_data_list_query_pending && now - total_players_data_list_query_last_time < TOTAL_PLAYERS_DATA_LIST_QUERY_RETRY_MS)
+		return;
+
+	total_players_data_list_query_pending = 1;
+	total_players_data_list_query_last_time = now;
+	network_log_printf("OUT","TOTAL_PLAYERS_DATA_QUERY blocking=0");
+	events_out.send_simple_query(TOTAL_PLAYERS_DATA_QUERY);
 }
 void send_player_body(PlayerBody& body)
 {
@@ -1201,12 +1980,24 @@ PlayerData::PlayerData(int client_id)
 	next = prev = 0;
 	list = 0;
 	CreatePlayerFlag = 0;
+	LastDestroyedNetID = 0;
 	uvsPoint = NULL;
 	for(int i = 0;i < MAX_ACTIVE_SLOT;i++){
 		SlotNetID[i] = 0;
 		SlotStuffNetID[i] = 0;
 		SlotFireCount[i] = 0;
-		}
+			}
+}
+
+PlayerData* PlayersList::find_any(int client_id)
+{
+	PlayerData* p = first();
+	while(p){
+		if(p -> client_ID == client_id)
+			return p;
+		p = p -> next;
+	}
+	return NULL;
 }
 
 PlayerData* PlayersList::find(int client_id)
@@ -1222,6 +2013,21 @@ PlayerData* PlayersList::find(int client_id)
 	append(p);
 	return p;
 }
+
+static void assign_player_name(PlayerData* p,const char* name)
+{
+	if(!p -> name){
+		p -> name = new char[strlen(name) + 1];
+		strcpy(p -> name, name);
+	}else{
+		if(strcmp(p -> name,name)){
+			delete[] p -> name;
+			p -> name = new char[strlen(name) + 1];
+			strcpy(p -> name, name);
+		}
+	}
+}
+
 void PlayersList::single_parsing(int event_ID)
 {
 	PlayerData* p = find(events_in.get_byte());
@@ -1229,17 +2035,7 @@ void PlayersList::single_parsing(int event_ID)
 		case PLAYERS_NAME:{
 			char name[257];
 			events_in > name;
-			if(!p -> name){
-				p -> name = new char[strlen(name) + 1];
-				strcpy(p -> name, name);
-				}
-			else{
-				if(strcmp(p -> name,name)){
-					delete[] p -> name;
-					p -> name = new char[strlen(name) + 1];
-					strcpy(p -> name, name);
-					}
-				}
+			assign_player_name(p,name);
 			}
 			break;
 		case PLAYERS_POSITION:
@@ -1302,9 +2098,87 @@ void PlayersList::parsing_total_body_query()
 				strcpy(p -> name, name);
 				}
 			}
-		if(p -> client_ID == GlobalStationID)
-			my_player_data = p;
+			if(p -> client_ID == GlobalStationID)
+				my_player_data = p;
+			}
+	total_players_data_list_query_pending = 0;
+}
+
+void PlayersList::merge_total_body_query()
+{
+	unsigned char client_ID,status,world;
+	short x,y;
+	char name[257];
+	PlayerBody body;
+	PlayerData* p;
+	PlayerData* current_player_data = NULL;
+	int num = events_in.get_byte();
+
+	p = first();
+	while(p){
+		p -> GamingFlag = 0;
+		p = (PlayerData*)(p -> next);
+	}
+
+	for(int i = 0;i < num;i++){
+		events_in > client_ID > status > world > x > y > name;
+		events_in.read(&body,sizeof(PlayerBody));
+
+		p = NULL;
+		if(status != FINISHED_STATUS){
+			PlayerData* n = first();
+			while(n){
+				if(!n -> GamingFlag && n -> client_ID == client_ID && n -> status != FINISHED_STATUS){
+					p = n;
+					break;
+				}
+				n = (PlayerData*)(n -> next);
+			}
+		}else{
+			PlayerData* candidate = NULL;
+			PlayerData* n = first();
+			while(n){
+				if(!n -> GamingFlag && n -> client_ID == client_ID){
+					if(n -> status == FINISHED_STATUS){
+						p = n;
+						break;
+					}
+					if(!candidate)
+						candidate = n;
+				}
+				n = (PlayerData*)(n -> next);
+			}
+			if(!p)
+				p = candidate;
 		}
+
+		if(!p){
+			p = new PlayerData(client_ID);
+			append(p);
+		}
+
+		int prev_status = p -> status;
+		p -> GamingFlag = 1;
+		p -> status = status;
+		p -> world = world;
+		p -> x = x;
+		p -> y = y;
+		assign_player_name(p,name);
+		p -> body = body;
+
+		if(prev_status != FINISHED_STATUS && p -> status == FINISHED_STATUS)
+			PLAYER_REMOVAL_EVENT(p);
+
+		if(p -> client_ID == GlobalStationID){
+			if(p -> status != FINISHED_STATUS || !current_player_data)
+				current_player_data = p;
+		}
+	}
+
+	if(current_player_data)
+		my_player_data = current_player_data;
+
+	total_players_data_list_query_pending = 0;
 }
 
 /*******************************************************************************

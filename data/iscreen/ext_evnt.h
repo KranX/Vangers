@@ -70,3 +70,5 @@
 #define iEXT_CHECK_END_FLAG		46
 
 #define iEXT_INIT_SOCKETS		47
+
+#define iEXT_UPDATE_FPS_MODE	48

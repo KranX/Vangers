@@ -20,6 +20,8 @@ void xtUnRegisterSysFinitFnc(int id);
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
+#define AV_CODEC_PAR (LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 33, 100))
+
 // compatability with newer libavcodec
 #if LIBAVCODEC_VERSION_MAJOR < 57
   #define AV_FRAME_ALLOC avcodec_alloc_frame
@@ -29,7 +31,17 @@ void xtUnRegisterSysFinitFnc(int id);
   #define AV_PACKET_UNREF av_packet_unref
 #endif
 
-#define AV_CODEC_PAR (LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 33, 100))
+#if LIBAVCODEC_VERSION_MAJOR < 55
+  #define AV_FRAME_FREE(frame) av_free(frame)
+#else
+  #define AV_FRAME_FREE(frame) av_frame_free(&(frame))
+#endif
+
+#if AV_CODEC_PAR
+  #define AV_CODEC_CONTEXT_RELEASE(ctx) avcodec_free_context(&(ctx))
+#else
+  #define AV_CODEC_CONTEXT_RELEASE(ctx) avcodec_close(ctx)
+#endif
 
 static XList aviXList;
 
@@ -176,7 +188,7 @@ void AVIFile::draw(void) {
 		}
 		if(frame<0 && (flags & AVI_LOOPING)) {
 				// Close the codec
-				avcodec_close(pCodecCtx);
+				AV_CODEC_CONTEXT_RELEASE(pCodecCtx);
 				// Close the video file
 				//av_close_input_file(pFormatCtx);
 				avformat_close_input(&pFormatCtx);
@@ -232,9 +244,9 @@ void AVIFile::close(void)
 	released = 1;
 	SDL_mutexP(avCriticalSection);
 	// Free the YUV frame
-	av_free(pFrame);
+	AV_FRAME_FREE(pFrame);
 	// Close the codec
-	avcodec_close(pCodecCtx);
+	AV_CODEC_CONTEXT_RELEASE(pCodecCtx);
 	// Close the video file
 	//av_close_input_file(pFormatCtx);
 	//avformat_free_context(pFormatCtx);

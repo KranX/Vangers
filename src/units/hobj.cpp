@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../runtime.h"
 #include "lang.h"
 
 #include "../3d/3d_math.h"
@@ -163,6 +164,18 @@ aiMessageList aiMessageQueue;
 int PassageBmpNum;
 int PassageBmpPrev;
 PassageImageType* PassageImageData;
+
+static inline int ai_message_speed_tabu_ticks(void)
+{
+	int ticks = (int)round(10 * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline int ai_message_repeat_delta_ticks(void)
+{
+	int ticks = (int)round((AI_MESSAGE_DELTA + 1) * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
 
 void OpenCyclicPal(void)
 {
@@ -1762,8 +1775,14 @@ void VangerUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 {
 	if(ExternalMode != EXTERNAL_MODE_NORMAL || !ExternalDraw)
 		return;
-	if(Armor < MaxArmor && (int)(RND(MaxArmor)) > Armor && (int)(RND(MaxArmor)) > Armor)
-		MapD.CreateDust(Vector(x,y,level), (int)MAP_SMOKE_PROCESS);
+
+	if(Armor < MaxArmor && 
+		frame % (int)GAME_TIME_COEFF == 0 &&
+		(int)(RND(MaxArmor)) > Armor && 
+		(int)(RND(MaxArmor)) > Armor) {
+			MapD.CreateDust(Vector(x,y,level), (int)MAP_SMOKE_PROCESS);
+	}
+		
 	TrackUnit::DrawMechosParticle(x,y,speed,level,n);
 };
 
@@ -1789,32 +1808,43 @@ void TrackUnit::DrawMechosParticle(int x,int y,int speed,int level,int n)
 			if(level){
 				trn = GET_REAL_TERRAIN(TypeMap,x);
 				if(trn == 1){
-					if(PrevWheelY[n] != 0)
-						MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,1);
-					PrevWheelX[n] = x;
-					PrevWheelY[n] = y;
 					PrevWheelFlag[n] = 1;
+					if(frame % (int)GAME_TIME_COEFF == 0){
+						if(PrevWheelY[n] != 0)
+							MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,1);
+						PrevWheelX[n] = x;
+						PrevWheelY[n] = y;
+					}
 				};
 			}else{
 				trn = GET_REAL_DOWNTERRAIN(TypeMap,x);
 				if(trn == 1){
-					if(PrevWheelY[n] != 0)
-						MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,0);
-					PrevWheelX[n] = x;
-					PrevWheelY[n] = y;
 					PrevWheelFlag[n] = 1;
+					if(frame % (int)GAME_TIME_COEFF == 0){
+						if(PrevWheelY[n] != 0)
+							MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,0);
+						PrevWheelX[n] = x;
+						PrevWheelY[n] = y;
+					}
 				};
 			};
 		}else{
 			trn = GET_TERRAIN(*TypeMap);
 			if(trn == 1){
-				if(PrevWheelY[n] != 0)
-					MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,1);
-				PrevWheelX[n] = x;
-				PrevWheelY[n] = y;
 				PrevWheelFlag[n] = 1;
+				if(frame % (int)GAME_TIME_COEFF == 0){
+					if(PrevWheelY[n] != 0)
+						MapD.CreateTrace(x,y,PrevWheelX[n],PrevWheelY[n],track_nx,track_ny,1);
+					PrevWheelX[n] = x;
+					PrevWheelY[n] = y;
+				}
 			};
 		};
+
+		// 60PFS: Creating dust at 20FPS
+		if(frame % (int)GAME_TIME_COEFF > 0){
+			return;
+		}
 
 		if((int)(RND(10)) > speed) return;
 
@@ -3026,7 +3056,40 @@ char getObjectPosition(int& x,int& y)
 	return -1;
 };
 
-void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
+static inline int ScreenLaserTraceRadius(void)
+{
+	return (XGR_MAXX > 800 || XGR_MAXY > 600) ? 1 : 0;
+}
+
+static inline int ScreenTraceClip(int x,int y)
+{
+	return x > UcutLeft && x < UcutRight && y > VcutUp && y < VcutDown;
+}
+
+static inline void ScreenTracePutPixel(int x,int y,uchar* ColorTable,int offset,int laserGlow)
+{
+	int sideOffset;
+
+	XGR_SetPixel(x,y,ColorTable[XGR_GetPixel(x,y) + offset]);
+
+	if(!laserGlow || !ScreenLaserTraceRadius())
+		return;
+
+	sideOffset = (offset >> 1) & 0xffffff00;
+	if(sideOffset <= 0)
+		return;
+
+	if(ScreenTraceClip(x - 1,y))
+		XGR_SetPixel(x - 1,y,ColorTable[XGR_GetPixel(x - 1,y) + sideOffset]);
+	if(ScreenTraceClip(x + 1,y))
+		XGR_SetPixel(x + 1,y,ColorTable[XGR_GetPixel(x + 1,y) + sideOffset]);
+	if(ScreenTraceClip(x,y - 1))
+		XGR_SetPixel(x,y - 1,ColorTable[XGR_GetPixel(x,y - 1) + sideOffset]);
+	if(ScreenTraceClip(x,y + 1))
+		XGR_SetPixel(x,y + 1,ColorTable[XGR_GetPixel(x,y + 1) + sideOffset]);
+}
+
+static void ScreenLineTraceImpl(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag,int laserGlow)
 {
 	int x0,y0,x1,y1;
 	int dx,dy,k,cx,cy;
@@ -3041,8 +3104,8 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 		G2LQ(v0,x0,y0);
 		G2LQ(v1,x1,y1);
 	}else{
-		G2LP(v0,x0,y0);
-		G2LP(v1,x1,y1);
+		G2LS(v0,x0,y0);
+		G2LS(v1,x1,y1);
 	};
 
 	dx = x1 - x0;
@@ -3083,7 +3146,7 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 						vC.x >> FIXED_SHIFT,
 						vC.y >> FIXED_SHIFT,
 						vC.z >> FIXED_SHIFT))
-					){ XGR_SetPixel(cx,ty,ColorTable[XGR_GetPixel(cx,ty) + l]); };
+					){ ScreenTracePutPixel(cx,ty,ColorTable,l,laserGlow); };
 				};
 				cx++;
 				cy += k;
@@ -3122,7 +3185,7 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 						vC.x >> FIXED_SHIFT,
 						vC.y >> FIXED_SHIFT,
 						vC.z >> FIXED_SHIFT))
-					){ XGR_SetPixel(tx,cy,ColorTable[XGR_GetPixel(tx,cy) + l]); };
+					){ ScreenTracePutPixel(tx,cy,ColorTable,l,laserGlow); };
 				};
 				cy++;
 				cx += k;
@@ -3167,7 +3230,7 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 						vC.x >> FIXED_SHIFT,
 						vC.y >> FIXED_SHIFT,
 						vC.z >> FIXED_SHIFT))
-					){ XGR_SetPixel(cx,ty,ColorTable[XGR_GetPixel(cx,ty) + (l & 0xffffff00)]); };
+					){ ScreenTracePutPixel(cx,ty,ColorTable,l & 0xffffff00,laserGlow); };
 				};
 
 				cx++;
@@ -3214,7 +3277,7 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 						vC.x >> FIXED_SHIFT,
 						vC.y >> FIXED_SHIFT,
 						vC.z >> FIXED_SHIFT))
-					){ XGR_SetPixel(tx,cy,ColorTable[XGR_GetPixel(tx,cy) + (l & 0xffffff00)]); };
+					){ ScreenTracePutPixel(tx,cy,ColorTable,l & 0xffffff00,laserGlow); };
 				};
 				cy++;
 				cx += k;
@@ -3224,7 +3287,18 @@ void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
 			};
 		};
 	};
+
 };
+
+void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
+{
+	ScreenLineTraceImpl(v0,v1,ColorTable,flag,0);
+}
+
+void ScreenLaserTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag)
+{
+	ScreenLineTraceImpl(v0,v1,ColorTable,flag,1);
+}
 
 int GlobalFuryLevel;
 
@@ -3745,18 +3819,43 @@ void GameObjectDispatcher::NetEvent(void)
 					break;
 				default:
 #ifdef _DEBUG
-				
+
 					fout.SetRadix(16);
 					fout < "Ignore:  Type:" <= type;
 					fout.SetRadix(10);
 					fout < "  EvID:" <= id < "  nID:" <= GET_NETWORK_ID(id) < "\n";
 #endif
+					network_log_object_event("IN",type,id,NETWORK_IN_STREAM.current_creator(),NETWORK_IN_STREAM.current_time(),NETWORK_IN_STREAM.current_x(),NETWORK_IN_STREAM.current_y(),NETWORK_IN_STREAM.current_radius(),NETWORK_IN_STREAM.current_body_size(),"ignored_unknown_network_id");
+					NETWORK_IN_STREAM.ignore_event();
+					break;
+			};
+		}else{
+			switch(type){
+				case TOTAL_LIST_OF_PLAYERS_DATA:
+					players_list.merge_total_body_query();
+					break;
+				case WORLD_SNAPSHOT_BEGIN:
+				case WORLD_SNAPSHOT_END:
+					NETWORK_IN_STREAM.ignore_event();
+					break;
+				case ITEM_STATE:
+					ItemD.NetItemState(NETWORK_IN_STREAM.current_item_state(),
+						NETWORK_IN_STREAM.current_item_previous_ID(),
+						NETWORK_IN_STREAM.current_ID());
+					break;
+				case ITEM_REMOVED:
+					ItemD.NetItemRemoved(NETWORK_IN_STREAM.current_ID(),
+						NETWORK_IN_STREAM.current_item_removed_paired_ID(),
+						NETWORK_IN_STREAM.current_item_removed_reason());
+					break;
+				default:
+					network_log_printf("IN","%s decision=ignored_aux_in_dispatcher body_size=%d",type == 0 ? "UNKNOWN_EVENT" : "AUX_EVENT",NETWORK_IN_STREAM.current_body_size());
 					NETWORK_IN_STREAM.ignore_event();
 					break;
 			};
 		};
 		NETWORK_IN_STREAM.next_event();
-	};	
+	};
 	NETWORK_OUT_STREAM.send();
 };
 
@@ -3780,7 +3879,7 @@ int NetInit(ServerFindChain* p)
 
 	LocalNetEnvironment  =  0;
 
-	set_time_by_server(10);
+	set_time_by_server(3);
 	std::cout<<"NetInit - [1.5]"<<std::endl;
 	my_player_body.clear();
 	
@@ -3995,7 +4094,7 @@ void aiMessageType::Send(int speed,int ind,int sf)
 				aiMessageBuffer.TimeBuf[c] = Time[i];
 				aiMessageBuffer.ColBuf[c] = Color[i];
 				c++;
-			};			
+			};
 			ind >>= 1;
 		};
 		aiMessageBuffer.NumStr = c;
@@ -4009,7 +4108,7 @@ int aiMessageType::GetTime(int ind)
 	int c,i;
 	c = 0;
 	for(i = 0;i < Num;i++){
-		if(ind & 1) c += strlen(Data[i]);		
+		if(ind & 1) c += strlen(Data[i]);
 		ind >>= 1;
 	};
 	return c;
@@ -4229,7 +4328,7 @@ void PalPoint::Set(int mode,int time,uchar* p1,uchar* p2)
 			PalCD.PalEnable = 0;
 			for(i =0;i < 768;i++){
 				FirstColor[i] = ((int)(palbuf/*Org*/[i])) << 16;
-				DeltaColor[i] = ((63 << 16) - FirstColor[i]) / Time;					
+				DeltaColor[i] = ((63 << 16) - FirstColor[i]) / Time;
 			};
 			break;
 		case CPAL_PASSAGE_FROM:
@@ -4291,10 +4390,10 @@ void aiMessageList::Send(int ind,int speed,int n,int sf)
 	aiMessageListElem* p;
 	static int PrevSpeed = 0;
 	if(!ActD.Active || !(ActD.Active->ExternalDraw)) return;
-	if(abs(speed) != 0) PrevSpeed = 10;
+	if(abs(speed) != 0) PrevSpeed = ai_message_speed_tabu_ticks();
 	else PrevSpeed--;
-	if(sf && PrevSpeed > MAX_AI_MESSAGE_SPEED) return;	
-	if(abs(aiMessageData[ind].LastFrame - frame) > AI_MESSAGE_DELTA){
+	if(sf && PrevSpeed > MAX_AI_MESSAGE_SPEED) return;
+	if(abs(aiMessageData[ind].LastFrame - frame) >= ai_message_repeat_delta_ticks()){
 		p = Tail;
 		while(p){
 			if(p->Index == ind) return;
@@ -4426,19 +4525,19 @@ void aiMessageList::Quant(void)
 				switch(p->Index){
 					case AI_MESSAGE_INDEX_LUCK:
 						aiPromptLuckMessage(p->Luck);
-						Time = 70;
+						Time = 70 * GAME_TIME_COEFF;
 						break;
 					case AI_MESSAGE_INDEX_DOMINANCE:
 						aiPromptDominanceMessage(p->Dominance);
-						Time = 50;
+						Time = 50 * GAME_TIME_COEFF;
 						break;
 					case AI_MESSAGE_INDEX_TABUTASK:
 						aiPromptTaskMessage(p->TabuTask);
-						Time = 50;
+						Time = 50 * GAME_TIME_COEFF;
 						break;
 					default:
 						aiMessageData[p->Index].Send(p->Speed,p->Mask,0);
-						Time = aiMessageData[p->Index].GetTime(p->Mask) / 2 + 10;
+						Time = (aiMessageData[p->Index].GetTime(p->Mask) / 2 + 10) * GAME_TIME_COEFF;
 						break;
 				};
 			};
@@ -4450,22 +4549,22 @@ void aiMessageList::Quant(void)
 			switch(View->Index){
 				case AI_MESSAGE_INDEX_LUCK:
 					aiPromptLuckMessage(View->Luck);
-					Time = 70;
+					Time = 70 * GAME_TIME_COEFF;
 					break;
 				case AI_MESSAGE_INDEX_DOMINANCE:
 					aiPromptDominanceMessage(View->Dominance);
-					Time = 50;
+					Time = 50 * GAME_TIME_COEFF;
 					break;
 				case AI_MESSAGE_INDEX_TABUTASK:
 					aiPromptTaskMessage(View->TabuTask);
-					Time = 50;
+					Time = 50 * GAME_TIME_COEFF;
 					break;
 				default:
 					aiMessageData[View->Index].Send(View->Speed,View->Mask,0);
-					Time = aiMessageData[View->Index].GetTime(View->Mask) / 2 + 10;
+					Time = (aiMessageData[View->Index].GetTime(View->Mask) / 2 + 10) * GAME_TIME_COEFF;
 					break;
 			};
-		};		
+		};
 	};
 };
 

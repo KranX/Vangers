@@ -83,7 +83,7 @@ struct SimpleParticleType
 {
 	Vector vR;
 	Vector vD;
-	int Color,dColor;
+	float Color,dColor;
 	void Quant(void);
 	void QuantT(int x,int y,int s);
 	void QuantP(Vector _c, Vector _n, int s,int c);
@@ -92,7 +92,7 @@ struct SimpleParticleType
 
 struct ParticleInitDataType
 {
-	int LifeTime;																		   
+	int LifeTime;
 	int Velocity;
 	int FirstRadius,EndRadius;
 	int FirstColor,EndColor;
@@ -107,7 +107,7 @@ struct ParticleObject : BaseObject
 	int Mode,Phase,dPhase;
 
 	SimpleParticleType* Data;
-	
+
 	void InitParicle(int num);
 	void Init(StorageType* s);
 	void Free(void);
@@ -134,7 +134,7 @@ struct WaterParticleObject : BaseObject
 	int Velocity;
 
 	SimpleParticleType* Data;
-	
+
 	void InitParicle(int num);
 	void Init(StorageType* s);
 	void Free(void);
@@ -149,7 +149,10 @@ struct TargetParticleType
 	int Color;
 	Vector vR,vT,vD;
 	int s;
-	short pDist, LifeTime;
+	int pDist, LifeTime;
+	double MoveAccumX,MoveAccumY,MoveAccumZ;
+	double AccelAccumX,AccelAccumY;
+	double DragAccumX,DragAccumY;
 	void aQuant(void);
 	void aQuant2(void);
 
@@ -165,6 +168,7 @@ struct TargetParticleObject : BaseObject
 	TargetParticleType* Data;
 	Vector vTarget;
 	int FadeTime,FadeNum;
+	double FadeAccum;
 
 	void InitParicle(int num);
 	void Init(StorageType* s);
@@ -193,10 +197,12 @@ const int PG_STYLE_REINCAR = 2;
 struct ParticleGenerator : BaseObject
 {
 	Vector vTarget,vDelta;
+	double SteerAccumX,SteerAccumY,SteerAccumZ;
+	double MoveAccumX,MoveAccumY,MoveAccumZ;
 	int Speed,Precision;
 	int MoveMode,TargetMode;
 	int ParticleStorage,ParticleType;
-	int Time;	
+	int Time;
 	int FlyRadius;
 
 	void Init(StorageType* s);

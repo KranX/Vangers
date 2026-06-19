@@ -8,6 +8,7 @@
 //#define EFFECT_KHZ	22050
 #define SPEECH_KHZ	22050
 #define DELTA_KHZ	2000
+#define MOTOR_SOUND_NATIVE_KHZ	22050
 
 #define DISTANCE_TO_TOWN 2000
 #define DISTANCE_TO_SICRET 512
@@ -47,6 +48,9 @@ struct SndParameters {
 	};
 
 static int *TrackCDTime = 0;
+static int CurrentMotorFileType = -1;
+static int CurrentMotorFrequency = MOTOR_SOUND_NATIVE_KHZ;
+static int CurrentMotorFrequencyMode = 0;
 
 static const char* SndMotorFileName[7*2] = {
 	"raffa",  "raffa2",
@@ -66,7 +70,7 @@ static SndParameters SndData[EFF_MAX] = {
 	{  4,2,255,0,0,"copterig",NULL },
 	{  4,2,255,0,0,"cutterig",NULL },
 	{  4,2,255,0,0,"crotrig",NULL },
-	{  1,1,255,0,0,"explode",NULL },
+	{  2,1,255,0,0,"explode",NULL },
 	{  1,1,128,DS_QUEUE,0,"explode2",NULL },
 	{  1,3,255,0,0,"crustest",NULL },
 	{  1,2,0,0,0,"collis",NULL },
@@ -227,19 +231,46 @@ void RestoreSOUND(void)
 }
 
 void SetMotorFile( int type ){
+	CurrentMotorFileType = type;
 	SndData[EFF_DRIVING].fname = SndMotorFileName[type*2];
 //	SndData[EFF_START].fname = SndMotorFileName[type*3+1];
 	SndData[EFF_STOP].fname = SndMotorFileName[type*2+1];
 
 	LoadMotorSound();
+	CurrentMotorFrequency = MOTOR_SOUND_NATIVE_KHZ;
+	CurrentMotorFrequencyMode = 0;
+	lastSoundFlag &= ~SoundMotor;
+}
+
+void SetMotorFileIfChanged( int type ){
+	if(CurrentMotorFileType != type)
+		SetMotorFile(type);
+}
+
+static void SetMotorSoundFrequency(int frequency)
+{
+	int mode = frequency == MOTOR_SOUND_NATIVE_KHZ ? 0 : 1;
+	if(CurrentMotorFrequency == frequency && CurrentMotorFrequencyMode == mode)
+		return;
+
+	if(SndData[EffectInFrequence].lpDSB)
+		SetSoundFrequency(SndData[EffectInFrequence].lpDSB, frequency);
+	if(SndData[EffectInFrequence + 1].lpDSB)
+		SetSoundFrequency(SndData[EffectInFrequence + 1].lpDSB, frequency);
+
+	if(CurrentMotorFrequencyMode != mode)
+		lastSoundFlag &= ~SoundMotor;
+	CurrentMotorFrequency = frequency;
+	CurrentMotorFrequencyMode = mode;
+}
+
+void ResetMotorSoundFrequency(void){
+	SetMotorSoundFrequency(MOTOR_SOUND_NATIVE_KHZ);
 }
 
 void SetMotorSound(int speed){
 	if ((speed > 0) && (speed < 11)){
-		if(SndData[EffectInFrequence].lpDSB)
-			SetSoundFrequency(SndData[EffectInFrequence].lpDSB, EFFECT_KHZ + DELTA_KHZ*speed);
-		if(SndData[EffectInFrequence + 1].lpDSB)
-			SetSoundFrequency(SndData[EffectInFrequence + 1].lpDSB, EFFECT_KHZ + DELTA_KHZ*speed);
+		SetMotorSoundFrequency(EFFECT_KHZ + DELTA_KHZ*speed);
 		}
 }
 

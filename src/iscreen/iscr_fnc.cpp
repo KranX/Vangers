@@ -167,6 +167,7 @@ ServerFindChain* iGetCurServer(void);
 
 void SetSoundVolume(int);
 void EffectsOff(void);
+void iSetFPS(int state);
 
 int acsQuant(void);
 void acsHandleExtEvent(int code,int data0 = 0,int data1 = 0,int data2 = 0);
@@ -592,7 +593,7 @@ void iQuantFirst(void)
 #ifndef _ACI_SKIP_MAINMENU_
         iSetOptionValueCHR(iPLAYER_NAME2, (lang() == RUSSIAN ? "‚ ­ЈҐа" : "Vanger"));
         iSetOptionValueCHR(iPLAYER_PASSWORD, iSTR_DefaultPassword);
-        iSetOptionValueCHR(iHOST_NAME, "vangers.net");
+        iSetOptionValueCHR(iHOST_NAME, "v5.vangers.net");
         iSetOptionValueCHR(iSERVER_NAME, iSTR_NONE);
         iSetOptionValueCHR(iPROXY_SERVER, "192.1.1.1");
         iSetOptionValueCHR(iPROXY_PORT, "1080");
@@ -2126,7 +2127,7 @@ void iLoadData(void)
 	iHandleExtEvent(iEXT_UPDATE_SOUND_VOLUME);
 	iHandleExtEvent(iEXT_UPDATE_MUSIC_VOLUME);
 
-	iHandleExtEvent(iEXT_UPDATE_TUTORIAL_MODE);
+	iHandleExtEvent(iEXT_UPDATE_FPS_MODE);
 
 	iHandleExtEvent(iEXT_INIT_KEEP_OPTIONS);
 
@@ -2248,6 +2249,9 @@ void iHandleExtEvent(int code,int data)
 				XGR_MouseObj.DisablePrompt();
 			else
 				XGR_MouseObj.EnablePrompt();
+			break;
+		case iEXT_UPDATE_FPS_MODE:
+			iSetFPS(iGetOptionValue(iFPS_60));
 			break;
 		case iEXT_UPDATE_MUSIC_MODE:
 #ifndef _NO_CDAUDIO_

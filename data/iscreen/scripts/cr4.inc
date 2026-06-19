@@ -260,7 +260,6 @@ Screen "Credits7"
 	}
 }
 
-#define Credits8_Logo0_PosY	307
 #define Credits8_Back_Option_PosX	616
 #define Credits8_Back_Option_PosY	424
 
@@ -346,24 +345,4 @@ Screen "Credits8"
 			}
 		}
 	}
-	#define LOGO_OBJ_ID	"Logo0"
-	Object "Logo0" {
-		align_x center
-		align_x_offs 200
-		y	$Credits8_Logo0_PosY
-
-		Element BITMAP {
-			align_x 	center
-			align_y 	center
-
-			terrain_num	$TERRAIN4
-
-			bmp_null_level	148
-			null_level	128
-
-			bmp_file	"resource/iscreen/bitmap/kranx_logo.bmp"
-		}
-		$LOGO_EV
-	}
 }
-

@@ -21,6 +21,7 @@
 
 #include "_xsound.h"
 
+#define DEFINE_GAME_RTO_TIMERS
 #include "runtime.h"
 
 #include "sqexp.h"
@@ -36,6 +37,8 @@
 
 #include "actint/item_api.h"
 #include "units/uvsapi.h"
+
+void reconfigure_runtime_fps_scaled_state(double old_coeff,double new_coeff);
 
 #include "terra/world.h"
 #include "terra/vmap.h"
@@ -202,9 +205,7 @@ char* host_name = 0;
 int host_port = DEFAULT_SERVER_PORT;
 
 int network_log = 0;
-
-const int FPS_PERIOD = 50;
-int fps_frame,fps_start;
+int fps_frame,fps_start,uvsQuantFrame,gameDQuantFrame,actQuantFrame,MLQuantFrame;
 char fps_string[20];
 
 int stop_all_except_me = 0;
@@ -523,19 +524,21 @@ int xtInitApplication(void) {
 
     // Runtime objects init...
 
-    xtCreateRuntimeObjectTable(RTO_MAX_ID);
-    GameQuantRTO *gqObj = new GameQuantRTO;
-    MainMenuRTO *mmObj = new MainMenuRTO;
-    EscaveRTO *eObj = new EscaveRTO;
-    EscaveOutRTO *eoObj = new EscaveOutRTO;
-    FirstEscaveRTO *fObj = new FirstEscaveRTO;
-    FirstEscaveOutRTO *foObj = new FirstEscaveOutRTO;
-    PaletteTransformRTO *pObj = new PaletteTransformRTO;
-    LoadingRTO1 *lObj1 = new LoadingRTO1;
-    LoadingRTO2 *lObj2 = new LoadingRTO2;
-    LoadingRTO3 *lObj3 = new LoadingRTO3;
-    ShowImageRTO *siObj = new ShowImageRTO;
-    ShowAviRTO *saObj = new ShowAviRTO;
+	xtCreateRuntimeObjectTable(RTO_MAX_ID);
+	RTO_GAME_QUANT_TIMER = 1000 / 20;
+	GAME_TIME_COEFF = 1;
+	GameQuantRTO* gqObj = new GameQuantRTO(RTO_GAME_QUANT_TIMER);
+	MainMenuRTO* mmObj = new MainMenuRTO;
+	EscaveRTO* eObj = new EscaveRTO;
+	EscaveOutRTO* eoObj = new EscaveOutRTO;
+	FirstEscaveRTO* fObj = new FirstEscaveRTO;
+	FirstEscaveOutRTO* foObj = new FirstEscaveOutRTO;
+	PaletteTransformRTO* pObj = new PaletteTransformRTO;
+	LoadingRTO1* lObj1 = new LoadingRTO1;
+	LoadingRTO2* lObj2 = new LoadingRTO2;
+	LoadingRTO3* lObj3 = new LoadingRTO3;
+	ShowImageRTO* siObj = new ShowImageRTO;
+	ShowAviRTO* saObj = new ShowAviRTO;
 
 //	  siObj -> SetNumFiles(1);
 //	  siObj -> SetName("resource\\iscreen\\bitmap\\kdlogo.bmp",0);
@@ -691,6 +694,14 @@ _MEM_STATISTIC_("AFTER IQUANTFIRST INIT -> ");
 #else
 	aLoadFonts32();
 #endif
+	// initialize proper FPS setting here, cuz earlier stored settings not available
+	// and initially wrong config value could be set
+	if (iGetOptionValue(iFPS_60)) {
+		RTO_GAME_QUANT_TIMER = 1000 / 60;
+		GAME_TIME_COEFF = 3;
+	}
+	GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
+	p -> SetTimer(RTO_GAME_QUANT_TIMER);
 	
 	XGR_Obj.set_fullscreen(iGetOptionValue(iFULLSCREEN));
 	iSetResolution(iGetOptionValue(iSCREEN_RESOLUTION));
@@ -964,10 +975,11 @@ _MEM_STATISTIC_("AFTER TABLE OPEN  -> ");
 #ifdef ACTINT
 	if (XGR_Obj.get_screen_scale_x() == 1) {
 		curGMap = new iGameMap(aScrDisp -> curIbs -> CenterX,aScrDisp -> curIbs -> CenterY,XSIDE,YSIDE);
+		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 	} else {
 		curGMap = new iGameMap(XGR_MAXX / 2, XGR_MAXY / 2, XGR_MAXX / 2, XGR_MAXY / 2);
+		COMPAS_RIGHT = HD_COMPAS_RIGHT;
 	}
-	COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 #else
 	curGMap = new iGameMap(XGR_MAXX/2,XGR_MAXY/2,XSIDE,YSIDE);
 #endif
@@ -1109,8 +1121,8 @@ int GameQuantRTO::Quant(void)
 		gameQuant();
 //		DBGCHECK
 		frame++;
-		if(++fps_frame == FPS_PERIOD) {
-			sprintf(fps_string,"%.1f",(double)FPS_PERIOD/(SDL_GetTicks() - (int)fps_start)*1000);
+		if(++fps_frame == RTO_GAME_QUANT_TIMER) {
+			sprintf(fps_string,"%.1f",(double)(RTO_GAME_QUANT_TIMER)/(SDL_GetTicks() - (int)fps_start)*1000);
 #ifdef _DEBUG
 			network_analysis(network_analysis_buffer,0);
 #else
@@ -1627,6 +1639,23 @@ void KeyCenter(SDL_Event *key)
 				message_mode++;
 #endif
 			break;
+		case SDL_SCANCODE_G:
+			mod = SDL_GetModState();
+			if (mod&KMOD_CTRL) {
+				double old_game_time_coeff = GAME_TIME_COEFF;
+				if (GAME_TIME_COEFF == 1) {
+					RTO_GAME_QUANT_TIMER = 1000 / 60;
+					GAME_TIME_COEFF = 3;
+				} else {
+					RTO_GAME_QUANT_TIMER = 1000 / 20;
+					GAME_TIME_COEFF = 1;
+				}
+				GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
+				p -> SetTimer(RTO_GAME_QUANT_TIMER);
+				reconfigure_runtime_fps_scaled_state(old_game_time_coeff,GAME_TIME_COEFF);
+				//Toggle FPS
+			}
+			break;
 		case SDL_SCANCODE_F5:
 			if(!Pause){
 				camera_rotate_enable = 1 - camera_rotate_enable;
@@ -1696,10 +1725,6 @@ iGameMap::iGameMap(int _x,int _y,int _xside,int _yside)
 	UcutRight = xc + xside;
 	VcutUp = yc - yside;
 	VcutDown = yc + yside;
-	
-	if (XGR_Obj.get_screen_scale_x() == 1.6f) {
-		UcutRight = (XGR_MAXX - (800 - aScrDisp -> curIbs -> SizeX));
-	}
 
 //	  focus = (xside*540)/180;
 	focus_flt = focus = 512;
@@ -1759,10 +1784,6 @@ void iGameMap::change(int Dx,int Dy,int mode,int xcenter,int ycenter)
 	UcutRight = xc + xside;
 	VcutUp = yc - yside;
 	VcutDown = yc + yside;
-	
-	if (XGR_Obj.get_screen_scale_x() == 1.6f) {
-		UcutRight = (XGR_MAXX - (I_RES_X - aScrDisp -> curIbs -> SizeX));
-	}
 
 	TurnSecX = TurnSecX*xsize/xsize_old;
 	camera_zmin = camera_zmin*xsize/xsize_old;
@@ -1781,7 +1802,7 @@ void iGameMap::change(int Dx,int Dy,int mode,int xcenter,int ycenter)
 
 void iGameMap::reset(void)
 {
-	std::cout<<"iGameMap::reset"<<std::endl;
+	// std::cout<<"iGameMap::reset"<<std::endl;
 //	ViewX = PlayerInitData.x;
 //	ViewY = PlayerInitData.y;
 
@@ -1818,15 +1839,17 @@ void calc_view_factors()
 
 	//if(!(XRec.flags & (XRC_RECORD_MODE | XRC_PLAY_MODE)) && prev_frame_time)
 	//Stalkerg
-	if((speed_correction_enabled | NetworkON) && prev_frame_time){
-		int dt = SDL_GetTicks() - prev_frame_time;
-		if(dt > 15 && dt < 200) {
-			speed_correction_factor = (double)dt*((double)STANDART_FRAME_RATE/1000.)*speed_correction_tau + speed_correction_factor*(1 - speed_correction_tau);
-		}
-	} else {
-		speed_correction_factor = 1;
-	}
-	//speed_correction_factor = 1;
+//	if((speed_correction_enabled | NetworkON) && prev_frame_time){
+//		int dt = SDL_GetTicks() - prev_frame_time;
+//		if(dt > 5 && dt < 200) {
+//			speed_correction_factor = (double)dt*((double)STANDART_FRAME_RATE/1000.)*speed_correction_tau + speed_correction_factor*(1 - speed_correction_tau);
+//		}
+//		std::cout<<"speed_correction_factor:"<<speed_correction_factor<<" dt:"<<dt<<std::endl;
+//	} else {
+//		speed_correction_factor = 1;
+//	}
+	speed_correction_factor = (double)50.*((double)STANDART_FRAME_RATE/1000.)*speed_correction_tau + speed_correction_factor*(1 - speed_correction_tau);
+
 	//std::cout<<"DT::"<<SDL_GetTicks() - prev_frame_time<<std::endl;
 
 	prev_frame_time = SDL_GetTicks();
@@ -1910,18 +1933,25 @@ void iGameMap::draw(int self)
 		SoundQuant();
 	}
 
-	if(GeneralSystemSkip) {
+	if(GeneralSystemSkip && ++actQuantFrame >= (int)round(GAME_TIME_COEFF)) {
 		actIntQuant();
+		actQuantFrame = 0;
 	}
-	
-	uvsQuant();
+	if (++uvsQuantFrame >= (int)round(GAME_TIME_COEFF)) {
+		uvsQuant();
+		uvsQuantFrame = 0;
+	}
 
 	if(GeneralSystemSkip && !ChangeWorldSkipQuant){
 		if(curGMap) {
 			BackD.restore();
-			MLquant();
+
+			if (++MLQuantFrame >= (int)round(GAME_TIME_COEFF)) {
+				MLquant(); // Moveland animation frame is here!!!
+				MLQuantFrame = 0;
+			}
 			//try {
-				GameD.Quant();
+			GameD.Quant();
 			/*} catch (...) {
 				std::cout<<"ERROR:Some GameD.Quant is error."<<std::endl;
 			}*/
@@ -2496,6 +2526,7 @@ void set_map_to_ibs(ibsObject* ibs)
 		COMPAS_RIGHT = DEFAULT_COMPAS_RIGHT;
 	} else {
 		set_map_to_fullscreen();
+		COMPAS_RIGHT = HD_COMPAS_RIGHT;
 	}
 }
 
@@ -2782,7 +2813,9 @@ void GameTimerON_OFF(void)
 {
 	GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
 	if(!p) return;
-	if(!p -> Timer) p -> SetTimer(RTO_GAME_QUANT_TIMER);
+	if(!p -> Timer) {
+		p -> SetTimer(RTO_GAME_QUANT_TIMER);
+	}
 	else p -> SetTimer(0);
 }
 

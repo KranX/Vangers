@@ -84,6 +84,9 @@ int XGR_SysMsgFlag = 0;
 
 bool XGR_FULL_SCREEN = false;
 
+const int XGR_SCALED_RENDER_SOURCE_X = 800;
+const int XGR_SCALED_RENDER_SOURCE_Y = 600;
+
 void XGR_FinitFnc(void)
 {
 	XGR_Finit();
@@ -963,8 +966,8 @@ void XGR_Screen::flip()
 			SDL_SetTextureColorMod(HDBackgroundTexture, averageColorPalette.r, averageColorPalette.g, averageColorPalette.b);
 			SDL_RenderCopy(sdlRenderer, HDBackgroundTexture, NULL, NULL);
 
-			SDL_Rect src_rect {0, 0, 800, 600};
-			int new_width = screen_scale_y * 800;
+			SDL_Rect src_rect {0, 0, XGR_SCALED_RENDER_SOURCE_X, XGR_SCALED_RENDER_SOURCE_Y};
+			int new_width = screen_scale_y * XGR_SCALED_RENDER_SOURCE_X;
 			SDL_Rect dst_rect {
 					.x = (xgrScreenSizeX - new_width)/2,
 					.y = 0,
@@ -2254,9 +2257,16 @@ XGR_MousePromptData* XGR_MousePromptScreen::check_xy(int x,int y)
 void XGR_Mouse::InitPrompt(void)
 {
 	int x,y,x0,y0,sx,sy;
+	int prompt_sx = XGR_MAXX;
+	int prompt_sy = XGR_MAXY;
 	XGR_MousePromptData* p;
 
 	if(!promptData) return;
+
+	if(XGR_Obj.get_is_scaled_renderer()){
+		if(prompt_sx > XGR_SCALED_RENDER_SOURCE_X) prompt_sx = XGR_SCALED_RENDER_SOURCE_X;
+		if(prompt_sy > XGR_SCALED_RENDER_SOURCE_Y) prompt_sy = XGR_SCALED_RENDER_SOURCE_Y;
+	}
 
 	x = PosX + SpotX + PromptDeltaX;
 	y = PosY + SpotY + PromptDeltaY;
@@ -2270,7 +2280,7 @@ void XGR_Mouse::InitPrompt(void)
 	x0 = PosX + sx;
 	y0 = PosY + sy;
 
-	if((x0 + sx + p -> textSizeX) < XGR_MAXX){
+	if((x0 + sx + p -> textSizeX) < prompt_sx){
 		PromptX = x0 + sx;
 	}
 	else {
@@ -2280,7 +2290,7 @@ void XGR_Mouse::InitPrompt(void)
 		else
 			return;
 	}
-	if((y0 + sy + p -> textSizeY) < XGR_MAXY){
+	if((y0 + sy + p -> textSizeY) < prompt_sy){
 		PromptY = y0 + sy;
 	}
 	else {

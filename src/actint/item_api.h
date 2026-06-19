@@ -259,6 +259,7 @@ char getObjectPosition(int& x,int& y);
 actintItemData* aciGetLast(void);
 
 int aciGetScreenItem(int x,int y);
+void aciUpdateScreenMousePoint(int x,int y);
 
 int aciReInitItem(actintItemData* p);
 int aciReInitItemXY(actintItemData* p,int x,int y);

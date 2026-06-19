@@ -61,6 +61,9 @@ struct ParticleMapProcess{
 	int Ymax;
 	int phase;
 	int ProcessTime;
+	int CurrDev;
+	int DeviationTime;
+	int LegacyStepDelay;
 	ParticleMapProcessType* Type;
 	int PrevCurrDev;
 

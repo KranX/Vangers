@@ -8,6 +8,9 @@ Vitaly "Fenex" Busko
 XiadaOku
 Yury "stalkerg" Zhuravlev
 ZeeWanderer
+Testing support:
+Richter Klinn
+John Tomson
  
 And many thanks to all
 who participated in the closed test

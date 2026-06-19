@@ -1,4 +1,5 @@
 #include "global.h"
+#include "runtime.h"
 
 #include "terra/world.h"
 #include "palette.h"
@@ -109,7 +110,31 @@ int PaletteTransform::quant(void)
 }
 #endif
 
-void pal_iter0(void)
+static inline int palette_legacy_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool palette_legacy_step(void)
+{
+	static int counter = 0;
+	static int last_ticks = 0;
+
+	int ticks = palette_legacy_ticks();
+	if(ticks != last_ticks){
+		counter = 0;
+		last_ticks = ticks;
+	}
+
+	if(++counter >= ticks){
+		counter = 0;
+		return true;
+	}
+	return false;
+}
+
+void pal_iter0(int legacy_step)
 {
 	if(PAL_WAVE_TERRAIN == -1 || PAL_WAVE_TERRAIN >= TERRAIN_MAX) return;
 	const int DSIZE = 8;
@@ -141,26 +166,28 @@ void pal_iter0(void)
 			if(*p > 63) *p = 63;
 			p++;
 			}
-	if(--cnt) off = off + add;
-	else {
-		cnt = PRD;
-		add = realRND(2) ? 1 : -1;
-		if(add > 0) off = -DSIZE;
-		else off = SZ - 1;
-		}
+	if(legacy_step){
+		if(--cnt) off = off + add;
+		else {
+			cnt = PRD;
+			add = realRND(2) ? 1 : -1;
+			if(add > 0) off = -DSIZE;
+			else off = SZ - 1;
+			}
+	}
 
 #ifdef _ROAD_
 	if(MuteLog) return;
-	static int timer = 10 + realRND(100);
+	static int timer = (10 + realRND(100)) * GAME_TIME_COEFF;
 	if(!--timer){
 		SOUND_GLOBAL();
-		timer = 20 + realRND(100);
+		timer = (20 + realRND(100)) * GAME_TIME_COEFF;
 		}
 	if(BackgroundSound) StartEFFECT(EFF_GLOBAL,1);
 #endif
 }
 
-void pal_iter1(void)
+void pal_iter1(int legacy_step)
 {
 	if(PAL_WAVE_TERRAIN == -1 || PAL_WAVE_TERRAIN >= TERRAIN_MAX) return;
 	const int DSIZE = 10;
@@ -192,13 +219,15 @@ void pal_iter1(void)
 			if(*p > 63) *p = 63;
 			p++;
 			}
-	if(--cnt) off = off + add;
-	else {
-		cnt = PRD;
-		add = realRND(2) ? 1 : -1;
-		if(add > 0) off = -DSIZE;
-		else off = SZ - 1;
-		}
+	if(legacy_step){
+		if(--cnt) off = off + add;
+		else {
+			cnt = PRD;
+			add = realRND(2) ? 1 : -1;
+			if(add > 0) off = -DSIZE;
+			else off = SZ - 1;
+			}
+	}
 }
 
 int PAL_MAX;
@@ -217,7 +246,7 @@ void pal_iter2(void)
 	int add,i,j;
 	uchar *p,*po;
 	for(int ind = 0;ind < PAL_MAX;ind++){
-		offset[ind] = rPI(offset[ind] + PAL_SPEED[ind]);
+		offset[ind] = rPI(offset[ind] + (int)round(PAL_SPEED[ind] / GAME_TIME_COEFF));
 		add = PAL_AMPL[ind]*SI[offset[ind]]/UNIT;
 		p = palbuf + 3*BEGCOLOR[PAL_TERRAIN[ind]];
 		po = palbufOrg + 3*BEGCOLOR[PAL_TERRAIN[ind]];
@@ -250,8 +279,9 @@ void pal_iter_init(void)
 
 void pal_iter(void)
 {
-	pal_iter0();
-	pal_iter1();
+	int legacy_step = palette_legacy_step();
+	pal_iter0(legacy_step);
+	pal_iter1(legacy_step);
 	pal_iter2();
 #ifdef TERRAIN16
 	XGR_SetPal(palbuf,0,256);

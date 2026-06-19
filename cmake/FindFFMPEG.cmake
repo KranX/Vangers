@@ -80,7 +80,11 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 		avutil
 		avutil-55
 		avutil-56
+		avutil-57
 		avutil-58
+		avutil-59
+		avutil-60
+		avutil-61
 	PATHS
 		/usr/local/lib
 		/usr/pkg/lib/ffmpeg3
@@ -102,7 +106,11 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 		avcodec
 		avcodec-57
 		avcodec-58
+		avcodec-59
 		avcodec-60
+		avcodec-61
+		avcodec-62
+		avcodec-63
 	PATHS
 		/usr/local/lib
 		/usr/pkg/lib/ffmpeg3
@@ -123,7 +131,11 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		avformat
 		avformat-57
 		avformat-58
+		avformat-59
 		avformat-60
+		avformat-61
+		avformat-62
+		avformat-63
 	PATHS
 		/usr/local/lib
 		/usr/pkg/lib/ffmpeg3

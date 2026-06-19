@@ -3,6 +3,7 @@
 #include "../global.h"
 #include "lang.h"
 #include "../iscreen/hfont.h"
+#include "../runtime.h"
 
 #include "aci_evnt.h"
 #include "aci_scr.h"
@@ -30,6 +31,7 @@ extern char* aciSTR_ON;
 extern char* aciSTR_OFF;
 
 extern iScreenOption** iScrOpt;
+int acs_is_legacy_caller(void);
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
@@ -86,6 +88,40 @@ aciScreenDispatcher* acsScrD;
 HFont** acsFntTable = NULL;
 
 int aciCurCredits00 = 0;
+int acsSequenceCounter = 0;
+
+static inline bool acs_legacy_caller(void)
+{
+	return acs_is_legacy_caller();
+}
+
+static inline int acs_timer_ticks(int legacy_ticks)
+{
+	if(legacy_ticks <= 0)
+		return 0;
+	if(acs_legacy_caller())
+		return legacy_ticks;
+
+	int ticks = (int)round(legacy_ticks * GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline int acs_timer_limit_ticks(int legacy_ticks)
+{
+	if(legacy_ticks < 0)
+		return -1;
+	if(acs_legacy_caller())
+		return legacy_ticks;
+
+	int ticks = (int)round((legacy_ticks + 1) * GAME_TIME_COEFF) - 1;
+	return ticks >= 0 ? ticks : 0;
+}
+
+static inline int acs_sequence_step_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
 
 int acsEventActive(aciScreenEventCommand* p)
 {
@@ -111,7 +147,6 @@ int acsEventActive(aciScreenEventCommand* p)
 				obj = acsScrD -> GetObject(ACS_TUTORIAL_MODE);
 				if(obj -> activeSeq) return 0;
 			}
-			break;
 	}
 	return 1;
 }
@@ -812,6 +847,7 @@ void aciScreenDispatcher::alloc_mem(void)
 	flags &= ~ACS_NEED_EXIT;
 	flags |= ACS_FORCED_REDRAW;
 	flags |= ACS_FIRST_REDRAW;
+	acsSequenceCounter = 0;
 
 	KeyTrap(ACS_STARTUP_KEY, nullptr);
 
@@ -957,7 +993,7 @@ void aciScreenEvent::Quant(void)
 	int nextQuant = 1;
 
 	while(p){
-		if(p -> StartTimer == CurTimer){
+		if(acs_timer_ticks(p -> StartTimer) == CurTimer) {
 			if(p -> flags & ACS_COMMAND_STARTED){
 				if(!acsEventActive(p))
 					nextQuant = 0;
@@ -972,7 +1008,7 @@ void aciScreenEvent::Quant(void)
 	}
 	if(nextQuant){
 		CurTimer ++;
-		if(CurTimer > MaxTimer) Stop();
+		if(CurTimer > acs_timer_limit_ticks(MaxTimer)) Stop();
 	}
 }
 
@@ -1136,7 +1172,7 @@ int aciScreenDispatcher::Quant(int flush_log)
 
 	if(activeInput){
 		acsInputTimer ++;
-		if(acsInputTimer >= ACS_INPUT_TIMER){
+		if(acsInputTimer >= acs_timer_ticks(ACS_INPUT_TIMER)){
 			acsInputTimer = 0;
 			acsInputFlag = 1;
 		}
@@ -1168,16 +1204,43 @@ int aciScreenDispatcher::Quant(int flush_log)
 int aciScreenDispatcher::ObjectQuant(void)
 {
 	int ret = 0;
+	int sequence_step = 0;
+	int active_sequence = 0;
 	aciScreenObject* p = (aciScreenObject*)curScr -> objList -> fPtr;
+
+	while(p){
+		if(p -> activeSeq){
+			active_sequence = 1;
+			break;
+		}
+		p = (aciScreenObject*)p -> next;
+	}
+
+	if(acs_legacy_caller())
+		sequence_step = active_sequence;
+	else {
+		if(active_sequence){
+			if(++acsSequenceCounter >= acs_sequence_step_ticks()){
+				acsSequenceCounter = 0;
+				sequence_step = 1;
+			}
+		}
+		else
+			acsSequenceCounter = 0;
+	}
+
+	p = (aciScreenObject*)curScr -> objList -> fPtr;
 	while(p){
 		if(p -> activeSeq){
 			p -> ResID = p -> activeSeq -> ResourceID;
 			p -> resPtr = GetResource(p -> ResID);
 			p -> curFrame = p -> activeSeq -> CurFrame;
-			if(p -> activeSeq -> CurFrame == p -> activeSeq -> EndFrame)
-				p -> activeSeq = NULL;
-			else
-				p -> activeSeq -> CurFrame += p -> activeSeq -> FrameDelta;
+			if(sequence_step){
+				if(p -> activeSeq -> CurFrame == p -> activeSeq -> EndFrame)
+					p -> activeSeq = NULL;
+				else
+					p -> activeSeq -> CurFrame += p -> activeSeq -> FrameDelta;
+			}
 			p -> flags |= ACS_REDRAW_OBJECT;
 			ret = 1;
 		}

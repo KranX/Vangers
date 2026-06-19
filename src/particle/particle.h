@@ -47,6 +47,8 @@ struct Particle{
 
 	void BackRestore(void);
 	void GetBackGround(void);
+
+	void valueDecrease();
 };
 
 

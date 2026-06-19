@@ -2276,10 +2276,7 @@ void uvsVanger::get_list_from_ActInt( uvsActInt*& Item, uvsActInt*& Mechos){
 			Pmechos = new uvsMechos(Mechos -> type);
 		}
 
-		if (strcmp(uvsMechosTable[Pmechos -> type] -> name, "LawnMower"))
-			SetMotorFile(uvsMechosTable[Pmechos -> type] -> type);
-		else
-			SetMotorFile(6);
+		SetMotorFile(uvsMechosTable[Pmechos -> type] -> type);
 #ifndef _DEMO_
 		Pmechos -> color = Mechos -> param1;
 #else
@@ -6619,7 +6616,12 @@ int uvsVanger::sellCirt(void){
 				}
 
 
-			if (tmp_good >= tmp_bad && tmp_good > 0 && !dgAbortStatus ){
+			if (dgAbortStatus && tmp_good >= tmp_bad && tmp_good > 0){
+				tmp_good = 0;
+				tmp_bad = 0;
+			}
+
+			if (tmp_good >= tmp_bad && tmp_good > 0){
 				tmp_good = 0;
 
 	//			if(cool_index == -1) ErrH.Abort("uvsVanger::sellCirt - good cirt not found but it have");
@@ -10630,6 +10632,31 @@ void uvsDomChangeFromItem( int type, int what, int where){
 	}
 }
 
+static void uvsRefreshCompletedTabuTaskSellPrice(uvsActInt* pa)
+{
+	int param2;
+
+	if(!pa) return;
+
+	param2 = pa -> param2 & 0x0000FFFF;
+	pa -> sell_price = 0;
+
+	if(!Gamer) return;
+
+	if(Gamer -> Pescave){
+		if((Gamer -> Pescave -> TabuTaskID <= param2) &&
+		   (Gamer -> Pescave -> TabuTaskCount + Gamer -> Pescave -> TabuTaskID > param2))
+			pa -> sell_price = TabuTable[param2] -> cash;
+		return;
+	}
+
+	if(Gamer -> Pspot){
+		if((Gamer -> Pspot -> TabuTaskID <= param2) &&
+		   (Gamer -> Pspot -> TabuTaskCount + Gamer -> Pspot -> TabuTaskID > param2))
+			pa -> sell_price = TabuTable[param2] -> cash;
+	}
+}
+
 void uvsChangeGoodsInList(int world ){
 	uvsActInt *pa = GGamer;
 	if (GGamer){
@@ -10640,18 +10667,9 @@ void uvsChangeGoodsInList(int world ){
 //				uvs_aciChangeOneItem(pa -> type, uvsSetItemType(type, pa -> param1, pa -> param2), pa);
 				uvs_aciChangeOneItem(pa -> type, uvsSetItemType(type, pa -> param1, pa -> param2), pa -> pos_x, pa -> pos_y);
 				if (uvsSetItemType(type, pa -> param1, pa -> param2) == TABUTASK_GOOD){
-					int param2 = (pa -> param2 & 0x0000FFFF);
-
 					SOUND_SUCCESS();
 					pa -> type = TABUTASK_GOOD;
-
-					if (Gamer -> Pescave){
-						if ( (Gamer -> Pescave -> TabuTaskID <= param2) && (Gamer -> Pescave -> TabuTaskCount +Gamer -> Pescave -> TabuTaskID > param2))
-							pa -> sell_price = TabuTable[param2] -> cash;
-					} else {
-						if ( (Gamer -> Pspot -> TabuTaskID <= param2) && (Gamer -> Pspot -> TabuTaskCount +Gamer -> Pspot -> TabuTaskID > param2))
-							pa -> sell_price = TabuTable[param2] -> cash;
-					}
+					uvsRefreshCompletedTabuTaskSellPrice(pa);
 				} else {
 					SOUND_FAILED();
 					pa -> type = TABUTASK_BAD;
@@ -10843,18 +10861,31 @@ uvsPassage* GetPassage(int fromWID, int toWID){
 	uvsWorld *nextW;
 	uvsWorld *fromW;
 
+	if(fromWID < 0 || fromWID >= WORLD_MAX || toWID < 0 || toWID >= WORLD_MAX)
+		return NULL;
+
+	if(!WorldTable[fromWID] || !WorldTable[toWID])
+		return NULL;
+
 	if ( fromWID == toWID ) return NULL;
 
 	if ( fromWID >= MAIN_WORLD_MAX ) {
+		if(WorldTable[fromWID] -> pssTmax <= 0 || !WorldTable[fromWID] -> pssT || !WorldTable[fromWID] -> pssT[0])
+			return NULL;
 		return WorldTable[fromWID] -> pssT[0];
 	}
 
 	if (toWID >= MAIN_WORLD_MAX ) {
 		int lastID = toWID;
+		if(WorldTable[toWID] -> pssTmax <= 0 || !WorldTable[toWID] -> pssT || !WorldTable[toWID] -> pssT[0] || !WorldTable[toWID] -> pssT[0] -> Poutput)
+			return NULL;
 		toWID = WorldTable[toWID] -> pssT[0] -> Poutput -> gIndex;
 
 		if (fromWID == toWID) return WorldTable[fromWID] -> getPassage( getWorld(lastID) );;
 	}
+
+	if(toWID < 0 || toWID >= MAIN_WORLD_MAX)
+		return NULL;
 
 	unsigned int linkage = ChainMap[toWID + fromWID*MAIN_WORLD_MAX],mI;
 
@@ -10864,6 +10895,8 @@ uvsPassage* GetPassage(int fromWID, int toWID){
 
 	if(!nextW) nextW = getWorld(toWID);
 	fromW = getWorld(fromWID);
+	if(!fromW || !nextW)
+		return NULL;
 
 	return	fromW -> getPassage(nextW);
 }
@@ -11012,10 +11045,15 @@ void uvsCheckVangerTabuTask(uvsVanger* pv, int how){
 
 void uvsCheckKronIventTabuTask(int KronType, int KronCount,  int MYresult, int MYitem ){
 	int i;
+	int gamer_mechos_type;
 #ifdef TABU_REPORT
 	tabu < ConTimer.GetTime();
 	tabu < " Kron Type " <= KronType < "KronCount " <= KronCount < "MYresult " <= MYresult < "MYitem " <= MYitem < "\n";
 #endif
+	if (Gamer && Gamer -> Pmechos)
+		gamer_mechos_type = Gamer -> Pmechos -> type;
+	else
+		gamer_mechos_type = lastMechos;
 	for( i = 0; i < MAX_TABUTASK; i++){
 		if ( TabuTable[i] -> status == UVS_TABUTASK_STATUS::ACTIVE){
 			switch(TabuTable[i] -> target){
@@ -11221,12 +11259,12 @@ void uvsCheckKronIventTabuTask(int KronType, int KronCount,  int MYresult, int M
 
 					if (TabuTable[i] -> work_on_target != UVS_TABUTASK_WORK::END_RACE_RAFFA){
 
-						if ((TabuTable[i] -> param == -1) || (Gamer -> Pmechos -> type == TabuTable[i] -> param)){
+						if ((TabuTable[i] -> param == -1) || (gamer_mechos_type >= 0 && gamer_mechos_type == TabuTable[i] -> param)){
 							uvsChangeTabuTask(i, UVS_TABUTASK_STATUS::GOOD);
 							uvsChangeTownTabuTask(i);
 							TabuTable[i]  -> status = UVS_TABUTASK_STATUS::OK;
 						}
-					} else if (uvsMechosTable[Gamer -> Pmechos -> type] -> type == UVS_CAR_TYPE::RAFFA){
+					} else if (gamer_mechos_type >= 0 && uvsMechosTable[gamer_mechos_type] -> type == UVS_CAR_TYPE::RAFFA){
 						uvsChangeTabuTask(i, UVS_TABUTASK_STATUS::GOOD);
 						uvsChangeTownTabuTask(i);
 						TabuTable[i]  -> status = UVS_TABUTASK_STATUS::OK;
@@ -11394,16 +11432,7 @@ void uvsChangeTabuTask(int type, int status){
 					uvs_aciChangeOneItem(pa -> type, TABUTASK_GOOD, pa -> pos_x, pa -> pos_y);
 
 					pa -> type = TABUTASK_GOOD;
-
-					int param2 = pa -> param2 & 0x0000FFFF;
-
-					if (Gamer -> Pescave){
-						if ( (Gamer -> Pescave -> TabuTaskID <= param2) && (Gamer -> Pescave -> TabuTaskCount +Gamer -> Pescave -> TabuTaskID > param2))
-							pa -> sell_price = TabuTable[param2] -> cash;
-					} else {
-						if ( (Gamer -> Pspot -> TabuTaskID <= param2) && (Gamer -> Pspot -> TabuTaskCount +Gamer -> Pspot -> TabuTaskID > param2))
-							pa -> sell_price = TabuTable[param2] -> cash;
-					}
+					uvsRefreshCompletedTabuTaskSellPrice(pa);
 				} else {
 					SOUND_FAILED()
 					uvs_aciChangeOneItem(pa -> type, TABUTASK_BAD, pa -> pos_x, pa -> pos_y);

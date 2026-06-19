@@ -3,8 +3,8 @@
 
 #define LAG -3000
 //#define EVENTS_LOG
-#define MIN_SERVER_VERSION 1
-#define MAX_SERVER_VERSION 2
+#define MIN_SERVER_VERSION 4
+#define MAX_SERVER_VERSION 4
 
 #ifdef EVENTS_LOG
 XStream fout("lst", XS_OUT);
@@ -1067,8 +1067,8 @@ int Player::receive() {
 			if (GET_OBJECT_TYPE(obj_ID) == NID_VANGER) {
 				x = obj->x;
 				y = obj->y;
-				y_half_size_of_screen = in_buffer.get_byte() << 1;
-				obj->body_size = in_buffer.event_size() - 16;
+				y_half_size_of_screen = in_buffer.get_word();
+				obj->body_size = in_buffer.event_size() - 17;
 				obj->body = new unsigned char[obj->body_size];
 				in_buffer.read(obj->body, obj->body_size);
 				world->process_create(!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj);
@@ -1148,8 +1148,8 @@ int Player::receive() {
 			if (GET_OBJECT_TYPE(obj_ID) == NID_VANGER) {
 				x = obj->x;
 				y = obj->y;
-				y_half_size_of_screen = in_buffer.get_byte() << 1;
-				int update_size = in_buffer.event_size() - 14;
+				y_half_size_of_screen = in_buffer.get_word();
+				int update_size = in_buffer.event_size() - 15;
 				if (update_size > obj->body_size)
 					SERVER_ERROR_NO_EXIT("Update body size is greater than create size", obj_ID);
 				in_buffer.read(obj->body, update_size);
@@ -1275,14 +1275,25 @@ int Player::receive() {
 		}
 
 		case SET_WORLD: {
-			if (world) {
-				SERVER_ERROR_NO_EXIT("Duplicated set world", ID);
-				in_buffer.ignore_event();
-				break;
-			}
 			int world_ID = in_buffer.get_byte();
 			int world_y_size = in_buffer.get_short();
 			int world_status = 0;
+			if (world) {
+				if (world->ID == world_ID) {
+					SERVER_ERROR_NO_EXIT("Duplicated set world", ID);
+					out_buffer.begin_event(SET_WORLD_RESPONSE);
+					out_buffer < (unsigned char)world_ID;
+					out_buffer < (unsigned char)0;
+					out_buffer.end_event();
+
+					IN_EVENTS_LOG(SET_WORLD);
+					OUT_EVENTS_LOG1(SET_WORLD_RESPONSE, 0);
+					break;
+				}
+
+				SERVER_ERROR_NO_EXIT("Set world without leave", ID);
+				world->detach_player(this);
+			}
 			if ((world = game->worlds.search(world_ID)) == 0) {
 				world = new World(world_ID, world_y_size);
 				game->worlds.append(world);
@@ -1587,7 +1598,7 @@ Object::Object() {
 
 Object::~Object() {
 	if (body)
-		delete body;
+		delete[] body;
 }
 
 /***********************************************************************

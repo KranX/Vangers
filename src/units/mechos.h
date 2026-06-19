@@ -176,7 +176,7 @@ struct uvsUnitType : uvsKernel
 	int dEnergy,DropEnergy;
 	int DelayDrop,DropTime;
 	int uvsMaxSpeed;	
-	int MaxOxigenResource,OxigenResource;
+	int MaxOxigenResource,OxigenResource, OxigenQuant;
 	int MaxPassageCount,PassageCount;
 
 	int DestroyClass;
@@ -223,6 +223,10 @@ struct ActionUnit : Object
 	int PrevVisibility;
 
 	int Count;
+	double HideTurnAccum;
+	double ActionSpeedAccum;
+	double ActionHideMoveAccumX;
+	double ActionHideMoveAccumY;
 
 	int WavePhase;
 	WaveProcess* wProcess;
@@ -275,6 +279,7 @@ struct TrackUnit : ActionUnit , TrackLinkType
 	int EnvirReaction,TargetReaction;
 
 	int NullTime;
+	double FrontStepAccum;
 
 	char MoveDir,FrontDir;
 	BranchType* PrevBranch;
@@ -283,6 +288,7 @@ struct TrackUnit : ActionUnit , TrackLinkType
 	int CheckWayCount,MaxWayCount;
 
 	int DestroyPhase;
+	int DestroyFrame;
 
 	int PrevWheelX[6];
 	int PrevWheelY[6];
@@ -755,6 +761,9 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 	dastPoly3D* MolePoint1;
 	dastPoly3D* MolePoint2;
 	int Molerizator;
+	Vector MoleTrailPrev;
+	int MoleTrailStep;
+	int MoleTrailValid;
 	int VangerCloneID;
 
 	VangerUnit* VangerChanger;
@@ -783,9 +792,10 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 	SensorDataType* ExternalObject;
 	SensorDataType* ExternalLastSensor;
 	SensorDataType* ExternalSensor;
-	int RandomUpdate;
+	int UpdateStationActive;
+	int UpdateStationTouched;
 
-	PlayerData* pNetPlayer;	
+	PlayerData* pNetPlayer;
 	
 	int NetworkArmor,NetworkEnergy;	
 	int TabuUse;
@@ -896,6 +906,8 @@ struct InsectUnit : ActionUnit
 {
 	Vector Target;
 	int BeebType;
+	double VisibleDirectSpeedAccum;
+	double HideMoveAccumX,HideMoveAccumY;
 
 	void Init(void);
 

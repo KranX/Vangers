@@ -1,6 +1,6 @@
 
 #include "../global.h"
-
+#include "../runtime.h"
 
 #define _DAST_
 //#define UPMECH 24
@@ -116,19 +116,39 @@ void dastPoly3D::set(  Vector _p, int _n ){
 	*p = _p;
 	n = _n;
 	count = 0;
+	quant = 0;
 }
 
 void dastPoly3D::set(  Vector _p, int _n_, int _count_ ){
 	*p = _p;
 	n = _n_;
 	count = _count_;
+	quant = 0;
+}
+
+static inline int dast_effect_step_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline bool dast_effect_legacy_step(int& quant)
+{
+	if(quant <= 0){
+		quant = dast_effect_step_ticks() - 1;
+		return 1;
+	}
+	quant--;
+	return 0;
 }
 
 int dastPoly3D::quant_make_sign(void){
 	Vector lp;
-	int xl, xr, yl, yr;
 	int dx, dy;
 	int _z = p->z;
+
+	if(!dast_effect_legacy_step(quant))
+		return (count != dastResSign->poly[n]);
 
 	for( int s = 0; s < dastResSign->once[n]; s++){
 
@@ -137,60 +157,44 @@ int dastPoly3D::quant_make_sign(void){
 		lp.x = p->x + dastResSign -> x[n][count];
 		lp.y = p->y + dastResSign -> y[n][count];
 
-
-		if (p->x < lp.x ) {
-			xl = p->x; 
-			xr = lp.x; 
-		}else {
-			xl = lp.x;
-			xr = p->x;
-		}
-
-		if (p->y < lp.y ) {
-			yl = p->y; 
-			yr = lp.y; 
-		}else {
-			yl = lp.y;
-			yr = p->y;
-		}
-
 		switch (dastResSign -> type[n][count]){
-		case DAST_SIGN_TYPE::UP:
-		case DAST_SIGN_TYPE::DOWN:
-		{
-			dx = (lp.x-p->x);
-			dy = (lp.y-p->y);
+			case DAST_SIGN_TYPE::UP:
+			case DAST_SIGN_TYPE::DOWN:
+				{
+					dx = (lp.x-p->x);
+					dy = (lp.y-p->y);
 
-			int max;
-			p->x <<= 16;
-			p->x += 1<<15;
+					int max;
+					p->x <<= 16;
+					p->x += 1<<15;
 
-			p->y <<= 16;
-			p->y += 1<<15;
+					p->y <<= 16;
+					p->y += 1<<15;
 
-			if ( abs(dx ) > abs(dy) ) max = abs(dx); else max = abs(dy);
-			int tt = (1<<16)/max;
+					if ( abs(dx ) > abs(dy) ) max = abs(dx); else max = abs(dy);
+					int tt = (1<<16)/max;
 
-			dx *= tt;
-			dy *= tt;
+					dx *= tt;
+					dy *= tt;
 
-			for( int i = 0; i < max; i++){
-				int x = (p->x)>>16;
-				int y = (p->y)>>16;
-				//dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(5), dastResSign -> wide[n][count] );
-				dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(6), dastResSign -> wide[n][count] );
-				//regRender(x - 7, y - 7, x + 7, y + 7, 0);
-				p->x += dx;
-				p->y += dy;
-			}
-			break;
-		}
-		case DAST_SIGN_TYPE::MOVE:	
-			break;
+					for( int i = 0; i < max; i++){
+						int x = (p->x)>>16;
+						int y = (p->y)>>16;
+						//dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(5), dastResSign -> wide[n][count] );
+						dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(6), dastResSign -> wide[n][count] );
+						//regRender(x - 7, y - 7, x + 7, y + 7, 0);
+						p->x += dx;
+						p->y += dy;
+					}
+					break;
+				}
+			case DAST_SIGN_TYPE::MOVE:	
+				break;
 		}
 		*p = lp;
 		p->z = _z;
 		count++;
+		
 	}
 	return (count != dastResSign->poly[n]);
 }
@@ -808,13 +812,16 @@ int dastPoly3D::make_first_mole( dastResourcePoly3D* res ){
 
 	int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
 
-	n -= 3;
-	count -= 3;
-
 	if ( dz < 50 ) scale = 1 << 15;
 	else if ( dz < 160 ) scale = 1 << 14;
 	else if ( dz < 220 ) scale = 1 << 13;
 	else return 0;
+
+	if(!dast_effect_legacy_step(quant))
+		return 1;
+
+	n -= 3;
+	count -= 3;
 
 	for( int i = 1; i < 32; i++, A += dA)
 //		if ( !RND(16 - (count/5)) ){
@@ -873,6 +880,9 @@ int dastPoly3D::make_catch_dolly( dastResourcePoly3D* res ){
 	else if ( dz < 160 ) scale = 1 << 14;
 	else if ( dz < 220 ) scale = 1 << 13;
 	else return 0;
+
+	if(!dast_effect_legacy_step(quant))
+		return 1;
 
 
 	for( int i = 1; i < 32; i++, A += dA)

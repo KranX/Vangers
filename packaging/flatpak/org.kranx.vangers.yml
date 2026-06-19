@@ -1,0 +1,41 @@
+app-id: org.kranx.vangers
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: vangers
+appstream-compose: false
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --share=network
+  - --filesystem=home
+modules:
+  - name: vangers-binaries
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 vangers-wrapper /app/bin/vangers
+      - install -Dm755 vangers-wrapper /app/bin/vangers_server
+      - install -Dm755 vangers-wrapper /app/bin/surmap
+      - install -Dm755 bin/vangers /app/lib/vangers/bin/vangers
+      - install -Dm755 bin/vangers_server /app/lib/vangers/bin/vangers_server
+      - install -Dm755 bin/surmap /app/lib/vangers/bin/surmap
+      - mkdir -p /app/lib/vangers/lib
+      - cp -a lib/. /app/lib/vangers/lib/
+      - chmod -R u=rwX,go=rX /app/lib/vangers/lib
+      - install -Dm644 org.kranx.vangers.desktop /app/share/applications/org.kranx.vangers.desktop
+      - install -Dm644 org.kranx.vangers.metainfo.xml /app/share/metainfo/org.kranx.vangers.metainfo.xml
+      - install -Dm644 org.kranx.vangers.png /app/share/icons/hicolor/256x256/apps/org.kranx.vangers.png
+    sources:
+      - type: dir
+        path: flatpak-payload
+      - type: file
+        path: vangers-wrapper
+      - type: file
+        path: org.kranx.vangers.desktop
+      - type: file
+        path: org.kranx.vangers.metainfo.xml
+      - type: file
+        path: org.kranx.vangers.png

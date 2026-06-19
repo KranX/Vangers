@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../runtime.h"
 
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
@@ -117,11 +118,15 @@ int LightPoint::quant(void) {
 
 	x = xn;
 	y = yn;
-
+	int pulseChangeCount = (int)round(10 * GAME_TIME_COEFF); // get proper frame count for time pulsation
+	if (pulseChangeCount % 2 != 0) {
+		pulseChangeCount++;
+	}
 	if (type & LIGHT_TYPE::STATIONARY) {
 		if ( c_time < LIGHT_FIRST_TIME) {
 			c_time++;
 			E = ((c_time*energy)/LIGHT_FIRST_TIME)>>15;
+		// std::cout<<"STATIONARY LIGHT:"<<c_time<<std::endl;
 		} else {
 			E = (energy -= (3<<15))>>15;
 			c_time += 3;
@@ -129,15 +134,17 @@ int LightPoint::quant(void) {
 
 		if( energy <= (5<<15) ) return 0;
 	} else if (type & LIGHT_TYPE::DYNAMIC) {
-		c_time++;
-		if (c_time <= 5 ){
+		// std::cout<<"DYNAMIC LIGHT:"<<c_time<<std::endl;
+		c_time ++;
+		if (c_time <= pulseChangeCount/2){
 			energy -= d_energy;
 		} else {
-			if ( c_time == 10 ) c_time = 0;
+			if ( c_time == pulseChangeCount) c_time = 0;
 			energy += d_energy;
 		};
 		E = energy>>15;
 	} else if (type & LIGHT_TYPE::STATIC) {
+		// std::cout<<"STATIC LIGHT:"<<c_time<<std::endl;
 		E = energy>>15;
 	}
 	
@@ -384,8 +391,7 @@ void LightPoint::CreateLight( int _r,int _e, int _t)
 		energy = (LIGHT_MAX_BRIGHTNESS-1)<<15;
 	else
 		energy = (_e)<<15;
-	d_energy = energy/5;
-
+	d_energy = (int)round(energy / 5 / GAME_TIME_COEFF); // recalculate dynamic energy for current FPS
 	c_time  = 0;	
 };
 
@@ -479,7 +485,7 @@ int  LandQuake::quant(int shiftparam){
 		}
 	}//  while
 
-	Rcur += dx;
+	Rcur += dx*XTCORE_FRAME_NORMAL;
 	return 1;
 }
 
@@ -564,7 +570,7 @@ void LightPoint::FourLightLine(int _dx, int _dy, int _E){
 
 void aWriteHelpString(int count, int* x, int* y, int font, unsigned char **pstr, int timer, int color, int space, unsigned int *pcolor){
 	int i, total_len = 0;
-	int draw_len = CHAR_SPEED*timer;
+	int draw_len = (CHAR_SPEED*timer) / GAME_TIME_COEFF;
 	unsigned char tmp[256];
 	int _x;
 	int _color = color;
@@ -573,7 +579,7 @@ void aWriteHelpString(int count, int* x, int* y, int font, unsigned char **pstr,
 		if (pstr[i]){
 			if (pcolor[i]) _color = pcolor[i];
 
-			total_len += strlen((char*)pstr[i]);	
+			total_len += strlen((char*)pstr[i]);
 			if (total_len <= draw_len){
 				aOutStr(x[i], y[i], font, _color, pstr[i], space );
 			} else {

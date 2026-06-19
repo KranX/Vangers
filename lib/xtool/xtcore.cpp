@@ -206,11 +206,12 @@ int main(int argc, char *argv[])
 				XTCORE_FRAME_DELTA = (clockNowGlobal - clockCntGlobal) / 1000.0;
 				XTCORE_FRAME_NORMAL = XTCORE_FRAME_DELTA / 0.050; //20FPS
 				clockCntGlobal = clockNowGlobal;
-//				std::cout<<"XTCORE_FRAME_DELTA:"<<XTCORE_FRAME_DELTA
-//						 <<" XTCORE_FRAME_NORMAL:"<<XTCORE_FRAME_NORMAL
-//						 <<" clockDelta:"<<clockDelta<<std::endl;
+				// std::cout<<"XTCORE_FRAME_DELTA:"<<XTCORE_FRAME_DELTA
+				// 		 <<" XTCORE_FRAME_NORMAL:"<<XTCORE_FRAME_NORMAL
+				// 		 <<" clockDelta:"<<clockDelta<<std::endl;
 
 				if (clockDelta < XObj->Timer) {
+					// std::cout<<"clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
 					SDL_Delay(XObj->Timer - clockDelta);
 				} else {
 					std::cout<<"Strange deltas clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;

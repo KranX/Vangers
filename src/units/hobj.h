@@ -231,6 +231,7 @@ const int PTrack_mask_x = (map_size_x << 8) - 1;
 extern int PTrack_mask_y;
 
 void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag);
+void ScreenLaserTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag);
 
 void CheckActiveJump(BaseObject* p);
 

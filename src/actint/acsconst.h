@@ -51,3 +51,5 @@
 
 #define ACS_SAVE_STRING 	36
 
+#define ACS_FPS_MODE 	    37
+

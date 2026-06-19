@@ -38,6 +38,7 @@ const int  GET_GAME_DATA 			= 0x93;
 
 const int  SET_PLAYER_DATA 			= 0x94; //  PlayerData
 const int  DIRECT_SENDING			= 0x95; //  Mask(4), SendData
+const int  ITEM_TRANSFER			= 0x96; // TransferType(1), OldID(4), OldTime(4), DeleteBody(1), NewCreateObjectBody
 
 
 // Служебные получаемые
@@ -63,6 +64,16 @@ const int  PLAYERS_WORLD				= 0xD1; // Client(1),world(1), for all
 const int  PLAYERS_STATUS				= 0xD2; // Client(1),status(1), for all
 const int  PLAYERS_DATA					= 0xD3; // Client(1),data,  for all
 const int  PLAYERS_RATING				= 0xD4; // Client(1),rating(float), for me
+const int  WORLD_SNAPSHOT_BEGIN		= 0xD6; // World(1)
+const int  WORLD_SNAPSHOT_END			= 0xD7; // World(1)
+const int  ITEM_STATE				= 0xD8; // ItemState(1), PreviousID(4), NewUpdateObjectData
+const int  ITEM_REMOVED			= 0xD9; // ItemID(4), PairedID(4), Reason(1)
+
+const int  ITEM_TRANSFER_PICKUP		= 1; // STUFF -> DEVICE
+const int  ITEM_TRANSFER_DROP			= 2; // DEVICE -> STUFF
+const int  ITEM_STATE_IN_INVENTORY		= 1; // authoritative item state is DEVICE
+const int  ITEM_STATE_IN_WORLD			= 2; // authoritative item state is STUFF
+const int  ITEM_REMOVED_REASON_DELETE	= 1;
 
 
 //zmod fixed

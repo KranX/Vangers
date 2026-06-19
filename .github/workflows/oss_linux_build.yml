@@ -1,0 +1,177 @@
+name: OSS Linux Build
+
+on:
+  push:
+    branches:
+      - master
+      - alpha
+  pull_request:
+    branches:
+      - master
+      - alpha
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oss-linux-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: ${{ github.repository == 'KranX/Vangers' }}
+    runs-on: ubuntu-24.04
+
+    env:
+      BUILD_TYPE: RelWithDebInfo
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            elfutils \
+            flatpak \
+            flatpak-builder \
+            git \
+            ninja-build \
+            pkg-config \
+            python3-venv \
+            libsdl2-dev \
+            libsdl2-net-dev \
+            libogg-dev \
+            libvorbis-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libavutil-dev \
+            libswscale-dev \
+            zlib1g-dev
+
+      - name: Install latest CMake 4
+        run: |
+          python3 -m venv .ci-cmake
+          .ci-cmake/bin/python -m pip install --upgrade pip
+          .ci-cmake/bin/python -m pip install --upgrade "cmake>=4.0.0"
+          echo "$PWD/.ci-cmake/bin" >> "$GITHUB_PATH"
+
+      - name: Show tool versions
+        run: |
+          cmake --version
+          ninja --version
+          c++ --version
+
+      - name: Download Clunk
+        id: clunk-source
+        run: |
+          mkdir -p external
+          git clone --depth 1 https://github.com/stalkerg/clunk.git external/clunk
+          echo "sha=$(git -C external/clunk rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Clunk build
+        id: cache-clunk
+        uses: actions/cache@v5
+        with:
+          path: external/clunk/build
+          key: oss-linux-clunk-${{ runner.os }}-${{ steps.clunk-source.outputs.sha }}
+
+      - name: Build Clunk
+        if: steps.cache-clunk.outputs.cache-hit != 'true'
+        run: |
+          cmake -S external/clunk -B external/clunk/build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr/local
+          cmake --build external/clunk/build --parallel
+
+      - name: Install Clunk
+        run: |
+          sudo cmake --install external/clunk/build
+          sudo ldconfig
+
+      - name: Configure Vangers
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE="${BUILD_TYPE}"
+
+      - name: Build Vangers
+        run: cmake --build build --parallel
+
+      - name: Show built binaries
+        run: |
+          file build/src/vangers
+          file build/server/vangers_server
+          file build/surmap/surmap
+
+      - name: Prepare runtime artifact
+        run: |
+          rm -rf artifacts
+          mkdir -p artifacts/bin artifacts/lib
+
+          cp build/src/vangers artifacts/bin/
+          cp build/server/vangers_server artifacts/bin/
+          cp build/surmap/surmap artifacts/bin/
+
+          for exe in artifacts/bin/*; do
+            ldd "$exe" | awk '/=>/ { if ($3 ~ /^\//) print $3; next } $1 ~ /^\// { print $1 }'
+          done | sort -u | while read -r lib; do
+            [ -f "$lib" ] || continue
+            case "$lib" in
+              /lib*/ld-linux*|/lib*/libc.so*|/lib*/libm.so*|/lib*/libpthread.so*|/lib*/libdl.so*|/lib*/librt.so*)
+                continue
+                ;;
+            esac
+            cp -L "$lib" artifacts/lib/
+          done
+
+          chmod +x artifacts/bin/*
+
+      - name: Install Flatpak runtime
+        run: |
+          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install --noninteractive -y flathub \
+            org.freedesktop.Platform//24.08 \
+            org.freedesktop.Sdk//24.08
+
+      - name: Build Flatpak bundle
+        run: |
+          rm -rf \
+            artifacts-flatpak \
+            flatpak-build \
+            flatpak-repo \
+            packaging/flatpak/flatpak-payload
+
+          mkdir -p packaging/flatpak/flatpak-payload artifacts-flatpak
+          cp -a artifacts/bin packaging/flatpak/flatpak-payload/
+          cp -a artifacts/lib packaging/flatpak/flatpak-payload/
+
+          flatpak-builder \
+            --force-clean \
+            --disable-rofiles-fuse \
+            --default-branch=stable \
+            --repo=flatpak-repo \
+            flatpak-build \
+            packaging/flatpak/org.kranx.vangers.yml
+
+          flatpak build-bundle \
+            flatpak-repo \
+            artifacts-flatpak/Vangers-OSS-linux-x86_64.flatpak \
+            org.kranx.vangers \
+            stable
+
+      - name: Upload runtime artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Vangers-OSS-linux-x86_64
+          path: artifacts
+
+      - name: Upload Flatpak bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: Vangers-OSS-linux-x86_64-flatpak
+          path: artifacts-flatpak

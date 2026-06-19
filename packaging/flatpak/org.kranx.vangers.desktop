@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Vangers
+Comment=Mind-altering sandbox game
+Exec=vangers
+Icon=org.kranx.vangers
+Categories=Game;ActionGame;
+Terminal=false

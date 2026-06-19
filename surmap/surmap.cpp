@@ -5,6 +5,7 @@
 #ifdef _NT
 #include "..\root\win32f.h"
 #endif
+#define DEFINE_GAME_RTO_TIMERS
 #include "runtime.h"
 
 #include "sqint.h"

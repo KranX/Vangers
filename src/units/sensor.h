@@ -380,6 +380,9 @@ struct WorldBulletTemplate : BulletControlType
 	int WaitTime;
 	int LifeTime;
 	int BulletRadius;
+	int LegacyLifeTime;
+	int LegacyWaitTime;
+	int LastPower;
 	void Init(Parser& in);
 };
 
@@ -445,7 +448,7 @@ struct TntCreature : StaticObject
 	void NetEvent(void);
 	void NetUpdate(void);
 	void ClearUpdate(void);	
-	void NetQuant(void);
+	void NetQuant(bool legacy_static_tick);
 	void NetDestroy(int fl = 1);	
 
 	void NetHideEvent(void){
@@ -489,9 +492,9 @@ struct DangerTypeList
 	enum{
 		FASTSAND = 0,	//0 пески(икспло)	
 		WHIRLPOOL,		//1 водоворот
-		SWAMP,			//2
+		SWAMP,			//2 топь на некроссе (аналог песков)
 		FIRE,			//3 выползки(икспло,арк),выстрелы(трилл)
-		HOLE,			//4
+		HOLE,			//4 раскрывающиеся дырки на дорогах некросса
 		TRAIN			//5 поезд
 	};
 };

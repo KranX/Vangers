@@ -2,7 +2,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
-
+#include "../runtime.h"
 #include "../network.h"
 #include "../xjoystick.h"
 
@@ -651,6 +651,18 @@ void iSetFullscreen(int state) {
 	XGR_Obj.set_fullscreen(state);
 }
 
+void iSetFPS(int state) {
+	if (state) {
+		RTO_GAME_QUANT_TIMER = 1000 / 60;
+		GAME_TIME_COEFF = 3;
+	} else {
+		RTO_GAME_QUANT_TIMER = 1000 / 20;
+		GAME_TIME_COEFF = 1;
+	}
+	GameQuantRTO* p = (GameQuantRTO*)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
+	p -> SetTimer(RTO_GAME_QUANT_TIMER);
+}
+
 void iSetResolution(int state) {
 	switch(state){
 		case 0:
@@ -784,6 +796,9 @@ void iPrepareOptions(void)
 
 
 	iScrOpt[iAUTO_ACCELERATION] = new iScreenOption(iTRIGGER,0,"Controls screen","AutoAccelerationTrig");
+
+	iScrOpt[iFPS_60] = new iScreenOption(iTRIGGER,0,"Graphics screen","FpsTrig");
+	((iTriggerObject *)iScrOpt[iFPS_60]->objPtr)->callback = &iSetFPS;
 	
 	iPrepareControls();
 }

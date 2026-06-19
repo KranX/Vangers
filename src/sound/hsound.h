@@ -154,7 +154,9 @@ void SetSoundVolume(int value);
 void SoundQuant(void);
 void SoundEscaveOff(void);
 void SetMotorSound(int speed);
+void ResetMotorSoundFrequency(void);
 void SetMotorFile( int type );
+void SetMotorFileIfChanged( int type );
 
 void StartSPEECH(SPEECH_VALUE SpeechValue);
 void StartEFFECT(EFFECT_VALUE EffectValue,int loop = 0, int pan = 0);
@@ -223,7 +225,8 @@ const int SoundMotor = 0x00000010;
 #define SOUND_TAKE_ITEM(p)		StartEFFECT(EFF_TAKE_ITEM, 0, p);
 #define SOUND_HIT(p)				StartEFFECT(EFF_HIT, 0, p);
 
-#define SOUND_EXPLOSION(p)	      {	StartEFFECT(EFF_MECHOS_EXPLOSION, 0, p); StartEFFECT(EFF_BACK_EXPLOSION, 0, p);}
+#define SOUND_EXPLOSION(p)	      {	StartEFFECT(EFF_MECHOS_EXPLOSION, 0, p); }
+#define SOUND_BACK_EXPLOSION(p)	      {	StartEFFECT(EFF_BACK_EXPLOSION, 0, p);}
 #define SOUND_EXPLOSION_CRUSTER(p)	{StartEFFECT(EFF_CRUSTER_EXPLOSION, 0, p);StartEFFECT(EFF_BACK_EXPLOSION, 0, p);}
 
 

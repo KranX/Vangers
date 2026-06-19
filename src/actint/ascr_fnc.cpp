@@ -105,6 +105,11 @@ extern int aci_SecondMatrixID;
 extern int curMatrixID;
 
 extern actIntDispatcher* aScrDisp;
+
+int acs_is_legacy_caller(void)
+{
+	return aScrDisp && (aScrDisp -> flags & AS_ISCREEN);
+}
 extern char* aImageBmp;
 
 extern unsigned char* aCellFrame;
@@ -1864,6 +1869,7 @@ void aci_LocationQuantPrepare(void)
 
 	aScrDisp -> i_init();
 	iScrQuantPrepare();
+	iKeyClear();
 }
 
 void aci_LocationQuantFinit(void)
@@ -1939,6 +1945,8 @@ void aciKillLinks(void)
 	if(!aScrDisp -> curMatrix) return;
 	invItem* p = (invItem*)aScrDisp -> curMatrix -> items -> last;
 	while(p){
+		if(p -> item_ptr)
+			p -> item_ptr -> actintOwner = NULL;
 		p -> item_ptr = NULL;
 		p = (invItem*)p -> prev;
 	}
@@ -2930,6 +2938,8 @@ void aciBuyItem(void)
 
 				if(!u) ErrH.Abort("Bad shop item...");
 				u -> delink(GMechos);
+				u -> next = NULL;
+				u -> prev = NULL;
 				if(aScrDisp -> curMatrix){
 					if(GGamerMechos){
 						el = GMechos;
@@ -3330,7 +3340,8 @@ void aciChangeItem(actintItemData* p)
 	else
 		it = aScrDisp -> get_iitem(p -> type);
 
-	p1 = (invItem*)p -> actintOwner;
+	p1 = aScrDisp -> resolve_item_owner(p);
+	if(!p1) return;
 	it -> clone(p1);
 
 	if(!(aScrDisp -> flags & AS_ISCREEN) && aScrDisp -> curMode == AS_INV_MODE)
@@ -3740,6 +3751,7 @@ int aciCheckCredits(void)
 	}
 
 	if(aScrDisp -> flags & AS_INV_MOVE_ITEM){
+		if(iEvLineID == MECHOS_MODE || iEvLineID == MECHOS_LIST_MODE) return 0;
 		if(aScrDisp -> curItem -> partData) return 1;
 		if(!((uvsActInt*)aScrDisp -> curItem -> uvsDataPtr) -> sell_price) return 0;
 		return 1;
@@ -4694,7 +4706,12 @@ void mem_rectangle(int x,int y,int sx,int sy,int bsx,int col_in,int col_out,int 
 
 void aciGetItemCoords(actintItemData* p,int& x,int& y)
 {
-	invItem* itm = (invItem*)p -> actintOwner;
+	invItem* itm = aScrDisp -> resolve_item_owner(p);
+	if(!itm){
+		x = 0;
+		y = 0;
+		return;
+	}
 
 	x = itm -> MatrixX;
 	y = itm -> MatrixY;
@@ -4932,9 +4949,9 @@ void aciPromptData::quant(void)
 	} else {
 		CurTimer ++;
 	}
-	for(i = 0; i < NumStr; i ++){
-		if(StrBuf[i]){
-			if(CurTimer > TimeBuf[i]){
+	for(i = 0; i < NumStr; i ++) {
+		if(StrBuf[i]) {
+			if(CurTimer > (int)(TimeBuf[i] * GAME_TIME_COEFF)) {
 				delete[] StrBuf[i];
 				StrBuf[i] = NULL;
 			}
@@ -6178,18 +6195,43 @@ void aciTheEnd(void)
 void aciDropMoveItem(void)
 {
 	if(aScrDisp -> flags & AS_INV_MOVE_ITEM){
+		aciUpdateScreenMousePoint(iMouseX,iMouseY);
 		aciSendEvent2itmdsp(ACI_DROP_ITEM,aScrDisp -> curItem -> item_ptr);
 		aScrDisp -> flags &= ~AS_INV_MOVE_ITEM;
 		aScrDisp -> free_item(aScrDisp -> curItem);
 	}
 }
 
+// Old cheat strings are kept decodable, but disabled by default.
+static const int aciCheatsTemporarilyEnabled = 0;
+
+static int aciCheatKeyToChar(int key)
+{
+	if(key >= SDL_SCANCODE_A && key <= SDL_SCANCODE_Z)
+		return 'a' + key - SDL_SCANCODE_A;
+	if(key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_9)
+		return '1' + key - SDL_SCANCODE_1;
+	if(key == SDL_SCANCODE_0)
+		return '0';
+	if(key == SDL_SCANCODE_MINUS)
+		return '-';
+	return 0;
+}
+
 //znfo key handler
 void aciCHandler(int key)
 {
-	return;
 	int code = 0,cr;
+	if(!aciCheatsTemporarilyEnabled)
+		return;
 	if(NetworkON || key > 256 || key <= 0) return;
+
+	key = aciCheatKeyToChar(key);
+	if(!key){
+		if(aciTreeData)
+			aciTreeData -> reset();
+		return;
+	}
 
 	if(aciTreeData) {
 		code = aciTreeData -> quant(key);

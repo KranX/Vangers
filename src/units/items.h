@@ -217,10 +217,17 @@ struct GunSlot;
 struct BulletObject : BaseObject , BulletControlType
 {
 	Vector vDelta,vTarget;
+	double MoveAccumX,MoveAccumY,MoveAccumZ;
+	Vector LegacyLaserDrawCached;
+	Vector LegacyLaserDrawAccum;
 	GeneralObject* TargetObject;
 	int FrameCount;
-	GeneralObject* Owner;	
-	Vector vTail;		
+	int TargetSteerDelay;
+	int LegacyLaserDraw;
+	int LegacyLaserDrawDelay;
+	int LegacyCraterDrawDelay;
+	GeneralObject* Owner;
+	Vector vTail;
 	LightPoint* LightData;
 	Vector vWallTarget;
 	int DataID;
@@ -259,7 +266,9 @@ struct HordeObject : BaseObject
 	int NumParticle;
 	SimpleParticleType* Data;
 	int Power;
-	Vector vDelta;
+	Vector vDelta,vMove;
+	double SteerAccumX,SteerAccumY,SteerAccumZ;
+	double MoveAccumX,MoveAccumY,MoveAccumZ;
 	int zAttackRadius,AttackRadius;
 	GeneralObject* Owner;
 	int zCruiser;
@@ -402,6 +411,8 @@ struct ItemsDispatcher : UnitList
 	void DeleteItem(StuffObject* p);
 	void NetEvent(int type,int id);
 	void NetDevice(int type,int id);
+	void NetItemState(int item_state,int previous_id,int item_id);
+	void NetItemRemoved(int item_id,int paired_id,int reason);
 
 	int CreateEnableCrypt(void);
 	void CryptQuant(void);
@@ -452,6 +463,8 @@ const int CHECK_DEVICE_ADD = 2;
 const int CHECK_DEVICE_OUT = 3;
 
 extern int WeaponWaitTime;
+
+void reconfigure_runtime_fps_scaled_state(double old_coeff,double new_coeff);
 
 struct BulletList : UnitBaseListType
 {

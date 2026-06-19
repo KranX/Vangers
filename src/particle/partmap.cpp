@@ -1,5 +1,5 @@
 #include "../global.h"
-
+#include "../runtime.h"
 #include "../3d/3d_math.h"
 
 #include "../common.h"
@@ -37,6 +37,28 @@ int ParticleMapProcessMaskTotal = 0;
 
 unsigned char *FirePaletteTable;
 #define random1(a) (rand() & 1 ? random(a) : -random(a))
+
+static inline int particle_map_legacy_step_ticks(void)
+{
+	int ticks = (int)round(GAME_TIME_COEFF);
+	return ticks > 0 ? ticks : 1;
+}
+
+static inline int particle_map_next_hold_ticks(void)
+{
+	return particle_map_legacy_step_ticks() - 1;
+}
+
+static inline int particle_map_calc_deviation(int xsize,int radius,int period,int time)
+{
+	double ph;
+	if(period)
+		ph = 2*M_PI*(time % period)/period;
+	else
+		ph = (2*M_PI*RND(1025))/1024.0;
+
+	return int(radius*cos(ph)) + int(radius*sin(ph))*xsize;
+}
 
 void color_line_f(int len,unsigned char* dbuf,int bx,int bKx,int fx,int fy);
 void transparency_line_f(int len,unsigned char* dbuf,int bx,int bKx,int fx,int fy);
@@ -116,8 +138,6 @@ void ParticleMapProcess::init_flame(unsigned char* f,int fade)
 
 #define P(a,b) int((f1p)[(a) + (b)])
 
-int CurrDev = 0;
-
 #ifdef EXTERNAL_USE
 extern int frame;
 #endif
@@ -132,7 +152,6 @@ int ParticleMapProcess::process(char* vb,int Xc,int Yc,int XcS,int turn,int noou
 		f1 = field2;
 		f2 = field1;
 		}
-	phase = !phase;
 
 	 uchar l1;
 	 uchar l2;
@@ -152,18 +171,6 @@ int ParticleMapProcess::process(char* vb,int Xc,int Yc,int XcS,int turn,int noou
 	unsigned char* f1p,*f2p;
 	f1p = f1;
 //	unsigned char* bp = ColorBuf;
-//	  double ph = ProcessTime*2*_PI/DeviationPeriod;
-	double ph;
-	if(DeviationPeriod)
-		ph = 2*M_PI*(frame%DeviationPeriod)/DeviationPeriod;
-	else
-		ph = (2*M_PI*RND(1025))/1024.0;
-	CurrDev = int(DeviationRadius*cos(ph)) + int(DeviationRadius*sin(ph))*Xmax;
-
-	if(PrevCurrDev > CurrDev){
-		}
-
-	PrevCurrDev = CurrDev;
 
 #ifndef EXTERNAL_USE
 	if(!NoFlush)
@@ -175,6 +182,12 @@ int ParticleMapProcess::process(char* vb,int Xc,int Yc,int XcS,int turn,int noou
 #else
 		smart_putspr_f(f1,Xc,Yc,Xmax,Ymax,XcS, height);
 #endif
+	if(LegacyStepDelay > 0){
+		LegacyStepDelay--;
+		return 0;
+	}
+
+	LegacyStepDelay = particle_map_next_hold_ticks();
 	int i = 0;
 	int fade = 1;
 	ProcessTime++;
@@ -265,6 +278,13 @@ int ParticleMapProcess::process(char* vb,int Xc,int Yc,int XcS,int turn,int noou
 #endif
 			}
 		}
+
+	phase = !phase;
+	DeviationTime++;
+	CurrDev = particle_map_calc_deviation(Xmax,DeviationRadius,DeviationPeriod,DeviationTime);
+	if(PrevCurrDev > CurrDev){
+		}
+	PrevCurrDev = CurrDev;
 	
 	return !ProcessTime;
 }
@@ -298,10 +318,13 @@ void ParticleMapProcess::activate(int n_hot_spots,int hot_spot_area,int attackT,
 
 	Type = ParticleMapProcessTypeArray + type;
 	ProcessTime = 0;
+	LegacyStepDelay = particle_map_next_hold_ticks();
+	DeviationTime = frame / particle_map_legacy_step_ticks();
+	CurrDev = particle_map_calc_deviation(Xmax,DeviationRadius,DeviationPeriod,DeviationTime);
 
 	//memset(WorkArea,0,2*Xmax*(Ymax + 2*PARTICLE_MAP_GAP));
 	memset(WorkArea,0,2*Xmax*(Ymax + PARTICLE_MAP_GAP));
-	PrevCurrDev = 0;
+	PrevCurrDev = CurrDev;
 	int a,b;
 	for(int i = 0;i < GLOBAL_N_HOT_CENTERS;i++){
 		a = random(360);
