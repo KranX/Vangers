@@ -1,3 +1,6 @@
+#ifndef __PARTICLE_DEFORM_H__
+#define __PARTICLE_DEFORM_H__
+
 #define TABLE_TYPE short
 #define FRACT_TYPE unsigned char
 const int FRACT_BITS = sizeof(FRACT_TYPE) * 8;
@@ -34,3 +37,5 @@ struct DeformProcess {
 	int deform(int d_phase, int x, int y);
 	void BackRestore(void);
 };
+
+#endif

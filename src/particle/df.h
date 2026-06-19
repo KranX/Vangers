@@ -1,3 +1,6 @@
+#ifndef __PARTICLE_DF_H__
+#define __PARTICLE_DF_H__
+
 const char DEFORM_WATER_ONLY = 0;
 const char DEFORM_ALL = 1;
 
@@ -55,3 +58,5 @@ void TeleportShowFree(void);
 void TeleportShowProcess(int x,int y,uchar* p);
 void TeleportShowQuant(void);
 void TeleportShowStart(void);*/
+
+#endif

@@ -1,4 +1,7 @@
 
+#ifndef __PARTICLE_PARTMAP_H__
+#define __PARTICLE_PARTMAP_H__
+
 const int FIRE_COLOR_BITS = 5;
 const int FIRE_COLOR_FIRST = 192;
 const int PROCESS_TYPE_TOTAL = 5;
@@ -111,3 +114,5 @@ void FirePaletteInit(unsigned char *palbuf);
 void FirePaletteTableInit(unsigned char *pal);
 
 enum { EXPLOSION_64x64 = 0, EXPLOSION_16x16 };
+
+#endif

@@ -1,6 +1,12 @@
 #ifndef __UNITS__EFFECT_H
 #define __UNITS__EFFECT_H
 
+#include "../3d/3dobject.h"
+#include "../common.h"
+#include "../particle/df.h"
+#include "../particle/partmap.h"
+#include "hobj.h"
+
 const int EXPLOSION_OFFSET = 50;
 
 const char DT_DEFORM01 = 0;
