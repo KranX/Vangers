@@ -2,6 +2,12 @@
 #ifndef __XRECORDER_H
 #define __XRECORDER_H
 
+#include <cstddef>
+
+#include <SDL.h>
+
+struct XStream;
+
 // XRecorderMessage types...
 enum XRecorderMessages {
 	XRC_SYSTEM_MESSAGE = 1, // Keyoard events...
