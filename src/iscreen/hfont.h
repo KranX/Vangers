@@ -1,16 +1,15 @@
 #ifndef __HFONT_H__
 #define __HFONT_H__
 
-const int 	HFONT_DELTA		= 20;
-const int 	HFONT_NULL_LEVEL	= 128;
+const int HFONT_DELTA = 20;
+const int HFONT_NULL_LEVEL = 128;
 
-const int 	NULL_HCHAR		= 0x01;
+const int NULL_HCHAR = 0x01;
 
-const int 	FONT_LOADED		= 0x01;
-const int 	FONT_COLORS		= 0x02;
+const int FONT_LOADED = 0x01;
+const int FONT_COLORS = 0x02;
 
-struct HChar
-{
+struct HChar {
 	short SizeX;
 	short SizeY;
 	int Size;
@@ -22,22 +21,21 @@ struct HChar
 	short MinHeight;
 	short MaxHeight;
 
-	unsigned char* HeightMap;
+	unsigned char *HeightMap;
 
 	void calcHLimits(void);
 	void calcOffsets(void);
 
-	void put(int x,int y);
+	void put(int x, int y);
 	int null_check(void);
 
-	void init(int sx,int sy,int fl);
+	void init(int sx, int sy, int fl);
 
-	HChar(int sx,int sy,int fl);
+	HChar(int sx, int sy, int fl);
 	~HChar(void);
 };
 
-struct HFont
-{
+struct HFont {
 	short SizeX;
 	short SizeY;
 
@@ -47,27 +45,29 @@ struct HFont
 	short EndChar;
 	int NumChars;
 
-	HChar** data;
+	HChar **data;
 
 	int dataHeapSize;
-	char* data_heap;
+	char *data_heap;
 
 	int memHeapSize;
-	char* mem_heap;
+	char *mem_heap;
 
 	void alloc_mem(void);
 	void alloc_char_mem(void);
 	void free_mem(void);
 
-	void save(char* fname);
-	void load(char* fname);
+	void save(char *fname);
+	void load(char *fname);
 
-	void scan_chars(char* fname);
+	void scan_chars(char *fname);
 
-	void put_char(int x,int y,int ch);
+	void put_char(int x, int y, int ch);
 
-	HFont(void){ Flags = 0; };
-	HFont(int sx,int sy,int sc,int ec);
+	HFont(void) {
+		Flags = 0;
+	};
+	HFont(int sx, int sy, int sc, int ec);
 	~HFont(void);
 };
 
@@ -79,8 +79,8 @@ void put_hfont(void);
 void bml2fnt(void);
 */
 
-extern HFont* hFnt;
-extern char* HFntName;
-extern char* HBmlName;
+extern HFont *hFnt;
+extern char *HFntName;
+extern char *HBmlName;
 
 #endif

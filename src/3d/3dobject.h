@@ -31,9 +31,9 @@ const int ID_HORDE_SOURCE = 1 << 20;
 const int ID_GLORY_PLACE = 1 << 22;
 
 // Types of visibility
-#define UNVISIBLE		0
-#define VISIBLE 		1
-#define NEAR_VISIBLE		2
+#define UNVISIBLE 0
+#define VISIBLE 1
+#define NEAR_VISIBLE 2
 
 struct StorageType;
 struct DangerDataType;
@@ -41,24 +41,23 @@ struct StorageClusterType;
 struct LightPoint;
 struct MemoryStorageType;
 
-struct GeneralObject
-{
+struct GeneralObject {
 	int ID;
 	int NetID;
 	int Status;
 	Vector R_curr;
 
-	StorageType* Storage;
-	StorageClusterType* Cluster;
-	MemoryStorageType* ObjectHeap;
+	StorageType *Storage;
+	StorageClusterType *Cluster;
+	MemoryStorageType *ObjectHeap;
 
-	GeneralObject* NextTypeList;
-	GeneralObject* PrevTypeList;
+	GeneralObject *NextTypeList;
+	GeneralObject *PrevTypeList;
 
 	virtual ~GeneralObject() = default;
 #ifdef _ROAD_
-	virtual void Init(StorageType* s);
-	virtual void Init(MemoryStorageType* s);
+	virtual void Init(StorageType *s);
+	virtual void Init(MemoryStorageType *s);
 	virtual void Init(void);
 
 	virtual void Free(void);
@@ -67,17 +66,17 @@ struct GeneralObject
 	virtual void Quant(void);
 	virtual void TimeOutQuant(void);
 
-	virtual void Touch(GeneralObject* p);
+	virtual void Touch(GeneralObject *p);
 
-	virtual void NetEvent(int type,int id,int creator,int time,int x,int y,int radius);
+	virtual void NetEvent(int type, int id, int creator, int time, int x, int y, int radius);
 	virtual void Send(void);
-	void GetUser(void);	
+	void GetUser(void);
 #else
-	virtual void Touch(GeneralObject* p){}
+	virtual void Touch(GeneralObject *p) {}
 #endif
 };
 
-struct BaseObject : GeneralObject {
+struct BaseObject: GeneralObject {
 	Vector R_prev;
 
 	int x_of_last_update;
@@ -90,13 +89,15 @@ struct BaseObject : GeneralObject {
 	int ez;
 	int radius;
 
-	BaseObject(){ dynamic_state = Visibility = MapLevel = ez = radius = 0; }
+	BaseObject() {
+		dynamic_state = Visibility = MapLevel = ez = radius = 0;
+	}
 
-	BaseObject* NextBaseList;
-	BaseObject* PrevBaseList;
+	BaseObject *NextBaseList;
+	BaseObject *PrevBaseList;
 
-	BaseObject* NextViewList;
-	BaseObject* PrevViewList;
+	BaseObject *NextViewList;
+	BaseObject *PrevViewList;
 
 #ifdef _ROAD_
 	virtual void DrawQuant(void);
@@ -110,36 +111,36 @@ extern char WorldBorderEnable;
 		Dynamic structs and constants
 *******************************************************************************/
 //   Wheel's sides and Rudder's directions
-#define LEFT_SIDE	1
-#define RIGHT_SIDE	2
-#define FRONT_SIDE	4
-#define BACK_SIDE	8
+#define LEFT_SIDE 1
+#define RIGHT_SIDE 2
+#define FRONT_SIDE 4
+#define BACK_SIDE 8
 
 // Motor control
-#define ADD_POWER	1
-#define DEL_POWER	2
+#define ADD_POWER 1
+#define DEL_POWER 2
 
 // Dynamic states
-#define GROUND_COLLISION		1
-#define TRACTION_WHEEL_TOUCH		2
-#define STEER_WHEEL_TOUCH		4
-#define OBJECT_TO_OBJECT_COLLISION	8
-#define TOUCH_OF_WATER			16
-#define TOUCH_OF_AIR			32
-#define ITS_MOVING			64
-#define VERTICAL_WALL_COLLISION		128
-#define STRONG_GROUND_COLLISION		256
+#define GROUND_COLLISION 1
+#define TRACTION_WHEEL_TOUCH 2
+#define STEER_WHEEL_TOUCH 4
+#define OBJECT_TO_OBJECT_COLLISION 8
+#define TOUCH_OF_WATER 16
+#define TOUCH_OF_AIR 32
+#define ITS_MOVING 64
+#define VERTICAL_WALL_COLLISION 128
+#define STRONG_GROUND_COLLISION 256
 
-#define WHEELS_TOUCH			(TRACTION_WHEEL_TOUCH | STEER_WHEEL_TOUCH)
-#define TOUCH_OF_GROUND		(GROUND_COLLISION | WHEELS_TOUCH)
+#define WHEELS_TOUCH (TRACTION_WHEEL_TOUCH | STEER_WHEEL_TOUCH)
+#define TOUCH_OF_GROUND (GROUND_COLLISION | WHEELS_TOUCH)
 
 // Set_3D modes
 enum {
-SET_3D_DIRECT_PLACE = 1,
-SET_3D_CONST_Z = 2,
-SET_3D_TO_THE_LOWER_LEVEL = 4,
-SET_3D_TO_THE_UPPER_LEVEL = 8,
-SET_3D_CHOOSE_LEVEL = 16
+	SET_3D_DIRECT_PLACE = 1,
+	SET_3D_CONST_Z = 2,
+	SET_3D_TO_THE_LOWER_LEVEL = 4,
+	SET_3D_TO_THE_UPPER_LEVEL = 8,
+	SET_3D_CHOOSE_LEVEL = 16
 };
 
 // Mechous control modes
@@ -170,25 +171,24 @@ struct CONTROLS {
 		FLOTATION_DOWN,
 		MOLE_UP,
 		MOLE_DOWN
-		};
+	};
 };
 
 // Slots
-#define LEFT_SLOT	0
-#define RIGHT_SLOT	1
-#define MIDDLE_SLOT    2
-#define MAX_SLOTS	3
-
+#define LEFT_SLOT 0
+#define RIGHT_SLOT 1
+#define MIDDLE_SLOT 2
+#define MAX_SLOTS 3
 
 // Spring's directions
-#define SPRING_UNTOUCHED	0
-#define SPRING_UP		1
-#define SPRING_DOWN		2
-#define SPRING_HORIZONTAL	4
+#define SPRING_UNTOUCHED 0
+#define SPRING_UP 1
+#define SPRING_DOWN 2
+#define SPRING_HORIZONTAL 4
 
 // Object's draw modes
-#define NORMAL_DRAW_MODE	1
-#define TRANSPARENCY_DRAW_MODE	2
+#define NORMAL_DRAW_MODE 1
+#define TRANSPARENCY_DRAW_MODE 2
 
 struct Wheel {
 	int steer;
@@ -197,22 +197,21 @@ struct Wheel {
 	int radius;
 	int bound_index;
 	Model model;
-	DBV r,n;
+	DBV r, n;
 	double dZ;
 };
 
 /*******************************************************************************
 		3D object for building Mechouses, Raffas, Static Objects.
 *******************************************************************************/
-struct Object : BaseObject {
-
+struct Object: BaseObject {
 	// Part of 3D data
 	int n_models;
-	Model* models;
+	Model *models;
 	unsigned int i_model;
-	Model* model;
-	Model* bound;
-	int xmax,ymax,zmax,zmin;
+	Model *model;
+	Model *bound;
+	int xmax, ymax, zmax, zmin;
 	int rmax;
 	double scale_size;
 	double original_scale_size;
@@ -220,30 +219,29 @@ struct Object : BaseObject {
 	int body_color_shift;
 
 	int n_wheels;
-	Wheel* wheels;
+	Wheel *wheels;
 
 	int n_debris;
-	Model* debris;
-	Model* bound_debris;
+	Model *debris;
+	Model *bound_debris;
 
 	int slots_existence;
-	Object* data_in_slots[MAX_SLOTS];
+	Object *data_in_slots[MAX_SLOTS];
 	Vector R_slots[MAX_SLOTS];
 	int location_angle_of_slots[MAX_SLOTS];
-	
-	char prm_name[128];
-	
-	Object* old_appearance_storage;
 
+	char prm_name[128];
+
+	Object *old_appearance_storage;
 
 	// Part of coordinates
 	Vector R_scr;
 	DBM A_scl;
-	int psi,tetta;
+	int psi, tetta;
 	double scale;
 	double scale_max;
 	double scale_real;
-	int xmax_real,ymax_real,zmax_real;
+	int xmax_real, ymax_real, zmax_real;
 	int rmax_screen;
 	int z_below;
 
@@ -254,13 +252,13 @@ struct Object : BaseObject {
 	double terrain_immersion;
 	double water_immersion;
 
-	DBV R,V,W;
+	DBV R, V, W;
 	DBM A_l2g;
 	DBM A_g2l;
 	Quaternion Q_l2g;
 	double V_drag;
 	double W_drag;
-	Object* collision_object;
+	Object *collision_object;
 	int after_db_coll;
 	int after_ram_damage_coll;
 
@@ -301,7 +299,7 @@ struct Object : BaseObject {
 	DBV skyfarmer_direction;
 
 	double k_elastic_modulation;
-	DangerDataType* closest_field_object;
+	DangerDataType *closest_field_object;
 
 	// Part of dynamic constants
 
@@ -315,7 +313,7 @@ struct Object : BaseObject {
 	// Car's params
 	double speed_factor;
 	double mobility_factor;
-	
+
 	// Devices params
 	double water_speed_factor;
 	double air_speed_factor;
@@ -349,9 +347,8 @@ struct Object : BaseObject {
 
 	int end_of_object_data;
 
-
 	Object();
-	Object& operator = (Object& obj);
+	Object &operator=(Object &obj);
 	virtual ~Object() {
 		// stalkerg: memory leak
 		// free();
@@ -359,40 +356,40 @@ struct Object : BaseObject {
 	void free();
 
 	// Part of 3D graphical functions
-	void load(char* name,int scale = 256);
-	void save(char* name);
+	void load(char *name, int scale = 256);
+	void save(char *name);
 
-	void loadLST(char* name_lst,char* name_asc = 0);
-	void loadM3D(char* name);
-	void saveM3D(char* name);
+	void loadLST(char *name_lst, char *name_asc = 0);
+	void loadM3D(char *name);
+	void saveM3D(char *name);
 
-	void loadLSA(char* name);
-	void loadA3D(char* name);
-	void saveA3D(char* name);
+	void loadLSA(char *name);
+	void loadA3D(char *name);
+	void saveA3D(char *name);
 
 	void draw();
 	void pixel_draw();
 	void non_sorted_draw();
 
 	void set_body_color(unsigned int color_id);
-	void lay_to_slot(int slot,Object* weapon);
+	void lay_to_slot(int slot, Object *weapon);
 
 	// Part of dynamic function
-	void dynamics_init(char* prm_name);
-	void calc_springs(int NumParts,int Threshold);
+	void dynamics_init(char *prm_name);
+	void calc_springs(int NumParts, int Threshold);
 	void calc_bound();
-	void load_parameters(const char* name);
-	void save_parameters(char* name);
+	void load_parameters(const char *name);
+	void save_parameters(char *name);
 	void global_save_parameter(int i_entry);
 	void entries_control();
 
 	void set_active(int on);
-	void controls(int mode,int param = 0);
-	void set_3D(int mode,int x,int y,int z,int dz,int angle,int speed);
-	void instant_impulse(int angle,int distance,int slope = Pi/4,int lever_arm = 0);
-	void instant_impulse(const DBV& direct,int distance,int lever_arm = 0);
-	void continuous_impulse(int angle,int distance,int slope = Pi/4,int lever_arm = 0);
-	void continuous_impulse(const DBV& direct,int distance,int lever_arm = 0);
+	void controls(int mode, int param = 0);
+	void set_3D(int mode, int x, int y, int z, int dz, int angle, int speed);
+	void instant_impulse(int angle, int distance, int slope = Pi / 4, int lever_arm = 0);
+	void instant_impulse(const DBV &direct, int distance, int lever_arm = 0);
+	void continuous_impulse(int angle, int distance, int slope = Pi / 4, int lever_arm = 0);
+	void continuous_impulse(const DBV &direct, int distance, int lever_arm = 0);
 	void jump();
 	void direct_keyboard_control();
 	void direct_joystick_control();
@@ -400,16 +397,18 @@ struct Object : BaseObject {
 	void analysis();
 	void switch_analysis(int off);
 	void mechous_analysis(double dt);
-	void basic_mechous_analysis(double dt,int last);
+	void basic_mechous_analysis(double dt, int last);
 	void debris_analysis(double dt);
 	void basic_debris_analysis(double dt);
 	void insect_analysis();
 	void skyfarmer_analysis(double dt);
 	void fish_analysis(double dt);
 	void update_coord(int camera_correction = 0);
-	void convert_to_beeb(Object* beeb = 0); // Zero means converting back
-	void set_draw_mode(int mode){ draw_mode = mode; }
-	void set_ground_elastic(double k);  // [0..1], properly works for stuffs, debris (non vangers).
+	void convert_to_beeb(Object *beeb = 0); // Zero means converting back
+	void set_draw_mode(int mode) {
+		draw_mode = mode;
+	}
+	void set_ground_elastic(double k); // [0..1], properly works for stuffs, debris (non vangers).
 
 	void steer(int dir);
 	void motor_control(int dir);
@@ -421,21 +420,25 @@ struct Object : BaseObject {
 
 #ifndef _SURMAP_
 	virtual int test_objects_collision();
-#ifdef _ROAD_
-	virtual void DrawMechosParticle(int x,int y,int speed,int level,int n);
-	virtual void DestroyCollision(int l,Object* p);
-#endif
+#	ifdef _ROAD_
+	virtual void DrawMechosParticle(int x, int y, int speed, int level, int n);
+	virtual void DestroyCollision(int l, Object *p);
+#	endif
 #else
-	virtual int test_objects_collision(){ return 0; }
+	virtual int test_objects_collision() {
+		return 0;
+	}
 #endif
-	int test_object_to_object(Object* obj);
-	int test_object_to_baseobject(BaseObject* obj);
-	int test_box_to_box(Object* obj);
-	int test_wheels_to_sphere(Object* sphere);
+	int test_object_to_object(Object *obj);
+	int test_object_to_baseobject(BaseObject *obj);
+	int test_box_to_box(Object *obj);
+	int test_wheels_to_sphere(Object *sphere);
 
-	void DrawQuant(){ draw(); }
+	void DrawQuant() {
+		draw();
+	}
 
-	void Explosion(int m_TNT,int m_id);
+	void Explosion(int m_TNT, int m_id);
 	void destroy_double_level();
 	void ground_pressing();
 	int test_whether_there_is_not_something_above();
@@ -443,13 +446,13 @@ struct Object : BaseObject {
 	int check_mole_submerging();
 	int get_max_jump_distance();
 
-	void NetEvent(int type,int id,int creator,int time,int x,int y,int radius);
+	void NetEvent(int type, int id, int creator, int time, int x, int y, int radius);
 	void Send(void);
 
-	void skyfarmer_start(int x,int y,int angle = 0);
-	void skyfarmer_set_direction(const DBV& direction);
+	void skyfarmer_start(int x, int y, int angle = 0);
+	void skyfarmer_set_direction(const DBV &direction);
 	void skyfarmer_end();
-	void precise_impulse(Vector source_point,int x_dest,int y_dest);
+	void precise_impulse(Vector source_point, int x_dest, int y_dest);
 
 	virtual void StartMoleProcess(void);
 	int MoleInProcess;
@@ -457,8 +460,7 @@ struct Object : BaseObject {
 	virtual int UsingCopterig(int decr_8);
 	virtual int UsingCrotrig(int decr_8);
 	virtual int UsingCutterig(int decr_8);
-	};
-
+};
 
 extern double density;
 

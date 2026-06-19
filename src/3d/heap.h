@@ -2,13 +2,13 @@
 #define __3D__HEAP_H__
 
 struct MemoryHeap {
-	int offset,size;
-	char* heap;
-	const char* overflow_message;
+	int offset, size;
+	char *heap;
+	const char *overflow_message;
 
-	MemoryHeap(const char* message);
+	MemoryHeap(const char *message);
 	~MemoryHeap() {
-		if(size) {
+		if (size) {
 			free();
 		}
 	}
@@ -22,16 +22,16 @@ struct MemoryHeap {
 	void init() {
 		offset = 0;
 	}
-	void* get(int sz) {
-		char* p = heap + offset;
+	void *get(int sz) {
+		char *p = heap + offset;
 		offset += sz;
-		if(offset > size) {
+		if (offset > size) {
 			ErrH.Abort(overflow_message, XERR_USER, sz);
 		}
 		return p;
 	}
-	void back(int sz){
-		if((offset -= sz) < 0) {
+	void back(int sz) {
+		if ((offset -= sz) < 0) {
 			ErrH.Abort(overflow_message, XERR_USER, sz);
 		}
 	}

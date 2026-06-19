@@ -3,65 +3,63 @@
 #include "../runtime.h"
 
 #define _DAST_
-//#define UPMECH 24
+// #define UPMECH 24
 
 #include "../common.h"
-//#include "..\terra\world.h"
+// #include "..\terra\world.h"
 
 #include "../sqexp.h"
 #include "poly3d.h"
 
 extern uchar DestroyMoleTable[TERRAIN_MAX];
-#define BREAKABLE_TERRAIN(prop)		(DestroyMoleTable[GET_TERRAIN((prop))] > 127)
+#define BREAKABLE_TERRAIN(prop) (DestroyMoleTable[GET_TERRAIN((prop))] > 127)
 
 //-----------------------------------------------------------------
-extern iGameMap* curGMap;
+extern iGameMap *curGMap;
 
 //-----------------------------------------------------------------
 
 //----------------------------------------------------------------
-//extern vrtMap* vMap;
+// extern vrtMap* vMap;
 dastResourcePoly3D *dastResource;
 dastResourceSign *dastResSign;
 
-
-//uchar *sqr3_matr;
-//int max_len_mech = 64;
+// uchar *sqr3_matr;
+// int max_len_mech = 64;
 int MOVER_ON = 1;
 
-uchar*  (*pf)( int x, int y );
+uchar *(*pf)(int x, int y);
 
-inline uchar* get_down_ground( int x, int y )
-{
-	uchar * lt = vMap -> lineT[y & clip_mask_y] + x;
+inline uchar *get_down_ground(int x, int y) {
+	uchar *lt = vMap->lineT[y & clip_mask_y] + x;
 
-//	if ( !lt ) ErrH.Abort( "DAST : not it line" );
+	//	if ( !lt ) ErrH.Abort( "DAST : not it line" );
 
-	if(*(lt + H_SIZE) & DOUBLE_LEVEL){ 
-			if((x & 1)) return (--lt);
-	} 
-	return (lt) ;
+	if (*(lt + H_SIZE) & DOUBLE_LEVEL) {
+		if ((x & 1))
+			return (--lt);
+	}
+	return (lt);
 }
 
-inline uchar* get_up_ground( int x, int y )
-{
-	uchar * lt = vMap -> lineT[y & clip_mask_y] + x;
+inline uchar *get_up_ground(int x, int y) {
+	uchar *lt = vMap->lineT[y & clip_mask_y] + x;
 
-//	if ( !lt ) ErrH.Abort( "DAST : not it line" );
+	//	if ( !lt ) ErrH.Abort( "DAST : not it line" );
 
-	if(*(lt + H_SIZE) & DOUBLE_LEVEL){ 
-			if(!(x & 1)) return (++lt);
-	} 
-	return (lt) ;
+	if (*(lt + H_SIZE) & DOUBLE_LEVEL) {
+		if (!(x & 1))
+			return (++lt);
+	}
+	return (lt);
 }
-
 
 /*uchar sqr3( int x ){
 	uchar i;
 
 	//if ( x >= 512 ) ErrH.Abort( "DAST : greater when table sqrt3" );
 	if ( x >= 512 ) return 8;
-	
+
 	//if ( !x ) return 0;
 
 	while ( x >= 512 ){
@@ -92,49 +90,47 @@ void precalc_sqr3_matr(void){
 	*sqr3_matr = 0;
 }*/
 
-dastPoly3D::dastPoly3D(  Vector _p, int _n ){
+dastPoly3D::dastPoly3D(Vector _p, int _n) {
 	p = NULL;
 	p_array = NULL;
-	
+
 	n = _n;
 	count = dastResSign->poly[n];
 
 	p = new Vector;
 	*p = _p;
 
-/*	 uchar *l1 = get_real_ground(0, p[0].x & clip_mask_x, p[0].y);
-	 uchar *l2 = get_real_ground(1, p[0].x & clip_mask_x, p[0].y);
+	/*	 uchar *l1 = get_real_ground(0, p[0].x & clip_mask_x, p[0].y);
+		 uchar *l2 = get_real_ground(1, p[0].x & clip_mask_x, p[0].y);
 
-	if ( abs( *l1 - p[0].z) < abs(*l2 - p[0].z)){
-		pf = &get_up_ground;
-	} else {
-		pf = &get_down_ground;
-	}*/
+		if ( abs( *l1 - p[0].z) < abs(*l2 - p[0].z)){
+			pf = &get_up_ground;
+		} else {
+			pf = &get_down_ground;
+		}*/
 }
 
-void dastPoly3D::set(  Vector _p, int _n ){
+void dastPoly3D::set(Vector _p, int _n) {
 	*p = _p;
 	n = _n;
 	count = 0;
 	quant = 0;
 }
 
-void dastPoly3D::set(  Vector _p, int _n_, int _count_ ){
+void dastPoly3D::set(Vector _p, int _n_, int _count_) {
 	*p = _p;
 	n = _n_;
 	count = _count_;
 	quant = 0;
 }
 
-static inline int dast_effect_step_ticks(void)
-{
+static inline int dast_effect_step_ticks(void) {
 	int ticks = (int)round(GAME_TIME_COEFF);
 	return ticks > 0 ? ticks : 1;
 }
 
-static inline bool dast_effect_legacy_step(int& quant)
-{
-	if(quant <= 0){
+static inline bool dast_effect_legacy_step(int &quant) {
+	if (quant <= 0) {
 		quant = dast_effect_step_ticks() - 1;
 		return 1;
 	}
@@ -142,67 +138,69 @@ static inline bool dast_effect_legacy_step(int& quant)
 	return 0;
 }
 
-int dastPoly3D::quant_make_sign(void){
+int dastPoly3D::quant_make_sign(void) {
 	Vector lp;
 	int dx, dy;
 	int _z = p->z;
 
-	if(!dast_effect_legacy_step(quant))
+	if (!dast_effect_legacy_step(quant))
 		return (count != dastResSign->poly[n]);
 
-	for( int s = 0; s < dastResSign->once[n]; s++){
+	for (int s = 0; s < dastResSign->once[n]; s++) {
+		if (count == dastResSign->poly[n])
+			return 0;
 
-		if (count == dastResSign->poly[n]) return 0;
+		lp.x = p->x + dastResSign->x[n][count];
+		lp.y = p->y + dastResSign->y[n][count];
 
-		lp.x = p->x + dastResSign -> x[n][count];
-		lp.y = p->y + dastResSign -> y[n][count];
+		switch (dastResSign->type[n][count]) {
+		case DAST_SIGN_TYPE::UP:
+		case DAST_SIGN_TYPE::DOWN: {
+			dx = (lp.x - p->x);
+			dy = (lp.y - p->y);
 
-		switch (dastResSign -> type[n][count]){
-			case DAST_SIGN_TYPE::UP:
-			case DAST_SIGN_TYPE::DOWN:
-				{
-					dx = (lp.x-p->x);
-					dy = (lp.y-p->y);
+			int max;
+			p->x <<= 16;
+			p->x += 1 << 15;
 
-					int max;
-					p->x <<= 16;
-					p->x += 1<<15;
+			p->y <<= 16;
+			p->y += 1 << 15;
 
-					p->y <<= 16;
-					p->y += 1<<15;
+			if (abs(dx) > abs(dy))
+				max = abs(dx);
+			else
+				max = abs(dy);
+			int tt = (1 << 16) / max;
 
-					if ( abs(dx ) > abs(dy) ) max = abs(dx); else max = abs(dy);
-					int tt = (1<<16)/max;
+			dx *= tt;
+			dy *= tt;
 
-					dx *= tt;
-					dy *= tt;
-
-					for( int i = 0; i < max; i++){
-						int x = (p->x)>>16;
-						int y = (p->y)>>16;
-						//dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(5), dastResSign -> wide[n][count] );
-						dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(6), dastResSign -> wide[n][count] );
-						//regRender(x - 7, y - 7, x + 7, y + 7, 0);
-						p->x += dx;
-						p->y += dy;
-					}
-					break;
-				}
-			case DAST_SIGN_TYPE::MOVE:	
-				break;
+			for (int i = 0; i < max; i++) {
+				int x = (p->x) >> 16;
+				int y = (p->y) >> 16;
+				// dastPutSandOnMapAlt( x ,y, uchar(p->z), uchar(5), dastResSign -> wide[n][count]
+				// );
+				dastPutSandOnMapAlt(x, y, uchar(p->z), uchar(6), dastResSign->wide[n][count]);
+				// regRender(x - 7, y - 7, x + 7, y + 7, 0);
+				p->x += dx;
+				p->y += dy;
+			}
+			break;
+		}
+		case DAST_SIGN_TYPE::MOVE:
+			break;
 		}
 		*p = lp;
 		p->z = _z;
 		count++;
-		
 	}
 	return (count != dastResSign->poly[n]);
 }
 
-dastPoly3D::dastPoly3D(  Vector _p, int x, int y ){
+dastPoly3D::dastPoly3D(Vector _p, int x, int y) {
 	p = NULL;
 	p_array = NULL;
-	
+
 	n = x;
 	count = y;
 
@@ -210,10 +208,10 @@ dastPoly3D::dastPoly3D(  Vector _p, int x, int y ){
 	*p = _p;
 }
 
-dastPoly3D::dastPoly3D(Vector lp, Vector rp, Vector dv){
+dastPoly3D::dastPoly3D(Vector lp, Vector rp, Vector dv) {
 	p = NULL;
 	p_array = NULL;
-	
+
 	n = 4;
 	count = 0;
 	p_array = new Vector[4];
@@ -225,7 +223,7 @@ dastPoly3D::dastPoly3D(Vector lp, Vector rp, Vector dv){
 	p_array[3] = rp + dv;
 }
 
-void dastPoly3D::set( Vector lp, Vector rp, Vector dv ){
+void dastPoly3D::set(Vector lp, Vector rp, Vector dv) {
 	p_array[0] = rp;
 	p_array[1] = lp;
 
@@ -233,7 +231,7 @@ void dastPoly3D::set( Vector lp, Vector rp, Vector dv ){
 	p_array[3] = rp + dv;
 }
 
-dastPoly3D::~dastPoly3D(void){
+dastPoly3D::~dastPoly3D(void) {
 	if (p) {
 		delete p;
 	}
@@ -242,7 +240,7 @@ dastPoly3D::~dastPoly3D(void){
 	}
 }
 
-//#define _TEST_
+// #define _TEST_
 
 #ifdef _TEST_
 /*
@@ -390,17 +388,17 @@ void dastPoly3D::make_dast( void ){
 	for( i = 0; i < mh + d_wide; i++){
 		float xx = x, yy = y, zz = z;
 
-		
+
 //     Цикл по точкам ковша - сдвигание поверхности.
 
 		for( j = 0; j < mv; j++){
 			int zzz = round(double(zz));
-			
+
 			p0 = pf( round(double(xx)) & clip_mask_x, round(double(yy)) & clip_mask_y );
 
 			if ( *p0 > zzz ) {
 				*p0 = zzz;
-			} 
+			}
 
 			xx += dxv;
 			yy += dyv;
@@ -436,7 +434,7 @@ void dastPoly3D::make_dast( void ){
 
 	delete h;
 	hh -= 5;
-	delete hh; 
+	delete hh;
 }
 
 #else
@@ -455,7 +453,7 @@ void dastPoly3D::make_dast( void ){
 	uchar *p0;
 
 	int xr, xl,yr, yl;
-	
+
 	if ( !MOVER_ON ) return;
 
 //	if ( !vMap -> lineT[yl-10] || !vMap -> lineT[yr+10] ) return;
@@ -563,7 +561,7 @@ void dastPoly3D::make_dast( void ){
 	}
 
 	for ( i = yr-20; i <= yl+20; i++)
-		if ( !lt[i & clip_mask_y] ) return;	
+		if ( !lt[i & clip_mask_y] ) return;
 
 	//  приготовление к основному циклу.
 
@@ -648,11 +646,11 @@ void dastPoly3D::make_dast( void ){
 				h[j] += ((int)(*p0) - zzz)<<10;
 
 				// *pa = zzz;
-				if (zzz > 0 ) 
+				if (zzz > 0 )
 					*p0 = zzz;
 				else
 					*p0 = 0;
-			} 
+			}
 
 			xx += dxv;
 			yy += dyv;
@@ -664,7 +662,7 @@ void dastPoly3D::make_dast( void ){
 		z += dzh;
 	}//  end for i
 
-//  Пересыпание после сдвига	
+//  Пересыпание после сдвига
 
 	memset( hh - _boder_*2, 0, (mv+_boder_*4)*sizeof( int ));
 
@@ -707,7 +705,7 @@ void dastPoly3D::make_dast( void ){
 			uchar tt = 0;
 			 tt = hhh - (k>>3);
 
-			p0 = pf( _xxx, _yyy );		
+			p0 = pf( _xxx, _yyy );
 			*p0 += tt;
 
 			_xx += dxh;
@@ -746,234 +744,294 @@ void dastPoly3D::make_dast( void ){
 
 	delete h;
 	hh -= _boder_*2;
-	delete hh; 
+	delete hh;
 }*/
 #endif
 
-void dastPoly3D::make_mole( dastResourcePoly3D* res ){
+void dastPoly3D::make_mole(dastResourcePoly3D *res) {
 	int xl, xr, yl, yr;
 
-//--------------------------------------
-	if (p_array[0].x < p_array[1].x ) {
-		xl = p_array[0].x; 
-		xr = p_array[1].x; 
-	}else {
+	//--------------------------------------
+	if (p_array[0].x < p_array[1].x) {
+		xl = p_array[0].x;
+		xr = p_array[1].x;
+	} else {
 		xl = p_array[1].x;
 		xr = p_array[0].x;
 	}
-	if (xl > p_array[2].x ) xl = p_array[2].x;
-	if (xl > p_array[3].x ) xl = p_array[3].x;
+	if (xl > p_array[2].x)
+		xl = p_array[2].x;
+	if (xl > p_array[3].x)
+		xl = p_array[3].x;
 
-	if (xr < p_array[2].x ) xr = p_array[2].x;
-	if (xr < p_array[3].x ) xr = p_array[3].x;
+	if (xr < p_array[2].x)
+		xr = p_array[2].x;
+	if (xr < p_array[3].x)
+		xr = p_array[3].x;
 
-	if (p_array[0].y < p_array[1].y ) {
-		yl = p_array[0].y; 
-		yr = p_array[1].y; 
-	}else {
+	if (p_array[0].y < p_array[1].y) {
+		yl = p_array[0].y;
+		yr = p_array[1].y;
+	} else {
 		yl = p_array[1].y;
 		yr = p_array[0].y;
 	}
-	if (yl > p_array[2].y ) yl = p_array[2].y;
-	if (yl > p_array[3].y ) yl = p_array[3].y;
+	if (yl > p_array[2].y)
+		yl = p_array[2].y;
+	if (yl > p_array[3].y)
+		yl = p_array[3].y;
 
-	if (yr < p_array[2].y ) yr = p_array[2].y;
-	if (yr < p_array[3].y ) yr = p_array[3].y;
-//--------------------------------------
+	if (yr < p_array[2].y)
+		yr = p_array[2].y;
+	if (yr < p_array[3].y)
+		yr = p_array[3].y;
+	//--------------------------------------
 
-	if (!vMap -> lineT[p_array[0].y & clip_mask_y])
+	if (!vMap->lineT[p_array[0].y & clip_mask_y])
 		return;
 
 	unsigned int scale;
-	int dz = *get_down_ground( (p_array[0].x) & clip_mask_x, p_array[0].y );
+	int dz = *get_down_ground((p_array[0].x) & clip_mask_x, p_array[0].y);
 
-	if ( dz < 50 ) scale = 1 << 15;
-	else if ( dz < 120 ) scale = 1 << 14;
-	else if ( dz < 200 ) scale = 1 << 13;
-	else return ;
+	if (dz < 50)
+		scale = 1 << 15;
+	else if (dz < 120)
+		scale = 1 << 14;
+	else if (dz < 200)
+		scale = 1 << 13;
+	else
+		return;
 
-	for( int i = 1; i < 8; i++)
-		if(!RND(5)) {
-			dastPutSpriteOnMapAlt( (i*p_array[1].x + (8-i)*p_array[0].x)>>3, (i*p_array[1].y +  (8-i)*p_array[0].y)>>3, res->data[RND(res->n)], res->x_size, res->y_size, scale);
+	for (int i = 1; i < 8; i++)
+		if (!RND(5)) {
+			dastPutSpriteOnMapAlt(
+				(i * p_array[1].x + (8 - i) * p_array[0].x) >> 3,
+				(i * p_array[1].y + (8 - i) * p_array[0].y) >> 3,
+				res->data[RND(res->n)],
+				res->x_size,
+				res->y_size,
+				scale
+			);
 			++i;
 		}
 
-	regRender(xl - (res->x_size>>1), yl - (res->y_size>>1), xr + (res->x_size>>1), yr + (res->y_size>>1), 0);
+	regRender(
+		xl - (res->x_size >> 1),
+		yl - (res->y_size >> 1),
+		xr + (res->x_size >> 1),
+		yr + (res->y_size >> 1),
+		0
+	);
 }
 
-int dastPoly3D::make_first_mole( dastResourcePoly3D* res ){
-	int dA = PIx2>>5;
+int dastPoly3D::make_first_mole(dastResourcePoly3D *res) {
+	int dA = PIx2 >> 5;
 	int A = 0;
 	unsigned int scale;
-	if (count < 3 || n < 3) return 0;
-
-	if (!vMap -> lineT[p->y & clip_mask_y])
+	if (count < 3 || n < 3)
 		return 0;
 
-	int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
+	if (!vMap->lineT[p->y & clip_mask_y])
+		return 0;
 
-	if ( dz < 50 ) scale = 1 << 15;
-	else if ( dz < 160 ) scale = 1 << 14;
-	else if ( dz < 220 ) scale = 1 << 13;
-	else return 0;
+	int dz = *get_down_ground((p->x) & clip_mask_x, p->y);
 
-	if(!dast_effect_legacy_step(quant))
+	if (dz < 50)
+		scale = 1 << 15;
+	else if (dz < 160)
+		scale = 1 << 14;
+	else if (dz < 220)
+		scale = 1 << 13;
+	else
+		return 0;
+
+	if (!dast_effect_legacy_step(quant))
 		return 1;
 
 	n -= 3;
 	count -= 3;
 
-	for( int i = 1; i < 32; i++, A += dA)
-//		if ( !RND(16 - (count/5)) ){
-		if ( RND(count) && RND(3)){
-			dastPutSpriteOnMapAlt( p->x + ((SI[A]*count)>>16), p->y + ((CO[A]*count)>>16), res->data[RND(res->n)], res->x_size, res->y_size, scale);
-			//regRender( p->x - n - 8, p->y - count - 8, p->x + n + 8, p->y + count + 8, 0);
+	for (int i = 1; i < 32; i++, A += dA)
+		//		if ( !RND(16 - (count/5)) ){
+		if (RND(count) && RND(3)) {
+			dastPutSpriteOnMapAlt(
+				p->x + ((SI[A] * count) >> 16),
+				p->y + ((CO[A] * count) >> 16),
+				res->data[RND(res->n)],
+				res->x_size,
+				res->y_size,
+				scale
+			);
+			// regRender( p->x - n - 8, p->y - count - 8, p->x + n + 8, p->y + count + 8, 0);
 		}
 
-	regRender( p->x - n - 8, p->y - count - 8, p->x + n + 8, p->y + count + 8, 0);
-	
-	return ((n > 0)&&(count > 0));
+	regRender(p->x - n - 8, p->y - count - 8, p->x + n + 8, p->y + count + 8, 0);
+
+	return ((n > 0) && (count > 0));
 }
 
-int dastPoly3D::make_last_mole( dastResourcePoly3D* res ){
-	int dA = PIx2>>5;
+int dastPoly3D::make_last_mole(dastResourcePoly3D *res) {
+	int dA = PIx2 >> 5;
 	int A = 0;
 	unsigned int scale;
-	if (count >= n ) return 0;
-
-	if (!vMap -> lineT[p->y & clip_mask_y])
+	if (count >= n)
 		return 0;
 
-	int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
+	if (!vMap->lineT[p->y & clip_mask_y])
+		return 0;
+
+	int dz = *get_down_ground((p->x) & clip_mask_x, p->y);
 
 	count += 3;
 
-	if ( dz < 50 ) scale = 1 << 15;
-	else if ( dz < 200 ) scale = 1 << 14;
-	else scale = 1 << 13;
-	
-	for( int i = 1; i < 32; i++, A += dA)
-		if ( RND(count) ){
-//		if ( !RND(16 - (count/5)) ){
-			dastPutSpriteOnMapAlt( p->x + ((SI[A]*count)>>16), p->y + ((CO[A]*count)>>16), res->data[RND(res->n)], res->x_size, res->y_size, scale);
-			//regRender( p->x - n - 8, p->y - count - 8, p->x + n + 8, p->y + count + 8, 0);
+	if (dz < 50)
+		scale = 1 << 15;
+	else if (dz < 200)
+		scale = 1 << 14;
+	else
+		scale = 1 << 13;
+
+	for (int i = 1; i < 32; i++, A += dA)
+		if (RND(count)) {
+			//		if ( !RND(16 - (count/5)) ){
+			dastPutSpriteOnMapAlt(
+				p->x + ((SI[A] * count) >> 16),
+				p->y + ((CO[A] * count) >> 16),
+				res->data[RND(res->n)],
+				res->x_size,
+				res->y_size,
+				scale
+			);
+			// regRender( p->x - n - 8, p->y - count - 8, p->x + n + 8, p->y + count + 8, 0);
 		}
 
-	regRender( p->x - count - 8, p->y - count - 8, p->x + count + 8, p->y + count + 8, 0);
-	
+	regRender(p->x - count - 8, p->y - count - 8, p->x + count + 8, p->y + count + 8, 0);
+
 	return (count < n);
 }
 
-int dastPoly3D::make_catch_dolly( dastResourcePoly3D* res ){
-	int dA = PIx2>>5;
+int dastPoly3D::make_catch_dolly(dastResourcePoly3D *res) {
+	int dA = PIx2 >> 5;
 	int A = 0;
 	unsigned int scale;
 	int dx, dy;
-	if (count <= 0 ) return 0;
-
-	if (!vMap -> lineT[p->y & clip_mask_y])
+	if (count <= 0)
 		return 0;
 
-	int dz = *get_down_ground( (p->x) & clip_mask_x, p->y );
+	if (!vMap->lineT[p->y & clip_mask_y])
+		return 0;
 
-	if ( dz < 50 ) scale = 1 << 15;
-	else if ( dz < 160 ) scale = 1 << 14;
-	else if ( dz < 220 ) scale = 1 << 13;
-	else return 0;
+	int dz = *get_down_ground((p->x) & clip_mask_x, p->y);
 
-	if(!dast_effect_legacy_step(quant))
+	if (dz < 50)
+		scale = 1 << 15;
+	else if (dz < 160)
+		scale = 1 << 14;
+	else if (dz < 220)
+		scale = 1 << 13;
+	else
+		return 0;
+
+	if (!dast_effect_legacy_step(quant))
 		return 1;
 
-
-	for( int i = 1; i < 32; i++, A += dA)
-		if ( !RND(16) ){
-			dx = ((SI[A]*(n + RND(10)))>>16);
-			dy = ((CO[A]*(n + RND(10)))>>16);
-			dastPutSpriteOnMapAlt( p->x + dx, p->y + dy, res->data[RND(res->n)], res->x_size, res->y_size, scale);
-			regRender( p->x + dx  - 8, p->y + dy - 8, p->x + dx + 8, p->y + dy + 8, 0);
+	for (int i = 1; i < 32; i++, A += dA)
+		if (!RND(16)) {
+			dx = ((SI[A] * (n + RND(10))) >> 16);
+			dy = ((CO[A] * (n + RND(10))) >> 16);
+			dastPutSpriteOnMapAlt(
+				p->x + dx, p->y + dy, res->data[RND(res->n)], res->x_size, res->y_size, scale
+			);
+			regRender(p->x + dx - 8, p->y + dy - 8, p->x + dx + 8, p->y + dy + 8, 0);
 		}
 
-	//regRender( p->x - n - 18, p->y - n -18, p->x + n + 18, p->y + n + 18, 0);
-	
+	// regRender( p->x - n - 18, p->y - n -18, p->x + n + 18, p->y + n + 18, 0);
+
 	count--;
 	return (count > 0);
 }
 
-dastResourcePoly3D::dastResourcePoly3D(const char* FileName){
+dastResourcePoly3D::dastResourcePoly3D(const char *FileName) {
 	int i;
 	XStream fin(FileName, XS_IN);
 
 	fin > x_size > y_size > n;
 
-	data = new uchar*[n];
+	data = new uchar *[n];
 
-	for( i = 0; i < n; i++){
-		data[i] = new uchar[x_size*y_size];
-		fin.read(data[i], x_size*y_size);
+	for (i = 0; i < n; i++) {
+		data[i] = new uchar[x_size * y_size];
+		fin.read(data[i], x_size * y_size);
 	}
 
 	fin.close();
 }
 
-dastResourceSign::dastResourceSign(const char* FileName){
+dastResourceSign::dastResourceSign(const char *FileName) {
 	int i;
 	int tmp;
 	XStream fin(FileName, XS_IN);
 
-	fin >=  n;
-	//std::cout<<"dastResourceSig n:"<<(int)n<<std::endl;
+	fin >= n;
+	// std::cout<<"dastResourceSig n:"<<(int)n<<std::endl;
 	poly = new uchar[n];
-	x = new char*[n];
-	y = new char*[n];
-	type = new char*[n];
+	x = new char *[n];
+	y = new char *[n];
+	type = new char *[n];
 	once = new uchar[n];
-	wide = new uchar*[n];
+	wide = new uchar *[n];
 	int coef;
 
-	for( i = 0; i < n; i++){
-		if (i == 7) coef = 2;
-		else coef = 1;
+	for (i = 0; i < n; i++) {
+		if (i == 7)
+			coef = 2;
+		else
+			coef = 1;
 
 		fin >= poly[i];
-		//std::cout<<"poly:"<<(int)poly[i]<<std::endl;
+		// std::cout<<"poly:"<<(int)poly[i]<<std::endl;
 		fin >= once[i];
 		x[i] = new char[poly[i]];
 		y[i] = new char[poly[i]];
 		type[i] = new char[poly[i]];
 		wide[i] = new uchar[poly[i]];
 
-		for( int j = 0; j < poly[i]; j++){
-			fin >= tmp;		x[i][j] = tmp*coef;
-			//std::cout<<"x[i][j]:"<<(int)x[i][j]<<" "<<j<<std::endl;
-			fin >= tmp;		y[i][j] = tmp*coef;
-			//std::cout<<"y[i][j]:"<<(int)y[i][j]<<std::endl;
-			fin >= tmp;		type[i][j] = tmp;
-			//std::cout<<"type[i][j]:"<<(int)type[i][j]<<std::endl;
-			fin >= tmp;		wide[i][j] = tmp;
-			//std::cout<<"wide[i][j]:"<<(int)wide[i][j]<<std::endl;
+		for (int j = 0; j < poly[i]; j++) {
+			fin >= tmp;
+			x[i][j] = tmp * coef;
+			// std::cout<<"x[i][j]:"<<(int)x[i][j]<<" "<<j<<std::endl;
+			fin >= tmp;
+			y[i][j] = tmp * coef;
+			// std::cout<<"y[i][j]:"<<(int)y[i][j]<<std::endl;
+			fin >= tmp;
+			type[i][j] = tmp;
+			// std::cout<<"type[i][j]:"<<(int)type[i][j]<<std::endl;
+			fin >= tmp;
+			wide[i][j] = tmp;
+			// std::cout<<"wide[i][j]:"<<(int)wide[i][j]<<std::endl;
 		}
 	}
 
 	fin.close();
 }
 
-dastResourcePoly3D::~dastResourcePoly3D(void){
+dastResourcePoly3D::~dastResourcePoly3D(void) {
 	int i;
 
-	if ( n ){
-		for( i = 0; i < n; i++)
+	if (n) {
+		for (i = 0; i < n; i++)
 			delete data[i];
 
 		delete[] data;
 	}
 }
 
-dastResourceSign::~dastResourceSign(void){
+dastResourceSign::~dastResourceSign(void) {
 	int i;
 
-	if ( n ){
+	if (n) {
 		delete[] poly;
-		for( i = 0; i < n; i++){
+		for (i = 0; i < n; i++) {
 			delete[] x[i];
 			delete[] y[i];
 			delete[] type[i];
@@ -987,71 +1045,77 @@ dastResourceSign::~dastResourceSign(void){
 	}
 }
 
-void dastCreateResource(const char* FileName){
+void dastCreateResource(const char *FileName) {
 	dastResource = new dastResourcePoly3D(FileName);
 }
 
-void dastCreateResource(void){
+void dastCreateResource(void) {
 	delete dastResource;
 }
 
-void dastCreateResourceSign(const char* FileName){
+void dastCreateResourceSign(const char *FileName) {
 	dastResSign = new dastResourceSign(FileName);
 }
 
-void dastDeleteResourceSign(void){
+void dastDeleteResourceSign(void) {
 	delete dastResSign;
 }
 
-void dastPutSpriteOnMapAlt(int x, int y, uchar *data, int x_size, int y_size, unsigned int scale){
-		uchar **lt = vMap -> lineT;
-		int i, j;
-		uchar *llt;
+void dastPutSpriteOnMapAlt(int x, int y, uchar *data, int x_size, int y_size, unsigned int scale) {
+	uchar **lt = vMap->lineT;
+	int i, j;
+	uchar *llt;
 
-		for( i = y - (y_size>>1); i < y + (y_size>>1); i++)
-			if (!lt[(i) & clip_mask_y]) return;
+	for (i = y - (y_size >> 1); i < y + (y_size >> 1); i++)
+		if (!lt[(i)&clip_mask_y])
+			return;
 
-		for( i = y - (y_size>>1); i < y + (y_size>>1); i++)
-			for( j = x - (x_size>>1); j < x + (x_size>>1); j++, data++){
-				llt = get_down_ground( (j) & clip_mask_x, i );
-				if (BREAKABLE_TERRAIN(*(llt + H_SIZE))){
-					int dz = (*data)*scale>>15;
-					if ( *llt + dz < 256 ) *llt += dz;
-					else *llt = 255;
-				}
+	for (i = y - (y_size >> 1); i < y + (y_size >> 1); i++)
+		for (j = x - (x_size >> 1); j < x + (x_size >> 1); j++, data++) {
+			llt = get_down_ground((j)&clip_mask_x, i);
+			if (BREAKABLE_TERRAIN(*(llt + H_SIZE))) {
+				int dz = (*data) * scale >> 15;
+				if (*llt + dz < 256)
+					*llt += dz;
+				else
+					*llt = 255;
 			}
+		}
 }
 
-void dastPutSandOnMapAlt(int x, int y, uchar _z,  uchar newter, uchar wide){
-		uchar **lt = vMap -> lineT;
-		uchar _d = 82;
-		newter <<= TERRAIN_OFFSET;
+void dastPutSandOnMapAlt(int x, int y, uchar _z, uchar newter, uchar wide) {
+	uchar **lt = vMap->lineT;
+	uchar _d = 82;
+	newter <<= TERRAIN_OFFSET;
 
-		int x_size = wide;
-		int y_size = wide;
+	int x_size = wide;
+	int y_size = wide;
 
-		for(int i = y - (y_size>>1); i <= y + (y_size>>1); i++){
-			if (!lt[(i) & clip_mask_y]) return;
+	for (int i = y - (y_size >> 1); i <= y + (y_size >> 1); i++) {
+		if (!lt[(i)&clip_mask_y])
+			return;
 
-			for(int j = x - (x_size>>1); j <= x + (x_size>>1); j++){
-				//uchar *lc = get_down_ground( (j) & clip_mask_x, i );
-			    //uchar *lc = (*pf)( (j) & clip_mask_x, i );
-				uchar *lc = get_up_ground( (j) & clip_mask_x, i );
-				if ( *lc > _z ) lc = get_down_ground( (j) & clip_mask_x, i );
-				if (*lc + _d < _z) continue;
+		for (int j = x - (x_size >> 1); j <= x + (x_size >> 1); j++) {
+			// uchar *lc = get_down_ground( (j) & clip_mask_x, i );
+			// uchar *lc = (*pf)( (j) & clip_mask_x, i );
+			uchar *lc = get_up_ground((j)&clip_mask_x, i);
+			if (*lc > _z)
+				lc = get_down_ground((j)&clip_mask_x, i);
+			if (*lc + _d < _z)
+				continue;
 
-				uchar hh = RND(4);
-				//if ( GET_TERRAIN(*(lc + H_SIZE)) ){
-					*lc += hh + RND(2);
-					//*lc += RND(6);
-				if ( GET_TERRAIN(*(lc + H_SIZE)) ){
-					//if ( hh || !RND(4) ){
-					if ( !RND(4) ){
-						*(lc + H_SIZE) &= ~TERRAIN_MASK;
- 						*(lc + H_SIZE) += newter; 
-					} 
+			uchar hh = RND(4);
+			// if ( GET_TERRAIN(*(lc + H_SIZE)) ){
+			*lc += hh + RND(2);
+			//*lc += RND(6);
+			if (GET_TERRAIN(*(lc + H_SIZE))) {
+				// if ( hh || !RND(4) ){
+				if (!RND(4)) {
+					*(lc + H_SIZE) &= ~TERRAIN_MASK;
+					*(lc + H_SIZE) += newter;
 				}
 			}
 		}
-		regRender(x - (x_size>>1), y - (y_size>>1), x + (x_size>>1), y + (y_size>>1), 0);
+	}
+	regRender(x - (x_size >> 1), y - (y_size >> 1), x + (x_size >> 1), y + (y_size >> 1), 0);
 }

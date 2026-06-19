@@ -2,7 +2,7 @@
 #include "xerrhand.h"
 
 #define LAG -3000
-//#define EVENTS_LOG
+// #define EVENTS_LOG
 #define MIN_SERVER_VERSION 4
 #define MAX_SERVER_VERSION 4
 
@@ -18,8 +18,10 @@ XStream fout("lst", XS_OUT);
 			fout < "\t\t\t> [" <= ID < ":" <= (GLOBAL_CLOCK() >> 8) < ":" <= frame < "]" < #id < \
 				": " <= code < "\n";                                                             \
 		}
-#	define OUT_EVENTS_LOG(id) \
-		{ fout < "< [" <= ID < ":" <= (GLOBAL_CLOCK() >> 8) < ":" <= frame < "]" < #id < "\n"; }
+#	define OUT_EVENTS_LOG(id)                                                                   \
+		{                                                                                        \
+			fout < "< [" <= ID < ":" <= (GLOBAL_CLOCK() >> 8) < ":" <= frame < "]" < #id < "\n"; \
+		}
 #	define OUT_EVENTS_LOG1(id, code)                                                              \
 		{                                                                                          \
 			fout < "< [" <= ID < ":" <= (GLOBAL_CLOCK() >> 8) < ":" <= frame < "]" < #id < ": " <= \
@@ -33,18 +35,26 @@ XStream fout("lst", XS_OUT);
 #endif
 
 #ifdef _DEBUG
-#	define DOUT(str) \
-		{ std::cout << str << "                                       \n"; }
-#	define DOUT1(str, code) \
-		{ std::cout << str << ", code: " << code << "                                       \n"; }
+#	define DOUT(str)                                                        \
+		{                                                                    \
+			std::cout << str << "                                       \n"; \
+		}
+#	define DOUT1(str, code)                                                                       \
+		{                                                                                          \
+			std::cout << str << ", code: " << code << "                                       \n"; \
+		}
 #else
 #	define DOUT(str)
 #	define DOUT1(str, code)
 #endif
-#define MOUT(str) \
-	{ std::cout << str << "                                       \n"; }
-#define MOUT1(str, code) \
-	{ std::cout << str << ", code: " << code << "                                       \n"; }
+#define MOUT(str)                                                        \
+	{                                                                    \
+		std::cout << str << "                                       \n"; \
+	}
+#define MOUT1(str, code)                                                                       \
+	{                                                                                          \
+		std::cout << str << ", code: " << code << "                                       \n"; \
+	}
 
 const char *MP_GAMES_NAMES[NUMBER_MP_GAMES] = {"VAN_WAR", "MECHOSOMA", "PASSEMBLOSS"};
 
@@ -120,7 +130,7 @@ int Game::attach_player(Player *player) {
 void Game::detach_player(Player *player) {
 	//	if(player -> name && player -> password && player -> status == GAMING_STATUS)
 	//		player -> server -> add_rating_data(player -> name,player ->
-	//password,data.GameType,player
+	// password,data.GameType,player
 	//-> rating);
 
 	player->clear_object_queue(0);
@@ -376,7 +386,8 @@ void Game::process_MECHOSOMA_ratings() {
 	Player *p = players.first();
 	while (p) {
 		if (p->status != INITIAL_STATUS) {
-			p -> body.rating = (float)((p -> body.MechosomaStat.MaxTransitTime)*pow(1.1,p -> body.kills)*pow(0.9,p -> body.deaths));
+			p->body.rating = (float)((p->body.MechosomaStat.MaxTransitTime) *
+									 pow(1.1, p->body.kills) * pow(0.9, p->body.deaths));
 			avr_rating += p->body.rating;
 			counter++;
 		}
@@ -384,7 +395,8 @@ void Game::process_MECHOSOMA_ratings() {
 	}
 	p = removed_players.first();
 	while (p) {
-		p -> body.rating = (float)((p -> body.MechosomaStat.MaxTransitTime)*pow(1.1,p -> body.kills)*pow(0.9,p -> body.deaths));
+		p->body.rating = (float)((p->body.MechosomaStat.MaxTransitTime) * pow(1.1, p->body.kills) *
+								 pow(0.9, p->body.deaths));
 		avr_rating += p->body.rating;
 		counter++;
 		p = p->next;
@@ -436,7 +448,8 @@ void Game::process_PASSEMBLOSS_ratings() {
 	Player *p = players.first();
 	while (p) {
 		if (p->status != INITIAL_STATUS) {
-			p -> body.rating = (float)((p -> body.PassemblossStat.TotalTime)*pow(1.1,p -> body.kills)*pow(0.9,p -> body.deaths));
+			p->body.rating = (float)((p->body.PassemblossStat.TotalTime) * pow(1.1, p->body.kills) *
+									 pow(0.9, p->body.deaths));
 			avr_rating += p->body.rating;
 			counter++;
 		}
@@ -444,8 +457,8 @@ void Game::process_PASSEMBLOSS_ratings() {
 	}
 	p = removed_players.first();
 	while (p) {
-		p->body.rating =
-			(float)((p->body.PassemblossStat.TotalTime) * pow(1.1, p->body.kills) * pow(0.9, p->body.deaths));
+		p->body.rating = (float)((p->body.PassemblossStat.TotalTime) * pow(1.1, p->body.kills) *
+								 pow(0.9, p->body.deaths));
 		avr_rating += p->body.rating;
 		counter++;
 		p = p->next;
@@ -836,8 +849,7 @@ void World::process_set_position(Player *player) {
 	int send_position = IS_PAST(player->last_sent_position + 5000) ? 1 : 0;
 	Player *p = current_players.first();
 	while (p) {
-		if (p != player)
-		{
+		if (p != player) {
 			if (check_visibility(p, player)) {
 				// All's inventories to Me
 				obj = p->inventory.first();
@@ -962,7 +974,8 @@ void Player::identification() {
 				// Client is not supported, so indicate the real latest supported protocol version
 				string[strlen(string) + 1] = MAX_SERVER_VERSION;
 			} else {
-				// Client's protocol is within supported range, so send them identical version to prevent crashes
+				// Client's protocol is within supported range, so send them identical version to
+				// prevent crashes
 				string[strlen(string) + 1] = client_version;
 			}
 			socket.send(string, strlen(string) + 2);
@@ -1009,7 +1022,7 @@ void Player::clear_object_queue(int keep_globals) {
 			else
 				// if(obj -> ID != DIRECT_SENDING_OBJECT)
 				if (obj->list)
-				obj->list->remove(obj);
+					obj->list->remove(obj);
 			delete obj;
 		}
 	}
@@ -1079,13 +1092,15 @@ int Player::receive() {
 				in_buffer.read(obj->body, obj->body_size);
 				if (!PLAYERS_OBJECT(obj_ID))
 					world->process_create(
-						!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj);
+						!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj
+					);
 				else {
 					if (NON_GLOBAL_OBJECT(obj_ID))
 						world->process_create_inventory(this, obj);
 					else
 						game->process_create_globals(
-							!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj);
+							!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj
+						);
 				}
 			}
 			IN_EVENTS_LOG1(CREATE_PERMANENT_OBJECT, obj->ID);
@@ -1162,13 +1177,15 @@ int Player::receive() {
 				in_buffer.read(obj->body, update_size);
 				if (!PLAYERS_OBJECT(obj_ID))
 					world->process_update(
-						!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj);
+						!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj
+					);
 				else {
 					if (NON_GLOBAL_OBJECT(obj_ID))
 						world->process_update_inventory(this, obj);
 					else
 						game->process_update_globals(
-							!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj);
+							!(in_buffer.current_event() & ECHO_EVENT) ? this : 0, obj
+						);
 				}
 			}
 			IN_EVENTS_LOG1(UPDATE_OBJECT, obj->ID);
@@ -1299,7 +1316,9 @@ int Player::receive() {
 				game->worlds.append(world);
 				world_status = 1;
 			} else if (world_y_size != world->V_SIZE)
-				SERVER_ERROR_NO_EXIT("Incorrect world Y size", world_y_size * 100000 + world->V_SIZE);
+				SERVER_ERROR_NO_EXIT(
+					"Incorrect world Y size", world_y_size * 100000 + world->V_SIZE
+				);
 
 			out_buffer.begin_event(SET_WORLD_RESPONSE);
 			out_buffer < (unsigned char)world_ID;
@@ -1924,9 +1943,10 @@ void Server::get_games_list(OutputEventBuffer &out_buffer, int client_version) {
 	Game *g = games.first();
 	while (g) {
 		if (g->data.GameType != UNCONFIGURED && g->used_players_IDs != 0x7fffffff)
-			// This check isn't needed for now, as both clients' and games' versions are guaranteed to be within supported
-			// range; though later this condition might end up being needed in some adjusted form in case of further updates
-			//g->client_version == client_version)
+			// This check isn't needed for now, as both clients' and games' versions are guaranteed
+			// to be within supported range; though later this condition might end up being needed
+			// in some adjusted form in case of further updates
+			// g->client_version == client_version)
 			num++;
 		g = g->next;
 	}
@@ -1935,9 +1955,10 @@ void Server::get_games_list(OutputEventBuffer &out_buffer, int client_version) {
 	g = games.first();
 	while (g) {
 		if (g->data.GameType != UNCONFIGURED && g->used_players_IDs != 0x7fffffff) {
-			// This check isn't needed for now, as both clients' and games' versions are guaranteed to be within supported
-			// range; though later this condition might end up being needed in some adjusted form in case of further updates
-			//g->client_version == client_version) {
+			// This check isn't needed for now, as both clients' and games' versions are guaranteed
+			// to be within supported range; though later this condition might end up being needed
+			// in some adjusted form in case of further updates
+			// g->client_version == client_version) {
 			out_buffer < g->ID < g->name < ": " <= g->players.size() < " " <
 				(g->data.GameType == VAN_WAR ? "V" : (g->data.GameType == MECHOSOMA ? "M" : "P"));
 
@@ -2036,7 +2057,7 @@ void Server::save_rating_list(const char *name) {
 	while (p) {
 		ff < p->name < char(0) < p->password < char(0) < p->MP_game < p->rating;
 		//		fout < p -> name < "\t" < p -> password  < "\t" <= p -> MP_game < "\t" <= p ->
-		//rating < "\n";
+		// rating < "\n";
 		p = p->next;
 	}
 	//	fout < "\n";

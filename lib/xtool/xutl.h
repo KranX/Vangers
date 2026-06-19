@@ -1,27 +1,27 @@
 #ifndef __XUTIL_H
 #define __XUTIL_H
 
-void* xalloc(unsigned sz);
-void* xrealloc(void* p,unsigned sz);
-void  xfree(void* p);
+void *xalloc(unsigned sz);
+void *xrealloc(void *p, unsigned sz);
+void xfree(void *p);
 
-#define XALLOC(a)	xalloc(a)
-#define XREALLOC(a,b)	xrealloc(a,b)
-#define XFREE(a)	xfree(a)
+#define XALLOC(a) xalloc(a)
+#define XREALLOC(a, b) xrealloc(a, b)
+#define XFREE(a) xfree(a)
 
-//unsigned int XRnd(unsigned int m);
+// unsigned int XRnd(unsigned int m);
 void XRndSet(unsigned int m);
 unsigned int XRndGet();
 
-char* XFindNext(void);
-char* XFindFirst(char* mask);
+char *XFindNext(void);
+char *XFindFirst(char *mask);
 
 #ifndef M_PI
-#define M_PI	3.14159265358979323846
+#	define M_PI 3.14159265358979323846
 #endif
 
 #ifndef __ROUND__
-#define __ROUND__
+#	define __ROUND__
 
 // TODO(amdmi3): both old and new code depends on current rounding mode;
 // should use lrint family functions actually
@@ -45,11 +45,13 @@ __forceinline int round(float x)
 	return (int)(x);
 }
 */
-template <class T> 
-inline T sqr(const T& x){ return x*x; }
+template<class T> inline T sqr(const T &x) {
+	return x * x;
+}
 
-template <class T> 
-inline int SIGN(const T& x) { return x ? (x > 0 ? 1 : -1 ) : 0; }
+template<class T> inline int SIGN(const T &x) {
+	return x ? (x > 0 ? 1 : -1) : 0;
+}
 
 #endif //__ROUND__
 
@@ -66,8 +68,7 @@ inline int BitSR(int x)
 	return 0;
 }*/
 
-inline bool IsPowerOf2(int x)
-{
+inline bool IsPowerOf2(int x) {
 	return (x) && !(x & (x - 1));
 }
 
@@ -85,6 +86,6 @@ void initclock(void);
 int clocki(void);
 double clockf(void);
 
-void xtDeleteFile(char* fname);
+void xtDeleteFile(char *fname);
 
 #endif

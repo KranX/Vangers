@@ -1,108 +1,101 @@
 
-#define eCmpIncubator  "Incubator" //English Version
-#define rCmpIncubator  "Инкубатор" //Local Version
+#define eCmpIncubator "Incubator" // English Version
+#define rCmpIncubator "Инкубатор" // Local Version
 
-#define eCmpPodish		"Podish"
-#define rCmpPodish		"Подиш"
+#define eCmpPodish "Podish"
+#define rCmpPodish "Подиш"
 
-#define eCmpRepair1      "Repair Station I"
-#define rCmpRepair1      "Ремонт-Станция I"
+#define eCmpRepair1 "Repair Station I"
+#define rCmpRepair1 "Ремонт-Станция I"
 
-#define eCmpRepair2      "Repair Station II"
-#define rCmpRepair2      "Ремонт-Станция II"
+#define eCmpRepair2 "Repair Station II"
+#define rCmpRepair2 "Ремонт-Станция II"
 
-#define eCmpRigs           "Rigs Station"
-#define rCmpRigs           "Риг-Станция"
+#define eCmpRigs "Rigs Station"
+#define rCmpRigs "Риг-Станция"
 
-#define eCmpGhOrb       "ghOrb Station"
-#define rCmpGhOrb       "гОрб-Станция"
+#define eCmpGhOrb "ghOrb Station"
+#define rCmpGhOrb "гОрб-Станция"
 
-#define eCmpBroken1      "Broken Station I"
-#define rCmpBroken1      "Сломанная Станция I"
+#define eCmpBroken1 "Broken Station I"
+#define rCmpBroken1 "Сломанная Станция I"
 
-#define eCmpBroken2      "Broken Station II"
-#define rCmpBroken2      "Сломанная Станция II"
+#define eCmpBroken2 "Broken Station II"
+#define rCmpBroken2 "Сломанная Станция II"
 
-#define eCmpSpiral          "Spiral Station"
-#define rCmpSpiral          "Зарядка Спирали"
+#define eCmpSpiral "Spiral Station"
+#define rCmpSpiral "Зарядка Спирали"
 
-#define eCmpPassGlorx   "Passage to Glorx"
-#define rCmpPassGlorx   "Коридор на Глоркс"
+#define eCmpPassGlorx "Passage to Glorx"
+#define rCmpPassGlorx "Коридор на Глоркс"
 
-#define eCmpPassWeexow      "Passage to Weexow"
-#define rCmpPassWeexow      "Коридор на Виксов"
+#define eCmpPassWeexow "Passage to Weexow"
+#define rCmpPassWeexow "Коридор на Виксов"
 
+#define eCmpOgorod "Ogorod"
+#define rCmpOgorod "Огород"
 
+#define eCmpLampasso "Lampasso"
+#define rCmpLampasso "Лампассы"
 
+#define eCmpVigBoo "VigBoo"
+#define rCmpVigBoo "ВигБу"
 
-#define eCmpOgorod			  "Ogorod"
-#define rCmpOgorod			  "Огород"
+#define eCmpPassFostral "Passage to  Fostral"
+#define rCmpPassFostral "Коридор на Фострал"
 
-#define eCmpLampasso        "Lampasso"
-#define rCmpLampasso        "Лампассы"
+#define eCmpPassNecross "Passage to  Necross"
+#define rCmpPassNecross "Коридор на Некросс"
 
-#define eCmpVigBoo            "VigBoo"
-#define rCmpVigBoo            "ВигБу"
+#define eCmpPassXplo "Passage to  Xplo"
+#define rCmpPassXplo "Коридор на Икспло"
 
-#define eCmpPassFostral      "Passage to  Fostral"
-#define rCmpPassFostral      "Коридор на Фострал"
+#define eCmpPassKhox "Passage to  Khox"
+#define rCmpPassKhox "Коридор на Кокс"
 
-#define eCmpPassNecross    "Passage to  Necross"
-#define rCmpPassNecross    "Коридор на Некросс"
+#define eCmpRigs1 "Rigs Station I"
+#define rCmpRigs1 "Риг-Станция I"
 
-#define eCmpPassXplo         "Passage to  Xplo"
-#define rCmpPassXplo         "Коридор на Икспло"
+#define eCmpRigs2 "Rigs Station II"
+#define rCmpRigs2 "Риг-Станция II"
 
-#define eCmpPassKhox        "Passage to  Khox"
-#define rCmpPassKhox        "Коридор на Кокс"
+#define eCmpBZone "B-Zone"
+#define rCmpBZone "БиЗона"
 
-#define eCmpRigs1                "Rigs Station I"
-#define rCmpRigs1                "Риг-Станция I"
+#define eCmpZeePa "ZeePa"
+#define rCmpZeePa "ЦыПа"
 
-#define eCmpRigs2                "Rigs Station II"
-#define rCmpRigs2                "Риг-Станция II"
+#define eCmpPassBoozeena "Passage to  Boozeena"
+#define rCmpPassBoozeena "Коридор на Бузину"
 
+#define eCmpPassArk "Passage to  Ark'a'Znoy"
+#define rCmpPassArk "Коридор на Арк-а-Зной"
 
+#define eCmpRepair "Repair Station"
+#define rCmpRepair "Ремонт-Станция"
 
-#define eCmpBZone             "B-Zone"
-#define rCmpBZone             "БиЗона"
+#define eCmpBroken "Broken Station"
+#define rCmpBroken "Сломанная станция"
 
-#define eCmpZeePa               "ZeePa"
-#define rCmpZeePa               "ЦыПа"
+#define eCmpSpobs "Spobs"
+#define rCmpSpobs "Спобс"
 
-#define eCmpPassBoozeena   "Passage to  Boozeena"
-#define rCmpPassBoozeena   "Коридор на Бузину"
+#define eCmpPassThreall "Passage to Threall"
+#define rCmpPassThreall "Коридор на Трилл"
 
-#define eCmpPassArk        "Passage to  Ark'a'Znoy"
-#define rCmpPassArk        "Коридор на Арк-а-Зной"
+#define eCmpPassEarth "Passage to Earth"
+#define rCmpPassEarth "Коридор на Землю"
 
-#define eCmpRepair            "Repair Station"
-#define rCmpRepair            "Ремонт-Станция"
+#define SuccessTaskMessageData "TabuTask Complete"
+#define FailedTaskMessageData "TabuTask Failed"
+#define rSuccessTaskMessageData "Табутаск выполнен"
+#define rFailedTaskMessageData "Табутаск провален"
 
-#define eCmpBroken           "Broken Station"
-#define rCmpBroken           "Сломанная станция"
+#define TaskMessageLuck "Luck"
+#define rTaskMessageLuck "Удача"
 
-#define eCmpSpobs    		"Spobs"
-#define rCmpSpobs    		"Спобс"
-
-#define eCmpPassThreall            "Passage to Threall"
-#define rCmpPassThreall            "Коридор на Трилл"
-
-#define eCmpPassEarth      "Passage to Earth"
-#define rCmpPassEarth      "Коридор на Землю"
-
-
-#define SuccessTaskMessageData	"TabuTask Complete"
-#define FailedTaskMessageData	"TabuTask Failed"
-#define rSuccessTaskMessageData	"Табутаск выполнен"
-#define rFailedTaskMessageData  "Табутаск провален"
-
-#define TaskMessageLuck		"Luck"
-#define rTaskMessageLuck	"Удача"
-
-#define DominanceMessageData	"Dominance "
-#define rDominanceMessageData	"Авторитет" 
-
+#define DominanceMessageData "Dominance "
+#define rDominanceMessageData "Авторитет"
 
 #define FirstTabuTaskMessage " tabutask complete\n"
 #define SecondTabuTaskMessage "sell it in the escave for "
@@ -127,7 +120,6 @@
 
 #define Function83CompasTarget "Function-83+"
 #define rFunction83CompasTarget "Способ-83+"
-
 
 #define PlayerFirstDropedMessage " has departed from the"
 #define PlayerSecondDropedMessage "Chain of Worlds."

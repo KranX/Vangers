@@ -9,7 +9,7 @@
 #define MOVELAND_ON
 #define DEVICE_ON
 
-//#define STACK_EMPTY_IGNORE
+// #define STACK_EMPTY_IGNORE
 
 const int SOBJ_ACTIVE = 1;
 const int SOBJ_DISCONNECT = 2;
@@ -39,56 +39,52 @@ const int TELEPORT_ESCAVE_ID = 83000;
 
 struct ActionUnit;
 
-struct StorageType
-{
-	int Max,ObjectPointer;
-	GeneralObject** Data;
+struct StorageType {
+	int Max, ObjectPointer;
+	GeneralObject **Data;
 
 	void Init(int _max = 100);
 	void Free(void);
-	GeneralObject* Active(void);
-	void Deactive(GeneralObject* p);
-	GeneralObject* GetAll(void);
+	GeneralObject *Active(void);
+	void Deactive(GeneralObject *p);
+	GeneralObject *GetAll(void);
 
 	void Check(void);
 };
 
 struct MemoryStorageType;
 
-struct StorageClusterType
-{
-	int MaxPoint,CurrPoint;
+struct StorageClusterType {
+	int MaxPoint, CurrPoint;
 	int PointSize;
-	char** PointData;
-	char* Data;
-	StorageClusterType* Next;
+	char **PointData;
+	char *Data;
+	StorageClusterType *Next;
 
-	void Init(MemoryStorageType* p);
+	void Init(MemoryStorageType *p);
 	void Free(void);
 	char CheckSpace(void);
-	GeneralObject* GetPoint(void);
-	void PutPoint(GeneralObject* p);
+	GeneralObject *GetPoint(void);
+	void PutPoint(GeneralObject *p);
 };
 
-struct MemoryStorageType
-{
+struct MemoryStorageType {
 	int NumCluster;
 	int ElementSize;
 	int MaxElement;
 
-	StorageClusterType* Tail;
+	StorageClusterType *Tail;
 
-	void Init(int mElement,int eSize);
+	void Init(int mElement, int eSize);
 	void Free(void);
-	GeneralObject* GetPoint(void);
-	void PutPoint(GeneralObject* p);
+	GeneralObject *GetPoint(void);
+	void PutPoint(GeneralObject *p);
 };
 
-struct GameObjectDispatcher
-{
+struct GameObjectDispatcher {
 	int Num;
-	BaseObject* Tail;
-	BaseObject* ViewTail;
+	BaseObject *Tail;
+	BaseObject *ViewTail;
 	int GlobalTime;
 	char FirstQuant;
 	int cWorld;
@@ -99,68 +95,67 @@ struct GameObjectDispatcher
 	void Close(void);
 	void InitTime(void);
 
-	void ConnectBaseList(BaseObject* p);
-	void DisconnectBaseList(BaseObject* p);
+	void ConnectBaseList(BaseObject *p);
+	void DisconnectBaseList(BaseObject *p);
 	void Quant(void);
 	void DrawQuant(void);
 	void Sort(void);
-	void ConnectViewList(BaseObject* p);
-	void ConnectNextView(BaseObject* p,BaseObject* link);
-	void ConnectPrevView(BaseObject* p,BaseObject* link);
+	void ConnectViewList(BaseObject *p);
+	void ConnectNextView(BaseObject *p, BaseObject *link);
+	void ConnectPrevView(BaseObject *p, BaseObject *link);
 
-	void NetEvent(void);	
+	void NetEvent(void);
 };
 
-struct UnitListType
-{
+struct UnitListType {
 	int Num;
-	GeneralObject* Tail;
+	GeneralObject *Tail;
 
 	virtual void Init(void);
 	virtual void Free(void);
 	virtual void Quant(void);
-	virtual void NetEvent(int type,int id);	
-	virtual void FreeUnit(GeneralObject* p);
+	virtual void NetEvent(int type, int id);
+	virtual void FreeUnit(GeneralObject *p);
 
-	virtual void ConnectTypeList(GeneralObject* p);
-	virtual void DisconnectTypeList(GeneralObject* p);
-	GeneralObject* GetNetObject(int id);
+	virtual void ConnectTypeList(GeneralObject *p);
+	virtual void DisconnectTypeList(GeneralObject *p);
+	GeneralObject *GetNetObject(int id);
 	void ClearNet(void);
 };
 
-struct UnitBaseListType : UnitListType
-{
-	virtual void ConnectTypeList(GeneralObject* p);
-	virtual void DisconnectTypeList(GeneralObject* p);
+struct UnitBaseListType: UnitListType {
+	virtual void ConnectTypeList(GeneralObject *p);
+	virtual void DisconnectTypeList(GeneralObject *p);
 };
 
-struct UnitList 
-{
+struct UnitList {
 	int Total;
-	int* MaxUnit;
-	StorageType* UnitStorage;
-	GeneralObject** UnitData;
+	int *MaxUnit;
+	StorageType *UnitStorage;
+	GeneralObject **UnitData;
 
 	int Num;
-	GeneralObject* Tail;
+	GeneralObject *Tail;
 
-	void Init(Parser& in);
-	void Open(Parser& in);
+	void Init(Parser &in);
+	void Open(Parser &in);
 
-	void ConnectTypeList(GeneralObject* p);
-	void DisconnectTypeList(GeneralObject* p);
+	void ConnectTypeList(GeneralObject *p);
+	void DisconnectTypeList(GeneralObject *p);
 	void Quant(void);
 
-	void ConnectObject(BaseObject* p);
+	void ConnectObject(BaseObject *p);
 
-	void Add2Next(GeneralObject* p,GeneralObject* t);
-	void Add2Prev(GeneralObject* p,GeneralObject* t);
+	void Add2Next(GeneralObject *p, GeneralObject *t);
+	void Add2Prev(GeneralObject *p, GeneralObject *t);
 
-	GeneralObject* GetNetObject(int id);
+	GeneralObject *GetNetObject(int id);
 
-	virtual void NetEvent(int type,int id);
+	virtual void NetEvent(int type, int id);
 
-	GeneralObject* GetObject(int type){ return UnitStorage[type].Active(); };
+	GeneralObject *GetObject(int type) {
+		return UnitStorage[type].Active();
+	};
 	void ClearNet(void);
 };
 
@@ -178,49 +173,71 @@ void CloseCyclicPal(void);
 
 extern GameObjectDispatcher GameD;
 
-int compare(BaseObject* p,BaseObject* n);
+int compare(BaseObject *p, BaseObject *n);
 
-int getDistX(int s0,int s1);
-int getDistY(int s0,int s1);
-//int objDist(BaseObject* e1,BaseObject* e2);
+int getDistX(int s0, int s1);
+int getDistY(int s0, int s1);
+// int objDist(BaseObject* e1,BaseObject* e2);
 
-void setMapPixel(int px,int py,int col);
-void putMapPixel(int px,int py,int col);
-//int path_trace(const Vector& c1,const Vector& c2);
-//void line_trace(const Vector& c1,const Vector& c2);
+void setMapPixel(int px, int py, int col);
+void putMapPixel(int px, int py, int col);
+// int path_trace(const Vector& c1,const Vector& c2);
+// void line_trace(const Vector& c1,const Vector& c2);
 
-void G2L(int x,int y,int& xl,int& yl);
-void G2L(Vector v,int& xl,int& yl);
-int MapLineTrace(Vector& c1,Vector& c2);
-char GetCollisionMap(int x,int y,int z);
-char GetMapLevel(Vector& v);
-uchar GetAlt(Vector v,uchar& alt);
-uchar GetGlobalAlt(int x,int y);
+void G2L(int x, int y, int &xl, int &yl);
+void G2L(Vector v, int &xl, int &yl);
+int MapLineTrace(Vector &c1, Vector &c2);
+char GetCollisionMap(int x, int y, int z);
+char GetMapLevel(Vector &v);
+uchar GetAlt(Vector v, uchar &alt);
+uchar GetGlobalAlt(int x, int y);
 
-int G2LS(Vector v,int& sx,int& sy);
-int G2LS(int x,int y,int z,int& sx,int& sy);
-int G2LF(Vector v,int& sx,int& sy);
-int G2LF(int x,int y,int& sx,int& sy);
-void G2LQ(Vector v,int& sx,int& sy);
-void G2LQ(int x,int y,int& sx,int& sy);
-void G2LP(Vector v,int& sx,int& sy);
-void G2LP(int x,int y,int& sx,int& sy);
-void S2G(int xs,int ys,int& xg,int& yg);
+int G2LS(Vector v, int &sx, int &sy);
+int G2LS(int x, int y, int z, int &sx, int &sy);
+int G2LF(Vector v, int &sx, int &sy);
+int G2LF(int x, int y, int &sx, int &sy);
+void G2LQ(Vector v, int &sx, int &sy);
+void G2LQ(int x, int y, int &sx, int &sy);
+void G2LP(Vector v, int &sx, int &sy);
+void G2LP(int x, int y, int &sx, int &sy);
+void S2G(int xs, int ys, int &xg, int &yg);
 
-//void SetMapBuff(int x,int y,int x_size,int y_size,uchar* MapBuf);
+// void SetMapBuff(int x,int y,int x_size,int y_size,uchar* MapBuf);
 
-void DrawMechosWheelDown(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,int nx,int ny,char step);
-void DrawMechosWheelUp(int cx1,int cy1,int cx2,int cy2,int lh,int h,int delta,int nx,int ny,char step);
-void DrawMechosBody(int x,int y,int speed,int level);
-void DrawMechosParticle(int x,int y,int speed,int level,int n,Object* p=NULL);
+void DrawMechosWheelDown(
+	int cx1,
+	int cy1,
+	int cx2,
+	int cy2,
+	int lh,
+	int h,
+	int delta,
+	int nx,
+	int ny,
+	char step
+);
+void DrawMechosWheelUp(
+	int cx1,
+	int cy1,
+	int cx2,
+	int cy2,
+	int lh,
+	int h,
+	int delta,
+	int nx,
+	int ny,
+	char step
+);
+void DrawMechosBody(int x, int y, int speed, int level);
+void DrawMechosParticle(int x, int y, int speed, int level, int n, Object *p = NULL);
 
-int TouchSphere(Vector& r0,Vector& r1,Vector& c,int rad,int& r);
-int TouchSphereZ(Vector& r0,Vector& r1,Vector& c,int rad,int& r);
+int TouchSphere(Vector &r0, Vector &r1, Vector &c, int rad, int &r);
+int TouchSphereZ(Vector &r0, Vector &r1, Vector &c, int rad, int &r);
 
-void DrawShadow(int x,int y,int x_size,int y_size,uchar* buff);
+void DrawShadow(int x, int y, int x_size, int y_size, uchar *buff);
 
-char GetMapLevelType(Vector& v,uchar*& type);
-int BigGetAlt(Vector v,uchar& alt,uchar terrain);
+char GetMapLevelType(Vector &v, uchar *&type);
+int BigGetAlt(Vector v, uchar &alt, uchar terrain);
 
 extern char SetWorldFlag;
 extern int CurrentWorld;
@@ -230,14 +247,14 @@ extern int TurnSideY;
 const int PTrack_mask_x = (map_size_x << 8) - 1;
 extern int PTrack_mask_y;
 
-void ScreenLineTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag);
-void ScreenLaserTrace(Vector& v0,Vector& v1,uchar* ColorTable,uchar flag);
+void ScreenLineTrace(Vector &v0, Vector &v1, uchar *ColorTable, uchar flag);
+void ScreenLaserTrace(Vector &v0, Vector &v1, uchar *ColorTable, uchar flag);
 
-void CheckActiveJump(BaseObject* p);
+void CheckActiveJump(BaseObject *p);
 
-//void PrepareProtoCrypt(void);
+// void PrepareProtoCrypt(void);
 
-extern uchar** WorldPalData;
+extern uchar **WorldPalData;
 extern int WorldPalNum;
 extern int WorldPalCurrent;
 
@@ -246,21 +263,20 @@ extern int PalIterLock;
 extern int GeneralMapReload;
 extern int GeneralLoadReleaseFlag;
 
+int CheckStartJump(Object *p);
 
-int CheckStartJump(Object* p);
+void GeneralSystemLoad(XStream &in);
+void GeneralSystemSave(XStream &out);
 
-void GeneralSystemLoad(XStream& in);
-void GeneralSystemSave(XStream& out);
-
-extern uchar* 	palbufSrc;
-//extern int WorldBulletNum;
+extern uchar *palbufSrc;
+// extern int WorldBulletNum;
 
 extern int GameBulletNum;
 
 #define NETWORK_IN_STREAM events_in
 #define NETWORK_OUT_STREAM events_out
 
-int GetMasterID(int x,int y,int radius);
+int GetMasterID(int x, int y, int radius);
 
 const int AI_MESSAGE_DELTA = 20;
 
@@ -272,8 +288,7 @@ const int MAX_MLLINK_NAME = 32;
 
 const int MAX_AI_MESSAGE_SPEED = 0;
 
-struct aiMessageType
-{
+struct aiMessageType {
 	int LastFrame;
 	int Num;
 	int Type;
@@ -281,8 +296,8 @@ struct aiMessageType
 	int Time[AI_MESSAGE_MAX_STRING];
 	int Color[AI_MESSAGE_MAX_STRING];
 
-	void Load(Parser& in);
-	void Send(int speed = 0,int n = 0xff,int sf = 1);
+	void Load(Parser &in);
+	void Send(int speed = 0, int n = 0xff, int sf = 1);
 	int GetTime(int n = 0xff);
 };
 
@@ -290,35 +305,33 @@ const int AI_MESSAGE_INDEX_LUCK = -1;
 const int AI_MESSAGE_INDEX_DOMINANCE = -2;
 const int AI_MESSAGE_INDEX_TABUTASK = -3;
 
-struct aiMessageListElem
-{
-	aiMessageListElem* Next;
-	aiMessageListElem* Prev;
-	int Speed,Mask,SpeedFlag;
+struct aiMessageListElem {
+	aiMessageListElem *Next;
+	aiMessageListElem *Prev;
+	int Speed, Mask, SpeedFlag;
 	int Index;
-	int Luck,Dominance,TabuTask;
+	int Luck, Dominance, TabuTask;
 };
 
-struct aiMessageList
-{
+struct aiMessageList {
 	int Num;
-	aiMessageListElem* Tail;
-	aiMessageListElem* View;
+	aiMessageListElem *Tail;
+	aiMessageListElem *View;
 	int Time;
 
 	void Open(void);
 	void Close(void);
-	void Send(int ind,int speed = 0,int n = 0xff,int sf = 1);
+	void Send(int ind, int speed = 0, int n = 0xff, int sf = 1);
 	void Quant(void);
-	void Connect(aiMessageListElem* p);
-	void Disconnect(aiMessageListElem* p);
+	void Connect(aiMessageListElem *p);
+	void Disconnect(aiMessageListElem *p);
 	void SendDominance(int dom);
 	void SendLuck(int luck);
 	void SendTabuTask(int luck);
 };
 
 extern aiMessageList aiMessageQueue;
-extern aiMessageType* aiMessageData;
+extern aiMessageType *aiMessageData;
 
 const int AI_MESSAGE_FOSTRAL = 0;
 const int AI_MESSAGE_GLORX = 1;
@@ -378,12 +391,12 @@ const int AI_MESSAGE_INCOMING_MESSAGE = 48;
 const int AI_MESSAGE_DESTROY_SPOBS_MESSAGE = 49;
 const int AI_MESSAGE_DESTROY_THREALL_MESSAGE = 50;
 
-//NEW for STEAM REALESE
+// NEW for STEAM REALESE
 const int AI_MESSAGE_CAMERA_HELP = 51;
 
 void NetworkSetTnt(int id);
 
-void aiMessageTouch(int speed,int ind);
+void aiMessageTouch(int speed, int ind);
 
 void FreeAll(int mode = 1);
 
@@ -404,30 +417,28 @@ const int CPAL_THREALL_TO = 8;
 
 const int SPOBS_PAL_TERRAIN = 2;
 
-struct PalPoint
-{
+struct PalPoint {
 	int Mode;
 	int Time;
 	int FirstColor[768];
 	int DeltaColor[768];
-	PalPoint* Next;
-	PalPoint* Prev;
+	PalPoint *Next;
+	PalPoint *Prev;
 
-	void Set(int mode,int time,uchar* p1 = NULL,uchar* p2 = NULL);
+	void Set(int mode, int time, uchar *p1 = NULL, uchar *p2 = NULL);
 	void Quant(void);
 };
 
-struct PalConstructor
-{
-	PalPoint* pPrev;
-	PalPoint* Tail;
+struct PalConstructor {
+	PalPoint *pPrev;
+	PalPoint *Tail;
 	int PalEnable;
 
 	void Init(void);
 	void Free(void);
 	void Quant(void);
-	void Set(int mode,int time,uchar* p1 = NULL,uchar* p2 = NULL);
-	void Clear(PalPoint* p);
+	void Set(int mode, int time, uchar *p1 = NULL, uchar *p2 = NULL);
+	void Clear(PalPoint *p);
 };
 
 void NetworkWorldOpen(void);
@@ -442,55 +453,63 @@ extern int VangerLuck;
 
 void InitProtoCrypt(void);
 void FreeProtoCrypt(void);
-void LoadProtoCrypt(XStream& in,int v);
-void SaveProtoCrypt(XStream& in);
+void LoadProtoCrypt(XStream &in, int v);
+void SaveProtoCrypt(XStream &in);
 
 const int MAX_SKIP_LOCATION = 20;
 extern int ChangeWorldConstraction;
 extern int ChangeWorldSkipQuant;
-//#define ITEM_LOG
+// #define ITEM_LOG
 
 extern unsigned int NetGlobalTime;
 int check_dynamics_locals();
 
-#define CHECK_SICHER_CRASH(s) {if(check_dynamics_locals() || aciCurArmor > aciMaxArmor || aciCurEnergy > aciMaxEnergy) ErrH.Abort(s);}
+#define CHECK_SICHER_CRASH(s)                                                                    \
+	{                                                                                            \
+		if (check_dynamics_locals() || aciCurArmor > aciMaxArmor || aciCurEnergy > aciMaxEnergy) \
+			ErrH.Abort(s);                                                                       \
+	}
 
 extern int aiCutLuck;
 extern int aiCutDominance;
 
 void NetworkSetLocation(int id);
 
-struct aiRndType
-{
+struct aiRndType {
 	unsigned aiRndVal;
-	void aiInit(unsigned d) { aiRndVal=d; }
-	aiRndType() { aiRndVal=0; }
-	inline unsigned aiRnd(unsigned m){
+	void aiInit(unsigned d) {
+		aiRndVal = d;
+	}
+	aiRndType() {
+		aiRndVal = 0;
+	}
+	inline unsigned aiRnd(unsigned m) {
 		aiRndVal ^= aiRndVal >> 3;
 		aiRndVal ^= aiRndVal << 28;
 		aiRndVal &= 0x7FFFFFFF;
-		if(!m) return 0;
-		return aiRndVal%m;
-	};	
+		if (!m)
+			return 0;
+		return aiRndVal % m;
+	};
 };
 
 extern int NetworkLoadEnable;
 
-inline int GetDistTime(unsigned int t1,unsigned int t2)
-{
+inline int GetDistTime(unsigned int t1, unsigned int t2) {
 	unsigned int l1 = t1 - t2;
 	unsigned int l2 = t2 - t1;
-	if(l2 > l1) return l1;
-	else return l2;
+	if (l2 > l1)
+		return l1;
+	else
+		return l2;
 };
 
-struct PassageImageType
-{
-	int xSize,ySize;
-	char* Name;
-	char* Data;
+struct PassageImageType {
+	int xSize, ySize;
+	char *Name;
+	char *Data;
 	char Pal[768];
-	void Open(char* name);
+	void Open(char *name);
 	void Close(void);
 	void Show(void);
 	void Hide(void);
@@ -498,9 +517,9 @@ struct PassageImageType
 
 extern int PassageBmpNum;
 extern int PassageBmpPrev;
-extern PassageImageType* PassageImageData;
+extern PassageImageType *PassageImageData;
 
 //!!!!!!!!!!!!!!
-//extern XStream StorageLog;
+// extern XStream StorageLog;
 //!!!!!!!!!!!!!!!!!!!
 #endif

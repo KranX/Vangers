@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #if defined(__unix__) || defined(__APPLE__)
-#include <dirent.h>
+#	include <dirent.h>
 #endif
 
 typedef unsigned char uchar;
@@ -37,26 +37,26 @@ extern "C" {
 int NetworkON = 0;
 int debug_view = 0;
 
-char * iniparser_getstring_surmap(void * d, const char * cat, const char * key) {
-	return iniparser_getstring((dictionary*) d, (std::string(cat) + ":" + key).c_str(), NULL);
+char *iniparser_getstring_surmap(void *d, const char *cat, const char *key) {
+	return iniparser_getstring((dictionary *)d, (std::string(cat) + ":" + key).c_str(), NULL);
 }
 
-XConWrapper& XConWrapper::operator<(const char* str) {
+XConWrapper &XConWrapper::operator<(const char *str) {
 	printf("%s", str);
 	return *this;
 }
 
-XConWrapper& XConWrapper::operator<=(int value) {
+XConWrapper &XConWrapper::operator<=(int value) {
 	printf("%d", value);
 	return *this;
 }
 
 XConWrapper XCon;
 
-XKeyWrapper* keyWrapper = 0;
+XKeyWrapper *keyWrapper = 0;
 std::function<void(int)> keyHandler;
 std::unordered_map<int, bool> keyStates;
-void onKeyDown(SDL_Event* e) {
+void onKeyDown(SDL_Event *e) {
 	if (!keyHandler || e->type != SDL_KEYDOWN) {
 		return;
 	}
@@ -64,7 +64,7 @@ void onKeyDown(SDL_Event* e) {
 	keyHandler(e->key.keysym.sym);
 	keyStates[e->key.keysym.sym] = true;
 }
-void onKeyUp(SDL_Event* e) {
+void onKeyUp(SDL_Event *e) {
 	if (!keyHandler || e->type != SDL_KEYUP) {
 		return;
 	}
@@ -73,23 +73,20 @@ void onKeyUp(SDL_Event* e) {
 XKeyWrapper::XKeyWrapper() {
 	keyWrapper = this;
 }
-void XKeyWrapper::init(std::function<void(int)> handlerFn, void*) {
+void XKeyWrapper::init(std::function<void(int)> handlerFn, void *) {
 	set_key_handlers(onKeyDown, onKeyUp);
 	keyHandler = handlerFn;
 }
-void XKeyWrapper::finit() {
-}
+void XKeyWrapper::finit() {}
 bool XKeyWrapper::Pressed(int sdlkKey) {
 	return keyStates[sdlkKey] == true;
 }
 
 XKeyWrapper XKey;
 
-void mainWinMinimize() {
-}
+void mainWinMinimize() {}
 
-void mainWinMaximize() {
-}
+void mainWinMaximize() {}
 
 #if !(defined(__unix__) || defined(__APPLE__))
 // implementation is in moveland.cpp
@@ -98,8 +95,8 @@ int lastSearchCount = 0;
 struct dirent **lastSearch = nullptr;
 std::string extToSearch;
 
-//http://www.delorie.com/djgpp/doc/libc/libc_167.html
-char* win32_findnext() {
+// http://www.delorie.com/djgpp/doc/libc/libc_167.html
+char *win32_findnext() {
 	if (lastSearchCount == 0 || lastSearch == nullptr) {
 		return nullptr;
 	}
@@ -111,16 +108,16 @@ char* win32_findnext() {
 }
 
 // we should still rely on gcc 5
-void replace_all(std::string& str, const std::string& from, const std::string& to) {
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length();
-    }
+void replace_all(std::string &str, const std::string &from, const std::string &to) {
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length();
+	}
 }
 
-//http://www.delorie.com/djgpp/doc/libc/libc_166.html
-char* win32_findfirst(const char* cMask) {
+// http://www.delorie.com/djgpp/doc/libc/libc_166.html
+char *win32_findfirst(const char *cMask) {
 	if (lastSearch != nullptr) {
 		free(lastSearch);
 		lastSearch = nullptr;
@@ -144,13 +141,19 @@ char* win32_findfirst(const char* cMask) {
 
 	extToSearch = mask.substr(1, mask.length() - 1);
 
-	lastSearchCount = scandir(path.c_str(), &lastSearch, [](const struct dirent* next) -> int {
+	lastSearchCount = scandir(
+		path.c_str(),
+		&lastSearch,
+		[](const struct dirent *next) -> int {
 			std::string name = next->d_name;
 			if (extToSearch.length() > name.length()) {
 				return false;
 			}
-			return extToSearch == name.substr(name.length() - extToSearch.length(), extToSearch.length());
-		}, alphasort);
+			return extToSearch ==
+				   name.substr(name.length() - extToSearch.length(), extToSearch.length());
+		},
+		alphasort
+	);
 
 	if (lastSearchCount < 0) {
 		printf("scandir errored for path %s\n", path.c_str());
@@ -163,10 +166,9 @@ char* win32_findfirst(const char* cMask) {
 
 #endif
 
-
 // unused methods
 void setLang(Language lang) {}
-void StartEFFECT(EFFECT_VALUE EffectValue,int loop, int pan) {}
+void StartEFFECT(EFFECT_VALUE EffectValue, int loop, int pan) {}
 int iKeyPressed(int id) {
 	return 0;
 }
@@ -180,34 +182,34 @@ InputEventBuffer::InputEventBuffer(unsigned int size): XBuffer(size) {}
 OutputEventBuffer::OutputEventBuffer(unsigned int size): XBuffer(size) {}
 
 // unimplemented methods, I think that they are unused but not sure
-DebrisObject* DebrisList::CreateDebris(void) {
+DebrisObject *DebrisList::CreateDebris(void) {
 	abort();
 }
-void DebrisObject::CreateDebris(int id,int ind) {
+void DebrisObject::CreateDebris(int id, int ind) {
 	abort();
 }
-void DrawMechosBody(int x,int y,int speed,int level) {
+void DrawMechosBody(int x, int y, int speed, int level) {
 	abort();
 }
-void DrawMechosParticle(int x,int y,int speed,int level,int n,Object* p) {
+void DrawMechosParticle(int x, int y, int speed, int level, int n, Object *p) {
 	abort();
 }
-int CheckStartJump(Object* p) {
+int CheckStartJump(Object *p) {
 	abort();
 }
 void Object::destroy_double_level() {
 	abort();
 }
-void UnitBaseListType::ConnectTypeList(GeneralObject* p) {
+void UnitBaseListType::ConnectTypeList(GeneralObject *p) {
 	abort();
 }
-void UnitBaseListType::DisconnectTypeList(GeneralObject* p) {
+void UnitBaseListType::DisconnectTypeList(GeneralObject *p) {
 	abort();
 }
-void UnitListType::ConnectTypeList(GeneralObject* p) {
+void UnitListType::ConnectTypeList(GeneralObject *p) {
 	abort();
 }
-void UnitListType::DisconnectTypeList(GeneralObject* p) {
+void UnitListType::DisconnectTypeList(GeneralObject *p) {
 	abort();
 }
 void UnitListType::Init(void) {
@@ -219,10 +221,10 @@ void UnitListType::Free(void) {
 void UnitListType::Quant(void) {
 	abort();
 }
-void UnitListType::NetEvent(int type,int id) {
+void UnitListType::NetEvent(int type, int id) {
 	abort();
 }
-void UnitListType::FreeUnit(GeneralObject* p) {
+void UnitListType::FreeUnit(GeneralObject *p) {
 	abort();
 }
 

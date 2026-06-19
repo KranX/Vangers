@@ -7,40 +7,34 @@
 
 #include "terra/vmap.h"
 
-//BackgroundDispatcher* BackD;
+// BackgroundDispatcher* BackD;
 
-void BackgroundElement::BackRestore(void)
-{
-};
+void BackgroundElement::BackRestore(void) {};
 
-void BackgroundDispatcher::init(int sz)
-{
+void BackgroundDispatcher::init(int sz) {
 	size = sz;
 	point = 0;
-	BkData = new BackgroundElement*[size];
+	BkData = new BackgroundElement *[size];
 };
 
-void BackgroundDispatcher::free(void)
-{
+void BackgroundDispatcher::free(void) {
 	delete[] BkData;
 };
 
-void BackgroundDispatcher::close(void)
-{
+void BackgroundDispatcher::close(void) {
 	point = 0;
 };
 
-void BackgroundDispatcher::put(BackgroundElement* p)
-{
-	if(point < size){
+void BackgroundDispatcher::put(BackgroundElement *p) {
+	if (point < size) {
 		BkData[point] = p;
 		point++;
-	}else ErrH.Abort("Background stack overflow");
+	} else
+		ErrH.Abort("Background stack overflow");
 };
 
-void BackgroundDispatcher::restore(void)
-{
-	while(point != 0){
+void BackgroundDispatcher::restore(void) {
+	while (point != 0) {
 		point--;
 		BkData[point]->BackRestore();
 	};

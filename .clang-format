@@ -6,6 +6,8 @@ IndentWidth: 4
 TabWidth: 4
 UseTab: Always
 ColumnLimit: 100
+LineEnding: LF
+SortIncludes: Never
 BreakBeforeBraces: Attach
 IndentPPDirectives: AfterHash
 AllowShortIfStatementsOnASingleLine: Never
@@ -20,6 +22,9 @@ SpaceBeforeInheritanceColon: false
 SpaceBeforeParens: ControlStatements
 BinPackArguments: false
 BinPackParameters: false
-AlignAfterOpenBracket: AlwaysBreak
+AllowAllParametersOfDeclarationOnNextLine: false
+AlignAfterOpenBracket: false
+BreakAfterOpenBracketFunction: true
+BreakBeforeCloseBracketFunction: true
 AlignEscapedNewlines: Left
 ---

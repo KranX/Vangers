@@ -1,7 +1,7 @@
 #include "../global.h"
 #include "../runtime.h"
 
-//#include "..\win32f.h"
+// #include "..\win32f.h"
 
 #include "../3d/3d_math.h"
 #include "../3d/3dgraph.h"
@@ -39,130 +39,138 @@
 #include "effect.h"
 #include "mechos.h"
 
-//#define SAVE_TNT_DATA
+// #define SAVE_TNT_DATA
 
-const int  TNT_WAIT_TIME = 2;
+const int TNT_WAIT_TIME = 2;
 
-extern listElem* EscaveTail;
-extern listElem* SpotTail;
-extern listElem* PassageTail;
+extern listElem *EscaveTail;
+extern listElem *SpotTail;
+extern listElem *PassageTail;
 
 const int TNT_CRATER_RADIUS = 45;
 
 #ifdef NEW_TNT
-TntCreature** TntObjectData;
-TntCreature** TntSortedData;
+TntCreature **TntObjectData;
+TntCreature **TntSortedData;
 #else
-TntStaticObject** TntObjectData;
-TntStaticObject** TntSortedData;
+TntStaticObject **TntObjectData;
+TntStaticObject **TntSortedData;
 #endif
 
-SensorDataType** SensorObjectData;
-SensorDataType** SensorSortedData;
+SensorDataType **SensorObjectData;
+SensorDataType **SensorSortedData;
 
 int NumKeySensor;
-SensorDataType** KeySensorData;
-SensorDataType** KeySensorSorted;
+SensorDataType **KeySensorData;
+SensorDataType **KeySensorSorted;
 
-DangerDataType** DangerObjectData;
-DangerDataType** DangerSortedData;
+DangerDataType **DangerObjectData;
+DangerDataType **DangerSortedData;
 
 int NumLocation;
-LocationEngine** LocationData;
+LocationEngine **LocationData;
 
 int NumEnterCenter;
-EnterCenter* EnterCenterData;
+EnterCenter *EnterCenterData;
 
 const int TNT_DETONATION_RADIUS = 50;
 
-char* TntCloneName;
+char *TntCloneName;
 
 #ifdef _DEBUG
 XStream fDanger;
 #endif
 
-//char* TntSporeName = "Bomb";
+// char* TntSporeName = "Bomb";
 
 extern int NumSkipLocation[WORLD_MAX];
 extern int RealNumLocation[WORLD_MAX];
-extern int* NumLocationData[WORLD_MAX];
-extern int* NumLocationID[WORLD_MAX];
+extern int *NumLocationData[WORLD_MAX];
+extern int *NumLocationID[WORLD_MAX];
 
 void dgInThreall(void);
 void dgOutThreall(void);
-char* dgGetThreallPhrase(void);
+char *dgGetThreallPhrase(void);
 
 int TimeSecretEnable[2][MAX_TIME_SECRET];
-const char* TimeSecretName[2][MAX_TIME_SECRET] = {{"YLI1","YLI2"},{"YLI1","YLI2"}};
-int TimeSecretData0[2][MAX_TIME_SECRET] = {{0,0},{0,0}};
-int TimeSecretData1[2][MAX_TIME_SECRET] = {{0,0},{0,0}};
-int TimeSecretType[2][MAX_TIME_SECRET] = {{UVS_ITEM_TYPE::PEELOT,UVS_ITEM_TYPE::POPONKA},{UVS_ITEM_TYPE::WORMASTER_PART1,UVS_ITEM_TYPE::QUEEN_FROG_PART1}};
+const char *TimeSecretName[2][MAX_TIME_SECRET] = {{"YLI1", "YLI2"}, {"YLI1", "YLI2"}};
+int TimeSecretData0[2][MAX_TIME_SECRET] = {{0, 0}, {0, 0}};
+int TimeSecretData1[2][MAX_TIME_SECRET] = {{0, 0}, {0, 0}};
+int TimeSecretType[2][MAX_TIME_SECRET] = {{UVS_ITEM_TYPE::PEELOT, UVS_ITEM_TYPE::POPONKA},
+	{UVS_ITEM_TYPE::WORMASTER_PART1, UVS_ITEM_TYPE::QUEEN_FROG_PART1}};
 
 int ThreallMessageProcess;
 extern uvsVanger *Gamer;
-int sensorStaticFrame = 0; // animation speed control frame, required to skip animation frames on high fps
-void StaticOpen(void)
-{
-	int i,j;
+int sensorStaticFrame =
+	0; // animation speed control frame, required to skip animation frames on high fps
+void StaticOpen(void) {
+	int i, j;
 	Vector vCheck;
-	int n,l,q,t;
+	int n, l, q, t;
 
 #ifdef NEW_TNT
-	if(TntTableSize){
-		TntSortedData = new TntCreature*[TntTableSize];
-		StaticSort(TntTableSize,(StaticObject**)TntObjectData,(StaticObject**)TntSortedData);
+	if (TntTableSize) {
+		TntSortedData = new TntCreature *[TntTableSize];
+		StaticSort(TntTableSize, (StaticObject **)TntObjectData, (StaticObject **)TntSortedData);
 	};
 #else
-	if(TntTableSize){
-		TntSortedData = new TntStaticObject*[TntTableSize];
-		StaticSort(TntTableSize,(StaticObject**)TntObjectData,(StaticObject**)TntSortedData);
+	if (TntTableSize) {
+		TntSortedData = new TntStaticObject *[TntTableSize];
+		StaticSort(TntTableSize, (StaticObject **)TntObjectData, (StaticObject **)TntSortedData);
 	};
 #endif
 
-	if(SnsTableSize){
-		SensorSortedData = new SensorDataType*[SnsTableSize];
-		StaticSort(SnsTableSize,(StaticObject**)SensorObjectData,(StaticObject**)SensorSortedData);
+	if (SnsTableSize) {
+		SensorSortedData = new SensorDataType *[SnsTableSize];
+		StaticSort(
+			SnsTableSize, (StaticObject **)SensorObjectData, (StaticObject **)SensorSortedData
+		);
 	};
 
-//	TntSpore = ModelD.FindModel(TntSporeName);
+	//	TntSpore = ModelD.FindModel(TntSporeName);
 
-	for(i = 0;i < TntTableSize;i++){
-//		TntObjectData[i]->Enable = 1;
+	for (i = 0; i < TntTableSize; i++) {
+		//		TntObjectData[i]->Enable = 1;
 
 #ifdef NEW_TNT
-		
-		TntObjectData[i]->CurrentHeight = TntObjectData[i]->StartHeight = TntObjectData[i]->MaxHeight;
+
+		TntObjectData[i]->CurrentHeight = TntObjectData[i]->StartHeight =
+			TntObjectData[i]->MaxHeight;
 		TntObjectData[i]->TntNumLink = 0;
 
-		for(j = 0;j < TntTableSize;j++){
-			if(i != j){
-				if(TntObjectData[i]->TntNumLink >= MAX_TNT_EXPLOSION) break;
-				vCheck.x = getDistX(TntObjectData[i]->R_curr.x,TntObjectData[j]->R_curr.x);
-				vCheck.y = getDistY(TntObjectData[i]->R_curr.y,TntObjectData[j]->R_curr.y);
+		for (j = 0; j < TntTableSize; j++) {
+			if (i != j) {
+				if (TntObjectData[i]->TntNumLink >= MAX_TNT_EXPLOSION)
+					break;
+				vCheck.x = getDistX(TntObjectData[i]->R_curr.x, TntObjectData[j]->R_curr.x);
+				vCheck.y = getDistY(TntObjectData[i]->R_curr.y, TntObjectData[j]->R_curr.y);
 				vCheck.z = TntObjectData[i]->R_curr.z - TntObjectData[j]->R_curr.z;
-				if(vCheck.vabs() < TNT_DETONATION_RADIUS && !TestLink2Link(TntObjectData[i],TntObjectData[j])){
+				if (vCheck.vabs() < TNT_DETONATION_RADIUS &&
+					!TestLink2Link(TntObjectData[i], TntObjectData[j])) {
 					TntObjectData[i]->TntLinkData[TntObjectData[i]->TntNumLink] = TntObjectData[j];
 					TntObjectData[i]->TntNumLink++;
 				};
 			};
-	 	};
+		};
 #else
 		TntObjectData[i]->DestroyRestore = 0;
 		TntObjectData[i]->DestroyFlag = 0;
 		TntObjectData[i]->NumLink = 0;
-		for(j = 0;j < TntTableSize;j++){
-			if(i != j){
-				if(TntObjectData[i]->NumLink >= TNT_NUM_LINK) break;
+		for (j = 0; j < TntTableSize; j++) {
+			if (i != j) {
+				if (TntObjectData[i]->NumLink >= TNT_NUM_LINK)
+					break;
 
-				vCheck.x = getDistX(TntObjectData[i]->R_curr.x,TntObjectData[j]->R_curr.x);
-				vCheck.y = getDistY(TntObjectData[i]->R_curr.y,TntObjectData[j]->R_curr.y);
+				vCheck.x = getDistX(TntObjectData[i]->R_curr.x, TntObjectData[j]->R_curr.x);
+				vCheck.y = getDistY(TntObjectData[i]->R_curr.y, TntObjectData[j]->R_curr.y);
 				vCheck.z = TntObjectData[i]->R_curr.z - TntObjectData[j]->R_curr.z;
-				if(vCheck.vabs() < TNT_DETONATION_RADIUS && !TestLink2Link(TntObjectData[i],TntObjectData[j])){
+				if (vCheck.vabs() < TNT_DETONATION_RADIUS &&
+					!TestLink2Link(TntObjectData[i], TntObjectData[j])) {
 					TntObjectData[i]->Link[TntObjectData[i]->NumLink] = TntObjectData[j];
 					TntObjectData[i]->NumLink++;
 				};
 			};
-	 	};
+		};
 #endif
 	};
 
@@ -176,113 +184,119 @@ void StaticOpen(void)
 	NumLocation = in.get_int();
 
 	NumLocation -= NumSkipLocation[CurrentWorld] - RealNumLocation[CurrentWorld];
-	
-	i = 0;
-	LocationData = new LocationEngine*[NumLocation];
 
-	for(l = 0;l < NumLocation + NumSkipLocation[CurrentWorld] - RealNumLocation[CurrentWorld];l++){
+	i = 0;
+	LocationData = new LocationEngine *[NumLocation];
+
+	for (l = 0; l < NumLocation + NumSkipLocation[CurrentWorld] - RealNumLocation[CurrentWorld];
+		l++) {
 		in.search_name("Part");
 		q = in.get_int();
-		if(l != q) ErrH.Abort("Bad Number of Part");
+		if (l != q)
+			ErrH.Abort("Bad Number of Part");
 		t = 1;
 
-		for(j = 0;j < NumSkipLocation[CurrentWorld];j++){
-			if(NumLocationID[CurrentWorld][NumLocationData[CurrentWorld][j]] == q){
-				if(j >= RealNumLocation[CurrentWorld])
+		for (j = 0; j < NumSkipLocation[CurrentWorld]; j++) {
+			if (NumLocationID[CurrentWorld][NumLocationData[CurrentWorld][j]] == q) {
+				if (j >= RealNumLocation[CurrentWorld])
 					t = 0;
 				break;
 			};
 		};
-		
-		if(t){
+
+		if (t) {
 			in.search_name("EngineType");
 			n = in.get_int();
-			switch(n){
-				case EngineTypeList::DOOR:
-					LocationData[i] = new DoorEngine;
-					break;
-				case EngineTypeList::ELEVATOR:
-					LocationData[i] = new ElevatorEngine;
-					break;
-				case EngineTypeList::ESCAVE:
-					LocationData[i] = new EscaveEngine;
-					break;
-				case EngineTypeList::PASSAGE:
-					LocationData[i] = new PassageEngine;
-					break;
-				case EngineTypeList::CYCLIC:
-					LocationData[i] = new CyclicEngine;
-					break;
-				case EngineTypeList::TRAIN:
-					LocationData[i] = new TrainEngine;
-					break;
-				case EngineTypeList::IMPULSE_ESCAVE:
-					LocationData[i] = new ImpulseEscave;
-					break;
-				case EngineTypeList::TIRISTOR:
-					LocationData[i] = new TiristorEngine;
-					break;
-				case EngineTypeList::IMPULSE_SPOT:
-					LocationData[i] = new ImpulseSpot;
-					break;
-				case EngineTypeList::CHECK_POINT:
-					LocationData[i] = new CheckPointEngine;
-					break;
-				case EngineTypeList::LAND_SLIDE:
-					LocationData[i] = new LandSlideEngine;
-					break;
-				case EngineTypeList::SIGN_PLAY:
-					LocationData[i] = new SignPlayEngine;
-					break;
-				case EngineTypeList::ITEM_GENERATOR:
-					LocationData[i] = new ItemGenerator;
-					break;
-				default:
-					ErrH.Abort("Bad Location");
-					break;
+			switch (n) {
+			case EngineTypeList::DOOR:
+				LocationData[i] = new DoorEngine;
+				break;
+			case EngineTypeList::ELEVATOR:
+				LocationData[i] = new ElevatorEngine;
+				break;
+			case EngineTypeList::ESCAVE:
+				LocationData[i] = new EscaveEngine;
+				break;
+			case EngineTypeList::PASSAGE:
+				LocationData[i] = new PassageEngine;
+				break;
+			case EngineTypeList::CYCLIC:
+				LocationData[i] = new CyclicEngine;
+				break;
+			case EngineTypeList::TRAIN:
+				LocationData[i] = new TrainEngine;
+				break;
+			case EngineTypeList::IMPULSE_ESCAVE:
+				LocationData[i] = new ImpulseEscave;
+				break;
+			case EngineTypeList::TIRISTOR:
+				LocationData[i] = new TiristorEngine;
+				break;
+			case EngineTypeList::IMPULSE_SPOT:
+				LocationData[i] = new ImpulseSpot;
+				break;
+			case EngineTypeList::CHECK_POINT:
+				LocationData[i] = new CheckPointEngine;
+				break;
+			case EngineTypeList::LAND_SLIDE:
+				LocationData[i] = new LandSlideEngine;
+				break;
+			case EngineTypeList::SIGN_PLAY:
+				LocationData[i] = new SignPlayEngine;
+				break;
+			case EngineTypeList::ITEM_GENERATOR:
+				LocationData[i] = new ItemGenerator;
+				break;
+			default:
+				ErrH.Abort("Bad Location");
+				break;
 			};
 			LocationData[i]->Open(in);
 			i++;
 		};
 	};
 
-	if(DngTableSize){
-		DangerSortedData = new DangerDataType*[DngTableSize];
-		StaticSort(DngTableSize,(StaticObject**)DangerObjectData,(StaticObject**)DangerSortedData);
+	if (DngTableSize) {
+		DangerSortedData = new DangerDataType *[DngTableSize];
+		StaticSort(
+			DngTableSize, (StaticObject **)DangerObjectData, (StaticObject **)DangerSortedData
+		);
 	};
 
 	NumKeySensor = 0;
-	for(i = 0;i < SnsTableSize;i++){
-//		SensorObjectData[i]->Enable = 1;
-		if(CheckKeySensor(SensorObjectData[i]))
+	for (i = 0; i < SnsTableSize; i++) {
+		//		SensorObjectData[i]->Enable = 1;
+		if (CheckKeySensor(SensorObjectData[i]))
 			NumKeySensor++;
 	};
-	
-	if(NumKeySensor){
-		KeySensorData = new SensorDataType*[NumKeySensor];
-		KeySensorSorted  = new SensorDataType*[NumKeySensor];
+
+	if (NumKeySensor) {
+		KeySensorData = new SensorDataType *[NumKeySensor];
+		KeySensorSorted = new SensorDataType *[NumKeySensor];
 		j = 0;
-		for(i = 0;i < SnsTableSize;i++){
-			if(CheckKeySensor(SensorObjectData[i])){
+		for (i = 0; i < SnsTableSize; i++) {
+			if (CheckKeySensor(SensorObjectData[i])) {
 				KeySensorData[j] = SensorObjectData[i];
 				j++;
 			};
 		};
-		StaticSort(NumKeySensor,(StaticObject**)KeySensorData,(StaticObject**)KeySensorSorted);
+		StaticSort(NumKeySensor, (StaticObject **)KeySensorData, (StaticObject **)KeySensorSorted);
 	};
 
-	for(i = 0;i < NumLocation;i++) LocationData[i]->Link();
+	for (i = 0; i < NumLocation; i++)
+		LocationData[i]->Link();
 
 	in.search_name("NumEnterCenter");
 	NumEnterCenter = in.get_int();
 	EnterCenterData = new EnterCenter[NumEnterCenter];
-	for(i = 0;i < NumEnterCenter;i++) EnterCenterData[i].Open(in);
+	for (i = 0; i < NumEnterCenter; i++)
+		EnterCenterData[i].Open(in);
 
 #ifdef _DEBUG
-	fDanger.open("danger.log",XS_OUT);
+	fDanger.open("danger.log", XS_OUT);
 #endif
 
-	for(i = 0;i < DngTableSize;i++)
+	for (i = 0; i < DngTableSize; i++)
 		DangerObjectData[i]->TabuUse = 0;
 
 	ThreallMessageProcess = 0;
@@ -294,8 +308,8 @@ void StaticOpen(void)
 	int iTntPosition;
 	XStream outTnt;
 
-	Parser tin(GetTargetName("out.vl"));	
-	for(i = 0;i < TntTableSize;i++){
+	Parser tin(GetTargetName("out.vl"));
+	for (i = 0; i < TntTableSize; i++) {
 		iTntPosition = tin.get_int();
 		xTntPosition = tin.get_int();
 		yTntPosition = tin.get_int();
@@ -305,26 +319,26 @@ void StaticOpen(void)
 		TntObjectData[iTntPosition]->nSource = nTntPosition;
 	};
 
-	outTnt.open(GetTargetName("tnttable.vlc"),XS_OUT);
-	outTnt.write("VLT1",4);
+	outTnt.open(GetTargetName("tnttable.vlc"), XS_OUT);
+	outTnt.write("VLT1", 4);
 	outTnt < TntTableSize;
-	for(i = 0;i < TntTableSize;i++)
+	for (i = 0; i < TntTableSize; i++)
 		TntObjectData[i]->Save(outTnt);
 	outTnt.close();
 #endif
 };
 
-void ValocTableFree(void)
-{
+void ValocTableFree(void) {
 	int i;
-	if(TntTableSize){
-		for(i = 0;i < TntTableSize;i++) delete TntObjectData[i];
+	if (TntTableSize) {
+		for (i = 0; i < TntTableSize; i++)
+			delete TntObjectData[i];
 		delete[] TntObjectData;
 		TntTableSize = 0;
 	};
 
-	if(SnsTableSize){
-		for(i = 0;i < SnsTableSize;i++){
+	if (SnsTableSize) {
+		for (i = 0; i < SnsTableSize; i++) {
 			SensorObjectData[i]->Close();
 			delete SensorObjectData[i];
 		};
@@ -332,49 +346,53 @@ void ValocTableFree(void)
 		SnsTableSize = 0;
 	};
 
-	if(DngTableSize){
-		for(i = 0;i < DngTableSize;i++) delete DangerObjectData[i];
+	if (DngTableSize) {
+		for (i = 0; i < DngTableSize; i++)
+			delete DangerObjectData[i];
 		delete[] DangerObjectData;
 		DngTableSize = 0;
 	};
 };
 
-void StaticClose(void)
-{
+void StaticClose(void) {
 	int i;
 
-	if(NumKeySensor){
+	if (NumKeySensor) {
 		delete[] KeySensorSorted;
 		delete[] KeySensorData;
 		NumKeySensor = 0;
 	};
 
-	if(NumLocation){
-		for(i = 0;i < NumLocation;i++){
+	if (NumLocation) {
+		for (i = 0; i < NumLocation; i++) {
 			LocationData[i]->Close();
-			delete LocationData[i];	
+			delete LocationData[i];
 		};
 		delete[] LocationData;
 		NumLocation = 0;
 	};
 
-	if(TntTableSize) delete[] TntSortedData;
-	if(SnsTableSize) delete[] SensorSortedData;
-	if(DngTableSize) delete[] DangerSortedData;
-	
-	for(i = 0;i < NumEnterCenter;i++) EnterCenterData[i].Close();
+	if (TntTableSize)
+		delete[] TntSortedData;
+	if (SnsTableSize)
+		delete[] SensorSortedData;
+	if (DngTableSize)
+		delete[] DangerSortedData;
+
+	for (i = 0; i < NumEnterCenter; i++)
+		EnterCenterData[i].Close();
 	delete[] EnterCenterData;
 #ifdef _DEBUG
 	fDanger.close();
 #endif
 };
 
-void StaticQuant(void) //world animation quant
+void StaticQuant(void) // world animation quant
 {
-	int y0,y1,i;
-	StaticObject* st;
-	uchar** lt;
-		
+	int y0, y1, i;
+	StaticObject *st;
+	uchar **lt;
+
 	lt = vMap->lineT;
 	if (sensorStaticFrame >= GAME_TIME_COEFF) {
 		sensorStaticFrame = 1;
@@ -382,126 +400,124 @@ void StaticQuant(void) //world animation quant
 		sensorStaticFrame++;
 	}
 	const bool legacy_static_tick = sensorStaticFrame == 1;
-	if(NetworkON){
-		for(i = 0;i < TntTableSize;i++)
-		{
-			if(lt[TntObjectData[i]->R_curr.y]) {
+	if (NetworkON) {
+		for (i = 0; i < TntTableSize; i++) {
+			if (lt[TntObjectData[i]->R_curr.y]) {
 				TntObjectData[i]->NetQuant(legacy_static_tick);
 			} else
 				TntObjectData[i]->NetHideEvent();
 		}
-	}else{
-		for(i = 0;i < TntTableSize;i++)
-		{
-			if(lt[TntObjectData[i]->R_curr.y]) {
-				if(legacy_static_tick)
-					TntObjectData[i]->Quant(); //animate mushroom grow
+	} else {
+		for (i = 0; i < TntTableSize; i++) {
+			if (lt[TntObjectData[i]->R_curr.y]) {
+				if (legacy_static_tick)
+					TntObjectData[i]->Quant(); // animate mushroom grow
 			} else
 				TntObjectData[i]->HideEvent();
-
 		}
 	}
-	for(i = 0;i < NumLocation;i++) {
-		if(LocationData[i]->Enable) {
+	for (i = 0; i < NumLocation; i++) {
+		if (LocationData[i]->Enable) {
 			LocationData[i]->Quant(); // Sensor animation frame is here
 		}
 	}
-	
+
 	int dy0;
-	y0 = ViewY -  TurnSideY;
+	y0 = ViewY - TurnSideY;
 	y1 = ViewY + TurnSideY;
 
-	if(y0 < 0){
+	if (y0 < 0) {
 		dy0 = -y0;
 		y0 = 0;
-		i = FindFirstStatic(y0,y1,(StaticObject**)DangerSortedData,DngTableSize);
-		if(i > -1){
-			do{
+		i = FindFirstStatic(y0, y1, (StaticObject **)DangerSortedData, DngTableSize);
+		if (i > -1) {
+			do {
 				st = DangerSortedData[i];
-				if(abs(getDistX(st->R_curr.x,ViewX)) < TurnSideX) ((DangerDataType*)(st))->Quant();
+				if (abs(getDistX(st->R_curr.x, ViewX)) < TurnSideX)
+					((DangerDataType *)(st))->Quant();
 				i++;
-			}while(i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
+			} while (i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
 		};
 
 		y0 = TOR_YSIZE;
 		y1 = TOR_YSIZE - dy0;
-		i = FindFirstStatic(y0,y1,(StaticObject**)DangerSortedData,DngTableSize);
-		if(i > -1){
-			do{
+		i = FindFirstStatic(y0, y1, (StaticObject **)DangerSortedData, DngTableSize);
+		if (i > -1) {
+			do {
 				st = DangerSortedData[i];
-				if(abs(getDistX(st->R_curr.x,ViewX)) < TurnSideX) ((DangerDataType*)(st))->Quant();
+				if (abs(getDistX(st->R_curr.x, ViewX)) < TurnSideX)
+					((DangerDataType *)(st))->Quant();
 				i++;
-			}while(i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
+			} while (i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
 		};
-	}else{
-		if(y1 > TOR_YSIZE){
+	} else {
+		if (y1 > TOR_YSIZE) {
 			dy0 = y1 - TOR_YSIZE;
-			 y1 = TOR_YSIZE;
-			i = FindFirstStatic(y0,y1,(StaticObject**)DangerSortedData,DngTableSize);
-			if(i > -1){
-				do{
+			y1 = TOR_YSIZE;
+			i = FindFirstStatic(y0, y1, (StaticObject **)DangerSortedData, DngTableSize);
+			if (i > -1) {
+				do {
 					st = DangerSortedData[i];
-					if(abs(getDistX(st->R_curr.x,ViewX)) < TurnSideX) ((DangerDataType*)(st))->Quant();
+					if (abs(getDistX(st->R_curr.x, ViewX)) < TurnSideX)
+						((DangerDataType *)(st))->Quant();
 					i++;
-				}while(i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
+				} while (i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
 			};
 
 			y0 = 0;
 			y1 = dy0;
-			i = FindFirstStatic(y0,y1,(StaticObject**)DangerSortedData,DngTableSize);
+			i = FindFirstStatic(y0, y1, (StaticObject **)DangerSortedData, DngTableSize);
 
-			if(i > -1){
-				do{
+			if (i > -1) {
+				do {
 					st = DangerSortedData[i];
-					if(abs(getDistX(st->R_curr.x,ViewX)) < TurnSideX) ((DangerDataType*)(st))->Quant();
+					if (abs(getDistX(st->R_curr.x, ViewX)) < TurnSideX)
+						((DangerDataType *)(st))->Quant();
 					i++;
-				}while(i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
+				} while (i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
 			};
-		}else{
-			i = FindFirstStatic(y0,y1,(StaticObject**)DangerSortedData,DngTableSize);
+		} else {
+			i = FindFirstStatic(y0, y1, (StaticObject **)DangerSortedData, DngTableSize);
 
-			if(i > -1){
-				do{
+			if (i > -1) {
+				do {
 					st = DangerSortedData[i];
-					if(abs(getDistX(st->R_curr.x,ViewX)) < TurnSideX) ((DangerDataType*)(st))->Quant();
+					if (abs(getDistX(st->R_curr.x, ViewX)) < TurnSideX)
+						((DangerDataType *)(st))->Quant();
 					i++;
-				}while(i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
+				} while (i < DngTableSize && DangerSortedData[i]->R_curr.y < y1);
 			};
 		};
 	};
 };
 
-int CheckKeySensor(SensorDataType* p)
-{
-	if(p->SensorType == SensorTypeList::ESCAVE ||
-	   p->SensorType == SensorTypeList::PASSAGE ||
-	   p->SensorType == SensorTypeList::SPOT || 
-	   p->SensorType == SensorTypeList::ARMOR_UPDATE ||
-	   p->SensorType == SensorTypeList::FIRE_UPDATE ||
-	   p->SensorType == SensorTypeList::FLY_UPDATE)
+int CheckKeySensor(SensorDataType *p) {
+	if (p->SensorType == SensorTypeList::ESCAVE || p->SensorType == SensorTypeList::PASSAGE ||
+		p->SensorType == SensorTypeList::SPOT || p->SensorType == SensorTypeList::ARMOR_UPDATE ||
+		p->SensorType == SensorTypeList::FIRE_UPDATE || p->SensorType == SensorTypeList::FLY_UPDATE)
 		return 1;
-	else 
+	else
 		return 0;
 };
 
 #ifdef NEW_TNT
 
-int TestLink2Link(TntCreature* p,TntCreature* n)
-{
-	int i;  
-	for(i = 0;i < p->TntNumLink;i++)
-		if(p->TntLinkData[i] == n) return 1;
-	 return 0;
+int TestLink2Link(TntCreature *p, TntCreature *n) {
+	int i;
+	for (i = 0; i < p->TntNumLink; i++)
+		if (p->TntLinkData[i] == n)
+			return 1;
+	return 0;
 };
 
 #else
 
-int TestLink2Link(TntStaticObject* p,TntStaticObject* n)
-{
-	int i;  
-	for(i = 0;i < p->NumLink;i++)
-		if(p->Link[i] == n) return 1;
-	 return 0;
+int TestLink2Link(TntStaticObject *p, TntStaticObject *n) {
+	int i;
+	for (i = 0; i < p->NumLink; i++)
+		if (p->Link[i] == n)
+			return 1;
+	return 0;
 };
 
 #endif
@@ -510,87 +526,97 @@ extern int TurnSideX;
 extern int TurnSideY;
 
 #ifndef NEW_TNT
-void RestoreFlagBarell(void)
-{
+void RestoreFlagBarell(void) {
 	int i;
-	for(i = 0;i < TntTableSize;i++)
-		if(TntObjectData[i]->Enable == 0) 
-			((TntStaticObject*)(TntObjectData[i]))->DestroyRestore = 1;
+	for (i = 0; i < TntTableSize; i++)
+		if (TntObjectData[i]->Enable == 0)
+			((TntStaticObject *)(TntObjectData[i]))->DestroyRestore = 1;
 };
 
-void RestoreBarell(void)
-{
-	int i,y0,y1;
-	StaticObject* st;
+void RestoreBarell(void) {
+	int i, y0, y1;
+	StaticObject *st;
 
 	y0 = vMap->upLine + EXPLOSION_BARELL_RADIUS + 5;
 	y1 = vMap->downLine - EXPLOSION_BARELL_RADIUS - 5;
 
-	if(y0 > y1){
-		if(ViewY > y1) 
-			y1 =  TOR_YSIZE - 1;
-		else 
+	if (y0 > y1) {
+		if (ViewY > y1)
+			y1 = TOR_YSIZE - 1;
+		else
 			y0 = 0;
 	};
 
-	i = FindFirstStatic(y0,y1,(StaticObject**)TntSortedData,TntTableSize);
-	if(i > -1){
-		do{
+	i = FindFirstStatic(y0, y1, (StaticObject **)TntSortedData, TntTableSize);
+	if (i > -1) {
+		do {
 			st = TntSortedData[i];
-			if(((TntStaticObject*)(st))->DestroyRestore){
-//				DestroyBarellSmooth(st->R_curr.x,st->R_curr.y,TNT_CRATER_RADIUS,TNT_CRATER_RADIUS / 2,32 - RND(64),7,3,st->R_curr.z,3);
-//				MapD.CreateCrater(st->R_curr,MAP_POINT_CRATER06,TNT_CRATER_RADIUS);
-				if(DestroyBarellSmoothWithCheck(st->R_curr.x,st->R_curr.y,TNT_CRATER_RADIUS,TNT_CRATER_RADIUS / 2,32 - RND(64),7,3,st->R_curr.z,3))
-					((TntStaticObject*)(st))->DestroyRestore = 0;
+			if (((TntStaticObject *)(st))->DestroyRestore) {
+				//				DestroyBarellSmooth(st->R_curr.x,st->R_curr.y,TNT_CRATER_RADIUS,TNT_CRATER_RADIUS
+				/// 2,32 - RND(64),7,3,st->R_curr.z,3);
+				//				MapD.CreateCrater(st->R_curr,MAP_POINT_CRATER06,TNT_CRATER_RADIUS);
+				if (DestroyBarellSmoothWithCheck(
+						st->R_curr.x,
+						st->R_curr.y,
+						TNT_CRATER_RADIUS,
+						TNT_CRATER_RADIUS / 2,
+						32 - RND(64),
+						7,
+						3,
+						st->R_curr.z,
+						3
+					))
+					((TntStaticObject *)(st))->DestroyRestore = 0;
 			};
 			i++;
-		}while(i < TntTableSize && TntSortedData[i]->R_curr.y < y1);
+		} while (i < TntTableSize && TntSortedData[i]->R_curr.y < y1);
 	};
 };
 #endif
 
-void StaticSort(int num,StaticObject** data,StaticObject** list)
-{
-	int nmin,min;
-	StaticObject* c;
-	int i,j;
-	for(i = 0;i < num;i++) list[i] = data[i];
-	for(i = 0;i < num - 1;i++){
+void StaticSort(int num, StaticObject **data, StaticObject **list) {
+	int nmin, min;
+	StaticObject *c;
+	int i, j;
+	for (i = 0; i < num; i++)
+		list[i] = data[i];
+	for (i = 0; i < num - 1; i++) {
 		nmin = i;
 		min = list[i]->R_curr.y;
-		for(j = i + 1;j < num;j++){
-			if(list[j]->R_curr.y < min){
+		for (j = i + 1; j < num; j++) {
+			if (list[j]->R_curr.y < min) {
 				min = list[j]->R_curr.y;
 				nmin = j;
 			};
 		};
-		if(nmin != i){
+		if (nmin != i) {
 			c = list[i];
 			list[i] = list[nmin];
 			list[nmin] = c;
 		};
 	};
-/*	for(i = 1;i < num;i++)
-		if(list[i]->R_curr.y < list[i - 1]->R_curr.y)
-			ErrH.Abort("Bad Sorted List");*/
+	/*	for(i = 1;i < num;i++)
+			if(list[i]->R_curr.y < list[i - 1]->R_curr.y)
+				ErrH.Abort("Bad Sorted List");*/
 };
 
-int FastFindFirstStatic(int y0,int y1,StaticObject** list,int num)
-{
-	int n0,n1,n;
+int FastFindFirstStatic(int y0, int y1, StaticObject **list, int num) {
+	int n0, n1, n;
 	int cy;
-	int i,j;
+	int i, j;
 	n0 = 0;
-	n1= num;
-	for(i = 0;i < num;i++){
+	n1 = num;
+	for (i = 0; i < num; i++) {
 		n = (n0 + n1) >> 1;
 		cy = list[n]->R_curr.y;
-		if(cy < y0) n1 = n;
-		else{
-			if(cy > y1) n0 = n;
-			else{
-				for(j = n;j >= 0;j++){
-					if(list[j]->R_curr.y < y0)
+		if (cy < y0)
+			n1 = n;
+		else {
+			if (cy > y1)
+				n0 = n;
+			else {
+				for (j = n; j >= 0; j++) {
+					if (list[j]->R_curr.y < y0)
 						return (j + 1);
 				};
 				return 0;
@@ -600,52 +626,49 @@ int FastFindFirstStatic(int y0,int y1,StaticObject** list,int num)
 	return -1;
 };
 
-int FindFirstStatic(int y0,int y1,StaticObject** list,int num)
-{
+int FindFirstStatic(int y0, int y1, StaticObject **list, int num) {
 	int i;
-	for(i = 0;i < num;i++){
-		if(list[i]->R_curr.y > y0){
-			if(list[i]->R_curr.y < y1) return i;
+	for (i = 0; i < num; i++) {
+		if (list[i]->R_curr.y > y0) {
+			if (list[i]->R_curr.y < y1)
+				return i;
 			return -1;
 		};
 	};
 	return -1;
 };
 
-//---------------------------------------------------NEW NEW NEW -------------------------------------------------------
+//---------------------------------------------------NEW NEW NEW
+//-------------------------------------------------------
 
-
-MobileLocation* FindMobileLocation(char* Name)
-{
+MobileLocation *FindMobileLocation(char *Name) {
 	int i;
-	for(i = 0;i < MLTableSize;i++)
-		{
-		if(!strcmp(Name,MLTable[i]->name)) return (MLTable[i]);
-		}
+	for (i = 0; i < MLTableSize; i++) {
+		if (!strcmp(Name, MLTable[i]->name))
+			return (MLTable[i]);
+	}
 	return NULL;
 };
 
-SensorDataType* FindSensor(const char* Name)
-{
+SensorDataType *FindSensor(const char *Name) {
 	int i;
-	for(i = 0;i < SnsTableSize;i++)
-		{
-		if(SensorSortedData[i]->Name != NULL && !strcmp(Name,SensorSortedData[i]->Name)) return (SensorSortedData[i]);
-		}
+	for (i = 0; i < SnsTableSize; i++) {
+		if (SensorSortedData[i]->Name != NULL && !strcmp(Name, SensorSortedData[i]->Name))
+			return (SensorSortedData[i]);
+	}
 	return NULL;
 };
 
-LocationEngine* FindLocation(char* Name)
-{
+LocationEngine *FindLocation(char *Name) {
 	int i;
-	for(i = 0;i < NumLocation;i++){
-		if(LocationData[i]->MLLink != NULL && !strcmp(Name,LocationData[i]->MLLink->name)) return (LocationData[i]);
+	for (i = 0; i < NumLocation; i++) {
+		if (LocationData[i]->MLLink != NULL && !strcmp(Name, LocationData[i]->MLLink->name))
+			return (LocationData[i]);
 	};
 	return NULL;
 };
 
-void SensorDataType::SaveSensor(XStream& out)
-{
+void SensorDataType::SaveSensor(XStream &out) {
 	int n;
 
 	out < R_curr.x;
@@ -656,22 +679,21 @@ void SensorDataType::SaveSensor(XStream& out)
 	out < radius;
 	n = strlen(Name);
 	out < n;
-	out.write(Name,n);
+	out.write(Name, n);
 
 	out < (R_curr.z - radius);
-//	out < z0;
+	//	out < z0;
 	out < vData.x;
 	out < vData.y;
 	out < vData.z;
 	out < Power;
 	out < (R_curr.z + radius);
-//	out < z1;
+	//	out < z1;
 	out < data5;
 	out < data6;
 };
 
-void SensorDataType::CreateSensor(XStream& in,int ind)
-{
+void SensorDataType::CreateSensor(XStream &in, int ind) {
 	int n;
 
 	in > R_curr.x;
@@ -680,11 +702,12 @@ void SensorDataType::CreateSensor(XStream& in,int ind)
 
 	in > SensorType;
 	in > radius > n;
-	if(n){
+	if (n) {
 		Name = new char[n + 1];
-		in.read(Name,n);
+		in.read(Name, n);
 		Name[n] = '\0';
-	}else Name = NULL;
+	} else
+		Name = NULL;
 
 	in > z0;
 	in > vData.x;
@@ -694,51 +717,51 @@ void SensorDataType::CreateSensor(XStream& in,int ind)
 	in > z1;
 	in > data5;
 	in > data6;
-//	in.seek(8*sizeof(int),XS_CUR);
+	//	in.seek(8*sizeof(int),XS_CUR);
 
 	Owner = NULL;
 	Mode = SensorTypeList::NONE;
 	Enable = 1;
 	StaticType = StaticObjectType::SENSOR;
 
-	cycleTor(R_curr.x,R_curr.y);
+	cycleTor(R_curr.x, R_curr.y);
 	Status = 0;
 	ID = ID_STATIC;
 	Index = 0;
 	TableIndex = ind;
 };
 
-void SensorDataType::Close(void)
-{
-	if(Name) delete[] Name;
+void SensorDataType::Close(void) {
+	if (Name)
+		delete[] Name;
 };
 
-void SensorDataType::Touch(GeneralObject* obj)
-{
-	if(Owner) 
-		Owner->Touch(obj,this);
-//Send to Server
+void SensorDataType::Touch(GeneralObject *obj) {
+	if (Owner)
+		Owner->Touch(obj, this);
+	// Send to Server
 };
-	
+
 #define LOCATION_ENGINE_MESSAGE
 
-void LocationEngine::Open(Parser& in)
-{
-	char* n;
+void LocationEngine::Open(Parser &in) {
+	char *n;
 
 	in.search_name("MLName");
 	n = in.get_name();
-	if(strcmp(n,"None")){
+	if (strcmp(n, "None")) {
 		MLLink = FindMobileLocation(n);
 
 #ifdef LOCATION_ENGINE_MESSAGE
-		if(!MLLink) 
+		if (!MLLink)
 			ErrH.Abort("Bad Find MLName");
-#endif	
-		R_curr.x = XCYCL(MLLink->x0 + abs(getDistX(MLLink->x0,MLLink->x1) / 2));
-		R_curr.y = YCYCL(MLLink->y0 + abs(getDistY(MLLink->y0,MLLink->y1) / 2));
-		radius = abs(getDistX(MLLink->x0,MLLink->x1) / 2) + abs(getDistY(MLLink->y0,MLLink->y1) / 2);
-	}else MLLink = NULL;
+#endif
+		R_curr.x = XCYCL(MLLink->x0 + abs(getDistX(MLLink->x0, MLLink->x1) / 2));
+		R_curr.y = YCYCL(MLLink->y0 + abs(getDistY(MLLink->y0, MLLink->y1) / 2));
+		radius =
+			abs(getDistX(MLLink->x0, MLLink->x1) / 2) + abs(getDistY(MLLink->y0, MLLink->y1) / 2);
+	} else
+		MLLink = NULL;
 
 	in.search_name("ActivePhase");
 	ActivePhase = in.get_int();
@@ -752,170 +775,175 @@ void LocationEngine::Open(Parser& in)
 	DeactiveTime = in.get_int();
 
 	in.search_name("SoundID");
-	SoundID =  in.get_int();
+	SoundID = in.get_int();
 
 	NetMode = Mode = EngineModeList::WAIT;
 	Enable = 1;
 
 	HideFlag = 1;
 	UpdateFlag = 0;
-	if(NetworkON) NetID = CREATE_NET_ID(NID_SENSOR);
-	else NetID = 0;
+	if (NetworkON)
+		NetID = CREATE_NET_ID(NID_SENSOR);
+	else
+		NetID = 0;
 	TabuUse = 0;
 };
 
-void LocationEngine::SoundEvent(void)
-{
-	if(!MLLink || abs(getDistY(YCYCL(MLLink->table[MLLink->cFrame].y0 - MLLink->table[MLLink->cFrame].sy / 2),ViewY)) > (TurnSideY + MLLink->table[MLLink->cFrame].sy) ||
-	   abs(getDistX(XCYCL(MLLink->table[MLLink->cFrame].x0 - MLLink->table[MLLink->cFrame].sx / 2),ViewX)) > (TurnSideX + MLLink->table[MLLink->cFrame].sx))
-		return;	
-	switch(SoundID){
-		case LOCATION_SOUND_ESCAVE:
-			if(ActD.Active) SOUND_ENTRANCE(getDistX(ActD.Active->R_curr.x,R_curr.x));
-			break;
-		case LOCATION_SOUND_BRIDGE_THREALL:
-			SOUND_CRASH();
-			break;
-		case LOCATION_SOUND_BRIDGE_FOSTRAL:
-			SOUND_BOLT();
-			break;
-		case LOCATION_SOUND_DOOR_BOOZEENA:
-			SOUND_TOGGLE();
-			break;
-		case LOCATION_SOUND_STONE_GLORX:
-			if(ActD.Active) SOUND_TEAR(getDistX(ActD.Active->R_curr.x,R_curr.x));
-			break;
-		case LOCATION_SOUND_CRYPT:
-			if(ActD.Active) SOUND_HIDEOUT(getDistX(ActD.Active->R_curr.x,R_curr.x));
-			break;
-		case LOCATION_SOUND_IMPULSE:
-			SOUND_KIDPUSH();
-			break;
+void LocationEngine::SoundEvent(void) {
+	if (!MLLink ||
+		abs(getDistY(
+			YCYCL(MLLink->table[MLLink->cFrame].y0 - MLLink->table[MLLink->cFrame].sy / 2), ViewY
+		)) > (TurnSideY + MLLink->table[MLLink->cFrame].sy) ||
+		abs(getDistX(
+			XCYCL(MLLink->table[MLLink->cFrame].x0 - MLLink->table[MLLink->cFrame].sx / 2), ViewX
+		)) > (TurnSideX + MLLink->table[MLLink->cFrame].sx))
+		return;
+	switch (SoundID) {
+	case LOCATION_SOUND_ESCAVE:
+		if (ActD.Active)
+			SOUND_ENTRANCE(getDistX(ActD.Active->R_curr.x, R_curr.x));
+		break;
+	case LOCATION_SOUND_BRIDGE_THREALL:
+		SOUND_CRASH();
+		break;
+	case LOCATION_SOUND_BRIDGE_FOSTRAL:
+		SOUND_BOLT();
+		break;
+	case LOCATION_SOUND_DOOR_BOOZEENA:
+		SOUND_TOGGLE();
+		break;
+	case LOCATION_SOUND_STONE_GLORX:
+		if (ActD.Active)
+			SOUND_TEAR(getDistX(ActD.Active->R_curr.x, R_curr.x));
+		break;
+	case LOCATION_SOUND_CRYPT:
+		if (ActD.Active)
+			SOUND_HIDEOUT(getDistX(ActD.Active->R_curr.x, R_curr.x));
+		break;
+	case LOCATION_SOUND_IMPULSE:
+		SOUND_KIDPUSH();
+		break;
 	};
 };
 
-void LocationEngine::Close(void)
-{
-};
+void LocationEngine::Close(void) {};
 
-void LocationEngine::Touch(GeneralObject* obj,SensorDataType* p)
-{
-};
+void LocationEngine::Touch(GeneralObject *obj, SensorDataType *p) {};
 
-void LocationEngine::Quant(void)
-{
-};
-   
-void LocationEngine::Link(void)
-{
-};
+void LocationEngine::Quant(void) {};
 
-void CyclicEngine::Open(Parser& in)
-{
-	char* n;
+void LocationEngine::Link(void) {};
+
+void CyclicEngine::Open(Parser &in) {
+	char *n;
 	int i;
 	LocationEngine::Open(in);
 
 	in.search_name("ActionMode");
 	ActionMode = in.get_int();
 
-	if(ActionMode > -1){
+	if (ActionMode > -1) {
 		in.search_name("NumActionLink");
 		NumAction = in.get_int();
 
-		ActionLink = new SensorDataType*[NumAction];
-		for(i = 0;i < NumAction;i++){
+		ActionLink = new SensorDataType *[NumAction];
+		for (i = 0; i < NumAction; i++) {
 			in.search_name("ActionName");
 			n = in.get_name();
 			ActionLink[i] = FindSensor(n);
-			if(!ActionLink[i]) 
+			if (!ActionLink[i])
 				ErrH.Abort("Bad Find Sensor");
-			ActionLink[i]->Enable = 0;	     
+			ActionLink[i]->Enable = 0;
 			ActionLink[i]->Owner = this;
 		};
-	}else ActionLink = NULL;
+	} else
+		ActionLink = NULL;
 
 	Type = EngineTypeList::CYCLIC;
 
 	Time = 0;
 	Mode = EngineModeList::SEND_PROCESS;
-//	MLLink->setStaticPhase(DeactivePhase);
+	//	MLLink->setStaticPhase(DeactivePhase);
 	MLLink->goKeyPhase(DeactivePhase);
 };
 
-static inline int cyclic_delay_ticks(int legacy_delay)
-{
+static inline int cyclic_delay_ticks(int legacy_delay) {
 	int ticks = (int)round((legacy_delay + 1) * GAME_TIME_COEFF);
 	return ticks > 0 ? ticks : 1;
 }
 
-void CyclicEngine::Quant(void)
-{
+void CyclicEngine::Quant(void) {
 	int i;
-	if(!MLLink) return;
-	if(!MLLink->frozen){
-		if(MLLink->isGoFinish()){
-			if(abs(getDistY(YCYCL(MLLink->table[MLLink->cFrame].y0 - MLLink->table[MLLink->cFrame].sy / 2),ViewY)) > (TurnSideY + MLLink->table[MLLink->cFrame].sy) ||
-			   abs(getDistX(XCYCL(MLLink->table[MLLink->cFrame].x0 - MLLink->table[MLLink->cFrame].sx / 2),ViewX)) > (TurnSideX + MLLink->table[MLLink->cFrame].sx))
+	if (!MLLink)
+		return;
+	if (!MLLink->frozen) {
+		if (MLLink->isGoFinish()) {
+			if (abs(getDistY(
+					YCYCL(MLLink->table[MLLink->cFrame].y0 - MLLink->table[MLLink->cFrame].sy / 2),
+					ViewY
+				)) > (TurnSideY + MLLink->table[MLLink->cFrame].sy) ||
+				abs(getDistX(
+					XCYCL(MLLink->table[MLLink->cFrame].x0 - MLLink->table[MLLink->cFrame].sx / 2),
+					ViewX
+				)) > (TurnSideX + MLLink->table[MLLink->cFrame].sx))
 				return;
-			switch(Mode){
-				case EngineModeList::ACCEPT_PROCESS:
-					if(++Time >= cyclic_delay_ticks(DeactiveTime)){
-						MLLink->goKeyPhase(ActivePhase);
-						SoundEvent();
-						Time = 0;
-						Mode = EngineModeList::ACCEPT_DELAY;
-					};
-					break;
-				case EngineModeList::ACCEPT_DELAY:
-					Mode = EngineModeList::ACCEPT_PROCESS_END;
-					break;
-				case EngineModeList::ACCEPT_PROCESS_END:
-					if(++Time >= cyclic_delay_ticks(ActiveTime)){
-						MLLink->goKeyPhase(DeactivePhase);
-						SoundEvent();
-						Time = 0;
-						Mode = EngineModeList::SEND_PROCESS;
-					};
-					break;
-				case EngineModeList::SEND_PROCESS:
-					Mode = EngineModeList::ACCEPT_PROCESS;
-					break;
+			switch (Mode) {
+			case EngineModeList::ACCEPT_PROCESS:
+				if (++Time >= cyclic_delay_ticks(DeactiveTime)) {
+					MLLink->goKeyPhase(ActivePhase);
+					SoundEvent();
+					Time = 0;
+					Mode = EngineModeList::ACCEPT_DELAY;
+				};
+				break;
+			case EngineModeList::ACCEPT_DELAY:
+				Mode = EngineModeList::ACCEPT_PROCESS_END;
+				break;
+			case EngineModeList::ACCEPT_PROCESS_END:
+				if (++Time >= cyclic_delay_ticks(ActiveTime)) {
+					MLLink->goKeyPhase(DeactivePhase);
+					SoundEvent();
+					Time = 0;
+					Mode = EngineModeList::SEND_PROCESS;
+				};
+				break;
+			case EngineModeList::SEND_PROCESS:
+				Mode = EngineModeList::ACCEPT_PROCESS;
+				break;
 			};
 		};
 
-		if(ActionLink){
-			if(Mode == ActionMode){
-				for(i = 0;i < NumAction;i++) 
+		if (ActionLink) {
+			if (Mode == ActionMode) {
+				for (i = 0; i < NumAction; i++)
 					ActionLink[i]->Enable = 1;
-			}else{
-				for(i = 0;i < NumAction;i++)
+			} else {
+				for (i = 0; i < NumAction; i++)
 					ActionLink[i]->Enable = 0;
 			};
 		};
-	}else{
-//		MLLink->goKeyPhase(DeactivePhase);
+	} else {
+		//		MLLink->goKeyPhase(DeactivePhase);
 		Mode = EngineModeList::SEND_PROCESS;
 		Time = 0;
 	};
 };
 
-void DoorEngine::Open(Parser& in)
-{
-	char* n;
+void DoorEngine::Open(Parser &in) {
+	char *n;
 	int i;
 	LocationEngine::Open(in);
 
 	in.search_name("NumSensorLink");
 	NumSensor = in.get_int();
-	SensorLink = new SensorDataType*[NumSensor];
+	SensorLink = new SensorDataType *[NumSensor];
 
-	for(i = 0;i < NumSensor;i++){
+	for (i = 0; i < NumSensor; i++) {
 		in.search_name("SensorName");
-		n = in.get_name();	
+		n = in.get_name();
 		SensorLink[i] = NULL;
 		SensorLink[i] = FindSensor(n);
-		if(!SensorLink[i]) 
+		if (!SensorLink[i])
 			ErrH.Abort("Bad Find Sensor");
 		SensorLink[i]->Enable = 1;
 		SensorLink[i]->Owner = this;
@@ -927,66 +955,70 @@ void DoorEngine::Open(Parser& in)
 	in.search_name("Luck");
 	Luck = in.get_int();
 
-	if(NetworkON) Luck = 0;
+	if (NetworkON)
+		Luck = 0;
 
 	TouchFlag = 0;
 	Type = EngineTypeList::DOOR;
 	Mode = EngineModeList::WAIT;
 	Time = 0;
 	ProcessFlag = 0;
-//	MLLink->setStaticPhase(DeactivePhase);
+	//	MLLink->setStaticPhase(DeactivePhase);
 	MLLink->goKeyPhase(DeactivePhase);
 
 	Level = 0;
 	NumTouchObject = 0;
 };
 
-void DoorEngine::Close(void)
-{
+void DoorEngine::Close(void) {
 	delete[] SensorLink;
 };
 
-void DoorEngine::Touch(GeneralObject* obj,SensorDataType* p)
-{
-	if(!Enable || !MLLink) return;
-	if(!MLLink->frozen) 
+void DoorEngine::Touch(GeneralObject *obj, SensorDataType *p) {
+	if (!Enable || !MLLink)
+		return;
+	if (!MLLink->frozen)
 		TouchFlag++;
 };
 
 void DoorEngine::Quant(void) // Animation frame for threall connection point and all doors/elevators
 {
-	char* ThreallText;
-	if(!MLLink) return;
-	if(!MLLink->frozen){
+	char *ThreallText;
+	if (!MLLink)
+		return;
+	if (!MLLink->frozen) {
 		HideFlag = 0;
 		NumTouchObject = TouchFlag;
-		if(MLLink->isGoFinish()){
+		if (MLLink->isGoFinish()) {
 			ProcessFlag = 0;
-			if(NetworkON && Mode != NetMode){
-				if(UpdateFlag){
-					if(NetMode == EngineModeList::OPEN) OpenDoor(0);
-					else CloseDoor(0);
+			if (NetworkON && Mode != NetMode) {
+				if (UpdateFlag) {
+					if (NetMode == EngineModeList::OPEN)
+						OpenDoor(0);
+					else
+						CloseDoor(0);
 					UpdateFlag = 0;
 					return;
-				}else{
+				} else {
 					NetMode = Mode;
-					NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
+					NETWORK_OUT_STREAM.update_object(NetID, R_curr.x, R_curr.y);
 					NETWORK_OUT_STREAM < (char)(NetMode);
 					NETWORK_OUT_STREAM.end_body();
 				};
 			};
 
-			if(Time){
+			if (Time) {
 				Time--;
 				TouchFlag = 0;
-			}else{
-				if(TouchFlag){
-					if(Mode != EngineModeList::OPEN && !(LockFlag & DOOR_OPEN_LOCK)){
-						if(CurrentWorld == WORLD_THREALL && !strcmp(MLLink->name,"MMMM")){
-//							aciSendEvent2actint(ACI_SHOW_TEXT,NULL);
+			} else {
+				if (TouchFlag) {
+					if (Mode != EngineModeList::OPEN && !(LockFlag & DOOR_OPEN_LOCK)) {
+						if (CurrentWorld == WORLD_THREALL && !strcmp(MLLink->name, "MMMM")) {
+							//							aciSendEvent2actint(ACI_SHOW_TEXT,NULL);
 							dgInThreall();
 							ThreallText = dgGetThreallPhrase();
-							if(ThreallText) aciPrepareText(ThreallText);
+							if (ThreallText)
+								aciPrepareText(ThreallText);
 							ThreallMessageProcess = 1;
 						};
 						Mode = EngineModeList::OPEN;
@@ -995,10 +1027,10 @@ void DoorEngine::Quant(void) // Animation frame for threall connection point and
 						SoundEvent();
 					};
 					TouchFlag = 0;
-				}else{
-					if(Mode != EngineModeList::WAIT && !(LockFlag & DOOR_CLOSE_LOCK)){
-						if(CurrentWorld == WORLD_THREALL && !strcmp(MLLink->name,"MMMM")){
-							aciSendEvent2actint(ACI_HIDE_TEXT,NULL);
+				} else {
+					if (Mode != EngineModeList::WAIT && !(LockFlag & DOOR_CLOSE_LOCK)) {
+						if (CurrentWorld == WORLD_THREALL && !strcmp(MLLink->name, "MMMM")) {
+							aciSendEvent2actint(ACI_HIDE_TEXT, NULL);
 							dgOutThreall();
 							ThreallMessageProcess = 0;
 						};
@@ -1009,10 +1041,9 @@ void DoorEngine::Quant(void) // Animation frame for threall connection point and
 					};
 				};
 			};
-
 		};
-	}else{
-		if(Mode != EngineModeList::WAIT) 
+	} else {
+		if (Mode != EngineModeList::WAIT)
 			MLLink->goKeyPhase(DeactivePhase);
 		Mode = EngineModeList::WAIT;
 		Time = 0;
@@ -1022,109 +1053,110 @@ void DoorEngine::Quant(void) // Animation frame for threall connection point and
 	};
 };
 
-static inline int door_explicit_delay_ticks(int legacy_delay)
-{
-	if(legacy_delay <= 0)
+static inline int door_explicit_delay_ticks(int legacy_delay) {
+	if (legacy_delay <= 0)
 		return (int)round(GAME_TIME_COEFF);
 
 	return (int)round(legacy_delay * GAME_TIME_COEFF);
 }
 
-void DoorEngine::OpenDoor(void)
-{
-	if(!Enable || !MLLink) return;
+void DoorEngine::OpenDoor(void) {
+	if (!Enable || !MLLink)
+		return;
 	Time = ActiveTime;
-	if (Time <= 0) { Time = GAME_TIME_COEFF; }
+	if (Time <= 0) {
+		Time = GAME_TIME_COEFF;
+	}
 	Mode = EngineModeList::OPEN;
 	ProcessFlag = 1;
-	if(!MLLink->frozen){
+	if (!MLLink->frozen) {
 		MLLink->goKeyPhase(ActivePhase);
 		SoundEvent();
 	};
 
-/*	if(NetworkON){
-		NetMode = Mode;
-		NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
-		NETWORK_OUT_STREAM < (char)(NetMode);
-		NETWORK_OUT_STREAM.end_body();
-	};*/
+	/*	if(NetworkON){
+			NetMode = Mode;
+			NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
+			NETWORK_OUT_STREAM < (char)(NetMode);
+			NETWORK_OUT_STREAM.end_body();
+		};*/
 };
 
-void DoorEngine::CloseDoor(void)
-{
-	if(!Enable || !MLLink || Time) return;
+void DoorEngine::CloseDoor(void) {
+	if (!Enable || !MLLink || Time)
+		return;
 	Time = DeactiveTime;
-	if (Time <= 0) { Time = GAME_TIME_COEFF; }
+	if (Time <= 0) {
+		Time = GAME_TIME_COEFF;
+	}
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 1;
-	if(!MLLink->frozen){
+	if (!MLLink->frozen) {
 		MLLink->goKeyPhase(DeactivePhase);
 		SoundEvent();
 	};
 
-/*	if(NetworkON){
-		NetMode = Mode;
-		NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
-		NETWORK_OUT_STREAM < (char)(NetMode);
-		NETWORK_OUT_STREAM.end_body();
-	};*/
+	/*	if(NetworkON){
+			NetMode = Mode;
+			NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
+			NETWORK_OUT_STREAM < (char)(NetMode);
+			NETWORK_OUT_STREAM.end_body();
+		};*/
 };
 
-void DoorEngine::OpenDoor(int t)
-{
-	if(!Enable || !MLLink || Time) return;
+void DoorEngine::OpenDoor(int t) {
+	if (!Enable || !MLLink || Time)
+		return;
 	Time = door_explicit_delay_ticks(t);
 	Mode = EngineModeList::OPEN;
 	ProcessFlag = 1;
-	if(!MLLink->frozen){
+	if (!MLLink->frozen) {
 		MLLink->goKeyPhase(ActivePhase);
 		SoundEvent();
 	};
 
-/*	if(NetworkON){
-		NetMode = Mode;
-		NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
-		NETWORK_OUT_STREAM < (char)(NetMode);
-		NETWORK_OUT_STREAM.end_body();
-	};*/
+	/*	if(NetworkON){
+			NetMode = Mode;
+			NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
+			NETWORK_OUT_STREAM < (char)(NetMode);
+			NETWORK_OUT_STREAM.end_body();
+		};*/
 };
 
-void DoorEngine::CloseDoor(int t)
-{
-	if(!Enable || !MLLink || Time) return;
+void DoorEngine::CloseDoor(int t) {
+	if (!Enable || !MLLink || Time)
+		return;
 	Time = door_explicit_delay_ticks(t);
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 1;
-	if(!MLLink->frozen){
+	if (!MLLink->frozen) {
 		MLLink->goKeyPhase(DeactivePhase);
 		SoundEvent();
 	};
 
-/*	if(NetworkON){
-		NetMode = Mode;
-		NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
-		NETWORK_OUT_STREAM < (char)(NetMode);
-		NETWORK_OUT_STREAM.end_body();
-	};*/
+	/*	if(NetworkON){
+			NetMode = Mode;
+			NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
+			NETWORK_OUT_STREAM < (char)(NetMode);
+			NETWORK_OUT_STREAM.end_body();
+		};*/
 };
 
-
-void TiristorEngine::Open(Parser& in)
-{
-	char* n;
+void TiristorEngine::Open(Parser &in) {
+	char *n;
 	int i;
 	LocationEngine::Open(in);
 
 	in.search_name("NumSensorLink");
 	NumSensor = in.get_int();
-	SensorLink = new SensorDataType*[NumSensor];
+	SensorLink = new SensorDataType *[NumSensor];
 
-	for(i = 0;i < NumSensor;i++){
+	for (i = 0; i < NumSensor; i++) {
 		in.search_name("SensorName");
-		n = in.get_name();	
+		n = in.get_name();
 		SensorLink[i] = NULL;
 		SensorLink[i] = FindSensor(n);
-		if(!SensorLink[i]) 
+		if (!SensorLink[i])
 			ErrH.Abort("Bad Find Sensor");
 		SensorLink[i]->Enable = 1;
 		SensorLink[i]->Owner = this;
@@ -1136,59 +1168,60 @@ void TiristorEngine::Open(Parser& in)
 	in.search_name("Luck");
 	Luck = in.get_int();
 
-	if(NetworkON) Luck = 0;
+	if (NetworkON)
+		Luck = 0;
 
 	TouchFlag = 0;
 	Type = EngineTypeList::TIRISTOR;
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 0;
-//	MLLink->setStaticPhase(DeactivePhase);
+	//	MLLink->setStaticPhase(DeactivePhase);
 	MLLink->goKeyPhase(DeactivePhase);
 	NumTouchObject = 0;
 
-	if(CurrentWorld == WORLD_FOSTRAL || CurrentWorld == WORLD_GLORX){
-		for(i = 0;i < MAX_TIME_SECRET;i++){
-			if(!strcmp(TimeSecretName[CurrentWorld][i],MLLink->name) && !TimeSecretEnable[CurrentWorld][i])
+	if (CurrentWorld == WORLD_FOSTRAL || CurrentWorld == WORLD_GLORX) {
+		for (i = 0; i < MAX_TIME_SECRET; i++) {
+			if (!strcmp(TimeSecretName[CurrentWorld][i], MLLink->name) &&
+				!TimeSecretEnable[CurrentWorld][i])
 				Enable = 0;
 		};
 	};
 };
 
-void TiristorEngine::Close(void)
-{
+void TiristorEngine::Close(void) {
 	delete[] SensorLink;
 };
 
-void TiristorEngine::Touch(GeneralObject* obj,SensorDataType* p)
-{
-	if(!Enable || !MLLink) return;
-	if(!MLLink->frozen) 
+void TiristorEngine::Touch(GeneralObject *obj, SensorDataType *p) {
+	if (!Enable || !MLLink)
+		return;
+	if (!MLLink->frozen)
 		TouchFlag++;
 };
 
-void TiristorEngine::Quant(void)
-{
-	if(!MLLink) return;
-	if(!MLLink->frozen){
+void TiristorEngine::Quant(void) {
+	if (!MLLink)
+		return;
+	if (!MLLink->frozen) {
 		NumTouchObject = TouchFlag;
-		if(MLLink->isGoFinish()){
-
-			if(NetworkON && Mode != NetMode){
-				if(UpdateFlag){
-					if(NetMode == EngineModeList::OPEN) OpenDoor();
+		if (MLLink->isGoFinish()) {
+			if (NetworkON && Mode != NetMode) {
+				if (UpdateFlag) {
+					if (NetMode == EngineModeList::OPEN)
+						OpenDoor();
 					UpdateFlag = 0;
 					return;
-				}else{
+				} else {
 					NetMode = Mode;
-					NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
+					NETWORK_OUT_STREAM.update_object(NetID, R_curr.x, R_curr.y);
 					NETWORK_OUT_STREAM < (char)(NetMode);
-					NETWORK_OUT_STREAM.end_body();					
+					NETWORK_OUT_STREAM.end_body();
 				};
 			};
 
 			ProcessFlag = 0;
-			if(TouchFlag){
-				if(Mode != EngineModeList::OPEN && !(LockFlag & DOOR_OPEN_LOCK)){
+			if (TouchFlag) {
+				if (Mode != EngineModeList::OPEN && !(LockFlag & DOOR_OPEN_LOCK)) {
 					Mode = EngineModeList::OPEN;
 					MLLink->goKeyPhase(ActivePhase);
 					SoundEvent();
@@ -1197,8 +1230,8 @@ void TiristorEngine::Quant(void)
 				TouchFlag = 0;
 			};
 		};
-	}else{
-		if(Mode != EngineModeList::WAIT) 
+	} else {
+		if (Mode != EngineModeList::WAIT)
 			MLLink->goKeyPhase(DeactivePhase);
 		Mode = EngineModeList::WAIT;
 		ProcessFlag = 0;
@@ -1206,23 +1239,23 @@ void TiristorEngine::Quant(void)
 	};
 };
 
-void TiristorEngine::OpenDoor(void)
-{
-	if(!Enable || !MLLink) return;
+void TiristorEngine::OpenDoor(void) {
+	if (!Enable || !MLLink)
+		return;
 	Mode = EngineModeList::OPEN;
 	ProcessFlag = 1;
-	if(!MLLink->frozen){
+	if (!MLLink->frozen) {
 		MLLink->goKeyPhase(ActivePhase);
 		SoundEvent();
 	};
 };
 
-void TiristorEngine::CloseDoor(void)
-{
-	if(!Enable || !MLLink) return;
+void TiristorEngine::CloseDoor(void) {
+	if (!Enable || !MLLink)
+		return;
 	Mode = EngineModeList::WAIT;
 	ProcessFlag = 1;
-	if(!MLLink->frozen){
+	if (!MLLink->frozen) {
 		MLLink->goKeyPhase(DeactivePhase);
 		SoundEvent();
 	};
@@ -1264,28 +1297,23 @@ void TiristorEngine::CloseDoor(void)
 	};
 };*/
 
-void EnterEngine::Open(Parser& in)
-{
-	char* n;
+void EnterEngine::Open(Parser &in) {
+	char *n;
 	LocationEngine::Open(in);
 
 	in.search_name("ActionName");
 	n = in.get_name();
 	ActionLink = FindSensor(n);
-	if(!ActionLink)
+	if (!ActionLink)
 		ErrH.Abort("Bad Find Sensor");
 	ActionLink->Owner = this;
 	ActionLink->Enable = 1;
 	ActionLink->Index = 0;
 };
 
-void EnterEngine::Close(void)
-{
-};
+void EnterEngine::Close(void) {};
 
-void EnterEngine::Active(void)
-{
-};
+void EnterEngine::Active(void) {};
 
 const int ENGINE_ACTION_TOUCH = 1;
 const int ENGINE_ACTION_USE = 2;
@@ -1308,7 +1336,7 @@ void SpotEngine::Quant(void)
 		Owner->PutCenter(this);
 		UseFlag = 0;
 	}else  UseFlag--;
-};														
+};
 
 void SpotEngine::Active(void)
 {
@@ -1321,9 +1349,8 @@ void SpotEngine::Touch(GeneralObject* obj,SensorDataType* p)
 };
 */
 
-void PassageEngine::Open(Parser& in)
-{
-	char* n;
+void PassageEngine::Open(Parser &in) {
+	char *n;
 
 	LocationEngine::Open(in);
 
@@ -1332,7 +1359,7 @@ void PassageEngine::Open(Parser& in)
 	in.search_name("ActionName");
 	n = in.get_name();
 	ActionLink = FindSensor(n);
-	if(!ActionLink) 
+	if (!ActionLink)
 		ErrH.Abort("Bad Find Sensor");
 	ActionLink->Owner = this;
 	ActionLink->Enable = 1;
@@ -1340,41 +1367,36 @@ void PassageEngine::Open(Parser& in)
 	in.search_name("PassageName");
 	n = in.get_name();
 	PassageName = new char[strlen(n) + 1];
-	strcpy(PassageName,n);
+	strcpy(PassageName, n);
 };
 
-void PassageEngine::Close(void)
-{
+void PassageEngine::Close(void) {
 	delete[] PassageName;
 };
 
-void PassageEngine::Quant(void)
-{
-};
+void PassageEngine::Quant(void) {};
 
-void PassageEngine::Link(void)
-{
-	uvsPassage* pe;
+void PassageEngine::Link(void) {
+	uvsPassage *pe;
 	uvsPort = NULL;
-	pe = (uvsPassage*)PassageTail;
-	while(pe){
-		if(!strcmp(pe->name,PassageName)){
+	pe = (uvsPassage *)PassageTail;
+	while (pe) {
+		if (!strcmp(pe->name, PassageName)) {
 			uvsPort = pe;
 			break;
 		};
-		pe = (uvsPassage*)(pe -> next);
+		pe = (uvsPassage *)(pe->next);
 	};
-	if(!uvsPort) 
+	if (!uvsPort)
 		ErrH.Abort("Bad uvsPort");
 	uvsPort->unitPtr.PassageT = this;
 	uvsPort->locked = 0;
 };
 
-//Close Locked
+// Close Locked
 
-void ElevatorEngine::Open(Parser& in)
-{
-	char* n;
+void ElevatorEngine::Open(Parser &in) {
+	char *n;
 	EnterEngine::Open(in);
 	Type = EngineTypeList::ELEVATOR;
 	UseFlag = 0;
@@ -1382,90 +1404,88 @@ void ElevatorEngine::Open(Parser& in)
 
 	in.search_name("DoorName");
 	n = in.get_name();
-	if(strcmp(n,"None")){
+	if (strcmp(n, "None")) {
 		DoorName = new char[strlen(n) + 1];
-		strcpy(DoorName,n);
+		strcpy(DoorName, n);
 		DoorLink = NULL;
-	}else DoorName = NULL;
+	} else
+		DoorName = NULL;
 };
 
-void ElevatorEngine::Close(void)
-{
+void ElevatorEngine::Close(void) {
 	delete[] DoorName;
 };
 
-void ElevatorEngine::Quant(void)
-{
-	if(MLLink && !MLLink->frozen){
-		if(UseFlag){
-			if(!(DoorLink->NumTouchObject)){
+void ElevatorEngine::Quant(void) {
+	if (MLLink && !MLLink->frozen) {
+		if (UseFlag) {
+			if (!(DoorLink->NumTouchObject)) {
 				Owner->PutCenter(this);
 				UseFlag = 0;
-			}else{
-//				if(!(DoorLink->ProcessFlag) && DoorLink->Mode == EngineModeList::OPEN)
-				if(ActionFlag && !(DoorLink->ProcessFlag) && DoorLink->Mode == EngineModeList::OPEN)
+			} else {
+				//				if(!(DoorLink->ProcessFlag) && DoorLink->Mode ==
+				// EngineModeList::OPEN)
+				if (ActionFlag && !(DoorLink->ProcessFlag) &&
+					DoorLink->Mode == EngineModeList::OPEN)
 					DoorLink->CloseDoor(0);
 			};
 			ActionFlag = 0;
-		}else{
-			 if(DoorLink->NumTouchObject){
+		} else {
+			if (DoorLink->NumTouchObject) {
 				Owner->LockedCenter(this);
 				UseFlag = 1;
-			 };
-		};		
-	}else{
-		if(UseFlag){
+			};
+		};
+	} else {
+		if (UseFlag) {
 			Owner->PutCenter(this);
 			UseFlag = 0;
 			ActionFlag = 0;
 		};
-	};	
+	};
 };
 
-void ElevatorEngine::Touch(GeneralObject* obj,SensorDataType* p)
-{
-	if(UseFlag) ActionFlag = 1;
+void ElevatorEngine::Touch(GeneralObject *obj, SensorDataType *p) {
+	if (UseFlag)
+		ActionFlag = 1;
 };
 
-void ElevatorEngine::Link(void)
-{
-	DoorLink = (DoorEngine*)(FindSensor(DoorName)->Owner);
-	if(!DoorLink) ErrH.Abort("Bad Door Object");
+void ElevatorEngine::Link(void) {
+	DoorLink = (DoorEngine *)(FindSensor(DoorName)->Owner);
+	if (!DoorLink)
+		ErrH.Abort("Bad Door Object");
 };
 
-void ElevatorEngine::Active(void)
-{
+void ElevatorEngine::Active(void) {
 	DoorLink->OpenDoor(0);
 	UseFlag = 1;
 };
 
-void EscaveEngine::Open(Parser& in)
-{
+void EscaveEngine::Open(Parser &in) {
 	ElevatorEngine::Open(in);
 	in.search_name("StartAngle");
 	StartAngle = in.get_int();
 	Type = EngineTypeList::ESCAVE;
 	LastOpen = 0;
 };
-	
-void EscaveEngine::Quant(void)
-{
-	if(MLLink && !MLLink->frozen){
-		if(UseFlag){
-			if(DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag) && !LastOpen){
+
+void EscaveEngine::Quant(void) {
+	if (MLLink && !MLLink->frozen) {
+		if (UseFlag) {
+			if (DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag) && !LastOpen) {
 				Owner->PutCenter(this);
 				UseFlag = 0;
 				ActionLink->Enable = 1;
 			};
-		}else{
-			if(DoorLink->Mode != EngineModeList::WAIT){
+		} else {
+			if (DoorLink->Mode != EngineModeList::WAIT) {
 				Owner->LockedCenter(this);
 				UseFlag = 1;
 				ActionLink->Enable = 0;
-			 };
+			};
 		};
-	}else{
-		if(UseFlag){
+	} else {
+		if (UseFlag) {
 			Owner->PutCenter(this);
 			UseFlag = 0;
 			ActionLink->Enable = 1;
@@ -1474,79 +1494,77 @@ void EscaveEngine::Quant(void)
 	LastOpen = 0;
 };
 
-void EscaveEngine::Active(void)
-{
+void EscaveEngine::Active(void) {
 	UseFlag = 1;
 	ActionLink->Enable = 0;
 	LastOpen = 1;
 };
 
-void ImpulseEscave::Open(Parser& in)
-{
-	char* n;
+void ImpulseEscave::Open(Parser &in) {
+	char *n;
 
 	ElevatorEngine::Open(in);
 	Type = EngineTypeList::IMPULSE_ESCAVE;
 	in.search_name("ImpulseName");
 	n = in.get_name();
 	ImpulseLink = FindSensor(n);
-	if(!ImpulseLink)
+	if (!ImpulseLink)
 		ErrH.Abort("Bad Find Impulse Sensor");
-//	ImpulseLink->Owner = NULL;
+	//	ImpulseLink->Owner = NULL;
 	ImpulseLink->Enable = 0;
 	ImpulseLink->Index = 1;
 };
 
-void ImpulseEscave::Quant(void)
-{
-	if(MLLink && !MLLink->frozen){
-		switch(UseFlag){
-			case 0:
-				if(DoorLink->Mode != EngineModeList::WAIT){
-					Owner->LockedCenter(this);
-					UseFlag = 1;
-				};
-				break;
-			case 1:
-				if(DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)){
-					Owner->PutCenter(this);
-					UseFlag = 0;
-					ImpulseLink->Enable = 0;
-				}else{
-					if(ActionFlag && !(DoorLink->ProcessFlag) && DoorLink->Mode == EngineModeList::OPEN)
-						DoorLink->CloseDoor(0);
-				};
-				ActionFlag = 0;
-				break;
-			case 2:
-				if(DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)){
-					Owner->PutCenter(this);
-					UseFlag = 0;
-					ImpulseLink->Enable = 0;
-				};
-				ActionFlag = 0;
-				break;
-		};
-
-/*		if(UseFlag){
-			if(DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)){
+void ImpulseEscave::Quant(void) {
+	if (MLLink && !MLLink->frozen) {
+		switch (UseFlag) {
+		case 0:
+			if (DoorLink->Mode != EngineModeList::WAIT) {
+				Owner->LockedCenter(this);
+				UseFlag = 1;
+			};
+			break;
+		case 1:
+			if (DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)) {
 				Owner->PutCenter(this);
 				UseFlag = 0;
 				ImpulseLink->Enable = 0;
-			}else{
-				if(ActionFlag && !(DoorLink->ProcessFlag) && DoorLink->Mode == EngineModeList::OPEN)
+			} else {
+				if (ActionFlag && !(DoorLink->ProcessFlag) &&
+					DoorLink->Mode == EngineModeList::OPEN)
 					DoorLink->CloseDoor(0);
 			};
 			ActionFlag = 0;
-		}else{
-			if(DoorLink->Mode != EngineModeList::WAIT){
-				Owner->LockedCenter(this);
-				UseFlag = 1;
-			 };
-		};*/
+			break;
+		case 2:
+			if (DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)) {
+				Owner->PutCenter(this);
+				UseFlag = 0;
+				ImpulseLink->Enable = 0;
+			};
+			ActionFlag = 0;
+			break;
+		};
 
-	}else{
-		if(UseFlag){
+		/*		if(UseFlag){
+					if(DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)){
+						Owner->PutCenter(this);
+						UseFlag = 0;
+						ImpulseLink->Enable = 0;
+					}else{
+						if(ActionFlag && !(DoorLink->ProcessFlag) && DoorLink->Mode ==
+		   EngineModeList::OPEN) DoorLink->CloseDoor(0);
+					};
+					ActionFlag = 0;
+				}else{
+					if(DoorLink->Mode != EngineModeList::WAIT){
+						Owner->LockedCenter(this);
+						UseFlag = 1;
+					 };
+				};*/
+
+	} else {
+		if (UseFlag) {
 			Owner->PutCenter(this);
 			UseFlag = 0;
 			ImpulseLink->Enable = 0;
@@ -1555,76 +1573,70 @@ void ImpulseEscave::Quant(void)
 	};
 };
 
-void ImpulseEscave::Active(void)
-{
+void ImpulseEscave::Active(void) {
 	DoorLink->OpenDoor(0);
-//	UseFlag = 1;
+	//	UseFlag = 1;
 	UseFlag = 2;
 	ImpulseLink->Enable = 1;
 };
 
-void ImpulseSpot::Open(Parser& in)
-{
+void ImpulseSpot::Open(Parser &in) {
 	ImpulseEscave::Open(in);
 	Type = EngineTypeList::IMPULSE_SPOT;
 	ActionLink->Enable = 1;
 };
 
-void ImpulseSpot::Quant(void)
-{
-	if(MLLink && !MLLink->frozen){
-		switch(UseFlag){
-			case 0:
-				if(DoorLink->Mode != EngineModeList::WAIT){
-					Owner->LockedCenter(this);
-					UseFlag = 1;					
-					ActionLink->Enable = 0;
-				};
-				break;
-			case 1:
-				if(DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)){
-					Owner->PutCenter(this);
-					UseFlag = 0;
-					ActionLink->Enable = 1;
-				};
-				break;
-			case 2:
-				if(DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)){
-					Owner->PutCenter(this);
-					UseFlag = 0;
-					ImpulseLink->Enable = 0;
-					ActionLink->Enable = 1;
-				};
-				break;
+void ImpulseSpot::Quant(void) {
+	if (MLLink && !MLLink->frozen) {
+		switch (UseFlag) {
+		case 0:
+			if (DoorLink->Mode != EngineModeList::WAIT) {
+				Owner->LockedCenter(this);
+				UseFlag = 1;
+				ActionLink->Enable = 0;
+			};
+			break;
+		case 1:
+			if (DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)) {
+				Owner->PutCenter(this);
+				UseFlag = 0;
+				ActionLink->Enable = 1;
+			};
+			break;
+		case 2:
+			if (DoorLink->Mode == EngineModeList::WAIT && !(DoorLink->ProcessFlag)) {
+				Owner->PutCenter(this);
+				UseFlag = 0;
+				ImpulseLink->Enable = 0;
+				ActionLink->Enable = 1;
+			};
+			break;
 		};
-	}else{
-		if(UseFlag){
+	} else {
+		if (UseFlag) {
 			Owner->PutCenter(this);
 			UseFlag = 0;
-			ImpulseLink->Enable = 0;			
-			ActionLink->Enable =1;
+			ImpulseLink->Enable = 0;
+			ActionLink->Enable = 1;
 		};
 	};
 };
 
-void ImpulseSpot::Active(void)
-{
+void ImpulseSpot::Active(void) {
 	ImpulseLink->Enable = 1;
 	UseFlag = 2;
 	ActionLink->Enable = 0;
 	DoorLink->OpenDoor(0);
 };
 
-static inline int train_delay_ticks(int legacy_delay)
-{
-	if(legacy_delay <= 0)
+static inline int train_delay_ticks(int legacy_delay) {
+	if (legacy_delay <= 0)
 		return 0;
 
 	return (int)round(legacy_delay * GAME_TIME_COEFF);
 }
 
-void TrainEngine::CreateTrain(SensorDataType* p1,SensorDataType* p2,int time)
-{
+void TrainEngine::CreateTrain(SensorDataType *p1, SensorDataType *p2, int time) {
 	Type = EngineTypeList::TRAIN;
 
 	MLLink = NULL;
@@ -1633,7 +1645,7 @@ void TrainEngine::CreateTrain(SensorDataType* p1,SensorDataType* p2,int time)
 	DeactivePhase = 0;
 
 	Mode = EngineModeList::WAIT;
-	Enable = 1;				    
+	Enable = 1;
 
 	TrainLink[0] = p1;
 	TrainLink[0]->Owner = this;
@@ -1647,13 +1659,12 @@ void TrainEngine::CreateTrain(SensorDataType* p1,SensorDataType* p2,int time)
 
 	ActiveTime = train_delay_ticks(time);
 	DeactiveTime = train_delay_ticks(10);
-	LockFlag = DOOR_CLOSE_LOCK;	
+	LockFlag = DOOR_CLOSE_LOCK;
 };
 
 int NumAddDanger;
-void TrainEngine::Open(Parser& in)
-{
-	char* n;
+void TrainEngine::Open(Parser &in) {
+	char *n;
 	LocationEngine::Open(in);
 	ActiveTime = train_delay_ticks(ActiveTime);
 	DeactiveTime = train_delay_ticks(DeactiveTime);
@@ -1663,7 +1674,7 @@ void TrainEngine::Open(Parser& in)
 	in.search_name("FirstStationName");
 	n = in.get_name();
 	TrainLink[0] = FindSensor(n);
-	if(!TrainLink[0])
+	if (!TrainLink[0])
 		ErrH.Abort("Bad Find Sensor");
 	TrainLink[0]->Owner = this;
 	TrainLink[0]->Enable = 1;
@@ -1672,7 +1683,7 @@ void TrainEngine::Open(Parser& in)
 	in.search_name("SecondStationName");
 	n = in.get_name();
 	TrainLink[1] = FindSensor(n);
-	if(!TrainLink[1]) 
+	if (!TrainLink[1])
 		ErrH.Abort("Bad Find Sensor");
 	TrainLink[1]->Owner = this;
 	TrainLink[1]->Enable = 1;
@@ -1683,407 +1694,493 @@ void TrainEngine::Open(Parser& in)
 	DangerLink = NULL;
 };
 
-void TrainEngine::Link(void)
-{
-	if(EffectID && NumAddDanger < DngTableSize){
+void TrainEngine::Link(void) {
+	if (EffectID && NumAddDanger < DngTableSize) {
 		DangerLink = DangerObjectData[NumAddDanger];
 		NumAddDanger++;
-		DangerLink->CreateDanger(Vector(TrainLink[0]->R_curr.x,TrainLink[0]->R_curr.y,FloodLEVEL),TrainLink[0]->radius / 2,DangerTypeList::TRAIN);
+		DangerLink->CreateDanger(
+			Vector(TrainLink[0]->R_curr.x, TrainLink[0]->R_curr.y, FloodLEVEL),
+			TrainLink[0]->radius / 2,
+			DangerTypeList::TRAIN
+		);
 	};
 };
 
-void DangerDataType::CreateDanger(Vector v,int r,int tp)
-{
+void DangerDataType::CreateDanger(Vector v, int r, int tp) {
 	R_curr = v;
 
 	Type = tp;
-	radius =  r;	
+	radius = r;
 
-    //zmod fixed
-	//if(NetworkON) Enable = 0; //zmod 1.13
-	//else Enable = 1;
+	// zmod fixed
+	// if(NetworkON) Enable = 0; //zmod 1.13
+	// else Enable = 1;
 	Enable = 1;
 
 	StaticType = StaticObjectType::DANGER;
 
-	cycleTor(R_curr.x,R_curr.y);
+	cycleTor(R_curr.x, R_curr.y);
 	Status = 0;
 	ID = ID_STATIC;
 
-	switch(Type){
-		case DangerTypeList::WHIRLPOOL:
-		case DangerTypeList::TRAIN:
-			Delay = 3;
-			if(CurrentWorld == WORLD_GLORX){
-				if(!RND(1000)) Enable = 0;
-			}else if(!RND(200)) Enable = 0;
-			break;	
-		case DangerTypeList::FASTSAND:
-		case DangerTypeList::SWAMP:
-			dActive = (int)round(3 / GAME_TIME_COEFF);
-			break;
+	switch (Type) {
+	case DangerTypeList::WHIRLPOOL:
+	case DangerTypeList::TRAIN:
+		Delay = 3;
+		if (CurrentWorld == WORLD_GLORX) {
+			if (!RND(1000))
+				Enable = 0;
+		} else if (!RND(200))
+			Enable = 0;
+		break;
+	case DangerTypeList::FASTSAND:
+	case DangerTypeList::SWAMP:
+		dActive = (int)round(3 / GAME_TIME_COEFF);
+		break;
 	};
 	Time = 0;
-	rActive = radius / 2;	
+	rActive = radius / 2;
 };
 
-void DangerDataType::CreateDanger(XStream& in)
-{
+void DangerDataType::CreateDanger(XStream &in) {
 	in > R_curr.x;
 	in > R_curr.y;
 	in > R_curr.z;
 
 	in > Type;
 	in > radius;
-	in.seek(4*sizeof(int),XS_CUR);
+	in.seek(4 * sizeof(int), XS_CUR);
 
-	//zmod fixed
-	//if(NetworkON) Enable = 1; //zmod danger
-	//else Enable = 1;
+	// zmod fixed
+	// if(NetworkON) Enable = 1; //zmod danger
+	// else Enable = 1;
 	Enable = 1;
 
 	StaticType = StaticObjectType::DANGER;
 
-	cycleTor(R_curr.x,R_curr.y);
+	cycleTor(R_curr.x, R_curr.y);
 	Status = 0;
 	ID = ID_STATIC;
 
-	switch(Type){
-		case DangerTypeList::WHIRLPOOL:
-		case DangerTypeList::TRAIN:
-			Delay = 3;
-			if(CurrentWorld == WORLD_GLORX){
-				if(!RND(1000)) Enable = 0;
-			}else if(!RND(200)) Enable = 0;
-			break;	
-		case DangerTypeList::FASTSAND:
-		case DangerTypeList::SWAMP:
-			dActive = (int)round(3 / GAME_TIME_COEFF);
-			break;
-//zmod fixed 1.14
-		case DangerTypeList::FIRE:
-			if (NetworkON) { //!RND(4) means remove 1/4 in random
-//zmod 1.21
-				if(CurrentWorld==WORLD_ARKONOY && !RND(2) && !RND(2)) Enable=0;
-				if(CurrentWorld==WORLD_THREALL && !RND(2)) Enable=0;
-				}
-			break;	
+	switch (Type) {
+	case DangerTypeList::WHIRLPOOL:
+	case DangerTypeList::TRAIN:
+		Delay = 3;
+		if (CurrentWorld == WORLD_GLORX) {
+			if (!RND(1000))
+				Enable = 0;
+		} else if (!RND(200))
+			Enable = 0;
+		break;
+	case DangerTypeList::FASTSAND:
+	case DangerTypeList::SWAMP:
+		dActive = (int)round(3 / GAME_TIME_COEFF);
+		break;
+		// zmod fixed 1.14
+	case DangerTypeList::FIRE:
+		if (NetworkON) { //! RND(4) means remove 1/4 in random
+			// zmod 1.21
+			if (CurrentWorld == WORLD_ARKONOY && !RND(2) && !RND(2))
+				Enable = 0;
+			if (CurrentWorld == WORLD_THREALL && !RND(2))
+				Enable = 0;
+		}
+		break;
 	};
 	Time = 0;
 	rActive = radius / 2;
 };
 
-void DangerDataType::Quant(void)
-{
+void DangerDataType::Quant(void) {
 	Vector vPos;
-	int r,n,d1,d2,h;
-	WaterParticleObject* w;
-	int x,y,z,a;
+	int r, n, d1, d2, h;
+	WaterParticleObject *w;
+	int x, y, z, a;
 
-	//if(NetworkON) return; //zmod fixed
+	// if(NetworkON) return; //zmod fixed
 
-	switch(Type){
-		case DangerTypeList::FASTSAND:
-//#ifdef _DEBUG
-//			fDanger < "\nFastSand : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <= R_curr.z;
-//#endif
-			if(Enable){
-				if(radius <= 0){
-					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
-					break;
-				};
-				if(rActive > radius - abs(dActive) || rActive <= abs(dActive)) dActive = -dActive;
-				rActive += dActive;
-
-				d1 = (radius + rActive) / (2*10);
-				d2 = (radius + rActive) / (2*2);
-
-	//			for(i = 0;i < (int)RND(5);i++){
-					vPos = Vector(rActive - RND(2*rActive),rActive - RND(2*rActive),0);
-					vPos += R_curr;
-					vPos.x = XCYCL(vPos.x);
-					vPos.y = YCYCL(vPos.y);
-
-					r = d1 + RND(d1);
-					if(RND(100) < 50) h = -r;
-					else h = RND(d2) + r;
-					n = 3 + RND(3);
-					MapD.CreateLavaSpot(vPos,0,0,r,h,r,0,n,n*2,83,0,0,0,83);
-	//			};
-				RadialRender(R_curr.x,R_curr.y,radius + d1 * 2);
-				if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
-			}else{
-				if(!RND(100*GAME_TIME_COEFF)) Enable = 1;				
+	switch (Type) {
+	case DangerTypeList::FASTSAND:
+		// #ifdef _DEBUG
+		//			fDanger < "\nFastSand : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <=
+		// R_curr.z; #endif
+		if (Enable) {
+			if (radius <= 0) {
+				if (!RND(100 * GAME_TIME_COEFF))
+					Enable = 0;
+				break;
 			};
-			break;
-		case DangerTypeList::WHIRLPOOL:
-//#ifdef _DEBUG
-//			fDanger < "\nWhirlpool : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <= R_curr.z;
-//#endif
+			if (rActive > radius - abs(dActive) || rActive <= abs(dActive))
+				dActive = -dActive;
+			rActive += dActive;
 
-			if(Enable){
-				if(Time <= 0){
-					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
-					else{
-						EffD.CreateDeform(R_curr,DEFORM_WATER_ONLY,0);
-						Time = (EffD.DeformData[1].NumFrame * GAME_TIME_COEFF) - 1;
-//						Time = 1 + RND(3);
-					};
-				}else{
-					Time--;
-					if(!(Time % (int)round(4 * GAME_TIME_COEFF))){
-						w = (WaterParticleObject*)(EffD.GetObject(EFF_PARTICLE03));
-						if(w){
-							w->CreateParticle(30,5,1 << 7,radius,10,31,5,R_curr,1);
-							EffD.ConnectObject(w);
-						};
-					};
-				};
-			}else{
-				if(!RND(100*GAME_TIME_COEFF)){
-					EffD.CreateDeform(R_curr,DEFORM_WATER_ONLY,0);
-					Time = (EffD.DeformData[1].NumFrame * GAME_TIME_COEFF) - 1;
-//					Time = 1 + RND(3);
-					Enable = 1;
-				};
-			};
-			break;
-		case DangerTypeList::SWAMP:
+			d1 = (radius + rActive) / (2 * 10);
+			d2 = (radius + rActive) / (2 * 2);
 
-//#ifdef _DEBUG
-//			fDanger < "\nSwamp : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <= R_curr.z;
-//#endif
-			if(Enable){
-				if(radius <= 0){
-					if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
-					break;
-				};
-				if(rActive > radius - abs(dActive) || rActive <= abs(dActive)) dActive = -dActive;
-				rActive += dActive;
+			//			for(i = 0;i < (int)RND(5);i++){
+			vPos = Vector(rActive - RND(2 * rActive), rActive - RND(2 * rActive), 0);
+			vPos += R_curr;
+			vPos.x = XCYCL(vPos.x);
+			vPos.y = YCYCL(vPos.y);
 
-				d1 = (radius + rActive) / (2*10);
-				d2 = (radius + rActive) / (2*2);
-
-	//			for(i = 0;i < (int)RND(5);i++){
-					vPos = Vector(rActive - RND(2*rActive),rActive - RND(2*rActive),0);
-					vPos += R_curr;
-					vPos.x = XCYCL(vPos.x);
-					vPos.y = YCYCL(vPos.y);
-
-					r = d1 + RND(d1);
-					if(RND(100) < 50) h = -r;
-					else h = RND(d2) + r;
-					n = 3 + RND(3);
-					MapD.CreateLavaSpot(vPos,0,0,r,h,r,0,n,n*2,83,0,0,0,83);
-	//			};
-				RadialRender(R_curr.x,R_curr.y,radius + d1 * 2);
-				if(!RND(100*GAME_TIME_COEFF)) Enable = 0;
-			}else{
-				if(!RND(100*GAME_TIME_COEFF)) Enable = 1;
-			};
-			break;
-		case DangerTypeList::FIRE:
-			switch(CurrentWorld){
-				case WORLD_BOOZEENA:
-					FireWork(200 * GAME_TIME_COEFF,PI/4);
-					break;
-				case WORLD_THREALL:
-					if(!ActD.ThreallDestroy) FireWork(500 * GAME_TIME_COEFF,PI/8);
-					break;
-				case WORLD_ARKONOY:
-					FireWork(1000 * GAME_TIME_COEFF,PI/6);
-					break;
-				case WORLD_XPLO:
-					FireWork(800 * GAME_TIME_COEFF,PI / 6);
-					break;
-			};
-			break;
-		case DangerTypeList::HOLE: // Necross road animated hole
-
-//#ifdef _DEBUG
-//			fDanger < "\nHole : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <= R_curr.z;
-//#endif
-
-			if(Enable){
-//zmod fixed 1.15
-				if (!NetworkON) {
-				Delay = (int)round(70 + RND(30));
-				MapD.CreateMapHole(R_curr,radius,Delay,0,0);
-				} else {
-					vPos = Vector(realRND(30)-15,realRND(30)-15,0);
-					vPos += R_curr;
-					vPos.x = XCYCL(vPos.x);
-					vPos.y = YCYCL(vPos.y);
-					Delay = (int)round(realRND(100));
-					MapD.CreateMapHole(vPos,(radius*0.8+realRND(radius*0.4)),Delay,0,0);
-				}
-///zmod
+			r = d1 + RND(d1);
+			if (RND(100) < 50)
+				h = -r;
+			else
+				h = RND(d2) + r;
+			n = 3 + RND(3);
+			MapD.CreateLavaSpot(vPos, 0, 0, r, h, r, 0, n, n * 2, 83, 0, 0, 0, 83);
+			//			};
+			RadialRender(R_curr.x, R_curr.y, radius + d1 * 2);
+			if (!RND(100 * GAME_TIME_COEFF))
 				Enable = 0;
-				Time = 0;
-				Delay += (int)round(radius * 2);
-			}else{
-				if(Time > Delay * GAME_TIME_COEFF)
-					Enable = 1;
-				Time++;
+		} else {
+			if (!RND(100 * GAME_TIME_COEFF))
+				Enable = 1;
+		};
+		break;
+	case DangerTypeList::WHIRLPOOL:
+		// #ifdef _DEBUG
+		//			fDanger < "\nWhirlpool : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < ","
+		//<= R_curr.z; #endif
+
+		if (Enable) {
+			if (Time <= 0) {
+				if (!RND(100 * GAME_TIME_COEFF))
+					Enable = 0;
+				else {
+					EffD.CreateDeform(R_curr, DEFORM_WATER_ONLY, 0);
+					Time = (EffD.DeformData[1].NumFrame * GAME_TIME_COEFF) - 1;
+					//						Time = 1 + RND(3);
+				};
+			} else {
+				Time--;
+				if (!(Time % (int)round(4 * GAME_TIME_COEFF))) {
+					w = (WaterParticleObject *)(EffD.GetObject(EFF_PARTICLE03));
+					if (w) {
+						w->CreateParticle(30, 5, 1 << 7, radius, 10, 31, 5, R_curr, 1);
+						EffD.ConnectObject(w);
+					};
+				};
 			};
-			break;
-		case DangerTypeList::TRAIN:
-			if(!RND((int)round(3 * GAME_TIME_COEFF))){
-				a = rPI(RND(PI*2));
-				r = RND(radius);
-				x = XCYCL(R_curr.x + (CO[a] * r >> 16));
-				y = YCYCL(R_curr.y + (SI[a] * r >> 16));
-				z = FloodLEVEL;
-				EffD.CreateParticleGenerator(Vector(x,y,z),Vector(R_curr.x,R_curr.y,z),Vector(5 - RND(10),5 - RND(10),0),PG_STYLE_ENTER);
+		} else {
+			if (!RND(100 * GAME_TIME_COEFF)) {
+				EffD.CreateDeform(R_curr, DEFORM_WATER_ONLY, 0);
+				Time = (EffD.DeformData[1].NumFrame * GAME_TIME_COEFF) - 1;
+				//					Time = 1 + RND(3);
+				Enable = 1;
 			};
+		};
+		break;
+	case DangerTypeList::SWAMP:
+
+		// #ifdef _DEBUG
+		//			fDanger < "\nSwamp : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <=
+		// R_curr.z; #endif
+		if (Enable) {
+			if (radius <= 0) {
+				if (!RND(100 * GAME_TIME_COEFF))
+					Enable = 0;
+				break;
+			};
+			if (rActive > radius - abs(dActive) || rActive <= abs(dActive))
+				dActive = -dActive;
+			rActive += dActive;
+
+			d1 = (radius + rActive) / (2 * 10);
+			d2 = (radius + rActive) / (2 * 2);
+
+			//			for(i = 0;i < (int)RND(5);i++){
+			vPos = Vector(rActive - RND(2 * rActive), rActive - RND(2 * rActive), 0);
+			vPos += R_curr;
+			vPos.x = XCYCL(vPos.x);
+			vPos.y = YCYCL(vPos.y);
+
+			r = d1 + RND(d1);
+			if (RND(100) < 50)
+				h = -r;
+			else
+				h = RND(d2) + r;
+			n = 3 + RND(3);
+			MapD.CreateLavaSpot(vPos, 0, 0, r, h, r, 0, n, n * 2, 83, 0, 0, 0, 83);
+			//			};
+			RadialRender(R_curr.x, R_curr.y, radius + d1 * 2);
+			if (!RND(100 * GAME_TIME_COEFF))
+				Enable = 0;
+		} else {
+			if (!RND(100 * GAME_TIME_COEFF))
+				Enable = 1;
+		};
+		break;
+	case DangerTypeList::FIRE:
+		switch (CurrentWorld) {
+		case WORLD_BOOZEENA:
+			FireWork(200 * GAME_TIME_COEFF, PI / 4);
 			break;
+		case WORLD_THREALL:
+			if (!ActD.ThreallDestroy)
+				FireWork(500 * GAME_TIME_COEFF, PI / 8);
+			break;
+		case WORLD_ARKONOY:
+			FireWork(1000 * GAME_TIME_COEFF, PI / 6);
+			break;
+		case WORLD_XPLO:
+			FireWork(800 * GAME_TIME_COEFF, PI / 6);
+			break;
+		};
+		break;
+	case DangerTypeList::HOLE: // Necross road animated hole
+
+		// #ifdef _DEBUG
+		//			fDanger < "\nHole : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <=
+		// R_curr.z; #endif
+
+		if (Enable) {
+			// zmod fixed 1.15
+			if (!NetworkON) {
+				Delay = (int)round(70 + RND(30));
+				MapD.CreateMapHole(R_curr, radius, Delay, 0, 0);
+			} else {
+				vPos = Vector(realRND(30) - 15, realRND(30) - 15, 0);
+				vPos += R_curr;
+				vPos.x = XCYCL(vPos.x);
+				vPos.y = YCYCL(vPos.y);
+				Delay = (int)round(realRND(100));
+				MapD.CreateMapHole(vPos, (radius * 0.8 + realRND(radius * 0.4)), Delay, 0, 0);
+			}
+			/// zmod
+			Enable = 0;
+			Time = 0;
+			Delay += (int)round(radius * 2);
+		} else {
+			if (Time > Delay * GAME_TIME_COEFF)
+				Enable = 1;
+			Time++;
+		};
+		break;
+	case DangerTypeList::TRAIN:
+		if (!RND((int)round(3 * GAME_TIME_COEFF))) {
+			a = rPI(RND(PI * 2));
+			r = RND(radius);
+			x = XCYCL(R_curr.x + (CO[a] * r >> 16));
+			y = YCYCL(R_curr.y + (SI[a] * r >> 16));
+			z = FloodLEVEL;
+			EffD.CreateParticleGenerator(
+				Vector(x, y, z),
+				Vector(R_curr.x, R_curr.y, z),
+				Vector(5 - RND(10), 5 - RND(10), 0),
+				PG_STYLE_ENTER
+			);
+		};
+		break;
 	};
 };
 
-void DangerDataType::FireWork(int rFactor,int Angle)
-{
-	BulletObject* p;
+void DangerDataType::FireWork(int rFactor, int Angle) {
+	BulletObject *p;
 	Vector vCheck;
-//	FishWarrior* f;
+	//	FishWarrior* f;
 
-	if(ActD.Active && RND(rFactor) < 5){
-		switch(CurrentWorld){
-			case WORLD_THREALL:
-				p = BulletD.CreateBullet();
-				vCheck = Vector(getDistX(ActD.Active->R_curr.x,R_curr.x),getDistY(ActD.Active->R_curr.y, R_curr.y),ActD.Active->R_curr.z - R_curr.z)*DBM((Angle >> 1) - (int)(RND(Angle)),Z_AXIS);
+	if (ActD.Active && RND(rFactor) < 5) {
+		switch (CurrentWorld) {
+		case WORLD_THREALL:
+			p = BulletD.CreateBullet();
+			vCheck = Vector(
+						 getDistX(ActD.Active->R_curr.x, R_curr.x),
+						 getDistY(ActD.Active->R_curr.y, R_curr.y),
+						 ActD.Active->R_curr.z - R_curr.z
+					 ) *
+					 DBM((Angle >> 1) - (int)(RND(Angle)), Z_AXIS);
 
-				p->Owner = NULL;
-//zmod 1.21 
-				if (!NetworkON) {
-					if(RND(100) < 50)
-						p->CreateBullet(Vector(R_curr.x,R_curr.y,radius + R_curr.z),
-							Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),NULL,&GameBulletData[WD_BULLET_BIG_FIREBALL]);
-					else 
-						p->CreateBullet(Vector(R_curr.x,R_curr.y,radius + R_curr.z),
-							Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),NULL,&GameBulletData[WD_BULLET_SMALL_FIREBALL]);
-				} else {
-					if(RND(100) < 50)
-						p->CreateBullet(
-							Vector(R_curr.x,R_curr.y,radius + R_curr.z),
-							Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),
-							NULL,
-							&GameBulletData[WD_BULLET_BIG_FIREBALL],
-							NULL,
-							-2); //decrease speed
-					else 
-						p->CreateBullet(
-							Vector(R_curr.x,R_curr.y,radius + R_curr.z),
-							Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),
-							NULL,
-							&GameBulletData[WD_BULLET_SMALL_FIREBALL],
-							NULL,
-							-2); //decrease speed
-				}
-
-				if(ActD.Active)
-					SOUND_THUNDER(getDistX(ActD.Active->R_curr.x,R_curr.x)) 
-				break;
-			case WORLD_ARKONOY:
-				p = BulletD.CreateBullet();
-				vCheck = Vector(getDistX(ActD.Active->R_curr.x,R_curr.x),getDistY(ActD.Active->R_curr.y, R_curr.y),ActD.Active->R_curr.z - R_curr.z)*DBM((Angle >> 1) - (int)(RND(Angle)),Z_AXIS);
-				p->Owner = NULL;
-
-//zmod fixed 1.15
-				if (!NetworkON) {
-				p->CreateBullet(Vector(R_curr.x,R_curr.y,radius + R_curr.z),
-					Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),ActD.Active,&GameBulletData[WD_BULLET_EYE_TERROR]);
-				} else {
+			p->Owner = NULL;
+			// zmod 1.21
+			if (!NetworkON) {
+				if (RND(100) < 50)
 					p->CreateBullet(
-						Vector(R_curr.x,R_curr.y,radius + R_curr.z),
-						Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),
-						ActD.Active,
-						&GameBulletData[WD_BULLET_EYE_TERROR],
+						Vector(R_curr.x, R_curr.y, radius + R_curr.z),
+						Vector(
+							XCYCL(vCheck.x + R_curr.x),
+							YCYCL(vCheck.y + R_curr.y),
+							R_curr.z + vCheck.z
+						),
 						NULL,
-						-3); //real speed=5 so 5-3=2
-				}
-				break;
-			case WORLD_XPLO:
-				p = BulletD.CreateBullet();
-				vCheck = Vector(getDistX(ActD.Active->R_curr.x,R_curr.x),getDistY(ActD.Active->R_curr.y, R_curr.y),ActD.Active->R_curr.z - R_curr.z)*DBM((Angle >> 1) - (int)(RND(Angle)),Z_AXIS);
-				p->Owner = NULL;
+						&GameBulletData[WD_BULLET_BIG_FIREBALL]
+					);
+				else
+					p->CreateBullet(
+						Vector(R_curr.x, R_curr.y, radius + R_curr.z),
+						Vector(
+							XCYCL(vCheck.x + R_curr.x),
+							YCYCL(vCheck.y + R_curr.y),
+							R_curr.z + vCheck.z
+						),
+						NULL,
+						&GameBulletData[WD_BULLET_SMALL_FIREBALL]
+					);
+			} else {
+				if (RND(100) < 50)
+					p->CreateBullet(
+						Vector(R_curr.x, R_curr.y, radius + R_curr.z),
+						Vector(
+							XCYCL(vCheck.x + R_curr.x),
+							YCYCL(vCheck.y + R_curr.y),
+							R_curr.z + vCheck.z
+						),
+						NULL,
+						&GameBulletData[WD_BULLET_BIG_FIREBALL],
+						NULL,
+						-2
+					); // decrease speed
+				else
+					p->CreateBullet(
+						Vector(R_curr.x, R_curr.y, radius + R_curr.z),
+						Vector(
+							XCYCL(vCheck.x + R_curr.x),
+							YCYCL(vCheck.y + R_curr.y),
+							R_curr.z + vCheck.z
+						),
+						NULL,
+						&GameBulletData[WD_BULLET_SMALL_FIREBALL],
+						NULL,
+						-2
+					); // decrease speed
+			}
 
-				p->CreateBullet(Vector(R_curr.x,R_curr.y,radius + R_curr.z),
-					Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),ActD.Active,&GameBulletData[WD_BULLET_XPLORATOR]);
-				break;
-			case WORLD_BOOZEENA:
-				p = BulletD.CreateBullet();
-				vCheck = Vector(getDistX(ActD.Active->R_curr.x,R_curr.x),getDistY(ActD.Active->R_curr.y, R_curr.y),ActD.Active->R_curr.z - R_curr.z)*DBM((Angle >> 1) - (int)(RND(Angle)),Z_AXIS);
-				p->Owner = NULL;
+			if (ActD.Active)
+				SOUND_THUNDER(getDistX(ActD.Active->R_curr.x, R_curr.x))
+			break;
+		case WORLD_ARKONOY:
+			p = BulletD.CreateBullet();
+			vCheck = Vector(
+						 getDistX(ActD.Active->R_curr.x, R_curr.x),
+						 getDistY(ActD.Active->R_curr.y, R_curr.y),
+						 ActD.Active->R_curr.z - R_curr.z
+					 ) *
+					 DBM((Angle >> 1) - (int)(RND(Angle)), Z_AXIS);
+			p->Owner = NULL;
 
-				p->CreateBullet(Vector(R_curr.x,R_curr.y,radius + R_curr.z),
-					Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),NULL,&GameBulletData[WD_BULLET_OTHER]);
-				if(ActD.Active)
-					SOUND_THUNDER(getDistX(ActD.Active->R_curr.x,R_curr.x)) 
-				break;
-			
+			// zmod fixed 1.15
+			if (!NetworkON) {
+				p->CreateBullet(
+					Vector(R_curr.x, R_curr.y, radius + R_curr.z),
+					Vector(
+						XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + vCheck.z
+					),
+					ActD.Active,
+					&GameBulletData[WD_BULLET_EYE_TERROR]
+				);
+			} else {
+				p->CreateBullet(
+					Vector(R_curr.x, R_curr.y, radius + R_curr.z),
+					Vector(
+						XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + vCheck.z
+					),
+					ActD.Active,
+					&GameBulletData[WD_BULLET_EYE_TERROR],
+					NULL,
+					-3
+				); // real speed=5 so 5-3=2
+			}
+			break;
+		case WORLD_XPLO:
+			p = BulletD.CreateBullet();
+			vCheck = Vector(
+						 getDistX(ActD.Active->R_curr.x, R_curr.x),
+						 getDistY(ActD.Active->R_curr.y, R_curr.y),
+						 ActD.Active->R_curr.z - R_curr.z
+					 ) *
+					 DBM((Angle >> 1) - (int)(RND(Angle)), Z_AXIS);
+			p->Owner = NULL;
+
+			p->CreateBullet(
+				Vector(R_curr.x, R_curr.y, radius + R_curr.z),
+				Vector(XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + vCheck.z),
+				ActD.Active,
+				&GameBulletData[WD_BULLET_XPLORATOR]
+			);
+			break;
+		case WORLD_BOOZEENA:
+			p = BulletD.CreateBullet();
+			vCheck = Vector(
+						 getDistX(ActD.Active->R_curr.x, R_curr.x),
+						 getDistY(ActD.Active->R_curr.y, R_curr.y),
+						 ActD.Active->R_curr.z - R_curr.z
+					 ) *
+					 DBM((Angle >> 1) - (int)(RND(Angle)), Z_AXIS);
+			p->Owner = NULL;
+
+			p->CreateBullet(
+				Vector(R_curr.x, R_curr.y, radius + R_curr.z),
+				Vector(XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + vCheck.z),
+				NULL,
+				&GameBulletData[WD_BULLET_OTHER]
+			);
+			if (ActD.Active)
+				SOUND_THUNDER(getDistX(ActD.Active->R_curr.x, R_curr.x))
+			break;
 		};
 	};
 };
 
-void EnterCenter::Open(Parser& in)
-{
-	int i,j,t;
-	char* n;
-	uvsEscave* pe;
-	uvsSpot* ps;
+void EnterCenter::Open(Parser &in) {
+	int i, j, t;
+	char *n;
+	uvsEscave *pe;
+	uvsSpot *ps;
 
 	in.search_name("MaxEnter");
 	MaxEnter = in.get_int();
 	NumEnter = 0;
 
-	if(MaxEnter){
-		Data = new EnterEngine*[MaxEnter];
-		ListData = new EnterEngine*[MaxEnter];
+	if (MaxEnter) {
+		Data = new EnterEngine *[MaxEnter];
+		ListData = new EnterEngine *[MaxEnter];
 
 		in.search_name("uvsObjectType");
 		t = in.get_int();
-		
+
 		in.search_name("uvsObjectName");
 		n = in.get_name();
 
 		Lock = NULL;
-		if(t == 0){
-			pe = (uvsEscave*)EscaveTail;
-			while(pe){
-				if(!strcmp(pe->name,n)){
+		if (t == 0) {
+			pe = (uvsEscave *)EscaveTail;
+			while (pe) {
+				if (!strcmp(pe->name, n)) {
 					Lock = &(pe->locked);
 					Owner = pe;
 					break;
 				};
-				pe = (uvsEscave*)(pe -> next);
+				pe = (uvsEscave *)(pe->next);
 			};
-			if(!Lock) 
+			if (!Lock)
 				ErrH.Abort("Bad Escave Center Name");
-		}else{
-			ps = (uvsSpot*)SpotTail;
-			while(ps){
-				if(!strcmp(ps->name,n)){
+		} else {
+			ps = (uvsSpot *)SpotTail;
+			while (ps) {
+				if (!strcmp(ps->name, n)) {
 					Lock = &(ps->locked);
 					Owner = ps;
 					break;
 				};
-				ps = (uvsSpot*)(ps -> next);
+				ps = (uvsSpot *)(ps->next);
 			};
-			if(!Lock) 
+			if (!Lock)
 				ErrH.Abort("Bad Spot Center Name");
 		};
 		Owner->unitPtr.EnterT = this;
 
-		for(i = 0;i < MaxEnter;i++){
+		for (i = 0; i < MaxEnter; i++) {
 			in.search_name("SensorName");
 			n = in.get_name();
-			for(j = 0;j < SnsTableSize;j++){
-				if(!strcmp(SensorObjectData[j]->Name,n)){
-	//				if(SensorObjectData[j]->Owner->Type != EngineTypeList::ELEVATOR && SensorObjectData[j]->Owner->Type != EngineTypeList::ESCAVE)
-	//					ErrH.Abort("Bad Enter Sensor Name");
-					ListData[i] = (EnterEngine*)(SensorObjectData[j]->Owner);
-					PutCenter((EnterEngine*)(SensorObjectData[j]->Owner));
-					((EnterEngine*)(SensorObjectData[j])->Owner)->Owner = this;
+			for (j = 0; j < SnsTableSize; j++) {
+				if (!strcmp(SensorObjectData[j]->Name, n)) {
+					//				if(SensorObjectData[j]->Owner->Type != EngineTypeList::ELEVATOR
+					//&& SensorObjectData[j]->Owner->Type != EngineTypeList::ESCAVE)
+					// ErrH.Abort("Bad Enter Sensor Name");
+					ListData[i] = (EnterEngine *)(SensorObjectData[j]->Owner);
+					PutCenter((EnterEngine *)(SensorObjectData[j]->Owner));
+					((EnterEngine *)(SensorObjectData[j])->Owner)->Owner = this;
 					break;
 				};
 			};
@@ -2091,65 +2188,73 @@ void EnterCenter::Open(Parser& in)
 	};
 };
 
-void EnterCenter::Resort(void)
-{
-	int i,t;
-	EnterEngine* b[10];
+void EnterCenter::Resort(void) {
+	int i, t;
+	EnterEngine *b[10];
 	t = RND(NumEnter);
-	for(i = 0;i < NumEnter;i++) b[i] = ListData[(t + i) % NumEnter];
-	for(i = 0;i < NumEnter;i++) Data[i] = b[i];
+	for (i = 0; i < NumEnter; i++)
+		b[i] = ListData[(t + i) % NumEnter];
+	for (i = 0; i < NumEnter; i++)
+		Data[i] = b[i];
 };
 
-void EnterCenter::Close(void)
-{
-	if(MaxEnter){
-		delete[] Data; 
+void EnterCenter::Close(void) {
+	if (MaxEnter) {
+		delete[] Data;
 		delete[] ListData;
 	};
 };
 
-SensorDataType* EnterCenter::GetCenter(void)
-{
-	if(NumEnter == 0)
+SensorDataType *EnterCenter::GetCenter(void) {
+	if (NumEnter == 0)
 		ErrH.Abort("Bad get Center");
 	NumEnter--;
-	if(NumEnter == 0) (*Lock) = 1;
-//	Data[NumEnter]->Active();
+	if (NumEnter == 0)
+		(*Lock) = 1;
+	//	Data[NumEnter]->Active();
 	return Data[NumEnter]->ActionLink;
 };
 
-void EnterCenter::PutCenter(EnterEngine* p)
-{
-	if(NumEnter == 0) (*Lock) = 0;
-	else if(NumEnter >= MaxEnter)
+void EnterCenter::PutCenter(EnterEngine *p) {
+	if (NumEnter == 0)
+		(*Lock) = 0;
+	else if (NumEnter >= MaxEnter)
 		ErrH.Abort("Bad put Center");
 	Data[NumEnter] = p;
 	NumEnter++;
 };
 
-SensorDataType* EnterCenter::GetNearCenter(Vector& v)
-{
-	EnterEngine* p;
+SensorDataType *EnterCenter::GetNearCenter(Vector &v) {
+	EnterEngine *p;
 	p = NULL;
-	if(NumEnter == 0) p =  Data[RND(NumEnter)];
-	else  p = GetEnterCenter(v);
+	if (NumEnter == 0)
+		p = Data[RND(NumEnter)];
+	else
+		p = GetEnterCenter(v);
 	return p->ActionLink;
 };
 
-EnterEngine* EnterCenter::GetEnterCenter(Vector& v)
-{
+EnterEngine *EnterCenter::GetEnterCenter(Vector &v) {
 	Vector vCheck;
-	int d,dm,i;
-	EnterEngine* p;
+	int d, dm, i;
+	EnterEngine *p;
 
-	vCheck = Vector(getDistX(v.x,ListData[0]->ActionLink->R_curr.x),getDistY(v.y,ListData[0]->ActionLink->R_curr.y),0);
+	vCheck = Vector(
+		getDistX(v.x, ListData[0]->ActionLink->R_curr.x),
+		getDistY(v.y, ListData[0]->ActionLink->R_curr.y),
+		0
+	);
 	dm = d = vCheck.x * vCheck.x + vCheck.y * vCheck.y;
 	p = ListData[0];
 
-	for(i = 1;i < MaxEnter;i++){
-		vCheck = Vector(getDistX(v.x,ListData[i]->ActionLink->R_curr.x),getDistY(v.y,ListData[i]->ActionLink->R_curr.y),0);
+	for (i = 1; i < MaxEnter; i++) {
+		vCheck = Vector(
+			getDistX(v.x, ListData[i]->ActionLink->R_curr.x),
+			getDistY(v.y, ListData[i]->ActionLink->R_curr.y),
+			0
+		);
 		d = vCheck.x * vCheck.x + vCheck.y * vCheck.y;
-		if(d < dm){
+		if (d < dm) {
 			dm = d;
 			p = ListData[i];
 		};
@@ -2157,57 +2262,58 @@ EnterEngine* EnterCenter::GetEnterCenter(Vector& v)
 	return p;
 };
 
-void EnterCenter::LockedCenter(EnterEngine* p)
-{
+void EnterCenter::LockedCenter(EnterEngine *p) {
 	int i;
 
-	if(NumEnter == 0)
+	if (NumEnter == 0)
 		ErrH.Abort("Bad Locked Num Enter");
 
-	for(i = 0;i < NumEnter;i++)
-		if(Data[i] == p) break;
+	for (i = 0; i < NumEnter; i++)
+		if (Data[i] == p)
+			break;
 
-	if(i == NumEnter)
+	if (i == NumEnter)
 		ErrH.Abort("Bad LockedCenter");
 
 	NumEnter--;
-	if(NumEnter == 0) (*Lock) = 1;
-	else Data[i] = Data[NumEnter];
+	if (NumEnter == 0)
+		(*Lock) = 1;
+	else
+		Data[i] = Data[NumEnter];
 };
 
-EnterCenter* FindDoor(DoorEngine* p,int& type)
-{
-	int i,j;
-	EnterEngine* n;
+EnterCenter *FindDoor(DoorEngine *p, int &type) {
+	int i, j;
+	EnterEngine *n;
 
-	for(j = 0;j < NumEnterCenter;j++){
-		for(i = 0;i < EnterCenterData[j].MaxEnter;i++){
+	for (j = 0; j < NumEnterCenter; j++) {
+		for (i = 0; i < EnterCenterData[j].MaxEnter; i++) {
 			n = EnterCenterData[j].ListData[i];
-			switch(n->Type){
-				case EngineTypeList::IMPULSE_ESCAVE:
-					if(((ImpulseEscave*)(n))->DoorLink == p){
-						type = n->Type;
-						return &(EnterCenterData[j]);
-					};
-					break;
-				case EngineTypeList::IMPULSE_SPOT:
-					if(((ImpulseSpot*)(n))->DoorLink == p){
-						type = n->Type;
-						return &(EnterCenterData[j]);
-					};
-					break;
-				case EngineTypeList::ELEVATOR:
-					if(((ElevatorEngine*)(n))->DoorLink == p){
-						type = n->Type;
-						return &(EnterCenterData[j]);
-					};
-					break;
-				case EngineTypeList::ESCAVE:
-					if(((EscaveEngine*)(n))->DoorLink == p){
-						type = n->Type;
-						return &(EnterCenterData[j]);
-					};
-					break;
+			switch (n->Type) {
+			case EngineTypeList::IMPULSE_ESCAVE:
+				if (((ImpulseEscave *)(n))->DoorLink == p) {
+					type = n->Type;
+					return &(EnterCenterData[j]);
+				};
+				break;
+			case EngineTypeList::IMPULSE_SPOT:
+				if (((ImpulseSpot *)(n))->DoorLink == p) {
+					type = n->Type;
+					return &(EnterCenterData[j]);
+				};
+				break;
+			case EngineTypeList::ELEVATOR:
+				if (((ElevatorEngine *)(n))->DoorLink == p) {
+					type = n->Type;
+					return &(EnterCenterData[j]);
+				};
+				break;
+			case EngineTypeList::ESCAVE:
+				if (((EscaveEngine *)(n))->DoorLink == p) {
+					type = n->Type;
+					return &(EnterCenterData[j]);
+				};
+				break;
 			};
 		};
 	};
@@ -2218,155 +2324,213 @@ EnterCenter* FindDoor(DoorEngine* p,int& type)
 
 #ifdef NEW_TNT
 
-void TntCreature::Quant(void)
-{
-	BulletObject* p;
+void TntCreature::Quant(void) {
+	BulletObject *p;
 	Vector vCheck;
 
-	if(TntClone->QuickCheck()){
-		if(HideFlag)
-			HideFlag = 0;		
+	if (TntClone->QuickCheck()) {
+		if (HideFlag)
+			HideFlag = 0;
 
-		if(TouchTime > 0){
+		if (TouchTime > 0) {
 			TouchTime--;
-			if(TouchTime <= 0) Destroy();
-		}else{
-			if(CurrentHeight < MaxHeight){
-				if(Time <= 0){
-					Time =  DelayHeight;
+			if (TouchTime <= 0)
+				Destroy();
+		} else {
+			if (CurrentHeight < MaxHeight) {
+				if (Time <= 0) {
+					Time = DelayHeight;
 					CurrentHeight++;
-					TntClone->setPhase(CurrentHeight,0);
-					if(ActD.Active && abs(getDistY(R_curr.y,ViewY)) - (radius << 1) < TurnSideY && abs(getDistX(R_curr.x,ViewX)) - (radius << 1) < TurnSideX)
-						SOUND_GROW(getDistX(ActD.Active->R_curr.x,R_curr.x)) 
-				}else Time--;
-			}else{
-				switch(CurrentWorld){
-					case 0:
-						if(RND(300) < 5){
-							p = BulletD.CreateBullet();
-							vCheck = Vector(radius,0,0) * DBM((int)(RND(2*PI)),Z_AXIS);
-							p->CreateBullet(R_curr,
-								Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z),NULL,&GameBulletData[WD_BULLET_SPORE]);
-							p->Owner = NULL;
-						};
-						break;
-					case 1:
-						if(RND(1000) < 5 && abs(getDistY(R_curr.y,ViewY)) - (radius << 1) < TurnSideY && abs(getDistX(R_curr.x,ViewX)) - (radius << 1) < TurnSideX)
-							TouchTime = TntLinkDelay;
-						break;
+					TntClone->setPhase(CurrentHeight, 0);
+					if (ActD.Active && abs(getDistY(R_curr.y, ViewY)) - (radius << 1) < TurnSideY &&
+						abs(getDistX(R_curr.x, ViewX)) - (radius << 1) < TurnSideX)
+						SOUND_GROW(getDistX(ActD.Active->R_curr.x, R_curr.x))
+				} else
+					Time--;
+			} else {
+				switch (CurrentWorld) {
+				case 0:
+					if (RND(300) < 5) {
+						p = BulletD.CreateBullet();
+						vCheck = Vector(radius, 0, 0) * DBM((int)(RND(2 * PI)), Z_AXIS);
+						p->CreateBullet(
+							R_curr,
+							Vector(
+								XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z
+							),
+							NULL,
+							&GameBulletData[WD_BULLET_SPORE]
+						);
+						p->Owner = NULL;
+					};
+					break;
+				case 1:
+					if (RND(1000) < 5 &&
+						abs(getDistY(R_curr.y, ViewY)) - (radius << 1) < TurnSideY &&
+						abs(getDistX(R_curr.x, ViewX)) - (radius << 1) < TurnSideX)
+						TouchTime = TntLinkDelay;
+					break;
 				};
 			};
 		};
 	};
 };
 
-void TntCreature::Destroy(void)
-{	
+void TntCreature::Destroy(void) {
 	int i;
 	Vector vCheck;
-	Object* p;
+	Object *p;
 	int d;
-	BulletObject* g;
+	BulletObject *g;
 
-	if(TntClone->QuickCheck()){
+	if (TntClone->QuickCheck()) {
 		CurrentHeight = 0;
-		TntClone->setPhase(CurrentHeight,1);
-		MapD.CreateCrater(R_curr,MAP_POINT_CRATER06,radius + 10);
-		EffD.CreateFireBall(R_curr + Vector(0,0,20),DT_FIRE_BALL04,NULL,1 << 8,0);
+		TntClone->setPhase(CurrentHeight, 1);
+		MapD.CreateCrater(R_curr, MAP_POINT_CRATER06, radius + 10);
+		EffD.CreateFireBall(R_curr + Vector(0, 0, 20), DT_FIRE_BALL04, NULL, 1 << 8, 0);
 		TouchTime = 0;
 		Time = DestroyDelay;
-		if(ActD.Active)
-			SOUND_BARREL_DESTROY(getDistX(ActD.Active->R_curr.x,R_curr.x));
+		if (ActD.Active)
+			SOUND_BARREL_DESTROY(getDistX(ActD.Active->R_curr.x, R_curr.x));
 
-/*			CurrentHeight = 0;
-			TntClone->setPhase(CurrentHeight,0);
-			MapD.CreateCrater(R_curr,MAP_POINT_CRATER06,radius);
-			EffD.CreateFireBall(R_curr + Vector(0,0,20),DT_FIRE_BALL04,NULL,1 << 8,0);
-			TouchTime = 0;
-			Time = DestroyDelay;*/
+		/*			CurrentHeight = 0;
+					TntClone->setPhase(CurrentHeight,0);
+					MapD.CreateCrater(R_curr,MAP_POINT_CRATER06,radius);
+					EffD.CreateFireBall(R_curr + Vector(0,0,20),DT_FIRE_BALL04,NULL,1 << 8,0);
+					TouchTime = 0;
+					Time = DestroyDelay;*/
 
-		switch(CurrentWorld){
-			case WORLD_GLORX:
-/*				if(ActD.Active){
-					g = BulletD.CreateBullet();
-					vCheck = Vector(getDistX((ActD.Active)->R_curr.x,R_curr.x),getDistY((ActD.Active)->R_curr.y,R_curr.y),(ActD.Active)->R_curr.z - R_curr.z);
+		switch (CurrentWorld) {
+		case WORLD_GLORX:
+			/*				if(ActD.Active){
+								g = BulletD.CreateBullet();
+								vCheck =
+			   Vector(getDistX((ActD.Active)->R_curr.x,R_curr.x),getDistY((ActD.Active)->R_curr.y,R_curr.y),(ActD.Active)->R_curr.z
+			   - R_curr.z); d = vCheck.vabs(); vCheck *= radius; vCheck /= d;
+
+								g->CreateBullet(Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y +
+			   R_curr.y),R_curr.z + vCheck.z),
+									(ActD.Active)->R_curr,NULL,&GameBulletData[WD_BULLET_GSEED]);
+								g->Owner = NULL;
+							};*/
+
+			for (i = 0; i < PI * 2; i += PI / 8) {
+				g = BulletD.CreateBullet();
+				vCheck = Vector(radius, 0, 0) * DBM(i, Z_AXIS);
+				g->CreateBullet(
+					Vector(
+						XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + radius
+					),
+					Vector(
+						XCYCL(vCheck.x * 4 + R_curr.x), YCYCL(vCheck.y * 4 + R_curr.y), R_curr.z
+					),
+					NULL,
+					&GameBulletData[WD_BULLET_GSEED]
+				);
+				g->Owner = NULL;
+			};
+
+			p = (Object *)(ActD.Tail);
+			while (p) {
+				if (p->Visibility == VISIBLE) {
+					vCheck = Vector(
+						getDistX(p->R_curr.x, R_curr.x),
+						getDistY(p->R_curr.y, R_curr.y),
+						p->R_curr.z - R_curr.z
+					);
 					d = vCheck.vabs();
-					vCheck *= radius;
-					vCheck /= d;
+					if (d < TNT_POWER_RADIUS && d > 0) {
+						p->instant_impulse(
+							vCheck, TNT_POWER_IMPULSE * (TNT_POWER_RADIUS - d) / d, 0
+						);
+						if (p->ID == ID_VANGER)
+							((VangerUnit *)(p))->BulletCollision(TNT_POWER_DAMAGE, NULL);
+					};
+				};
+				p = (Object *)(p->NextTypeList);
+			};
+			break;
+		case WORLD_FOSTRAL:
+			for (i = 0; i < PI * 2; i += PI / 8) {
+				g = BulletD.CreateBullet();
+				vCheck = Vector(radius, 0, 0) * DBM(i, Z_AXIS);
+				g->CreateBullet(
+					Vector(
+						XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + radius
+					),
+					Vector(
+						XCYCL(vCheck.x * 4 + R_curr.x),
+						YCYCL(vCheck.y * 4 + R_curr.y),
+						R_curr.z + radius * 2
+					),
+					NULL,
+					&GameBulletData[WD_BULLET_FSEED]
+				);
+				g->Owner = NULL;
+			};
 
-					g->CreateBullet(Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + vCheck.z),
-						(ActD.Active)->R_curr,NULL,&GameBulletData[WD_BULLET_GSEED]);
-					g->Owner = NULL;
-				};*/
+			p = (Object *)(ActD.Tail);
+			while (p) {
+				if (p->Visibility == VISIBLE) {
+					vCheck = Vector(
+						getDistX(p->R_curr.x, R_curr.x),
+						getDistY(p->R_curr.y, R_curr.y),
+						p->R_curr.z - R_curr.z
+					);
+					d = vCheck.vabs();
+					if (d < TNT_POWER_RADIUS && d > 0) {
+						p->instant_impulse(
+							vCheck, TNT_POWER_IMPULSE * (TNT_POWER_RADIUS - d) / d, 0
+						);
+						if (p->ID == ID_VANGER)
+							((VangerUnit *)(p))->BulletCollision(TNT_POWER_DAMAGE, NULL);
+					};
+				};
+				p = (Object *)(p->NextTypeList);
+			};
+			break;
+		case WORLD_NECROSS:
+			for (i = 0; i < PI * 2; i += PI / 8) {
+				g = BulletD.CreateBullet();
+				vCheck = Vector(radius, 0, 0) * DBM(i, Z_AXIS);
+				g->CreateBullet(
+					Vector(
+						XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + radius
+					),
+					Vector(
+						XCYCL(vCheck.x * 4 + R_curr.x),
+						YCYCL(vCheck.y * 4 + R_curr.y),
+						R_curr.z + radius * 2
+					),
+					NULL,
+					&GameBulletData[WD_BULLET_NSEED]
+				);
+				g->Owner = NULL;
+			};
 
-				for(i = 0;i < PI*2;i+= PI / 8){
-					g = BulletD.CreateBullet();
-					vCheck = Vector(radius,0,0) * DBM(i,Z_AXIS);
-					g->CreateBullet(Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + radius),
-						Vector(XCYCL(vCheck.x*4 + R_curr.x),YCYCL(vCheck.y*4 + R_curr.y),R_curr.z),NULL,&GameBulletData[WD_BULLET_GSEED]);
-					g->Owner = NULL;
+			p = (Object *)(ActD.Tail);
+			while (p) {
+				if (p->Visibility == VISIBLE) {
+					vCheck = Vector(
+						getDistX(p->R_curr.x, R_curr.x),
+						getDistY(p->R_curr.y, R_curr.y),
+						p->R_curr.z - R_curr.z
+					);
+					d = vCheck.vabs();
+					if (d < TNT_POWER_RADIUS && d > 0) {
+						p->instant_impulse(
+							vCheck, TNT_POWER_IMPULSE * (TNT_POWER_RADIUS - d) / d, 0
+						);
+						if (p->ID == ID_VANGER)
+							((VangerUnit *)(p))->BulletCollision(TNT_POWER_DAMAGE, NULL);
+					};
 				};
-
-				p = (Object*)(ActD.Tail);
-				while(p){
-					if(p->Visibility == VISIBLE){
-						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
-						d = vCheck.vabs();
-						if(d < TNT_POWER_RADIUS && d > 0){
-							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
-							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
-						};
-					};		
-					p = (Object*)(p->NextTypeList);
-				};
-				break;
-			case WORLD_FOSTRAL:
-				for(i = 0;i < PI*2;i+= PI / 8){
-					g = BulletD.CreateBullet();
-					vCheck = Vector(radius,0,0) * DBM(i,Z_AXIS);
-					g->CreateBullet(Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + radius),
-						Vector(XCYCL(vCheck.x*4 + R_curr.x),YCYCL(vCheck.y*4 + R_curr.y),R_curr.z + radius*2),NULL,&GameBulletData[WD_BULLET_FSEED]);
-					g->Owner = NULL;
-				};
-
-				p = (Object*)(ActD.Tail);
-				while(p){
-					if(p->Visibility == VISIBLE){
-						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
-						d = vCheck.vabs();
-						if(d < TNT_POWER_RADIUS && d > 0){
-							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
-							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
-						};
-					};		
-					p = (Object*)(p->NextTypeList);
-				};
-				break;
-			case WORLD_NECROSS:
-				for(i = 0;i < PI*2;i+= PI / 8){
-					g = BulletD.CreateBullet();
-					vCheck = Vector(radius,0,0) * DBM(i,Z_AXIS);
-					g->CreateBullet(Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + radius),
-						Vector(XCYCL(vCheck.x*4 + R_curr.x),YCYCL(vCheck.y*4 + R_curr.y),R_curr.z + radius*2),NULL,&GameBulletData[WD_BULLET_NSEED]);
-					g->Owner = NULL;
-				};
-
-				p = (Object*)(ActD.Tail);
-				while(p){
-					if(p->Visibility == VISIBLE){
-						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
-						d = vCheck.vabs();
-						if(d < TNT_POWER_RADIUS && d > 0){
-							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
-							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
-						};
-					};		
-					p = (Object*)(p->NextTypeList);
-				};
-				break;
+				p = (Object *)(p->NextTypeList);
+			};
+			break;
 		};
-		for(i = 0;i < TntNumLink;i++){
-			if(TntLinkData[i]->CurrentHeight > 0 && TouchTime == 0)
+		for (i = 0; i < TntNumLink; i++) {
+			if (TntLinkData[i]->CurrentHeight > 0 && TouchTime == 0)
 				TntLinkData[i]->TouchTime = TntLinkDelay;
 		};
 	};
@@ -2374,37 +2538,34 @@ void TntCreature::Destroy(void)
 
 const int MAX_TNT_FIRE_RADIUS = 300;
 
-void TntCreature::DrawQuant(void)
-{
-/*	int aaa;	
-	if(TntClone->QuickCheck()){
-		aaa = 0;
-		if(HideFlag) HideFlag = 0;
-		while(TntClone->cStage != CurrentHeight){
-			TntClone->quant(1);
-			if(aaa++ > 10) return;
-		};
-		if(RND(15000) < 5)
-			TouchTime = TntLinkDelay;
-	};*/
+void TntCreature::DrawQuant(void) {
+	/*	int aaa;
+		if(TntClone->QuickCheck()){
+			aaa = 0;
+			if(HideFlag) HideFlag = 0;
+			while(TntClone->cStage != CurrentHeight){
+				TntClone->quant(1);
+				if(aaa++ > 10) return;
+			};
+			if(RND(15000) < 5)
+				TouchTime = TntLinkDelay;
+		};*/
 };
 
-extern MobileLocation* MLTnt[2];
+extern MobileLocation *MLTnt[2];
 
-void TntCreature::Save(XStream& in)
-{
+void TntCreature::Save(XStream &in) {
 	in < R_curr.x;
 	in < R_curr.y;
 	in < R_curr.z;
 	in < nSource;
 	in < radius;
-	in < StartHeight;	
+	in < StartHeight;
 };
 
-void TntCreature::Load(XStream& in)
-{
+void TntCreature::Load(XStream &in) {
 	int i;
-	int dx,dy;
+	int dx, dy;
 
 	GeneralObject::Init();
 
@@ -2414,24 +2575,28 @@ void TntCreature::Load(XStream& in)
 	in > nSource;
 	in > radius;
 	in > StartHeight;
-	
+
 	Status = 0;
 	ID = ID_STATIC;
 
 	StaticType = StaticObjectType::TNT;
-	Enable = 1;	
+	Enable = 1;
 
 	CurrentHeight = 0;
 
 	DestroyProcess = MAP_POINT_CRATER06;
 
-//	DestroyDelay = 5;
-	if(NetworkON) DestroyDelay = 350;
-	else DestroyDelay = 350 + RND(350);
-//	DestroyDelay = 10 + RND(20);
-	
-	if(NetworkON) DelayHeight = 1;
-	else DelayHeight = 1 + RND(5);
+	//	DestroyDelay = 5;
+	if (NetworkON)
+		DestroyDelay = 350;
+	else
+		DestroyDelay = 350 + RND(350);
+	//	DestroyDelay = 10 + RND(20);
+
+	if (NetworkON)
+		DelayHeight = 1;
+	else
+		DelayHeight = 1 + RND(5);
 
 	Time = 0;
 	TouchTime = 0;
@@ -2439,207 +2604,275 @@ void TntCreature::Load(XStream& in)
 	TntLinkDelay = 5;
 	TntNumLink = 0;
 
-	TntClone.reset(MLTnt[nSource]->cloning(getDistX(R_curr.x,MLTnt[nSource]->x0),getDistY(R_curr.y,MLTnt[nSource]->y0),"TntLocation"));
+	TntClone.reset(
+		MLTnt[nSource]->cloning(
+			getDistX(R_curr.x, MLTnt[nSource]->x0),
+			getDistY(R_curr.y, MLTnt[nSource]->y0),
+			"TntLocation"
+		)
+	);
 
-	dx = abs(getDistX(TntClone->x0,TntClone->x1)) / 2;
-	dy = abs(getDistY(TntClone->y0,TntClone->y1)) / 2;
-	radius = (int)(sqrt(dx*(double)dx + dy*(double)dy));
+	dx = abs(getDistX(TntClone->x0, TntClone->x1)) / 2;
+	dy = abs(getDistY(TntClone->y0, TntClone->y1)) / 2;
+	radius = (int)(sqrt(dx * (double)dx + dy * (double)dy));
 
 	R_curr.x += dx;
 	R_curr.y += dy;
-	cycleTor(R_curr.x,R_curr.y);
+	cycleTor(R_curr.x, R_curr.y);
 
 	MaxHeight = TntClone->maxStage - 1;
-//	StartHeight = MaxHeight - 1;
+	//	StartHeight = MaxHeight - 1;
 	CurrentHeight = StartHeight = MaxHeight;
 
-//	TntClone->cStage = CurrentHeight = StartHeight;
+	//	TntClone->cStage = CurrentHeight = StartHeight;
 
-	TntClone->setPhase(StartHeight,1);
+	TntClone->setPhase(StartHeight, 1);
 
 	HideFlag = 1;
 
-	for(i = 0;i < MAX_TNT_EXPLOSION;i++)
+	for (i = 0; i < MAX_TNT_EXPLOSION; i++)
 		TntLinkData[i] = NULL;
 	NetTime = 0;
 
-	if(NetworkON) NetID = CREATE_NET_ID(NID_TNT);
-	else NetID = 0;
+	if (NetworkON)
+		NetID = CREATE_NET_ID(NID_TNT);
+	else
+		NetID = 0;
 };
 
-void TntCreature::Touch(GeneralObject* obj)
-{
-	if(CurrentHeight){
-		if(NetworkON) NetDestroy();
-		else Destroy();
+void TntCreature::Touch(GeneralObject *obj) {
+	if (CurrentHeight) {
+		if (NetworkON)
+			NetDestroy();
+		else
+			Destroy();
 	};
 };
 
-void TntCreature::NetEvent(void)
-{
+void TntCreature::NetEvent(void) {
 	NETWORK_IN_STREAM > NetTime;
-	if(!HideFlag && NetTime > NetGlobalTime)
+	if (!HideFlag && NetTime > NetGlobalTime)
 		NetDestroy(0);
 };
 
-void TntCreature::NetQuant(bool legacy_static_tick)
-{
-	BulletObject* p;
+void TntCreature::NetQuant(bool legacy_static_tick) {
+	BulletObject *p;
 	Vector vCheck;
 
-	if(TntClone->NetQuickCheck(R_curr.x,R_curr.y,radius)){
-		if(HideFlag){
-			if(NetTime > NetGlobalTime){
-				TntClone->setPhase(0,1);
-				if(CurrentWorld == WORLD_GLORX) ClearBarell(R_curr.x,R_curr.y,radius,83,R_curr.z);
-				else ClearBarell(R_curr.x,R_curr.y,radius,7,R_curr.z);
+	if (TntClone->NetQuickCheck(R_curr.x, R_curr.y, radius)) {
+		if (HideFlag) {
+			if (NetTime > NetGlobalTime) {
+				TntClone->setPhase(0, 1);
+				if (CurrentWorld == WORLD_GLORX)
+					ClearBarell(R_curr.x, R_curr.y, radius, 83, R_curr.z);
+				else
+					ClearBarell(R_curr.x, R_curr.y, radius, 7, R_curr.z);
 				CurrentHeight = 0;
 				TouchTime = 0;
 				Time = 0;
-			}else{
+			} else {
 				TntClone->cStage = CurrentHeight = StartHeight;
 				Time = 0;
 				TouchTime = 0;
-				TntClone->setPhase(0,1);
-				if(CurrentWorld == WORLD_GLORX) ClearBarell(R_curr.x,R_curr.y,radius,83,R_curr.z);
-				else ClearBarell(R_curr.x,R_curr.y,radius,7,R_curr.z);
-				TntClone->setPhase(CurrentHeight,0);
+				TntClone->setPhase(0, 1);
+				if (CurrentWorld == WORLD_GLORX)
+					ClearBarell(R_curr.x, R_curr.y, radius, 83, R_curr.z);
+				else
+					ClearBarell(R_curr.x, R_curr.y, radius, 7, R_curr.z);
+				TntClone->setPhase(CurrentHeight, 0);
 			};
 			HideFlag = 0;
 		};
 
-		if(TouchTime > 0){
+		if (TouchTime > 0) {
 			TouchTime--;
-			if(TouchTime <= 0) NetDestroy();
-		}else{
-			if(NetTime < NetGlobalTime){
-				if(CurrentHeight < MaxHeight){
-					if(legacy_static_tick){
-						if(Time <= 0){
-							Time =  DelayHeight;
+			if (TouchTime <= 0)
+				NetDestroy();
+		} else {
+			if (NetTime < NetGlobalTime) {
+				if (CurrentHeight < MaxHeight) {
+					if (legacy_static_tick) {
+						if (Time <= 0) {
+							Time = DelayHeight;
 							CurrentHeight++;
-							TntClone->setPhase(CurrentHeight,0);
-						}else Time--;
+							TntClone->setPhase(CurrentHeight, 0);
+						} else
+							Time--;
 					}
-				}else{
-					switch(CurrentWorld){
-						case 0:
-							if(RND(300 * GAME_TIME_COEFF) < 5){
-								p = BulletD.CreateBullet();
-								vCheck = Vector(radius,0,0) * DBM((int)(RND(2*PI)),Z_AXIS);
-								p->CreateBullet(R_curr,
-									Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z),NULL,&GameBulletData[WD_BULLET_SPORE]);
-								p->Owner = NULL;
-							};
-							break;
-						case 1:
-							if(RND(1000 * GAME_TIME_COEFF) < 5)
-								TouchTime = TntLinkDelay * GAME_TIME_COEFF;
-							break;
+				} else {
+					switch (CurrentWorld) {
+					case 0:
+						if (RND(300 * GAME_TIME_COEFF) < 5) {
+							p = BulletD.CreateBullet();
+							vCheck = Vector(radius, 0, 0) * DBM((int)(RND(2 * PI)), Z_AXIS);
+							p->CreateBullet(
+								R_curr,
+								Vector(
+									XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z
+								),
+								NULL,
+								&GameBulletData[WD_BULLET_SPORE]
+							);
+							p->Owner = NULL;
+						};
+						break;
+					case 1:
+						if (RND(1000 * GAME_TIME_COEFF) < 5)
+							TouchTime = TntLinkDelay * GAME_TIME_COEFF;
+						break;
 					};
 				};
 			};
 		};
-	}else NetHideEvent();
+	} else
+		NetHideEvent();
 };
 
-void TntCreature::NetDestroy(int fl)
-{	
+void TntCreature::NetDestroy(int fl) {
 	int i;
 	Vector vCheck;
-	Object* p;
+	Object *p;
 	int d;
-	BulletObject* g;
+	BulletObject *g;
 
-	if(!HideFlag && CurrentHeight && TntClone->NetQuickCheck(R_curr.x,R_curr.y,radius)){
+	if (!HideFlag && CurrentHeight && TntClone->NetQuickCheck(R_curr.x, R_curr.y, radius)) {
 		CurrentHeight = 0;
-		TntClone->setPhase(CurrentHeight,1);
-		MapD.CreateCrater(R_curr,MAP_POINT_CRATER06,radius + 10);
-		EffD.CreateFireBall(R_curr + Vector(0,0,20),DT_FIRE_BALL04,NULL,1 << 8,0);
+		TntClone->setPhase(CurrentHeight, 1);
+		MapD.CreateCrater(R_curr, MAP_POINT_CRATER06, radius + 10);
+		EffD.CreateFireBall(R_curr + Vector(0, 0, 20), DT_FIRE_BALL04, NULL, 1 << 8, 0);
 
 		TouchTime = 0;
 		Time = 0;
-		NetTime = NetGlobalTime + (DestroyDelay*256 / 15);
-		if(ActD.Active)
-			SOUND_BARREL_DESTROY(getDistX(ActD.Active->R_curr.x,R_curr.x));
-	
-		if(fl){
-			NETWORK_OUT_STREAM.update_object(NetID,R_curr.x,R_curr.y);
+		NetTime = NetGlobalTime + (DestroyDelay * 256 / 15);
+		if (ActD.Active)
+			SOUND_BARREL_DESTROY(getDistX(ActD.Active->R_curr.x, R_curr.x));
+
+		if (fl) {
+			NETWORK_OUT_STREAM.update_object(NetID, R_curr.x, R_curr.y);
 			NETWORK_OUT_STREAM < NetTime;
 			NETWORK_OUT_STREAM.end_body();
 		};
 
-		switch(CurrentWorld){ //znfo TNT power scheme
-			case WORLD_GLORX:
-				for(i = 0;i < PI*2;i+= PI / 8){
-					g = BulletD.CreateBullet();
-					vCheck = Vector(radius,0,0) * DBM(i,Z_AXIS);
-					g->CreateBullet(Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + radius),
-						Vector(XCYCL(vCheck.x*4 + R_curr.x),YCYCL(vCheck.y*4 + R_curr.y),R_curr.z),NULL,&GameBulletData[WD_BULLET_GSEED]);
-					g->Owner = NULL;
-				};
+		switch (CurrentWorld) { // znfo TNT power scheme
+		case WORLD_GLORX:
+			for (i = 0; i < PI * 2; i += PI / 8) {
+				g = BulletD.CreateBullet();
+				vCheck = Vector(radius, 0, 0) * DBM(i, Z_AXIS);
+				g->CreateBullet(
+					Vector(
+						XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + radius
+					),
+					Vector(
+						XCYCL(vCheck.x * 4 + R_curr.x), YCYCL(vCheck.y * 4 + R_curr.y), R_curr.z
+					),
+					NULL,
+					&GameBulletData[WD_BULLET_GSEED]
+				);
+				g->Owner = NULL;
+			};
 
-				p = (Object*)(ActD.Tail);
-				while(p){
-					if(p->Visibility == VISIBLE){
-						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
-						d = vCheck.vabs();
-						if(d < 2*TNT_POWER_RADIUS && d > 0){
-							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS*2 - d) / d,0);
-							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
-						};
-					};		
-					p = (Object*)(p->NextTypeList);
+			p = (Object *)(ActD.Tail);
+			while (p) {
+				if (p->Visibility == VISIBLE) {
+					vCheck = Vector(
+						getDistX(p->R_curr.x, R_curr.x),
+						getDistY(p->R_curr.y, R_curr.y),
+						p->R_curr.z - R_curr.z
+					);
+					d = vCheck.vabs();
+					if (d < 2 * TNT_POWER_RADIUS && d > 0) {
+						p->instant_impulse(
+							vCheck, TNT_POWER_IMPULSE * (TNT_POWER_RADIUS * 2 - d) / d, 0
+						);
+						if (p->ID == ID_VANGER)
+							((VangerUnit *)(p))->BulletCollision(TNT_POWER_DAMAGE, NULL);
+					};
 				};
-				break;
-			case WORLD_FOSTRAL:
-				for(i = 0;i < PI*2;i+= PI / 8){
-					g = BulletD.CreateBullet();
-					vCheck = Vector(radius,0,0) * DBM(i,Z_AXIS);
-					g->CreateBullet(Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + radius),
-						Vector(XCYCL(vCheck.x*4 + R_curr.x),YCYCL(vCheck.y*4 + R_curr.y),R_curr.z + radius*2),NULL,&GameBulletData[WD_BULLET_FSEED]);
-					g->Owner = NULL;
-				};
+				p = (Object *)(p->NextTypeList);
+			};
+			break;
+		case WORLD_FOSTRAL:
+			for (i = 0; i < PI * 2; i += PI / 8) {
+				g = BulletD.CreateBullet();
+				vCheck = Vector(radius, 0, 0) * DBM(i, Z_AXIS);
+				g->CreateBullet(
+					Vector(
+						XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + radius
+					),
+					Vector(
+						XCYCL(vCheck.x * 4 + R_curr.x),
+						YCYCL(vCheck.y * 4 + R_curr.y),
+						R_curr.z + radius * 2
+					),
+					NULL,
+					&GameBulletData[WD_BULLET_FSEED]
+				);
+				g->Owner = NULL;
+			};
 
-				p = (Object*)(ActD.Tail);
-				while(p){
-					if(p->Visibility == VISIBLE){
-						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
-						d = vCheck.vabs();
-						if(d < TNT_POWER_RADIUS && d > 0){
-							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
-							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
-						};
-					};		
-					p = (Object*)(p->NextTypeList);
+			p = (Object *)(ActD.Tail);
+			while (p) {
+				if (p->Visibility == VISIBLE) {
+					vCheck = Vector(
+						getDistX(p->R_curr.x, R_curr.x),
+						getDistY(p->R_curr.y, R_curr.y),
+						p->R_curr.z - R_curr.z
+					);
+					d = vCheck.vabs();
+					if (d < TNT_POWER_RADIUS && d > 0) {
+						p->instant_impulse(
+							vCheck, TNT_POWER_IMPULSE * (TNT_POWER_RADIUS - d) / d, 0
+						);
+						if (p->ID == ID_VANGER)
+							((VangerUnit *)(p))->BulletCollision(TNT_POWER_DAMAGE, NULL);
+					};
 				};
-				break;
-			case WORLD_NECROSS:
-				for(i = 0;i < PI*2;i+= PI / 8){
-					g = BulletD.CreateBullet();
-					vCheck = Vector(radius,0,0) * DBM(i,Z_AXIS);
-					g->CreateBullet(Vector(XCYCL(vCheck.x + R_curr.x),YCYCL(vCheck.y + R_curr.y),R_curr.z + radius),
-						Vector(XCYCL(vCheck.x*4 + R_curr.x),YCYCL(vCheck.y*4 + R_curr.y),R_curr.z + radius*2),NULL,&GameBulletData[WD_BULLET_NSEED]);
-					g->Owner = NULL;
-				};
+				p = (Object *)(p->NextTypeList);
+			};
+			break;
+		case WORLD_NECROSS:
+			for (i = 0; i < PI * 2; i += PI / 8) {
+				g = BulletD.CreateBullet();
+				vCheck = Vector(radius, 0, 0) * DBM(i, Z_AXIS);
+				g->CreateBullet(
+					Vector(
+						XCYCL(vCheck.x + R_curr.x), YCYCL(vCheck.y + R_curr.y), R_curr.z + radius
+					),
+					Vector(
+						XCYCL(vCheck.x * 4 + R_curr.x),
+						YCYCL(vCheck.y * 4 + R_curr.y),
+						R_curr.z + radius * 2
+					),
+					NULL,
+					&GameBulletData[WD_BULLET_NSEED]
+				);
+				g->Owner = NULL;
+			};
 
-				p = (Object*)(ActD.Tail);
-				while(p){
-					if(p->Visibility == VISIBLE){
-						vCheck = Vector(getDistX(p->R_curr.x,R_curr.x),getDistY(p->R_curr.y,R_curr.y),p->R_curr.z - R_curr.z);
-						d = vCheck.vabs();
-						if(d < TNT_POWER_RADIUS && d > 0){
-							p->instant_impulse(vCheck,TNT_POWER_IMPULSE*(TNT_POWER_RADIUS - d) / d,0);
-							if(p->ID == ID_VANGER) ((VangerUnit*)(p))->BulletCollision(TNT_POWER_DAMAGE,NULL);
-						};
-					};		
-					p = (Object*)(p->NextTypeList);
+			p = (Object *)(ActD.Tail);
+			while (p) {
+				if (p->Visibility == VISIBLE) {
+					vCheck = Vector(
+						getDistX(p->R_curr.x, R_curr.x),
+						getDistY(p->R_curr.y, R_curr.y),
+						p->R_curr.z - R_curr.z
+					);
+					d = vCheck.vabs();
+					if (d < TNT_POWER_RADIUS && d > 0) {
+						p->instant_impulse(
+							vCheck, TNT_POWER_IMPULSE * (TNT_POWER_RADIUS - d) / d, 0
+						);
+						if (p->ID == ID_VANGER)
+							((VangerUnit *)(p))->BulletCollision(TNT_POWER_DAMAGE, NULL);
+					};
 				};
-				break;
+				p = (Object *)(p->NextTypeList);
+			};
+			break;
 		};
 
-		for(i = 0;i < TntNumLink;i++){
-			if(TntLinkData[i]->CurrentHeight > 0 && TouchTime == 0)
+		for (i = 0; i < TntNumLink; i++) {
+			if (TntLinkData[i]->CurrentHeight > 0 && TouchTime == 0)
 				TntLinkData[i]->TouchTime = TntLinkDelay * GAME_TIME_COEFF;
 		};
 	};
@@ -2647,23 +2880,24 @@ void TntCreature::NetDestroy(int fl)
 
 #else
 
-void TntStaticObject::Quant(uchar** lt)
-{
-	if(Enable){
-		if(DestroyFlag){
-			if(DestroyTime == 0){
+void TntStaticObject::Quant(uchar **lt) {
+	if (Enable) {
+		if (DestroyFlag) {
+			if (DestroyTime == 0) {
 				Touch(this);
 				DestroyFlag = 0;
-			}else DestroyTime--;
+			} else
+				DestroyTime--;
 		};
-	}else{
-		if(DestroyFlag) DestroyFlag = 0;
-		if(!lt[R_curr.y]) DestroyRestore = 1;
+	} else {
+		if (DestroyFlag)
+			DestroyFlag = 0;
+		if (!lt[R_curr.y])
+			DestroyRestore = 1;
 	};
 };
 
-void TntStaticObject::Load(XStream& in)
-{
+void TntStaticObject::Load(XStream &in) {
 	int Skip;
 	in > R_curr.x;
 	in > R_curr.y;
@@ -2672,7 +2906,7 @@ void TntStaticObject::Load(XStream& in)
 	in > radius;
 	in > Skip;
 
-	cycleTor(R_curr.x,R_curr.y);
+	cycleTor(R_curr.x, R_curr.y);
 	Status = 0;
 	ID = ID_STATIC;
 
@@ -2682,101 +2916,105 @@ void TntStaticObject::Load(XStream& in)
 	DestroyFlag = 0;
 	DestroyRestore = 0;
 
-//	MobileLocation* mln;
-//	mln = FindMobileLocation(TntCloneName);
-//	TntClone = mln->cloning(getDistX(R_curr.x,mln->x0),getDistY(R_curr.y,mln->y0),"TntLocation");
+	//	MobileLocation* mln;
+	//	mln = FindMobileLocation(TntCloneName);
+	//	TntClone =
+	// mln->cloning(getDistX(R_curr.x,mln->x0),getDistY(R_curr.y,mln->y0),"TntLocation");
 };
 
-void TntStaticObject::Touch(GeneralObject* obj)
-{
+void TntStaticObject::Touch(GeneralObject *obj) {
 	int i;
-	ActionUnit* p;
-	int r,dist,k;
+	ActionUnit *p;
+	int r, dist, k;
 	Vector vDir;
-	uchar** lt;
+	uchar **lt;
 
 	lt = vMap->lineT;
-	if(Enable){
-		for(i = R_curr.y - TNT_CRATER_RADIUS;i < R_curr.y + TNT_CRATER_RADIUS;i++) if(!lt[i]) return;
+	if (Enable) {
+		for (i = R_curr.y - TNT_CRATER_RADIUS; i < R_curr.y + TNT_CRATER_RADIUS; i++)
+			if (!lt[i])
+				return;
 
-//		EffD.CreateExplosion(R_curr,EFF_EXPLOSION01,0,3 << 14,0);
-//		EffD.CreateFireBall(R_curr,DT_FIRE_BALL04,NULL,1 << 10,0);
-		EffD.CreateFireBall(R_curr,DT_FIRE_BALL04,NULL,1 << 8,0);
+		//		EffD.CreateExplosion(R_curr,EFF_EXPLOSION01,0,3 << 14,0);
+		//		EffD.CreateFireBall(R_curr,DT_FIRE_BALL04,NULL,1 << 10,0);
+		EffD.CreateFireBall(R_curr, DT_FIRE_BALL04, NULL, 1 << 8, 0);
 
-		MapD.CreateCrater(R_curr,DestroyType,TNT_CRATER_RADIUS);		
+		MapD.CreateCrater(R_curr, DestroyType, TNT_CRATER_RADIUS);
 		Enable = 0;
-		r = radius*4;
-		p = (ActionUnit*)(ActD.Tail);
-		while(p){
-			if(p->Visibility == VISIBLE){
-				vDir.y = getDistY(p->R_curr.y,R_curr.y);
-				if(abs(vDir.y) < r){
-					vDir.x = getDistX(p->R_curr.x,R_curr.x);
-					if(abs(vDir.x) < r){
+		r = radius * 4;
+		p = (ActionUnit *)(ActD.Tail);
+		while (p) {
+			if (p->Visibility == VISIBLE) {
+				vDir.y = getDistY(p->R_curr.y, R_curr.y);
+				if (abs(vDir.y) < r) {
+					vDir.x = getDistX(p->R_curr.x, R_curr.x);
+					if (abs(vDir.x) < r) {
 						vDir.z = p->R_curr.z - R_curr.z;
-						if(vDir.z < r){
+						if (vDir.z < r) {
 							dist = vDir.vabs();
-							k = dist < 30 ? impulse_of_tuns_explosion : impulse_of_tuns_explosion*30/dist;
+							k = dist < 30 ? impulse_of_tuns_explosion
+										  : impulse_of_tuns_explosion * 30 / dist;
 							// Tun's explosion impulse
-#ifndef TEST_TRACK
-							p->instant_impulse(vDir,k,0);
-#endif
+#	ifndef TEST_TRACK
+							p->instant_impulse(vDir, k, 0);
+#	endif
 						};
 					};
 				};
 			};
-			p = (ActionUnit*)(p->NextTypeList);
+			p = (ActionUnit *)(p->NextTypeList);
 		};
-		for(i = 0;i < NumLink;i++){
-			if(Link[i]->Enable && !Link[i]->DestroyFlag){
+		for (i = 0; i < NumLink; i++) {
+			if (Link[i]->Enable && !Link[i]->DestroyFlag) {
 				Link[i]->DestroyFlag = 1;
-				Link[i]->DestroyTime = i*2 + 1;
+				Link[i]->DestroyTime = i * 2 + 1;
 			};
 		};
 	};
 };
 #endif
 
-void CheckPointEngine::Open(Parser& in)
-{
-	char* n;
+void CheckPointEngine::Open(Parser &in) {
+	char *n;
 	int i;
 	LocationEngine::Open(in);
 
 	in.search_name("NumCheckSensor");
 	NumCheckSensor = in.get_int();
-	CheckSensor = new SensorDataType*[NumCheckSensor];
+	CheckSensor = new SensorDataType *[NumCheckSensor];
 
-	CheckLocationName = new char*[NumCheckSensor];
-	CheckLocation = new LocationEngine*[NumCheckSensor];
+	CheckLocationName = new char *[NumCheckSensor];
+	CheckLocation = new LocationEngine *[NumCheckSensor];
 	CheckIndex = new int[NumCheckSensor];
 
-	for(i = 0;i < NumCheckSensor;i++){
+	for (i = 0; i < NumCheckSensor; i++) {
 		in.search_name("SensorName");
 		n = in.get_name();
 		CheckSensor[i] = NULL;
 		CheckSensor[i] = FindSensor(n);
-		if(!CheckSensor[i])
+		if (!CheckSensor[i])
 			ErrH.Abort("Bad Find Sensor");
 		CheckSensor[i]->Enable = 1;
 		CheckSensor[i]->Owner = this;
-		
+
 		in.search_name("CheckLocationName");
 		n = in.get_name();
-		if(strcmp(n,"None")){
+		if (strcmp(n, "None")) {
 			CheckLocationName[i] = new char[strlen(n) + 1];
-			strcpy(CheckLocationName[i],n);
-		}else CheckLocationName[i] = NULL;
+			strcpy(CheckLocationName[i], n);
+		} else
+			CheckLocationName[i] = NULL;
 		CheckIndex[i] = 0;
 	};
 
 	in.search_name("MainLocationName");
 	n = in.get_name();
-	if(strcmp(n,"None")){
+	if (strcmp(n, "None")) {
 		MainLocationName = new char[strlen(n) + 1];
-		strcpy(MainLocationName,n);
-	}else MainLocationName = NULL;
-	
+		strcpy(MainLocationName, n);
+	} else
+		MainLocationName = NULL;
+
 	Type = EngineTypeList::CHECK_POINT;
 	Mode = EngineModeList::WAIT;
 
@@ -2784,31 +3022,30 @@ void CheckPointEngine::Open(Parser& in)
 	WrongCheckMode = in.get_int();
 };
 
-void CheckPointEngine::Close(void)
-{
+void CheckPointEngine::Close(void) {
 	int i;
-	for(i = 0;i < NumCheckSensor;i++){
-		if(CheckLocationName[i]){
+	for (i = 0; i < NumCheckSensor; i++) {
+		if (CheckLocationName[i]) {
 			delete CheckLocationName[i];
-//			delete CheckLocation[i];
+			//			delete CheckLocation[i];
 		};
 	};
 	delete CheckLocationName;
 	delete CheckLocation;
 	delete CheckSensor;
-	if(MainLocationName) delete MainLocationName;
+	if (MainLocationName)
+		delete MainLocationName;
 };
 
-void CheckPointEngine::Link(void)
-{
+void CheckPointEngine::Link(void) {
 	int i;
-	if(MainLocationName){
+	if (MainLocationName) {
 		MainLocation = FindLocation(MainLocationName);
 		MainLocation->Enable = 0;
 	};
 
-	for(i = 0;i < NumCheckSensor;i++){
-		if(CheckLocationName[i]){
+	for (i = 0; i < NumCheckSensor; i++) {
+		if (CheckLocationName[i]) {
 			CheckLocation[i] = FindLocation(CheckLocationName[i]);
 			CheckLocation[i]->Enable = 0;
 		};
@@ -2818,30 +3055,31 @@ void CheckPointEngine::Link(void)
 const int CHECK_POINT_IMPULSE = 1;
 const int CHECK_POINT_RESET = 2;
 
-void CheckPointEngine::Touch(GeneralObject* obj,SensorDataType* p)
-{
-	
-	int i,ind;	
-	VangerUnit* v;	
+void CheckPointEngine::Touch(GeneralObject *obj, SensorDataType *p) {
+	int i, ind;
+	VangerUnit *v;
 
-	if(obj->ID != ID_VANGER) return;	
-	v = (VangerUnit*)(obj);
-	if(v->CheckPointCount >= NUM_CONTROL_BSIGN) return;
+	if (obj->ID != ID_VANGER)
+		return;
+	v = (VangerUnit *)(obj);
+	if (v->CheckPointCount >= NUM_CONTROL_BSIGN)
+		return;
 	ind = CHECK_BSIGN_INDEX[v->CheckPointCount];
-	if(p == CheckSensor[ind]){
-		if(CheckLocationName[ind]){
+	if (p == CheckSensor[ind]) {
+		if (CheckLocationName[ind]) {
 			CheckLocation[ind]->Enable = 1;
 			CheckSensor[ind]->Enable = 0;
 			v->CheckPointCount++;
 		};
-		if(v->CheckPointCount == NUM_CONTROL_BSIGN/*NumCheckSensor*/ && MainLocationName)
+		if (v->CheckPointCount == NUM_CONTROL_BSIGN /*NumCheckSensor*/ && MainLocationName)
 			MainLocation->Enable = 1;
-	}else{
-		if(WrongCheckMode & CHECK_POINT_IMPULSE)
-			v->instant_impulse(DBV(32 - RND(64),32 - RND(64),32 - RND(64)),RND(5),RND(5));
-		if(WrongCheckMode & CHECK_POINT_RESET){
-			for(i = 0;i < NumCheckSensor;i++){
-				if(CheckLocation[i]->Type == EngineTypeList::TIRISTOR) ((TiristorEngine*)(CheckLocation[i]))->CloseDoor();
+	} else {
+		if (WrongCheckMode & CHECK_POINT_IMPULSE)
+			v->instant_impulse(DBV(32 - RND(64), 32 - RND(64), 32 - RND(64)), RND(5), RND(5));
+		if (WrongCheckMode & CHECK_POINT_RESET) {
+			for (i = 0; i < NumCheckSensor; i++) {
+				if (CheckLocation[i]->Type == EngineTypeList::TIRISTOR)
+					((TiristorEngine *)(CheckLocation[i]))->CloseDoor();
 				CheckLocation[i]->Enable = 0;
 				CheckSensor[i]->Enable = 1;
 				v->CheckPointCount = 0;
@@ -2850,19 +3088,18 @@ void CheckPointEngine::Touch(GeneralObject* obj,SensorDataType* p)
 	};
 };
 
-void LandSlideEngine::Open(Parser& in)
-{
-	SensorDataType* p;
-	char* n;
+void LandSlideEngine::Open(Parser &in) {
+	SensorDataType *p;
+	char *n;
 	int i;
 	LocationEngine::Open(in);
 
-	for(i = 0;i < 4;i++){
+	for (i = 0; i < 4; i++) {
 		in.search_name("BorderSensorName");
 		n = in.get_name();
 		p = NULL;
 		p = FindSensor(n);
-		if(!p)
+		if (!p)
 			ErrH.Abort("Bad Find Sensor");
 		p->Enable = 0;
 		p->Owner = NULL;
@@ -2874,11 +3111,11 @@ void LandSlideEngine::Open(Parser& in)
 	n = in.get_name();
 	SignalSensor = NULL;
 	SignalSensor = FindSensor(n);
-	if(!SignalSensor)
+	if (!SignalSensor)
 		ErrH.Abort("Bad Find Sensor");
 	SignalSensor->Enable = 1;
 	SignalSensor->Owner = this;
-	
+
 	in.search_name("LifeTime");
 	LifeTime = in.get_int() * GAME_TIME_COEFF;
 
@@ -2886,36 +3123,33 @@ void LandSlideEngine::Open(Parser& in)
 	Mode = EngineModeList::WAIT;
 };
 
-void LandSlideEngine::Touch(GeneralObject* obj,SensorDataType* p)
-{
-	if(Mode == EngineModeList::WAIT){
+void LandSlideEngine::Touch(GeneralObject *obj, SensorDataType *p) {
+	if (Mode == EngineModeList::WAIT) {
 		Mode = EngineModeList::OPEN;
-		MapD.CreateLandSlide(cX,cY,LifeTime);
+		MapD.CreateLandSlide(cX, cY, LifeTime);
 	};
 };
 
-static inline int sign_play_delay_ticks(int legacy_delay)
-{
+static inline int sign_play_delay_ticks(int legacy_delay) {
 	int ticks = (int)round(legacy_delay * GAME_TIME_COEFF);
 	return ticks >= 0 ? ticks : 0;
 }
 
-void SignPlayEngine::Open(Parser& in)
-{
-	char* n;
+void SignPlayEngine::Open(Parser &in) {
+	char *n;
 	int i;
 	LocationEngine::Open(in);
 
 	in.search_name("NumSensorLink");
 	NumSensor = in.get_int();
-	SensorLink = new SensorDataType*[NumSensor];
+	SensorLink = new SensorDataType *[NumSensor];
 
-	for(i = 0;i < NumSensor;i++){
+	for (i = 0; i < NumSensor; i++) {
 		in.search_name("SensorName");
-		n = in.get_name();	
+		n = in.get_name();
 		SensorLink[i] = NULL;
 		SensorLink[i] = FindSensor(n);
-		if(!SensorLink[i]) 
+		if (!SensorLink[i])
 			ErrH.Abort("Bad Find Sensor");
 		SensorLink[i]->Enable = 1;
 		SensorLink[i]->Owner = this;
@@ -2931,21 +3165,22 @@ void SignPlayEngine::Open(Parser& in)
 	MLLink->goKeyPhase(DeactivePhase);
 };
 
-void SignPlayEngine::Quant(void)
-{
-	if(!MLLink) return;
-	if(!MLLink->frozen){
-		if(Mode == EngineModeList::OPEN && MLLink->isGoFinish()){
-			if(ReplayCount >= NumReplay)
+void SignPlayEngine::Quant(void) {
+	if (!MLLink)
+		return;
+	if (!MLLink->frozen) {
+		if (Mode == EngineModeList::OPEN && MLLink->isGoFinish()) {
+			if (ReplayCount >= NumReplay)
 				Mode = EngineModeList::WAIT;
-			else{
-				if(Time > 0) Time--;
-				else{				
-					if(ReplayCount & 1){
+			else {
+				if (Time > 0)
+					Time--;
+				else {
+					if (ReplayCount & 1) {
 						MLLink->goKeyPhase(ActivePhase);
-						Time = sign_play_delay_ticks(ActiveTime);					
+						Time = sign_play_delay_ticks(ActiveTime);
 						SoundEvent();
-					}else{
+					} else {
 						MLLink->goKeyPhase(DeactivePhase);
 						Time = sign_play_delay_ticks(DeactiveTime);
 						SoundEvent();
@@ -2954,23 +3189,22 @@ void SignPlayEngine::Quant(void)
 				};
 			};
 		};
-	}else{
-		if(Mode != EngineModeList::WAIT) 
+	} else {
+		if (Mode != EngineModeList::WAIT)
 			MLLink->goKeyPhase(DeactivePhase);
 		Mode = EngineModeList::WAIT;
 		Time = 0;
 	};
 };
 
-void SignPlayEngine::Close(void)
-{
+void SignPlayEngine::Close(void) {
 	delete SensorLink;
 };
 
-void SignPlayEngine::Touch(GeneralObject* obj,SensorDataType* p)
-{
-	if(!Enable || !MLLink) return;
-	if(!MLLink->frozen && Mode != EngineModeList::OPEN){
+void SignPlayEngine::Touch(GeneralObject *obj, SensorDataType *p) {
+	if (!Enable || !MLLink)
+		return;
+	if (!MLLink->frozen && Mode != EngineModeList::OPEN) {
 		Mode = EngineModeList::OPEN;
 		MLLink->goKeyPhase(ActivePhase);
 		ReplayCount = 0;
@@ -2978,107 +3212,110 @@ void SignPlayEngine::Touch(GeneralObject* obj,SensorDataType* p)
 	};
 };
 
-
-void ItemGenerator::Open(Parser& in)
-{
+void ItemGenerator::Open(Parser &in) {
 	int i;
-	char* n;
+	char *n;
 	LocationEngine::Open(in);
 
 	in.search_name("SensorName");
-	n = in.get_name();	
+	n = in.get_name();
 	SensorLink = NULL;
 	SensorLink = FindSensor(n);
-	if(!SensorLink) 
+	if (!SensorLink)
 		ErrH.Abort("Bad Find Sensor");
 	SensorLink->Enable = 1;
 	SensorLink->Owner = this;
 
 	in.search_name("DoorName");
 	n = in.get_name();
-	if(strcmp(n,"None")){
+	if (strcmp(n, "None")) {
 		DoorName = new char[strlen(n) + 1];
-		strcpy(DoorName,n);
+		strcpy(DoorName, n);
 		pLink = NULL;
-	}else DoorName = NULL;
+	} else
+		DoorName = NULL;
 
 	Enable = 1;
 	Type = EngineTypeList::ITEM_GENERATOR;
 	Mode = EngineModeList::WAIT;
 
-	if(CurrentWorld == WORLD_FOSTRAL || CurrentWorld == WORLD_GLORX){
-		for(i = 0;i < MAX_TIME_SECRET;i++){
-			if(!strcmp(TimeSecretName[CurrentWorld][i],MLLink->name)){
+	if (CurrentWorld == WORLD_FOSTRAL || CurrentWorld == WORLD_GLORX) {
+		for (i = 0; i < MAX_TIME_SECRET; i++) {
+			if (!strcmp(TimeSecretName[CurrentWorld][i], MLLink->name)) {
 				DeviceType = TimeSecretType[CurrentWorld][i];
 				DeviceP1 = TimeSecretData0[CurrentWorld][i];
 				DeviceP2 = TimeSecretData1[CurrentWorld][i];
-				if(!TimeSecretEnable[CurrentWorld][i])
+				if (!TimeSecretEnable[CurrentWorld][i])
 					Enable = 0;
 			};
 		};
 	};
-	
+
 	Time = 0;
 };
 
-void ItemGenerator::Link(void)
-{
+void ItemGenerator::Link(void) {
 	pLink = FindSensor(DoorName)->Owner;
-	if(!pLink) ErrH.Abort("Bad Door Object");
+	if (!pLink)
+		ErrH.Abort("Bad Door Object");
 };
 
-void ItemGenerator::Quant(void)
-{
+void ItemGenerator::Quant(void) {
 	int i;
-	if(Mode == EngineModeList::WAIT){
-		if(pLink->Mode != EngineModeList::WAIT){
+	if (Mode == EngineModeList::WAIT) {
+		if (pLink->Mode != EngineModeList::WAIT) {
 			Time = (int)round(ActiveTime * GAME_TIME_COEFF);
 			Mode = EngineModeList::OPEN;
 		};
-	}else{
+	} else {
 		Time--;
-		if(Time == 0){ 
-			addDevice(SensorLink->R_curr.x,SensorLink->R_curr.y,SensorLink->R_curr.z,DeviceType,DeviceP1,DeviceP2,NULL);
+		if (Time == 0) {
+			addDevice(
+				SensorLink->R_curr.x,
+				SensorLink->R_curr.y,
+				SensorLink->R_curr.z,
+				DeviceType,
+				DeviceP1,
+				DeviceP2,
+				NULL
+			);
 
-			if(CurrentWorld == WORLD_FOSTRAL || CurrentWorld == WORLD_GLORX){
-				for(i = 0;i < MAX_TIME_SECRET;i++){
-					if(!strcmp(TimeSecretName[CurrentWorld][i],MLLink->name) && TimeSecretEnable[CurrentWorld][i]){
+			if (CurrentWorld == WORLD_FOSTRAL || CurrentWorld == WORLD_GLORX) {
+				for (i = 0; i < MAX_TIME_SECRET; i++) {
+					if (!strcmp(TimeSecretName[CurrentWorld][i], MLLink->name) &&
+						TimeSecretEnable[CurrentWorld][i]) {
 						TimeSecretEnable[CurrentWorld][i] = 0;
 						break;
 					};
 				};
 			};
-
 		};
 	};
 };
 
-void ItemGenerator::Close(void)
-{
-	if(DoorName) delete[] DoorName;
+void ItemGenerator::Close(void) {
+	if (DoorName)
+		delete[] DoorName;
 };
 
-void ResortEnter(void)
-{
+void ResortEnter(void) {
 	int i;
-	if(!NetworkON){
-		for(i = 0;i < NumEnterCenter;i++)
+	if (!NetworkON) {
+		for (i = 0; i < NumEnterCenter; i++)
 			EnterCenterData[i].Resort();
 	};
 };
 
-
-SensorDataType* GetNearSensor(int y,int type)
-{
+SensorDataType *GetNearSensor(int y, int type) {
 	int i;
-	int d,dm;
-	SensorDataType * p;
+	int d, dm;
+	SensorDataType *p;
 	p = NULL;
 	dm = 0;
-	for(i = 0;i < SnsTableSize;i++){
-		if(SensorSortedData[i]->SensorType == type){
-			d = abs(getDistY(SensorSortedData[i]->R_curr.y,y));
-			if(!p || d < dm){
+	for (i = 0; i < SnsTableSize; i++) {
+		if (SensorSortedData[i]->SensorType == type) {
+			d = abs(getDistY(SensorSortedData[i]->R_curr.y, y));
+			if (!p || d < dm) {
 				dm = d;
 				p = SensorSortedData[i];
 			};
@@ -3087,16 +3324,16 @@ SensorDataType* GetNearSensor(int y,int type)
 	return p;
 };
 
-void NetworkSetLocation(int id)
-{
-	if(!NetworkLoadEnable) LocationData[(id & 0xffff) - 1]->NetID = id;
+void NetworkSetLocation(int id) {
+	if (!NetworkLoadEnable)
+		LocationData[(id & 0xffff) - 1]->NetID = id;
 	LocationData[(id & 0xffff) - 1]->NetEvent();
 };
 
-void LocationEngine::NetEvent(void)
-{	
+void LocationEngine::NetEvent(void) {
 	uchar ch;
-	NETWORK_IN_STREAM > ch;	
+	NETWORK_IN_STREAM > ch;
 	NetMode = ch;
-	if(NetMode != Mode) UpdateFlag = 1;
+	if (NetMode != Mode)
+		UpdateFlag = 1;
 };

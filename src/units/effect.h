@@ -38,94 +38,107 @@ const int PARTICLE_SIZE07 = 8;
 const int PARTICLE_DIRECT = 0;
 const int PARTICLE_REVERS = 1;
 
-struct ExplosionObject : BaseObject
-{
-	int Scale,dScale;
+struct ExplosionObject: BaseObject {
+	int Scale, dScale;
 	int FirstRadius;
-	BaseObject* Owner;
+	BaseObject *Owner;
 	ParticleMapProcess MainMapProcess;
 
 	void InitProcess(char _type);
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Free(void);
 	void Quant(void);
 	void DrawQuant(void);
-	void CreateExplosion(const Vector& v,BaseObject* _owner,int _scale,int _dscale);
+	void CreateExplosion(const Vector &v, BaseObject *_owner, int _scale, int _dscale);
 };
 
-struct FireBallObject : BaseObject
-{
-	int Scale,dScale;
+struct FireBallObject: BaseObject {
+	int Scale, dScale;
 	int FirstRadius;
-	BaseObject* Owner;
-	FireBallProcess* FBP;
+	BaseObject *Owner;
+	FireBallProcess *FBP;
 	int frame;
 
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Quant(void);
 	void DrawQuant(void);
-	void CreateFireBall(const Vector& v,BaseObject* _owner,int _scale,int _dscale,char _type);
+	void CreateFireBall(const Vector &v, BaseObject *_owner, int _scale, int _dscale, char _type);
 };
 
-struct DeformObject : BaseObject
-{
+struct DeformObject: BaseObject {
 	char FullFlag;
 	int Offset;
-	WaveProcess* wProcess;
+	WaveProcess *wProcess;
 
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Quant(void);
 	void DrawQuant(void);
-	void CreateDeform(const Vector& v,char _fl,WaveProcess* p);
+	void CreateDeform(const Vector &v, char _fl, WaveProcess *p);
 };
 
-struct SimpleParticleType
-{
+struct SimpleParticleType {
 	Vector vR;
 	Vector vD;
-	float Color,dColor;
+	float Color, dColor;
 	void Quant(void);
-	void QuantT(int x,int y,int s);
-	void QuantP(Vector _c, Vector _n, int s,int c);
-	void QuantRingOfLord(Vector v,int s,int c);
+	void QuantT(int x, int y, int s);
+	void QuantP(Vector _c, Vector _n, int s, int c);
+	void QuantRingOfLord(Vector v, int s, int c);
 };
 
-struct ParticleInitDataType
-{
+struct ParticleInitDataType {
 	int LifeTime;
 	int Velocity;
-	int FirstRadius,EndRadius;
-	int FirstColor,EndColor;
-	int FirstAlpha,StepAlpha;
+	int FirstRadius, EndRadius;
+	int FirstColor, EndColor;
+	int FirstAlpha, StepAlpha;
 };
 
-struct ParticleObject : BaseObject
-{
+struct ParticleObject: BaseObject {
 	int NumParticle;
 	int LifeTime;
 	int Time;
-	int Mode,Phase,dPhase;
+	int Mode, Phase, dPhase;
 
-	SimpleParticleType* Data;
+	SimpleParticleType *Data;
 
 	void InitParicle(int num);
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Free(void);
 	void Quant(void);
 	void DrawQuant(void);
-	void CreateParticle(int _LifeTime,int _Velocity,int _FirstRadius,int _EndRadius,int _FirstColor,int _EndColor,const Vector& v1,const Vector& v2);
-	void CreateParticle(int _LifeTime,int _Velocity,int _FirstRadius,int _EndRadius,int _FirstColor,int _EndColor,int _StepAlpha,const Vector& v1,const Vector& v2,const DBM& n);
-	void CreateParticle(ParticleInitDataType* n,const Vector& v1,const Vector& v2);
-	void CreateParticle(ParticleInitDataType* n,const Vector& v1,const Vector& v2,const DBM& m);
-	void CreateParticle(ParticleInitDataType* n,const Vector& v);
-	void CreateDirectParticle(ParticleInitDataType* n,const Vector& v);
-	void CreateRingOfLord(const Vector v1,int rad,int ltime,int fcol,int lcol,int vel);
+	void CreateParticle(
+		int _LifeTime,
+		int _Velocity,
+		int _FirstRadius,
+		int _EndRadius,
+		int _FirstColor,
+		int _EndColor,
+		const Vector &v1,
+		const Vector &v2
+	);
+	void CreateParticle(
+		int _LifeTime,
+		int _Velocity,
+		int _FirstRadius,
+		int _EndRadius,
+		int _FirstColor,
+		int _EndColor,
+		int _StepAlpha,
+		const Vector &v1,
+		const Vector &v2,
+		const DBM &n
+	);
+	void CreateParticle(ParticleInitDataType *n, const Vector &v1, const Vector &v2);
+	void CreateParticle(ParticleInitDataType *n, const Vector &v1, const Vector &v2, const DBM &m);
+	void CreateParticle(ParticleInitDataType *n, const Vector &v);
+	void CreateDirectParticle(ParticleInitDataType *n, const Vector &v);
+	void CreateRingOfLord(const Vector v1, int rad, int ltime, int fcol, int lcol, int vel);
 };
 
-struct WaterParticleObject : BaseObject
-{
+struct WaterParticleObject: BaseObject {
 	int NumParticle;
-	int LifeTime,SetLifeTime;
+	int LifeTime, SetLifeTime;
 	int DeltaColor;
 	int Time;
 
@@ -133,26 +146,35 @@ struct WaterParticleObject : BaseObject
 	Vector vCenter;
 	int Velocity;
 
-	SimpleParticleType* Data;
+	SimpleParticleType *Data;
 
 	void InitParicle(int num);
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Free(void);
 	void Quant(void);
 	void DrawQuant(void);
-	void CreateParticle(int _LifeTime,int _SetLifeTime,int _Velocity,int _Radius,int _FirstColor,int _SetColor,int _EndColor,const Vector& v1,int _TargetType = 0);
+	void CreateParticle(
+		int _LifeTime,
+		int _SetLifeTime,
+		int _Velocity,
+		int _Radius,
+		int _FirstColor,
+		int _SetColor,
+		int _EndColor,
+		const Vector &v1,
+		int _TargetType = 0
+	);
 };
 
-struct TargetParticleType
-{
+struct TargetParticleType {
 	char type;
 	int Color;
-	Vector vR,vT,vD;
+	Vector vR, vT, vD;
 	int s;
 	int pDist, LifeTime;
-	double MoveAccumX,MoveAccumY,MoveAccumZ;
-	double AccelAccumX,AccelAccumY;
-	double DragAccumX,DragAccumY;
+	double MoveAccumX, MoveAccumY, MoveAccumZ;
+	double AccelAccumX, AccelAccumY;
+	double DragAccumX, DragAccumY;
 	void aQuant(void);
 	void aQuant2(void);
 
@@ -160,24 +182,23 @@ struct TargetParticleType
 	void sQuant2(void);
 };
 
-struct TargetParticleObject : BaseObject
-{
+struct TargetParticleObject: BaseObject {
 	char TargetType;
-	int NumParticle,CurrParticle;
-	int LifeTime,Time;
-	TargetParticleType* Data;
+	int NumParticle, CurrParticle;
+	int LifeTime, Time;
+	TargetParticleType *Data;
 	Vector vTarget;
-	int FadeTime,FadeNum;
+	int FadeTime, FadeNum;
 	double FadeAccum;
 
 	void InitParicle(int num);
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Free(void);
 	void Quant(void);
 	void DrawQuant(void);
-	void AddVertex(const Vector& _vR,int _Color,int _Speed1,int _Speed2);
-	void AddVertex2(const Vector& _vR,const Vector& _vT,int _Color, int _type = PARTICLE_DIRECT);
-	void CreateParticle(const Vector& _vTarget,int _LifeTime,char type);
+	void AddVertex(const Vector &_vR, int _Color, int _Speed1, int _Speed2);
+	void AddVertex2(const Vector &_vR, const Vector &_vT, int _Color, int _type = PARTICLE_DIRECT);
+	void CreateParticle(const Vector &_vTarget, int _LifeTime, char type);
 };
 
 const int PG_TARGET = 1;
@@ -194,81 +215,104 @@ const int PG_STYLE_INCAR = 0;
 const int PG_STYLE_ENTER = 1;
 const int PG_STYLE_REINCAR = 2;
 
-struct ParticleGenerator : BaseObject
-{
-	Vector vTarget,vDelta;
-	double SteerAccumX,SteerAccumY,SteerAccumZ;
-	double MoveAccumX,MoveAccumY,MoveAccumZ;
-	int Speed,Precision;
-	int MoveMode,TargetMode;
-	int ParticleStorage,ParticleType;
+struct ParticleGenerator: BaseObject {
+	Vector vTarget, vDelta;
+	double SteerAccumX, SteerAccumY, SteerAccumZ;
+	double MoveAccumX, MoveAccumY, MoveAccumZ;
+	int Speed, Precision;
+	int MoveMode, TargetMode;
+	int ParticleStorage, ParticleType;
 	int Time;
 	int FlyRadius;
 
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Quant(void);
 	void DrawQuant(void);
-	void CreateGenerator(Vector vC,Vector vT,Vector vD,int mode = PG_STYLE_INCAR);
+	void CreateGenerator(Vector vC, Vector vT, Vector vD, int mode = PG_STYLE_INCAR);
 };
 
-struct EffectDispatcher : UnitList
-{
+struct EffectDispatcher: UnitList {
 	int NumDeformProcessType;
-	WaveProcess* DeformData;
+	WaveProcess *DeformData;
 
 	int NumFireBallProcessType;
-	FireBallProcess* FireBallData;
+	FireBallProcess *FireBallData;
 
 	int NumParticleInitType;
-	ParticleInitDataType* ParticleInitData;
+	ParticleInitDataType *ParticleInitData;
 
-	void Init(Parser& in);
+	void Init(Parser &in);
 	void Free(void);
-	void Open(Parser& in);
+	void Open(Parser &in);
 	void Close(void);
 	void Quant(void);
 
 	void CalcWave(void);
 
-	void CreateExplosion(const Vector& v,unsigned char _type,BaseObject* _owner = NULL,int _scale = 1 << 15,int _dscale = 0);
-	void CreateFireBall(const Vector& v,unsigned char _type,BaseObject* _owner = NULL,int _scale = 1 << 8,int _dscale = 0);
-	void CreateDeform(const Vector& v,char _fl,unsigned char _type);
-	void CreateParticle(char _init,const Vector& v1,const Vector& v2,unsigned char _type);
-	void CreateParticle(char _init,const Vector& v1,const Vector& v2,const DBM& m,unsigned char Type);
-	void CreateParticle(char _init,const Vector& v,unsigned char _type);
-	void CreateDirectParticle(char _init,const Vector& v,unsigned char _type);
-	void CreateRingOfLord(int type,const Vector v1,int rad,int ltime,int fcol,int lcol,int vel);
-	void DeleteEffect(BaseObject* p);
-	void CreateParticleTime(unsigned char _init,const Vector& v1,const Vector& v2,unsigned char _type,int LifeTime);
-	void CreateParticleGenerator(Vector vC,Vector vT,Vector vD,int mode = PG_STYLE_INCAR);
+	void CreateExplosion(
+		const Vector &v,
+		unsigned char _type,
+		BaseObject *_owner = NULL,
+		int _scale = 1 << 15,
+		int _dscale = 0
+	);
+	void CreateFireBall(
+		const Vector &v,
+		unsigned char _type,
+		BaseObject *_owner = NULL,
+		int _scale = 1 << 8,
+		int _dscale = 0
+	);
+	void CreateDeform(const Vector &v, char _fl, unsigned char _type);
+	void CreateParticle(char _init, const Vector &v1, const Vector &v2, unsigned char _type);
+	void CreateParticle(
+		char _init,
+		const Vector &v1,
+		const Vector &v2,
+		const DBM &m,
+		unsigned char Type
+	);
+	void CreateParticle(char _init, const Vector &v, unsigned char _type);
+	void CreateDirectParticle(char _init, const Vector &v, unsigned char _type);
+	void
+	CreateRingOfLord(int type, const Vector v1, int rad, int ltime, int fcol, int lcol, int vel);
+	void DeleteEffect(BaseObject *p);
+	void CreateParticleTime(
+		unsigned char _init,
+		const Vector &v1,
+		const Vector &v2,
+		unsigned char _type,
+		int LifeTime
+	);
+	void CreateParticleGenerator(Vector vC, Vector vT, Vector vD, int mode = PG_STYLE_INCAR);
 };
 
 int GetAltLevel(Vector v);
-//char GetAltLevel(int x,int y,int z);
+// char GetAltLevel(int x,int y,int z);
 int WaterAltLevel(Vector v);
-//char WaterAltLevel(int x,int y,int z);
+// char WaterAltLevel(int x,int y,int z);
 
 extern EffectDispatcher EffD;
-int SPGetDistX(int s0,int s1);
+int SPGetDistX(int s0, int s1);
 
-void MakeColorTable(int fc,int lc,uchar* d,uchar* pal);
+void MakeColorTable(int fc, int lc, uchar *d, uchar *pal);
 
-extern int SPViewX,SPViewY,SPScaleMap,SPTorXSize,SPTorYSize;
-inline int SPGetDistX(int s0,int s1)
-{
+extern int SPViewX, SPViewY, SPScaleMap, SPTorXSize, SPTorYSize;
+inline int SPGetDistX(int s0, int s1) {
 	int d0 = s0 - s1;
 	int ad0 = abs(d0);
 	int d1 = SPTorXSize - ad0;
-	if(ad0 < d1) return d0;
+	if (ad0 < d1)
+		return d0;
 	return s0 > s1 ? -(SPTorXSize - s0 + s1) : SPTorXSize - s1 + s0;
 };
 
-inline int SPGetDistY(int s0,int s1)
-{
+inline int SPGetDistY(int s0, int s1) {
 	int d0 = s0 - s1;
 	int ad0 = abs(d0);
 	int d1 = SPTorYSize - ad0;
-	if(ad0 < d1) return d0;
+	if (ad0 < d1)
+		return d0;
 	return s0 > s1 ? -(SPTorYSize - s0 + s1) : SPTorYSize - s1 + s0;
 };
 

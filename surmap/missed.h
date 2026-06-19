@@ -7,23 +7,23 @@
 
 #include <functional>
 
-#define CLOCK()		(SDL_GetTicks()*18/1000)
+#define CLOCK() (SDL_GetTicks() * 18 / 1000)
 
 class XKeyWrapper {
   public:
 	XKeyWrapper();
-	void init(std::function<void(int)> handlerFn, void*);
+	void init(std::function<void(int)> handlerFn, void *);
 	void finit();
 	bool Pressed(int sdlkKey);
 };
 
 class XConWrapper {
   public:
-	XConWrapper& operator<(const char* str);
-	XConWrapper& operator<=(int value);
+	XConWrapper &operator<(const char *str);
+	XConWrapper &operator<=(int value);
 };
 
-char *iniparser_getstring_surmap(/*dictionary*/ void * d, const char * cat, const char * key);
+char *iniparser_getstring_surmap(/*dictionary*/ void *d, const char *cat, const char *key);
 void mainWinMinimize();
 void mainWinMaximize();
 
