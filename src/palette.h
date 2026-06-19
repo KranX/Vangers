@@ -1,4 +1,10 @@
 
+#ifndef __PALETTE_H__
+#define __PALETTE_H__
+
+#include "common.h"
+#include "terra/world.h"
+
 struct PaletteTransform {
 	uchar *from;
 	uchar *to;
@@ -39,3 +45,5 @@ extern int PAL_AMPL[TERRAIN_MAX];
 extern int PAL_RED[TERRAIN_MAX];
 extern int PAL_GREEN[TERRAIN_MAX];
 extern int PAL_BLUE[TERRAIN_MAX];
+
+#endif
