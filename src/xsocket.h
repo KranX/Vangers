@@ -1,46 +1,50 @@
 #ifndef _XSOCKET_H
 #define _XSOCKET_H
 
-#include "xglobal.h"
 #include "SDL_net.h"
+#include "xglobal.h"
 
 #include "xcontainers.h"
 
 int XSocketInit(int ErrHUsed = 1);
 
 // extern char XSocketLocalHostName[257];
-extern IPaddress XSocketLocalHostADDR; // used in network.cpp
+extern IPaddress XSocketLocalHostADDR;		 // used in network.cpp
 extern IPaddress XSocketLocalHostExternADDR; // used in iscreen/iscr_fnc.cpp
 
-class XSocket
-{
+class XSocket {
 	int ErrHUsed;
 	TCPsocket tcpSock;
 	SDLNet_SocketSet socketSet;
-	public:
-		IPaddress addr;
 
-		XSocket();
-		~XSocket();
+  public:
+	IPaddress addr;
 
-		XSocket(XSocket& donor); // transfers socket ownership, donor dies.
-		XSocket& operator = (XSocket& donor); // transfers socket ownership, donor dies.
+	XSocket();
+	~XSocket();
 
-		int open(int IP,int port);
-		int open(char* name,int port);
-		void close();
+	XSocket(XSocket &donor);			// transfers socket ownership, donor dies.
+	XSocket &operator=(XSocket &donor); // transfers socket ownership, donor dies.
 
-		int listen(int port);
-		XSocket accept();
+	int open(int IP, int port);
+	int open(char *name, int port);
+	void close();
 
-		int send(const char* buffer, int size);
-		int receive(char* buffer, int size_of_buffer, int ms_time = 0);
+	int listen(int port);
+	XSocket accept();
 
-		int operator! (){ return tcpSock == NULL; }
-		int operator() (){ return tcpSock != NULL; }
+	int send(const char *buffer, int size);
+	int receive(char *buffer, int size_of_buffer, int ms_time = 0);
 
-	private:
-		int tcp_open();
+	int operator!() {
+		return tcpSock == NULL;
+	}
+	int operator()() {
+		return tcpSock != NULL;
+	}
+
+  private:
+	int tcp_open();
 };
 
 #endif

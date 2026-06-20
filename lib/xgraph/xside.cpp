@@ -33,7 +33,7 @@ std::pair<const char *, const char *> getSideNames() {
 	}
 
 	if ((currentRto == activeRtoId && currentIScreenId == activeIScreenId) ||
-		 activeRtoId == 10 /*RTO_PALETTE_TRANSFORM_ID*/) {
+		activeRtoId == 10 /*RTO_PALETTE_TRANSFORM_ID*/) {
 		return activeSides;
 	}
 
@@ -44,35 +44,36 @@ std::pair<const char *, const char *> getSideNames() {
 		if (activeIScreenX == 0) {
 			return std::make_pair<>(
 				"resource/actint/hd/side/main_menu_left.bmp",
-				"resource/actint/hd/side/main_menu_right.bmp");
+				"resource/actint/hd/side/main_menu_right.bmp"
+			);
 		}
 
 		return std::make_pair<>(
-			"resource/actint/hd/side/menu_left.bmp",
-			"resource/actint/hd/side/menu_right.bmp");
-	} else if (
-		currentRto == 6 /*RTO_FIRST_ESCAVE_ID*/ ||
-		currentRto == 8 /*RTO_ESCAVE_ID*/) {
-
+			"resource/actint/hd/side/menu_left.bmp", "resource/actint/hd/side/menu_right.bmp"
+		);
+	} else if (currentRto == 6 /*RTO_FIRST_ESCAVE_ID*/ || currentRto == 8 /*RTO_ESCAVE_ID*/) {
 		switch (CurrentWorld) {
 		case -1:
 			return activeSides;
 		case 0:
 			return std::make_pair<>(
 				"resource/actint/hd/side/fostral_left.bmp",
-				"resource/actint/hd/side/fostral_right.bmp");
+				"resource/actint/hd/side/fostral_right.bmp"
+			);
 		case 1:
 			return std::make_pair<>(
-				"resource/actint/hd/side/glorx_left.bmp",
-				"resource/actint/hd/side/glorx_right.bmp");
+				"resource/actint/hd/side/glorx_left.bmp", "resource/actint/hd/side/glorx_right.bmp"
+			);
 		case 2:
 			return std::make_pair<>(
 				"resource/actint/hd/side/necross_left.bmp",
-				"resource/actint/hd/side/necross_right.bmp");
+				"resource/actint/hd/side/necross_right.bmp"
+			);
 		case 3:
 			return std::make_pair<>(
 				"resource/actint/hd/side/parafin_left.bmp",
-				"resource/actint/hd/side/parafin_right.bmp");
+				"resource/actint/hd/side/parafin_right.bmp"
+			);
 		default:;
 		}
 	} else if (currentRto == 7 /*RTO_FIRST_ESCAVE_OUT_ID*/ ||
@@ -82,7 +83,7 @@ std::pair<const char *, const char *> getSideNames() {
 
 	return std::make_pair<>(nullptr, nullptr);
 }
-}
+} // namespace
 
 void XGR_RenderSides(SDL_Renderer *renderer, int renderWidth) {
 	auto sideNames = getSideNames();

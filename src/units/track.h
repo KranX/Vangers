@@ -8,11 +8,10 @@ const int BRANCH_STATUS_WATER = 10;
 struct NodeType;
 struct TrackLinkType;
 
-struct LinkType
-{
-	int x,y,z;
-	int xr,yr,zr;
-	int xl,yl,zl;
+struct LinkType {
+	int x, y, z;
+	int xr, yr, zr;
+	int xl, yl, zl;
 	int Len;
 	int Wide;
 	int Noise;
@@ -24,51 +23,49 @@ struct LinkType
 	int TrackCount;
 };
 
-struct BranchType
-{
+struct BranchType {
 	int index;
-	NodeType* pBeg;
-	NodeType* pEnd;
+	NodeType *pBeg;
+	NodeType *pEnd;
 	int NumLink;
 
 	int Len;
-	LinkType* Link;
-	int Top,Bottom;
+	LinkType *Link;
+	int Top, Bottom;
 
 	int Status;
 	int Time;
 
 	int NoWay;
 
-	void Open(XStream& fin,NodeType* node,int ind);
-	void Save(XStream& fout);
+	void Open(XStream &fin, NodeType *node, int ind);
+	void Save(XStream &fout);
 	void Close(void);
 };
 
-struct NodeType
-{
+struct NodeType {
 	int index;
-	int x,y,z;
+	int x, y, z;
 
 	int *BorderX;
 	int *BorderY;
 
 	int NumBranch;
-	int* Branches;
-	char* Status;
+	int *Branches;
+	char *Status;
 
-	BranchType** pBranches;
+	BranchType **pBranches;
 	char Level;
 	int TrackCount;
 
-	int Top,Bottom;
+	int Top, Bottom;
 
 	int NumWayNode;
-	int* WayBranchIndex;
-	int* WayNodeIndex;
+	int *WayBranchIndex;
+	int *WayNodeIndex;
 
-	void Open(XStream& fin,BranchType* branch,int ind);
-	void Save(XStream& fout);
+	void Open(XStream &fin, BranchType *branch, int ind);
+	void Save(XStream &fout);
 	void Close(void);
 };
 
@@ -83,32 +80,30 @@ struct NodeType
 	WayNodeType** NodeData;
 };*/
 
-struct TrackType
-{
+struct TrackType {
 	int NumNode;
 	int NumBranch;
 
-	NodeType* node;
-	BranchType* branch;
+	NodeType *node;
+	BranchType *branch;
 
-	void Open(char* filename);
-	void Save(char* filename);
+	void Open(char *filename);
+	void Save(char *filename);
 	void Close(void);
-	void GetPosition(int x,int y,LinkType*& ln,BranchType*& bn);
-	void GetPosition(int x,int y,LinkType*& ln,BranchType*& bn,NodeType*& n);
-	void GetPosition(TrackLinkType* p);
-	void GetFirstPosition(int x,int y,LinkType*& ln,BranchType*& bn);
-	void GetInsidePosition(TrackLinkType* p);
+	void GetPosition(int x, int y, LinkType *&ln, BranchType *&bn);
+	void GetPosition(int x, int y, LinkType *&ln, BranchType *&bn, NodeType *&n);
+	void GetPosition(TrackLinkType *p);
+	void GetFirstPosition(int x, int y, LinkType *&ln, BranchType *&bn);
+	void GetInsidePosition(TrackLinkType *p);
 };
 
-struct TrackLinkType
-{
+struct TrackLinkType {
 	char PointStatus;
 	Vector vPoint;
-	LinkType* pNextLink;
-	LinkType* pPrevLink;
-	BranchType* pBranch;
-	NodeType* pNode;
+	LinkType *pNextLink;
+	LinkType *pPrevLink;
+	BranchType *pBranch;
+	NodeType *pNode;
 
 	TrackLinkType(void);
 	void ChangeLink(void);

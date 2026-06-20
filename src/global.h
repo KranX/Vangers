@@ -1,49 +1,48 @@
 #ifndef __GLOBAL_H
 #define __GLOBAL_H
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <ctime>
 #include <ctype.h>
 #include <math.h>
-#include <time.h>
-#include <ctime>
 #include <memory>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #if (defined(__unix__) || defined(__APPLE__))
-#include <dirent.h>
+#	include <dirent.h>
 #endif
 
 #ifdef _NT
 
-#define WIN32_EXTRA_LEAN
-#define WIN32_LEAN_AND_MEAN
+#	define WIN32_EXTRA_LEAN
+#	define WIN32_LEAN_AND_MEAN
 
-namespace KDWIN
-{
-#include <windows.h>
+namespace KDWIN {
+#	include <windows.h>
 }
 #endif
 
 #ifndef _SURMAP_
-#define _ROAD_
-//#define RUSSIAN_VERSION
+#	define _ROAD_
+// #define RUSSIAN_VERSION
 #endif
 
-typedef void* HANDLE;
+typedef void *HANDLE;
 
 #include "xglobal.h"
 #include "xgraph.h"
 
 #include "common.h"
 
-extern char* win32_findfirst(const char* mask);
-extern char* win32_findnext();
+extern char *win32_findfirst(const char *mask);
+extern char *win32_findnext();
 
 typedef unsigned char uchar;
 
 #ifdef _ROAD_
-#define ML_COMPRESS_ON
+#	define ML_COMPRESS_ON
 #endif
 
 #ifdef _STEAM_API_

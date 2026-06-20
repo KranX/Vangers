@@ -1,8 +1,7 @@
 #include "zmod_client.h"
 
-
-#include <time.h>
 #include <SDL.h>
+#include <time.h>
 
 int z_time = 0;
 int z_time_tic = 0;
@@ -23,22 +22,21 @@ void z_time_collect() {
 
 #ifdef _ZMOD_DEBUG_
 
-FILE* ZLog;
+FILE *ZLog;
 
 void ZLogClose() {
-  if (ZLog != NULL)
-    fclose(ZLog);
+	if (ZLog != NULL)
+		fclose(ZLog);
 }
 
 void ZLogFlush() {
-  if (ZLog != NULL)
-    fflush(ZLog);
+	if (ZLog != NULL)
+		fflush(ZLog);
 }
 
-FILE* ZLogOpen() {
-  FILE* F = fopen("zMod.log","wb");
-  return F;
+FILE *ZLogOpen() {
+	FILE *F = fopen("zMod.log", "wb");
+	return F;
 }
 
 #endif
-

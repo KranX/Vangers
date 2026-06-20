@@ -4,76 +4,73 @@
 #include <SDL.h>
 
 // aciScreenResource::type values...
-#define ACS_NONE	0
-#define ACS_BMP 	1
-#define ACS_BML 	2
-#define ACS_BMO 	3
-#define ACS_XBM 	4
+#define ACS_NONE 0
+#define ACS_BMP 1
+#define ACS_BML 2
+#define ACS_BMO 3
+#define ACS_XBM 4
 
 // aciScreenResource::flags...
-#define ACS_LOADED		0x01
-#define ACS_NO_FLUSH		0x02
-#define ACS_BUILD_RESOURCE	0x04
+#define ACS_LOADED 0x01
+#define ACS_NO_FLUSH 0x02
+#define ACS_BUILD_RESOURCE 0x04
 
-struct aciScreenResource : XListElement
-{
+struct aciScreenResource: XListElement {
 	int ID;
 	int type;
 	int flags;
 
-	char* fname;
+	char *fname;
 
-	void set_name(char* p);
+	void set_name(char *p);
 
-	virtual void load(void){ };
-	virtual void free(void){ };
+	virtual void load(void) {};
+	virtual void free(void) {};
 
-	virtual void change_coords(int dx,int dy) { 
-		std::cout<<"aciScreenResource::change_coords(dx="<<dx<<", dy="<<dy<<")"<<std::endl;
+	virtual void change_coords(int dx, int dy) {
+		std::cout << "aciScreenResource::change_coords(dx=" << dx << ", dy=" << dy << ")"
+				  << std::endl;
 	};
 
-	virtual void redraw(int x,int y,int frame,int mode) {};
+	virtual void redraw(int x, int y, int frame, int mode) {};
 
 	aciScreenResource(void);
 	virtual ~aciScreenResource(void);
 };
 
-struct aciScreenResourceBMP : aciScreenResource
-{
+struct aciScreenResourceBMP: aciScreenResource {
 	int SizeX;
 	int SizeY;
 
-	unsigned char* data;
+	unsigned char *data;
 
 	virtual void load(void);
 	virtual void free(void);
 
-	virtual void redraw(int x,int y,int frame,int mode);
+	virtual void redraw(int x, int y, int frame, int mode);
 
 	aciScreenResourceBMP(void);
 	~aciScreenResourceBMP(void);
 };
 
-struct aciScreenResourceBML : aciScreenResource
-{
+struct aciScreenResourceBML: aciScreenResource {
 	int SizeX;
 	int SizeY;
 	int NumFrames;
 
-	unsigned char* data;
-	unsigned char** frameTable;
+	unsigned char *data;
+	unsigned char **frameTable;
 
 	virtual void load(void);
 	virtual void free(void);
 
-	virtual void redraw(int x,int y,int frame,int mode);
+	virtual void redraw(int x, int y, int frame, int mode);
 
 	aciScreenResourceBML(void);
 	~aciScreenResourceBML(void);
 };
 
-struct aciScreenResourceBMO : aciScreenResource
-{
+struct aciScreenResourceBMO: aciScreenResource {
 	int SizeX;
 	int SizeY;
 	int NumFrames;
@@ -81,21 +78,23 @@ struct aciScreenResourceBMO : aciScreenResource
 	int OffsX;
 	int OffsY;
 
-	unsigned char* data;
-	unsigned char** frameTable;
+	unsigned char *data;
+	unsigned char **frameTable;
 
 	virtual void load(void);
 	virtual void free(void);
 
-	virtual void change_coords(int dx,int dy){ OffsX += dx; OffsY += dy; }
-	virtual void redraw(int x,int y,int frame,int mode);
+	virtual void change_coords(int dx, int dy) {
+		OffsX += dx;
+		OffsY += dy;
+	}
+	virtual void redraw(int x, int y, int frame, int mode);
 
 	aciScreenResourceBMO(void);
 	~aciScreenResourceBMO(void);
 };
 
-struct aciScreenResourceXBM : aciScreenResource
-{
+struct aciScreenResourceXBM: aciScreenResource {
 	int PosX;
 	int PosY;
 
@@ -112,26 +111,27 @@ struct aciScreenResourceXBM : aciScreenResource
 	int SideY;
 
 	int ImageSize;
-	unsigned char* data;
+	unsigned char *data;
 
 	virtual void load(void);
 	virtual void free(void);
 
-	virtual void change_coords(int dx,int dy){ PosX += dx; PosY += dy; }
-	virtual void redraw(int x,int y,int frame,int mode);
+	virtual void change_coords(int dx, int dy) {
+		PosX += dx;
+		PosY += dy;
+	}
+	virtual void redraw(int x, int y, int frame, int mode);
 
 	aciScreenResourceXBM(void);
 	~aciScreenResourceXBM(void);
 };
 
-struct aciScreenKey : XListElement
-{
+struct aciScreenKey: XListElement {
 	int code;
 };
 
-struct aciScreenKeyObject
-{
-	XList* codes;
+struct aciScreenKeyObject {
+	XList *codes;
 
 	int KeyTrap(int code);
 	void AddKey(int code);
@@ -141,10 +141,9 @@ struct aciScreenKeyObject
 };
 
 // aciScreenEventCommand::flags...
-#define ACS_COMMAND_STARTED	0x01
+#define ACS_COMMAND_STARTED 0x01
 
-struct aciScreenEventCommand : XListElement
-{
+struct aciScreenEventCommand: XListElement {
 	int flags;
 	int code;
 	int StartTimer;
@@ -155,22 +154,25 @@ struct aciScreenEventCommand : XListElement
 };
 
 // aciScreenEvent::flags...
-#define ACS_EVENT_ACTIVE	0x01
+#define ACS_EVENT_ACTIVE 0x01
 
-struct aciScreenEvent : XListElement
-{
+struct aciScreenEvent: XListElement {
 	int flags;
 
 	int CurTimer;
 	int MaxTimer;
 
-	XList* commSeq;
-	aciScreenKeyObject* keyObj;
+	XList *commSeq;
+	aciScreenKeyObject *keyObj;
 
-	void AddCommand(aciScreenEventCommand* p);
-	void AddKey(int code){ keyObj -> AddKey(code); }
+	void AddCommand(aciScreenEventCommand *p);
+	void AddKey(int code) {
+		keyObj->AddKey(code);
+	}
 
-	int KeyTrap(int code){ return keyObj -> KeyTrap(code); }
+	int KeyTrap(int code) {
+		return keyObj->KeyTrap(code);
+	}
 
 	void Start(void);
 	void Stop(void);
@@ -181,8 +183,7 @@ struct aciScreenEvent : XListElement
 	~aciScreenEvent(void);
 };
 
-struct aciScreenFrameSequence : XListElement
-{
+struct aciScreenFrameSequence: XListElement {
 	int ID;
 	int ResourceID;
 
@@ -192,45 +193,45 @@ struct aciScreenFrameSequence : XListElement
 
 	int FrameDelta;
 
-	void reset(void){ CurFrame = StartFrame; }
+	void reset(void) {
+		CurFrame = StartFrame;
+	}
 
 	aciScreenFrameSequence(void);
 };
 
-#define ACS_EVENT_LINE_SIZE	20
+#define ACS_EVENT_LINE_SIZE 20
 
-struct aciScreenEventLine
-{
+struct aciScreenEventLine {
 	int size;
 	int first_index;
 	int last_index;
 	int flags;
 
-	aciScreenEventCommand** table;
-	char* mem_heap;
+	aciScreenEventCommand **table;
+	char *mem_heap;
 
 	void clear(void);
-	void put(int cd,int dt0 = 0,int dt1 = 0,int dt2 = 0,int dt3 = 0);
-	aciScreenEventCommand* get(void);
+	void put(int cd, int dt0 = 0, int dt1 = 0, int dt2 = 0, int dt3 = 0);
+	aciScreenEventCommand *get(void);
 
 	aciScreenEventLine(void);
 	~aciScreenEventLine(void);
 };
 
 // aciScreenObject:type values...
-#define ACS_BASE_OBJ		0x01
-#define ACS_INPUT_FIELD_OBJ	0x02
-#define ACS_SCROLLER_OBJ	0x03
+#define ACS_BASE_OBJ 0x01
+#define ACS_INPUT_FIELD_OBJ 0x02
+#define ACS_SCROLLER_OBJ 0x03
 
 // aciScreenObject::flags...
-#define ACS_REDRAW_OBJECT	0x01
-#define ACS_ISCREEN_FONT	0x02
-#define ACS_ALIGN_CENTER	0x04
-#define ACS_ACTIVE_STRING	0x08
-#define ACS_BACK_RES		0x10
+#define ACS_REDRAW_OBJECT 0x01
+#define ACS_ISCREEN_FONT 0x02
+#define ACS_ALIGN_CENTER 0x04
+#define ACS_ACTIVE_STRING 0x08
+#define ACS_BACK_RES 0x10
 
-struct aciScreenObject : XListElement
-{
+struct aciScreenObject: XListElement {
 	int ID;
 	int type;
 
@@ -244,19 +245,22 @@ struct aciScreenObject : XListElement
 
 	int curFrame;
 	int ResID;
-	aciScreenResource* resPtr;
+	aciScreenResource *resPtr;
 
-	aciScreenFrameSequence* activeSeq;
+	aciScreenFrameSequence *activeSeq;
 
-	XList* frameSeq;
-	XList* events;
+	XList *frameSeq;
+	XList *events;
 
-	virtual void init(void){ }
+	virtual void init(void) {}
 	virtual void redraw(void);
-	virtual void Quant(void){ }
+	virtual void Quant(void) {}
 
-	virtual void change_coords(int dx,int dy){ PosX += dx; PosY += dy; }
-	virtual int CheckXY(int x,int y);
+	virtual void change_coords(int dx, int dy) {
+		PosX += dx;
+		PosY += dy;
+	}
+	virtual int CheckXY(int x, int y);
 
 	int isActive(void);
 
@@ -264,20 +268,21 @@ struct aciScreenObject : XListElement
 	void StopEvents(void);
 	void EventQuant(void);
 
-	void AddSeq(aciScreenFrameSequence* p);
-	void AddEvent(aciScreenEvent* p);
+	void AddSeq(aciScreenFrameSequence *p);
+	void AddEvent(aciScreenEvent *p);
 
-	void set_redraw(void){ flags |= ACS_REDRAW_OBJECT; }
+	void set_redraw(void) {
+		flags |= ACS_REDRAW_OBJECT;
+	}
 
-	aciScreenFrameSequence* GetSequence(int id);
+	aciScreenFrameSequence *GetSequence(int id);
 
 	aciScreenObject(void);
 	~aciScreenObject(void);
 };
 
-struct aciScreenInputField : aciScreenObject
-{
-	char* string;
+struct aciScreenInputField: aciScreenObject {
+	char *string;
 	int MaxStrLen;
 
 	int font;
@@ -298,14 +303,15 @@ struct aciScreenInputField : aciScreenObject
 
 	virtual void Quant(void);
 
-	void set_string(char* p){ strcpy(string,p); }
+	void set_string(char *p) {
+		strcpy(string, p);
+	}
 
 	aciScreenInputField(void);
 	~aciScreenInputField(void);
 };
 
-struct aciScreenScroller : aciScreenObject
-{
+struct aciScreenScroller: aciScreenObject {
 	int CurValue;
 	int MaxValue;
 
@@ -313,10 +319,10 @@ struct aciScreenScroller : aciScreenObject
 	int BackColor;
 
 	int ScrResID;
-	aciScreenResource* ScrRes;
+	aciScreenResource *ScrRes;
 
 	int sResID;
-	aciScreenResource* sRes;
+	aciScreenResource *sRes;
 
 	int ScrResSX;
 	int ScrResSY;
@@ -329,7 +335,7 @@ struct aciScreenScroller : aciScreenObject
 
 	virtual void init(void);
 	virtual void redraw(void);
-	virtual int CheckXY(int x,int y);
+	virtual int CheckXY(int x, int y);
 
 	void Change(int x);
 
@@ -337,27 +343,26 @@ struct aciScreenScroller : aciScreenObject
 	~aciScreenScroller(void);
 };
 
-struct aciScreen : XListElement
-{
+struct aciScreen: XListElement {
 	int ID;
 	int flags;
 
-	XList* events;
-	XList* objList;
+	XList *events;
+	XList *objList;
 
-	XList* resources;
+	XList *resources;
 
 	int backResID;
-	aciScreenResource* backRes;
+	aciScreenResource *backRes;
 
-	void AddEvent(aciScreenEvent* p);
-	void AddObject(aciScreenObject* p);
-	void AddResource(aciScreenResource* p);
+	void AddEvent(aciScreenEvent *p);
+	void AddObject(aciScreenObject *p);
+	void AddResource(aciScreenResource *p);
 
-	void ChangeCoords(int dx,int dy);
+	void ChangeCoords(int dx, int dy);
 
-	aciScreenObject* GetObject(int id);
-	aciScreenResource* GetResource(int id);
+	aciScreenObject *GetObject(int id);
+	aciScreenResource *GetResource(int id);
 
 	void alloc_mem(void);
 	void free_mem(void);
@@ -375,33 +380,32 @@ struct aciScreen : XListElement
 };
 
 // aciScreenDispatcher::flags...
-#define ACS_FORCED_REDRAW	0x01
-#define ACS_FIRST_REDRAW	0x02
-#define ACS_NEED_EXIT		0x04
+#define ACS_FORCED_REDRAW 0x01
+#define ACS_FIRST_REDRAW 0x02
+#define ACS_NEED_EXIT 0x04
 
-struct aciScreenDispatcher
-{
+struct aciScreenDispatcher {
 	int flags;
 	int QuantCode;
 
-	XList* scrList;
+	XList *scrList;
 
 	int curScrID;
-	aciScreen* curScr;
+	aciScreen *curScr;
 
-	XList* resources;
+	XList *resources;
 
-	aciScreenInputField* activeInput;
+	aciScreenInputField *activeInput;
 
-	aciScreenEventLine* eventLine;
-	aciScreenEventLine* flushLine;
+	aciScreenEventLine *eventLine;
+	aciScreenEventLine *flushLine;
 
-	void AddScreen(aciScreen* p);
-	void AddResource(aciScreenResource* p);
+	void AddScreen(aciScreen *p);
+	void AddResource(aciScreenResource *p);
 
-	aciScreen* GetScreen(int id);
-	aciScreenObject* GetObject(int id);
-	aciScreenResource* GetResource(int id);
+	aciScreen *GetScreen(int id);
+	aciScreenObject *GetObject(int id);
+	aciScreenResource *GetResource(int id);
 
 	void KeyTrap(int code, SDL_Event *event);
 
@@ -421,26 +425,26 @@ struct aciScreenDispatcher
 	void CancelInput(void);
 	void DoneInput(void);
 
-	void ChangeCoords(int dx,int dy);
+	void ChangeCoords(int dx, int dy);
 
-	void SetResource(int obj_id,int res_id,int fr);
-	void SetSequence(int obj_id,int seq_id);
-	void ChangeScroller(int obj_id,int x);
-	void SetScroller(int obj_id,int v,int max_v);
+	void SetResource(int obj_id, int res_id, int fr);
+	void SetSequence(int obj_id, int seq_id);
+	void ChangeScroller(int obj_id, int x);
+	void SetScroller(int obj_id, int v, int max_v);
 
-	int GetObjectValue(int obj_id,int flag = 0);
+	int GetObjectValue(int obj_id, int flag = 0);
 
 	aciScreenDispatcher(void);
 	~aciScreenDispatcher(void);
 };
 
-extern aciScreenDispatcher* acsScrD;
+extern aciScreenDispatcher *acsScrD;
 
-aciScreenResource* acsAllocResource(int type);
-void acsFreeResource(aciScreenResource* p);
+aciScreenResource *acsAllocResource(int type);
+void acsFreeResource(aciScreenResource *p);
 
-aciScreenObject* acsAllocObject(int type);
-void acsFreeObject(aciScreenObject* p);
+aciScreenObject *acsAllocObject(int type);
+void acsFreeObject(aciScreenObject *p);
 int sdlEventToCode(SDL_Event *event);
 unsigned char UTF8toCP866(unsigned short utf);
 

@@ -8,21 +8,13 @@ extern int aciCurCredits05;
 extern int aciCurCredits06;
 extern int aciCurCredits07;
 
-
-inline int aciGetCurCredits(void)
-{
-	return	 aciCurCredits00	|
-		(aciCurCredits01 << 4)	|
-		(aciCurCredits02 << 8)	|
-		(aciCurCredits03 << 12) |
-		(aciCurCredits04 << 16) |
-		(aciCurCredits05 << 20) |
-		(aciCurCredits06 << 24) |
-		(aciCurCredits07 << 28);
+inline int aciGetCurCredits(void) {
+	return aciCurCredits00 | (aciCurCredits01 << 4) | (aciCurCredits02 << 8) |
+		   (aciCurCredits03 << 12) | (aciCurCredits04 << 16) | (aciCurCredits05 << 20) |
+		   (aciCurCredits06 << 24) | (aciCurCredits07 << 28);
 };
 
-inline void aciUpdateCurCredits(int val)
-{
+inline void aciUpdateCurCredits(int val) {
 	aciCurCredits00 = val & 0x0F;
 	aciCurCredits01 = (val >> 4) & 0x0F;
 	aciCurCredits02 = (val >> 8) & 0x0F;
@@ -32,4 +24,3 @@ inline void aciUpdateCurCredits(int val)
 	aciCurCredits06 = (val >> 24) & 0x0F;
 	aciCurCredits07 = (val >> 28) & 0x0F;
 };
-

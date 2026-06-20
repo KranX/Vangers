@@ -2,23 +2,22 @@
 #define __IKEYS_H__
 #include <SDL.h>
 
-//#define _ISCREEN_GERMAN_
+// #define _ISCREEN_GERMAN_
 
-#define CUR_KEY_PRESSED 	0x01
-#define CUR_KEY_UNPRESSED	0x02
+#define CUR_KEY_PRESSED 0x01
+#define CUR_KEY_UNPRESSED 0x02
 
 #undef SHIFT_PRESSED
 
-const int 	MAX_SIZE		= 500;
+const int MAX_SIZE = 500;
 
-const int 	CTRL_PRESSED		= 0x01;
-const int 	SHIFT_PRESSED		= 0x02;
-const int 	KBD_ENABLE		= 0x04;
+const int CTRL_PRESSED = 0x01;
+const int SHIFT_PRESSED = 0x02;
+const int KBD_ENABLE = 0x04;
 
-struct KeyBuffer
-{
-	SDL_Event* table;
-	char* state_table;
+struct KeyBuffer {
+	SDL_Event *table;
+	char *state_table;
 
 	int size;
 	int first_index;
@@ -39,7 +38,7 @@ void unpress_key(SDL_Event *);
 
 void KBD_init(void);
 
-extern KeyBuffer* KeyBuf;
+extern KeyBuffer *KeyBuf;
 extern int KeyType;
 
 #endif

@@ -1,42 +1,44 @@
 #ifndef _XJOYSTICK_H
 #define _XJOYSTICK_H
 
+#include <SDL.h>
+
 //---------------------------------------------------------------------------
 
 struct XJOYSTATE {
-    long    lX;                     /* x-axis position              */
-    long    lY;                     /* y-axis position              */
-//    long    lZ;                     /* z-axis position              */
-//    long    lRx;                    /* x-axis rotation              */
-//    long    lRy;                    /* y-axis rotation              */
-//    long    lRz;                    /* z-axis rotation              */
-//    long    rglSlider[2];           /* extra axes positions         */
-//    unsigned int   rgdwPOV[4];             /* POV directions               */
-    unsigned char    rgbButtons[32];         /* 32 buttons                   */
+	long lX; /* x-axis position              */
+	long lY; /* y-axis position              */
+			 //    long    lZ;                     /* z-axis position              */
+			 //    long    lRx;                    /* x-axis rotation              */
+			 //    long    lRy;                    /* y-axis rotation              */
+			 //    long    lRz;                    /* z-axis rotation              */
+			 //    long    rglSlider[2];           /* extra axes positions         */
+			 //    unsigned int   rgdwPOV[4];             /* POV directions               */
+	unsigned char rgbButtons[32]; /* 32 buttons                   */
 };
-   
-extern XJOYSTATE  XJoystickState;
+
+extern XJOYSTATE XJoystickState;
 
 // prototypes
 bool XJoystickInit();
 void XJoystickCleanup();
-int XJoystickInput();  // updates XJoystickState if !0
+int XJoystickInput(); // updates XJoystickState if !0
 
 // constants used for scaling the input device
-#define DEADZONE        2500            // 25% of the axis range
-#define RANGE_MAX       256            // maximum positive axis value
-#define RANGE_MIN       -256           // minimum negative axis value
-#define FF_CHILD        5000            // "Child"          gain == 50%
-#define FF_ADULT        7500            // "Adult"          gain == 75%
-#define FF_BODYBUILDER  10000           // "Bodybuilder"    gain == 100%
+#define DEADZONE 2500		 // 25% of the axis range
+#define RANGE_MAX 256		 // maximum positive axis value
+#define RANGE_MIN -256		 // minimum negative axis value
+#define FF_CHILD 5000		 // "Child"          gain == 50%
+#define FF_ADULT 7500		 // "Adult"          gain == 75%
+#define FF_BODYBUILDER 10000 // "Bodybuilder"    gain == 100%
 
 // "effect flags" - these are internal identifiers and in no way map to DirectInput
-#define EF_BOUNCE   0x00000001l
-#define EF_EXPLODE  0x00000002l
-#define EF_FIRE     0x00000004l
+#define EF_BOUNCE 0x00000001l
+#define EF_EXPLODE 0x00000002l
+#define EF_FIRE 0x00000004l
 
-#define VK_BUTTON		0x100
-#define VK_STICK_SWITCH	  0x200
+#define VK_BUTTON 0x100
+#define VK_STICK_SWITCH 0x200
 enum {
 	VK_BUTTON_1 = VK_BUTTON + 1,
 	VK_BUTTON_2,
@@ -82,12 +84,7 @@ enum {
 	VK_STICK_SWITCH_9
 };
 
-enum {
-	JOYSTICK_None,
-	JOYSTICK_GamePad,
-	JOYSTICK_Joystick,
-	JOYSTICK_SteeringWheel
-};
+enum { JOYSTICK_None, JOYSTICK_GamePad, JOYSTICK_Joystick, JOYSTICK_SteeringWheel };
 
 extern int JoystickAvailable;
 extern int JoystickMode;
@@ -95,7 +92,6 @@ extern int JoystickStickSwitchButton;
 
 int JoystickWhatsPressedNow();
 int isJoystickButtonPressed(int vk_code);
-
 
 SDL_GameController *get_gamecontroller();
 SDL_Joystick *get_joystick();

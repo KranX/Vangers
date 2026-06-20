@@ -12,30 +12,26 @@
 
 #define CHAR_SPEED 2
 
-struct LIGHT_TYPE
-{
-	enum{
-		STATIONARY = 1,
-		DYNAMIC = 2,
-		STATIC = 3,
-		TOR = 4
-	};
+struct LIGHT_TYPE {
+	enum { STATIONARY = 1, DYNAMIC = 2, STATIC = 3, TOR = 4 };
 };
 
-struct LandQuake{
+struct LandQuake {
 	int x, y;
 	int Rmin, Rmax, Rcur;
 	int dx;
 
-	LandQuake(void){Rmax = 0; Rcur = 1;};
-	~LandQuake(void){};
+	LandQuake(void) {
+		Rmax = 0;
+		Rcur = 1;
+	};
+	~LandQuake(void) {};
 
 	void set(int _x, int _y, int _Rmin, int _Rmax, int _dx = 0);
 	int quant(int);
 };
 
-struct LightPoint : GeneralObject, BackgroundElement
-{
+struct LightPoint: GeneralObject, BackgroundElement {
 	int type;
 	int x, y;
 	int xn, yn;
@@ -48,24 +44,34 @@ struct LightPoint : GeneralObject, BackgroundElement
 	uchar *buf;
 	uchar *bool_buf;
 
-	void load_color_line( void );
-	void restore_color_line( void );
-	void set_position(int _x,int _y,int _z);
+	void load_color_line(void);
+	void restore_color_line(void);
+	void set_position(int _x, int _y, int _z);
 	int quant(void);
 	void BackRestore(void);
 
-	void FourLightLine( int, int, int );
-	void CreateLight(int _r,int _e,int _type);
+	void FourLightLine(int, int, int);
+	void CreateLight(int _r, int _e, int _type);
 	void Quant(void);
 
 	void Free(void);
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void MemInit(int R = 64);
 	void Destroy(void);
 };
 
-void PrepareLight( void );
-void aWriteHelpString(int count, int* x, int* y, int font, unsigned char **pstr, int timer, int color, int space, unsigned int *pcolor);
+void PrepareLight(void);
+void aWriteHelpString(
+	int count,
+	int *x,
+	int *y,
+	int font,
+	unsigned char **pstr,
+	int timer,
+	int color,
+	int space,
+	unsigned int *pcolor
+);
 
 extern int *light_table;
 extern uchar *invisible_table;

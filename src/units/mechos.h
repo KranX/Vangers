@@ -2,12 +2,12 @@
 #define __UNITS__MECHOS_H
 
 #include "../3d/3dobject.h"
-#include "../particle/light.h"
 #include "../dast/poly3d.h"
+#include "../particle/light.h"
 #include "hobj.h"
-#include "track.h"
 #include "items.h"
-//#define TEST_TRACK
+#include "track.h"
+// #define TEST_TRACK
 
 /*
 const int WORLD_FOSTRAL = 0;
@@ -44,7 +44,7 @@ const char TRK_TARGET_LINK = 78;
 const char TOTAL_REACTION_SHIFT = 8;
 const int TOTAL_REACTION = 1 << TOTAL_REACTION_SHIFT;
 
-const char MECHOS_TARGET_MOVE = 1;  //0 - DIRECT_MOVE
+const char MECHOS_TARGET_MOVE = 1; // 0 - DIRECT_MOVE
 const char MECHOS_CALC_WAY = 2;
 const char MECHOS_WAIT = 4;
 const char MECHOS_RECALC_FRONT = 8;
@@ -139,87 +139,84 @@ const int EXTERNAL_IMPULSE_TIME = 50;
 
 const int MAX_PASSAGE_DELAY = 50;
 
-struct UnitItemMatrix
-{
+struct UnitItemMatrix {
 	int ID;
 	int NumID;
-	UnitItemMatrix** DataID;
+	UnitItemMatrix **DataID;
 	int NumSlot;
-	int* SlotSize;
-	int* nSlot; 
+	int *SlotSize;
+	int *nSlot;
 	int FullNum;
 
-	void Open(Parser& in);
-	void Close(void);	
+	void Open(Parser &in);
+	void Close(void);
 	int GetFullNum(void);
-	int CheckSize(int sz,int*& p);
-	int GetSize(int sz,int*& p);
-	int CheckFree(int*& p);
+	int CheckSize(int sz, int *&p);
+	int GetSize(int sz, int *&p);
+	int CheckFree(int *&p);
 };
 
 const int UNIT_SUB_MATRIX_NUM = 9;
 
 extern int NumUnitMatrix;
-extern UnitItemMatrix* UnitMatrixData;
+extern UnitItemMatrix *UnitMatrixData;
 
-struct uvsUnitType : uvsKernel
-{
+struct uvsUnitType: uvsKernel {
 	int NumDevice;
-	StuffObject* DeviceData;
+	StuffObject *DeviceData;
 
-	UnitItemMatrix* ItemMatrix;
-	int* ItemMatrixData;
+	UnitItemMatrix *ItemMatrix;
+	int *ItemMatrixData;
 
-	int MaxVolume,Volume;
-	int MaxEnergy,MaxArmor;
-	int Armor,Energy;
-	int dEnergy,DropEnergy;
-	int DelayDrop,DropTime;
-	int uvsMaxSpeed;	
-	int MaxOxigenResource,OxigenResource, OxigenQuant;
-	int MaxPassageCount,PassageCount;
+	int MaxVolume, Volume;
+	int MaxEnergy, MaxArmor;
+	int Armor, Energy;
+	int dEnergy, DropEnergy;
+	int DelayDrop, DropTime;
+	int uvsMaxSpeed;
+	int MaxOxigenResource, OxigenResource, OxigenQuant;
+	int MaxPassageCount, PassageCount;
 
 	int DestroyClass;
 
-	int PowerFlag,aiPowerFlag;
+	int PowerFlag, aiPowerFlag;
 	int ImpulsePower;
 
 	void Init(void);
 	void Free(void);
 
-	void CreateUnitType(uvsVanger* p);
+	void CreateUnitType(uvsVanger *p);
 
-	void AddDevice(StuffObject* p);
-	void DelDevice(StuffObject* p);
+	void AddDevice(StuffObject *p);
+	void DelDevice(StuffObject *p);
 
-	virtual void ItemQuant(void);	
+	virtual void ItemQuant(void);
 	virtual void Go2World(void);
 	virtual void Go2Universe(void);
-	virtual char CheckInDevice(StuffObject* p);
-	virtual void CheckOutDevice(StuffObject* p);
+	virtual char CheckInDevice(StuffObject *p);
+	virtual void CheckOutDevice(StuffObject *p);
 
 	void AddOxigenResource(void);
-	void UseOxigenResource(void);	
+	void UseOxigenResource(void);
 };
 
-struct ActionUnit : Object
-{
-	Vector vDirect,vEnvir;
-	int EnvirAngle,EnvirLen;
-	int NumCalcUnit,NumViewUnit;
+struct ActionUnit: Object {
+	Vector vDirect, vEnvir;
+	int EnvirAngle, EnvirLen;
+	int NumCalcUnit, NumViewUnit;
 	int MaxVelocity;
 
 	int ViewRadius;
 
 	char SpeedDir;
-	int MinSpeed,MaxSpeed,CurrSpeed;
+	int MinSpeed, MaxSpeed, CurrSpeed;
 	int MaxHideSpeed;
-	int MoveAngle,DeltaSpeed,DeltaTraction;
+	int MoveAngle, DeltaSpeed, DeltaTraction;
 	char OtherFlag;
 
-	Vector vUp,vDown;
-	int Speed,Angle;
-	DBM RotMat,MovMat;
+	Vector vUp, vDown;
+	int Speed, Angle;
+	DBM RotMat, MovMat;
 	int PrevVisibility;
 
 	int Count;
@@ -229,63 +226,70 @@ struct ActionUnit : Object
 	double ActionHideMoveAccumY;
 
 	int WavePhase;
-	WaveProcess* wProcess;
+	WaveProcess *wProcess;
 
 	int nModel;
 
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Free(void);
 	void Open(void);
 	void Close(void);
 
 	void DrawQuant(void);
 
-	void CreateActionUnit(int nmodel/*Object& _model*/,int _status,const Vector& _v,int _angle,int put_mode);
+	void CreateActionUnit(
+		int nmodel /*Object& _model*/,
+		int _status,
+		const Vector &_v,
+		int _angle,
+		int put_mode
+	);
 
 	virtual void Quant(void);
 	virtual void InitEnvironment(void);
-	virtual void keyhandler(int key){std::cout<<"virtual ActionUnit::keyhandler key:"<<key<<std::endl;};
+	virtual void keyhandler(int key) {
+		std::cout << "virtual ActionUnit::keyhandler key:" << key << std::endl;
+	};
 
 	virtual void Hide2Show(void);
 	virtual void DeleteHandler(void);
 
-	void CalcTrackVector(Vector& v,int& len,int& angle1,int& angle2);
+	void CalcTrackVector(Vector &v, int &len, int &angle1, int &angle2);
 	void Action(void);
 	void HideAction(void);
 
 	void MixVector(void);
 
-	void Touch(GeneralObject* obj);	
+	void Touch(GeneralObject *obj);
 };
 
 const int AI_NAVIGATION_NORMAL = 1;
 const int AI_NAVIGATION_FAR = 2;
 
-struct TrackUnit : ActionUnit , TrackLinkType
-{
-	int aiMoveMode,aiMoveFunction;
-	TrackLinkType TestPoint,FrontPoint;	
-	int* WayDist;
-	int* WayDistData;
-	int* CalcWayDist;
-	int* TrackDist;
+struct TrackUnit: ActionUnit, TrackLinkType {
+	int aiMoveMode, aiMoveFunction;
+	TrackLinkType TestPoint, FrontPoint;
+	int *WayDist;
+	int *WayDistData;
+	int *CalcWayDist;
+	int *TrackDist;
 
 	int NoWayDirect;
 
 	TrackLinkType TargetPoint;
 
 	Vector vTarget;
-	int TargetAngle,TargetLen;
-	int EnvirReaction,TargetReaction;
+	int TargetAngle, TargetLen;
+	int EnvirReaction, TargetReaction;
 
 	int NullTime;
 	double FrontStepAccum;
 
-	char MoveDir,FrontDir;
-	BranchType* PrevBranch;
+	char MoveDir, FrontDir;
+	BranchType *PrevBranch;
 
-	int CheckPosition,MaxCheckPosition;
-	int CheckWayCount,MaxWayCount;
+	int CheckPosition, MaxCheckPosition;
+	int CheckWayCount, MaxWayCount;
 
 	int DestroyPhase;
 	int DestroyFrame;
@@ -293,9 +297,9 @@ struct TrackUnit : ActionUnit , TrackLinkType
 	int PrevWheelX[6];
 	int PrevWheelY[6];
 	int PrevWheelFlag[6];
-//	int nLeftWheel,nRightWheel;
+	//	int nLeftWheel,nRightWheel;
 
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Free(void);
 	void Open(void);
 	void Close(void);
@@ -307,12 +311,12 @@ struct TrackUnit : ActionUnit , TrackLinkType
 	int TraceWay(void);
 	void WayInit(void);
 
-	void GetNode(TrackLinkType* tp,char& dir);
+	void GetNode(TrackLinkType *tp, char &dir);
 	void GetInside(void);
-	char GetDirect(TrackLinkType* tp);
+	char GetDirect(TrackLinkType *tp);
 
-	char Check2Position(int fx,int fy,int num);
-	char TestAnalysis(TrackLinkType& tp);
+	char Check2Position(int fx, int fy, int num);
+	char TestAnalysis(TrackLinkType &tp);
 
 	void GetBranch(void);
 	void HideGetBranch(void);
@@ -326,30 +330,31 @@ struct TrackUnit : ActionUnit , TrackLinkType
 
 	void LastFire(void);
 
-	void DrawMechosParticle(int x,int y,int speed,int level,int n);
+	void DrawMechosParticle(int x, int y, int speed, int level, int n);
 
 	void Hide2Show(void);
 	void MakeTrackDist(void);
 
 	int gRnd;
-	int GeneralRND(unsigned int  m){
+	int GeneralRND(unsigned int m) {
 		gRnd ^= gRnd >> 3;
 		gRnd ^= gRnd << 28;
 		gRnd &= 0x7FFFFFFF;
-		if(!m) return 0;
+		if (!m)
+			return 0;
 		return gRnd % m;
 	};
 };
 
-struct  CharacterDataType
-{
-	int Aggressia,Hunting;
-	float KillerInstinct,FetishMaina;
-	float Aggressia2Hunting,RobberFactor;
+struct CharacterDataType {
+	int Aggressia, Hunting;
+	float KillerInstinct, FetishMaina;
+	float Aggressia2Hunting, RobberFactor;
 
-	void GetStuffOrder(int d,int a,int item,StuffObject* s);
-	void GetVangerOrder(int d,int a,VangerUnit* p,VangerUnit* n);
-	void GetInternalStuffOrder(int d,int a,int item,StuffObject* s,VangerUnit* p,VangerUnit* n);
+	void GetStuffOrder(int d, int a, int item, StuffObject *s);
+	void GetVangerOrder(int d, int a, VangerUnit *p, VangerUnit *n);
+	void
+	GetInternalStuffOrder(int d, int a, int item, StuffObject *s, VangerUnit *p, VangerUnit *n);
 };
 
 extern int vSetVangerFlag;
@@ -359,33 +364,32 @@ const int AI_SLAVE = 1;
 
 const int MAX_AMMO_USE = 2;
 
-struct GunSlot
-{
+struct GunSlot {
 	int NetID;
 	int StuffNetID;
 	int nSlot;
-	GunDevice* ItemData;
-	WorldBulletTemplate* pData;
+	GunDevice *ItemData;
+	WorldBulletTemplate *pData;
 	int RealSpeed;
 	int Time;
 	int GunStatus;
-	Vector vPlace,vFire;
-	DBM mPlace,mFire;
-	VangerUnit* Owner;
+	Vector vPlace, vFire;
+	DBM mPlace, mFire;
+	VangerUnit *Owner;
 	int ControlFlag;
-	GeneralObject* TargetObject;
-	GeneralObject* aiTargetObject;
-	int FireCount,NetFireCount;
+	GeneralObject *TargetObject;
+	GeneralObject *aiTargetObject;
+	int FireCount, NetFireCount;
 	int TableIndex;
 
-	void OpenSlot(int slot,VangerUnit* own,int ind);
+	void OpenSlot(int slot, VangerUnit *own, int ind);
 	void CloseSlot(void);
-	void OpenGun(GunDevice* p);
+	void OpenGun(GunDevice *p);
 	void CloseGun(void);
 	void Fire(void);
 	void Quant(void);
-	int CheckTarget(ActionUnit* p);
-	
+	int CheckTarget(ActionUnit *p);
+
 	void RemoteFire(void);
 
 	void NetEvent(unsigned int time);
@@ -393,17 +397,17 @@ struct GunSlot
 	void NetUpdate(void);
 };
 
-//Global Events
+// Global Events
 const int AI_EVENT_DROP = 0;
 const int AI_EVENT_CAPTURE = 1;
 const int AI_EVENT_COLLISION = 2;
 const int AI_EVENT_MAX = 3;
 
-//Local Events
+// Local Events
 const int AI_EVENT_VANGER = 4;
 const int AI_EVENT_ITEM = 5;
 
-//Check Envirinment
+// Check Envirinment
 const int AI_STATUS_NONE = 0;
 const int AI_STATUS_NOISE = 1;
 const int AI_STATUS_SPEED_FACTOR = 2;
@@ -418,55 +422,56 @@ const int AI_STATUS_WALL = 512;
 
 const int AI_MODIFIER_ELEEPOD = 0;
 const int AI_MODIFIER_BEEBOORAT = 1;
-const int AI_MODIFIER_ZEEX = 2; 
+const int AI_MODIFIER_ZEEX = 2;
 
-struct aiListElement
-{
-	aiListElement* Next;	
-	aiListElement* Prev;
+struct aiListElement {
+	aiListElement *Next;
+	aiListElement *Prev;
 };
 
-struct aiListType
-{
-	aiListElement* Tail;
+struct aiListType {
+	aiListElement *Tail;
 	int Num;
 	void Init(void);
 	void Free(void);
-	void Connect(aiListElement* p);
-	void Disconnect(aiListElement* p);
+	void Connect(aiListElement *p);
+	void Disconnect(aiListElement *p);
 };
 
-struct aiUnitEvent : aiListElement
-{
+struct aiUnitEvent: aiListElement {
 	int ID;
 	int Refresh;
-	int Time;	
-	VangerUnit* Subj;	
-	GeneralObject* Obj;
+	int Time;
+	VangerUnit *Subj;
+	GeneralObject *Obj;
 };
 
 extern int TotalVangerSpeed;
 
-extern int aiReadEvent,aiWriteEvent;
+extern int aiReadEvent, aiWriteEvent;
 const int AI_GLOBAL_EVENT_MAX = 500;
 extern int aiNumGlobalEvent[2][AI_EVENT_MAX];
 extern aiUnitEvent aiGlobalEventData[2][AI_EVENT_MAX][AI_GLOBAL_EVENT_MAX];
 
-#define PUT_GLOBAL_EVENT(type,id,obj,subj)  { if(aiNumGlobalEvent[aiWriteEvent][type] < AI_GLOBAL_EVENT_MAX){\
-										    aiGlobalEventData[aiWriteEvent][type][aiNumGlobalEvent[aiWriteEvent][type]].Obj = obj;\
-										    aiGlobalEventData[aiWriteEvent][type][aiNumGlobalEvent[aiWriteEvent][type]].Subj = subj;\
-										    aiGlobalEventData[aiWriteEvent][type][aiNumGlobalEvent[aiWriteEvent][type]].ID = id;\
-										    aiGlobalEventData[aiWriteEvent][type][aiNumGlobalEvent[aiWriteEvent][type]].Refresh = 1;\
-										    aiNumGlobalEvent[aiWriteEvent][type]++;}\
-										}\
+#define PUT_GLOBAL_EVENT(type, id, obj, subj)                                                      \
+	{                                                                                              \
+		if (aiNumGlobalEvent[aiWriteEvent][type] < AI_GLOBAL_EVENT_MAX) {                          \
+			aiGlobalEventData[aiWriteEvent][type][aiNumGlobalEvent[aiWriteEvent][type]].Obj = obj; \
+			aiGlobalEventData[aiWriteEvent][type][aiNumGlobalEvent[aiWriteEvent][type]].Subj =     \
+				subj;                                                                              \
+			aiGlobalEventData[aiWriteEvent][type][aiNumGlobalEvent[aiWriteEvent][type]].ID = id;   \
+			aiGlobalEventData[aiWriteEvent][type][aiNumGlobalEvent[aiWriteEvent][type]].Refresh =  \
+				1;                                                                                 \
+			aiNumGlobalEvent[aiWriteEvent][type]++;                                                \
+		}                                                                                          \
+	}
 
 const int AI_RESOLVE_ATTACK = 0;
 const int AI_RESOLVE_FIND = 1;
 const int AI_RESOLVE_NOWAY = 2;
 const int AI_RESOLVE_FORCE = 3;
 
-struct aiUnitResolve : aiListElement
-{
+struct aiUnitResolve: aiListElement {
 	int Type;
 	UnitOrderType Obj;
 	int rStatus;
@@ -505,15 +510,16 @@ const int AI_ACTION_THIEF = 7;
 
 const int MAX_CHECK_AROUND = 5;
 
-struct aiResolveList : aiListType
-{
-	void ClearResolve(void);	
-	void ClearResolve(int type,UnitOrderType obj);
+struct aiResolveList: aiListType {
+	void ClearResolve(void);
+	void ClearResolve(int type, UnitOrderType obj);
 	void ClearResolveForce(UnitOrderType obj);
 
-	aiUnitResolve* FindResolve(int type,UnitOrderType obj);
-	aiUnitResolve* AddResolve(int type,UnitOrderType obj,int level = 0,int status = AI_RESOLVE_STATUS_NONE);
-	aiUnitResolve* FastAddResolve(int type,UnitOrderType obj,int level = 0,int status = AI_RESOLVE_STATUS_NONE);
+	aiUnitResolve *FindResolve(int type, UnitOrderType obj);
+	aiUnitResolve *
+	AddResolve(int type, UnitOrderType obj, int level = 0, int status = AI_RESOLVE_STATUS_NONE);
+	aiUnitResolve *
+	FastAddResolve(int type, UnitOrderType obj, int level = 0, int status = AI_RESOLVE_STATUS_NONE);
 };
 
 const int NET_OPEN_DOOR = 1;
@@ -548,56 +554,55 @@ const int AI_ADD_BACK_COLLISION = 1;
 const int AI_ADD_SIDE_COLLISION = 2;
 const int AI_ADD_ATTACK = 3;
 
-struct aiFactorType
-{
-//MainSection
+struct aiFactorType {
+	// MainSection
 	int aiSection;
 
-	int aiAttackUp,aiAttackDown;
-	int aiRunUp,aiRunDown;
-	int aiIgnoreUp,aiIgnoreDown;
-	int aiNoWayUp,aiNoWayDown;
+	int aiAttackUp, aiAttackDown;
+	int aiRunUp, aiRunDown;
+	int aiIgnoreUp, aiIgnoreDown;
+	int aiNoWayUp, aiNoWayDown;
 
-	float aiFactorAttack,aiFactorRun,aiFactorIgnore,aiFactorNoWay;
+	float aiFactorAttack, aiFactorRun, aiFactorIgnore, aiFactorNoWay;
 	float aiRacerAttack;
 
-	int aiMainLevel,aiDeltaLevel;
+	int aiMainLevel, aiDeltaLevel;
 
 	int aiFindLevel;
 
-	int aiAddAttack,aiMaxAttack;
-	int aiAddView,aiMaxView;
-	int aiAddFrontCollision,aiMaxFrontCollision;
-	int aiAddBackCollision,aiMaxBackCollision;
-	int aiAddSideCollision,aiMaxSideCollision;
-	int aiAddAlarm,aiMaxAlarm;
+	int aiAddAttack, aiMaxAttack;
+	int aiAddView, aiMaxView;
+	int aiAddFrontCollision, aiMaxFrontCollision;
+	int aiAddBackCollision, aiMaxBackCollision;
+	int aiAddSideCollision, aiMaxSideCollision;
+	int aiAddAlarm, aiMaxAlarm;
 
 	float aiFuryLevel;
-//AlarmSection
+	// AlarmSection
 
-	float aiAlarmRun,aiAlarmAttack;
-	float aiAmmoRun,aiAmmoAttack;
-	float aiArmorRun,aiArmorAttack;	
-	
-//TargetSection
+	float aiAlarmRun, aiAlarmAttack;
+	float aiAmmoRun, aiAmmoAttack;
+	float aiArmorRun, aiArmorAttack;
 
-	float aiMultyAttack,aiTargetAttack,aiTargetFind;
+	// TargetSection
 
-//OtherSection
-	float aiDollyAttack,aiDollyRun;
-	float aiDominanceAttack,aiDominanceRun;
+	float aiMultyAttack, aiTargetAttack, aiTargetFind;
 
-	float aiFrontOverAttack,aiFrontOverRun,aiFrontOverIgnore,aiFrontOverNoWay;
-	float aiBackOverAttack,aiBackOverRun,aiBackOverIgnore,aiBackOverNoWay;
-	float aiFrontUnderAttack,aiFrontUnderRun,aiFrontUnderIgnore,aiFrontUnderNoWay;
-	float aiBackUnderAttack,aiBackUnderRun,aiBackUnderIgnore,aiBackUnderNoWay;
+	// OtherSection
+	float aiDollyAttack, aiDollyRun;
+	float aiDominanceAttack, aiDominanceRun;
 
-	float aiVisibleRun,aiVisibleAttack;
-	float aiInvisibleRun,aiInvisibleAttack;
-	float aiAttackTime;	
-	
-	void FactorOpen(aiFactorType* in);
-	void FactorLoad(Parser& in);	
+	float aiFrontOverAttack, aiFrontOverRun, aiFrontOverIgnore, aiFrontOverNoWay;
+	float aiBackOverAttack, aiBackOverRun, aiBackOverIgnore, aiBackOverNoWay;
+	float aiFrontUnderAttack, aiFrontUnderRun, aiFrontUnderIgnore, aiFrontUnderNoWay;
+	float aiBackUnderAttack, aiBackUnderRun, aiBackUnderIgnore, aiBackUnderNoWay;
+
+	float aiVisibleRun, aiVisibleAttack;
+	float aiInvisibleRun, aiInvisibleAttack;
+	float aiAttackTime;
+
+	void FactorOpen(aiFactorType *in);
+	void FactorLoad(Parser &in);
 };
 
 const int AI_FACTOR_NUM = 13;
@@ -620,7 +625,6 @@ const int AI_FACTOR_TRANSPORT = 10;
 const int AI_FACTOR_OTHER_GAMER = 11;
 const int AI_FACTOR_ALARM_GAMER = 12;
 
-
 const float AI_MAX_DOLLY_FACTOR = 10000;
 
 const int MAX_ADD_ATTACK_TIME = 40;
@@ -636,8 +640,7 @@ const int TABUTASK_COUNT_OTHER = 16;
 
 const int SAFE_STUFF_MAX = 3;
 
-struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
-{
+struct VangerUnit: TrackUnit, uvsUnitType, aiFactorType {
 	Vector vMove;
 
 	int ShellNetID;
@@ -654,60 +657,64 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 
 	Vector aiNearTrack;
 	int aiResolveWayEnable;
-	int aiModifier;	
-	aiUnitResolve* aiLocalTarget;
+	int aiModifier;
+	aiUnitResolve *aiLocalTarget;
 
 	int aiScanDist;
-	int aiReactionTime,aiReactionTimeMax;
+	int aiReactionTime, aiReactionTimeMax;
 	int aiVangerRadius;
-	int aiFirstItem,aiSecondItem;
+	int aiFirstItem, aiSecondItem;
 	int aiItemRadius;
 
 	int MixVectorEnable;
 
-	BranchType* aiRunBranch;
-	NodeType* aiRunNode;
+	BranchType *aiRunBranch;
+	NodeType *aiRunNode;
 	Vector vRunStartPosition;
 	int RunStartDist;
 	int RunTimeProcess;
 
 	void TargetAnalysis(void);
 	void ResolveGenerator(void);
-	
+
 	void NoWayHandler(void);
 
-	void ResolveHandler(aiUnitResolve* p);
-	int CheckReturn2Track(void);	
-	void GetForceWay(int d2,Vector& v);
+	void ResolveHandler(aiUnitResolve *p);
+	int CheckReturn2Track(void);
+	void GetForceWay(int d2, Vector &v);
 	void WeaponGenerator(void);
-	int CheckNearTrack(void);	
+	int CheckNearTrack(void);
 
-	aiUnitEvent* AddEvent(int id,GeneralObject* obj,VangerUnit* subj);
-	void ClearSubjEvent(VangerUnit* subj);
-	void ClearObjEvent(GeneralObject* obj);
-	void ClearEvent(GeneralObject* obj);
-	
+	aiUnitEvent *AddEvent(int id, GeneralObject *obj, VangerUnit *subj);
+	void ClearSubjEvent(VangerUnit *subj);
+	void ClearObjEvent(GeneralObject *obj);
+	void ClearEvent(GeneralObject *obj);
+
 	void MainOrderInit(void);
-	int GetAllert(VangerUnit* p);
-	void StuffDestroyHandler(GeneralObject* p);
-	void VangerDestroyHandler(GeneralObject* p);		
+	int GetAllert(VangerUnit *p);
+	void StuffDestroyHandler(GeneralObject *p);
+	void VangerDestroyHandler(GeneralObject *p);
 	void InitAI(void);
-	void CheckFind(aiUnitResolve* p,Vector v);
+	void CheckFind(aiUnitResolve *p, Vector v);
 
-	void ResolveHandlerForce(aiUnitResolve* p);
-	void ResolveHandlerFind(aiUnitResolve* p);
-	void ResolveHandlerAttack(aiUnitResolve* p);
+	void ResolveHandlerForce(aiUnitResolve *p);
+	void ResolveHandlerFind(aiUnitResolve *p);
+	void ResolveHandlerAttack(aiUnitResolve *p);
 
-	aiUnitResolve* AddFindResolve(int type,UnitOrderType obj,int level = 0,int status = AI_RESOLVE_STATUS_NONE);
-	aiUnitEvent* FindEvent(VangerUnit* subj,GeneralObject* obj);
-	void NoWayInit(void){if(NoWayEnable == AI_NO_WAY_NONE) NoWayEnable = AI_NO_WAY_CALC;};
+	aiUnitResolve *
+	AddFindResolve(int type, UnitOrderType obj, int level = 0, int status = AI_RESOLVE_STATUS_NONE);
+	aiUnitEvent *FindEvent(VangerUnit *subj, GeneralObject *obj);
+	void NoWayInit(void) {
+		if (NoWayEnable == AI_NO_WAY_NONE)
+			NoWayEnable = AI_NO_WAY_CALC;
+	};
 	void CalcImpulse(void);
 	void CalcForce(void);
 
 	void CalcWeaponDelta(void);
-	void AddEventTime(VangerUnit* p,int delta,int mode);
+	void AddEventTime(VangerUnit *p, int delta, int mode);
 
-	void ResolveFindDestroy(aiUnitResolve* p);
+	void ResolveFindDestroy(aiUnitResolve *p);
 	void GamerOrderInit(void);
 
 	int aiMaxJumpRadius;
@@ -717,107 +724,107 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 	int MaxSeed;
 
 	int LowAmmo;
-	int LowArmor,ArmorAlarm;
+	int LowArmor, ArmorAlarm;
 
 	int aiAlarmTime;
 	int aiDamage;
 	int SpeedFactorTime;
-	VangerUnit* aiDamageData;
+	VangerUnit *aiDamageData;
 
 	float aiResolveFactor[MAX_AI_FACTOR];
 
-	void CalcAiFactor(VangerUnit* p,int ind);
+	void CalcAiFactor(VangerUnit *p, int ind);
 
-	int aiRelaxTime,aiRealxRadius,aiRelaxTimeMax;
+	int aiRelaxTime, aiRealxRadius, aiRelaxTimeMax;
 	Vector aiRelaxData;
 
 	int WallCollisionTime;
-	int DeltaTractionTime,TractionValue,TractionStat;
+	int DeltaTractionTime, TractionValue, TractionStat;
 
-	StuffObject* CoptePoint;
-	StuffObject* MolePoint;
-	StuffObject* SwimPoint;
+	StuffObject *CoptePoint;
+	StuffObject *MolePoint;
+	StuffObject *SwimPoint;
 
 	int AttackRadius;
-	int aiReactionCheckTime,aiReactionMode,aiReactionCheckTimeMax;
+	int aiReactionCheckTime, aiReactionMode, aiReactionCheckTimeMax;
 
 	int AddAttackTime;
 
-	int BeebonationFlag,SensorEnable;
+	int BeebonationFlag, SensorEnable;
 
 	void DestroyEnvironment(void);
 	void GetWeaponDelta(void);
 
 	int UseDeviceMask;
 	int VangerRaceStatus;
-//----------------------------------------------------------
-	int DoorFlag,nDoorFlag;
+	//----------------------------------------------------------
+	int DoorFlag, nDoorFlag;
 	int NetCreateID;
 	int NetExternalSensor;
-	unsigned char NetDestroyID;		
+	unsigned char NetDestroyID;
 
 	int LastMole;
-	dastPoly3D* MoleTool;
-	dastPoly3D* MolePoint1;
-	dastPoly3D* MolePoint2;
+	dastPoly3D *MoleTool;
+	dastPoly3D *MolePoint1;
+	dastPoly3D *MolePoint2;
 	int Molerizator;
 	Vector MoleTrailPrev;
 	int MoleTrailStep;
 	int MoleTrailValid;
 	int VangerCloneID;
 
-	VangerUnit* VangerChanger;
+	VangerUnit *VangerChanger;
 	int MechosChangerType;
 	int VangerChangerCount;
 	Vector vChangerPosition;
 	int VangerChangerAngle;
-	int VangerChangerArmor,VangerChangerEnergy;
+	int VangerChangerArmor, VangerChangerEnergy;
 	int VangerChangerColor;
 
 	unsigned char NetChanger;
 	unsigned char NetFunction;
 	unsigned int NetRuffaGunTime;
-	unsigned int NetProtractorFunctionTime,NetMessiahFunctionTime;
-	unsigned int NetFunction83Time,PrevNetFunction83Time;
+	unsigned int NetProtractorFunctionTime, NetMessiahFunctionTime;
+	unsigned int NetFunction83Time, PrevNetFunction83Time;
 
 	GunSlot GunSlotData[MAX_ACTIVE_SLOT];
 
 	int RuffaGunTime;
 
-	SensorDataType* TouchKeyObject;
+	SensorDataType *TouchKeyObject;
 	int TouchKeyObjectFlag;
 
-	int ExternalMode,ExternalTime,ExternalLock,ExternalDraw,ExternalAngle;
+	int ExternalMode, ExternalTime, ExternalLock, ExternalDraw, ExternalAngle;
 	int ExternalTime2;
-	SensorDataType* ExternalObject;
-	SensorDataType* ExternalLastSensor;
-	SensorDataType* ExternalSensor;
+	SensorDataType *ExternalObject;
+	SensorDataType *ExternalLastSensor;
+	SensorDataType *ExternalSensor;
 	int UpdateStationActive;
 	int UpdateStationTouched;
 
-	PlayerData* pNetPlayer;
-	
-	int NetworkArmor,NetworkEnergy;	
+	PlayerData *pNetPlayer;
+
+	int NetworkArmor, NetworkEnergy;
 	int TabuUse;
 
-//For Secret WORLD
+	// For Secret WORLD
 	int CheckPointCount;
-	int MaxKhoxPoison,KhoxPoison;
+	int MaxKhoxPoison, KhoxPoison;
 
-	int PlayerDestroyFlag;		
+	int PlayerDestroyFlag;
 
 	int PrevImpuseFrame;
 
-	void Init(StorageType* s);
+	void Init(StorageType *s);
 	void Free(void);
 
-//	void CreateAI(void);
+	//	void CreateAI(void);
 
-	void TouchSensor(SensorDataType* p);
-	void AutomaticTouchSensor(SensorDataType* p);
-	void StopTouchSensor(SensorDataType* p);
+	void TouchSensor(SensorDataType *p);
+	void AutomaticTouchSensor(SensorDataType *p);
+	void StopTouchSensor(SensorDataType *p);
 
-	void Touch(GeneralObject* p);
+	void Touch(GeneralObject *p);
 	void SensorQuant(void);
 
 	void Action(void);
@@ -833,26 +840,26 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 	void InitEnvironment(void);
 	void CreateVangerUnit(void);
 
-	void CreateParticleRotor(const Vector& v,int r);
-	void CreateParticleMechos(const Vector& v,int r, int type = 0);	
+	void CreateParticleRotor(const Vector &v, int r);
+	void CreateParticleMechos(const Vector &v, int r, int type = 0);
 
 	void AddFree(void);
-	void AddPassage(SensorDataType* p);
-	void AddEscave(SensorDataType* p);
-	void AddSpot(SensorDataType* p);
+	void AddPassage(SensorDataType *p);
+	void AddEscave(SensorDataType *p);
+	void AddSpot(SensorDataType *p);
 
-	void ItemQuant(void);	
-	void Go2World(void); //znfo !!!
-	void Go2Universe(void); //znfo !!!
-	char CheckInDevice(StuffObject* p); //znfo !!!
-	void CheckOutDevice(StuffObject* p); //znfo !!!
+	void ItemQuant(void);
+	void Go2World(void);				 // znfo !!!
+	void Go2Universe(void);				 // znfo !!!
+	char CheckInDevice(StuffObject *p);	 // znfo !!!
+	void CheckOutDevice(StuffObject *p); // znfo !!!
 
 	void Hide2Show(void);
 
 	void DeleteHandler(void);
 
-	void BulletCollision(int pow,GeneralObject* p);
-	void DestroyCollision(int l,Object* p);
+	void BulletCollision(int pow, GeneralObject *p);
+	void DestroyCollision(int l, Object *p);
 	int test_objects_collision();
 
 	void LocalScan(void);
@@ -861,19 +868,19 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 	void TerrainQuant(void);
 
 	void MoleProcessQuant(void);
-	void SetMechos(int n); //znfo !!!
+	void SetMechos(int n); // znfo !!!
 
 #ifdef TEST_TRACK
 	void DestroyAroundBarrel(void);
 #endif
 	int CheckStartJump(void);
 
-	void DrawMechosParticle(int x,int y,int speed,int level,int n);
+	void DrawMechosParticle(int x, int y, int speed, int level, int n);
 
 	void SendCameraData(void);
 	void ChangeVangerProcess(void);
-	void InCarNator(void); //znfo !!!
-	void OutCarNator(void); //znfo !!!
+	void InCarNator(void);	// znfo !!!
+	void OutCarNator(void); // znfo !!!
 
 	void StartMoleProcess(void);
 	void MapQuant(void);
@@ -885,29 +892,28 @@ struct VangerUnit : TrackUnit , uvsUnitType , aiFactorType
 
 	int CheckSpeetle(void);
 
-	void NetCreateVanger(uvsPassage* pp,uvsEscave* pe,uvsSpot* ps);
-	void NetEvent(int type,int id,int creator,int time,int x,int y,int radius_);
-	void ShellNetEvent(int type,int id,int creator,int time,int x,int y,int radius_);
-	void NetCreateSlave(void);	
-	void InitPlayerPoint(PlayerData* p);	
+	void NetCreateVanger(uvsPassage *pp, uvsEscave *pe, uvsSpot *ps);
+	void NetEvent(int type, int id, int creator, int time, int x, int y, int radius_);
+	void ShellNetEvent(int type, int id, int creator, int time, int x, int y, int radius_);
+	void NetCreateSlave(void);
+	void InitPlayerPoint(PlayerData *p);
 
 	int CheckInMatrix(int sz);
 	int CheckOutMatrix(int sz);
 
 	void ShellUpdate(void);
 
-	void DischargeItem(StuffObject* p);
-	void DestroyItem(StuffObject* p);
+	void DischargeItem(StuffObject *p);
+	void DestroyItem(StuffObject *p);
 
 	void ClearItemList(void);
 };
 
-struct InsectUnit : ActionUnit
-{
+struct InsectUnit: ActionUnit {
 	Vector Target;
 	int BeebType;
 	double VisibleDirectSpeedAccum;
-	double HideMoveAccumX,HideMoveAccumY;
+	double HideMoveAccumX, HideMoveAccumY;
 
 	void Init(void);
 
@@ -915,54 +921,51 @@ struct InsectUnit : ActionUnit
 
 	void Quant(void);
 	void InitEnvironment(void);
-	void Touch(GeneralObject* p);
+	void Touch(GeneralObject *p);
 	int test_objects_collision();
 	void HideAction(void);
 };
 
-struct ModelDispatcher
-{
+struct ModelDispatcher {
 	int MaxModel;
-	Object* Data;
-	char** NameData;
+	Object *Data;
+	char **NameData;
 
-	void Init(Parser& in);
+	void Init(Parser &in);
 	void Free(void);
 
-	Object& ActiveModel(char id);
-	int FindModel(const char* name);
+	Object &ActiveModel(char id);
+	int FindModel(const char *name);
 };
 
-struct CompasTargetType
-{
+struct CompasTargetType {
 	int ID;
 	UnitOrderType Data;
-	char* Name;
-	char* aciName;
-	CompasTargetType* Next;
-	CompasTargetType* Prev;
+	char *Name;
+	char *aciName;
+	CompasTargetType *Next;
+	CompasTargetType *Prev;
 	int dFlag;
 };
 
-struct CompasObject
-{
-	int x,y;
+struct CompasObject {
+	int x, y;
 	int FrameCount;
 	Vector vMove;
-	CompasTargetType* TargetData;
-	CompasTargetType* CurrentTarget;
+	CompasTargetType *TargetData;
+	CompasTargetType *CurrentTarget;
 
 	void Init(void);
 	void Open(void);
 	void Close(void);
 	void Free(void);
 	void Quant(void);
-	void AddTarget(int id,UnitOrderType d,char* n1,const char* n2);
-	void DeleteTarget(CompasTargetType* p);
+	void AddTarget(int id, UnitOrderType d, char *n1, const char *n2);
+	void DeleteTarget(CompasTargetType *p);
 };
 
-//const int SPEETLE_AMMO = 0;
-//const int CRUSTEST_AMMO = 1;
+// const int SPEETLE_AMMO = 0;
+// const int CRUSTEST_AMMO = 1;
 
 const int RES_DRAW_LEFT = 80;
 const int RES_DRAW_RIGHT = 100;
@@ -978,7 +981,7 @@ const int PROTRACTOR_PALLADIUM = 4;
 const int PROTRACTOR_BEEBOS_DANCE = 5;
 const int PROTRACTOR_JESTEROID = 6;
 const int PROTRACTOR_MOLERIZATOR = 7;
-const int PROTRACTOR_PREPASSAGE  = 8;
+const int PROTRACTOR_PREPASSAGE = 8;
 const int MECHANIC_UNVISIBLE = 9;
 const int MECHANIC_GAME_OVER = 10;
 const int MECHANIC_ITEM_FALL = 11;
@@ -992,15 +995,14 @@ const int FIRE_GARDEN_RADIUS = 40;
 const int FIRE_GARDEN_START = 50;
 const int FIRE_GARDEN_NUM = 8;
 
-struct VangerFunctionType
-{
+struct VangerFunctionType {
 	int ID;
 	Vector vR;
-	int Time,LifeTime;
-	VangerFunctionType* Next;
-	VangerFunctionType* Prev;
+	int Time, LifeTime;
+	VangerFunctionType *Next;
+	VangerFunctionType *Prev;
 
-	void Init(int _ID,Vector _vR,int _Time,int _External = 0);
+	void Init(int _ID, Vector _vR, int _Time, int _External = 0);
 	void Quant(void);
 	void SoundQuant(void);
 };
@@ -1008,78 +1010,77 @@ struct VangerFunctionType
 const int LOCATOR_DATA_SIZE = 100;
 const int LOCATOR_DATA_RADIUS = 300;
 
-const int GAME_OVER_EVENT_TIME = 20*15;
+const int GAME_OVER_EVENT_TIME = 20 * 15;
 
-struct ActionDispatcher : UnitList 
-{
+struct ActionDispatcher: UnitList {
 	int PassageTouchEnable;
 
 	int CameraModifier;
 	int SpobsEntrance;
-	VangerUnit* Active;
+	VangerUnit *Active;
 
-	dastPoly3D* SignEngine;
-	int hMokKeyEnable,XploKeyEnable;
+	dastPoly3D *SignEngine;
+	int hMokKeyEnable, XploKeyEnable;
 
-	int LocatorNum,LocatorOffset;
-	Object* LocatorData[LOCATOR_DATA_SIZE];
-	Object* LocatorPoint;
+	int LocatorNum, LocatorOffset;
+	Object *LocatorData[LOCATOR_DATA_SIZE];
+	Object *LocatorPoint;
 
 	LightPoint LightData;
-	LightPoint* ProtractorLight;
+	LightPoint *ProtractorLight;
 	int NumVisibleVanger;
 
 	int NumResolve;
 
-	int PromptPodishFreeVisit,PromptIncubatorFreeVisit;
+	int PromptPodishFreeVisit, PromptIncubatorFreeVisit;
 	int PromptChangeCycleCount;
 	int PromptCurrentWay;
-	int PromptPodishCount,PromptIncubatorCount;
-	int PromptPrevY,PromptPrevTime;
+	int PromptPodishCount, PromptIncubatorCount;
+	int PromptPrevY, PromptPrevTime;
 
-	StuffObject* BigZek;
+	StuffObject *BigZek;
 	int WorldSeedNum;
 
-	int SpobsDestroy,ThreallDestroy;
-	int SpobsDestroyActive,ThreallDestroyActive;
-	int FunctionSpobsDestroyActive,FunctionThreallDestroyActive;
+	int SpobsDestroy, ThreallDestroy;
+	int SpobsDestroyActive, ThreallDestroyActive;
+	int FunctionSpobsDestroyActive, FunctionThreallDestroyActive;
 	int SpummyRunner;
 	int LuckyFunction;
 
-	unsigned char NetFunctionProtractor,NetFunctionMessiah;
+	unsigned char NetFunctionProtractor, NetFunctionMessiah;
 	int NetEnterOffset;
-//	int FishWarriorNum;
+	//	int FishWarriorNum;
 
-	void Init(Parser& in);
+	void Init(Parser &in);
 	void Free(void);
-	void Open(Parser& in);
+	void Open(Parser &in);
 	void Close(void);
 	void Quant(void);
 	void keyhandler(int key);
 
-	VangerUnit* GetNextVanger(ActionUnit* p);
-	void DeleteUnit(ActionUnit* p);
+	VangerUnit *GetNextVanger(ActionUnit *p);
+	void DeleteUnit(ActionUnit *p);
 	void CameraQuant(void);
 
 	void ActiveAllTerminator(void);
 	void ActiveTerminatorSlot(int n);
 
-//-----------------------------------------------------------------------------	
+	//-----------------------------------------------------------------------------
 
 	int DrawResourceMaxValue;
 	int DrawResourceValue;
-	int DrawResourceTime;	
+	int DrawResourceTime;
 
-//	int HotBug;	
+	//	int HotBug;
 	int DoorEnable;
 
-	StuffObject* Slot[MAX_ACTIVE_SLOT];
-	
-	void CreateActive(VangerUnit* p);
+	StuffObject *Slot[MAX_ACTIVE_SLOT];
 
-	void CheckDevice(StuffObject* p);
-	void SlotIn(int n,StuffObject* p);
-	void SlotOut(StuffObject* p);
+	void CreateActive(VangerUnit *p);
+
+	void CheckDevice(StuffObject *p);
+	void SlotIn(int n, StuffObject *p);
+	void SlotOut(StuffObject *p);
 
 	void ActiveAllSlots(void);
 	void DeactiveAllSlots(void);
@@ -1088,51 +1089,48 @@ struct ActionDispatcher : UnitList
 	void AddWaterResource(void);
 	void AddFireResource(void);
 	void AddFlyResource(void);
-	
+
 	void UseFlyResource(void);
-	
+
 	void DrawResource(void);
 	void UseMole(void);
 
-	int FlyTaskFirstY,FlyTaskLastY,FlyTaskDirect;
+	int FlyTaskFirstY, FlyTaskLastY, FlyTaskDirect;
 	int FlyTaskEnable;
-//----------------------------------------------------------------
+	//----------------------------------------------------------------
 
-	VangerUnit* pfActive;
-	VangerUnit* mfActive;
+	VangerUnit *pfActive;
+	VangerUnit *mfActive;
 
-
-	VangerFunctionType* fTail;
-	void AddFunction(VangerFunctionType* p);
-	void DeleteFunction(VangerFunctionType* p);
-	int NewFunction(int id,int tp);
+	VangerFunctionType *fTail;
+	void AddFunction(VangerFunctionType *p);
+	void DeleteFunction(VangerFunctionType *p);
+	int NewFunction(int id, int tp);
 	void FunctionQuant(void);
 	void ClearMessiah(void);
 	void ClearProtractor(void);
-	void AddCoolFunction(int _ID,Vector _vR,int _Time,int _External = 0);
+	void AddCoolFunction(int _ID, Vector _vR, int _Time, int _External = 0);
 
 	void ChangeLocator(void);
-	void NetEvent(int type,int id);
-	void ShellNetEvent(int type,int id);
+	void NetEvent(int type, int id);
+	void ShellNetEvent(int type, int id);
 
 	void PromptInit(int ind);
 	void PromptChangeCycle(void);
 	void PromptQuant(void);
 };
 
-
-//zNfo beeb price
+// zNfo beeb price
 
 const int MAX_INSECT_TYPE = 3;
-const int INSECT_PRICE_DATA[MAX_INSECT_TYPE] = {1,10,100};
+const int INSECT_PRICE_DATA[MAX_INSECT_TYPE] = {1, 10, 100};
 
-struct InsectList : UnitBaseListType
-{
+struct InsectList: UnitBaseListType {
 	int NumInsect[MAX_INSECT_TYPE];
 
-	InsectUnit* Data;
+	InsectUnit *Data;
 	void Init(void);
-	void FreeUnit(GeneralObject* p);
+	void FreeUnit(GeneralObject *p);
 	void Free(void);
 	void Quant(void);
 };
@@ -1142,26 +1140,39 @@ extern InsectList InsectD;
 extern ActionDispatcher ActD;
 extern ModelDispatcher ModelD;
 
-char CheckAddLink(LinkType* l,BranchType* b,char s);
-char CheckDecLink(LinkType* l,BranchType* b,char s);
+char CheckAddLink(LinkType *l, BranchType *b, char s);
+char CheckDecLink(LinkType *l, BranchType *b, char s);
 
-int GetAngle(int x0,int y0,int x1,int y1,int x2,int y2);
-char CheckInLink(Vector& v,LinkType* pl,LinkType* nl);
-char CheckInNode(Vector& v,NodeType* n);
-char CheckInBranch(Vector& v,LinkType* pl,LinkType* nl,BranchType* b);
+int GetAngle(int x0, int y0, int x1, int y1, int x2, int y2);
+char CheckInLink(Vector &v, LinkType *pl, LinkType *nl);
+char CheckInNode(Vector &v, NodeType *n);
+char CheckInBranch(Vector &v, LinkType *pl, LinkType *nl, BranchType *b);
 
-int LinkDist(int x,int y,int x1,int y1,int x2,int y2);
-void LinkDist(int x,int y,int x1,int y1,int x2,int y2,int radius,Vector& v);
-void PointDist(int dx,int dy,int dz,int r,int radius,char dir,Vector& vd,Vector& v);
-void LenDist(int x,int y,int z,int x1,int y1,int z1,int dist,int radius,Vector& v);
-void AxisLen(Vector vA0,Vector vA1,Vector vC,Vector& vR);
+int LinkDist(int x, int y, int x1, int y1, int x2, int y2);
+void LinkDist(int x, int y, int x1, int y1, int x2, int y2, int radius, Vector &v);
+void PointDist(int dx, int dy, int dz, int r, int radius, char dir, Vector &vd, Vector &v);
+void LenDist(int x, int y, int z, int x1, int y1, int z1, int dist, int radius, Vector &v);
+void AxisLen(Vector vA0, Vector vA1, Vector vC, Vector &vR);
 
-char GetNodeDist(TrackLinkType* p1,TrackLinkType* p2);
+char GetNodeDist(TrackLinkType *p1, TrackLinkType *p2);
 
-void section_prepare(int xg0,int yg0,int xg1,int yg1,int xg2,int yg2,int xg3,int yg3,int z_mechous,
-		       double& A,double& B,double& Z_AVR,DBV& normal);
+void section_prepare(
+	int xg0,
+	int yg0,
+	int xg1,
+	int yg1,
+	int xg2,
+	int yg2,
+	int xg3,
+	int yg3,
+	int z_mechous,
+	double &A,
+	double &B,
+	double &Z_AVR,
+	DBV &normal
+);
 
-StuffObject* GetStuffObject(uvsUnitType* g,int n);
+StuffObject *GetStuffObject(uvsUnitType *g, int n);
 
 void ClearTabutaskTarget(void);
 
@@ -1170,23 +1181,22 @@ extern CompasObject CompasObj;
 extern Vector vInsectTarget;
 extern int UnitGlobalTime;
 
-int ChargeWeapon(VangerUnit* p,int ind,int sign);
-int ChargeDevice(VangerUnit* p,int ind,int sign);
+int ChargeWeapon(VangerUnit *p, int ind, int sign);
+int ChargeDevice(VangerUnit *p, int ind, int sign);
 void CreatePhantomTarget(void);
-void ObjectDestroy(GeneralObject* p,int mode = 1);
+void ObjectDestroy(GeneralObject *p, int mode = 1);
 void CreateTabutaskTarget(void);
 
-
 void CheckPlayerList(void);
-void NetEvent4Uvs(PlayerData* p);
+void NetEvent4Uvs(PlayerData *p);
 
-void NetSlotEvent(int type,int id);
+void NetSlotEvent(int type, int id);
 
-inline int isTerminator(int i)
-{
-	if(i == ACI_TERMINATOR || i == ACI_TERMINATOR2 || i == ACI_EMPTY_AMPUTATOR || i == ACI_EMPTY_DEGRADATOR || i == ACI_EMPTY_MECHOSCOPE)
+inline int isTerminator(int i) {
+	if (i == ACI_TERMINATOR || i == ACI_TERMINATOR2 || i == ACI_EMPTY_AMPUTATOR ||
+		i == ACI_EMPTY_DEGRADATOR || i == ACI_EMPTY_MECHOSCOPE)
 		return 1;
-	else 
+	else
 		return 0;
 };
 
@@ -1195,18 +1205,18 @@ extern XBuffer RaceTxtBuff;
 const int NUM_CHECK_BSIGN = 13;
 const int NUM_CONTROL_BSIGN = 7;
 extern int CHECK_BSIGN_INDEX[NUM_CHECK_BSIGN];
-extern char* CHECK_BSIGN_DATA;
+extern char *CHECK_BSIGN_DATA;
 
 void camera_reset();
 void start_vibration();
 void ClearPhantomTarget(int id);
-void AddPhantomTarget(PlayerData* n);
-void DeleteArtefactTarget(StuffObject*n);
-void CreateArtefactTarget(StuffObject* n);
+void AddPhantomTarget(PlayerData *n);
+void DeleteArtefactTarget(StuffObject *n);
+void CreateArtefactTarget(StuffObject *n);
 
-//Fly Podish->Incubator
-//Fly Lampasso->Ogorod
-//Fly Zeepa ->B-Zone
+// Fly Podish->Incubator
+// Fly Lampasso->Ogorod
+// Fly Zeepa ->B-Zone
 
 extern int aiHotBugData00;
 extern int aiHotBugData01;
@@ -1218,17 +1228,16 @@ extern int aiHotBugAdd01;
 extern int aiHotBugAdd02;
 extern int aiHotBugAdd03;
 
-
-inline int aiGetHotBug(void)
-{	
-	return(((aiHotBugData00 ^ aiHotBugAdd03) & 0xf000000f) | 
-		((aiHotBugData01 ^ aiHotBugAdd02) & 0x0f0000f0) | 
-		((aiHotBugData02 ^ aiHotBugAdd01) & 0x00f00f00) | 
-		((aiHotBugData03 ^ aiHotBugAdd00) & 0x000ff000));	
+inline int aiGetHotBug(void) {
+	return (
+		((aiHotBugData00 ^ aiHotBugAdd03) & 0xf000000f) |
+		((aiHotBugData01 ^ aiHotBugAdd02) & 0x0f0000f0) |
+		((aiHotBugData02 ^ aiHotBugAdd01) & 0x00f00f00) |
+		((aiHotBugData03 ^ aiHotBugAdd00) & 0x000ff000)
+	);
 };
 
-inline void aiPutHotBug(int d)
-{	
+inline void aiPutHotBug(int d) {
 	aiHotBugData00 = d & 0xf000000f;
 	aiHotBugData01 = d & 0x0f0000f0;
 	aiHotBugData02 = d & 0x00f00f00;
@@ -1239,6 +1248,5 @@ inline void aiPutHotBug(int d)
 	aiHotBugData02 ^= aiHotBugAdd01;
 	aiHotBugData03 ^= aiHotBugAdd00;
 };
-
 
 #endif

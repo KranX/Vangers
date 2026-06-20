@@ -6,7 +6,5 @@
 
 // unlink xtool from xgraph
 bool XGR_FULL_SCREEN = false;
-void XGR_Flip() {
-}
-void doCursorAnimation() {
-}
+void XGR_Flip() {}
+void doCursorAnimation() {}

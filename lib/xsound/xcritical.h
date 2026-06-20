@@ -8,12 +8,15 @@
 
 #include "SDL_mutex.h"
 
-struct XCriticalSection
-{
+struct XCriticalSection {
 	SDL_mutex *csection;
-	XCriticalSection(SDL_mutex *section) { csection = section; SDL_mutexP(csection); }
-	~XCriticalSection(void) { SDL_mutexV(csection); }
+	XCriticalSection(SDL_mutex *section) {
+		csection = section;
+		SDL_mutexP(csection);
+	}
+	~XCriticalSection(void) {
+		SDL_mutexV(csection);
+	}
 };
-
 
 #endif //__XCRITICAL_H__

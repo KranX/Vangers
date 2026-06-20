@@ -2,45 +2,66 @@
 
 #include "../3d/3d_math.h"
 
-#include "../sqexp.h"
-#include "../backg.h"
 #include "../3d/3dgraph.h"
+#include "../backg.h"
+#include "../sqexp.h"
 
 #include "../terra/vmap.h"
 
 #include "particle.h"
 #include "partmap.h"
 
-extern uchar* FireColorTable;
-extern unsigned char* draw_vbuf;
-extern unsigned char** draw_lt;
+extern uchar *FireColorTable;
+extern unsigned char *draw_vbuf;
+extern unsigned char **draw_lt;
 extern int draw_k_xscr_x;
 extern int draw_k_xscr_y;
 unsigned char z_level;
 
 #ifdef EXTERNAL_USE
-	extern int UcutLeft;
-	extern int UcutRight;
-	extern int VcutUp;
-	extern int VcutDown;
+extern int UcutLeft;
+extern int UcutRight;
+extern int VcutUp;
+extern int VcutDown;
 #else
-	#define UcutLeft 200*0
-	#define UcutRight (XGR_MAXX - 200*0)
-	#define VcutUp 150*0
-	#define VcutDown (XGR_MAXY - 150*0)
+#	define UcutLeft 200 * 0
+#	define UcutRight (XGR_MAXX - 200 * 0)
+#	define VcutUp 150 * 0
+#	define VcutDown (XGR_MAXY - 150 * 0)
 #endif
 
-void transparency_line_non_test_f(int len,unsigned char* dbuf,int bx,int bKx);
-void color_line_non_test_f(int len,unsigned char* dbuf,int bx,int bKx);
-void transparency_line_f(int len,unsigned char* dbuf,int bx,int bKx,int fx,int fy);
-void color_line_f(int len,unsigned char* dbuf,int bx,int bKx,int fx,int fy);
+void transparency_line_non_test_f(int len, unsigned char *dbuf, int bx, int bKx);
+void color_line_non_test_f(int len, unsigned char *dbuf, int bx, int bKx);
+void transparency_line_f(int len, unsigned char *dbuf, int bx, int bKx, int fx, int fy);
+void color_line_f(int len, unsigned char *dbuf, int bx, int bKx, int fx, int fy);
 
 #define ParticlePaletteTable FirePaletteTable
-void putBitmap2scrLine(int x,int xr_,int bx,int by,int bKx,int bKy,unsigned char* data,int FIRE_COLOR_FIRST,unsigned char* ParticlePaletteTable,unsigned char*& bGr,int MAX_SPRITE_POWER);
+void putBitmap2scrLine(
+	int x,
+	int xr_,
+	int bx,
+	int by,
+	int bKx,
+	int bKy,
+	unsigned char *data,
+	int FIRE_COLOR_FIRST,
+	unsigned char *ParticlePaletteTable,
+	unsigned char *&bGr,
+	int MAX_SPRITE_POWER
+);
 
-void bitmap2screenNoTurn(char* vb,unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize);
+void bitmap2screenNoTurn(
+	char *vb,
+	unsigned char *data,
+	int Xcenter,
+	int Ycenter,
+	int XsizeB,
+	int YsizeB,
+	int ScaleXsize
+);
 
-/*void bitmap2screen(char* vb,unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize,int turn)
+/*void bitmap2screen(char* vb,unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int
+ScaleXsize,int turn)
 {
 #ifndef BMP2SCR_TURN_ENABLE
 	bitmap2screenNoTurn(vb,data,Xcenter,Ycenter,XsizeB,YsizeB,ScaleXsize);
@@ -108,10 +129,10 @@ void bitmap2screenNoTurn(char* vb,unsigned char* data,int Xcenter,int Ycenter,in
 	int Ys2 = YsizeS/2;
 	X = (Xcenter << 15) + cosTurn*(-Xs2) - sinTurn*(-Ys2);
 	Y = (Ycenter << 15) + sinTurn*(-Xs2) + cosTurn*(-Ys2);
-	int Xx = cosTurn*XsizeS;		 //	  X	
-	int Xy = sinTurn*XsizeS;		 //  0 3	 
-	int Yx = -sinTurn*YsizeS;		 //	Y	 
-	int Yy = cosTurn*YsizeS;		 //	 1 2	 
+	int Xx = cosTurn*XsizeS;		 //	  X
+	int Xy = sinTurn*XsizeS;		 //  0 3
+	int Yx = -sinTurn*YsizeS;		 //	Y
+	int Yy = cosTurn*YsizeS;		 //	 1 2
 
 	int Xy_ = Xy >> 15;
 	int Yy_ = Yy >> 15;
@@ -423,7 +444,8 @@ void bitmap2screenNoTurn(char* vb,unsigned char* data,int Xcenter,int Ycenter,in
 #endif
 }
 
-void putBitmap2scrLine(int x,int xr_,int bx,int by,int bKx,int bKy,unsigned char* data,int FIRE_COLOR_FIRST,unsigned char* ParticlePaletteTable,unsigned char*& bGr,int MAX_SPRITE_POWER)
+void putBitmap2scrLine(int x,int xr_,int bx,int by,int bKx,int bKy,unsigned char* data,int
+FIRE_COLOR_FIRST,unsigned char* ParticlePaletteTable,unsigned char*& bGr,int MAX_SPRITE_POWER)
 {
 	for(;x < xr_;x++){
 		int bx_ = bx >> 15;
@@ -440,7 +462,8 @@ void putBitmap2scrLine(int x,int xr_,int bx,int by,int bKx,int bKy,unsigned char
 		}
 }
 
-void bitmap2screenNoTurn(char* vb,unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize)
+void bitmap2screenNoTurn(char* vb,unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int
+YsizeB,int ScaleXsize)
 {
 	int XsizeS = ScaleXsize;
 	int YsizeS = ScaleXsize*YsizeB/XsizeB;
@@ -489,7 +512,8 @@ void bitmap2screenNoTurn(char* vb,unsigned char* data,int Xcenter,int Ycenter,in
 		}
 }
 
-void bitmap2screenFire(char* vb,unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize)
+void bitmap2screenFire(char* vb,unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int
+YsizeB,int ScaleXsize)
 {
 	int XsizeS = ScaleXsize;
 	int YsizeS = ScaleXsize*YsizeB/XsizeB;
@@ -537,102 +561,107 @@ void bitmap2screenFire(char* vb,unsigned char* data,int Xcenter,int Ycenter,int 
 		}
 }*/
 
-void smart_putspr_f(unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int YsizeB,int ScaleXsize,int height)
-{
-	if(!XsizeB || !ScaleXsize)
+void smart_putspr_f(
+	unsigned char *data,
+	int Xcenter,
+	int Ycenter,
+	int XsizeB,
+	int YsizeB,
+	int ScaleXsize,
+	int height
+) {
+	if (!XsizeB || !ScaleXsize)
 		return;
 	int XsizeS = ScaleXsize;
-	int YsizeS = ScaleXsize*YsizeB/XsizeB;
-	if(DepthShow)
-		YsizeS = round(YsizeS*Cos(SlopeAngle));
-	int bKx,bKy;
-	int X = Xcenter - XsizeS/2;
-	int Y = Ycenter - YsizeS/2;
-	bKx = bKy = (XsizeB << 15)/ScaleXsize;
+	int YsizeS = ScaleXsize * YsizeB / XsizeB;
+	if (DepthShow)
+		YsizeS = round(YsizeS * Cos(SlopeAngle));
+	int bKx, bKy;
+	int X = Xcenter - XsizeS / 2;
+	int Y = Ycenter - YsizeS / 2;
+	bKx = bKy = (XsizeB << 15) / ScaleXsize;
 	int bx = 0;
 	int by = 0;
 	int xt = X + XsizeS;
 	int yt = Y + YsizeS;
-	if(X < UcutLeft){
-		bx = ((UcutLeft - X) << 15)*XsizeB/ScaleXsize;
+	if (X < UcutLeft) {
+		bx = ((UcutLeft - X) << 15) * XsizeB / ScaleXsize;
 		XsizeS -= UcutLeft - X;
 		X = UcutLeft;
-		}
-	if(Y < VcutUp){
-		by = ((VcutUp - Y) << 15)*XsizeB/ScaleXsize;
+	}
+	if (Y < VcutUp) {
+		by = ((VcutUp - Y) << 15) * XsizeB / ScaleXsize;
 		YsizeS -= VcutUp - Y;
 		Y = VcutUp;
-		}
-	if(xt > UcutRight){
+	}
+	if (xt > UcutRight) {
 		XsizeS -= xt - UcutRight;
 		xt = UcutRight;
-		}
-	if(yt > VcutDown){
+	}
+	if (yt > VcutDown) {
 		YsizeS -= yt - VcutDown;
 		yt = VcutDown;
-		}
-	if(XsizeS <= 0)
+	}
+	if (XsizeS <= 0)
 		return;
 
 	int vadd = XGR_MAXX - XsizeS;
-	draw_vbuf = XGR_VIDEOBUF + Y*XGR_MAXX + X;
-	draw_lt = vMap -> lineT;
+	draw_vbuf = XGR_VIDEOBUF + Y * XGR_MAXX + X;
+	draw_lt = vMap->lineT;
 
 	z_level = height;
 
-	if(height >= 256){
-		while(YsizeS-- > 0){
-			transparency_line_non_test_f(XsizeS,data + (by >> 15)*XsizeB,bx,bKx);
+	if (height >= 256) {
+		while (YsizeS-- > 0) {
+			transparency_line_non_test_f(XsizeS, data + (by >> 15) * XsizeB, bx, bKx);
 			by += bKy;
 			draw_vbuf += vadd;
-			}
-		return;
 		}
-
+		return;
+	}
 
 	int x = X - ScreenCX;
 	int y = Y - ScreenCY;
 
-	if(!DepthShow){
+	if (!DepthShow) {
 		draw_k_xscr_x = cosTurnInv;
 		draw_k_xscr_y = -sinTurnInv;
 		int k_yscr_x = sinTurnInv;
 		int k_yscr_y = cosTurnInv;
-		int tfx = (ViewX << 16) + (x*cosTurnInv + y*sinTurnInv) + (1 << 15);
-		int tfy = (ViewY << 16) + (-x*sinTurnInv + y*cosTurnInv) + (1 << 15);
-		while(YsizeS-- > 0){
-			transparency_line_f(XsizeS,data + (by >> 15)*XsizeB,bx,bKx,tfx,tfy);
+		int tfx = (ViewX << 16) + (x * cosTurnInv + y * sinTurnInv) + (1 << 15);
+		int tfy = (ViewY << 16) + (-x * sinTurnInv + y * cosTurnInv) + (1 << 15);
+		while (YsizeS-- > 0) {
+			transparency_line_f(XsizeS, data + (by >> 15) * XsizeB, bx, bKx, tfx, tfy);
 			by += bKy;
 			draw_vbuf += vadd;
 			tfx += k_yscr_x;
 			tfy += k_yscr_y;
-			}
 		}
-	else{
-		int fx,fy;
+	} else {
+		int fx, fy;
 		int cx = ViewX << 16;
 		int cy = ViewY << 16;
 
-		double al = Ha*x + Va*y;
-		double bl = Hb*x + Vb*y;
-		double cl = Oc + Hc*x + Vc*y;
+		double al = Ha * x + Va * y;
+		double bl = Hb * x + Vb * y;
+		double cl = Oc + Hc * x + Vc * y;
 
-		double ar = Ha*(x + XsizeS) + Va*y;
-		double br = Hb*(x + XsizeS) + Vb*y;
+		double ar = Ha * (x + XsizeS) + Va * y;
+		double br = Hb * (x + XsizeS) + Vb * y;
 
-		double nxs_inv = 1/(double)XsizeS;
+		double nxs_inv = 1 / (double)XsizeS;
 		double cl_inv;
 
-		while(YsizeS-- > 0){
-			if(fabs(cl) < DBL_EPS) 
+		while (YsizeS-- > 0) {
+			if (fabs(cl) < DBL_EPS)
 				return;
-			cl_inv = 1/cl;
-			fx = round(al*cl_inv);
-			fy = round(bl*cl_inv);
+			cl_inv = 1 / cl;
+			fx = round(al * cl_inv);
+			fy = round(bl * cl_inv);
 			cl_inv *= nxs_inv;
-			draw_k_xscr_x = round((ar - al)*cl_inv);
-			draw_k_xscr_y = round((br - bl)*cl_inv);
-			transparency_line_f(XsizeS,data + (by >> 15)*XsizeB,bx,bKx,fx + cx,fy + cy);
+			draw_k_xscr_x = round((ar - al) * cl_inv);
+			draw_k_xscr_y = round((br - bl) * cl_inv);
+			transparency_line_f(XsizeS, data + (by >> 15) * XsizeB, bx, bKx, fx + cx, fy + cy);
 
 			by += bKy;
 			draw_vbuf += vadd;
@@ -642,41 +671,40 @@ void smart_putspr_f(unsigned char* data,int Xcenter,int Ycenter,int XsizeB,int Y
 			cl += Vc;
 			ar += Va;
 			br += Vb;
-			}
 		}
+	}
 }
 
-void transparency_line_f(int len,unsigned char* dbuf,int bx,int bKx,int fx,int fy)
-{
+void transparency_line_f(int len, unsigned char *dbuf, int bx, int bKx, int fx, int fy) {
 	unsigned char c;
-	unsigned char* mbuf;
-	while(len-- > 0){
-		if((c = dbuf[bx >> 15]) != 0){
+	unsigned char *mbuf;
+	while (len-- > 0) {
+		if ((c = dbuf[bx >> 15]) != 0) {
 			mbuf = draw_lt[(fy >> 16) & clip_mask_y] + (((fx >> 16) | 1) & clip_mask_x);
 
-			if ( c > 31 ) c = 31;
+			if (c > 31)
+				c = 31;
 
-			if(z_level > *mbuf)
+			if (z_level > *mbuf)
 				*draw_vbuf = FireColorTable[*draw_vbuf + (c << 11)];
-			}
+		}
 		draw_vbuf++;
 		bx += bKx;
 		fx += draw_k_xscr_x;
 		fy += draw_k_xscr_y;
-		}
+	}
 }
 
-void transparency_line_non_test_f(int len,unsigned char* dbuf,int bx,int bKx)
-{
+void transparency_line_non_test_f(int len, unsigned char *dbuf, int bx, int bKx) {
 	unsigned char c;
-	while(len-- > 0){
-		if((c = dbuf[bx >> 15]) != 0){
-
-			if ( c > 31 ) c = 31;
+	while (len-- > 0) {
+		if ((c = dbuf[bx >> 15]) != 0) {
+			if (c > 31)
+				c = 31;
 
 			*draw_vbuf = FireColorTable[*draw_vbuf + (c << 11)];
 		}
 		draw_vbuf++;
 		bx += bKx;
-		}
+	}
 }
