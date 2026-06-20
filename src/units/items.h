@@ -24,6 +24,10 @@ const int NETWORK_INIT_OBJECT = 0;
 
 struct ActionUnit;
 struct GunDevice;
+struct SensorDataType;
+struct SimpleParticleType;
+struct VangerUnit;
+struct WorldBulletTemplate;
 
 const int NET_OUT_OBJECT = 11083;
 
