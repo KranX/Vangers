@@ -1,0 +1,106 @@
+name: Clang Format
+
+on:
+  push:
+    branches:
+      - master
+      - alpha
+  pull_request:
+    branches:
+      - master
+      - alpha
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clang-format-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clang-format:
+    if: ${{ github.repository == 'KranX/Vangers' }}
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install clang-format
+        run: |
+          python3 -m venv .ci-clang-format
+          .ci-clang-format/bin/python -m pip install --upgrade pip
+          .ci-clang-format/bin/python -m pip install "clang-format==22.1.5"
+          echo "$PWD/.ci-clang-format/bin" >> "$GITHUB_PATH"
+
+      - name: Show clang-format version
+        run: clang-format --version
+
+      - name: Check C/C++ formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -d '' files < <(
+            git ls-files -z -- \
+              '*.c' \
+              '*.cc' \
+              '*.cpp' \
+              '*.cxx' \
+              '*.h' \
+              '*.hh' \
+              '*.hpp' \
+              '*.hxx'
+          )
+
+          if ((${#files[@]} == 0)); then
+            echo "No tracked C/C++ files found." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          printf '%s\0' "${files[@]}" | xargs -0 clang-format -i --style=file
+
+          if git diff --quiet -- "${files[@]}"; then
+            echo "All checked C/C++ files match clang-format." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          mkdir -p clang-format-report
+
+          {
+            echo "### clang-format check failed"
+            echo
+            echo "Some tracked C/C++ files are not formatted according to the repository .clang-format."
+            echo
+            echo "Run locally:"
+            echo
+            echo '```bash'
+            echo "git ls-files -z -- '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hh' '*.hpp' '*.hxx' | xargs -0 clang-format -i --style=file"
+            echo '```'
+            echo
+            echo "Changed files:"
+            echo
+            echo '```'
+            git diff --name-only -- "${files[@]}"
+            echo '```'
+            echo
+            echo "Diffstat:"
+            echo
+            echo '```'
+            git diff --stat -- "${files[@]}"
+            echo '```'
+          } | tee clang-format-report/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+          git diff --binary -- "${files[@]}" > clang-format-report/clang-format.patch
+
+          echo "::error title=clang-format failed::Some C/C++ files are not formatted. See the job summary and clang-format-report artifact."
+          exit 1
+
+      - name: Upload clang-format report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: clang-format-report
+          path: clang-format-report
+          if-no-files-found: ignore
