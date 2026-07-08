@@ -102,6 +102,7 @@ extern int GameQuantReturnValue;
 
 extern int aci_SecondMatrixID;
 extern int curMatrixID;
+extern int ChangeEnergy, ChangeArmor;
 
 extern actIntDispatcher *aScrDisp;
 
@@ -3142,6 +3143,8 @@ void aciBuyItem(void) {
 				cr = aciGetCurCredits();
 				cr -= u->price;
 				aciUpdateCurCredits(cr);
+				ChangeEnergy = -1;
+				ChangeArmor = -1;
 
 				u1 = aciGetMechos(m->type);
 				if (u1)
