@@ -810,8 +810,10 @@ int iQuantSecond(void) {
 						iChatKeyQuant(k);
 					if ((k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_ESCAPE) &&
 						actIntLog) {
+						if (!iPause)
+							ipal_iter(iScreenOffs);
 						iPause ^= 1;
-						acsScreenID = 2;
+						acsScreenID = ACS_PAUSE_SCREEN2;
 						if (iPause) {
 							XGR_Obj.fill(0, XGR_Obj.get_2d_render_buffer());
 							XGR_Obj.fill(0, XGR_Obj.get_2d_rgba_render_buffer());

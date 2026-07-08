@@ -92,6 +92,7 @@ extern unsigned char *iscrPal;
 
 extern int iScreenActive;
 extern int iSlotNumber;
+extern int iPause;
 
 extern int ShowImageKeyFlag;
 extern int ShowImageMouseFlag;
@@ -490,7 +491,7 @@ int aciLoadLog = 0;
 int aciShopMenuLog = 0;
 int aciWorldIndex = -1;
 
-int acsScreenID = 1;
+int acsScreenID = ACS_PAUSE_SCREEN1;
 
 int acsCurrentSlotID = ACS_SAVE_SLOT0;
 int acsCurrentSlotNum = 0;
@@ -2040,7 +2041,25 @@ void aci_LocationQuantPrepare(void) {
 	iKeyClear();
 }
 
+static void aciResetLocationPauseState(void) {
+	if (acsAllocFlag && acsScrD) {
+		if (!(aScrDisp->flags & AS_ISCREEN) && acsScrD->curScr) {
+			acsScrD->curScr->ChangeCoords(-(XGR_MAXX - 640) / 2, -(XGR_MAXY - 480) / 2);
+		}
+		acsScrD->free_mem();
+		acsAllocFlag = 0;
+	}
+
+	iPause = 0;
+	if (NetworkON)
+		aciKeyboardLocked = 0;
+	acsScreenID = ACS_PAUSE_SCREEN1;
+	if (KeyBuf)
+		KeyBuf->clear();
+}
+
 void aci_LocationQuantFinit(void) {
+	aciResetLocationPauseState();
 	iScrQuantFinit();
 	aScrDisp->i_finit();
 	aciKillLinks();
@@ -5273,7 +5292,7 @@ int acsQuant(void) {
 		if (NetworkON)
 			aciKeyboardLocked = 0;
 
-		acsScreenID = 1;
+		acsScreenID = ACS_PAUSE_SCREEN1;
 		iSaveData();
 		KeyBuf->clear();
 		return 1;

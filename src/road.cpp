@@ -69,6 +69,7 @@ void reconfigure_runtime_fps_scaled_state(double old_coeff, double new_coeff);
 #	include "iscreen/controls.h"
 #	include "iscreen/i_chat.h"
 #	include "actint/actint.h"
+#	include "actint/acsconst.h"
 #endif
 
 #include "palette.h"
@@ -122,6 +123,7 @@ extern int SoundVolumePanning;
 
 #ifdef ACTINT
 extern int aciLoadLog;
+extern int acsScreenID;
 extern actIntDispatcher *aScrDisp;
 #endif
 
@@ -1591,6 +1593,9 @@ void KeyCenter(SDL_Event *key) {
 #endif
 		std::cout << "road.KeyCenter:" << key << std::endl;
 		if (!Pause) {
+#ifdef ACTINT
+			acsScreenID = ACS_PAUSE_SCREEN1;
+#endif
 			Pause = 1;
 		}
 
