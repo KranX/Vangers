@@ -366,25 +366,58 @@ void showModal(char *fname, float reelW, float reelH, float screenW, float scree
 		winVideo.Close(); */
 }
 
-static int LoadStartupFullscreenOption(void) {
+static bool SkipStartupOptionString(XStream &options, long options_size) {
+	if (options.tell() > options_size - (long)sizeof(int))
+		return false;
+
+	int length;
+	options > length;
+	if (length < 0 || length > options_size - options.tell())
+		return false;
+
+	options.seek(length, XS_CUR);
+	return true;
+}
+
+static bool LoadStartupDisplayOptions(int &fullscreen, int &resolution) {
 	XStream options(0);
 	if (!options.open("options.dat", XS_IN))
-		return -1;
+		return false;
 
+	const long options_size = options.size();
 	const long saved_values_size = 4 * (long)sizeof(int);
-	if (options.size() < (long)sizeof(int) + saved_values_size) {
+	if (options_size < (long)sizeof(int) + saved_values_size) {
 		options.close();
-		return -1;
+		return false;
 	}
 
 	int option_count;
 	options > option_count;
 	if (option_count != iMAX_OPTION_ID) {
 		options.close();
-		return -1;
+		return false;
 	}
 
-	int fullscreen;
+	// iSCREEN_RESOLUTION follows the first ten integer options and four
+	// length-prefixed strings in the serialized iScreen option order.
+	const long integer_options_size = 10 * (long)sizeof(int);
+	if (options.tell() > options_size - integer_options_size) {
+		options.close();
+		return false;
+	}
+	options.seek(integer_options_size, XS_CUR);
+	for (int i = 0; i < 4; ++i) {
+		if (!SkipStartupOptionString(options, options_size)) {
+			options.close();
+			return false;
+		}
+	}
+	if (options.tell() > options_size - (long)sizeof(int)) {
+		options.close();
+		return false;
+	}
+	options > resolution;
+
 	int auto_acceleration;
 	int fps_60;
 	int repeated_auto_acceleration;
@@ -395,11 +428,12 @@ static int LoadStartupFullscreenOption(void) {
 	options.close();
 
 	if ((fullscreen != 0 && fullscreen != 1) ||
+		(resolution != 0 && resolution != 1) ||
 		(auto_acceleration != 0 && auto_acceleration != 1) || (fps_60 != 0 && fps_60 != 1) ||
 		auto_acceleration != repeated_auto_acceleration)
-		return -1;
+		return false;
 
-	return fullscreen;
+	return true;
 }
 
 int xtInitApplication(void) {
@@ -493,15 +527,18 @@ int xtInitApplication(void) {
 
 	emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
 	// emode |= XGR_HICOLOR;
-	if (!XGR_FULL_SCREEN) {
-		const int startup_fullscreen = LoadStartupFullscreenOption();
-		if (startup_fullscreen != -1)
+	int startup_fullscreen = -1;
+	int startup_resolution = -1;
+	if (LoadStartupDisplayOptions(startup_fullscreen, startup_resolution)) {
+		if (!XGR_FULL_SCREEN)
 			XGR_FULL_SCREEN = startup_fullscreen;
 	}
 
 	actintLowResFlag = 1;
 	if (XGR_Init(emode))
 		ErrH.Abort(ErrorVideoMss);
+	if (startup_resolution == 0)
+		XGR_Obj.set_resolution(800, 600);
 
 	// WORK	sWinVideo::Init();
 	//	::ShowCursor(0);
