@@ -137,6 +137,23 @@ bool test_saves(const std::filesystem::path &dataDirectory) {
 	return check(saveCount > 0, "no representative legacy save files were found");
 }
 
+bool test_installed_legacy_data(const std::filesystem::path &dataDirectory) {
+	const std::filesystem::path controls = dataDirectory / "controls.dat";
+	const std::filesystem::path options = dataDirectory / "options.dat";
+	const std::filesystem::path saves = dataDirectory / "savegame";
+	if (!std::filesystem::exists(controls) && !std::filesystem::exists(options) &&
+		!std::filesystem::exists(saves)) {
+		std::cout << "Legacy user data is not part of the OSS checkout; "
+				  << "runtime compatibility checks were skipped\n";
+		return true;
+	}
+
+	return check(std::filesystem::is_regular_file(controls), "legacy controls.dat is missing") &&
+		   check(std::filesystem::is_regular_file(options), "legacy options.dat is missing") &&
+		   check(std::filesystem::is_directory(saves), "legacy savegame directory is missing") &&
+		   test_controls(dataDirectory) && test_options(dataDirectory) && test_saves(dataDirectory);
+}
+
 } // namespace
 
 int main() {
@@ -153,7 +170,5 @@ int main() {
 	static_assert(SDL_GAMEPAD_BUTTON_DPAD_RIGHT == 14);
 
 	const std::filesystem::path dataDirectory = TEST_DATA_DIR;
-	return test_controls(dataDirectory) && test_options(dataDirectory) && test_saves(dataDirectory)
-			   ? 0
-			   : 1;
+	return test_installed_legacy_data(dataDirectory) ? 0 : 1;
 }
