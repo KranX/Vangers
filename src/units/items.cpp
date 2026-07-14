@@ -84,7 +84,8 @@ static int should_play_spheroid_activation_sound(VangerUnit *owner) {
 		return 1;
 	if (owner == ActD.Active)
 		return 1;
-	return owner->ExternalDraw;
+	return owner->Visibility == VISIBLE && owner->ExternalDraw &&
+		   !(owner->Status & SOBJ_WAIT_CONFIRMATION);
 }
 
 static void NetworkLogStuffObject(const char *tag, StuffObject *p, const char *extra) {
