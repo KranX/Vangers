@@ -25,7 +25,7 @@ jobs:
 
     env:
       BUILD_TYPE: RelWithDebInfo
-      CLUNK_COMMIT: d3fabbf95067f5350e16128b51dc17505e0f83bd
+      CLUNK_COMMIT: 3fa1e999ecc0ddb2f8eb550ca8203c7229127196
 
     steps:
       - name: Checkout
