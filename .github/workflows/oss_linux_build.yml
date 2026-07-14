@@ -25,6 +25,7 @@ jobs:
 
     env:
       BUILD_TYPE: RelWithDebInfo
+      CLUNK_COMMIT: d3fabbf95067f5350e16128b51dc17505e0f83bd
 
     steps:
       - name: Checkout
@@ -42,14 +43,25 @@ jobs:
             ninja-build \
             pkg-config \
             python3-venv \
-            libsdl2-dev \
-            libsdl2-net-dev \
+            ca-certificates \
+            curl \
+            libasound2-dev \
+            libdecor-0-dev \
+            libdrm-dev \
             libogg-dev \
             libvorbis-dev \
             libavcodec-dev \
             libavformat-dev \
             libavutil-dev \
             libswscale-dev \
+            libwayland-dev \
+            libx11-dev \
+            libxcursor-dev \
+            libxext-dev \
+            libxfixes-dev \
+            libxi-dev \
+            libxkbcommon-dev \
+            libxrandr-dev \
             zlib1g-dev
 
       - name: Install latest CMake 4
@@ -65,11 +77,53 @@ jobs:
           ninja --version
           c++ --version
 
+      - name: Build native SDL3 dependencies
+        env:
+          SDL_VERSION: 3.4.12
+          SDL_SHA256: f07b958a9ac5020fb7a44cadb957f658b2149c3c8abb4f63145fac9303249db7
+          SDL_NET_VERSION: 3.2.0
+          SDL_NET_SHA256: 098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41
+        run: |
+          mkdir -p external
+
+          curl --fail --location --retry 3 \
+            --output external/SDL3.tar.gz \
+            "https://github.com/libsdl-org/SDL/releases/download/release-${SDL_VERSION}/SDL3-${SDL_VERSION}.tar.gz"
+          echo "${SDL_SHA256}  external/SDL3.tar.gz" | sha256sum --check --strict
+          tar --extract --gzip --file external/SDL3.tar.gz --directory external
+          cmake -S "external/SDL3-${SDL_VERSION}" -B external/SDL3-build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DSDL_SHARED=ON \
+            -DSDL_STATIC=OFF \
+            -DSDL_TESTS=OFF \
+            -DSDL_EXAMPLES=OFF
+          cmake --build external/SDL3-build --parallel
+          sudo cmake --install external/SDL3-build
+
+          curl --fail --location --retry 3 \
+            --output external/SDL3_net.tar.gz \
+            "https://github.com/libsdl-org/SDL_net/releases/download/release-${SDL_NET_VERSION}/SDL3_net-${SDL_NET_VERSION}.tar.gz"
+          echo "${SDL_NET_SHA256}  external/SDL3_net.tar.gz" | sha256sum --check --strict
+          tar --extract --gzip --file external/SDL3_net.tar.gz --directory external
+          cmake -S "external/SDL3_net-${SDL_NET_VERSION}" -B external/SDL3_net-build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DBUILD_SHARED_LIBS=ON \
+            -DSDLNET_SAMPLES=OFF
+          cmake --build external/SDL3_net-build --parallel
+          sudo cmake --install external/SDL3_net-build
+          sudo ldconfig
+
       - name: Download Clunk
         id: clunk-source
         run: |
-          mkdir -p external
-          git clone --depth 1 https://github.com/stalkerg/clunk.git external/clunk
+          git init external/clunk
+          git -C external/clunk remote add origin https://github.com/stalkerg/clunk.git
+          git -C external/clunk fetch --depth 1 origin "${CLUNK_COMMIT}"
+          git -C external/clunk checkout --detach FETCH_HEAD
           echo "sha=$(git -C external/clunk rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Clunk build
@@ -101,6 +155,9 @@ jobs:
 
       - name: Build Vangers
         run: cmake --build build --parallel
+
+      - name: Test Vangers
+        run: ctest --test-dir build --output-on-failure
 
       - name: Show built binaries
         run: |

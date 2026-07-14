@@ -284,10 +284,10 @@ struct Object: BaseObject {
 	int mole_on;
 	int k_track;
 	int draw_mode;
-	unsigned int device_switch_latency;
+	Uint64 device_switch_latency;
 	int prev_controls;
 	int current_controls;
-	unsigned int last_send_time;
+	Uint64 last_send_time;
 
 	int helicopter;
 	int helicopter_time;

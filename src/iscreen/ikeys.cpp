@@ -26,28 +26,42 @@ void KBD_init(void) {
 
 void key(SDL_Event *key) {
 	if (KeyBuf->flag & KBD_ENABLE &&
-		(key->type == SDL_KEYDOWN || key->type == SDL_TEXTINPUT || key->type == SDL_MOUSEWHEEL)) {
+		(key->type == SDL_EVENT_KEY_DOWN || key->type == SDL_EVENT_TEXT_INPUT ||
+			key->type == SDL_EVENT_MOUSE_WHEEL)) {
 		KeyBuf->put(key, CUR_KEY_PRESSED);
 	}
 }
 
 void unpress_key(SDL_Event *key) {
-	if (key->type == SDL_KEYUP) {
+	if (key->type == SDL_EVENT_KEY_UP) {
 		KeyBuf->put(key, CUR_KEY_UNPRESSED);
 	}
 }
 
 KeyBuffer::KeyBuffer(void) {
 	table = new SDL_Event[MAX_SIZE];
+	text_table = new std::string[MAX_SIZE];
 	state_table = new char[MAX_SIZE];
 
 	clear();
 	flag = KBD_ENABLE;
 }
 
+KeyBuffer::~KeyBuffer(void) {
+	delete[] table;
+	delete[] text_table;
+	delete[] state_table;
+}
+
 void KeyBuffer::put(SDL_Event *key, int state) {
 	if (size < MAX_SIZE) {
 		table[last_index] = *key;
+		if (key->type == SDL_EVENT_TEXT_INPUT) {
+			text_table[last_index] = key->text.text ? key->text.text : "";
+			table[last_index].text.text = text_table[last_index].c_str();
+		} else {
+			text_table[last_index].clear();
+		}
 		//		std::cout<<"KeyBuffer::put key:"<<key<<" last_index:"<<last_index<<std::endl;
 		state_table[last_index] = state;
 		last_index++;

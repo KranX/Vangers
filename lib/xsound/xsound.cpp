@@ -1,7 +1,6 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 // #include "dsound.h"
-// #include <SDL_mixer.h>
 #include <clunk/clunk.h>
 
 #include "_xsound.h"
@@ -46,6 +45,11 @@ int XSoundInitFlag = 0;
 clunk::Context context;
 clunk::Object *clunk_object;
 int g_freq;
+
+static void SoundPause(bool paused) {
+	if (XSoundInitFlag)
+		context.set_paused(paused);
+}
 
 void SoundPlay(void *lpDSB, int channel, int priority, int cropos, int flags) {
 	if (XSoundInitFlag) {
@@ -283,7 +287,7 @@ void SoundLoadRaw(
 	const void *data,
 	std::size_t size,
 	int frequency,
-	Uint16 format,
+	SDL_AudioFormat format,
 	Uint8 channels_count,
 	void **lpDSB
 ) {
@@ -374,6 +378,7 @@ int SoundInit(int maxHZ, int schannels) {
 	/* SDL_Mixer version
 	Mix_ChannelFinished(&ChannelFinished);*/
 	XSoundInitFlag = 1;
+	xtSetAudioPauseHandler(SoundPause);
 	// ErrH.Abort("SoundInit OK!!!");
 	return true;
 }
@@ -381,6 +386,7 @@ int SoundInit(int maxHZ, int schannels) {
 void SoundFinit(void) {
 	int i;
 	if (XSoundInitFlag) {
+		xtSetAudioPauseHandler(nullptr);
 		for (i = 0; i < MAX_CHANNELS; ++i)
 			SoundStop(i);
 		/* SDL_Mixer version

@@ -257,7 +257,7 @@ void iLoadControls(void) {
 int iKeyPressed(int id) {
 	int i, code, state = 0;
 	SDL_Joystick *joy = get_joystick();
-	SDL_GameController *ctrl = get_gamecontroller();
+	SDL_Gamepad *gamepad = get_gamepad();
 
 	if (!iControlsObj)
 		return 0;
@@ -266,16 +266,16 @@ int iKeyPressed(int id) {
 		// std::cout<<"iKeyPressed code:"<<(int)code<<" id:"<<id<<" i:"<<i<<std::endl;
 		if (code) {
 			if (code & SDLK_JOYSTICK_BUTTON_MASK && joy) {
-				state = SDL_JoystickGetButton(joy, code ^ SDLK_JOYSTICK_BUTTON_MASK);
-			} else if (code & SDLK_GAMECONTROLLER_BUTTON_MASK && ctrl) {
-				state = SDL_GameControllerGetButton(
-					ctrl, (SDL_GameControllerButton)(code ^ SDLK_GAMECONTROLLER_BUTTON_MASK)
+				state = SDL_GetJoystickButton(joy, code ^ SDLK_JOYSTICK_BUTTON_MASK);
+			} else if (code & SDLK_GAMEPAD_BUTTON_MASK && gamepad) {
+				state = SDL_GetGamepadButton(
+					gamepad, (SDL_GamepadButton)(code ^ SDLK_GAMEPAD_BUTTON_MASK)
 				);
 			} else if (code & SDLK_JOYSTICK_HAT_MASK && joy) {
-				state = SDL_JoystickGetHat(joy, (code ^ SDLK_JOYSTICK_HAT_MASK) / 10) ==
+				state = SDL_GetJoystickHat(joy, (code ^ SDLK_JOYSTICK_HAT_MASK) / 10) ==
 						(code ^ SDLK_JOYSTICK_HAT_MASK) % 10;
 			} else if (code & SDLK_SCANCODE_MASK) {
-				state = SDL_GetKeyboardState(NULL)[SDL_GetScancodeFromKey(code)];
+				state = SDL_GetKeyboardState(NULL)[SDL_GetScancodeFromKey(code, nullptr)];
 			} else {
 				state = SDL_GetKeyboardState(NULL)[code];
 			}

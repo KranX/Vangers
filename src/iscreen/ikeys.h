@@ -1,6 +1,8 @@
 #ifndef __IKEYS_H__
 #define __IKEYS_H__
-#include <SDL.h>
+#include <string>
+
+#include <SDL3/SDL.h>
 
 // #define _ISCREEN_GERMAN_
 
@@ -17,6 +19,7 @@ const int KBD_ENABLE = 0x04;
 
 struct KeyBuffer {
 	SDL_Event *table;
+	std::string *text_table;
 	char *state_table;
 
 	int size;
@@ -31,6 +34,9 @@ struct KeyBuffer {
 	SDL_Event *get(void);
 
 	KeyBuffer(void);
+	~KeyBuffer(void);
+	KeyBuffer(const KeyBuffer &) = delete;
+	KeyBuffer &operator=(const KeyBuffer &) = delete;
 };
 
 void key(SDL_Event *);

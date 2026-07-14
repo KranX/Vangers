@@ -5,8 +5,8 @@
 #ifndef VANGERS_XSIDE_H
 #define VANGERS_XSIDE_H
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
-void XGR_RenderSides(SDL_Renderer *renderer, int renderWidth);
+bool XGR_RenderSides(SDL_Renderer *renderer, int renderWidth);
 
 #endif // VANGERS_XSIDE_H

@@ -29,6 +29,7 @@ jobs:
 
     env:
       BUILD_TYPE: RelWithDebInfo
+      CLUNK_COMMIT: d3fabbf95067f5350e16128b51dc17505e0f83bd
 
     steps:
       - name: Setup MSYS2
@@ -39,6 +40,8 @@ jobs:
           install: |
             diffutils
             git
+            mingw-w64-ucrt-x86_64-sdl3
+            mingw-w64-ucrt-x86_64-sdl3-net
           pacboy: |
             cmake:p
             ffmpeg:p
@@ -47,8 +50,6 @@ jobs:
             libvorbis:p
             ninja:p
             pkgconf:p
-            SDL2:p
-            SDL2_net:p
             zlib:p
 
       - name: Checkout
@@ -63,8 +64,10 @@ jobs:
       - name: Download Clunk
         id: clunk-source
         run: |
-          mkdir -p external
-          git clone --depth 1 https://github.com/stalkerg/clunk.git external/clunk
+          git init external/clunk
+          git -C external/clunk remote add origin https://github.com/stalkerg/clunk.git
+          git -C external/clunk fetch --depth 1 origin "${CLUNK_COMMIT}"
+          git -C external/clunk checkout --detach FETCH_HEAD
           echo "sha=$(git -C external/clunk rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Clunk build
@@ -94,6 +97,9 @@ jobs:
 
       - name: Build Vangers
         run: cmake --build build --parallel
+
+      - name: Test Vangers
+        run: ctest --test-dir build --output-on-failure
 
       - name: Prepare artifact folder
         run: |

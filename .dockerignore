@@ -1,0 +1,13 @@
+**
+!CMakeLists.txt
+!vangers.res
+!cmake/
+!cmake/**
+!lib/
+!lib/**
+!server/
+!server/**
+!src/
+!src/**
+!surmap/
+!surmap/**

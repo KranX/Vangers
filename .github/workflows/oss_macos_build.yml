@@ -20,6 +20,7 @@ concurrency:
 
 env:
   BUILD_TYPE: RelWithDebInfo
+  CLUNK_COMMIT: d3fabbf95067f5350e16128b51dc17505e0f83bd
   MACOSX_DEPLOYMENT_TARGET: "13"
 
 jobs:
@@ -50,8 +51,8 @@ jobs:
             libvorbis \
             ninja \
             pkgconf \
-            sdl2 \
-            sdl2_net
+            sdl3 \
+            sdl3_net
 
       - name: Install latest CMake 4
         run: |
@@ -69,8 +70,10 @@ jobs:
       - name: Download Clunk
         id: clunk-source
         run: |
-          mkdir -p external
-          git clone --depth 1 https://github.com/stalkerg/clunk.git external/clunk
+          git init external/clunk
+          git -C external/clunk remote add origin https://github.com/stalkerg/clunk.git
+          git -C external/clunk fetch --depth 1 origin "${CLUNK_COMMIT}"
+          git -C external/clunk checkout --detach FETCH_HEAD
           echo "sha=$(git -C external/clunk rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Clunk build
@@ -102,6 +105,9 @@ jobs:
 
       - name: Build Vangers
         run: cmake --build build --parallel
+
+      - name: Test Vangers
+        run: ctest --test-dir build --output-on-failure
 
       - name: Show built binaries
         run: |

@@ -54,14 +54,13 @@
 		}
 		"9"
 		{
-			"file"	"Vangers.app/Contents/Libs/libSDL2-2.0.0.dylib"
+			"file"	"Vangers.app/Contents/Libs/libSDL3.0.dylib"
 			"mode"	"755"
 		}
 		"10"
 		{
-			"file"	"Vangers.app/Contents/Libs/libSDL2_net-2.0.0.dylib"
+			"file"	"Vangers.app/Contents/Libs/libSDL3_net.0.dylib"
 			"mode"	"755"
 		}
 	}
 }
-

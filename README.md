@@ -21,10 +21,10 @@ http://www.gog.com/game/vangers
 
 ## Required libraries ##
 
-* SDL2
-* SDL2_net
+* SDL 3.2 or newer
+* SDL_net 3.2 or newer
 * libvorbis
-* clunk (https://github.com/stalkerg/clunk)
+* SDL3-native clunk from the `sdl3` branch (https://github.com/stalkerg/clunk/tree/sdl3)
 * ffmpeg 6.0 or newer
 * zlib
 

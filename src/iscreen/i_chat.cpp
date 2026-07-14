@@ -81,7 +81,7 @@ void iInitChatButtons(void);
 void iInitChatScreen(void);
 
 void iChatInputChar(SDL_Event *code);
-void iChatInputChar(char *input_char);
+void iChatInputChar(const char *input_char);
 void iChatInputFlush(void);
 void iChatInputBack(void);
 void iChatInputEditing(SDL_Event *code);
@@ -1019,7 +1019,8 @@ void iChatInit(void) {
 	XGR_MouseShow();
 
 	iInitChatScreen();
-	SDL_StartTextInput();
+	if (!SDL_StartTextInput(XGR_Obj.get_window()))
+		ErrH.Abort(SDL_GetError(), XERR_USER, 0);
 }
 
 void iChatQuant(int flush) {
@@ -1092,7 +1093,7 @@ void iChatFinit(void) {
 	iChatHistory = NULL;
 	iChatInput = NULL;
 	iChatButtons = NULL;
-	SDL_StopTextInput();
+	SDL_StopTextInput(XGR_Obj.get_window());
 }
 
 void iChatKeyQuant(SDL_Event *k) {
@@ -1103,16 +1104,16 @@ void iChatKeyQuant(SDL_Event *k) {
 	iChatInputChar(k);
 	iChatInputEditing(k);
 
-	if (k->type != SDL_KEYDOWN) {
+	if (k->type != SDL_EVENT_KEY_DOWN) {
 		return;
 	}
 
-	if (iCheckKeyID(iKEY_CHAT, k->key.keysym.scancode)) {
+	if (iCheckKeyID(iKEY_CHAT, k->key.scancode)) {
 		iChatExit = 1;
 		return;
 	}
 
-	switch (k->key.keysym.scancode) {
+	switch (k->key.scancode) {
 	case SDL_SCANCODE_ESCAPE:
 		iChatExit = 1;
 		break;
@@ -1340,7 +1341,7 @@ void iChatInputDrawCursor(void) {
 	);
 }
 
-void iChatInputChar(char *input_char) {
+void iChatInputChar(const char *input_char) {
 	if (!iChatReady() || !input_char || !input_char[0])
 		return;
 	iChatNormalizeInput();
@@ -1396,7 +1397,7 @@ void iChatInputChar(char *input_char) {
 }
 
 void iChatInputChar(SDL_Event *event) {
-	if (event && iChatReady() && event->type == SDL_TEXTINPUT) {
+	if (event && iChatReady() && event->type == SDL_EVENT_TEXT_INPUT) {
 		iChatInputChar(event->text.text);
 	}
 }
@@ -1498,9 +1499,9 @@ void iChatInputEditing(SDL_Event *event) {
 		return;
 	iChatNormalizeInput();
 
-	if (event->type == SDL_MOUSEWHEEL) {
-		int x, y;
-		SDL_GetMouseState(&x, &y);
+	if (event->type == SDL_EVENT_MOUSE_WHEEL) {
+		const int x = XGR_MouseObj.PosX;
+		const int y = XGR_MouseObj.PosY;
 
 		iChatHistory->SizeX += scrollSizeX; // check history bounds with scroll
 		if (iChatHistory->check_xy(x, y)) {
@@ -1511,12 +1512,12 @@ void iChatInputEditing(SDL_Event *event) {
 			}
 		}
 		iChatHistory->SizeX -= scrollSizeX;
-	} else if (event->type == SDL_KEYDOWN) {
-		SDL_Keycode keycode = event->key.keysym.sym;
-		uint16_t keymod = event->key.keysym.mod;
+	} else if (event->type == SDL_EVENT_KEY_DOWN) {
+		SDL_Keycode keycode = event->key.key;
+		SDL_Keymod keymod = event->key.mod;
 
 		// because SDL doesn't know what numlock is
-		if (!(keymod & KMOD_NUM)) {
+		if (!(keymod & SDL_KMOD_NUM)) {
 			switch (keycode) {
 			case SDLK_KP_2:
 				keycode = SDLK_DOWN;
@@ -1539,21 +1540,21 @@ void iChatInputEditing(SDL_Event *event) {
 
 			int position = iChatInput->cursorPosition;
 
-			if (keymod & KMOD_CTRL) {
+			if (keymod & SDL_KMOD_CTRL) {
 				std::string string = iChatInput->string;
 				int group = getCharGroup(string[position - 1]);
 
 				while (position > 1 && getCharGroup(string[position - 1]) == group) {
 					position -= 1;
 				}
-			} else if (!(keymod & KMOD_SHIFT) && position != iChatInput->selectionPosition) {
+			} else if (!(keymod & SDL_KMOD_SHIFT) && position != iChatInput->selectionPosition) {
 				position = std::min(position, iChatInput->selectionPosition);
 			} else {
 				position = std::max(1, position - 1);
 			}
 
 			iChatInput->cursorPosition = position;
-			if (!(keymod & KMOD_SHIFT)) {
+			if (!(keymod & SDL_KMOD_SHIFT)) {
 				iChatInput->selectionPosition = position;
 			}
 
@@ -1566,21 +1567,21 @@ void iChatInputEditing(SDL_Event *event) {
 
 			int position = iChatInput->cursorPosition;
 
-			if (keymod & KMOD_CTRL) {
+			if (keymod & SDL_KMOD_CTRL) {
 				std::string string = iChatInput->string;
 				int group = getCharGroup(string[position]);
 
 				while (position < (int)string.length() && getCharGroup(string[position]) == group) {
 					position += 1;
 				}
-			} else if (!(keymod & KMOD_SHIFT) && position != iChatInput->selectionPosition) {
+			} else if (!(keymod & SDL_KMOD_SHIFT) && position != iChatInput->selectionPosition) {
 				position = std::max(position, iChatInput->selectionPosition);
 			} else {
 				position = std::min(position + 1, (int)((iChatInput->string).length()));
 			}
 
 			iChatInput->cursorPosition = position;
-			if (!(keymod & KMOD_SHIFT)) {
+			if (!(keymod & SDL_KMOD_SHIFT)) {
 				iChatInput->selectionPosition = position;
 			}
 
@@ -1596,7 +1597,7 @@ void iChatInputEditing(SDL_Event *event) {
 			}
 
 			iChatInput->cursorPosition = 1;
-			if (!(keymod & KMOD_SHIFT)) {
+			if (!(keymod & SDL_KMOD_SHIFT)) {
 				iChatInput->selectionPosition = iChatInput->cursorPosition;
 			}
 
@@ -1612,41 +1613,41 @@ void iChatInputEditing(SDL_Event *event) {
 			}
 
 			iChatInput->cursorPosition = (iChatInput->string).length();
-			if (!(keymod & KMOD_SHIFT)) {
+			if (!(keymod & SDL_KMOD_SHIFT)) {
 				iChatInput->selectionPosition = iChatInput->cursorPosition;
 			}
 
 			iChatInput->rightDrawPosition = iChatInput->cursorPosition;
 			iChatInput->leftDrawPosition =
 				iChatInput->getLeftDrawPositionByRight(iChatInput->rightDrawPosition);
-		} else if (keycode == SDLK_a && (keymod & KMOD_CTRL)) {
+		} else if (keycode == SDLK_A && (keymod & SDL_KMOD_CTRL)) {
 			iChatInput->cursorPosition = (iChatInput->string).length();
 			iChatInput->selectionPosition = 1;
 			iChatInput->rightDrawPosition = iChatInput->cursorPosition;
 			iChatInput->leftDrawPosition =
 				iChatInput->getLeftDrawPositionByRight(iChatInput->rightDrawPosition);
-		} else if (keycode == SDLK_v && (keymod & KMOD_CTRL) &&
-				   SDL_HasClipboardText() == SDL_TRUE) {
+		} else if (keycode == SDLK_V && (keymod & SDL_KMOD_CTRL) && SDL_HasClipboardText()) {
 			iChatInputField prevBuf = *iChatInput;
 
 			char *clipboard = SDL_GetClipboardText();
+			if (clipboard) {
+				for (size_t i = 0; i < strlen(clipboard); i++) {
+					char chr[3] = {clipboard[i], 0, 0};
+					if ((unsigned char)(chr[0]) >= 128 && clipboard[i + 1]) {
+						chr[1] = clipboard[i + 1];
+						i++;
+					}
 
-			for (size_t i = 0; i < strlen(clipboard); i++) {
-				char *chr = new char[2]{clipboard[i], 0};
-				if ((unsigned char)(chr[0]) >= 128) {
-					chr[1] = clipboard[i + 1];
-					i++;
+					if (chr[0] < 32 && chr[1] == 0)
+						chr[0] = ' ';
+
+					iChatInputChar(chr);
 				}
-
-				if (chr[0] < 32 && chr[1] == 0) {
-					chr[0] = ' ';
-				}
-
-				iChatInputChar(chr);
+				SDL_free(clipboard);
 			}
 
 			iChatInputPrev = prevBuf;
-		} else if ((keycode == SDLK_c || keycode == SDLK_x) && (keymod & KMOD_CTRL)) {
+		} else if ((keycode == SDLK_C || keycode == SDLK_X) && (keymod & SDL_KMOD_CTRL)) {
 			int leftSelectionPosition =
 				std::min(iChatInput->cursorPosition, iChatInput->selectionPosition);
 			int rightSelectionPosition =
@@ -1672,12 +1673,12 @@ void iChatInputEditing(SDL_Event *event) {
 
 			SDL_SetClipboardText(new_string.c_str());
 
-			if (keycode == SDLK_x) {
+			if (keycode == SDLK_X) {
 				iChatInputField prevBuf = *iChatInput;
 				iChatInputBack();
 				iChatInputPrev = prevBuf;
 			}
-		} else if (keycode == SDLK_z && (keymod & KMOD_CTRL)) {
+		} else if (keycode == SDLK_Z && (keymod & SDL_KMOD_CTRL)) {
 			iChatInputField prevBuf = *iChatInput;
 			XBuffer *activeXConv = iChatInput->XConv;
 			*iChatInput = iChatInputPrev;

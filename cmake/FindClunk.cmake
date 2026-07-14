@@ -1,38 +1,37 @@
 FIND_PATH(CLUNK_INCLUDE_DIR
   NAMES
     clunk/clunk.h
-  PATHS
-    ${CLUNK_ROOT}/include
-	/usr/include
-    /usr/include/x86_64-linux-gnu
-    /usr/local/include
-    /local/include
-    /mingw/include
-    /opt/local/include
-    /opt/include
-    /sw/include
+  HINTS
+    ${CLUNK_ROOT}
+    /usr/local
+    /opt/local
+    /mingw
+  PATH_SUFFIXES include
 )
 
 FIND_LIBRARY(CLUNK_LIBRARY
   NAMES
     clunk
-  PATHS
+  HINTS
     ${CLUNK_ROOT}/lib
-    /usr/lib
+    ${CLUNK_ROOT}/bin
     /usr/local/lib
     /opt/local/lib
-    /sw/lib
-    /local/lib
     /mingw/lib
-	/local/bin
-	/mingw/bin
-	/usr/local/lib
+    /mingw/bin
 )
 IF(CLUNK_INCLUDE_DIR AND CLUNK_LIBRARY)
    SET(CLUNK_FOUND TRUE)
 ENDIF(CLUNK_INCLUDE_DIR AND CLUNK_LIBRARY)
 
 IF(CLUNK_FOUND)
+  IF(NOT TARGET Clunk::Clunk)
+    ADD_LIBRARY(Clunk::Clunk INTERFACE IMPORTED)
+    SET_TARGET_PROPERTIES(Clunk::Clunk PROPERTIES
+      INTERFACE_INCLUDE_DIRECTORIES "${CLUNK_INCLUDE_DIR}"
+      INTERFACE_LINK_LIBRARIES "${CLUNK_LIBRARY};SDL3::SDL3"
+    )
+  ENDIF()
   IF(NOT CLUNK_FIND_QUIETLY)
     MESSAGE(STATUS "Found clunk: ${CLUNK_LIBRARY} ${CLUNK_INCLUDE_DIR}")
   ENDIF(NOT CLUNK_FIND_QUIETLY)

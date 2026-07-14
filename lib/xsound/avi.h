@@ -1,7 +1,7 @@
 #ifndef __AVI_H__
 #define __AVI_H__
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <string>
 
 #include "xtcore.h"
@@ -39,7 +39,7 @@ struct AVIFile: XListElement {
 	int rgbaHeight;
 	int rgbaLineSize;
 
-	SDL_mutex *avCriticalSection;
+	SDL_Mutex *avCriticalSection;
 	int pause;
 
 	int width;
@@ -61,7 +61,7 @@ struct AVIFile: XListElement {
 	double pendingFrameTime;
 	double lastDecodedFrameTime;
 	double frameDuration;
-	Uint32 playbackStart;
+	Uint64 playbackStart;
 
 	void *audioSample;
 	int audioChannel;

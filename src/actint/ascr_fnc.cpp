@@ -5260,12 +5260,12 @@ int acsQuant(void) {
 	}
 	while (KeyBuf->size) {
 		SDL_Event *e = KeyBuf->get();
-		if (e->type == SDL_KEYDOWN) {
+		if (e->type == SDL_EVENT_KEY_DOWN) {
 			k = sdlEventToCode(e);
 		}
-		if (e->type == SDL_KEYDOWN || e->type == SDL_TEXTINPUT) {
+		if (e->type == SDL_EVENT_KEY_DOWN || e->type == SDL_EVENT_TEXT_INPUT) {
 			acsScrD->KeyTrap(0, e);
-			if (e->key.keysym.scancode == SDL_SCANCODE_ESCAPE && !acsScrD->QuantCode) {
+			if (e->key.scancode == SDL_SCANCODE_ESCAPE && !acsScrD->QuantCode) {
 				acsScrD->QuantCode = 1;
 			}
 		}
@@ -7533,18 +7533,18 @@ void aciDisableParametersMenu(void) {
 
 int sdlEventToCode(SDL_Event *event) {
 	switch (event->type) {
-	case SDL_KEYDOWN:
-	case SDL_KEYUP:
-		return event->key.keysym.scancode;
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEBUTTONUP:
+	case SDL_EVENT_KEY_DOWN:
+	case SDL_EVENT_KEY_UP:
+		return event->key.scancode;
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
 		switch (event->button.button) {
 		case SDL_BUTTON_LEFT:
 			return iMOUSE_LEFT_PRESS_CODE;
 		case SDL_BUTTON_RIGHT:
 			return iMOUSE_RIGHT_PRESS_CODE;
 		}
-	case SDL_MOUSEMOTION:
+	case SDL_EVENT_MOUSE_MOTION:
 		if (event->motion.state & SDL_BUTTON_LMASK)
 			return iMOUSE_LEFT_MOVE;
 		else if (event->motion.state & SDL_BUTTON_RMASK)

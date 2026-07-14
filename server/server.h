@@ -1,5 +1,6 @@
 #include "../lib/xtool/xglobal.h"
 #include "../src/multiplayer.h"
+#include "../src/xcontainers.h"
 #include "xsocket.h"
 
 #define DIRECT_SENDING_OBJECT 1
@@ -196,10 +197,10 @@ struct Player {
 	XTList<Object> inventory;
 
 	// Object* current_sent_object;
-	unsigned int birth_time;
-	unsigned int last_sent_position;
-	unsigned int last_IO_operation;
-	unsigned int time_to_remove;
+	Uint64 birth_time;
+	Uint64 last_sent_position;
+	Uint64 last_IO_operation;
+	Uint64 time_to_remove;
 	int total_sent;
 	int total_received;
 	XSocket socket;
@@ -216,7 +217,7 @@ struct Player {
 	Player *prev_alt;
 	XTListAlt<Player> *list_alt;
 
-	Player(Server *server, XSocket &sock);
+	Player(Server *server, XSocket &&sock);
 	~Player();
 
 	void identification();
@@ -236,7 +237,7 @@ struct Game {
 	XTList<World> worlds;
 	XTList<Object> global_objects;
 
-	unsigned int birth_time;
+	Uint64 birth_time;
 	char name[128];
 	ServerData data;
 
@@ -294,8 +295,8 @@ struct Server {
 
 	int transferring;
 	unsigned int time_to_live;
-	unsigned int time_to_destroy;
-	int next_broadcast;
+	Uint64 time_to_destroy;
+	Uint64 next_broadcast;
 
 	int n_games[NUMBER_MP_GAMES];
 	int n_players_max[NUMBER_MP_GAMES], n_players_sum[NUMBER_MP_GAMES];
@@ -325,14 +326,14 @@ struct Server {
 /*******************************************************************************
 			Defines
 *******************************************************************************/
-#define GLOBAL_CLOCK() (round(SDL_GetTicks() * (256. / 1000)))
-#define SECONDS() (round(SDL_GetTicks() * (1. / 1000)))
+#define GLOBAL_CLOCK() static_cast<unsigned int>(round(SDL_GetTicks() * (256. / 1000)))
+#define SECONDS() static_cast<unsigned int>(round(SDL_GetTicks() * (1. / 1000)))
 #define SERVER_ERROR(str, code) ErrH.Abort(str, XERR_USER, code)
 #define SERVER_ERROR_NO_EXIT(str, code) \
 	std::cout << "Error: " << str << " code:" << XERR_USER << " val:" << code << std::endl
 
-#define START_TIMER(interval) unsigned int _end_time_ = SDL_GetTicks() + interval;
-#define CHECK_TIMER() ((int)(SDL_GetTicks() - _end_time_) < 0)
-#define IS_FUTURE(time) ((int)((time) - SDL_GetTicks()) > 0)
-#define IS_PAST(time) ((int)(SDL_GetTicks() - (time)) > 0)
-#define TIME_INTERVAL(time) ((int)(SDL_GetTicks() - (time)))
+#define START_TIMER(interval) Uint64 _end_time_ = SDL_GetTicks() + (interval);
+#define CHECK_TIMER() (SDL_GetTicks() < _end_time_)
+#define IS_FUTURE(time) ((time) > SDL_GetTicks())
+#define IS_PAST(time) (SDL_GetTicks() > (time))
+#define TIME_INTERVAL(time) (SDL_GetTicks() - (time))

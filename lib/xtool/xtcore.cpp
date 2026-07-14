@@ -5,6 +5,8 @@
 #include "xglobal.h"
 #include "xt_list.h"
 
+#include <SDL3/SDL_main.h>
+
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 #	include <locale.h>
 #endif
@@ -93,6 +95,8 @@ XStream xtRTO_Log;
 
 int xtSysQuantDisabled = 0;
 static int xtFrameCount = 0;
+static bool xtExitRequested = false;
+static void (*xtAudioPauseHandler)(bool) = nullptr;
 extern bool XGR_FULL_SCREEN;
 
 int SkipIntro = 0;
@@ -113,13 +117,13 @@ int xtGetFrameCount(void) {
 	return xtFrameCount;
 }
 
-#ifdef ANDROID
-extern int vangers_main(int argc, char *argv[])
-#else
-int main(int argc, char *argv[])
-#endif
-{
-	int id, prevID, clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
+void xtSetAudioPauseHandler(void (*handler)(bool)) {
+	xtAudioPauseHandler = handler;
+}
+
+int main(int argc, char *argv[]) {
+	int id, prevID;
+	Uint64 clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
 	__internal_argc = argc;
 	__internal_argv = argv;
 
@@ -128,7 +132,6 @@ int main(int argc, char *argv[])
 	LoadLibraryA("backtrace.dll");
 	std::cout << "Set priority class" << std::endl;
 	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
-	putenv("SDL_AUDIODRIVER=DirectSound");
 #endif
 
 	for (int i = 1; i < argc; i++) {
@@ -205,6 +208,7 @@ int main(int argc, char *argv[])
 		clockCntGlobal = clockCnt;
 		while (!id) {
 			if (XObj->Timer) {
+				const Uint64 frameTime = static_cast<Uint64>(XObj->Timer);
 				id = XObj->Quant();
 				clockNow = clockNowGlobal = clocki();
 				clockDelta = clockNow - clockCnt;
@@ -215,9 +219,9 @@ int main(int argc, char *argv[])
 				// 		 <<" XTCORE_FRAME_NORMAL:"<<XTCORE_FRAME_NORMAL
 				// 		 <<" clockDelta:"<<clockDelta<<std::endl;
 
-				if (clockDelta < XObj->Timer) {
+				if (clockDelta < frameTime) {
 					// std::cout<<"clockDelta:"<<clockDelta<<" Timer:"<<XObj->Timer<<std::endl;
-					SDL_Delay(XObj->Timer - clockDelta);
+					SDL_Delay(static_cast<Uint32>(frameTime - clockDelta));
 				} else {
 					std::cout << "Strange deltas clockDelta:" << clockDelta
 							  << " Timer:" << XObj->Timer << std::endl;
@@ -234,17 +238,19 @@ int main(int argc, char *argv[])
 			if (!xtSysQuantDisabled)
 				xtEventQuant();
 			XGR_Flip();
+			if (xtExitRequested)
+				id = XT_TERMINATE_ID;
 		}
 
 		XObj->Finit();
 #ifdef _RTO_LOG_
-		xtRTO_Log < "\r\nChange RTO: " <= XObj->ID < " -> " <= id < " frame -> " <=
-			xtFrameCount;
+		xtRTO_Log < "\r\nChange RTO: " <= XObj->ID < " -> " <= id < " frame -> " <= xtFrameCount;
 #endif
 		XObj = xtGetRuntimeObject(id);
 	}
 	xtDoneApplication();
 	xtSysFinit();
+	SDL_Quit();
 
 #ifdef _RTO_LOG_
 	xtRTO_Log.close();
@@ -284,60 +290,55 @@ void xtRegisterRuntimeObject(XRuntimeObject *p) {
 
 int xtCallXKey(SDL_Event *m) {
 	switch (m->type) {
-	case SDL_KEYDOWN:
+	case SDL_EVENT_KEY_DOWN:
 		if (press_handler) {
 			(*press_handler)(m);
 		}
 		break;
-	case SDL_KEYUP:
+	case SDL_EVENT_KEY_UP:
 		if (unpress_handler) {
 			(*unpress_handler)(m);
 		}
 		break;
-	case SDL_TEXTINPUT:
+	case SDL_EVENT_TEXT_INPUT:
 		if (press_handler) {
 			(*press_handler)(m);
 		}
 		break;
-	case SDL_JOYBUTTONDOWN:
+	case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
 		// std::cout<<"jevent down button:"<<(int)m->jbutton.button<<std::endl;
 		if (press_handler) {
 			(*press_handler)(m);
 		}
 		break;
-	case SDL_JOYBUTTONUP:
+	case SDL_EVENT_JOYSTICK_BUTTON_UP:
 		// std::cout<<"jevent up"<<std::endl;
 		if (unpress_handler) {
 			(*unpress_handler)(m);
 		}
 		break;
-	case SDL_CONTROLLERBUTTONDOWN:
+	case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
 		// std::cout<<"CONTROLLERBUTTONDOWN"<<std::endl;
 		if (press_handler) {
 			(*press_handler)(m);
 		}
 		break;
-	case SDL_CONTROLLERBUTTONUP:
+	case SDL_EVENT_GAMEPAD_BUTTON_UP:
 		// std::cout<<"CONTROLLERBUTTONUP"<<std::endl;
 		if (unpress_handler) {
 			(*unpress_handler)(m);
 		}
 		break;
-	case SDL_JOYHATMOTION:
-		// std::cout<<"SDL_JOYHATMOTION:"<<(int)m->jhat.hat<<" value"<<(int)m->jhat.value<<"
-		// k:"<<std::endl;
+	case SDL_EVENT_JOYSTICK_HAT_MOTION:
 		if (press_handler) {
 			(*press_handler)(m);
 		}
 		break;
-	case SDL_JOYBALLMOTION:
-		// std::cout<<"SDL_JOYBALLMOTION:"<<(int)m->jball.ball<<" xrel:"<<m->jball.xrel<<"
-		// yrel:"<<m->jball.yrel<<std::endl;
+	case SDL_EVENT_JOYSTICK_BALL_MOTION:
 		break;
-	case SDL_JOYAXISMOTION:
-		// std::cout<<"SDL_JOYAXISMOTION:"<<(int)m->jaxis.axis<<" value"<<m->jaxis.value<<std::endl;
+	case SDL_EVENT_JOYSTICK_AXIS_MOTION:
 		break;
-	case SDL_MOUSEWHEEL:
+	case SDL_EVENT_MOUSE_WHEEL:
 		if (press_handler) {
 			(*press_handler)(m);
 		}
@@ -479,10 +480,7 @@ void xtSysFinit(void) {
 
 void xtSetExit() {
 	std::cout << "Exit!" << std::endl;
-	SDL_Quit();
-	exit(0);
-	//	ResetEvent(hXActiveWndEvent);
-	//	SetEvent(hXNeedExitEvent);
+	xtExitRequested = true;
 };
 
 extern int Pause;
@@ -497,49 +495,21 @@ int xtDispatchMessage(SDL_Event *msg) {
 
 	ret += xtCallXKey(msg);
 	switch (msg->type) {
-	case SDL_QUIT:
+	case SDL_EVENT_QUIT:
 		xtSetExit();
 		break;
-	case SDL_WINDOWEVENT:
-		switch (msg->window.event) {
-		case SDL_WINDOWEVENT_SHOWN:
-			// Pause = 0;
-			SDL_LockAudioDevice(1);
-			SDL_PauseAudioDevice(1, 0);
-			SDL_UnlockAudioDevice(1);
-			std::cout << "window show" << std::endl;
-			break;
-		case SDL_WINDOWEVENT_HIDDEN:
-			// Pause = 1;
-			SDL_LockAudioDevice(1);
-			SDL_PauseAudioDevice(1, 1);
-			SDL_UnlockAudioDevice(1);
-			std::cout << "window hidden" << std::endl;
-			break;
-		case SDL_WINDOWEVENT_RESTORED:
-			// Pause = 0;
-			SDL_LockAudioDevice(1);
-			SDL_PauseAudioDevice(1, 0);
-			SDL_UnlockAudioDevice(1);
-			std::cout << "window restored" << std::endl;
-			break;
-		case SDL_WINDOWEVENT_FOCUS_LOST:
-			// Pause = 1;
-			SDL_LockAudioDevice(1);
-			SDL_PauseAudioDevice(1, 1);
-			SDL_UnlockAudioDevice(1);
-			std::cout << "window focus lost" << std::endl;
-			break;
-		case SDL_WINDOWEVENT_FOCUS_GAINED:
-			// Pause = 0;
-			SDL_LockAudioDevice(1);
-			SDL_PauseAudioDevice(1, 0);
-			SDL_UnlockAudioDevice(1);
-			std::cout << "window focus gained" << std::endl;
-			break;
-		}
+	case SDL_EVENT_WINDOW_SHOWN:
+	case SDL_EVENT_WINDOW_RESTORED:
+	case SDL_EVENT_WINDOW_FOCUS_GAINED:
+		if (xtAudioPauseHandler)
+			xtAudioPauseHandler(false);
 		break;
-	case SDL_USEREVENT:
+	case SDL_EVENT_WINDOW_HIDDEN:
+	case SDL_EVENT_WINDOW_FOCUS_LOST:
+		if (xtAudioPauseHandler)
+			xtAudioPauseHandler(true);
+		break;
+	case SDL_EVENT_USER:
 		switch (msg->user.code) {
 		case CursorAnimationEvent:
 			doCursorAnimation();
@@ -554,12 +524,12 @@ void xtClearMessageQueue(void) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
-		case SDL_KEYDOWN:
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_JOYBUTTONDOWN:
-		case SDL_MOUSEMOTION:
-		case SDL_MOUSEBUTTONUP:
-		case SDL_KEYUP:
+		case SDL_EVENT_KEY_DOWN:
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+		case SDL_EVENT_MOUSE_MOTION:
+		case SDL_EVENT_MOUSE_BUTTON_UP:
+		case SDL_EVENT_KEY_UP:
 			XMsgBuf->put(&event);
 			break;
 		default:

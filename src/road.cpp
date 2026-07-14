@@ -205,7 +205,8 @@ char *host_name = 0;
 int host_port = DEFAULT_SERVER_PORT;
 
 int network_log = 0;
-int fps_frame, fps_start, uvsQuantFrame, gameDQuantFrame, actQuantFrame, MLQuantFrame;
+int fps_frame, uvsQuantFrame, gameDQuantFrame, actQuantFrame, MLQuantFrame;
+Uint64 fps_start;
 char fps_string[20];
 
 int stop_all_except_me = 0;
@@ -228,7 +229,7 @@ void memstatDumpLeak(void);
 #endif
 
 int page;
-clock_t _Timer_;
+Uint64 _Timer_;
 int frame;
 int Quit = 1;
 int Dead;
@@ -281,7 +282,7 @@ int Pause = 0;
 int FirstDraw = 1;
 
 int speed_correction_enabled = 1;
-int prev_frame_time = 0;
+Uint64 prev_frame_time = 0;
 
 iGameMap *curGMap;
 
@@ -1110,7 +1111,7 @@ int GameQuantRTO::Quant(void) {
 			sprintf(
 				fps_string,
 				"%.1f",
-				(double)(RTO_GAME_QUANT_TIMER) / (SDL_GetTicks() - (int)fps_start) * 1000
+				(double)(RTO_GAME_QUANT_TIMER) / (SDL_GetTicks() - fps_start) * 1000
 			);
 #ifdef _DEBUG
 			network_analysis(network_analysis_buffer, 0);
@@ -1234,7 +1235,7 @@ void LoadingRTO3::Init(int id) {
 	if (!actIntLog) {
 		palTr->set(palbuf, NULL, 0, 255, &Quit);
 		Quit = 1;
-		int cnt = CLOCK();
+		Uint64 cnt = CLOCK();
 		while (Quit) {
 			if (CLOCK() != cnt) {
 				palTr->quant();
@@ -1281,6 +1282,8 @@ void xtDoneApplication(void) {
 
 void restore(void) {
 	KDWIN::destroy_server();
+	main_socket.close();
+	XSocketFinit();
 #ifdef _DEBUG
 	network_analysis(network_analysis_buffer, 1);
 	fout < network_analysis_buffer.address();
@@ -1289,7 +1292,7 @@ void restore(void) {
 	memStart = 0;
 #endif
 	RestoreSOUND();
-	SDL_Quit();
+	XJoystickCleanup();
 
 	//	  win32_dump_mem();
 
@@ -1536,8 +1539,7 @@ void costab(void) {
 //	dstrect.h = 256;
 //
 //
-//     surface = SDL_CreateRGBSurface(0, map_size_x, map_size_y, 8,
-//		0, 0, 0, 0);
+//     surface = SDL_CreateSurface(map_size_x, map_size_y, SDL_PIXELFORMAT_INDEX8);
 //	surface->format = XGR_Obj.XGR_ScreenSurface->format;
 //
 //	for (iter=0; iter<map_size_y/256;iter++) {
@@ -1616,7 +1618,7 @@ void KeyCenter(SDL_Event *key) {
 #endif
 	case SDL_SCANCODE_F:
 		mod = SDL_GetModState();
-		if (mod & KMOD_CTRL) {
+		if (mod & SDL_KMOD_CTRL) {
 			curGMap->prmFlag ^= PRM_FPS;
 		}
 #ifdef _DEBUG
@@ -1626,7 +1628,7 @@ void KeyCenter(SDL_Event *key) {
 		break;
 	case SDL_SCANCODE_G:
 		mod = SDL_GetModState();
-		if (mod & KMOD_CTRL) {
+		if (mod & SDL_KMOD_CTRL) {
 			double old_game_time_coeff = GAME_TIME_COEFF;
 			if (GAME_TIME_COEFF == 1) {
 				RTO_GAME_QUANT_TIMER = 1000 / 60;
@@ -1911,7 +1913,8 @@ void iGameMap::flush() {
 
 void iGameMap::draw(int self) {
 	static XBuffer status;
-	static int blink, clcnt;
+	static int blink;
+	static Uint64 clcnt;
 
 	if (!MuteLog && ((ConTimer.counter & 7) == 0)) {
 		SoundQuant();
@@ -2481,8 +2484,13 @@ void shotFlush(void) {
 	}
 	std::cout << "ScreenShot name:" << out_buf.GetBuf() << std::endl;
 	SDL_Surface *screenshotSurface = XGR_Obj.get_screenshot();
-	SDL_SaveBMP(screenshotSurface, out_buf.GetBuf());
-	SDL_FreeSurface(screenshotSurface);
+	if (!screenshotSurface) {
+		std::cerr << "Screenshot failed: " << SDL_GetError() << std::endl;
+		return;
+	}
+	if (!SDL_SaveBMP(screenshotSurface, out_buf.GetBuf()))
+		std::cerr << "Screenshot save failed: " << SDL_GetError() << std::endl;
+	SDL_DestroySurface(screenshotSurface);
 }
 #endif
 

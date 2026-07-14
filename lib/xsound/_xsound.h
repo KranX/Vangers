@@ -38,7 +38,7 @@ void SoundLoadRaw(
 	const void *data,
 	std::size_t size,
 	int frequency,
-	Uint16 format,
+	SDL_AudioFormat format,
 	Uint8 channels,
 	void **lpDSB
 );

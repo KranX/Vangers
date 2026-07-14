@@ -2459,10 +2459,8 @@ const char *iGetKeyNameText(int vkey, Language lang, bool scan) {
 			return STR_JOYSTICK_KEY_NAME[vkey ^ SDLK_JOYSTICK_BUTTON_MASK];
 		else
 			return "jbutton_unknow";
-	} else if (vkey & SDLK_GAMECONTROLLER_BUTTON_MASK) {
-		return SDL_GameControllerGetStringForButton(
-			(SDL_GameControllerButton)(vkey ^ SDLK_GAMECONTROLLER_BUTTON_MASK)
-		);
+	} else if (vkey & SDLK_GAMEPAD_BUTTON_MASK) {
+		return SDL_GetGamepadStringForButton((SDL_GamepadButton)(vkey ^ SDLK_GAMEPAD_BUTTON_MASK));
 	} else if (vkey & SDLK_JOYSTICK_HAT_MASK) {
 		return get_joystick_hat_name((vkey ^ SDLK_JOYSTICK_HAT_MASK) % 10);
 	} else if (vkey & SDLK_SCANCODE_MASK) {
@@ -2470,7 +2468,7 @@ const char *iGetKeyNameText(int vkey, Language lang, bool scan) {
 	} else if (scan) {
 		return SDL_GetScancodeName((SDL_Scancode)vkey);
 	} else {
-		return SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)vkey));
+		return SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)vkey, SDL_KMOD_NONE, false));
 	}
 }
 

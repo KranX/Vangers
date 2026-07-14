@@ -20,7 +20,7 @@ PaletteTransform *palTr;
 void PalEvidence(char *tpal, char *pal) {
 	const int SPEED = 4;
 	int log = 1, i;
-	int t;
+	Uint64 t;
 	while (log) {
 		t = CLOCK();
 		while (CLOCK() < t + 1)
@@ -53,7 +53,7 @@ void PalSlake(char *pal) {
 	const int SPEED = 4;
 
 	int log = 1, i;
-	int t;
+	Uint64 t;
 	while (log) {
 		t = CLOCK();
 		while (CLOCK() < t + 1)

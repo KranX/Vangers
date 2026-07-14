@@ -85,7 +85,7 @@ std::pair<const char *, const char *> getSideNames() {
 }
 } // namespace
 
-void XGR_RenderSides(SDL_Renderer *renderer, int renderWidth) {
+bool XGR_RenderSides(SDL_Renderer *renderer, int renderWidth) {
 	auto sideNames = getSideNames();
 
 	if (sideNames.first != activeSides.first) {
@@ -103,16 +103,21 @@ void XGR_RenderSides(SDL_Renderer *renderer, int renderWidth) {
 	}
 
 	int outWidth = (xgrScreenSizeX - renderWidth) / 2;
-	SDL_Rect dst_rect{0, 0, 0, xgrScreenSizeY};
+	SDL_FRect dst_rect{0, 0, 0, static_cast<float>(xgrScreenSizeY)};
 	if (HDLeftSideTexture != nullptr) {
-		SDL_QueryTexture(HDLeftSideTexture, nullptr, nullptr, &dst_rect.w, nullptr);
+		if (!SDL_GetTextureSize(HDLeftSideTexture, &dst_rect.w, nullptr))
+			return false;
 		dst_rect.x = std::max<int>(0, outWidth - contentWidth);
-		SDL_RenderCopy(renderer, HDLeftSideTexture, NULL, &dst_rect);
+		if (!SDL_RenderTexture(renderer, HDLeftSideTexture, NULL, &dst_rect))
+			return false;
 	}
 
 	if (HDRightSideTexture != nullptr) {
-		SDL_QueryTexture(HDRightSideTexture, nullptr, nullptr, &dst_rect.w, nullptr);
+		if (!SDL_GetTextureSize(HDRightSideTexture, &dst_rect.w, nullptr))
+			return false;
 		dst_rect.x = xgrScreenSizeX - outWidth - (dst_rect.w - contentWidth);
-		SDL_RenderCopy(renderer, HDRightSideTexture, NULL, &dst_rect);
+		if (!SDL_RenderTexture(renderer, HDRightSideTexture, NULL, &dst_rect))
+			return false;
 	}
+	return true;
 }

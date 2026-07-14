@@ -7,7 +7,7 @@
 #	include <process.h>
 #endif
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <ctype.h>
 #include <memory>
 #include <stdio.h>

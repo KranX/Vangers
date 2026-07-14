@@ -31,10 +31,6 @@
 #include "../actint/aci_scr.h"
 #include "../actint/acsconst.h"
 
-#ifndef _WIN32
-#	include <arpa/inet.h> // ntohl() FIXME: remove
-#endif
-
 #include "../sound/hmusic.h"
 #include "../sound/hsound.h"
 
@@ -806,7 +802,7 @@ int iQuantSecond(void) {
 					k = KeyBuf->get();
 					if (iChatON)
 						iChatKeyQuant(k);
-					if ((k->type == SDL_KEYDOWN && k->key.keysym.scancode == SDL_SCANCODE_ESCAPE) &&
+					if ((k->type == SDL_EVENT_KEY_DOWN && k->key.scancode == SDL_SCANCODE_ESCAPE) &&
 						actIntLog) {
 						if (!iPause)
 							ipal_iter(iScreenOffs);
@@ -818,20 +814,21 @@ int iQuantSecond(void) {
 						}
 					}
 
-					//					if(k->type == SDL_KEYDOWN && k->key.keysym.scancode ==
+					//					if(k->type == SDL_EVENT_KEY_DOWN && k->key.scancode ==
 					// SDL_SCANCODE_F11) {
 					if (iKeyPressed(iKEY_SCREENSHOT)) {
 						shotFlush();
 					}
 
-					if (k->type == SDL_KEYDOWN || k->type == SDL_KEYUP) {
-						iKeyTrap(k->key.keysym.scancode);
-					} else if (k->type == SDL_JOYBUTTONDOWN || k->type == SDL_JOYBUTTONUP) {
+					if (k->type == SDL_EVENT_KEY_DOWN || k->type == SDL_EVENT_KEY_UP) {
+						iKeyTrap(k->key.scancode);
+					} else if (k->type == SDL_EVENT_JOYSTICK_BUTTON_DOWN ||
+							   k->type == SDL_EVENT_JOYSTICK_BUTTON_UP) {
 						iKeyTrap(k->jbutton.button | SDLK_JOYSTICK_BUTTON_MASK);
-					} else if (k->type == SDL_CONTROLLERBUTTONDOWN ||
-							   k->type == SDL_CONTROLLERBUTTONUP) {
-						iKeyTrap(k->cbutton.button | SDLK_GAMECONTROLLER_BUTTON_MASK);
-					} else if (k->type == SDL_JOYHATMOTION) {
+					} else if (k->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
+							   k->type == SDL_EVENT_GAMEPAD_BUTTON_UP) {
+						iKeyTrap(k->gbutton.button | SDLK_GAMEPAD_BUTTON_MASK);
+					} else if (k->type == SDL_EVENT_JOYSTICK_HAT_MOTION) {
 						iKeyTrap((k->jhat.value + 10 * k->jhat.hat) | SDLK_JOYSTICK_HAT_MASK);
 					}
 				}
@@ -1812,13 +1809,13 @@ void aciShowLocation(void) {
 	// XGR_Flush(0,0,XGR_MAXX,XGR_MAXY);
 	// i_evince_pal(iscrPal,8);
 
-	timer = CLOCK();
+	Uint64 door_timer = CLOCK();
 	for (i = 0; i < ACI_DOOR_DELAY; i++) {
-		while (CLOCK() < timer + I_TIME_DELTA) {
+		while (CLOCK() < door_timer + I_TIME_DELTA) {
 			xtClearMessageQueue();
 		}
 		SlowCDTRACK();
-		timer = CLOCK();
+		door_timer = CLOCK();
 	}
 
 	SOUND_GATE();
@@ -3119,11 +3116,5 @@ void aciShowLocationPicture(void) {
 }
 
 void iGetIP(void) {
-	// Should be BigEndian in anycase
-	int IP = XSocketLocalHostExternADDR.host;
-	XBuffer XBuf;
-
-	XBuf <= (IP & 0xff) < "." <= ((IP >> 8) & 0xff) < "." <= ((IP >> 16) & 0xff) < "." <=
-		((IP >> 24) & 0xff);
-	iSetOptionValueCHR(iIP_ADDRESS, XBuf.address());
+	iSetOptionValueCHR(iIP_ADDRESS, XSocketLocalHostExternalAddress.c_str());
 }
