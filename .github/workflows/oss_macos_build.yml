@@ -34,6 +34,8 @@ jobs:
 
       - name: Install system dependencies
         run: |
+          brew untap aws/tap 2>/dev/null || true
+
           install_if_missing() {
             for formula in "$@"; do
               if brew list --formula "$formula" >/dev/null 2>&1; then

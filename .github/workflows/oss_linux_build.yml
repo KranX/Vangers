@@ -46,9 +46,24 @@ jobs:
             ca-certificates \
             curl \
             libasound2-dev \
+            libdbus-1-dev \
             libdecor-0-dev \
             libdrm-dev \
+            libegl1-mesa-dev \
+            libfribidi-dev \
+            libgbm-dev \
+            libgl1-mesa-dev \
+            libgles2-mesa-dev \
+            libibus-1.0-dev \
+            libjack-dev \
             libogg-dev \
+            libpipewire-0.3-dev \
+            libpulse-dev \
+            libsndio-dev \
+            libthai-dev \
+            libudev-dev \
+            liburing-dev \
+            libusb-1.0-0-dev \
             libvorbis-dev \
             libavcodec-dev \
             libavformat-dev \
@@ -62,6 +77,8 @@ jobs:
             libxi-dev \
             libxkbcommon-dev \
             libxrandr-dev \
+            libxss-dev \
+            libxtst-dev \
             zlib1g-dev
 
       - name: Install latest CMake 4

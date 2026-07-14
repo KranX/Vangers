@@ -37,6 +37,7 @@ jobs:
         with:
           msystem: UCRT64
           path-type: inherit
+          update: true
           install: |
             diffutils
             git
