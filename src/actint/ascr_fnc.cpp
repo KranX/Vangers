@@ -2041,14 +2041,38 @@ void aci_LocationQuantPrepare(void) {
 	iKeyClear();
 }
 
-static void aciResetLocationPauseState(void) {
-	if (acsAllocFlag && acsScrD) {
-		if (!(aScrDisp->flags & AS_ISCREEN) && acsScrD->curScr) {
-			acsScrD->curScr->ChangeCoords(-(XGR_MAXX - 640) / 2, -(XGR_MAXY - 480) / 2);
-		}
-		acsScrD->free_mem();
-		acsAllocFlag = 0;
+static void aciFinishPauseScreen(void) {
+	if (!acsAllocFlag || !acsScrD)
+		return;
+
+	acsAllocFlag = 0;
+	if (!(aScrDisp->flags & AS_ISCREEN) && acsScrD->curScr) {
+		acsScrD->curScr->ChangeCoords(-(XGR_MAXX - 640) / 2, -(XGR_MAXY - 480) / 2);
 	}
+	acsScrD->free_mem();
+	if (aScrDisp->flags & AS_FULLSCR && !(aScrDisp->flags & AS_ISCREEN)) {
+		XGR_MouseHide();
+	} else
+		aScrDisp->flags &= ~AS_FULL_REDRAW;
+
+	iScrDisp->flags &= ~MS_LEFT_PRESS;
+	iScrDisp->flags &= ~MS_RIGHT_PRESS;
+	iScrDisp->flags &= ~MS_MOVED;
+	iHandleExtEvent(iEXT_UPDATE_TUTORIAL_MODE);
+	iHandleExtEvent(iEXT_UPDATE_SOUND_MODE);
+	iHandleExtEvent(iEXT_UPDATE_SOUND_VOLUME);
+
+	if (NetworkON)
+		aciKeyboardLocked = 0;
+
+	acsScreenID = ACS_PAUSE_SCREEN1;
+	iSaveData();
+	if (KeyBuf)
+		KeyBuf->clear();
+}
+
+static void aciResetLocationPauseState(void) {
+	aciFinishPauseScreen();
 
 	iPause = 0;
 	if (NetworkON)
@@ -5272,29 +5296,7 @@ int acsQuant(void) {
 		acsScrD->PrepareInput(acsCurrentSlotID);
 	}
 	if (ret) {
-		acsAllocFlag = 0;
-		if (!(aScrDisp->flags & AS_ISCREEN)) {
-			acsScrD->curScr->ChangeCoords(-(XGR_MAXX - 640) / 2, -(XGR_MAXY - 480) / 2);
-		}
-		acsScrD->free_mem();
-		if (aScrDisp->flags & AS_FULLSCR && !(aScrDisp->flags & AS_ISCREEN)) {
-			XGR_MouseHide();
-		} else
-			aScrDisp->flags &= ~AS_FULL_REDRAW;
-
-		iScrDisp->flags &= ~MS_LEFT_PRESS;
-		iScrDisp->flags &= ~MS_RIGHT_PRESS;
-		iScrDisp->flags &= ~MS_MOVED;
-		iHandleExtEvent(iEXT_UPDATE_TUTORIAL_MODE);
-		iHandleExtEvent(iEXT_UPDATE_SOUND_MODE);
-		iHandleExtEvent(iEXT_UPDATE_SOUND_VOLUME);
-
-		if (NetworkON)
-			aciKeyboardLocked = 0;
-
-		acsScreenID = ACS_PAUSE_SCREEN1;
-		iSaveData();
-		KeyBuf->clear();
+		aciFinishPauseScreen();
 		return 1;
 	}
 	return 0;
