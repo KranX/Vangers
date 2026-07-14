@@ -27,26 +27,11 @@ void xtUnRegisterSysFinitFnc(int id);
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
-#define AV_CODEC_PAR (LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 33, 100))
-
-#if LIBAVCODEC_VERSION_MAJOR < 57
-#	define AV_FRAME_ALLOC avcodec_alloc_frame
-#	define AV_PACKET_UNREF av_free_packet
-#else
-#	define AV_FRAME_ALLOC av_frame_alloc
-#	define AV_PACKET_UNREF av_packet_unref
-#endif
-
-#if LIBAVCODEC_VERSION_MAJOR < 55
-#	define AV_FRAME_FREE(frame) av_free(frame)
-#else
-#	define AV_FRAME_FREE(frame) av_frame_free(&(frame))
-#endif
-
-#if AV_CODEC_PAR
-#	define AV_CODEC_CONTEXT_RELEASE(ctx) avcodec_free_context(&(ctx))
-#else
-#	define AV_CODEC_CONTEXT_RELEASE(ctx) avcodec_close(ctx)
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(60, 3, 100) ||  \
+	LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(60, 3, 100) || \
+	LIBAVUTIL_VERSION_INT < AV_VERSION_INT(58, 2, 100) ||   \
+	LIBSWSCALE_VERSION_INT < AV_VERSION_INT(7, 1, 100)
+#	error "FFmpeg 6.0 or newer is required"
 #endif
 
 static XList aviXList;
@@ -77,10 +62,6 @@ int AVIFile::open(char *aviname, int initFlags, int channel) {
 	if (flags & AVI_INTERPOLATE)
 		return 0;
 
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
-	av_register_all();
-#endif
-
 	int ret = avformat_open_input(&pFormatCtx, aviname, NULL, NULL);
 	if (ret < 0) {
 		char error_message[AV_ERROR_MAX_STRING_SIZE];
@@ -94,11 +75,7 @@ int AVIFile::open(char *aviname, int initFlags, int channel) {
 	}
 
 	for (unsigned i = 0; i < pFormatCtx->nb_streams; i++) {
-#if AV_CODEC_PAR
 		if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
-#else
-		if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
-#endif
 			videoStream = i;
 			break;
 		}
@@ -107,8 +84,6 @@ int AVIFile::open(char *aviname, int initFlags, int channel) {
 		std::cout << "Didn't find a video stream file: " << aviname << std::endl;
 		return 0;
 	}
-
-#if AV_CODEC_PAR
 	pCodecCtx = avcodec_alloc_context3(NULL);
 	if (!pCodecCtx) {
 		std::cout << "Unable to allocate codec context" << std::endl;
@@ -119,26 +94,19 @@ int AVIFile::open(char *aviname, int initFlags, int channel) {
 		std::cout << "Couldn't get the codec context" << std::endl;
 		return 0;
 	}
-#else
-	pCodecCtx = pFormatCtx->streams[videoStream]->codec;
-#endif
 
 	pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
 	if (!pCodec) {
 		std::cout << "Unsupported codec! file: " << aviname << std::endl;
 		return 0;
 	}
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53, 8, 0)
 	if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
-#else
-	if (avcodec_open(pCodecCtx, pCodec) < 0) {
-#endif
 		std::cout << "Could not open codec file: " << aviname << std::endl;
 		return 0;
 	}
 
-	pFrame = AV_FRAME_ALLOC();
-	pNextFrame = AV_FRAME_ALLOC();
+	pFrame = av_frame_alloc();
+	pNextFrame = av_frame_alloc();
 	if (!pFrame || !pNextFrame) {
 		std::cout << "Unable to allocate video frames" << std::endl;
 		return 0;
@@ -189,25 +157,12 @@ void AVIFile::loadAudio(const char *aviname) {
 	int channels = 0;
 	AVCodecID codec_id = AV_CODEC_ID_NONE;
 	for (unsigned i = 0; i < audioFormat->nb_streams; i++) {
-#if AV_CODEC_PAR
 		AVCodecParameters *parameters = audioFormat->streams[i]->codecpar;
 		if (parameters->codec_type != AVMEDIA_TYPE_AUDIO)
 			continue;
 		codec_id = parameters->codec_id;
 		sample_rate = parameters->sample_rate;
-#	if LIBAVCODEC_VERSION_MAJOR >= 59
 		channels = parameters->ch_layout.nb_channels;
-#	else
-		channels = parameters->channels;
-#	endif
-#else
-		AVCodecContext *context = audioFormat->streams[i]->codec;
-		if (context->codec_type != AVMEDIA_TYPE_AUDIO)
-			continue;
-		codec_id = context->codec_id;
-		sample_rate = context->sample_rate;
-		channels = context->channels;
-#endif
 		audio_stream = i;
 		break;
 	}
@@ -224,9 +179,9 @@ void AVIFile::loadAudio(const char *aviname) {
 		if (audio_packet.stream_index == audio_stream && audio_packet.size > 0) {
 			samples.insert(samples.end(), audio_packet.data, audio_packet.data + audio_packet.size);
 		}
-		AV_PACKET_UNREF(&audio_packet);
+		av_packet_unref(&audio_packet);
 	}
-	AV_PACKET_UNREF(&audio_packet);
+	av_packet_unref(&audio_packet);
 	avformat_close_input(&audioFormat);
 
 	const size_t sample_size = sizeof(int16_t) * channels;
@@ -278,12 +233,12 @@ int AVIFile::decodeNextFrame(AVFrame *frame) {
 				break;
 			}
 			if (packet.stream_index != videoStream) {
-				AV_PACKET_UNREF(&packet);
+				av_packet_unref(&packet);
 				continue;
 			}
 
 			ret = avcodec_send_packet(pCodecCtx, &packet);
-			AV_PACKET_UNREF(&packet);
+			av_packet_unref(&packet);
 			if (ret < 0) {
 				std::cout << "Can't send video packet: " << filename << std::endl;
 				return 0;
@@ -399,17 +354,16 @@ void AVIFile::close(void) {
 
 	if (avCriticalSection)
 		SDL_LockMutex(avCriticalSection);
-	AV_PACKET_UNREF(&packet);
+	av_packet_unref(&packet);
 	if (swsContext) {
 		sws_freeContext(swsContext);
 		swsContext = NULL;
 	}
 	av_freep(&rgbaFrame);
-	AV_FRAME_FREE(pNextFrame);
-	AV_FRAME_FREE(pFrame);
+	av_frame_free(&pNextFrame);
+	av_frame_free(&pFrame);
 	if (pCodecCtx) {
-		AV_CODEC_CONTEXT_RELEASE(pCodecCtx);
-		pCodecCtx = NULL;
+		avcodec_free_context(&pCodecCtx);
 	}
 	if (pFormatCtx)
 		avformat_close_input(&pFormatCtx);

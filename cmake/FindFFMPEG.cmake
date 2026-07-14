@@ -11,7 +11,6 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 		avutil.h
 	PATHS
 		/usr/local/include
-		/usr/pkg/include/ffmpeg3/libavutil
 		/usr/include
 		/usr/include/x86_64-linux-gnu
 		/usr/include/aarch64-linux-gnu
@@ -34,7 +33,6 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
 		avcodec.h
 	PATHS
 		/usr/local/include
-		/usr/pkg/include/ffmpeg3/libavcodec
 		/usr/include
 		/usr/include/x86_64-linux-gnu
 		/usr/include/aarch64-linux-gnu
@@ -57,7 +55,6 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 		avformat.h
 	PATHS
 		/usr/local/include
-		/usr/pkg/include/ffmpeg3/libavformat
 		/usr/include
 		/usr/include/x86_64-linux-gnu
 		/usr/include/aarch64-linux-gnu
@@ -80,7 +77,6 @@ FIND_PATH(SWSCALE_INCLUDE_DIR
 		swscale.h
 	PATHS
 		/usr/local/include
-		/usr/pkg/include/ffmpeg3/libswscale
 		/usr/include
 		/usr/include/x86_64-linux-gnu
 		/usr/include/aarch64-linux-gnu
@@ -100,16 +96,12 @@ FIND_PATH(SWSCALE_INCLUDE_DIR
 FIND_LIBRARY(AVUTIL_LIBRARY
 	NAMES
 		avutil
-		avutil-55
-		avutil-56
-		avutil-57
 		avutil-58
 		avutil-59
 		avutil-60
 		avutil-61
 	PATHS
 		/usr/local/lib
-		/usr/pkg/lib/ffmpeg3
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/aarch64-linux-gnu
@@ -126,16 +118,12 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 FIND_LIBRARY(AVCODEC_LIBRARY
 	NAMES
 		avcodec
-		avcodec-57
-		avcodec-58
-		avcodec-59
 		avcodec-60
 		avcodec-61
 		avcodec-62
 		avcodec-63
 	PATHS
 		/usr/local/lib
-		/usr/pkg/lib/ffmpeg3
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/aarch64-linux-gnu
@@ -151,16 +139,12 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 FIND_LIBRARY(AVFORMAT_LIBRARY
 	NAMES
 		avformat
-		avformat-57
-		avformat-58
-		avformat-59
 		avformat-60
 		avformat-61
 		avformat-62
 		avformat-63
 	PATHS
 		/usr/local/lib
-		/usr/pkg/lib/ffmpeg3
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/aarch64-linux-gnu
@@ -177,16 +161,12 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 FIND_LIBRARY(SWSCALE_LIBRARY
 	NAMES
 		swscale
-		swscale-4
-		swscale-5
-		swscale-6
 		swscale-7
 		swscale-8
 		swscale-9
 		swscale-10
 	PATHS
 		/usr/local/lib
-		/usr/pkg/lib/ffmpeg3
 		/usr/lib
 		/usr/lib/x86_64-linux-gnu
 		/usr/lib/aarch64-linux-gnu

@@ -25,7 +25,7 @@ http://www.gog.com/game/vangers
 * SDL2_net
 * libvorbis
 * clunk (https://github.com/stalkerg/clunk)
-* ffmpeg
+* ffmpeg 6.0 or newer
 * zlib
 
 You can see the [wiki pages](https://github.com/KranX/Vangers/wiki) to learn how to build this project.
