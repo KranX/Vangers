@@ -20,6 +20,7 @@ typedef unsigned char uchar;
 #include "../src/actint/item_api.h"
 #include "../src/common.h"
 #include "../src/dast/poly3d.h"
+#include "../src/file_utils.h"
 #include "../src/network.h"
 #include "../src/sound/hsound.h"
 #include "../src/units/hobj.h"
@@ -145,12 +146,7 @@ char *win32_findfirst(const char *cMask) {
 		path.c_str(),
 		&lastSearch,
 		[](const struct dirent *next) -> int {
-			std::string name = next->d_name;
-			if (extToSearch.length() > name.length()) {
-				return false;
-			}
-			return extToSearch ==
-				   name.substr(name.length() - extToSearch.length(), extToSearch.length());
+			return vangers::files::is_resource_file_name(next->d_name, extToSearch.c_str());
 		},
 		alphasort
 	);

@@ -8,27 +8,40 @@
 
 #include "../backg.h"
 #include "../common.h"
+#include "../file_utils.h"
 #include "../sqexp.h"
+
+#include <vector>
+
+#if defined(__unix__) || defined(__APPLE__)
+#	include <sys/stat.h>
+#endif
 
 #if !(defined(__unix__) || defined(__APPLE__))
 static WIN32_FIND_DATA FFdata;
 static HANDLE FFh;
+
+static int should_skip_find_entry(void) {
+	const DWORD ignored_attributes =
+		FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM;
+	return (FFdata.dwFileAttributes & ignored_attributes) ||
+		   !vangers::files::is_visible_directory_entry(FFdata.cFileName);
+}
+
 char *win32_findnext(void) {
-	if (FindNextFile(FFh, &FFdata) == TRUE) {
-		if (FFdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			return win32_findnext();
-		return FFdata.cFileName;
-	} else {
-		FindClose(FFh);
-		return NULL;
+	while (FindNextFile(FFh, &FFdata) == TRUE) {
+		if (!should_skip_find_entry())
+			return FFdata.cFileName;
 	}
+	FindClose(FFh);
+	return NULL;
 }
 
 char *win32_findfirst(const char *mask) {
 	FFh = FindFirstFile(mask, &FFdata);
 	if (FFh == INVALID_HANDLE_VALUE)
 		return NULL;
-	if (FFdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+	if (should_skip_find_entry())
 		return win32_findnext();
 	return FFdata.cFileName;
 }
@@ -755,9 +768,18 @@ static int should_load_world_mobile_location(const char *fname) {
 }
 #endif
 
+#if defined(__unix__) || defined(__APPLE__)
+static int is_regular_file(const std::string &directory, const char *name) {
+	struct stat info;
+	const std::string path = directory + name;
+	return stat(path.c_str(), &info) == 0 && S_ISREG(info.st_mode);
+}
+#endif
+
 void MLload(void) {
 	int i, j, t;
 	XBuffer buf;
+	std::vector<std::string> file_names;
 
 #ifdef _ROAD_
 	int k;
@@ -794,82 +816,45 @@ void MLload(void) {
 			MLTnt[i] = 0;
 	};
 #endif
-	MLTableSize = 0;
 #if !(defined(__unix__) || defined(__APPLE__))
 	buf.init();
 	buf < "data.vot/*.vot";
 	char *fn = win32_findfirst(GetTargetName(buf.GetBuf()));
 	while (fn) {
-		MLTableSize++;
+		if (vangers::files::is_resource_file_name(fn, ".vot")
+#	ifdef _ROAD_
+			&& should_load_world_mobile_location(fn)
+#	endif
+		)
+			file_names.emplace_back(fn);
 		fn = win32_findnext();
 	}
 #else
 	std::string tmp = path_to_world + "data.vot/";
 	struct dirent **namelist;
-	int n;
-	n = scandir(tmp.c_str(), &namelist, 0, alphasort);
+	int n = scandir(tmp.c_str(), &namelist, 0, alphasort);
 	if (n < 0)
 		perror("scandir");
 	else {
 		while (n--) {
-			std::string name = namelist[n]->d_name;
-			if (name.find(".vot")!=std::string::npos
+			const char *name = namelist[n]->d_name;
+			if (vangers::files::is_resource_file_name(name, ".vot") &&
+				is_regular_file(tmp, name)
 #	ifdef _ROAD_
-				&& should_load_world_mobile_location(name.c_str())
+				&& should_load_world_mobile_location(name)
 #	endif
 				)
-				MLTableSize++;
+				file_names.emplace_back(name);
 			free(namelist[n]);
 		}
 		free(namelist);
 	}
-
 #endif
 
-#ifdef _ROAD_
-#	if !(defined(__unix__) || defined(__APPLE__))
-	MLTableSize -= NumSkipLocation[CurrentWorld] - RealNumLocation[CurrentWorld];
-#	endif
-#endif
-
+	MLTableSize = static_cast<int>(file_names.size());
 	MLTable = new MobileLocation *[MLTableSize];
-	i = 0;
-#if !(defined(__unix__) || defined(__APPLE__))
-	fn = win32_findfirst(GetTargetName(buf.GetBuf()));
-	while (fn) {
-		t = 1;
-#	ifdef _ROAD_
-		t = should_load_world_mobile_location(fn);
-#	endif
-		if (t) {
-			(MLTable[i] = new MobileLocation)->load(fn);
-			i++;
-		}
-		fn = win32_findnext();
-	};
-#else
-	struct dirent **namelist2;
-	n = scandir(tmp.c_str(), &namelist2, 0, alphasort);
-	if (n < 0)
-		perror("scandir");
-	else {
-		while (n--) {
-			std::string name = namelist2[n]->d_name;
-			if (name.find(".vot") != std::string::npos) {
-				t = 1;
-#	ifdef _ROAD_
-				t = should_load_world_mobile_location(name.c_str());
-#	endif
-				if (t) {
-					(MLTable[i] = new MobileLocation)->load(namelist2[n]->d_name);
-					i++;
-				}
-			}
-			free(namelist2[n]);
-		}
-		free(namelist2);
-	}
-#endif
+	for (i = 0; i < MLTableSize; i++)
+		(MLTable[i] = new MobileLocation)->load(file_names[i].data());
 	VLload();
 	ML_FRAME_DELTA = new uchar[ML_FRAME_SIZE];
 	ML_FRAME_TERRAIN = new uchar[ML_FRAME_SIZE];
