@@ -1,7 +1,7 @@
 # Locate the FFmpeg libraries
 # This module defines
-# {AVUTIL,AVCODEC,AVFORMAT}_INCLUDE_DIR
-# {AVUTIL,AVCODEC,AVFORMAT}_LIBRARY
+# {AVUTIL,AVCODEC,AVFORMAT,SWSCALE}_INCLUDE_DIR
+# {AVUTIL,AVCODEC,AVFORMAT,SWSCALE}_LIBRARY
 # FFMPEG_INLUDE_DIRS
 # FFMPEG_LIBRARIES
 #
@@ -72,6 +72,28 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 		/usr/include/ffmpeg/libavformat
 	PATH_SUFFIXES
 		libavformat
+		ffmpeg
+)
+
+FIND_PATH(SWSCALE_INCLUDE_DIR
+	NAMES
+		swscale.h
+	PATHS
+		/usr/local/include
+		/usr/pkg/include/ffmpeg3/libswscale
+		/usr/include
+		/usr/include/x86_64-linux-gnu
+		/usr/include/aarch64-linux-gnu
+		/opt/local/include
+		/local/include
+		/mingw/include
+		/opt/include
+		/sw/include
+		/usr/include/libswscale
+		/usr/include/ffmpeg
+		/usr/include/ffmpeg/libswscale
+	PATH_SUFFIXES
+		libswscale
 		ffmpeg
 )
 
@@ -152,12 +174,39 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		/bin
 )
 
+FIND_LIBRARY(SWSCALE_LIBRARY
+	NAMES
+		swscale
+		swscale-4
+		swscale-5
+		swscale-6
+		swscale-7
+		swscale-8
+		swscale-9
+		swscale-10
+	PATHS
+		/usr/local/lib
+		/usr/pkg/lib/ffmpeg3
+		/usr/lib
+		/usr/lib/x86_64-linux-gnu
+		/usr/lib/aarch64-linux-gnu
+		/usr/lib/ffmpeg
+		/opt/local/lib
+		/sw/lib
+		/local/lib
+		/local/bin
+		/mingw/bin
+		/mingw/lib
+		/bin
+)
+
 get_filename_component(FFMPEG_PARENT_DIR ${AVCODEC_INCLUDE_DIR} DIRECTORY)
 
 SET(FFMPEG_INCLUDE_DIRS
 	#${AVUTIL_INCLUDE_DIR}
 	${AVCODEC_INCLUDE_DIR}
 	${AVFORMAT_INCLUDE_DIR}
+	${SWSCALE_INCLUDE_DIR}
 	${FFMPEG_PARENT_DIR}
 )
 
@@ -184,9 +233,16 @@ IF(AVFORMAT_LIBRARY)
 	)
 ENDIF(AVFORMAT_LIBRARY)
 
-IF(FFMPEG_INCLUDE_DIRS AND FFMPEG_LIBRARIES)
+IF(SWSCALE_LIBRARY)
+	SET(FFMPEG_LIBRARIES
+		${FFMPEG_LIBRARIES}
+		${SWSCALE_LIBRARY}
+	)
+ENDIF(SWSCALE_LIBRARY)
+
+IF(FFMPEG_INCLUDE_DIRS AND FFMPEG_LIBRARIES AND SWSCALE_INCLUDE_DIR AND SWSCALE_LIBRARY)
 	SET(FFMPEG_FOUND TRUE)
-ENDIF(FFMPEG_INCLUDE_DIRS AND FFMPEG_LIBRARIES)
+ENDIF(FFMPEG_INCLUDE_DIRS AND FFMPEG_LIBRARIES AND SWSCALE_INCLUDE_DIR AND SWSCALE_LIBRARY)
 
 IF(FFMPEG_FOUND)
 	IF(NOT FFMPEG_FIND_QUIETLY)
