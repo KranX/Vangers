@@ -38,7 +38,6 @@
 #include "xcpuid.h"
 #include "xerrhand.h"
 #include "xmsgbuf.h"
-#include "xrec.h"
 #include "xstream.h"
 #include "xt_list.h"
 #include "xutl.h"

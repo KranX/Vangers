@@ -49,7 +49,8 @@ void xtSysFinit(void);
 
 // void xtPostMessage(HANDLE hWnd,int msg,int wp,int lp);
 int xtDispatchMessage(SDL_Event *msg);
-void xtProcessMessageBuffer(void);
+static void xtEventQuant(void);
+static void xtProcessMessageBuffer(void);
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
@@ -91,6 +92,7 @@ XStream xtRTO_Log;
 #endif
 
 int xtSysQuantDisabled = 0;
+static int xtFrameCount = 0;
 extern bool XGR_FULL_SCREEN;
 
 int SkipIntro = 0;
@@ -105,6 +107,10 @@ XRuntimeObject *XObj = nullptr;
 
 int getCurRtoId() {
 	return XObj == nullptr ? 0 : XObj->ID;
+}
+
+int xtGetFrameCount(void) {
+	return xtFrameCount;
 }
 
 #ifdef ANDROID
@@ -187,10 +193,7 @@ int main(int argc, char *argv[])
 	id = xtInitApplication();
 	XObj = xtGetRuntimeObject(id);
 #ifdef _RTO_LOG_
-	if (XRec.flags & XRC_PLAY_MODE)
-		xtRTO_Log.open("xt_rto_p.log", XS_OUT);
-	else
-		xtRTO_Log.open("xt_rto_w.log", XS_OUT);
+	xtRTO_Log.open("xt_rto_w.log", XS_OUT);
 #endif
 
 	while (XObj) {
@@ -229,13 +232,14 @@ int main(int argc, char *argv[])
 			}
 
 			if (!xtSysQuantDisabled)
-				XRec.Quant(); // впускает внешние события, записывает их или воспроизводит
+				xtEventQuant();
 			XGR_Flip();
 		}
 
 		XObj->Finit();
 #ifdef _RTO_LOG_
-		xtRTO_Log < "\r\nChange RTO: " <= XObj->ID < " -> " <= id < " frame -> " <= XRec.frameCount;
+		xtRTO_Log < "\r\nChange RTO: " <= XObj->ID < " -> " <= id < " frame -> " <=
+			xtFrameCount;
 #endif
 		XObj = xtGetRuntimeObject(id);
 	}
@@ -341,33 +345,6 @@ int xtCallXKey(SDL_Event *m) {
 	}
 	return 1;
 }
-
-/*int xtCallXKey(SDL_Event* m)
-{
-	int rec_flag = 0,ret = 0;
-	switch(m->type){
-		case SDL_KEYDOWN:
-			//std::cout<<"xtCallXKey sym:"<<m->key.keysym.sym<<"
-scancode:"<<(int)m->key.keysym.scancode<<" SDLK_q:"<<SDLK_q<<std::endl;
-			// TODO(amdmi3): this is supposed to be executed on WM_CHAR; non-char keys should
-probably be filtered here XKey.LastChar = m->key.keysym.sym;
-
-			XKey.PressFnc(m->key.keysym.sym, m->key.keysym.sym);
-			rec_flag = 1;
-
-			if (m->key.keysym.sym == SDLK_LALT || m->key.keysym.sym == SDLK_RALT ||
-m->key.keysym.sym == SDLK_F10) ret = 1; break; case SDL_KEYUP: XKey.UnPressFnc(m->key.keysym.sym,
-m->key.keysym.sym); rec_flag = 1;
-
-			if (m->key.keysym.sym == SDLK_LALT || m->key.keysym.sym == SDLK_RALT ||
-m->key.keysym.sym == SDLK_F10) ret = 1; break;
-	}
-	if(rec_flag && XRec.flags & XRC_RECORD_MODE){
-		XRec.PutSysMessage(XRC_SYSTEM_MESSAGE, m);
-	}
-
-	return ret;
-}*/
 
 XList::XList(void) {
 	ClearList();
@@ -488,7 +465,6 @@ void xtSysFinit(void) {
 			(*(XFNC)(p->QuantPtr))();
 		p = (XSysObject *)p->prev;
 	}
-	XRec.Close();
 }
 
 /*int xtIsActive(void)
@@ -577,26 +553,33 @@ int xtDispatchMessage(SDL_Event *msg) {
 void xtClearMessageQueue(void) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
-		// std::cout<<"event "<<event.type<<std::endl;
-		if (XRec.CheckMessage(event.type)) {
-			xtDispatchMessage(&event);
-			//			if(!xtDispatchMessage(&event))
-			//				DispatchMessage(&event);
-		} else {
+		switch (event.type) {
+		case SDL_KEYDOWN:
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_JOYBUTTONDOWN:
+		case SDL_MOUSEMOTION:
+		case SDL_MOUSEBUTTONUP:
+		case SDL_KEYUP:
 			XMsgBuf->put(&event);
+			break;
+		default:
+			xtDispatchMessage(&event);
+			break;
 		}
 	}
 }
 
-void xtProcessMessageBuffer(void) {
+static void xtProcessMessageBuffer(void) {
 	SDL_Event event;
-	while (XMsgBuf->get(&event)) {
-		if (!(XRec.flags & XRC_PLAY_MODE) || XRec.CheckMessage(event.type)) {
-			xtDispatchMessage(&event);
-			//			if(!xtDispatchMessage(&event))
-			//				DispatchMessage(&event);
-		}
-	}
+	while (XMsgBuf->get(&event))
+		xtDispatchMessage(&event);
+}
+
+static void xtEventQuant(void) {
+	xtFrameCount++;
+	xtSysQuant();
+	xtClearMessageQueue();
+	xtProcessMessageBuffer();
 }
 
 xtMsgHandlerObject::xtMsgHandlerObject(void (*p)(SDL_Event *), int id) {

@@ -60,8 +60,6 @@ extern int MusicON;
 extern int SoundVolumePanning;
 extern int KeepON;
 
-extern int RecorderMode;
-
 extern int iCurMultiGame;
 extern int SoundVolumeCD;
 
@@ -2104,25 +2102,21 @@ void iUnlockExit(void) {
 
 void iSaveData(void) {
 #ifndef _ACI_SKIP_MAINMENU_
-	if (!RecorderMode) {
-		XStream fh("options.dat", XS_OUT);
-		iScrDisp->save_data(&fh);
-		//		fh < aciAutoRun;
-		fh < iGetOptionValue(iAUTO_ACCELERATION);
-		fh.close();
-	}
+	XStream fh("options.dat", XS_OUT);
+	iScrDisp->save_data(&fh);
+	//		fh < aciAutoRun;
+	fh < iGetOptionValue(iAUTO_ACCELERATION);
+	fh.close();
 #endif
 }
 
 void iLoadData(void) {
 	XStream fh(0);
 
-	if (!RecorderMode) {
-		if (fh.open("options.dat", XS_IN)) {
-			iScrDisp->load_data(&fh);
-			fh > aciAutoRun;
-			fh.close();
-		}
+	if (fh.open("options.dat", XS_IN)) {
+		iScrDisp->load_data(&fh);
+		fh > aciAutoRun;
+		fh.close();
 	}
 
 	aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);

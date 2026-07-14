@@ -225,8 +225,6 @@ int XGR_Screen::init(int flags_in) {
 
 	flags &= ~XGR_REINIT;
 
-	// XRec.hWnd = XGR_hWnd;
-
 	if (XGR_MouseObj.flags & XGM_INIT) {
 		if (XGR_MouseObj.flags & XGM_AUTOCLIP) {
 			XGR_MouseObj.SetClipAuto();
@@ -2883,7 +2881,7 @@ void XGR_SetTextYFnc(XGR_TextHeightHandler p) {
 }*/
 
 void XGR_MouseFnc(SDL_Event *p) {
-	int x, y, x1, y1, rec_flag = 0;
+	int x, y, x1, y1;
 	// ErrH.Log("Mouse Event\n");
 
 	// Mouse motion
@@ -2907,13 +2905,11 @@ void XGR_MouseFnc(SDL_Event *p) {
 		XGR_MouseObj.Move(0, XGR_MouseObj.PosX, XGR_MouseObj.PosY);
 		// if(XGR_MouseVisible())
 		//	XGR_MouseRedraw();
-		rec_flag = 1;
 		return;
 	} else if (p->type == SDL_MOUSEWHEEL) {
 		XGR_MouseObj.LastPosZ = XGR_MouseObj.PosZ;
 		// TODO (amdmi3): mouse wheel may be reversed; change 1 <-> -1 if so
 		XGR_MouseObj.PosZ += XGR_MouseObj.MovementZ = (p->wheel.y > 0) ? 1 : -1;
-		rec_flag = 1;
 	} else if (p->type == SDL_MOUSEBUTTONDOWN || p->type == SDL_MOUSEBUTTONUP) {
 		int flag = 0;
 		switch (p->button.button) {
@@ -2933,10 +2929,6 @@ void XGR_MouseFnc(SDL_Event *p) {
 			XGR_MouseUnPress(flag, 0, XGR_MouseObj.PosX, XGR_MouseObj.PosY);
 		else
 			XGR_MousePress(flag, 0, XGR_MouseObj.PosX, XGR_MouseObj.PosY);
-		rec_flag = 1;
-	}
-	if (rec_flag && XRec.flags & XRC_RECORD_MODE) {
-		// XRec.PutSysMessage(XRC_XMOUSE_MESSAGE,p -> message,p -> wParam,p -> lParam);
 	}
 }
 

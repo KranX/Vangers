@@ -91,9 +91,7 @@ int aciML_ShutdownCount = 0;
 
 #ifdef AML_DEBUG
 int aciML_logFile = 0;
-char *aciML_logFileNameW = "iml_wr.log";
-char *aciML_logFileNameR = "iml_pl.log";
-char *aciML_logFileName = NULL;
+const char *aciML_logFileName = "iml_wr.log";
 #endif
 
 void aciML_KeyTrap(int key, int mode) {
@@ -449,7 +447,7 @@ void aciML_Dispatcher::event_quant(void) {
 		ev = event_line->get();
 
 #ifdef AML_DEBUG
-		logFile < "\r\n" <= XRec.frameCount < "\t" <= ev->code < "\t" <= ev->data0 < "\t" <=
+		logFile < "\r\n" <= xtGetFrameCount() < "\t" <= ev->code < "\t" <= ev->data0 < "\t" <=
 			ev->data1;
 #endif
 #ifndef _ACI_NO_SHOP_ANIMATION_
@@ -551,11 +549,6 @@ void aciML_Dispatcher::startup(void) {
 	flags &= ~AML_PAUSE;
 
 #ifdef AML_DEBUG
-	if (XRec.flags & XRC_PLAY_MODE)
-		aciML_logFileName = aciML_logFileNameR;
-	else
-		aciML_logFileName = aciML_logFileNameW;
-
 	if (aciML_logFile) {
 		logFile.open(aciML_logFileName, XS_OUT | XS_APPEND | XS_NOREPLACE);
 	} else {

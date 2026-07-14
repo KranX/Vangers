@@ -307,9 +307,6 @@ extern int *AVI_index;
 int TotalDrawFlag = 1;
 int StartMainQuantFlag = 0;
 
-int RecorderMode = 0;
-char *RecorderName = NULL;
-
 int COMPAS_RIGHT;
 constexpr int DEFAULT_COMPAS_RIGHT = 80;
 constexpr int HD_COMPAS_RIGHT = 340;
@@ -592,10 +589,7 @@ int xtInitApplication(void) {
 	xtRegisterRuntimeObject(siObj);
 	xtRegisterRuntimeObject(saObj);
 
-	if (RecorderMode)
-		XRec.Open(RecorderName, RecorderMode);
-	else
-		RNDVAL = SDL_GetTicks();
+	RNDVAL = SDL_GetTicks();
 
 	_MEM_STATISTIC_("AFTER FIRST INIT -> ");
 
@@ -613,12 +607,6 @@ int xtInitApplication(void) {
 		GameQuantRTO *p = (GameQuantRTO *)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
 		p->SetTimer(0);
 	}
-	if (RecorderMode) {
-		GameQuantRTO *p = (GameQuantRTO *)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
-		//		p -> SetTimer(1000/20);
-		speed_correction_enabled = 0;
-	}
-
 	// STEAM
 #ifdef _STEAM_API_
 	if (SteamAPI_RestartAppIfNecessary(k_uAppIdInvalid)) {
@@ -1418,20 +1406,6 @@ void ComlineAnalyze(int argc, char **argv) {
 			j = 0;
 			while (argv[i][j] == '/' || argv[i][j] == '-') {
 				switch (argv[i][j + 1]) {
-#ifdef zRECORDER_ENABLED
-				case 'W':
-				case 'w':
-					RecorderMode = XRC_RECORD_MODE;
-					RecorderName = argv[i] + 2;
-					SkipIntro = 1;
-					break;
-				case 'P':
-				case 'p':
-					RecorderMode = XRC_PLAY_MODE;
-					RecorderName = argv[i] + 2;
-					SkipIntro = 1;
-					break;
-#endif
 				case 'X':
 				case 'x':
 					ExclusiveLog = 1;
@@ -1845,7 +1819,6 @@ void iGameMap::reset(void) {
 }
 
 void calc_view_factors() {
-	// if(!(XRec.flags & (XRC_RECORD_MODE | XRC_PLAY_MODE)) && prev_frame_time)
 	// Stalkerg
 	//	if((speed_correction_enabled | NetworkON) && prev_frame_time){
 	//		int dt = SDL_GetTicks() - prev_frame_time;

@@ -44,10 +44,6 @@ struct iKeyControls {
 	iKeyControls(void);
 };
 
-/* ----------------------------- EXTERN SECTION ----------------------------- */
-
-extern int RecorderMode;
-
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
 void iInitControlObjects(void);
@@ -231,7 +227,7 @@ iKeyControls::iKeyControls(void) {
 }
 
 void iSaveControls(void) {
-	if (!iControlsObj || RecorderMode)
+	if (!iControlsObj)
 		return;
 	XStream fh("controls.dat", XS_OUT);
 	fh < (int)iKEY_MAX_ID < (int)iKEY_OBJECT_SIZE;
@@ -241,7 +237,7 @@ void iSaveControls(void) {
 
 void iLoadControls(void) {
 	int sz0, sz1;
-	if (!iControlsObj || RecorderMode)
+	if (!iControlsObj)
 		return;
 
 	XStream fh(0);
