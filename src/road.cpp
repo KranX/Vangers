@@ -18,6 +18,7 @@
 #endif
 
 #include "_xsound.h"
+#include "avi.h"
 
 #define DEFINE_GAME_RTO_TIMERS
 #include "runtime.h"
@@ -252,7 +253,7 @@ int MuteLog = 0;
 int Verbose;
 int DepthShow;
 
-int SkipIntro = 0;
+extern int SkipIntro;
 
 int PalIterLock = 0;
 
@@ -367,6 +368,42 @@ void showModal(char *fname, float reelW, float reelH, float screenW, float scree
 		winVideo.Close(); */
 }
 
+static int LoadStartupFullscreenOption(void) {
+	XStream options(0);
+	if (!options.open("options.dat", XS_IN))
+		return -1;
+
+	const long saved_values_size = 4 * (long)sizeof(int);
+	if (options.size() < (long)sizeof(int) + saved_values_size) {
+		options.close();
+		return -1;
+	}
+
+	int option_count;
+	options > option_count;
+	if (option_count != iMAX_OPTION_ID) {
+		options.close();
+		return -1;
+	}
+
+	int fullscreen;
+	int auto_acceleration;
+	int fps_60;
+	int repeated_auto_acceleration;
+	// These are the final three saved options followed by iSaveData's repeated
+	// auto-acceleration value. The complete options file is loaded normally by the menu later.
+	options.seek(-saved_values_size, XS_END);
+	options > fullscreen > auto_acceleration > fps_60 > repeated_auto_acceleration;
+	options.close();
+
+	if ((fullscreen != 0 && fullscreen != 1) ||
+		(auto_acceleration != 0 && auto_acceleration != 1) || (fps_60 != 0 && fps_60 != 1) ||
+		auto_acceleration != repeated_auto_acceleration)
+		return -1;
+
+	return fullscreen;
+}
+
 int xtInitApplication(void) {
 	XGraphWndID = "VANGERS";
 	char *tmp;
@@ -458,6 +495,11 @@ int xtInitApplication(void) {
 
 	emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
 	// emode |= XGR_HICOLOR;
+	if (!XGR_FULL_SCREEN) {
+		const int startup_fullscreen = LoadStartupFullscreenOption();
+		if (startup_fullscreen != -1)
+			XGR_FULL_SCREEN = startup_fullscreen;
+	}
 
 	actintLowResFlag = 1;
 	if (XGR_Init(emode))
@@ -465,13 +507,6 @@ int xtInitApplication(void) {
 
 	// WORK	sWinVideo::Init();
 	//	::ShowCursor(0);
-
-	// zmod
-	if (!SkipIntro) {
-		//		showModal( "resource\\video\\intro\\logo1.avi", 512, 384, w, h );
-		//		showModal( "resource\\video\\intro\\logo2.avi", 512, 384, w, h );
-		//		showModal( "resource\\video\\intro\\intro.avi", 512, 380, w, h );
-	}
 
 	// WORK	sWinVideo::Done();
 
@@ -539,28 +574,9 @@ int xtInitApplication(void) {
 	//	  siObj -> SetName("resource\\iscreen\\bitmap\\kdlogo.bmp",0);
 	//	  siObj -> SetNext(RTO_MAIN_MENU_ID);
 
-	if (lang() == RUSSIAN) {
-		saObj->SetNumFiles(3);
-		// saObj -> SetName("resource\\video\\intro\\logo1.avi",0);
-		// saObj -> SetName("resource\\video\\intro\\logo2.avi",1);
-		// saObj -> SetName("resource\\video\\intro\\intro.avi",2);
-
-		//	saObj -> SetFlag(0,AVI_RTO_HICOLOR);
-		//	saObj -> SetFlag(1,AVI_RTO_HICOLOR);
-		//	saObj -> SetFlag(2,AVI_RTO_HICOLOR);
-	} else {
-		saObj->SetNumFiles(4);
-		saObj->SetName("resource/video/intro/logo0.avi", 0);
-		saObj->SetName("resource/video/intro/logo1.avi", 1);
-		saObj->SetName("resource/video/intro/logo2.avi", 2);
-		saObj->SetName("resource/video/intro/intro.avi", 3);
-		// znfo commented in zmod
-		//	saObj -> SetFlag(0,AVI_RTO_HICOLOR);
-		//	saObj -> SetFlag(1,AVI_RTO_HICOLOR);
-		//	saObj -> SetFlag(2,AVI_RTO_HICOLOR);
-		//	saObj -> SetFlag(3,AVI_RTO_HICOLOR);
-		// znfo
-	}
+	saObj->SetNumFiles(2);
+	saObj->SetName("resource/video/intro/logo2.avi", 0);
+	saObj->SetName("resource/video/intro/intro.avi", 1);
 	saObj->SetNext(RTO_MAIN_MENU_ID);
 
 	xtRegisterRuntimeObject(gqObj);
@@ -574,7 +590,7 @@ int xtInitApplication(void) {
 	xtRegisterRuntimeObject(lObj2);
 	xtRegisterRuntimeObject(lObj3);
 	xtRegisterRuntimeObject(siObj);
-	// xtRegisterRuntimeObject(saObj);
+	xtRegisterRuntimeObject(saObj);
 
 	if (RecorderMode)
 		XRec.Open(RecorderName, RecorderMode);
@@ -655,8 +671,10 @@ int xtInitApplication(void) {
 	char *res = setlocale(LC_NUMERIC, "POSIX");
 	std::cout << "Result:" << res << std::endl;
 #endif
-	if (SkipIntro)
-		return RTO_MAIN_MENU_ID;
+#ifdef SHOW_LOGOS
+	if (!SkipIntro)
+		return RTO_SHOW_AVI_ID;
+#endif
 	return RTO_MAIN_MENU_ID;
 }
 
@@ -2324,107 +2342,50 @@ void ShowImageRTO::Init(int id) {
 	_MEM_STATISTIC_("AFTER SHOW IMAGE RTO INIT -> ");
 }
 
+static void DrawStartupVideoFrame(void *avi) {
+	const int canvas_width = XGR_MAXX;
+	const int canvas_height = XGR_MAXY;
+	const int video_width = AVIwidth(avi);
+	const int video_height = AVIheight(avi);
+
+	int output_width = canvas_width;
+	int output_height = (video_height * canvas_width + video_width / 2) / video_width;
+	if (output_height > canvas_height) {
+		output_height = canvas_height;
+		output_width = (video_width * canvas_height + video_height / 2) / video_height;
+	}
+
+	const int x = (canvas_width - output_width) / 2;
+	const int y = (canvas_height - output_height) / 2;
+
+	XGR_Obj.fill(0);
+	XGR_Obj.clear_2d_surface();
+	XGR_Obj.fill(0, XGR_Obj.get_2d_rgba_render_buffer());
+	AVIPrepareFrame(avi);
+	AVIDrawFrame(
+		avi, x, y, XGR_MAXX, XGR_Obj.get_2d_rgba_render_buffer(), 1.0f, output_width, output_height
+	);
+}
+
 void ShowAviRTO::Init(int id) {
-#ifdef SHOW_LOGOS
-
-/*
-	int x,y,sx,sy;
-
-	XBuffer* XBuf = new XBuffer(1024);
-	char* avi_pal,*pal,*tpal;
-
-	if(!(Flags[curFile] & AVI_RTO_HICOLOR)){
-		pal = new char[768];
-		tpal = new char[768];
-		memset(tpal,0,768);
-	}
-
-	set_key_nadlers(ShowImageKeyPress,NULL);
-	XGR_MouseSetPressHandler(XGM_LEFT_BUTTON,ShowImageMousePress);
-	XGR_MouseSetPressHandler(XGM_RIGHT_BUTTON,ShowImageMousePress);
-
-	XBuf -> init();
-	*XBuf < iVideoPathDefault < fileNames[curFile];
-
-//	OLD XTOOL
-//	if(!AVIopen(XBuf -> address(),AVI_NOTIMER | AVI_NODRAW | AVI_NOPALETTE |
-AVI_NO_SOUND,0,&aviBuf)){ if(!AVIopen(XBuf -> address(),AVI_NOTIMER | AVI_NODRAW |
-AVI_NOPALETTE,0,&aviBuf)){ XBuf -> init(); *XBuf < iVideoPath < fileNames[curFile];
-//		OLD XTOOL
-//		if(!AVIopen(XBuf -> address(),AVI_NOTIMER | AVI_NODRAW | AVI_NOPALETTE |
-AVI_NO_SOUND,0,&aviBuf)){ if(!AVIopen(XBuf -> address(),AVI_NOTIMER | AVI_NODRAW |
-AVI_NOPALETTE,0,&aviBuf)){ aviBuf = NULL;
-		}
-	}
-
-	if(aviBuf){
-		if(!(Flags[curFile] & AVI_RTO_HICOLOR)){
-			if(XGR_Obj.flags & XGR_HICOLOR)
-				XGR_ReInit(800,600,emode);
-
-			XGR_Fill(0);
-			XGR_SetPal(tpal,0,255);
-			XGR_Flush(0,0,XGR_MAXX,XGR_MAXY);
-		}
-		else {
-			if(!(XGR_Obj.flags & XGR_HICOLOR)){
-				if(XGR_ReInit(800,600,emode | XGR_HICOLOR)){
-					XGR_ReInit(800,600,emode);
-					aviBuf = NULL;
-				}
-			}
-			else {
-//				OLD XTOOL
-//				XGR_Fill16RGB(0,0,0);
-				XGR_Fill16(0);
-				XGR_Flush(0,0,XGR_MAXX - 1,XGR_MAXY - 1);
-			}
-		}
-
-		if(aviBuf){
-			sx = AVIwidth(aviBuf);
-			sy = AVIheight(aviBuf);
-
-			x = (XGR_MAXX - sx) / 2;
-			y = (XGR_MAXY - sy) / 2;
-
-			if(!(Flags[curFile] & AVI_RTO_HICOLOR)){
-				avi_pal = (char*)AVIGetPalette(aviBuf);
-				memcpy(pal,avi_pal,768);
-
-				AVIplay(aviBuf,x,y);
-				AVIdraw(aviBuf);
-				AVIstop(aviBuf);
-				AVIclose(aviBuf);
-
-				PalEvidence(tpal,pal);
-
-				if(!AVIopen(XBuf -> address(),0,0,&aviBuf))
-					ErrH.Abort(AVInotFoundMSS);
-			}
-			else {
-				AVIstop(aviBuf);
-				AVIclose(aviBuf);
-//				OLD XTOOL
-//				if(!AVIopen(XBuf -> address(),AVI_HICOLOR,0,&aviBuf))
-				if(!AVIopen(XBuf -> address(),AVI_LOOPING,0,&aviBuf))
-					ErrH.Abort(AVInotFoundMSS);
-			}
-			AVIplay(aviBuf,x,y);
-		}
-	}
-	count = CLOCK();
-
+	XGR_Obj.set_is_scaled_renderer(false);
+	XGR_MouseHide();
+	aviBuf = NULL;
 	ShowImageMouseFlag = 0;
 	ShowImageKeyFlag = 0;
 
-	if(!(Flags[curFile] & AVI_RTO_HICOLOR)){
-		delete pal;
-		delete tpal;
+	set_key_handlers(&ShowImageKeyPress, NULL);
+	XGR_MouseSetPressHandler(XGM_LEFT_BUTTON, ShowImageMousePress);
+	XGR_MouseSetPressHandler(XGM_RIGHT_BUTTON, ShowImageMousePress);
+
+	if (AVIopen(fileNames[curFile], AVI_NODRAW | AVI_NOPALETTE, 0, &aviBuf)) {
+		AVIplay(aviBuf, 0, 0);
+		DrawStartupVideoFrame(aviBuf);
+	} else {
+		XGR_Obj.fill(0);
+		XGR_Obj.clear_2d_surface();
+		XGR_Obj.fill(0, XGR_Obj.get_2d_rgba_render_buffer());
 	}
-	delete XBuf;
-*/
-#endif
 	_MEM_STATISTIC_("AFTER SHOW IMAGE RTO INIT -> ");
 }
 
@@ -2459,30 +2420,16 @@ int ShowImageRTO::Quant(void) {
 }
 
 int ShowAviRTO::Quant(void) {
-#ifdef SHOW_LOGOS
-/*
-	int ret = 0;
-	if(aviBuf){
-		if(ShowImageKeyFlag || ShowImageMouseFlag){
-			ret = 1;
-		}
-//		OLD XTOOL
-//		if(AVIactive(aviBuf)){
-			count= CLOCK();
-//		}
-//		else {
-//			if((count + 100) < CLOCK())
-//				ret = 1;
-//		}
+	if (aviBuf && !ShowImageKeyFlag && !ShowImageMouseFlag) {
+		DrawStartupVideoFrame(aviBuf);
 
-		if(!ret) return 0;
+		if (!AVIisFinished(aviBuf))
+			return 0;
 	}
-*/
-#endif
+
 	curFile++;
-	if (curFile >= numFiles) {
+	if (curFile >= numFiles)
 		return NextID;
-	}
 
 	return ID;
 }
@@ -2502,27 +2449,15 @@ void ShowImageRTO::Finit(void) {
 }
 
 void ShowAviRTO::Finit(void) {
-#ifdef SHOW_LOGOS
-/*
-	char* pal;
-
-	if(aviBuf){
+	if (aviBuf) {
 		AVIstop(aviBuf);
 		AVIclose(aviBuf);
-
-		if(XGR_Obj.flags & XGR_HICOLOR && curFile >= numFiles) XGR_ReInit(800,600,emode);
-
-		if(!(Flags[curFile - 1] & AVI_RTO_HICOLOR)){
-			pal = new char[768];
-			i_slake_pal((unsigned char*)pal,32);
-			delete pal;
-		}
+		aviBuf = NULL;
 	}
-	else {
-		if(XGR_Obj.flags & XGR_HICOLOR && curFile >= numFiles) XGR_ReInit(800,600,emode);
-	}
-*/
-#endif
+	XGR_Obj.fill(0);
+	XGR_Obj.clear_2d_surface();
+	XGR_Obj.fill(0, XGR_Obj.get_2d_rgba_render_buffer());
+	XGR_Obj.set_is_scaled_renderer(false);
 	_MEM_STATISTIC_("AFTER SHOW IMAGE RTO 4 FINIT -> ");
 }
 
@@ -2770,9 +2705,9 @@ ShowImageRTO::ShowImageRTO(void) {
 }
 
 ShowAviRTO::ShowAviRTO(void) {
-	int i;
 	ID = RTO_SHOW_AVI_ID;
 	Timer = RTO_IMAGE_TIMER;
+	aviBuf = NULL;
 }
 
 void SetupPath(void) {

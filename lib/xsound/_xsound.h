@@ -1,6 +1,8 @@
 #ifndef __XSOUND_H
 #define __XSOUND_H
 
+#include <cstddef>
+
 #include <clunk/clunk.h>
 
 #define DS_LOOPING 0x00000001
@@ -31,6 +33,15 @@ void SoundRelease(void *lpDSB);
 void SoundStop(int channel);
 void *GetSound(int channel);
 void SoundLoad(char *filename, void **lpDSB);
+void SoundLoadRaw(
+	const char *name,
+	const void *data,
+	std::size_t size,
+	int frequency,
+	Uint16 format,
+	Uint8 channels,
+	void **lpDSB
+);
 void SoundFinit(void);
 void SoundVolume(int channel, int volume);
 void SetVolume(void *lpDSB, int volume);

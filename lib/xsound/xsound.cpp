@@ -278,6 +278,36 @@ void SoundLoad(char *filename, void **lpDSB) {
 	(*lpDSB) = (void *)chunk;
 }
 
+void SoundLoadRaw(
+	const char *name,
+	const void *data,
+	std::size_t size,
+	int frequency,
+	Uint16 format,
+	Uint8 channels_count,
+	void **lpDSB
+) {
+	clunk::Sample *sample = NULL;
+	if (XSoundInitFlag && data && size) {
+		try {
+			clunk::Buffer buffer;
+			buffer.set_data(data, size);
+			sample = context.create_sample();
+			sample->name = name;
+			sample->init(buffer, frequency, format, channels_count);
+		} catch (const std::exception &e) {
+			std::string message = "Error loading raw sound: ";
+			message += name;
+			message += " ";
+			message += e.what();
+			ErrH.Log(message.c_str());
+			delete sample;
+			sample = NULL;
+		}
+	}
+	*lpDSB = sample;
+}
+
 void SetVolume(void *lpDSB, int volume) {
 	/* SDL_Mixer Version
 	volume+=10000;

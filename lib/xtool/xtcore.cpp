@@ -93,6 +93,8 @@ XStream xtRTO_Log;
 int xtSysQuantDisabled = 0;
 extern bool XGR_FULL_SCREEN;
 
+int SkipIntro = 0;
+
 bool autoconnect = false;
 char *autoconnectHost;
 unsigned short autoconnectPort = 2197;
@@ -127,6 +129,8 @@ int main(int argc, char *argv[])
 		std::string cmd_key = argv[i];
 		if (cmd_key == "-fullscreen") {
 			XGR_FULL_SCREEN = true;
+		} else if (cmd_key == "-skipintro") {
+			SkipIntro = 1;
 		} else if (cmd_key == "-russian") {
 			setLang(RUSSIAN);
 		} else if (cmd_key == "-server") {
