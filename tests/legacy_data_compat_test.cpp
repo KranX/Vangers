@@ -40,6 +40,62 @@ std::uint32_t read_u32(const std::vector<std::uint8_t> &data, std::size_t offset
 		   (static_cast<std::uint32_t>(data[offset + 3]) << 24);
 }
 
+bool is_valid_saved_control_code(std::uint32_t code) {
+	constexpr std::uint32_t joystickButtonMask = SDLK_JOYSTICK_BUTTON_MASK;
+	constexpr std::uint32_t gamepadButtonMask = SDLK_GAMEPAD_BUTTON_MASK;
+	constexpr std::uint32_t joystickHatMask = SDLK_JOYSTICK_HAT_MASK;
+	constexpr std::uint32_t scancodeMask = SDLK_SCANCODE_MASK;
+	constexpr std::uint32_t categoryMask =
+		joystickButtonMask | gamepadButtonMask | joystickHatMask | scancodeMask;
+
+	const std::uint32_t category = code & categoryMask;
+	const std::uint32_t payload = code ^ category;
+	if (category == 0)
+		return code < SDL_SCANCODE_COUNT;
+	if (category == joystickButtonMask)
+		return payload <= UINT8_MAX;
+	if (category == gamepadButtonMask)
+		return payload < SDL_GAMEPAD_BUTTON_COUNT;
+	if (category == joystickHatMask)
+		return payload <= UINT8_MAX * 10u + SDL_HAT_LEFTUP;
+	if (category == scancodeMask)
+		return payload < SDL_SCANCODE_COUNT;
+	return false;
+}
+
+bool test_control_code_validation() {
+	return check(is_valid_saved_control_code(0), "unassigned control was rejected") &&
+		   check(
+			   is_valid_saved_control_code(SDL_SCANCODE_LCTRL), "keyboard scancode was rejected"
+		   ) &&
+		   check(
+			   is_valid_saved_control_code(SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_LCTRL)),
+			   "scancode-derived keycode was rejected"
+		   ) &&
+		   check(
+			   is_valid_saved_control_code(SDLK_JOYSTICK_BUTTON_MASK | 19),
+			   "joystick button binding was rejected"
+		   ) &&
+		   check(
+			   is_valid_saved_control_code(
+				   SDLK_GAMEPAD_BUTTON_MASK | SDL_GAMEPAD_BUTTON_DPAD_RIGHT
+			   ),
+			   "gamepad button binding was rejected"
+		   ) &&
+		   check(
+			   is_valid_saved_control_code(SDLK_JOYSTICK_HAT_MASK | (2 * 10 + SDL_HAT_LEFTUP)),
+			   "joystick hat binding was rejected"
+		   ) &&
+		   check(
+			   !is_valid_saved_control_code(SDLK_GAMEPAD_BUTTON_MASK | SDL_GAMEPAD_BUTTON_COUNT),
+			   "out-of-range gamepad button was accepted"
+		   ) &&
+		   check(
+			   !is_valid_saved_control_code(SDLK_JOYSTICK_BUTTON_MASK | SDLK_GAMEPAD_BUTTON_MASK),
+			   "control code with multiple categories was accepted"
+		   );
+}
+
 bool test_controls(const std::filesystem::path &dataDirectory) {
 	const auto controls = read_file(dataDirectory / "controls.dat");
 	const std::size_t expectedSize =
@@ -58,7 +114,8 @@ bool test_controls(const std::filesystem::path &dataDirectory) {
 	for (std::size_t offset = 8; offset < controls.size(); offset += sizeof(std::uint32_t)) {
 		const std::uint32_t code = read_u32(controls, offset);
 		if (!check(
-				code < SDL_SCANCODE_COUNT, "legacy controls.dat contains an invalid SDL3 scancode"
+				is_valid_saved_control_code(code),
+				"legacy controls.dat contains an invalid control code"
 			))
 			return false;
 	}
@@ -170,5 +227,5 @@ int main() {
 	static_assert(SDL_GAMEPAD_BUTTON_DPAD_RIGHT == 14);
 
 	const std::filesystem::path dataDirectory = TEST_DATA_DIR;
-	return test_installed_legacy_data(dataDirectory) ? 0 : 1;
+	return test_control_code_validation() && test_installed_legacy_data(dataDirectory) ? 0 : 1;
 }
