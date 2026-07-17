@@ -427,8 +427,7 @@ static bool LoadStartupDisplayOptions(int &fullscreen, int &resolution) {
 	options > fullscreen > auto_acceleration > fps_60 > repeated_auto_acceleration;
 	options.close();
 
-	if ((fullscreen != 0 && fullscreen != 1) ||
-		(resolution != 0 && resolution != 1) ||
+	if ((fullscreen != 0 && fullscreen != 1) || (resolution != 0 && resolution != 1) ||
 		(auto_acceleration != 0 && auto_acceleration != 1) || (fps_60 != 0 && fps_60 != 1) ||
 		auto_acceleration != repeated_auto_acceleration)
 		return false;
