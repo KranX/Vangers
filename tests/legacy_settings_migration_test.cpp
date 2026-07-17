@@ -259,6 +259,20 @@ void test_controls_versions_and_binding_vocabulary() {
 	CHECK(!legacy_control_action_id("joystick_switch"));
 }
 
+void test_stable_binding_names_round_trip() {
+	for (int scancode = 1; scancode < SDL_SCANCODE_COUNT; ++scancode) {
+		const DecodedLegacyBinding decoded = decode_legacy_control_code(scancode);
+		if (decoded.kind == LegacyBindingKind::Keyboard)
+			CHECK(keyboard_binding_code(decoded.name) == scancode);
+	}
+	for (int button = 0; button < SDL_GAMEPAD_BUTTON_COUNT; ++button) {
+		const int legacy_code = button | (1 << 27);
+		const DecodedLegacyBinding decoded = decode_legacy_control_code(legacy_code);
+		CHECK(decoded.kind == LegacyBindingKind::Gamepad);
+		CHECK(gamepad_binding_code(decoded.name) == legacy_code);
+	}
+}
+
 void test_invalid_controls_do_not_modify_settings() {
 	TempDirectory temp;
 	const auto file = temp.path / "controls.dat";
@@ -325,6 +339,7 @@ int main() {
 	test_options_versions();
 	test_invalid_options_are_rejected_atomically();
 	test_controls_versions_and_binding_vocabulary();
+	test_stable_binding_names_round_trip();
 	test_invalid_controls_do_not_modify_settings();
 	test_unsupported_control_codes_keep_new_defaults();
 	test_combined_import_and_missing_files();

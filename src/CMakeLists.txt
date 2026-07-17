@@ -48,6 +48,7 @@ SET(vangers_SRCS
 	iscreen/iscript.cpp
 	iscreen/ivmap.cpp
 	iscreen/script.cpp
+	iscreen/settings_adapter.cpp
 	iscreen/smooth.cpp
 	network.cpp
 	palette.cpp

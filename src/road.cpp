@@ -27,6 +27,7 @@
 #include "sqexp.h"
 
 #include "network.h"
+#include "settings/settings.h"
 #include "xjoystick.h"
 
 #include "3d/3d_math.h"
@@ -366,75 +367,6 @@ void showModal(char *fname, float reelW, float reelH, float screenW, float scree
 		winVideo.Close(); */
 }
 
-static bool SkipStartupOptionString(XStream &options, long options_size) {
-	if (options.tell() > options_size - (long)sizeof(int))
-		return false;
-
-	int length;
-	options > length;
-	if (length < 0 || length > options_size - options.tell())
-		return false;
-
-	options.seek(length, XS_CUR);
-	return true;
-}
-
-static bool LoadStartupDisplayOptions(int &fullscreen, int &resolution) {
-	XStream options(0);
-	if (!options.open("options.dat", XS_IN))
-		return false;
-
-	const long options_size = options.size();
-	const long saved_values_size = 4 * (long)sizeof(int);
-	if (options_size < (long)sizeof(int) + saved_values_size) {
-		options.close();
-		return false;
-	}
-
-	int option_count;
-	options > option_count;
-	if (option_count != iMAX_OPTION_ID) {
-		options.close();
-		return false;
-	}
-
-	// iSCREEN_RESOLUTION follows the first ten integer options and four
-	// length-prefixed strings in the serialized iScreen option order.
-	const long integer_options_size = 10 * (long)sizeof(int);
-	if (options.tell() > options_size - integer_options_size) {
-		options.close();
-		return false;
-	}
-	options.seek(integer_options_size, XS_CUR);
-	for (int i = 0; i < 4; ++i) {
-		if (!SkipStartupOptionString(options, options_size)) {
-			options.close();
-			return false;
-		}
-	}
-	if (options.tell() > options_size - (long)sizeof(int)) {
-		options.close();
-		return false;
-	}
-	options > resolution;
-
-	int auto_acceleration;
-	int fps_60;
-	int repeated_auto_acceleration;
-	// These are the final three saved options followed by iSaveData's repeated
-	// auto-acceleration value. The complete options file is loaded normally by the menu later.
-	options.seek(-saved_values_size, XS_END);
-	options > fullscreen > auto_acceleration > fps_60 > repeated_auto_acceleration;
-	options.close();
-
-	if ((fullscreen != 0 && fullscreen != 1) || (resolution != 0 && resolution != 1) ||
-		(auto_acceleration != 0 && auto_acceleration != 1) || (fps_60 != 0 && fps_60 != 1) ||
-		auto_acceleration != repeated_auto_acceleration)
-		return false;
-
-	return true;
-}
-
 int xtInitApplication(void) {
 	XGraphWndID = "VANGERS";
 	char *tmp;
@@ -521,22 +453,22 @@ int xtInitApplication(void) {
 #endif
 
 	SetupPath();
+	vangers::settings::SettingsManager &user_settings = vangers::settings::settings_manager();
+	if (!user_settings.is_loaded())
+		user_settings.load();
+	const vangers::settings::VideoSettings &startup_video = user_settings.get().video;
 
 	_MEM_STATISTIC_("FONT -> ");
 
 	emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
 	// emode |= XGR_HICOLOR;
-	int startup_fullscreen = -1;
-	int startup_resolution = -1;
-	if (LoadStartupDisplayOptions(startup_fullscreen, startup_resolution)) {
-		if (!XGR_FULL_SCREEN)
-			XGR_FULL_SCREEN = startup_fullscreen;
-	}
+	if (!XGR_FULL_SCREEN)
+		XGR_FULL_SCREEN = startup_video.fullscreen;
 
 	actintLowResFlag = 1;
 	if (XGR_Init(emode))
 		ErrH.Abort(ErrorVideoMss);
-	if (startup_resolution == 0)
+	if (startup_video.resolution == vangers::settings::ResolutionMode::Legacy800x600)
 		XGR_Obj.set_resolution(800, 600);
 
 	// WORK	sWinVideo::Init();
@@ -589,8 +521,13 @@ int xtInitApplication(void) {
 	// Runtime objects init...
 
 	xtCreateRuntimeObjectTable(RTO_MAX_ID);
-	RTO_GAME_QUANT_TIMER = 1000 / 20;
-	GAME_TIME_COEFF = 1;
+	if (startup_video.fps == 60) {
+		RTO_GAME_QUANT_TIMER = 1000 / 60;
+		GAME_TIME_COEFF = 3;
+	} else {
+		RTO_GAME_QUANT_TIMER = 1000 / 20;
+		GAME_TIME_COEFF = 1;
+	}
 	GameQuantRTO *gqObj = new GameQuantRTO(RTO_GAME_QUANT_TIMER);
 	MainMenuRTO *mmObj = new MainMenuRTO;
 	EscaveRTO *eObj = new EscaveRTO;

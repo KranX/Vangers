@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../settings/settings.h"
 
 #include "../xjoystick.h"
 
@@ -8,6 +9,7 @@
 #include "hfont.h"
 #include "ikeys.h"
 #include "iscreen.h"
+#include "settings_adapter.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
@@ -229,28 +231,14 @@ iKeyControls::iKeyControls(void) {
 void iSaveControls(void) {
 	if (!iControlsObj)
 		return;
-	XStream fh("controls.dat", XS_OUT);
-	fh < (int)iKEY_MAX_ID < (int)iKEY_OBJECT_SIZE;
-	fh.write(iControlsObj->keyCodes, iKEY_OBJECT_SIZE * iKEY_MAX_ID * sizeof(int));
-	fh.close();
+	vangers::settings::capture_settings_from_controls();
+	vangers::settings::settings_manager().save();
 }
 
 void iLoadControls(void) {
-	int sz0, sz1;
 	if (!iControlsObj)
 		return;
-
-	XStream fh(0);
-	if (!fh.open("controls.dat", XS_IN))
-		return;
-
-	fh > sz0 > sz1;
-	if (sz0 != iKEY_MAX_ID || sz1 != iKEY_OBJECT_SIZE) {
-		fh.close();
-		return;
-	}
-	fh.read(iControlsObj->keyCodes, iKEY_OBJECT_SIZE * iKEY_MAX_ID * sizeof(int));
-	fh.close();
+	vangers::settings::apply_settings_to_controls();
 	iInitControlObjects();
 }
 

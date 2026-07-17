@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../settings/settings.h"
 #include "../sound/hsound.h"
 
 #include "../network.h"
@@ -15,6 +16,7 @@
 #include "ikeys.h"
 #include "iscreen.h"
 #include "iscript.h"
+#include "settings_adapter.h"
 
 #include "controls.h"
 
@@ -2099,22 +2101,13 @@ void iUnlockExit(void) {
 
 void iSaveData(void) {
 #ifndef _ACI_SKIP_MAINMENU_
-	XStream fh("options.dat", XS_OUT);
-	iScrDisp->save_data(&fh);
-	//		fh < aciAutoRun;
-	fh < iGetOptionValue(iAUTO_ACCELERATION);
-	fh.close();
+	vangers::settings::capture_settings_from_interface();
+	vangers::settings::settings_manager().save();
 #endif
 }
 
 void iLoadData(void) {
-	XStream fh(0);
-
-	if (fh.open("options.dat", XS_IN)) {
-		iScrDisp->load_data(&fh);
-		fh > aciAutoRun;
-		fh.close();
-	}
+	vangers::settings::apply_settings_to_interface();
 
 	aciAutoRun = iGetOptionValue(iAUTO_ACCELERATION);
 
