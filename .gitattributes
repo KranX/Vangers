@@ -3,6 +3,10 @@ data/actint/aci_low.scb -text
 
 .gitattributes text eol=lf
 .clang-format text eol=lf
+.dockerignore text eol=lf
+*.yml text eol=lf
+CMakeLists.txt text eol=lf
+*.cmake text eol=lf
 *.c text eol=lf
 *.cc text eol=lf
 *.cpp text eol=lf

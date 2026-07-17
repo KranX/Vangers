@@ -1,7 +1,7 @@
 #ifndef _XJOYSTICK_H
 #define _XJOYSTICK_H
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 //---------------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ extern int JoystickStickSwitchButton;
 int JoystickWhatsPressedNow();
 int isJoystickButtonPressed(int vk_code);
 
-SDL_GameController *get_gamecontroller();
+SDL_Gamepad *get_gamepad();
 SDL_Joystick *get_joystick();
 //---------------------------------------------------------------------------
 

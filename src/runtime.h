@@ -1,3 +1,5 @@
+#include <cstdint>
+
 #ifdef DEFINE_GAME_RTO_TIMERS
 #	define EXTERN /* nothing */
 #else
@@ -170,7 +172,7 @@ struct FirstEscaveOutRTO: BaseRTO {
 
 #define RTO_SHOW_IMAGE_MAX 5
 struct ShowImageRTO: BaseRTO {
-	int count;
+	std::uint64_t count;
 	int numFiles;
 	int curFile;
 

@@ -472,8 +472,9 @@ void sqInputString::draw(int self) {
 }
 
 void sqInputString::quant(void) {
-	static int last = 0;
-	int t = CLOCK(), c, cdy;
+	static Uint64 last = 0;
+	Uint64 t = CLOCK();
+	int c, cdy;
 	if (last != t) {
 		if (!(t % 2)) {
 			if (!(type & T_FIELD)) {

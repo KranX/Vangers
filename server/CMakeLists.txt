@@ -22,8 +22,8 @@ IF(WIN32)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(vangers_server
-	${SDL2_LIBRARY}
-	${SDL2_NET_LIBRARY}
+	SDL3::SDL3
+	SDL3_net::SDL3_net
 	${WIN_LIB}
 	xtool
 )

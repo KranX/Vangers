@@ -318,7 +318,7 @@ struct sqPopupMenu: sqElem {
 	sqFont *font;
 	unsigned char *seekbuf;
 	int seeklen;
-	unsigned int seekcounter;
+	Uint64 seekcounter;
 
 	sqPopupMenu(
 		sqElem *_owner,

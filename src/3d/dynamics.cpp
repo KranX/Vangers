@@ -408,7 +408,7 @@ int STANDART_FRAME_RATE = 14;
 double speed_correction_factor = 1;
 double speed_correction_tau = 0.01;
 
-unsigned int last_keyboard_touch;
+Uint64 last_keyboard_touch;
 int terrain_analysis_flag;
 int non_loaded_space;
 
@@ -2952,7 +2952,7 @@ void Object::direct_joystick_control() {
 	if (!XJoystickInput())
 		return;
 
-	if ((int)(SDL_GetTicks() - last_keyboard_touch) < 2000)
+	if (SDL_GetTicks() - last_keyboard_touch < 2000)
 		return;
 
 	int dx = XJoystickState.lX;

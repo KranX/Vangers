@@ -538,9 +538,8 @@ void Game::load_result(Server *server, char *name) {
 	in.read(&data, sizeof(ServerData));
 	int counter;
 	in > counter;
-	XSocket sock;
 	for (int i = 0; i < counter; i++) {
-		Player *p = new Player(server, sock);
+		Player *p = new Player(server, XSocket{});
 		removed_players.append(p);
 		p->name = new char[256];
 		in > p->name;
@@ -923,11 +922,10 @@ void World::process_update_inventory(Player *player, Object *obj) {
 /******************************************************************
 				Player
 ******************************************************************/
-Player::Player(Server *serv, XSocket &sock)
-	: in_buffer(IN_BUFFER_SIZE), out_buffer(OUT_BUFFER_SIZE), object_queue(OUT_QUEUE_SIZE),
-	  code_queue(OUT_QUEUE_SIZE) {
+Player::Player(Server *serv, XSocket &&sock)
+	: socket(std::move(sock)), in_buffer(IN_BUFFER_SIZE), out_buffer(OUT_BUFFER_SIZE),
+	  object_queue(OUT_QUEUE_SIZE), code_queue(OUT_QUEUE_SIZE) {
 	server = serv;
-	socket = sock;
 
 	identificated = 0;
 	client_version = 0;
@@ -987,8 +985,8 @@ void Player::identification() {
 }
 
 int Player::is_alive() {
-	if (socket()) {
-		if ((int)(SDL_GetTicks() - last_IO_operation) > 3000) {
+	if (socket.is_open()) {
+		if (SDL_GetTicks() > last_IO_operation + 3000) {
 			short size = 0;
 			socket.send((const char *)&size, 2);
 			last_IO_operation = SDL_GetTicks();
@@ -1002,7 +1000,7 @@ int Player::is_alive() {
 		MOUT1("Connection have been lost", ID);
 		return 1;
 	}
-	return (int)(SDL_GetTicks() - time_to_remove) < 0 ? 1 : 0;
+	return SDL_GetTicks() < time_to_remove ? 1 : 0;
 }
 
 void Player::clear_object_queue(int keep_globals) {
@@ -1226,7 +1224,8 @@ int Player::receive() {
 
 			out_buffer.begin_event(ATTACH_TO_GAME_RESPONSE);
 			out_buffer < game->ID < char(game->data.GameType != UNCONFIGURED ? 1 : 0) <
-				(unsigned int)round((double)game->birth_time * (256. / 1000.)) < (unsigned char)ID;
+				static_cast<unsigned int>(round((double)game->birth_time * (256. / 1000.))) <
+				(unsigned char)ID;
 			game->get_object_ID_offsets(out_buffer, ID);
 			out_buffer.end_event();
 
@@ -1247,9 +1246,9 @@ int Player::receive() {
 			Game *game;
 			if ((game = server->games.search(in_buffer.get_int())) != 0 &&
 				(p = game->players.search(in_buffer.get_byte())) != 0) {
-				if (p->socket())
+				if (p->socket.is_open())
 					p->socket.close();
-				p->socket = socket;
+				p->socket = std::move(socket);
 				p->time_to_remove = 0;
 				MOUT1("Connection have been restored", p->ID);
 				p->out_buffer.begin_event(RESTORE_CONNECTION_RESPONSE);
@@ -1691,7 +1690,7 @@ int OutputEventBuffer::send(XSocket &sock) {
 		SERVER_ERROR_NO_EXIT("There wasn't the end of the event", 0);
 		return 0;
 	}
-	unsigned int sent = sock.send(buf, tell());
+	unsigned int sent = sock.send_if_ready(buf, tell());
 	if (sent == tell())
 		init();
 	else {
@@ -1789,11 +1788,11 @@ int Server::check_new_clients() {
 	if (!main_socket)
 		return 0;
 
-	XSocket &&sock = main_socket.accept();
+	XSocket sock = main_socket.accept();
 	if (!sock)
 		return 0;
 
-	Player *player = new Player(this, sock);
+	Player *player = new Player(this, std::move(sock));
 	clients.append(player);
 	if (clients.size() == 256) {
 		SERVER_ERROR_NO_EXIT("DDOS", 0);
@@ -1926,10 +1925,9 @@ void Server::analyse_statistics(Game *g) {
 			"; Time of game: " <= playing_time < " min.\n";
 		Player *p = g->removed_players.first();
 		while (p) {
-			int IP = p->socket.addr.host;
-			if (IP)
-				stat_log < "IP: " <= (IP & 0xff) < "." <= ((IP >> 8) & 0xff) < "." <=
-					((IP >> 16) & 0xff) < "." <= ((IP >> 24) & 0xff) < "; Time of Existence: " <=
+			const std::string &IP = p->socket.address();
+			if (!IP.empty())
+				stat_log < "IP: " < IP.c_str() < "; Time of Existence: " <=
 					round(double(TIME_INTERVAL(p->birth_time)) / (60 * 1000)) < " min.; Rating: " <=
 					round(p->body.rating) < "\n";
 			p = p->next;
@@ -1962,12 +1960,12 @@ void Server::get_games_list(OutputEventBuffer &out_buffer, int client_version) {
 			out_buffer < g->ID < g->name < ": " <= g->players.size() < " " <
 				(g->data.GameType == VAN_WAR ? "V" : (g->data.GameType == MECHOSOMA ? "M" : "P"));
 
-			int t = (SDL_GetTicks() - g->birth_time) / 1000;
-			int ts = t % 60;
+			Uint64 t = (SDL_GetTicks() - g->birth_time) / 1000;
+			int ts = static_cast<int>(t % 60);
 			t /= 60;
-			int tm = t % 60;
+			int tm = static_cast<int>(t % 60);
 			t /= 60;
-			int th = t % 24;
+			int th = static_cast<int>(t % 24);
 			out_buffer < " " <= th < ":" <= tm < ":" <= ts < char(0);
 		}
 		g = g->next;
@@ -1991,7 +1989,7 @@ void Server::report() {
 				  << "\tglobal objects: " << s->global_objects.size() << "\n";
 		p = s->players.first();
 		while (p) {
-			std::cout << "Player: " << p->ID << "\tsocket: " << p->socket()
+			std::cout << "Player: " << p->ID << "\tsocket: " << p->socket.is_open()
 					  << "\tworld: " << (p->world ? p->world->ID : 0)
 					  << "\tinventory: " << p->inventory.size() << "\t " << p->name << "\n";
 			p = p->next;

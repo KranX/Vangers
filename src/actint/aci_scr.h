@@ -1,7 +1,7 @@
 #ifndef __ACI_SCR_H__
 #define __ACI_SCR_H__
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 // aciScreenResource::type values...
 #define ACS_NONE 0

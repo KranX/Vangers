@@ -1,7 +1,7 @@
 //
 // Created by caiiiycuk on 15.01.2021.
 //
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <unordered_map>
 
 #if defined(__unix__) || defined(__APPLE__)
@@ -58,18 +58,18 @@ XKeyWrapper *keyWrapper = 0;
 std::function<void(int)> keyHandler;
 std::unordered_map<int, bool> keyStates;
 void onKeyDown(SDL_Event *e) {
-	if (!keyHandler || e->type != SDL_KEYDOWN) {
+	if (!keyHandler || e->type != SDL_EVENT_KEY_DOWN) {
 		return;
 	}
 
-	keyHandler(e->key.keysym.sym);
-	keyStates[e->key.keysym.sym] = true;
+	keyHandler(e->key.key);
+	keyStates[e->key.key] = true;
 }
 void onKeyUp(SDL_Event *e) {
-	if (!keyHandler || e->type != SDL_KEYUP) {
+	if (!keyHandler || e->type != SDL_EVENT_KEY_UP) {
 		return;
 	}
-	keyStates[e->key.keysym.sym] = false;
+	keyStates[e->key.key] = false;
 }
 XKeyWrapper::XKeyWrapper() {
 	keyWrapper = this;

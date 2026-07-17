@@ -271,7 +271,7 @@ int SurmapRTO::Quant(void) {
 		Redraw = 0;
 	}
 	//	XGR_MouseRedraw();
-	static int cnt = CLOCK();
+	static Uint64 cnt = CLOCK();
 	if (paliterMode && ColorShow && CLOCK() != cnt) {
 		cnt = CLOCK();
 		pal_iter();
@@ -879,7 +879,7 @@ void iGameMap::keytrap(int key) {
 		else
 			TurnSecX = curGMap->xsize;
 		break;
-	case SDLK_BACKQUOTE:
+	case SDLK_GRAVE:
 		vMap->squeeze();
 		break;
 	case '0':

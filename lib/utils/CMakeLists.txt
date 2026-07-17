@@ -9,13 +9,11 @@ ADD_EXECUTABLE(zip_convert
 	xzip/treezip.cpp
 )
 
-#ADD_DEFINITIONS(-e SDL_main )
-
 TARGET_LINK_LIBRARIES(zip_convert
 	${ZLIB_LIBRARIES}
 	xtool
 	xgraph
-	${SDL2_LIBRARY}
+	SDL3::SDL3
 )
 
 

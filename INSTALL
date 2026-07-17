@@ -3,19 +3,18 @@ VANGERS: One for the Road
 
 1. Required libraries:
 
-   - SDL2
-   - SDL2_net
+   - SDL 3.2 or newer
+   - SDL_net 3.2 or newer
    - libvorbis
-   - clunk (https://github.com/stalkerg/clunk)
-   - ffmpeg
+   - SDL3-native clunk from the `sdl3` branch
+     (https://github.com/stalkerg/clunk/tree/sdl3)
+   - ffmpeg 6.0 or newer
    - zlib
-
-See `.travis.yml` script for the exact command lines for Ubuntu/Debian systems.
 
 2. Required tools:
 
-   - cmake
-   - make
+   - CMake 4.0 or newer
+   - Ninja or make
 
 3. Building:
 
@@ -33,8 +32,17 @@ See `.travis.yml` script for the exact command lines for Ubuntu/Debian systems.
 OSX prerequisites
 
 a. Install homebrew
-b. brew install sdl2 sdl2_net libvorbis libogg ffmpeg
-c. Build/install clunk (https://github.com/stalkerg/clunk).
+b. brew install sdl3 sdl3_net libvorbis libogg ffmpeg
+c. Build/install the `sdl3` branch of clunk
+   (https://github.com/stalkerg/clunk/tree/sdl3).
 d. Go to 3.
 
 
+Android integration
+
+The Android host project must provide native SDL3 and SDL3_net CMake packages,
+for example through their official Prefab-enabled Android archives, and an
+SDL3-native Clunk build. With `ANDROID` enabled this repository builds the
+static `vangers` library and exports the standard SDL3 `SDL_main()` entry point
+for the host activity's native entry point. Save games, `options.dat`, and
+`controls.dat` keep their existing binary formats.

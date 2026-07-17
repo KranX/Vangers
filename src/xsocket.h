@@ -1,50 +1,64 @@
 #ifndef _XSOCKET_H
 #define _XSOCKET_H
 
-#include "SDL_net.h"
-#include "xglobal.h"
+#include <string>
 
-#include "xcontainers.h"
+#include <SDL3_net/SDL_net.h>
 
 int XSocketInit(int ErrHUsed = 1);
+void XSocketFinit();
 
-// extern char XSocketLocalHostName[257];
-extern IPaddress XSocketLocalHostADDR;		 // used in network.cpp
-extern IPaddress XSocketLocalHostExternADDR; // used in iscreen/iscr_fnc.cpp
+extern std::string XSocketLocalHostAddress;
+extern std::string XSocketLocalHostExternalAddress;
 
 class XSocket {
 	int ErrHUsed;
-	TCPsocket tcpSock;
-	SDLNet_SocketSet socketSet;
+	NET_StreamSocket *streamSocket;
+	NET_Server *serverSocket;
+	std::string remoteAddress;
+	int remotePort;
 
   public:
-	IPaddress addr;
-
 	XSocket();
 	~XSocket();
 
-	XSocket(XSocket &donor);			// transfers socket ownership, donor dies.
-	XSocket &operator=(XSocket &donor); // transfers socket ownership, donor dies.
+	XSocket(const XSocket &) = delete;
+	XSocket &operator=(const XSocket &) = delete;
+	XSocket(XSocket &&donor) noexcept;
+	XSocket &operator=(XSocket &&donor) noexcept;
 
 	int open(int IP, int port);
-	int open(char *name, int port);
+	int open(const char *name, int port);
 	void close();
 
 	int listen(int port);
 	XSocket accept();
 
 	int send(const char *buffer, int size);
+	int send_if_ready(const char *buffer, int size);
+	int flush(int ms_time);
 	int receive(char *buffer, int size_of_buffer, int ms_time = 0);
 
-	int operator!() {
-		return tcpSock == NULL;
+	const std::string &address() const {
+		return remoteAddress;
 	}
-	int operator()() {
-		return tcpSock != NULL;
+	int port() const {
+		return remotePort;
+	}
+	bool is_open() const {
+		return streamSocket != nullptr || serverSocket != nullptr;
+	}
+
+	explicit operator bool() const {
+		return is_open();
+	}
+	bool operator!() const {
+		return !static_cast<bool>(*this);
 	}
 
   private:
-	int tcp_open();
+	int tcp_open(const char *name, int port);
+	void update_remote_address();
 };
 
 #endif

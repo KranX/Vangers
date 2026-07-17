@@ -8,8 +8,14 @@
 
 SDL_Texture *BMP_CreateTexture(const char *file, SDL_Renderer *renderer) {
 	SDL_Surface *surface = SDL_LoadBMP(file);
+	if (!surface)
+		return nullptr;
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-	SDL_FreeSurface(surface);
+	if (texture && (!SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND) ||
+					   !SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_LINEAR))) {
+		SDL_DestroyTexture(texture);
+		texture = nullptr;
+	}
+	SDL_DestroySurface(surface);
 	return texture;
 }

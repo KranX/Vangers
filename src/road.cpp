@@ -205,7 +205,8 @@ char *host_name = 0;
 int host_port = DEFAULT_SERVER_PORT;
 
 int network_log = 0;
-int fps_frame, fps_start, uvsQuantFrame, gameDQuantFrame, actQuantFrame, MLQuantFrame;
+int fps_frame, uvsQuantFrame, gameDQuantFrame, actQuantFrame, MLQuantFrame;
+Uint64 fps_start;
 char fps_string[20];
 
 int stop_all_except_me = 0;
@@ -228,7 +229,7 @@ void memstatDumpLeak(void);
 #endif
 
 int page;
-clock_t _Timer_;
+Uint64 _Timer_;
 int frame;
 int Quit = 1;
 int Dead;
@@ -281,7 +282,7 @@ int Pause = 0;
 int FirstDraw = 1;
 
 int speed_correction_enabled = 1;
-int prev_frame_time = 0;
+Uint64 prev_frame_time = 0;
 
 iGameMap *curGMap;
 
@@ -306,9 +307,6 @@ extern int *AVI_index;
 
 int TotalDrawFlag = 1;
 int StartMainQuantFlag = 0;
-
-int RecorderMode = 0;
-char *RecorderName = NULL;
 
 int COMPAS_RIGHT;
 constexpr int DEFAULT_COMPAS_RIGHT = 80;
@@ -368,25 +366,58 @@ void showModal(char *fname, float reelW, float reelH, float screenW, float scree
 		winVideo.Close(); */
 }
 
-static int LoadStartupFullscreenOption(void) {
+static bool SkipStartupOptionString(XStream &options, long options_size) {
+	if (options.tell() > options_size - (long)sizeof(int))
+		return false;
+
+	int length;
+	options > length;
+	if (length < 0 || length > options_size - options.tell())
+		return false;
+
+	options.seek(length, XS_CUR);
+	return true;
+}
+
+static bool LoadStartupDisplayOptions(int &fullscreen, int &resolution) {
 	XStream options(0);
 	if (!options.open("options.dat", XS_IN))
-		return -1;
+		return false;
 
+	const long options_size = options.size();
 	const long saved_values_size = 4 * (long)sizeof(int);
-	if (options.size() < (long)sizeof(int) + saved_values_size) {
+	if (options_size < (long)sizeof(int) + saved_values_size) {
 		options.close();
-		return -1;
+		return false;
 	}
 
 	int option_count;
 	options > option_count;
 	if (option_count != iMAX_OPTION_ID) {
 		options.close();
-		return -1;
+		return false;
 	}
 
-	int fullscreen;
+	// iSCREEN_RESOLUTION follows the first ten integer options and four
+	// length-prefixed strings in the serialized iScreen option order.
+	const long integer_options_size = 10 * (long)sizeof(int);
+	if (options.tell() > options_size - integer_options_size) {
+		options.close();
+		return false;
+	}
+	options.seek(integer_options_size, XS_CUR);
+	for (int i = 0; i < 4; ++i) {
+		if (!SkipStartupOptionString(options, options_size)) {
+			options.close();
+			return false;
+		}
+	}
+	if (options.tell() > options_size - (long)sizeof(int)) {
+		options.close();
+		return false;
+	}
+	options > resolution;
+
 	int auto_acceleration;
 	int fps_60;
 	int repeated_auto_acceleration;
@@ -396,12 +427,12 @@ static int LoadStartupFullscreenOption(void) {
 	options > fullscreen > auto_acceleration > fps_60 > repeated_auto_acceleration;
 	options.close();
 
-	if ((fullscreen != 0 && fullscreen != 1) ||
+	if ((fullscreen != 0 && fullscreen != 1) || (resolution != 0 && resolution != 1) ||
 		(auto_acceleration != 0 && auto_acceleration != 1) || (fps_60 != 0 && fps_60 != 1) ||
 		auto_acceleration != repeated_auto_acceleration)
-		return -1;
+		return false;
 
-	return fullscreen;
+	return true;
 }
 
 int xtInitApplication(void) {
@@ -495,15 +526,18 @@ int xtInitApplication(void) {
 
 	emode = ExclusiveLog ? XGR_EXCLUSIVE : 0;
 	// emode |= XGR_HICOLOR;
-	if (!XGR_FULL_SCREEN) {
-		const int startup_fullscreen = LoadStartupFullscreenOption();
-		if (startup_fullscreen != -1)
+	int startup_fullscreen = -1;
+	int startup_resolution = -1;
+	if (LoadStartupDisplayOptions(startup_fullscreen, startup_resolution)) {
+		if (!XGR_FULL_SCREEN)
 			XGR_FULL_SCREEN = startup_fullscreen;
 	}
 
 	actintLowResFlag = 1;
 	if (XGR_Init(emode))
 		ErrH.Abort(ErrorVideoMss);
+	if (startup_resolution == 0)
+		XGR_Obj.set_resolution(800, 600);
 
 	// WORK	sWinVideo::Init();
 	//	::ShowCursor(0);
@@ -592,10 +626,7 @@ int xtInitApplication(void) {
 	xtRegisterRuntimeObject(siObj);
 	xtRegisterRuntimeObject(saObj);
 
-	if (RecorderMode)
-		XRec.Open(RecorderName, RecorderMode);
-	else
-		RNDVAL = SDL_GetTicks();
+	RNDVAL = SDL_GetTicks();
 
 	_MEM_STATISTIC_("AFTER FIRST INIT -> ");
 
@@ -613,12 +644,6 @@ int xtInitApplication(void) {
 		GameQuantRTO *p = (GameQuantRTO *)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
 		p->SetTimer(0);
 	}
-	if (RecorderMode) {
-		GameQuantRTO *p = (GameQuantRTO *)xtGetRuntimeObject(RTO_GAME_QUANT_ID);
-		//		p -> SetTimer(1000/20);
-		speed_correction_enabled = 0;
-	}
-
 	// STEAM
 #ifdef _STEAM_API_
 	if (SteamAPI_RestartAppIfNecessary(k_uAppIdInvalid)) {
@@ -1122,7 +1147,7 @@ int GameQuantRTO::Quant(void) {
 			sprintf(
 				fps_string,
 				"%.1f",
-				(double)(RTO_GAME_QUANT_TIMER) / (SDL_GetTicks() - (int)fps_start) * 1000
+				(double)(RTO_GAME_QUANT_TIMER) / (SDL_GetTicks() - fps_start) * 1000
 			);
 #ifdef _DEBUG
 			network_analysis(network_analysis_buffer, 0);
@@ -1246,7 +1271,7 @@ void LoadingRTO3::Init(int id) {
 	if (!actIntLog) {
 		palTr->set(palbuf, NULL, 0, 255, &Quit);
 		Quit = 1;
-		int cnt = CLOCK();
+		Uint64 cnt = CLOCK();
 		while (Quit) {
 			if (CLOCK() != cnt) {
 				palTr->quant();
@@ -1293,6 +1318,8 @@ void xtDoneApplication(void) {
 
 void restore(void) {
 	KDWIN::destroy_server();
+	main_socket.close();
+	XSocketFinit();
 #ifdef _DEBUG
 	network_analysis(network_analysis_buffer, 1);
 	fout < network_analysis_buffer.address();
@@ -1301,7 +1328,7 @@ void restore(void) {
 	memStart = 0;
 #endif
 	RestoreSOUND();
-	SDL_Quit();
+	XJoystickCleanup();
 
 	//	  win32_dump_mem();
 
@@ -1418,20 +1445,6 @@ void ComlineAnalyze(int argc, char **argv) {
 			j = 0;
 			while (argv[i][j] == '/' || argv[i][j] == '-') {
 				switch (argv[i][j + 1]) {
-#ifdef zRECORDER_ENABLED
-				case 'W':
-				case 'w':
-					RecorderMode = XRC_RECORD_MODE;
-					RecorderName = argv[i] + 2;
-					SkipIntro = 1;
-					break;
-				case 'P':
-				case 'p':
-					RecorderMode = XRC_PLAY_MODE;
-					RecorderName = argv[i] + 2;
-					SkipIntro = 1;
-					break;
-#endif
 				case 'X':
 				case 'x':
 					ExclusiveLog = 1;
@@ -1562,8 +1575,7 @@ void costab(void) {
 //	dstrect.h = 256;
 //
 //
-//     surface = SDL_CreateRGBSurface(0, map_size_x, map_size_y, 8,
-//		0, 0, 0, 0);
+//     surface = SDL_CreateSurface(map_size_x, map_size_y, SDL_PIXELFORMAT_INDEX8);
 //	surface->format = XGR_Obj.XGR_ScreenSurface->format;
 //
 //	for (iter=0; iter<map_size_y/256;iter++) {
@@ -1642,7 +1654,7 @@ void KeyCenter(SDL_Event *key) {
 #endif
 	case SDL_SCANCODE_F:
 		mod = SDL_GetModState();
-		if (mod & KMOD_CTRL) {
+		if (mod & SDL_KMOD_CTRL) {
 			curGMap->prmFlag ^= PRM_FPS;
 		}
 #ifdef _DEBUG
@@ -1652,7 +1664,7 @@ void KeyCenter(SDL_Event *key) {
 		break;
 	case SDL_SCANCODE_G:
 		mod = SDL_GetModState();
-		if (mod & KMOD_CTRL) {
+		if (mod & SDL_KMOD_CTRL) {
 			double old_game_time_coeff = GAME_TIME_COEFF;
 			if (GAME_TIME_COEFF == 1) {
 				RTO_GAME_QUANT_TIMER = 1000 / 60;
@@ -1845,7 +1857,6 @@ void iGameMap::reset(void) {
 }
 
 void calc_view_factors() {
-	// if(!(XRec.flags & (XRC_RECORD_MODE | XRC_PLAY_MODE)) && prev_frame_time)
 	// Stalkerg
 	//	if((speed_correction_enabled | NetworkON) && prev_frame_time){
 	//		int dt = SDL_GetTicks() - prev_frame_time;
@@ -1938,7 +1949,8 @@ void iGameMap::flush() {
 
 void iGameMap::draw(int self) {
 	static XBuffer status;
-	static int blink, clcnt;
+	static int blink;
+	static Uint64 clcnt;
 
 	if (!MuteLog && ((ConTimer.counter & 7) == 0)) {
 		SoundQuant();
@@ -2508,8 +2520,13 @@ void shotFlush(void) {
 	}
 	std::cout << "ScreenShot name:" << out_buf.GetBuf() << std::endl;
 	SDL_Surface *screenshotSurface = XGR_Obj.get_screenshot();
-	SDL_SaveBMP(screenshotSurface, out_buf.GetBuf());
-	SDL_FreeSurface(screenshotSurface);
+	if (!screenshotSurface) {
+		std::cerr << "Screenshot failed: " << SDL_GetError() << std::endl;
+		return;
+	}
+	if (!SDL_SaveBMP(screenshotSurface, out_buf.GetBuf()))
+		std::cerr << "Screenshot save failed: " << SDL_GetError() << std::endl;
+	SDL_DestroySurface(screenshotSurface);
 }
 #endif
 

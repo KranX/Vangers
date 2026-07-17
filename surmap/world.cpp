@@ -892,7 +892,7 @@ void worldPrepare(void) {
 
 	XCon < vMap->wTable[vMap->cWorld].name < " -> ";
 	XCon < "X-Power: " <= MAP_POWER_X < " Y-Power: " <= MAP_POWER_Y < "\n";
-	int c = CLOCK();
+	Uint64 c = CLOCK();
 	while (CLOCK() - c < 24)
 		;
 

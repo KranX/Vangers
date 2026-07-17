@@ -195,7 +195,7 @@ void AVIFile::loadAudio(const char *aviname) {
 		samples.data(),
 		samples.size(),
 		sample_rate,
-		AUDIO_S16LSB,
+		SDL_AUDIO_S16LE,
 		channels,
 		&audioSample
 	);
@@ -313,7 +313,7 @@ void AVIFile::draw(void) {
 		redraw = 1;
 	}
 
-	const double elapsed = (Uint32)(SDL_GetTicks() - playbackStart);
+	const double elapsed = SDL_GetTicks() - playbackStart;
 	while (true) {
 		if (!pendingFrameReady && !decodeFinished) {
 			if (decodeNextFrame(pNextFrame)) {
@@ -380,7 +380,7 @@ int AVIFile::isFinished(void) const {
 		return 0;
 	if (!frameReady || (flags & AVI_NOTIMER))
 		return 1;
-	const double elapsed = (Uint32)(SDL_GetTicks() - playbackStart);
+	const double elapsed = SDL_GetTicks() - playbackStart;
 	return elapsed >= currentFrameTime + frameDuration;
 }
 

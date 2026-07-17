@@ -4843,9 +4843,9 @@ void VangerUnit::Quant(void) {
 			NETWORK_OUT_STREAM.end_body();
 			need_to_send_vanger = 0;
 
-			static const unsigned int SERVER_TIME_QUERY_TIMEOUT = 20000;
-			static unsigned int last_server_time_query = 0;
-			unsigned int now = SDL_GetTicks();
+			static const Uint64 SERVER_TIME_QUERY_TIMEOUT = 20000;
+			static Uint64 last_server_time_query = 0;
+			Uint64 now = SDL_GetTicks();
 			if (!lag_averaging_t0.empty() &&
 				IS_PAST(last_server_time_query + SERVER_TIME_QUERY_TIMEOUT)) {
 				network_log_printf(
@@ -7745,8 +7745,8 @@ void VangerUnit::keyhandler(int key) {
 		static int i_model = 0;
 		static int models[2] = {0, 0};
 		mod = SDL_GetModState();
-		if (!(mod & KMOD_CTRL)) {
-			if (!(mod & KMOD_SHIFT)) {
+		if (!(mod & SDL_KMOD_CTRL)) {
+			if (!(mod & SDL_KMOD_SHIFT)) {
 				if (++NumHumanModel >= ModelD.MaxModel)
 					NumHumanModel = 0;
 			} else {

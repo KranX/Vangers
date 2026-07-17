@@ -1,7 +1,7 @@
 
 #ifndef __XTCORE_H
 #define __XTCORE_H
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <iostream>
 
 #ifndef NULL
@@ -110,6 +110,8 @@ void xtUnRegisterSysQuant(int id);
 // int xtNeedExit(void);
 
 void xtClearMessageQueue(void);
+int xtGetFrameCount(void);
+void xtSetAudioPauseHandler(void (*handler)(bool));
 
 int xtInitApplication(void);
 void xtDoneApplication(void);
@@ -128,7 +130,7 @@ void xtCloseDummyWindow(void);
 void set_key_handlers(void (*pH)(SDL_Event *), void (*upH)(SDL_Event *));
 
 #define SDLK_JOYSTICK_BUTTON_MASK (1 << 28)
-#define SDLK_GAMECONTROLLER_BUTTON_MASK (1 << 27)
+#define SDLK_GAMEPAD_BUTTON_MASK (1 << 27)
 #define SDLK_JOYSTICK_HAT_MASK (1 << 26)
 
 extern double XTCORE_FRAME_DELTA;

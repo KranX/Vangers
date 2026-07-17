@@ -44,7 +44,7 @@ int xtInitApplication(void) {
 	//	ErrH.SetFlags(XERR_CTRLBRK);
 
 	/* initialize SDL */
-	if (SDL_Init(0) == -1) {
+	if (!SDL_Init(0)) {
 		std::cout << "SDL_Init: %s\n" << SDL_GetError() << std::endl;
 		exit(1);
 	}
@@ -71,12 +71,16 @@ int xtInitApplication(void) {
 
 void xtDoneApplication(void) {
 	delete server;
+	server = nullptr;
+	XSocketFinit();
 }
 
 void Syncro() {
 	const int dt_total = 1000 / 64;
-	static int t_prev = 0;
-	int dt = dt_total - (SDL_GetTicks() - t_prev);
+	static Uint64 t_prev = 0;
+	if (!t_prev)
+		t_prev = SDL_GetTicks();
+	int dt = dt_total - static_cast<int>(SDL_GetTicks() - t_prev);
 	if (dt > 0)
 		std::this_thread::sleep_for(std::chrono::milliseconds(dt));
 	t_prev = SDL_GetTicks();

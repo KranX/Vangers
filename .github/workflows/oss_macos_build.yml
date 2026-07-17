@@ -20,6 +20,7 @@ concurrency:
 
 env:
   BUILD_TYPE: RelWithDebInfo
+  CLUNK_COMMIT: 3fa1e999ecc0ddb2f8eb550ca8203c7229127196
   MACOSX_DEPLOYMENT_TARGET: "13"
 
 jobs:
@@ -33,6 +34,8 @@ jobs:
 
       - name: Install system dependencies
         run: |
+          brew untap aws/tap 2>/dev/null || true
+
           install_if_missing() {
             for formula in "$@"; do
               if brew list --formula "$formula" >/dev/null 2>&1; then
@@ -50,8 +53,8 @@ jobs:
             libvorbis \
             ninja \
             pkgconf \
-            sdl2 \
-            sdl2_net
+            sdl3 \
+            sdl3_net
 
       - name: Install latest CMake 4
         run: |
@@ -69,8 +72,10 @@ jobs:
       - name: Download Clunk
         id: clunk-source
         run: |
-          mkdir -p external
-          git clone --depth 1 https://github.com/stalkerg/clunk.git external/clunk
+          git init external/clunk
+          git -C external/clunk remote add origin https://github.com/stalkerg/clunk.git
+          git -C external/clunk fetch --depth 1 origin "${CLUNK_COMMIT}"
+          git -C external/clunk checkout --detach FETCH_HEAD
           echo "sha=$(git -C external/clunk rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Clunk build
@@ -102,6 +107,9 @@ jobs:
 
       - name: Build Vangers
         run: cmake --build build --parallel
+
+      - name: Test Vangers
+        run: ctest --test-dir build --output-on-failure
 
       - name: Show built binaries
         run: |

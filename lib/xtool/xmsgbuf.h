@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 const int XMSG_BUFFER_SIZE = 4096;
 
