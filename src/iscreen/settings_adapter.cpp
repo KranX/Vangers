@@ -1,6 +1,9 @@
 #include "settings_adapter.h"
 
+#include "../global.h"
+
 #include "controls.h"
+#include "iscreen.h"
 #include "iscreen_options.h"
 
 #include "settings/input_binding.h"
@@ -16,12 +19,7 @@
 namespace vangers::settings {
 namespace {
 
-constexpr std::size_t PLAYER_NAME_MAX_LENGTH = 16;
-constexpr std::size_t PLAYER_PASSWORD_MAX_LENGTH = 16;
-constexpr std::size_t SERVER_ADDRESS_MAX_LENGTH = 31;
-constexpr std::size_t PROXY_SERVER_MAX_LENGTH = 21;
-constexpr std::size_t PROXY_PORT_MAX_LENGTH = 11;
-constexpr std::size_t SERVER_PORT_MAX_LENGTH = 7;
+constexpr std::size_t ISCREEN_STRING_MAX_LENGTH = iSTR_LEN - 1;
 
 std::string ui_text(std::string_view utf8, std::size_t maximum_length) {
 	std::string text = utf8_to_cp866(utf8);
@@ -74,18 +72,18 @@ void apply_settings_to_interface() {
 		iSCREEN_RESOLUTION, settings.video.resolution == ResolutionMode::Desktop ? 1 : 0
 	);
 	iSetOptionValue(iPLAYER_COLOR, settings.network.player_color);
-	set_text_option(iPLAYER_NAME2, settings.network.player_name, PLAYER_NAME_MAX_LENGTH);
-	set_text_option(iPLAYER_PASSWORD, settings.network.player_password, PLAYER_PASSWORD_MAX_LENGTH);
-	set_text_option(iHOST_NAME, settings.network.server, SERVER_ADDRESS_MAX_LENGTH);
+	set_text_option(iPLAYER_NAME2, settings.network.player_name, ISCREEN_STRING_MAX_LENGTH);
+	set_text_option(iPLAYER_PASSWORD, settings.network.player_password, ISCREEN_STRING_MAX_LENGTH);
+	set_text_option(iHOST_NAME, settings.network.server, ISCREEN_STRING_MAX_LENGTH);
 	iSetOptionValue(iKEEP_MODE, settings.video.keep_terrain_changes ? 1 : 0);
 	iSetOptionValue(iPANNING_ON, settings.audio.panning ? 0 : 1);
 	iSetOptionValue(iDESTR_MODE, settings.video.destroy_terrain ? 1 : 0);
 	iSetOptionValue(iMECH_SOUND, settings.audio.engine_noise ? 0 : 1);
 	iSetOptionValue(iBACK_SOUND, settings.audio.background_sound ? 0 : 1);
 	iSetOptionValue(iPROXY_USAGE, settings.network.proxy_enabled ? 1 : 0);
-	set_text_option(iPROXY_SERVER, settings.network.proxy_server, PROXY_SERVER_MAX_LENGTH);
-	set_port_option(iPROXY_PORT, settings.network.proxy_port, PROXY_PORT_MAX_LENGTH);
-	set_port_option(iSERVER_PORT, settings.network.port, SERVER_PORT_MAX_LENGTH);
+	set_text_option(iPROXY_SERVER, settings.network.proxy_server, ISCREEN_STRING_MAX_LENGTH);
+	set_port_option(iPROXY_PORT, settings.network.proxy_port, ISCREEN_STRING_MAX_LENGTH);
+	set_port_option(iSERVER_PORT, settings.network.port, ISCREEN_STRING_MAX_LENGTH);
 	iSetOptionValue(iCAMERA_TURN, settings.gameplay.camera_rotation ? 1 : 0);
 	iSetOptionValue(iCAMERA_SLOPE, settings.gameplay.camera_slope ? 1 : 0);
 	iSetOptionValue(iCAMERA_SCALE, settings.gameplay.camera_zoom ? 1 : 0);

@@ -21,7 +21,7 @@ using BindingMap = std::map<std::string, BindingList>;
 
 struct VideoSettings {
 	bool fullscreen = false;
-	ResolutionMode resolution = ResolutionMode::Legacy800x600;
+	ResolutionMode resolution = ResolutionMode::Desktop;
 	int fps = 20;
 	int detail = 0;
 	bool keep_terrain_changes = false;

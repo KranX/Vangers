@@ -127,7 +127,12 @@ bool test_defaults_and_round_trip() {
 	if (!check(
 			first_result.source == SettingsLoadSource::Defaults, "defaults source was not used"
 		) ||
-		!check(first_result.settings_file_written, "default settings were not written"))
+		!check(first_result.settings_file_written, "default settings were not written") ||
+		!check(
+			first.get().video.resolution == ResolutionMode::Desktop,
+			"fresh installs no longer use the pre-settings desktop resolution"
+		) ||
+		!check(first.get().video.fps == 20, "fresh-install FPS default changed"))
 		return false;
 
 	GameSettings &changed = first.get_mutable();
@@ -235,6 +240,7 @@ bool test_malformed_file_recovery() {
 	TemporaryDirectory directory;
 	const SettingsPaths paths = paths_for(directory.path());
 	write_file(paths.settings_file, "format_version = [ this is not TOML\n");
+	write_bytes(paths.legacy_options_file, legacy_options());
 
 	SettingsManager manager(paths);
 	const SettingsLoadResult result = manager.load();
@@ -242,6 +248,10 @@ bool test_malformed_file_recovery() {
 			result.source == SettingsLoadSource::RecoveredDefaults, "broken TOML was not recovered"
 		) ||
 		!check(result.settings_file_written, "replacement TOML was not written") ||
+		!check(
+			!manager.get().video.fullscreen,
+			"malformed TOML incorrectly fell back to legacy options.dat"
+		) ||
 		!check(
 			result.diagnostic.find("settings.toml") != std::string::npos,
 			"parse location was not reported"
@@ -258,6 +268,30 @@ bool test_malformed_file_recovery() {
 		   check(
 			   verify.load().source == SettingsLoadSource::Toml, "replacement TOML is not readable"
 		   );
+}
+
+bool test_invalid_utf8_file_recovery() {
+	TemporaryDirectory directory;
+	const SettingsPaths paths = paths_for(directory.path());
+	std::string invalid = "format_version = 1\n[network]\nplayer_name = \"bad";
+	invalid.push_back(static_cast<char>(0xff));
+	invalid += "name\"\n";
+	write_file(paths.settings_file, invalid);
+
+	SettingsManager manager(paths);
+	const SettingsLoadResult result = manager.load();
+	if (!check(
+			result.source == SettingsLoadSource::RecoveredDefaults,
+			"invalid UTF-8 TOML was not recovered"
+		) ||
+		!check(result.settings_file_written, "invalid UTF-8 TOML was not replaced"))
+		return false;
+
+	SettingsManager verify(paths);
+	return check(
+		verify.load().source == SettingsLoadSource::Toml,
+		"replacement after invalid UTF-8 is not readable"
+	);
 }
 
 bool test_old_version_is_upgraded() {
@@ -391,7 +425,7 @@ bool test_partial_legacy_sources_use_defaults_for_missing_half() {
 int main() {
 	return test_defaults_and_round_trip() && test_comments_unknown_keys_and_normalization() &&
 				   test_future_version_is_read_only() && test_malformed_file_recovery() &&
-				   test_old_version_is_upgraded() &&
+				   test_invalid_utf8_file_recovery() && test_old_version_is_upgraded() &&
 				   test_legacy_migration_is_one_time_and_read_only() &&
 				   test_failed_migration_write_retries_without_touching_legacy() &&
 				   test_partial_legacy_sources_use_defaults_for_missing_half()
