@@ -85,6 +85,12 @@ bool run_send_backpressure_test() {
 			))
 			return false;
 	}
+	const char systemMarker = 'S';
+	if (!check(
+			client.send(&systemMarker, 1) == 1,
+			"ordered system write was blocked behind realtime output"
+		))
+		return false;
 
 	std::vector<char> receiveBuffer(64 * 1024);
 	const std::size_t expectedBytes = static_cast<std::size_t>(acceptedChunks) * chunkSize;
@@ -116,6 +122,13 @@ bool run_send_backpressure_test() {
 	if (!check(receivedBytes == expectedBytes, "queued payload did not drain"))
 		return false;
 	if (!check(client.flush(2000), "backpressure payload remained pending after peer drain"))
+		return false;
+	char receivedSystemMarker = 0;
+	if (!check(
+			receive_exact(accepted, &receivedSystemMarker, 1) == 1 &&
+				receivedSystemMarker == systemMarker,
+			"ordered system write was missing or reordered"
+		))
 		return false;
 
 	const char recoveryMarker = 'R';

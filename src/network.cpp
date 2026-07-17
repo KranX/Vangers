@@ -1270,7 +1270,10 @@ int OutputEventBuffer::send(int system_send, XSocket &sock) {
 	int sent_size = 0;
 	// if(sock() && (system_send | enable_send))
 	if (sock.is_open()) {
-		sent_size = sock.send_if_ready(address(), tell());
+		// Synchronous protocol requests are followed immediately by a response wait, so they must
+		// enter SDL3_net's ordered queue even while an earlier realtime batch is still pending.
+		sent_size =
+			system_send ? sock.send(address(), tell()) : sock.send_if_ready(address(), tell());
 		// if(!system_send)
 		//	enable_send = 0;
 	}
