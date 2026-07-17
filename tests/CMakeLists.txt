@@ -70,3 +70,14 @@ TARGET_LINK_LIBRARIES(text_encoding_test PRIVATE
 )
 
 ADD_TEST(NAME text_encoding COMMAND text_encoding_test)
+
+ADD_EXECUTABLE(legacy_settings_migration_test
+	legacy_settings_migration_test.cpp
+)
+
+TARGET_LINK_LIBRARIES(legacy_settings_migration_test PRIVATE
+	vangers_settings
+	SDL3::SDL3
+)
+
+ADD_TEST(NAME legacy_settings_migration COMMAND legacy_settings_migration_test)

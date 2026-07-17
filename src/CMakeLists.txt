@@ -5,6 +5,8 @@ include_directories(
 )
 
 ADD_LIBRARY(vangers_settings STATIC
+	settings/input_binding.cpp
+	settings/legacy_settings_import.cpp
 	settings/settings.cpp
 	settings/settings_io.cpp
 	settings/text_encoding.cpp
@@ -15,6 +17,7 @@ TARGET_INCLUDE_DIRECTORIES(vangers_settings PUBLIC
 )
 
 TARGET_LINK_LIBRARIES(vangers_settings PRIVATE
+	SDL3::SDL3
 	toml11::toml11
 )
 
