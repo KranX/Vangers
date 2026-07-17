@@ -2,6 +2,7 @@
 
 #include "../common.h"
 #include "../global.h"
+#include "../settings/text_encoding.h"
 
 #include "ikeys.h"
 
@@ -3715,18 +3716,8 @@ void iScreenDispatcher::input_string_quant(void) {
 				}
 			} else if (event->type == SDL_EVENT_TEXT_INPUT) {
 				if (!(ActiveEl->flags & EL_NUMBER)) {
-					if ((unsigned char)event->text.text[0] < 128) {
-						code = event->text.text[0];
-					} else {
-						unsigned short utf = ((unsigned short *)event->text.text)[0];
-						utf = ntohs(utf);
-						code = 0xdb;
-						if ((utf & (1 << (7))) && !(utf & (1 << (10)))) {
-							code = UTF8toCP866(utf);
-						} else {
-							code = ' ';
-						}
-					}
+					const std::string encoded = vangers::settings::utf8_to_cp866(event->text.text);
+					code = encoded.empty() ? ' ' : static_cast<unsigned char>(encoded.front());
 					if ((hfnt->data[code]->Flags & NULL_HCHAR) && code != ' ') {
 						break;
 					}

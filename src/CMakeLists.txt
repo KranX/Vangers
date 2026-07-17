@@ -7,6 +7,7 @@ include_directories(
 ADD_LIBRARY(vangers_settings STATIC
 	settings/settings.cpp
 	settings/settings_io.cpp
+	settings/text_encoding.cpp
 )
 
 TARGET_INCLUDE_DIRECTORIES(vangers_settings PUBLIC

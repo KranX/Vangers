@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../settings/text_encoding.h"
 
 #include "../actint/actint.h"
 #include "../actint/item_api.h"
@@ -95,9 +96,6 @@ iChatButton *iGetChatButton(int id);
 iChatButton *iGetChatPlayerButton(int id);
 
 void put_map(int x, int y, int sx, int sy);
-
-unsigned char UTF8toCP866(unsigned short utf);
-unsigned short CP866toUTF8(unsigned char cp866);
 
 int getCharGroup(char chr);
 /* --------------------------- DEFINITION SECTION --------------------------- */
@@ -1350,18 +1348,10 @@ void iChatInputChar(const char *input_char) {
 
 	aciFont *hfnt = aScrFonts32[iChatInput->font];
 
-	if ((unsigned char)(input_char[0]) < 128) {
-		chr = input_char[0];
-	} else {
-		unsigned short utf = ((unsigned short *)input_char)[0];
-		utf = ntohs(utf);
-		// All cyrilic chars should be coding in two octets. 8, 11 bit-index for 1,2 octets
-		if ((utf & (1 << (7))) && !(utf & (1 << (10)))) {
-			chr = UTF8toCP866(utf);
-		} else {
-			chr = ' ';
-		}
-	}
+	const std::string encoded = vangers::settings::utf8_to_cp866(input_char);
+	if (encoded.empty())
+		return;
+	chr = static_cast<unsigned char>(encoded.front());
 
 	if (hfnt && chr < hfnt->Size) {
 		int leftSelectionPosition =
@@ -1660,16 +1650,7 @@ void iChatInputEditing(SDL_Event *event) {
 			std::string copy_string =
 				(iChatInput->string)
 					.substr(leftSelectionPosition, rightSelectionPosition - leftSelectionPosition);
-			std::string new_string;
-			for (size_t i = 0; i < copy_string.length(); i++) {
-				if ((unsigned char)(copy_string[i]) < 128) {
-					new_string.push_back(copy_string[i]);
-				} else {
-					unsigned short utf = CP866toUTF8((unsigned char)(copy_string[i]));
-					new_string.push_back(utf >> 8);
-					new_string.push_back(utf & 0xFF);
-				}
-			}
+			const std::string new_string = vangers::settings::cp866_to_utf8(copy_string);
 
 			SDL_SetClipboardText(new_string.c_str());
 
@@ -1703,24 +1684,6 @@ int getCharGroup(char chr) {
 		}
 
 		return 2;
-	}
-}
-
-unsigned short CP866toUTF8(unsigned char cp866) {
-	if (cp866 >= 0x80 && cp866 <= 0xAF) {
-		return cp866 + 0xD010;
-	}
-	if (cp866 >= 0xE0 && cp866 <= 0xEF) {
-		return cp866 + 0xD0A0;
-	}
-
-	switch (cp866) {
-	case 0xF0: // Ё
-		return 0xD001;
-	case 0xF1: // ё
-		return 0xD191;
-	default:
-		return 0x20;
 	}
 }
 

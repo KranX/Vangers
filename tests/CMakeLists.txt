@@ -60,3 +60,13 @@ TARGET_LINK_LIBRARIES(settings_test PRIVATE
 )
 
 ADD_TEST(NAME settings COMMAND settings_test)
+
+ADD_EXECUTABLE(text_encoding_test
+	text_encoding_test.cpp
+)
+
+TARGET_LINK_LIBRARIES(text_encoding_test PRIVATE
+	vangers_settings
+)
+
+ADD_TEST(NAME text_encoding COMMAND text_encoding_test)
