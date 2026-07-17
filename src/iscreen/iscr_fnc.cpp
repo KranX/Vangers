@@ -307,8 +307,6 @@ void iSecondInit(void);
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
-#define _SAVE_SCREEN_
-
 const int iFRAME_CYCLE = 10;
 
 HFont **HFntTable = NULL;

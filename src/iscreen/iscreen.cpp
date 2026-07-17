@@ -4435,32 +4435,6 @@ int iScreenDispatcher::copy_text_prev(iScreen *scr, int mode) {
 	return 0;
 }
 
-void iScreenDispatcher::save_data(XStream *fh) {
-	std::cout << "iScreenDispatcher::save_data" << std::endl;
-	int i, num_opt = iMAX_OPTION_ID;
-	*fh < num_opt;
-	for (i = 0; i < iMAX_OPTION_ID; i++) {
-		if (iScrOpt[i])
-			iScrOpt[i]->save(fh);
-	}
-}
-
-void iScreenDispatcher::load_data(XStream *fh) {
-	int i, num_opt;
-	*fh > num_opt;
-	if (num_opt != iMAX_OPTION_ID) {
-		// Keep destroy terrain mode enabled
-		std::cout << "iScreenDispatcher::load_data data is broken keep default" << std::endl;
-		((iTriggerObject *)iScrOpt[iDESTR_MODE]->objPtr)->state = 1;
-		((iTriggerObject *)iScrOpt[iDESTR_MODE]->objPtr)->trigger_init();
-		return;
-	}
-	for (i = 0; i < iMAX_OPTION_ID; i++) {
-		if (iScrOpt[i])
-			iScrOpt[i]->load(fh);
-	}
-}
-
 void iScreenDispatcher::end_event(void) {
 	if (ActiveEv) {
 		ActiveEv->flags &= ~EV_ACTIVE;

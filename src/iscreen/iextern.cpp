@@ -731,28 +731,17 @@ void iPrepareOptions(void) {
 	iScrOpt[iMPGAME3_ID] = new iScreenOption(iSTRING, 0, "Select Game", "GameStr3");
 	iScrOpt[iMPGAME4_ID] = new iScreenOption(iSTRING, 0, "Select Game", "GameStr4");
 
-	iScrOpt[iMPGAME0_ID]->flags |= iOPTION_NO_SAVE;
-	iScrOpt[iMPGAME1_ID]->flags |= iOPTION_NO_SAVE;
-	iScrOpt[iMPGAME2_ID]->flags |= iOPTION_NO_SAVE;
-	iScrOpt[iMPGAME3_ID]->flags |= iOPTION_NO_SAVE;
-	iScrOpt[iMPGAME4_ID]->flags |= iOPTION_NO_SAVE;
-
 	iScrOpt[iCUR_MPGAME_ID] = new iScreenOption(iSTRING, 0, "Server Config screen", "GameNameStr");
-	iScrOpt[iCUR_MPGAME_ID]->flags |= iOPTION_NO_SAVE;
 	iScrOpt[iCUR_MPGAME_ID2] = new iScreenOption(iSTRING, 0, "Server Info screen", "GameNameStr");
-	iScrOpt[iCUR_MPGAME_ID2]->flags |= iOPTION_NO_SAVE;
 
 	iScrOpt[iCUR_MPGAME_ID]->add_link(iScrOpt[iCUR_MPGAME_ID2]);
 	iScrOpt[iCUR_MPGAME_ID2]->add_link(iScrOpt[iCUR_MPGAME_ID]);
 
 	iScrOpt[iHOST_NAME] = new iScreenOption(iSTRING, 0, "INet Host screen", "HostName");
 	iScrOpt[iIP_ADDRESS] = new iScreenOption(iSTRING, 0, "INet Host screen", "IP_AddrID");
-	iScrOpt[iIP_ADDRESS]->flags |= iOPTION_NO_SAVE;
 
 	iScrOpt[iKEEP_IN_USE] = new iScreenOption(iSTRING, 0, "Graphics screen", "InUseStr");
-	iScrOpt[iKEEP_IN_USE]->flags |= iOPTION_NO_SAVE;
 	iScrOpt[iKEEP_CLEAN_UP] = new iScreenOption(iSTRING, 0, "Graphics screen", "CleanUpStr");
-	iScrOpt[iKEEP_CLEAN_UP]->flags |= iOPTION_NO_SAVE;
 
 	iScrOpt[iKEEP_MODE] = new iScreenOption(iTRIGGER, 0, "Graphics screen", "KeepTrig");
 	iScrOpt[iDESTR_MODE] = new iScreenOption(iTRIGGER, 0, "Graphics screen", "DestrTrig");
@@ -765,11 +754,9 @@ void iPrepareOptions(void) {
 
 	iScrOpt[iPROXY_SERVER_STR] =
 		new iScreenOption(iSTRING, 0, "INet Host screen", "ProxyServerStrID");
-	iScrOpt[iPROXY_SERVER_STR]->flags |= iOPTION_NO_SAVE;
 	iScrOpt[iPROXY_PORT_STR] = new iScreenOption(iSTRING, 0, "INet Host screen", "ProxyPortStrID");
-	iScrOpt[iPROXY_PORT_STR]->flags |= iOPTION_NO_SAVE;
 
-	// Stalkerg hack for save fake menu options.
+	// Camera settings are shared with the in-game ACI and have no main-menu object.
 	iScrOpt[iCAMERA_TURN] = new iScreenOption(iTRIGGER, 0, NULL, "CameraTurn");
 	iScrOpt[iCAMERA_TURN]->objPtr = new iTriggerObject();
 	iScrOpt[iCAMERA_SLOPE] = new iScreenOption(iTRIGGER, 0, NULL, "CameraSlope");
@@ -791,7 +778,6 @@ void iPrepareOptions(void) {
 }
 
 iScreenOption::iScreenOption(int tp, int vtp, const char *scr, const char *obj) {
-	flags = 0;
 	ObjectType = tp;
 	ValueType = vtp;
 	objPtr = iGetObject(scr, obj);
@@ -837,103 +823,6 @@ int iScreenOption::GetValueINT(void) {
 		}
 	}
 	return ret;
-}
-
-void iScreenOption::save(XStream *fh) {
-	int ret = 0;
-	char *ptr;
-
-	if (flags & iOPTION_NO_SAVE)
-		return;
-
-	if (objPtr) {
-		switch (ObjectType) {
-		case iTRIGGER:
-			if (ValueType == iOPTION_VALUE_CUR)
-				ret = ((iTriggerObject *)objPtr)->state;
-			else
-				ret = ((iTriggerObject *)objPtr)->num_state;
-			*fh < ret;
-			break;
-		case iSCROLLER:
-			if (ValueType == iOPTION_VALUE_CUR)
-				ret = ((iScrollerElement *)objPtr)->Value;
-			else
-				ret = ((iScrollerElement *)objPtr)->maxValue;
-			*fh < ret;
-			break;
-		case iSTRING:
-			if (ValueType == iOPTION_VALUE_CUR) {
-				ptr = ((iStringElement *)objPtr)->string;
-				ret = strlen(ptr);
-				*fh < ret;
-				fh->write(ptr, ret);
-			}
-			break;
-		case iS_STRING:
-			if (ValueType == iOPTION_VALUE_CUR) {
-				ptr = ((iS_StringElement *)objPtr)->string;
-				ret = strlen(ptr);
-				*fh < ret;
-				fh->write(ptr, ret);
-			}
-			break;
-		}
-	}
-}
-
-void iScreenOption::load(XStream *fh) {
-	int ret = 0;
-	char *ptr;
-	iScreenObject *obj;
-
-	if (flags & iOPTION_NO_SAVE)
-		return;
-
-	if (objPtr) {
-		switch (ObjectType) {
-		case iTRIGGER:
-			*fh > ret;
-			if (ValueType == iOPTION_VALUE_CUR)
-				((iTriggerObject *)objPtr)->state = ret;
-			else
-				((iTriggerObject *)objPtr)->num_state = ret;
-			((iTriggerObject *)objPtr)->trigger_init();
-			break;
-		case iSCROLLER:
-			*fh > ret;
-			if (ValueType == iOPTION_VALUE_CUR)
-				((iScrollerElement *)objPtr)->Value = ret;
-			else
-				((iScrollerElement *)objPtr)->maxValue = ret;
-			((iScrollerElement *)objPtr)->scroller_init();
-			break;
-		case iSTRING:
-			if (ValueType == iOPTION_VALUE_CUR) {
-				*fh > ret;
-				ptr = ((iStringElement *)objPtr)->string;
-				fh->read(ptr, ret);
-				ptr[ret] = ptr[ret + 1] = 0;
-				((iStringElement *)objPtr)->init_size();
-				((iStringElement *)objPtr)->init_align();
-				obj = (iScreenObject *)((iStringElement *)objPtr)->owner;
-				obj->flags |= OBJ_REINIT;
-			}
-			break;
-		case iS_STRING:
-			if (ValueType == iOPTION_VALUE_CUR) {
-				*fh > ret;
-				ptr = ((iS_StringElement *)objPtr)->string;
-				fh->read(ptr, ret);
-				ptr[ret] = ptr[ret + 1] = 0;
-				((iS_StringElement *)objPtr)->init_size();
-				((iS_StringElement *)objPtr)->init_align();
-				obj = (iScreenObject *)((iS_StringElement *)objPtr)->owner;
-				obj->flags |= OBJ_REINIT;
-			}
-			break;
-		}
-	}
 }
 
 void iScreenOption::SetValueINT(int val) {
