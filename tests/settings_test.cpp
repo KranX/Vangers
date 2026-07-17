@@ -1,10 +1,12 @@
 #include "settings/settings.h"
 
 #include <chrono>
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace {
 
@@ -46,6 +48,68 @@ std::string read_file(const std::filesystem::path &path) {
 void write_file(const std::filesystem::path &path, const std::string &contents) {
 	std::ofstream output(path, std::ios::binary | std::ios::trunc);
 	output << contents;
+}
+
+void append_i32(std::vector<std::uint8_t> &bytes, std::int32_t value) {
+	const std::uint32_t encoded = static_cast<std::uint32_t>(value);
+	bytes.push_back(static_cast<std::uint8_t>(encoded));
+	bytes.push_back(static_cast<std::uint8_t>(encoded >> 8));
+	bytes.push_back(static_cast<std::uint8_t>(encoded >> 16));
+	bytes.push_back(static_cast<std::uint8_t>(encoded >> 24));
+}
+
+void append_string(std::vector<std::uint8_t> &bytes, const std::string &value) {
+	append_i32(bytes, static_cast<std::int32_t>(value.size()));
+	bytes.insert(bytes.end(), value.begin(), value.end());
+}
+
+void write_bytes(const std::filesystem::path &path, const std::vector<std::uint8_t> &bytes) {
+	std::ofstream output(path, std::ios::binary | std::ios::trunc);
+	output.write(reinterpret_cast<const char *>(bytes.data()), bytes.size());
+}
+
+std::vector<std::uint8_t> legacy_options() {
+	std::vector<std::uint8_t> bytes;
+	append_i32(bytes, 46);
+	for (const int value : {0, 12, 26, 0, 13, 26, 0, 1, 3, 3})
+		append_i32(bytes, value);
+	append_string(bytes, "temporary-1");
+	append_string(bytes, "temporary-2");
+	append_string(bytes, "password");
+	append_string(bytes, "Legacy player");
+	append_i32(bytes, 1); // desktop resolution
+	append_string(bytes, "legacy.example.test");
+	append_i32(bytes, 1); // keep terrain
+	append_i32(bytes, 0); // panning enabled
+	append_i32(bytes, 1); // terrain destruction
+	append_i32(bytes, 3); // duplicate color
+	append_string(bytes, "Legacy player");
+	append_i32(bytes, 0); // engine noise enabled
+	append_i32(bytes, 0); // background sound enabled
+	append_i32(bytes, 0); // obsolete joystick type
+	append_i32(bytes, 0); // proxy disabled
+	append_string(bytes, "192.1.1.1");
+	append_string(bytes, "1080");
+	append_string(bytes, "2198");
+	append_string(bytes, "Legacy player");
+	append_string(bytes, "password");
+	append_i32(bytes, 1); // camera rotation
+	append_i32(bytes, 1); // camera slope
+	append_i32(bytes, 1); // camera zoom
+	append_i32(bytes, 1); // fullscreen
+	append_i32(bytes, 1); // repeated auto acceleration
+	return bytes;
+}
+
+std::vector<std::uint8_t> legacy_controls() {
+	std::vector<std::uint8_t> bytes;
+	append_i32(bytes, 38);
+	append_i32(bytes, 2);
+	for (int control = 0; control < 38; ++control) {
+		append_i32(bytes, control == 1 ? 4 : 0); // SDL_SCANCODE_A for turn left
+		append_i32(bytes, 0);
+	}
+	return bytes;
 }
 
 SettingsPaths paths_for(const std::filesystem::path &directory) {
@@ -213,12 +277,124 @@ bool test_old_version_is_upgraded() {
 		   );
 }
 
+bool test_legacy_migration_is_one_time_and_read_only() {
+	TemporaryDirectory directory;
+	const SettingsPaths paths = paths_for(directory.path());
+	write_bytes(paths.legacy_options_file, legacy_options());
+	write_bytes(paths.legacy_controls_file, legacy_controls());
+	const std::string options_before = read_file(paths.legacy_options_file);
+	const std::string controls_before = read_file(paths.legacy_controls_file);
+
+	SettingsManager first(paths);
+	const SettingsLoadResult result = first.load();
+	if (!check(result.source == SettingsLoadSource::Legacy, "legacy source was not reported") ||
+		!check(result.settings_file_written, "migrated TOML was not written") ||
+		!check(first.get().video.fullscreen, "legacy fullscreen was not imported") ||
+		!check(
+			first.get().video.resolution == ResolutionMode::Desktop,
+			"legacy resolution was not imported"
+		) ||
+		!check(
+			first.get().network.player_name == "Legacy player", "legacy name was not imported"
+		) ||
+		!check(first.get().network.port == 2198, "legacy port was not imported") ||
+		!check(
+			first.get().input.keyboard.bindings.at("turn_left") == BindingList{"a"},
+			"legacy control was not imported"
+		) ||
+		!check(
+			read_file(paths.legacy_options_file) == options_before, "options.dat was modified"
+		) ||
+		!check(
+			read_file(paths.legacy_controls_file) == controls_before, "controls.dat was modified"
+		))
+		return false;
+
+	// Once TOML exists, even unusable legacy files must never be consulted again.
+	write_file(paths.legacy_options_file, "not legacy settings");
+	write_file(paths.legacy_controls_file, "not legacy controls");
+	SettingsManager second(paths);
+	return check(second.load().source == SettingsLoadSource::Toml, "TOML did not win over .dat") &&
+		   check(second.get().video.fullscreen, "migrated TOML value was not retained") &&
+		   check(
+			   second.get().input.keyboard.bindings.at("turn_left") == BindingList{"a"},
+			   "migrated TOML control was not retained"
+		   );
+}
+
+bool test_failed_migration_write_retries_without_touching_legacy() {
+	TemporaryDirectory directory;
+	SettingsPaths paths = paths_for(directory.path());
+	paths.settings_file = directory.path() / "missing-directory" / "settings.toml";
+	write_bytes(paths.legacy_options_file, legacy_options());
+	const std::string options_before = read_file(paths.legacy_options_file);
+
+	SettingsManager first(paths);
+	const SettingsLoadResult first_result = first.load();
+	if (!check(first_result.source == SettingsLoadSource::Legacy, "legacy import did not run") ||
+		!check(!first_result.settings_file_written, "migration unexpectedly wrote TOML") ||
+		!check(first.get().video.fullscreen, "failed write discarded imported settings") ||
+		!check(
+			read_file(paths.legacy_options_file) == options_before, "failed write changed .dat"
+		) ||
+		!check(!std::filesystem::exists(paths.settings_file), "partial settings.toml remained") ||
+		!check(
+			!std::filesystem::exists(paths.settings_file.string() + ".tmp"),
+			"partial temporary file remained"
+		))
+		return false;
+
+	SettingsManager second(paths);
+	const SettingsLoadResult second_result = second.load();
+	return check(
+			   second_result.source == SettingsLoadSource::Legacy,
+			   "failed migration was not retried"
+		   ) &&
+		   check(second.get().video.fullscreen, "retry did not import legacy settings");
+}
+
+bool test_partial_legacy_sources_use_defaults_for_missing_half() {
+	TemporaryDirectory directory;
+	SettingsPaths paths = paths_for(directory.path());
+	write_bytes(paths.legacy_options_file, legacy_options());
+	SettingsManager options_only(paths);
+	if (!check(
+			options_only.load().source == SettingsLoadSource::Legacy,
+			"options-only migration was not used"
+		) ||
+		!check(
+			options_only.get().input.keyboard.bindings.at("turn_left") == BindingList{"left"},
+			"missing controls did not retain defaults"
+		))
+		return false;
+
+	TemporaryDirectory controls_directory;
+	paths = paths_for(controls_directory.path());
+	write_bytes(paths.legacy_controls_file, legacy_controls());
+	SettingsManager controls_only(paths);
+	return check(
+			   controls_only.load().source == SettingsLoadSource::Legacy,
+			   "controls-only migration was not used"
+		   ) &&
+		   check(
+			   controls_only.get().network.server == "v5.vangers.net",
+			   "missing options did not retain defaults"
+		   ) &&
+		   check(
+			   controls_only.get().input.keyboard.bindings.at("turn_left") == BindingList{"a"},
+			   "controls-only binding was not imported"
+		   );
+}
+
 } // namespace
 
 int main() {
 	return test_defaults_and_round_trip() && test_comments_unknown_keys_and_normalization() &&
 				   test_future_version_is_read_only() && test_malformed_file_recovery() &&
-				   test_old_version_is_upgraded()
+				   test_old_version_is_upgraded() &&
+				   test_legacy_migration_is_one_time_and_read_only() &&
+				   test_failed_migration_write_retries_without_touching_legacy() &&
+				   test_partial_legacy_sources_use_defaults_for_missing_half()
 			   ? 0
 			   : 1;
 }

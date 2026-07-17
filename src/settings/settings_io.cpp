@@ -1,5 +1,7 @@
 #include "settings.h"
 
+#include "legacy_settings_import.h"
+
 #include <algorithm>
 #include <cerrno>
 #include <chrono>
@@ -418,11 +420,17 @@ SettingsLoadResult SettingsManager::load() {
 	impl_->settings = default_settings();
 
 	if (!std::filesystem::exists(impl_->paths.settings_file)) {
+		const LegacyImportResult legacy = import_legacy_settings(impl_->paths, impl_->settings);
 		impl_->document = new_document(impl_->settings);
-		impl_->last_result.source = SettingsLoadSource::Defaults;
+		impl_->last_result.source =
+			legacy.any_imported() ? SettingsLoadSource::Legacy : SettingsLoadSource::Defaults;
+		impl_->last_result.diagnostic = legacy.diagnostic;
 		impl_->last_result.settings_file_written = save();
-		if (!impl_->last_result.settings_file_written)
-			impl_->last_result.diagnostic = "cannot create settings.toml";
+		if (!impl_->last_result.settings_file_written) {
+			if (!impl_->last_result.diagnostic.empty())
+				impl_->last_result.diagnostic += "; ";
+			impl_->last_result.diagnostic += "cannot create settings.toml";
+		}
 		return impl_->last_result;
 	}
 

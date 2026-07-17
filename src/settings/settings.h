@@ -104,6 +104,7 @@ struct SettingsPaths {
 
 enum class SettingsLoadSource {
 	Toml,
+	Legacy,
 	Defaults,
 	RecoveredDefaults,
 };
