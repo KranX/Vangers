@@ -220,6 +220,22 @@ int XSocket::send(const char *buffer, int size) {
 	return size;
 }
 
+int XSocket::send_if_ready(const char *buffer, int size) {
+	if (!streamSocket || !buffer || size <= 0)
+		return 0;
+
+	const int pending = NET_GetStreamSocketPendingWrites(streamSocket);
+	if (pending < 0) {
+		XSOCKET_ERROR("TCP pending-write query failed", SDL_GetError());
+		close();
+		return 0;
+	}
+	if (pending > 0)
+		return 0;
+
+	return send(buffer, size);
+}
+
 int XSocket::flush(int ms_time) {
 	if (!streamSocket)
 		return 0;

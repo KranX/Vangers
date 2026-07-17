@@ -35,6 +35,7 @@ class XSocket {
 	XSocket accept();
 
 	int send(const char *buffer, int size);
+	int send_if_ready(const char *buffer, int size);
 	int flush(int ms_time);
 	int receive(char *buffer, int size_of_buffer, int ms_time = 0);
 

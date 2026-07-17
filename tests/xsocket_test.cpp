@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iostream>
 #include <utility>
+#include <vector>
 
 #include <SDL3/SDL.h>
 
@@ -45,6 +46,97 @@ int receive_exact(XSocket &socket, char *buffer, int size) {
 			break;
 	}
 	return received;
+}
+
+bool run_send_backpressure_test() {
+	XSocket listener;
+	const int port = listen_on_available_port(listener);
+	if (!check(port != 0, "could not allocate a backpressure test port"))
+		return false;
+
+	XSocket client;
+	if (!check(client.open("127.0.0.1", port), "backpressure client connection failed"))
+		return false;
+	XSocket accepted = wait_for_client(listener);
+	if (!check(accepted.is_open(), "backpressure peer was not accepted"))
+		return false;
+
+	constexpr int chunkSize = 1024 * 1024;
+	constexpr int maxChunks = 64;
+	std::vector<char> payload(chunkSize, 'Q');
+	int acceptedChunks = 0;
+	for (; acceptedChunks < maxChunks; ++acceptedChunks) {
+		const int sent = client.send_if_ready(payload.data(), payload.size());
+		if (sent == 0)
+			break;
+		if (!check(sent == chunkSize, "ready send returned a partial chunk"))
+			return false;
+	}
+	if (!check(acceptedChunks < maxChunks, "send path did not apply backpressure"))
+		return false;
+	if (!check(client.is_open(), "backpressure closed a healthy socket"))
+		return false;
+
+	const char blockedMarker = 'X';
+	for (int i = 0; i < 4; ++i) {
+		if (!check(
+				client.send_if_ready(&blockedMarker, 1) == 0,
+				"pending output accepted another write"
+			))
+			return false;
+	}
+
+	std::vector<char> receiveBuffer(64 * 1024);
+	const std::size_t expectedBytes = static_cast<std::size_t>(acceptedChunks) * chunkSize;
+	std::size_t receivedBytes = 0;
+	const Uint64 deadline = SDL_GetTicks() + 10000;
+	while (receivedBytes < expectedBytes && SDL_GetTicks() < deadline) {
+		client.flush(0);
+		const int amount = accepted.receive(
+			receiveBuffer.data(),
+			static_cast<int>(std::min(receiveBuffer.size(), expectedBytes - receivedBytes)),
+			20
+		);
+		if (amount <= 0) {
+			if (!accepted || !client)
+				break;
+			continue;
+		}
+		if (!check(
+				std::all_of(
+					receiveBuffer.begin(),
+					receiveBuffer.begin() + amount,
+					[](char value) { return value == 'Q'; }
+				),
+				"blocked writes leaked into the stream"
+			))
+			return false;
+		receivedBytes += amount;
+	}
+	if (!check(receivedBytes == expectedBytes, "queued payload did not drain"))
+		return false;
+	if (!check(client.flush(2000), "backpressure payload remained pending after peer drain"))
+		return false;
+
+	const char recoveryMarker = 'R';
+	if (!check(
+			client.send_if_ready(&recoveryMarker, 1) == 1,
+			"send path did not recover after pending output drained"
+		))
+		return false;
+	if (!check(client.flush(2000), "recovery marker did not drain"))
+		return false;
+	char receivedMarker = 0;
+	if (!check(
+			receive_exact(accepted, &receivedMarker, 1) == 1 && receivedMarker == recoveryMarker,
+			"recovery marker was missing or reordered"
+		))
+		return false;
+
+	client.close();
+	accepted.close();
+	listener.close();
+	return true;
 }
 
 bool run_loopback_test() {
@@ -210,7 +302,7 @@ int main() {
 		success = check(!invalid.listen(0), "invalid listen port was accepted") &&
 				  check(!invalid.open("127.0.0.1", 0), "invalid client port was accepted") &&
 				  check(!invalid.flush(0), "closed socket reported a successful flush") &&
-				  run_loopback_test();
+				  run_loopback_test() && run_send_backpressure_test();
 	}
 	XSocketFinit();
 

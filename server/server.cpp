@@ -1690,7 +1690,7 @@ int OutputEventBuffer::send(XSocket &sock) {
 		SERVER_ERROR_NO_EXIT("There wasn't the end of the event", 0);
 		return 0;
 	}
-	unsigned int sent = sock.send(buf, tell());
+	unsigned int sent = sock.send_if_ready(buf, tell());
 	if (sent == tell())
 		init();
 	else {

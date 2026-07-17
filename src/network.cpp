@@ -1270,13 +1270,13 @@ int OutputEventBuffer::send(int system_send, XSocket &sock) {
 	int sent_size = 0;
 	// if(sock() && (system_send | enable_send))
 	if (sock.is_open()) {
-		sent_size = sock.send(address(), tell());
+		sent_size = sock.send_if_ready(address(), tell());
 		// if(!system_send)
 		//	enable_send = 0;
 	}
 	int unsent_size = tell() - sent_size;
 	n_sended_bytes += sent_size;
-	if (sent_size == 0 && tell() > 0)
+	if (sent_size == 0 && tell() > 0 && !sock.is_open())
 		network_log_printf(
 			"SOCKET_ERROR",
 			"send_failed requested_size=%d sent_size=%d socket_alive=%d",
