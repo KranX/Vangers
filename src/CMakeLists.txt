@@ -4,6 +4,19 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xsound"
 )
 
+ADD_LIBRARY(vangers_settings STATIC
+	settings/settings.cpp
+	settings/settings_io.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(vangers_settings PUBLIC
+	"${PROJECT_SOURCE_DIR}/src"
+)
+
+TARGET_LINK_LIBRARIES(vangers_settings PRIVATE
+	toml11::toml11
+)
+
 SET(vangers_SRCS
 	3d/3d_math.cpp
 	3d/3dgraph.cpp
@@ -91,6 +104,7 @@ else()
 endif(ANDROID)
 
 TARGET_LINK_LIBRARIES(vangers PRIVATE
+	vangers_settings
 	SDL3::SDL3
 	SDL3_net::SDL3_net
 	Clunk::Clunk

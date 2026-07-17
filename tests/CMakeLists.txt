@@ -50,3 +50,13 @@ TARGET_INCLUDE_DIRECTORIES(sdl_event_buffer_test PRIVATE
 TARGET_LINK_LIBRARIES(sdl_event_buffer_test PRIVATE SDL3::SDL3)
 
 ADD_TEST(NAME sdl_event_buffer COMMAND sdl_event_buffer_test)
+
+ADD_EXECUTABLE(settings_test
+	settings_test.cpp
+)
+
+TARGET_LINK_LIBRARIES(settings_test PRIVATE
+	vangers_settings
+)
+
+ADD_TEST(NAME settings COMMAND settings_test)
