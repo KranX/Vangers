@@ -22,6 +22,8 @@ env:
   BUILD_TYPE: RelWithDebInfo
   CLUNK_COMMIT: 3fa1e999ecc0ddb2f8eb550ca8203c7229127196
   MACOSX_DEPLOYMENT_TARGET: "13"
+  TOML11_VERSION: 4.4.0
+  TOML11_SHA256: 815bfe6792aa11a13a133b86e7f0f45edc5d71eb78f5fb6686c49c7f792b9049
 
 jobs:
   build:
@@ -97,6 +99,22 @@ jobs:
 
       - name: Install Clunk
         run: sudo cmake --install external/clunk/build
+
+      - name: Install toml11
+        run: |
+          mkdir -p external
+          curl --fail --location --retry 3 \
+            --output external/toml11.tar.gz \
+            "https://github.com/ToruNiina/toml11/archive/refs/tags/v${TOML11_VERSION}.tar.gz"
+          echo "${TOML11_SHA256}  external/toml11.tar.gz" | shasum --algorithm 256 --check
+          tar --extract --gzip --file external/toml11.tar.gz --directory external
+          cmake -Wno-deprecated \
+            -S "external/toml11-${TOML11_VERSION}" -B external/toml11-build \
+            -G Ninja \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DBUILD_TESTING=OFF \
+            -DTOML11_PRECOMPILE=OFF
+          sudo cmake --install external/toml11-build
 
       - name: Configure Vangers
         run: |

@@ -26,9 +26,19 @@ http://www.gog.com/game/vangers
 * libvorbis
 * SDL3-native clunk from the `sdl3` branch (https://github.com/stalkerg/clunk/tree/sdl3)
 * ffmpeg 6.0 or newer
+* toml11 4.4.x
 * zlib
 
 You can see the [wiki pages](https://github.com/KranX/Vangers/wiki) to learn how to build this project.
+
+## User settings
+
+Vangers stores user preferences and input bindings in the UTF-8
+`settings.toml` file. On the first launch after updating, existing
+`options.dat` and `controls.dat` files are imported automatically. The legacy
+files are kept byte-for-byte unchanged so an older game build can still use
+them, but subsequent changes made by the new build are saved only to
+`settings.toml`. Save-game files are not affected by this migration.
 
 ## Server
 

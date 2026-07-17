@@ -12,6 +12,8 @@ finish-args:
   - --device=dri
   - --share=network
   - --filesystem=home
+# toml11 is header-only and is compiled into the CI-built binaries. The
+# Flatpak runtime therefore does not need a separate toml11 module.
 modules:
   - name: vangers-binaries
     buildsystem: simple
