@@ -55,8 +55,11 @@ ADD_EXECUTABLE(settings_test
 	settings_test.cpp
 )
 
+FIND_PACKAGE(Threads REQUIRED)
+
 TARGET_LINK_LIBRARIES(settings_test PRIVATE
 	vangers_settings
+	Threads::Threads
 )
 
 ADD_TEST(NAME settings COMMAND settings_test)

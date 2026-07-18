@@ -2,21 +2,21 @@
 
 #include "legacy_settings_import.h"
 
-#include <algorithm>
+#include <atomic>
 #include <cerrno>
-#include <chrono>
-#include <cstdio>
+#include <cstdint>
 #include <ctime>
 #include <fstream>
-#include <iostream>
 #include <limits>
 #include <optional>
-#include <sstream>
+#include <string_view>
 #include <system_error>
 #include <utility>
 
 #ifdef _WIN32
 #	include <windows.h>
+#else
+#	include <unistd.h>
 #endif
 
 #include <toml.hpp>
@@ -329,38 +329,92 @@ TomlValue new_document(const GameSettings &settings) {
 	return document;
 }
 
-bool replace_file(const std::filesystem::path &temporary, const std::filesystem::path &target) {
+struct FileWriteResult {
+	bool success = false;
+	std::string diagnostic;
+};
+
+std::atomic<std::uint64_t> temporary_file_sequence{0};
+std::atomic<std::uint64_t> backup_file_sequence{0};
+
+std::uint64_t process_id() {
 #ifdef _WIN32
-	return MoveFileExW(
-			   temporary.c_str(), target.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH
-		   ) != 0;
+	return static_cast<std::uint64_t>(GetCurrentProcessId());
 #else
-	return std::rename(temporary.c_str(), target.c_str()) == 0;
+	return static_cast<std::uint64_t>(getpid());
 #endif
 }
 
-bool atomic_write(const std::filesystem::path &path, const std::string &contents) {
-	std::filesystem::path temporary = path;
-	temporary += ".tmp";
-	std::error_code error;
-	std::filesystem::remove(temporary, error);
+std::string filesystem_failure(
+	std::string_view operation,
+	const std::filesystem::path &path,
+	const std::error_code &error
+) {
+	return std::string(operation) + " '" + path.string() + "': " + error.message();
+}
 
+std::error_code current_io_error() {
+	if (errno != 0)
+		return {errno, std::generic_category()};
+	return std::make_error_code(std::errc::io_error);
+}
+
+std::filesystem::path unique_temporary_path(const std::filesystem::path &path) {
+	std::filesystem::path temporary = path;
+	// A shared settings.toml.tmp lets concurrent game instances truncate or
+	// rename each other's writes. PID plus an atomic sequence isolates both
+	// cross-process and same-process writers while keeping the file beside the target.
+	temporary += ".tmp-" + std::to_string(process_id()) + "-" +
+				 std::to_string(temporary_file_sequence.fetch_add(1, std::memory_order_relaxed));
+	return temporary;
+}
+
+bool replace_file(
+	const std::filesystem::path &temporary,
+	const std::filesystem::path &target,
+	std::error_code &error
+) {
+#ifdef _WIN32
+	if (MoveFileExW(
+			temporary.c_str(), target.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH
+		))
+		return true;
+	error = {static_cast<int>(GetLastError()), std::system_category()};
+	return false;
+#else
+	std::filesystem::rename(temporary, target, error);
+	return !error;
+#endif
+}
+
+FileWriteResult atomic_write(const std::filesystem::path &path, const std::string &contents) {
+	const std::filesystem::path temporary = unique_temporary_path(path);
+	std::error_code ignored_error;
+
+	errno = 0;
 	std::ofstream output(temporary, std::ios::binary | std::ios::trunc);
-	if (!output)
-		return false;
+	if (!output) {
+		return {false,
+			filesystem_failure(
+				"cannot create temporary settings file", temporary, current_io_error()
+			)};
+	}
 	output.write(contents.data(), static_cast<std::streamsize>(contents.size()));
 	output.flush();
 	const bool write_ok = output.good();
 	output.close();
 	if (!write_ok || output.fail()) {
-		std::filesystem::remove(temporary, error);
-		return false;
+		const std::error_code error = current_io_error();
+		std::filesystem::remove(temporary, ignored_error);
+		return {
+			false, filesystem_failure("cannot write temporary settings file", temporary, error)};
 	}
-	if (!replace_file(temporary, path)) {
-		std::filesystem::remove(temporary, error);
-		return false;
+	std::error_code replace_error;
+	if (!replace_file(temporary, path, replace_error)) {
+		std::filesystem::remove(temporary, ignored_error);
+		return {false, filesystem_failure("cannot replace settings file", path, replace_error)};
 	}
-	return true;
+	return {true, {}};
 }
 
 std::string timestamp() {
@@ -376,14 +430,42 @@ std::string timestamp() {
 	return buffer;
 }
 
-std::filesystem::path available_backup_path(const std::filesystem::path &settings_path) {
-	std::filesystem::path candidate = settings_path;
-	candidate += ".broken-" + timestamp();
-	for (int suffix = 1; std::filesystem::exists(candidate); ++suffix) {
-		candidate = settings_path;
-		candidate += ".broken-" + timestamp() + "-" + std::to_string(suffix);
+std::optional<std::filesystem::path>
+available_backup_path(const std::filesystem::path &settings_path, std::string *diagnostic) {
+	const std::string base =
+		".broken-" + timestamp() + "-" + std::to_string(process_id()) + "-" +
+		std::to_string(backup_file_sequence.fetch_add(1, std::memory_order_relaxed));
+	for (int suffix = 0;; ++suffix) {
+		std::filesystem::path candidate = settings_path;
+		candidate += base + (suffix == 0 ? std::string{} : "-" + std::to_string(suffix));
+		std::error_code error;
+		const bool exists = std::filesystem::exists(candidate, error);
+		if (error) {
+			if (diagnostic)
+				*diagnostic = filesystem_failure("cannot inspect backup path", candidate, error);
+			return std::nullopt;
+		}
+		if (!exists)
+			return candidate;
 	}
-	return candidate;
+}
+
+bool inspect_path(const std::filesystem::path &path, bool &exists, std::string *diagnostic) {
+	std::error_code error;
+	exists = std::filesystem::exists(path, error);
+	if (!error)
+		return true;
+	if (diagnostic)
+		*diagnostic = filesystem_failure("cannot inspect settings path", path, error);
+	return false;
+}
+
+void append_diagnostic(std::string &target, const std::string &source) {
+	if (source.empty())
+		return;
+	if (!target.empty())
+		target += "; ";
+	target += source;
 }
 
 std::string format_errors(const std::vector<toml::error_info> &errors) {
@@ -418,78 +500,135 @@ SettingsLoadResult SettingsManager::load() {
 		return impl_->last_result;
 	impl_->loaded = true;
 	impl_->settings = default_settings();
+	impl_->last_result = {};
+	impl_->read_only = false;
 
-	if (!std::filesystem::exists(impl_->paths.settings_file)) {
-		const LegacyImportResult legacy = import_legacy_settings(impl_->paths, impl_->settings);
-		impl_->document = new_document(impl_->settings);
-		impl_->last_result.source =
-			legacy.any_imported() ? SettingsLoadSource::Legacy : SettingsLoadSource::Defaults;
-		impl_->last_result.diagnostic = legacy.diagnostic;
-		impl_->last_result.settings_file_written = save();
-		if (!impl_->last_result.settings_file_written) {
-			if (!impl_->last_result.diagnostic.empty())
-				impl_->last_result.diagnostic += "; ";
-			impl_->last_result.diagnostic += "cannot create settings.toml";
-		}
-		return impl_->last_result;
-	}
-
-	auto parsed = toml::try_parse<toml::ordered_type_config>(impl_->paths.settings_file);
-	if (parsed.is_err()) {
-		impl_->last_result.source = SettingsLoadSource::RecoveredDefaults;
-		impl_->last_result.diagnostic = format_errors(parsed.unwrap_err());
-		std::cerr << "Cannot parse " << impl_->paths.settings_file << ":\n"
-				  << impl_->last_result.diagnostic;
-
-		const std::filesystem::path backup = available_backup_path(impl_->paths.settings_file);
-		std::error_code error;
-		if (!std::filesystem::copy_file(
-				impl_->paths.settings_file, backup, std::filesystem::copy_options::none, error
-			)) {
+	try {
+		bool settings_exist = false;
+		std::string diagnostic;
+		if (!inspect_path(impl_->paths.settings_file, settings_exist, &diagnostic)) {
 			impl_->read_only = true;
 			impl_->last_result.read_only = true;
-			impl_->last_result.diagnostic +=
-				"cannot preserve broken settings file: " + error.message();
+			impl_->last_result.diagnostic = std::move(diagnostic);
 			return impl_->last_result;
 		}
 
-		impl_->document = new_document(impl_->settings);
-		impl_->last_result.settings_file_written = save();
-		if (!impl_->last_result.settings_file_written) {
+		if (!settings_exist) {
+			const LegacyImportResult legacy = import_legacy_settings(impl_->paths, impl_->settings);
+			impl_->document = new_document(impl_->settings);
+			impl_->last_result.source =
+				legacy.any_imported() ? SettingsLoadSource::Legacy : SettingsLoadSource::Defaults;
+			impl_->last_result.diagnostic = legacy.diagnostic;
+			if (legacy.filesystem_error) {
+				impl_->read_only = true;
+				impl_->last_result.read_only = true;
+				append_diagnostic(
+					impl_->last_result.diagnostic,
+					"migration will be retried because a legacy settings file was inaccessible"
+				);
+				return impl_->last_result;
+			}
+
+			std::string save_diagnostic;
+			impl_->last_result.settings_file_written = save(&save_diagnostic);
+			append_diagnostic(impl_->last_result.diagnostic, save_diagnostic);
+			return impl_->last_result;
+		}
+
+		auto parsed = toml::try_parse<toml::ordered_type_config>(impl_->paths.settings_file);
+		if (parsed.is_err()) {
+			impl_->last_result.source = SettingsLoadSource::RecoveredDefaults;
+			impl_->last_result.diagnostic = format_errors(parsed.unwrap_err());
+
+			std::string backup_diagnostic;
+			const auto backup =
+				available_backup_path(impl_->paths.settings_file, &backup_diagnostic);
+			if (!backup) {
+				impl_->read_only = true;
+				impl_->last_result.read_only = true;
+				append_diagnostic(impl_->last_result.diagnostic, backup_diagnostic);
+				return impl_->last_result;
+			}
+
+			std::error_code error;
+			if (!std::filesystem::copy_file(
+					impl_->paths.settings_file, *backup, std::filesystem::copy_options::none, error
+				)) {
+				impl_->read_only = true;
+				impl_->last_result.read_only = true;
+				if (!error)
+					error = std::make_error_code(std::errc::io_error);
+				append_diagnostic(
+					impl_->last_result.diagnostic,
+					filesystem_failure("cannot preserve broken settings file", *backup, error)
+				);
+				return impl_->last_result;
+			}
+
+			impl_->document = new_document(impl_->settings);
+			std::string save_diagnostic;
+			impl_->last_result.settings_file_written = save(&save_diagnostic);
+			if (!impl_->last_result.settings_file_written) {
+				impl_->read_only = true;
+				impl_->last_result.read_only = true;
+			}
+			append_diagnostic(impl_->last_result.diagnostic, save_diagnostic);
+			return impl_->last_result;
+		}
+
+		impl_->document = std::move(parsed.unwrap());
+		impl_->settings = decode_settings(*impl_->document);
+		impl_->last_result.source = SettingsLoadSource::Toml;
+		const int version = read_int(*impl_->document, {"format_version"}).value_or(0);
+		if (version > SETTINGS_FORMAT_VERSION) {
 			impl_->read_only = true;
 			impl_->last_result.read_only = true;
-			impl_->last_result.diagnostic += "cannot replace broken settings file";
+			impl_->last_result.diagnostic = "settings.toml was created by a newer game version";
+		} else if (version < SETTINGS_FORMAT_VERSION) {
+			std::string save_diagnostic;
+			impl_->last_result.settings_file_written = save(&save_diagnostic);
+			append_diagnostic(impl_->last_result.diagnostic, save_diagnostic);
 		}
-		return impl_->last_result;
-	}
-
-	impl_->document = std::move(parsed.unwrap());
-	impl_->settings = decode_settings(*impl_->document);
-	impl_->last_result.source = SettingsLoadSource::Toml;
-	const int version = read_int(*impl_->document, {"format_version"}).value_or(0);
-	if (version > SETTINGS_FORMAT_VERSION) {
+	} catch (const std::filesystem::filesystem_error &error) {
 		impl_->read_only = true;
 		impl_->last_result.read_only = true;
-		impl_->last_result.diagnostic = "settings.toml was created by a newer game version";
-	} else if (version < SETTINGS_FORMAT_VERSION) {
-		impl_->last_result.settings_file_written = save();
+		append_diagnostic(
+			impl_->last_result.diagnostic, "settings filesystem error: " + std::string(error.what())
+		);
+	} catch (const std::exception &error) {
+		impl_->read_only = true;
+		impl_->last_result.read_only = true;
+		append_diagnostic(
+			impl_->last_result.diagnostic, "cannot load settings: " + std::string(error.what())
+		);
 	}
 	return impl_->last_result;
 }
 
-bool SettingsManager::save() {
-	if (impl_->read_only)
+bool SettingsManager::save(std::string *diagnostic) {
+	if (diagnostic)
+		diagnostic->clear();
+	if (impl_->read_only) {
+		if (diagnostic)
+			*diagnostic = "settings are read-only for this run";
 		return false;
+	}
 	normalize_settings(impl_->settings);
 	if (!impl_->document)
 		impl_->document = new_document(impl_->settings);
 	else
 		encode_settings(*impl_->document, impl_->settings);
 	try {
-		return atomic_write(impl_->paths.settings_file, toml::format(*impl_->document));
+		const FileWriteResult result =
+			atomic_write(impl_->paths.settings_file, toml::format(*impl_->document));
+		if (diagnostic)
+			*diagnostic = result.diagnostic;
+		return result.success;
 	} catch (const std::exception &error) {
-		std::cerr << "Cannot serialize " << impl_->paths.settings_file << ": " << error.what()
-				  << '\n';
+		if (diagnostic) {
+			*diagnostic = "cannot serialize settings file '" + impl_->paths.settings_file.string() +
+						  "': " + error.what();
+		}
 		return false;
 	}
 }

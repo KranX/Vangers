@@ -117,13 +117,18 @@ class BinaryReader {
 	std::size_t offset_ = 0;
 };
 
-std::optional<std::vector<std::uint8_t>>
-read_legacy_file(const std::filesystem::path &path, std::string *diagnostic) {
+std::optional<std::vector<std::uint8_t>> read_legacy_file(
+	const std::filesystem::path &path,
+	std::string *diagnostic,
+	bool *filesystem_error
+) {
 	std::error_code error;
 	const std::uintmax_t file_size = std::filesystem::file_size(path, error);
 	if (error || file_size > MAX_LEGACY_FILE_SIZE) {
 		if (diagnostic)
 			*diagnostic = error ? error.message() : "legacy settings file is too large";
+		if (filesystem_error)
+			*filesystem_error = static_cast<bool>(error);
 		return std::nullopt;
 	}
 
@@ -131,6 +136,8 @@ read_legacy_file(const std::filesystem::path &path, std::string *diagnostic) {
 	if (!input) {
 		if (diagnostic)
 			*diagnostic = "cannot open legacy settings file";
+		if (filesystem_error)
+			*filesystem_error = true;
 		return std::nullopt;
 	}
 	std::vector<std::uint8_t> bytes(static_cast<std::size_t>(file_size));
@@ -141,6 +148,8 @@ read_legacy_file(const std::filesystem::path &path, std::string *diagnostic) {
 	if (!input || input.gcount() != static_cast<std::streamsize>(bytes.size())) {
 		if (diagnostic)
 			*diagnostic = "cannot read complete legacy settings file";
+		if (filesystem_error)
+			*filesystem_error = true;
 		return std::nullopt;
 	}
 	return bytes;
@@ -283,9 +292,12 @@ void append_diagnostic(std::string &target, const std::string &source) {
 bool import_legacy_options(
 	const std::filesystem::path &path,
 	GameSettings &settings,
-	std::string *diagnostic
+	std::string *diagnostic,
+	bool *filesystem_error
 ) {
-	const auto bytes = read_legacy_file(path, diagnostic);
+	if (filesystem_error)
+		*filesystem_error = false;
+	const auto bytes = read_legacy_file(path, diagnostic, filesystem_error);
 	if (!bytes)
 		return false;
 	BinaryReader reader(*bytes);
@@ -356,9 +368,12 @@ bool import_legacy_options(
 bool import_legacy_controls(
 	const std::filesystem::path &path,
 	GameSettings &settings,
-	std::string *diagnostic
+	std::string *diagnostic,
+	bool *filesystem_error
 ) {
-	const auto bytes = read_legacy_file(path, diagnostic);
+	if (filesystem_error)
+		*filesystem_error = false;
+	const auto bytes = read_legacy_file(path, diagnostic, filesystem_error);
 	if (!bytes)
 		return false;
 	BinaryReader reader(*bytes);
@@ -406,10 +421,10 @@ bool import_legacy_controls(
 			else if (binding.kind == LegacyBindingKind::Unsupported)
 				has_unsupported_binding = true;
 		}
-		// Unknown codes and raw joystick/hat bindings cannot be represented
-		// faithfully. Preserve the new default for that action instead of
-		// silently turning a usable control into an unbound one.
-		if (has_unsupported_binding)
+		// Preserve the default only when none of the legacy slots can be
+		// represented. A valid sibling binding must not be discarded merely
+		// because the other slot contains a raw joystick or unknown code.
+		if (has_unsupported_binding && keyboard.empty() && gamepad.empty())
 			continue;
 		imported.input.keyboard.bindings[action] = std::move(keyboard);
 		if (!gamepad.empty())
@@ -425,17 +440,41 @@ bool import_legacy_controls(
 
 LegacyImportResult import_legacy_settings(const SettingsPaths &paths, GameSettings &settings) {
 	LegacyImportResult result;
-	if (std::filesystem::exists(paths.legacy_options_file)) {
+	std::error_code error;
+	const bool options_exist = std::filesystem::exists(paths.legacy_options_file, error);
+	if (error) {
+		result.filesystem_error = true;
+		append_diagnostic(
+			result.diagnostic,
+			"cannot inspect options.dat '" + paths.legacy_options_file.string() +
+				"': " + error.message()
+		);
+	} else if (options_exist) {
 		std::string diagnostic;
-		result.options_imported =
-			import_legacy_options(paths.legacy_options_file, settings, &diagnostic);
+		bool filesystem_error = false;
+		result.options_imported = import_legacy_options(
+			paths.legacy_options_file, settings, &diagnostic, &filesystem_error
+		);
+		result.filesystem_error = result.filesystem_error || filesystem_error;
 		if (!result.options_imported)
 			append_diagnostic(result.diagnostic, "options.dat: " + diagnostic);
 	}
-	if (std::filesystem::exists(paths.legacy_controls_file)) {
+	error.clear();
+	const bool controls_exist = std::filesystem::exists(paths.legacy_controls_file, error);
+	if (error) {
+		result.filesystem_error = true;
+		append_diagnostic(
+			result.diagnostic,
+			"cannot inspect controls.dat '" + paths.legacy_controls_file.string() +
+				"': " + error.message()
+		);
+	} else if (controls_exist) {
 		std::string diagnostic;
-		result.controls_imported =
-			import_legacy_controls(paths.legacy_controls_file, settings, &diagnostic);
+		bool filesystem_error = false;
+		result.controls_imported = import_legacy_controls(
+			paths.legacy_controls_file, settings, &diagnostic, &filesystem_error
+		);
+		result.filesystem_error = result.filesystem_error || filesystem_error;
 		if (!result.controls_imported)
 			append_diagnostic(result.diagnostic, "controls.dat: " + diagnostic);
 	}

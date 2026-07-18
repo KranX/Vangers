@@ -293,6 +293,36 @@ void test_stable_binding_names_round_trip() {
 	}
 }
 
+void test_legacy_runtime_binding_projection_is_lossless() {
+	BindingList keyboard{"a"};
+	BindingList gamepad{"south", "east", "right_trigger"};
+	LegacyControlCodes codes = encode_legacy_control_bindings(keyboard, gamepad);
+	CHECK(codes[0] == SDL_SCANCODE_A);
+	CHECK(codes[1] == (SDL_GAMEPAD_BUTTON_SOUTH | (1 << 27)));
+
+	merge_legacy_control_bindings(codes, keyboard, gamepad);
+	CHECK((keyboard == BindingList{"a"}));
+	CHECK((gamepad == BindingList{"south", "east", "right_trigger"}));
+
+	codes[0] = SDL_SCANCODE_B;
+	merge_legacy_control_bindings(codes, keyboard, gamepad);
+	CHECK((keyboard == BindingList{"b"}));
+	CHECK((gamepad == BindingList{"south", "east", "right_trigger"}));
+
+	codes[1] = 0;
+	merge_legacy_control_bindings(codes, keyboard, gamepad);
+	CHECK((keyboard == BindingList{"b"}));
+	CHECK((gamepad == BindingList{"east", "right_trigger"}));
+
+	keyboard = {"a", "f1", "f2"};
+	gamepad = {"west"};
+	codes = encode_legacy_control_bindings(keyboard, gamepad);
+	codes[0] = SDL_SCANCODE_C;
+	merge_legacy_control_bindings(codes, keyboard, gamepad);
+	CHECK((keyboard == BindingList{"c", "f1", "f2"}));
+	CHECK((gamepad == BindingList{"west"}));
+}
+
 void test_invalid_controls_do_not_modify_settings() {
 	TempDirectory temp;
 	const auto file = temp.path / "controls.dat";
@@ -321,14 +351,16 @@ void test_unsupported_control_codes_keep_new_defaults() {
 	std::vector<std::uint8_t> controls = make_controls(38);
 	constexpr std::size_t header_size = 2 * sizeof(std::int32_t);
 	constexpr std::size_t control_size = 2 * sizeof(std::int32_t);
-	// Unknown keyboard code for turn right and a raw joystick button for move forward.
+	// A valid sibling must survive an unknown code. An unsupported-only action
+	// keeps its new default instead of becoming unbound.
 	overwrite_i32(controls, header_size + 2 * control_size, 9999);
+	overwrite_i32(controls, header_size + 2 * control_size + sizeof(std::int32_t), SDL_SCANCODE_F8);
 	overwrite_i32(controls, header_size + 3 * control_size, 4 | (1 << 28));
 	write_bytes(file, controls);
 
 	GameSettings settings = default_settings();
 	CHECK(import_legacy_controls(file, settings, &diagnostic));
-	CHECK((settings.input.keyboard.bindings.at("turn_right") == BindingList{"right"}));
+	CHECK((settings.input.keyboard.bindings.at("turn_right") == BindingList{"f8"}));
 	CHECK((settings.input.keyboard.bindings.at("move_forward") == BindingList{"up"}));
 }
 
@@ -360,6 +392,7 @@ int main() {
 	test_invalid_options_are_rejected_atomically();
 	test_controls_versions_and_binding_vocabulary();
 	test_stable_binding_names_round_trip();
+	test_legacy_runtime_binding_projection_is_lossless();
 	test_invalid_controls_do_not_modify_settings();
 	test_unsupported_control_codes_keep_new_defaults();
 	test_combined_import_and_missing_files();

@@ -1,11 +1,13 @@
 #include "settings/settings.h"
 
+#include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <vector>
 
 namespace {
@@ -66,6 +68,20 @@ void append_string(std::vector<std::uint8_t> &bytes, const std::string &value) {
 void write_bytes(const std::filesystem::path &path, const std::vector<std::uint8_t> &bytes) {
 	std::ofstream output(path, std::ios::binary | std::ios::trunc);
 	output.write(reinterpret_cast<const char *>(bytes.data()), bytes.size());
+}
+
+bool has_temporary_settings_file(const std::filesystem::path &settings_file) {
+	const std::filesystem::path directory = settings_file.parent_path();
+	std::error_code error;
+	if (!std::filesystem::exists(directory, error) || error)
+		return false;
+	const std::string prefix = settings_file.filename().string() + ".tmp";
+	for (const auto &entry : std::filesystem::directory_iterator(directory)) {
+		const std::string filename = entry.path().filename().string();
+		if (filename.compare(0, prefix.size(), prefix) == 0)
+			return true;
+	}
+	return false;
 }
 
 std::vector<std::uint8_t> legacy_options() {
@@ -142,6 +158,7 @@ bool test_defaults_and_round_trip() {
 	changed.audio.sound_volume = 17;
 	changed.network.player_name = "Tester";
 	changed.input.keyboard.bindings["fire_all"] = {"space"};
+	changed.input.sdl_gamepad.bindings["fire_all"] = {"right_trigger", "south"};
 	if (!check(first.save(), "changed settings could not be saved"))
 		return false;
 
@@ -159,6 +176,11 @@ bool test_defaults_and_round_trip() {
 		   check(
 			   loaded.input.keyboard.bindings.at("fire_all") == BindingList{"space"},
 			   "keyboard binding was not restored"
+		   ) &&
+		   check(
+			   loaded.input.sdl_gamepad.bindings.at("fire_all") ==
+				   BindingList{"right_trigger", "south"},
+			   "gamepad bindings were not restored"
 		   );
 }
 
@@ -208,8 +230,7 @@ bool test_comments_unknown_keys_and_normalization() {
 			   saved.find("unknown_video = 123") != std::string::npos, "unknown table key was lost"
 		   ) &&
 		   check(
-			   !std::filesystem::exists(paths.settings_file.string() + ".tmp"),
-			   "temporary settings file remained"
+			   !has_temporary_settings_file(paths.settings_file), "temporary settings file remained"
 		   );
 }
 
@@ -373,8 +394,7 @@ bool test_failed_migration_write_retries_without_touching_legacy() {
 		) ||
 		!check(!std::filesystem::exists(paths.settings_file), "partial settings.toml remained") ||
 		!check(
-			!std::filesystem::exists(paths.settings_file.string() + ".tmp"),
-			"partial temporary file remained"
+			!has_temporary_settings_file(paths.settings_file), "partial temporary file remained"
 		))
 		return false;
 
@@ -420,6 +440,88 @@ bool test_partial_legacy_sources_use_defaults_for_missing_half() {
 		   );
 }
 
+bool test_concurrent_saves_use_independent_temporary_files() {
+	TemporaryDirectory directory;
+	const SettingsPaths paths = paths_for(directory.path());
+	SettingsManager initial(paths);
+	if (!check(initial.load().settings_file_written, "initial settings file was not created"))
+		return false;
+
+	constexpr int writer_count = 24;
+	std::atomic<int> ready{0};
+	std::atomic<int> failures{0};
+	std::atomic<bool> start{false};
+	std::vector<std::thread> writers;
+	writers.reserve(writer_count);
+	for (int writer_id = 0; writer_id < writer_count; ++writer_id) {
+		writers.emplace_back([&, writer_id] {
+			SettingsManager writer(paths);
+			if (writer.load().source != SettingsLoadSource::Toml)
+				failures.fetch_add(1, std::memory_order_relaxed);
+			writer.get_mutable().network.player_name = "writer-" + std::to_string(writer_id);
+			ready.fetch_add(1, std::memory_order_release);
+			while (!start.load(std::memory_order_acquire))
+				std::this_thread::yield();
+			std::string diagnostic;
+			if (!writer.save(&diagnostic))
+				failures.fetch_add(1, std::memory_order_relaxed);
+		});
+	}
+	while (ready.load(std::memory_order_acquire) != writer_count)
+		std::this_thread::yield();
+	start.store(true, std::memory_order_release);
+	for (std::thread &writer : writers)
+		writer.join();
+
+	SettingsManager verify(paths);
+	const SettingsLoadResult result = verify.load();
+	return check(failures.load() == 0, "a concurrent settings save failed") &&
+		   check(result.source == SettingsLoadSource::Toml, "concurrent saves damaged TOML") &&
+		   check(
+			   verify.get().network.player_name.find("writer-") == 0,
+			   "concurrent save did not publish a complete document"
+		   ) &&
+		   check(
+			   !has_temporary_settings_file(paths.settings_file),
+			   "concurrent save left a temporary file"
+		   );
+}
+
+bool test_filesystem_errors_are_nonfatal_and_retryable() {
+	TemporaryDirectory directory;
+	const std::filesystem::path inaccessible = directory.path() / std::string(1024, 'x');
+
+	SettingsPaths paths = paths_for(directory.path());
+	paths.settings_file = inaccessible / "settings.toml";
+	SettingsManager inaccessible_settings(paths);
+	const SettingsLoadResult settings_result = inaccessible_settings.load();
+	std::string save_diagnostic;
+	if (!check(settings_result.read_only, "settings status error was not made read-only") ||
+		!check(!inaccessible_settings.can_save(), "settings status error still permits saving") ||
+		!check(!settings_result.diagnostic.empty(), "settings status error has no diagnostic") ||
+		!check(
+			!inaccessible_settings.save(&save_diagnostic),
+			"settings status error unexpectedly allowed a save"
+		) ||
+		!check(!save_diagnostic.empty(), "read-only save has no diagnostic"))
+		return false;
+
+	paths = paths_for(directory.path());
+	paths.legacy_options_file = inaccessible / "options.dat";
+	SettingsManager inaccessible_legacy(paths);
+	const SettingsLoadResult legacy_result = inaccessible_legacy.load();
+	return check(legacy_result.read_only, "legacy status error was not made read-only") &&
+		   check(
+			   !legacy_result.settings_file_written,
+			   "legacy status error incorrectly completed migration"
+		   ) &&
+		   check(!legacy_result.diagnostic.empty(), "legacy status error has no diagnostic") &&
+		   check(
+			   !std::filesystem::exists(paths.settings_file),
+			   "legacy status error created settings.toml"
+		   );
+}
+
 } // namespace
 
 int main() {
@@ -428,7 +530,9 @@ int main() {
 				   test_invalid_utf8_file_recovery() && test_old_version_is_upgraded() &&
 				   test_legacy_migration_is_one_time_and_read_only() &&
 				   test_failed_migration_write_retries_without_touching_legacy() &&
-				   test_partial_legacy_sources_use_defaults_for_missing_half()
+				   test_partial_legacy_sources_use_defaults_for_missing_half() &&
+				   test_concurrent_saves_use_independent_temporary_files() &&
+				   test_filesystem_errors_are_nonfatal_and_retryable()
 			   ? 0
 			   : 1;
 }

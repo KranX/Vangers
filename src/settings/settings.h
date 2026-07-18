@@ -128,7 +128,7 @@ class SettingsManager {
 	SettingsManager &operator=(const SettingsManager &) = delete;
 
 	SettingsLoadResult load();
-	bool save();
+	bool save(std::string *diagnostic = nullptr);
 
 	const GameSettings &get() const;
 	GameSettings &get_mutable();

@@ -232,7 +232,7 @@ void iSaveControls(void) {
 	if (!iControlsObj)
 		return;
 	vangers::settings::capture_settings_from_controls();
-	vangers::settings::settings_manager().save();
+	vangers::settings::save_settings();
 }
 
 void iLoadControls(void) {

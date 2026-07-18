@@ -11,6 +11,7 @@ namespace vangers::settings {
 struct LegacyImportResult {
 	bool options_imported = false;
 	bool controls_imported = false;
+	bool filesystem_error = false;
 	std::string diagnostic;
 
 	bool any_imported() const {
@@ -21,12 +22,14 @@ struct LegacyImportResult {
 bool import_legacy_options(
 	const std::filesystem::path &path,
 	GameSettings &settings,
-	std::string *diagnostic = nullptr
+	std::string *diagnostic = nullptr,
+	bool *filesystem_error = nullptr
 );
 bool import_legacy_controls(
 	const std::filesystem::path &path,
 	GameSettings &settings,
-	std::string *diagnostic = nullptr
+	std::string *diagnostic = nullptr,
+	bool *filesystem_error = nullptr
 );
 LegacyImportResult import_legacy_settings(const SettingsPaths &paths, GameSettings &settings);
 

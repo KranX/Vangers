@@ -26,6 +26,7 @@
 #include "backg.h"
 #include "sqexp.h"
 
+#include "iscreen/settings_adapter.h"
 #include "network.h"
 #include "settings/settings.h"
 #include "xjoystick.h"
@@ -454,8 +455,10 @@ int xtInitApplication(void) {
 
 	SetupPath();
 	vangers::settings::SettingsManager &user_settings = vangers::settings::settings_manager();
-	if (!user_settings.is_loaded())
-		user_settings.load();
+	if (!user_settings.is_loaded()) {
+		const vangers::settings::SettingsLoadResult settings_result = user_settings.load();
+		vangers::settings::report_settings_diagnostic(settings_result.diagnostic);
+	}
 	const vangers::settings::VideoSettings &startup_video = user_settings.get().video;
 
 	_MEM_STATISTIC_("FONT -> ");

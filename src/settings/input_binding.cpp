@@ -1,5 +1,6 @@
 #include "input_binding.h"
 
+#include <algorithm>
 #include <array>
 #include <charconv>
 #include <cstdint>
@@ -235,6 +236,72 @@ std::optional<int> gamepad_binding_code(std::string_view name) {
 	if (const NamedCode *entry = find_by_name(GAMEPAD_CODES, name))
 		return entry->code | LEGACY_GAMEPAD_BUTTON_MASK;
 	return std::nullopt;
+}
+
+LegacyControlCodes encode_legacy_control_bindings(
+	const std::vector<std::string> &keyboard,
+	const std::vector<std::string> &gamepad
+) {
+	LegacyControlCodes codes{};
+	std::size_t slot = 0;
+	const auto append = [&codes,
+							&slot](const std::vector<std::string> &bindings, const auto &encode) {
+		for (const std::string &binding : bindings) {
+			if (slot == codes.size())
+				return;
+			if (const auto code = encode(binding))
+				codes[slot++] = *code;
+		}
+	};
+	append(keyboard, keyboard_binding_code);
+	append(gamepad, gamepad_binding_code);
+	return codes;
+}
+
+void merge_legacy_control_bindings(
+	const LegacyControlCodes &codes,
+	std::vector<std::string> &keyboard,
+	std::vector<std::string> &gamepad
+) {
+	const LegacyControlCodes projected = encode_legacy_control_bindings(keyboard, gamepad);
+	if (codes == projected)
+		return;
+
+	// The legacy runtime can expose only two mixed keyboard/gamepad slots.
+	// Replace the projected portion after an edit, but retain bindings (such as
+	// trigger axes or additional buttons) that this UI could not represent.
+	std::vector<std::string> updated_keyboard;
+	std::vector<std::string> updated_gamepad;
+	const auto append_unique = [](std::vector<std::string> &target, const std::string &binding) {
+		if (std::find(target.begin(), target.end(), binding) == target.end())
+			target.push_back(binding);
+	};
+
+	for (const int code : codes) {
+		const DecodedLegacyBinding binding = decode_legacy_control_code(code);
+		if (binding.kind == LegacyBindingKind::Keyboard)
+			append_unique(updated_keyboard, binding.name);
+		else if (binding.kind == LegacyBindingKind::Gamepad)
+			append_unique(updated_gamepad, binding.name);
+	}
+
+	const auto preserve_unprojected = [&projected, &append_unique](
+										  const std::vector<std::string> &original,
+										  std::vector<std::string> &target,
+										  const auto &encode
+									  ) {
+		for (const std::string &binding : original) {
+			const auto code = encode(binding);
+			if (code && std::find(projected.begin(), projected.end(), *code) != projected.end())
+				continue;
+			append_unique(target, binding);
+		}
+	};
+	preserve_unprojected(keyboard, updated_keyboard, keyboard_binding_code);
+	preserve_unprojected(gamepad, updated_gamepad, gamepad_binding_code);
+
+	keyboard = std::move(updated_keyboard);
+	gamepad = std::move(updated_gamepad);
 }
 
 } // namespace vangers::settings

@@ -11,6 +11,7 @@
 #include "settings/text_encoding.h"
 
 #include <charconv>
+#include <iostream>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -137,31 +138,22 @@ void apply_settings_to_controls() {
 	if (!manager.is_loaded())
 		manager.load();
 	const GameSettings &settings = manager.get();
+	const BindingList empty;
 
 	for (int control_id = 1; control_id < iKEY_MAX_ID; ++control_id) {
 		const char *action = legacy_control_action_name(control_id);
 		if (!action)
 			continue;
-		iResetControlCode(control_id, 0);
-		iResetControlCode(control_id, 1);
-		int slot = 0;
 		const auto keyboard = settings.input.keyboard.bindings.find(action);
-		if (keyboard != settings.input.keyboard.bindings.end()) {
-			for (const std::string &name : keyboard->second) {
-				if (slot >= 2)
-					break;
-				if (const auto code = keyboard_binding_code(name))
-					iSetControlCode(control_id, *code, slot++);
-			}
-		}
 		const auto gamepad = settings.input.sdl_gamepad.bindings.find(action);
-		if (gamepad != settings.input.sdl_gamepad.bindings.end()) {
-			for (const std::string &name : gamepad->second) {
-				if (slot >= 2)
-					break;
-				if (const auto code = gamepad_binding_code(name))
-					iSetControlCode(control_id, *code, slot++);
-			}
+		const LegacyControlCodes codes = encode_legacy_control_bindings(
+			keyboard != settings.input.keyboard.bindings.end() ? keyboard->second : empty,
+			gamepad != settings.input.sdl_gamepad.bindings.end() ? gamepad->second : empty
+		);
+		for (std::size_t slot = 0; slot < codes.size(); ++slot) {
+			iResetControlCode(control_id, static_cast<int>(slot));
+			if (codes[slot] != 0)
+				iSetControlCode(control_id, codes[slot], static_cast<int>(slot));
 		}
 	}
 }
@@ -176,21 +168,36 @@ void capture_settings_from_controls() {
 		const char *action = legacy_control_action_name(control_id);
 		if (!action)
 			continue;
-		BindingList keyboard;
-		BindingList gamepad;
-		for (int slot = 0; slot < 2; ++slot) {
-			const DecodedLegacyBinding binding =
-				decode_legacy_control_code(iGetControlCode(control_id, slot));
-			if (binding.kind == LegacyBindingKind::Keyboard)
-				keyboard.push_back(binding.name);
-			else if (binding.kind == LegacyBindingKind::Gamepad)
-				gamepad.push_back(binding.name);
-		}
+		LegacyControlCodes codes{};
+		for (std::size_t slot = 0; slot < codes.size(); ++slot)
+			codes[slot] = iGetControlCode(control_id, static_cast<int>(slot));
+		BindingList keyboard = settings.input.keyboard.bindings[action];
+		const auto stored_gamepad = settings.input.sdl_gamepad.bindings.find(action);
+		BindingList gamepad = stored_gamepad != settings.input.sdl_gamepad.bindings.end()
+								  ? stored_gamepad->second
+								  : BindingList{};
+		merge_legacy_control_bindings(codes, keyboard, gamepad);
 		settings.input.keyboard.bindings[action] = std::move(keyboard);
-		if (!gamepad.empty())
+		if (stored_gamepad != settings.input.sdl_gamepad.bindings.end() || !gamepad.empty())
 			settings.input.sdl_gamepad.bindings[action] = std::move(gamepad);
 	}
 	normalize_settings(settings);
+}
+
+void report_settings_diagnostic(std::string_view diagnostic) {
+	if (diagnostic.empty())
+		return;
+	const std::string message = "Settings: " + std::string(diagnostic);
+	std::cerr << message << '\n';
+	ErrH.Log(message.c_str());
+}
+
+bool save_settings() {
+	std::string diagnostic;
+	const bool saved = settings_manager().save(&diagnostic);
+	if (!saved)
+		report_settings_diagnostic(diagnostic);
+	return saved;
 }
 
 } // namespace vangers::settings

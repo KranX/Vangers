@@ -2100,7 +2100,7 @@ void iUnlockExit(void) {
 void iSaveData(void) {
 #ifndef _ACI_SKIP_MAINMENU_
 	vangers::settings::capture_settings_from_interface();
-	vangers::settings::settings_manager().save();
+	vangers::settings::save_settings();
 #endif
 }
 
