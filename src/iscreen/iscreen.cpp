@@ -3675,7 +3675,8 @@ void iScreenDispatcher::input_string_quant(void) {
 
 	while (KeyBuf->size) {
 		SDL_Event *event = KeyBuf->get();
-		if (event->type != SDL_EVENT_KEY_DOWN && event->type != SDL_EVENT_TEXT_INPUT)
+		if (event->type != SDL_EVENT_KEY_DOWN && event->type != SDL_EVENT_GAMEPAD_BUTTON_DOWN &&
+			event->type != SDL_EVENT_TEXT_INPUT)
 			continue;
 
 		if (!(ActiveEl->flags & EL_KEY_NAME)) {
@@ -3762,12 +3763,6 @@ void iScreenDispatcher::input_string_quant(void) {
 					SDL_StopTextInput(XGR_Obj.get_window());
 					break;
 				default:
-					// NEED rewrite
-					/*if(!(k & iJOYSTICK_MASK))
-						key_name = iGetKeyNameText(k,lang());
-					else
-						key_name = iGetJoyBtnNameText(k,lang());
-					*/
 					key_name = iGetKeyNameText(k, lang());
 					if (flags & SD_INPUT_STRING && key_name) {
 						if (!(ActiveEl->flags & EL_JOYSTICK_KEY) || (k & iJOYSTICK_MASK)) {
@@ -3777,6 +3772,7 @@ void iScreenDispatcher::input_string_quant(void) {
 							init_flag = 1;
 							redraw_flag = 1;
 							iScreenLastInput = k;
+							SDL_StopTextInput(XGR_Obj.get_window());
 						}
 					}
 					break;

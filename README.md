@@ -40,6 +40,20 @@ files are kept byte-for-byte unchanged so an older game build can still use
 them, but subsequent changes made by the new build are saved only to
 `settings.toml`. Save-game files are not affected by this migration.
 
+## Gamepad input
+
+SDL3-compatible gamepads are detected and mapped automatically, including
+hot-plugging. The left stick controls steering and throttle by default; the
+right stick moves the UI cursor. Gamepad buttons can be assigned on the regular
+controls screen or changed in `[input.sdl_gamepad.bindings]` in
+`settings.toml`. Stick axes and trigger bindings can be changed in
+`[input.sdl_gamepad.axes]` and `[input.sdl_gamepad.bindings]`. The game uses one
+active gamepad and falls back to the next connected device if it is unplugged.
+
+The open-source build does not call Steam Input directly. It keeps the active
+`SDL_Gamepad`, so a Steam build can associate the same SDL-managed device with
+Steam Input without introducing a second device manager.
+
 ## Server
 
 To host server you can use Docker image or [build server](https://github.com/KranX/Vangers/wiki/Starting-up-server-compatible-with-web-&-native-versions)

@@ -29,7 +29,7 @@
 #include "iscreen/settings_adapter.h"
 #include "network.h"
 #include "settings/settings.h"
-#include "xjoystick.h"
+#include "xgamepad.h"
 
 #include "3d/3d_math.h"
 #include "3d/3dgraph.h"
@@ -506,11 +506,10 @@ int xtInitApplication(void) {
 	LoadResourceSOUND("resource/sound/effects/", 0);
 	SetSoundVolume(256);
 
-	if (XJoystickInit()) {
-		std::cout << "Joystick found\n";
-		JoystickMode = JOYSTICK_Joystick;
+	if (XGamepadInit()) {
+		std::cout << "Gamepad found\n";
 	} else {
-		std::cout << "Joystick not found" << std::endl;
+		std::cout << "Gamepad not found" << std::endl;
 	}
 
 	// XSocketInit();
@@ -1268,7 +1267,7 @@ void restore(void) {
 	memStart = 0;
 #endif
 	RestoreSOUND();
-	XJoystickCleanup();
+	XGamepadCleanup();
 
 	//	  win32_dump_mem();
 

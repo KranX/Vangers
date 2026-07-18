@@ -392,7 +392,7 @@ struct Object: BaseObject {
 	void continuous_impulse(const DBV &direct, int distance, int lever_arm = 0);
 	void jump();
 	void direct_keyboard_control();
-	void direct_joystick_control();
+	void direct_gamepad_control();
 	void import_controls();
 	void analysis();
 	void switch_analysis(int off);

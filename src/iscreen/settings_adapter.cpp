@@ -91,6 +91,7 @@ void apply_settings_to_interface() {
 	iSetOptionValue(iFULLSCREEN, settings.video.fullscreen ? 1 : 0);
 	iSetOptionValue(iAUTO_ACCELERATION, settings.gameplay.auto_acceleration ? 1 : 0);
 	iSetOptionValue(iFPS_60, settings.video.fps == 60 ? 1 : 0);
+	iSetOptionValue(iJOYSTICK_TYPE, settings.input.controller.enabled ? 1 : 0);
 }
 
 void capture_settings_from_interface() {
@@ -111,6 +112,9 @@ void capture_settings_from_interface() {
 	settings.gameplay.camera_rotation = iGetOptionValue(iCAMERA_TURN) != 0;
 	settings.gameplay.camera_slope = iGetOptionValue(iCAMERA_SLOPE) != 0;
 	settings.gameplay.camera_zoom = iGetOptionValue(iCAMERA_SCALE) != 0;
+	// SDL3 owns controller discovery and mapping. The legacy selector now only
+	// acts as an on/off switch; all of its non-zero historical modes mean enabled.
+	settings.input.controller.enabled = iGetOptionValue(iJOYSTICK_TYPE) != 0;
 	settings.video.fullscreen = iGetOptionValue(iFULLSCREEN) != 0;
 	settings.video.resolution = iGetOptionValue(iSCREEN_RESOLUTION) != 0
 									? ResolutionMode::Desktop

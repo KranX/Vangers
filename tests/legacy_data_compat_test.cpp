@@ -15,6 +15,9 @@
 
 namespace {
 
+constexpr std::uint32_t LEGACY_JOYSTICK_BUTTON_MASK = 1u << 28;
+constexpr std::uint32_t LEGACY_JOYSTICK_HAT_MASK = 1u << 26;
+
 constexpr std::uint32_t ACI_SAVE_COMPRESSED = 1;
 
 bool check(bool condition, const std::string &message) {
@@ -41,22 +44,20 @@ std::uint32_t read_u32(const std::vector<std::uint8_t> &data, std::size_t offset
 }
 
 bool is_valid_saved_control_code(std::uint32_t code) {
-	constexpr std::uint32_t joystickButtonMask = SDLK_JOYSTICK_BUTTON_MASK;
 	constexpr std::uint32_t gamepadButtonMask = SDLK_GAMEPAD_BUTTON_MASK;
-	constexpr std::uint32_t joystickHatMask = SDLK_JOYSTICK_HAT_MASK;
 	constexpr std::uint32_t scancodeMask = SDLK_SCANCODE_MASK;
 	constexpr std::uint32_t categoryMask =
-		joystickButtonMask | gamepadButtonMask | joystickHatMask | scancodeMask;
+		LEGACY_JOYSTICK_BUTTON_MASK | gamepadButtonMask | LEGACY_JOYSTICK_HAT_MASK | scancodeMask;
 
 	const std::uint32_t category = code & categoryMask;
 	const std::uint32_t payload = code ^ category;
 	if (category == 0)
 		return code < SDL_SCANCODE_COUNT;
-	if (category == joystickButtonMask)
+	if (category == LEGACY_JOYSTICK_BUTTON_MASK)
 		return payload <= UINT8_MAX;
 	if (category == gamepadButtonMask)
 		return payload < SDL_GAMEPAD_BUTTON_COUNT;
-	if (category == joystickHatMask)
+	if (category == LEGACY_JOYSTICK_HAT_MASK)
 		return payload <= UINT8_MAX * 10u + SDL_HAT_LEFTUP;
 	if (category == scancodeMask)
 		return payload < SDL_SCANCODE_COUNT;
@@ -73,7 +74,7 @@ bool test_control_code_validation() {
 			   "scancode-derived keycode was rejected"
 		   ) &&
 		   check(
-			   is_valid_saved_control_code(SDLK_JOYSTICK_BUTTON_MASK | 19),
+			   is_valid_saved_control_code(LEGACY_JOYSTICK_BUTTON_MASK | 19),
 			   "joystick button binding was rejected"
 		   ) &&
 		   check(
@@ -83,7 +84,7 @@ bool test_control_code_validation() {
 			   "gamepad button binding was rejected"
 		   ) &&
 		   check(
-			   is_valid_saved_control_code(SDLK_JOYSTICK_HAT_MASK | (2 * 10 + SDL_HAT_LEFTUP)),
+			   is_valid_saved_control_code(LEGACY_JOYSTICK_HAT_MASK | (2 * 10 + SDL_HAT_LEFTUP)),
 			   "joystick hat binding was rejected"
 		   ) &&
 		   check(
@@ -91,7 +92,7 @@ bool test_control_code_validation() {
 			   "out-of-range gamepad button was accepted"
 		   ) &&
 		   check(
-			   !is_valid_saved_control_code(SDLK_JOYSTICK_BUTTON_MASK | SDLK_GAMEPAD_BUTTON_MASK),
+			   !is_valid_saved_control_code(LEGACY_JOYSTICK_BUTTON_MASK | SDLK_GAMEPAD_BUTTON_MASK),
 			   "control code with multiple categories was accepted"
 		   );
 }
@@ -220,9 +221,9 @@ int main() {
 	static_assert(SDL_SCANCODE_UP == 82);
 	static_assert(SDL_SCANCODE_LSHIFT == 225);
 	static_assert(SDL_SCANCODE_RSHIFT == 229);
-	static_assert(SDLK_JOYSTICK_BUTTON_MASK == (1 << 28));
+	static_assert(LEGACY_JOYSTICK_BUTTON_MASK == (1u << 28));
 	static_assert(SDLK_GAMEPAD_BUTTON_MASK == (1 << 27));
-	static_assert(SDLK_JOYSTICK_HAT_MASK == (1 << 26));
+	static_assert(LEGACY_JOYSTICK_HAT_MASK == (1u << 26));
 	static_assert(SDL_GAMEPAD_BUTTON_SOUTH == 0);
 	static_assert(SDL_GAMEPAD_BUTTON_DPAD_RIGHT == 14);
 

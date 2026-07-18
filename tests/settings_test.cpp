@@ -158,7 +158,10 @@ bool test_defaults_and_round_trip() {
 	changed.audio.sound_volume = 17;
 	changed.network.player_name = "Tester";
 	changed.input.keyboard.bindings["fire_all"] = {"space"};
+	changed.input.controller.enabled = false;
+	changed.input.controller.cursor_speed = 1.5f;
 	changed.input.sdl_gamepad.bindings["fire_all"] = {"right_trigger", "south"};
+	changed.input.sdl_gamepad.bindings["fire_weapon_1"] = {"right_shoulder"};
 	if (!check(first.save(), "changed settings could not be saved"))
 		return false;
 
@@ -177,10 +180,20 @@ bool test_defaults_and_round_trip() {
 			   loaded.input.keyboard.bindings.at("fire_all") == BindingList{"space"},
 			   "keyboard binding was not restored"
 		   ) &&
+		   check(!loaded.input.controller.enabled, "controller enabled state was not restored") &&
+		   check(
+			   loaded.input.controller.cursor_speed == 1.5f,
+			   "controller cursor speed was not restored"
+		   ) &&
 		   check(
 			   loaded.input.sdl_gamepad.bindings.at("fire_all") ==
 				   BindingList{"right_trigger", "south"},
 			   "gamepad bindings were not restored"
+		   ) &&
+		   check(
+			   loaded.input.sdl_gamepad.bindings.at("fire_weapon_1") ==
+				   BindingList{"right_shoulder"},
+			   "non-default gamepad action was not restored"
 		   );
 }
 

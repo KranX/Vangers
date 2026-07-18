@@ -4,7 +4,7 @@
 #include "../runtime.h"
 #include "general.h"
 
-#include "../xjoystick.h"
+#include "../xgamepad.h"
 
 #include "../common.h"
 
@@ -408,7 +408,6 @@ int STANDART_FRAME_RATE = 14;
 double speed_correction_factor = 1;
 double speed_correction_tau = 0.01;
 
-Uint64 last_keyboard_touch;
 int terrain_analysis_flag;
 int non_loaded_space;
 
@@ -2892,7 +2891,6 @@ void Object::direct_keyboard_control() {
 			controls(CONTROLS::BRAKE_QUANT);
 		else
 			controls(CONTROLS::TRACTION_INCREASE);
-		last_keyboard_touch = SDL_GetTicks();
 	}
 	if (iKeyPressed(iKEY_MOVE_BACKWARD)) {
 		static int delay;
@@ -2902,7 +2900,6 @@ void Object::direct_keyboard_control() {
 			controls(CONTROLS::BRAKE_QUANT);
 		else
 			controls(CONTROLS::TRACTION_DECREASE);
-		last_keyboard_touch = SDL_GetTicks();
 	}
 
 	if (!aciAutoRun) {
@@ -2917,11 +2914,9 @@ void Object::direct_keyboard_control() {
 
 	if (iKeyPressed(iKEY_TURN_WHEELS_LEFT)) {
 		controls(CONTROLS::STEER_LEFT);
-		last_keyboard_touch = SDL_GetTicks();
 	}
 	if (iKeyPressed(iKEY_TURN_WHEELS_RIGHT)) {
 		controls(CONTROLS::STEER_RIGHT);
-		last_keyboard_touch = SDL_GetTicks();
 	}
 
 	if (iKeyPressed(iKEY_TURN_OVER_LEFT))
@@ -2948,68 +2943,20 @@ void Object::direct_keyboard_control() {
 }
 #endif
 
-void Object::direct_joystick_control() {
-	if (!XJoystickInput())
-		return;
+void Object::direct_gamepad_control() {
+	const float steering = XGamepadAxisValue("steering");
+	if (steering != 0.0f) {
+		current_controls |= 1 << (steering < 0.0f ? CONTROLS::STEER_LEFT : CONTROLS::STEER_RIGHT);
+		controls(CONTROLS::STEER_BY_ANGLE, round(-steering * rudder_max));
+		helicopter_strife = 0;
+	}
 
-	if (SDL_GetTicks() - last_keyboard_touch < 2000)
-		return;
-
-	int dx = XJoystickState.lX;
-	if (abs(dx) < RANGE_MAX / 16)
-		dx = 0;
-	int dy = XJoystickState.lY;
-	if (abs(dy) < RANGE_MAX / 16)
-		dy = 0;
-
-	if (!XJoystickState.rgbButtons[JoystickStickSwitchButton - VK_BUTTON_1])
-		switch (JoystickMode) {
-		case JOYSTICK_GamePad:
-			if (dy < 0) {
-				static int delay;
-				if (traction < 0)
-					delay = traction_reverse_delay_ticks();
-				if (delay-- > 0)
-					controls(CONTROLS::BRAKE_QUANT);
-				else
-					controls(CONTROLS::TRACTION_INCREASE);
-			}
-			if (dy > 0) {
-				static int delay;
-				if (traction > 0)
-					delay = traction_reverse_delay_ticks();
-				if (delay-- > 0)
-					controls(CONTROLS::BRAKE_QUANT);
-				else
-					controls(CONTROLS::TRACTION_DECREASE);
-			}
-
-			if (dx < 0)
-				controls(CONTROLS::STEER_LEFT);
-			if (dx > 0)
-				controls(CONTROLS::STEER_RIGHT);
-			break;
-
-		case JOYSTICK_Joystick:
-			traction = round(sqrt((double)(sqr(XJoystickState.lX) + sqr(XJoystickState.lY))));
-			if (dy > 0)
-				traction = -traction;
-			rudder = -XJoystickState.lX * rudder_max >> 8;
-			if (abs(traction) > 200)
-				controls(CONTROLS::TURBO_QUANT);
-			// if(abs(dx) > 200)
-			//	controls(CONTROLS::HAND_BRAKE_QUANT);
-			break;
-
-		case JOYSTICK_SteeringWheel:
-			traction = -XJoystickState.lY;
-			rudder = -XJoystickState.lX * rudder_max >> 8;
-			if (abs(dy) > 200)
-				controls(CONTROLS::TURBO_QUANT);
-			if (abs(dx) > 200)
-				controls(CONTROLS::HAND_BRAKE_QUANT);
-			break;
-		}
+	const float throttle = XGamepadAxisValue("throttle");
+	if (throttle != 0.0f) {
+		current_controls |=
+			1 << (throttle > 0.0f ? CONTROLS::TRACTION_INCREASE : CONTROLS::TRACTION_DECREASE);
+		traction = round(throttle * 256.0f);
+	}
 }
 
 void Object::import_controls() {
@@ -3050,8 +2997,7 @@ void Object::analysis() {
 			entries_control();
 			if (!disable_control) {
 				direct_keyboard_control();
-				/*if(JoystickMode)
-					direct_joystick_control();*/
+				direct_gamepad_control();
 			}
 		}
 	}

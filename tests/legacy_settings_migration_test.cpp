@@ -1,9 +1,11 @@
+#include "settings/gamepad_mapping.h"
 #include "settings/input_binding.h"
 #include "settings/legacy_settings_import.h"
 #include "settings/settings.h"
 
 #include <array>
 #include <chrono>
+#include <cmath>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
@@ -293,6 +295,57 @@ void test_stable_binding_names_round_trip() {
 	}
 }
 
+void test_gamepad_mapping_and_deadzone_scaling() {
+	for (int button = 0; button < SDL_GAMEPAD_BUTTON_COUNT; ++button) {
+		const auto code = static_cast<SDL_GamepadButton>(button);
+		const auto name = gamepad_button_name(code);
+		CHECK(name);
+		CHECK(name && gamepad_button_from_name(*name) == code);
+	}
+	for (int axis = 0; axis < SDL_GAMEPAD_AXIS_COUNT; ++axis) {
+		const auto code = static_cast<SDL_GamepadAxis>(axis);
+		const auto name = gamepad_axis_name(code);
+		CHECK(name);
+		CHECK(name && gamepad_axis_from_name(*name) == code);
+	}
+	CHECK(!gamepad_button_from_name("unknown"));
+	CHECK(!gamepad_axis_from_name("unknown"));
+
+	CHECK(normalize_gamepad_axis(0, SDL_GAMEPAD_AXIS_LEFTX, 0.2f, 0.05f, false) == 0.0f);
+	CHECK(normalize_gamepad_axis(6000, SDL_GAMEPAD_AXIS_LEFTX, 0.2f, 0.05f, false) == 0.0f);
+	CHECK(
+		std::abs(
+			normalize_gamepad_axis(16384, SDL_GAMEPAD_AXIS_LEFTX, 0.2f, 0.05f, false) - 0.375f
+		) < 0.001f
+	);
+	CHECK(normalize_gamepad_axis(-32768, SDL_GAMEPAD_AXIS_LEFTX, 0.2f, 0.05f, false) == -1.0f);
+	CHECK(normalize_gamepad_axis(32767, SDL_GAMEPAD_AXIS_RIGHTY, 0.2f, 0.05f, true) == -1.0f);
+	CHECK(normalize_gamepad_axis(1000, SDL_GAMEPAD_AXIS_RIGHT_TRIGGER, 0.2f, 0.05f, false) == 0.0f);
+	CHECK(
+		normalize_gamepad_axis(32767, SDL_GAMEPAD_AXIS_RIGHT_TRIGGER, 0.2f, 0.05f, false) == 1.0f
+	);
+	CHECK(gamepad_axis_is_trigger(SDL_GAMEPAD_AXIS_LEFT_TRIGGER));
+	CHECK(!gamepad_axis_is_trigger(SDL_GAMEPAD_AXIS_LEFTX));
+	CHECK(!gamepad_trigger_pressed(0.499f));
+	CHECK(gamepad_trigger_pressed(0.5f));
+
+	const GameSettings defaults = default_settings();
+	for (const auto &[action, bindings] : defaults.input.sdl_gamepad.bindings) {
+		(void)action;
+		for (const std::string &binding : bindings) {
+			CHECK(
+				gamepad_button_from_name(binding) ||
+				(gamepad_axis_from_name(binding) &&
+					gamepad_axis_is_trigger(*gamepad_axis_from_name(binding)))
+			);
+		}
+	}
+	for (const auto &[logical_axis, binding] : defaults.input.sdl_gamepad.axes) {
+		(void)logical_axis;
+		CHECK(gamepad_axis_from_name(binding.axis));
+	}
+}
+
 void test_legacy_runtime_binding_projection_is_lossless() {
 	BindingList keyboard{"a"};
 	BindingList gamepad{"south", "east", "right_trigger"};
@@ -392,6 +445,7 @@ int main() {
 	test_invalid_options_are_rejected_atomically();
 	test_controls_versions_and_binding_vocabulary();
 	test_stable_binding_names_round_trip();
+	test_gamepad_mapping_and_deadzone_scaling();
 	test_legacy_runtime_binding_projection_is_lossless();
 	test_invalid_controls_do_not_modify_settings();
 	test_unsupported_control_codes_keep_new_defaults();

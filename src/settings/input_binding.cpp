@@ -1,5 +1,7 @@
 #include "input_binding.h"
 
+#include "gamepad_mapping.h"
+
 #include <algorithm>
 #include <array>
 #include <charconv>
@@ -84,35 +86,6 @@ constexpr NamedCode COMMON_KEYBOARD_CODES[] = {
 	{SDL_SCANCODE_RSHIFT, "right_shift"},
 };
 
-constexpr NamedCode GAMEPAD_CODES[] = {
-	{SDL_GAMEPAD_BUTTON_SOUTH, "south"},
-	{SDL_GAMEPAD_BUTTON_EAST, "east"},
-	{SDL_GAMEPAD_BUTTON_WEST, "west"},
-	{SDL_GAMEPAD_BUTTON_NORTH, "north"},
-	{SDL_GAMEPAD_BUTTON_BACK, "back"},
-	{SDL_GAMEPAD_BUTTON_GUIDE, "guide"},
-	{SDL_GAMEPAD_BUTTON_START, "start"},
-	{SDL_GAMEPAD_BUTTON_LEFT_STICK, "left_stick"},
-	{SDL_GAMEPAD_BUTTON_RIGHT_STICK, "right_stick"},
-	{SDL_GAMEPAD_BUTTON_LEFT_SHOULDER, "left_shoulder"},
-	{SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER, "right_shoulder"},
-	{SDL_GAMEPAD_BUTTON_DPAD_UP, "dpad_up"},
-	{SDL_GAMEPAD_BUTTON_DPAD_DOWN, "dpad_down"},
-	{SDL_GAMEPAD_BUTTON_DPAD_LEFT, "dpad_left"},
-	{SDL_GAMEPAD_BUTTON_DPAD_RIGHT, "dpad_right"},
-	{SDL_GAMEPAD_BUTTON_MISC1, "misc_1"},
-	{SDL_GAMEPAD_BUTTON_RIGHT_PADDLE1, "right_paddle_1"},
-	{SDL_GAMEPAD_BUTTON_LEFT_PADDLE1, "left_paddle_1"},
-	{SDL_GAMEPAD_BUTTON_RIGHT_PADDLE2, "right_paddle_2"},
-	{SDL_GAMEPAD_BUTTON_LEFT_PADDLE2, "left_paddle_2"},
-	{SDL_GAMEPAD_BUTTON_TOUCHPAD, "touchpad"},
-	{SDL_GAMEPAD_BUTTON_MISC2, "misc_2"},
-	{SDL_GAMEPAD_BUTTON_MISC3, "misc_3"},
-	{SDL_GAMEPAD_BUTTON_MISC4, "misc_4"},
-	{SDL_GAMEPAD_BUTTON_MISC5, "misc_5"},
-	{SDL_GAMEPAD_BUTTON_MISC6, "misc_6"},
-};
-
 static_assert(SDL_SCANCODE_Z - SDL_SCANCODE_A == 25);
 static_assert(SDL_SCANCODE_9 - SDL_SCANCODE_1 == 8);
 static_assert(SDL_SCANCODE_F12 - SDL_SCANCODE_F1 == 11);
@@ -193,9 +166,9 @@ DecodedLegacyBinding decode_legacy_control_code(int code) {
 	if ((code & LEGACY_JOYSTICK_BUTTON_MASK) != 0 || (code & LEGACY_JOYSTICK_HAT_MASK) != 0)
 		return {LegacyBindingKind::Unsupported, {}};
 	if ((code & LEGACY_GAMEPAD_BUTTON_MASK) != 0) {
-		const int button = code ^ LEGACY_GAMEPAD_BUTTON_MASK;
-		if (const NamedCode *entry = find_by_code(GAMEPAD_CODES, button))
-			return {LegacyBindingKind::Gamepad, entry->name};
+		const auto button = static_cast<SDL_GamepadButton>(code ^ LEGACY_GAMEPAD_BUTTON_MASK);
+		if (const auto name = gamepad_button_name(button))
+			return {LegacyBindingKind::Gamepad, std::string(*name)};
 		return {LegacyBindingKind::Unsupported, {}};
 	}
 
@@ -233,8 +206,8 @@ std::optional<int> keyboard_binding_code(std::string_view name) {
 }
 
 std::optional<int> gamepad_binding_code(std::string_view name) {
-	if (const NamedCode *entry = find_by_name(GAMEPAD_CODES, name))
-		return entry->code | LEGACY_GAMEPAD_BUTTON_MASK;
+	if (const auto button = gamepad_button_from_name(name))
+		return static_cast<int>(*button) | LEGACY_GAMEPAD_BUTTON_MASK;
 	return std::nullopt;
 }
 

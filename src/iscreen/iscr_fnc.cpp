@@ -5,7 +5,7 @@
 #include "../sound/hsound.h"
 
 #include "../network.h"
-#include "../xjoystick.h"
+#include "../xgamepad.h"
 
 #include "i_str.h"
 #include "ivmap.h"
@@ -106,7 +106,7 @@ int iGetEscaveTime(void);
 void aciVMapPrepare(void);
 
 void iPrepareHallOfFame(void);
-void iBlockJoystickOption(int mode);
+void iBlockGamepadOption(int mode);
 void iInitProxyOptions(void);
 // #define iMOVE_MOUSE_OBJECTS
 
@@ -822,21 +822,12 @@ int iQuantSecond(void) {
 
 					if (k->type == SDL_EVENT_KEY_DOWN || k->type == SDL_EVENT_KEY_UP) {
 						iKeyTrap(k->key.scancode);
-					} else if (k->type == SDL_EVENT_JOYSTICK_BUTTON_DOWN ||
-							   k->type == SDL_EVENT_JOYSTICK_BUTTON_UP) {
-						iKeyTrap(k->jbutton.button | SDLK_JOYSTICK_BUTTON_MASK);
 					} else if (k->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
 							   k->type == SDL_EVENT_GAMEPAD_BUTTON_UP) {
 						iKeyTrap(k->gbutton.button | SDLK_GAMEPAD_BUTTON_MASK);
-					} else if (k->type == SDL_EVENT_JOYSTICK_HAT_MOTION) {
-						iKeyTrap((k->jhat.value + 10 * k->jhat.hat) | SDLK_JOYSTICK_HAT_MASK);
 					}
 				}
-			} /*else {
-				k = JoystickWhatsPressedNow();
-				if(k)
-					KeyBuf -> put(k,CUR_KEY_PRESSED);
-			}*/
+			}
 			if (iScrDisp->flags & MS_LEFT_PRESS) {
 				iScrDisp->flags &= ~MS_LEFT_PRESS;
 				iKeyTrap(iMOUSE_LEFT_PRESS_CODE);
@@ -2212,12 +2203,15 @@ void iHandleExtEvent(int code, int data) {
 		iInitProxyOptions();
 		break;
 	case iEXT_INIT_JOYSTICK_OBJ:
-		iBlockJoystickOption(JoystickAvailable);
+		iBlockGamepadOption(XGamepadIsAvailable());
 		break;
-	case iEXT_INIT_JOYSTICK:
-		JoystickMode = iGetOptionValue(iJOYSTICK_TYPE);
-		JoystickStickSwitchButton = iGetControlCode(iKEY_JOYSTICK_SWITCH);
+	case iEXT_INIT_JOYSTICK: {
+		auto &manager = vangers::settings::settings_manager();
+		if (!manager.is_loaded())
+			manager.load();
+		manager.get_mutable().input.controller.enabled = iGetOptionValue(iJOYSTICK_TYPE) != 0;
 		break;
+	}
 	case iEXT_UPDATE_SOUND_MODE:
 		if (!iGetOptionValue(iSOUND_ON)) {
 			EffectInUsePriory = 1;
@@ -3007,7 +3001,7 @@ void iWriteScreenSummary(void) {
 }
 #endif
 
-void iBlockJoystickOption(int mode) {
+void iBlockGamepadOption(int mode) {
 	iScreenObject *obj = (iScreenObject *)iGetObject("Controls screen2", "Joystick Option");
 	if (obj) {
 		if (mode)

@@ -4,7 +4,6 @@
 #include "../global.h"
 #include "../network.h"
 #include "../runtime.h"
-#include "../xjoystick.h"
 
 #include "ivmap.h"
 #include "iworld.h"
@@ -159,100 +158,6 @@ extern char *iSTR_MP_Mechos_frame;
 extern char *iSTR_MP_Mechos_assembled_in;
 extern char *iSTR_NONE;
 extern char *iSTR_Checkpoints_Number;
-
-// English version...
-const char *iJoystickButtons1[32] = {
-	"JoyBT1",
-	"JoyBT2",
-	"JoyBT3",
-	"JoyBT4",
-	"JoyBT5",
-	"JoyBT6",
-	"JoyBT7",
-	"JoyBT8",
-	"JoyBT9",
-	"JoyBT10",
-	"JoyBT11",
-	"JoyBT12",
-	"JoyBT13",
-	"JoyBT14",
-	"JoyBT15",
-	"JoyBT16",
-	"JoyBT17",
-	"JoyBT18",
-	"JoyBT19",
-	"JoyBT20",
-	"JoyBT21",
-	"JoyBT22",
-	"JoyBT23",
-	"JoyBT24",
-	"JoyBT25",
-	"JoyBT26",
-	"JoyBT27",
-	"JoyBT28",
-	"JoyBT29",
-	"JoyBT30",
-	"JoyBT31",
-	"JoyBT32",
-};
-
-// Local version...
-const char *iJoystickButtons2[32] = {
-	"JoyBT1",
-	"JoyBT2",
-	"JoyBT3",
-	"JoyBT4",
-	"JoyBT5",
-	"JoyBT6",
-	"JoyBT7",
-	"JoyBT8",
-	"JoyBT9",
-	"JoyBT10",
-	"JoyBT11",
-	"JoyBT12",
-	"JoyBT13",
-	"JoyBT14",
-	"JoyBT15",
-	"JoyBT16",
-	"JoyBT17",
-	"JoyBT18",
-	"JoyBT19",
-	"JoyBT20",
-	"JoyBT21",
-	"JoyBT22",
-	"JoyBT23",
-	"JoyBT24",
-	"JoyBT25",
-	"JoyBT26",
-	"JoyBT27",
-	"JoyBT28",
-	"JoyBT29",
-	"JoyBT30",
-	"JoyBT31",
-	"JoyBT32",
-};
-
-// English version...
-const char *iJoystickStickSwitch1[9] = {"JoyDownLeft",
-	"JoyDown",
-	"JoyDownRight",
-	"JoyLeft",
-	"JoyCenter",
-	"JoyRight",
-	"JoyUpLeft",
-	"JoyUp",
-	"JoyUpRight"};
-
-// English version...
-const char *iJoystickStickSwitch2[9] = {"JoyDownLeft",
-	"JoyDown",
-	"JoyDownRight",
-	"JoyLeft",
-	"JoyCenter",
-	"JoyRight",
-	"JoyUpLeft",
-	"JoyUp",
-	"JoyUpRight"};
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
@@ -1052,13 +957,6 @@ void iInitControlObjects(void) {
 			index = i * iKEY_OBJECT_SIZE + j;
 			if (iControlsStr[index]) {
 				key = iGetControlCode(i, j);
-				// NEED Full Rewrite
-				/*if(!(key & iJOYSTICK_MASK)){
-					str = iGetKeyNameText(key,lang());
-				}
-				else {
-					str = iGetJoyBtnNameText(key,lang());
-				}*/
 				str = iGetKeyNameText(key, lang(), true);
 
 				if (str) {
@@ -2281,52 +2179,6 @@ void iPreparePlayerResults(int id) {
 const char *STR_NONE1 = "NONE";
 const char STR_NONE2[] = {(char)0x8D, (char)0x85, (char)0x92, (char)0x00}; // cp866 - НЕТ
 
-const char *STR_JOYSTICK_KEY_NAME[] = {"jbutton_1",
-	"jbutton_2",
-	"jbutton_3",
-	"jbutton_4",
-	"jbutton_5",
-	"jbutton_6",
-	"jbutton_7",
-	"jbutton_8",
-	"jbutton_9",
-	"jbutton_10",
-	"jbutton_11",
-	"jbutton_12",
-	"jbutton_13",
-	"jbutton_14",
-	"jbutton_15",
-	"jbutton_16",
-	"jbutton_17",
-	"jbutton_18",
-	"jbutton_19",
-	"jbutton_20",
-	"jbutton_21"};
-
-const char *get_joystick_hat_name(int key) {
-	switch (key) {
-	case SDL_HAT_CENTERED:
-		return "jhat_centered";
-	case SDL_HAT_UP:
-		return "jhat_up";
-	case SDL_HAT_RIGHT:
-		return "jhat_right";
-	case SDL_HAT_DOWN:
-		return "jhat_down";
-	case SDL_HAT_LEFT:
-		return "jhat_left";
-	case SDL_HAT_RIGHTUP:
-		return "jhat_rightup";
-	case SDL_HAT_RIGHTDOWN:
-		return "jhat_rightdown";
-	case SDL_HAT_LEFTUP:
-		return "jhat_leftup";
-	case SDL_HAT_LEFTDOWN:
-		return "jhat_leftdown";
-	}
-	return "jhat_unknow";
-}
-
 const char *iGetKeyNameText(int vkey, Language lang, bool scan) {
 	// std::cout<<"iGetKeyNameText:"<<vkey<<" lang:"<<lang<<std::endl;
 	/*char* ret = NULL;
@@ -2343,15 +2195,8 @@ const char *iGetKeyNameText(int vkey, Language lang, bool scan) {
 			return STR_NONE1;
 		}
 	}
-	if (vkey & SDLK_JOYSTICK_BUTTON_MASK) {
-		if ((vkey ^ SDLK_JOYSTICK_BUTTON_MASK) < 20)
-			return STR_JOYSTICK_KEY_NAME[vkey ^ SDLK_JOYSTICK_BUTTON_MASK];
-		else
-			return "jbutton_unknow";
-	} else if (vkey & SDLK_GAMEPAD_BUTTON_MASK) {
+	if (vkey & SDLK_GAMEPAD_BUTTON_MASK) {
 		return SDL_GetGamepadStringForButton((SDL_GamepadButton)(vkey ^ SDLK_GAMEPAD_BUTTON_MASK));
-	} else if (vkey & SDLK_JOYSTICK_HAT_MASK) {
-		return get_joystick_hat_name((vkey ^ SDLK_JOYSTICK_HAT_MASK) % 10);
 	} else if (vkey & SDLK_SCANCODE_MASK) {
 		return SDL_GetKeyName(vkey);
 	} else if (scan) {
@@ -2359,27 +2204,6 @@ const char *iGetKeyNameText(int vkey, Language lang, bool scan) {
 	} else {
 		return SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)vkey, SDL_KMOD_NONE, false));
 	}
-}
-
-const char *iGetJoyBtnNameText(int vkey, Language lang) {
-	const char *ret;
-	if (vkey & VK_BUTTON) {
-		if (vkey >= VK_BUTTON_1 && vkey <= VK_BUTTON_32) {
-			ret = (lang == RUSSIAN) ? iJoystickButtons2[vkey - VK_BUTTON_1]
-									: iJoystickButtons1[vkey - VK_BUTTON_1];
-			return ret;
-		} else
-			return NULL; // WARNING NEED VIEW!!!
-	}
-	if (vkey & VK_STICK_SWITCH) {
-		if (vkey >= VK_STICK_SWITCH_1 && vkey <= VK_STICK_SWITCH_9) {
-			ret = (lang == RUSSIAN) ? iJoystickStickSwitch2[vkey - VK_STICK_SWITCH_1]
-									: iJoystickStickSwitch1[vkey - VK_STICK_SWITCH_1];
-			return ret;
-		} else
-			return NULL; // WARNING NEED VIEW!!!
-	}
-	return NULL; // WARNING NEED VIEW!!!
 }
 
 void iPrepareHallOfFame(void) {

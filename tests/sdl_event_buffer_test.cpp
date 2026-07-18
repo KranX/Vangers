@@ -5,6 +5,9 @@
 #include <iostream>
 
 void set_key_handlers(void (*)(SDL_Event *), void (*)(SDL_Event *)) {}
+bool XGamepadOwnsEvent(const SDL_Event &event) {
+	return event.gbutton.which == 42;
+}
 
 namespace {
 
@@ -53,8 +56,33 @@ bool test_ring_slots_own_independent_text() {
 	return check(buffer.get() == nullptr, "empty ring buffer returned an event");
 }
 
+bool test_only_active_gamepad_events_are_buffered() {
+	KeyBuffer buffer;
+	KeyBuf = &buffer;
+
+	SDL_Event event{};
+	event.type = SDL_EVENT_GAMEPAD_BUTTON_DOWN;
+	event.gbutton.which = 7;
+	key(&event);
+	if (!check(buffer.size == 0, "inactive gamepad event was buffered"))
+		return false;
+
+	event.gbutton.which = 42;
+	key(&event);
+	if (!check(buffer.size == 1, "active gamepad event was not buffered") ||
+		!check(buffer.get()->gbutton.which == 42, "buffered gamepad event changed"))
+		return false;
+
+	event.type = SDL_EVENT_GAMEPAD_BUTTON_UP;
+	key(&event);
+	return check(buffer.size == 0, "gamepad button release was buffered as a binding press");
+}
+
 } // namespace
 
 int main() {
-	return test_text_input_ownership() && test_ring_slots_own_independent_text() ? 0 : 1;
+	return test_text_input_ownership() && test_ring_slots_own_independent_text() &&
+				   test_only_active_gamepad_events_are_buffered()
+			   ? 0
+			   : 1;
 }

@@ -5,6 +5,7 @@ include_directories(
 )
 
 ADD_LIBRARY(vangers_settings STATIC
+	settings/gamepad_mapping.cpp
 	settings/input_binding.cpp
 	settings/legacy_settings_import.cpp
 	settings/settings.cpp
@@ -83,7 +84,7 @@ SET(vangers_SRCS
 	uvs/diagen.cpp
 	uvs/screen.cpp
 	uvs/univang.cpp
-	xjoystick.cpp
+	xgamepad.cpp
 	xsocket.cpp
 	zmod_client.cpp
 	${WINDOWS_RES}

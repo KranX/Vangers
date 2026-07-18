@@ -97,9 +97,10 @@ void load_bindings(
 	const TomlValue *table = find_value(root, path);
 	if (!table || !table->is_table())
 		return;
-	for (auto &[action, bindings] : out) {
+	for (const auto &[action, entry] : table->as_table(std::nothrow)) {
+		(void)entry;
 		if (const auto value = read_bindings(*table, action))
-			bindings = *value;
+			out[action] = *value;
 	}
 }
 
