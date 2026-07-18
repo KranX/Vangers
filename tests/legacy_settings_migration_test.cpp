@@ -255,6 +255,10 @@ void test_controls_versions_and_binding_vocabulary() {
 	CHECK(keyboard_binding_code("left_ctrl") == SDL_SCANCODE_LCTRL);
 	CHECK(gamepad_binding_code("touchpad") == (SDL_GAMEPAD_BUTTON_TOUCHPAD | (1 << 27)));
 	CHECK(!keyboard_binding_code("localized key name"));
+	CHECK(!keyboard_binding_code("scancode:0"));
+	CHECK(!keyboard_binding_code("scancode:-1"));
+	CHECK(!keyboard_binding_code("scancode:512x"));
+	CHECK(!keyboard_binding_code("scancode:" + std::to_string(SDL_SCANCODE_COUNT)));
 	CHECK(legacy_control_action_id("chat") == 35);
 	CHECK(!legacy_control_action_id("joystick_switch"));
 }
@@ -262,14 +266,30 @@ void test_controls_versions_and_binding_vocabulary() {
 void test_stable_binding_names_round_trip() {
 	for (int scancode = 1; scancode < SDL_SCANCODE_COUNT; ++scancode) {
 		const DecodedLegacyBinding decoded = decode_legacy_control_code(scancode);
-		if (decoded.kind == LegacyBindingKind::Keyboard)
-			CHECK(keyboard_binding_code(decoded.name) == scancode);
+		CHECK(decoded.kind == LegacyBindingKind::Keyboard);
+		CHECK(keyboard_binding_code(decoded.name) == scancode);
 	}
 	for (int button = 0; button < SDL_GAMEPAD_BUTTON_COUNT; ++button) {
 		const int legacy_code = button | (1 << 27);
 		const DecodedLegacyBinding decoded = decode_legacy_control_code(legacy_code);
 		CHECK(decoded.kind == LegacyBindingKind::Gamepad);
 		CHECK(gamepad_binding_code(decoded.name) == legacy_code);
+	}
+
+	CHECK(decode_legacy_control_code(SDL_SCANCODE_A).name == "a");
+	CHECK(decode_legacy_control_code(SDL_SCANCODE_0).name == "0");
+	CHECK(decode_legacy_control_code(SDL_SCANCODE_F24).name == "f24");
+	CHECK(decode_legacy_control_code(SDL_SCANCODE_LEFT).name == "left");
+	CHECK(
+		decode_legacy_control_code(SDL_SCANCODE_INTERNATIONAL1).name ==
+		"scancode:" + std::to_string(SDL_SCANCODE_INTERNATIONAL1)
+	);
+
+	const GameSettings defaults = default_settings();
+	for (const auto &[action, bindings] : defaults.input.keyboard.bindings) {
+		(void)action;
+		for (const std::string &binding : bindings)
+			CHECK(keyboard_binding_code(binding));
 	}
 }
 
