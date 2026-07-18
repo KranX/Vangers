@@ -526,6 +526,11 @@ void AVIDrawFrame(
 			destination,
 			destination_lines
 		);
+		for (int y = 0; y < file->rgbaHeight; y++) {
+			uint32_t *row = reinterpret_cast<uint32_t *>(file->rgbaFrame + y * file->rgbaLineSize);
+			for (int x = 0; x < file->rgbaWidth; x++)
+				row[x] |= 0xFF000000u;
+		}
 		file->converted = 1;
 	}
 
