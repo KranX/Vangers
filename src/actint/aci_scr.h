@@ -446,6 +446,5 @@ void acsFreeResource(aciScreenResource *p);
 aciScreenObject *acsAllocObject(int type);
 void acsFreeObject(aciScreenObject *p);
 int sdlEventToCode(SDL_Event *event);
-unsigned char UTF8toCP866(unsigned short utf);
 
 #endif

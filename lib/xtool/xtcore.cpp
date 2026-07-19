@@ -172,6 +172,13 @@ int main(int argc, char *argv[]) {
 			} else {
 				std::cout << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
 			}
+		} else if (cmd_key == "--compile-iscreen") {
+			if (i + 2 < argc) {
+				i += 2;
+			} else {
+				std::cout << "Invalid parameter usage: '--compile-iscreen source output' expected"
+						  << std::endl;
+			}
 		} else {
 			std::cout << "Unknown parameter: '" << cmd_key << "'" << std::endl;
 		}
@@ -305,18 +312,6 @@ int xtCallXKey(SDL_Event *m) {
 			(*press_handler)(m);
 		}
 		break;
-	case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
-		// std::cout<<"jevent down button:"<<(int)m->jbutton.button<<std::endl;
-		if (press_handler) {
-			(*press_handler)(m);
-		}
-		break;
-	case SDL_EVENT_JOYSTICK_BUTTON_UP:
-		// std::cout<<"jevent up"<<std::endl;
-		if (unpress_handler) {
-			(*unpress_handler)(m);
-		}
-		break;
 	case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
 		// std::cout<<"CONTROLLERBUTTONDOWN"<<std::endl;
 		if (press_handler) {
@@ -328,15 +323,6 @@ int xtCallXKey(SDL_Event *m) {
 		if (unpress_handler) {
 			(*unpress_handler)(m);
 		}
-		break;
-	case SDL_EVENT_JOYSTICK_HAT_MOTION:
-		if (press_handler) {
-			(*press_handler)(m);
-		}
-		break;
-	case SDL_EVENT_JOYSTICK_BALL_MOTION:
-		break;
-	case SDL_EVENT_JOYSTICK_AXIS_MOTION:
 		break;
 	case SDL_EVENT_MOUSE_WHEEL:
 		if (press_handler) {
@@ -526,10 +512,11 @@ void xtClearMessageQueue(void) {
 		switch (event.type) {
 		case SDL_EVENT_KEY_DOWN:
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-		case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+		case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
 		case SDL_EVENT_MOUSE_MOTION:
 		case SDL_EVENT_MOUSE_BUTTON_UP:
 		case SDL_EVENT_KEY_UP:
+		case SDL_EVENT_GAMEPAD_BUTTON_UP:
 			XMsgBuf->put(&event);
 			break;
 		default:

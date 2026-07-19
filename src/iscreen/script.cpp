@@ -138,10 +138,6 @@ void ScriptFileBuffer::load(XStream *fh) {
 	fh->read(buffer, size);
 }
 
-void ScriptFileBuffer::save(XStream *fh) {
-	fh->write(buffer, size);
-}
-
 void ScriptLine::merge(ScriptBlock *p, ScriptBlock *beg, ScriptBlock *end) {
 	ScriptBlock *p1, *tmp = beg;
 
@@ -323,12 +319,12 @@ void ScriptFile::next(void) {
 void ScriptFile::strip_comments(void) {
 	int i, offs;
 	while (SeekComm(CPP_COMMENT)) {
-		if ((offs = SeekCommPos(CPP_COMMENT_END)) != -1) {
-			for (i = 0; i < offs + 2; i++)
+		if ((offs = SeekCharPos('\n')) != -1) {
+			for (i = 0; i <= offs; i++)
 				if (cur_ptr[i] != '\n')
 					cur_ptr[i] = 0;
-			cur_ptr += offs + 2;
-			CurOffs += offs + 2;
+			cur_ptr += offs + 1;
+			CurOffs += offs + 1;
 		} else
 			handle_error("Bad script comment");
 
@@ -612,7 +608,7 @@ void ScriptFile::remove_line(ScriptLine *p) {
 }
 
 void ScriptFile::preprocess(void) {
-	int cur_line_id = 0;
+	int cur_line_id = 0, token_size;
 	ScriptLine *line = NULL;
 	ScriptBlock *p;
 
@@ -625,6 +621,8 @@ void ScriptFile::preprocess(void) {
 	while (CurOffs < Size) {
 		if (*cur_ptr == '\n') {
 			*cur_ptr = 0;
+			cur_ptr++;
+			CurOffs++;
 			cur_line_id++;
 			add_line(line);
 			line = new ScriptLine;
@@ -633,8 +631,27 @@ void ScriptFile::preprocess(void) {
 			_sALLOC_(ScriptBlock, p);
 			p->data = cur_ptr;
 			line->connect(p);
+
+			token_size = 0;
+			while (
+				CurOffs + token_size < Size && cur_ptr[token_size] && cur_ptr[token_size] != '\n')
+				token_size++;
+
+			if (CurOffs + token_size < Size && cur_ptr[token_size] == '\n') {
+				cur_ptr[token_size] = 0;
+				cur_ptr += token_size + 1;
+				CurOffs += token_size + 1;
+				cur_line_id++;
+				add_line(line);
+				line = new ScriptLine;
+				line->ID = cur_line_id;
+			} else {
+				next();
+			}
 		}
-		next();
+
+		if (CurOffs < Size && !*cur_ptr)
+			next();
 	}
 }
 
@@ -1152,18 +1169,35 @@ int ScriptFile::process_includes(void) {
 	if (!NumBufs)
 		return 0;
 
-	fh.open("iscreen/temp.scr", XS_OUT);
+	int merged_size = Size;
+	b = fBuf;
 	for (i = 0; i < NumBufs; i++) {
-		if (offs != b->offset)
-			fh.write(buffer + offs, b->offset - offs);
+		merged_size += b->size - b->offset_size;
+		b = b->next;
+	}
+
+	char *merged_buffer = new char[merged_size];
+	int merged_offs = 0;
+	b = fBuf;
+	for (i = 0; i < NumBufs; i++) {
+		if (offs != b->offset) {
+			memcpy(merged_buffer + merged_offs, buffer + offs, b->offset - offs);
+			merged_offs += b->offset - offs;
+		}
 		offs = b->offset + b->offset_size;
-		b->save(&fh);
+		memcpy(merged_buffer + merged_offs, b->buffer, b->size);
+		merged_offs += b->size;
 
 		b = b->next;
 	}
-	fh.write(buffer + offs, Size - offs);
-	fh.close();
+	memcpy(merged_buffer + merged_offs, buffer + offs, Size - offs);
+	merged_offs += Size - offs;
+	if (merged_offs != merged_size)
+		ErrH.Abort("Internal include processing error...");
+
 	delete[] buffer;
+	buffer = merged_buffer;
+	Size = merged_size;
 
 	b = lBuf;
 	while (b) {
@@ -1174,11 +1208,6 @@ int ScriptFile::process_includes(void) {
 	NumBufs = 0;
 	fBuf = lBuf = NULL;
 
-	fh.open("iscreen/temp.scr", XS_IN);
-	Size = fh.size();
-	buffer = new char[Size];
-	fh.read(buffer, Size);
-	fh.close();
 	reset();
 
 	return ret;

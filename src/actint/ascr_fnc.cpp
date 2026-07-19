@@ -7544,6 +7544,10 @@ int sdlEventToCode(SDL_Event *event) {
 		case SDL_BUTTON_RIGHT:
 			return iMOUSE_RIGHT_PRESS_CODE;
 		}
+		break;
+	case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+	case SDL_EVENT_GAMEPAD_BUTTON_UP:
+		return event->gbutton.button | SDLK_GAMEPAD_BUTTON_MASK;
 	case SDL_EVENT_MOUSE_MOTION:
 		if (event->motion.state & SDL_BUTTON_LMASK)
 			return iMOUSE_LEFT_MOVE;

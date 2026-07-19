@@ -4,6 +4,24 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xsound"
 )
 
+ADD_LIBRARY(vangers_settings STATIC
+	settings/gamepad_mapping.cpp
+	settings/input_binding.cpp
+	settings/legacy_settings_import.cpp
+	settings/settings.cpp
+	settings/settings_io.cpp
+	settings/text_encoding.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(vangers_settings PUBLIC
+	"${PROJECT_SOURCE_DIR}/src"
+)
+
+TARGET_LINK_LIBRARIES(vangers_settings PRIVATE
+	SDL3::SDL3
+	toml11::toml11
+)
+
 SET(vangers_SRCS
 	3d/3d_math.cpp
 	3d/3dgraph.cpp
@@ -31,6 +49,7 @@ SET(vangers_SRCS
 	iscreen/iscript.cpp
 	iscreen/ivmap.cpp
 	iscreen/script.cpp
+	iscreen/settings_adapter.cpp
 	iscreen/smooth.cpp
 	network.cpp
 	palette.cpp
@@ -65,7 +84,7 @@ SET(vangers_SRCS
 	uvs/diagen.cpp
 	uvs/screen.cpp
 	uvs/univang.cpp
-	xjoystick.cpp
+	xgamepad.cpp
 	xsocket.cpp
 	zmod_client.cpp
 	${WINDOWS_RES}
@@ -90,24 +109,55 @@ else()
 
 endif(ANDROID)
 
-TARGET_LINK_LIBRARIES(vangers PRIVATE
-	SDL3::SDL3
-	SDL3_net::SDL3_net
-	Clunk::Clunk
-	${OGG_LIBRARY}
-	${VORBIS_LIBRARY}
-	${VORBISFILE_LIBRARY}
-	${FFMPEG_LIBRARIES}
-	${ZLIB_LIBRARIES}
-	${OPENGL_LIBRARIES}
-	${WIN_LIB}
-	${STEAM_LIBS}
-)
+IF(BINARY_SCRIPT)
+	TARGET_COMPILE_DEFINITIONS(vangers PRIVATE _BINARY_SCRIPT_)
+ENDIF()
+
+function(CONFIGURE_VANGERS_TARGET target_name)
+	TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+		vangers_settings
+		SDL3::SDL3
+		SDL3_net::SDL3_net
+		Clunk::Clunk
+		${OGG_LIBRARY}
+		${VORBIS_LIBRARY}
+		${VORBISFILE_LIBRARY}
+		${FFMPEG_LIBRARIES}
+		${ZLIB_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		${WIN_LIB}
+		${STEAM_LIBS}
+	)
+
+	if (NOT ANDROID)
+		TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+			xtool
+			xgraph
+			xsound
+		)
+	endif()
+endfunction()
+
+CONFIGURE_VANGERS_TARGET(vangers)
 
 if (NOT ANDROID)
-	TARGET_LINK_LIBRARIES(vangers PRIVATE
-		xtool
-		xgraph
-		xsound
+	ADD_EXECUTABLE(vangers_iscreen_compiler EXCLUDE_FROM_ALL
+		${vangers_SRCS}
+		iscreen/script_compiler.cpp
+	)
+	TARGET_COMPILE_DEFINITIONS(vangers_iscreen_compiler PRIVATE ISCREEN_SCRIPT_COMPILER)
+	CONFIGURE_VANGERS_TARGET(vangers_iscreen_compiler)
+
+	ADD_CUSTOM_TARGET(compile_iscreen_scripts
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-iscreen
+			iscreen/oftr.scr resource/iscreen/oftr.scb
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-iscreen
+			iscreen/oftr2.scr resource/iscreen/oftr2.scb
+		DEPENDS vangers_iscreen_compiler
+		COMMENT "Compiling English and Russian interface scripts"
+		USES_TERMINAL
+		VERBATIM
 	)
 endif()

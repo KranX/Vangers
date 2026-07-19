@@ -2,6 +2,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../xgamepad.h"
 
 #include "ikeys.h"
 
@@ -27,7 +28,8 @@ void KBD_init(void) {
 void key(SDL_Event *key) {
 	if (KeyBuf->flag & KBD_ENABLE &&
 		(key->type == SDL_EVENT_KEY_DOWN || key->type == SDL_EVENT_TEXT_INPUT ||
-			key->type == SDL_EVENT_MOUSE_WHEEL)) {
+			key->type == SDL_EVENT_MOUSE_WHEEL ||
+			(key->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN && XGamepadOwnsEvent(*key)))) {
 		KeyBuf->put(key, CUR_KEY_PRESSED);
 	}
 }

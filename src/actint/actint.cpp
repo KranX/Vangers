@@ -5135,6 +5135,19 @@ void actIntDispatcher::iKeyTrap(int cd) {
 	fncMenu *m;
 	if (!NetworkON)
 		aciCHandler(cd);
+	if ((flags & AS_ISCREEN_INV_MODE) && (cd == SDL_SCANCODE_UP || cd == SDL_SCANCODE_DOWN)) {
+		m = get_imenu(SHOP_ITEMS_MENU_ID);
+		if (m && (m->flags & FM_ACTIVE) && m->curItem) {
+			if (cd == SDL_SCANCODE_UP)
+				m->step_up();
+			else
+				m->step_down();
+			m->set_redraw();
+			aciSetShopItem(m->curFunction);
+			aciInitShopAvi();
+			SOUND_SELECT();
+		}
+	}
 	if (!(flags & AS_ISCREEN_INV_MODE)) {
 		m = (fncMenu *)i_menuList->last;
 		while (m) {

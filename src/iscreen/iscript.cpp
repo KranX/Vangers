@@ -49,7 +49,7 @@ void link_object(void);
 void new_object(int tp);
 void new_element(void);
 void init_command(int code);
-void build_links(void);
+void build_links(bool initialize_objects);
 void init_objects(void);
 
 void load_text(char *fname);
@@ -412,7 +412,7 @@ iStackElement *iStack::get(void) {
 	return heap[curSize];
 }
 
-void ParseScript(const char *fname, const char *bname) {
+void ParseScript(const char *fname, const char *bname, bool initialize_objects) {
 	int id, t_id = 0, st = 0;
 
 	iScanCode *cd;
@@ -999,7 +999,7 @@ void ParseScript(const char *fname, const char *bname) {
 			script->next_ptr();
 #endif
 	}
-	build_links();
+	build_links(initialize_objects);
 	free_hfonts();
 
 #ifdef _SAVE_BINARY_SCRIPT_
@@ -1325,7 +1325,7 @@ void init_command(int code) {
 	}
 }
 
-void build_links(void) {
+void build_links(bool initialize_objects) {
 	int id;
 
 	iScreenEventCommand *p;
@@ -1417,7 +1417,8 @@ void build_links(void) {
 	if (id == -1) {
 		handle_error("Object not found", iScrDisp->t_scrID);
 	}
-	init_objects();
+	if (initialize_objects)
+		init_objects();
 	iScrDisp->curScr = (iScreen *)ObjTable[id];
 }
 

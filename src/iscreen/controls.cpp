@@ -1,36 +1,25 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../settings/input_binding.h"
+#include "../settings/settings.h"
 
-#include "../xjoystick.h"
+#include "../xgamepad.h"
 
 #include "controls.h"
 #include "hfont.h"
 #include "ikeys.h"
 #include "iscreen.h"
+#include "settings_adapter.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
-
-// flags...
-#define iKEY_NO_RESET 0x01
 
 struct iKeyControls {
 	int *keyCodes;
 	int *defaultCodes;
-	int *flags;
 
 	void init(void);
 	void reset(void);
-
-	void setFlag(int id, int fl) {
-		flags[id] |= fl;
-	}
-	void dropFlag(int id, int fl) {
-		flags[id] &= ~fl;
-	}
-	void clearFlag(int id) {
-		flags[id] = 0;
-	}
 
 	void addCode(int id, int key, int num = 0);
 	void removeCode(int id, int num = 0);
@@ -50,7 +39,6 @@ void iInitControlObjects(void);
 
 /* --------------------------- DEFINITION SECTION --------------------------- */
 
-int iKeyFirstInit = 0;
 iKeyControls *iControlsObj = NULL;
 
 void iInitControls(void) {
@@ -67,8 +55,15 @@ int iGetKeyID(int key) {
 }
 
 int iCheckKeyID(int id, int key) {
-	if (iControlsObj)
-		return iControlsObj->CheckID(id, key);
+	if (iControlsObj && iControlsObj->CheckID(id, key))
+		return 1;
+	if ((key & SDLK_GAMEPAD_BUTTON_MASK) != 0) {
+		const char *action = vangers::settings::legacy_control_action_name(id);
+		if (action) {
+			const auto button = static_cast<SDL_GamepadButton>(key ^ SDLK_GAMEPAD_BUTTON_MASK);
+			return XGamepadButtonMatchesAction(action, button) ? 1 : 0;
+		}
+	}
 	return 0;
 }
 
@@ -88,19 +83,15 @@ void iKeyControls::init(void) {
 
 	// Utility
 	addDefaultCode(iKEY_OPEN, SDL_SCANCODE_SPACE);
-	// addDefaultCode(iKEY_OPEN,VK_STICK_SWITCH_2,1);
 	addDefaultCode(iKEY_INVENTORY, SDL_SCANCODE_RETURN);
-	// addDefaultCode(iKEY_INVENTORY,VK_STICK_SWITCH_3,1);
 	addDefaultCode(iKEY_TURN_OVER_LEFT, SDL_SCANCODE_A);
 	//	addDefaultCode(iKEY_TURN_OVER_LEFT,SDL_SCANCODE_COMMA,1);
 	addDefaultCode(iKEY_TURN_OVER_RIGHT, SDL_SCANCODE_D);
 	//	addDefaultCode(iKEY_TURN_OVER_RIGHT,SDL_SCANCODE_PERIOD,1);
 	addDefaultCode(iKEY_DEVICE_ON, SDL_SCANCODE_R);
 	addDefaultCode(iKEY_DEVICE_ON, SDL_SCANCODE_PAGEUP, 1);
-	// addDefaultCode(iKEY_DEVICE_ON,VK_STICK_SWITCH_9,1);
 	addDefaultCode(iKEY_DEVICE_OFF, SDL_SCANCODE_F);
 	addDefaultCode(iKEY_DEVICE_OFF, SDL_SCANCODE_PAGEDOWN, 1);
-	// addDefaultCode(iKEY_DEVICE_OFF,VK_STICK_SWITCH_7,1);
 
 	// Combat
 	addDefaultCode(iKEY_FIRE_ALL_WEAPONS, SDL_SCANCODE_E);
@@ -112,7 +103,6 @@ void iKeyControls::init(void) {
 	addDefaultCode(iKEY_FIRE_WEAPON3, SDL_SCANCODE_3);
 	addDefaultCode(iKEY_USE_VECTOR, SDL_SCANCODE_V);
 	addDefaultCode(iKEY_CHANGE_TARGET, SDL_SCANCODE_TAB);
-	// addDefaultCode(iKEY_CHANGE_TARGET,VK_STICK_SWITCH_1,1);
 
 	// Camera
 	addDefaultCode(iKEY_FULLSCREEN, SDL_SCANCODE_F1);
@@ -132,30 +122,11 @@ void iKeyControls::init(void) {
 	//	addDefaultCode(iKEY_REDUCE_VIEW,SDL_SCANCODE_F2);
 	//	addDefaultCode(iKEY_ENLARGE_VIEW,SDL_SCANCODE_F3);
 
-	// Not found in the available controls settings
-	//	  addDefaultCode(iKEY_VERTICAL_THRUST,'Z');
-	addDefaultCode(iKEY_JOYSTICK_SWITCH, VK_BUTTON_1);
-	setFlag(iKEY_JOYSTICK_SWITCH, iKEY_NO_RESET);
-
 	reset();
 }
 
 void iKeyControls::reset(void) {
-	int i;
-	if (iKeyFirstInit) {
-		for (i = 0; i < iKEY_MAX_ID; i++) {
-			if (!(flags[i] & iKEY_NO_RESET)) {
-				memcpy(
-					keyCodes + i * iKEY_OBJECT_SIZE,
-					defaultCodes + i * iKEY_OBJECT_SIZE,
-					iKEY_OBJECT_SIZE * sizeof(int)
-				);
-			}
-		}
-	} else {
-		memcpy(keyCodes, defaultCodes, iKEY_OBJECT_SIZE * iKEY_MAX_ID * sizeof(int));
-		iKeyFirstInit = 1;
-	}
+	memcpy(keyCodes, defaultCodes, iKEY_OBJECT_SIZE * iKEY_MAX_ID * sizeof(int));
 }
 
 void iKeyControls::addDefaultCode(int id, int key, int num) {
@@ -212,68 +183,55 @@ int iGetControlCode(int id, int num) {
 }
 
 void iResetControls(void) {
-	if (iControlsObj)
-		iControlsObj->reset();
+	if (!iControlsObj)
+		return;
+
+	vangers::settings::SettingsManager &manager = vangers::settings::settings_manager();
+	if (!manager.is_loaded())
+		manager.load();
+	vangers::settings::reset_input_bindings_to_defaults(manager.get_mutable());
+	vangers::settings::apply_settings_to_controls();
 }
 
 iKeyControls::iKeyControls(void) {
 	keyCodes = new int[iKEY_OBJECT_SIZE * iKEY_MAX_ID];
 	defaultCodes = new int[iKEY_OBJECT_SIZE * iKEY_MAX_ID];
-	flags = new int[iKEY_MAX_ID];
 
 	memset(keyCodes, 0, iKEY_OBJECT_SIZE * iKEY_MAX_ID * sizeof(int));
 	memset(defaultCodes, 0, iKEY_OBJECT_SIZE * iKEY_MAX_ID * sizeof(int));
-	memset(flags, 0, iKEY_MAX_ID * sizeof(int));
 }
 
 void iSaveControls(void) {
 	if (!iControlsObj)
 		return;
-	XStream fh("controls.dat", XS_OUT);
-	fh < (int)iKEY_MAX_ID < (int)iKEY_OBJECT_SIZE;
-	fh.write(iControlsObj->keyCodes, iKEY_OBJECT_SIZE * iKEY_MAX_ID * sizeof(int));
-	fh.close();
+	vangers::settings::capture_settings_from_controls();
+	vangers::settings::save_settings();
 }
 
 void iLoadControls(void) {
-	int sz0, sz1;
 	if (!iControlsObj)
 		return;
-
-	XStream fh(0);
-	if (!fh.open("controls.dat", XS_IN))
-		return;
-
-	fh > sz0 > sz1;
-	if (sz0 != iKEY_MAX_ID || sz1 != iKEY_OBJECT_SIZE) {
-		fh.close();
-		return;
-	}
-	fh.read(iControlsObj->keyCodes, iKEY_OBJECT_SIZE * iKEY_MAX_ID * sizeof(int));
-	fh.close();
+	vangers::settings::apply_settings_to_controls();
 	iInitControlObjects();
 }
 
 int iKeyPressed(int id) {
 	int i, code, state = 0;
-	SDL_Joystick *joy = get_joystick();
-	SDL_Gamepad *gamepad = get_gamepad();
 
 	if (!iControlsObj)
 		return 0;
+	if (const char *action = vangers::settings::legacy_control_action_name(id);
+		action && XGamepadActionPressed(action)) {
+		return 1;
+	}
 	for (i = 0; i < iKEY_OBJECT_SIZE; i++) {
 		code = iControlsObj->getCode(id, i);
 		// std::cout<<"iKeyPressed code:"<<(int)code<<" id:"<<id<<" i:"<<i<<std::endl;
 		if (code) {
-			if (code & SDLK_JOYSTICK_BUTTON_MASK && joy) {
-				state = SDL_GetJoystickButton(joy, code ^ SDLK_JOYSTICK_BUTTON_MASK);
-			} else if (code & SDLK_GAMEPAD_BUTTON_MASK && gamepad) {
-				state = SDL_GetGamepadButton(
-					gamepad, (SDL_GamepadButton)(code ^ SDLK_GAMEPAD_BUTTON_MASK)
+			if (code & SDLK_GAMEPAD_BUTTON_MASK) {
+				state = XGamepadButtonPressed(
+					static_cast<SDL_GamepadButton>(code ^ SDLK_GAMEPAD_BUTTON_MASK)
 				);
-			} else if (code & SDLK_JOYSTICK_HAT_MASK && joy) {
-				state = SDL_GetJoystickHat(joy, (code ^ SDLK_JOYSTICK_HAT_MASK) / 10) ==
-						(code ^ SDLK_JOYSTICK_HAT_MASK) % 10;
 			} else if (code & SDLK_SCANCODE_MASK) {
 				state = SDL_GetKeyboardState(NULL)[SDL_GetScancodeFromKey(code, nullptr)];
 			} else {
@@ -285,8 +243,4 @@ int iKeyPressed(int id) {
 		}
 	}
 	return 0;
-}
-
-char *iGetJoystickButtonName(int vkey) {
-	return NULL;
 }

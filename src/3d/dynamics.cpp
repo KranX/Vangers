@@ -1,10 +1,13 @@
+#include <algorithm>
 #include <cmath>
 
 #include "../global.h"
 #include "../runtime.h"
+#include "../settings/gamepad_mapping.h"
 #include "general.h"
+#include "traction_control.h"
 
-#include "../xjoystick.h"
+#include "../xgamepad.h"
 
 #include "../common.h"
 
@@ -110,11 +113,19 @@ static inline int traction_control_step_ticks(void) {
 	return ticks > 0 ? ticks : 1;
 }
 
-static inline bool traction_control_legacy_step(void) {
+static inline bool traction_control_input_step(void) {
 #ifdef _SURMAP_
 	return 1;
 #else
-	return !(frame % traction_control_step_ticks());
+	return vangers::physics::traction_control_input_step(frame, traction_control_step_ticks());
+#endif
+}
+
+static inline bool traction_control_decay_step(void) {
+#ifdef _SURMAP_
+	return 1;
+#else
+	return vangers::physics::traction_control_decay_step(frame, traction_control_step_ticks());
 #endif
 }
 
@@ -408,7 +419,6 @@ int STANDART_FRAME_RATE = 14;
 double speed_correction_factor = 1;
 double speed_correction_tau = 0.01;
 
-Uint64 last_keyboard_touch;
 int terrain_analysis_flag;
 int non_loaded_space;
 
@@ -2383,6 +2393,8 @@ void Object::dynamics_init(char *name) {
 	// draw_mode = TRANSPARENCY_DRAW_MODE;
 	device_switch_latency = 0;
 	prev_controls = current_controls = 0;
+	network_analog_rudder_target = 0;
+	network_analog_traction_target = 0;
 	last_send_time = 0;
 
 	helicopter = 0;
@@ -2527,7 +2539,7 @@ void Object::set_active(int on) {
 		Object movement control
 *******************************************************************************/
 void Object::motor_control(int dir) {
-	if (!traction_control_legacy_step())
+	if (!traction_control_input_step())
 		return;
 
 	int sign = SIGN(traction);
@@ -2542,7 +2554,7 @@ void Object::motor_control(int dir) {
 }
 void Object::brake_on() {
 	brake = 1;
-	if (traction_control_legacy_step())
+	if (traction_control_input_step())
 		traction = traction / 2;
 }
 void Object::steer(int dir) {
@@ -2892,7 +2904,6 @@ void Object::direct_keyboard_control() {
 			controls(CONTROLS::BRAKE_QUANT);
 		else
 			controls(CONTROLS::TRACTION_INCREASE);
-		last_keyboard_touch = SDL_GetTicks();
 	}
 	if (iKeyPressed(iKEY_MOVE_BACKWARD)) {
 		static int delay;
@@ -2902,7 +2913,6 @@ void Object::direct_keyboard_control() {
 			controls(CONTROLS::BRAKE_QUANT);
 		else
 			controls(CONTROLS::TRACTION_DECREASE);
-		last_keyboard_touch = SDL_GetTicks();
 	}
 
 	if (!aciAutoRun) {
@@ -2917,11 +2927,9 @@ void Object::direct_keyboard_control() {
 
 	if (iKeyPressed(iKEY_TURN_WHEELS_LEFT)) {
 		controls(CONTROLS::STEER_LEFT);
-		last_keyboard_touch = SDL_GetTicks();
 	}
 	if (iKeyPressed(iKEY_TURN_WHEELS_RIGHT)) {
 		controls(CONTROLS::STEER_RIGHT);
-		last_keyboard_touch = SDL_GetTicks();
 	}
 
 	if (iKeyPressed(iKEY_TURN_OVER_LEFT))
@@ -2948,73 +2956,63 @@ void Object::direct_keyboard_control() {
 }
 #endif
 
-void Object::direct_joystick_control() {
-	if (!XJoystickInput())
-		return;
+void Object::direct_gamepad_control() {
+	const float steering = XGamepadAxisValue("steering");
+	if (steering != 0.0f) {
+		current_controls |= NETWORK_CONTROL_ANALOG_STEERING_FLAG;
+		current_controls |= 1 << (steering < 0.0f ? CONTROLS::STEER_LEFT : CONTROLS::STEER_RIGHT);
+		network_analog_rudder_target = round(-steering * rudder_max);
+		controls(CONTROLS::STEER_BY_ANGLE, network_analog_rudder_target);
+		helicopter_strife = 0;
+	}
 
-	if (SDL_GetTicks() - last_keyboard_touch < 2000)
-		return;
-
-	int dx = XJoystickState.lX;
-	if (abs(dx) < RANGE_MAX / 16)
-		dx = 0;
-	int dy = XJoystickState.lY;
-	if (abs(dy) < RANGE_MAX / 16)
-		dy = 0;
-
-	if (!XJoystickState.rgbButtons[JoystickStickSwitchButton - VK_BUTTON_1])
-		switch (JoystickMode) {
-		case JOYSTICK_GamePad:
-			if (dy < 0) {
-				static int delay;
-				if (traction < 0)
-					delay = traction_reverse_delay_ticks();
-				if (delay-- > 0)
-					controls(CONTROLS::BRAKE_QUANT);
-				else
-					controls(CONTROLS::TRACTION_INCREASE);
-			}
-			if (dy > 0) {
-				static int delay;
-				if (traction > 0)
-					delay = traction_reverse_delay_ticks();
-				if (delay-- > 0)
-					controls(CONTROLS::BRAKE_QUANT);
-				else
-					controls(CONTROLS::TRACTION_DECREASE);
-			}
-
-			if (dx < 0)
-				controls(CONTROLS::STEER_LEFT);
-			if (dx > 0)
-				controls(CONTROLS::STEER_RIGHT);
-			break;
-
-		case JOYSTICK_Joystick:
-			traction = round(sqrt((double)(sqr(XJoystickState.lX) + sqr(XJoystickState.lY))));
-			if (dy > 0)
-				traction = -traction;
-			rudder = -XJoystickState.lX * rudder_max >> 8;
-			if (abs(traction) > 200)
-				controls(CONTROLS::TURBO_QUANT);
-			// if(abs(dx) > 200)
-			//	controls(CONTROLS::HAND_BRAKE_QUANT);
-			break;
-
-		case JOYSTICK_SteeringWheel:
-			traction = -XJoystickState.lY;
-			rudder = -XJoystickState.lX * rudder_max >> 8;
-			if (abs(dy) > 200)
-				controls(CONTROLS::TURBO_QUANT);
-			if (abs(dx) > 200)
-				controls(CONTROLS::HAND_BRAKE_QUANT);
-			break;
+	const float forward = XGamepadAxisValue("throttle_forward");
+	const float reverse = XGamepadAxisValue("throttle_reverse");
+	if (forward != 0.0f || reverse != 0.0f) {
+		const float throttle = vangers::settings::combine_gamepad_throttle(forward, reverse);
+		current_controls |= NETWORK_CONTROL_ANALOG_THROTTLE_FLAG;
+		if (throttle != 0.0f) {
+			current_controls |=
+				1 << (throttle > 0.0f ? CONTROLS::TRACTION_INCREASE : CONTROLS::TRACTION_DECREASE);
 		}
+		network_analog_traction_target = round(throttle * 256.0f);
+		traction = network_analog_traction_target;
+		// The full trigger range represents the complete useful speed range.
+		// Partial trigger pressure still gives proportional traction, while full
+		// pressure reaches the same turbo-assisted speed as keyboard acceleration.
+		if (throttle != 0.0f)
+			controls(CONTROLS::TURBO_QUANT);
+	}
+
+	// The right stick controls the cursor while an interface is visible. On the
+	// road it can safely provide the two remaining bidirectional vehicle actions.
+	if (!XGamepadIsControllingCursor()) {
+		const float roll = XGamepadAxisValue("roll");
+		if (roll < -XGAMEPAD_DIGITAL_AXIS_THRESHOLD)
+			controls(CONTROLS::LEFT_SIDE_IMPULSE);
+		else if (roll > XGAMEPAD_DIGITAL_AXIS_THRESHOLD)
+			controls(CONTROLS::RIGHT_SIDE_IMPULSE);
+
+		const float rig = XGamepadAxisValue("rig");
+		if (rig > XGAMEPAD_DIGITAL_AXIS_THRESHOLD)
+			controls(CONTROLS::VIRTUAL_UP);
+		else if (rig < -XGAMEPAD_DIGITAL_AXIS_THRESHOLD)
+			controls(CONTROLS::VIRTUAL_DOWN);
+	}
 }
 
 void Object::import_controls() {
+	// The live rudder and traction values decay during physics. Restore the last
+	// received analog targets every prediction frame, just as the local gamepad
+	// path reapplies its current axes before local physics.
+	if (current_controls & NETWORK_CONTROL_ANALOG_STEERING_FLAG)
+		controls(CONTROLS::STEER_BY_ANGLE, network_analog_rudder_target);
+	if (current_controls & NETWORK_CONTROL_ANALOG_THROTTLE_FLAG)
+		traction = network_analog_traction_target;
+
 	for (int i = 0; i < CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS; i++)
-		if (current_controls & (1 << i))
+		if ((current_controls & (1 << i)) &&
+			!network_control_uses_analog_value(current_controls, i))
 			controls(i);
 }
 /*******************************************************************************
@@ -3050,8 +3048,7 @@ void Object::analysis() {
 			entries_control();
 			if (!disable_control) {
 				direct_keyboard_control();
-				/*if(JoystickMode)
-					direct_joystick_control();*/
+				direct_gamepad_control();
 			}
 		}
 	}
@@ -3238,7 +3235,7 @@ void Object::mechous_analysis(double dt) {
 	} else
 		archimedean = 0;
 
-	if (traction_control_legacy_step()) {
+	if (traction_control_decay_step()) {
 		if (abs(traction) > traction_decrement)
 			if (traction > 0)
 				traction -= traction_decrement;
@@ -4809,8 +4806,15 @@ int Object::test_object_to_baseobject(BaseObject *bobj) {
 			return 1;
 		// fout <= k_destroy_level*Pabs/m2 < "\t";
 		// fout <= k_destroy_level*Pabs/m1 < "\n";
-		if (active || obj->active)
+		if (active || obj->active) {
 			SOUND_OBJECT_TO_OBJECT_COLLISION();
+			const double full_strength_impulse =
+				std::max(strong_double_collision_threshould * 4.0, 1.0);
+			const float strength =
+				std::clamp(static_cast<float>(Pabs / full_strength_impulse), 0.25f, 1.0f);
+			const Uint32 duration_ms = static_cast<Uint32>(80 + std::lround(strength * 100.0f));
+			XGamepadRumble(strength, strength * 0.35f, duration_ms);
+		}
 
 		int defense1, defense2;
 		int ram_power1, ram_power2;
@@ -5025,9 +5029,11 @@ void Object::NetEvent(int type, int id, int creator, int time, int x, int y, int
 	if (analysis_off)
 		analysis_off = 0;
 	current_controls = events_in.get_short();
-	mole_on = current_controls & (1 << CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS) ? 256 : 0;
+	mole_on = current_controls & NETWORK_CONTROL_MOLE_FLAG ? 256 : 0;
 	traction = round(unpack(events_in.get_byte(), Rz_pack_min, Rz_pack_max));
 	rudder = round(unpack(events_in.get_byte(), Rz_pack_min, Rz_pack_max));
+	network_analog_traction_target = traction;
+	network_analog_rudder_target = rudder;
 	helicopter = round(unpack(events_in.get_byte(), Rz_pack_min, Rz_pack_max));
 
 	DBV R_real;
@@ -5083,10 +5089,16 @@ void Object::NetEvent(int type, int id, int creator, int time, int x, int y, int
 	// speed = round(V.vabs());
 }
 void Object::Send(void) {
-	events_out <
-		(short)(current_controls | (mole_on ? 1 << CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS : 0));
-	events_out < pack(traction, Rz_pack_min, Rz_pack_max);
-	events_out < pack(rudder, Rz_pack_min, Rz_pack_max);
+	const int sent_traction = current_controls & NETWORK_CONTROL_ANALOG_THROTTLE_FLAG
+								  ? network_analog_traction_target
+								  : traction;
+	const int sent_rudder = current_controls & NETWORK_CONTROL_ANALOG_STEERING_FLAG
+								? network_analog_rudder_target
+								: rudder;
+
+	events_out < (short)(current_controls | (mole_on ? NETWORK_CONTROL_MOLE_FLAG : 0));
+	events_out < pack(sent_traction, Rz_pack_min, Rz_pack_max);
+	events_out < pack(sent_rudder, Rz_pack_min, Rz_pack_max);
 	events_out < pack(helicopter, Rz_pack_min, Rz_pack_max);
 
 	events_out < (short)round(R.z);

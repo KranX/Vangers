@@ -35,7 +35,7 @@ enum iControlID {
 	iKEY_HANDBRAKE, // 29
 
 	iKEY_USE_GLUEK,		  // 30
-	iKEY_JOYSTICK_SWITCH, // 31
+	iKEY_JOYSTICK_SWITCH, // 31, reserved for controls.dat compatibility
 	iKEY_SKIP_TEXT,		  // 32
 
 	iKEY_USE_VECTOR, // 33
@@ -61,5 +61,4 @@ void iSetControlCode(int id, int key, int num = 0);
 void iResetControlCode(int id, int num = 0);
 int iGetControlCode(int id, int num = 0);
 
-char *iGetJoystickButtonName(int vkey);
 char *iGetMouseButtonName(int vkey);

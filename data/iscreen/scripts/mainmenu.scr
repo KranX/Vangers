@@ -1650,7 +1650,7 @@ Screen "Graphics screen"
 			}
 		}
 	}
-	
+
 	Object "Back Option"
 	{
 		align_x center
@@ -5093,7 +5093,7 @@ Screen "Failed screen"
 			{								\
 				x	$Controls_screen_Back_Option_PosX		\
 				y	$Controls_screen_Back_Option_PosY		\
-											\
+										\
 				Element STRING {					\
 					align_x center					\
 											\
@@ -5145,7 +5145,7 @@ Screen "Failed screen"
 			{								\
 				x	$Controls_screen_More_Option_PosX		\
 				y	$Controls_screen_More_Option_PosY		\
-											\
+										\
 				Element STRING {					\
 					align_x center					\
 											\
@@ -10871,7 +10871,7 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
 		}
 	}
@@ -10925,7 +10925,7 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen 2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
 		}
 	}
@@ -10979,7 +10979,7 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen 3"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
 		}
 	}
@@ -11033,7 +11033,7 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen 4"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
 		}
 	}
@@ -11087,7 +11087,7 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen 5"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
 		}
 	}

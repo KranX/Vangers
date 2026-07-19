@@ -26,7 +26,7 @@ typedef unsigned char uchar;
 #include "../src/units/hobj.h"
 #include "../src/units/items.h"
 #include "../src/units/uvsapi.h"
-#include "../src/xjoystick.h"
+#include "../src/xgamepad.h"
 #include "lang.h"
 
 #include "missed.h"
@@ -168,9 +168,16 @@ void StartEFFECT(EFFECT_VALUE EffectValue, int loop, int pan) {}
 int iKeyPressed(int id) {
 	return 0;
 }
-int XJoystickInput() {
-	return 0;
+float XGamepadAxisValue(std::string_view) {
+	return 0.0f;
 }
+bool XGamepadIsControllingCursor() {
+	return false;
+}
+bool XGamepadHasManualDrivingInput() {
+	return false;
+}
+void XGamepadRumble(float, float, Uint32) {}
 void SetMotorSound(int speed) {}
 void ResetMotorSoundFrequency(void) {}
 void SetMotorFileIfChanged(int type) {}
@@ -228,11 +235,8 @@ void UnitListType::FreeUnit(GeneralObject *p) {
 DebrisList DebrisD;
 InputEventBuffer events_in(1);
 OutputEventBuffer events_out(1);
-XJOYSTATE XJoystickState;
 uchar DestroyTerrainTable[TERRAIN_MAX];
 uchar DestroyMoleTable[TERRAIN_MAX];
-int JoystickStickSwitchButton = 0;
-int JoystickMode = 0;
 double camera_mi = 0;
 double camera_miz = 0;
 double camera_mit = 0;

@@ -9,6 +9,7 @@ VANGERS: One for the Road
    - SDL3-native clunk from the `sdl3` branch
      (https://github.com/stalkerg/clunk/tree/sdl3)
    - ffmpeg 6.0 or newer
+   - toml11 4.4.x
    - zlib
 
 2. Required tools:
@@ -32,7 +33,7 @@ VANGERS: One for the Road
 OSX prerequisites
 
 a. Install homebrew
-b. brew install sdl3 sdl3_net libvorbis libogg ffmpeg
+b. brew install sdl3 sdl3_net libvorbis libogg ffmpeg toml11
 c. Build/install the `sdl3` branch of clunk
    (https://github.com/stalkerg/clunk/tree/sdl3).
 d. Go to 3.
@@ -44,5 +45,7 @@ The Android host project must provide native SDL3 and SDL3_net CMake packages,
 for example through their official Prefab-enabled Android archives, and an
 SDL3-native Clunk build. With `ANDROID` enabled this repository builds the
 static `vangers` library and exports the standard SDL3 `SDL_main()` entry point
-for the host activity's native entry point. Save games, `options.dat`, and
-`controls.dat` keep their existing binary formats.
+for the host activity's native entry point. The host build must also provide a
+toml11 4.4.x CMake package. Save-game files keep their existing binary format.
+User preferences migrate once from `options.dat` and `controls.dat` to
+`settings.toml`; the legacy files are left unchanged.
