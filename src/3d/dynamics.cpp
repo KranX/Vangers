@@ -5,6 +5,7 @@
 #include "../runtime.h"
 #include "../settings/gamepad_mapping.h"
 #include "general.h"
+#include "traction_control.h"
 
 #include "../xgamepad.h"
 
@@ -112,11 +113,19 @@ static inline int traction_control_step_ticks(void) {
 	return ticks > 0 ? ticks : 1;
 }
 
-static inline bool traction_control_legacy_step(void) {
+static inline bool traction_control_input_step(void) {
 #ifdef _SURMAP_
 	return 1;
 #else
-	return !(frame % traction_control_step_ticks());
+	return vangers::physics::traction_control_input_step(frame, traction_control_step_ticks());
+#endif
+}
+
+static inline bool traction_control_decay_step(void) {
+#ifdef _SURMAP_
+	return 1;
+#else
+	return vangers::physics::traction_control_decay_step(frame, traction_control_step_ticks());
 #endif
 }
 
@@ -2530,7 +2539,7 @@ void Object::set_active(int on) {
 		Object movement control
 *******************************************************************************/
 void Object::motor_control(int dir) {
-	if (!traction_control_legacy_step())
+	if (!traction_control_input_step())
 		return;
 
 	int sign = SIGN(traction);
@@ -2545,7 +2554,7 @@ void Object::motor_control(int dir) {
 }
 void Object::brake_on() {
 	brake = 1;
-	if (traction_control_legacy_step())
+	if (traction_control_input_step())
 		traction = traction / 2;
 }
 void Object::steer(int dir) {
@@ -3226,7 +3235,7 @@ void Object::mechous_analysis(double dt) {
 	} else
 		archimedean = 0;
 
-	if (traction_control_legacy_step()) {
+	if (traction_control_decay_step()) {
 		if (abs(traction) > traction_decrement)
 			if (traction > 0)
 				traction -= traction_decrement;

@@ -65,6 +65,16 @@ TARGET_LINK_LIBRARIES(network_control_flags_test PRIVATE SDL3::SDL3)
 
 ADD_TEST(NAME network_control_flags COMMAND network_control_flags_test)
 
+ADD_EXECUTABLE(traction_control_cadence_test
+	traction_control_cadence_test.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(traction_control_cadence_test PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+)
+
+ADD_TEST(NAME traction_control_cadence COMMAND traction_control_cadence_test)
+
 ADD_EXECUTABLE(settings_test
 	settings_test.cpp
 )
