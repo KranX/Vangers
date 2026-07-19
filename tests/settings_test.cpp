@@ -586,11 +586,11 @@ bool test_concurrent_saves_use_independent_temporary_files() {
 }
 
 bool test_filesystem_errors_are_nonfatal_and_retryable() {
-	TemporaryDirectory directory;
-	const std::filesystem::path inaccessible = directory.path() / std::string(1024, 'x');
-
-	SettingsPaths paths = paths_for(directory.path());
-	paths.settings_file = inaccessible / "settings.toml";
+	TemporaryDirectory settings_directory;
+	SettingsPaths paths = paths_for(settings_directory.path());
+	// A directory where a regular file is required fails deterministically on
+	// every supported platform; path-length limits differ between filesystems.
+	std::filesystem::create_directory(paths.settings_file);
 	SettingsManager inaccessible_settings(paths);
 	const SettingsLoadResult settings_result = inaccessible_settings.load();
 	std::string save_diagnostic;
@@ -604,8 +604,9 @@ bool test_filesystem_errors_are_nonfatal_and_retryable() {
 		!check(!save_diagnostic.empty(), "read-only save has no diagnostic"))
 		return false;
 
-	paths = paths_for(directory.path());
-	paths.legacy_options_file = inaccessible / "options.dat";
+	TemporaryDirectory legacy_directory;
+	paths = paths_for(legacy_directory.path());
+	std::filesystem::create_directory(paths.legacy_options_file);
 	SettingsManager inaccessible_legacy(paths);
 	const SettingsLoadResult legacy_result = inaccessible_legacy.load();
 	return check(legacy_result.read_only, "legacy status error was not made read-only") &&
