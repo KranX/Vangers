@@ -336,6 +336,22 @@ float XGamepadAxisValue(std::string_view logical_axis) {
 	return axis_value(*axis, binding->second.inverted);
 }
 
+bool XGamepadIsControllingCursor() {
+	return active_gamepad && controller_enabled() && XGR_MouseVisible();
+}
+
+void XGamepadRumble(float low_frequency, float high_frequency, Uint32 duration_ms) {
+	if (!active_gamepad || !controller_enabled() || !current_settings().input.controller.rumble)
+		return;
+
+	const auto intensity = [](float value) {
+		return static_cast<Uint16>(std::lround(std::clamp(value, 0.0f, 1.0f) * 65535.0f));
+	};
+	SDL_RumbleGamepad(
+		active_gamepad, intensity(low_frequency), intensity(high_frequency), duration_ms
+	);
+}
+
 SDL_Gamepad *XGamepadHandle() {
 	return active_gamepad;
 }

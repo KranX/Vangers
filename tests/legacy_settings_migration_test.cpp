@@ -330,6 +330,21 @@ void test_gamepad_mapping_and_deadzone_scaling() {
 	CHECK(gamepad_trigger_pressed(0.5f));
 
 	const GameSettings defaults = default_settings();
+	CHECK(defaults.input.sdl_gamepad.axes.at("steering").axis == "left_x");
+	CHECK(defaults.input.sdl_gamepad.axes.at("throttle").axis == "left_y");
+	CHECK(defaults.input.sdl_gamepad.axes.at("throttle").inverted);
+	CHECK(defaults.input.sdl_gamepad.axes.at("roll").axis == "right_x");
+	CHECK(defaults.input.sdl_gamepad.axes.at("rig").axis == "right_y");
+	CHECK(defaults.input.sdl_gamepad.axes.at("rig").inverted);
+	CHECK((defaults.input.sdl_gamepad.bindings.at("open") == BindingList{"south"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("handbrake") == BindingList{"east"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("use_vector") == BindingList{"west"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("acceleration") == BindingList{"left_trigger"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_all") == BindingList{"right_trigger"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_weapon_1") == BindingList{"dpad_up"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_weapon_2") == BindingList{"dpad_right"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_weapon_3") == BindingList{"dpad_down"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_weapon_4") == BindingList{"dpad_left"}));
 	for (const auto &[action, bindings] : defaults.input.sdl_gamepad.bindings) {
 		(void)action;
 		for (const std::string &binding : bindings) {

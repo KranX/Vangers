@@ -171,6 +171,10 @@ int iKeyPressed(int id) {
 float XGamepadAxisValue(std::string_view) {
 	return 0.0f;
 }
+bool XGamepadIsControllingCursor() {
+	return false;
+}
+void XGamepadRumble(float, float, Uint32) {}
 void SetMotorSound(int speed) {}
 void ResetMotorSoundFrequency(void) {}
 void SetMotorFileIfChanged(int type) {}

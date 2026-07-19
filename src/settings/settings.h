@@ -94,6 +94,7 @@ struct GameSettings {
 };
 
 GameSettings default_settings();
+void reset_input_bindings_to_defaults(GameSettings &settings);
 void normalize_settings(GameSettings &settings);
 
 struct SettingsPaths {

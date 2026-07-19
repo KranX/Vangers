@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 
 #include "../global.h"
@@ -2944,6 +2945,8 @@ void Object::direct_keyboard_control() {
 #endif
 
 void Object::direct_gamepad_control() {
+	constexpr float digital_axis_threshold = 0.5f;
+
 	const float steering = XGamepadAxisValue("steering");
 	if (steering != 0.0f) {
 		current_controls |= 1 << (steering < 0.0f ? CONTROLS::STEER_LEFT : CONTROLS::STEER_RIGHT);
@@ -2956,6 +2959,22 @@ void Object::direct_gamepad_control() {
 		current_controls |=
 			1 << (throttle > 0.0f ? CONTROLS::TRACTION_INCREASE : CONTROLS::TRACTION_DECREASE);
 		traction = round(throttle * 256.0f);
+	}
+
+	// The right stick controls the cursor while an interface is visible. On the
+	// road it can safely provide the two remaining bidirectional vehicle actions.
+	if (!XGamepadIsControllingCursor()) {
+		const float roll = XGamepadAxisValue("roll");
+		if (roll < -digital_axis_threshold)
+			controls(CONTROLS::LEFT_SIDE_IMPULSE);
+		else if (roll > digital_axis_threshold)
+			controls(CONTROLS::RIGHT_SIDE_IMPULSE);
+
+		const float rig = XGamepadAxisValue("rig");
+		if (rig > digital_axis_threshold)
+			controls(CONTROLS::VIRTUAL_UP);
+		else if (rig < -digital_axis_threshold)
+			controls(CONTROLS::VIRTUAL_DOWN);
 	}
 }
 
@@ -4755,8 +4774,15 @@ int Object::test_object_to_baseobject(BaseObject *bobj) {
 			return 1;
 		// fout <= k_destroy_level*Pabs/m2 < "\t";
 		// fout <= k_destroy_level*Pabs/m1 < "\n";
-		if (active || obj->active)
+		if (active || obj->active) {
 			SOUND_OBJECT_TO_OBJECT_COLLISION();
+			const double full_strength_impulse =
+				std::max(strong_double_collision_threshould * 4.0, 1.0);
+			const float strength =
+				std::clamp(static_cast<float>(Pabs / full_strength_impulse), 0.25f, 1.0f);
+			const Uint32 duration_ms = static_cast<Uint32>(80 + std::lround(strength * 100.0f));
+			XGamepadRumble(strength, strength * 0.35f, duration_ms);
+		}
 
 		int defense1, defense2;
 		int ram_power1, ram_power2;

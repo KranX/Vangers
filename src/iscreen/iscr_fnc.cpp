@@ -173,6 +173,8 @@ void ipal_iter(int r);
 
 void iKeyTrap(int k);
 
+static int gamepad_menu_navigation_code(SDL_GamepadButton button);
+
 void iInitMultiGames(void);
 
 void aci_setMatrixBorder(void);
@@ -824,7 +826,14 @@ int iQuantSecond(void) {
 						iKeyTrap(k->key.scancode);
 					} else if (k->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
 							   k->type == SDL_EVENT_GAMEPAD_BUTTON_UP) {
-						iKeyTrap(k->gbutton.button | SDLK_GAMEPAD_BUTTON_MASK);
+						int code = k->gbutton.button | SDLK_GAMEPAD_BUTTON_MASK;
+						if (k->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN &&
+							XGamepadIsControllingCursor() &&
+							!SDL_TextInputActive(XGR_Obj.get_window()))
+							code = gamepad_menu_navigation_code(
+								static_cast<SDL_GamepadButton>(k->gbutton.button)
+							);
+						iKeyTrap(code);
 					}
 				}
 			}
@@ -2141,6 +2150,21 @@ void iKeyTrap(int k) {
 			if (!(iScrDisp->flags & SD_LOCK_EVENTS))
 				iScrDisp->curScr->CheckScanCode(k);
 		}
+	}
+}
+
+static int gamepad_menu_navigation_code(SDL_GamepadButton button) {
+	switch (button) {
+	case SDL_GAMEPAD_BUTTON_DPAD_UP:
+		return SDL_SCANCODE_UP;
+	case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
+		return SDL_SCANCODE_DOWN;
+	case SDL_GAMEPAD_BUTTON_DPAD_LEFT:
+		return SDL_SCANCODE_LEFT;
+	case SDL_GAMEPAD_BUTTON_DPAD_RIGHT:
+		return SDL_SCANCODE_RIGHT;
+	default:
+		return button | SDLK_GAMEPAD_BUTTON_MASK;
 	}
 }
 

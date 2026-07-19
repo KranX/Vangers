@@ -43,12 +43,18 @@ them, but subsequent changes made by the new build are saved only to
 ## Gamepad input
 
 SDL3-compatible gamepads are detected and mapped automatically, including
-hot-plugging. The left stick controls steering and throttle by default; the
-right stick moves the UI cursor. Gamepad buttons can be assigned on the regular
-controls screen or changed in `[input.sdl_gamepad.bindings]` in
-`settings.toml`. Stick axes and trigger bindings can be changed in
+hot-plugging. The left stick controls steering and throttle by default. The
+right stick moves the UI cursor and, during gameplay, controls side impulses
+and RIG movement. Face buttons operate actions, inventory, the handbrake, and
+Vector; the triggers provide acceleration and fire; the D-pad fires individual
+weapon slots. In menus, the D-pad follows the existing arrow-key navigation.
+Gamepad buttons can be assigned on the regular controls screen or changed in
+`[input.sdl_gamepad.bindings]` in `settings.toml`. Stick axes and trigger
+bindings can be changed in
 `[input.sdl_gamepad.axes]` and `[input.sdl_gamepad.bindings]`. The game uses one
 active gamepad and falls back to the next connected device if it is unplugged.
+Strong collisions involving the player's mechos use SDL gamepad rumble when
+`input.controller.rumble` is enabled.
 
 The open-source build does not call Steam Input directly. It keeps the active
 `SDL_Gamepad`, so a Steam build can associate the same SDL-managed device with

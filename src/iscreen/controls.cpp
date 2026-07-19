@@ -183,8 +183,14 @@ int iGetControlCode(int id, int num) {
 }
 
 void iResetControls(void) {
-	if (iControlsObj)
-		iControlsObj->reset();
+	if (!iControlsObj)
+		return;
+
+	vangers::settings::SettingsManager &manager = vangers::settings::settings_manager();
+	if (!manager.is_loaded())
+		manager.load();
+	vangers::settings::reset_input_bindings_to_defaults(manager.get_mutable());
+	vangers::settings::apply_settings_to_controls();
 }
 
 iKeyControls::iKeyControls(void) {

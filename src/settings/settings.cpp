@@ -80,16 +80,39 @@ GameSettings default_settings() {
 		{"throttle", {"left_y", true}},
 		{"cursor_x", {"right_x", false}},
 		{"cursor_y", {"right_y", false}},
+		{"roll", {"right_x", false}},
+		{"rig", {"right_y", true}},
 	};
 	settings.input.sdl_gamepad.bindings = {
 		{"open", {"south"}},
 		{"inventory", {"north"}},
+		{"handbrake", {"east"}},
+		{"use_vector", {"west"}},
+		{"acceleration", {"left_trigger"}},
 		{"fire_all", {"right_trigger"}},
+		{"use_gluek", {"left_shoulder"}},
+		{"change_target", {"right_shoulder"}},
+		{"activate_kid", {"left_stick"}},
+		{"zoom_standard", {"right_stick"}},
+		{"fire_weapon_1", {"dpad_up"}},
+		{"fire_weapon_2", {"dpad_right"}},
+		{"fire_weapon_3", {"dpad_down"}},
+		{"fire_weapon_4", {"dpad_left"}},
+		{"skip_text", {"south"}},
+		{"frag_info", {"back"}},
+		{"chat", {"touchpad"}},
 		{"pause", {"start"}},
 		{"menu_confirm", {"south"}},
 		{"menu_cancel", {"east"}},
 	};
 	return settings;
+}
+
+void reset_input_bindings_to_defaults(GameSettings &settings) {
+	const GameSettings defaults = default_settings();
+	settings.input.keyboard.bindings = defaults.input.keyboard.bindings;
+	settings.input.sdl_gamepad.axes = defaults.input.sdl_gamepad.axes;
+	settings.input.sdl_gamepad.bindings = defaults.input.sdl_gamepad.bindings;
 }
 
 void normalize_settings(GameSettings &settings) {

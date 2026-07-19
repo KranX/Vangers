@@ -14,6 +14,8 @@ bool XGamepadButtonPressed(SDL_GamepadButton button);
 bool XGamepadButtonMatchesAction(std::string_view action, SDL_GamepadButton button);
 bool XGamepadOwnsEvent(const SDL_Event &event);
 float XGamepadAxisValue(std::string_view logical_axis);
+bool XGamepadIsControllingCursor();
+void XGamepadRumble(float low_frequency, float high_frequency, Uint32 duration_ms);
 
 // The gamepad manager owns this SDL handle; callers must not close it.
 SDL_Gamepad *XGamepadHandle();
