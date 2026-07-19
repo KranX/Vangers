@@ -681,6 +681,7 @@ struct iScreen: public iListElement {
 
 	void CheckScanCode(int sc);
 	void HandleEvent(iScreenEvent *ev);
+	bool HandlePrimaryAction(iScreenObject *target);
 	void redraw(int mode = 0);
 	void prepare(void);
 	void init(void);

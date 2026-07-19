@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <limits>
 
 void xtRegisterSysMsgFnc(void (*fPtr)(SDL_Event *), int id);
 
@@ -16,6 +17,7 @@ namespace {
 
 constexpr int XGAMEPAD_SYSOBJ_ID = 0x05;
 constexpr float CURSOR_PIXELS_PER_SECOND = 600.0f;
+constexpr SDL_KeyboardID XGAMEPAD_VIRTUAL_KEYBOARD_ID = std::numeric_limits<SDL_KeyboardID>::max();
 
 SDL_Gamepad *active_gamepad = nullptr;
 SDL_JoystickID active_gamepad_id = 0;
@@ -25,7 +27,6 @@ bool quant_registered = false;
 bool confirm_pressed = false;
 bool confirm_action_down = false;
 bool pause_action_down = false;
-bool cancel_action_down = false;
 bool focus_navigation_active = false;
 Uint64 previous_cursor_time = 0;
 float cursor_remainder_x = 0.0f;
@@ -55,7 +56,6 @@ void reset_ui_actions() {
 	release_confirm();
 	confirm_action_down = false;
 	pause_action_down = false;
-	cancel_action_down = false;
 	focus_navigation_active = false;
 }
 
@@ -130,6 +130,7 @@ void push_key_event(SDL_Scancode scancode, SDL_Keycode keycode) {
 	SDL_zero(event);
 	event.type = SDL_EVENT_KEY_DOWN;
 	event.key.timestamp = SDL_GetTicksNS();
+	event.key.which = XGAMEPAD_VIRTUAL_KEYBOARD_ID;
 	event.key.scancode = scancode;
 	event.key.key = keycode;
 	event.key.down = true;
@@ -163,12 +164,9 @@ void update_ui_actions(bool cursor_visible, bool actions_enabled) {
 	confirm_action_down = confirm;
 
 	const bool pause = XGamepadActionPressed("pause");
-	const bool cancel = XGamepadActionPressed("menu_cancel");
-	if (actions_enabled &&
-		((pause && !pause_action_down) || (cursor_visible && cancel && !cancel_action_down)))
+	if (actions_enabled && pause && !pause_action_down)
 		push_key_event(SDL_SCANCODE_ESCAPE, SDLK_ESCAPE);
 	pause_action_down = pause;
-	cancel_action_down = cancel;
 }
 
 void handle_gamepad_event(SDL_Event *event) {
@@ -360,6 +358,11 @@ bool XGamepadOwnsEvent(const SDL_Event &event) {
 	return false;
 }
 
+bool XGamepadGeneratedKeyEvent(const SDL_Event &event) {
+	return (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) &&
+		   event.key.which == XGAMEPAD_VIRTUAL_KEYBOARD_ID;
+}
+
 float XGamepadAxisValue(std::string_view logical_axis) {
 	if (!active_gamepad || !controller_enabled())
 		return 0.0f;
@@ -378,8 +381,14 @@ bool XGamepadIsControllingCursor() {
 	return active_gamepad && controller_enabled() && XGR_MouseVisible();
 }
 
+void XGamepadUseFocusNavigation() {
+	if (XGamepadIsControllingCursor())
+		focus_navigation_active = true;
+}
+
 bool XGamepadHasManualDrivingInput() {
-	if (XGamepadAxisValue("steering") != 0.0f || XGamepadAxisValue("throttle") != 0.0f)
+	if (XGamepadAxisValue("steering") != 0.0f || XGamepadAxisValue("throttle_forward") != 0.0f ||
+		XGamepadAxisValue("throttle_reverse") != 0.0f)
 		return true;
 	if (XGamepadIsControllingCursor())
 		return false;

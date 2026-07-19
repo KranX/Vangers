@@ -328,11 +328,18 @@ void test_gamepad_mapping_and_deadzone_scaling() {
 	CHECK(!gamepad_axis_is_trigger(SDL_GAMEPAD_AXIS_LEFTX));
 	CHECK(!gamepad_trigger_pressed(0.499f));
 	CHECK(gamepad_trigger_pressed(0.5f));
+	CHECK(combine_gamepad_throttle(1.0f, 0.0f) == 1.0f);
+	CHECK(combine_gamepad_throttle(0.0f, 1.0f) == -1.0f);
+	CHECK(combine_gamepad_throttle(0.75f, 0.25f) == 0.5f);
+	CHECK(combine_gamepad_throttle(1.0f, 1.0f) == 0.0f);
+	CHECK(combine_gamepad_throttle(2.0f, -1.0f) == 1.0f);
 
 	const GameSettings defaults = default_settings();
 	CHECK(defaults.input.sdl_gamepad.axes.at("steering").axis == "left_x");
-	CHECK(defaults.input.sdl_gamepad.axes.at("throttle").axis == "left_y");
-	CHECK(defaults.input.sdl_gamepad.axes.at("throttle").inverted);
+	CHECK(defaults.input.sdl_gamepad.axes.at("throttle_forward").axis == "right_trigger");
+	CHECK(!defaults.input.sdl_gamepad.axes.at("throttle_forward").inverted);
+	CHECK(defaults.input.sdl_gamepad.axes.at("throttle_reverse").axis == "left_trigger");
+	CHECK(!defaults.input.sdl_gamepad.axes.at("throttle_reverse").inverted);
 	CHECK(defaults.input.sdl_gamepad.axes.at("roll").axis == "right_x");
 	CHECK(defaults.input.sdl_gamepad.axes.at("rig").axis == "right_y");
 	CHECK(defaults.input.sdl_gamepad.axes.at("rig").inverted);
@@ -340,9 +347,10 @@ void test_gamepad_mapping_and_deadzone_scaling() {
 	CHECK((defaults.input.sdl_gamepad.bindings.at("handbrake") == BindingList{"east"}));
 	CHECK((defaults.input.sdl_gamepad.bindings.at("activate_kid") == BindingList{"west"}));
 	CHECK((defaults.input.sdl_gamepad.bindings.at("use_vector") == BindingList{"left_stick"}));
-	CHECK((defaults.input.sdl_gamepad.bindings.at("acceleration") == BindingList{"left_trigger"}));
-	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_all") == BindingList{"right_trigger"}));
-	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_weapon_1") == BindingList{"dpad_up"}));
+	CHECK(defaults.input.sdl_gamepad.bindings.at("acceleration").empty());
+	CHECK((defaults.input.sdl_gamepad.bindings.at("inventory") == BindingList{"dpad_up"}));
+	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_all") == BindingList{"north"}));
+	CHECK(defaults.input.sdl_gamepad.bindings.at("fire_weapon_1").empty());
 	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_weapon_2") == BindingList{"dpad_right"}));
 	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_weapon_3") == BindingList{"dpad_down"}));
 	CHECK((defaults.input.sdl_gamepad.bindings.at("fire_weapon_4") == BindingList{"dpad_left"}));

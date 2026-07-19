@@ -15,8 +15,10 @@ bool XGamepadActionPressed(std::string_view action);
 bool XGamepadButtonPressed(SDL_GamepadButton button);
 bool XGamepadButtonMatchesAction(std::string_view action, SDL_GamepadButton button);
 bool XGamepadOwnsEvent(const SDL_Event &event);
+bool XGamepadGeneratedKeyEvent(const SDL_Event &event);
 float XGamepadAxisValue(std::string_view logical_axis);
 bool XGamepadIsControllingCursor();
+void XGamepadUseFocusNavigation();
 bool XGamepadHasManualDrivingInput();
 void XGamepadRumble(float low_frequency, float high_frequency, Uint32 duration_ms);
 

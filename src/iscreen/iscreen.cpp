@@ -2488,6 +2488,42 @@ void iScreen::HandleEvent(iScreenEvent *ev) {
 	}
 }
 
+bool iScreen::HandlePrimaryAction(iScreenObject *target) {
+	if (!target || iScrDisp->ActiveEv)
+		return false;
+
+	iScreenEvent *event = (iScreenEvent *)target->EventList->last;
+	while (event && !iScrDisp->ActiveEv) {
+		if (bool(target->flags & OBJ_LOCKED) == bool(event->flags & EV_IF_LOCKED) &&
+			(!(event->flags & EV_IF_SELECTED) || target->flags & OBJ_SELECTED) &&
+			(!(event->flags & EV_IF_NOT_SELECTED) || !(target->flags & OBJ_SELECTED))) {
+			iListElement *code = event->codes->last;
+			while (code && !iScrDisp->ActiveEv) {
+				if (((iScanCode *)code)->code == iMOUSE_LEFT_PRESS_CODE)
+					HandleEvent(event);
+				code = code->prev;
+			}
+		}
+		event = (iScreenEvent *)event->prev;
+	}
+
+	return iScrDisp->ActiveEv != NULL;
+}
+
+static bool has_primary_mouse_action(iScreenObject *obj) {
+	iScreenEvent *event = (iScreenEvent *)obj->EventList->last;
+	while (event) {
+		iListElement *code = event->codes->last;
+		while (code) {
+			if (((iScanCode *)code)->code == iMOUSE_LEFT_PRESS_CODE)
+				return true;
+			code = code->prev;
+		}
+		event = (iScreenEvent *)event->prev;
+	}
+	return false;
+}
+
 void iScreen::CheckScanCode(int sc) {
 	int x = 0, y = 0, mouse_sc = 0;
 	iScreenObject *obj;
@@ -2500,10 +2536,14 @@ void iScreen::CheckScanCode(int sc) {
 		y = iMouseY;
 	}
 
+	const bool focused_confirmation =
+		!actIntLog && !mouse_sc && (sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_SPACE) &&
+		curObj && (curObj->flags & OBJ_SELECTABLE) && (curObj->flags & OBJ_SELECTED);
+
 	obj = (iScreenObject *)objList->last;
 	while (obj) {
 		if (!iScrDisp->ActiveEv) {
-			if (!mouse_sc || obj->CheckXY(x, y)) {
+			if ((!focused_confirmation || obj == curObj) && (!mouse_sc || obj->CheckXY(x, y))) {
 				p = (iScreenEvent *)obj->EventList->last;
 				while (p) {
 					if (bool(obj->flags & OBJ_LOCKED) == bool(p->flags & EV_IF_LOCKED)) {
@@ -2535,23 +2575,6 @@ void iScreen::CheckScanCode(int sc) {
 		}
 	}
 
-	auto handle_primary_action = [&](iScreenObject *target) {
-		p = (iScreenEvent *)target->EventList->last;
-		while (p && !iScrDisp->ActiveEv) {
-			if (bool(target->flags & OBJ_LOCKED) == bool(p->flags & EV_IF_LOCKED) &&
-				(!(p->flags & EV_IF_SELECTED) || target->flags & OBJ_SELECTED) &&
-				(!(p->flags & EV_IF_NOT_SELECTED) || !(target->flags & OBJ_SELECTED))) {
-				cd = p->codes->last;
-				while (cd && !iScrDisp->ActiveEv) {
-					if (((iScanCode *)cd)->code == iMOUSE_LEFT_PRESS_CODE)
-						HandleEvent(p);
-					cd = cd->prev;
-				}
-			}
-			p = (iScreenEvent *)p->prev;
-		}
-	};
-
 	iScrollerElement *selected_scroller = NULL;
 	if (curObj && (curObj->flags & OBJ_SELECTABLE) && (curObj->flags & OBJ_SELECTED)) {
 		iScreenElement *element = (iScreenElement *)curObj->ElementList->last;
@@ -2568,7 +2591,7 @@ void iScreen::CheckScanCode(int sc) {
 		(curObj->flags & OBJ_SELECTED) && (sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_SPACE)) {
 		if (selected_scroller)
 			selected_scroller->keyboard_delta = 1;
-		handle_primary_action(curObj);
+		HandlePrimaryAction(curObj);
 		if (!iScrDisp->ActiveEv && selected_scroller)
 			selected_scroller->keyboard_delta = 0;
 	}
@@ -2580,7 +2603,7 @@ void iScreen::CheckScanCode(int sc) {
 		(selected_scroller || curObj->flags & OBJ_TRIGGER)) {
 		if (selected_scroller)
 			selected_scroller->keyboard_delta = sc == SDL_SCANCODE_LEFT ? -1 : 1;
-		handle_primary_action(curObj);
+		HandlePrimaryAction(curObj);
 		if (!iScrDisp->ActiveEv && selected_scroller)
 			selected_scroller->keyboard_delta = 0;
 	}
@@ -2693,6 +2716,11 @@ void iScreen::CheckScanCode(int sc) {
 void iScreen::prepare(void) {
 	iScreenObject *p = (iScreenObject *)objList->last;
 	while (p) {
+		// The standalone menu scripts historically marked only a few mouse
+		// actions as selectable. Make every primary menu action reachable by
+		// keyboard/gamepad without changing the in-game ACI object model.
+		if (!actIntLog && has_primary_mouse_action(p))
+			p->flags |= OBJ_SELECTABLE;
 		p->flags &= ~OBJ_HIDE;
 		if (!(p->flags & OBJ_NOT_UNLOCK))
 			p->flags &= ~OBJ_LOCKED;

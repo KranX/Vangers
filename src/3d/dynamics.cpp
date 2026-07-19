@@ -3,6 +3,7 @@
 
 #include "../global.h"
 #include "../runtime.h"
+#include "../settings/gamepad_mapping.h"
 #include "general.h"
 
 #include "../xgamepad.h"
@@ -2956,13 +2957,22 @@ void Object::direct_gamepad_control() {
 		helicopter_strife = 0;
 	}
 
-	const float throttle = XGamepadAxisValue("throttle");
-	if (throttle != 0.0f) {
+	const float forward = XGamepadAxisValue("throttle_forward");
+	const float reverse = XGamepadAxisValue("throttle_reverse");
+	if (forward != 0.0f || reverse != 0.0f) {
+		const float throttle = vangers::settings::combine_gamepad_throttle(forward, reverse);
 		current_controls |= NETWORK_CONTROL_ANALOG_THROTTLE_FLAG;
-		current_controls |=
-			1 << (throttle > 0.0f ? CONTROLS::TRACTION_INCREASE : CONTROLS::TRACTION_DECREASE);
+		if (throttle != 0.0f) {
+			current_controls |=
+				1 << (throttle > 0.0f ? CONTROLS::TRACTION_INCREASE : CONTROLS::TRACTION_DECREASE);
+		}
 		network_analog_traction_target = round(throttle * 256.0f);
 		traction = network_analog_traction_target;
+		// The full trigger range represents the complete useful speed range.
+		// Partial trigger pressure still gives proportional traction, while full
+		// pressure reaches the same turbo-assisted speed as keyboard acceleration.
+		if (throttle != 0.0f)
+			controls(CONTROLS::TURBO_QUANT);
 	}
 
 	// The right stick controls the cursor while an interface is visible. On the

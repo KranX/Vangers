@@ -77,7 +77,8 @@ GameSettings default_settings() {
 	settings.input.keyboard.bindings = default_keyboard_bindings();
 	settings.input.sdl_gamepad.axes = {
 		{"steering", {"left_x", false}},
-		{"throttle", {"left_y", true}},
+		{"throttle_forward", {"right_trigger", false}},
+		{"throttle_reverse", {"left_trigger", false}},
 		{"cursor_x", {"right_x", false}},
 		{"cursor_y", {"right_y", false}},
 		{"roll", {"right_x", false}},
@@ -85,16 +86,16 @@ GameSettings default_settings() {
 	};
 	settings.input.sdl_gamepad.bindings = {
 		{"open", {"south"}},
-		{"inventory", {"north"}},
+		{"inventory", {"dpad_up"}},
 		{"handbrake", {"east"}},
 		{"activate_kid", {"west"}},
-		{"acceleration", {"left_trigger"}},
-		{"fire_all", {"right_trigger"}},
+		{"acceleration", {}},
+		{"fire_all", {"north"}},
 		{"use_gluek", {"left_shoulder"}},
 		{"change_target", {"right_shoulder"}},
 		{"use_vector", {"left_stick"}},
 		{"zoom_standard", {"right_stick"}},
-		{"fire_weapon_1", {"dpad_up"}},
+		{"fire_weapon_1", {}},
 		{"fire_weapon_2", {"dpad_right"}},
 		{"fire_weapon_3", {"dpad_down"}},
 		{"fire_weapon_4", {"dpad_left"}},

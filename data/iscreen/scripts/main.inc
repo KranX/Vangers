@@ -150,7 +150,7 @@ $BUG_OBJ
 Screen "TextScreen00"
 {
 	screen_offs		800
-	default_obj		"Text00"
+	default_obj		"PlayBT"
 
 	Event {
 		key	$VK_ESCAPE
@@ -363,7 +363,7 @@ Screen "TextScreen00"
 Screen "TextScreen01"
 {
 	screen_offs		0
-	default_obj		"Text00"
+	default_obj		"PlayBT"
 
 	Event {
 		key	$VK_ESCAPE

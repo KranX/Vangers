@@ -174,6 +174,9 @@ void ipal_iter(int r);
 void iKeyTrap(int k);
 
 static int gamepad_menu_navigation_code(SDL_GamepadButton button);
+static bool gamepad_shop_active();
+static bool gamepad_shop_menu_active();
+static int gamepad_shop_category_code(SDL_GamepadButton button);
 
 void iInitMultiGames(void);
 
@@ -823,16 +826,50 @@ int iQuantSecond(void) {
 					}
 
 					if (k->type == SDL_EVENT_KEY_DOWN || k->type == SDL_EVENT_KEY_UP) {
-						iKeyTrap(k->key.scancode);
+						if (k->type == SDL_EVENT_KEY_DOWN && XGamepadGeneratedKeyEvent(*k) &&
+							k->key.scancode == SDL_SCANCODE_RETURN && gamepad_shop_active() &&
+							!(aScrDisp->flags & AS_INV_MOVE_ITEM) && !gamepad_shop_menu_active() &&
+							!iScrDisp->ActiveEv) {
+							iScreenObject *preview =
+								(iScreenObject *)iScrDisp->curScr->get_object("Avi00");
+							if (!iScrDisp->curScr->HandlePrimaryAction(preview))
+								iKeyTrap(k->key.scancode);
+						} else {
+							iKeyTrap(k->key.scancode);
+						}
 					} else if (k->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
 							   k->type == SDL_EVENT_GAMEPAD_BUTTON_UP) {
-						int code = k->gbutton.button | SDLK_GAMEPAD_BUTTON_MASK;
+						const auto button = static_cast<SDL_GamepadButton>(k->gbutton.button);
+						int code = button | SDLK_GAMEPAD_BUTTON_MASK;
 						if (k->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN &&
 							XGamepadIsControllingCursor() &&
-							!SDL_TextInputActive(XGR_Obj.get_window()))
-							code = gamepad_menu_navigation_code(
-								static_cast<SDL_GamepadButton>(k->gbutton.button)
-							);
+							!SDL_TextInputActive(XGR_Obj.get_window())) {
+							if (XGamepadButtonMatchesAction("menu_cancel", button)) {
+								if (gamepad_shop_active() &&
+									!(aScrDisp->flags & AS_INV_MOVE_ITEM)) {
+									if (gamepad_shop_menu_active())
+										code = SDL_SCANCODE_RETURN;
+									else
+										code = SDL_SCANCODE_TAB;
+								} else if (!actIntLog) {
+									code = SDL_SCANCODE_ESCAPE;
+								}
+							} else if (gamepad_shop_active() &&
+									   !(aScrDisp->flags & AS_INV_MOVE_ITEM) &&
+									   (button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER ||
+										   button == SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER)) {
+								code = gamepad_shop_category_code(button);
+								XGamepadUseFocusNavigation();
+							} else if (gamepad_shop_active() &&
+									   !(aScrDisp->flags & AS_INV_MOVE_ITEM) &&
+									   !gamepad_shop_menu_active() &&
+									   (button == SDL_GAMEPAD_BUTTON_DPAD_UP ||
+										   button == SDL_GAMEPAD_BUTTON_DPAD_DOWN)) {
+								code = SDL_SCANCODE_RETURN;
+							} else {
+								code = gamepad_menu_navigation_code(button);
+							}
+						}
 						iKeyTrap(code);
 					}
 				}
@@ -2165,6 +2202,56 @@ static int gamepad_menu_navigation_code(SDL_GamepadButton button) {
 		return SDL_SCANCODE_RIGHT;
 	default:
 		return button | SDLK_GAMEPAD_BUTTON_MASK;
+	}
+}
+
+static bool gamepad_shop_active() {
+	return actIntLog && aScrDisp && (aScrDisp->flags & AS_ISCREEN_INV_MODE);
+}
+
+static bool gamepad_shop_menu_active() {
+	if (!gamepad_shop_active())
+		return false;
+	fncMenu *menu = aScrDisp->get_imenu(SHOP_ITEMS_MENU_ID);
+	return menu && (menu->flags & FM_ACTIVE);
+}
+
+static int gamepad_shop_category_code(SDL_GamepadButton button) {
+	int category;
+	switch (iEvLineID) {
+	case WEAPONS_MODE:
+	case WEAPONS_LIST_MODE:
+	case CHANGE_2_WEAPONS_MODE:
+		category = 0;
+		break;
+	case MECHOS_MODE:
+	case MECHOS_LIST_MODE:
+	case CHANGE_2_MECHOS_MODE:
+		category = 1;
+		break;
+	case ITEMS_MODE:
+	case ITEMS_LIST_MODE:
+	case CHANGE_2_ITEMS_MODE:
+		category = 2;
+		break;
+	default:
+		return button | SDLK_GAMEPAD_BUTTON_MASK;
+	}
+
+	if (button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER)
+		category = (category + 2) % 3;
+	else if (button == SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER)
+		category = (category + 1) % 3;
+	else
+		return button | SDLK_GAMEPAD_BUTTON_MASK;
+
+	switch (category) {
+	case 0:
+		return SDL_SCANCODE_F1;
+	case 1:
+		return SDL_SCANCODE_F2;
+	default:
+		return SDL_SCANCODE_F3;
 	}
 }
 

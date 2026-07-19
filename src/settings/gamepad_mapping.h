@@ -1,6 +1,7 @@
 #ifndef VANGERS_SETTINGS_GAMEPAD_MAPPING_H
 #define VANGERS_SETTINGS_GAMEPAD_MAPPING_H
 
+#include <algorithm>
 #include <optional>
 #include <string_view>
 
@@ -16,6 +17,9 @@ std::optional<std::string_view> gamepad_axis_name(SDL_GamepadAxis axis);
 
 bool gamepad_axis_is_trigger(SDL_GamepadAxis axis);
 bool gamepad_trigger_pressed(float normalized_value);
+inline float combine_gamepad_throttle(float forward, float reverse) {
+	return std::clamp(forward, 0.0f, 1.0f) - std::clamp(reverse, 0.0f, 1.0f);
+}
 float normalize_gamepad_axis(
 	Sint16 raw_value,
 	SDL_GamepadAxis axis,
