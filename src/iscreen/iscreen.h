@@ -514,6 +514,7 @@ struct iScrollerElement: public iBitmapElement {
 	int Value;
 	int maxValue;
 	int prevValue;
+	int keyboard_delta;
 
 	int scale;
 	int scale_delta;
@@ -522,6 +523,7 @@ struct iScrollerElement: public iBitmapElement {
 
 	void change_quant(void);
 	void change_val(int x, int y);
+	void change_value_by(int delta);
 	void scroller_init(void);
 
 	iScrollerElement(void);
@@ -886,7 +888,7 @@ iListElement *iGetOptionObj(int id);
 void i_preExtQuant(void);
 void i_postExtQuant(void);
 
-void ParseScript(const char *fname, const char *bname = NULL);
+void ParseScript(const char *fname, const char *bname = NULL, bool initialize_objects = true);
 void iInit(void);
 int iQuant(void);
 

@@ -109,25 +109,55 @@ else()
 
 endif(ANDROID)
 
-TARGET_LINK_LIBRARIES(vangers PRIVATE
-	vangers_settings
-	SDL3::SDL3
-	SDL3_net::SDL3_net
-	Clunk::Clunk
-	${OGG_LIBRARY}
-	${VORBIS_LIBRARY}
-	${VORBISFILE_LIBRARY}
-	${FFMPEG_LIBRARIES}
-	${ZLIB_LIBRARIES}
-	${OPENGL_LIBRARIES}
-	${WIN_LIB}
-	${STEAM_LIBS}
-)
+IF(BINARY_SCRIPT)
+	TARGET_COMPILE_DEFINITIONS(vangers PRIVATE _BINARY_SCRIPT_)
+ENDIF()
+
+function(CONFIGURE_VANGERS_TARGET target_name)
+	TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+		vangers_settings
+		SDL3::SDL3
+		SDL3_net::SDL3_net
+		Clunk::Clunk
+		${OGG_LIBRARY}
+		${VORBIS_LIBRARY}
+		${VORBISFILE_LIBRARY}
+		${FFMPEG_LIBRARIES}
+		${ZLIB_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		${WIN_LIB}
+		${STEAM_LIBS}
+	)
+
+	if (NOT ANDROID)
+		TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+			xtool
+			xgraph
+			xsound
+		)
+	endif()
+endfunction()
+
+CONFIGURE_VANGERS_TARGET(vangers)
 
 if (NOT ANDROID)
-	TARGET_LINK_LIBRARIES(vangers PRIVATE
-		xtool
-		xgraph
-		xsound
+	ADD_EXECUTABLE(vangers_iscreen_compiler EXCLUDE_FROM_ALL
+		${vangers_SRCS}
+		iscreen/script_compiler.cpp
+	)
+	TARGET_COMPILE_DEFINITIONS(vangers_iscreen_compiler PRIVATE ISCREEN_SCRIPT_COMPILER)
+	CONFIGURE_VANGERS_TARGET(vangers_iscreen_compiler)
+
+	ADD_CUSTOM_TARGET(compile_iscreen_scripts
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-iscreen
+			iscreen/oftr.scr resource/iscreen/oftr.scb
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-iscreen
+			iscreen/oftr2.scr resource/iscreen/oftr2.scb
+		DEPENDS vangers_iscreen_compiler
+		COMMENT "Compiling English and Russian interface scripts"
+		USES_TERMINAL
+		VERBATIM
 	)
 endif()

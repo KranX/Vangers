@@ -699,6 +699,7 @@ iBitmapElement::iBitmapElement(void) {
 
 iScrollerElement::iScrollerElement(void) {
 	Value = maxValue = dir = 0;
+	keyboard_delta = 0;
 	space = I_DEFAULT_SPACE;
 	bmp_null_level = I_LEVEL;
 
@@ -982,8 +983,25 @@ void iScrollerElement::change_val(int x, int y) {
 	scale = (Value > prevValue) ? -256 : 256;
 }
 
+void iScrollerElement::change_value_by(int delta) {
+	prevValue = Value;
+	Value += delta;
+	if (Value < 0)
+		Value = 0;
+	if (Value > maxValue)
+		Value = maxValue;
+
+	if (Value > prevValue)
+		scale = -256;
+	else if (Value < prevValue)
+		scale = 256;
+	else
+		scale = 0;
+}
+
 void iScrollerElement::scroller_init(void) {
 	prevValue = Value;
+	keyboard_delta = 0;
 }
 
 iTerrainElement::iTerrainElement(void) {
@@ -2516,6 +2534,160 @@ void iScreen::CheckScanCode(int sc) {
 			p = (iScreenEvent *)p->prev;
 		}
 	}
+
+	auto handle_primary_action = [&](iScreenObject *target) {
+		p = (iScreenEvent *)target->EventList->last;
+		while (p && !iScrDisp->ActiveEv) {
+			if (bool(target->flags & OBJ_LOCKED) == bool(p->flags & EV_IF_LOCKED) &&
+				(!(p->flags & EV_IF_SELECTED) || target->flags & OBJ_SELECTED) &&
+				(!(p->flags & EV_IF_NOT_SELECTED) || !(target->flags & OBJ_SELECTED))) {
+				cd = p->codes->last;
+				while (cd && !iScrDisp->ActiveEv) {
+					if (((iScanCode *)cd)->code == iMOUSE_LEFT_PRESS_CODE)
+						HandleEvent(p);
+					cd = cd->prev;
+				}
+			}
+			p = (iScreenEvent *)p->prev;
+		}
+	};
+
+	iScrollerElement *selected_scroller = NULL;
+	if (curObj && (curObj->flags & OBJ_SELECTABLE) && (curObj->flags & OBJ_SELECTED)) {
+		iScreenElement *element = (iScreenElement *)curObj->ElementList->last;
+		while (element && !selected_scroller) {
+			if (element->type == I_SCROLLER_ELEM)
+				selected_scroller = (iScrollerElement *)element;
+			element = (iScreenElement *)element->prev;
+		}
+	}
+
+	// A selectable object without an explicit keyboard action uses its existing
+	// primary mouse action for keyboard and gamepad confirmation.
+	if (!iScrDisp->ActiveEv && !mouse_sc && curObj && (curObj->flags & OBJ_SELECTABLE) &&
+		(curObj->flags & OBJ_SELECTED) && (sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_SPACE)) {
+		if (selected_scroller)
+			selected_scroller->keyboard_delta = 1;
+		handle_primary_action(curObj);
+		if (!iScrDisp->ActiveEv && selected_scroller)
+			selected_scroller->keyboard_delta = 0;
+	}
+
+	// Left/right changes a focused option in place. Scrollers retain their
+	// existing event, including the setting-specific update callback.
+	if (!iScrDisp->ActiveEv && !mouse_sc && curObj && (curObj->flags & OBJ_SELECTABLE) &&
+		(curObj->flags & OBJ_SELECTED) && (sc == SDL_SCANCODE_LEFT || sc == SDL_SCANCODE_RIGHT) &&
+		(selected_scroller || curObj->flags & OBJ_TRIGGER)) {
+		if (selected_scroller)
+			selected_scroller->keyboard_delta = sc == SDL_SCANCODE_LEFT ? -1 : 1;
+		handle_primary_action(curObj);
+		if (!iScrDisp->ActiveEv && selected_scroller)
+			selected_scroller->keyboard_delta = 0;
+	}
+
+	// Explicit script navigation has priority. If it did not handle an arrow,
+	// navigate the selectable objects as rows and columns. Vertical navigation
+	// advances to the nearest row first, while horizontal navigation stays in
+	// the current row first. Wrap at the edge so every options screen can be
+	// traversed cyclically.
+	if (!iScrDisp->ActiveEv && !mouse_sc && curObj && (curObj->flags & OBJ_SELECTABLE) &&
+		(sc == SDL_SCANCODE_UP || sc == SDL_SCANCODE_DOWN || sc == SDL_SCANCODE_LEFT ||
+			sc == SDL_SCANCODE_RIGHT)) {
+		const int current_x = curObj->PosX + curObj->SizeX / 2;
+		const int current_y = curObj->PosY + curObj->SizeY / 2;
+		iScreenObject *next_obj = NULL;
+		iScreenObject *wrap_obj = NULL;
+		int best_primary = -1;
+		int best_secondary = -1;
+		int best_wrap_primary = -1;
+		int best_wrap_secondary = -1;
+		const bool vertical = sc == SDL_SCANCODE_UP || sc == SDL_SCANCODE_DOWN;
+
+		obj = (iScreenObject *)objList->last;
+		while (obj) {
+			if (obj != curObj && (obj->flags & OBJ_SELECTABLE) && !(obj->flags & OBJ_LOCKED) &&
+				!(obj->flags & OBJ_HIDE)) {
+				const int object_x = obj->PosX + obj->SizeX / 2;
+				const int object_y = obj->PosY + obj->SizeY / 2;
+				const int dx = object_x - current_x;
+				const int dy = object_y - current_y;
+				int primary = 0;
+				int secondary = 0;
+				int wrap_primary = 0;
+
+				switch (sc) {
+				case SDL_SCANCODE_UP:
+					primary = -dy;
+					secondary = abs(dx);
+					wrap_primary = -object_y;
+					break;
+				case SDL_SCANCODE_DOWN:
+					primary = dy;
+					secondary = abs(dx);
+					wrap_primary = object_y;
+					break;
+				case SDL_SCANCODE_LEFT:
+					primary = -dx;
+					secondary = abs(dy);
+					wrap_primary = -object_x;
+					break;
+				case SDL_SCANCODE_RIGHT:
+					primary = dx;
+					secondary = abs(dy);
+					wrap_primary = object_x;
+					break;
+				}
+
+				if (primary > 0) {
+					bool better;
+					if (vertical) {
+						better = best_primary < 0 || primary < best_primary ||
+								 (primary == best_primary && secondary < best_secondary);
+					} else {
+						better = best_secondary < 0 || secondary < best_secondary ||
+								 (secondary == best_secondary && primary < best_primary);
+					}
+					if (better) {
+						best_primary = primary;
+						best_secondary = secondary;
+						next_obj = obj;
+					}
+				}
+
+				bool better_wrap;
+				if (vertical) {
+					better_wrap =
+						!wrap_obj || wrap_primary < best_wrap_primary ||
+						(wrap_primary == best_wrap_primary && secondary < best_wrap_secondary);
+				} else {
+					better_wrap =
+						!wrap_obj || secondary < best_wrap_secondary ||
+						(secondary == best_wrap_secondary && wrap_primary < best_wrap_primary);
+				}
+				if (better_wrap) {
+					best_wrap_primary = wrap_primary;
+					best_wrap_secondary = secondary;
+					wrap_obj = obj;
+				}
+			}
+			obj = (iScreenObject *)obj->prev;
+		}
+
+		if (!next_obj)
+			next_obj = wrap_obj;
+
+		if (next_obj) {
+			curObj->flags &= ~OBJ_SELECTED;
+			curObj->curHeightScale = I_UNSELECT_SCALE;
+			iScrDisp->set_obj_redraw(curObj);
+
+			curObj = next_obj;
+			curObj->flags |= OBJ_SELECTED;
+			curObj->curHeightScale = 256;
+			iScrDisp->set_obj_redraw(curObj);
+			SOUND_SELECT();
+		}
+	}
 }
 
 void iScreen::prepare(void) {
@@ -2869,7 +3041,16 @@ void iScreenDispatcher::ProcessEvent(iScreenEvent *p) {
 					break;
 				case EV_CHANGE_SCROLLER:
 					scl = (iScrollerElement *)cm->obj;
-					if (scl->check_xy(iMouseX + iScreenOffs, iMouseY)) {
+					if (scl->keyboard_delta) {
+						scl->change_value_by(scl->keyboard_delta);
+						scl->keyboard_delta = 0;
+						if (scl->Value > scl->prevValue)
+							scl->scale_delta = 512 / cm->time;
+						else if (scl->Value < scl->prevValue)
+							scl->scale_delta = -512 / cm->time;
+						else
+							scl->scale_delta = 0;
+					} else if (scl->check_xy(iMouseX + iScreenOffs, iMouseY)) {
 						scl->change_val(iMouseX + iScreenOffs, iMouseY);
 						scl->scale_delta =
 							(scl->Value > scl->prevValue) ? 512 / cm->time : -512 / cm->time;

@@ -138,10 +138,6 @@ void ScriptFileBuffer::load(XStream *fh) {
 	fh->read(buffer, size);
 }
 
-void ScriptFileBuffer::save(XStream *fh) {
-	fh->write(buffer, size);
-}
-
 void ScriptLine::merge(ScriptBlock *p, ScriptBlock *beg, ScriptBlock *end) {
 	ScriptBlock *p1, *tmp = beg;
 
@@ -1172,18 +1168,35 @@ int ScriptFile::process_includes(void) {
 	if (!NumBufs)
 		return 0;
 
-	fh.open("iscreen/temp.scr", XS_OUT);
+	int merged_size = Size;
+	b = fBuf;
 	for (i = 0; i < NumBufs; i++) {
-		if (offs != b->offset)
-			fh.write(buffer + offs, b->offset - offs);
+		merged_size += b->size - b->offset_size;
+		b = b->next;
+	}
+
+	char *merged_buffer = new char[merged_size];
+	int merged_offs = 0;
+	b = fBuf;
+	for (i = 0; i < NumBufs; i++) {
+		if (offs != b->offset) {
+			memcpy(merged_buffer + merged_offs, buffer + offs, b->offset - offs);
+			merged_offs += b->offset - offs;
+		}
 		offs = b->offset + b->offset_size;
-		b->save(&fh);
+		memcpy(merged_buffer + merged_offs, b->buffer, b->size);
+		merged_offs += b->size;
 
 		b = b->next;
 	}
-	fh.write(buffer + offs, Size - offs);
-	fh.close();
+	memcpy(merged_buffer + merged_offs, buffer + offs, Size - offs);
+	merged_offs += Size - offs;
+	if (merged_offs != merged_size)
+		ErrH.Abort("Internal include processing error...");
+
 	delete[] buffer;
+	buffer = merged_buffer;
+	Size = merged_size;
 
 	b = lBuf;
 	while (b) {
@@ -1194,11 +1207,6 @@ int ScriptFile::process_includes(void) {
 	NumBufs = 0;
 	fBuf = lBuf = NULL;
 
-	fh.open("iscreen/temp.scr", XS_IN);
-	Size = fh.size();
-	buffer = new char[Size];
-	fh.read(buffer, Size);
-	fh.close();
 	reset();
 
 	return ret;

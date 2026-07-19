@@ -27,6 +27,9 @@
 #include "sqexp.h"
 
 #include "iscreen/settings_adapter.h"
+#ifdef ISCREEN_SCRIPT_COMPILER
+#	include "iscreen/script_compiler.h"
+#endif
 #include "network.h"
 #include "settings/settings.h"
 #include "xgamepad.h"
@@ -369,6 +372,18 @@ void showModal(char *fname, float reelW, float reelH, float screenW, float scree
 }
 
 int xtInitApplication(void) {
+#ifdef ISCREEN_SCRIPT_COMPILER
+	extern int __internal_argc;
+	extern char **__internal_argv;
+	if (__internal_argc != 4 || strcmp(__internal_argv[1], "--compile-iscreen"))
+		ErrH.Abort(
+			"Usage: vangers_iscreen_compiler --compile-iscreen <source.scr> <output.scb>", XERR_USER
+		);
+
+	CompileIScreenScript(__internal_argv[2], __internal_argv[3]);
+	return XT_TERMINATE_ID;
+#endif
+
 	XGraphWndID = "VANGERS";
 	char *tmp;
 
@@ -1252,6 +1267,9 @@ void LoadingRTO3::Finit(void) {
 }
 
 void xtDoneApplication(void) {
+#ifdef ISCREEN_SCRIPT_COMPILER
+	return;
+#endif
 	restore();
 }
 

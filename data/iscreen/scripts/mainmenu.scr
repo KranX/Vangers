@@ -1608,6 +1608,7 @@ Screen "Graphics screen"
 	Trigger "TutorialTrig" {
 		x	$KEEP_TRG_X
 		y	$GRAPHICS_SCR_START_Y
+		selectable_obj
 
 		num_state	2
 
@@ -1650,11 +1651,12 @@ Screen "Graphics screen"
 			}
 		}
 	}
-	
+
 	Object "Back Option"
 	{
 		align_x center
 		y	$OPTIONS_BACK_Y
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -1723,6 +1725,7 @@ Screen "Graphics screen"
 	Trigger "ResTrig" {
 		x	$RESOLUTION_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 1 }
+		selectable_obj
 
 		num_state	2
 
@@ -1783,6 +1786,7 @@ Screen "Graphics screen"
 	Trigger "FpsTrig" {
 		x	$KEEP_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
+		selectable_obj
 
 		num_state	2
 
@@ -1844,6 +1848,7 @@ Screen "Graphics screen"
 	Trigger "DestrTrig" {
 		x	$DESTR_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 3 }
+		selectable_obj
 
 		num_state	2
 
@@ -1901,6 +1906,7 @@ Screen "Graphics screen"
 	Trigger "KeepTrig" {
 		x	$KEEP_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
+		selectable_obj
 
 		num_state	2
 
@@ -1962,6 +1968,7 @@ Screen "Graphics screen"
 	Trigger "FullScreenTrig" {
 		x	$KEEP_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 5 }
+		selectable_obj
 
 		num_state	2
 
@@ -2026,6 +2033,7 @@ Screen "Graphics screen"
 	{
 		x	$Graphics_screen_CleanUpObj_PosX
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 6 }
+		selectable_obj
 
 		not_unlock
 
@@ -2132,6 +2140,7 @@ Screen "Sound screen"
 	Trigger "SoundTrig" {
 		x	$Sound_screen_SoundTrig_PosX
 		y	$SOUND_SCR_START_Y
+		selectable_obj
 
 		num_state	2
 
@@ -2193,6 +2202,7 @@ Screen "Sound screen"
 	Trigger "MusicTrig" {
 		x	$Sound_screen_MusicTrig_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 1 }
+		selectable_obj
 
 		num_state	2
 
@@ -2255,6 +2265,7 @@ Screen "Sound screen"
 	{
 		x	$Sound_screen_SndScrlObj_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 5 }
+		selectable_obj
 
 		Element SCROLLER "SndVolumeScroller" {
 			bmp_file	"resource/iscreen/bitmap/snd_shp.bmp"
@@ -2307,6 +2318,7 @@ Screen "Sound screen"
 	{
 		x	$Sound_screen_MusScrlObj_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 6 }
+		selectable_obj
 
 		Element SCROLLER "MusVolumeScroller" {
 			bmp_file	"resource/iscreen/bitmap/snd_shp.bmp"
@@ -2343,6 +2355,7 @@ Screen "Sound screen"
 	{
 		align_x center
 		y	$OPTIONS_BACK_Y
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -2409,6 +2422,7 @@ Screen "Sound screen"
 	Trigger "PanningTrig" {
 		x	$Sound_screen_PanningTrig_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 2 }
+		selectable_obj
 
 		num_state	2
 		null_level	$DEFAULT_NULL
@@ -2469,6 +2483,7 @@ Screen "Sound screen"
 	Trigger "MechSndTrig" {
 		x	$Sound_screen_MechSndTrig_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 3 }
+		selectable_obj
 
 		num_state	2
 		null_level	$DEFAULT_NULL
@@ -2525,6 +2540,7 @@ Screen "Sound screen"
 	Trigger "BackSndTrig" {
 		x	$Sound_screen_BackSndTrig_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 4 }
+		selectable_obj
 
 		num_state	2
 		null_level	$DEFAULT_NULL
@@ -5008,6 +5024,7 @@ Screen "Failed screen"
 			{									\
 				x	{ 830 - $KEYS0_X }					\
 				y		{ $KEYS0_START_Y + $KEYS0_DELTA_Y * $KEY_Y }	\
+				selectable_obj						\
 												\
 				Element STRING {						\
 					id		$KEY_ID 				\
@@ -5051,6 +5068,7 @@ Screen "Failed screen"
 			{									\
 				x	{ 1050 - $KEYS0_X }					\
 				y		{ $KEYS0_START_Y + $KEYS0_DELTA_Y * $KEY_Y }	\
+				selectable_obj						\
 												\
 				Element STRING {						\
 					id		$KEY_ID 				\
@@ -5093,6 +5111,7 @@ Screen "Failed screen"
 			{								\
 				x	$Controls_screen_Back_Option_PosX		\
 				y	$Controls_screen_Back_Option_PosY		\
+				selectable_obj						\
 											\
 				Element STRING {					\
 					align_x center					\
@@ -5145,6 +5164,7 @@ Screen "Failed screen"
 			{								\
 				x	$Controls_screen_More_Option_PosX		\
 				y	$Controls_screen_More_Option_PosY		\
+				selectable_obj						\
 											\
 				Element STRING {					\
 					align_x center					\
@@ -5229,6 +5249,7 @@ Screen "Controls screen"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5293,6 +5314,7 @@ Screen "Controls screen"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5366,6 +5388,7 @@ Screen "Controls screen"
 	Trigger "AutoAccelerationTrig" {
 		x	{ 830 - $KEYS0_X }
 		y	{ $KEYS0_START_Y + $KEYS0_DELTA_Y * 7 }
+		selectable_obj
 
 		num_state	2
 
@@ -5556,6 +5579,7 @@ Screen "Controls screen 2"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5620,6 +5644,7 @@ Screen "Controls screen 2"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5802,6 +5827,7 @@ Screen "Controls screen 3"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5866,6 +5892,7 @@ Screen "Controls screen 3"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -6078,6 +6105,7 @@ Screen "Controls screen 4"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -6142,6 +6170,7 @@ Screen "Controls screen 4"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -6339,6 +6368,7 @@ Screen "Controls screen 5"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -6403,6 +6433,7 @@ Screen "Controls screen 5"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
+		selectable_obj
 
 		Element STRING {
 			align_x center

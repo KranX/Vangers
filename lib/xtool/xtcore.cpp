@@ -172,6 +172,13 @@ int main(int argc, char *argv[]) {
 			} else {
 				std::cout << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
 			}
+		} else if (cmd_key == "--compile-iscreen") {
+			if (i + 2 < argc) {
+				i += 2;
+			} else {
+				std::cout << "Invalid parameter usage: '--compile-iscreen source output' expected"
+						  << std::endl;
+			}
 		} else {
 			std::cout << "Unknown parameter: '" << cmd_key << "'" << std::endl;
 		}
