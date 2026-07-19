@@ -2,15 +2,19 @@
 
 #include "legacy_settings_import.h"
 
+#include <algorithm>
 #include <atomic>
 #include <cerrno>
+#include <chrono>
 #include <cstdint>
 #include <ctime>
 #include <fstream>
 #include <limits>
+#include <mutex>
 #include <optional>
 #include <string_view>
 #include <system_error>
+#include <thread>
 #include <utility>
 
 #ifdef _WIN32
@@ -337,6 +341,9 @@ struct FileWriteResult {
 
 std::atomic<std::uint64_t> temporary_file_sequence{0};
 std::atomic<std::uint64_t> backup_file_sequence{0};
+#ifdef _WIN32
+std::mutex settings_file_replace_mutex;
+#endif
 
 std::uint64_t process_id() {
 #ifdef _WIN32
@@ -376,11 +383,34 @@ bool replace_file(
 	std::error_code &error
 ) {
 #ifdef _WIN32
-	if (MoveFileExW(
-			temporary.c_str(), target.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH
-		))
-		return true;
-	error = {static_cast<int>(GetLastError()), std::system_category()};
+	// Windows can transiently deny replacement while another game instance,
+	// thread, indexer, or antivirus has the destination open. Unique temporary
+	// names prevent writers from corrupting each other's data, but they do not
+	// make concurrent replacement of the shared destination reliable. Serialize
+	// writers in this process and retry only errors that can disappear once the
+	// competing handle is released.
+	std::lock_guard<std::mutex> replace_lock(settings_file_replace_mutex);
+	constexpr int maximum_attempts = 32;
+	for (int attempt = 0; attempt < maximum_attempts; ++attempt) {
+		if (MoveFileExW(
+				temporary.c_str(),
+				target.c_str(),
+				MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH
+			))
+			return true;
+
+		const DWORD windows_error = GetLastError();
+		const bool retryable =
+			windows_error == ERROR_ACCESS_DENIED || windows_error == ERROR_SHARING_VIOLATION ||
+			windows_error == ERROR_LOCK_VIOLATION || windows_error == ERROR_USER_MAPPED_FILE;
+		if (!retryable || attempt + 1 == maximum_attempts) {
+			error = {static_cast<int>(windows_error), std::system_category()};
+			return false;
+		}
+
+		const int delay_ms = 1 << std::min(attempt, 4);
+		std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+	}
 	return false;
 #else
 	std::filesystem::rename(temporary, target, error);

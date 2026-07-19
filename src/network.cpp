@@ -24,8 +24,8 @@ extern XStream fout;
 extern int frame;
 extern int GlobalExit;
 
-#define CLIENT_VERSION 5
-#define SERVER_VERSION 5
+#define CLIENT_VERSION 6
+#define SERVER_VERSION 6
 
 // zmod
 int zserver_version = 0;

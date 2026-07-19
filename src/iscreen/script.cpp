@@ -633,7 +633,8 @@ void ScriptFile::preprocess(void) {
 			line->connect(p);
 
 			token_size = 0;
-			while (CurOffs + token_size < Size && cur_ptr[token_size] && cur_ptr[token_size] != '\n')
+			while (
+				CurOffs + token_size < Size && cur_ptr[token_size] && cur_ptr[token_size] != '\n')
 				token_size++;
 
 			if (CurOffs + token_size < Size && cur_ptr[token_size] == '\n') {
