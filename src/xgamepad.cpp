@@ -13,6 +13,9 @@
 
 void xtRegisterSysMsgFnc(void (*fPtr)(SDL_Event *), int id);
 
+extern int iScreenActive;
+extern int Pause;
+
 namespace {
 
 constexpr int XGAMEPAD_SYSOBJ_ID = 0x05;
@@ -41,6 +44,10 @@ const vangers::settings::GameSettings &current_settings() {
 
 bool controller_enabled() {
 	return current_settings().input.controller.enabled;
+}
+
+bool gamepad_cursor_context_active() {
+	return iScreenActive || Pause;
 }
 
 void release_confirm() {
@@ -185,7 +192,7 @@ void handle_gamepad_event(SDL_Event *event) {
 		}
 		break;
 	case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
-		if (event->gbutton.which == active_gamepad_id && XGR_MouseVisible() &&
+		if (event->gbutton.which == active_gamepad_id && XGamepadIsControllingCursor() &&
 			!SDL_TextInputActive(XGR_Obj.get_window())) {
 			switch (event->gbutton.button) {
 			case SDL_GAMEPAD_BUTTON_DPAD_UP:
@@ -261,9 +268,9 @@ void update_gamepad_input() {
 	}
 
 	SDL_UpdateGamepads();
-	const bool cursor_visible = XGR_MouseVisible();
-	update_gamepad_cursor(elapsed, cursor_visible);
-	update_ui_actions(cursor_visible, !SDL_TextInputActive(XGR_Obj.get_window()));
+	const bool cursor_active = XGamepadIsControllingCursor();
+	update_gamepad_cursor(elapsed, cursor_active);
+	update_ui_actions(cursor_active, !SDL_TextInputActive(XGR_Obj.get_window()));
 }
 
 } // namespace
@@ -378,7 +385,8 @@ float XGamepadAxisValue(std::string_view logical_axis) {
 }
 
 bool XGamepadIsControllingCursor() {
-	return active_gamepad && controller_enabled() && XGR_MouseVisible();
+	return active_gamepad && controller_enabled() && gamepad_cursor_context_active() &&
+		   XGR_MouseVisible();
 }
 
 void XGamepadUseFocusNavigation() {

@@ -176,6 +176,7 @@ void iKeyTrap(int k);
 static int gamepad_menu_navigation_code(SDL_GamepadButton button);
 static bool gamepad_shop_active();
 static bool gamepad_shop_menu_active();
+static int gamepad_shop_back_code();
 static int gamepad_shop_category_code(SDL_GamepadButton button);
 
 void iInitMultiGames(void);
@@ -847,13 +848,20 @@ int iQuantSecond(void) {
 							if (XGamepadButtonMatchesAction("menu_cancel", button)) {
 								if (gamepad_shop_active() &&
 									!(aScrDisp->flags & AS_INV_MOVE_ITEM)) {
-									if (gamepad_shop_menu_active())
-										code = SDL_SCANCODE_RETURN;
-									else
-										code = SDL_SCANCODE_TAB;
+									code = gamepad_shop_back_code();
 								} else if (!actIntLog) {
 									code = SDL_SCANCODE_ESCAPE;
 								}
+							} else if (gamepad_shop_active() &&
+									   !(aScrDisp->flags & AS_INV_MOVE_ITEM) &&
+									   button == SDL_GAMEPAD_BUTTON_DPAD_LEFT) {
+								code = gamepad_shop_back_code();
+							} else if (gamepad_shop_active() &&
+									   !(aScrDisp->flags & AS_INV_MOVE_ITEM) &&
+									   button == SDL_GAMEPAD_BUTTON_DPAD_RIGHT) {
+								// The shop is the rightmost Escave screen. Item browsing uses
+								// the vertical list, so Right has no second spatial destination.
+								code = button | SDLK_GAMEPAD_BUTTON_MASK;
 							} else if (gamepad_shop_active() &&
 									   !(aScrDisp->flags & AS_INV_MOVE_ITEM) &&
 									   (button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER ||
@@ -2214,6 +2222,10 @@ static bool gamepad_shop_menu_active() {
 		return false;
 	fncMenu *menu = aScrDisp->get_imenu(SHOP_ITEMS_MENU_ID);
 	return menu && (menu->flags & FM_ACTIVE);
+}
+
+static int gamepad_shop_back_code() {
+	return gamepad_shop_menu_active() ? SDL_SCANCODE_RETURN : SDL_SCANCODE_TAB;
 }
 
 static int gamepad_shop_category_code(SDL_GamepadButton button) {
