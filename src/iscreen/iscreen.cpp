@@ -2524,6 +2524,30 @@ static bool has_primary_mouse_action(iScreenObject *obj) {
 	return false;
 }
 
+static bool is_focus_target(iScreenObject *obj) {
+	return obj && ((obj->flags & OBJ_SELECTABLE) || has_primary_mouse_action(obj));
+}
+
+static bool is_focused_object(iScreenObject *obj) {
+	return is_focus_target(obj) && (obj->flags & OBJ_SELECTED);
+}
+
+static void move_cursor_to_focus(iScreenObject *obj) {
+	int x = obj->PosX + obj->SizeX / 2 - iScreenOffs;
+	int y = obj->PosY + obj->SizeY / 2;
+	if (x < 0)
+		x = 0;
+	else if (x >= XGR_MAXX)
+		x = XGR_MAXX - 1;
+	if (y < 0)
+		y = 0;
+	else if (y >= XGR_MAXY)
+		y = XGR_MAXY - 1;
+
+	XGR_MouseSetPos(x, y);
+	XGR_MouseMove(0, XGR_MouseObj.PosX, XGR_MouseObj.PosY);
+}
+
 void iScreen::CheckScanCode(int sc) {
 	int x = 0, y = 0, mouse_sc = 0;
 	iScreenObject *obj;
@@ -2536,9 +2560,9 @@ void iScreen::CheckScanCode(int sc) {
 		y = iMouseY;
 	}
 
-	const bool focused_confirmation =
-		!actIntLog && !mouse_sc && (sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_SPACE) &&
-		curObj && (curObj->flags & OBJ_SELECTABLE) && (curObj->flags & OBJ_SELECTED);
+	const bool focused_confirmation = !actIntLog && !mouse_sc &&
+									  (sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_SPACE) &&
+									  is_focused_object(curObj);
 
 	obj = (iScreenObject *)objList->last;
 	while (obj) {
@@ -2576,7 +2600,7 @@ void iScreen::CheckScanCode(int sc) {
 	}
 
 	iScrollerElement *selected_scroller = NULL;
-	if (curObj && (curObj->flags & OBJ_SELECTABLE) && (curObj->flags & OBJ_SELECTED)) {
+	if (is_focused_object(curObj)) {
 		iScreenElement *element = (iScreenElement *)curObj->ElementList->last;
 		while (element && !selected_scroller) {
 			if (element->type == I_SCROLLER_ELEM)
@@ -2585,10 +2609,10 @@ void iScreen::CheckScanCode(int sc) {
 		}
 	}
 
-	// A selectable object without an explicit keyboard action uses its existing
+	// A focused object without an explicit keyboard action uses its existing
 	// primary mouse action for keyboard and gamepad confirmation.
-	if (!iScrDisp->ActiveEv && !mouse_sc && curObj && (curObj->flags & OBJ_SELECTABLE) &&
-		(curObj->flags & OBJ_SELECTED) && (sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_SPACE)) {
+	if (!iScrDisp->ActiveEv && !mouse_sc && is_focused_object(curObj) &&
+		(sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_SPACE)) {
 		if (selected_scroller)
 			selected_scroller->keyboard_delta = 1;
 		HandlePrimaryAction(curObj);
@@ -2598,8 +2622,8 @@ void iScreen::CheckScanCode(int sc) {
 
 	// Left/right changes a focused option in place. Scrollers retain their
 	// existing event, including the setting-specific update callback.
-	if (!iScrDisp->ActiveEv && !mouse_sc && curObj && (curObj->flags & OBJ_SELECTABLE) &&
-		(curObj->flags & OBJ_SELECTED) && (sc == SDL_SCANCODE_LEFT || sc == SDL_SCANCODE_RIGHT) &&
+	if (!iScrDisp->ActiveEv && !mouse_sc && is_focused_object(curObj) &&
+		(sc == SDL_SCANCODE_LEFT || sc == SDL_SCANCODE_RIGHT) &&
 		(selected_scroller || curObj->flags & OBJ_TRIGGER)) {
 		if (selected_scroller)
 			selected_scroller->keyboard_delta = sc == SDL_SCANCODE_LEFT ? -1 : 1;
@@ -2608,14 +2632,15 @@ void iScreen::CheckScanCode(int sc) {
 			selected_scroller->keyboard_delta = 0;
 	}
 
-	// Explicit script navigation has priority. If it did not handle an arrow,
-	// navigate the selectable objects as rows and columns. Vertical navigation
+	// Explicit script navigation has priority. If it did not handle an arrow or Tab,
+	// navigate the focusable objects as rows and columns. Vertical navigation
 	// advances to the nearest row first, while horizontal navigation stays in
 	// the current row first. Wrap at the edge so every options screen can be
 	// traversed cyclically.
-	if (!iScrDisp->ActiveEv && !mouse_sc && curObj && (curObj->flags & OBJ_SELECTABLE) &&
+	if (!iScrDisp->ActiveEv && !mouse_sc && is_focused_object(curObj) &&
 		(sc == SDL_SCANCODE_UP || sc == SDL_SCANCODE_DOWN || sc == SDL_SCANCODE_LEFT ||
-			sc == SDL_SCANCODE_RIGHT)) {
+			sc == SDL_SCANCODE_RIGHT || sc == SDL_SCANCODE_TAB)) {
+		const int navigation_sc = sc == SDL_SCANCODE_TAB ? SDL_SCANCODE_DOWN : sc;
 		const int current_x = curObj->PosX + curObj->SizeX / 2;
 		const int current_y = curObj->PosY + curObj->SizeY / 2;
 		iScreenObject *next_obj = NULL;
@@ -2624,11 +2649,12 @@ void iScreen::CheckScanCode(int sc) {
 		int best_secondary = -1;
 		int best_wrap_primary = -1;
 		int best_wrap_secondary = -1;
-		const bool vertical = sc == SDL_SCANCODE_UP || sc == SDL_SCANCODE_DOWN;
+		const bool vertical =
+			navigation_sc == SDL_SCANCODE_UP || navigation_sc == SDL_SCANCODE_DOWN;
 
 		obj = (iScreenObject *)objList->last;
 		while (obj) {
-			if (obj != curObj && (obj->flags & OBJ_SELECTABLE) && !(obj->flags & OBJ_LOCKED) &&
+			if (obj != curObj && is_focus_target(obj) && !(obj->flags & OBJ_LOCKED) &&
 				!(obj->flags & OBJ_HIDE)) {
 				const int object_x = obj->PosX + obj->SizeX / 2;
 				const int object_y = obj->PosY + obj->SizeY / 2;
@@ -2638,7 +2664,7 @@ void iScreen::CheckScanCode(int sc) {
 				int secondary = 0;
 				int wrap_primary = 0;
 
-				switch (sc) {
+				switch (navigation_sc) {
 				case SDL_SCANCODE_UP:
 					primary = -dy;
 					secondary = abs(dx);
@@ -2701,13 +2727,15 @@ void iScreen::CheckScanCode(int sc) {
 
 		if (next_obj) {
 			curObj->flags &= ~OBJ_SELECTED;
-			curObj->curHeightScale = I_UNSELECT_SCALE;
+			curObj->curHeightScale = curObj->flags & OBJ_SELECTABLE ? I_UNSELECT_SCALE : 256;
 			iScrDisp->set_obj_redraw(curObj);
 
 			curObj = next_obj;
 			curObj->flags |= OBJ_SELECTED;
 			curObj->curHeightScale = 256;
 			iScrDisp->set_obj_redraw(curObj);
+			if (!(curObj->flags & OBJ_SELECTABLE))
+				move_cursor_to_focus(curObj);
 			SOUND_SELECT();
 		}
 	}
@@ -2716,11 +2744,6 @@ void iScreen::CheckScanCode(int sc) {
 void iScreen::prepare(void) {
 	iScreenObject *p = (iScreenObject *)objList->last;
 	while (p) {
-		// The standalone menu scripts historically marked only a few mouse
-		// actions as selectable. Make every primary menu action reachable by
-		// keyboard/gamepad without changing the in-game ACI object model.
-		if (!actIntLog && has_primary_mouse_action(p))
-			p->flags |= OBJ_SELECTABLE;
 		p->flags &= ~OBJ_HIDE;
 		if (!(p->flags & OBJ_NOT_UNLOCK))
 			p->flags &= ~OBJ_LOCKED;

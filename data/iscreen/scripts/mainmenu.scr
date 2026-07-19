@@ -1608,7 +1608,6 @@ Screen "Graphics screen"
 	Trigger "TutorialTrig" {
 		x	$KEEP_TRG_X
 		y	$GRAPHICS_SCR_START_Y
-		selectable_obj
 
 		num_state	2
 
@@ -1656,7 +1655,6 @@ Screen "Graphics screen"
 	{
 		align_x center
 		y	$OPTIONS_BACK_Y
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -1725,7 +1723,6 @@ Screen "Graphics screen"
 	Trigger "ResTrig" {
 		x	$RESOLUTION_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 1 }
-		selectable_obj
 
 		num_state	2
 
@@ -1786,7 +1783,6 @@ Screen "Graphics screen"
 	Trigger "FpsTrig" {
 		x	$KEEP_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 2 }
-		selectable_obj
 
 		num_state	2
 
@@ -1848,7 +1844,6 @@ Screen "Graphics screen"
 	Trigger "DestrTrig" {
 		x	$DESTR_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 3 }
-		selectable_obj
 
 		num_state	2
 
@@ -1906,7 +1901,6 @@ Screen "Graphics screen"
 	Trigger "KeepTrig" {
 		x	$KEEP_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
-		selectable_obj
 
 		num_state	2
 
@@ -1968,7 +1962,6 @@ Screen "Graphics screen"
 	Trigger "FullScreenTrig" {
 		x	$KEEP_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 5 }
-		selectable_obj
 
 		num_state	2
 
@@ -2033,7 +2026,6 @@ Screen "Graphics screen"
 	{
 		x	$Graphics_screen_CleanUpObj_PosX
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 6 }
-		selectable_obj
 
 		not_unlock
 
@@ -2140,7 +2132,6 @@ Screen "Sound screen"
 	Trigger "SoundTrig" {
 		x	$Sound_screen_SoundTrig_PosX
 		y	$SOUND_SCR_START_Y
-		selectable_obj
 
 		num_state	2
 
@@ -2202,7 +2193,6 @@ Screen "Sound screen"
 	Trigger "MusicTrig" {
 		x	$Sound_screen_MusicTrig_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 1 }
-		selectable_obj
 
 		num_state	2
 
@@ -2265,7 +2255,6 @@ Screen "Sound screen"
 	{
 		x	$Sound_screen_SndScrlObj_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 5 }
-		selectable_obj
 
 		Element SCROLLER "SndVolumeScroller" {
 			bmp_file	"resource/iscreen/bitmap/snd_shp.bmp"
@@ -2318,7 +2307,6 @@ Screen "Sound screen"
 	{
 		x	$Sound_screen_MusScrlObj_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 6 }
-		selectable_obj
 
 		Element SCROLLER "MusVolumeScroller" {
 			bmp_file	"resource/iscreen/bitmap/snd_shp.bmp"
@@ -2355,7 +2343,6 @@ Screen "Sound screen"
 	{
 		align_x center
 		y	$OPTIONS_BACK_Y
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -2422,7 +2409,6 @@ Screen "Sound screen"
 	Trigger "PanningTrig" {
 		x	$Sound_screen_PanningTrig_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 2 }
-		selectable_obj
 
 		num_state	2
 		null_level	$DEFAULT_NULL
@@ -2483,7 +2469,6 @@ Screen "Sound screen"
 	Trigger "MechSndTrig" {
 		x	$Sound_screen_MechSndTrig_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 3 }
-		selectable_obj
 
 		num_state	2
 		null_level	$DEFAULT_NULL
@@ -2540,7 +2525,6 @@ Screen "Sound screen"
 	Trigger "BackSndTrig" {
 		x	$Sound_screen_BackSndTrig_PosX
 		y	{ $SOUND_SCR_START_Y + $SOUND_SCR_DELTA_Y * 4 }
-		selectable_obj
 
 		num_state	2
 		null_level	$DEFAULT_NULL
@@ -5024,7 +5008,6 @@ Screen "Failed screen"
 			{									\
 				x	{ 830 - $KEYS0_X }					\
 				y		{ $KEYS0_START_Y + $KEYS0_DELTA_Y * $KEY_Y }	\
-				selectable_obj						\
 												\
 				Element STRING {						\
 					id		$KEY_ID 				\
@@ -5068,7 +5051,6 @@ Screen "Failed screen"
 			{									\
 				x	{ 1050 - $KEYS0_X }					\
 				y		{ $KEYS0_START_Y + $KEYS0_DELTA_Y * $KEY_Y }	\
-				selectable_obj						\
 												\
 				Element STRING {						\
 					id		$KEY_ID 				\
@@ -5111,8 +5093,7 @@ Screen "Failed screen"
 			{								\
 				x	$Controls_screen_Back_Option_PosX		\
 				y	$Controls_screen_Back_Option_PosY		\
-				selectable_obj						\
-											\
+										\
 				Element STRING {					\
 					align_x center					\
 											\
@@ -5164,8 +5145,7 @@ Screen "Failed screen"
 			{								\
 				x	$Controls_screen_More_Option_PosX		\
 				y	$Controls_screen_More_Option_PosY		\
-				selectable_obj						\
-											\
+										\
 				Element STRING {					\
 					align_x center					\
 											\
@@ -5249,7 +5229,6 @@ Screen "Controls screen"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5314,7 +5293,6 @@ Screen "Controls screen"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5388,7 +5366,6 @@ Screen "Controls screen"
 	Trigger "AutoAccelerationTrig" {
 		x	{ 830 - $KEYS0_X }
 		y	{ $KEYS0_START_Y + $KEYS0_DELTA_Y * 7 }
-		selectable_obj
 
 		num_state	2
 
@@ -5579,7 +5556,6 @@ Screen "Controls screen 2"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5644,7 +5620,6 @@ Screen "Controls screen 2"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5827,7 +5802,6 @@ Screen "Controls screen 3"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -5892,7 +5866,6 @@ Screen "Controls screen 3"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -6105,7 +6078,6 @@ Screen "Controls screen 4"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -6170,7 +6142,6 @@ Screen "Controls screen 4"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -6368,7 +6339,6 @@ Screen "Controls screen 5"
 	{
 		align_x center
 		y	$Controls_screen_Defaults_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -6433,7 +6403,6 @@ Screen "Controls screen 5"
 	{
 		align_x center
 		y	$Controls_screen_Menu_Option_PosY
-		selectable_obj
 
 		Element STRING {
 			align_x center
@@ -10857,7 +10826,6 @@ Screen "Controls screen2"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 1 }
-		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -10869,7 +10837,6 @@ Screen "Controls screen2"
 			string		$iSTR_Movement
 		}
 		Event {
-			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -10907,42 +10874,12 @@ Screen "Controls screen2"
 					time		$MOVE2SCREEN_TIME
 			}
 		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Go to Controls Screen 1"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 1"
-		#define OBJ2	"Go to Controls Screen 2"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 1"
-		#define OBJ2	"Go to Controls Screen 5"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
 	}
 
 	Object "Go to Controls Screen 2"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 2 }
-		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -10954,7 +10891,6 @@ Screen "Controls screen2"
 			string		$iSTR_Utility
 		}
 		Event {
-			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -10992,42 +10928,12 @@ Screen "Controls screen2"
 					time		$MOVE2SCREEN_TIME
 			}
 		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Go to Controls Screen 2"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 2"
-		#define OBJ2	"Go to Controls Screen 3"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 2"
-		#define OBJ2	"Go to Controls Screen 1"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
 	}
 
 	Object "Go to Controls Screen 3"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 3 }
-		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -11039,7 +10945,6 @@ Screen "Controls screen2"
 			string		$iSTR_Combat
 		}
 		Event {
-			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -11077,42 +10982,12 @@ Screen "Controls screen2"
 					time		$MOVE2SCREEN_TIME
 			}
 		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Go to Controls Screen 3"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 3"
-		#define OBJ2	"Go to Controls Screen 4"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 3"
-		#define OBJ2	"Go to Controls Screen 2"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
 	}
 
 	Object "Go to Controls Screen 4"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 4 }
-		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -11124,7 +10999,6 @@ Screen "Controls screen2"
 			string		$iSTR_Camera
 		}
 		Event {
-			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -11162,42 +11036,12 @@ Screen "Controls screen2"
 					time		$MOVE2SCREEN_TIME
 			}
 		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Go to Controls Screen 4"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 4"
-		#define OBJ2	"Go to Controls Screen 5"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 4"
-		#define OBJ2	"Go to Controls Screen 3"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
-		}
 	}
 
 	Object "Go to Controls Screen 5"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 5 }
-		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -11209,7 +11053,6 @@ Screen "Controls screen2"
 			string		$iSTR_MultiplayerAndMisc
 		}
 		Event {
-			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -11246,35 +11089,6 @@ Screen "Controls screen2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
 					time		$MOVE2SCREEN_TIME
 			}
-		}
-
-		#define OBJ1	"SELECTED_OBJ"
-		#define OBJ2	"Go to Controls Screen 5"
-		Event {
-			if_not_selected
-			key $VK_LBUTTON
-			key $VK_MOVE
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 5"
-		#define OBJ2	"Go to Controls Screen 1"
-		Event {
-			if_selected
-			key $VK_DOWN
-			key $VK_TAB
-
-			$EV_CHANGE_OBJ
-		}
-
-		#define OBJ1	"Go to Controls Screen 5"
-		#define OBJ2	"Go to Controls Screen 4"
-		Event {
-			if_selected
-			key $VK_UP
-
-			$EV_CHANGE_OBJ
 		}
 	}
 }
