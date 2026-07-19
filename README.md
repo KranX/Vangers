@@ -46,8 +46,9 @@ SDL3-compatible gamepads are detected and mapped automatically, including
 hot-plugging. The left stick controls steering and throttle by default. The
 right stick moves the UI cursor and, during gameplay, controls side impulses
 and RIG movement. Face buttons operate actions, inventory, the handbrake, and
-Vector; the triggers provide acceleration and fire; the D-pad fires individual
-weapon slots. In menus, the D-pad follows the existing arrow-key navigation.
+the jump spring; pressing the left stick activates Vector. The triggers provide
+acceleration and fire; the D-pad fires individual weapon slots. In menus, the
+D-pad follows the existing arrow-key navigation.
 Gamepad buttons can be assigned on the regular controls screen or changed in
 `[input.sdl_gamepad.bindings]` in `settings.toml`. Stick axes and trigger
 bindings can be changed in

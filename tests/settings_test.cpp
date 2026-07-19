@@ -215,7 +215,7 @@ bool test_new_gamepad_defaults_extend_existing_settings() {
 			   "existing gamepad binding was replaced by a new default"
 		   ) &&
 		   check(
-			   settings.input.sdl_gamepad.bindings.at("use_vector") == BindingList{"west"},
+			   settings.input.sdl_gamepad.bindings.at("activate_kid") == BindingList{"west"},
 			   "missing gamepad action did not receive its new default"
 		   ) &&
 		   check(

@@ -2383,6 +2383,8 @@ void Object::dynamics_init(char *name) {
 	// draw_mode = TRANSPARENCY_DRAW_MODE;
 	device_switch_latency = 0;
 	prev_controls = current_controls = 0;
+	network_analog_rudder_target = 0;
+	network_analog_traction_target = 0;
 	last_send_time = 0;
 
 	helicopter = 0;
@@ -2945,42 +2947,53 @@ void Object::direct_keyboard_control() {
 #endif
 
 void Object::direct_gamepad_control() {
-	constexpr float digital_axis_threshold = 0.5f;
-
 	const float steering = XGamepadAxisValue("steering");
 	if (steering != 0.0f) {
+		current_controls |= NETWORK_CONTROL_ANALOG_STEERING_FLAG;
 		current_controls |= 1 << (steering < 0.0f ? CONTROLS::STEER_LEFT : CONTROLS::STEER_RIGHT);
-		controls(CONTROLS::STEER_BY_ANGLE, round(-steering * rudder_max));
+		network_analog_rudder_target = round(-steering * rudder_max);
+		controls(CONTROLS::STEER_BY_ANGLE, network_analog_rudder_target);
 		helicopter_strife = 0;
 	}
 
 	const float throttle = XGamepadAxisValue("throttle");
 	if (throttle != 0.0f) {
+		current_controls |= NETWORK_CONTROL_ANALOG_THROTTLE_FLAG;
 		current_controls |=
 			1 << (throttle > 0.0f ? CONTROLS::TRACTION_INCREASE : CONTROLS::TRACTION_DECREASE);
-		traction = round(throttle * 256.0f);
+		network_analog_traction_target = round(throttle * 256.0f);
+		traction = network_analog_traction_target;
 	}
 
 	// The right stick controls the cursor while an interface is visible. On the
 	// road it can safely provide the two remaining bidirectional vehicle actions.
 	if (!XGamepadIsControllingCursor()) {
 		const float roll = XGamepadAxisValue("roll");
-		if (roll < -digital_axis_threshold)
+		if (roll < -XGAMEPAD_DIGITAL_AXIS_THRESHOLD)
 			controls(CONTROLS::LEFT_SIDE_IMPULSE);
-		else if (roll > digital_axis_threshold)
+		else if (roll > XGAMEPAD_DIGITAL_AXIS_THRESHOLD)
 			controls(CONTROLS::RIGHT_SIDE_IMPULSE);
 
 		const float rig = XGamepadAxisValue("rig");
-		if (rig > digital_axis_threshold)
+		if (rig > XGAMEPAD_DIGITAL_AXIS_THRESHOLD)
 			controls(CONTROLS::VIRTUAL_UP);
-		else if (rig < -digital_axis_threshold)
+		else if (rig < -XGAMEPAD_DIGITAL_AXIS_THRESHOLD)
 			controls(CONTROLS::VIRTUAL_DOWN);
 	}
 }
 
 void Object::import_controls() {
+	// The live rudder and traction values decay during physics. Restore the last
+	// received analog targets every prediction frame, just as the local gamepad
+	// path reapplies its current axes before local physics.
+	if (current_controls & NETWORK_CONTROL_ANALOG_STEERING_FLAG)
+		controls(CONTROLS::STEER_BY_ANGLE, network_analog_rudder_target);
+	if (current_controls & NETWORK_CONTROL_ANALOG_THROTTLE_FLAG)
+		traction = network_analog_traction_target;
+
 	for (int i = 0; i < CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS; i++)
-		if (current_controls & (1 << i))
+		if ((current_controls & (1 << i)) &&
+			!network_control_uses_analog_value(current_controls, i))
 			controls(i);
 }
 /*******************************************************************************
@@ -4997,9 +5010,11 @@ void Object::NetEvent(int type, int id, int creator, int time, int x, int y, int
 	if (analysis_off)
 		analysis_off = 0;
 	current_controls = events_in.get_short();
-	mole_on = current_controls & (1 << CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS) ? 256 : 0;
+	mole_on = current_controls & NETWORK_CONTROL_MOLE_FLAG ? 256 : 0;
 	traction = round(unpack(events_in.get_byte(), Rz_pack_min, Rz_pack_max));
 	rudder = round(unpack(events_in.get_byte(), Rz_pack_min, Rz_pack_max));
+	network_analog_traction_target = traction;
+	network_analog_rudder_target = rudder;
 	helicopter = round(unpack(events_in.get_byte(), Rz_pack_min, Rz_pack_max));
 
 	DBV R_real;
@@ -5055,10 +5070,16 @@ void Object::NetEvent(int type, int id, int creator, int time, int x, int y, int
 	// speed = round(V.vabs());
 }
 void Object::Send(void) {
-	events_out <
-		(short)(current_controls | (mole_on ? 1 << CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS : 0));
-	events_out < pack(traction, Rz_pack_min, Rz_pack_max);
-	events_out < pack(rudder, Rz_pack_min, Rz_pack_max);
+	const int sent_traction = current_controls & NETWORK_CONTROL_ANALOG_THROTTLE_FLAG
+								  ? network_analog_traction_target
+								  : traction;
+	const int sent_rudder = current_controls & NETWORK_CONTROL_ANALOG_STEERING_FLAG
+								? network_analog_rudder_target
+								: rudder;
+
+	events_out < (short)(current_controls | (mole_on ? NETWORK_CONTROL_MOLE_FLAG : 0));
+	events_out < pack(sent_traction, Rz_pack_min, Rz_pack_max);
+	events_out < pack(sent_rudder, Rz_pack_min, Rz_pack_max);
 	events_out < pack(helicopter, Rz_pack_min, Rz_pack_max);
 
 	events_out < (short)round(R.z);

@@ -10826,6 +10826,7 @@ Screen "Controls screen2"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 1 }
+		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -10837,6 +10838,7 @@ Screen "Controls screen2"
 			string		$iSTR_Movement
 		}
 		Event {
+			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -10871,8 +10873,37 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
+		}
+
+		#define OBJ1	"SELECTED_OBJ"
+		#define OBJ2	"Go to Controls Screen 1"
+		Event {
+			if_not_selected
+			key $VK_LBUTTON
+			key $VK_MOVE
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 1"
+		#define OBJ2	"Go to Controls Screen 2"
+		Event {
+			if_selected
+			key $VK_DOWN
+			key $VK_TAB
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 1"
+		#define OBJ2	"Go to Controls Screen 5"
+		Event {
+			if_selected
+			key $VK_UP
+
+			$EV_CHANGE_OBJ
 		}
 	}
 
@@ -10880,6 +10911,7 @@ Screen "Controls screen2"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 2 }
+		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -10891,6 +10923,7 @@ Screen "Controls screen2"
 			string		$iSTR_Utility
 		}
 		Event {
+			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -10925,8 +10958,37 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen 2"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
+		}
+
+		#define OBJ1	"SELECTED_OBJ"
+		#define OBJ2	"Go to Controls Screen 2"
+		Event {
+			if_not_selected
+			key $VK_LBUTTON
+			key $VK_MOVE
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 2"
+		#define OBJ2	"Go to Controls Screen 3"
+		Event {
+			if_selected
+			key $VK_DOWN
+			key $VK_TAB
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 2"
+		#define OBJ2	"Go to Controls Screen 1"
+		Event {
+			if_selected
+			key $VK_UP
+
+			$EV_CHANGE_OBJ
 		}
 	}
 
@@ -10934,6 +10996,7 @@ Screen "Controls screen2"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 3 }
+		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -10945,6 +11008,7 @@ Screen "Controls screen2"
 			string		$iSTR_Combat
 		}
 		Event {
+			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -10979,8 +11043,37 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen 3"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
+		}
+
+		#define OBJ1	"SELECTED_OBJ"
+		#define OBJ2	"Go to Controls Screen 3"
+		Event {
+			if_not_selected
+			key $VK_LBUTTON
+			key $VK_MOVE
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 3"
+		#define OBJ2	"Go to Controls Screen 4"
+		Event {
+			if_selected
+			key $VK_DOWN
+			key $VK_TAB
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 3"
+		#define OBJ2	"Go to Controls Screen 2"
+		Event {
+			if_selected
+			key $VK_UP
+
+			$EV_CHANGE_OBJ
 		}
 	}
 
@@ -10988,6 +11081,7 @@ Screen "Controls screen2"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 4 }
+		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -10999,6 +11093,7 @@ Screen "Controls screen2"
 			string		$iSTR_Camera
 		}
 		Event {
+			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -11033,8 +11128,37 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen 4"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
+		}
+
+		#define OBJ1	"SELECTED_OBJ"
+		#define OBJ2	"Go to Controls Screen 4"
+		Event {
+			if_not_selected
+			key $VK_LBUTTON
+			key $VK_MOVE
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 4"
+		#define OBJ2	"Go to Controls Screen 5"
+		Event {
+			if_selected
+			key $VK_DOWN
+			key $VK_TAB
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 4"
+		#define OBJ2	"Go to Controls Screen 3"
+		Event {
+			if_selected
+			key $VK_UP
+
+			$EV_CHANGE_OBJ
 		}
 	}
 
@@ -11042,6 +11166,7 @@ Screen "Controls screen2"
 	{
 		align_x 	center
 		y		{ $CONTROLS2_START_Y + $CONTROLS2_DELTA_Y * 5 }
+		selectable_obj
 
 		Element STRING {
 			align_x 	center
@@ -11053,6 +11178,7 @@ Screen "Controls screen2"
 			string		$iSTR_MultiplayerAndMisc
 		}
 		Event {
+			if_selected
 			key $VK_LBUTTON
 			key $VK_RETURN
 			key $VK_SPACE
@@ -11087,8 +11213,37 @@ Screen "Controls screen2"
 			EvComm {
 				move2screen	"Controls screen 5"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
-				time		$MOVE2SCREEN_TIME
+					time		$MOVE2SCREEN_TIME
 			}
+		}
+
+		#define OBJ1	"SELECTED_OBJ"
+		#define OBJ2	"Go to Controls Screen 5"
+		Event {
+			if_not_selected
+			key $VK_LBUTTON
+			key $VK_MOVE
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 5"
+		#define OBJ2	"Go to Controls Screen 1"
+		Event {
+			if_selected
+			key $VK_DOWN
+			key $VK_TAB
+
+			$EV_CHANGE_OBJ
+		}
+
+		#define OBJ1	"Go to Controls Screen 5"
+		#define OBJ2	"Go to Controls Screen 4"
+		Event {
+			if_selected
+			key $VK_UP
+
+			$EV_CHANGE_OBJ
 		}
 	}
 }

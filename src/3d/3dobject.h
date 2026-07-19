@@ -174,6 +174,28 @@ struct CONTROLS {
 	};
 };
 
+// UPDATE_OBJECT stores the transferable controls in a 16-bit field. The first
+// free bits after the legacy controls and mole state describe how steering and
+// traction must be predicted between network updates. Direction bits remain in
+// the packet for compatibility and prompt change detection, but a new client
+// must not replay them as fully pressed digital controls when the corresponding
+// analog flag is present.
+constexpr int NETWORK_CONTROL_MOLE_FLAG = 1 << CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS;
+constexpr int NETWORK_CONTROL_ANALOG_STEERING_FLAG =
+	1 << (CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS + 1);
+constexpr int NETWORK_CONTROL_ANALOG_THROTTLE_FLAG =
+	1 << (CONTROLS::NUMBER_OF_TRANSFERABLE_CONTROLS + 2);
+
+constexpr bool network_control_uses_analog_value(int control_flags, int control) {
+	if (control == CONTROLS::STEER_LEFT || control == CONTROLS::STEER_RIGHT)
+		return (control_flags & NETWORK_CONTROL_ANALOG_STEERING_FLAG) != 0;
+	if (control == CONTROLS::TRACTION_INCREASE || control == CONTROLS::TRACTION_DECREASE)
+		return (control_flags & NETWORK_CONTROL_ANALOG_THROTTLE_FLAG) != 0;
+	return false;
+}
+
+static_assert(NETWORK_CONTROL_ANALOG_THROTTLE_FLAG < (1 << 15));
+
 // Slots
 #define LEFT_SLOT 0
 #define RIGHT_SLOT 1
@@ -287,6 +309,8 @@ struct Object: BaseObject {
 	Uint64 device_switch_latency;
 	int prev_controls;
 	int current_controls;
+	int network_analog_rudder_target;
+	int network_analog_traction_target;
 	Uint64 last_send_time;
 
 	int helicopter;

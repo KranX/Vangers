@@ -26,6 +26,7 @@ bool confirm_pressed = false;
 bool confirm_action_down = false;
 bool pause_action_down = false;
 bool cancel_action_down = false;
+bool focus_navigation_active = false;
 Uint64 previous_cursor_time = 0;
 float cursor_remainder_x = 0.0f;
 float cursor_remainder_y = 0.0f;
@@ -55,6 +56,7 @@ void reset_ui_actions() {
 	confirm_action_down = false;
 	pause_action_down = false;
 	cancel_action_down = false;
+	focus_navigation_active = false;
 }
 
 void close_active_gamepad() {
@@ -123,22 +125,38 @@ float axis_value(SDL_GamepadAxis axis, bool inverted) {
 	);
 }
 
-void push_escape_event() {
+void push_key_event(SDL_Scancode scancode, SDL_Keycode keycode) {
 	SDL_Event event;
 	SDL_zero(event);
 	event.type = SDL_EVENT_KEY_DOWN;
 	event.key.timestamp = SDL_GetTicksNS();
-	event.key.scancode = SDL_SCANCODE_ESCAPE;
-	event.key.key = SDLK_ESCAPE;
+	event.key.scancode = scancode;
+	event.key.key = keycode;
 	event.key.down = true;
 	SDL_PushEvent(&event);
 }
 
+bool gamepad_navigation_pressed() {
+	return XGamepadButtonPressed(SDL_GAMEPAD_BUTTON_DPAD_UP) ||
+		   XGamepadButtonPressed(SDL_GAMEPAD_BUTTON_DPAD_DOWN) ||
+		   XGamepadButtonPressed(SDL_GAMEPAD_BUTTON_DPAD_LEFT) ||
+		   XGamepadButtonPressed(SDL_GAMEPAD_BUTTON_DPAD_RIGHT);
+}
+
 void update_ui_actions(bool cursor_visible, bool actions_enabled) {
+	if (!cursor_visible)
+		focus_navigation_active = false;
+	else if (gamepad_navigation_pressed())
+		focus_navigation_active = true;
+
 	const bool confirm = XGamepadActionPressed("menu_confirm");
 	if (actions_enabled && cursor_visible && confirm && !confirm_action_down) {
-		confirm_pressed = true;
-		XGR_MousePress(XGM_LEFT_BUTTON, 0, XGR_MouseObj.PosX, XGR_MouseObj.PosY);
+		if (focus_navigation_active) {
+			push_key_event(SDL_SCANCODE_RETURN, SDLK_RETURN);
+		} else {
+			confirm_pressed = true;
+			XGR_MousePress(XGM_LEFT_BUTTON, 0, XGR_MouseObj.PosX, XGR_MouseObj.PosY);
+		}
 	}
 	if (confirm_pressed && (!actions_enabled || !confirm || !cursor_visible))
 		release_confirm();
@@ -148,7 +166,7 @@ void update_ui_actions(bool cursor_visible, bool actions_enabled) {
 	const bool cancel = XGamepadActionPressed("menu_cancel");
 	if (actions_enabled &&
 		((pause && !pause_action_down) || (cursor_visible && cancel && !cancel_action_down)))
-		push_escape_event();
+		push_key_event(SDL_SCANCODE_ESCAPE, SDLK_ESCAPE);
 	pause_action_down = pause;
 	cancel_action_down = cancel;
 }
@@ -167,6 +185,25 @@ void handle_gamepad_event(SDL_Event *event) {
 			close_active_gamepad();
 			open_first_gamepad();
 		}
+		break;
+	case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+		if (event->gbutton.which == active_gamepad_id && XGR_MouseVisible() &&
+			!SDL_TextInputActive(XGR_Obj.get_window())) {
+			switch (event->gbutton.button) {
+			case SDL_GAMEPAD_BUTTON_DPAD_UP:
+			case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
+			case SDL_GAMEPAD_BUTTON_DPAD_LEFT:
+			case SDL_GAMEPAD_BUTTON_DPAD_RIGHT:
+				focus_navigation_active = true;
+				break;
+			default:
+				break;
+			}
+		}
+		break;
+	case SDL_EVENT_MOUSE_MOTION:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		focus_navigation_active = false;
 		break;
 	default:
 		break;
@@ -187,6 +224,7 @@ void update_gamepad_cursor(Uint64 elapsed, bool cursor_visible) {
 		cursor_remainder_y = 0.0f;
 		return;
 	}
+	focus_navigation_active = false;
 
 	const float seconds = static_cast<float>(std::min<Uint64>(elapsed, 100)) / 1000.0f;
 	const float resolution_scale = std::max(1.0f, static_cast<float>(XGR_MAXX) / 800.0f);
@@ -338,6 +376,15 @@ float XGamepadAxisValue(std::string_view logical_axis) {
 
 bool XGamepadIsControllingCursor() {
 	return active_gamepad && controller_enabled() && XGR_MouseVisible();
+}
+
+bool XGamepadHasManualDrivingInput() {
+	if (XGamepadAxisValue("steering") != 0.0f || XGamepadAxisValue("throttle") != 0.0f)
+		return true;
+	if (XGamepadIsControllingCursor())
+		return false;
+	return std::abs(XGamepadAxisValue("roll")) > XGAMEPAD_DIGITAL_AXIS_THRESHOLD ||
+		   std::abs(XGamepadAxisValue("rig")) > XGAMEPAD_DIGITAL_AXIS_THRESHOLD;
 }
 
 void XGamepadRumble(float low_frequency, float high_frequency, Uint32 duration_ms) {

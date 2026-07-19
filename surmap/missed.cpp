@@ -174,6 +174,9 @@ float XGamepadAxisValue(std::string_view) {
 bool XGamepadIsControllingCursor() {
 	return false;
 }
+bool XGamepadHasManualDrivingInput() {
+	return false;
+}
 void XGamepadRumble(float, float, Uint32) {}
 void SetMotorSound(int speed) {}
 void ResetMotorSoundFrequency(void) {}

@@ -24,6 +24,7 @@
 
 #include "../actint/item_api.h"
 #include "../network.h"
+#include "../xgamepad.h"
 #include "uvsapi.h"
 
 #include "../uvs/univang.h"
@@ -7682,7 +7683,7 @@ void VangerUnit::NewKeyHandler(void) {
 			iKeyPressed(iKEY_TURN_OVER_LEFT) || iKeyPressed(iKEY_TURN_OVER_RIGHT) ||
 			iKeyPressed(iKEY_DEVICE_ON) || iKeyPressed(iKEY_DEVICE_OFF) ||
 			iKeyPressed(iKEY_ACTIVATE_KID) || iKeyPressed(iKEY_ACCELERATION) ||
-			iKeyPressed(iKEY_OPEN))) {
+			iKeyPressed(iKEY_OPEN) || XGamepadHasManualDrivingInput())) {
 		Status &= ~SOBJ_AUTOMAT;
 		aiMessageQueue.Send(AI_MESSAGE_AUTOMATIC_OFF, 0, 0xff, 0);
 	};
