@@ -335,8 +335,14 @@ void XGR_Screen::destroy_surfaces() {
 
 void XGR_Screen::set_fullscreen(bool fullscreen) {
 	if (fullscreen != XGR_FULL_SCREEN) {
-		if (!SDL_SetWindowFullscreen(sdlWindow, fullscreen) || !SDL_SyncWindow(sdlWindow))
+		if (!SDL_SetWindowFullscreen(sdlWindow, fullscreen))
 			ErrH.Abort(SDL_GetError(), XERR_USER, 0);
+		if (!SDL_SyncWindow(sdlWindow)) {
+			const char *warning =
+				"Warning: fullscreen transition did not complete before SDL_SyncWindow timed out";
+			std::cerr << warning << std::endl;
+			ErrH.Log(warning);
+		}
 		if (!fullscreen) {
 			if (!SDL_SetWindowSize(sdlWindow, XGR_MAXX, XGR_MAXY))
 				ErrH.Abort(SDL_GetError(), XERR_USER, 0);
