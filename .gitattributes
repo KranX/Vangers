@@ -1,5 +1,11 @@
 data/actint/* text eol=crlf
 data/actint/aci_low.scb -text
+data/thechain/fostral/** -text
+data/thechain/fostral/*.ini text eol=lf
+data/thechain/fostral/*.lst text eol=lf
+data/thechain/fostral/*.prm text eol=lf
+data/thechain/fostral/LICENSE.md text eol=lf
+data/thechain/fostral/level.lst whitespace=-blank-at-eof
 
 .gitattributes text eol=lf
 .clang-format text eol=lf

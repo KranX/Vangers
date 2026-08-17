@@ -1,0 +1,15 @@
+VERSION: 2
+
+TERRAIN_MAX:	8
+
+Drag and drift factors:
+.80	.80
+1	.98
+1	.98
+1	.98
+1	.98
+1	.98
+1	.98
+1	.98
+
+g: 4

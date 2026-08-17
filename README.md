@@ -13,7 +13,14 @@ Video game that combines elements of the racing and role-playing genres.
 
 All source code is published under the GPLv3 license.
 
-The necessary resources for the game (maps, sounds, textures, etc.) you can take from the games purchased here:
+The Fostral world data in [`data/thechain/fostral`](data/thechain/fostral) is
+published by Association K-D Lab under the
+[Creative Commons Attribution-ShareAlike 4.0 International
+license](https://creativecommons.org/licenses/by-sa/4.0/). See
+[`LICENSES.md`](LICENSES.md) for the exact licensing scope and attribution.
+
+Other resources necessary for the complete game (maps, sounds, textures, etc.)
+can be obtained from copies of the game purchased here:
 
 http://store.steampowered.com/app/264080
 

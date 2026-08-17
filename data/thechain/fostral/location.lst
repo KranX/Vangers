@@ -1,0 +1,1127 @@
+NumEngine	85
+
+Part	0
+
+EngineType	6
+MLName		spot1
+ActivePhase	0
+DeactivePhase	0
+ActiveTime	6
+DeactiveTime	7
+SoundID		0
+ActionName	Spot1
+DoorName	SpotDoor1
+ImpulseName	SpotImpulse1
+
+Part	1
+
+EngineType	3
+MLName		tttttt
+ActivePhase	0
+DeactivePhase	0
+ActiveTime	120
+DeactiveTime	120
+SoundID		0
+ActionName	Passage1
+PassageName	F2G
+
+Part	2
+
+EngineType	3
+MLName		ttttttt1
+ActivePhase	0
+DeactivePhase	0
+ActiveTime	120
+DeactiveTime	120
+SoundID		0
+ActionName	Passage2
+PassageName	F2W
+
+Part	3
+
+EngineType	1
+MLName		g1
+ActivePhase	0
+DeactivePhase	0
+ActiveTime	4
+DeactiveTime	1
+SoundID		0
+ActionName	Escave1
+DoorName	EscaveDoor1
+StartAngle	-1024
+
+Part	4
+
+EngineType	0
+MLName		tttttt
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	120
+DeactiveTime	120
+SoundID		0
+NumSensorLink	1
+SensorName	PassDoor1
+LockFlag	0
+Luck	0
+
+Part	5
+
+EngineType	0
+MLName		g1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	4
+SoundID		1
+NumSensorLink	2
+SensorName	EscaveDoor1
+SensorName	EscaveDoor83
+LockFlag	0
+Luck	0
+
+Part	6
+
+EngineType	0
+MLName		ttttttt1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	120
+DeactiveTime	120
+SoundID		0
+NumSensorLink	1
+SensorName	PassDoor2
+LockFlag	0
+Luck	0
+
+Part	7
+
+EngineType	0
+MLName		ttttttt3
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	120
+DeactiveTime	120
+SoundID		0
+NumSensorLink	1
+SensorName	PassDoor3
+LockFlag	0
+Luck	0
+
+Part 8
+EngineType	4
+MLName		lov4tttttt
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	80
+SoundID		3
+ActionMode	-1
+
+
+Part  9
+EngineType	4
+MLName		lov4t
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	80
+SoundID		3
+ActionMode	-1
+
+
+Part 10
+EngineType	4
+MLName		lov4t6
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	80
+SoundID		3
+ActionMode	-1
+
+Part 11
+EngineType	4
+MLName		lov4t7
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	80
+SoundID		3
+ActionMode	-1
+
+Part 12
+EngineType	4
+MLName		lov4tt
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	80
+SoundID		3
+ActionMode	-1
+
+
+Part 13
+EngineType	4
+MLName		lov4ttt
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	80
+SoundID		3
+ActionMode	-1
+
+
+Part 14
+EngineType	4
+MLName		lov4tttt
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	80
+SoundID		3
+ActionMode	-1
+
+
+Part 15
+EngineType	4
+MLName		lov4ttttt
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	80
+SoundID		3
+ActionMode	-1
+
+Part 16
+EngineType	0
+MLName		tain2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	SecretSensor01
+LockFlag	3
+Luck	0
+
+
+Part 17
+EngineType	0
+MLName		vxod12
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	SecretSensor02
+LockFlag	1
+Luck	0
+
+Part 18
+EngineType	0
+MLName		kol1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		0
+NumSensorLink	1
+SensorName	EscDoor01
+LockFlag	0
+Luck	0
+
+
+Part 19
+EngineType	0
+MLName		kol2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		0
+NumSensorLink	1
+SensorName	EscDoor02
+LockFlag	0
+Luck	0
+
+Part 20
+EngineType	5
+MLName		vxod12
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	SecretTrain02f
+SecondStationName	SecretTrain02s
+EffectID	0
+
+
+Part 21
+EngineType	4
+MLName		koli1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	1
+NumActionLink	1
+ActionName	Impulse01
+
+
+Part 22
+EngineType	4
+MLName		koli2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	1
+NumActionLink	1
+ActionName	Impulse02
+
+Part 23
+EngineType	4
+MLName		koli3
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse03
+
+
+Part 24
+EngineType	4
+MLName		koli4
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse04
+
+
+Part 25
+EngineType	4
+MLName		koli5
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse05
+
+
+Part 26
+EngineType	4
+MLName		koli6
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse06
+
+Part 27
+EngineType	4
+MLName		koli7
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse07
+
+
+Part 28
+EngineType	4
+MLName		koli8
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse08
+
+
+
+Part 29
+EngineType	4
+MLName		koli9
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse09
+
+
+Part 30
+EngineType	4
+MLName		koli10
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse10
+
+
+Part 31
+EngineType	4
+MLName		koli11
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse11
+
+
+Part 32
+EngineType	4
+MLName		koli12
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	50
+SoundID		0
+ActionMode	3
+NumActionLink	1
+ActionName	Impulse12
+
+Part	33
+
+EngineType	0
+MLName		spot1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	1
+DeactiveTime	5
+SoundID		1
+NumSensorLink	1
+SensorName	SpotDoor1
+LockFlag	1
+Luck	0
+
+Part	34
+
+EngineType	6
+MLName		spot2
+ActivePhase	0
+DeactivePhase	0
+ActiveTime	6
+DeactiveTime	7
+SoundID		0
+ActionName	Spot2
+DoorName	SpotDoor2
+ImpulseName	SpotImpulse2
+
+Part	35
+
+EngineType	6
+MLName		spot3
+ActivePhase	0
+DeactivePhase	0
+ActiveTime	6
+DeactiveTime	7
+SoundID		0
+ActionName	Spot3
+DoorName	SpotDoor3
+ImpulseName	SpotImpulse3
+
+Part	36
+
+EngineType	0
+MLName		spot2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	5
+SoundID		1
+NumSensorLink	1
+SensorName	SpotDoor2
+LockFlag	1
+Luck	0
+
+Part	37
+
+EngineType	0
+MLName		spot3
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	5
+SoundID		1
+NumSensorLink	1
+SensorName	SpotDoor3
+LockFlag	1
+Luck	0
+
+Part	38
+
+EngineType	6
+MLName		mesto1
+ActivePhase	0
+DeactivePhase	0
+ActiveTime	4
+DeactiveTime	4
+SoundID		0
+ActionName	Escave2
+DoorName	EscaveDoor2
+ImpulseName	EscaveImpulse2
+
+Part	39
+
+EngineType	0
+MLName		mesto1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		1
+NumSensorLink	1
+SensorName	EscaveDoor2
+LockFlag	1
+Luck	0
+
+Part 40
+
+EngineType	5
+MLName		vxod1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc0l0
+SecondStationName	Sc0l1
+EffectID	0
+
+Part 41
+
+EngineType	5
+MLName		vxod2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc1l0
+SecondStationName	Sc1l1
+EffectID	0
+
+Part 42
+
+EngineType	5
+MLName		vxod3
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc2l0
+SecondStationName	Sc2l1
+EffectID	0
+
+Part 43
+
+EngineType	5
+MLName		vxod4
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc3l0
+SecondStationName	Sc3l1
+EffectID	0
+
+Part 44
+
+EngineType	5
+MLName		vxod5
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc4l0
+SecondStationName	Sc4l1
+EffectID	0
+
+
+
+Part 45
+
+EngineType	5
+MLName		vxod6
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc5l0
+SecondStationName	Sc5l1
+EffectID	0
+
+
+
+Part 46
+
+EngineType	5
+MLName		vxod7
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc6l0
+SecondStationName	Sc6l1
+EffectID	0
+
+
+Part 47
+
+EngineType	5
+MLName		vxod8
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc7l0
+SecondStationName	Sc7l1
+EffectID	0
+
+
+Part 48
+
+EngineType	5
+MLName		vxod9
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc8l0
+SecondStationName	Sc8l1
+EffectID	0
+
+
+Part 49
+
+EngineType	5
+MLName		vxod10
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc9l0
+SecondStationName	Sc9l1
+EffectID	0
+
+
+
+Part 50
+
+EngineType	5
+MLName		vxod11
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	40
+DeactiveTime	10
+SoundID		0
+FirstStationName	Sc10l0
+SecondStationName	Sc10l1
+EffectID	0
+
+
+
+Part	51
+
+EngineType	0
+MLName		vxod1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor0
+LockFlag	1
+Luck	20
+
+Part	52
+
+EngineType	0
+MLName		vxod2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor1
+LockFlag	1
+Luck	20
+
+
+Part	53
+
+EngineType	0
+MLName		vxod3
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor2
+LockFlag	1
+Luck	20
+
+
+Part	54
+
+EngineType	0
+MLName		vxod4
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor3
+LockFlag	1
+Luck	20
+
+
+Part	55
+
+EngineType	0
+MLName		vxod5
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor4
+LockFlag	1
+Luck	20
+
+
+Part	56
+
+EngineType	0
+MLName		vxod6
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor5
+LockFlag	1
+Luck	20
+
+
+Part	57
+
+EngineType	0
+MLName		vxod7
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor6
+LockFlag	1
+Luck	20
+
+
+Part	58
+
+EngineType	0
+MLName		vxod8
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor7
+LockFlag	1
+Luck	20
+
+
+Part	59
+
+EngineType	0
+MLName		vxod9
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor8
+LockFlag	1
+Luck	20
+
+
+Part	60
+
+EngineType	0
+MLName		vxod10
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor9
+LockFlag	1
+Luck	20
+
+Part	61
+
+EngineType	0
+MLName		vxod11
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	ScDoor10
+LockFlag	1
+Luck	20
+
+
+Part	62
+
+EngineType	7
+MLName		tain1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	Crypt1
+LockFlag	1
+Luck	-50
+
+
+Part	63
+
+EngineType	7
+MLName		tain3
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	Crypt2
+LockFlag	1
+Luck	-50
+
+Part	64
+
+EngineType	7
+MLName		tain4
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	Crypt3
+LockFlag	1
+Luck	-50
+
+Part	65
+
+EngineType	7
+MLName		tain6
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	Crypt4
+LockFlag	1
+Luck	-50
+
+
+Part	66
+
+EngineType	7
+MLName		tain7
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	Crypt5
+LockFlag	1
+Luck	-50
+
+
+Part	67
+
+EngineType	7
+MLName		YLI1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	Crypt3n0
+LockFlag	1
+Luck	0
+
+
+Part	68
+EngineType	12
+MLName		YLI1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	15
+DeactiveTime	0
+SoundID		0
+SensorName	Crypt3ITM0
+DoorName	Crypt3n0
+
+
+Part 69
+EngineType	4
+MLName		GORA1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 70
+EngineType	4
+MLName		GORA2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+
+Part 71
+EngineType	4
+MLName		GORA3
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 72
+EngineType	4
+MLName		GORA5
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 73
+EngineType	4
+MLName		GORA6
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 74
+EngineType	4
+MLName		GORA7
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 75
+EngineType	4
+MLName		GORA8
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 76
+EngineType	4
+MLName		GORA9
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 77
+EngineType	4
+MLName		GORA10
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 78
+EngineType	4
+MLName		GORA11
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part 79
+EngineType	4
+MLName		GORA12
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	20
+DeactiveTime	20
+SoundID		0
+ActionMode	-1
+
+
+Part	80
+
+EngineType	7
+MLName		YLI2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	0
+DeactiveTime	0
+SoundID		6
+NumSensorLink	1
+SensorName	Crypt3n1
+LockFlag	1
+Luck	0
+
+
+Part 81
+
+EngineType	4
+MLName		PRILIV1
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	10
+DeactiveTime	10
+SoundID		0
+ActionMode	-1
+
+
+
+Part 82
+
+EngineType	4
+MLName		PRILIV2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	10
+DeactiveTime	10
+SoundID		0
+ActionMode	-1
+
+
+Part 83
+
+EngineType	4
+MLName		PRILIV3
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	10
+DeactiveTime	10
+SoundID		0
+ActionMode	-1
+
+
+Part	84
+EngineType	12
+MLName		YLI2
+ActivePhase	1
+DeactivePhase	0
+ActiveTime	15
+DeactiveTime	0
+SoundID		0
+SensorName	Crypt3ITM1
+DoorName	Crypt3n1
+
+
+NumEnterCenter	2
+
+MaxEnter	3
+uvsObjectType	1
+uvsObjectName	Incubator
+SensorName	Spot1
+SensorName	Spot2
+SensorName	Spot3
+
+MaxEnter	2
+uvsObjectType	0
+uvsObjectName	Podish
+SensorName	Escave2
+SensorName	Escave1
