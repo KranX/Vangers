@@ -1,0 +1,21 @@
+TrackName	track0.bnl
+
+NumDustType	2
+
+DustVolume	200
+DustFirstColor	0
+
+DustVolume	200
+DustFirstColor	1
+
+
+DestroyTerrain		255	255	255
+DestroyTerrain		225	255	255
+DestroyTerrain		255	255	255
+DestroyTerrain		255	255	0
+DestroyTerrain		0	0	0
+DestroyTerrain		0	0	0
+DestroyTerrain		0	0	0
+DestroyTerrain		255	255	0
+
+
