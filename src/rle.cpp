@@ -10,9 +10,16 @@ int RLE_ANALISE(uchar *_buf, int len, uchar *&out) {
 	int pack_len = 0;
 	uchar c_len = 0;
 	uchar *buf = _buf;
+
+	if ((_buf == 0) || (len <= 0)) {
+		out = 0;
+		return 0;
+	}
+
 	uchar *_out = new uchar[len * 2];
 	uchar *p = _out;
 	uchar _ch = *buf++;
+	i = 1;
 
 	while (i < len) {
 		while ((i < len) && (_ch == *buf) && (c_len < 127)) {
