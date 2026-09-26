@@ -32,7 +32,6 @@ jobs:
 
     env:
       BUILD_TYPE: RelWithDebInfo
-      MSYS2_ROOT: ${{ runner.temp }}\msys64
 
     steps:
       - name: Checkout
@@ -41,13 +40,15 @@ jobs:
       - name: Build with the MSYS2 scripts
         shell: pwsh
         run: |
-          ./packaging/msys2/build-msys2.ps1 -Msys2Root $env:MSYS2_ROOT -BuildType $env:BUILD_TYPE
+          $msys2Root = Join-Path $env:RUNNER_TEMP 'msys64'
+          ./packaging/msys2/build-msys2.ps1 -Msys2Root $msys2Root -BuildType $env:BUILD_TYPE
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Stage runtime
         shell: pwsh
         run: |
-          ./packaging/msys2/run-msys2.ps1 artifacts -NoRun -Msys2Root $env:MSYS2_ROOT
+          $msys2Root = Join-Path $env:RUNNER_TEMP 'msys64'
+          ./packaging/msys2/run-msys2.ps1 artifacts -NoRun -Msys2Root $msys2Root
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Upload runtime artifact
