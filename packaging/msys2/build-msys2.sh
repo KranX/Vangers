@@ -57,7 +57,8 @@ echo "==> Repository:        ${REPO}"
 
 # --- 1. packages ------------------------------------------------------------
 if [ "${UPDATE}" = "1" ]; then
-	echo "==> Updating MSYS2 packages (pacman -Syu)..."
+	echo "==> Updating MSYS2 packages (pacman -Syu; may run twice after a core update)..."
+	pacman --noconfirm -Syu
 	pacman --noconfirm -Syu
 else
 	echo "==> Refreshing the MSYS2 package database (pacman -Sy)..."
