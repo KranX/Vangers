@@ -131,7 +131,13 @@ else
 fi
 
 echo "==> Configuring Vangers (${BUILD_TYPE})..."
-cmake -S "${REPO}" -B "${BUILD_PATH}" -G Ninja \
+FRESH_FLAG=""
+if [ -f "${BUILD_PATH}/CMakeCache.txt" ] \
+	&& ! grep -qF "CMAKE_HOME_DIRECTORY:INTERNAL=${REPO}" "${BUILD_PATH}/CMakeCache.txt"; then
+	echo "    existing CMake cache is from a different source tree; using --fresh"
+	FRESH_FLAG="--fresh"
+fi
+cmake ${FRESH_FLAG} -S "${REPO}" -B "${BUILD_PATH}" -G Ninja \
 	-DCMAKE_BUILD_TYPE="${BUILD_TYPE}"
 
 echo "==> Building Vangers..."
