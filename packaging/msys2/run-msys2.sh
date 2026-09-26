@@ -14,6 +14,7 @@ REPO="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 GAME_DIR="${GAME_DIR:-}"
 BUILD_DIR="${BUILD_DIR:-build}"
+MINGW_PREFIX="${MINGW_PREFIX:-/ucrt64}"
 
 if [ -z "${GAME_DIR}" ]; then
 	echo "GAME_DIR is not set. Specify a game directory." >&2
@@ -53,16 +54,27 @@ if [ -f "${BUILD_PATH}/surmap/surmap.exe" ]; then
 fi
 
 echo "==> Copying MSYS2 runtime DLLs"
-for exe in "${GAME_DIR}/vangers.exe" "${GAME_DIR}/surmap.exe"; do
-	[ -f "${exe}" ] || continue
-	ldd "${exe}" \
-		| awk '$3 ~ /\/(ucrt64|mingw64|clang64)\// { print $3 }' \
-		| sort -u \
-		| while read -r dll; do
-			if [ -f "${dll}" ]; then
-				cp -f "${dll}" "${GAME_DIR}/"
-			fi
-		done
+# Resolve dependencies from the build tree (not the destination), otherwise
+# ldd would pick up stale DLLs already present in the game directory.
+collect_dlls() {
+	local exe="$1"
+	[ -f "${exe}" ] || return 0
+	ldd "${exe}" | awk '$3 ~ /\/(ucrt64|mingw64|clang64)\// { print $3 }'
+}
+
+for exe in "${BUILD_PATH}/src/vangers.exe" "${BUILD_PATH}/surmap/surmap.exe"; do
+	collect_dlls "${exe}" | sort -u | while read -r dll; do
+		if [ -f "${dll}" ]; then
+			cp -f "${dll}" "${GAME_DIR}/"
+		fi
+	done
+done
+
+# Always ship a consistent C++ runtime, even if the destination had stale ones.
+for dll in libwinpthread-1.dll libstdc++-6.dll libgcc_s_seh-1.dll libgcc_s_dw2-1.dll; do
+	if [ -f "${MINGW_PREFIX}/bin/${dll}" ]; then
+		cp -f "${MINGW_PREFIX}/bin/${dll}" "${GAME_DIR}/"
+	fi
 done
 
 echo "==> Done: ${GAME_DIR}"
