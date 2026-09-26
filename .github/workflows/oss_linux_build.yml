@@ -196,7 +196,6 @@ jobs:
       - name: Show built binaries
         run: |
           file build/src/vangers
-          file build/server/vangers_server
           file build/surmap/surmap
 
       - name: Prepare runtime artifact
@@ -205,7 +204,6 @@ jobs:
           mkdir -p artifacts/bin artifacts/lib
 
           cp build/src/vangers artifacts/bin/
-          cp build/server/vangers_server artifacts/bin/
           cp build/surmap/surmap artifacts/bin/
 
           for exe in artifacts/bin/*; do

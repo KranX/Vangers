@@ -81,7 +81,7 @@ char *win32_findfirst(const char *mask) {
 #endif
 
 /* ----------------------------- EXTERN SECTION ---------------------------- */
-extern int frame; // kdsplus.cpp
+extern int frame;
 extern int ViewX, ViewY;
 extern iGameMap *curGMap;
 extern int MLstatus, MLprocess;

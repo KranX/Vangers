@@ -27,7 +27,10 @@ Important consequences:
 
 ## What C++ server does
 
-The C++ server is in `server/server.cpp`.
+The removed C++ server implementation is preserved in
+[source history](https://github.com/KranX/Vangers/blob/71e95b86cf61c4bdc3df5b1279cd09122d3a81da/server/server.cpp).
+The analysis below describes that legacy implementation, not the maintained
+[Rust server](https://github.com/stalkerg/vangers-srv).
 
 ### Player station / id reuse
 

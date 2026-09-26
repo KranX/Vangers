@@ -87,7 +87,8 @@ This is not a one-off packet race; it repeats in later multiplayer sessions.
 
 ## Why the C++ server behaved differently
 
-Original C++ server `server/server.cpp` does not check owner in `DELETE_OBJECT`.
+The removed [original C++ server](https://github.com/KranX/Vangers/blob/71e95b86cf61c4bdc3df5b1279cd09122d3a81da/server/server.cpp)
+does not check owner in `DELETE_OBJECT`.
 
 Relevant behavior:
 

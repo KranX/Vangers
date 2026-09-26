@@ -41,6 +41,3 @@ CMakeSettings.json
 /flatpak-build
 /flatpak-repo
 /packaging/flatpak/flatpak-payload
-
-# Server env file
-.env
