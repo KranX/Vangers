@@ -27,6 +27,10 @@ build
 .vscode/
 *.code-workspace
 
+# Local development tools
+/.ropeproject/
+/.codex
+
 # VS cmake
 .vs/
 [Oo]ut/
@@ -35,6 +39,7 @@ CMakeSettings.json
 # compile stuff
 /ffmpeg
 /build
+/build_*/
 /clunk
 /vangers
 /artifacts-flatpak
