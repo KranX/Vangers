@@ -30,6 +30,43 @@ VANGERS: One for the Road
    $ ../build/src/vangers
 
 
+Windows (MSVC) prerequisites
+
+a. Install Visual Studio 2022 or newer with the "Desktop development with C++"
+   workload (CMake and Ninja are included with the workload).
+b. Install vcpkg and set VCPKG_ROOT to its directory:
+   https://learn.microsoft.com/vcpkg/get_started/get-started
+   Dependencies are declared in vcpkg.json (sdl3, sdl3-net, libogg, libvorbis,
+   zlib, toml11) and are installed automatically during the CMake configure
+   step.
+c. Obtain an MSVC build of FFmpeg (6.0 or newer). Prebuilt shared packages
+   with headers and import libraries are available from
+   https://github.com/System233/ffmpeg-msvc-prebuilt (x64, LGPL). Extract the
+   archive and pass the prefix as -DFFMPEG_ROOT=<ffmpeg-prefix>.
+d. Build and install clunk with the MSVC toolchain. Use the `msvc` branch of
+   https://github.com/DileSoft/clunk (based on the upstream `sdl3` branch,
+   with MSVC-compatible build flags), then pass its install prefix as
+   -DCLUNK_ROOT=<prefix>:
+
+   > git clone --branch msvc https://github.com/DileSoft/clunk.git
+   > cmake -S clunk -B clunk/build -G Ninja -DCMAKE_BUILD_TYPE=Release ^
+       -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake
+   > cmake --build clunk/build --parallel
+   > cmake --install clunk/build --prefix <clunk-prefix>
+e. Configure and build Vangers:
+
+   > cmake -S . -B build-msvc -G Ninja ^
+       -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
+       -DCMAKE_BUILD_TYPE=RelWithDebInfo ^
+       -DCLUNK_ROOT=<clunk-prefix> ^
+       -DFFMPEG_ROOT=<ffmpeg-prefix>
+   > cmake --build build-msvc --parallel
+
+   Note: the MSVC build currently links no executable icon. The committed
+   vangers.res was produced by windres as a 32-bit COFF object, which the x64
+   MSVC linker rejects (LNK1112), so MSVC builds skip the resource.
+
+
 OSX prerequisites
 
 a. Install homebrew

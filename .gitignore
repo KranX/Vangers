@@ -32,6 +32,10 @@ build
 [Oo]ut/
 CMakeSettings.json
 
+# vcpkg (manifest mode)
+/vcpkg_installed/
+/build-msvc/
+
 # compile stuff
 /ffmpeg
 /build

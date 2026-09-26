@@ -2689,7 +2689,7 @@ void SetupPath(void) {
 	char *path = getVideoPath();
 	if (!path)
 		ErrH.Abort("Software is NOT properly installed. Please, reinstall the Game!");
-	extern char *iVideoPath;
+	extern const char *iVideoPath;
 	strcat(path, "\\");
 	iVideoPath = path;
 #endif

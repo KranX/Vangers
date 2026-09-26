@@ -25,42 +25,42 @@ extern int aciKeyboardLocked;
 
 extern int iScreenOffs;
 
-extern char *iSTR_WORLD_NONE_CHAR;
-extern char *iSTR_WORLD_FOSTRAL_CHAR;
-extern char *iSTR_WORLD_GLORX_CHAR;
-extern char *iSTR_WORLD_NECROSS_CHAR;
-extern char *iSTR_WORLD_XPLO_CHAR;
-extern char *iSTR_WORLD_KHOX_CHAR;
-extern char *iSTR_WORLD_BOOZEENA_CHAR;
-extern char *iSTR_WORLD_WEEXOW_CHAR;
-extern char *iSTR_WORLD_HMOK_CHAR;
-extern char *iSTR_WORLD_THREALL_CHAR;
-extern char *iSTR_WORLD_ARK_A_ZNOY_CHAR;
-extern char *iSTR_COLOR_GREEN_CHAR;
-extern char *iSTR_COLOR_ORANGE_CHAR;
-extern char *iSTR_COLOR_BLUE_CHAR;
-extern char *iSTR_COLOR_YELLOW_CHAR;
-extern char *iSTR_COLOR_RED_CHAR;
-extern char *iSTR_COLOR_WHITE_CHAR;
-extern char *iSTR_COLOR_GRAY_CHAR;
-extern char *iSTR_COLOR_BLACK_CHAR;
-extern char *iSTR_COLOR_CAMOUFLAGE_CHAR;
-extern char *iSTR_COLOR_PATROL_CHAR;
-extern char *iSTR_MUTE_ALL;
-extern char *iSTR_CLEAR_LOG;
-extern char *iSTR_BACKGROUND;
-extern char *iSTR_LEAVE_CHAT;
-extern char *iSTR_All;
-extern char *iSTR_Yellow;
-extern char *iSTR_Orange;
-extern char *iSTR_Blue;
-extern char *iSTR_Green;
-extern char *iSTR_Red;
-extern char *iSTR_White;
-extern char *iSTR_Gray;
-extern char *iSTR_Black;
-extern char *iSTR_Camouflage;
-extern char *iSTR_Patrol;
+extern const char *iSTR_WORLD_NONE_CHAR;
+extern const char *iSTR_WORLD_FOSTRAL_CHAR;
+extern const char *iSTR_WORLD_GLORX_CHAR;
+extern const char *iSTR_WORLD_NECROSS_CHAR;
+extern const char *iSTR_WORLD_XPLO_CHAR;
+extern const char *iSTR_WORLD_KHOX_CHAR;
+extern const char *iSTR_WORLD_BOOZEENA_CHAR;
+extern const char *iSTR_WORLD_WEEXOW_CHAR;
+extern const char *iSTR_WORLD_HMOK_CHAR;
+extern const char *iSTR_WORLD_THREALL_CHAR;
+extern const char *iSTR_WORLD_ARK_A_ZNOY_CHAR;
+extern const char *iSTR_COLOR_GREEN_CHAR;
+extern const char *iSTR_COLOR_ORANGE_CHAR;
+extern const char *iSTR_COLOR_BLUE_CHAR;
+extern const char *iSTR_COLOR_YELLOW_CHAR;
+extern const char *iSTR_COLOR_RED_CHAR;
+extern const char *iSTR_COLOR_WHITE_CHAR;
+extern const char *iSTR_COLOR_GRAY_CHAR;
+extern const char *iSTR_COLOR_BLACK_CHAR;
+extern const char *iSTR_COLOR_CAMOUFLAGE_CHAR;
+extern const char *iSTR_COLOR_PATROL_CHAR;
+extern const char *iSTR_MUTE_ALL;
+extern const char *iSTR_CLEAR_LOG;
+extern const char *iSTR_BACKGROUND;
+extern const char *iSTR_LEAVE_CHAT;
+extern const char *iSTR_All;
+extern const char *iSTR_Yellow;
+extern const char *iSTR_Orange;
+extern const char *iSTR_Blue;
+extern const char *iSTR_Green;
+extern const char *iSTR_Red;
+extern const char *iSTR_White;
+extern const char *iSTR_Gray;
+extern const char *iSTR_Black;
+extern const char *iSTR_Camouflage;
+extern const char *iSTR_Patrol;
 
 extern aciFont **aScrFonts32;
 
@@ -252,7 +252,7 @@ int scrollColorI = (6 | (2 << 16));	 // aciChatColors0[5] white color for scroll
 int scrollColor = (230 | (2 << 16)); // aciChatColors1[5]
 int scrollSizeX = 5;
 
-static char *iChatWorlds[] = {iSTR_WORLD_NONE_CHAR,
+static const char *iChatWorlds[] = {iSTR_WORLD_NONE_CHAR,
 	iSTR_WORLD_FOSTRAL_CHAR,
 	iSTR_WORLD_GLORX_CHAR,
 	iSTR_WORLD_NECROSS_CHAR,
@@ -264,7 +264,7 @@ static char *iChatWorlds[] = {iSTR_WORLD_NONE_CHAR,
 	iSTR_WORLD_THREALL_CHAR,
 	iSTR_WORLD_ARK_A_ZNOY_CHAR};
 
-static char *iChatColors[] = {iSTR_COLOR_GREEN_CHAR,
+static const char *iChatColors[] = {iSTR_COLOR_GREEN_CHAR,
 	iSTR_COLOR_ORANGE_CHAR,
 	iSTR_COLOR_BLUE_CHAR,
 	iSTR_COLOR_YELLOW_CHAR,

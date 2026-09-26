@@ -1006,10 +1006,10 @@ void XGR_Screen::flip() {
 			SDL_FRect src_rect{0, 0, XGR_SCALED_RENDER_SOURCE_X, XGR_SCALED_RENDER_SOURCE_Y};
 			int new_width = screen_scale_y * XGR_SCALED_RENDER_SOURCE_X;
 			SDL_FRect dst_rect{
-				.x = static_cast<float>(xgrScreenSizeX - new_width) / 2.0f,
-				.y = 0,
-				.w = static_cast<float>(new_width),
-				.h = static_cast<float>(xgrScreenSizeY),
+				static_cast<float>(xgrScreenSizeX - new_width) / 2.0f,
+				0,
+				static_cast<float>(new_width),
+				static_cast<float>(xgrScreenSizeY),
 			};
 			if (!XGR_RenderSides(sdlRenderer, new_width) ||
 				!SDL_RenderTexture(sdlRenderer, sdlTexture, &src_rect, &dst_rect))
@@ -2651,7 +2651,7 @@ XGR_MousePromptData::~XGR_MousePromptData(void) {
 		delete[] textData;
 }
 
-void XGR_MousePromptData::init_text(char *p) {
+void XGR_MousePromptData::init_text(const char *p) {
 	int sz = strlen(p) + 1;
 	textData = new char[sz];
 	strcpy(textData, p);
@@ -2660,8 +2660,8 @@ void XGR_MousePromptData::init_text(char *p) {
 	init();
 }
 
-void XGR_MousePromptData::set_text(char *p) {
-	textData = p;
+void XGR_MousePromptData::set_text(const char *p) {
+	textData = const_cast<char *>(p);
 	flags &= ~XGR_PROMPT_MEM_ALLOC;
 
 	init();

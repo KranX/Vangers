@@ -95,7 +95,7 @@ void graph3d_init();
 void calc_screen(int zoom_percent);
 void shotMake(void);
 void loadState(void);
-char *getVLname(void);
+const char *getVLname(void);
 void VLshow(void);
 void VLnext(void);
 void ClipboardOperation(int slot, int save, int render = 1);

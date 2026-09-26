@@ -4705,8 +4705,8 @@ int CheckThreallMessiah(void) {
 	return 0;
 };
 
-extern char *iVideoPath;
-extern char *iVideoPathDefault;
+extern const char *iVideoPath;
+extern const char *iVideoPathDefault;
 
 void PassageImageType::Open(char *name) {
 	short st;

@@ -5,10 +5,21 @@
 # FFMPEG_INLUDE_DIRS
 # FFMPEG_LIBRARIES
 #
+# A prebuilt FFmpeg prefix can be supplied with -DFFMPEG_ROOT=<dir> (or the
+# FFMPEG_ROOT environment variable). This is the expected setup for the MSVC
+# build, which uses a prebuilt MSVC FFmpeg distribution.
+#
+
+SET(FFMPEG_ROOT_HINTS
+	${FFMPEG_ROOT}
+	$ENV{FFMPEG_ROOT}
+)
 
 FIND_PATH(AVUTIL_INCLUDE_DIR
 	NAMES
 		avutil.h
+	HINTS
+		${FFMPEG_ROOT_HINTS}
 	PATHS
 		/usr/local/include
 		/usr/include
@@ -24,13 +35,17 @@ FIND_PATH(AVUTIL_INCLUDE_DIR
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavutil
 	PATH_SUFFIXES
+		include/libavutil
 		libavutil
+		include
 		ffmpeg
 )
 
 FIND_PATH(AVCODEC_INCLUDE_DIR
 	NAMES
 		avcodec.h
+	HINTS
+		${FFMPEG_ROOT_HINTS}
 	PATHS
 		/usr/local/include
 		/usr/include
@@ -46,13 +61,17 @@ FIND_PATH(AVCODEC_INCLUDE_DIR
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavcodec
 	PATH_SUFFIXES
+		include/libavcodec
 		libavcodec
+		include
 		ffmpeg
 )
 
 FIND_PATH(AVFORMAT_INCLUDE_DIR
 	NAMES
 		avformat.h
+	HINTS
+		${FFMPEG_ROOT_HINTS}
 	PATHS
 		/usr/local/include
 		/usr/include
@@ -68,13 +87,17 @@ FIND_PATH(AVFORMAT_INCLUDE_DIR
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libavformat
 	PATH_SUFFIXES
+		include/libavformat
 		libavformat
+		include
 		ffmpeg
 )
 
 FIND_PATH(SWSCALE_INCLUDE_DIR
 	NAMES
 		swscale.h
+	HINTS
+		${FFMPEG_ROOT_HINTS}
 	PATHS
 		/usr/local/include
 		/usr/include
@@ -89,7 +112,9 @@ FIND_PATH(SWSCALE_INCLUDE_DIR
 		/usr/include/ffmpeg
 		/usr/include/ffmpeg/libswscale
 	PATH_SUFFIXES
+		include/libswscale
 		libswscale
+		include
 		ffmpeg
 )
 
@@ -100,6 +125,8 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 		avutil-59
 		avutil-60
 		avutil-61
+	HINTS
+		${FFMPEG_ROOT_HINTS}
 	PATHS
 		/usr/local/lib
 		/usr/lib
@@ -113,6 +140,10 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 		/local/bin
 		/mingw/bin
 		/bin
+	PATH_SUFFIXES
+		lib
+		lib64
+		bin
 )
 
 FIND_LIBRARY(AVCODEC_LIBRARY
@@ -122,6 +153,8 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 		avcodec-61
 		avcodec-62
 		avcodec-63
+	HINTS
+		${FFMPEG_ROOT_HINTS}
 	PATHS
 		/usr/local/lib
 		/usr/lib
@@ -134,6 +167,10 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 		/local/bin
 		/mingw/bin
 		/bin
+	PATH_SUFFIXES
+		lib
+		lib64
+		bin
 )
 
 FIND_LIBRARY(AVFORMAT_LIBRARY
@@ -143,6 +180,8 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		avformat-61
 		avformat-62
 		avformat-63
+	HINTS
+		${FFMPEG_ROOT_HINTS}
 	PATHS
 		/usr/local/lib
 		/usr/lib
@@ -156,6 +195,10 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		/mingw/bin
 		/mingw/lib
 		/bin
+	PATH_SUFFIXES
+		lib
+		lib64
+		bin
 )
 
 FIND_LIBRARY(SWSCALE_LIBRARY
@@ -165,6 +208,8 @@ FIND_LIBRARY(SWSCALE_LIBRARY
 		swscale-8
 		swscale-9
 		swscale-10
+	HINTS
+		${FFMPEG_ROOT_HINTS}
 	PATHS
 		/usr/local/lib
 		/usr/lib
@@ -178,6 +223,10 @@ FIND_LIBRARY(SWSCALE_LIBRARY
 		/mingw/bin
 		/mingw/lib
 		/bin
+	PATH_SUFFIXES
+		lib
+		lib64
+		bin
 )
 
 get_filename_component(FFMPEG_PARENT_DIR ${AVCODEC_INCLUDE_DIR} DIRECTORY)

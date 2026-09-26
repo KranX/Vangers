@@ -96,7 +96,7 @@ extern int IsMainMenu;
 extern bool autoconnect;
 extern char *autoconnectHost;
 extern unsigned short autoconnectPort;
-extern int autoconnectJoinGame;
+extern bool autoconnectJoinGame;
 extern int autoconnectGameID;
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */

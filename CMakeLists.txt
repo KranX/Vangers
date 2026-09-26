@@ -34,7 +34,7 @@ FIND_PACKAGE(Clunk REQUIRED)
 
 FIND_PACKAGE(FFMPEG REQUIRED)
 FIND_PACKAGE(ZLIB REQUIRED)
-set(WINDOWS_RES "../vangers.res")
+set(WINDOWS_RES "${PROJECT_SOURCE_DIR}/vangers.res")
 
 IF(ACTINT)
 	ADD_DEFINITIONS(-DACTINT)
@@ -56,30 +56,57 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE(CheckCXXCompilerFlag)
-SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wextra")
-SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2 -ftree-vectorize -ffast-math")
-CHECK_CXX_COMPILER_FLAG("-msse2" HAVE_SIMDSSE)
-IF(HAVE_SIMDSSE)
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -msse2")
-ENDIF()
-# For modern gcc
+
+# For modern MSVC
 add_definitions(-D_USE_MATH_DEFINES)
 
-add_compile_options(-Werror=shift-negative-value)
-add_compile_options(-Werror=dangling-else)
-add_compile_options(-Werror=parentheses)
-add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=delete-non-virtual-dtor>)
-add_compile_options(-Werror=write-strings)
-add_compile_options(-fsigned-char)
+IF(MSVC)
+	# The sources contain UTF-8 (Russian) string literals. GCC/clang use UTF-8 as
+	# the execution charset by default, so tell MSVC to do the same.
+	add_compile_options("$<$<COMPILE_LANGUAGE:C,CXX>:/utf-8>")
+	# Report the real __cplusplus value instead of the legacy 199711L.
+	add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:/Zc:__cplusplus>")
+	# A few translation units (actint, univang) are large enough to exceed the
+	# default object file section limit otherwise.
+	add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:/bigobj>")
+	add_compile_options("$<$<COMPILE_LANGUAGE:C,CXX>:/W3>")
+	# Keep the POSIX CRT names (strdup, ...) and the classic CRT functions usable
+	# without deprecation noise, and stop windows.h from defining min/max macros.
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
+	add_definitions(-DNOMINMAX)
+ELSE()
+	SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wextra")
+	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2 -ftree-vectorize -ffast-math")
+	CHECK_CXX_COMPILER_FLAG("-msse2" HAVE_SIMDSSE)
+	IF(HAVE_SIMDSSE)
+	  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -msse2")
+	ENDIF()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	add_compile_options(-Werror=mismatched-new-delete )
-endif()
+	add_compile_options(-Werror=shift-negative-value)
+	add_compile_options(-Werror=dangling-else)
+	add_compile_options(-Werror=parentheses)
+	add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=delete-non-virtual-dtor>)
+	add_compile_options(-Werror=write-strings)
+	add_compile_options(-fsigned-char)
+
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		add_compile_options(-Werror=mismatched-new-delete )
+	endif()
+ENDIF()
 
 IF(WIN32)
 	SET(WIN_DBG
 		dbghelp
 	)
+	IF(MSVC)
+		# The committed vangers.res was produced by windres as a 32-bit COFF
+		# object, which MSVC's x64 linker rejects (LNK1112). The icon is optional,
+		# so MSVC builds without an embedded resource for now.
+		SET(WINDOWS_RES "")
+	ELSE()
+		SET(WINDOWS_RES "${PROJECT_SOURCE_DIR}/vangers.res")
+	ENDIF()
 ENDIF(WIN32)
 
 # Get the current working branch

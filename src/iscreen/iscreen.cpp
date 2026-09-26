@@ -36,7 +36,7 @@ extern int actIntLog;
 extern actIntDispatcher *aScrDisp;
 extern unsigned char *aciCurColorScheme;
 
-extern char *AVInotFound;
+extern const char *AVInotFound;
 
 extern int iFrameFlag;
 
