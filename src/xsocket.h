@@ -14,7 +14,6 @@ extern std::string XSocketLocalHostExternalAddress;
 class XSocket {
 	int ErrHUsed;
 	NET_StreamSocket *streamSocket;
-	NET_Server *serverSocket;
 	std::string remoteAddress;
 	int remotePort;
 
@@ -31,9 +30,6 @@ class XSocket {
 	int open(const char *name, int port);
 	void close();
 
-	int listen(int port);
-	XSocket accept();
-
 	int send(const char *buffer, int size);
 	int send_if_ready(const char *buffer, int size);
 	int flush(int ms_time);
@@ -46,7 +42,7 @@ class XSocket {
 		return remotePort;
 	}
 	bool is_open() const {
-		return streamSocket != nullptr || serverSocket != nullptr;
+		return streamSocket != nullptr;
 	}
 
 	explicit operator bool() const {
@@ -58,7 +54,6 @@ class XSocket {
 
   private:
 	int tcp_open(const char *name, int port);
-	void update_remote_address();
 };
 
 #endif

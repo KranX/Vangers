@@ -1,11 +1,24 @@
 # Multiplayer NetID / ownership architecture notes
 
-Date: 2026-05-19
+Original notes: 2026-05-19. Last source audit: 2026-09-26.
 
-These notes record the investigation around legacy C++ server semantics,
-`NetID`, `NetOwner`, station reuse, and item ownership. They are intentionally
-separate from the implementation plan so we can continue the architecture
-discussion later without losing context.
+These notes distinguish the implemented legacy identity/ownership model from a
+future generation-based design. Client baseline: `71e95b8`. Rust baseline:
+`stalkerg/vangers-srv`, `master` at `29fb0cb`, after merging
+`integration/open-prs-2026-04-10`. Rust paths below refer to that revision.
+The current matching pair uses protocol **6**.
+
+The item-transfer/snapshot changes introduced in protocol 5 remain implemented
+under protocol 6. The separate logical-item table and generation-based identities
+below are still **deferred**, not completed by the protocol bump. See the
+[network implementation plan](multiplayer-network-refactor-plan.md) for delivery,
+validation and compatibility status.
+
+The integration branch was merged into Rust `master` after the initial audit.
+No deployment or end-to-end multiplayer session was performed for this
+documentation update. The legacy C++ server examples describe the removed
+protocol-4 implementation and remain useful for understanding identity semantics,
+not as a compatible server for the current client.
 
 ## Legacy NetID format
 
@@ -27,7 +40,10 @@ Important consequences:
 
 ## What C++ server does
 
-The C++ server is in `server/server.cpp`.
+The removed C++ server implementation is preserved in
+[source history](https://github.com/KranX/Vangers/blob/71e95b86cf61c4bdc3df5b1279cd09122d3a81da/server/server.cpp).
+The analysis below describes that legacy implementation, not the maintained
+[Rust server](https://github.com/stalkerg/vangers-srv).
 
 ### Player station / id reuse
 
@@ -206,24 +222,46 @@ reference, not as the source of truth for server ownership.
 Server-side truth should remain a separate concept such as `player_bind_id`.
 Long-term it should probably become `server_player_id + generation`.
 
-## Current Rust server implications
+## Current Rust server implementation
 
-The current protocol-5 server already fixed the observed item loss by making
-pickup/drop an explicit `ITEM_TRANSFER`.
+Rust `master` implements the protocol-5 item-state model and now
+requires protocol 6. Pickup/drop uses explicit `ITEM_TRANSFER`; the server
+validates and replaces the active item face in one mutation path, emitting
+`ITEM_STATE`. True deletion uses `ITEM_REMOVED`. Tests cover pickup races, wrong
+world/owner/id rejection and preservation of transferred items on departure.
 
-However, the underlying identity model still has old limitations:
+The identity model is still legacy-based:
 
-- `Vanject.id` still contains the legacy station/counter namespace.
-- `player_bind_id` is the actual server owner.
-- A transferred item can still have old station bits in `Vanject.id` while its
-  `player_bind_id` points to a different current owner.
-- This is compatible with legacy C++ semantics, but can become confusing when
-  a station is later reused by another player.
+- `Game::vanjects` is a `HashMap<i32, Vanject>` keyed by legacy object id.
+- `Vanject.id` contains creator station/type/counter, not current ownership.
+- `player_bind_id` is the server's owner field.
+- A transferred item can keep station bits from its creator while its
+  `player_bind_id` belongs to another player.
+- `server/callback/leave_world.rs` preserves inventory transferred to another
+  player, dropped world items and existing static world state; dedicated tests
+  exercise those distinctions.
 
-The C++ server handled this by sending object counter offsets to a newly
-attached client. We need to verify that the Rust server fully preserves the
-same collision-avoidance behavior for all relevant object classes and for
-transferred inventory items.
+### Station reuse: offset mechanism exists; boundary validation remains
+
+`server/callback/attach_to_game.rs` already scans **all live `game.vanjects`**
+for the newly assigned creator station, regardless of their current owner.
+It collects per-type counter maxima and sends the 16 offset fields in
+`ATTACH_TO_GAME_RESPONSE` (nonzero maxima are advanced by one). Thus transferred
+items with the reused station participate in that scan while they remain in
+storage. Do not describe collision avoidance as an entirely missing feature.
+
+Still required before treating reuse as fully validated:
+
+- regression scenarios for disconnect/reconnect and slot reuse after a transfer;
+- both paired item faces and relevant object types across worlds;
+- zero/max counter boundaries, 16-bit exhaustion and indexing assumptions;
+- stale owner references and pending events when the same station is assigned
+  to another connection.
+
+The offset mechanism is not a generation model and does not on its own establish
+that stale packets can never refer to a newly valid object. No separate logical
+item database, `server_object_id + generation`, or `owner_id + generation` model
+was found in the audited Rust revision.
 
 ## Why "do not reuse station while old objects exist" is not ideal
 
@@ -296,20 +334,22 @@ This would solve:
 - paired `STUFF`/`DEVICE` identity confusion;
 - ABA problems where an old id becomes valid again after reconnect/reuse.
 
-Protocol 5 is a step in this direction because it already moves item transfer
-to explicit `ITEM_TRANSFER` / `ITEM_STATE` / `ITEM_REMOVED`, but the server
-internals still store active item faces as legacy `Vanject` ids. A later
-internal refactor can keep the same protocol-5 packets while introducing a real
-logical item table.
+The transfer model introduced in protocol 5 and retained in protocol 6 is a
+step in this direction: `ITEM_TRANSFER` / `ITEM_STATE` / `ITEM_REMOVED` make the
+operation explicit, but the server still stores active faces as legacy `Vanject`
+ids. An internal logical-item table may keep those wire packets. Exposing new
+identity/generation semantics to clients would require a separate compatibility
+design; it must not be slipped into an unrelated cleanup.
 
-## Practical conclusion for now
+## Practical conclusion for the current code
 
-For the current protocol-5 work:
-
-1. `station` should be treated as a legacy id namespace, not owner.
-2. `NetOwner` should not be trusted as authoritative owner.
-3. `player_bind_id` is currently the server-side owner truth.
-4. Rust server must preserve C++-style station reuse collision avoidance by
-   sending correct object id offsets for all live objects in the game.
-5. Future architecture should move to server object ids/generations, but this
-   should be done coherently, not by patching individual references.
+1. Treat `station` as a creator namespace, not as the current owner.
+2. Treat `NetOwner` as a legacy attachment reference, not server-authoritative
+   ownership.
+3. Preserve the explicit item-state path and the `player_bind_id` distinction.
+4. Keep the existing offset scan; add targeted reuse/transfer/exhaustion tests
+   rather than assuming either that it is absent or that it proves all cases.
+5. Do not forbid station reuse indefinitely or re-key individual item references
+   as an isolated workaround.
+6. Keep a full logical-item/generation design as explicit future architecture,
+   separate from the implemented protocol-6 client/Rust-server baseline.

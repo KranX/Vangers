@@ -1,5 +1,18 @@
 # Multiplayer desync investigation, 2026-05-17 logs
 
+> **Historical investigation; status reviewed 2026-09-26.** The log evidence and
+> proposed hotfixes below describe the 2026-05-17 implementation, not the current
+> protocol. The later protocol-5 refactor replaced split item pickup/drop with
+> `ITEM_TRANSFER` / `ITEM_STATE` / `ITEM_REMOVED` and added world-entry snapshot
+> boundaries. Those changes are present in the protocol-6 client (`71e95b8`)
+> and Rust `master` (`29fb0cb`), which now includes the former integration branch
+> (`integration/open-prs-2026-04-10`). Do not apply the suggested non-owner
+> `DELETE_OBJECT` pickup exception as a current fix. See the
+> [current network plan](multiplayer-network-refactor-plan.md) and
+> [NetID notes](multiplayer-netid-architecture-notes.md) for remaining work.
+> The original evidence is retained below; its logs were not reanalysed or its
+> reproduction rerun during this documentation update.
+
 Context: testers reported that in multiplayer items can disappear, be thrown to a
 wrong place, and other players sometimes have incorrect weapon/slot visuals.
 
@@ -87,7 +100,8 @@ This is not a one-off packet race; it repeats in later multiplayer sessions.
 
 ## Why the C++ server behaved differently
 
-Original C++ server `server/server.cpp` does not check owner in `DELETE_OBJECT`.
+The removed [original C++ server](https://github.com/KranX/Vangers/blob/71e95b86cf61c4bdc3df5b1279cd09122d3a81da/server/server.cpp)
+does not check owner in `DELETE_OBJECT`.
 
 Relevant behavior:
 

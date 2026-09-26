@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -16,40 +17,71 @@ bool check(bool condition, const char *message) {
 	return condition;
 }
 
-int listen_on_available_port(XSocket &server) {
+// Listening sockets are test fixtures only; production XSocket is client-only.
+struct ServerDeleter {
+	void operator()(NET_Server *server) const {
+		NET_DestroyServer(server);
+	}
+};
+
+struct PeerDeleter {
+	void operator()(NET_StreamSocket *peer) const {
+		NET_DestroyStreamSocket(peer);
+	}
+};
+
+using TestServer = std::unique_ptr<NET_Server, ServerDeleter>;
+using TestPeer = std::unique_ptr<NET_StreamSocket, PeerDeleter>;
+
+int listen_on_available_port(TestServer &server) {
 	for (int port = 32197; port < 32297; ++port) {
-		if (server.listen(port))
+		server.reset(NET_CreateServer(nullptr, static_cast<Uint16>(port), 0));
+		if (server)
 			return port;
 	}
 	return 0;
 }
 
-XSocket wait_for_client(XSocket &server) {
+TestPeer wait_for_client(const TestServer &server) {
 	const Uint64 deadline = SDL_GetTicks() + 2000;
 	do {
-		XSocket client = server.accept();
+		NET_StreamSocket *client = nullptr;
+		if (!NET_AcceptClient(server.get(), &client))
+			return {};
 		if (client)
-			return client;
+			return TestPeer(client);
 		SDL_Delay(1);
 	} while (SDL_GetTicks() < deadline);
 	return {};
 }
 
-int receive_exact(XSocket &socket, char *buffer, int size) {
+int receive(XSocket &socket, char *buffer, int size, int timeout) {
+	return socket.receive(buffer, size, timeout);
+}
+
+int receive(const TestPeer &socket, char *buffer, int size, int timeout) {
+	void *peer = socket.get();
+	const int available = NET_WaitUntilInputAvailable(&peer, 1, timeout);
+	if (available <= 0)
+		return available;
+	return NET_ReadFromStreamSocket(socket.get(), buffer, size);
+}
+
+template<typename Socket> int receive_exact(Socket &socket, char *buffer, int size) {
 	int received = 0;
 	const Uint64 deadline = SDL_GetTicks() + 2000;
 	while (received < size && SDL_GetTicks() < deadline) {
-		const int amount = socket.receive(buffer + received, size - received, 50);
+		const int amount = receive(socket, buffer + received, size - received, 50);
 		if (amount > 0)
 			received += amount;
-		else if (!socket)
+		else if (amount < 0 || !socket)
 			break;
 	}
 	return received;
 }
 
 bool run_send_backpressure_test() {
-	XSocket listener;
+	TestServer listener;
 	const int port = listen_on_available_port(listener);
 	if (!check(port != 0, "could not allocate a backpressure test port"))
 		return false;
@@ -57,8 +89,8 @@ bool run_send_backpressure_test() {
 	XSocket client;
 	if (!check(client.open("127.0.0.1", port), "backpressure client connection failed"))
 		return false;
-	XSocket accepted = wait_for_client(listener);
-	if (!check(accepted.is_open(), "backpressure peer was not accepted"))
+	TestPeer accepted = wait_for_client(listener);
+	if (!check(static_cast<bool>(accepted), "backpressure peer was not accepted"))
 		return false;
 
 	constexpr int chunkSize = 1024 * 1024;
@@ -98,13 +130,14 @@ bool run_send_backpressure_test() {
 	const Uint64 deadline = SDL_GetTicks() + 10000;
 	while (receivedBytes < expectedBytes && SDL_GetTicks() < deadline) {
 		client.flush(0);
-		const int amount = accepted.receive(
+		const int amount = receive(
+			accepted,
 			receiveBuffer.data(),
 			static_cast<int>(std::min(receiveBuffer.size(), expectedBytes - receivedBytes)),
 			20
 		);
 		if (amount <= 0) {
-			if (!accepted || !client)
+			if (amount < 0 || !client)
 				break;
 			continue;
 		}
@@ -147,53 +180,51 @@ bool run_send_backpressure_test() {
 		return false;
 
 	client.close();
-	accepted.close();
-	listener.close();
+	accepted.reset();
+	listener.reset();
 	return true;
 }
 
 bool run_loopback_test() {
-	XSocket listener;
+	TestServer listener;
 	const int port = listen_on_available_port(listener);
 	if (!check(port != 0, "could not allocate a loopback test port"))
 		return false;
-	if (!check(listener.is_open(), "listener should report an open server socket"))
-		return false;
-	if (!check(!listener.accept(), "accept without a pending client should be nonblocking"))
-		return false;
-
 	XSocket client;
 	if (!check(client.open("127.0.0.1", port), "loopback client connection failed"))
 		return false;
-	XSocket accepted = wait_for_client(listener);
-	if (!check(accepted.is_open(), "server did not accept the loopback client"))
+	TestPeer accepted = wait_for_client(listener);
+	if (!check(static_cast<bool>(accepted), "server did not accept the loopback client"))
 		return false;
-	if (!check(!accepted.address().empty(), "accepted socket has no peer address"))
+	if (!check(client.address() == "127.0.0.1" && client.port() == port, "wrong client endpoint"))
 		return false;
 
 	char buffer[32] = {};
 	const Uint64 timeoutStart = SDL_GetTicks();
-	if (!check(accepted.receive(buffer, sizeof(buffer), 30) == 0, "idle receive returned data"))
+	if (!check(client.receive(buffer, sizeof(buffer), 30) == 0, "idle receive returned data"))
 		return false;
 	const Uint64 timeoutElapsed = SDL_GetTicks() - timeoutStart;
 	if (!check(timeoutElapsed >= 15 && timeoutElapsed < 1000, "receive timeout was not honored"))
 		return false;
-	if (!check(accepted.is_open(), "receive timeout closed a healthy socket"))
+	if (!check(client.is_open(), "receive timeout closed a healthy socket"))
 		return false;
-	if (!check(
-			accepted.receive(buffer, sizeof(buffer), 0) == 0, "nonblocking receive returned data"
-		))
+	if (!check(client.receive(buffer, sizeof(buffer), 0) == 0, "nonblocking receive returned data"))
 		return false;
 
 	const char first[] = "ordered-";
 	const char second[] = "payload";
-	if (!check(client.send(first, sizeof(first) - 1) == sizeof(first) - 1, "first send failed"))
+	if (!check(
+			NET_WriteToStreamSocket(accepted.get(), first, sizeof(first) - 1), "first send failed"
+		))
 		return false;
-	if (!check(client.send(second, sizeof(second) - 1) == sizeof(second) - 1, "second send failed"))
+	if (!check(
+			NET_WriteToStreamSocket(accepted.get(), second, sizeof(second) - 1),
+			"second send failed"
+		))
 		return false;
 	const int payloadSize = sizeof(first) + sizeof(second) - 2;
 	if (!check(
-			receive_exact(accepted, buffer, payloadSize) == payloadSize,
+			receive_exact(client, buffer, payloadSize) == payloadSize,
 			"ordered payload was incomplete"
 		))
 		return false;
@@ -204,16 +235,16 @@ bool run_loopback_test() {
 
 	const char partialPayload[] = "0123456789";
 	if (!check(
-			client.send(partialPayload, sizeof(partialPayload) - 1) == sizeof(partialPayload) - 1,
+			NET_WriteToStreamSocket(accepted.get(), partialPayload, sizeof(partialPayload) - 1),
 			"partial-read payload send failed"
 		))
 		return false;
-	const int firstRead = accepted.receive(buffer, 4, 1000);
+	const int firstRead = client.receive(buffer, 4, 1000);
 	if (!check(firstRead > 0 && firstRead <= 4, "bounded receive ignored its destination size"))
 		return false;
 	const int remaining = static_cast<int>(sizeof(partialPayload) - 1) - firstRead;
 	if (!check(
-			receive_exact(accepted, buffer + firstRead, remaining) == remaining,
+			receive_exact(client, buffer + firstRead, remaining) == remaining,
 			"partial-read payload was not preserved"
 		))
 		return false;
@@ -223,8 +254,8 @@ bool run_loopback_test() {
 		))
 		return false;
 
-	XSocket moved(std::move(accepted));
-	if (!check(!accepted && moved, "move construction did not transfer socket ownership"))
+	XSocket moved(std::move(client));
+	if (!check(!client && moved, "move construction did not transfer socket ownership"))
 		return false;
 	XSocket assigned;
 	assigned = std::move(moved);
@@ -233,15 +264,15 @@ bool run_loopback_test() {
 
 	const char finalPayload[] = "graceful-close";
 	if (!check(
-			client.send(finalPayload, sizeof(finalPayload) - 1) == sizeof(finalPayload) - 1,
+			assigned.send(finalPayload, sizeof(finalPayload) - 1) == sizeof(finalPayload) - 1,
 			"final payload send failed"
 		))
 		return false;
-	if (!check(client.flush(2000), "final payload did not drain before close"))
+	if (!check(assigned.flush(2000), "final payload did not drain before close"))
 		return false;
-	client.close();
+	assigned.close();
 	if (!check(
-			receive_exact(assigned, buffer, sizeof(finalPayload) - 1) == sizeof(finalPayload) - 1,
+			receive_exact(accepted, buffer, sizeof(finalPayload) - 1) == sizeof(finalPayload) - 1,
 			"drained payload was abandoned during close"
 		))
 		return false;
@@ -250,11 +281,7 @@ bool run_loopback_test() {
 			"drained payload changed before close"
 		))
 		return false;
-	const Uint64 disconnectDeadline = SDL_GetTicks() + 2000;
-	while (assigned && SDL_GetTicks() < disconnectDeadline)
-		assigned.receive(buffer, sizeof(buffer), 50);
-	if (!check(!assigned, "peer disconnect did not close the stream socket"))
-		return false;
+	accepted.reset();
 
 	XSocket integerAddressClient;
 	if (!check(
@@ -262,7 +289,7 @@ bool run_loopback_test() {
 			"host-order integer loopback address did not resolve to 127.0.0.1"
 		))
 		return false;
-	XSocket integerAddressAccepted = wait_for_client(listener);
+	TestPeer integerAddressAccepted = wait_for_client(listener);
 	if (!check(
 			static_cast<bool>(integerAddressAccepted),
 			"server did not accept the integer-address client"
@@ -287,9 +314,14 @@ bool run_loopback_test() {
 		))
 		return false;
 
-	integerAddressClient.close();
-	integerAddressAccepted.close();
-	listener.close();
+	integerAddressAccepted.reset();
+	const Uint64 disconnectDeadline = SDL_GetTicks() + 2000;
+	while (integerAddressClient && SDL_GetTicks() < disconnectDeadline)
+		integerAddressClient.receive(buffer, sizeof(buffer), 50);
+	if (!check(!integerAddressClient, "peer disconnect did not close the stream socket"))
+		return false;
+
+	listener.reset();
 	XSocket refusedClient;
 	if (!check(!refusedClient.open("127.0.0.1", port), "connection to a closed listener succeeded"))
 		return false;
@@ -312,8 +344,7 @@ int main() {
 	bool success = false;
 	{
 		XSocket invalid;
-		success = check(!invalid.listen(0), "invalid listen port was accepted") &&
-				  check(!invalid.open("127.0.0.1", 0), "invalid client port was accepted") &&
+		success = check(!invalid.open("127.0.0.1", 0), "invalid client port was accepted") &&
 				  check(!invalid.flush(0), "closed socket reported a successful flush") &&
 				  run_loopback_test() && run_send_backpressure_test();
 	}

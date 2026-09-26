@@ -50,12 +50,13 @@ them, but subsequent changes made by the new build are saved only to
 ## Gamepad input
 
 SDL3-compatible gamepads are detected and mapped automatically, including
-hot-plugging. The left stick controls steering and throttle by default. The
-right stick moves the UI cursor and, during gameplay, controls side impulses
-and RIG movement. Face buttons operate actions, inventory, the handbrake, and
-the jump spring; pressing the left stick activates Vector. The triggers provide
-acceleration and fire; the D-pad fires individual weapon slots. In menus, the
-D-pad follows the existing arrow-key navigation.
+hot-plugging. With the current default bindings, the left stick steers; the
+right and left triggers control forward and reverse throttle. The right stick
+moves the UI cursor and, during gameplay, controls side impulses and RIG
+movement. Face buttons provide actions, the handbrake, the jump spring and
+fire-all; pressing the left stick activates Vector. D-pad up opens inventory,
+while right/down/left fire weapon slots 2/3/4. In menus, the D-pad navigates
+focus instead. These defaults can be overridden in user settings.
 Gamepad buttons can be assigned on the regular controls screen or changed in
 `[input.sdl_gamepad.bindings]` in `settings.toml`. Stick axes and trigger
 bindings can be changed in
@@ -68,29 +69,52 @@ The open-source build does not call Steam Input directly. It keeps the active
 `SDL_Gamepad`, so a Steam build can associate the same SDL-managed device with
 Steam Input without introducing a second device manager.
 
+## Development plans and status
+
+The plans distinguish implemented features, intentional deferrals and runtime
+checks still requiring recorded results:
+
+- [Multiplayer refactor](multiplayer-network-refactor-plan.md): matching client
+  and Rust-server revisions, completed item/snapshot/latency work and backlog.
+- [NetID and ownership architecture](multiplayer-netid-architecture-notes.md):
+  current station/owner model and deferred logical-item/generation design.
+- [Historical desync investigation](multiplayer-desync-investigation-2026-05-17.md):
+  original evidence, superseded as implementation guidance by the network plan.
+
 ## Server
 
-To host server you can use Docker image or [build server](https://github.com/KranX/Vangers/wiki/Starting-up-server-compatible-with-web-&-native-versions)
-manually.
+The maintained multiplayer server is the separate Rust project
+[stalkerg/vangers-srv](https://github.com/stalkerg/vangers-srv).
+Use its `master` branch with the current Vangers client: both use network
+protocol `6`. Servers using older protocol versions are not compatible with
+the current client.
 
-To use docker image you need to pull `vangers-server` image and run it:
+The audited Rust baseline is `29fb0cb`, after merging
+`integration/open-prs-2026-04-10` into `master`. See the
+[network plan](multiplayer-network-refactor-plan.md) for exact source baselines.
+This describes source compatibility, not the revision deployed on a public host.
+
+The legacy C++ server (`vangers_server`) is no longer built or shipped in this
+repository, including CI artifacts and Flatpak bundles. Multiplayer client
+support is unchanged; hosting a game requires running the Rust server separately.
+
+To build and run the server with a current stable Rust toolchain:
 
 ```sh
-docker pull caiiiycuk/vangers-server:latest
-docker run -v host-dir:container-dir -e SERVER=<server-name> -e CER_FILE=<path-to-cer-file> -e KEY_FILE=<path-to-key-file> caiiiycuk/vangers-server:latest
+git clone --branch master https://github.com/stalkerg/vangers-srv.git
+cd vangers-srv
+cargo run --release --locked -p vangers-srv
 ```
 
-Vangers server requires cer/key files to host wss server.
-For example, if you want to host server on `vangers.net` and your cer/key files are in `/root/websockify/` file, then you run command will be:
+The default port is TCP `2197`; use `--port` or `VANGERS_PORT` to change it
+(for example, `cargo run --release --locked -p vangers-srv -- --port 2198`).
+See the server repository's
+[environment settings](https://github.com/stalkerg/vangers-srv/blob/master/.env.example),
+[Dockerfile](https://github.com/stalkerg/vangers-srv/blob/master/Dockerfile), and
+[Compose configuration](https://github.com/stalkerg/vangers-srv/blob/master/compose.yml)
+for deployment configuration.
 
-```
-docker run -d -v /root/websockify:/root/websockify -e SERVER=vangers.net -e CER_FILE=/root/websockify/vangers.net.cer -e KEY_FILE=/root/websockify/vangers.net.key --network host caiiiycuk/vangers-server
-```
-
-Explanation:
-* **-d**: means start in detached mode
-* **-v /root/websockify:/root/websockify**: map host directory `/root/websockify` to container directory `/root/websockify`
-* **-e SERVER=vangers.net**: should be name of domain you want to host server
-* **-e CERT_FILE=/root/websockify/vangers.net.cer**: full path to cer file
-* **-e KEY_FILE=/root/websockify/vangers.net.key**: full path to key file
-* **--network host**: use host networking (required to bind on domain)
+Native clients connect over TCP and do not need WSS or TLS certificates. The
+old Docker/websockify launcher has also been removed from this repository;
+WebSocket/WSS access for web clients requires a separate proxy and is not built
+into the Rust server.

@@ -3,7 +3,7 @@ set -eu
 
 program="$(basename "$0")"
 case "$program" in
-  vangers|vangers_server|surmap) ;;
+  vangers|surmap) ;;
   *) program="vangers" ;;
 esac
 
