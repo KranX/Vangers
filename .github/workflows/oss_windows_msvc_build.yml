@@ -47,6 +47,7 @@ jobs:
             throw "VCPKG_INSTALLATION_ROOT is not set on this runner."
           }
           "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" >> $env:GITHUB_ENV
+          New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
 
       - name: Show tool versions
         shell: pwsh
