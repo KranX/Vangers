@@ -42,6 +42,7 @@ CMakeSettings.json
 /build_*/
 /clunk
 /vangers
+/external/
 /artifacts-flatpak
 /flatpak-build
 /flatpak-repo

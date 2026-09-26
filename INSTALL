@@ -30,6 +30,24 @@ VANGERS: One for the Road
    $ ../build/src/vangers
 
 
+Windows (MSYS2) helper scripts
+
+The OSS Windows build can be reproduced locally with the scripts in
+packaging/msys2. They mirror the "OSS Windows 64bit Build" GitHub Actions job:
+they install the required MSYS2 packages, build the pinned clunk and toml11,
+then configure, build and test Vangers.
+
+   > powershell -ExecutionPolicy Bypass -File packaging\msys2\build-msys2.ps1
+   > powershell -ExecutionPolicy Bypass -File packaging\msys2\run-msys2.ps1 <game-dir>
+
+build-msys2.ps1 installs MSYS2 automatically (into C:\msys64 by default) when
+it is not present. Use -Msys2Root, -NoInstallMsys2, -BuildType, -ClunkRepo,
+-ClunkCommit, -SkipTests and -NoUpdate to override the defaults. The underlying
+build-msys2.sh can also be run directly from an MSYS2 UCRT64 shell.
+run-msys2.ps1 copies the built binaries and their MSYS2 runtime DLLs into
+<game-dir> and launches the game (add -NoRun to copy only).
+
+
 OSX prerequisites
 
 a. Install homebrew
