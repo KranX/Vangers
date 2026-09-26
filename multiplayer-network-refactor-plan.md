@@ -8,7 +8,7 @@ Original plan: 2026-05-18. Last source audit: 2026-09-26.
 | --- | --- | --- |
 | Current C++ client | Vangers `master`, `71e95b8` | **6** (`src/network.cpp`) |
 | Current Rust server | `stalkerg/vangers-srv`, `master`, `29fb0cb` (merged from `integration/open-prs-2026-04-10`) | **6** (`vangers-srv/src/client.rs`) |
-| Bundled legacy C++ server | Vangers `server/server.cpp` at `71e95b8` | **4** only |
+| Removed legacy C++ server (historical reference) | [Archived source at `71e95b8`](https://github.com/KranX/Vangers/blob/71e95b86cf61c4bdc3df5b1279cd09122d3a81da/server/server.cpp) | **4** only; not shipped |
 
 The matching implementation is the C++ client plus Rust **master** at the
 revision above. The Rust integration branch has been merged into `master`,
@@ -204,10 +204,11 @@ explicit item and snapshot paths, without reintroducing protocol-4 heuristics.
 ### 7. Repository/platform compatibility — explicit scope decision
 
 The Rust integration work is now merged into Rust `master` at `29fb0cb`.
-Use that matching protocol-6 server for tests and releases. The bundled C++
-server remains protocol-4-only; its removal and the switch to separate Rust
-hosting are proposed in [PR #682](https://github.com/KranX/Vangers/pull/682).
-This documentation update does not merge that PR or deploy a server.
+Use that matching protocol-6 server for tests and releases. The legacy C++
+server, its build target and deployment packaging have been removed from this
+repository. Host multiplayer with the separate Rust server; see the
+[README](README.md#server) for build/run and deployment configuration.
+Removing the bundled server does not change a deployed server automatically.
 
 ## Existing tests and remaining acceptance checks
 

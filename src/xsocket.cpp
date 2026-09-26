@@ -78,7 +78,6 @@ void XSocketFinit() {
 XSocket::XSocket() {
 	ErrHUsed = 1;
 	streamSocket = nullptr;
-	serverSocket = nullptr;
 	remotePort = 0;
 }
 
@@ -88,12 +87,10 @@ XSocket::~XSocket() {
 
 XSocket::XSocket(XSocket &&donor) noexcept {
 	streamSocket = donor.streamSocket;
-	serverSocket = donor.serverSocket;
 	ErrHUsed = donor.ErrHUsed;
 	remoteAddress = std::move(donor.remoteAddress);
 	remotePort = donor.remotePort;
 	donor.streamSocket = nullptr;
-	donor.serverSocket = nullptr;
 	donor.remotePort = 0;
 }
 
@@ -102,12 +99,10 @@ XSocket &XSocket::operator=(XSocket &&donor) noexcept {
 		return *this;
 	close();
 	streamSocket = donor.streamSocket;
-	serverSocket = donor.serverSocket;
 	ErrHUsed = donor.ErrHUsed;
 	remoteAddress = std::move(donor.remoteAddress);
 	remotePort = donor.remotePort;
 	donor.streamSocket = nullptr;
-	donor.serverSocket = nullptr;
 	donor.remotePort = 0;
 	return *this;
 }
@@ -168,44 +163,8 @@ void XSocket::close() {
 		NET_DestroyStreamSocket(streamSocket);
 		streamSocket = nullptr;
 	}
-	if (serverSocket) {
-		NET_DestroyServer(serverSocket);
-		serverSocket = nullptr;
-	}
 	remoteAddress.clear();
 	remotePort = 0;
-}
-
-int XSocket::listen(int port) {
-	close();
-	if (port <= 0 || port > 65535) {
-		XSOCKET_ERROR("Invalid TCP listen port", "");
-		return 0;
-	}
-	serverSocket = NET_CreateServer(nullptr, static_cast<Uint16>(port), 0);
-	if (!serverSocket) {
-		XSOCKET_ERROR("TCP listen failed", SDL_GetError());
-		return 0;
-	}
-	remotePort = port;
-	return 1;
-}
-
-XSocket XSocket::accept() {
-	XSocket xsock;
-	if (!serverSocket)
-		return xsock;
-	if (!NET_AcceptClient(serverSocket, &xsock.streamSocket)) {
-		XSOCKET_ERROR("TCP accept failed", SDL_GetError());
-		return xsock;
-	}
-	if (!xsock.streamSocket)
-		return xsock;
-	xsock.ErrHUsed = ErrHUsed;
-	xsock.remotePort = remotePort;
-	xsock.update_remote_address();
-
-	return xsock;
 }
 
 int XSocket::send(const char *buffer, int size) {
@@ -268,16 +227,4 @@ int XSocket::receive(char *buffer, int size_of_buffer, int ms_time) {
 		return 0;
 	}
 	return status;
-}
-
-void XSocket::update_remote_address() {
-	if (!streamSocket)
-		return;
-	NET_Address *address = NET_GetStreamSocketAddress(streamSocket);
-	if (!address)
-		return;
-	const char *addressString = NET_GetAddressString(address);
-	if (addressString)
-		remoteAddress = addressString;
-	NET_UnrefAddress(address);
 }

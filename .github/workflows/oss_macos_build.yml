@@ -132,7 +132,6 @@ jobs:
       - name: Show built binaries
         run: |
           file build/src/vangers
-          file build/server/vangers_server
           file build/surmap/surmap
           otool -L build/src/vangers
 
@@ -181,9 +180,8 @@ jobs:
 
           codesign --force --deep --sign - "$APP"
 
-          cp build/server/vangers_server artifacts/bin/
           cp build/surmap/surmap artifacts/bin/
-          chmod +x artifacts/bin/vangers_server artifacts/bin/surmap
+          chmod +x artifacts/bin/surmap
 
           otool -L "$APP/Contents/MacOS/Vangers"
 

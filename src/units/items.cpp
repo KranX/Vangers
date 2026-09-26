@@ -46,7 +46,7 @@
 extern int RAM16;
 extern iGameMap *curGMap;
 extern uchar *FireColorTable;
-extern int frame; // kdsplus.cpp
+extern int frame;
 
 const char DEBRIS_LIFE_TIME = 100;
 

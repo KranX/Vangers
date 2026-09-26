@@ -123,7 +123,6 @@ jobs:
         run: |
           mkdir -p artifacts
           cp build/src/vangers.exe artifacts/
-          cp build/server/vangers_server.exe artifacts/
           cp build/surmap/surmap.exe artifacts/
 
           for exe in artifacts/*.exe; do
