@@ -50,12 +50,13 @@ them, but subsequent changes made by the new build are saved only to
 ## Gamepad input
 
 SDL3-compatible gamepads are detected and mapped automatically, including
-hot-plugging. The left stick controls steering and throttle by default. The
-right stick moves the UI cursor and, during gameplay, controls side impulses
-and RIG movement. Face buttons operate actions, inventory, the handbrake, and
-the jump spring; pressing the left stick activates Vector. The triggers provide
-acceleration and fire; the D-pad fires individual weapon slots. In menus, the
-D-pad follows the existing arrow-key navigation.
+hot-plugging. With the current default bindings, the left stick steers; the
+right and left triggers control forward and reverse throttle. The right stick
+moves the UI cursor and, during gameplay, controls side impulses and RIG
+movement. Face buttons provide actions, the handbrake, the jump spring and
+fire-all; pressing the left stick activates Vector. D-pad up opens inventory,
+while right/down/left fire weapon slots 2/3/4. In menus, the D-pad navigates
+focus instead. These defaults can be overridden in user settings.
 Gamepad buttons can be assigned on the regular controls screen or changed in
 `[input.sdl_gamepad.bindings]` in `settings.toml`. Stick axes and trigger
 bindings can be changed in
@@ -68,6 +69,18 @@ The open-source build does not call Steam Input directly. It keeps the active
 `SDL_Gamepad`, so a Steam build can associate the same SDL-managed device with
 Steam Input without introducing a second device manager.
 
+## Development plans and status
+
+The plans distinguish implemented features, intentional deferrals and runtime
+checks still requiring recorded results:
+
+- [Multiplayer refactor](multiplayer-network-refactor-plan.md): matching client
+  and Rust-server revisions, completed item/snapshot/latency work and backlog.
+- [NetID and ownership architecture](multiplayer-netid-architecture-notes.md):
+  current station/owner model and deferred logical-item/generation design.
+- [Historical desync investigation](multiplayer-desync-investigation-2026-05-17.md):
+  original evidence, superseded as implementation guidance by the network plan.
+
 ## Server
 
 The maintained multiplayer server is the separate Rust project
@@ -75,6 +88,11 @@ The maintained multiplayer server is the separate Rust project
 Use its `master` branch with the current Vangers client: both use network
 protocol `6`. Servers using older protocol versions are not compatible with
 the current client.
+
+The audited Rust baseline is `29fb0cb`, after merging
+`integration/open-prs-2026-04-10` into `master`. See the
+[network plan](multiplayer-network-refactor-plan.md) for exact source baselines.
+This describes source compatibility, not the revision deployed on a public host.
 
 The legacy C++ server (`vangers_server`) is no longer built or shipped in this
 repository, including CI artifacts and Flatpak bundles. Multiplayer client

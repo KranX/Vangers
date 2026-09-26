@@ -1,426 +1,242 @@
-# Multiplayer network refactor plan
+# Multiplayer network refactor: status and remaining work
 
-Date: 2026-05-18
+Original plan: 2026-05-18. Last source audit: 2026-09-26.
 
-This is a living implementation plan for the current protocol-5 multiplayer
-refactor. All currently identified wire/protocol-breaking pieces are intended
-to be completed inside protocol `5`, so testers do not have to retest several
-intermediate incompatible versions.
+## Audited baselines and compatibility
 
-The goal is to make multiplayer easier to support and debug. We should not
-add more compatibility layers, packet guessing, or special cases around the
-old `DELETE_OBJECT + CREATE_OBJECT` semantics unless we are doing a temporary
-hotfix.
+| Component | Inspected revision | Handshake protocol |
+| --- | --- | --- |
+| Current C++ client | Vangers `master`, `71e95b8` | **6** (`src/network.cpp`) |
+| Current Rust server | `stalkerg/vangers-srv`, `master`, `29fb0cb` (merged from `integration/open-prs-2026-04-10`) | **6** (`vangers-srv/src/client.rs`) |
+| Removed legacy C++ server (historical reference) | [Archived source at `71e95b8`](https://github.com/KranX/Vangers/blob/71e95b86cf61c4bdc3df5b1279cd09122d3a81da/server/server.cpp) | **4** only; not shipped |
 
-## Main problem
+The matching implementation is the C++ client plus Rust **master** at the
+revision above. The Rust integration branch has been merged into `master`,
+including the protocol-5 item/snapshot work (`071f278`) and the later protocol-6
+handshake change (`29fb0cb`).
 
-The old network protocol exposes too much of the local client object model.
+Rust source paths below are relative to that audited revision. To inspect the
+exact baseline without switching branches:
 
-For example, item pickup/drop is encoded as low-level object destruction and
-creation:
-
-- world item: `NID_STUFF`;
-- inventory/device item: `NID_DEVICE`;
-- pickup/drop is represented as a paired `DELETE_OBJECT` and `CREATE_OBJECT`.
-
-That makes the server guess intent from object lifecycle packets. This is why
-we get fragile cases like:
-
-- another player tries to delete a world `STUFF` while picking it up;
-- the Rust server rejects it as a non-owner delete;
-- then it accepts the new `DEVICE`;
-- now the same logical item exists in conflicting states.
-
-The protocol should describe gameplay intent, not local implementation details.
-
-## Refactor principles
-
-1. **Server owns multiplayer truth.**
-   Clients may request actions, but the server validates and commits state.
-
-2. **One gameplay action = one network command.**
-   Pickup, drop, slot change, world switch, and player equipment change should
-   not be reconstructed from several low-level object events.
-
-3. **No hidden semantic meaning in generic packets.**
-   `DELETE_OBJECT` should mean object deletion, not “maybe pickup
-   confirmation if body byte is 1”.
-
-4. **Prefer explicit snapshots over ordering assumptions.**
-   After world switch/reconnect the client should receive a complete state
-   snapshot for that world instead of relying on lucky ordering of later
-   updates.
-
-5. **Break protocol compatibility cleanly.**
-   If we change semantics, bump protocol version and reject old clients with a
-   clear error. Do not keep multiple old/new item-transfer paths alive unless
-   absolutely necessary for a short transition.
-
-6. **Keep the number of new concepts small.**
-   Do not introduce complicated reliability classes, ownership exceptions, or
-   per-object hacks if a simpler authoritative state model solves the issue.
-
-## Protocol version strategy
-
-Protocol `5` is the current compatibility break for this refactor.
-
-Do not bump the protocol again while finishing the remaining protocol-5 pieces:
-
-- end-to-end item transfer;
-- deterministic world-entry snapshot boundary;
-- client/server handling required by those packet ids.
-
-Only bump again if we introduce another incompatible packet format after
-protocol `5` has already been handed to testers as a stable baseline.
-
-Reason: testers cannot continuously retest every intermediate bump. We should
-finish the coherent protocol-5 change set first, then test that as one
-multiplayer compatibility boundary.
-
-## Target model
-
-### Logical network items
-
-Long-term, a networked item should be represented by one logical item identity:
-
-```text
-item_id
-data_id
-state = InWorld | InInventory | Deleted
-owner_player_id / owner_vanger_id
-slot
-world
-position
+```sh
+git -C ../vangers-srv show 29fb0cb:vangers-srv/src/server/callback/item_transfer.rs
 ```
 
-`NID_STUFF` and `NID_DEVICE` can remain client-side/rendering/storage forms,
-but they should not be the authoritative multiplayer identity.
+The initial source audit used locally available Git refs. The integration
+branch was subsequently fast-forwarded into Rust `master` and pushed, with
+`cargo test --workspace --locked` passing 112 tests at `29fb0cb`.
+No deployed server was inspected or changed. **Implemented** means present in
+source; it is not an end-to-end multiplayer sign-off.
 
-The server should not need to infer that `0x060B004F` and `0x0601004F` are two
-faces of the same item by decoding object id type bits.
+## What changed from the original plan
 
-### Item commands
+The original protocol-4 pickup/drop path represented one gameplay action as two
+independent requests: `DELETE_OBJECT(STUFF)` followed by `CREATE_OBJECT(DEVICE)`,
+or the reverse on drop. Ownership rejection or stale events could leave both
+faces of the same item alive.
 
-Replace low-level item transfer with explicit commands.
+Protocol **5** introduced explicit item transfers, authoritative item events and
+world-entry snapshot boundaries. Those mechanisms are implemented in the client
+and Rust `master`.
 
-For protocol `5` this is implemented as one generic transfer request:
+Protocol **6** subsequently defined analog steering/throttle semantics in
+previously unused bits of the existing 16-bit control field for gamepad input.
+Its packet size is unchanged, but older clients must not interpret the new bits
+as the old controls. See [PR #678](https://github.com/KranX/Vangers/pull/678).
+
+The old instruction to "finish everything inside protocol 5" is historical,
+not a reason to revert the current handshake. Keep compatible cleanup on protocol
+6; assess any future incompatible wire/semantic change explicitly rather than
+mixing old and new peers through packet guessing.
+
+## Implemented item-state refactor
+
+| Feature | Current implementation |
+| --- | --- |
+| Explicit pickup/drop | `src/units/items.cpp` calls `begin_item_transfer()` in `src/network.cpp`; packet IDs are in `src/multiplayer.h` and Rust `src/protocol.rs`. |
+| Atomic server transition | Rust `server/callback/item_transfer.rs` validates packet/type/paired-ID/linked-ID/world constraints, permits same-world pickup from another creator and requires inventory ownership for drop. Validation precedes replacement in `game.vanjects`. |
+| Explicit state/removal | Accepted transfers and item create/update/snapshot entries use `ITEM_STATE`; actual item deletion uses `ITEM_REMOVED`. Client dispatch is in `src/network.cpp` and `src/units/hobj.cpp`. |
+| Old split-transfer rejection | Rust `delete_object.rs` rejects the old item-transfer delete marker; `create_object.rs` rejects an item create when the paired face already exists. Ordinary non-item lifecycle packets remain supported. |
+| Ownership on leave | Rust `leave_world.rs` distinguishes current owner from creator/station, preserving items transferred to someone else and dropped world items. Tests cover these cases. |
+
+Current wire shapes remain:
 
 ```text
 ITEM_TRANSFER(kind, old_id, old_time, delete_marker, new_item_object)
+ITEM_STATE(item_state, previous_id, full_update_object_data)
+ITEM_REMOVED(item_id, paired_id, reason)
 ```
 
-where `kind` is `Pickup` or `Drop`.  This covers the currently observed
-protocol-breaking item bug: a single gameplay transfer must no longer be split
-into independent `DELETE_OBJECT` and `CREATE_OBJECT` lifecycle packets.
+`kind` distinguishes pickup (`STUFF -> DEVICE`) from drop (`DEVICE -> STUFF`).
+Server validation is authoritative for stored state; do not restore non-owner
+generic deletion as a pickup workaround. The successful transfer is relayed to
+other clients in that world. Server-side race tests are not a substitute for
+checking the losing client's local recovery in a real two-player session.
 
-If we later need explicit item slot moves or item use requests, they should
-reuse this state model or add new requests before protocol `5` is treated as a
-stable external baseline. They are not part of the current observed bug because
-the current slot/use paths do not require replacing the old split
-pickup/drop lifecycle.
+## Implemented world-entry snapshot
 
-The semantics must stay direct:
-
-- client requests an action;
-- server validates current state;
-- server applies the state transition atomically;
-- server broadcasts the resulting item state.
-
-### Item events from server
-
-Server sends state, not guessed lifecycle:
+Rust `server/callback/set_world.rs` constructs the following sequence for the
+joining client:
 
 ```text
-ITEM_STATE(item_id, full state)
-ITEM_REMOVED(item_id, reason)
-```
-
-For the first implementation we can still translate server state into existing
-client object creation/removal internally, but that translation should happen
-on the client side from explicit item state, not by receiving arbitrary
-`DELETE_OBJECT` from another client.
-
-## World switch / reconnect
-
-World entry should be deterministic:
-
-1. client sends `SET_WORLD`;
-2. server updates player world;
-3. server replies `SET_WORLD_RESPONSE`;
-4. server sends one `WORLD_SNAPSHOT`;
-5. only after snapshot completion does the client apply live updates.
-
-`WORLD_SNAPSHOT` should contain:
-
-- players in the world;
-- their vangers;
-- current equipment/slots;
-- world items;
-- relevant global objects;
-- current object counters/state needed to avoid duplicate ids.
-
-This is simpler than trying to repair missing remote weapons or invisible
-players after the fact.
-
-## Remote player equipment and shooting
-
-Remote weapons should not depend on incidental inventory/object ordering.
-
-For protocol `5` this is handled through the deterministic world snapshot
-rather than by introducing another packet family:
-
-- `PLAYERS_DATA` describes remote players;
-- `VANGER` snapshot entries create the remote mechoses first;
-- `SLOT` and inventory `DEVICE` snapshot entries follow after the vanger;
-- active `SHELL` entries can be replayed after equipment state exists.
-
-This gives the client a stable construction order without inventing a separate
-equipment protocol before we know that the existing object representation is
-insufficient. If later testing proves that live weapon/shot state still needs a
-dedicated event, that should be designed as an extension of the same snapshot
-state model, not as another hidden ordering dependency.
-
-## Separate fix for missing remote weapons/shots
-
-The “remote player has no visible weapons / shooting is not visible” bug should
-be handled by the same protocol break, but as a separate piece of work from item
-pickup/drop.
-
-The right fix is `WORLD_SNAPSHOT`.
-
-After `SET_WORLD`, the server should send a complete snapshot for the target
-world before the client starts applying live updates:
-
-- players data;
-- `VANGER` objects;
-- `SLOT` objects;
-- inventory `DEVICE` objects;
-- active `SHELL` objects if they must survive world entry timing;
-- world `STUFF`.
-
-Only after the snapshot is complete should normal live `CREATE_OBJECT`,
-`UPDATE_OBJECT`, `DELETE_OBJECT`, `HIDE_OBJECT`, shot, and slot updates be
-processed.
-
-This removes the fragile window where a client receives slot/device/update
-events for a remote player, but does not yet have the local `VangerUnit` needed
-to attach those events to something visible.
-
-Important: this should not become another pile of per-packet exceptions. The
-snapshot is a boundary:
-
-```text
-SET_WORLD
 SET_WORLD_RESPONSE
 WORLD_SNAPSHOT_BEGIN
-WORLD_SNAPSHOT_ENTRY...
+TOTAL_LIST_OF_PLAYERS_DATA
+VANGER -> SLOT -> DEVICE -> SHELL -> STUFF
 WORLD_SNAPSHOT_END
-live updates
 ```
 
-During snapshot loading, live updates can be queued or ignored according to a
-simple rule, but they should not be mixed with partially constructed world
-state.
+Objects are sorted by class and ID. Remote player/equipment/shell objects and
+world `STUFF` are included; the joiner's own player objects and objects from other
+worlds are excluded. Item entries use `ITEM_STATE`; other entries use
+`UPDATE_OBJECT`. Snapshot packets use the ordinary reliable send path, not live
+VANGER coalescing.
 
-## What to remove or stop relying on
+The client has explicit `wait_begin`, `loading` and idle states in
+`src/network.cpp`, and ignores stale relevant packets before snapshot begin.
+This replaces the old reliance on incidental later updates to reconstruct the
+joining client's world. It does **not** implement a matching ordered spawn bundle
+for every client already in the world, and it does not prove queue-saturation
+ordering under all conditions.
 
-These old semantics should be phased out for multiplayer gameplay state:
+`RESTORE_CONNECTION` also has a server implementation with timed retention and
+client-ID rebinding. It is a separate path: its presence alone does not prove
+that every reconnect triggers the complete world-entry reconstruction above.
 
-- non-owner `DELETE_OBJECT` as item pickup;
-- paired `STUFF`/`DEVICE` object ids as authoritative item identity;
-- object ownership inferred only from `NetOwner` inside client-provided body;
-- world entry depending on later `UPDATE_OBJECT` to create missing vangers;
-- slot state buffered indefinitely waiting for missing local objects;
-- server accepting local client object lifecycle as truth without semantic
-  validation.
+## Latency/backlog work already implemented
 
-## Suggested implementation phases
+The audited Rust revision also contains
+[`NETWORK_LATENCY_PLAN_2026_05_17.md`](https://github.com/stalkerg/vangers-srv/blob/29fb0cb12317c44d820b82ffa0f3188ef8eb3e03/vangers-srv/docs/NETWORK_LATENCY_PLAN_2026_05_17.md).
+Some of that document's examples describe the pre-fix state. Current source has:
 
-### Current protocol-5 status
+- **Client:** one outstanding `SERVER_TIME_QUERY`, with timeout recovery;
+  VANGER send interval bounded to **50..150 ms**, instead of unbounded
+  `average_lag` (`src/units/mechos.cpp`).
+- **Rust transport:** a latest-only `SERVER_TIME` slot and a per-recipient,
+  per-object latest-update queue for live **VANGER** updates (`src/client.rs`).
+- **Reliable default:** ordinary `UPDATE_OBJECT` sends, snapshot entries and
+  lifecycle/item/control/chat events are not automatically coalesced. Only the
+  explicitly selected live VANGER path uses `send_realtime_update()`.
+- **Lifecycle cleanup:** `DELETE_OBJECT` / `HIDE_OBJECT` remove queued realtime
+  updates for the same object.
+- **Writer/backlog diagnostics:** separate queue statistics and scheduling of
+  time replies, reliable packets and realtime updates.
+- **World departure:** the old burst of HIDE packets to the leaving client was
+  removed; there is a dedicated regression test in `leave_world.rs`.
+- **SDL3 client transport:** pending-write backpressure is retained, with a
+  separate synchronous-send path (`src/xsocket.cpp`).
 
-All protocol-breaking pieces that were already identified for this refactor are
-implemented in the current client/server patch. The remaining work should be
-internal cleanup, better tests, or snapshot-content refinements that reuse the
-same protocol-5 packet ids.
+Do not extend latest-only behavior to inventory, slots or other object classes
+without evidence that their intermediate states are replaceable. No fixed
+20/30/60 Hz server flush schedule is established by the current writer.
 
-Implemented:
+## Remaining work
 
-- protocol was bumped to `5`;
-- old clients are rejected at handshake instead of being mixed with protocol-5
-  clients;
-- client sends explicit `ITEM_TRANSFER` for pickup/drop instead of sending
-  `DELETE_OBJECT + CREATE_OBJECT` as two independent requests;
-- Rust server validates `ITEM_TRANSFER` and commits server-side `vanjects`
-  atomically: either old object is replaced by new object, or nothing changes;
-- server validates that old/new ids are paired `STUFF`/`DEVICE` forms of the
-  same item identity: same station, same world, same counter, different object
-  type;
-- accepted transfer is broadcast as explicit `ITEM_STATE`;
-- generic item create/update is also broadcast as `ITEM_STATE`, not as
-  `UPDATE_OBJECT`;
-- generic item delete is broadcast as explicit `ITEM_REMOVED`, not as
-  `DELETE_OBJECT`;
-- server rejects old protocol-4 style item-transfer `DELETE_OBJECT` marker
-  (`body[0] == 1`) instead of treating it as hidden pickup semantics;
-- server rejects item `CREATE_OBJECT` if the paired `STUFF`/`DEVICE` form is
-  already present, so old split transfer cannot leave both faces alive;
-- client applies `ITEM_STATE` through one explicit item-state handler and marks
-  the previous paired object as waiting for conversion before applying the new
-  state;
-- client applies `ITEM_REMOVED` through one explicit item-removal handler;
-- Rust server sends a world snapshot after `SET_WORLD`;
-- snapshot includes remote `VANGER`, `SLOT`, `DEVICE`, `SHELL`, and world
-  `STUFF`, ordered as `VANGER -> SLOT -> DEVICE -> SHELL -> STUFF`;
-- snapshot item entries use `ITEM_STATE`, so world-entry item state and live
-  item state have the same semantics;
-- client treats `WORLD_SNAPSHOT_BEGIN/END` as a real loading boundary and
-  ignores stale pre-snapshot object/player/item updates.
+### 1. Ordered live join for existing world clients — open
 
-This is not a full separate logical-item database yet: internally the server
-still stores the currently active item face as a `Vanject`, and the paired id is
-decoded from the item body. That is acceptable for protocol `5` because the
-wire format no longer exposes the old split lifecycle semantics. A later server
-data-structure cleanup can keep the same `ITEM_TRANSFER`, `ITEM_STATE`, and
-`ITEM_REMOVED` packets.
+`set_world.rs` sends the full snapshot to the **joining** client. Existing clients
+receive world/status notifications and ordinary subsequent object traffic; there
+is no equivalent explicit ordered bundle of the entering player's complete
+state. The historical symptom is `ignored_missing_vanger` / missing remote
+weapons or shots.
 
-### Phase 1: protocol break and explicit item transfer
-
-Status: **implemented**.
-
-- Bump protocol version.
-- Reject old clients clearly.
-- Add explicit `ITEM_TRANSFER` request packet.
-- Client sends pickup/drop as one request.
-- Server validates and commits pickup/drop atomically in server state.
-- Keep old generic object packets only for objects that are still truly
-  generic.
-
-This removes the worst ambiguity on the request path: the server no longer has
-to guess whether a non-owner `DELETE_OBJECT` is a real delete or an item pickup.
-
-### Phase 2: authoritative item state packets
-
-Status: **implemented at the protocol level**.
-
-Server-to-client item state is now explicit:
+Design and test an ordered sequence for existing recipients:
 
 ```text
-ITEM_STATE {
-    item_state,
-    previous_id,
-    full_update_object_data
-}
-
-ITEM_REMOVED {
-    item_id,
-    paired_id,
-    reason
-}
+player data -> VANGER -> SLOT -> DEVICE/ITEM_STATE -> SHELL if needed
+then replaceable live updates
 ```
 
-Why this matters:
+Reuse existing packets where sufficient. Do not patch this with indefinitely
+buffered per-object exceptions or assume the joiner's snapshot solves both sides.
 
-- pickup/drop no longer creates a window where clients see only `DELETE_OBJECT`
-  or only `CREATE_OBJECT`;
-- world item, inventory item, and snapshot item use the same server-authored
-  state event;
-- a true item removal is distinguishable from a transfer;
-- old `DELETE_OBJECT body[0] == 1` semantics are rejected, not emulated.
+### 2. Reliable ordering and load validation — open verification/hardening
 
-The remaining “logical item table” idea is now an internal server refactor, not
-a necessary protocol break. If we later replace `HashMap<i32, Vanject>` with a
-dedicated item table, it can still emit the same `ITEM_STATE` / `ITEM_REMOVED`
-events.
+Rust `Client::send_reliable()` still spawns an asynchronous fallback send when the
+bounded queue is full. A test checks that a full queue does not silently discard
+a reliable packet; that is not a proof of ordering across multiple concurrent
+fallbacks, snapshots and realtime traffic.
 
-### Phase 3: deterministic world snapshot
+Stress-test world switch/reconnect and slow recipients, verify snapshot
+begin/entries/end ordering, and decide whether queue/backpressure handling needs
+further hardening. Measure latency before changing writer cadence or expanding
+coalescing. Historical solo logs are not sufficient multiplayer evidence.
 
-Status: **implemented**.
+### 3. Missing static type-14 updates — open investigation
 
-- Server sends `WORLD_SNAPSHOT_BEGIN`, ordered snapshot entries, and
-  `WORLD_SNAPSHOT_END` after `SET_WORLD`.
-- Snapshot includes players data and the object types needed to reconstruct
-  remote vangers, their slots/equipment, active shells, and visible items.
-- Snapshot item entries use `ITEM_STATE`.
-- Client enters `wait_begin` state when requesting `SET_WORLD`.
-- Client ignores stale object/player/item packets before
-  `WORLD_SNAPSHOT_BEGIN`.
-- Client applies snapshot entries while `loading`.
-- Client returns to normal live-update processing only after
-  `WORLD_SNAPSHOT_END`.
+In Rust `update_object.rs`, missing objects still follow the generic
+`ignored_missing` / `VanjectNotFound` path. No dedicated resolution of the
+historical type-14 cases was found. Decide from gameplay/log evidence whether
+these objects need creation/replication or whether the missing updates are
+expected and should be downgraded/rate-limited. Do not confuse this with the
+already implemented preservation of existing static objects on world departure.
 
-This removes the fragile window where a client receives slot/device/update
-events for a remote player before it has the local `VangerUnit` needed to attach
-those events.
+### 4. Per-client logs and diagnostic cleanup — open
 
-### Phase 4: obsolete protocol-4 compatibility removal
+The C++ client still opens `network-client.log` with mode `w` in
+`src/network.cpp`. Multiple processes in one data directory can overwrite/mix
+that file. Add a process/connection identity to the filename, then reduce
+high-volume temporary diagnostics once multi-client validation is reliable.
+Server visibility and logging tuning remain evidence-driven follow-ups.
 
-Status: **implemented for item transfer semantics**.
+### 5. Stable item/owner identity — deferred architecture
 
-- Old pickup/drop through split `DELETE_OBJECT + CREATE_OBJECT` is no longer a
-  valid protocol-5 item transfer path.
-- Server rejects protocol-4 item-transfer delete markers.
-- Server rejects paired item creates that would resurrect the old split
-  transfer bug.
-- Non-item `CREATE_OBJECT`, `UPDATE_OBJECT`, `DELETE_OBJECT`, and `HIDE_OBJECT`
-  remain available for generic object lifecycle.
+Rust still stores the active legacy item face in `HashMap<i32, Vanject>` and
+uses `player_bind_id` for owner state. There is no separate logical-item table
+or generation-based identity model in the audited Rust revision.
 
-### Remaining non-protocol-breaking work
+Station-reuse offset calculation **does exist** in `attach_to_game.rs`, scanning
+live `game.vanjects` by creator station and type. What remains is targeted
+validation of reconnect/reuse, transferred items and counter limits, not writing
+that mechanism from scratch. See the
+[NetID architecture notes](multiplayer-netid-architecture-notes.md).
 
-The following can be done after multiplayer tests without another protocol
-bump:
+A future internal logical-item table may preserve the current packets; changing
+client-visible identity/ownership semantics needs separate protocol design.
 
-- add a reliable live-join replay for players that are already in the world
-  when another player enters that world. The `SET_WORLD` snapshot currently
-  protects the joining client, but logs from 2026-05-19 still show a short
-  window on existing clients where `UPDATE_OBJECT VANGER` can arrive before the
-  local remote `VangerUnit` is fully available (`ignored_missing_vanger`). This
-  should be fixed with a small ordered spawn/snapshot bundle to the existing
-  world clients:
+### 6. Snapshot content and client receive simplification — conditional follow-up
 
-  ```text
-  PLAYERS_DATA for the entering player
-  VANGER state
-  SLOT state
-  DEVICE/ITEM_STATE state
-  SHELL state if needed
-  then live UPDATE_OBJECT
-  ```
+Extend snapshot contents only if tests reveal a missing class. The current
+snapshot intentionally covers the five classes listed above, not every possible
+world object. Simplify obsolete client receive assumptions after validating the
+explicit item and snapshot paths, without reintroducing protocol-4 heuristics.
 
-  The important point is semantic ordering, not a new packet family. Reuse
-  existing protocol-5 packets and make the server send them reliably before the
-  entering player's replaceable realtime updates can overtake them. This should
-  address the remaining "remote player exists but weapons/shot visuals are
-  missing" class of bugs without another protocol bump;
-- investigate `UPDATE_OBJECT` for missing static type-14 objects. The
-  2026-05-19 server log contains several harmless-but-noisy
-  `ignored_missing` updates such as `0x880E02E4`, all decoded as
-  `static_object=true`, `type_id=14`. These are not item-transfer objects and
-  did not break the session, but the server currently reports them as errors.
-  We need to decide whether type-14 objects should be accepted/created as
-  replicated static world state, or whether missing updates for that class are
-  expected and should be downgraded to an ignored/rate-limited diagnostic;
-- make client diagnostic logs unambiguous when several local clients are run
-  from the same `data/` directory. The 2026-05-19 local test had `station=1`
-  and `station=2` writing into the same `network-client.log`, which is useful
-  enough for rough analysis but makes exact ordering harder. A future
-  diagnostic-only cleanup can include the process id, connection id, or final
-  station id in the file name;
-- improve Rust server internals by replacing paired-id decoding with a real
-  logical item table while keeping the same wire packets;
-- extend snapshot contents if logs show a missing object class, as long as
-  existing `ITEM_STATE` / `UPDATE_OBJECT` snapshot entries are enough;
-- simplify client receive paths now that item state and snapshot boundaries are
-  explicit;
-- remove temporary high-volume diagnostics after protocol-5 multiplayer is
-  stable;
-- tune logging and server visibility rules.
+### 7. Repository/platform compatibility — explicit scope decision
 
-## Success criteria
+The Rust integration work is now merged into Rust `master` at `29fb0cb`.
+Use that matching protocol-6 server for tests and releases. The legacy C++
+server, its build target and deployment packaging have been removed from this
+repository. Host multiplayer with the separate Rust server; see the
+[README](README.md#server) for build/run and deployment configuration.
+Removing the bundled server does not change a deployed server automatically.
 
-- Item pickup/drop cannot leave both `STUFF` and `DEVICE` versions alive.
-- Two players racing for one item produce one winner and one clear rejection.
-- Another player’s trunk cannot lose items because the owner died or changed
-  world.
-- World switch/reconnect always reconstructs visible players and their weapons.
-- Server logs describe gameplay decisions, not only low-level packet effects.
-- The amount of special-case networking code decreases after the refactor.
+## Existing tests and remaining acceptance checks
+
+The Rust server source includes tests for:
+
+- current handshake acceptance and prior-version rejection;
+- atomic non-owner world pickup, single-winner pickup races, drop ownership,
+  wrong-world and malformed pair rejection without state mutation;
+- explicit item packet bodies, paired-create rejection and legacy-marker rejection;
+- snapshot classes, order and filtering;
+- transferred inventory, dropped items and static objects surviving departure;
+- restore-connection success/failure;
+- reliable/default delivery, latest-only replacement, lifecycle cancellation,
+  writer priority and full-queue fallback.
+
+The client has eight CTest targets, including socket, event, settings and analog
+control tests. These are implementation evidence, not newly executed results.
+
+Before calling the network work fully validated, record a matching client/server
+revision pair and multi-client results for:
+
+- [ ] Pickup/drop races and the losing client's recovery; no duplicate item faces.
+- [ ] Transfers followed by owner death, world departure and station reuse.
+- [ ] World switching, late joining on both sides, weapons/shots and reconnect.
+- [ ] Mixed keyboard/gamepad analog input under protocol 6.
+- [ ] Slow-recipient/queue-saturation behavior, bounded update age and reliable order.
+- [ ] Snapshot content and diagnostics for missing object classes.
+
+The 2026-05-17 [desync investigation](multiplayer-desync-investigation-2026-05-17.md)
+is retained as historical evidence, not as instructions to restore the old
+split item-transfer protocol.
