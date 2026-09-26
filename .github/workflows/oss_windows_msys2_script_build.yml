@@ -4,6 +4,8 @@ name: OSS Windows MSYS2 (script) Build
 # installs MSYS2 with the official installer when it is not present, then
 # installs the packages, builds the pinned clunk and toml11 and builds/tests
 # Vangers. run-msys2.ps1 stages the runtime (executables + DLLs).
+# MSYS2 is installed into a fresh directory under RUNNER_TEMP so the
+# auto-install path is exercised instead of the preinstalled C:\msys64.
 
 on:
   push:
@@ -30,6 +32,7 @@ jobs:
 
     env:
       BUILD_TYPE: RelWithDebInfo
+      MSYS2_ROOT: ${{ runner.temp }}\msys64
 
     steps:
       - name: Checkout
@@ -38,13 +41,13 @@ jobs:
       - name: Build with the MSYS2 scripts
         shell: pwsh
         run: |
-          ./packaging/msys2/build-msys2.ps1 -BuildType $env:BUILD_TYPE
+          ./packaging/msys2/build-msys2.ps1 -Msys2Root $env:MSYS2_ROOT -BuildType $env:BUILD_TYPE
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Stage runtime
         shell: pwsh
         run: |
-          ./packaging/msys2/run-msys2.ps1 artifacts -NoRun
+          ./packaging/msys2/run-msys2.ps1 artifacts -NoRun -Msys2Root $env:MSYS2_ROOT
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Upload runtime artifact
