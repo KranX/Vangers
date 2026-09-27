@@ -43,7 +43,7 @@ param(
     [string]$BuildType = 'RelWithDebInfo',
     [string]$BuildDir = 'build',
     [string]$ClunkRepo = 'https://github.com/stalkerg/clunk.git',
-    [string]$ClunkCommit = '3fa1e999ecc0ddb2f8eb550ca8203c7229127196',
+    [string]$ClunkCommit = 'b52d1fda2237ef9ec81d09664ad2bb3aadd0de68',
     [string]$Toml11Version = '4.4.0',
     [switch]$SkipTests,
     [switch]$NoUpdate
