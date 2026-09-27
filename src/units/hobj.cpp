@@ -1172,7 +1172,7 @@ void GameObjectDispatcher::Quant(void) {
 	else
 		AdvancedView = 1;
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 //	DBGCHECK;
 #endif
 
@@ -1208,7 +1208,7 @@ void GameObjectDispatcher::Quant(void) {
 		};
 	}
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 //	DBGCHECK;
 #endif
 
@@ -1228,17 +1228,17 @@ void GameObjectDispatcher::Quant(void) {
 
 	MapD.Quant();
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 //	DBGCHECK;
 #endif
 	ActD.Quant();
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 //	DBGCHECK;
 #endif
 	ItemD.Quant();
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 //	DBGCHECK;
 #endif
 	InsectD.Quant();
@@ -1255,14 +1255,14 @@ void GameObjectDispatcher::Quant(void) {
 	// znfo ai quant
 	aiMessageQueue.Quant();
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 //	DBGCHECK;
 #endif
 
 	ViewTail = NULL;
 	Sort();
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 //	DBGCHECK;
 #endif
 };
@@ -1273,7 +1273,7 @@ extern int YSIDE;
 extern int TotalDrawFlag;
 
 void GameObjectDispatcher::DrawQuant(void) {
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	if (!TotalDrawFlag)
 		return;
 #endif
@@ -2933,7 +2933,7 @@ char getObjectPosition(int &x, int &y) {
 	char c;
 
 	if (!actCurrentViewObject) {
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 		if (aiCutDominance >= 0) {
 #else
 		// #ifdef ZMOD_BETA
@@ -2944,7 +2944,7 @@ char getObjectPosition(int &x, int &y) {
 // #endif //ZMOD_BETA
 #endif
 			if (!actCurrentViewDolly) {
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 				if (!actCurrentViewStuff) {
 					actCurrentViewStuff = (StuffObject *)(ItemD.Tail);
 
@@ -3810,7 +3810,7 @@ GeneralObject *UnitList::GetNetObject(int id) {
 
 void UnitList::NetEvent(int type, int id) {};
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 extern XStream fout;
 #endif
 
@@ -3851,7 +3851,7 @@ void GameObjectDispatcher::NetEvent(void) {
 				NetSlotEvent(type, id);
 				break;
 			default:
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 
 				fout.SetRadix(16);
 				fout < "Ignore:  Type:" <= type;

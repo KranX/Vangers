@@ -345,7 +345,7 @@ void smooth_shape_quant(int sx, int sy, unsigned char *buf, int src, int dest, i
 void put_buf2col(int x, int y, int sx, int sy, unsigned char *buf, int null_lev, int n_mode);
 void put_map(int x, int y, int sx, int sy);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 void aciResizeItem(double delta);
 #endif
 
@@ -498,7 +498,7 @@ int aciProtractorEvent = 0;
 int aciMechMessiahEvent = 0;
 int aciTeleportEvent = 0;
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 int aciShotCount = 0;
 int aciCurIND = 0;
 int aciIndMove = 0;
@@ -4802,7 +4802,7 @@ void actIntDispatcher::KeyQuant(void) {
 
 	aciBitmapMenu *bm;
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	int i;
 	invMatrix *temp;
 	invItem *temp_item;
@@ -9723,7 +9723,7 @@ int aciScreenText::NextPage(void) {
 	return 0;
 }
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 void actIntDispatcher::save_items(void) {
 	int i;
 	invItem *p;

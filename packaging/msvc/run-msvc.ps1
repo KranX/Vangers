@@ -8,6 +8,9 @@
 
 .EXAMPLE
     .\run-msvc.ps1 ..\..\vangers\bin -NoRun
+
+.EXAMPLE
+    .\run-msvc.ps1 ..\..\vangers\bin -BuildType Debug
 #>
 [CmdletBinding()]
 param(
@@ -15,6 +18,9 @@ param(
     [string]$GameDir,
 
     [switch]$NoRun,
+
+    [ValidateSet('Release', 'RelWithDebInfo', 'MinSizeRel', 'Debug')]
+    [string]$BuildType = 'RelWithDebInfo',
 
     [string]$VcpkgRoot = $env:VCPKG_ROOT,
     [string]$ClunkRoot,
@@ -26,10 +32,13 @@ $ErrorActionPreference = 'Stop'
 
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 
+$isDebug = ($BuildType -eq 'Debug')
+$configSuffix = if ($isDebug) { '-debug' } else { '' }
+
 if (-not $VcpkgRoot)  { $VcpkgRoot  = Join-Path $env:USERPROFILE 'vcpkg' }
-if (-not $ClunkRoot)  { $ClunkRoot  = Join-Path $repo 'external\clunk-install' }
+if (-not $ClunkRoot)  { $ClunkRoot  = Join-Path $repo "external\clunk-install$configSuffix" }
 if (-not $FfmpegRoot) { $FfmpegRoot = Join-Path $repo 'external\ffmpeg' }
-if (-not $BuildDir)   { $BuildDir   = Join-Path $repo 'build-msvc' }
+if (-not $BuildDir)   { $BuildDir   = Join-Path $repo "build-msvc$configSuffix" }
 
 $vangersExe = Join-Path $BuildDir 'src\vangers.exe'
 if (-not (Test-Path $vangersExe)) {
@@ -50,12 +59,14 @@ foreach ($exe in @(
 }
 
 # --- runtime DLLs -----------------------------------------------------------
-# clunk and the vcpkg/FFmpeg dependencies are always built in a release
-# configuration, so only their release DLLs exist.
+# Vangers, clunk and every dependency must use the same configuration, so pick
+# the bin/ tree that matches -BuildType (Debug ships separate DLLs).
+$vcpkgBin = if ($isDebug) { 'vcpkg_installed\x64-windows\debug\bin' } else { 'vcpkg_installed\x64-windows\bin' }
+$ffmpegBin = if ($isDebug) { 'debug\bin' } else { 'bin' }
 $dllDirs = @(
-    (Join-Path $repo 'vcpkg_installed\x64-windows\bin'),
+    (Join-Path $repo $vcpkgBin),
     (Join-Path $ClunkRoot 'bin'),
-    (Join-Path $FfmpegRoot 'bin')
+    (Join-Path $FfmpegRoot $ffmpegBin)
 )
 foreach ($dir in $dllDirs) {
     if (Test-Path $dir) {

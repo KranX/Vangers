@@ -72,22 +72,29 @@ e. Configure and build Vangers:
    vangers.res was produced by windres as a 32-bit COFF object, which the x64
    MSVC linker rejects (LNK1112), so MSVC builds skip the resource.
 
-   Note: only the release configurations (Release, RelWithDebInfo, MinSizeRel)
-   are supported. clunk and the vcpkg/FFmpeg dependencies are always built in a
-   release configuration; mixing them with a Debug Vangers would break the
-   C++/STL ABI across the clunk DLL.
+   Debug builds use the same dependencies built in Debug: vcpkg installs the
+   debug packages (VCPKG_BUILD_TYPE=debug) and clunk is built with
+   -DCMAKE_BUILD_TYPE=Debug. For FFmpeg, use the "-develop" archive, which adds
+   the debug libraries under debug\ to the prefix, e.g.
+   ffmpeg-9.0.2_x64-windows-shared-lgpl-develop.zip.
 
    The same steps are wrapped in helper scripts:
 
    > powershell -ExecutionPolicy Bypass -File packaging\msvc\build-msvc.ps1
    > powershell -ExecutionPolicy Bypass -File packaging\msvc\run-msvc.ps1 <game-dir>
+   > powershell -ExecutionPolicy Bypass -File packaging\msvc\build-msvc.ps1 -BuildType Debug
+   > powershell -ExecutionPolicy Bypass -File packaging\msvc\run-msvc.ps1 <game-dir> -BuildType Debug
 
    build-msvc.ps1 installs the vcpkg dependencies, downloads a prebuilt FFmpeg
-   and clones clunk into external\ when they are missing, then builds clunk and
-   Vangers. Visual Studio and vcpkg must be installed beforehand.
+   (the "-develop" archive for Debug) and clones clunk into external\ when they
+   are missing, then builds clunk and Vangers. Debug uses separate build and
+   install trees (build-msvc-debug, external\clunk-install-debug) so it never
+   mixes with the release DLLs. Visual Studio and vcpkg must be installed
+   beforehand.
    run-msvc.ps1 copies the built game and its runtime DLLs into <game-dir> and
    launches it (add -NoRun to copy without launching). Both scripts accept
-   -VcpkgRoot, -ClunkSrc, -ClunkRoot, -FfmpegRoot and -BuildDir overrides.
+   -VcpkgRoot, -ClunkSrc, -ClunkRoot, -FfmpegRoot and -BuildDir overrides;
+   run-msvc.ps1 also takes -BuildType to pick the matching DLLs.
 
 
 OSX prerequisites

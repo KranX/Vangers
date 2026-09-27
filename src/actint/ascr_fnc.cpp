@@ -4612,7 +4612,7 @@ int aciGetCurCycle(void) {
 #endif
 }
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 void aciChangeMouseItem(void) {
 	invItem *temp_item;
 
@@ -6061,7 +6061,7 @@ void aciShowFrags(void) {
 	}
 }
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 void scale_bmp(int sx, int sy, int sx0, int sy0, void *dest, void *src) {
 	int x, y;
 	unsigned char *dest_buf, *src_buf;

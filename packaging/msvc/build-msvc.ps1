@@ -6,16 +6,16 @@
 .DESCRIPTION
     1. installs the vcpkg manifest dependencies into <repo>\vcpkg_installed
     2. downloads a prebuilt MSVC FFmpeg into <repo>\external\ffmpeg when missing
+       (the "-develop" archive for Debug, which also ships debug libraries)
     3. clones clunk into <repo>\external\clunk when missing
-    4. builds and installs clunk into <repo>\external\clunk-install
-    5. configures and builds Vangers into -BuildDir
+    4. builds and installs clunk into <repo>\external\clunk-install[-debug]
+    5. configures and builds Vangers into -BuildDir (default build-msvc[-debug])
 
     Visual Studio and vcpkg must already be installed (see INSTALL): this script
     only fetches FFmpeg and clunk on its own.
 
-    Debug configurations are not supported: clunk and the vcpkg/FFmpeg
-    dependencies are always built in a release configuration, and mixing them
-    with a Debug Vangers would break the C++/STL ABI across the clunk DLL.
+    Debug is built end to end: the vcpkg dependencies and clunk are built in
+    Debug too, so the C++/STL ABI matches across the clunk DLL.
 #>
 [CmdletBinding()]
 param(
@@ -25,7 +25,7 @@ param(
     [string]$FfmpegRoot,
     [string]$BuildDir,
 
-    [ValidateSet('Release', 'RelWithDebInfo', 'MinSizeRel')]
+    [ValidateSet('Release', 'RelWithDebInfo', 'MinSizeRel', 'Debug')]
     [string]$BuildType = 'RelWithDebInfo',
 
     [string]$ClunkRepo = 'https://github.com/DileSoft/clunk.git',
@@ -43,22 +43,27 @@ $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $external = Join-Path $repo 'external'
 
+$isDebug = ($BuildType -eq 'Debug')
+# Debug keeps its own build/install trees so it never mixes with release DLLs.
+$configSuffix = if ($isDebug) { '-debug' } else { '' }
+
 if (-not $VcpkgRoot)  { $VcpkgRoot  = Join-Path $env:USERPROFILE 'vcpkg' }
 if (-not $ClunkSrc)   { $ClunkSrc   = Join-Path $external 'clunk' }
-if (-not $ClunkRoot)  { $ClunkRoot  = Join-Path $external 'clunk-install' }
+if (-not $ClunkRoot)  { $ClunkRoot  = Join-Path $external "clunk-install$configSuffix" }
 if (-not $FfmpegRoot) { $FfmpegRoot = Join-Path $external 'ffmpeg' }
-if (-not $BuildDir)   { $BuildDir   = Join-Path $repo 'build-msvc' }
+if (-not $BuildDir)   { $BuildDir   = Join-Path $repo "build-msvc$configSuffix" }
 
 function Assert-Path([string]$Path, [string]$Message) {
     if (-not (Test-Path $Path)) { throw $Message }
 }
 
 function Get-FfmpegUrl {
-    param([string]$Version, [string]$Url)
+    param([string]$Version, [string]$Url, [switch]$Develop)
 
     if ($Url) { return $Url }
     $base = "https://github.com/System233/ffmpeg-msvc-prebuilt/releases/download/ffmpeg-$Version"
-    return "$base/ffmpeg-${Version}_x64-windows-shared-lgpl.zip"
+    $suffix = if ($Develop) { '-develop' } else { '' }
+    return "$base/ffmpeg-${Version}_x64-windows-shared-lgpl$suffix.zip"
 }
 
 function Install-Ffmpeg {
@@ -150,25 +155,30 @@ foreach ($line in $envLines) {
 }
 # vcvars points VCPKG_ROOT at the bundled vcpkg (which has no ports); restore ours.
 $env:VCPKG_ROOT = $VcpkgRoot
-$env:VCPKG_BUILD_TYPE = 'release'
+# Only build the configuration we are going to use.
+$env:VCPKG_BUILD_TYPE = if ($isDebug) { 'debug' } else { 'release' }
 $vcpkgPrefix = Join-Path $repo 'vcpkg_installed\x64-windows'
 
 # --- 1. vcpkg dependencies --------------------------------------------------
-Write-Host "`n[1/5] Installing vcpkg dependencies (triplet x64-windows, release)..."
+Write-Host "`n[1/5] Installing vcpkg dependencies (triplet x64-windows, $($env:VCPKG_BUILD_TYPE))..."
 & (Join-Path $VcpkgRoot 'vcpkg.exe') install --triplet x64-windows `
     "--x-manifest-root=$repo" "--x-install-root=$(Join-Path $repo 'vcpkg_installed')"
 if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed with exit code $LASTEXITCODE." }
 
 # --- 2. FFmpeg --------------------------------------------------------------
 Write-Host "`n[2/5] Ensuring prebuilt MSVC FFmpeg at '$FfmpegRoot'..."
-if (-not (Test-Path (Join-Path $FfmpegRoot 'include\libavcodec\avcodec.h'))) {
+$ffmpegMarker = if ($isDebug) {
+    Join-Path $FfmpegRoot 'debug\lib'
+} else {
+    Join-Path $FfmpegRoot 'include\libavcodec\avcodec.h'
+}
+if (-not (Test-Path $ffmpegMarker)) {
     if ($NoInstallFfmpeg) {
         throw "Prebuilt MSVC FFmpeg not found at '$FfmpegRoot'. Download a shared x64 build from https://github.com/System233/ffmpeg-msvc-prebuilt and set -FfmpegRoot."
     }
-    $ffmpegUrl = Get-FfmpegUrl -Version $FfmpegVersion -Url $FfmpegUrl
+    $ffmpegUrl = Get-FfmpegUrl -Version $FfmpegVersion -Url $FfmpegUrl -Develop:$isDebug
     Install-Ffmpeg -Root $FfmpegRoot -Url $ffmpegUrl -Sha256 $FfmpegSha256
-    Assert-Path (Join-Path $FfmpegRoot 'include\libavcodec\avcodec.h') `
-        "FFmpeg extraction did not produce '$FfmpegRoot\include\libavcodec\avcodec.h'."
+    Assert-Path $ffmpegMarker "FFmpeg extraction did not produce '$ffmpegMarker'."
 }
 
 # --- 3. clunk sources -------------------------------------------------------
@@ -187,10 +197,11 @@ if (-not (Test-Path (Join-Path $ClunkSrc 'CMakeLists.txt'))) {
 }
 
 # --- 4. clunk ---------------------------------------------------------------
-Write-Host "`n[4/5] Building clunk from '$ClunkSrc'..."
-$clunkBuild = Join-Path $ClunkSrc 'build-msvc'
+$clunkBuildType = if ($isDebug) { 'Debug' } else { 'Release' }
+Write-Host "`n[4/5] Building clunk ($clunkBuildType) from '$ClunkSrc'..."
+$clunkBuild = Join-Path $ClunkSrc "build-msvc$configSuffix"
 cmake -S $ClunkSrc -B $clunkBuild -G Ninja `
-    -DCMAKE_BUILD_TYPE=Release `
+    "-DCMAKE_BUILD_TYPE=$clunkBuildType" `
     "-DCMAKE_INSTALL_PREFIX=$ClunkRoot" `
     "-DCMAKE_PREFIX_PATH=$vcpkgPrefix"
 if ($LASTEXITCODE -ne 0) { throw "clunk configure failed with exit code $LASTEXITCODE." }

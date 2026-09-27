@@ -38,7 +38,7 @@ CMakeSettings.json
 
 # vcpkg (manifest mode)
 /vcpkg_installed/
-/build-msvc/
+/build-msvc*/
 
 # External dependencies fetched by the build scripts
 /external/

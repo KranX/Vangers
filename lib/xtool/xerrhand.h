@@ -51,7 +51,7 @@ extern XErrorHandler ErrH;
 #	define XAssert(expr) ErrH.RTC(__FILE__, __LINE__, expr)
 #endif /* _ERRH_H */
 
-// #if (!defined(_FINAL_VERSION_) || defined(_DEBUG)) && !defined(NASSERT)
+// #if (!defined(_FINAL_VERSION_) || defined(_LEGACY_VS_DEBUG)) && !defined(NASSERT)
 // #endif
 
 void set_signal_handler();

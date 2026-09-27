@@ -77,7 +77,7 @@ const int TNT_DETONATION_RADIUS = 50;
 
 char *TntCloneName;
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 XStream fDanger;
 #endif
 
@@ -292,7 +292,7 @@ void StaticOpen(void) {
 	for (i = 0; i < NumEnterCenter; i++)
 		EnterCenterData[i].Open(in);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	fDanger.open("danger.log", XS_OUT);
 #endif
 
@@ -382,7 +382,7 @@ void StaticClose(void) {
 	for (i = 0; i < NumEnterCenter; i++)
 		EnterCenterData[i].Close();
 	delete[] EnterCenterData;
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	fDanger.close();
 #endif
 };
@@ -1801,7 +1801,7 @@ void DangerDataType::Quant(void) {
 
 	switch (Type) {
 	case DangerTypeList::FASTSAND:
-		// #ifdef _DEBUG
+		// #ifdef _LEGACY_VS_DEBUG
 		//			fDanger < "\nFastSand : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <=
 		// R_curr.z; #endif
 		if (Enable) {
@@ -1840,7 +1840,7 @@ void DangerDataType::Quant(void) {
 		};
 		break;
 	case DangerTypeList::WHIRLPOOL:
-		// #ifdef _DEBUG
+		// #ifdef _LEGACY_VS_DEBUG
 		//			fDanger < "\nWhirlpool : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < ","
 		//<= R_curr.z; #endif
 
@@ -1874,7 +1874,7 @@ void DangerDataType::Quant(void) {
 		break;
 	case DangerTypeList::SWAMP:
 
-		// #ifdef _DEBUG
+		// #ifdef _LEGACY_VS_DEBUG
 		//			fDanger < "\nSwamp : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <=
 		// R_curr.z; #endif
 		if (Enable) {
@@ -1931,7 +1931,7 @@ void DangerDataType::Quant(void) {
 		break;
 	case DangerTypeList::HOLE: // Necross road animated hole
 
-		// #ifdef _DEBUG
+		// #ifdef _LEGACY_VS_DEBUG
 		//			fDanger < "\nHole : " <= Enable < ";" <= R_curr.x < "," <= R_curr.y < "," <=
 		// R_curr.z; #endif
 

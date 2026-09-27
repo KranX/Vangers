@@ -15,6 +15,15 @@ SET(FFMPEG_ROOT_HINTS
 	$ENV{FFMPEG_ROOT}
 )
 
+# The prebuilt MSVC "-develop" archives ship debug libraries in <root>/debug/.
+# Prefer those for Debug builds so the whole DLL set uses the debug CRT.
+STRING(TOLOWER "${CMAKE_BUILD_TYPE}" FFMPEG_BUILD_TYPE_LOWER)
+IF(FFMPEG_BUILD_TYPE_LOWER STREQUAL "debug")
+	SET(FFMPEG_LIB_PATH_SUFFIXES debug/lib debug/bin lib lib64 bin)
+ELSE()
+	SET(FFMPEG_LIB_PATH_SUFFIXES lib lib64 bin)
+ENDIF()
+
 FIND_PATH(AVUTIL_INCLUDE_DIR
 	NAMES
 		avutil.h
@@ -141,9 +150,7 @@ FIND_LIBRARY(AVUTIL_LIBRARY
 		/mingw/bin
 		/bin
 	PATH_SUFFIXES
-		lib
-		lib64
-		bin
+		${FFMPEG_LIB_PATH_SUFFIXES}
 )
 
 FIND_LIBRARY(AVCODEC_LIBRARY
@@ -168,9 +175,7 @@ FIND_LIBRARY(AVCODEC_LIBRARY
 		/mingw/bin
 		/bin
 	PATH_SUFFIXES
-		lib
-		lib64
-		bin
+		${FFMPEG_LIB_PATH_SUFFIXES}
 )
 
 FIND_LIBRARY(AVFORMAT_LIBRARY
@@ -196,9 +201,7 @@ FIND_LIBRARY(AVFORMAT_LIBRARY
 		/mingw/lib
 		/bin
 	PATH_SUFFIXES
-		lib
-		lib64
-		bin
+		${FFMPEG_LIB_PATH_SUFFIXES}
 )
 
 FIND_LIBRARY(SWSCALE_LIBRARY
@@ -224,9 +227,7 @@ FIND_LIBRARY(SWSCALE_LIBRARY
 		/mingw/lib
 		/bin
 	PATH_SUFFIXES
-		lib
-		lib64
-		bin
+		${FFMPEG_LIB_PATH_SUFFIXES}
 )
 
 get_filename_component(FFMPEG_PARENT_DIR ${AVCODEC_INCLUDE_DIR} DIRECTORY)

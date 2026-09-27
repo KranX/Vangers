@@ -102,7 +102,7 @@ void reconfigure_runtime_fps_scaled_state(double old_coeff, double new_coeff);
 #define MAX_ZOOM 384
 #define MIN_ZOOM 128
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 XStream fmemory("memstats.dmp", XS_OUT);
 #endif
 
@@ -528,7 +528,7 @@ int xtInitApplication(void) {
 	}
 
 	// XSocketInit();
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	if (host_name && avaible_servers.talk_to_server(0, host_port, host_name))
 		NetInit(avaible_servers.first());
 #endif
@@ -926,7 +926,7 @@ void LoadingRTO2::Init(int id) {
 	LoadingMessage(1);
 #endif
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	StandScreenPrepare();
 #endif
 	_MEM_STATISTIC_("\nBEFORE VMAP  -> ");
@@ -1103,7 +1103,7 @@ int GameQuantRTO::Quant(void) {
 				"%.1f",
 				(double)(RTO_GAME_QUANT_TIMER) / (SDL_GetTicks() - fps_start) * 1000
 			);
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 			network_analysis(network_analysis_buffer, 0);
 #else
 			if (curGMap->prmFlag & PRM_FPS && NetworkON)
@@ -1277,7 +1277,7 @@ void restore(void) {
 	KDWIN::destroy_server();
 	main_socket.close();
 	XSocketFinit();
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	network_analysis(network_analysis_buffer, 1);
 	fout < network_analysis_buffer.address();
 #endif
@@ -1449,7 +1449,7 @@ void ComlineAnalyze(int argc, char **argv) {
 					if (argv[i][j + 2] == '^')
 						SkipCD = 1;
 					break;
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 				case 'q':
 					host_port = atoi(argv[i] + (j + 2));
 					break;
@@ -1596,7 +1596,7 @@ void KeyCenter(SDL_Event *key) {
 		curGMap->change(3, 2);
 		break;
 #endif
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	case SDL_SCANCODE_F12:
 		DBGCHECK
 		break;
@@ -1614,7 +1614,7 @@ void KeyCenter(SDL_Event *key) {
 		if (mod & SDL_KMOD_CTRL) {
 			curGMap->prmFlag ^= PRM_FPS;
 		}
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 		else
 			message_mode++;
 #endif

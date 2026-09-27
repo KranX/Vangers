@@ -187,7 +187,7 @@ int xtInitApplication(void) {
 	win32_SetPriorityProcess(NORMAL_PRIORITY_CLASS);
 	XCon < "Priority: " <= win32_GetProcessPriority() < "\n";
 
-#	ifdef _DEBUG
+#	ifdef _LEGACY_VS_DEBUG
 	win32_debugSet();
 #	endif
 #endif
@@ -345,7 +345,7 @@ void PalettePrepare(void) {
 	palbuf = palbufC;
 	memcpy(palbufOrg, palbuf, 768);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	memcpy(RGBpal, palbuf, 768);
 //	XStream fp("pals",XS_OUT);
 //	for(int i = 0;i < 128;i++){
