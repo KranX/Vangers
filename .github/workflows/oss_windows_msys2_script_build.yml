@@ -1,9 +1,9 @@
 name: OSS Windows MSYS2 (script) Build
 
-# Builds Vangers through the packaging/msys2 helper scripts. build-msys2.ps1
-# installs MSYS2 with the official installer when it is not present, then
-# installs the packages, builds the pinned clunk and toml11 and builds/tests
-# Vangers. run-msys2.ps1 stages the runtime (executables + DLLs).
+# Builds Vangers through the packaging/msys2 helper scripts. install-msys2.ps1
+# installs MSYS2 with the official installer when it is not present and adds
+# the dependencies, build-msys2.ps1 builds/tests Vangers and run-msys2.ps1
+# stages the runtime (executables + DLLs).
 # MSYS2 is installed into a fresh directory under RUNNER_TEMP so the
 # auto-install path is exercised instead of the preinstalled C:\msys64.
 
@@ -37,7 +37,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build with the MSYS2 scripts
+      - name: Install MSYS2 and dependencies
+        shell: pwsh
+        run: |
+          $msys2Root = Join-Path $env:RUNNER_TEMP 'msys64'
+          ./packaging/msys2/install-msys2.ps1 -Msys2Root $msys2Root
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build Vangers
         shell: pwsh
         run: |
           $msys2Root = Join-Path $env:RUNNER_TEMP 'msys64'

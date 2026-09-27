@@ -33,24 +33,27 @@ VANGERS: One for the Road
 Windows (MSYS2) helper scripts
 
 The OSS Windows build can be reproduced locally with the scripts in
-packaging/msys2. They mirror the "OSS Windows 64bit Build" GitHub Actions job:
-they install the required MSYS2 packages, build the pinned clunk and toml11,
-then configure, build and test Vangers.
+packaging/msys2. They mirror the "OSS Windows 64bit Build" GitHub Actions job
+and are split into three steps:
 
+   > powershell -ExecutionPolicy Bypass -File packaging\msys2\install-msys2.ps1
    > powershell -ExecutionPolicy Bypass -File packaging\msys2\build-msys2.ps1
    > powershell -ExecutionPolicy Bypass -File packaging\msys2\run-msys2.ps1 <game-dir>
 
-build-msys2.ps1 installs MSYS2 automatically (into C:\msys64 by default) when
-it is not present. Use -Msys2Root, -NoInstallMsys2, -BuildType, -ClunkRepo,
--ClunkCommit, -SkipTests and -NoUpdate to override the defaults. The underlying
-build-msys2.sh can also be run directly from an MSYS2 UCRT64 shell; in that case
-perform the full update yourself first (pacman -Syu, reopening the terminal if it
-updated msys2-runtime, then pacman -Syu again) and run it as
-`MSYS2_UPDATED=1 ./packaging/msys2/build-msys2.sh`, since the script does not
-restart the shell after a core update. -NoUpdate skips the update and only
-verifies that the required packages are installed. run-msys2.ps1 copies the built
-binaries and their MSYS2 runtime DLLs into <game-dir> and launches the game (add
--NoRun to copy only).
+install-msys2.ps1 installs MSYS2 automatically (into C:\msys64 by default) when
+it is not present, updates it, and installs the required packages plus the pinned
+clunk and toml11; use -Msys2Root, -NoInstallMsys2, -ClunkRepo, -ClunkCommit,
+-Msys2Version, -Msys2InstallerUrl, -Msys2Sha256 and -NoUpdate to override the
+defaults. build-msys2.ps1 only configures, builds and tests Vangers (use
+-BuildType, -BuildDir and -SkipTests). run-msys2.ps1 copies the built binaries and
+their MSYS2 runtime DLLs into <game-dir> and launches the game (add -NoRun to copy
+only).
+
+The underlying .sh scripts can also be run directly from an MSYS2 UCRT64 shell.
+install-msys2.sh requires a completed full update: either run it as
+`MSYS2_UPDATED=1 ./packaging/msys2/install-msys2.sh` after updating manually
+(pacman -Syu, reopening the terminal if it updated msys2-runtime, then pacman -Syu
+again), or use the PowerShell entry point, which drives the restart.
 
 
 OSX prerequisites
