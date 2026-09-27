@@ -117,7 +117,10 @@ function Install-Clunk {
         git -C $Src remote set-url origin $Repo
     }
 
-    $current = git -C $Src rev-parse HEAD 2>$null
+    # --verify --quiet keeps an unborn HEAD (fresh git init) from writing a
+    # "fatal:" line to stderr, which would terminate the script when
+    # $ErrorActionPreference is Stop.
+    $current = git -C $Src rev-parse --verify --quiet HEAD 2>$null
     if ($current -ne $Commit) {
         Write-Host "Fetching clunk $Commit from $Repo..."
         git -C $Src fetch --depth 1 origin $Commit
