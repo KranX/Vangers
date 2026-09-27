@@ -27,8 +27,8 @@ $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 
 if (-not $VcpkgRoot)  { $VcpkgRoot  = Join-Path $env:USERPROFILE 'vcpkg' }
-if (-not $ClunkRoot)  { $ClunkRoot  = Join-Path $env:USERPROFILE 'clunk-install' }
-if (-not $FfmpegRoot) { $FfmpegRoot = Join-Path $repo 'ffmpeg' }
+if (-not $ClunkRoot)  { $ClunkRoot  = Join-Path $repo 'external\clunk-install' }
+if (-not $FfmpegRoot) { $FfmpegRoot = Join-Path $repo 'external\ffmpeg' }
 if (-not $BuildDir)   { $BuildDir   = Join-Path $repo 'build-msvc' }
 
 $vangersExe = Join-Path $BuildDir 'src\vangers.exe'
@@ -50,6 +50,8 @@ foreach ($exe in @(
 }
 
 # --- runtime DLLs -----------------------------------------------------------
+# clunk and the vcpkg/FFmpeg dependencies are always built in a release
+# configuration, so only their release DLLs exist.
 $dllDirs = @(
     (Join-Path $repo 'vcpkg_installed\x64-windows\bin'),
     (Join-Path $ClunkRoot 'bin'),

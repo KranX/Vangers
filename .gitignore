@@ -40,6 +40,9 @@ CMakeSettings.json
 /vcpkg_installed/
 /build-msvc/
 
+# External dependencies fetched by the build scripts
+/external/
+
 # compile stuff
 /ffmpeg
 /build
