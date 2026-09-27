@@ -79,21 +79,21 @@ e. Configure and build Vangers:
 
    The same steps are wrapped in helper scripts:
 
+   > powershell -ExecutionPolicy Bypass -File packaging\msvc\install-msvc.ps1
    > powershell -ExecutionPolicy Bypass -File packaging\msvc\build-msvc.ps1
    > powershell -ExecutionPolicy Bypass -File packaging\msvc\run-msvc.ps1 <game-dir>
-   > powershell -ExecutionPolicy Bypass -File packaging\msvc\build-msvc.ps1 -BuildType Debug
-   > powershell -ExecutionPolicy Bypass -File packaging\msvc\run-msvc.ps1 <game-dir> -BuildType Debug
 
-   build-msvc.ps1 installs the vcpkg dependencies, downloads a prebuilt FFmpeg
-   (the "-develop" archive for Debug) and clones clunk into external\ when they
-   are missing, then builds clunk and Vangers. Debug uses separate build and
-   install trees (build-msvc-debug, external\clunk-install-debug) so it never
-   mixes with the release DLLs. Visual Studio and vcpkg must be installed
-   beforehand.
+   install-msvc.ps1 installs the vcpkg dependencies, downloads a prebuilt FFmpeg
+   (the "-develop" archive for Debug) and clones/builds clunk into external\.
+   build-msvc.ps1 only configures and builds Vangers. Debug uses separate build
+   and install trees (build-msvc-debug, external\clunk-install-debug) so it never
+   mixes with the release DLLs; install and build both take -BuildType Debug.
+   Visual Studio and vcpkg must be installed beforehand.
    run-msvc.ps1 copies the built game and its runtime DLLs into <game-dir> and
-   launches it (add -NoRun to copy without launching). Both scripts accept
-   -VcpkgRoot, -ClunkSrc, -ClunkRoot, -FfmpegRoot and -BuildDir overrides;
-   run-msvc.ps1 also takes -BuildType to pick the matching DLLs.
+   launches it (add -NoRun to copy without launching). install-msvc.ps1 accepts
+   -VcpkgRoot, -ClunkSrc, -ClunkRoot, -FfmpegRoot, -ClunkRepo, -ClunkCommit and
+   -BuildType; build-msvc.ps1 accepts -VcpkgRoot, -ClunkRoot, -FfmpegRoot,
+   -BuildDir and -BuildType; run-msvc.ps1 takes -BuildType to pick the DLLs.
 
 
 OSX prerequisites
