@@ -39,6 +39,7 @@
 #include "../sound/hsound.h"
 #include "compas.h"
 #include "effect.h"
+#include "gluek_armor.h"
 #include "hobj.h"
 #include "items.h"
 #include "mechos.h"
@@ -7523,7 +7524,8 @@ void VangerUnit::NewKeyHandler(void) {
 	if (iKeyPressed(iKEY_USE_GLUEK)) {
 		p = GetStuffObject(this, ACI_GLUEK);
 		if (p) {
-			(ActD.Active)->Armor += 10 << 16;
+			ActD.Active->Armor =
+				vangers::items::restore_gluek_armor(ActD.Active->Armor, ActD.Active->MaxArmor);
 			ObjectDestroy(p);
 			(ActD.Active)->CheckOutDevice(p);
 			ActD.CheckDevice(p);
@@ -8662,7 +8664,7 @@ void VangerUnit::ItemQuant(void) {
 						switch (p->ActIntBuffer.type) {
 						case ACI_GLUEK:
 							if (Armor < MaxArmor / 2) {
-								Armor += 10 << 16;
+								Armor = vangers::items::restore_gluek_armor(Armor, MaxArmor);
 								ObjectDestroy(p);
 								if (Status & SOBJ_ACTIVE) {
 									aciSendEvent2actint(ACI_DROP_ITEM, &(p->ActIntBuffer));
@@ -8696,7 +8698,7 @@ void VangerUnit::ItemQuant(void) {
 				switch (p->ActIntBuffer.type) {
 				case ACI_GLUEK:
 					if (Armor < MaxArmor / 2) {
-						Armor += 10 << 16;
+						Armor = vangers::items::restore_gluek_armor(Armor, MaxArmor);
 						ObjectDestroy(p);
 						if (Status & SOBJ_ACTIVE) {
 							aciSendEvent2actint(ACI_DROP_ITEM, &(p->ActIntBuffer));
@@ -9084,7 +9086,8 @@ void aciSendEvent2itmdsp(int code, actintItemData *p, int data) {
 				dev = resolve_stuff_owner(active, p);
 				if (!dev)
 					break;
-				active->Armor += 10 << 16;
+				active->Armor =
+					vangers::items::restore_gluek_armor(active->Armor, active->MaxArmor);
 				ObjectDestroy(dev);
 				active->CheckOutDevice(dev);
 				ActD.CheckDevice(dev);

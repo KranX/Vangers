@@ -75,6 +75,16 @@ TARGET_INCLUDE_DIRECTORIES(traction_control_cadence_test PRIVATE
 
 ADD_TEST(NAME traction_control_cadence COMMAND traction_control_cadence_test)
 
+ADD_EXECUTABLE(gluek_armor_test
+	gluek_armor_test.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(gluek_armor_test PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+)
+
+ADD_TEST(NAME gluek_armor COMMAND gluek_armor_test)
+
 ADD_EXECUTABLE(settings_test
 	settings_test.cpp
 )
