@@ -115,7 +115,7 @@ fi
 
 echo "==> Fetching clunk ${CLUNK_COMMIT}..."
 git -C "${CLUNK_DIR}" fetch --depth 1 origin "${CLUNK_COMMIT}"
-git -C "${CLUNK_DIR}" checkout --detach FETCH_HEAD
+git -C "${CLUNK_DIR}" checkout --force --detach FETCH_HEAD
 
 echo "==> Building clunk..."
 cmake -S "${CLUNK_DIR}" -B "${CLUNK_DIR}/build" -G Ninja \
