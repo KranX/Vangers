@@ -43,9 +43,14 @@ then configure, build and test Vangers.
 build-msys2.ps1 installs MSYS2 automatically (into C:\msys64 by default) when
 it is not present. Use -Msys2Root, -NoInstallMsys2, -BuildType, -ClunkRepo,
 -ClunkCommit, -SkipTests and -NoUpdate to override the defaults. The underlying
-build-msys2.sh can also be run directly from an MSYS2 UCRT64 shell.
-run-msys2.ps1 copies the built binaries and their MSYS2 runtime DLLs into
-<game-dir> and launches the game (add -NoRun to copy only).
+build-msys2.sh can also be run directly from an MSYS2 UCRT64 shell; in that case
+perform the full update yourself first (pacman -Syu, reopening the terminal if it
+updated msys2-runtime, then pacman -Syu again) and run it as
+`MSYS2_UPDATED=1 ./packaging/msys2/build-msys2.sh`, since the script does not
+restart the shell after a core update. -NoUpdate skips the update and only
+verifies that the required packages are installed. run-msys2.ps1 copies the built
+binaries and their MSYS2 runtime DLLs into <game-dir> and launches the game (add
+-NoRun to copy only).
 
 
 OSX prerequisites

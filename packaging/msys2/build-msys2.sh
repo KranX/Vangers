@@ -17,14 +17,13 @@
 #   SKIP_TESTS      set to 1 to skip ctest        (default: 0)
 #   UPDATE          set to 0 to skip the MSYS2 update and only verify that
 #                   the required packages are already installed (default: 1)
+#   MSYS2_UPDATED   set to 1 by build-msys2.ps1 after it performed a complete
+#                   MSYS2 update; a direct .sh run must set it manually
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-
-# Absolute path of this script, used to re-exec after a core update.
-SELF="${SCRIPT_DIR}/$(basename "${BASH_SOURCE[0]}")"
 
 BUILD_TYPE="${BUILD_TYPE:-RelWithDebInfo}"
 BUILD_DIR="${BUILD_DIR:-build}"
@@ -77,13 +76,25 @@ PACKAGES=(
 
 if [ "${UPDATE}" = "1" ]; then
 	if [ "${MSYS2_UPDATED:-0}" != "1" ]; then
-		# Update in its own process. A core runtime update requires a fresh
-		# shell afterwards, so re-exec this script once with the new runtime.
-		echo "==> Updating MSYS2 packages (pacman -Syu)..."
-		pacman --noconfirm -Syu
-		export MSYS2_UPDATED=1
-		echo "==> Restarting the shell to finish the update with the new runtime..."
-		exec bash --login "${SELF}"
+		# The full update is driven from the outside (build-msys2.ps1): a core
+		# (msys2-runtime) update closes the current shell, so an in-process
+		# "pacman -Syu" or a re-exec here would never reach the build.
+		{
+			echo "ERROR: a complete MSYS2 update is required, but build-msys2.sh"
+			echo "       does not run it itself because a core update can close"
+			echo "       this shell."
+			echo
+			echo "Run the PowerShell entry point, which drives the restart:"
+			echo "    powershell -ExecutionPolicy Bypass -File packaging\\msys2\\build-msys2.ps1"
+			echo
+			echo "or update manually, reopening the terminal if msys2-runtime changed:"
+			echo "    pacman --noconfirm -Syu"
+			echo "    pacman --noconfirm -Syu"
+			echo
+			echo "then re-run with MSYS2_UPDATED=1:"
+			echo "    MSYS2_UPDATED=1 ./packaging/msys2/build-msys2.sh"
+		} >&2
+		exit 1
 	fi
 
 	echo "==> Finishing the MSYS2 update (pacman -Su)..."
