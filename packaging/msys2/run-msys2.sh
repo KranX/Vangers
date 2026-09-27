@@ -12,6 +12,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
+# shellcheck source=common.sh disable=SC1091
+source "${SCRIPT_DIR}/common.sh"
+
 GAME_DIR="${GAME_DIR:-}"
 BUILD_DIR="${BUILD_DIR:-build}"
 MINGW_PREFIX="${MINGW_PREFIX:-/ucrt64}"
@@ -22,19 +25,10 @@ if [ -z "${GAME_DIR}" ]; then
 fi
 
 # Accept Windows paths too (D:\foo -> /d/foo).
-to_msys_path() {
-	local p="$1"
-	if [[ "$p" =~ ^([A-Za-z]):[\\/](.*)$ ]]; then
-		local drive="${BASH_REMATCH[1],,}"
-		local rest="${BASH_REMATCH[2]//\\//}"
-		printf '/%s/%s' "$drive" "$rest"
-	else
-		printf '%s' "$p"
-	fi
-}
 GAME_DIR="$(to_msys_path "${GAME_DIR}")"
+BUILD_DIR="$(to_msys_path "${BUILD_DIR}")"
 
-if [[ "${BUILD_DIR}" = /* || "${BUILD_DIR}" =~ ^[A-Za-z]:/ ]]; then
+if [[ "${BUILD_DIR}" = /* ]]; then
 	BUILD_PATH="${BUILD_DIR}"
 else
 	BUILD_PATH="${REPO}/${BUILD_DIR}"

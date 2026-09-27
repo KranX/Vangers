@@ -24,6 +24,10 @@
 .PARAMETER Msys2Sha256
     Optional SHA256 of the installer; verified when provided.
 
+.PARAMETER NoUpdate
+    Do not update MSYS2. The required packages must already be installed,
+    otherwise the script fails instead of performing a partial upgrade.
+
 .EXAMPLE
     .\build-msys2.ps1
 .EXAMPLE
@@ -105,6 +109,15 @@ if (-not (Test-Path $bash)) {
     }
 }
 
+# --- update MSYS2 (own process; a core update needs a fresh shell) ----------
+if (-not $NoUpdate) {
+    Write-Host 'Updating MSYS2 (pacman -Syu)...'
+    & $bash --login -c 'pacman --noconfirm -Syu'
+    if ($LASTEXITCODE -ne 0) {
+        throw "pacman -Syu failed with exit code $LASTEXITCODE."
+    }
+}
+
 # --- run the build inside MSYS2 --------------------------------------------
 $env:MSYSTEM = 'UCRT64'
 $env:BUILD_TYPE = $BuildType
@@ -114,6 +127,7 @@ $env:CLUNK_COMMIT = $ClunkCommit
 $env:TOML11_VERSION = $Toml11Version
 $env:SKIP_TESTS = if ($SkipTests) { '1' } else { '0' }
 $env:UPDATE = if ($NoUpdate) { '0' } else { '1' }
+$env:MSYS2_UPDATED = if ($NoUpdate) { '0' } else { '1' }
 
 $script = (Join-Path $PSScriptRoot 'build-msys2.sh') -replace '\\', '/'
 Write-Host "Running '$script' in MSYS2 ($env:MSYSTEM)..."

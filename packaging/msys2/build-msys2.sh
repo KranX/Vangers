@@ -9,18 +9,25 @@
 #
 # Parameters are passed through the environment:
 #   BUILD_TYPE      CMake build type              (default: RelWithDebInfo)
-#   BUILD_DIR       build directory, repo-relative(default: build)
+#   BUILD_DIR       build directory, repo-relative or absolute (default: build)
 #   CLUNK_REPO      clunk git remote              (default: stalkerg/clunk)
 #   CLUNK_COMMIT    clunk commit to build         (default: CI pin)
 #   TOML11_VERSION  toml11 version                (default: 4.4.0)
 #   TOML11_SHA256   toml11 tarball sha256         (default: CI value)
 #   SKIP_TESTS      set to 1 to skip ctest        (default: 0)
-#   UPDATE          set to 0 to skip `pacman -Syu` (default: 1)
+#   UPDATE          set to 0 to skip the MSYS2 update and only verify that
+#                   the required packages are already installed (default: 1)
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+
+# shellcheck source=common.sh disable=SC1091
+source "${SCRIPT_DIR}/common.sh"
+
+# Absolute path of this script, used to re-exec after a core update.
+SELF="${SCRIPT_DIR}/$(basename "${BASH_SOURCE[0]}")"
 
 BUILD_TYPE="${BUILD_TYPE:-RelWithDebInfo}"
 BUILD_DIR="${BUILD_DIR:-build}"
@@ -56,28 +63,49 @@ echo "==> MSYS2 environment: ${MSYSTEM} (${MINGW_PREFIX})"
 echo "==> Repository:        ${REPO}"
 
 # --- 1. packages ------------------------------------------------------------
-if [ "${UPDATE}" = "1" ]; then
-	echo "==> Updating MSYS2 packages (pacman -Syu; may run twice after a core update)..."
-	pacman --noconfirm -Syu
-	pacman --noconfirm -Syu
-else
-	echo "==> Refreshing the MSYS2 package database (pacman -Sy)..."
-	pacman --noconfirm -Sy
-fi
-
-echo "==> Installing build dependencies..."
-pacman --noconfirm --needed -S \
-	git diffutils \
-	"${MINGW_PKG_PREFIX}-sdl3" \
-	"${MINGW_PKG_PREFIX}-sdl3-net" \
-	"${MINGW_PKG_PREFIX}-cmake" \
-	"${MINGW_PKG_PREFIX}-ffmpeg" \
-	"${MINGW_PKG_PREFIX}-gcc" \
-	"${MINGW_PKG_PREFIX}-libogg" \
-	"${MINGW_PKG_PREFIX}-libvorbis" \
-	"${MINGW_PKG_PREFIX}-ninja" \
-	"${MINGW_PKG_PREFIX}-pkgconf" \
+PACKAGES=(
+	git
+	diffutils
+	"${MINGW_PKG_PREFIX}-sdl3"
+	"${MINGW_PKG_PREFIX}-sdl3-net"
+	"${MINGW_PKG_PREFIX}-cmake"
+	"${MINGW_PKG_PREFIX}-ffmpeg"
+	"${MINGW_PKG_PREFIX}-gcc"
+	"${MINGW_PKG_PREFIX}-libogg"
+	"${MINGW_PKG_PREFIX}-libvorbis"
+	"${MINGW_PKG_PREFIX}-ninja"
+	"${MINGW_PKG_PREFIX}-pkgconf"
 	"${MINGW_PKG_PREFIX}-zlib"
+)
+
+if [ "${UPDATE}" = "1" ]; then
+	if [ "${MSYS2_UPDATED:-0}" != "1" ]; then
+		# Update in its own process. A core runtime update requires a fresh
+		# shell afterwards, so re-exec this script once with the new runtime.
+		echo "==> Updating MSYS2 packages (pacman -Syu)..."
+		pacman --noconfirm -Syu
+		export MSYS2_UPDATED=1
+		echo "==> Restarting the shell to finish the update with the new runtime..."
+		exec bash --login "${SELF}"
+	fi
+
+	echo "==> Finishing the MSYS2 update (pacman -Su)..."
+	pacman --noconfirm -Su
+
+	echo "==> Installing build dependencies..."
+	pacman --noconfirm --needed -S "${PACKAGES[@]}"
+else
+	# Never refresh the database here: `pacman -Sy` followed by `-S` would be
+	# a partial upgrade, which MSYS2 does not support. Only check what exists.
+	echo "==> -NoUpdate: verifying that build dependencies are already installed..."
+	missing="$(pacman -T -- "${PACKAGES[@]}" 2>/dev/null || true)"
+	if [ -n "${missing}" ]; then
+		echo "ERROR: missing packages: ${missing}" >&2
+		echo "Run this script without -NoUpdate to perform a full 'pacman -Syu'," >&2
+		echo "or install the packages listed above manually." >&2
+		exit 1
+	fi
+fi
 
 # --- 2. clunk ---------------------------------------------------------------
 CLUNK_DIR="${EXTERNAL}/clunk"
@@ -125,7 +153,8 @@ cmake --build "${EXTERNAL}/toml11-build" --parallel
 cmake --install "${EXTERNAL}/toml11-build"
 
 # --- 4. Vangers -------------------------------------------------------------
-if [[ "${BUILD_DIR}" = /* || "${BUILD_DIR}" =~ ^[A-Za-z]:/ ]]; then
+BUILD_DIR="$(to_msys_path "${BUILD_DIR}")"
+if [[ "${BUILD_DIR}" = /* ]]; then
 	BUILD_PATH="${BUILD_DIR}"
 else
 	BUILD_PATH="${REPO}/${BUILD_DIR}"
