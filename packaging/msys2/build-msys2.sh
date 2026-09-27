@@ -23,9 +23,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
-# shellcheck source=common.sh disable=SC1091
-source "${SCRIPT_DIR}/common.sh"
-
 # Absolute path of this script, used to re-exec after a core update.
 SELF="${SCRIPT_DIR}/$(basename "${BASH_SOURCE[0]}")"
 
@@ -153,7 +150,8 @@ cmake --build "${EXTERNAL}/toml11-build" --parallel
 cmake --install "${EXTERNAL}/toml11-build"
 
 # --- 4. Vangers -------------------------------------------------------------
-BUILD_DIR="$(to_msys_path "${BUILD_DIR}")"
+# Accept Windows paths too (D:\foo -> /d/foo); relative paths stay relative.
+BUILD_DIR="$(cygpath --unix -- "${BUILD_DIR}")"
 if [[ "${BUILD_DIR}" = /* ]]; then
 	BUILD_PATH="${BUILD_DIR}"
 else
