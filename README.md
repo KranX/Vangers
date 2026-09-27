@@ -2,10 +2,10 @@
 
 ![Vangers](http://cdn.akamai.steamstatic.com/steam/apps/264080/header.jpg?t=1447359431)
 
-![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Linux%20Build/badge.svg)
-![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Windows%2064bit%20Build/badge.svg)
-![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20Windows%2032bit%20Build/badge.svg)
-![Vangers CI](https://github.com/KranX/Vangers/workflows/Vangers%20MacOS%20Build/badge.svg)
+[![OSS Linux Build](https://github.com/KranX/Vangers/actions/workflows/oss_linux_build.yml/badge.svg?branch=master)](https://github.com/KranX/Vangers/actions/workflows/oss_linux_build.yml)
+[![OSS Windows 64bit Build](https://github.com/KranX/Vangers/actions/workflows/oss_windows_64_build.yml/badge.svg?branch=master)](https://github.com/KranX/Vangers/actions/workflows/oss_windows_64_build.yml)
+[![OSS MacOS Build](https://github.com/KranX/Vangers/actions/workflows/oss_macos_build.yml/badge.svg?branch=master)](https://github.com/KranX/Vangers/actions/workflows/oss_macos_build.yml)
+[![Clang Format](https://github.com/KranX/Vangers/actions/workflows/clang_format.yml/badge.svg?branch=master)](https://github.com/KranX/Vangers/actions/workflows/clang_format.yml)
 [![Join the chat at https://t.me/vangers](https://patrolavia.github.io/telegram-badge/chat.svg)](https://t.me/vangers)
 
 
