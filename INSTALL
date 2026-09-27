@@ -6,8 +6,8 @@ VANGERS: One for the Road
    - SDL 3.2 or newer
    - SDL_net 3.2 or newer
    - libvorbis
-   - SDL3-native clunk from the `sdl3` branch
-     (https://github.com/stalkerg/clunk/tree/sdl3)
+   - SDL3-native clunk from the upstream `master` branch
+     (https://github.com/stalkerg/clunk)
    - ffmpeg 6.0 or newer
    - toml11 4.4.x
    - zlib
@@ -45,13 +45,12 @@ c. Obtain an MSVC build of FFmpeg (6.0 or newer). Prebuilt shared packages
    https://github.com/System233/ffmpeg-msvc-prebuilt (x64, LGPL). Extract the
    archive and pass the prefix as -DFFMPEG_ROOT=<ffmpeg-prefix>. The helper
    script below downloads it into external\ffmpeg automatically.
-d. Build and install clunk with the MSVC toolchain. Use the `msvc` branch of
-   https://github.com/DileSoft/clunk (based on the upstream `sdl3` branch,
-   with MSVC-compatible build flags). clunk has no vcpkg manifest of its own,
-   so point it at the dependencies installed in step b; pass its install
-   prefix to Vangers as -DCLUNK_ROOT=<clunk-prefix>:
+d. Build and install clunk with the MSVC toolchain from the upstream `master`
+   branch (https://github.com/stalkerg/clunk). clunk has no vcpkg manifest of
+   its own, so point it at the dependencies installed in step b; pass its
+   install prefix to Vangers as -DCLUNK_ROOT=<clunk-prefix>:
 
-   > git clone --branch msvc https://github.com/DileSoft/clunk.git external/clunk
+   > git clone https://github.com/stalkerg/clunk.git external/clunk
    > cmake -S external/clunk -B external/clunk/build -G Ninja ^
        -DCMAKE_BUILD_TYPE=Release ^
        -DCMAKE_PREFIX_PATH=%CD%\vcpkg_installed\x64-windows ^
@@ -101,8 +100,8 @@ OSX prerequisites
 
 a. Install homebrew
 b. brew install sdl3 sdl3_net libvorbis libogg ffmpeg toml11
-c. Build/install the `sdl3` branch of clunk
-   (https://github.com/stalkerg/clunk/tree/sdl3).
+c. Build/install the upstream `master` branch of clunk
+   (https://github.com/stalkerg/clunk).
 d. Go to 3.
 
 

@@ -26,8 +26,8 @@ jobs:
     env:
       BUILD_TYPE: RelWithDebInfo
       FFMPEG_VERSION: 9.0.2
-      CLUNK_REPO: https://github.com/DileSoft/clunk.git
-      CLUNK_COMMIT: efd7f2d0a5adf57008b360894ef6526d5f8602eb
+      CLUNK_REPO: https://github.com/stalkerg/clunk.git
+      CLUNK_COMMIT: b52d1fda2237ef9ec81d09664ad2bb3aadd0de68
       VCPKG_BUILD_TYPE: release
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-archives
 

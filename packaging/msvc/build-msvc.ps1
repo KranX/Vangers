@@ -28,8 +28,8 @@ param(
     [ValidateSet('Release', 'RelWithDebInfo', 'MinSizeRel', 'Debug')]
     [string]$BuildType = 'RelWithDebInfo',
 
-    [string]$ClunkRepo = 'https://github.com/DileSoft/clunk.git',
-    [string]$ClunkCommit = 'efd7f2d0a5adf57008b360894ef6526d5f8602eb',
+    [string]$ClunkRepo = 'https://github.com/stalkerg/clunk.git',
+    [string]$ClunkCommit = 'b52d1fda2237ef9ec81d09664ad2bb3aadd0de68',
     [switch]$NoInstallClunk,
 
     [string]$FfmpegVersion = '9.0.2',
@@ -189,7 +189,7 @@ $manageClunk = -not $PSBoundParameters.ContainsKey('ClunkSrc')
 Write-Host "`n[3/5] Ensuring clunk sources at '$ClunkSrc'..."
 if (-not (Test-Path (Join-Path $ClunkSrc 'CMakeLists.txt'))) {
     if ($NoInstallClunk) {
-        throw "clunk sources not found at '$ClunkSrc'. Clone the msvc branch of https://github.com/DileSoft/clunk or set -ClunkSrc."
+        throw "clunk sources not found at '$ClunkSrc'. Clone https://github.com/stalkerg/clunk or set -ClunkSrc."
     }
     Install-Clunk -Src $ClunkSrc -Repo $ClunkRepo -Commit $ClunkCommit
     Assert-Path (Join-Path $ClunkSrc 'CMakeLists.txt') `
