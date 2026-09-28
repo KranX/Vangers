@@ -848,6 +848,7 @@ struct VangerUnit: TrackUnit, uvsUnitType, aiFactorType {
 	void AddEscave(SensorDataType *p);
 	void AddSpot(SensorDataType *p);
 
+	void RestoreGluekArmor(void);
 	void ItemQuant(void);
 	void Go2World(void);				 // znfo !!!
 	void Go2Universe(void);				 // znfo !!!

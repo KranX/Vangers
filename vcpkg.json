@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "vangers",
+  "version-string": "0.0.0",
+  "description": "Vangers dependencies for the MSVC build",
+  "dependencies": [
+    "sdl3",
+    "sdl3-net",
+    "libogg",
+    "libvorbis",
+    "zlib",
+    "toml11"
+  ]
+}

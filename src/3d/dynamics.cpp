@@ -51,7 +51,7 @@ const int LAWN_MOWER_FLIGHT_MOTOR_TYPE = 6;
 #	define UsingCutterig(t) 1
 #endif
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 #	define ENTRIES_CONTROL
 #	define MSG_OUT
 #endif

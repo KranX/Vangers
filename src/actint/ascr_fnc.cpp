@@ -4,7 +4,7 @@
 #include "lang.h"
 #include <zlib.h>
 
-#if defined(__APPLE__) || __GNUC__ < 9
+#if defined(__APPLE__) || (defined(__GNUC__) && __GNUC__ < 9)
 #	include <sys/stat.h>
 #else
 #	include <filesystem>
@@ -49,7 +49,7 @@
 #include "acsconst.h"
 #include "chtree.h"
 
-#if defined(__APPLE__) || __GNUC__ < 9
+#if defined(__APPLE__) || (defined(__GNUC__) && __GNUC__ < 9)
 #else
 namespace fs = std::filesystem;
 #endif
@@ -4612,7 +4612,7 @@ int aciGetCurCycle(void) {
 #endif
 }
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 void aciChangeMouseItem(void) {
 	invItem *temp_item;
 
@@ -5478,7 +5478,7 @@ void acsPrepareSlotNameInput(int id, int slot_num) {
 	acsCurrentSlotNum = slot_num;
 }
 
-#if defined(__APPLE__) || __GNUC__ < 9
+#if defined(__APPLE__) || (defined(__GNUC__) && __GNUC__ < 9)
 void createDirIfNotExist(const char *dirName) {
 	struct stat info;
 	if (stat(dirName, &info) != 0) {
@@ -6061,7 +6061,7 @@ void aciShowFrags(void) {
 	}
 }
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 void scale_bmp(int sx, int sy, int sx0, int sy0, void *dest, void *src) {
 	int x, y;
 	unsigned char *dest_buf, *src_buf;

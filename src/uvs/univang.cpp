@@ -8,7 +8,7 @@
 
 // XStream VOVA("VOVA.LST", XS_OUT);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 // #define _DEMO_
 #	define STAND_REPORT
 #	define TABU_REPORT
@@ -9562,7 +9562,7 @@ uvsItem::uvsItem(XStream &pfile) {
 	pfile > pos_z;
 	pfile > type;
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 	if (uvsItemTable[type]->type == UVS_ITEM_STATUS::MECHOS_PART)
 		XCon <= type < "\n";
 #endif

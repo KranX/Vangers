@@ -51,6 +51,8 @@
 
 #include "../actint/credits.h"
 
+#include <cstdint>
+
 #define INSECTOIDS
 
 int DbgCheckEnable;
@@ -7523,7 +7525,7 @@ void VangerUnit::NewKeyHandler(void) {
 	if (iKeyPressed(iKEY_USE_GLUEK)) {
 		p = GetStuffObject(this, ACI_GLUEK);
 		if (p) {
-			(ActD.Active)->Armor += 10 << 16;
+			ActD.Active->RestoreGluekArmor();
 			ObjectDestroy(p);
 			(ActD.Active)->CheckOutDevice(p);
 			ActD.CheckDevice(p);
@@ -8594,6 +8596,12 @@ void VangerUnit::CheckOutDevice(StuffObject *p) {
 	};
 };
 
+void VangerUnit::RestoreGluekArmor(void) {
+	// Armor is 16.16 fixed-point. Widen before adding so the cap cannot overflow.
+	const std::int64_t healed = static_cast<std::int64_t>(Armor) + (10 << 16);
+	Armor = healed > MaxArmor ? MaxArmor : static_cast<int>(healed);
+}
+
 void VangerUnit::ItemQuant(void) {
 	StuffObject *p;
 	StuffObject *pp;
@@ -8662,7 +8670,7 @@ void VangerUnit::ItemQuant(void) {
 						switch (p->ActIntBuffer.type) {
 						case ACI_GLUEK:
 							if (Armor < MaxArmor / 2) {
-								Armor += 10 << 16;
+								RestoreGluekArmor();
 								ObjectDestroy(p);
 								if (Status & SOBJ_ACTIVE) {
 									aciSendEvent2actint(ACI_DROP_ITEM, &(p->ActIntBuffer));
@@ -8696,7 +8704,7 @@ void VangerUnit::ItemQuant(void) {
 				switch (p->ActIntBuffer.type) {
 				case ACI_GLUEK:
 					if (Armor < MaxArmor / 2) {
-						Armor += 10 << 16;
+						RestoreGluekArmor();
 						ObjectDestroy(p);
 						if (Status & SOBJ_ACTIVE) {
 							aciSendEvent2actint(ACI_DROP_ITEM, &(p->ActIntBuffer));
@@ -9084,7 +9092,7 @@ void aciSendEvent2itmdsp(int code, actintItemData *p, int data) {
 				dev = resolve_stuff_owner(active, p);
 				if (!dev)
 					break;
-				active->Armor += 10 << 16;
+				active->RestoreGluekArmor();
 				ObjectDestroy(dev);
 				active->CheckOutDevice(dev);
 				ActD.CheckDevice(dev);

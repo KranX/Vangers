@@ -15,6 +15,8 @@
 #include <string.h>
 #include <time.h>
 
+#include "xcompat.h"
+
 #ifdef __WORDSIZE
 #else
 #	if (defined __LP64__)

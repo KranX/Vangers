@@ -56,6 +56,72 @@ install-msys2.sh requires a completed full update: either run it as
 again), or use the PowerShell entry point, which drives the restart.
 
 
+Windows (MSVC) prerequisites
+
+a. Install Visual Studio 2022 or newer with the "Desktop development with C++"
+   workload (CMake and Ninja are included with the workload).
+b. Install vcpkg and set VCPKG_ROOT to its directory:
+   https://learn.microsoft.com/vcpkg/get_started/get-started
+   Dependencies are declared in vcpkg.json (sdl3, sdl3-net, libogg, libvorbis,
+   zlib, toml11). Install them from the Vangers root into vcpkg_installed:
+
+   > vcpkg install --triplet x64-windows
+c. Obtain an MSVC build of FFmpeg (6.0 or newer). Prebuilt shared packages
+   with headers and import libraries are available from
+   https://github.com/System233/ffmpeg-msvc-prebuilt (x64, LGPL). Extract the
+   archive and pass the prefix as -DFFMPEG_ROOT=<ffmpeg-prefix>. The helper
+   script below downloads it into external\ffmpeg automatically.
+d. Build and install clunk with the MSVC toolchain from the upstream `master`
+   branch (https://github.com/stalkerg/clunk). clunk has no vcpkg manifest of
+   its own, so point it at the dependencies installed in step b; pass its
+   install prefix to Vangers as -DCLUNK_ROOT=<clunk-prefix>:
+
+   > git clone https://github.com/stalkerg/clunk.git external/clunk
+   > cmake -S external/clunk -B external/clunk/build -G Ninja ^
+       -DCMAKE_BUILD_TYPE=Release ^
+       -DCMAKE_PREFIX_PATH=%CD%\vcpkg_installed\x64-windows ^
+       -DCMAKE_INSTALL_PREFIX=%CD%\external\clunk-install
+   > cmake --build external/clunk/build --parallel
+   > cmake --install external/clunk/build
+e. Configure and build Vangers:
+
+   > cmake -S . -B build-msvc -G Ninja ^
+       -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
+       -DVCPKG_INSTALLED_DIR=%CD%\vcpkg_installed ^
+       -DCMAKE_BUILD_TYPE=RelWithDebInfo ^
+       -DCLUNK_ROOT=%CD%\external\clunk-install ^
+       -DFFMPEG_ROOT=%CD%\external\ffmpeg
+   > cmake --build build-msvc --parallel
+
+   Note: the MSVC build currently links no executable icon. The committed
+   vangers.res was produced by windres as a 32-bit COFF object, which the x64
+   MSVC linker rejects (LNK1112), so MSVC builds skip the resource.
+
+   Debug builds use the same dependencies built in Debug: vcpkg installs the
+   debug packages (VCPKG_BUILD_TYPE=debug) and clunk is built with
+   -DCMAKE_BUILD_TYPE=Debug. For FFmpeg, use the "-develop" archive, which adds
+   the debug libraries under debug\ to the prefix, e.g.
+   ffmpeg-9.0.2_x64-windows-shared-lgpl-develop.zip.
+
+   The same steps are wrapped in helper scripts:
+
+   > powershell -ExecutionPolicy Bypass -File packaging\msvc\install-msvc.ps1
+   > powershell -ExecutionPolicy Bypass -File packaging\msvc\build-msvc.ps1
+   > powershell -ExecutionPolicy Bypass -File packaging\msvc\run-msvc.ps1 <game-dir>
+
+   install-msvc.ps1 installs the vcpkg dependencies, downloads a prebuilt FFmpeg
+   (the "-develop" archive for Debug) and clones/builds clunk into external\.
+   build-msvc.ps1 only configures and builds Vangers. Debug uses separate build
+   and install trees (build-msvc-debug, external\clunk-install-debug) so it never
+   mixes with the release DLLs; install and build both take -BuildType Debug.
+   Visual Studio and vcpkg must be installed beforehand.
+   run-msvc.ps1 copies the built game and its runtime DLLs into <game-dir> and
+   launches it (add -NoRun to copy without launching). install-msvc.ps1 accepts
+   -VcpkgRoot, -ClunkSrc, -ClunkRoot, -FfmpegRoot, -ClunkRepo, -ClunkCommit and
+   -BuildType; build-msvc.ps1 accepts -VcpkgRoot, -ClunkRoot, -FfmpegRoot,
+   -BuildDir and -BuildType; run-msvc.ps1 takes -BuildType to pick the DLLs.
+
+
 OSX prerequisites
 
 a. Install homebrew

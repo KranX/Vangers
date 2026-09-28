@@ -32,8 +32,8 @@ extern int MLstatus;
 extern int MLprocess;
 extern int DirectLog;
 extern int ViewX, ViewY;
-extern char *VLCsign[4];
-extern char *VLfilenames[];
+extern const char *VLCsign[4];
+extern const char *VLfilenames[];
 
 const char pathSeparator =
 #ifdef _WIN32
