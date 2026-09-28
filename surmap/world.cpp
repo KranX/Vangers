@@ -25,7 +25,7 @@ extern int RenderingLayer;
 extern int ShotPrm, GlassPrm;
 extern int StartshotPrm;
 extern uchar *shadowParent;
-extern uchar FloodLevel;
+extern int FloodLevel;
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
 void LINE_render(int y);
 void RenderPrepare(void);

@@ -1,0 +1,155 @@
+name: OSS Windows MSVC Build
+
+on:
+  push:
+    branches:
+      - master
+      - alpha
+      - msvc
+  pull_request:
+    branches:
+      - master
+      - alpha
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oss-windows-msvc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-2025-vs2026
+
+    env:
+      BUILD_TYPE: RelWithDebInfo
+      FFMPEG_VERSION: 9.0.2
+      CLUNK_REPO: https://github.com/stalkerg/clunk.git
+      CLUNK_COMMIT: b52d1fda2237ef9ec81d09664ad2bb3aadd0de68
+      VCPKG_BUILD_TYPE: release
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-archives
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure vcpkg environment
+        shell: pwsh
+        run: |
+          if (-not $env:VCPKG_INSTALLATION_ROOT) {
+            throw "VCPKG_INSTALLATION_ROOT is not set on this runner."
+          }
+          "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" >> $env:GITHUB_ENV
+          New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
+
+      - name: Show tool versions
+        shell: pwsh
+        run: |
+          cmake --version
+          ninja --version
+          & "$env:VCPKG_ROOT\vcpkg.exe" version
+
+      - name: Cache vcpkg binary packages
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-msvc-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            vcpkg-msvc-${{ runner.os }}-
+
+      - name: Cache FFmpeg
+        id: cache-ffmpeg
+        uses: actions/cache@v5
+        with:
+          path: ffmpeg
+          key: ffmpeg-msvc-${{ runner.os }}-${{ env.FFMPEG_VERSION }}
+
+      - name: Download FFmpeg (MSVC prebuilt)
+        if: steps.cache-ffmpeg.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $base = "https://github.com/System233/ffmpeg-msvc-prebuilt/releases/download/ffmpeg-$env:FFMPEG_VERSION"
+          $file = "ffmpeg-${env:FFMPEG_VERSION}_x64-windows-shared-lgpl.zip"
+          curl.exe --fail --location --retry 3 --output ffmpeg.zip "$base/$file"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Expand-Archive -Path ffmpeg.zip -DestinationPath ffmpeg -Force
+          Remove-Item ffmpeg.zip
+
+      - name: Download Clunk
+        id: clunk-source
+        shell: pwsh
+        run: |
+          git init clunk
+          git -C clunk remote add origin "$env:CLUNK_REPO"
+          git -C clunk fetch --depth 1 origin "$env:CLUNK_COMMIT"
+          git -C clunk checkout --detach FETCH_HEAD
+          "sha=$(git -C clunk rev-parse --short HEAD)" >> $env:GITHUB_OUTPUT
+
+      - name: Install vcpkg dependencies
+        shell: pwsh
+        run: |
+          & "$env:VCPKG_ROOT\vcpkg.exe" install --triplet x64-windows
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build Clunk
+        shell: pwsh
+        run: |
+          $vcpkgPrefix = Join-Path $env:GITHUB_WORKSPACE 'vcpkg_installed\x64-windows'
+          cmake -S clunk -B clunk/build -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release `
+            "-DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE\clunk-install" `
+            "-DCMAKE_PREFIX_PATH=$vcpkgPrefix"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build clunk/build --parallel
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --install clunk/build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Configure Vangers
+        shell: pwsh
+        run: |
+          $toolchain = Join-Path $env:VCPKG_ROOT 'scripts\buildsystems\vcpkg.cmake'
+          cmake -S . -B build -G Ninja `
+            "-DCMAKE_BUILD_TYPE=$env:BUILD_TYPE" `
+            "-DCMAKE_TOOLCHAIN_FILE=$toolchain" `
+            "-DVCPKG_INSTALLED_DIR=$env:GITHUB_WORKSPACE\vcpkg_installed" `
+            "-DCLUNK_ROOT=$env:GITHUB_WORKSPACE\clunk-install" `
+            "-DFFMPEG_ROOT=$env:GITHUB_WORKSPACE\ffmpeg"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build Vangers
+        shell: pwsh
+        run: |
+          cmake --build build --parallel
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Test Vangers
+        shell: pwsh
+        run: |
+          $env:PATH = "$env:GITHUB_WORKSPACE\vcpkg_installed\x64-windows\bin;$env:GITHUB_WORKSPACE\clunk-install\bin;$env:GITHUB_WORKSPACE\ffmpeg\bin;$env:PATH"
+          ctest --test-dir build --output-on-failure
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Prepare artifact folder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          Copy-Item build/src/vangers.exe artifacts/
+          Copy-Item build/surmap/surmap.exe artifacts/
+          Copy-Item vcpkg_installed/x64-windows/bin/*.dll artifacts/
+          Copy-Item clunk-install/bin/*.dll artifacts/
+          Copy-Item ffmpeg/bin/*.dll artifacts/
+          Get-ChildItem artifacts | Select-Object Name, Length
+
+      - name: Upload runtime artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Vangers-OSS-windows-msvc-x86_64
+          path: artifacts

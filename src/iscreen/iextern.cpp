@@ -137,27 +137,27 @@ extern int EffectInUsePriory, EffectInUse;
 
 extern XBuffer *iResBuf;
 
-extern char *iSTR_MP_Kills;
-extern char *iSTR_MP_Deaths;
-extern char *iSTR_MP_DeathTimeMin;
-extern char *iSTR_MP_DeathTimeMax;
-extern char *iSTR_MP_Kills_rate;
-extern char *iSTR_MP_Deaths_rate;
-extern char *iSTR_MP_Ware01_Delivery;
-extern char *iSTR_MP_Ware02_Delivery;
-extern char *iSTR_MP_Min_delivery_time;
-extern char *iSTR_MP_Max_delivery_time;
-extern char *iSTR_MP_StolenWares;
-extern char *iSTR_MP_Wares_lost;
-extern char *iSTR_MP_Total_time;
-extern char *iSTR_MP_Min_checkpoint_time;
-extern char *iSTR_MP_Max_checkpoint_time;
-extern char *iSTR_MP_1st_part_delivery;
-extern char *iSTR_MP_2nd_part_delivery;
-extern char *iSTR_MP_Mechos_frame;
-extern char *iSTR_MP_Mechos_assembled_in;
-extern char *iSTR_NONE;
-extern char *iSTR_Checkpoints_Number;
+extern const char *iSTR_MP_Kills;
+extern const char *iSTR_MP_Deaths;
+extern const char *iSTR_MP_DeathTimeMin;
+extern const char *iSTR_MP_DeathTimeMax;
+extern const char *iSTR_MP_Kills_rate;
+extern const char *iSTR_MP_Deaths_rate;
+extern const char *iSTR_MP_Ware01_Delivery;
+extern const char *iSTR_MP_Ware02_Delivery;
+extern const char *iSTR_MP_Min_delivery_time;
+extern const char *iSTR_MP_Max_delivery_time;
+extern const char *iSTR_MP_StolenWares;
+extern const char *iSTR_MP_Wares_lost;
+extern const char *iSTR_MP_Total_time;
+extern const char *iSTR_MP_Min_checkpoint_time;
+extern const char *iSTR_MP_Max_checkpoint_time;
+extern const char *iSTR_MP_1st_part_delivery;
+extern const char *iSTR_MP_2nd_part_delivery;
+extern const char *iSTR_MP_Mechos_frame;
+extern const char *iSTR_MP_Mechos_assembled_in;
+extern const char *iSTR_NONE;
+extern const char *iSTR_Checkpoints_Number;
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 

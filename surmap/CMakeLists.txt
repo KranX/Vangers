@@ -21,10 +21,27 @@ SET(surmap_SRCS
 	missed.cpp
 )
 
+IF(MSVC)
+	SET(surmap_COMPILE_OPTIONS /wd4100 /wd4189)
+	SET(vangers_surmap_COMPILE_OPTIONS /wd4100 /wd4189)
+ELSE()
+	SET(surmap_COMPILE_OPTIONS
+		-Wno-parentheses
+		-Wno-unused-variable
+		-Wno-unused-parameter
+		-Wno-register
+		-Wno-dangling-else
+		-Werror=missing-field-initializers
+		-Werror=uninitialized)
+	SET(vangers_surmap_COMPILE_OPTIONS
+		-Wno-parentheses
+		-Wno-unused-variable
+		-Wno-unused-parameter
+		-Wno-dangling-else)
+ENDIF()
+
 SET_SOURCE_FILES_PROPERTIES(${surmap_SRCS}
-		PROPERTIES COMPILE_FLAGS
-		"-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-register -Wno-dangling-else \
-		 -Werror=missing-field-initializers -Werror=uninitialized")
+		PROPERTIES COMPILE_OPTIONS "${surmap_COMPILE_OPTIONS}")
 
 SET(vangers_surmap_SRCS
 	"${PROJECT_SOURCE_DIR}/src/3d/3dobject.cpp"
@@ -47,8 +64,7 @@ SET(vangers_surmap_SRCS
 
 ADD_EXECUTABLE(surmap ${surmap_SRCS} ${vangers_surmap_SRCS})
 SET_SOURCE_FILES_PROPERTIES(${vangers_surmap_SRCS}
-		PROPERTIES COMPILE_FLAGS
-		"-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-dangling-else")
+		PROPERTIES COMPILE_OPTIONS "${vangers_surmap_COMPILE_OPTIONS}")
 
 TARGET_COMPILE_DEFINITIONS(surmap PUBLIC _SURMAP_ _SURMAP_ROUGH_)
 

@@ -4,7 +4,7 @@
 
 #include "../common.h"
 
-#ifdef _DEBUG
+#ifdef _LEGACY_VS_DEBUG
 #	include "../win32f.h"
 #endif
 
