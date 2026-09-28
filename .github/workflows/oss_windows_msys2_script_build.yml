@@ -1,0 +1,65 @@
+name: OSS Windows MSYS2 (script) Build
+
+# Builds Vangers through the packaging/msys2 helper scripts. install-msys2.ps1
+# installs MSYS2 with the official installer when it is not present and adds
+# the dependencies, build-msys2.ps1 builds/tests Vangers and run-msys2.ps1
+# stages the runtime (executables + DLLs).
+# MSYS2 is installed into a fresh directory under RUNNER_TEMP so the
+# auto-install path is exercised instead of the preinstalled C:\msys64.
+
+on:
+  push:
+    branches:
+      - master
+      - alpha
+      - windows_scripts
+  pull_request:
+    branches:
+      - master
+      - alpha
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oss-windows-msys2-script-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-2025-vs2026
+
+    env:
+      BUILD_TYPE: RelWithDebInfo
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install MSYS2 and dependencies
+        shell: pwsh
+        run: |
+          $msys2Root = Join-Path $env:RUNNER_TEMP 'msys64'
+          ./packaging/msys2/install-msys2.ps1 -Msys2Root $msys2Root
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build Vangers
+        shell: pwsh
+        run: |
+          $msys2Root = Join-Path $env:RUNNER_TEMP 'msys64'
+          ./packaging/msys2/build-msys2.ps1 -Msys2Root $msys2Root -BuildType $env:BUILD_TYPE
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Stage runtime
+        shell: pwsh
+        run: |
+          $msys2Root = Join-Path $env:RUNNER_TEMP 'msys64'
+          ./packaging/msys2/run-msys2.ps1 artifacts -NoRun -Msys2Root $msys2Root
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload runtime artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Vangers-OSS-windows-msys2-script-x86_64
+          path: artifacts
