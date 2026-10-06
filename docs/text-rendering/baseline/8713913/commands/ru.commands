@@ -1,0 +1,70 @@
+wait 2500
+shot ru-main-menu
+move 550 340
+wait 200
+down 1
+wait 120
+up 1
+wait 1000
+key Return
+wait 1500
+shot ru-credits-index
+wait 400
+move 200 205
+down 1
+wait 120
+up 1
+wait 1500
+shot ru-credits-detail
+wait 400
+key Escape
+wait 1200
+key Escape
+wait 1200
+move 230 45
+down 1
+wait 120
+up 1
+wait 1000
+key Return
+wait 1500
+shot ru-history
+wait 400
+key Space
+wait 6000
+shot ru-escave
+wait 400
+key Down
+wait 1500
+shot ru-escave-dialogue
+wait 400
+key Right
+wait 2500
+shot ru-trade
+move 340 80
+wait 1500
+shot ru-shop-hint
+wait 400
+key Tab
+wait 1500
+move 50 230
+down 1
+wait 120
+up 1
+wait 1500
+shot ru-save-open
+wait 400
+text Проверка Ёж
+wait 800
+shot ru-save-input
+wait 400
+key Escape
+wait 700
+key Escape
+wait 1200
+key Up
+wait 6000
+key Return
+wait 1600
+shot ru-inventory
+quit

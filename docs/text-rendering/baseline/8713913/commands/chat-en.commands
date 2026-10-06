@@ -1,0 +1,19 @@
+wait 2500
+key Return
+wait 1800
+shot en-chat-fixture-empty
+text Hello world
+wait 700
+shot en-chat-fixture-multichar
+key Backspace
+text H
+text e
+text l
+text l
+text o
+text  
+text 0
+text 9
+wait 800
+shot en-chat-fixture-ascii
+quit

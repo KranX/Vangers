@@ -1,0 +1,3 @@
+# Frozen evidence: preserve bytes and hashes, including original line endings
+# and meaningful trailing spaces in recorded SDL text-input commands.
+baseline/8713913/** -text -whitespace

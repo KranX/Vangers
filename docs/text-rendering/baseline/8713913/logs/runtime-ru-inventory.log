@@ -1,0 +1,119 @@
+Set locale. Result:C
+"VANGERS" by K-D Lab (SDL Version)
+Release (RUS)
+XGR_Screen::init
+SDL_CreateWindowAndRenderer
+SDL_Window created: 1280x960
+Load and set icon
+Can't set window icon: That operation is not supported
+SDL_SetRenderDrawColor
+SDL_RenderClear
+SDL_RenderPresent
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+SDL_HideCursor
+BASELINE frame=1 ticks=17 command=wait 2500
+XGR_Screen::set_resolution: 800, 600
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+Gamepad not found
+Set locale. Result:C
+ScriptFile::load_bscriptresource/iscreen/oftr2.scb file.
+Start load decomp trees
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+BASELINE frame=48 ticks=2541 command=move 230 45
+BASELINE frame=48 ticks=2541 command=down 1
+BASELINE frame=48 ticks=2541 command=wait 120
+BASELINE frame=51 ticks=2691 command=up 1
+BASELINE frame=51 ticks=2691 command=wait 1000
+BASELINE frame=71 ticks=3692 command=key Return
+BASELINE frame=71 ticks=3692 command=wait 1500
+uniVangPrepare
+ScriptFile::load_bscriptresource/actint/aci_hi2.scb file.
+ScriptFile::load_bscriptresource/actint/acs_low2.scb file.
+Layout for view 0x55d15b5a5b70 is already done
+Layout for view 0x55d15b51c000 is already done
+Layout for view 0x55d15b5a5d10 is already done
+Layout for view 0x55d15b5a5db0 is already done
+Warning: Bad seek in file.
+Warning: XStream::seek applies when the end of the file reached. resource/bml/sign.fnt
+DiagenDispatcher::init data/room.lst
+Start load decomp trees
+BASELINE frame=94 ticks=5298 command=key Space
+BASELINE frame=94 ticks=5299 command=wait 6500
+Layout for view 0x55d15b2ce6d0 is already done
+Layout for view 0x55d15b44bdd0 is already done
+Layout for view 0x55d15b29a9f0 is already done
+Layout for view 0x55d15b51dd70 is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+Layout for view 0x55d15b464460 is already done
+Layout for view 0x55d15b1e0c10 is already done
+Layout for view 0x55d15b497ea0 is already done
+Layout for view 0x55d15b495410 is already done
+Layout for view 0x55d15b4a1c60 is already done
+Layout for view 0x55d15b4b0f40 is already done
+Layout for view 0x55d15b469960 is already done
+Layout for view 0x55d15b5a5b70 is already done
+Layout for view 0x55d15b5a5b70 is already done
+Layout for view 0x55d15b51c000 is already done
+Layout for view 0x55d15b51c000 is already done
+Layout for view 0x55d15b5a5d10 is already done
+Layout for view 0x55d15b5a5d10 is already done
+Layout for view 0x55d15b5a5db0 is already done
+Layout for view 0x55d15b5a5db0 is already done
+vrtMap::analyzeINI thechain/fostral/world.ini
+Compressed format detected...
+Get compressed tables for V_SIZE:16384
+Start load decomp trees
+PrepareLight
+PalettePrepare
+iGameMap::iGameMap
+vrtMap::analyzeINI thechain/fostral/world.ini
+Compressed format detected...
+Start load decomp trees
+BASELINE frame=235 ticks=11834 command=key Up
+BASELINE frame=235 ticks=11834 command=wait 5000
+BASELINE frame=335 ticks=16846 command=key Return
+BASELINE frame=335 ticks=16846 command=wait 1000
+iGameMap::change
+BASELINE frame=355 ticks=17846 command=shot ru-world-inventory
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/ru-world-inventory.bmp size=800x600 frame=358 driver=dummy renderer=software ok=1
+BASELINE frame=358 ticks=17997 command=wait 500
+BASELINE frame=368 ticks=18497 command=quit
+Exit!

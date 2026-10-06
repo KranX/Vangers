@@ -1,0 +1,8 @@
+Fixture installed. Return on startup opens the unchanged Chat screen.
+No server, player-list or message-delivery verification is provided.
+Navigation fixture matches recorded run.
+Set locale. Result:C
+Compiled interface script: iscreen/oftr.scr -> resource/iscreen/oftr.scb
+Set locale. Result:C
+Compiled interface script: iscreen/oftr2.scr -> resource/iscreen/oftr2.scb
+Binary scripts match recorded chat run.

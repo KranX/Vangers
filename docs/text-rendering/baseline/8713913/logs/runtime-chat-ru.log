@@ -1,0 +1,60 @@
+Set locale. Result:C
+"VANGERS" by K-D Lab (SDL Version)
+Release (RUS)
+XGR_Screen::init
+SDL_CreateWindowAndRenderer
+SDL_Window created: 1280x960
+Load and set icon
+Can't set window icon: That operation is not supported
+SDL_SetRenderDrawColor
+SDL_RenderClear
+SDL_RenderPresent
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+SDL_HideCursor
+BASELINE frame=1 ticks=13 command=wait 2500
+XGR_Screen::set_resolution: 800, 600
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+Gamepad not found
+Set locale. Result:C
+ScriptFile::load_bscriptresource/iscreen/oftr2.scb file.
+Start load decomp trees
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+BASELINE frame=47 ticks=2520 command=key Return
+BASELINE frame=47 ticks=2520 command=wait 1800
+BASELINE frame=83 ticks=4326 command=text Привет мир
+BASELINE frame=83 ticks=4326 command=wait 700
+BASELINE frame=97 ticks=5030 command=shot ru-chat-fixture-multichar
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/ru-chat-fixture-multichar.bmp size=800x600 frame=100 driver=dummy renderer=software ok=1
+BASELINE frame=100 ticks=5182 command=key Backspace
+BASELINE frame=100 ticks=5182 command=text П
+BASELINE frame=100 ticks=5182 command=text р
+BASELINE frame=101 ticks=5233 command=text и
+BASELINE frame=101 ticks=5233 command=text в
+BASELINE frame=101 ticks=5233 command=text е
+BASELINE frame=101 ticks=5233 command=text т
+BASELINE frame=101 ticks=5233 command=text  
+BASELINE frame=102 ticks=5284 command=text Ё
+BASELINE frame=102 ticks=5284 command=text ж
+BASELINE frame=102 ticks=5284 command=text  
+BASELINE frame=102 ticks=5284 command=text 0
+BASELINE frame=102 ticks=5284 command=text 9
+BASELINE frame=102 ticks=5284 command=wait 700
+BASELINE frame=116 ticks=5991 command=shot ru-chat-fixture-cyrillic
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/ru-chat-fixture-cyrillic.bmp size=800x600 frame=119 driver=dummy renderer=software ok=1
+BASELINE frame=119 ticks=6141 command=text  
+BASELINE frame=119 ticks=6141 command=text ä
+BASELINE frame=119 ticks=6141 command=text  
+BASELINE frame=120 ticks=6192 command=text 日
+BASELINE frame=120 ticks=6192 command=wait 700
+BASELINE frame=134 ticks=6892 command=shot ru-chat-fixture-unsupported
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/ru-chat-fixture-unsupported.bmp size=800x600 frame=137 driver=dummy renderer=software ok=1
+BASELINE frame=137 ticks=7042 command=wait 500
+BASELINE frame=147 ticks=7543 command=quit
+Exit!

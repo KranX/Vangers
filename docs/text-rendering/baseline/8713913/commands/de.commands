@@ -1,0 +1,4 @@
+wait 2500
+shot german-argument-main-menu
+wait 800
+quit

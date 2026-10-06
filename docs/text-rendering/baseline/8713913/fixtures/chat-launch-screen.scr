@@ -1,0 +1,66 @@
+
+Screen "Baseline Chat Launch" {
+ screen_offs 0
+ block_global_obj
+ default_obj "Chat Option"
+Object "Chat Option"
+	{
+		x	$Server_Info_screen_Chat_Option_PosX
+		y	{ $MSERVER_START_Y + $MSERVER_DELTA_Y * 6 }
+
+		Element STRING {
+			align_x center
+
+			terrain_num	$TERRAIN2
+
+			font		3
+			space		2
+			null_level	$DEFAULT_NULL
+			string		$iSTR_CHAT
+		}
+		Event {
+			key $VK_LBUTTON
+			key $VK_RETURN
+
+			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
+			EvComm {
+				low_obj 	"Chat Option"
+				time		$PRESS_OBJ_TIME
+				start_time	0
+			}
+			EvComm {
+				ext_event	$iEXT_ACTIVATE_CHAT 0
+				start_time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			}
+			EvComm {
+				move2screen	"Chat screen"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+		Event {
+			key $VK_RBUTTON
+
+			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
+			EvComm {
+				ext_event	$iEXT_ACTIVATE_CHAT 0
+				start_time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
+			}
+			EvComm {
+				smooth_obj	"Chat Option" 2
+				start_time	0
+				time		$SMOOTH_OBJ_TIME
+			}
+			EvComm {
+				hide_obj	"Chat Option"
+				start_time	$SMOOTH_OBJ_TIME
+				time		$HIDE_OBJ_TIME
+			}
+			EvComm {
+				move2screen	"Chat screen"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+			}
+		}
+	}
+}

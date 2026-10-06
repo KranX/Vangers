@@ -1,0 +1,177 @@
+wait 2500
+shot en-main-menu
+move 540 340
+wait 300
+down 1
+wait 100
+up 1
+wait 2000
+shot en-credits
+key Return
+wait 2000
+shot en-credits-open
+move 200 205
+wait 300
+down 1
+wait 120
+up 1
+wait 1500
+shot en-credits-detail
+key Escape
+wait 1500
+key Escape
+wait 1500
+move 230 45
+wait 300
+down 1
+wait 120
+up 1
+wait 1200
+key Return
+wait 1500
+shot en-history
+key Space
+wait 7000
+shot en-new-game
+shot en-escave
+key Tab
+wait 2000
+shot en-escave-tab
+move 500 220
+down 1
+wait 120
+up 1
+wait 1000
+shot en-escave-click
+move 745 55
+down 1
+wait 100
+up 1
+wait 1200
+shot en-escave-next
+key Down
+wait 1000
+key Down
+wait 1000
+key Down
+wait 1000
+shot en-escave-dialogue
+wait 700
+move 735 550
+wait 1500
+shot en-trade-hint
+down 1
+wait 120
+up 1
+wait 2000
+shot en-trade
+key Right
+wait 2500
+shot en-trade-open
+move 340 80
+wait 1300
+shot en-shop-hint
+wait 300
+down 1
+wait 120
+up 1
+wait 1700
+shot en-trade-items
+wait 300
+key Escape
+wait 1500
+move 50 230
+down 1
+wait 120
+up 1
+wait 1600
+shot en-save-screen
+key Escape
+wait 700
+key Tab
+wait 1600
+move 50 230
+wait 300
+down 1
+wait 120
+up 1
+wait 1500
+shot en-save-open
+text Baseline 09 - Test
+wait 800
+shot en-save-input
+wait 400
+key Return
+wait 1500
+key Up
+wait 5000
+shot en-world
+wait 400
+key Return
+wait 1500
+shot en-inventory
+move 670 380
+down 1
+wait 120
+up 1
+wait 1600
+shot en-after-save
+wait 400
+key Up
+wait 6000
+shot en-world-open
+wait 400
+key Return
+wait 1500
+shot en-inventory-open
+shot en-inventory-idle
+wait 400
+key Escape
+wait 1300
+shot en-pause-world
+key Escape
+wait 800
+key Right
+wait 1600
+key F3
+wait 1300
+move 220 240
+down 1
+wait 120
+up 1
+wait 700
+move 600 295
+down 1
+wait 120
+up 1
+wait 900
+shot en-shop-purchase-probe
+move 700 400
+wait 800
+shot en-shop-item-position
+wait 300
+key Tab
+wait 1000
+key Up
+wait 5000
+key Return
+wait 900
+shot en-inventory-item
+key Escape
+wait 1000
+move 400 405
+down 1
+wait 120
+up 1
+wait 1500
+shot en-abort-probe
+move 250 110
+down 1
+wait 120
+up 1
+wait 900
+key Return
+wait 1600
+shot en-load-slots
+wait 500
+quit

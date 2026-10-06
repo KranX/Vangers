@@ -1,0 +1,11 @@
+--- /home/stalkerg/projects/vangers-srv/vangers-srv/src/server/server.rs	2026-09-26 23:44:03.134145730 +0900
++++ /home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/server-lab/vangers-srv/src/server/server.rs	2026-10-06 10:29:40.492985146 +0900
+@@ -305,7 +305,7 @@
+         let (client_tx, mut clients_rx) = mpsc::channel(50);
+         let (event_tx, mut event_rx) = mpsc::channel::<Event>(10);
+ 
+-        let endpoint = format!("0.0.0.0:{}", self.conf.port);
++        let endpoint = format!("127.0.0.1:{}", self.conf.port);
+         println!("Server is listening on: {}", endpoint);
+         let listener = TcpListener::bind(endpoint).await?;
+         let mut disconnected_cleanup_tick = time::interval(Duration::from_secs(1));

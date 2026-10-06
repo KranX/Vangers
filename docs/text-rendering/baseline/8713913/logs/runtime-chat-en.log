@@ -1,0 +1,50 @@
+Set locale. Result:C
+"VANGERS: One For The Road" by K-D Lab (SDL Version)
+Release (ENG)
+XGR_Screen::init
+SDL_CreateWindowAndRenderer
+SDL_Window created: 1280x960
+Load and set icon
+Can't set window icon: That operation is not supported
+SDL_SetRenderDrawColor
+SDL_RenderClear
+SDL_RenderPresent
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+SDL_HideCursor
+BASELINE frame=1 ticks=21 command=wait 2500
+XGR_Screen::set_resolution: 800, 600
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+Gamepad not found
+Set locale. Result:C
+ScriptFile::load_bscriptresource/iscreen/oftr.scb file.
+Start load decomp trees
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+BASELINE frame=46 ticks=2552 command=key Return
+BASELINE frame=46 ticks=2552 command=wait 1800
+BASELINE frame=82 ticks=4365 command=shot en-chat-fixture-empty
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-chat-fixture-empty.bmp size=800x600 frame=85 driver=dummy renderer=software ok=1
+BASELINE frame=85 ticks=4516 command=text Hello world
+BASELINE frame=85 ticks=4517 command=wait 700
+BASELINE frame=99 ticks=5218 command=shot en-chat-fixture-multichar
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-chat-fixture-multichar.bmp size=800x600 frame=102 driver=dummy renderer=software ok=1
+BASELINE frame=562 ticks=28452 command=key Backspace
+BASELINE frame=562 ticks=28452 command=text H
+BASELINE frame=562 ticks=28452 command=text e
+BASELINE frame=563 ticks=28502 command=text l
+BASELINE frame=563 ticks=28502 command=text l
+BASELINE frame=563 ticks=28502 command=text o
+BASELINE frame=563 ticks=28502 command=text  
+BASELINE frame=563 ticks=28502 command=text 0
+BASELINE frame=564 ticks=28552 command=text 9
+BASELINE frame=564 ticks=28552 command=wait 800
+BASELINE frame=580 ticks=29356 command=shot en-chat-fixture-ascii
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-chat-fixture-ascii.bmp size=800x600 frame=583 driver=dummy renderer=software ok=1
+BASELINE frame=1687 ticks=84847 command=quit
+Exit!

@@ -1,0 +1,17 @@
+wait 2500
+move 230 45
+down 1
+wait 120
+up 1
+wait 1000
+key Return
+wait 1500
+key Space
+wait 6500
+key Up
+wait 5000
+key Return
+wait 1000
+shot ru-world-inventory
+wait 500
+quit

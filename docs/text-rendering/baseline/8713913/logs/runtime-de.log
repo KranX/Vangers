@@ -1,0 +1,34 @@
+Unknown parameter: '-german'
+Set locale. Result:C
+"VANGERS: One For The Road" by K-D Lab (SDL Version)
+Release (ENG)
+XGR_Screen::init
+SDL_CreateWindowAndRenderer
+SDL_Window created: 1280x960
+Load and set icon
+Can't set window icon: That operation is not supported
+SDL_SetRenderDrawColor
+SDL_RenderClear
+SDL_RenderPresent
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+SDL_HideCursor
+BASELINE frame=1 ticks=16 command=wait 2500
+XGR_Screen::set_resolution: 800, 600
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+Gamepad not found
+Set locale. Result:C
+ScriptFile::load_bscriptresource/iscreen/oftr.scb file.
+Start load decomp trees
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+BASELINE frame=47 ticks=2535 command=shot german-argument-main-menu
+BASELINE frame=47 ticks=2535 command=wait 800
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/german-argument-main-menu.bmp size=800x600 frame=50 driver=dummy renderer=software ok=1
+BASELINE frame=63 ticks=3336 command=quit
+Exit!

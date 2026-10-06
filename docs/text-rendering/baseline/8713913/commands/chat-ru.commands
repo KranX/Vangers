@@ -1,0 +1,29 @@
+wait 2500
+key Return
+wait 1800
+text Привет мир
+wait 700
+shot ru-chat-fixture-multichar
+key Backspace
+text П
+text р
+text и
+text в
+text е
+text т
+text  
+text Ё
+text ж
+text  
+text 0
+text 9
+wait 700
+shot ru-chat-fixture-cyrillic
+text  
+text ä
+text  
+text 日
+wait 700
+shot ru-chat-fixture-unsupported
+wait 500
+quit

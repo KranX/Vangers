@@ -1,0 +1,378 @@
+Set locale. Result:C
+"VANGERS: One For The Road" by K-D Lab (SDL Version)
+Release (ENG)
+XGR_Screen::init
+SDL_CreateWindowAndRenderer
+SDL_Window created: 1280x960
+Load and set icon
+Can't set window icon: That operation is not supported
+SDL_SetRenderDrawColor
+SDL_RenderClear
+SDL_RenderPresent
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+SDL_HideCursor
+BASELINE frame=1 ticks=16 command=wait 2500
+XGR_Screen::set_resolution: 800, 600
+XGR32_ScreenSurface = SDL_CreateSurface
+SDL_SetSurfacePalette
+SDL_CreateTexture sdlTexture
+Gamepad not found
+Set locale. Result:C
+ScriptFile::load_bscriptresource/iscreen/oftr.scb file.
+Start load decomp trees
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+BASELINE frame=47 ticks=2550 command=shot en-main-menu
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-main-menu.bmp size=800x600 frame=50 driver=dummy renderer=software ok=1
+BASELINE frame=654 ticks=33056 command=move 540 340
+BASELINE frame=654 ticks=33056 command=wait 300
+BASELINE frame=660 ticks=33356 command=down 1
+BASELINE frame=660 ticks=33357 command=wait 100
+BASELINE frame=662 ticks=33457 command=up 1
+BASELINE frame=662 ticks=33457 command=wait 2000
+BASELINE frame=702 ticks=35464 command=shot en-credits
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-credits.bmp size=800x600 frame=705 driver=dummy renderer=software ok=1
+BASELINE frame=1016 ticks=51243 command=key Return
+BASELINE frame=1016 ticks=51244 command=wait 2000
+BASELINE frame=1056 ticks=53247 command=shot en-credits-open
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-credits-open.bmp size=800x600 frame=1059 driver=dummy renderer=software ok=1
+BASELINE frame=1319 ticks=66469 command=move 200 205
+BASELINE frame=1319 ticks=66469 command=wait 300
+BASELINE frame=1325 ticks=66769 command=down 1
+BASELINE frame=1325 ticks=66769 command=wait 120
+BASELINE frame=1328 ticks=66921 command=up 1
+BASELINE frame=1328 ticks=66921 command=wait 1500
+BASELINE frame=1358 ticks=68423 command=shot en-credits-detail
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-credits-detail.bmp size=800x600 frame=1361 driver=dummy renderer=software ok=1
+BASELINE frame=2003 ticks=100830 command=key Escape
+BASELINE frame=2003 ticks=100830 command=wait 1500
+BASELINE frame=2033 ticks=102336 command=key Escape
+BASELINE frame=2033 ticks=102336 command=wait 1500
+BASELINE frame=2063 ticks=103844 command=move 230 45
+BASELINE frame=2063 ticks=103844 command=wait 300
+BASELINE frame=2069 ticks=104144 command=down 1
+BASELINE frame=2069 ticks=104144 command=wait 120
+BASELINE frame=2072 ticks=104294 command=up 1
+BASELINE frame=2072 ticks=104295 command=wait 1200
+BASELINE frame=2096 ticks=105499 command=key Return
+BASELINE frame=2096 ticks=105499 command=wait 1500
+BASELINE frame=2126 ticks=107004 command=shot en-history
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-history.bmp size=800x600 frame=2129 driver=dummy renderer=software ok=1
+BASELINE frame=2304 ticks=115935 command=key Space
+BASELINE frame=2304 ticks=115935 command=wait 7000
+uniVangPrepare
+ScriptFile::load_bscriptresource/actint/aci_hi.scb file.
+ScriptFile::load_bscriptresource/actint/acs_low.scb file.
+Layout for view 0x5616e8b93130 is already done
+Layout for view 0x5616e8b7aa60 is already done
+Layout for view 0x5616e8b7a920 is already done
+Layout for view 0x5616e8b93090 is already done
+Warning: Bad seek in file.
+Warning: XStream::seek applies when the end of the file reached. resource/bml/sign.fnt
+DiagenDispatcher::init data/room.lst
+Strange deltas clockDelta:1 Timer:1
+Start load decomp trees
+BASELINE frame=2448 ticks=122965 command=shot en-new-game
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-new-game.bmp size=800x600 frame=2451 driver=dummy renderer=software ok=1
+BASELINE frame=4726 ticks=237341 command=shot en-escave
+BASELINE frame=4727 ticks=237391 command=key Tab
+BASELINE frame=4727 ticks=237391 command=wait 2000
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-escave.bmp size=800x600 frame=4729 driver=dummy renderer=software ok=1
+BASELINE frame=4767 ticks=239398 command=shot en-escave-tab
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-escave-tab.bmp size=800x600 frame=4770 driver=dummy renderer=software ok=1
+BASELINE frame=5038 ticks=252999 command=move 500 220
+BASELINE frame=5038 ticks=252999 command=down 1
+BASELINE frame=5038 ticks=252999 command=wait 120
+BASELINE frame=5041 ticks=253151 command=up 1
+BASELINE frame=5041 ticks=253151 command=wait 1000
+BASELINE frame=5061 ticks=254159 command=shot en-escave-click
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-escave-click.bmp size=800x600 frame=5064 driver=dummy renderer=software ok=1
+BASELINE frame=5285 ticks=265398 command=move 745 55
+BASELINE frame=5285 ticks=265398 command=down 1
+BASELINE frame=5285 ticks=265398 command=wait 100
+BASELINE frame=5287 ticks=265498 command=up 1
+BASELINE frame=5287 ticks=265498 command=wait 1200
+BASELINE frame=5311 ticks=266705 command=shot en-escave-next
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-escave-next.bmp size=800x600 frame=5314 driver=dummy renderer=software ok=1
+BASELINE frame=5540 ticks=278195 command=key Down
+BASELINE frame=5540 ticks=278195 command=wait 1000
+BASELINE frame=5560 ticks=279200 command=key Down
+BASELINE frame=5560 ticks=279200 command=wait 1000
+BASELINE frame=5580 ticks=280205 command=key Down
+BASELINE frame=5580 ticks=280205 command=wait 1000
+BASELINE frame=5600 ticks=281207 command=shot en-escave-dialogue
+BASELINE frame=5601 ticks=281257 command=wait 700
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-escave-dialogue.bmp size=800x600 frame=5603 driver=dummy renderer=software ok=1
+BASELINE frame=5615 ticks=281962 command=move 735 550
+BASELINE frame=5615 ticks=281962 command=wait 1500
+BASELINE frame=5645 ticks=283468 command=shot en-trade-hint
+BASELINE frame=5645 ticks=283468 command=down 1
+BASELINE frame=5646 ticks=283518 command=wait 120
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-trade-hint.bmp size=800x600 frame=5648 driver=dummy renderer=software ok=1
+BASELINE frame=5649 ticks=283668 command=up 1
+BASELINE frame=5649 ticks=283668 command=wait 2000
+BASELINE frame=5689 ticks=285679 command=shot en-trade
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-trade.bmp size=800x600 frame=5692 driver=dummy renderer=software ok=1
+BASELINE frame=5876 ticks=295078 command=key Right
+BASELINE frame=5876 ticks=295078 command=wait 2500
+BASELINE frame=5926 ticks=297584 command=shot en-trade-open
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-trade-open.bmp size=800x600 frame=5929 driver=dummy renderer=software ok=1
+BASELINE frame=6204 ticks=311535 command=move 340 80
+BASELINE frame=6204 ticks=311535 command=wait 1300
+BASELINE frame=6230 ticks=312843 command=shot en-shop-hint
+BASELINE frame=6230 ticks=312843 command=wait 300
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-shop-hint.bmp size=800x600 frame=6233 driver=dummy renderer=software ok=1
+BASELINE frame=6236 ticks=313145 command=down 1
+BASELINE frame=6236 ticks=313145 command=wait 120
+BASELINE frame=6239 ticks=313296 command=up 1
+BASELINE frame=6239 ticks=313296 command=wait 1700
+BASELINE frame=6273 ticks=315001 command=shot en-trade-items
+BASELINE frame=6274 ticks=315051 command=wait 300
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-trade-items.bmp size=800x600 frame=6276 driver=dummy renderer=software ok=1
+BASELINE frame=6280 ticks=315353 command=key Escape
+BASELINE frame=6280 ticks=315353 command=wait 1500
+BASELINE frame=6310 ticks=316862 command=move 50 230
+BASELINE frame=6310 ticks=316862 command=down 1
+BASELINE frame=6311 ticks=316912 command=wait 120
+BASELINE frame=6314 ticks=317062 command=up 1
+BASELINE frame=6314 ticks=317062 command=wait 1600
+BASELINE frame=6346 ticks=318667 command=shot en-save-screen
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-save-screen.bmp size=800x600 frame=6349 driver=dummy renderer=software ok=1
+BASELINE frame=6772 ticks=340040 command=key Escape
+BASELINE frame=6772 ticks=340040 command=wait 700
+BASELINE frame=6786 ticks=340743 command=key Tab
+BASELINE frame=6786 ticks=340743 command=wait 1600
+BASELINE frame=6818 ticks=342353 command=move 50 230
+BASELINE frame=6818 ticks=342353 command=wait 300
+BASELINE frame=6824 ticks=342654 command=down 1
+BASELINE frame=6824 ticks=342654 command=wait 120
+BASELINE frame=6827 ticks=342804 command=up 1
+BASELINE frame=6827 ticks=342804 command=wait 1500
+BASELINE frame=6857 ticks=344314 command=shot en-save-open
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-save-open.bmp size=800x600 frame=6860 driver=dummy renderer=software ok=1
+BASELINE frame=7116 ticks=357323 command=text Baseline 09 - Test
+BASELINE frame=7116 ticks=357323 command=wait 800
+BASELINE frame=7132 ticks=358127 command=shot en-save-input
+BASELINE frame=7132 ticks=358127 command=wait 400
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-save-input.bmp size=800x600 frame=7135 driver=dummy renderer=software ok=1
+BASELINE frame=7140 ticks=358530 command=key Return
+BASELINE frame=7140 ticks=358530 command=wait 1500
+BASELINE frame=7170 ticks=360032 command=key Up
+BASELINE frame=7170 ticks=360032 command=wait 5000
+BASELINE frame=7270 ticks=365059 command=shot en-world
+BASELINE frame=7270 ticks=365059 command=wait 400
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-world.bmp size=800x600 frame=7273 driver=dummy renderer=software ok=1
+BASELINE frame=7278 ticks=365462 command=key Return
+BASELINE frame=7278 ticks=365462 command=wait 1500
+BASELINE frame=7308 ticks=366966 command=shot en-inventory
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-inventory.bmp size=800x600 frame=7311 driver=dummy renderer=software ok=1
+BASELINE frame=10462 ticks=525301 command=move 670 380
+BASELINE frame=10462 ticks=525301 command=down 1
+BASELINE frame=10463 ticks=525351 command=wait 120
+BASELINE frame=10466 ticks=525502 command=up 1
+BASELINE frame=10466 ticks=525502 command=wait 1600
+BASELINE frame=10498 ticks=527111 command=shot en-after-save
+BASELINE frame=10499 ticks=527162 command=wait 400
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-after-save.bmp size=800x600 frame=10501 driver=dummy renderer=software ok=1
+BASELINE frame=10507 ticks=527564 command=key Up
+BASELINE frame=10507 ticks=527564 command=wait 6000
+Layout for view 0x5616e8160330 is already done
+Layout for view 0x5616e81668b0 is already done
+Layout for view 0x5616e82ffbe0 is already done
+Layout for view 0x5616e8b7c7d0 is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+Layout for view 0x5616e832ab00 is already done
+Layout for view 0x5616e8328070 is already done
+Layout for view 0x5616e8334860 is already done
+Layout for view 0x5616e8319970 is already done
+Layout for view 0x5616e830c690 is already done
+Layout for view 0x5616e82e8080 is already done
+Layout for view 0x5616e8343b30 is already done
+Layout for view 0x5616e8b93130 is already done
+Layout for view 0x5616e8b93130 is already done
+Layout for view 0x5616e8b7aa60 is already done
+Layout for view 0x5616e8b7aa60 is already done
+Layout for view 0x5616e8b7a920 is already done
+Layout for view 0x5616e8b7a920 is already done
+Layout for view 0x5616e8b93090 is already done
+Layout for view 0x5616e8b93090 is already done
+vrtMap::analyzeINI thechain/fostral/world.ini
+Compressed format detected...
+Get compressed tables for V_SIZE:16384
+Start load decomp trees
+PrepareLight
+PalettePrepare
+iGameMap::iGameMap
+vrtMap::analyzeINI thechain/fostral/world.ini
+Compressed format detected...
+Start load decomp trees
+Strange deltas clockDelta:1 Timer:1
+BASELINE frame=10622 ticks=533606 command=shot en-world-open
+BASELINE frame=10623 ticks=533656 command=wait 400
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-world-open.bmp size=800x600 frame=10625 driver=dummy renderer=software ok=1
+BASELINE frame=10631 ticks=534057 command=key Return
+BASELINE frame=10631 ticks=534057 command=wait 1500
+iGameMap::change
+BASELINE frame=10661 ticks=535560 command=shot en-inventory-open
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-inventory-open.bmp size=800x600 frame=10664 driver=dummy renderer=software ok=1
+Start load decomp trees
+BASELINE frame=11310 ticks=567616 command=shot en-inventory-idle
+BASELINE frame=11310 ticks=567616 command=wait 400
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-inventory-idle.bmp size=800x600 frame=11313 driver=dummy renderer=software ok=1
+BASELINE frame=11318 ticks=568016 command=key Escape
+BASELINE frame=11318 ticks=568016 command=wait 1300
+BASELINE frame=11344 ticks=569321 command=shot en-pause-world
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-pause-world.bmp size=800x600 frame=11347 driver=dummy renderer=software ok=1
+BASELINE frame=13414 ticks=673130 command=key Escape
+BASELINE frame=13414 ticks=673130 command=wait 800
+BASELINE frame=13430 ticks=673931 command=key Right
+BASELINE frame=13430 ticks=673931 command=wait 1600
+BASELINE frame=13462 ticks=675540 command=key F3
+BASELINE frame=13462 ticks=675540 command=wait 1300
+BASELINE frame=13488 ticks=676843 command=move 220 240
+BASELINE frame=13488 ticks=676843 command=down 1
+BASELINE frame=13488 ticks=676843 command=wait 120
+BASELINE frame=13491 ticks=676993 command=up 1
+BASELINE frame=13491 ticks=676993 command=wait 700
+BASELINE frame=13505 ticks=677694 command=move 600 295
+BASELINE frame=13505 ticks=677694 command=down 1
+BASELINE frame=13506 ticks=677744 command=wait 120
+BASELINE frame=13509 ticks=677895 command=up 1
+BASELINE frame=13509 ticks=677895 command=wait 900
+BASELINE frame=13527 ticks=678798 command=shot en-shop-purchase-probe
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-shop-purchase-probe.bmp size=800x600 frame=13530 driver=dummy renderer=software ok=1
+BASELINE frame=13976 ticks=701299 command=move 700 400
+BASELINE frame=13976 ticks=701299 command=wait 800
+BASELINE frame=13992 ticks=702101 command=shot en-shop-item-position
+BASELINE frame=13993 ticks=702151 command=wait 300
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-shop-item-position.bmp size=800x600 frame=13995 driver=dummy renderer=software ok=1
+BASELINE frame=13999 ticks=702451 command=key Tab
+BASELINE frame=13999 ticks=702451 command=wait 1000
+BASELINE frame=14019 ticks=703454 command=key Up
+BASELINE frame=14019 ticks=703454 command=wait 5000
+Layout for view 0x5616e8160330 is already done
+Layout for view 0x5616e81668b0 is already done
+Layout for view 0x5616e82ffbe0 is already done
+Layout for view 0x5616e8b7c7d0 is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+  WARNING: layout is already done
+Layout for view 0x5616e832ab00 is already done
+Layout for view 0x5616e8328070 is already done
+Layout for view 0x5616e8334860 is already done
+Layout for view 0x5616e8319970 is already done
+Layout for view 0x5616e830c690 is already done
+Layout for view 0x5616e82e8080 is already done
+Layout for view 0x5616e8343b30 is already done
+Layout for view 0x5616e8b93130 is already done
+Layout for view 0x5616e8b93130 is already done
+Layout for view 0x5616e8b7aa60 is already done
+Layout for view 0x5616e8b7aa60 is already done
+Layout for view 0x5616e8b7a920 is already done
+Layout for view 0x5616e8b7a920 is already done
+Layout for view 0x5616e8b93090 is already done
+Layout for view 0x5616e8b93090 is already done
+vrtMap::analyzeINI thechain/fostral/world.ini
+Compressed format detected...
+Start load decomp trees
+Strange deltas clockDelta:172 Timer:50
+BASELINE frame=14114 ticks=708471 command=key Return
+BASELINE frame=14114 ticks=708471 command=wait 900
+iGameMap::change
+BASELINE frame=14132 ticks=709373 command=shot en-inventory-item
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-inventory-item.bmp size=800x600 frame=14135 driver=dummy renderer=software ok=1
+BASELINE frame=15158 ticks=760828 command=key Escape
+BASELINE frame=15158 ticks=760828 command=wait 1000
+road.KeyCenter:0x7ffc1e5bb1c0
+aciScreenResource::change_coords(dx=80, dy=60)
+aciScreenResource::change_coords(dx=80, dy=60)
+BASELINE frame=15178 ticks=761829 command=move 400 405
+BASELINE frame=15178 ticks=761829 command=down 1
+BASELINE frame=15178 ticks=761829 command=wait 120
+aciScreenResource::change_coords(dx=-80, dy=-60)
+aciScreenResource::change_coords(dx=-80, dy=-60)
+BASELINE frame=15181 ticks=762000 command=up 1
+BASELINE frame=15181 ticks=762000 command=wait 1500
+Start load decomp trees
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+BASELINE frame=15189 ticks=763535 command=shot en-abort-probe
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-abort-probe.bmp size=800x600 frame=15192 driver=dummy renderer=software ok=1
+XGR_Screen::set_resolution: 800, 600
+Resolution didn't change
+BASELINE frame=15389 ticks=773554 command=move 250 110
+BASELINE frame=15389 ticks=773555 command=down 1
+BASELINE frame=15389 ticks=773555 command=wait 120
+BASELINE frame=15392 ticks=773705 command=up 1
+BASELINE frame=15392 ticks=773705 command=wait 900
+BASELINE frame=15410 ticks=774605 command=key Return
+BASELINE frame=15410 ticks=774605 command=wait 1600
+BASELINE frame=15442 ticks=776206 command=shot en-load-slots
+BASELINE frame=15443 ticks=776256 command=wait 500
+BASELINE capture=/home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/captures/en-load-slots.bmp size=800x600 frame=15445 driver=dummy renderer=software ok=1
+BASELINE frame=15453 ticks=776756 command=quit
+Exit!

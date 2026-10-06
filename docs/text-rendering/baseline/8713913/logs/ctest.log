@@ -1,0 +1,21 @@
+Test project /home/stalkerg/projects/vangers-font-baseline/2026-10-06-8713913/build
+    Start 1: xsocket_loopback
+1/8 Test #1: xsocket_loopback .................   Passed    0.61 sec
+    Start 2: legacy_data_compat
+2/8 Test #2: legacy_data_compat ...............   Passed    0.01 sec
+    Start 3: sdl_event_buffer
+3/8 Test #3: sdl_event_buffer .................   Passed    0.00 sec
+    Start 4: network_control_flags
+4/8 Test #4: network_control_flags ............   Passed    0.00 sec
+    Start 5: traction_control_cadence
+5/8 Test #5: traction_control_cadence .........   Passed    0.00 sec
+    Start 6: settings
+6/8 Test #6: settings .........................   Passed    0.02 sec
+    Start 7: text_encoding
+7/8 Test #7: text_encoding ....................   Passed    0.00 sec
+    Start 8: legacy_settings_migration
+8/8 Test #8: legacy_settings_migration ........   Passed    0.00 sec
+
+100% tests passed out of 8
+
+Total Test time (real) =   0.64 sec
