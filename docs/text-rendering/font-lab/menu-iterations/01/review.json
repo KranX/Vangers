@@ -1,0 +1,8 @@
+{
+  "status": "REJECTED",
+  "visual": [
+    "Viewed actual game menu, native game strings and enlarged outlines.",
+    "Naive height-as-coverage loses upper ornaments and breaks curved strokes; height texture incorrectly becomes holes.",
+    "Must trace height footprint, not relief intensity. New lowercase/digits too thin relative to broad original caps."
+  ]
+}

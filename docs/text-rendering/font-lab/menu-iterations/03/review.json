@@ -1,0 +1,8 @@
+{
+  "status": "INTERMEDIATE",
+  "visual": [
+    "Viewed original menu labels and 50/100 ppem outline sheet.",
+    "0.85px footprint smoothing preserves ornament shape without large pixel steps.",
+    "Latin lowercase weight now closer; Cyrillic cap-derived lowercase still rougher, digits too light beside capitals."
+  ]
+}

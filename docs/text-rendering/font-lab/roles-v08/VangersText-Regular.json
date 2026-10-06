@@ -1,0 +1,1844 @@
+{
+  "settings": {
+    "id": "08-role-text",
+    "family": "Vangers Text",
+    "baseline": 15,
+    "spacing": 1,
+    "proof_scale": 2,
+    "supersample": 12,
+    "threshold": 0.4,
+    "blur": 0.3,
+    "alphamax": 1.0,
+    "opttolerance": 1.5,
+    "note": "Preserve cfont00 placement, re-anchor rasterized curves to each original glyph; no common-baseline normalization.",
+    "resample": "bicubic",
+    "match_ink": true,
+    "ink_factor": 1.015,
+    "guide_source": "data/resource/actint/fonts/cfont03.bml",
+    "guide_blend": 0.95,
+    "measured_vertical_metrics": true,
+    "upm": 1800,
+    "overrides": {
+      ".": {
+        "ink_factor": 1.04,
+        "opttolerance": 0.8
+      },
+      ":": {
+        "ink_factor": 1.04,
+        "opttolerance": 0.8
+      },
+      ";": {
+        "ink_factor": 1.04,
+        "opttolerance": 0.8
+      },
+      "i": {
+        "ink_factor": 1.04,
+        "opttolerance": 0.8
+      },
+      "j": {
+        "ink_factor": 1.04,
+        "opttolerance": 0.8
+      }
+    },
+    "truetype_winding": true,
+    "role": "text",
+    "release_family": "Vangers Text",
+    "source": "data/resource/actint/fonts/cfont00.bml"
+  },
+  "source": {
+    "width": 10,
+    "height": 18,
+    "kind": "aci-range",
+    "sha256": "8ee89cc9f1748d58e20e0a8c8e0d0575b57e293ddfe003edfd0fbc5e6027975a",
+    "path": "data/resource/actint/fonts/cfont00.bml"
+  },
+  "units_per_em": 1800,
+  "baseline": 15,
+  "core_characters": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяЁё",
+  "cmap": {
+    "32": "uni0020",
+    "33": "uni0021",
+    "34": "uni0022",
+    "35": "uni0023",
+    "36": "uni0024",
+    "37": "uni0025",
+    "38": "uni0026",
+    "39": "uni0027",
+    "40": "uni0028",
+    "41": "uni0029",
+    "42": "uni002A",
+    "43": "uni002B",
+    "44": "uni002C",
+    "45": "uni002D",
+    "46": "uni002E",
+    "47": "uni002F",
+    "48": "uni0030",
+    "49": "uni0031",
+    "50": "uni0032",
+    "51": "uni0033",
+    "52": "uni0034",
+    "53": "uni0035",
+    "54": "uni0036",
+    "55": "uni0037",
+    "56": "uni0038",
+    "57": "uni0039",
+    "58": "uni003A",
+    "59": "uni003B",
+    "60": "uni003C",
+    "61": "uni003D",
+    "62": "uni003E",
+    "63": "uni003F",
+    "64": "uni0040",
+    "65": "uni0041",
+    "66": "uni0042",
+    "67": "uni0043",
+    "68": "uni0044",
+    "69": "uni0045",
+    "70": "uni0046",
+    "71": "uni0047",
+    "72": "uni0048",
+    "73": "uni0049",
+    "74": "uni004A",
+    "75": "uni004B",
+    "76": "uni004C",
+    "77": "uni004D",
+    "78": "uni004E",
+    "79": "uni004F",
+    "80": "uni0050",
+    "81": "uni0051",
+    "82": "uni0052",
+    "83": "uni0053",
+    "84": "uni0054",
+    "85": "uni0055",
+    "86": "uni0056",
+    "87": "uni0057",
+    "88": "uni0058",
+    "89": "uni0059",
+    "90": "uni005A",
+    "91": "uni005B",
+    "92": "uni005C",
+    "93": "uni005D",
+    "94": "uni005E",
+    "95": "uni005F",
+    "96": "uni0060",
+    "97": "uni0061",
+    "98": "uni0062",
+    "99": "uni0063",
+    "100": "uni0064",
+    "101": "uni0065",
+    "102": "uni0066",
+    "103": "uni0067",
+    "104": "uni0068",
+    "105": "uni0069",
+    "106": "uni006A",
+    "107": "uni006B",
+    "108": "uni006C",
+    "109": "uni006D",
+    "110": "uni006E",
+    "111": "uni006F",
+    "112": "uni0070",
+    "113": "uni0071",
+    "114": "uni0072",
+    "115": "uni0073",
+    "116": "uni0074",
+    "117": "uni0075",
+    "118": "uni0076",
+    "119": "uni0077",
+    "120": "uni0078",
+    "121": "uni0079",
+    "122": "uni007A",
+    "123": "uni007B",
+    "124": "uni007C",
+    "125": "uni007D",
+    "126": "uni007E",
+    "1040": "uni0410",
+    "1041": "uni0411",
+    "1042": "uni0412",
+    "1043": "uni0413",
+    "1044": "uni0414",
+    "1045": "uni0415",
+    "1046": "uni0416",
+    "1047": "uni0417",
+    "1048": "uni0418",
+    "1049": "uni0419",
+    "1050": "uni041A",
+    "1051": "uni041B",
+    "1052": "uni041C",
+    "1053": "uni041D",
+    "1054": "uni041E",
+    "1055": "uni041F",
+    "1056": "uni0420",
+    "1057": "uni0421",
+    "1058": "uni0422",
+    "1059": "uni0423",
+    "1060": "uni0424",
+    "1061": "uni0425",
+    "1062": "uni0426",
+    "1063": "uni0427",
+    "1064": "uni0428",
+    "1065": "uni0429",
+    "1066": "uni042A",
+    "1067": "uni042B",
+    "1068": "uni042C",
+    "1069": "uni042D",
+    "1070": "uni042E",
+    "1071": "uni042F",
+    "1072": "uni0430",
+    "1073": "uni0431",
+    "1074": "uni0432",
+    "1075": "uni0433",
+    "1076": "uni0434",
+    "1077": "uni0435",
+    "1078": "uni0436",
+    "1079": "uni0437",
+    "1080": "uni0438",
+    "1081": "uni0439",
+    "1082": "uni043A",
+    "1083": "uni043B",
+    "1084": "uni043C",
+    "1085": "uni043D",
+    "1086": "uni043E",
+    "1087": "uni043F",
+    "1088": "uni0440",
+    "1089": "uni0441",
+    "1090": "uni0442",
+    "1091": "uni0443",
+    "1092": "uni0444",
+    "1093": "uni0445",
+    "1094": "uni0446",
+    "1095": "uni0447",
+    "1096": "uni0448",
+    "1097": "uni0449",
+    "1098": "uni044A",
+    "1099": "uni044B",
+    "1100": "uni044C",
+    "1101": "uni044D",
+    "1102": "uni044E",
+    "1103": "uni044F",
+    "1025": "uni0401",
+    "1105": "uni0451",
+    "160": "uni0020",
+    "57344": "uni0024"
+  },
+  "glyphs": {
+    " ": {
+      "source_byte": 32,
+      "left": 3,
+      "right": 3,
+      "advance": 500
+    },
+    "!": {
+      "source_byte": 33,
+      "left": 3,
+      "right": 3,
+      "advance": 500
+    },
+    "\"": {
+      "source_byte": 34,
+      "left": 1,
+      "right": 3,
+      "advance": 700
+    },
+    "#": {
+      "source_byte": 35,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "$": {
+      "source_byte": 36,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "%": {
+      "source_byte": 37,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "&": {
+      "source_byte": 38,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "'": {
+      "source_byte": 39,
+      "left": 1,
+      "right": 3,
+      "advance": 700
+    },
+    "(": {
+      "source_byte": 40,
+      "left": 1,
+      "right": 3,
+      "advance": 700
+    },
+    ")": {
+      "source_byte": 41,
+      "left": 3,
+      "right": 0,
+      "advance": 800
+    },
+    "*": {
+      "source_byte": 42,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "+": {
+      "source_byte": 43,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    ",": {
+      "source_byte": 44,
+      "left": 0,
+      "right": 3,
+      "advance": 800
+    },
+    "-": {
+      "source_byte": 45,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    ".": {
+      "source_byte": 46,
+      "left": 0,
+      "right": 3,
+      "advance": 800
+    },
+    "/": {
+      "source_byte": 47,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "0": {
+      "source_byte": 48,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "1": {
+      "source_byte": 49,
+      "left": 1,
+      "right": 3,
+      "advance": 700
+    },
+    "2": {
+      "source_byte": 50,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "3": {
+      "source_byte": 51,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "4": {
+      "source_byte": 52,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "5": {
+      "source_byte": 53,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "6": {
+      "source_byte": 54,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "7": {
+      "source_byte": 55,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "8": {
+      "source_byte": 56,
+      "left": 0,
+      "right": 1,
+      "advance": 1000
+    },
+    "9": {
+      "source_byte": 57,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    ":": {
+      "source_byte": 58,
+      "left": 3,
+      "right": 3,
+      "advance": 500
+    },
+    ";": {
+      "source_byte": 59,
+      "left": 3,
+      "right": 3,
+      "advance": 500
+    },
+    "<": {
+      "source_byte": 60,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "=": {
+      "source_byte": 61,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    ">": {
+      "source_byte": 62,
+      "left": 3,
+      "right": 0,
+      "advance": 800
+    },
+    "?": {
+      "source_byte": 63,
+      "left": 2,
+      "right": 3,
+      "advance": 600
+    },
+    "@": {
+      "source_byte": 64,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "A": {
+      "source_byte": 65,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "B": {
+      "source_byte": 66,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "C": {
+      "source_byte": 67,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "D": {
+      "source_byte": 68,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "E": {
+      "source_byte": 69,
+      "left": 0,
+      "right": 1,
+      "advance": 1000
+    },
+    "F": {
+      "source_byte": 70,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "G": {
+      "source_byte": 71,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "H": {
+      "source_byte": 72,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "I": {
+      "source_byte": 73,
+      "left": 3,
+      "right": 3,
+      "advance": 500
+    },
+    "J": {
+      "source_byte": 74,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "K": {
+      "source_byte": 75,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "L": {
+      "source_byte": 76,
+      "left": 0,
+      "right": 1,
+      "advance": 1000
+    },
+    "M": {
+      "source_byte": 77,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "N": {
+      "source_byte": 78,
+      "left": 0,
+      "right": 2,
+      "advance": 900
+    },
+    "O": {
+      "source_byte": 79,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "P": {
+      "source_byte": 80,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "Q": {
+      "source_byte": 81,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "R": {
+      "source_byte": 82,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "S": {
+      "source_byte": 83,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "T": {
+      "source_byte": 84,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "U": {
+      "source_byte": 85,
+      "left": 0,
+      "right": 1,
+      "advance": 1000
+    },
+    "V": {
+      "source_byte": 86,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "W": {
+      "source_byte": 87,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "X": {
+      "source_byte": 88,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "Y": {
+      "source_byte": 89,
+      "left": 0,
+      "right": 1,
+      "advance": 1000
+    },
+    "Z": {
+      "source_byte": 90,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "[": {
+      "source_byte": 91,
+      "left": 0,
+      "right": 3,
+      "advance": 800
+    },
+    "\\": {
+      "source_byte": 92,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "]": {
+      "source_byte": 93,
+      "left": 3,
+      "right": 0,
+      "advance": 800
+    },
+    "^": {
+      "source_byte": 94,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "_": {
+      "source_byte": 95,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "`": {
+      "source_byte": 96,
+      "left": 0,
+      "right": 3,
+      "advance": 800
+    },
+    "a": {
+      "source_byte": 97,
+      "left": 2,
+      "right": 0,
+      "advance": 900
+    },
+    "b": {
+      "source_byte": 98,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "c": {
+      "source_byte": 99,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "d": {
+      "source_byte": 100,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "e": {
+      "source_byte": 101,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "f": {
+      "source_byte": 102,
+      "left": 2,
+      "right": 2,
+      "advance": 700
+    },
+    "g": {
+      "source_byte": 103,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "h": {
+      "source_byte": 104,
+      "left": 2,
+      "right": 2,
+      "advance": 700
+    },
+    "i": {
+      "source_byte": 105,
+      "left": 3,
+      "right": 3,
+      "advance": 500
+    },
+    "j": {
+      "source_byte": 106,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "k": {
+      "source_byte": 107,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "l": {
+      "source_byte": 108,
+      "left": 3,
+      "right": 3,
+      "advance": 500
+    },
+    "m": {
+      "source_byte": 109,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "n": {
+      "source_byte": 110,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "o": {
+      "source_byte": 111,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "p": {
+      "source_byte": 112,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "q": {
+      "source_byte": 113,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "r": {
+      "source_byte": 114,
+      "left": 2,
+      "right": 2,
+      "advance": 700
+    },
+    "s": {
+      "source_byte": 115,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "t": {
+      "source_byte": 116,
+      "left": 2,
+      "right": 2,
+      "advance": 700
+    },
+    "u": {
+      "source_byte": 117,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "v": {
+      "source_byte": 118,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "w": {
+      "source_byte": 119,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "x": {
+      "source_byte": 120,
+      "left": 2,
+      "right": 2,
+      "advance": 700
+    },
+    "y": {
+      "source_byte": 121,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "z": {
+      "source_byte": 122,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "{": {
+      "source_byte": 123,
+      "left": 0,
+      "right": 3,
+      "advance": 800
+    },
+    "|": {
+      "source_byte": 124,
+      "left": 3,
+      "right": 3,
+      "advance": 500
+    },
+    "}": {
+      "source_byte": 125,
+      "left": 3,
+      "right": 0,
+      "advance": 800
+    },
+    "~": {
+      "source_byte": 126,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "А": {
+      "source_byte": 128,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Б": {
+      "source_byte": 129,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "В": {
+      "source_byte": 130,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Г": {
+      "source_byte": 131,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "Д": {
+      "source_byte": 132,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Е": {
+      "source_byte": 133,
+      "left": 0,
+      "right": 1,
+      "advance": 1000
+    },
+    "Ж": {
+      "source_byte": 134,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "З": {
+      "source_byte": 135,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "И": {
+      "source_byte": 136,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "Й": {
+      "source_byte": 137,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "К": {
+      "source_byte": 138,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "Л": {
+      "source_byte": 139,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "М": {
+      "source_byte": 140,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Н": {
+      "source_byte": 141,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "О": {
+      "source_byte": 142,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "П": {
+      "source_byte": 143,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "Р": {
+      "source_byte": 144,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "С": {
+      "source_byte": 145,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Т": {
+      "source_byte": 146,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "У": {
+      "source_byte": 147,
+      "left": 0,
+      "right": 1,
+      "advance": 1000
+    },
+    "Ф": {
+      "source_byte": 148,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Х": {
+      "source_byte": 149,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "Ц": {
+      "source_byte": 150,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "Ч": {
+      "source_byte": 151,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "Ш": {
+      "source_byte": 152,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Щ": {
+      "source_byte": 153,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Ъ": {
+      "source_byte": 154,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Ы": {
+      "source_byte": 155,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "Ь": {
+      "source_byte": 156,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "Э": {
+      "source_byte": 157,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "Ю": {
+      "source_byte": 158,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "Я": {
+      "source_byte": 159,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "а": {
+      "source_byte": 160,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "б": {
+      "source_byte": 161,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "в": {
+      "source_byte": 162,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "г": {
+      "source_byte": 163,
+      "left": 2,
+      "right": 2,
+      "advance": 700
+    },
+    "д": {
+      "source_byte": 164,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "е": {
+      "source_byte": 165,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "ж": {
+      "source_byte": 166,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "з": {
+      "source_byte": 167,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "и": {
+      "source_byte": 168,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "й": {
+      "source_byte": 169,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "к": {
+      "source_byte": 170,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "л": {
+      "source_byte": 171,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "м": {
+      "source_byte": 172,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "н": {
+      "source_byte": 173,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "о": {
+      "source_byte": 174,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "п": {
+      "source_byte": 175,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "р": {
+      "source_byte": 224,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "с": {
+      "source_byte": 225,
+      "left": 1,
+      "right": 2,
+      "advance": 800
+    },
+    "т": {
+      "source_byte": 226,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "у": {
+      "source_byte": 227,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "ф": {
+      "source_byte": 228,
+      "left": 1,
+      "right": 0,
+      "advance": 1000
+    },
+    "х": {
+      "source_byte": 229,
+      "left": 2,
+      "right": 0,
+      "advance": 900
+    },
+    "ц": {
+      "source_byte": 230,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "ч": {
+      "source_byte": 231,
+      "left": 2,
+      "right": 2,
+      "advance": 700
+    },
+    "ш": {
+      "source_byte": 232,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    },
+    "щ": {
+      "source_byte": 233,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "ъ": {
+      "source_byte": 234,
+      "left": 0,
+      "right": 1,
+      "advance": 1000
+    },
+    "ы": {
+      "source_byte": 235,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "ь": {
+      "source_byte": 236,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "э": {
+      "source_byte": 237,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "ю": {
+      "source_byte": 238,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "я": {
+      "source_byte": 239,
+      "left": 2,
+      "right": 1,
+      "advance": 800
+    },
+    "Ё": {
+      "source_byte": 240,
+      "left": 0,
+      "right": 0,
+      "advance": 1100
+    },
+    "ё": {
+      "source_byte": 241,
+      "left": 1,
+      "right": 1,
+      "advance": 900
+    }
+  },
+  "ttf_sha256": "6e0f04c1da016a0f4e8e01185f87dd9d00853fe05e6bb8256f94ab1132696f44",
+  "guide_source": {
+    "width": 15,
+    "height": 29,
+    "kind": "aci-range",
+    "sha256": "78dc7642bef3a00eae8038f122c26785d22294e10c3ebb5239b6dec5a31755f9",
+    "path": "data/resource/actint/fonts/cfont03.bml"
+  },
+  "role": "text",
+  "release_family": "Vangers Text",
+  "corrections_font_units": {
+    "!": [
+      2,
+      -14
+    ],
+    "\"": [
+      6,
+      -2
+    ],
+    "#": [
+      -2,
+      1
+    ],
+    "$": [
+      1,
+      2
+    ],
+    "%": [
+      0,
+      -4
+    ],
+    "&": [
+      2,
+      -2
+    ],
+    "'": [
+      0,
+      -2
+    ],
+    "(": [
+      5,
+      0
+    ],
+    ")": [
+      -3,
+      -5
+    ],
+    "*": [
+      3,
+      0
+    ],
+    "+": [
+      0,
+      0
+    ],
+    ",": [
+      -5,
+      -6
+    ],
+    "-": [
+      -7,
+      -2
+    ],
+    ".": [
+      -4,
+      -3
+    ],
+    "/": [
+      -1,
+      -3
+    ],
+    "0": [
+      -1,
+      3
+    ],
+    "1": [
+      -3,
+      -11
+    ],
+    "2": [
+      -1,
+      2
+    ],
+    "3": [
+      -5,
+      0
+    ],
+    "4": [
+      3,
+      -4
+    ],
+    "5": [
+      1,
+      -4
+    ],
+    "6": [
+      3,
+      2
+    ],
+    "7": [
+      -5,
+      -3
+    ],
+    "8": [
+      1,
+      -1
+    ],
+    "9": [
+      -3,
+      -7
+    ],
+    ":": [
+      2,
+      7
+    ],
+    ";": [
+      3,
+      17
+    ],
+    "<": [
+      7,
+      0
+    ],
+    "=": [
+      5,
+      6
+    ],
+    ">": [
+      -5,
+      1
+    ],
+    "?": [
+      0,
+      -13
+    ],
+    "@": [
+      1,
+      -3
+    ],
+    "A": [
+      1,
+      -7
+    ],
+    "B": [
+      5,
+      -3
+    ],
+    "C": [
+      2,
+      1
+    ],
+    "D": [
+      0,
+      -4
+    ],
+    "E": [
+      12,
+      4
+    ],
+    "F": [
+      2,
+      -2
+    ],
+    "G": [
+      2,
+      8
+    ],
+    "H": [
+      3,
+      0
+    ],
+    "I": [
+      -3,
+      -5
+    ],
+    "J": [
+      -4,
+      6
+    ],
+    "K": [
+      5,
+      -1
+    ],
+    "L": [
+      3,
+      1
+    ],
+    "M": [
+      4,
+      -8
+    ],
+    "N": [
+      -2,
+      -1
+    ],
+    "O": [
+      1,
+      -5
+    ],
+    "P": [
+      6,
+      0
+    ],
+    "Q": [
+      6,
+      3
+    ],
+    "R": [
+      1,
+      -5
+    ],
+    "S": [
+      -1,
+      3
+    ],
+    "T": [
+      -1,
+      -6
+    ],
+    "U": [
+      0,
+      5
+    ],
+    "V": [
+      -2,
+      9
+    ],
+    "W": [
+      4,
+      5
+    ],
+    "X": [
+      1,
+      1
+    ],
+    "Y": [
+      1,
+      1
+    ],
+    "Z": [
+      0,
+      -1
+    ],
+    "[": [
+      4,
+      3
+    ],
+    "\\": [
+      1,
+      0
+    ],
+    "]": [
+      -5,
+      -7
+    ],
+    "^": [
+      2,
+      -4
+    ],
+    "_": [
+      4,
+      1
+    ],
+    "`": [
+      1,
+      1
+    ],
+    "a": [
+      -2,
+      1
+    ],
+    "b": [
+      3,
+      2
+    ],
+    "c": [
+      3,
+      2
+    ],
+    "d": [
+      -2,
+      4
+    ],
+    "e": [
+      -1,
+      -5
+    ],
+    "f": [
+      2,
+      2
+    ],
+    "g": [
+      0,
+      -5
+    ],
+    "h": [
+      4,
+      -4
+    ],
+    "i": [
+      2,
+      -1
+    ],
+    "j": [
+      -2,
+      11
+    ],
+    "k": [
+      4,
+      3
+    ],
+    "l": [
+      2,
+      1
+    ],
+    "m": [
+      -17,
+      -7
+    ],
+    "n": [
+      -1,
+      -6
+    ],
+    "o": [
+      -1,
+      -1
+    ],
+    "p": [
+      0,
+      -3
+    ],
+    "q": [
+      1,
+      -5
+    ],
+    "r": [
+      3,
+      2
+    ],
+    "s": [
+      -2,
+      0
+    ],
+    "t": [
+      5,
+      0
+    ],
+    "u": [
+      -1,
+      3
+    ],
+    "v": [
+      -1,
+      6
+    ],
+    "w": [
+      3,
+      9
+    ],
+    "x": [
+      -1,
+      1
+    ],
+    "y": [
+      0,
+      2
+    ],
+    "z": [
+      0,
+      2
+    ],
+    "{": [
+      2,
+      -5
+    ],
+    "|": [
+      1,
+      13
+    ],
+    "}": [
+      -1,
+      1
+    ],
+    "~": [
+      -6,
+      2
+    ],
+    "А": [
+      1,
+      -8
+    ],
+    "Б": [
+      4,
+      4
+    ],
+    "В": [
+      5,
+      -3
+    ],
+    "Г": [
+      3,
+      -4
+    ],
+    "Д": [
+      8,
+      -10
+    ],
+    "Е": [
+      11,
+      4
+    ],
+    "Ж": [
+      2,
+      -2
+    ],
+    "З": [
+      -5,
+      2
+    ],
+    "И": [
+      -3,
+      -2
+    ],
+    "Й": [
+      -5,
+      8
+    ],
+    "К": [
+      6,
+      -3
+    ],
+    "Л": [
+      1,
+      -7
+    ],
+    "М": [
+      4,
+      -7
+    ],
+    "Н": [
+      3,
+      3
+    ],
+    "О": [
+      1,
+      -2
+    ],
+    "П": [
+      1,
+      -4
+    ],
+    "Р": [
+      4,
+      1
+    ],
+    "С": [
+      1,
+      3
+    ],
+    "Т": [
+      -1,
+      -6
+    ],
+    "У": [
+      -3,
+      2
+    ],
+    "Ф": [
+      7,
+      0
+    ],
+    "Х": [
+      -1,
+      0
+    ],
+    "Ц": [
+      0,
+      5
+    ],
+    "Ч": [
+      -4,
+      4
+    ],
+    "Ш": [
+      -1,
+      9
+    ],
+    "Щ": [
+      -1,
+      4
+    ],
+    "Ъ": [
+      -2,
+      0
+    ],
+    "Ы": [
+      9,
+      2
+    ],
+    "Ь": [
+      0,
+      2
+    ],
+    "Э": [
+      -5,
+      0
+    ],
+    "Ю": [
+      0,
+      -1
+    ],
+    "Я": [
+      -8,
+      -4
+    ],
+    "а": [
+      -2,
+      2
+    ],
+    "б": [
+      6,
+      3
+    ],
+    "в": [
+      0,
+      1
+    ],
+    "г": [
+      2,
+      -1
+    ],
+    "д": [
+      2,
+      -6
+    ],
+    "е": [
+      3,
+      -2
+    ],
+    "ж": [
+      -1,
+      -3
+    ],
+    "з": [
+      -7,
+      2
+    ],
+    "и": [
+      -3,
+      4
+    ],
+    "й": [
+      1,
+      14
+    ],
+    "к": [
+      6,
+      -2
+    ],
+    "л": [
+      2,
+      -6
+    ],
+    "м": [
+      0,
+      -7
+    ],
+    "н": [
+      0,
+      0
+    ],
+    "о": [
+      1,
+      5
+    ],
+    "п": [
+      3,
+      -8
+    ],
+    "р": [
+      2,
+      0
+    ],
+    "с": [
+      9,
+      2
+    ],
+    "т": [
+      1,
+      -1
+    ],
+    "у": [
+      -2,
+      4
+    ],
+    "ф": [
+      2,
+      -2
+    ],
+    "х": [
+      0,
+      -1
+    ],
+    "ц": [
+      1,
+      6
+    ],
+    "ч": [
+      -1,
+      5
+    ],
+    "ш": [
+      -2,
+      10
+    ],
+    "щ": [
+      -2,
+      9
+    ],
+    "ъ": [
+      -4,
+      10
+    ],
+    "ы": [
+      9,
+      4
+    ],
+    "ь": [
+      2,
+      7
+    ],
+    "э": [
+      -9,
+      1
+    ],
+    "ю": [
+      4,
+      4
+    ],
+    "я": [
+      -3,
+      -5
+    ],
+    "Ё": [
+      7,
+      19
+    ],
+    "ё": [
+      2,
+      13
+    ]
+  },
+  "correction_method": "Three source-centroid calibration passes in native FreeType coverage; each glyph retains its OWN original position"
+}

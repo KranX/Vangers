@@ -1,0 +1,20 @@
+{
+  "id": "menu-01",
+  "source": "data/resource/iscreen/fonts/hfont01.fnh",
+  "baseline": 44,
+  "spacing": 5,
+  "upm": 2000,
+  "supersample": 8,
+  "threshold": 0.45,
+  "blur": 0.2,
+  "alphamax": 1.0,
+  "opttolerance": 2.0,
+  "resample": "bicubic",
+  "match_ink": true,
+  "ink_factor": 1,
+  "truetype_winding": true,
+  "extension_weight": 3.8,
+  "extension_bulbs": 0.5,
+  "ornaments": true,
+  "release_version": "0.10-study1"
+}

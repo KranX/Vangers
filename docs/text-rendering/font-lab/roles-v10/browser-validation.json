@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-06",
+  "status": "PASS",
+  "fonts": [
+    "VangersMenu",
+    "VangersDisplay",
+    "VangersText"
+  ],
+  "method": "T3 html_preview of exact embedded roles-v10 TTFs; images visually inspected",
+  "views": [
+    {
+      "appearance": "dark",
+      "selected": "menu",
+      "width": 728,
+      "contentHeight": 828,
+      "capturedHeight": 828,
+      "consoleMessages": [
+        {
+          "level": "log",
+          "text": "{\"loaded\":[[{\"family\":\"VangersMenu\",\"status\":\"loaded\"}],[{\"family\":\"VangersDisplay\",\"status\":\"loaded\"}],[{\"family\":\"VangersText\",\"status\":\"loaded\"}]],\"horizontalOverflow\":false}"
+        },
+        {
+          "level": "log",
+          "text": "Three comparison selections passed"
+        }
+      ],
+      "screenshot": {
+        "mimeType": "image/png",
+        "width": 728,
+        "height": 828
+      }
+    },
+    {
+      "appearance": "light",
+      "selected": "menu",
+      "width": 360,
+      "contentHeight": 841,
+      "capturedHeight": 841,
+      "consoleMessages": [
+        {
+          "level": "log",
+          "text": "{\"loaded\":[[{\"family\":\"VangersMenu\",\"status\":\"loaded\"}],[{\"family\":\"VangersDisplay\",\"status\":\"loaded\"}],[{\"family\":\"VangersText\",\"status\":\"loaded\"}]],\"horizontalOverflow\":false}"
+        },
+        {
+          "level": "log",
+          "text": "Three comparison selections passed"
+        }
+      ],
+      "screenshot": {
+        "mimeType": "image/png",
+        "width": 360,
+        "height": 841
+      }
+    },
+    {
+      "appearance": "dark",
+      "selected": "text",
+      "width": 728,
+      "contentHeight": 777,
+      "capturedHeight": 777,
+      "consoleMessages": [
+        {
+          "level": "log",
+          "text": "{\"loaded\":[[{\"family\":\"VangersMenu\",\"status\":\"loaded\"}],[{\"family\":\"VangersDisplay\",\"status\":\"loaded\"}],[{\"family\":\"VangersText\",\"status\":\"loaded\"}]],\"horizontalOverflow\":false}"
+        },
+        {
+          "level": "log",
+          "text": "Three comparison selections passed; Text shown"
+        }
+      ],
+      "screenshot": {
+        "mimeType": "image/png",
+        "width": 728,
+        "height": 777
+      }
+    }
+  ]
+}

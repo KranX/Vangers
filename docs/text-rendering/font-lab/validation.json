@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "freetype_version": [
+    2,
+    13,
+    2
+  ],
+  "fonts": [
+    {
+      "iteration": "07-validated",
+      "status": "PASS",
+      "mapped_characters": 163,
+      "glyphs": 162,
+      "points": 22633,
+      "rendered_samples": 966,
+      "sizes": [
+        14,
+        18,
+        25,
+        50,
+        100,
+        200
+      ],
+      "exact_native_advances": true,
+      "clockwise_net_winding": true,
+      "bitmap_tables": false,
+      "byte_identical_rebuild": true,
+      "source_sha256": "fb72c7a7c05eba962d3230e2d728dbe602e540c2ba71770a5b24c90d98b3cf00",
+      "font_sha256": "4f28d7c7bb7d4a42a554f3cf8d61a254280bc26d17abfe153a266a813f9665d7",
+      "fc_scan": [
+        "Vangers Display Study 07-validated",
+        "True",
+        "True"
+      ]
+    },
+    {
+      "iteration": "dialogue-07-validated",
+      "status": "PASS",
+      "mapped_characters": 163,
+      "glyphs": 162,
+      "points": 11391,
+      "rendered_samples": 966,
+      "sizes": [
+        14,
+        18,
+        25,
+        50,
+        100,
+        200
+      ],
+      "exact_native_advances": true,
+      "clockwise_net_winding": true,
+      "bitmap_tables": false,
+      "byte_identical_rebuild": true,
+      "source_sha256": "8ee89cc9f1748d58e20e0a8c8e0d0575b57e293ddfe003edfd0fbc5e6027975a",
+      "font_sha256": "e6aac366e3fe680aa183b4038baff0fddcab4537b1e59ee9f782cadaadb3c6ee",
+      "fc_scan": [
+        "Vangers Dialogue Study 07-validated",
+        "True",
+        "True"
+      ]
+    }
+  ]
+}

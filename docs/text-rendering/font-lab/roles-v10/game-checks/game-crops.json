@@ -1,0 +1,247 @@
+{
+  "status": "PASS",
+  "note": "Original cfont00 mask check; TTF preview is offline, no in-game integration.",
+  "fixtures": [
+    {
+      "screenshot": "docs/text-rendering/baseline/8713913/images/en-new-game.png",
+      "sha256": "4e92f856017b47fe53e80026803b4ab81bb9542025d326bae896339ba6eb995d",
+      "text": "Welcome back, poor pilgarlic!",
+      "crop": [
+        122,
+        47,
+        218,
+        18
+      ],
+      "original_source_nonzero_xor": 0,
+      "ttf_native_advance": 218,
+      "source_native_advance": 218,
+      "source_vs_ttf_mae": 0.05452053914950636
+    },
+    {
+      "screenshot": "docs/text-rendering/baseline/8713913/images/ru-escave-dialogue.png",
+      "sha256": "6aed703484acece514463ae0152e3190743a4a1ef2490b07e702e898e44d4b3a",
+      "text": "Вот так бывает",
+      "crop": [
+        134,
+        39,
+        120,
+        18
+      ],
+      "original_source_nonzero_xor": 0,
+      "ttf_native_advance": 120,
+      "source_native_advance": 120,
+      "source_vs_ttf_mae": 0.05448980841035685
+    },
+    {
+      "screenshot": "docs/text-rendering/baseline/8713913/images/ru-escave.png",
+      "sha256": "fb4f8a44c656046299a5dd4883afd93693b5663cf47f7cbb03a93da58ffdf012",
+      "text": "Очнулся, жалкий?",
+      "crop": [
+        136,
+        47,
+        135,
+        18
+      ],
+      "original_source_nonzero_xor": 0,
+      "ttf_native_advance": 135,
+      "source_native_advance": 135,
+      "source_vs_ttf_mae": 0.05051708000426967
+    }
+  ],
+  "palette_observed_levels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "palette": {
+    "0": [
+      0,
+      0,
+      0
+    ],
+    "1": [
+      12,
+      12,
+      0
+    ],
+    "2": [
+      24,
+      24,
+      0
+    ],
+    "3": [
+      24,
+      24,
+      0
+    ],
+    "4": [
+      40,
+      40,
+      0
+    ],
+    "5": [
+      40,
+      40,
+      0
+    ],
+    "6": [
+      56,
+      56,
+      0
+    ],
+    "7": [
+      56,
+      56,
+      0
+    ],
+    "8": [
+      72,
+      68,
+      0
+    ],
+    "9": [
+      72,
+      68,
+      0
+    ],
+    "10": [
+      84,
+      84,
+      0
+    ],
+    "11": [
+      84,
+      84,
+      0
+    ],
+    "12": [
+      100,
+      100,
+      0
+    ],
+    "13": [
+      100,
+      100,
+      0
+    ],
+    "14": [
+      116,
+      112,
+      0
+    ],
+    "15": [
+      116,
+      112,
+      0
+    ],
+    "16": [
+      128,
+      128,
+      0
+    ],
+    "17": [
+      128,
+      128,
+      0
+    ],
+    "18": [
+      144,
+      144,
+      0
+    ],
+    "19": [
+      144,
+      144,
+      0
+    ],
+    "20": [
+      160,
+      156,
+      0
+    ],
+    "21": [
+      160,
+      156,
+      0
+    ],
+    "22": [
+      176,
+      172,
+      0
+    ],
+    "23": [
+      176,
+      172,
+      0
+    ],
+    "24": [
+      188,
+      188,
+      0
+    ],
+    "25": [
+      188,
+      188,
+      0
+    ],
+    "26": [
+      204,
+      200,
+      0
+    ],
+    "27": [
+      204,
+      200,
+      0
+    ],
+    "28": [
+      220,
+      216,
+      0
+    ],
+    "29": [
+      220,
+      216,
+      0
+    ],
+    "30": [
+      236,
+      232,
+      0
+    ],
+    "31": [
+      236,
+      232,
+      0
+    ]
+  }
+}

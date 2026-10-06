@@ -1,0 +1,18 @@
+{
+  "id": "05-optical",
+  "family": "Vangers Dialogue Study",
+  "baseline": 15,
+  "spacing": 1,
+  "proof_scale": 2,
+  "supersample": 8,
+  "threshold": 0.4,
+  "blur": 0.3,
+  "alphamax": 1.0,
+  "opttolerance": 1.0,
+  "note": "Alternative: higher-detail cfont03 anatomy registered to cfont00 ink moments and original advances.",
+  "resample": "bicubic",
+  "match_ink": true,
+  "ink_factor": 1.0,
+  "guide_source": "data/resource/actint/fonts/cfont03.bml",
+  "guide_blend": 0.85
+}

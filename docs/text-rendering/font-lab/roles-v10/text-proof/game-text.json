@@ -1,0 +1,80 @@
+[
+  {
+    "role": "text",
+    "language": "ru",
+    "text": "Очнулся, жалкий? Хорошо, а мы уж думали ты сдох совсем, придется отнимать другого...",
+    "path": "data/data/Podish.text",
+    "encoding": "cp1251",
+    "line": 30,
+    "sha256": "877fd4039b057411ce3efa80456036a54f9d3fd4fbc9500ed59ba6bd7f9dba13",
+    "wrapped_lines": [
+      "Очнулся, жалкий? Хорошо, а мы уж думали ты сдох",
+      "совсем, придется отнимать другого..."
+    ],
+    "native_widths": [
+      397.0,
+      304.0
+    ]
+  },
+  {
+    "role": "text",
+    "language": "ru",
+    "text": "Вот так бывает - вчера ты резвая личинка без забот, а сегодня... ты прыгнешь в мехос и наверх, бррpp, из теплых наших нор долой - пылить дороги на Фострале, пугаясь встречных, падая в канавы...",
+    "path": "data/data/Podish.text",
+    "encoding": "cp1251",
+    "line": 31,
+    "sha256": "877fd4039b057411ce3efa80456036a54f9d3fd4fbc9500ed59ba6bd7f9dba13",
+    "wrapped_lines": [
+      "Вот так бывает - вчера ты резвая личинка без забот, а",
+      "сегодня... ты прыгнешь в мехос и наверх, бррpp, из",
+      "теплых наших нор долой - пылить дороги на Фострале,",
+      "пугаясь встречных, падая в канавы..."
+    ],
+    "native_widths": [
+      428.0,
+      404.0,
+      428.0,
+      297.0
+    ]
+  },
+  {
+    "role": "text",
+    "language": "en",
+    "text": "Welcome back, poor pilgarlic! We thought you were completely dead, have to give another one away... ",
+    "path": "data/data/Podish.text",
+    "encoding": "cp1251",
+    "line": 32,
+    "sha256": "877fd4039b057411ce3efa80456036a54f9d3fd4fbc9500ed59ba6bd7f9dba13",
+    "wrapped_lines": [
+      "Welcome back, poor pilgarlic! We thought you were",
+      "completely dead, have to give another one away..."
+    ],
+    "native_widths": [
+      376.0,
+      381.0
+    ]
+  },
+  {
+    "role": "text",
+    "language": "en",
+    "text": "You know how it happens: yesterday you were a dapper little caterpillar without a care in the world, and now you're climbing into your mechos and going up, ugh, from our warmth, up there to plow the roads on Fostral, scaring everyone you meet into ditches...",
+    "path": "data/data/Podish.text",
+    "encoding": "cp1251",
+    "line": 33,
+    "sha256": "877fd4039b057411ce3efa80456036a54f9d3fd4fbc9500ed59ba6bd7f9dba13",
+    "wrapped_lines": [
+      "You know how it happens: yesterday you were a dapper",
+      "little caterpillar without a care in the world, and now",
+      "you're climbing into your mechos and going up, ugh, from",
+      "our warmth, up there to plow the roads on Fostral, scaring",
+      "everyone you meet into ditches..."
+    ],
+    "native_widths": [
+      406.0,
+      396.0,
+      427.0,
+      439.0,
+      256.0
+    ]
+  }
+]

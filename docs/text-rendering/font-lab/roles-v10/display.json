@@ -1,0 +1,94 @@
+{
+  "id": "10-role-display",
+  "baseline": 44,
+  "spacing": 5,
+  "supersample": 16,
+  "threshold": 0.45,
+  "blur": 0.25,
+  "alphamax": 1.0,
+  "opttolerance": 2.0,
+  "note": "Keep original fixed glyph positions; fit native raster coverage. No random offsets or common-bottom normalization.",
+  "resample": "bicubic",
+  "match_ink": true,
+  "ink_factor": 1.0,
+  "overrides": {
+    "M": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "W": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "Ж": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "ж": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "Щ": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "щ": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    ".": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    ":": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    ";": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "Ё": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "ё": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "Й": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "й": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "i": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "j": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    }
+  },
+  "measured_vertical_metrics": true,
+  "upm": 2000,
+  "truetype_winding": true,
+  "role": "display",
+  "family": "Vangers Display",
+  "release_family": "Vangers Display",
+  "release_version": "0.10",
+  "placement_method": "coverage-fit",
+  "source": "data/resource/iscreen/fonts/hfont00.fnh"
+}

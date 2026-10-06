@@ -1,0 +1,11 @@
+{
+  "id": "02-smooth",
+  "baseline": 44,
+  "spacing": 2,
+  "supersample": 1,
+  "threshold": 0.5,
+  "blur": 0,
+  "alphamax": 1.0,
+  "opttolerance": 0.2,
+  "note": "Smooth cubic fit of the same native threshold mask; evaluate corner loss."
+}

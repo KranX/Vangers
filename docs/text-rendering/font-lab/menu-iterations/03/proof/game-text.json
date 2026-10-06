@@ -1,0 +1,98 @@
+[
+  {
+    "role": "menu",
+    "language": "en",
+    "text": "NEW GAME",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 19,
+    "id": "iSTR_NEW_GAME1",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "NEW GAME"
+    ],
+    "native_widths": [
+      361.0
+    ]
+  },
+  {
+    "role": "menu",
+    "language": "ru",
+    "text": "НОВАЯ ИГРА",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 20,
+    "id": "iSTR_NEW_GAME2",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "НОВАЯ ИГРА"
+    ],
+    "native_widths": [
+      460.0
+    ]
+  },
+  {
+    "role": "menu",
+    "language": "en",
+    "text": "LOAD GAME",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 13,
+    "id": "iSTR_LOAD_GAME1",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "LOAD GAME"
+    ],
+    "native_widths": [
+      409.0
+    ]
+  },
+  {
+    "role": "menu",
+    "language": "ru",
+    "text": "ПРОДОЛЖИТЬ ИГРУ",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 14,
+    "id": "iSTR_LOAD_GAME2",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "ПРОДОЛЖИТЬ ИГРУ"
+    ],
+    "native_widths": [
+      702.0
+    ]
+  },
+  {
+    "role": "menu",
+    "language": "en",
+    "text": "OPTIONS",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 22,
+    "id": "iSTR_OPTIONS1",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "OPTIONS"
+    ],
+    "native_widths": [
+      310.0
+    ]
+  },
+  {
+    "role": "menu",
+    "language": "ru",
+    "text": "НАСТРОЙКИ",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 23,
+    "id": "iSTR_OPTIONS2",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "НАСТРОЙКИ"
+    ],
+    "native_widths": [
+      439.0
+    ]
+  }
+]

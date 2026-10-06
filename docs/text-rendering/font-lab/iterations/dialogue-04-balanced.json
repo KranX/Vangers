@@ -1,0 +1,16 @@
+{
+  "id": "04-balanced",
+  "family": "Vangers Dialogue Study",
+  "baseline": 15,
+  "spacing": 1,
+  "proof_scale": 2,
+  "supersample": 8,
+  "threshold": 0.4,
+  "blur": 0.3,
+  "alphamax": 1.0,
+  "opttolerance": 1.0,
+  "note": "Regularize height field and match each glyph ink area; reject blanket emboldening.",
+  "resample": "bicubic",
+  "match_ink": true,
+  "ink_factor": 1.0
+}

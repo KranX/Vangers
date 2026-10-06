@@ -1,0 +1,12 @@
+{
+  "id": "03-subpixel",
+  "baseline": 44,
+  "spacing": 2,
+  "supersample": 8,
+  "threshold": 0.45,
+  "blur": 0,
+  "alphamax": 1.0,
+  "opttolerance": 0.4,
+  "note": "Recover subpixel boundaries from grayscale, not binary silhouette; compensate thinning.",
+  "resample": "bicubic"
+}

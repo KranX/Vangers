@@ -1,0 +1,130 @@
+[
+  {
+    "role": "display",
+    "language": "en",
+    "text": "Options",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 55,
+    "id": "iSTR_Options1",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "Options"
+    ],
+    "native_widths": [
+      161.0
+    ]
+  },
+  {
+    "role": "display",
+    "language": "ru",
+    "text": "Настройки",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 56,
+    "id": "iSTR_Options2",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "Настройки"
+    ],
+    "native_widths": [
+      220.0
+    ]
+  },
+  {
+    "role": "display",
+    "language": "en",
+    "text": "Graphics Options",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 68,
+    "id": "iSTR_Graphics_Options1",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "Graphics Options"
+    ],
+    "native_widths": [
+      352.0
+    ]
+  },
+  {
+    "role": "display",
+    "language": "ru",
+    "text": "Настройка графики",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 69,
+    "id": "iSTR_Graphics_Options2",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "Настройка графики"
+    ],
+    "native_widths": [
+      406.0
+    ]
+  },
+  {
+    "role": "display",
+    "language": "en",
+    "text": "Credits",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 31,
+    "id": "iSTR_Credits1",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "Credits"
+    ],
+    "native_widths": [
+      160.0
+    ]
+  },
+  {
+    "role": "display",
+    "language": "ru",
+    "text": "О создателях",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 32,
+    "id": "iSTR_Credits2",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "О создателях"
+    ],
+    "native_widths": [
+      297.0
+    ]
+  },
+  {
+    "role": "display",
+    "language": "en",
+    "text": "MAIN MENU",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 49,
+    "id": "iSTR_MAIN_MENU1",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "MAIN MENU"
+    ],
+    "native_widths": [
+      231.0
+    ]
+  },
+  {
+    "role": "display",
+    "language": "ru",
+    "text": "ГЛАВНОЕ МЕНЮ",
+    "path": "data/iscreen/scripts/strings.inc",
+    "encoding": "cp866",
+    "line": 50,
+    "id": "iSTR_MAIN_MENU2",
+    "sha256": "186bfc7dffb4632d64195e8dbb613896b38e11d689cd38907eeb1f2d0ff03aa3",
+    "wrapped_lines": [
+      "ГЛАВНОЕ МЕНЮ"
+    ],
+    "native_widths": [
+      321.0
+    ]
+  }
+]

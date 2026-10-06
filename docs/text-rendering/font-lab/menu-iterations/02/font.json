@@ -1,0 +1,1327 @@
+{
+  "settings": {
+    "id": "menu-02",
+    "source": "data/resource/iscreen/fonts/hfont01.fnh",
+    "baseline": 44,
+    "spacing": 5,
+    "upm": 2000,
+    "supersample": 12,
+    "threshold": 0.45,
+    "blur": 0.45,
+    "alphamax": 1.0,
+    "opttolerance": 2.0,
+    "resample": "bicubic",
+    "match_ink": true,
+    "ink_factor": 1,
+    "truetype_winding": true,
+    "extension_weight": 3.8,
+    "extension_bulbs": 0.5,
+    "ornaments": true,
+    "release_version": "0.10-study2",
+    "height_knee": 1
+  },
+  "source": {
+    "width": 45,
+    "height": 50,
+    "kind": "height-map",
+    "sha256": "ec402b9ce8e2bef44cd2199328f3e3d6d73f1ad6267a6819823415f281390b22",
+    "path": "data/resource/iscreen/fonts/hfont01.fnh",
+    "normalization": "clip((height-128)/1,0,1); footprint proxy, NOT alpha; bearings use height != 128"
+  },
+  "extension_source_sha256": "fb72c7a7c05eba962d3230e2d728dbe602e540c2ba71770a5b24c90d98b3cf00",
+  "glyphs": {
+    " ": {
+      "source_byte": 32,
+      "original": true,
+      "provenance": "original blank advance",
+      "left": 15,
+      "right": 15,
+      "advance": 800
+    },
+    "!": {
+      "source_byte": 33,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 9,
+      "right": 25,
+      "advance": 440
+    },
+    "\"": {
+      "source_byte": 34,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 16,
+      "advance": 960
+    },
+    "#": {
+      "source_byte": 35,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": -1,
+      "right": 4,
+      "advance": 1680
+    },
+    "$": {
+      "source_byte": 36,
+      "original": false,
+      "provenance": "game beebs icon derived from hfont00; not a dollar sign",
+      "left": 3,
+      "right": 8,
+      "advance": 1360
+    },
+    "%": {
+      "source_byte": 37,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 0,
+      "right": 3,
+      "advance": 1680
+    },
+    "&": {
+      "source_byte": 38,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 3,
+      "right": 4,
+      "advance": 1520
+    },
+    "'": {
+      "source_byte": 39,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 8,
+      "right": 26,
+      "advance": 440
+    },
+    "(": {
+      "source_byte": 40,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 7,
+      "right": 15,
+      "advance": 920
+    },
+    ")": {
+      "source_byte": 41,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 17,
+      "advance": 920
+    },
+    "*": {
+      "source_byte": 42,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 7,
+      "advance": 1360
+    },
+    "+": {
+      "source_byte": 43,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 1,
+      "right": 5,
+      "advance": 1560
+    },
+    ",": {
+      "source_byte": 44,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 25,
+      "advance": 600
+    },
+    "-": {
+      "source_byte": 45,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 3,
+      "right": 11,
+      "advance": 1240
+    },
+    ".": {
+      "source_byte": 46,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 8,
+      "right": 27,
+      "advance": 400
+    },
+    "/": {
+      "source_byte": 47,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 1,
+      "right": 8,
+      "advance": 1440
+    },
+    "0": {
+      "source_byte": 48,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 1,
+      "right": 5,
+      "advance": 1560
+    },
+    "1": {
+      "source_byte": 49,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 3,
+      "right": 10,
+      "advance": 1280
+    },
+    "2": {
+      "source_byte": 50,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 3,
+      "right": 4,
+      "advance": 1520
+    },
+    "3": {
+      "source_byte": 51,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 2,
+      "right": 6,
+      "advance": 1480
+    },
+    "4": {
+      "source_byte": 52,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 4,
+      "advance": 1480
+    },
+    "5": {
+      "source_byte": 53,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 2,
+      "right": 7,
+      "advance": 1440
+    },
+    "6": {
+      "source_byte": 54,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 3,
+      "right": 6,
+      "advance": 1440
+    },
+    "7": {
+      "source_byte": 55,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 2,
+      "right": 5,
+      "advance": 1520
+    },
+    "8": {
+      "source_byte": 56,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 3,
+      "right": 5,
+      "advance": 1480
+    },
+    "9": {
+      "source_byte": 57,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 7,
+      "advance": 1360
+    },
+    ":": {
+      "source_byte": 58,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 8,
+      "right": 27,
+      "advance": 400
+    },
+    ";": {
+      "source_byte": 59,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 25,
+      "advance": 600
+    },
+    "<": {
+      "source_byte": 60,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 11,
+      "advance": 1160
+    },
+    "=": {
+      "source_byte": 61,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 1,
+      "right": 6,
+      "advance": 1520
+    },
+    ">": {
+      "source_byte": 62,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 12,
+      "advance": 1160
+    },
+    "?": {
+      "source_byte": 63,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 2,
+      "right": 11,
+      "advance": 1280
+    },
+    "@": {
+      "source_byte": 64,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": -2,
+      "right": 1,
+      "advance": 1840
+    },
+    "A": {
+      "source_byte": 65,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "B": {
+      "source_byte": 66,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "C": {
+      "source_byte": 67,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 1,
+      "advance": 1920
+    },
+    "D": {
+      "source_byte": 68,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 0,
+      "advance": 1920
+    },
+    "E": {
+      "source_byte": 69,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "F": {
+      "source_byte": 70,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "G": {
+      "source_byte": 71,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "H": {
+      "source_byte": 72,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "I": {
+      "source_byte": 73,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 12,
+      "right": 15,
+      "advance": 920
+    },
+    "J": {
+      "source_byte": 74,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 1,
+      "advance": 1880
+    },
+    "K": {
+      "source_byte": 75,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 1,
+      "advance": 1880
+    },
+    "L": {
+      "source_byte": 76,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 0,
+      "advance": 1920
+    },
+    "M": {
+      "source_byte": 77,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "N": {
+      "source_byte": 78,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 1,
+      "advance": 1880
+    },
+    "O": {
+      "source_byte": 79,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 0,
+      "advance": 1920
+    },
+    "P": {
+      "source_byte": 80,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Q": {
+      "source_byte": 81,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "R": {
+      "source_byte": 82,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 0,
+      "advance": 1920
+    },
+    "S": {
+      "source_byte": 83,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 3,
+      "advance": 1840
+    },
+    "T": {
+      "source_byte": 84,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 1,
+      "advance": 1960
+    },
+    "U": {
+      "source_byte": 85,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 3,
+      "right": 2,
+      "advance": 1800
+    },
+    "V": {
+      "source_byte": 86,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 1,
+      "advance": 1960
+    },
+    "W": {
+      "source_byte": 87,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "X": {
+      "source_byte": 88,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 1,
+      "advance": 1960
+    },
+    "Y": {
+      "source_byte": 89,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 2,
+      "advance": 1920
+    },
+    "Z": {
+      "source_byte": 90,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "[": {
+      "source_byte": 91,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 8,
+      "right": 14,
+      "advance": 920
+    },
+    "\\": {
+      "source_byte": 92,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 1,
+      "right": 8,
+      "advance": 1440
+    },
+    "]": {
+      "source_byte": 93,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 17,
+      "advance": 920
+    },
+    "^": {
+      "source_byte": 94,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 3,
+      "right": 6,
+      "advance": 1440
+    },
+    "_": {
+      "source_byte": 95,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 0,
+      "right": 4,
+      "advance": 1640
+    },
+    "`": {
+      "source_byte": 96,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 22,
+      "advance": 720
+    },
+    "a": {
+      "source_byte": 97,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 10,
+      "advance": 1240
+    },
+    "b": {
+      "source_byte": 98,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 7,
+      "advance": 1360
+    },
+    "c": {
+      "source_byte": 99,
+      "original": false,
+      "provenance": "derived lowercase from original C; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "d": {
+      "source_byte": 100,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 8,
+      "advance": 1320
+    },
+    "e": {
+      "source_byte": 101,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 8,
+      "advance": 1320
+    },
+    "f": {
+      "source_byte": 102,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 0,
+      "right": 13,
+      "advance": 1280
+    },
+    "g": {
+      "source_byte": 103,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 10,
+      "advance": 1240
+    },
+    "h": {
+      "source_byte": 104,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 9,
+      "advance": 1280
+    },
+    "i": {
+      "source_byte": 105,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 8,
+      "right": 24,
+      "advance": 520
+    },
+    "j": {
+      "source_byte": 106,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 2,
+      "right": 17,
+      "advance": 1040
+    },
+    "k": {
+      "source_byte": 107,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 8,
+      "advance": 1320
+    },
+    "l": {
+      "source_byte": 108,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 7,
+      "right": 17,
+      "advance": 840
+    },
+    "m": {
+      "source_byte": 109,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 1,
+      "right": 3,
+      "advance": 1640
+    },
+    "n": {
+      "source_byte": 110,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 9,
+      "advance": 1280
+    },
+    "o": {
+      "source_byte": 111,
+      "original": false,
+      "provenance": "derived lowercase from original O; new size/placement",
+      "left": 3,
+      "right": 15,
+      "advance": 1080
+    },
+    "p": {
+      "source_byte": 112,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 8,
+      "advance": 1320
+    },
+    "q": {
+      "source_byte": 113,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 8,
+      "advance": 1280
+    },
+    "r": {
+      "source_byte": 114,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 11,
+      "advance": 1200
+    },
+    "s": {
+      "source_byte": 115,
+      "original": false,
+      "provenance": "derived lowercase from original S; new size/placement",
+      "left": 3,
+      "right": 15,
+      "advance": 1080
+    },
+    "t": {
+      "source_byte": 116,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 1,
+      "right": 12,
+      "advance": 1280
+    },
+    "u": {
+      "source_byte": 117,
+      "original": false,
+      "provenance": "derived lowercase from original U; new size/placement",
+      "left": 3,
+      "right": 16,
+      "advance": 1040
+    },
+    "v": {
+      "source_byte": 118,
+      "original": false,
+      "provenance": "derived lowercase from original V; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "w": {
+      "source_byte": 119,
+      "original": false,
+      "provenance": "derived lowercase from original W; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "x": {
+      "source_byte": 120,
+      "original": false,
+      "provenance": "derived lowercase from original X; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "y": {
+      "source_byte": 121,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 9,
+      "advance": 1280
+    },
+    "z": {
+      "source_byte": 122,
+      "original": false,
+      "provenance": "derived lowercase from original Z; new size/placement",
+      "left": 3,
+      "right": 13,
+      "advance": 1160
+    },
+    "{": {
+      "source_byte": 123,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 12,
+      "advance": 1120
+    },
+    "|": {
+      "source_byte": 124,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 12,
+      "right": 23,
+      "advance": 400
+    },
+    "}": {
+      "source_byte": 125,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 4,
+      "right": 13,
+      "advance": 1120
+    },
+    "~": {
+      "source_byte": 126,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 0,
+      "right": 4,
+      "advance": 1640
+    },
+    "А": {
+      "source_byte": 128,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Б": {
+      "source_byte": 129,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "В": {
+      "source_byte": 130,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Г": {
+      "source_byte": 131,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Д": {
+      "source_byte": 132,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "Е": {
+      "source_byte": 133,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Ж": {
+      "source_byte": 134,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "З": {
+      "source_byte": 135,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 0,
+      "advance": 1920
+    },
+    "И": {
+      "source_byte": 136,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 1,
+      "advance": 1960
+    },
+    "Й": {
+      "source_byte": 137,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "К": {
+      "source_byte": 138,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Л": {
+      "source_byte": 139,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "М": {
+      "source_byte": 140,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Н": {
+      "source_byte": 141,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "О": {
+      "source_byte": 142,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 3,
+      "right": 0,
+      "advance": 1880
+    },
+    "П": {
+      "source_byte": 143,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Р": {
+      "source_byte": 144,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "С": {
+      "source_byte": 145,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 2,
+      "advance": 1880
+    },
+    "Т": {
+      "source_byte": 146,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "У": {
+      "source_byte": 147,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 2,
+      "right": 0,
+      "advance": 1920
+    },
+    "Ф": {
+      "source_byte": 148,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "Х": {
+      "source_byte": 149,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Ц": {
+      "source_byte": 150,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Ч": {
+      "source_byte": 151,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 1,
+      "advance": 1920
+    },
+    "Ш": {
+      "source_byte": 152,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Щ": {
+      "source_byte": 153,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "Ъ": {
+      "source_byte": 154,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 1,
+      "advance": 1960
+    },
+    "Ы": {
+      "source_byte": 155,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "Ь": {
+      "source_byte": 156,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 3,
+      "advance": 1840
+    },
+    "Э": {
+      "source_byte": 157,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 0,
+      "right": 0,
+      "advance": 2000
+    },
+    "Ю": {
+      "source_byte": 158,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "Я": {
+      "source_byte": 159,
+      "original": true,
+      "provenance": "original hfont01",
+      "left": 1,
+      "right": 0,
+      "advance": 1960
+    },
+    "а": {
+      "source_byte": 160,
+      "original": false,
+      "provenance": "new lowercase using compatible a skeleton",
+      "left": 4,
+      "right": 10,
+      "advance": 1240
+    },
+    "б": {
+      "source_byte": 161,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 5,
+      "right": 9,
+      "advance": 1240
+    },
+    "в": {
+      "source_byte": 162,
+      "original": false,
+      "provenance": "derived lowercase from original В; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "г": {
+      "source_byte": 163,
+      "original": false,
+      "provenance": "derived lowercase from original Г; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "д": {
+      "source_byte": 164,
+      "original": false,
+      "provenance": "derived lowercase from original Д; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "е": {
+      "source_byte": 165,
+      "original": false,
+      "provenance": "new lowercase using compatible e skeleton",
+      "left": 4,
+      "right": 8,
+      "advance": 1320
+    },
+    "ж": {
+      "source_byte": 166,
+      "original": false,
+      "provenance": "derived lowercase from original Ж; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "з": {
+      "source_byte": 167,
+      "original": false,
+      "provenance": "derived lowercase from original З; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "и": {
+      "source_byte": 168,
+      "original": false,
+      "provenance": "derived lowercase from original И; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "й": {
+      "source_byte": 169,
+      "original": false,
+      "provenance": "derived lowercase from original Й; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "к": {
+      "source_byte": 170,
+      "original": false,
+      "provenance": "derived lowercase from original К; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "л": {
+      "source_byte": 171,
+      "original": false,
+      "provenance": "derived lowercase from original Л; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "м": {
+      "source_byte": 172,
+      "original": false,
+      "provenance": "derived lowercase from original М; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "н": {
+      "source_byte": 173,
+      "original": false,
+      "provenance": "derived lowercase from original Н; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "о": {
+      "source_byte": 174,
+      "original": false,
+      "provenance": "new lowercase using compatible o skeleton",
+      "left": 3,
+      "right": 15,
+      "advance": 1080
+    },
+    "п": {
+      "source_byte": 175,
+      "original": false,
+      "provenance": "new lowercase using compatible n skeleton",
+      "left": 4,
+      "right": 9,
+      "advance": 1280
+    },
+    "р": {
+      "source_byte": 224,
+      "original": false,
+      "provenance": "new lowercase using compatible p skeleton",
+      "left": 4,
+      "right": 8,
+      "advance": 1320
+    },
+    "с": {
+      "source_byte": 225,
+      "original": false,
+      "provenance": "new lowercase using compatible c skeleton",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "т": {
+      "source_byte": 226,
+      "original": false,
+      "provenance": "derived lowercase from original Т; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "у": {
+      "source_byte": 227,
+      "original": false,
+      "provenance": "new lowercase using compatible y skeleton",
+      "left": 4,
+      "right": 9,
+      "advance": 1280
+    },
+    "ф": {
+      "source_byte": 228,
+      "original": false,
+      "provenance": "authored variable-width Bezier strokes",
+      "left": 2,
+      "right": 5,
+      "advance": 1520
+    },
+    "х": {
+      "source_byte": 229,
+      "original": false,
+      "provenance": "new lowercase using compatible x skeleton",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "ц": {
+      "source_byte": 230,
+      "original": false,
+      "provenance": "derived lowercase from original Ц; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "ч": {
+      "source_byte": 231,
+      "original": false,
+      "provenance": "derived lowercase from original Ч; new size/placement",
+      "left": 3,
+      "right": 15,
+      "advance": 1080
+    },
+    "ш": {
+      "source_byte": 232,
+      "original": false,
+      "provenance": "derived lowercase from original Ш; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "щ": {
+      "source_byte": 233,
+      "original": false,
+      "provenance": "derived lowercase from original Щ; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "ъ": {
+      "source_byte": 234,
+      "original": false,
+      "provenance": "derived lowercase from original Ъ; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "ы": {
+      "source_byte": 235,
+      "original": false,
+      "provenance": "derived lowercase from original Ы; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "ь": {
+      "source_byte": 236,
+      "original": false,
+      "provenance": "derived lowercase from original Ь; new size/placement",
+      "left": 3,
+      "right": 16,
+      "advance": 1040
+    },
+    "э": {
+      "source_byte": 237,
+      "original": false,
+      "provenance": "derived lowercase from original Э; new size/placement",
+      "left": 3,
+      "right": 12,
+      "advance": 1200
+    },
+    "ю": {
+      "source_byte": 238,
+      "original": false,
+      "provenance": "derived lowercase from original Ю; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "я": {
+      "source_byte": 239,
+      "original": false,
+      "provenance": "derived lowercase from original Я; new size/placement",
+      "left": 3,
+      "right": 14,
+      "advance": 1120
+    },
+    "Ё": {
+      "source_byte": 240,
+      "original": false,
+      "provenance": "new dieresis + vertically fitted original Е",
+      "left": 2,
+      "right": 4,
+      "advance": 1560
+    },
+    "ё": {
+      "source_byte": 241,
+      "original": false,
+      "provenance": "new lowercase е + new dieresis",
+      "left": 4,
+      "right": 8,
+      "advance": 1320
+    }
+  },
+  "units_per_em": 2000,
+  "baseline": 44,
+  "original_visible_count": 58,
+  "designed_visible_count": 102,
+  "ttf_sha256": "82c12b798c58218e6c251fa98311e6922354688047ff4bb98172734554c169d9"
+}

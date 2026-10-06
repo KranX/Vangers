@@ -1,0 +1,13 @@
+{
+  "id": "01-pixel",
+  "family": "Vangers Dialogue Study",
+  "baseline": 15,
+  "spacing": 1,
+  "proof_scale": 2,
+  "supersample": 1,
+  "threshold": 0.5,
+  "blur": 0,
+  "alphamax": 0,
+  "opttolerance": 0.2,
+  "note": "Control: native cfont00 range midpoint, polygonal outline; dialogue and inventory role."
+}

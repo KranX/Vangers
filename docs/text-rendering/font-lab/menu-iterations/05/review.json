@@ -1,0 +1,9 @@
+{
+  "status": "SUPERSEDED_BY_TECHNICAL_FIX",
+  "visual": [
+    "Viewed enlarged original caps, newly designed lowercase/digits and full prior atlas.",
+    "Reduced smoothing preserves original spurs while outlines remain smoother than footprint-only pass 2.",
+    "New Menu glyphs are design proposals, not recovered original artwork. Relief/color must remain separate."
+  ],
+  "technical": "Full QA found hmtx LSB assigned before glyf bounds calculation. Pass 6 recalculates LSB; do not use passes 1-5 for integration."
+}

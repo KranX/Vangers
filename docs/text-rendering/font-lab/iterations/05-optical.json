@@ -1,0 +1,85 @@
+{
+  "id": "05-optical",
+  "baseline": 44,
+  "spacing": 2,
+  "supersample": 12,
+  "threshold": 0.45,
+  "blur": 0.25,
+  "alphamax": 1.0,
+  "opttolerance": 1.5,
+  "note": "Higher contour precision plus targeted optical corrections to dots, descenders and busy joins.",
+  "resample": "bicubic",
+  "match_ink": true,
+  "ink_factor": 1.0,
+  "overrides": {
+    "M": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "W": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "Ж": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "ж": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "Щ": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    "щ": {
+      "blur": 0.4,
+      "opttolerance": 2.0
+    },
+    ".": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    ":": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    ";": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "Ё": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "ё": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "Й": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "й": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "i": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    },
+    "j": {
+      "ink_factor": 1.025,
+      "blur": 0.15,
+      "opttolerance": 0.8
+    }
+  }
+}

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+__FONT_FACES__
+body{margin:0;color:var(--foreground);background:var(--background);font-family:var(--font-sans);font-size:14px}
+#font-comparison{width:100%;box-sizing:border-box}
+#font-comparison section{margin:0 0 20px}
+#font-comparison h3{font:500 14px var(--font-sans);margin:0 0 4px}
+#font-comparison .sample{font-weight:400;line-height:1.18;overflow-wrap:anywhere;padding:8px 0;font-kerning:none;font-variant-ligatures:none}
+#font-comparison .menu{font-family:VangersMenu;font-size:50px}
+#font-comparison .display{font-family:VangersDisplay;font-size:50px}
+#font-comparison .text{font-family:VangersText;font-size:18px}
+#font-comparison .extension{font-family:VangersMenu;font-size:32px;line-height:1.5}
+#font-comparison .caption{color:var(--muted-foreground);margin:4px 0 10px}
+#font-comparison label{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+#font-comparison select{font:inherit;color:var(--foreground);background:var(--background);min-height:36px;max-width:100%}
+#font-comparison figure{margin:12px 0 0}
+#font-comparison img{display:block;max-width:100%;height:auto;image-rendering:pixelated}
+#font-comparison hr{border:0;border-top:1px solid var(--border);margin:18px 0}
+@media(max-width:480px){#font-comparison .menu,#font-comparison .display{font-size:36px}}
+</style></head><body><main id="font-comparison">
+<section><h3>Menu — главное меню · hfont01</h3><div class="sample menu">НОВАЯ ИГРА<br>NEW GAME</div></section>
+<section><h3>Display — заголовки · hfont00</h3><div class="sample display">Настройка графики<br>Graphics Options</div></section>
+<section><h3>Text — диалоги · cfont00</h3><div class="sample text">Очнулся, жалкий?<br>Welcome back, poor pilgarlic!</div></section>
+<div class="caption">Дополнения Menu: новые рисунки, не буквы из оригинала</div>
+<div class="sample extension">AaБб Ёё 0123456789 !?</div>
+<hr>
+<label for="proof-choice">Сравнение <select id="proof-choice" class="form-select"><option value="menu">Menu</option><option value="display">Display</option><option value="text">Text</option></select></label>
+<figure><figcaption id="proof-caption" class="caption" aria-live="polite">Сверху силуэт исходника, снизу TTF. 50 px; без рельефа.</figcaption>
+<img id="proof-image" src="__MENU_PROOF__" alt="Сравнение исходного растра и TTF на игровой строке НОВАЯ ИГРА"></figure>
+<div class="caption">Сравнения офлайн. Шрифты ещё не подключены к игре.</div>
+</main><script>
+const root=document.getElementById('font-comparison');
+const samples={
+ menu:{src:'__MENU_PROOF__',label:'Сверху силуэт исходника, снизу TTF. 50 px; без рельефа.',alt:'НОВАЯ ИГРА: исходный силуэт hfont01 и TTF'},
+ display:{src:'__DISPLAY_PROOF__',label:'Сверху поле исходника, снизу TTF. 50 px; без рельефа.',alt:'Настройка графики: исходный hfont00 и TTF'},
+ text:{src:'__TEXT_PROOF__',label:'Сверху фрагмент игры, снизу TTF с той же палитрой. 18 px, пиксели ×2.',alt:'Welcome back, poor pilgarlic: фрагмент игры и офлайн TTF'}
+};
+function choose(){const v=samples[root.querySelector('select').value];root.querySelector('img').src=v.src;root.querySelector('img').alt=v.alt;root.querySelector('figcaption').textContent=v.label}
+root.querySelector('select').addEventListener('change',choose);
+Promise.all(['VangersMenu','VangersDisplay','VangersText'].map(f=>document.fonts.load('50px '+f,'AaЁё0123'))).then(results=>{
+ console.log(JSON.stringify({loaded:results.map(r=>r.map(f=>({family:f.family,status:f.status}))),horizontalOverflow:document.documentElement.scrollWidth>innerWidth}));
+ const select=root.querySelector('select');for(const role of ['text','display','menu']){select.value=role;choose();if(root.querySelector('img').alt!==samples[role].alt)throw Error('Proof selection failed')}
+ console.log('Three comparison selections passed');
+}).catch(e=>console.error(e));
+</script></body></html>

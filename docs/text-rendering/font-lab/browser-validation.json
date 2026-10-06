@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-06",
+  "tool": "T3 html_preview",
+  "cases": [
+    {
+      "width": 728,
+      "appearance": "dark",
+      "contentHeight": 1074
+    },
+    {
+      "width": 360,
+      "appearance": "light",
+      "contentHeight": 790,
+      "details": "open"
+    }
+  ],
+  "font_load": [
+    "VangersDisplay: loaded",
+    "VangersDialogue: loaded"
+  ],
+  "iteration_control": "7/7 passed",
+  "console_errors": [],
+  "visual_review": "Desktop and mobile previews inspected: labels and controls fit, both browser-rendered TTF samples render Cyrillic.",
+  "html_source": "/home/stalkerg/projects/vangers-font-baseline/2026-10-06-vector-font/work/font-comparison.html",
+  "html_sha256": "4b74fa7c859747486be79e13d7ed8c7e667129aaf4f0c2aa271a87e97784444a"
+}

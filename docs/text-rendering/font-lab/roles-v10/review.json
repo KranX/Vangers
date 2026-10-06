@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-06",
+  "status": "VISUALLY_REVIEWED_EXPERIMENT",
+  "fonts": {
+    "Menu": [
+      "Six sequential passes viewed; final original labels and all 160 visible glyphs checked.",
+      "Pass 1 rejected because relief height was incorrectly treated as coverage.",
+      "Pass 6 fixes LSB; new letters/digits are explicitly new design, not original-match claims."
+    ],
+    "Display": [
+      "Real Options/Graphics/Credits/Main Menu headings viewed in both languages; all glyphs checked.",
+      "Original thin irregular drawing and fixed placement retained; spacing5 matches selected source role."
+    ],
+    "Text": [
+      "Four full real-game dialogue lines in RU/EN viewed with controlled wrapping; full atlas checked.",
+      "Three actual screenshot crops match original source mask exactly; offline TTF close but not identical.",
+      "Fixed uneven e/c/k placement remains; no invented random motion."
+    ]
+  },
+  "browser": [
+    "All 3 fonts loaded; desktop728 dark, mobile360 light, Text comparison selection visually checked."
+  ],
+  "acceptance": "Owner positively accepted these experimental samples. Future in-game renderer still needs separate verification.",
+  "owner_feedback": "2026-10-06: user said looks excellent at this stage and explicitly requested commit and push. Experimental-stage acceptance; no renderer integration requested."
+}

@@ -1,0 +1,43 @@
+{
+  "id": "07-validated",
+  "family": "Vangers Dialogue Study",
+  "baseline": 15,
+  "spacing": 1,
+  "proof_scale": 2,
+  "supersample": 12,
+  "threshold": 0.4,
+  "blur": 0.3,
+  "alphamax": 1.0,
+  "opttolerance": 1.5,
+  "note": "Technical QA: reverse Potrace/CFF winding to TrueType convention; keep accepted forms and repeat visual verification.",
+  "resample": "bicubic",
+  "match_ink": true,
+  "ink_factor": 1.015,
+  "guide_source": "data/resource/actint/fonts/cfont03.bml",
+  "guide_blend": 0.95,
+  "measured_vertical_metrics": true,
+  "upm": 1800,
+  "overrides": {
+    ".": {
+      "ink_factor": 1.04,
+      "opttolerance": 0.8
+    },
+    ":": {
+      "ink_factor": 1.04,
+      "opttolerance": 0.8
+    },
+    ";": {
+      "ink_factor": 1.04,
+      "opttolerance": 0.8
+    },
+    "i": {
+      "ink_factor": 1.04,
+      "opttolerance": 0.8
+    },
+    "j": {
+      "ink_factor": 1.04,
+      "opttolerance": 0.8
+    }
+  },
+  "truetype_winding": true
+}

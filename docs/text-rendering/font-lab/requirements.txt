@@ -1,0 +1,6 @@
+# Python 3.14 was used for the recorded experiment. Potrace 1.16 is external.
+fonttools==4.66.1
+freetype-py==2.5.1
+numpy==2.5.3
+pillow==12.3.0
+scipy==1.18.1

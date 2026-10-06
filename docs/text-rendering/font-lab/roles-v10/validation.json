@@ -1,0 +1,222 @@
+{
+  "status": "PASS",
+  "date": "2026-10-06",
+  "freetype_version": [
+    2,
+    13,
+    2
+  ],
+  "fonts": [
+    {
+      "role": "menu",
+      "status": "PASS",
+      "sha256": "45e44b66abd41d65bc4529c9361c08c3bbd55fa9784b487dd4373eff9f966b37",
+      "mapped": 163,
+      "glyphs": 162,
+      "points": 47817,
+      "render_checks": 966,
+      "ppem": [
+        14,
+        18,
+        25,
+        50,
+        100,
+        200
+      ],
+      "outline_only": true,
+      "clockwise_net_winding": true,
+      "exact_native_advances": true,
+      "byte_identical_rebuild": true,
+      "original_vertical_centroid_error_px": {
+        "mean": 0.05267663931749121,
+        "max": 0.15421091155121758
+      },
+      "real_game_phrases": [
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 19,
+          "native_width": 361.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 20,
+          "native_width": 460.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 13,
+          "native_width": 409.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 14,
+          "native_width": 702.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 22,
+          "native_width": 310.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 23,
+          "native_width": 439.0,
+          "line_count": 1
+        }
+      ],
+      "fc_scan": [
+        "Vangers Menu",
+        "True",
+        "True"
+      ]
+    },
+    {
+      "role": "display",
+      "status": "PASS",
+      "sha256": "dd64ebdcb8108b58806f34a9ebeb27f083a633a7a31175ab7945b0c4e0227f49",
+      "mapped": 163,
+      "glyphs": 162,
+      "points": 22633,
+      "render_checks": 966,
+      "ppem": [
+        14,
+        18,
+        25,
+        50,
+        100,
+        200
+      ],
+      "outline_only": true,
+      "clockwise_net_winding": true,
+      "exact_native_advances": true,
+      "byte_identical_rebuild": true,
+      "original_vertical_centroid_error_px": {
+        "mean": 0.05669072401721342,
+        "max": 0.23567752152644772
+      },
+      "real_game_phrases": [
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 55,
+          "native_width": 161.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 56,
+          "native_width": 220.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 68,
+          "native_width": 352.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 69,
+          "native_width": 406.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 31,
+          "native_width": 160.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 32,
+          "native_width": 297.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 49,
+          "native_width": 231.0,
+          "line_count": 1
+        },
+        {
+          "source": "data/iscreen/scripts/strings.inc",
+          "line": 50,
+          "native_width": 321.0,
+          "line_count": 1
+        }
+      ],
+      "fc_scan": [
+        "Vangers Display",
+        "True",
+        "True"
+      ]
+    },
+    {
+      "role": "text",
+      "status": "PASS",
+      "sha256": "5165e59e38703ad60adb1c83d10292c2a6cef0a2f2efecb764c503f60c011cf4",
+      "mapped": 163,
+      "glyphs": 162,
+      "points": 11391,
+      "render_checks": 966,
+      "ppem": [
+        14,
+        18,
+        25,
+        50,
+        100,
+        200
+      ],
+      "outline_only": true,
+      "clockwise_net_winding": true,
+      "exact_native_advances": true,
+      "byte_identical_rebuild": true,
+      "original_vertical_centroid_error_px": {
+        "mean": 0.04261083608727526,
+        "max": 0.19289107143612583
+      },
+      "real_game_phrases": [
+        {
+          "source": "data/data/Podish.text",
+          "line": 30,
+          "native_width": 706.0,
+          "line_count": 2
+        },
+        {
+          "source": "data/data/Podish.text",
+          "line": 31,
+          "native_width": 1572.0,
+          "line_count": 4
+        },
+        {
+          "source": "data/data/Podish.text",
+          "line": 32,
+          "native_width": 767.0,
+          "line_count": 2
+        },
+        {
+          "source": "data/data/Podish.text",
+          "line": 33,
+          "native_width": 1944.0,
+          "line_count": 5
+        }
+      ],
+      "fc_scan": [
+        "Vangers Text",
+        "True",
+        "True"
+      ]
+    }
+  ],
+  "render_checks": 2898,
+  "game_phrases": 18,
+  "limitations": [
+    "Native height/footprint proxies are not physical alpha or in-game relief parity.",
+    "Small-size nonempty renders do not prove readability.",
+    "No shaping/in-game integration; kerning/hinting and extended alphabets not supplied."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "status": "CANDIDATE",
+  "visual": [
+    "Viewed all 160 visible glyphs, 50/100 ppem extensions and original Menu labels.",
+    "New numbers have sufficient weight; ornamental 1 fits the native stem vocabulary.",
+    "Lowercase glyphs distinguish case and preserve counters; Cyrillic derivatives intentionally retain ornate caps anatomy.",
+    "Final pass will tighten curve tolerance and moderate smoothing to retain small original ornament tips."
+  ]
+}
