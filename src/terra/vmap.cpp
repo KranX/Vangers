@@ -409,7 +409,7 @@ void vrtMap::captureRow(int y) {
 		return;
 	if (!wTable || cWorld < 0 || cWorld >= maxWorld || !wTable[cWorld].name)
 		return;
-	if (NetworkON)
+	if (NetworkON || !terrainSavingEnabled())
 		return;
 
 	terrainStore().setRow(cWorld, wTable[cWorld].name, H2_SIZE, V_SIZE, (uint32_t)y, lineT[y]);
@@ -429,8 +429,8 @@ void vrtMap::captureChangedRows(void) {
 
 bool vrtMap::applyStoredRow(int y, uchar *row) {
 #ifndef _SURMAP_
-	if (!row || NetworkON || !wTable || cWorld < 0 || cWorld >= maxWorld ||
-		!wTable[cWorld].name)
+	if (!row || NetworkON || !terrainSavingEnabled() || !wTable || cWorld < 0 ||
+		cWorld >= maxWorld || !wTable[cWorld].name)
 		return false;
 
 	const std::vector<uchar> *stored =

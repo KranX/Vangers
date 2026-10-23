@@ -44,6 +44,7 @@ public:
 
 	bool saveDir(const std::string &dir) const;
 	bool loadDir(const std::string &dir);
+	bool removeDir(const std::string &dir) const;
 
 private:
 	std::map<int, TerrainWorldRows> worlds_;
@@ -54,6 +55,10 @@ TerrainStore &terrainStore(void);
 // Captures changed surface rows of the currently loaded world. No-op when no
 // world is loaded or in network game.
 void captureTerrainChangedRows(void);
+
+// Global on/off switch for saving surface changes with game saves.
+void setTerrainSavingEnabled(bool enabled);
+bool terrainSavingEnabled(void);
 
 // "savegame/save03.dat" -> "savegame/save03.terrain"
 std::string terrainStoreDirForSave(const std::string &savePath);

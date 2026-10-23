@@ -118,6 +118,9 @@
 #define iSTR_KEEP_ALL_TERRAIN_CHANGES1	"KEEP ALL TERRAIN CHANGES:"
 #define iSTR_KEEP_ALL_TERRAIN_CHANGES2	"‘Ž•€Ÿ’œ ‹€„˜€”’:"
 
+#define iSTR_SAVE_TERRAIN_CHANGES1	"SAVE TERRAIN IN SAVES:"
+#define iSTR_SAVE_TERRAIN_CHANGES2	"‹€„˜€”’ ‚ ‘Ž•€…ˆŸ•:"
+
 #define iSTR_FULL_SCREEN1	"FULL SCREEN:"
 #define iSTR_FULL_SCREEN2	"Ž‹›‰ Š€:"
 

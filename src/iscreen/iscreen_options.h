@@ -77,7 +77,9 @@ enum iScreenOptionID {
 
 	iFPS_60, // 47
 
-	iMAX_OPTION_ID, // 48
+	iSAVE_TERRAIN, // 48
+
+	iMAX_OPTION_ID, // 49
 };
 
 enum iScreenOptionObjType {

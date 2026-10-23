@@ -5592,8 +5592,14 @@ void acsSaveData(void) {
 		acsCompressData(XBuf.address());
 #endif
 
-		if (!NetworkON)
+		if (NetworkON) {
+			// Multiplayer terrain is server-authoritative: no per-save overlay.
+		} else if (terrainSavingEnabled()) {
 			terrainStore().saveDir(terrainStoreDirForSave(savePath));
+		} else {
+			terrainStore().clear();
+			terrainStore().removeDir(terrainStoreDirForSave(savePath));
+		}
 	}
 	aciAutoSaveFlag = 0;
 }
@@ -5610,7 +5616,8 @@ void acsLoadData(void) {
 		XBuf <= slot < ".dat";
 
 		terrainStore().clear();
-		terrainStore().loadDir(terrainStoreDirForSave(XBuf.address()));
+		if (terrainSavingEnabled() && !NetworkON)
+			terrainStore().loadDir(terrainStoreDirForSave(XBuf.address()));
 
 #ifdef _ACI_PACK_SAVES_
 		acsDecompressData(XBuf.address());

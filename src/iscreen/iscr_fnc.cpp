@@ -22,6 +22,8 @@
 
 #include "ext_evnt.h"
 
+#include "../terra/terrain_store.h"
+
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
 #include "../actint/item_api.h"
@@ -2352,6 +2354,9 @@ void iHandleExtEvent(int code, int data) {
 		break;
 	case iEXT_UPDATE_FPS_MODE:
 		iSetFPS(iGetOptionValue(iFPS_60));
+		break;
+	case iEXT_UPDATE_TERRAIN_SAVE_MODE:
+		setTerrainSavingEnabled(iGetOptionValue(iSAVE_TERRAIN) != 0);
 		break;
 	case iEXT_UPDATE_MUSIC_MODE:
 #ifndef _NO_CDAUDIO_

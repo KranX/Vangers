@@ -125,6 +125,8 @@ GameSettings decode_settings(const TomlValue &document) {
 		settings.video.detail = *value;
 	if (const auto value = read_bool(document, {"video", "keep_terrain_changes"}))
 		settings.video.keep_terrain_changes = *value;
+	if (const auto value = read_bool(document, {"video", "save_terrain_changes"}))
+		settings.video.save_terrain_changes = *value;
 	if (const auto value = read_bool(document, {"video", "destroy_terrain"}))
 		settings.video.destroy_terrain = *value;
 
@@ -261,6 +263,7 @@ void encode_settings(TomlValue &document, const GameSettings &settings) {
 	set_value(video, "fps", TomlValue(settings.video.fps), "Supported values: 20 or 60.");
 	set_value(video, "detail", TomlValue(settings.video.detail));
 	set_value(video, "keep_terrain_changes", TomlValue(settings.video.keep_terrain_changes));
+	set_value(video, "save_terrain_changes", TomlValue(settings.video.save_terrain_changes));
 	set_value(video, "destroy_terrain", TomlValue(settings.video.destroy_terrain));
 
 	TomlValue &audio = ensure_table(document, "audio", "Sound and music settings.");

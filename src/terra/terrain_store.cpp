@@ -242,6 +242,14 @@ bool TerrainStore::saveDir(const std::string &dir) const {
 	return ok;
 }
 
+bool TerrainStore::removeDir(const std::string &dir) const {
+	if (dir.empty())
+		return false;
+	std::error_code ec;
+	fs::remove_all(dir, ec);
+	return !ec;
+}
+
 bool TerrainStore::loadDir(const std::string &dir) {
 	if (dir.empty())
 		return false;
@@ -277,6 +285,18 @@ bool TerrainStore::loadDir(const std::string &dir) {
 TerrainStore &terrainStore(void) {
 	static TerrainStore store;
 	return store;
+}
+
+namespace {
+bool g_terrainSavingEnabled = true;
+}
+
+void setTerrainSavingEnabled(bool enabled) {
+	g_terrainSavingEnabled = enabled;
+}
+
+bool terrainSavingEnabled(void) {
+	return g_terrainSavingEnabled;
 }
 
 std::string terrainStoreDirForSave(const std::string &savePath) {

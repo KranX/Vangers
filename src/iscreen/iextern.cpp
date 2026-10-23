@@ -679,6 +679,8 @@ void iPrepareOptions(void) {
 	iScrOpt[iFPS_60] = new iScreenOption(iTRIGGER, 0, "Graphics screen", "FpsTrig");
 	((iTriggerObject *)iScrOpt[iFPS_60]->objPtr)->callback = &iSetFPS;
 
+	iScrOpt[iSAVE_TERRAIN] = new iScreenOption(iTRIGGER, 0, "Graphics screen", "SaveTerrainTrig");
+
 	iPrepareControls();
 }
 
