@@ -150,8 +150,7 @@ bool test_defaults_and_round_trip() {
 		) ||
 		!check(first.get().video.fps == 20, "fresh-install FPS default changed") ||
 		!check(
-			!first.get().video.save_terrain_changes,
-			"fresh-install terrain saving default changed"
+			!first.get().video.save_terrain_changes, "fresh-install terrain saving default changed"
 		))
 		return false;
 

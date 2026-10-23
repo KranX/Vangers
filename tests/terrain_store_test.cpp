@@ -83,8 +83,7 @@ int main() {
 			!check(store.getRow(3, "Fostral", h2Size, vSize, 9) != nullptr, "row 9 lost") ||
 			!check(store.getRow(1, "Glorx", h2Size, vSize, 2) != nullptr, "other world lost") ||
 			!check(
-				store.getRow(3, "Fostral", h2Size, vSize, 6) == nullptr,
-				"unexpected row restored"
+				store.getRow(3, "Fostral", h2Size, vSize, 6) == nullptr, "unexpected row restored"
 			) ||
 			!check(
 				store.getRow(3, "Fostral", h2Size, vSize + 1, 5) == nullptr,
@@ -114,7 +113,9 @@ int main() {
 		writeGarbage(root / "corrupt.terrain" / "world_0.trn");
 		writeGarbage(root / "corrupt.terrain" / "world_1.trn");
 		TerrainStore store;
-		if (!check(store.loadDir((root / "corrupt.terrain").string()), "corrupt dir failed to load") ||
+		if (!check(
+				store.loadDir((root / "corrupt.terrain").string()), "corrupt dir failed to load"
+			) ||
 			!check(store.empty(), "corrupt data produced rows"))
 			return 1;
 	}

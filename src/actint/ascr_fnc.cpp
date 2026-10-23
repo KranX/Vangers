@@ -14,8 +14,8 @@
 
 #include "../network.h"
 
-#include "../terra/world.h"
 #include "../terra/terrain_store.h"
+#include "../terra/world.h"
 
 #include "../iscreen/hfont.h"
 #include "../iscreen/iml.h"

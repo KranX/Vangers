@@ -45,8 +45,8 @@
 void reconfigure_runtime_fps_scaled_state(double old_coeff, double new_coeff);
 
 #include "terra/render.h"
-#include "terra/vmap.h"
 #include "terra/terrain_store.h"
+#include "terra/vmap.h"
 #include "terra/world.h"
 
 #include "particle/df.h"

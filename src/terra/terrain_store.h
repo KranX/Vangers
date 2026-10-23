@@ -18,7 +18,7 @@ struct TerrainWorldRows {
 };
 
 class TerrainStore {
-public:
+  public:
 	void clear(void);
 	bool empty(void) const;
 	size_t rowCount(void) const;
@@ -34,19 +34,14 @@ public:
 	);
 
 	// Returns nullptr when the world/row is unknown or the map layout differs.
-	const std::vector<unsigned char> *getRow(
-		int worldIndex,
-		const char *name,
-		uint32_t h2Size,
-		uint32_t vSize,
-		uint32_t y
-	) const;
+	const std::vector<unsigned char> *
+	getRow(int worldIndex, const char *name, uint32_t h2Size, uint32_t vSize, uint32_t y) const;
 
 	bool saveDir(const std::string &dir) const;
 	bool loadDir(const std::string &dir);
 	bool removeDir(const std::string &dir) const;
 
-private:
+  private:
 	std::map<int, TerrainWorldRows> worlds_;
 };
 
