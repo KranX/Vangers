@@ -16,6 +16,9 @@
 #include "render.h"
 #include "vmap.h"
 #include "world.h"
+#ifndef _SURMAP_
+#	include "terrain_store.h"
+#endif
 // #include "..\win32f.h"
 // #include "cpuid.h"
 #include "../palette.h"
@@ -374,6 +377,9 @@ void vrtMap::allocHeap(void) {
 }
 
 void vrtMap::release(void) {
+#ifndef _SURMAP_
+	captureChangedRows();
+#endif
 #ifdef _ROAD_
 	if (ExclusiveLog && LockSuccess) {
 		// WHAT is IT?
@@ -395,6 +401,57 @@ void vrtMap::release(void) {
 		kmap.close();
 	}
 	on = false;
+}
+
+void vrtMap::captureRow(int y) {
+#ifndef _SURMAP_
+	if (!lineT || !changedT || y < 0 || (uint)y >= V_SIZE || !lineT[y] || !changedT[y])
+		return;
+	if (!wTable || cWorld < 0 || cWorld >= maxWorld || !wTable[cWorld].name)
+		return;
+	if (NetworkON)
+		return;
+
+	terrainStore().setRow(cWorld, wTable[cWorld].name, H2_SIZE, V_SIZE, (uint32_t)y, lineT[y]);
+#else
+	(void)y;
+#endif
+}
+
+void vrtMap::captureChangedRows(void) {
+#ifndef _SURMAP_
+	if (!lineT || !changedT)
+		return;
+	for (uint i = 0; i < V_SIZE; i++)
+		captureRow((int)i);
+#endif
+}
+
+bool vrtMap::applyStoredRow(int y, uchar *row) {
+#ifndef _SURMAP_
+	if (!row || NetworkON || !wTable || cWorld < 0 || cWorld >= maxWorld ||
+		!wTable[cWorld].name)
+		return false;
+
+	const std::vector<uchar> *stored =
+		terrainStore().getRow(cWorld, wTable[cWorld].name, H2_SIZE, V_SIZE, (uint32_t)y);
+	if (!stored || stored->size() != H2_SIZE)
+		return false;
+
+	memcpy(row, stored->data(), H2_SIZE);
+	return true;
+#else
+	(void)y;
+	(void)row;
+	return false;
+#endif
+}
+
+void captureTerrainChangedRows(void) {
+#ifndef _SURMAP_
+	if (vMap)
+		vMap->captureChangedRows();
+#endif
 }
 
 void vrtMap::init(void) {
@@ -856,6 +913,9 @@ void vrtMap::load(const char *name, int nWorld) {
 }
 
 void vrtMap::reload(int nWorld) {
+#ifndef _SURMAP_
+	captureChangedRows();
+#endif
 	on = true;
 	if (nWorld >= maxWorld || nWorld < 0)
 		ErrH.Abort("World Index out of range");
@@ -1193,6 +1253,8 @@ void vrtMap::accept(int up, int down) {
 					offset += H2_SIZE;
 				fmap.read(p, H2_SIZE);
 			}
+			if (applyStoredRow(i, p))
+				changedT[i] = 1;
 			lineT[i] = p; // znfo lineT plain //загрузка
 			lineTcolor[i] = use_c();
 			LINE_render(i);
@@ -1221,6 +1283,8 @@ void vrtMap::accept(int up, int down) {
 			lineT[i] = p; // znfo lineT compressed //загрузка
 			lineTcolor[i] = use_c();
 #endif
+			if (applyStoredRow(i, p))
+				changedT[i] = 1;
 			LINE_render(i);
 			i = YCYCL(i + 1);
 		} while (i != max);
@@ -1526,6 +1590,8 @@ void vrtMap::link(int up, int down, int d) {
 				if (!DirectLog && sssT[i] != -1) {
 					fsss.seek(sssT[i], XS_BEG);
 					fsss.read(p, H2_SIZE);
+					if (applyStoredRow(i, p))
+						changedT[i] = 1;
 					lineT[i] = p;
 					lineTcolor[i] = use_c();
 					LINE_render(i);
@@ -1544,6 +1610,8 @@ void vrtMap::link(int up, int down, int d) {
 						}
 						fmap.read(p, H2_SIZE);
 					}
+					if (applyStoredRow(i, p))
+						changedT[i] = 1;
 					lineT[i] = p; // znfo lineT plain //догрузка
 					lineTcolor[i] = use_c();
 					LINE_render(i);
@@ -1581,6 +1649,8 @@ void vrtMap::linkC(int up, int down, int d) {
 			lineT[i] = p = use();
 			lineTcolor[i] = use_c();
 			ExpandBuffer(mappingPtr + st_table[i], p);
+			if (applyStoredRow(i, p))
+				changedT[i] = 1;
 			LINE_render(i);
 #else
 			p = use();
@@ -1595,6 +1665,8 @@ void vrtMap::linkC(int up, int down, int d) {
 
 			netModify(p);
 
+			if (applyStoredRow(i, p))
+				changedT[i] = 1;
 			lineT[i] = p; // znfo lineT compressed //догрузка
 			lineTcolor[i] = use_c();
 			LINE_render(i);
@@ -1615,6 +1687,9 @@ void vrtMap::delink(int up, int down) {
 	uchar *p;
 	do {
 		if (lineT[i]) {
+#ifndef _SURMAP_
+			captureRow(i);
+#endif
 			freeMax++;
 			p = lineT[i];
 #ifdef _ROAD_

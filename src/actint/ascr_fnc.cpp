@@ -15,6 +15,7 @@
 #include "../network.h"
 
 #include "../terra/world.h"
+#include "../terra/terrain_store.h"
 
 #include "../iscreen/hfont.h"
 #include "../iscreen/iml.h"
@@ -5528,6 +5529,7 @@ void acsSaveData(void) {
 		if (slot < 10)
 			XBuf < "0";
 		XBuf <= slot < ".dat";
+		const std::string savePath(XBuf.address());
 		len = strlen(ptr);
 		for (i = 0; i < len; i++) {
 			if (ptr[i] && ptr[i] != ' ')
@@ -5568,6 +5570,8 @@ void acsSaveData(void) {
 
 		CurrentWorld = prevWorld;
 
+		captureTerrainChangedRows();
+
 		uniVangSave(fh);
 
 		aciSaveUVSList(fh, GItem);
@@ -5587,6 +5591,9 @@ void acsSaveData(void) {
 #ifdef _ACI_PACK_SAVES_
 		acsCompressData(XBuf.address());
 #endif
+
+		if (!NetworkON)
+			terrainStore().saveDir(terrainStoreDirForSave(savePath));
 	}
 	aciAutoSaveFlag = 0;
 }
@@ -5601,6 +5608,9 @@ void acsLoadData(void) {
 		if (slot < 10)
 			XBuf < "0";
 		XBuf <= slot < ".dat";
+
+		terrainStore().clear();
+		terrainStore().loadDir(terrainStoreDirForSave(XBuf.address()));
 
 #ifdef _ACI_PACK_SAVES_
 		acsDecompressData(XBuf.address());

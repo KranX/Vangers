@@ -77,6 +77,9 @@ struct vrtMap {
 	void load(const char *name, int nWorld);
 	void reload(int nWorld);
 	void release(void);
+	void captureChangedRows(void);
+	void captureRow(int y);
+	bool applyStoredRow(int y, uchar *row);
 	void allocHeap(void);
 	void lockHeap(void);
 	void dump_terrain(void);

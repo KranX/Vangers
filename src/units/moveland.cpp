@@ -2280,7 +2280,7 @@ void DestroyBarellSmooth(
 	if (CurrentWorld != WORLD_NECROSS)
 #	endif
 		regSet(rx, ry, x1, y1, 1, 0);
-	regRender(rx, ry, x1, y1, 0);
+	regRender(rx, ry, x1, y1);
 };
 
 void ClearBarell(int x0, int y0, int radius, uchar terrain, int z0) {

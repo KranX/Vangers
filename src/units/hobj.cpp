@@ -4227,12 +4227,14 @@ void FreeAll(int mode) {
 		GeneralSystemClose();
 		MLfree();
 		delete vMap;
+		vMap = NULL;
 		GeneralTableFree();
 		GeneralSystemFree();
 		break;
 	case 2:
 		MLfree();
 		delete vMap;
+		vMap = NULL;
 		GeneralTableFree();
 		GeneralSystemFree();
 		break;

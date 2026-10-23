@@ -73,6 +73,7 @@ SET(vangers_SRCS
 	terra/siderend.cpp #ASM
 	terra/slopskip.cpp
 	terra/splay.cpp
+	terra/terrain_store.cpp
 	terra/vmap.cpp #ASM
 	units/effect.cpp
 	units/hobj.cpp
