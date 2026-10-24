@@ -108,3 +108,18 @@ TARGET_LINK_LIBRARIES(legacy_settings_migration_test PRIVATE
 )
 
 ADD_TEST(NAME legacy_settings_migration COMMAND legacy_settings_migration_test)
+
+ADD_EXECUTABLE(rle_test
+	rle_test.cpp
+	../src/rle.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(rle_test PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_SOURCE_DIR}/lib/xtool
+	${PROJECT_SOURCE_DIR}/lib/xgraph
+)
+
+TARGET_LINK_LIBRARIES(rle_test PRIVATE SDL3::SDL3)
+
+ADD_TEST(NAME rle_roundtrip COMMAND rle_test)
