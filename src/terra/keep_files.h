@@ -2,6 +2,7 @@
 #define __TERRA__KEEP_FILES_H__
 
 #include <string>
+#include <vector>
 
 // Terrain persistence is active when either the global keep option or the
 // per-save terrain option is enabled in single player.
@@ -22,9 +23,9 @@ void ClearKeepSession(void);
 // "savegame/save03.dat" -> "savegame/save03.terrain"
 std::string TerrainDirForSave(const std::string &savePath);
 
-// Unique, filesystem-safe name for one world's .vmt inside a terrain
-// snapshot. Different worlds must never share a snapshot file name.
-std::string TerrainSnapshotName(const std::string &worldKeepPath);
+// Builds one filesystem-safe file name per world .vmt path. The order matches
+// the input; names are stable and different worlds never share a name.
+std::vector<std::string> TerrainSnapshotNames(const std::vector<std::string> &worldKeepPaths);
 
 // Publishes a new save file and (optionally) its terrain snapshot as one
 // generation. On failure the previous files are restored and false is

@@ -1,7 +1,9 @@
 #include "keep_files.h"
 
 #include <filesystem>
+#include <map>
 #include <system_error>
+#include <vector>
 
 namespace {
 
@@ -15,28 +17,71 @@ bool RenamePath(const std::string &from, const std::string &to, std::error_code 
 
 } // namespace
 
+namespace {
+
+std::string BaseSnapshotName(const std::string &worldKeepPath) {
+	std::filesystem::path path(worldKeepPath);
+	std::string base = path.parent_path().filename().string();
+	if (base.empty())
+		base = path.stem().string();
+
+	std::string safe;
+	safe.reserve(base.size());
+	for (unsigned char c : base) {
+		const bool keep = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+						  (c >= '0' && c <= '9') || c == '-' || c == '_' || c == ' ';
+		safe.push_back(keep ? static_cast<char>(c) : '_');
+	}
+	if (safe.empty())
+		safe = "world";
+	return safe;
+}
+
+std::string PathHash(const std::string &value) {
+	static const char hex[] = "0123456789abcdef";
+	unsigned int hash = 2166136261u;
+	for (unsigned char c : value) {
+		hash ^= c;
+		hash *= 16777619u;
+	}
+
+	std::string result;
+	result.reserve(8);
+	for (int shift = 28; shift >= 0; shift -= 4)
+		result.push_back(hex[(hash >> shift) & 0x0F]);
+	return result;
+}
+
+} // namespace
+
 std::string TerrainDirForSave(const std::string &savePath) {
 	fs::path path(savePath);
 	path.replace_extension(".terrain");
 	return path.string();
 }
 
-std::string TerrainSnapshotName(const std::string &worldKeepPath) {
-	static const char hex[] = "0123456789ABCDEF";
-	std::string name;
-	name.reserve(worldKeepPath.size());
-	for (unsigned char c : worldKeepPath) {
-		const bool safe = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-						  (c >= '0' && c <= '9') || c == '.' || c == '-' || c == '_';
-		if (safe) {
-			name.push_back(static_cast<char>(c));
-		} else {
-			name.push_back('%');
-			name.push_back(hex[c >> 4]);
-			name.push_back(hex[c & 0x0F]);
-		}
+std::vector<std::string> TerrainSnapshotNames(const std::vector<std::string> &worldKeepPaths) {
+	std::vector<std::string> bases;
+	std::map<std::string, int> counts;
+	bases.reserve(worldKeepPaths.size());
+	for (const std::string &path : worldKeepPaths) {
+		bases.push_back(BaseSnapshotName(path));
+		++counts[bases.back()];
 	}
-	return name;
+
+	// A directory name alone is readable but not guaranteed unique. If two
+	// worlds would collide, both get a stable path hash instead of relying on
+	// the order of the world list.
+	std::vector<std::string> names;
+	names.reserve(worldKeepPaths.size());
+	for (size_t i = 0; i < worldKeepPaths.size(); ++i) {
+		std::string name = bases[i];
+		if (counts[bases[i]] > 1)
+			name += "_" + PathHash(worldKeepPaths[i]);
+		name += ".vmt";
+		names.push_back(std::move(name));
+	}
+	return names;
 }
 
 bool PublishSaveGeneration(

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "terra/keep_files.h"
 
@@ -29,19 +30,41 @@ std::string readFile(const fs::path &path) {
 } // namespace
 
 int main() {
-	const std::string fostral = TerrainSnapshotName("thechain/fostral/output.vmt");
-	const std::string glorx = TerrainSnapshotName("thechain/glorx/output.vmt");
-	const std::string ark = TerrainSnapshotName("thechain/ark-a-znoy/output.vmt");
-	if (!check(fostral != glorx, "different worlds share a snapshot file name") ||
-		!check(fostral != ark, "different worlds share a snapshot file name") ||
-		!check(glorx != ark, "different worlds share a snapshot file name") ||
+	const std::vector<std::string> worlds = {
+		"thechain/fostral/output.vmt",
+		"thechain/glorx/output.vmt",
+		"thechain/ark-a-znoy/output.vmt",
+	};
+	const std::vector<std::string> names = TerrainSnapshotNames(worlds);
+	if (!check(names.size() == worlds.size(), "snapshot name count mismatch") ||
+		!check(names[0] == "fostral.vmt", "fostral snapshot name is not readable") ||
+		!check(names[1] == "glorx.vmt", "glorx snapshot name is not readable") ||
+		!check(names[2] == "ark-a-znoy.vmt", "ark-a-znoy snapshot name is not readable") ||
 		!check(
-			TerrainSnapshotName("thechain/fostral/output.vmt") == fostral,
-			"snapshot file name is not deterministic"
+			names[0] != names[1] && names[1] != names[2] && names[0] != names[2],
+			"different worlds share a snapshot file name"
 		) ||
+		!check(TerrainSnapshotNames(worlds) == names, "snapshot names are not deterministic") ||
 		!check(
-			fostral.find('/') == std::string::npos && fostral.find('\\') == std::string::npos,
+			names[0].find('/') == std::string::npos && names[0].find('\\') == std::string::npos,
 			"snapshot file name contains a path separator"
+		))
+		return 1;
+
+	// Same-named world directories must still get distinct, order-independent
+	// names; otherwise terrain from one world can be restored into another.
+	const std::vector<std::string> colliding = {
+		"chain-a/same/output.vmt",
+		"chain-b/same/output.vmt",
+	};
+	const std::vector<std::string> collidingNames = TerrainSnapshotNames(colliding);
+	const std::vector<std::string> reversedNames =
+		TerrainSnapshotNames({colliding[1], colliding[0]});
+	if (!check(collidingNames.size() == 2, "collision snapshot name count mismatch") ||
+		!check(collidingNames[0] != collidingNames[1], "colliding worlds share a name") ||
+		!check(
+			collidingNames[0] == reversedNames[1] && collidingNames[1] == reversedNames[0],
+			"collision names depend on world order"
 		))
 		return 1;
 

@@ -250,12 +250,15 @@ bool SaveKeepSnapshotTo(const std::string &dir) {
 	if (ec)
 		return false;
 
-	for (const auto &path : CollectWorldKeepFiles()) {
+	const auto files = CollectWorldKeepFiles();
+	const auto snapshotNames = TerrainSnapshotNames(files);
+	for (size_t i = 0; i < files.size(); ++i) {
+		const std::string &path = files[i];
 		ec.clear();
 		if (!fs::exists(path, ec))
 			continue;
 
-		const fs::path destination = fs::path(dir) / TerrainSnapshotName(path);
+		const fs::path destination = fs::path(dir) / snapshotNames[i];
 		bool ok = false;
 		if (vMap && vMap->kname && vMap->on && IsSameFile(path, vMap->kname)) {
 			ok = vMap->saveKeepToFile(destination.string());
@@ -287,8 +290,10 @@ void LoadKeepSnapshotFrom(const std::string &dir) {
 	if (!fs::is_directory(dir, ec))
 		return;
 
-	for (const auto &path : files) {
-		const fs::path source = fs::path(dir) / TerrainSnapshotName(path);
+	const auto snapshotNames = TerrainSnapshotNames(files);
+	for (size_t i = 0; i < files.size(); ++i) {
+		const std::string &path = files[i];
+		const fs::path source = fs::path(dir) / snapshotNames[i];
 		ec.clear();
 		if (!fs::is_regular_file(source, ec))
 			continue;
