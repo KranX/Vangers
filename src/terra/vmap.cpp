@@ -165,6 +165,14 @@ char *GetTargetName(const char *name) {
 	return namebuf;
 }
 
+static std::string DirectoryOf(const std::string &path) {
+	const size_t pos = path.find_last_of("/\\");
+	return pos == std::string::npos ? std::string() : path.substr(0, pos + 1);
+}
+
+// Builds .vmt paths directly from the world list instead of using
+// GetTargetName(), whose "first call" state is used for the current world and
+// must not be disturbed while the game is running.
 static std::vector<std::string> CollectWorldKeepFiles(void) {
 	std::vector<std::string> files;
 
@@ -175,27 +183,22 @@ static std::vector<std::string> CollectWorldKeepFiles(void) {
 		ErrH.Abort("Empty world list");
 
 	char *atom;
-	char *buf = new char[256];
 	for (int i = 0; i < maxWorld; i++) {
 		atom = pFile.getAtom();
 		atom = pFile.getAtom();
 		if (!atom)
 			ErrH.Abort("Null world path");
 
-		GetTargetName(NULL);
-		strcpy(buf, GetTargetName(atom));
-		dictionary *dict_name = iniparser_load(buf);
+		const std::string iniPath = atom;
+		dictionary *dict_name = iniparser_load(iniPath.c_str());
+		if (!dict_name)
+			continue;
 		const char *fileName = iniparser_getstring(dict_name, "Storage:File Name", NULL);
-		if (fileName) {
-			strcpy(buf, fileName);
-			strcat(buf, ".vmt");
-			files.push_back(GetTargetName(buf));
-		}
+		if (fileName)
+			files.push_back(DirectoryOf(iniPath) + fileName + ".vmt");
 		iniparser_freedict(dict_name);
 	}
-	delete[] buf;
 	pFile.finit();
-	GetTargetName(NULL);
 	return files;
 }
 
