@@ -51,6 +51,20 @@ TARGET_LINK_LIBRARIES(sdl_event_buffer_test PRIVATE SDL3::SDL3)
 
 ADD_TEST(NAME sdl_event_buffer COMMAND sdl_event_buffer_test)
 
+ADD_EXECUTABLE(renderer_aspect_test
+	renderer_aspect_test.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(renderer_aspect_test PRIVATE
+	${PROJECT_SOURCE_DIR}/lib/xtool
+	${PROJECT_SOURCE_DIR}/lib/xgraph
+)
+
+TARGET_LINK_LIBRARIES(renderer_aspect_test PRIVATE SDL3::SDL3)
+
+ADD_TEST(NAME renderer_aspect COMMAND renderer_aspect_test)
+SET_TESTS_PROPERTIES(renderer_aspect PROPERTIES TIMEOUT 15)
+
 ADD_EXECUTABLE(network_control_flags_test
 	network_control_flags_test.cpp
 )
