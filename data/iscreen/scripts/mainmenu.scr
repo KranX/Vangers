@@ -1654,7 +1654,7 @@ Screen "Graphics screen"
 	Object "Back Option"
 	{
 		align_x center
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 7 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 8 }
 
 		Element STRING {
 			align_x center
@@ -1938,7 +1938,7 @@ Screen "Graphics screen"
 				time $TRIGGER_TIME
 			}
 			EvComm {
-				ext_event	$iEXT_INIT_KEEP_OPTIONS 0
+				ext_event	$iEXT_UPDATE_KEEP_MODE 0
 				start_time	{ $TRIGGER_TIME / 2 }
 			}
 		}

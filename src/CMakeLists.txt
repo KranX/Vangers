@@ -68,12 +68,12 @@ SET(vangers_SRCS
 	#sqint/sqicore.cpp #FOR surmap
 	terra/compress.cpp
 	terra/huff1.cpp
+	terra/keep_files.cpp
 	terra/land.cpp
 	terra/perpslop.cpp
 	terra/siderend.cpp #ASM
 	terra/slopskip.cpp
 	terra/splay.cpp
-	terra/terrain_store.cpp
 	terra/vmap.cpp #ASM
 	units/effect.cpp
 	units/hobj.cpp

@@ -119,6 +119,9 @@ void reset_input_bindings_to_defaults(GameSettings &settings) {
 void normalize_settings(GameSettings &settings) {
 	settings.video.fps = settings.video.fps == 60 ? 60 : 20;
 	settings.video.detail = std::clamp(settings.video.detail, 0, 1);
+	// Terrain persistence is either global or per-save, never both.
+	if (settings.video.save_terrain_changes)
+		settings.video.keep_terrain_changes = false;
 	settings.audio.sound_volume = std::clamp(settings.audio.sound_volume, 0, 26);
 	settings.audio.music_volume = std::clamp(settings.audio.music_volume, 0, 26);
 	settings.network.player_color = std::clamp(settings.network.player_color, 0, 9);

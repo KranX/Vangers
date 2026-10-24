@@ -10,8 +10,6 @@
 #include "settings/settings.h"
 #include "settings/text_encoding.h"
 
-#include "../terra/terrain_store.h"
-
 #include <charconv>
 #include <iostream>
 #include <optional>
@@ -80,7 +78,6 @@ void apply_settings_to_interface() {
 	set_text_option(iHOST_NAME, settings.network.server, ISCREEN_STRING_MAX_LENGTH);
 	iSetOptionValue(iKEEP_MODE, settings.video.keep_terrain_changes ? 1 : 0);
 	iSetOptionValue(iSAVE_TERRAIN, settings.video.save_terrain_changes ? 1 : 0);
-	setTerrainSavingEnabled(settings.video.save_terrain_changes);
 	iSetOptionValue(iPANNING_ON, settings.audio.panning ? 0 : 1);
 	iSetOptionValue(iDESTR_MODE, settings.video.destroy_terrain ? 1 : 0);
 	iSetOptionValue(iMECH_SOUND, settings.audio.engine_noise ? 0 : 1);
@@ -128,7 +125,6 @@ void capture_settings_from_interface() {
 	settings.video.keep_terrain_changes = iGetOptionValue(iKEEP_MODE) != 0;
 	if (iGetOptionObj(iSAVE_TERRAIN))
 		settings.video.save_terrain_changes = iGetOptionValue(iSAVE_TERRAIN) != 0;
-	setTerrainSavingEnabled(settings.video.save_terrain_changes);
 	settings.video.destroy_terrain = iGetOptionValue(iDESTR_MODE) != 0;
 	settings.network.player_name = option_text(iPLAYER_NAME2);
 	settings.network.player_color = iGetOptionValue(iPLAYER_COLOR);

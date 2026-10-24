@@ -22,8 +22,6 @@
 
 #include "ext_evnt.h"
 
-#include "../terra/terrain_store.h"
-
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
 #include "../actint/item_api.h"
@@ -59,6 +57,7 @@ extern iStringElement **iControlsStr;
 extern int MusicON;
 extern int SoundVolumePanning;
 extern int KeepON;
+extern int KeepSaveON;
 
 extern int iCurMultiGame;
 extern int SoundVolumeCD;
@@ -2356,7 +2355,14 @@ void iHandleExtEvent(int code, int data) {
 		iSetFPS(iGetOptionValue(iFPS_60));
 		break;
 	case iEXT_UPDATE_TERRAIN_SAVE_MODE:
-		setTerrainSavingEnabled(iGetOptionValue(iSAVE_TERRAIN) != 0);
+		if (iGetOptionValue(iSAVE_TERRAIN))
+			iSetOptionValue(iKEEP_MODE, 0);
+		iInitKeepOptions();
+		break;
+	case iEXT_UPDATE_KEEP_MODE:
+		if (iGetOptionValue(iKEEP_MODE))
+			iSetOptionValue(iSAVE_TERRAIN, 0);
+		iInitKeepOptions();
 		break;
 	case iEXT_UPDATE_MUSIC_MODE:
 #ifndef _NO_CDAUDIO_
@@ -2847,7 +2853,19 @@ int getWID(void) {
 void iInitKeepOptions(void) {
 	int sz;
 	iScreenObject *p;
-	if (iGetOptionValue(iKEEP_MODE)) {
+
+	bool keepGlobal = iGetOptionValue(iKEEP_MODE) != 0;
+	bool keepSave = iGetOptionValue(iSAVE_TERRAIN) != 0;
+	if (keepGlobal && keepSave) {
+		// Modes are mutually exclusive: the per-save mode wins.
+		keepGlobal = false;
+		iSetOptionValue(iKEEP_MODE, 0);
+	}
+
+	KeepSaveON = keepSave ? 1 : 0;
+	KeepON = (keepGlobal || keepSave) ? 1 : 0;
+
+	if (KeepON) {
 		sz = GetKeepSpace();
 		iResBuf->init();
 		*iResBuf < iSTR_SpaceInUse < " " <= sz < " " < iSTR_MBytes;
@@ -2856,14 +2874,12 @@ void iInitKeepOptions(void) {
 		p = (iScreenObject *)iGetObject("Graphics screen", "CleanUpObj");
 		if (p)
 			p->flags &= ~OBJ_LOCKED;
-		KeepON = 1;
 	} else {
 		iSetOptionValueCHR(iKEEP_IN_USE, "");
 		iSetOptionValueCHR(iKEEP_CLEAN_UP, "");
 		p = (iScreenObject *)iGetObject("Graphics screen", "CleanUpObj");
 		if (p)
 			p->flags |= OBJ_LOCKED;
-		KeepON = 0;
 	}
 }
 

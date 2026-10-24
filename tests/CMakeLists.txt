@@ -109,13 +109,13 @@ TARGET_LINK_LIBRARIES(legacy_settings_migration_test PRIVATE
 
 ADD_TEST(NAME legacy_settings_migration COMMAND legacy_settings_migration_test)
 
-ADD_EXECUTABLE(terrain_store_test
-	terrain_store_test.cpp
-	../src/terra/terrain_store.cpp
+ADD_EXECUTABLE(keep_files_test
+	keep_files_test.cpp
+	../src/terra/keep_files.cpp
 )
 
-TARGET_INCLUDE_DIRECTORIES(terrain_store_test PRIVATE
+TARGET_INCLUDE_DIRECTORIES(keep_files_test PRIVATE
 	${PROJECT_SOURCE_DIR}/src
 )
 
-ADD_TEST(NAME terrain_store COMMAND terrain_store_test)
+ADD_TEST(NAME keep_files COMMAND keep_files_test)
