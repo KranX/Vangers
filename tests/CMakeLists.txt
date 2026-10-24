@@ -107,6 +107,20 @@ TARGET_LINK_LIBRARIES(actint_text_test PRIVATE vangers_settings)
 
 ADD_TEST(NAME actint_text COMMAND actint_text_test)
 
+ADD_EXECUTABLE(actint_mouse_prompt_test
+	actint_mouse_prompt_test.cpp
+	../lib/xgraph/xprompt.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(actint_mouse_prompt_test PRIVATE
+	${PROJECT_SOURCE_DIR}/lib/xtool
+	${PROJECT_SOURCE_DIR}/lib/xgraph
+)
+
+TARGET_LINK_LIBRARIES(actint_mouse_prompt_test PRIVATE vangers_settings SDL3::SDL3)
+
+ADD_TEST(NAME actint_mouse_prompt COMMAND actint_mouse_prompt_test)
+
 ADD_EXECUTABLE(legacy_settings_migration_test
 	legacy_settings_migration_test.cpp
 )

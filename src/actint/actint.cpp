@@ -18,6 +18,7 @@
 
 #include "mlconsts.h"
 #include "mlstruct.h"
+#include "mouse_prompt.h"
 
 #include "../units/uvsapi.h"
 
@@ -27,13 +28,10 @@
 #include "../sound/hsound.h"
 #include "layout.h"
 
+using vangers::actint::set_mouse_prompt;
 using vangers::settings::cp866_to_utf8;
 using vangers::settings::utf8_to_cp866;
 
-// XGR owns a legacy CP866 mouse-prompt model outside actint.
-static void set_mouse_prompt(XGR_MousePromptData *prompt, const char *text) {
-	prompt->set_text(utf8_to_cp866(text).c_str());
-}
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 

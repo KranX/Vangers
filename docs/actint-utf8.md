@@ -31,6 +31,10 @@ ACS, iscreen, Diagen internals, the network protocol or save-file formats.
 - XGR mouse-prompt copies, iscreen mechos captions, ACS toggle/slot labels and
   save metadata are encoded at those legacy boundaries. Save header lengths
   continue to describe CP866 bytes, not UTF-8 bytes.
+  XGR's `set_text` borrows storage, so the actint adapter uses `init_text` to
+  own the converted CP866 bytes. Repeated updates release the previous copy;
+  unchanged hover text reuses it. XGR also owns the active displayed snapshot,
+  since its source can be replaced while the mouse remains stationary.
 
 The `$` currency glyph, arrow/control glyphs, palettes and numeric highlighting
 are unchanged. Source-code labels in `aci_str.h` are now UTF-8; they are not
@@ -59,6 +63,35 @@ c++ -std=c++17 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer \
   src/settings/text_encoding.cpp -o /tmp/vangers-actint-text-test
 ASAN_OPTIONS=detect_leaks=1 /tmp/vangers-actint-text-test
 ```
+
+The `actint_mouse_prompt` CTest runs the production UTF-8 adapter and XGR prompt
+lifecycle, with only font measurement stubbed. It checks post-return reads,
+short/long Russian labels, repeated updates, borrowed/owned transitions, both
+constructors and the displayed snapshot's lifetime. It can also run standalone:
+
+```sh
+c++ -std=c++17 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer \
+  -Isrc -Ilib/xtool -Ilib/xgraph tests/actint_mouse_prompt_test.cpp \
+  lib/xgraph/xprompt.cpp src/settings/text_encoding.cpp \
+  $(pkg-config --cflags --libs sdl3) -o /tmp/vangers-actint-mouse-prompt-test
+ASAN_OPTIONS=detect_leaks=1:detect_stack_use_after_return=1 \
+  /tmp/vangers-actint-mouse-prompt-test
+```
+
+The original adapter's borrowed-pointer call was reproduced as an ASan
+heap-use-after-free by changing only `init_text` back to `set_text` in an external
+negative-control copy of the adapter. The fixed code passes ASan/UBSan and leak
+detection, including repeated updates. The initial nine-test suite did not
+exercise this lifetime boundary; the suite now includes ten tests.
+A separate negative control retaining a borrowed active snapshot also reproduces
+an ASan heap-use-after-free after the prompt source is replaced.
+
+The ownership follow-up was also checked in the game under GDB with isolated
+RU/EN data and SDL dummy/software: all 13 initialized mouse prompts in each
+language owned their CP866 storage. Actual `InitPrompt`/`PutPrompt` calls with
+the real fonts retained an independent displayed snapshot and identical raster
+buffers after replacing its source. These are targeted runtime checks, not a
+new manual playthrough.
 
 Local Linux validation on 24 October 2026 additionally checked:
 

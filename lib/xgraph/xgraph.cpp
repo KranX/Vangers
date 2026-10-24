@@ -2621,79 +2621,11 @@ void XGR_Mouse::Move(int fl, int x, int y) {
 		(*MoveH)(fl, x + SpotX, y + SpotY);
 }
 
-XGR_MousePromptData::XGR_MousePromptData(int x, int y, int sx, int sy, int fnt) {
-	ID = 0;
-	StartX = x;
-	StartY = y;
-
-	SizeX = sx;
-	SizeY = sy;
-
-	font = fnt;
-
-	textData = NULL;
-}
-
-XGR_MousePromptData::XGR_MousePromptData(void) {
-	ID = 0;
-	StartX = StartY = 0;
-	SizeX = SizeY = 0;
-	textSizeX = textSizeY = 0;
-	flags = 0;
-
-	font = XGR_FONT0_8x16;
-
-	textData = NULL;
-}
-
-XGR_MousePromptData::~XGR_MousePromptData(void) {
-	if (textData && flags & XGR_PROMPT_MEM_ALLOC)
-		delete[] textData;
-}
-
-void XGR_MousePromptData::init_text(const char *p) {
-	int sz = strlen(p) + 1;
-	textData = new char[sz];
-	strcpy(textData, p);
-
-	flags |= XGR_PROMPT_MEM_ALLOC;
-	init();
-}
-
-void XGR_MousePromptData::set_text(const char *p) {
-	textData = const_cast<char *>(p);
-	flags &= ~XGR_PROMPT_MEM_ALLOC;
-
-	init();
-}
-
-void XGR_MousePromptData::init(void) {
-	if (!textData)
-		return;
-
-	if (XGR_TextXFnc)
-		textSizeX = (*XGR_TextXFnc)(textData, font, 1);
-	else
-		textSizeX = XGR_TextWidth(textData, font);
-
-	if (XGR_TextYFnc)
-		textSizeY = (*XGR_TextYFnc)(textData, font, 1);
-	else
-		textSizeY = XGR_TextHeight(textData, font);
-}
-
-int XGR_MousePromptData::check_xy(int x, int y) {
-	if (x >= StartX && x < (StartX + SizeX) && y >= StartY && y < (StartY + SizeY))
-		return 1;
-	return 0;
-}
-
 XGR_MousePromptScreen::XGR_MousePromptScreen(void) {
 	Timer = 0;
 	ActivateTimer = 5;
 
 	curFont = 0;
-	curText = NULL;
 	ClearList();
 }
 
@@ -2741,7 +2673,7 @@ void XGR_Mouse::InitPrompt(void) {
 	y = PosY + SpotY + PromptDeltaY;
 
 	p = promptData->check_xy(x, y);
-	if (!p)
+	if (!p || !p->textData)
 		return;
 
 	sx = SizeX / 2;
@@ -2786,13 +2718,15 @@ void XGR_Mouse::InitPrompt(void) {
 }
 
 void XGR_Mouse::PutPrompt(void) {
-	if (promptData && promptData->curText) {
+	if (promptData && !promptData->curText.empty()) {
 		if (XGR_TextOutFnc)
 			(*(XGR_TextOutFnc))(
-				PromptX, PromptY, PromptColor, promptData->curText, promptData->curFont, 1, 1
+				PromptX, PromptY, PromptColor, promptData->curText.data(), promptData->curFont, 1, 1
 			);
 		else
-			XGR_OutText(PromptX, PromptY, PromptColor, promptData->curText, promptData->curFont);
+			XGR_OutText(
+				PromptX, PromptY, PromptColor, promptData->curText.data(), promptData->curFont
+			);
 	}
 }
 
