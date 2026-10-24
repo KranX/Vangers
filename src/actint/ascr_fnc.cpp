@@ -5506,7 +5506,6 @@ void createDirIfNotExist(const fs::path &dirName) {
 }
 #endif
 
-
 void acsSaveData(void) {
 	int i, null_flag = 1;
 	int slot = acsCurrentSlotNum, len, time_len;

@@ -46,7 +46,10 @@ int main() {
 	writeFile(terrainFile, "old terrain");
 	writeFile(newTerrainDir / "fostral.vmt", "new terrain");
 	std::string error;
-	if (!check(PublishSaveGeneration(savePath.string(), newSavePath.string(), true, &error), "publish failed") ||
+	if (!check(
+			PublishSaveGeneration(savePath.string(), newSavePath.string(), true, &error),
+			"publish failed"
+		) ||
 		!check(readFile(savePath) == "new save", "save file was not replaced") ||
 		!check(readFile(terrainFile) == "new terrain", "terrain snapshot was not replaced") ||
 		!check(!fs::exists(newSavePath, ec), "temporary save file was left behind") ||
@@ -74,7 +77,10 @@ int main() {
 	writeFile(terrainFile, "stale terrain");
 	writeFile(newSavePath, "new save");
 	error.clear();
-	if (!check(PublishSaveGeneration(savePath.string(), newSavePath.string(), false, &error), "plain publish failed") ||
+	if (!check(
+			PublishSaveGeneration(savePath.string(), newSavePath.string(), false, &error),
+			"plain publish failed"
+		) ||
 		!check(readFile(savePath) == "new save", "save file was not replaced") ||
 		!check(!fs::exists(terrainDir, ec), "stale terrain snapshot was not removed"))
 		return 1;
