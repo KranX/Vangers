@@ -22,6 +22,10 @@ void ClearKeepSession(void);
 // "savegame/save03.dat" -> "savegame/save03.terrain"
 std::string TerrainDirForSave(const std::string &savePath);
 
+// Unique, filesystem-safe name for one world's .vmt inside a terrain
+// snapshot. Different worlds must never share a snapshot file name.
+std::string TerrainSnapshotName(const std::string &worldKeepPath);
+
 // Publishes a new save file and (optionally) its terrain snapshot as one
 // generation. On failure the previous files are restored and false is
 // returned with a description in error.

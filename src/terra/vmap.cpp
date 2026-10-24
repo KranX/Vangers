@@ -241,15 +241,6 @@ static bool IsSameFile(const std::string &a, const std::string &b) {
 	return std::filesystem::absolute(a, ec) == std::filesystem::absolute(b, ec);
 }
 
-static bool SameFileName(const std::string &a, const std::string &b) {
-	if (a.size() != b.size())
-		return false;
-	for (size_t i = 0; i < a.size(); i++)
-		if (tolower((unsigned char)a[i]) != tolower((unsigned char)b[i]))
-			return false;
-	return true;
-}
-
 bool SaveKeepSnapshotTo(const std::string &dir) {
 	namespace fs = std::filesystem;
 	std::error_code ec;
@@ -264,7 +255,7 @@ bool SaveKeepSnapshotTo(const std::string &dir) {
 		if (!fs::exists(path, ec))
 			continue;
 
-		const fs::path destination = fs::path(dir) / fs::path(path).filename();
+		const fs::path destination = fs::path(dir) / TerrainSnapshotName(path);
 		bool ok = false;
 		if (vMap && vMap->kname && vMap->on && IsSameFile(path, vMap->kname)) {
 			ok = vMap->saveKeepToFile(destination.string());
@@ -296,21 +287,15 @@ void LoadKeepSnapshotFrom(const std::string &dir) {
 	if (!fs::is_directory(dir, ec))
 		return;
 
-	for (const auto &entry : fs::directory_iterator(dir, ec)) {
-		if (ec)
-			break;
-		if (!entry.is_regular_file())
+	for (const auto &path : files) {
+		const fs::path source = fs::path(dir) / TerrainSnapshotName(path);
+		ec.clear();
+		if (!fs::is_regular_file(source, ec))
 			continue;
-		if (entry.path().extension() != ".vmt")
-			continue;
-
-		const std::string name = entry.path().filename().string();
-		for (const auto &path : files) {
-			if (!SameFileName(fs::path(path).filename().string(), name))
-				continue;
-			fs::copy_file(entry.path(), path, fs::copy_options::overwrite_existing, ec);
+		fs::copy_file(source, path, fs::copy_options::overwrite_existing, ec);
+		if (ec) {
+			std::cerr << "Can't restore terrain file " << path << ": " << ec.message() << std::endl;
 			ec.clear();
-			break;
 		}
 	}
 }

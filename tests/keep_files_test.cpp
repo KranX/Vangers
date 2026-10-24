@@ -29,6 +29,22 @@ std::string readFile(const fs::path &path) {
 } // namespace
 
 int main() {
+	const std::string fostral = TerrainSnapshotName("thechain/fostral/output.vmt");
+	const std::string glorx = TerrainSnapshotName("thechain/glorx/output.vmt");
+	const std::string ark = TerrainSnapshotName("thechain/ark-a-znoy/output.vmt");
+	if (!check(fostral != glorx, "different worlds share a snapshot file name") ||
+		!check(fostral != ark, "different worlds share a snapshot file name") ||
+		!check(glorx != ark, "different worlds share a snapshot file name") ||
+		!check(
+			TerrainSnapshotName("thechain/fostral/output.vmt") == fostral,
+			"snapshot file name is not deterministic"
+		) ||
+		!check(
+			fostral.find('/') == std::string::npos && fostral.find('\\') == std::string::npos,
+			"snapshot file name contains a path separator"
+		))
+		return 1;
+
 	const fs::path root = fs::temp_directory_path() / "vangers_keep_files_test";
 	std::error_code ec;
 	fs::remove_all(root, ec);

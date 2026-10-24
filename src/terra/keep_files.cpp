@@ -21,6 +21,24 @@ std::string TerrainDirForSave(const std::string &savePath) {
 	return path.string();
 }
 
+std::string TerrainSnapshotName(const std::string &worldKeepPath) {
+	static const char hex[] = "0123456789ABCDEF";
+	std::string name;
+	name.reserve(worldKeepPath.size());
+	for (unsigned char c : worldKeepPath) {
+		const bool safe = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+						  (c >= '0' && c <= '9') || c == '.' || c == '-' || c == '_';
+		if (safe) {
+			name.push_back(static_cast<char>(c));
+		} else {
+			name.push_back('%');
+			name.push_back(hex[c >> 4]);
+			name.push_back(hex[c & 0x0F]);
+		}
+	}
+	return name;
+}
+
 bool PublishSaveGeneration(
 	const std::string &savePath,
 	const std::string &newSavePath,
