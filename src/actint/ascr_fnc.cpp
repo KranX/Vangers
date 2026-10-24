@@ -6,10 +6,10 @@
 
 #if defined(__APPLE__) || (defined(__GNUC__) && __GNUC__ < 9)
 #	include <sys/stat.h>
-#else
-#	include <filesystem>
 #endif
 #include <filesystem>
+
+namespace fs = std::filesystem;
 
 #include "../runtime.h"
 
@@ -50,11 +50,6 @@
 #include "aci_scr.h"
 #include "acsconst.h"
 #include "chtree.h"
-
-#if defined(__APPLE__) || (defined(__GNUC__) && __GNUC__ < 9)
-#else
-namespace fs = std::filesystem;
-#endif
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
