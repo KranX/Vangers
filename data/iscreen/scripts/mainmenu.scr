@@ -173,6 +173,8 @@
 
 #define DESTR_STR_X			90
 
+#define TERRAIN_MODE_TRG_X		470
+
 #define IN_USE_STR_X		90
 #define CLEAN_STR_X			550
 
@@ -1899,7 +1901,7 @@ Screen "Graphics screen"
 		}
 	}
 	Trigger "TerrainModeTrig" {
-		x	$KEEP_TRG_X
+		x	$TERRAIN_MODE_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
 
 		num_state	3
@@ -1907,7 +1909,7 @@ Screen "Graphics screen"
 		null_level	$DEFAULT_NULL
 
 		State 0 "STRING"{
-			align_x center
+			align_x left
 			align_y center
 
 			font		$GRAPHICS_FONT
@@ -1918,7 +1920,7 @@ Screen "Graphics screen"
 			null_level	$DEFAULT_NULL
 		}
 		State 1 "STRING"{
-			align_x center
+			align_x left
 			align_y center
 
 			font		$GRAPHICS_FONT
@@ -1929,7 +1931,7 @@ Screen "Graphics screen"
 			null_level	$DEFAULT_NULL
 		}
 		State 2 "STRING"{
-			align_x center
+			align_x left
 			align_y center
 
 			font		$GRAPHICS_FONT
