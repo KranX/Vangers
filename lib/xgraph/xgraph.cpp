@@ -989,7 +989,7 @@ void XGR_Screen::flip() {
 				ErrH.Abort(SDL_GetError(), XERR_USER, 0);
 		}
 		if (!SDL_SetRenderLogicalPresentation(
-				sdlRenderer, xgrScreenSizeX, xgrScreenSizeY, SDL_LOGICAL_PRESENTATION_STRETCH
+				sdlRenderer, xgrScreenSizeX, xgrScreenSizeY, ScenePresentation
 			))
 			ErrH.Abort(SDL_GetError(), XERR_USER, 0);
 

@@ -1,70 +1,45 @@
 #include "rle.h"
 
-// XStream fRLE("anal", XS_OUT);
-
-/*static int G_len = 0;
-static int G_all_len = 0;*/
+#include <climits>
+#include <cstddef>
+#include <memory>
+#include <stdexcept>
 
 int RLE_ANALISE(uchar *_buf, int len, uchar *&out) {
+	out = nullptr;
+	if (!_buf || len <= 0)
+		return 0;
+
+	// Each packet needs at most two encoded bytes per input byte.
+	std::unique_ptr<uchar[]> packed(new uchar[static_cast<std::size_t>(len) * 2]);
+	std::size_t pack_len = 0;
 	int i = 0;
-	int pack_len = 0;
-	uchar c_len = 0;
-	uchar *buf = _buf;
-	uchar *_out = new uchar[len * 2];
-	uchar *p = _out;
-	uchar _ch = *buf++;
-
 	while (i < len) {
-		while ((i < len) && (_ch == *buf) && (c_len < 127)) {
-			c_len++;
-			buf++;
-			i++;
+		const int start = i++;
+		while (i < len && i - start < 128 && _buf[i] == _buf[start])
+			++i;
+
+		// The low seven bits store count - 1; bit 7 marks a literal block.
+		if (i - start > 1) {
+			packed[pack_len++] = static_cast<uchar>(i - start - 1);
+			packed[pack_len++] = _buf[start];
+		} else {
+			// Stop before the next repeated pair, or include the final singleton.
+			while (i < len && i - start < 128 && (i + 1 == len || _buf[i] != _buf[i + 1]))
+				++i;
+			const int count = i - start;
+			packed[pack_len++] = static_cast<uchar>(128 + count - 1);
+			memcpy(packed.get() + pack_len, _buf + start, count);
+			pack_len += count;
 		}
+	}
 
-		if (c_len) {
-			*p++ = c_len;
-			*p++ = _ch;
-
-			_ch = *buf++;
-
-			pack_len += 2;
-			c_len = 0;
-			i++;
-		}
-
-		while ((i < len) && (_ch != *buf) && (c_len < 127)) {
-			c_len++;
-			_ch = *buf++;
-			i++;
-		}
-
-		if (c_len) {
-			*p++ = 128 + (c_len - 1);
-			memcpy(p, buf - c_len - 1, c_len);
-			p += c_len;
-			pack_len += c_len + 1;
-			c_len = 0;
-		}
-	} //  end while
-
-	/*G_len += pack_len;
-	G_all_len += len;
-
-	fRLE <= G_len < "  ==>  " <= G_all_len < "\n";
-	fRLE <= pack_len < "  ==>  " <= len < "\n";
-	if ( where ) fRLE < "\n";*/
-
+	if (pack_len > static_cast<std::size_t>(INT_MAX))
+		throw std::length_error("RLE encoded data is too large");
 	out = new uchar[pack_len];
-	memcpy(out, _out, pack_len);
-	/*RLE_UNCODE( _out, len,  out);
+	memcpy(out, packed.get(), pack_len);
 
-	for( i = 0; i < len; i++)
-		if (_out[i] != _buf[i] )
-			ErrH.Abort("'Bad restore");*/
-
-	delete[] _out;
-
-	return pack_len;
+	return static_cast<int>(pack_len);
 }
 
 void RLE_UNCODE(uchar *_buf, int len, uchar *out) {

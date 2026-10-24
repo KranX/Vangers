@@ -117,7 +117,8 @@ void reset_input_bindings_to_defaults(GameSettings &settings) {
 }
 
 void normalize_settings(GameSettings &settings) {
-	settings.video.fps = settings.video.fps == 60 ? 60 : 20;
+	if (settings.video.fps != 20 && settings.video.fps != 60)
+		settings.video.fps = VideoSettings{}.fps;
 	settings.video.detail = std::clamp(settings.video.detail, 0, 1);
 	// Terrain persistence is either global or per-save, never both.
 	if (settings.video.save_terrain_changes)

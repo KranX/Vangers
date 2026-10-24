@@ -176,18 +176,19 @@ void test_options_versions() {
 	const auto file = temp.path / "options.dat";
 	std::string diagnostic;
 
+	// Layouts without an FPS setting inherit the current default.
 	write_bytes(file, make_options(46, 0, 0, 1));
 	GameSettings settings = default_settings();
 	CHECK(import_legacy_options(file, settings, &diagnostic));
 	check_common_options(settings);
-	CHECK(settings.video.fps == 20);
+	CHECK(settings.video.fps == 60);
 	CHECK(settings.gameplay.auto_acceleration);
 
 	// Public 2.0 layout: equal slot 46 and tail are duplicate auto-acceleration.
 	write_bytes(file, make_options(47, 1, 0, 1));
 	settings = default_settings();
 	CHECK(import_legacy_options(file, settings, &diagnostic));
-	CHECK(settings.video.fps == 20);
+	CHECK(settings.video.fps == 60);
 	CHECK(settings.gameplay.auto_acceleration);
 
 	// Historical alpha layout: a differing slot 46 is the FPS flag.
@@ -202,6 +203,19 @@ void test_options_versions() {
 	CHECK(import_legacy_options(file, settings, &diagnostic));
 	CHECK(settings.video.fps == 60);
 	CHECK(!settings.gameplay.auto_acceleration);
+
+	// Explicit legacy 20 FPS must override the new 60 FPS default.
+	write_bytes(file, make_options(47, 0, 0, 1));
+	settings = default_settings();
+	CHECK(import_legacy_options(file, settings, &diagnostic));
+	CHECK(settings.video.fps == 20);
+	CHECK(settings.gameplay.auto_acceleration);
+
+	write_bytes(file, make_options(48, 1, 0, 1));
+	settings = default_settings();
+	CHECK(import_legacy_options(file, settings, &diagnostic));
+	CHECK(settings.video.fps == 20);
+	CHECK(settings.gameplay.auto_acceleration);
 }
 
 void test_invalid_options_are_rejected_atomically() {
