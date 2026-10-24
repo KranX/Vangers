@@ -44,6 +44,7 @@
 
 void reconfigure_runtime_fps_scaled_state(double old_coeff, double new_coeff);
 
+#include "terra/keep_files.h"
 #include "terra/render.h"
 #include "terra/vmap.h"
 #include "terra/world.h"
@@ -1010,6 +1011,9 @@ void FirstEscaveRTO::Init(int id) {
 	if (aciLoadLog) {
 		aciLoadData();
 		_MEM_STATISTIC_("AFTER ACILOADDATA INIT -> ");
+	} else {
+		if (KeepSaveON)
+			ClearKeepSession();
 	}
 	FirstShopPrepare(aciLoadLog);
 	_MEM_STATISTIC_("AFTER FIRSTSHOP PREPARE INIT -> ");

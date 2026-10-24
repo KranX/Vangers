@@ -6,14 +6,16 @@
 
 #if defined(__APPLE__) || (defined(__GNUC__) && __GNUC__ < 9)
 #	include <sys/stat.h>
-#else
-#	include <filesystem>
 #endif
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 #include "../runtime.h"
 
 #include "../network.h"
 
+#include "../terra/keep_files.h"
 #include "../terra/world.h"
 
 #include "../iscreen/hfont.h"
@@ -48,11 +50,6 @@
 #include "aci_scr.h"
 #include "acsconst.h"
 #include "chtree.h"
-
-#if defined(__APPLE__) || (defined(__GNUC__) && __GNUC__ < 9)
-#else
-namespace fs = std::filesystem;
-#endif
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -5528,6 +5525,8 @@ void acsSaveData(void) {
 		if (slot < 10)
 			XBuf < "0";
 		XBuf <= slot < ".dat";
+		const std::string savePath(XBuf.address());
+		std::string newSavePath = savePath + ".new";
 		len = strlen(ptr);
 		for (i = 0; i < len; i++) {
 			if (ptr[i] && ptr[i] != ' ')
@@ -5543,7 +5542,7 @@ void acsSaveData(void) {
 			((uvsActInt *)aScrDisp->curItem->uvsDataPtr)->pos_y = aScrDisp->curItem->MatrixY = -1;
 		}
 
-		fh.open(XBuf.address(), XS_OUT);
+		fh.open(newSavePath.c_str(), XS_OUT);
 
 		aciXConv->init();
 		*aciXConv < aScrDisp->curLocData->nameID2 < ", ";
@@ -5568,6 +5567,8 @@ void acsSaveData(void) {
 
 		CurrentWorld = prevWorld;
 
+		FlushKeep();
+
 		uniVangSave(fh);
 
 		aciSaveUVSList(fh, GItem);
@@ -5585,8 +5586,31 @@ void acsSaveData(void) {
 		fh.close();
 
 #ifdef _ACI_PACK_SAVES_
-		acsCompressData(XBuf.address());
+		acsCompressData(&newSavePath[0]);
 #endif
+
+		const bool writeTerrain = KeepSaveON != 0 && !NetworkON;
+		const std::string terrainNew = TerrainDirForSave(savePath) + ".new";
+		if (writeTerrain && !SaveKeepSnapshotTo(terrainNew)) {
+			std::error_code ec;
+			fs::remove(newSavePath, ec);
+			fs::remove_all(terrainNew, ec);
+			ErrH.Log("Save failed: can't write the terrain snapshot");
+			std::cerr << "Save failed: can't write the terrain snapshot" << std::endl;
+			aciAutoSaveFlag = 0;
+			return;
+		}
+
+		std::string publishError;
+		if (!PublishSaveGeneration(savePath, newSavePath, writeTerrain, &publishError)) {
+			std::error_code ec;
+			fs::remove(newSavePath, ec);
+			if (writeTerrain)
+				fs::remove_all(terrainNew, ec);
+			const std::string message = "Save failed: " + publishError;
+			ErrH.Log(message.c_str());
+			std::cerr << message << std::endl;
+		}
 	}
 	aciAutoSaveFlag = 0;
 }
@@ -5601,6 +5625,10 @@ void acsLoadData(void) {
 		if (slot < 10)
 			XBuf < "0";
 		XBuf <= slot < ".dat";
+
+		const std::string savePath(XBuf.address());
+		if (KeepSaveON && !NetworkON)
+			LoadKeepSnapshotFrom(TerrainDirForSave(savePath));
 
 #ifdef _ACI_PACK_SAVES_
 		acsDecompressData(XBuf.address());

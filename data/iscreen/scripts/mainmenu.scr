@@ -159,7 +159,7 @@
 
 /* ------------------------ Graphics Screen Defines ------------------------- */
 
-#define GRAPHICS_SCR_START_Y	50
+#define GRAPHICS_SCR_START_Y	75
 #define GRAPHICS_SCR_DELTA_Y	50
 
 #define TUTORIAL_STR_X		220
@@ -172,6 +172,8 @@
 #define RESOLUTION_TRG_X	600
 
 #define DESTR_STR_X			90
+
+#define TERRAIN_MODE_TRG_X		470
 
 #define IN_USE_STR_X		90
 #define CLEAN_STR_X			550
@@ -1654,7 +1656,7 @@ Screen "Graphics screen"
 	Object "Back Option"
 	{
 		align_x center
-		y	$OPTIONS_BACK_Y
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 7 }
 
 		Element STRING {
 			align_x center
@@ -1882,7 +1884,7 @@ Screen "Graphics screen"
 			}
 		}
 	}
-	Object "KeepStr"
+	Object "TerrainModeStr"
 	{
 		x	$KEEP_STR_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
@@ -1895,30 +1897,19 @@ Screen "Graphics screen"
 
 			font		$GRAPHICS_FONT
 			null_level	$DEFAULT_NULL
-			string		$iSTR_KEEP_ALL_TERRAIN_CHANGES
+			string		$iSTR_TERRAIN_MODE
 		}
 	}
-	Trigger "KeepTrig" {
-		x	$KEEP_TRG_X
+	Trigger "TerrainModeTrig" {
+		x	$TERRAIN_MODE_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
 
-		num_state	2
+		num_state	3
 
 		null_level	$DEFAULT_NULL
 
-		State 1 "STRING"{
-			align_x center
-			align_y center
-
-			font		$GRAPHICS_FONT
-			space		$OPTION_SPACE
-			terrain_num	$TERRAIN4
-
-			string		$iSTR_ON
-			null_level	$DEFAULT_NULL
-		}
 		State 0 "STRING"{
-			align_x center
+			align_x left
 			align_y center
 
 			font		$GRAPHICS_FONT
@@ -1928,17 +1919,39 @@ Screen "Graphics screen"
 			string		$iSTR_OFF
 			null_level	$DEFAULT_NULL
 		}
+		State 1 "STRING"{
+			align_x left
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_TERRAIN_PER_SAVE
+			null_level	$DEFAULT_NULL
+		}
+		State 2 "STRING"{
+			align_x left
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_TERRAIN_GLOBAL
+			null_level	$DEFAULT_NULL
+		}
 		Event {
 			key $VK_LBUTTON
 			key $VK_RBUTTON
 
 			time { $TRIGGER_TIME + 1 }
 			EvComm {
-				change_trigger	"KeepTrig"
+				change_trigger	"TerrainModeTrig"
 				time $TRIGGER_TIME
 			}
 			EvComm {
-				ext_event	$iEXT_INIT_KEEP_OPTIONS 0
+				ext_event	$iEXT_UPDATE_TERRAIN_MODE 0
 				start_time	{ $TRIGGER_TIME / 2 }
 			}
 		}

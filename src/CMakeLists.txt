@@ -68,6 +68,7 @@ SET(vangers_SRCS
 	#sqint/sqicore.cpp #FOR surmap
 	terra/compress.cpp
 	terra/huff1.cpp
+	terra/keep_files.cpp
 	terra/land.cpp
 	terra/perpslop.cpp
 	terra/siderend.cpp #ASM

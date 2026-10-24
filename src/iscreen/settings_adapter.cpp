@@ -76,7 +76,12 @@ void apply_settings_to_interface() {
 	set_text_option(iPLAYER_NAME2, settings.network.player_name, ISCREEN_STRING_MAX_LENGTH);
 	set_text_option(iPLAYER_PASSWORD, settings.network.player_password, ISCREEN_STRING_MAX_LENGTH);
 	set_text_option(iHOST_NAME, settings.network.server, ISCREEN_STRING_MAX_LENGTH);
-	iSetOptionValue(iKEEP_MODE, settings.video.keep_terrain_changes ? 1 : 0);
+	iSetOptionValue(
+		iTERRAIN_MODE,
+		settings.video.save_terrain_changes
+			? iTERRAIN_MODE_SAVE
+			: (settings.video.keep_terrain_changes ? iTERRAIN_MODE_GLOBAL : iTERRAIN_MODE_OFF)
+	);
 	iSetOptionValue(iPANNING_ON, settings.audio.panning ? 0 : 1);
 	iSetOptionValue(iDESTR_MODE, settings.video.destroy_terrain ? 1 : 0);
 	iSetOptionValue(iMECH_SOUND, settings.audio.engine_noise ? 0 : 1);
@@ -121,7 +126,9 @@ void capture_settings_from_interface() {
 									: ResolutionMode::Legacy800x600;
 	settings.video.fps = iGetOptionValue(iFPS_60) != 0 ? 60 : 20;
 	settings.video.detail = iGetOptionValue(iDETAIL_SETTING);
-	settings.video.keep_terrain_changes = iGetOptionValue(iKEEP_MODE) != 0;
+	const int terrainMode = iGetOptionValue(iTERRAIN_MODE);
+	settings.video.save_terrain_changes = terrainMode == iTERRAIN_MODE_SAVE;
+	settings.video.keep_terrain_changes = terrainMode == iTERRAIN_MODE_GLOBAL;
 	settings.video.destroy_terrain = iGetOptionValue(iDESTR_MODE) != 0;
 	settings.network.player_name = option_text(iPLAYER_NAME2);
 	settings.network.player_color = iGetOptionValue(iPLAYER_COLOR);
