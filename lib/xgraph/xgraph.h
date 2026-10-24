@@ -101,6 +101,10 @@ struct XGR_Pal64K {
 };
 
 struct XGR_Screen {
+	// Preserve SDL2 logical-size behavior; the fullscreen backdrop is separate.
+	static constexpr SDL_RendererLogicalPresentation ScenePresentation =
+		SDL_LOGICAL_PRESENTATION_LETTERBOX;
+
 	int flags;
 
 	int hdWidth;

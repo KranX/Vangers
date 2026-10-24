@@ -148,13 +148,13 @@ bool test_defaults_and_round_trip() {
 			first.get().video.resolution == ResolutionMode::Desktop,
 			"fresh installs no longer use the pre-settings desktop resolution"
 		) ||
-		!check(first.get().video.fps == 20, "fresh-install FPS default changed"))
+		!check(first.get().video.fps == 60, "fresh installs must default to 60 FPS"))
 		return false;
 
 	GameSettings &changed = first.get_mutable();
 	changed.video.fullscreen = true;
 	changed.video.resolution = ResolutionMode::Desktop;
-	changed.video.fps = 60;
+	changed.video.fps = 20;
 	changed.audio.sound_volume = 17;
 	changed.network.player_name = "Tester";
 	changed.input.keyboard.bindings["fire_all"] = {"space"};
@@ -173,7 +173,7 @@ bool test_defaults_and_round_trip() {
 		   check(
 			   loaded.video.resolution == ResolutionMode::Desktop, "resolution was not restored"
 		   ) &&
-		   check(loaded.video.fps == 60, "FPS was not restored") &&
+		   check(loaded.video.fps == 20, "saved 20 FPS was replaced by the new default") &&
 		   check(loaded.audio.sound_volume == 17, "sound volume was not restored") &&
 		   check(loaded.network.player_name == "Tester", "player name was not restored") &&
 		   check(
@@ -195,6 +195,29 @@ bool test_defaults_and_round_trip() {
 				   BindingList{"right_shoulder"},
 			   "non-default gamepad action was not restored"
 		   );
+}
+
+bool test_missing_fps_uses_new_default() {
+	for (const char *document : {
+			 "format_version = 1\n",
+			 "format_version = 1\n[video]\nfullscreen = false\n",
+		 }) {
+		TemporaryDirectory directory;
+		const SettingsPaths paths = paths_for(directory.path());
+		write_file(paths.settings_file, document);
+		SettingsManager manager(paths);
+		if (!check(manager.load().source == SettingsLoadSource::Toml, "TOML was not loaded") ||
+			!check(manager.get().video.fps == 60, "missing FPS did not use the 60 FPS default") ||
+			!check(manager.save(), "default FPS could not be saved"))
+			return false;
+		SettingsManager reloaded(paths);
+		if (!check(
+				reloaded.load().source == SettingsLoadSource::Toml, "saved TOML was not loaded"
+			) ||
+			!check(reloaded.get().video.fps == 60, "default FPS did not survive save and reload"))
+			return false;
+	}
+	return true;
 }
 
 bool test_new_gamepad_defaults_extend_existing_settings() {
@@ -307,7 +330,7 @@ bool test_comments_unknown_keys_and_normalization() {
 	SettingsManager manager(paths);
 	manager.load();
 	const GameSettings &settings = manager.get();
-	if (!check(settings.video.fps == 20, "invalid FPS was not normalized") ||
+	if (!check(settings.video.fps == 60, "invalid FPS did not use the 60 FPS default") ||
 		!check(settings.audio.sound_volume == 26, "sound volume was not clamped") ||
 		!check(settings.audio.music_volume == 0, "music volume was not clamped") ||
 		!check(settings.network.port == 2197, "wrong port type did not use default") ||
@@ -624,7 +647,8 @@ bool test_filesystem_errors_are_nonfatal_and_retryable() {
 } // namespace
 
 int main() {
-	return test_defaults_and_round_trip() && test_new_gamepad_defaults_extend_existing_settings() &&
+	return test_defaults_and_round_trip() && test_missing_fps_uses_new_default() &&
+				   test_new_gamepad_defaults_extend_existing_settings() &&
 				   test_restore_all_resets_bindings_without_controller_preferences() &&
 				   test_comments_unknown_keys_and_normalization() &&
 				   test_future_version_is_read_only() && test_malformed_file_recovery() &&

@@ -351,7 +351,7 @@ bool import_legacy_options(
 		valid_legacy_bool(repeated_auto_acceleration)) {
 		// Two historical layouts used the same count. A differing slot 46 is the
 		// alpha layout's FPS flag; equal values are the public 2.0 duplicate of
-		// auto-acceleration and deliberately leave FPS at its legacy default.
+		// auto-acceleration and deliberately leave FPS at the supplied default.
 		if (*ambiguous_option != repeated_auto_acceleration)
 			imported.video.fps = *ambiguous_option ? 60 : 20;
 	} else if (option_count == 48 && fps_option && valid_legacy_bool(*fps_option)) {
