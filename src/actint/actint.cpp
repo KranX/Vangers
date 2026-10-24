@@ -26,6 +26,14 @@
 
 #include "../sound/hsound.h"
 #include "layout.h"
+
+using vangers::settings::cp866_to_utf8;
+using vangers::settings::utf8_to_cp866;
+
+// XGR owns a legacy CP866 mouse-prompt model outside actint.
+static void set_mouse_prompt(XGR_MousePromptData *prompt, const char *text) {
+	prompt->set_text(utf8_to_cp866(text).c_str());
+}
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -162,12 +170,6 @@ void LoadingMessage(int flush = 0);
 void acsHandleExtEvent(int code, int data0 = 0, int data1 = 0, int data2 = 0);
 
 void aciShowLocationPicture(void);
-void aciPrepareScreenText(char *ptr, int sz, int max_len);
-
-void aOutText32(int x, int y, int color, void *text, int font, int hspace, int vspace);
-void aOutText32clip(int x, int y, int color, void *text, int font, int hspace, int vspace);
-int aTextWidth32(void *text, int font, int hspace);
-int aTextHeight32(void *text, int font, int vspace);
 
 void aciInitItmTextQueue(void);
 void aciReadItmText(void);
@@ -1941,7 +1943,7 @@ void invItem::clone(invItem *p) {
 	p->flags |= INV_CLONE;
 }
 
-void invItem::init_name(char *p) {
+void invItem::init_name(const char *p) {
 	init_id(p);
 }
 
@@ -2520,7 +2522,7 @@ void fncMenuItem::init_name(const char *p) {
 
 	if (!name_len || sz > name_len) {
 		if (name_len)
-			delete name;
+			delete[] name;
 		name = new char[sz];
 		name_len = sz;
 	}
@@ -4353,9 +4355,9 @@ void actIntDispatcher::i_finit(void) {
 
 void fncMenuItem::init(void) {
 	if (flags & FM_RANGE_FONT)
-		SizeX = aStrLen32((unsigned char *)name, font, space);
+		SizeX = aStrLen32Utf8((unsigned char *)name, font, space);
 	else
-		SizeX = aStrLen((unsigned char *)name, font, space);
+		SizeX = aStrLenUtf8((unsigned char *)name, font, space);
 	SizeY = aScrFonts[font]->SizeY;
 }
 
@@ -4492,9 +4494,9 @@ void fncMenuItem::redraw(int bsx, int bsy, unsigned char *buf, int x, int y) {
 								: aciCurColorScheme[FM_UNSELECT_COL];
 #endif
 	if (flags & FM_RANGE_FONT)
-		aPutStr32(x, y, font, col, col_sz, name, bsx, buf, space);
+		aPutStr32Utf8(x, y, font, col, col_sz, name, bsx, buf, space);
 	else
-		aPutStr(x, y, font, col, (unsigned char *)name, bsx, buf, space);
+		aPutStrUtf8(x, y, font, col, (unsigned char *)name, bsx, buf, space);
 }
 
 void fncMenuItem::redraw_str(
@@ -4511,7 +4513,7 @@ void fncMenuItem::redraw_str(
 #else
 	col = aciCurColorScheme[FM_SELECT_COL];
 #endif
-	aPutStr(x, y, font, col, str, bsx, buf, space);
+	aPutStrUtf8(x, y, font, col, str, bsx, buf, space);
 }
 
 void fncMenu::redraw(void) {
@@ -4697,16 +4699,16 @@ void InfoPanel::redraw(void) {
 		} else {
 			if (!(flags & IP_RANGE_FONT))
 				x = OffsX +
-					((SizeX - aStrLen((unsigned char *)p->ID_ptr.c_str(), font, hSpace)) >> 1);
+					((SizeX - aStrLenUtf8((unsigned char *)p->ID_ptr.c_str(), font, hSpace)) >> 1);
 			else
-				x = OffsX + ((SizeX - aStrLen32((void *)p->ID_ptr.c_str(), font, hSpace)) >> 1);
+				x = OffsX + ((SizeX - aStrLen32Utf8((void *)p->ID_ptr.c_str(), font, hSpace)) >> 1);
 		}
 		if (y < 0)
 			ErrH.Abort("InfoPanel overflow...");
 		if (!(flags & IP_RANGE_FONT)) {
-			aPutStr(x, y, fnt, col, (unsigned char *)p->ID_ptr.c_str(), SizeX, buf, hSpace);
+			aPutStrUtf8(x, y, fnt, col, (unsigned char *)p->ID_ptr.c_str(), SizeX, buf, hSpace);
 		} else {
-			aPutStr32(x, y, fnt, col, col_sz, (void *)p->ID_ptr.c_str(), SizeX, buf, hSpace);
+			aPutStr32Utf8(x, y, fnt, col, col_sz, (void *)p->ID_ptr.c_str(), SizeX, buf, hSpace);
 		}
 
 		if (!(flags & IP_RANGE_FONT))
@@ -5999,7 +6001,7 @@ void actIntDispatcher::init_submenu(fncMenu *m) {
 		if (!ptr)
 			p->curItem = p->get_obj(aciSTR_OFF);
 		else
-			p->curItem = p->get_obj(ptr);
+			p->curItem = p->get_obj(cp866_to_utf8(ptr).c_str());
 
 		if (p->VItems < p->items->Size)
 			p->firstItem = p->curItem;
@@ -7363,7 +7365,7 @@ void actIntDispatcher::inv_mouse_move_quant(void) {
 			bt_pr1 = XGR_MouseObj.promptData->getData(ACI_PICKUP_WPN_OFF);
 			if (!bt_pr1) {
 				bt_pr1 = new XGR_MousePromptData;
-				bt_pr1->set_text(aciSTR_PICKUP_WEAPONS_OFF);
+				set_mouse_prompt(bt_pr1, aciSTR_PICKUP_WEAPONS_OFF);
 				bt_pr1->ID = ACI_PICKUP_WPN_OFF;
 				XGR_MouseObj.promptData->AddElement((XListElement *)bt_pr1);
 			}
@@ -7395,7 +7397,7 @@ void actIntDispatcher::inv_mouse_move_quant(void) {
 			bt_pr1 = XGR_MouseObj.promptData->getData(ACI_PICKUP_ITM_OFF);
 			if (!bt_pr1) {
 				bt_pr1 = new XGR_MousePromptData;
-				bt_pr1->set_text(aciSTR_PICKUP_ITEMS_OFF);
+				set_mouse_prompt(bt_pr1, aciSTR_PICKUP_ITEMS_OFF);
 				bt_pr1->ID = ACI_PICKUP_ITM_OFF;
 				XGR_MouseObj.promptData->AddElement((XListElement *)bt_pr1);
 			}
@@ -7527,7 +7529,7 @@ void actIntDispatcher::inv_mouse_move_quant(void) {
 									pr->ID = ACI_ITEM_PROMPT;
 									XGR_MouseObj.promptData->AddElement((XListElement *)pr);
 								}
-								pr->set_text(p->promptData);
+								set_mouse_prompt(pr, p->promptData);
 								curMatrix->get_item_coords(
 									p, pr->StartX, pr->StartY, pr->SizeX, pr->SizeY
 								);
@@ -7582,7 +7584,7 @@ void actIntDispatcher::inv_mouse_imove_quant(void) {
 				avi_pr2 = new XGR_MousePromptData;
 				avi_pr2->ID = ACI_AVI_PROMPT2;
 				XGR_MouseObj.promptData->AddElement((XListElement *)avi_pr2);
-				avi_pr2->set_text(aciSTR_PutThis);
+				set_mouse_prompt(avi_pr2, aciSTR_PutThis);
 			}
 			obj = (iScreenObject *)curLocData->objList[ACI_AVI_OBJ_ID];
 			if (flags & AS_INV_MOVE_ITEM) {
@@ -7613,7 +7615,7 @@ void actIntDispatcher::inv_mouse_imove_quant(void) {
 		pr0 = new XGR_MousePromptData;
 		pr0->ID = ACI_NO_CASH_PROMPT2;
 		XGR_MouseObj.promptData->AddElement((XListElement *)pr0);
-		pr0->set_text(aciSTR_NO_CASH);
+		set_mouse_prompt(pr0, aciSTR_NO_CASH);
 	}
 
 	if (secondMatrix) {
@@ -7670,7 +7672,7 @@ void actIntDispatcher::inv_mouse_imove_quant(void) {
 				pr = new XGR_MousePromptData;
 				pr->ID = ACI_NO_CASH_PROMPT;
 				XGR_MouseObj.promptData->AddElement((XListElement *)pr);
-				pr->set_text(aciSTR_NO_CASH);
+				set_mouse_prompt(pr, aciSTR_NO_CASH);
 			}
 			pr->StartX = curMatrix->ScreenX + iScreenOffs;
 			pr->StartY = curMatrix->ScreenY;
@@ -8398,9 +8400,9 @@ void fncMenu::set_prefix(unsigned char *p) {
 	prefix = p;
 
 	if (postfix)
-		psx = aStrLen(postfix, curItem->font, curItem->space) + FM_PREFIX_DELTA;
+		psx = aStrLenUtf8(postfix, curItem->font, curItem->space) + FM_PREFIX_DELTA;
 
-	PrefixSX = aStrLen(p, curItem->font, curItem->space);
+	PrefixSX = aStrLenUtf8(p, curItem->font, curItem->space);
 	PrefixSY = aScrFonts[curItem->font]->SizeY;
 
 	PrefixX = (SizeX - (PrefixSX + curItem->SizeX + FM_PREFIX_DELTA + psx)) / 2;
@@ -9450,13 +9452,13 @@ void actIntDispatcher::init_prompt(void) {
 		if (ind->promptData) {
 			p = new XGR_MousePromptData;
 			p->ID = ind->ID;
-			p->set_text(ind->promptData);
+			set_mouse_prompt(p, ind->promptData);
 
 			invPrompt->AddElement((XListElement *)p);
 
 			p = new XGR_MousePromptData;
 			p->ID = ind->ID;
-			p->set_text(ind->promptData);
+			set_mouse_prompt(p, ind->promptData);
 
 			infPrompt->AddElement((XListElement *)p);
 		}
@@ -9467,12 +9469,12 @@ void actIntDispatcher::init_prompt(void) {
 		b->init();
 		if (b->promptData) {
 			p = new XGR_MousePromptData(b->PosX, b->PosY, b->SizeX, b->SizeY, 0);
-			p->set_text(b->promptData);
+			set_mouse_prompt(p, b->promptData);
 
 			invPrompt->AddElement((XListElement *)p);
 
 			p = new XGR_MousePromptData(b->PosX, b->PosY, b->SizeX, b->SizeY, 0);
-			p->set_text(b->promptData);
+			set_mouse_prompt(p, b->promptData);
 
 			infPrompt->AddElement((XListElement *)p);
 		}
@@ -9483,7 +9485,7 @@ void actIntDispatcher::init_prompt(void) {
 		b->init();
 		if (b->promptData) {
 			p = new XGR_MousePromptData(b->PosX, b->PosY, b->SizeX, b->SizeY, 0);
-			p->set_text(b->promptData);
+			set_mouse_prompt(p, b->promptData);
 
 			switch (b->ID) {
 			case ACI_WPN_PICKUP_BUTTON:
@@ -9503,7 +9505,7 @@ void actIntDispatcher::init_prompt(void) {
 		b->init();
 		if (b->promptData) {
 			p = new XGR_MousePromptData(b->PosX, b->PosY, b->SizeX, b->SizeY, 0);
-			p->set_text(b->promptData);
+			set_mouse_prompt(p, b->promptData);
 
 			infPrompt->AddElement((XListElement *)p);
 		}
@@ -9518,7 +9520,7 @@ aciScreenTextPage::aciScreenTextPage(void) {
 
 aciScreenTextPage::~aciScreenTextPage(void) {
 	if (StrTable)
-		delete StrTable;
+		delete[] StrTable;
 }
 
 aciScreenText::aciScreenText(void) {
@@ -9565,7 +9567,7 @@ void aciScreenText::free(void) {
 	CurStr = CurPage = 0;
 
 	if (data)
-		delete data;
+		delete[] data;
 	data = NULL;
 	dataSize = 0;
 
@@ -9589,14 +9591,15 @@ void aciScreenText::free(void) {
 }
 
 void aciScreenText::alloc(char *ptr, int sz) {
+	alloc_utf8(cp866_to_utf8(std::string_view(ptr, sz)));
+}
+
+void aciScreenText::alloc_utf8(std::string_view text) {
+	const auto valid = vangers::actint::decode_text(text, vangers::actint::TextEncoding::Utf8);
+	const auto wrapped = vangers::actint::wrap_columns(valid, MaxStrLen) + '\n';
 	free();
-	data = new char[sz + 1];
-	memcpy(data, ptr, sz);
-	data[sz] = '\n';
-	dataSize = sz + 1;
-
-	aciPrepareScreenText(data, dataSize, MaxStrLen);
-
+	data = vangers::actint::copy_text(wrapped);
+	dataSize = wrapped.size();
 	prepare();
 	CurPageData = (aciScreenTextPage *)PageTable->first;
 	flags |= ACI_TEXT_INIT;
@@ -9685,13 +9688,13 @@ void aciScreenText::redraw(void) {
 
 	int screenSizeX = XGR_Obj.get_is_scaled_renderer() ? I_RES_X : XGR_MAXX;
 	int screenSizeY = XGR_Obj.get_is_scaled_renderer() ? I_RES_Y : XGR_MAXY;
-	y = (screenSizeY - (DeltaY + aTextHeight32((void *)"", font, 1)) * p->NumStr) / 2;
+	y = (screenSizeY - (DeltaY + aTextHeight32Utf8((void *)"", font, 1)) * p->NumStr) / 2;
 	for (i = 0; i < CurStr; i++) {
 		str = p->StrTable[i];
-		x = (screenSizeX - aTextWidth32(str, font, 1)) / 2;
+		x = (screenSizeX - aTextWidth32Utf8(str, font, 1)) / 2;
 
-		aOutText32(x, y, color, str, font, 1, 1);
-		y += DeltaY + aTextHeight32(str, font, 1);
+		aOutText32Utf8(x, y, color, str, font, 1, 1);
+		y += DeltaY + aTextHeight32Utf8(str, font, 1);
 	}
 	CurPageData = p;
 }
@@ -9766,7 +9769,7 @@ void actIntDispatcher::save_items(void) {
 }
 #endif
 
-void invItem::set_template(char *p) {
+void invItem::set_template(const char *p) {
 	int sz = strlen(p) + 1;
 	pTemplate = new char[sz];
 	strcpy(pTemplate, p);

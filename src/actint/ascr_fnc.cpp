@@ -32,6 +32,7 @@
 
 #include "aci_str.h"
 #include "actint.h"
+
 #include "credits.h"
 
 #include "mlconsts.h"
@@ -53,6 +54,9 @@
 #else
 namespace fs = std::filesystem;
 #endif
+
+using vangers::settings::cp866_to_utf8;
+using vangers::settings::utf8_to_cp866;
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -287,7 +291,7 @@ void aciChangeWorld(int w_id);
 void aciInitWorldIDs(void);
 void aciPrepareWorldsMenu(void);
 
-void aciInitPanel(InfoPanel *p, unsigned char *str);
+void aciInitPanel(InfoPanel *p, const char *text);
 void aciClearQuestMenu(void);
 
 void aciInitShopButtons(void);
@@ -2197,7 +2201,7 @@ void aciSetMechName(void) {
 		return;
 
 	if (aScrDisp->secondMatrix->mech_name)
-		strcpy(str->string, aScrDisp->secondMatrix->mech_name);
+		strcpy(str->string, utf8_to_cp866(aScrDisp->secondMatrix->mech_name).c_str());
 	else
 		strcpy(str->string, " ");
 
@@ -2601,7 +2605,7 @@ void aciInitWorldIDs(void) {
 
 	for (i = 0; i < WORLD_MAX; i++) {
 		wrld = WorldTable[i];
-		a_wrld = aScrDisp->wMap->get_world_p(wrld->name);
+		a_wrld = aScrDisp->wMap->get_world_p(cp866_to_utf8(wrld->name).data());
 		if (a_wrld) {
 			ids[i] = a_wrld->ID;
 			a_wrld->uvsID = i;
@@ -3791,56 +3795,22 @@ void aciChooseShopItem(void) {
 int aciBadPhraseFlag = 0;
 #endif
 
-// TODO need fast malloc and need rewrite!
-void aciInitPanel(InfoPanel *p, unsigned char *str) {
-	int i = 0, quit_log = 0, sz = strlen((char *)str), str_len, len, col;
-	unsigned char *dest_str, *ptr, *tmp_ptr;
-
-	dest_str = new unsigned char[sz + 1];
-	ptr = new unsigned char[sz + 1];
-	tmp_ptr = ptr;
-
-	str_len = sz;
-	strcpy((char *)ptr, (char *)str);
-	col = (aciCurColorScheme[FM_SELECT_BORDER_COL] << 8) | aciCurColorScheme[FM_SELECT_BORDER_COL];
-
-	while (!quit_log) {
-		strcpy((char *)dest_str, (char *)tmp_ptr);
-
-		if (p->flags & IP_RANGE_FONT)
-			len = aStrLen32(dest_str, ACI_PHRASE_FONT, p->hSpace);
-		else
-			len = aStrLen(dest_str, ACI_PHRASE_FONT, p->hSpace);
-		if (len < p->SizeX) {
-			if (p->items->Size >= p->MaxStr) {
-				std::cout << "Dialog phrase too long..." << std::endl;
-				quit_log = 1;
-			} else {
-				p->add_item((char *)dest_str, -1, col);
-				sz -= strlen((char *)dest_str);
-				strcpy((char *)ptr, (char *)str);
-				if (sz <= 0) {
-					quit_log = 1;
-				} else {
-					tmp_ptr = ptr + (str_len - sz);
-				}
-			}
-		} else {
-			i = sz;
-			while (dest_str[i] != ' ') {
-				i--;
-				if (i <= 0) {
-					quit_log = 1;
-					break;
-				}
-			}
-			if (!quit_log)
-				tmp_ptr[i] = 0;
+// Diagen has already been decoded at the caller boundary.
+void aciInitPanel(InfoPanel *p, const char *text) {
+	const auto measure = [&](std::string_view line) {
+		const std::string value(line);
+		return p->flags & IP_RANGE_FONT ? aStrLen32Utf8(value.c_str(), ACI_PHRASE_FONT, p->hSpace)
+										: aStrLenUtf8(value.c_str(), ACI_PHRASE_FONT, p->hSpace);
+	};
+	const int color =
+		(aciCurColorScheme[FM_SELECT_BORDER_COL] << 8) | aciCurColorScheme[FM_SELECT_BORDER_COL];
+	for (const auto &line : vangers::actint::wrap_text(text, p->SizeX, measure)) {
+		if (p->items->Size >= p->MaxStr) {
+			std::cout << "Dialog phrase too long..." << std::endl;
+			break;
 		}
+		p->add_item(line.c_str(), -1, color);
 	}
-
-	delete[] dest_str;
-	delete[] ptr;
 }
 
 void aciStartSpeech(void) {
@@ -3943,7 +3913,7 @@ void aciNextPhrase(void) {
 
 		str = (unsigned char *)dgD->getQdead();
 		if (str)
-			aciInitPanel(p, str);
+			aciInitPanel(p, cp866_to_utf8((char *)str).c_str());
 		p->set_redraw();
 		return;
 	}
@@ -3968,7 +3938,7 @@ void aciNextPhrase(void) {
 	}
 
 	if (str)
-		aciInitPanel(p, str);
+		aciInitPanel(p, cp866_to_utf8((char *)str).c_str());
 
 	aciSpeechEndLocked = dgD->isEnd();
 
@@ -4111,7 +4081,7 @@ void aciBuildQuestList(void) {
 		m = new fncMenu;
 		m->flags |= FM_RANGE_FONT;
 		itm = aScrDisp->alloc_menu_item();
-		itm->init_name(p);
+		itm->init_name(cp866_to_utf8(p).c_str());
 		itm->fnc_code = 0;
 
 		itm->font = ACI_PHRASE_FONT;
@@ -4129,7 +4099,7 @@ void aciBuildQuestList(void) {
 		m->flags |= FM_RANGE_FONT;
 		while (p) {
 			itm = aScrDisp->alloc_menu_item();
-			itm->init_name(p);
+			itm->init_name(cp866_to_utf8(p).c_str());
 			itm->fnc_code = cd;
 
 			itm->font = ACI_PHRASE_FONT;
@@ -4150,7 +4120,7 @@ void aciBuildQuestList(void) {
 		m = new fncMenu;
 		m->flags |= FM_RANGE_FONT;
 		itm = aScrDisp->alloc_menu_item();
-		itm->init_name(p);
+		itm->init_name(cp866_to_utf8(p).c_str());
 		itm->fnc_code = 0;
 
 		itm->font = ACI_PHRASE_FONT;
@@ -4176,7 +4146,7 @@ void aciShowBlockPhrase(void) {
 
 	if (str) {
 		p->free_list();
-		aciInitPanel(p, (unsigned char *)str);
+		aciInitPanel(p, cp866_to_utf8(str).c_str());
 		p->set_redraw();
 	}
 }
@@ -4195,12 +4165,13 @@ void aciAskQuestion(void) {
 		str = dgD->getQempty();
 	} else {
 		subj = m->get();
-		str = dgD->getAnswer(subj);
+		auto legacy_subject = utf8_to_cp866(subj);
+		str = dgD->getAnswer(legacy_subject.data());
 	}
 
 	if (str) {
 		p->free_list();
-		aciInitPanel(p, (unsigned char *)str);
+		aciInitPanel(p, cp866_to_utf8(str).c_str());
 		p->set_redraw();
 	}
 	aciStartSpeech();
@@ -4216,7 +4187,7 @@ void aciEscaveKickOut(void) {
 
 	if (str) {
 		p->free_list();
-		aciInitPanel(p, (unsigned char *)str);
+		aciInitPanel(p, cp866_to_utf8(str).c_str());
 		p->set_redraw();
 	}
 	aciStartSpeech();
@@ -4365,7 +4336,7 @@ void aciAddTeleportMenuItem(int id, int fnc_id) {
 	}
 
 	itm = aScrDisp->alloc_menu_item();
-	itm->init_name(ptr);
+	itm->init_name(id == -1 ? cp866_to_utf8(ptr).c_str() : ptr);
 	itm->font = FMENU_TARGETS_FONT;
 	itm->space = FMENU_TARGETS_SPACE;
 	itm->fnc_code = fnc_id;
@@ -4400,7 +4371,7 @@ void aciAdd2Targets(char *p) {
 		return;
 
 	itm = aScrDisp->alloc_menu_item();
-	itm->init_name(p);
+	itm->init_name(cp866_to_utf8(p).c_str());
 	itm->font = FMENU_TARGETS_FONT;
 	itm->space = FMENU_TARGETS_SPACE;
 	itm->fnc_code = FMENU_OFF;
@@ -4411,7 +4382,7 @@ void aciAdd2Targets(char *p) {
 	ptr = GetCompasTarget();
 
 	if (ptr)
-		mn->curItem = mn->get_obj(ptr);
+		mn->curItem = mn->get_obj(cp866_to_utf8(ptr).c_str());
 	else
 		mn->curItem = mn->get_obj(aciSTR_OFF);
 
@@ -4433,7 +4404,7 @@ void aciRefreshTargetsMenu(void) {
 	ptr = GetCompasTarget();
 
 	if (ptr)
-		mn->curItem = mn->get_obj(ptr);
+		mn->curItem = mn->get_obj(cp866_to_utf8(ptr).c_str());
 	else
 		mn->curItem = mn->get_obj(aciSTR_OFF);
 
@@ -4452,7 +4423,7 @@ void aciDeleteFromTargets(char *p) {
 	if (!mn)
 		return;
 
-	itm = mn->get_obj(p);
+	itm = mn->get_obj(cp866_to_utf8(p).c_str());
 
 	if (itm == mn->curItem)
 		SelectCompasTarget(NULL);
@@ -4466,7 +4437,7 @@ void aciDeleteFromTargets(char *p) {
 	ptr = GetCompasTarget();
 
 	if (ptr)
-		mn->curItem = mn->get_obj(ptr);
+		mn->curItem = mn->get_obj(cp866_to_utf8(ptr).c_str());
 	else
 		mn->curItem = mn->get_obj(aciSTR_OFF);
 
@@ -4593,7 +4564,7 @@ void aciHandleSubmenuEvent(int id, fncMenuItem *p) {
 	switch (id) {
 	case FMENU_TARGETS_MENU:
 		if (strcmp(p->name, aciSTR_OFF)) {
-			SelectCompasTarget(p->name);
+			SelectCompasTarget(utf8_to_cp866(p->name).c_str());
 		} else {
 			SelectCompasTarget(NULL);
 		}
@@ -5126,7 +5097,7 @@ void aciPromptData::copy_data(aciPromptData *src) {
 #define ACI_PROMPT_DELTA_X 1
 #define ACI_PROMPT_DELTA_Y 1
 void aciPromptData::redraw(int scr_x, int scr_y, int scr_sx, int scr_sy) {
-	int i, x, y, sy = 0, sx, sz;
+	int i, x, y, sy = 0, sx;
 	if (!StrBuf)
 		return;
 
@@ -5150,16 +5121,15 @@ void aciPromptData::redraw(int scr_x, int scr_y, int scr_sx, int scr_sy) {
 
 	for (i = 0; i < NumStr; i++) {
 		if (StrBuf[i]) {
-			sx = aStrLen(StrBuf[i], font, ACI_PROMPT_DELTA_X);
+			sx = aStrLenUtf8(StrBuf[i], font, ACI_PROMPT_DELTA_X);
 			x = scr_x + (scr_sx - sx) / 2;
 			PosX[i] = x;
 			PosY[i] = y;
 
 			//			  if(x < 0) ErrH.Abort("Prompt string out of screen...");
-			while (x < 0) {
-				sz = strlen((char *)StrBuf[i]) - 1;
-				StrBuf[i][sz] = 0;
-				sx = aStrLen(StrBuf[i], font, ACI_PROMPT_DELTA_X);
+			while (x < 0 && StrBuf[i][0]) {
+				vangers::actint::pop_back((char *)StrBuf[i]);
+				sx = aStrLenUtf8(StrBuf[i], font, ACI_PROMPT_DELTA_X);
 				x = scr_x + (scr_sx - sx) / 2;
 				PosX[i] = x;
 				PosY[i] = y;
@@ -5172,12 +5142,14 @@ void aciPromptData::redraw(int scr_x, int scr_y, int scr_sx, int scr_sy) {
 }
 
 void aciPromptData::add_str(int num, unsigned char *p) {
-	int sz;
-	if (StrBuf[num])
-		delete[] StrBuf[num];
-	sz = strlen((char *)p) + 1;
-	StrBuf[num] = new unsigned char[sz];
-	strcpy((char *)StrBuf[num], (char *)p);
+	add_utf8_str(num, cp866_to_utf8((char *)p).c_str());
+}
+
+void aciPromptData::add_utf8_str(int num, const char *text) {
+	const auto valid = vangers::actint::decode_text(text, vangers::actint::TextEncoding::Utf8);
+	auto *copy = (unsigned char *)vangers::actint::copy_text(valid);
+	delete[] StrBuf[num];
+	StrBuf[num] = copy;
 }
 
 void aciPromptData::quant(void) {
@@ -5456,7 +5428,7 @@ void acsPrepareSlotName(int id, int slot_num) {
 		fh.read(p->string, len);
 		fh.close();
 	} else
-		strcpy(p->string, aciSTR_EMPTY_SLOT);
+		strcpy(p->string, utf8_to_cp866(aciSTR_EMPTY_SLOT).c_str());
 }
 
 void acsPrepareSlotNameInput(int id, int slot_num) {
@@ -5468,7 +5440,8 @@ void acsPrepareSlotNameInput(int id, int slot_num) {
 		acsScrD->activeInput->StopEvents();
 		acsScrD->CancelInput();
 	}
-	if (!strcmp(p->string, aciSTR_EMPTY_SLOT) || !strcmp(p->string, aciSTR_UNNAMED_SAVE)) {
+	if (!strcmp(p->string, utf8_to_cp866(aciSTR_EMPTY_SLOT).c_str()) ||
+		!strcmp(p->string, utf8_to_cp866(aciSTR_UNNAMED_SAVE).c_str())) {
 		sz = strlen(p->string) + 1;
 		acsBackupStr = new char[sz];
 		strcpy(acsBackupStr, p->string);
@@ -5511,10 +5484,12 @@ void acsSaveData(void) {
 	XStream fh;
 
 	const char *ptr = NULL;
+	std::string legacy_name;
 	aciScreenInputField *p;
 
 	if (aciAutoSaveFlag) {
-		ptr = aciSTR_AUTOSAVE;
+		legacy_name = utf8_to_cp866(aciSTR_AUTOSAVE);
+		ptr = legacy_name.c_str();
 		slot = ACS_NUM_SLOTS;
 	} else {
 		if (acsScrD->activeInput)
@@ -5534,7 +5509,8 @@ void acsSaveData(void) {
 				null_flag = 0;
 		}
 		if (null_flag) {
-			ptr = aciSTR_UNNAMED_SAVE;
+			legacy_name = utf8_to_cp866(aciSTR_UNNAMED_SAVE);
+			ptr = legacy_name.c_str();
 			len = strlen(ptr);
 		}
 
@@ -5546,7 +5522,7 @@ void acsSaveData(void) {
 		fh.open(XBuf.address(), XS_OUT);
 
 		aciXConv->init();
-		*aciXConv < aScrDisp->curLocData->nameID2 < ", ";
+		*aciXConv < utf8_to_cp866(aScrDisp->curLocData->nameID2).c_str() < ", ";
 
 		*aciXConv <= ConTimer.day < ":";
 		if (ConTimer.hour < 10)
@@ -6013,7 +5989,7 @@ void aciShowFrags(void) {
 				break;
 			}
 
-			aScrDisp->curPrompt->add_str(i, (unsigned char *)XBuf.address());
+			aScrDisp->curPrompt->add_utf8_str(i, XBuf.address());
 			aScrDisp->curPrompt->TimeBuf[i] = ACI_FRAG_TIMER;
 			aScrDisp->curPrompt->ColBuf[i] = fragColors[5];
 		}
@@ -6022,11 +5998,9 @@ void aciShowFrags(void) {
 			p = iPlayers[i];
 			XBuf.init();
 			world_name = aScrDisp->wMap->world_ptr[aScrDisp->wMap->world_ids[p->body.world]]->name;
-			XBuf < p->name < " (" < world_name < ") : " < aciSTR_WINS < " " <= p->body.kills <
-				", " < aciSTR_LOSSES < " " <= p->body.deaths;
-			aScrDisp->curPrompt->add_str(
-				i + ACI_FRAG_ADDITIONAL_LINES, (unsigned char *)XBuf.address()
-			);
+			XBuf < cp866_to_utf8(p->name).c_str() < " (" < world_name < ") : " < aciSTR_WINS <
+				" " <= p->body.kills < ", " < aciSTR_LOSSES < " " <= p->body.deaths;
+			aScrDisp->curPrompt->add_utf8_str(i + ACI_FRAG_ADDITIONAL_LINES, XBuf.address());
 			aScrDisp->curPrompt->TimeBuf[i + ACI_FRAG_ADDITIONAL_LINES] = ACI_FRAG_TIMER;
 			aScrDisp->curPrompt->ColBuf[i + ACI_FRAG_ADDITIONAL_LINES] = fragColors[p->body.color];
 		}
@@ -6036,11 +6010,12 @@ void aciShowFrags(void) {
 			p = iPlayers[i];
 			XBuf.init();
 			world_name = aScrDisp->wMap->world_ptr[aScrDisp->wMap->world_ids[p->body.world]]->name;
-			XBuf < p->name < " (" < world_name < ") : " < aciSTR_Ware1 < " " <=
-				p->body.MechosomaStat.ItemCount1 < "/" <= my_server_data.Mechosoma.ProductQuantity1;
+			XBuf < cp866_to_utf8(p->name).c_str() < " (" < world_name < ") : " < aciSTR_Ware1 <
+				" " <= p->body.MechosomaStat.ItemCount1 < "/" <=
+				my_server_data.Mechosoma.ProductQuantity1;
 			XBuf < " " < aciSTR_Ware2 < " " <= p->body.MechosomaStat.ItemCount2 < "/" <=
 				my_server_data.Mechosoma.ProductQuantity2;
-			aScrDisp->curPrompt->add_str(i, (unsigned char *)XBuf.address());
+			aScrDisp->curPrompt->add_utf8_str(i, XBuf.address());
 			aScrDisp->curPrompt->TimeBuf[i] = ACI_FRAG_TIMER;
 			aScrDisp->curPrompt->ColBuf[i] = fragColors[p->body.color];
 		}
@@ -6050,10 +6025,10 @@ void aciShowFrags(void) {
 			p = iPlayers[i];
 			XBuf.init();
 			world_name = aScrDisp->wMap->world_ptr[aScrDisp->wMap->world_ids[p->body.world]]->name;
-			XBuf < p->name < " (" < world_name < ") : " < aciSTR_Checkpoints < " " <=
-				p->body.PassemblossStat.CheckpointLighting < "/" <=
+			XBuf < cp866_to_utf8(p->name).c_str() < " (" < world_name < ") : " <
+				aciSTR_Checkpoints < " " <= p->body.PassemblossStat.CheckpointLighting < "/" <=
 				my_server_data.Passembloss.CheckpointsNumber;
-			aScrDisp->curPrompt->add_str(i, (unsigned char *)XBuf.address());
+			aScrDisp->curPrompt->add_utf8_str(i, XBuf.address());
 			aScrDisp->curPrompt->TimeBuf[i] = ACI_FRAG_TIMER;
 			aScrDisp->curPrompt->ColBuf[i] = fragColors[p->body.color];
 		}
@@ -6412,12 +6387,14 @@ void aciShowRacingPlace(void) {
 		y = XGR_MAXY - y;
 	}
 
-	aOutStr(x, y, ACI_RACING_FONT, ACI_RACING_COL, (unsigned char *)aciXConv->address(), 1);
+	aOutStrUtf8(x, y, ACI_RACING_FONT, ACI_RACING_COL, (unsigned char *)aciXConv->address(), 1);
 
-	dx = aStrLen((unsigned char *)aciXConv->address(), ACI_RACING_FONT, 1);
+	dx = aStrLenUtf8((unsigned char *)aciXConv->address(), ACI_RACING_FONT, 1);
 	aciXConv->init();
 	*aciXConv < aciCurRaceInfo;
-	aOutStr(x + dx, y, ACI_RACING_FONT, ACI_RACING_COL2, (unsigned char *)aciXConv->address(), 1);
+	aOutStrUtf8(
+		x + dx, y, ACI_RACING_FONT, ACI_RACING_COL2, (unsigned char *)aciXConv->address(), 1
+	);
 }
 
 void aciPrepareText(char *ptr) {
@@ -7421,52 +7398,6 @@ int aciTextQuant(void) {
 	return ret;
 }
 
-void aciPrepareScreenText(char *ptr, int sz, int max_len) {
-	int i, offs_start, offs_end, offs;
-
-	//	  XStream fh("text0.dat",XS_OUT);
-	//	  fh.write(ptr,sz);
-	//	  fh.close();
-
-	offs_start = offs_end = 0;
-	while (offs_start < sz - 1) {
-		while (ptr[offs_end] != '\n') {
-			offs_end++;
-			if (offs_end >= sz) {
-				offs_end = sz - 1;
-				break;
-			}
-		}
-		if (offs_end - offs_start > max_len) {
-			offs = offs_start + max_len;
-			for (i = 0; i < max_len; i++) {
-				if (ptr[offs] == ' ' || ptr[offs] == '\t') {
-					break;
-				}
-				offs--;
-				if (offs <= offs_start) {
-					break;
-				}
-			}
-			ptr[offs] = '\n';
-			if (offs > offs_start) {
-				offs_start = offs;
-				offs_end = offs + 1;
-			} else {
-				offs_start = offs_end;
-				offs_end++;
-			}
-		} else {
-			offs_start = offs_end;
-			offs_end++;
-		}
-	}
-
-	//	  fh.open("text1.dat",XS_OUT);
-	//	  fh.write(ptr,sz);
-	//	  fh.close();
-}
-
 void aciPrepareEndImage(void) {
 	StopCDTRACK();
 	ShowImageRTO *p;
@@ -7557,4 +7488,65 @@ int sdlEventToCode(SDL_Event *event) {
 			return iMOUSE_MOVE_CODE;
 	}
 	return -1;
+}
+
+// The model stays UTF-8; only the temporary bitmap view is lossy for glyphs
+// outside CP866. Width and drawing use precisely the same conversion.
+int aStrLenUtf8(const void *text, int font, int space) {
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts[font]->Size);
+	return aStrLen((unsigned char *)raster.data(), font, space);
+}
+
+int aStrLen32Utf8(const void *text, int font, int space) {
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
+	return aStrLen32(raster.data(), font, space);
+}
+
+void aPutStrUtf8(
+	int x,
+	int y,
+	int font,
+	int color,
+	const void *text,
+	int bsx,
+	unsigned char *buf,
+	int space
+) {
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts[font]->Size);
+	aPutStr(x, y, font, color, (unsigned char *)raster.data(), bsx, buf, space);
+}
+
+void aPutStr32Utf8(
+	int x,
+	int y,
+	int font,
+	int color,
+	int color_size,
+	const void *text,
+	int bsx,
+	void *buf,
+	int space
+) {
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
+	aPutStr32(x, y, font, color, color_size, raster.data(), bsx, buf, space);
+}
+
+void aOutStrUtf8(int x, int y, int font, int color, const void *text, int space) {
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts[font]->Size);
+	aOutStr(x, y, font, color, (unsigned char *)raster.data(), space);
+}
+
+void aOutText32Utf8(int x, int y, int color, const void *text, int font, int hspace, int vspace) {
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
+	aOutText32(x, y, color, raster.data(), font, hspace, vspace);
+}
+
+int aTextWidth32Utf8(const void *text, int font, int hspace) {
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
+	return aTextWidth32(raster.data(), font, hspace);
+}
+
+int aTextHeight32Utf8(const void *text, int font, int vspace) {
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
+	return aTextHeight32(raster.data(), font, vspace);
 }

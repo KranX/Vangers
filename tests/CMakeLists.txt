@@ -98,6 +98,15 @@ TARGET_LINK_LIBRARIES(text_encoding_test PRIVATE
 
 ADD_TEST(NAME text_encoding COMMAND text_encoding_test)
 
+ADD_EXECUTABLE(actint_text_test
+	actint_text_test.cpp
+	../src/actint/text.cpp
+)
+
+TARGET_LINK_LIBRARIES(actint_text_test PRIVATE vangers_settings)
+
+ADD_TEST(NAME actint_text COMMAND actint_text_test)
+
 ADD_EXECUTABLE(legacy_settings_migration_test
 	legacy_settings_migration_test.cpp
 )
