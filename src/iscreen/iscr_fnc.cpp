@@ -2354,14 +2354,7 @@ void iHandleExtEvent(int code, int data) {
 	case iEXT_UPDATE_FPS_MODE:
 		iSetFPS(iGetOptionValue(iFPS_60));
 		break;
-	case iEXT_UPDATE_TERRAIN_SAVE_MODE:
-		if (iGetOptionValue(iSAVE_TERRAIN))
-			iSetOptionValue(iKEEP_MODE, 0);
-		iInitKeepOptions();
-		break;
-	case iEXT_UPDATE_KEEP_MODE:
-		if (iGetOptionValue(iKEEP_MODE))
-			iSetOptionValue(iSAVE_TERRAIN, 0);
+	case iEXT_UPDATE_TERRAIN_MODE:
 		iInitKeepOptions();
 		break;
 	case iEXT_UPDATE_MUSIC_MODE:
@@ -2854,16 +2847,9 @@ void iInitKeepOptions(void) {
 	int sz;
 	iScreenObject *p;
 
-	bool keepGlobal = iGetOptionValue(iKEEP_MODE) != 0;
-	bool keepSave = iGetOptionValue(iSAVE_TERRAIN) != 0;
-	if (keepGlobal && keepSave) {
-		// Modes are mutually exclusive: the per-save mode wins.
-		keepGlobal = false;
-		iSetOptionValue(iKEEP_MODE, 0);
-	}
-
-	KeepSaveON = keepSave ? 1 : 0;
-	KeepON = (keepGlobal || keepSave) ? 1 : 0;
+	const int terrainMode = iGetOptionValue(iTERRAIN_MODE);
+	KeepSaveON = terrainMode == iTERRAIN_MODE_SAVE ? 1 : 0;
+	KeepON = terrainMode != iTERRAIN_MODE_OFF ? 1 : 0;
 
 	if (KeepON) {
 		sz = GetKeepSpace();

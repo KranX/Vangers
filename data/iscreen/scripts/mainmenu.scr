@@ -1654,7 +1654,7 @@ Screen "Graphics screen"
 	Object "Back Option"
 	{
 		align_x center
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 8 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 7 }
 
 		Element STRING {
 			align_x center
@@ -1882,7 +1882,7 @@ Screen "Graphics screen"
 			}
 		}
 	}
-	Object "KeepStr"
+	Object "TerrainModeStr"
 	{
 		x	$KEEP_STR_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
@@ -1895,28 +1895,17 @@ Screen "Graphics screen"
 
 			font		$GRAPHICS_FONT
 			null_level	$DEFAULT_NULL
-			string		$iSTR_KEEP_ALL_TERRAIN_CHANGES
+			string		$iSTR_TERRAIN_MODE
 		}
 	}
-	Trigger "KeepTrig" {
+	Trigger "TerrainModeTrig" {
 		x	$KEEP_TRG_X
 		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 4 }
 
-		num_state	2
+		num_state	3
 
 		null_level	$DEFAULT_NULL
 
-		State 1 "STRING"{
-			align_x center
-			align_y center
-
-			font		$GRAPHICS_FONT
-			space		$OPTION_SPACE
-			terrain_num	$TERRAIN4
-
-			string		$iSTR_ON
-			null_level	$DEFAULT_NULL
-		}
 		State 0 "STRING"{
 			align_x center
 			align_y center
@@ -1928,17 +1917,39 @@ Screen "Graphics screen"
 			string		$iSTR_OFF
 			null_level	$DEFAULT_NULL
 		}
+		State 1 "STRING"{
+			align_x center
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_TERRAIN_PER_SAVE
+			null_level	$DEFAULT_NULL
+		}
+		State 2 "STRING"{
+			align_x center
+			align_y center
+
+			font		$GRAPHICS_FONT
+			space		$OPTION_SPACE
+			terrain_num	$TERRAIN4
+
+			string		$iSTR_TERRAIN_GLOBAL
+			null_level	$DEFAULT_NULL
+		}
 		Event {
 			key $VK_LBUTTON
 			key $VK_RBUTTON
 
 			time { $TRIGGER_TIME + 1 }
 			EvComm {
-				change_trigger	"KeepTrig"
+				change_trigger	"TerrainModeTrig"
 				time $TRIGGER_TIME
 			}
 			EvComm {
-				ext_event	$iEXT_UPDATE_KEEP_MODE 0
+				ext_event	$iEXT_UPDATE_TERRAIN_MODE 0
 				start_time	{ $TRIGGER_TIME / 2 }
 			}
 		}
@@ -2004,71 +2015,10 @@ Screen "Graphics screen"
 			}
 		}
 	}
-	Object "SaveTerrainStr"
-	{
-		x	$KEEP_STR_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 6 }
-
-		Element STRING {
-			space		$OPTION_SPACE
-			align_x 	center
-
-			terrain_num	$TERRAIN2
-
-			font		$GRAPHICS_FONT
-			null_level	$DEFAULT_NULL
-			string		$iSTR_SAVE_TERRAIN_CHANGES
-		}
-	}
-	Trigger "SaveTerrainTrig" {
-		x	$KEEP_TRG_X
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 6 }
-
-		num_state	2
-
-		null_level	$DEFAULT_NULL
-
-		State 1 "STRING"{
-			align_x center
-			align_y center
-
-			font		$GRAPHICS_FONT
-			space		$OPTION_SPACE
-			terrain_num	$TERRAIN4
-
-			string		$iSTR_ON
-			null_level	$DEFAULT_NULL
-		}
-		State 0 "STRING"{
-			align_x center
-			align_y center
-
-			font		$GRAPHICS_FONT
-			space		$OPTION_SPACE
-			terrain_num	$TERRAIN4
-
-			string		$iSTR_OFF
-			null_level	$DEFAULT_NULL
-		}
-		Event {
-			key $VK_LBUTTON
-			key $VK_RBUTTON
-
-			time { $TRIGGER_TIME + 1 }
-			EvComm {
-				change_trigger	"SaveTerrainTrig"
-				time $TRIGGER_TIME
-			}
-			EvComm {
-				ext_event	$iEXT_UPDATE_TERRAIN_SAVE_MODE 0
-				start_time	1
-			}
-		}
-	}
 	Object "InUseObj"
 	{
 		x	$Graphics_screen_InUseObj_PosX
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 7 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 6 }
 
 		Element STRING {
 			id		"InUseStr"
@@ -2086,7 +2036,7 @@ Screen "Graphics screen"
 	Object "CleanUpObj"
 	{
 		x	$Graphics_screen_CleanUpObj_PosX
-		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 7 }
+		y	{ $GRAPHICS_SCR_START_Y + $GRAPHICS_SCR_DELTA_Y * 6 }
 
 		not_unlock
 

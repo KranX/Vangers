@@ -121,6 +121,13 @@
 #define iSTR_SAVE_TERRAIN_CHANGES1	"SAVE TERRAIN IN SAVES:"
 #define iSTR_SAVE_TERRAIN_CHANGES2	"‹€„˜€”’ ‚ ‘Ž•€…ˆŸ•:"
 
+#define iSTR_TERRAIN_MODE1			"SAVE TERRAIN:"
+#define iSTR_TERRAIN_MODE2			"‘Ž•€Ÿ’œ ‹€„˜€”’:"
+#define iSTR_TERRAIN_PER_SAVE1	"IN SAVES"
+#define iSTR_TERRAIN_PER_SAVE2	"ˆ ‘Ž•€…ˆˆ"
+#define iSTR_TERRAIN_GLOBAL1	"GLOBAL"
+#define iSTR_TERRAIN_GLOBAL2	"ƒ‹Ž€‹œŽ"
+
 #define iSTR_FULL_SCREEN1	"FULL SCREEN:"
 #define iSTR_FULL_SCREEN2	"Ž‹›‰ Š€:"
 
