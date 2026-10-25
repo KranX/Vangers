@@ -137,3 +137,29 @@ TARGET_INCLUDE_DIRECTORIES(rle_test PRIVATE
 TARGET_LINK_LIBRARIES(rle_test PRIVATE SDL3::SDL3)
 
 ADD_TEST(NAME rle_roundtrip COMMAND rle_test)
+
+ADD_EXECUTABLE(error_log_path_test
+	error_log_path_test.cpp
+	../lib/xtool/xerrhead.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(error_log_path_test PRIVATE
+	${PROJECT_SOURCE_DIR}/lib/xtool
+)
+
+# Keep the real error handler but replace the blocking dialog with an assertion stub.
+TARGET_COMPILE_DEFINITIONS(error_log_path_test PRIVATE
+	SDL_ShowSimpleMessageBox=VangersTest_ShowSimpleMessageBox
+)
+
+TARGET_LINK_LIBRARIES(error_log_path_test PRIVATE xtool)
+
+FOREACH(path_case relative nested absolute)
+	ADD_TEST(NAME error_log_path_${path_case} COMMAND error_log_path_test ${path_case})
+	SET_TESTS_PROPERTIES(error_log_path_${path_case} PROPERTIES TIMEOUT 15)
+ENDFOREACH()
+
+IF(UNIX)
+	ADD_TEST(NAME error_log_path_missing_cwd COMMAND error_log_path_test missing-cwd)
+	SET_TESTS_PROPERTIES(error_log_path_missing_cwd PROPERTIES TIMEOUT 15)
+ENDIF()
