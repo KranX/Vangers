@@ -4,6 +4,7 @@
 
 #include <SDL3/SDL.h>
 #include <ctime>
+#include <filesystem>
 #include <iostream>
 
 XErrorHandler ErrH;
@@ -65,10 +66,12 @@ void XErrorHandler::Abort(const char *message, int code, int val, const char *su
 	if (subj)
 		stream << "Subj:" << subj << std::endl << std::endl;
 
-	const char *basePath = SDL_GetBasePath();
+	// The logger opens log_name relative to the working directory, not the executable.
+	std::error_code path_error;
+	const auto log_path = std::filesystem::absolute(log_name, path_error);
 	stream << "Please send:" << std::endl
 		   << " - this message," << std::endl
-		   << " - logfile from " << (basePath ? basePath : "N/A") << log_name.c_str() << ","
+		   << " - logfile from " << (path_error ? log_name : log_path.u8string()) << ","
 		   << std::endl
 		   << " - your savegame" << std::endl
 		   << "to https://t.me/vangers or https://github.com/KranX/Vangers";
