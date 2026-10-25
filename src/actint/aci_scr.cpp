@@ -1,3 +1,5 @@
+#include "../settings/text_encoding.h"
+
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
@@ -1706,25 +1708,25 @@ void aciScreenInputField::init(void) {
 }
 
 void aciScreenInputField::change_state(void) {
-	if (!strcmp(string, aciSTR_OFF)) {
-		strcpy(string, aciSTR_ON);
+	if (!strcmp(string, vangers::settings::utf8_to_cp866(aciSTR_OFF).c_str())) {
+		strcpy(string, vangers::settings::utf8_to_cp866(aciSTR_ON).c_str());
 	} else {
-		strcpy(string, aciSTR_OFF);
+		strcpy(string, vangers::settings::utf8_to_cp866(aciSTR_OFF).c_str());
 	}
 	flags |= ACS_REDRAW_OBJECT;
 }
 
 void aciScreenInputField::set_state(int v) {
 	if (v) {
-		strcpy(string, aciSTR_ON);
+		strcpy(string, vangers::settings::utf8_to_cp866(aciSTR_ON).c_str());
 	} else {
-		strcpy(string, aciSTR_OFF);
+		strcpy(string, vangers::settings::utf8_to_cp866(aciSTR_OFF).c_str());
 	}
 	flags |= ACS_REDRAW_OBJECT;
 }
 
 int aciScreenInputField::get_state(void) {
-	if (!strcmp(string, aciSTR_OFF))
+	if (!strcmp(string, vangers::settings::utf8_to_cp866(aciSTR_OFF).c_str()))
 		return 0;
 	return 1;
 }

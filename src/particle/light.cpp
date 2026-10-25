@@ -1,3 +1,4 @@
+#include "../actint/text.h"
 #include "../global.h"
 #include "../runtime.h"
 
@@ -28,9 +29,6 @@ uchar *invisible_table;
 int FrameCount = 0;
 
 void LineQuake(int x1, int y1, int x0, int y0, int dx, int shiftparam);
-
-int aStrLen(unsigned char *str, int font, int space);
-void aOutStr(int x, int y, int font, int color, unsigned char *str, int space);
 
 uchar BRIGHTNESS[TERRAIN_MAX] = {255, 255, 255, 255, 255, 255, 255, 255};
 
@@ -591,7 +589,7 @@ void aWriteHelpString(
 ) {
 	int i, total_len = 0;
 	int draw_len = (CHAR_SPEED * timer) / GAME_TIME_COEFF;
-	unsigned char tmp[256];
+	std::string tmp;
 	int _x;
 	int _color = color;
 
@@ -600,16 +598,18 @@ void aWriteHelpString(
 			if (pcolor[i])
 				_color = pcolor[i];
 
-			total_len += strlen((char *)pstr[i]);
+			total_len += vangers::actint::text_length((char *)pstr[i]);
 			if (total_len <= draw_len) {
-				aOutStr(x[i], y[i], font, _color, pstr[i], space);
+				aOutStrUtf8(x[i], y[i], font, _color, pstr[i], space);
 			} else {
 				int d = total_len - draw_len;
-				memcpy(tmp, pstr[i], strlen((char *)pstr[i]) - d);
-				tmp[strlen((char *)pstr[i]) - d] = 0;
+				const std::string_view text((char *)pstr[i]);
+				tmp.assign(text.substr(
+					0, vangers::actint::prefix_bytes(text, vangers::actint::text_length(text) - d)
+				));
 
-				aOutStr(x[i], y[i], font, _color, tmp, space);
-				_x = x[i] + aStrLen(tmp, font, space);
+				aOutStrUtf8(x[i], y[i], font, _color, tmp.c_str(), space);
+				_x = x[i] + aStrLenUtf8(tmp.c_str(), font, space);
 
 				EffD.FireBallData[2].Show2(_x, y[i], FrameCount);
 				EffD.FireBallData[2].CheckOut(FrameCount);

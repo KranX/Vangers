@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include <memory>
 
 #include "../iscreen/hfont.h"
 #include "../iscreen/iscreen.h"
@@ -317,6 +318,7 @@ enum aOptions {
 	ADD_MAP_INFO_FILE, // 154
 	ANCHOR_RIGHT,	   // 155
 	ANCHOR_BOTTOM,	   // 156
+	SET_UTF8_TEXT,	   // 157
 
 	MAX_OPTION
 };
@@ -545,9 +547,10 @@ static const char *aOptIDs[MAX_OPTION] = {
 	"prm_template", // 152
 	"show_escave",	// 153
 
-	"map_data",		// 154
-	"anchor_right", // 155
-	"anchor_bottom" // 156
+	"map_data",		 // 154
+	"anchor_right",	 // 155
+	"anchor_bottom", // 156
+	"utf8_text"		 // 157: explicit encoding for subsequent display strings
 };
 
 int curMode = AS_NONE;
@@ -593,6 +596,14 @@ aciBitmapMenu *aciBM;
 
 void aParseScript(const char *fname, const char *bname) {
 	int i, id, t_id = 0, sz = 0, num;
+	auto text_encoding = vangers::actint::TextEncoding::Cp866;
+	const auto read_text = [&](char **destination) {
+		char *raw = nullptr;
+		script->read_pdata(&raw, 1);
+		const std::unique_ptr<char[]> resource(raw);
+		*destination =
+			vangers::actint::copy_text(vangers::actint::decode_text(resource.get(), text_encoding));
+	};
 
 	char *ptr;
 	iListElement *elemPtr;
@@ -630,6 +641,9 @@ void aParseScript(const char *fname, const char *bname) {
 #endif
 
 			switch (id) {
+			case SET_UTF8_TEXT:
+				text_encoding = vangers::actint::TextEncoding::Utf8;
+				break;
 			case INIT_MECHOS_PRM:
 				t_id = script->read_idata();
 				t_id = script->read_idata();
@@ -657,13 +671,13 @@ void aParseScript(const char *fname, const char *bname) {
 				break;
 			case SET_PROMPT_TEXT:
 				if (curMode == AS_INIT_BUTTON) {
-					script->read_pdata(&aBt->promptData, 1);
+					read_text(&aBt->promptData);
 				} else {
 					if (curMode == AS_INIT_IND) {
-						script->read_pdata(&aInd->promptData, 1);
+						read_text(&aInd->promptData);
 					} else {
 						if (curMode == AS_INIT_ITEM) {
-							script->read_pdata(&invItm->promptData, 1);
+							read_text(&invItm->promptData);
 						} else
 							handle_error("Misplaced option", aOptIDs[id]);
 					}
@@ -934,14 +948,14 @@ void aParseScript(const char *fname, const char *bname) {
 				break;
 			case SET_WORLD_NAME:
 				if (curMode == AS_INIT_WORLD_DATA) {
-					script->read_pdata(&wData->name, 1);
+					read_text(&wData->name);
 				} else {
 					if (curMode == AML_INIT_DATA) {
 						script->read_pdata(&mlData->name, 1);
 					} else {
 						if (curMode == AS_INIT_LOC_DATA) {
 							script->read_pdata(&locData->nameID, 1);
-							script->read_pdata(&locData->nameID2, 1);
+							read_text(&locData->nameID2);
 						} else {
 							if (curMode == AS_INIT_SHUTTER) {
 								script->read_pdata(&locSh->name, 1);
@@ -1113,7 +1127,9 @@ void aParseScript(const char *fname, const char *bname) {
 				curMode = AS_INIT_ITEM;
 
 				script->prepare_pdata();
-				invItm->init_name(script->get_conv_ptr());
+				invItm->init_name(
+					vangers::actint::decode_text(script->get_conv_ptr(), text_encoding).c_str()
+				);
 				break;
 			case NEW_COUNTER:
 				if (curMode != AS_NONE)
@@ -1277,7 +1293,10 @@ void aParseScript(const char *fname, const char *bname) {
 				if (curMode == AS_INIT_ITEM) {
 					script->prepare_pdata();
 					if (strcasecmp(script->get_conv_ptr(), "NONE"))
-						invItm->set_template(script->get_conv_ptr());
+						invItm->set_template(
+							vangers::actint::decode_text(script->get_conv_ptr(), text_encoding)
+								.c_str()
+						);
 				} else {
 					handle_error("Misplaced option", aOptIDs[id]);
 				}
@@ -1448,7 +1467,7 @@ void aParseScript(const char *fname, const char *bname) {
 					if (invItm->numComments) {
 						invItm->comments = new char *[invItm->numComments];
 						for (i = 0; i < invItm->numComments; i++) {
-							script->read_pdata(&invItm->comments[i], 1);
+							read_text(&invItm->comments[i]);
 						}
 					}
 				} else {
@@ -1793,7 +1812,9 @@ void aParseScript(const char *fname, const char *bname) {
 			case INIT_STRING:
 				if (curMode == AS_INIT_MENU_ITEM) {
 					script->prepare_pdata();
-					fnMnuItm->init_name(script->get_conv_ptr());
+					fnMnuItm->init_name(
+						vangers::actint::decode_text(script->get_conv_ptr(), text_encoding).c_str()
+					);
 				} else
 					handle_error("Misplaced option", aOptIDs[id]);
 				break;
@@ -1855,7 +1876,7 @@ void aParseScript(const char *fname, const char *bname) {
 							script->read_pdata(&locData->objIDs[t_id], 1);
 						} else {
 							if (curMode == AS_INIT_MATRIX) {
-								script->read_pdata(&invMat->mech_name, 1);
+								read_text(&invMat->mech_name);
 							} else {
 								if (curMode == AS_INIT_INFO_PANEL) {
 									iPl->type = script->read_idata();

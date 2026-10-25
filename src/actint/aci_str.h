@@ -10,116 +10,116 @@
 */
 
 #define aciSTR_ON1 "ON"
-#define aciSTR_ON2 "Ç™´."
+#define aciSTR_ON2 "–í–∫–ª."
 
 #define aciSTR_OFF1 "OFF"
-#define aciSTR_OFF2 "ÇÎ™´."
+#define aciSTR_OFF2 "–í—ã–∫–ª."
 
 #define aciSTR_DAY1 "Day"
-#define aciSTR_DAY2 "Ñ•≠Ï"
+#define aciSTR_DAY2 "–î–µ–Ω—å"
 
 #define aciSTR_UNDEFINED_PRICE1 "Cost: UNDEFINED"
-#define aciSTR_UNDEFINED_PRICE2 "ñ•≠†: çÖéèêÖÑÖãÖçÄ"
+#define aciSTR_UNDEFINED_PRICE2 "–¶–µ–Ω–∞: –ù–ï–û–ü–†–ï–î–ï–õ–ï–ù–ê"
 
 #define aciSTR_PRICE1 "Cost: "
-#define aciSTR_PRICE2 "ñ•≠†: "
+#define aciSTR_PRICE2 "–¶–µ–Ω–∞: "
 
 #define aciSTR_EMPTY_SLOT1 "EMPTY SLOT"
-#define aciSTR_EMPTY_SLOT2 "ë¢Æ°Æ§≠Æ"
+#define aciSTR_EMPTY_SLOT2 "–°–≤–æ–±–æ–¥–Ω–æ"
 
 #define aciSTR_UNNAMED_SAVE1 "UNNAMED"
-#define aciSTR_UNNAMED_SAVE2 "ë¢Æ°Æ§≠Î©"
+#define aciSTR_UNNAMED_SAVE2 "–°–≤–æ–±–æ–¥–Ω—ã–π"
 
 #define aciSTR_AUTOSAVE1 "AUTOSAVE"
-#define aciSTR_AUTOSAVE2 "Ä¢‚Æß†Ø®·Ï"
+#define aciSTR_AUTOSAVE2 "–ê–≤—Ç–æ–∑–∞–ø–∏—Å—å"
 
 // Multiplayer statistics...
 #define aciSTR_WINS1 "wins"
-#define aciSTR_WINS2 "ØÆ°•§"
+#define aciSTR_WINS2 "–ø–æ–±–µ–¥"
 
 #define aciSTR_LOSSES1 "losses"
-#define aciSTR_LOSSES2 "ØÆ‡†¶•≠®©"
+#define aciSTR_LOSSES2 "–ø–æ—Ä–∞–∂–µ–Ω–∏–π"
 
 #define aciSTR_Ware11 "Ware #1"
-#define aciSTR_Ware12 "íÆ¢†‡ #1"
+#define aciSTR_Ware12 "–¢–æ–≤–∞—Ä #1"
 
 #define aciSTR_Ware21 "Ware #2"
-#define aciSTR_Ware22 "íÆ¢†‡ #2"
+#define aciSTR_Ware22 "–¢–æ–≤–∞—Ä #2"
 
 #define aciSTR_Checkpoints1 "Checkpoint"
-#define aciSTR_Checkpoints2 "ù‚†Ø"
+#define aciSTR_Checkpoints2 "–≠—Ç–∞–ø"
 
 // Parameters...
 #define aciSTR_LUCK1 "LUCK"
-#define aciSTR_LUCK2 "ìÑÄóÄ"
+#define aciSTR_LUCK2 "–£–î–ê–ß–ê"
 
 #define aciSTR_DOMINANCE1 "DOMINANCE"
-#define aciSTR_DOMINANCE2 "ÄÇíéêàíÖí"
+#define aciSTR_DOMINANCE2 "–ê–í–¢–û–†–ò–¢–ï–¢"
 
 #define aciSTR_BROKEN1 "Broken..."
-#define aciSTR_BROKEN2 "ë´Æ¨†≠..."
+#define aciSTR_BROKEN2 "–°–ª–æ–º–∞–Ω..."
 
 #define aciSTR_ENERGY_SHIELD1 "Energy Shield:"
-#define aciSTR_ENERGY_SHIELD2 "ù≠•‡£•‚®Á•·™®© È®‚:"
+#define aciSTR_ENERGY_SHIELD2 "–≠–Ω–µ—Ä–≥–µ—Ç–∏—á–µ—Å–∫–∏–π —â–∏—Ç:"
 
 #define aciSTR_RESTORING_SPEED1 "Restoring Speed:"
-#define aciSTR_RESTORING_SPEED2 "ê•£•≠•‡†Ê®Ô È®‚†:"
+#define aciSTR_RESTORING_SPEED2 "–†–µ–≥–µ–Ω–µ—Ä–∞—Ü–∏—è —â–∏—Ç–∞:"
 
 #define aciSTR_MECHANIC_ARMOR1 "Armor:"
-#define aciSTR_MECHANIC_ARMOR2 "Å‡Æ≠Ô:"
+#define aciSTR_MECHANIC_ARMOR2 "–ë—Ä–æ–Ω—è:"
 
 #define aciSTR_VELOCITY1 "Velocity:"
-#define aciSTR_VELOCITY2 "ë™Æ‡Æ·‚Ï:"
+#define aciSTR_VELOCITY2 "–°–∫–æ—Ä–æ—Å—Ç—å:"
 
 #define aciSTR_SPIRAL_CAPACITY1 "Spiral Capacity:"
-#define aciSTR_SPIRAL_CAPACITY2 "Ö¨™Æ·‚Ï ëØ®‡†´®:"
+#define aciSTR_SPIRAL_CAPACITY2 "–ï–º–∫–æ—Å—Ç—å –°–ø–∏—Ä–∞–ª–∏:"
 
 #define aciSTR_AIR_RESERVE1 "Air Reserve:"
-#define aciSTR_AIR_RESERVE2 "á†Ø†· ¢Æß§„Â†:"
+#define aciSTR_AIR_RESERVE2 "–ó–∞–ø–∞—Å –≤–æ–∑–¥—É—Ö–∞:"
 
 #define aciSTR_DAMAGE1 "Damage:"
-#define aciSTR_DAMAGE2 "ì‡Æ≠:"
+#define aciSTR_DAMAGE2 "–£—Ä–æ–Ω:"
 
 #define aciSTR_LOAD1 "Load:"
-#define aciSTR_LOAD2 "Ö¨™Æ·‚Ï ¨†£†ß®≠†:"
+#define aciSTR_LOAD2 "–ï–º–∫–æ—Å—Ç—å –º–∞–≥–∞–∑–∏–Ω–∞:"
 
 #define aciSTR_SHOTS1 "Shots/Sec:"
-#define aciSTR_SHOTS2 "ÇÎ·‚‡•´Æ¢/ë•™:"
+#define aciSTR_SHOTS2 "–í—ã—Å—Ç—Ä–µ–ª–æ–≤/–°–µ–∫:"
 
 #define aciSTR_BURST1 "Burst:"
-#define aciSTR_BURST2 "ë™Æ‡Æ·‚Ï ¢Î´•‚†:"
+#define aciSTR_BURST2 "–°–∫–æ—Ä–æ—Å—Ç—å –≤—ã–ª–µ—Ç–∞:"
 
 #define aciSTR_WORKING_TIME1 "Working Time:"
-#define aciSTR_WORKING_TIME2 "ê•·„‡·:"
+#define aciSTR_WORKING_TIME2 "–†–µ—Å—É—Ä—Å:"
 
 #define aciSTR_SECONDS1 "sec"
-#define aciSTR_SECONDS2 "·•™"
+#define aciSTR_SECONDS2 "—Å–µ–∫"
 
 #define aciSTR_IN_PACK1 "In Pack:"
-#define aciSTR_IN_PACK2 "Ç Ø†™•‚•:"
+#define aciSTR_IN_PACK2 "–í –ø–∞–∫–µ—Ç–µ:"
 
 #define aciSTR_NO_CASH1 "Not enough cash"
-#define aciSTR_NO_CASH2 "ç•§Æ·‚†‚ÆÁ≠Æ §•≠•£"
+#define aciSTR_NO_CASH2 "–ù–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ –¥–µ–Ω–µ–≥"
 
 // Buttons text...
 #define aciSTR_PICKUP_ITEMS_OFF1 "Pick-up items OFF"
-#define aciSTR_PICKUP_ITEMS_OFF2 "ç• ØÆ§°®‡†‚Ï Ø‡•§¨•‚Î"
+#define aciSTR_PICKUP_ITEMS_OFF2 "–ù–µ –ø–æ–¥–±–∏—Ä–∞—Ç—å –ø—Ä–µ–¥–º–µ—Ç—ã"
 
 #define aciSTR_PICKUP_WEAPONS_OFF1 "Pick-up weapons OFF"
-#define aciSTR_PICKUP_WEAPONS_OFF2 "ç• ØÆ§°®‡†‚Ï Æ‡„¶®•"
+#define aciSTR_PICKUP_WEAPONS_OFF2 "–ù–µ –ø–æ–¥–±–∏—Ä–∞—Ç—å –æ—Ä—É–∂–∏–µ"
 
 // Shop AVI text...
 #define aciSTR_PutThis1 "Put this"
-#define aciSTR_PutThis2 "èÆ´Æ¶®‚Ï"
+#define aciSTR_PutThis2 "–ü–æ–ª–æ–∂–∏—Ç—å"
 
 // Van-War game restrictions
 #define aciSTR_RESTRICTIONS1 "Game restrictions:"
-#define aciSTR_RESTRICTIONS2 "é£‡†≠®Á•≠®Ô ®£‡Î:"
+#define aciSTR_RESTRICTIONS2 "–û–≥—Ä–∞–Ω–∏—á–µ–Ω–∏—è –∏–≥—Ä—ã:"
 
 // Van-War statistics
 #define aciSTR_STATISTICS1 "Statistics:"
-#define aciSTR_STATISTICS2 "ë‚†‚®·‚®™†:"
+#define aciSTR_STATISTICS2 "–°—Ç–∞—Ç–∏—Å—Ç–∏–∫–∞:"
 
 // Van-War time for statistics
 #define aciSTR_MINUTES1 "minutes"
-#define aciSTR_MINUTES2 "¨®≠„‚"
+#define aciSTR_MINUTES2 "–º–∏–Ω—É—Ç"

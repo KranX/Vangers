@@ -3,6 +3,11 @@
 
 #include "../iscreen/iscreen.h"
 #include "item_api.h"
+#include "text.h"
+
+// Display strings (item labels/comments/templates, menu names, world/location
+// labels and prompt text) are UTF-8. Resource paths and logic IDs stay opaque.
+// The original a* bitmap primitives below deliberately remain CP866.
 
 /* ----------------------------- Debug options ------------------------------ */
 
@@ -291,7 +296,7 @@ struct aciLocationShutterInfo {
 struct aciLocationInfo: public iListElement {
 	int ID;
 	char *nameID;
-	char *nameID2;
+	char *nameID2; // UTF-8 display label; nameID above is the unchanged lookup key.
 
 	int numColorScheme;
 	char *mapName;
@@ -423,7 +428,7 @@ struct invItem: public iListElement {
 	aciMechosPartInfo *partData;
 
 	void init_fname(char *p);
-	void init_name(char *p);
+	void init_name(const char *p);
 	void init_avi_id(char *p, int num);
 
 	void clone(invItem *p);
@@ -436,7 +441,7 @@ struct invItem: public iListElement {
 	void get_coords(int px, int py, int &x, int &y, int &sx, int &sy);
 
 	void alloc_prm(void);
-	void set_template(char *p);
+	void set_template(const char *p);
 	void calc_shape_center(void);
 
 	void redraw(int x, int y, int drop_mode = 0, int flush_mode = 0);
@@ -1212,7 +1217,9 @@ struct aciScreenText {
 	int NextPage(void);
 
 	void prepare(void);
+	// Existing game/Diagen callers supply CP866.
 	void alloc(char *ptr, int sz);
+	void alloc_utf8(std::string_view text);
 	void free(void);
 	void clear(void) {
 		CurPage = CurStr = 0;

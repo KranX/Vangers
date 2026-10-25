@@ -5,6 +5,7 @@ include_directories(
 SET(xgraph_SRCS
 	xfont.cpp
 	xgraph.cpp
+	xprompt.cpp
 	xbmp.cpp
 	xside.cpp
 )

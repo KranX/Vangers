@@ -35,6 +35,7 @@ SET(vangers_SRCS
 	actint/ascript.cpp
 	actint/chtree.cpp
 	actint/sscript.cpp
+	actint/text.cpp
 	backg.cpp
 	dast/poly3d.cpp
 	iscreen/controls.cpp

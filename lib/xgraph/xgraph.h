@@ -13,6 +13,8 @@
 
 #include "xglobal.h"
 
+#include <string>
+
 // Some defines for 64K modes...
 #define XGR_RGB64K(r, g, b) (((r) << XGR_SHIFT_R) + ((g) << XGR_SHIFT_G) + ((b) << XGR_SHIFT_B))
 #define XGR_64KR(c) (((c) >> XGR_SHIFT_R) & XGR_COLOR_MASK_R)
@@ -327,7 +329,9 @@ struct XGR_MousePromptData: XListElement {
 	char *textData;
 
 	void init(void);
+	// Own a copy, replacing any previous owned text. Input may alias textData.
 	void init_text(const char *p);
+	// Borrow external storage; it must outlive this prompt and not alias an owned substring.
 	void set_text(const char *p);
 
 	int check_xy(int x, int y);
@@ -342,7 +346,8 @@ struct XGR_MousePromptScreen: XList {
 	int ActivateTimer;
 
 	int curFont;
-	char *curText;
+	// Snapshot the displayed text: its source may be updated while the mouse is stationary.
+	std::string curText;
 
 	XGR_MousePromptData *check_xy(int x, int y);
 	XGR_MousePromptData *getData(int id);

@@ -229,7 +229,9 @@ struct aciPromptData {
 	void free_mem(void);
 	void copy_data(aciPromptData *src);
 
+	// Legacy game-message boundary: CP866 in, UTF-8 storage.
 	void add_str(int num, unsigned char *p);
+	void add_utf8_str(int num, const char *text);
 
 	void redraw(int scr_x, int scr_y, int scr_sx, int scr_sy);
 	void quant(void);
