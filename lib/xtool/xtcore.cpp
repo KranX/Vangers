@@ -5,8 +5,6 @@
 #include "xglobal.h"
 #include "xt_list.h"
 
-#include <SDL3/SDL_main.h>
-
 #if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
 #	include <locale.h>
 #endif
@@ -121,7 +119,7 @@ void xtSetAudioPauseHandler(void (*handler)(bool)) {
 	xtAudioPauseHandler = handler;
 }
 
-int main(int argc, char *argv[]) {
+int xtRunApplication(int argc, char *argv[]) {
 	int id, prevID;
 	Uint64 clockDelta, clockCnt, clockNow, clockCntGlobal, clockNowGlobal;
 	__internal_argc = argc;

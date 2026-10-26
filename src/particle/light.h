@@ -10,8 +10,6 @@
 #define LIGHT_MAX_RADIUSE 256
 #define LIGHT_MAX_BRIGHTNESS 32
 
-#define CHAR_SPEED 2
-
 struct LIGHT_TYPE {
 	enum { STATIONARY = 1, DYNAMIC = 2, STATIC = 3, TOR = 4 };
 };
@@ -61,17 +59,6 @@ struct LightPoint: GeneralObject, BackgroundElement {
 };
 
 void PrepareLight(void);
-void aWriteHelpString(
-	int count,
-	int *x,
-	int *y,
-	int font,
-	unsigned char **pstr,
-	int timer,
-	int color,
-	int space,
-	unsigned int *pcolor
-);
 
 extern int *light_table;
 extern uchar *invisible_table;

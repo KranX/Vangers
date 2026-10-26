@@ -1,5 +1,6 @@
 SET(xtool_SRCS
 	xtcore.cpp
+	xtmain.cpp
 	port.cpp
 	xerrhead.cpp
 	xbuffer/xbcnvin.cpp

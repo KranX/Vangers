@@ -510,7 +510,13 @@ struct XGR_Mouse {
 	}
 
 	void SetPromptData(XGR_MousePromptScreen *p) {
+		// The old list may already have been destroyed; never dereference it here.
+		flags &= ~XGM_PROMPT_ACTIVE;
 		promptData = p;
+		if (p) {
+			p->curText.clear();
+			p->Timer = 0;
+		}
 	}
 
 	void AdjustPos(void);

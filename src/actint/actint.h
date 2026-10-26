@@ -3,7 +3,7 @@
 
 #include "../iscreen/iscreen.h"
 #include "item_api.h"
-#include "text.h"
+#include "raster_text.h"
 
 // Display strings (item labels/comments/templates, menu names, world/location
 // labels and prompt text) are UTF-8. Resource paths and logic IDs stay opaque.

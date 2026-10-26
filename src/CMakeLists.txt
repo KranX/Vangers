@@ -4,6 +4,9 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xsound"
 )
 
+ADD_LIBRARY(vangers_text STATIC text/utf8.cpp)
+TARGET_INCLUDE_DIRECTORIES(vangers_text PUBLIC "${PROJECT_SOURCE_DIR}/src")
+
 ADD_LIBRARY(vangers_settings STATIC
 	settings/gamepad_mapping.cpp
 	settings/input_binding.cpp
@@ -33,6 +36,7 @@ SET(vangers_SRCS
 	actint/actintml.cpp
 	actint/ascr_fnc.cpp
 	actint/ascript.cpp
+	actint/prompt_text.cpp
 	actint/chtree.cpp
 	actint/sscript.cpp
 	actint/text.cpp
@@ -91,6 +95,18 @@ SET(vangers_SRCS
 	${WINDOWS_RES}
         actint/layout.h)
 
+# Only these translation units depend on the source/binary script mode.
+# Reuse the remaining production objects in both tools and integration tests.
+SET(vangers_SCRIPT_SRCS
+	actint/ascr_fnc.cpp
+	actint/ascript.cpp
+	actint/sscript.cpp
+	iscreen/iscr_fnc.cpp
+	iscreen/iscript.cpp
+	iscreen/script.cpp
+	road.cpp
+)
+
 if (ANDROID)
 	ADD_LIBRARY(vangers STATIC ${vangers_SRCS}
 		$<TARGET_OBJECTS:xtool>
@@ -98,7 +114,14 @@ if (ANDROID)
 		$<TARGET_OBJECTS:xsound>
 	)
 else()
-	ADD_EXECUTABLE(vangers ${vangers_SRCS})
+	SET(vangers_COMMON_SRCS ${vangers_SRCS})
+	LIST(REMOVE_ITEM vangers_COMMON_SRCS ${vangers_SCRIPT_SRCS} ${WINDOWS_RES})
+	ADD_LIBRARY(vangers_common OBJECT ${vangers_COMMON_SRCS})
+	ADD_EXECUTABLE(vangers
+		${vangers_SCRIPT_SRCS}
+		${WINDOWS_RES}
+		$<TARGET_OBJECTS:vangers_common>
+	)
 
 	IF(WIN32)
 		SET(WIN_LIB
@@ -116,6 +139,7 @@ ENDIF()
 
 function(CONFIGURE_VANGERS_TARGET target_name)
 	TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+		vangers_text
 		vangers_settings
 		SDL3::SDL3
 		SDL3_net::SDL3_net
@@ -142,12 +166,36 @@ endfunction()
 CONFIGURE_VANGERS_TARGET(vangers)
 
 if (NOT ANDROID)
+	CONFIGURE_VANGERS_TARGET(vangers_common)
+endif()
+
+if (NOT ANDROID)
 	ADD_EXECUTABLE(vangers_iscreen_compiler EXCLUDE_FROM_ALL
-		${vangers_SRCS}
+		${vangers_SCRIPT_SRCS}
+		${WINDOWS_RES}
+		$<TARGET_OBJECTS:vangers_common>
 		iscreen/script_compiler.cpp
 	)
 	TARGET_COMPILE_DEFINITIONS(vangers_iscreen_compiler PRIVATE ISCREEN_SCRIPT_COMPILER)
 	CONFIGURE_VANGERS_TARGET(vangers_iscreen_compiler)
+
+	IF(BUILD_TESTING)
+		FOREACH(script_mode source binary)
+			ADD_EXECUTABLE(actint_script_${script_mode}_test
+				${vangers_SCRIPT_SRCS}
+				$<TARGET_OBJECTS:vangers_common>
+				../tests/actint_script_test.cpp
+				../lib/xtool/xerrhead.cpp
+			)
+			TARGET_COMPILE_DEFINITIONS(actint_script_${script_mode}_test PRIVATE
+				SDL_ShowSimpleMessageBox=VangersTest_ShowSimpleMessageBox
+			)
+			IF(script_mode STREQUAL "binary")
+				TARGET_COMPILE_DEFINITIONS(actint_script_${script_mode}_test PRIVATE _BINARY_SCRIPT_)
+			ENDIF()
+			CONFIGURE_VANGERS_TARGET(actint_script_${script_mode}_test)
+		ENDFOREACH()
+	ENDIF()
 
 	ADD_CUSTOM_TARGET(compile_iscreen_scripts
 		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"

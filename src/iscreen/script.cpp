@@ -101,6 +101,9 @@ ScriptFile::~ScriptFile(void) {
 #ifndef _BINARY_SCRIPT_
 	delete[] prevStrBuf;
 #endif
+#ifdef _SAVE_BINARY_SCRIPT_
+	delete[] bScriptName;
+#endif
 
 	while (def) {
 		d = def->prev;
@@ -165,8 +168,9 @@ void ScriptFile::load(const char *fname) {
 	fh.open(fname, XS_IN);
 	Size = fh.size();
 
-	buffer = new char[Size];
+	buffer = new char[Size + 1];
 	fh.read(buffer, Size);
+	buffer[Size] = '\0';
 
 	fh.close();
 	while (process_includes()) {
@@ -653,6 +657,11 @@ void ScriptFile::preprocess(void) {
 		if (CurOffs < Size && !*cur_ptr)
 			next();
 	}
+	// The final line is unlinked, including the empty line allocated after '\n'.
+	if (line->Size)
+		add_line(line);
+	else
+		delete line;
 }
 
 char *ScriptFile::get_ptr(void) {
@@ -1176,7 +1185,7 @@ int ScriptFile::process_includes(void) {
 		b = b->next;
 	}
 
-	char *merged_buffer = new char[merged_size];
+	char *merged_buffer = new char[merged_size + 1];
 	int merged_offs = 0;
 	b = fBuf;
 	for (i = 0; i < NumBufs; i++) {
@@ -1194,6 +1203,7 @@ int ScriptFile::process_includes(void) {
 	merged_offs += Size - offs;
 	if (merged_offs != merged_size)
 		ErrH.Abort("Internal include processing error...");
+	merged_buffer[merged_size] = '\0';
 
 	delete[] buffer;
 	buffer = merged_buffer;
