@@ -244,7 +244,7 @@ aciML_Data::~aciML_Data(void) {
 	aciML_Event *ev, *ev1;
 
 	if (name)
-		delete name;
+		delete[] name;
 
 	ev = (aciML_Event *)event_list->last;
 	while (ev) {
@@ -273,7 +273,7 @@ aciML_EventSeqLine::aciML_EventSeqLine(void) {
 }
 
 aciML_EventSeqLine::~aciML_EventSeqLine(void) {
-	delete table;
+	delete[] table;
 }
 
 aciML_EventLine::aciML_EventLine(void) {
@@ -289,8 +289,8 @@ aciML_EventLine::aciML_EventLine(void) {
 }
 
 aciML_EventLine::~aciML_EventLine(void) {
-	delete mem_heap;
-	delete table;
+	delete[] mem_heap;
+	delete[] table;
 	clear();
 }
 
@@ -683,8 +683,8 @@ aciML_FlushLine::aciML_FlushLine(void) {
 }
 
 aciML_FlushLine::~aciML_FlushLine(void) {
-	delete mem_heap;
-	delete table;
+	delete[] mem_heap;
+	delete[] table;
 }
 
 void aciML_FlushLine::put(int x, int y, int sx, int sy) {
@@ -1180,11 +1180,11 @@ aciML_ItemData::aciML_ItemData(void) {
 
 aciML_ItemData::~aciML_ItemData(void) {
 	if (frameName)
-		delete frameName;
+		delete[] frameName;
 	if (frameData)
-		delete frameData;
+		delete[] frameData;
 	if (empty_frameData)
-		delete empty_frameData;
+		delete[] empty_frameData;
 }
 
 int aciML_ItemData::check_xy(int x, int y) {
@@ -1215,7 +1215,7 @@ void aciML_ItemData::init(void) {
 	PosY = oy;
 
 	if (frameData)
-		delete frameData;
+		delete[] frameData;
 	frameData = new unsigned char[SizeX * SizeY * sz];
 	fh.read(frameData, SizeX * SizeY * sz);
 	fh.close();
@@ -1261,7 +1261,7 @@ void aciML_ItemData::build_empty_frame(void) {
 	unsigned char *height_data, *height_data1, *attr_data, *attr_data1;
 
 	if (empty_frameData)
-		delete empty_frameData;
+		delete[] empty_frameData;
 	empty_frameData = new unsigned char[SizeX * SizeY * 2];
 	memcpy(empty_frameData, frameData, SizeX * SizeY * 2);
 
@@ -1415,11 +1415,11 @@ void aciML_EventSeq::alloc_mem(int sz) {
 
 void aciML_EventSeq::free_mem(void) {
 	if (SeqIDs)
-		delete SeqIDs;
+		delete[] SeqIDs;
 	if (SeqModes)
-		delete SeqModes;
+		delete[] SeqModes;
 	if (SeqEvents)
-		delete SeqEvents;
+		delete[] SeqEvents;
 
 	SeqIDs = NULL;
 	SeqModes = NULL;

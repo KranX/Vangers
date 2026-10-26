@@ -117,7 +117,7 @@ ADD_EXECUTABLE(actint_text_test
 	../src/actint/text.cpp
 )
 
-TARGET_LINK_LIBRARIES(actint_text_test PRIVATE vangers_settings)
+TARGET_LINK_LIBRARIES(actint_text_test PRIVATE vangers_settings vangers_text)
 
 ADD_TEST(NAME actint_text COMMAND actint_text_test)
 
@@ -134,6 +134,18 @@ TARGET_INCLUDE_DIRECTORIES(actint_mouse_prompt_test PRIVATE
 TARGET_LINK_LIBRARIES(actint_mouse_prompt_test PRIVATE vangers_settings SDL3::SDL3)
 
 ADD_TEST(NAME actint_mouse_prompt COMMAND actint_mouse_prompt_test)
+
+ADD_TEST(NAME actint_script_roundtrip
+	COMMAND ${CMAKE_COMMAND}
+		"-DSOURCE_PARSER=$<TARGET_FILE:actint_script_source_test>"
+		"-DBINARY_PARSER=$<TARGET_FILE:actint_script_binary_test>"
+		"-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/actint-script-roundtrip"
+		-P "${CMAKE_CURRENT_SOURCE_DIR}/actint_script_roundtrip.cmake"
+)
+SET_TESTS_PROPERTIES(actint_script_roundtrip PROPERTIES TIMEOUT 30)
+
+ADD_TEST(NAME actint_runtime_regressions COMMAND actint_script_binary_test --runtime)
+SET_TESTS_PROPERTIES(actint_runtime_regressions PROPERTIES TIMEOUT 15)
 
 ADD_EXECUTABLE(legacy_settings_migration_test
 	legacy_settings_migration_test.cpp

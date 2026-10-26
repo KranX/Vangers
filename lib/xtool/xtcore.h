@@ -124,6 +124,9 @@ extern void *XGR_hWnd;
 void xtSysQuantDisable(int v = 1);
 void xtSysQuant(void);
 
+// SDL's platform entry point lives separately so tools/tests can reuse the runtime.
+int xtRunApplication(int argc, char *argv[]);
+
 void xtCreateDummyWindow(int x = 0, int y = 0, int sx = 100, int sy = 100);
 void xtCloseDummyWindow(void);
 

@@ -1,4 +1,5 @@
 #include "text.h"
+#include "../text/utf8.h"
 
 #include <cstring>
 #include <stdexcept>
@@ -14,10 +15,11 @@ std::string decode_text(std::string_view text, TextEncoding encoding) {
 }
 
 std::string raster_text(std::string_view text, std::size_t glyph_count) {
-	if (!glyph_count)
+	// The C-string raster APIs need a printable fallback, not an embedded terminator.
+	if (glyph_count <= ' ')
 		return {};
 	auto bytes = settings::utf8_to_cp866(text);
-	const char fallback = glyph_count > '?' ? '?' : glyph_count > ' ' ? ' ' : '\0';
+	const char fallback = glyph_count > '?' ? '?' : ' ';
 	for (char &byte : bytes)
 		if (static_cast<unsigned char>(byte) >= glyph_count)
 			byte = fallback;
@@ -32,35 +34,6 @@ char *copy_text(std::string_view text) {
 	return copy;
 }
 
-std::size_t prefix_bytes(std::string_view text, std::size_t characters) {
-	std::size_t pos = 0;
-	while (pos < text.size() && characters) {
-		++pos;
-		while (pos < text.size() && (static_cast<unsigned char>(text[pos]) & 0xC0) == 0x80)
-			++pos;
-		--characters;
-	}
-	return pos;
-}
-
-std::size_t text_length(std::string_view text) {
-	std::size_t count = 0;
-	for (unsigned char byte : text)
-		if ((byte & 0xC0) != 0x80)
-			++count;
-	return count;
-}
-
-void pop_back(char *text) {
-	std::size_t size = std::strlen(text);
-	if (!size)
-		return;
-	do {
-		--size;
-	} while (size && (static_cast<unsigned char>(text[size]) & 0xC0) == 0x80);
-	text[size] = '\0';
-}
-
 std::vector<std::string> wrap_text(std::string_view text, int width, const TextWidth &measure) {
 	std::vector<std::string> lines;
 	do {
@@ -72,13 +45,13 @@ std::vector<std::string> wrap_text(std::string_view text, int width, const TextW
 			} else {
 				// A long word must make progress without cutting a UTF-8 sequence.
 				end = 0;
-				for (std::size_t next = prefix_bytes(text, 1); next <= text.size();) {
+				for (std::size_t next = text::prefix_bytes(text, 1); next <= text.size();) {
 					if (end && measure(text.substr(0, next)) >= width)
 						break;
 					end = next;
 					if (next == text.size())
 						break;
-					next += prefix_bytes(text.substr(next), 1);
+					next += text::prefix_bytes(text.substr(next), 1);
 				}
 				break;
 			}
@@ -96,8 +69,8 @@ std::string wrap_columns(std::string_view text, int columns) {
 	while (!text.empty()) {
 		const auto newline = text.find('\n');
 		auto line = text.substr(0, newline);
-		while (text_length(line) > static_cast<std::size_t>(columns)) {
-			auto end = prefix_bytes(line, columns);
+		while (text::text_length(line) > static_cast<std::size_t>(columns)) {
+			auto end = text::prefix_bytes(line, columns);
 			const auto space = line.substr(0, end + 1).find_last_of(" \t");
 			if (space != std::string_view::npos && space)
 				end = space;

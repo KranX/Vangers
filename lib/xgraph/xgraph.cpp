@@ -949,6 +949,9 @@ SDL_Surface *XGR_Screen::get_screenshot() {
 void XGR_Screen::flip() {
 	if (flags & XGR_INIT) {
 		set_2d_render_buffer();
+		// Refresh before capturing the background: text changes can resize the prompt.
+		if (XGR_MouseObj.flags & XGM_PROMPT_ACTIVE)
+			XGR_MouseObj.InitPrompt();
 		if (XGR_MouseObj.flags & XGM_PROMPT_ACTIVE) {
 			XGR_MouseObj.GetPromptFon();
 			XGR_MouseObj.PutPrompt();
@@ -2659,8 +2662,10 @@ void XGR_Mouse::InitPrompt(void) {
 	int prompt_sy = XGR_MAXY;
 	XGR_MousePromptData *p;
 
+	flags &= ~XGM_PROMPT_ACTIVE;
 	if (!promptData)
 		return;
+	promptData->curText.clear();
 
 	if (XGR_Obj.get_is_scaled_renderer()) {
 		if (prompt_sx > XGR_SCALED_RENDER_SOURCE_X)
@@ -2673,7 +2678,7 @@ void XGR_Mouse::InitPrompt(void) {
 	y = PosY + SpotY + PromptDeltaY;
 
 	p = promptData->check_xy(x, y);
-	if (!p || !p->textData)
+	if (!p || !p->textData || !p->textData[0])
 		return;
 
 	sx = SizeX / 2;
@@ -2718,7 +2723,7 @@ void XGR_Mouse::InitPrompt(void) {
 }
 
 void XGR_Mouse::PutPrompt(void) {
-	if (promptData && !promptData->curText.empty()) {
+	if ((flags & XGM_PROMPT_ACTIVE) && promptData && !promptData->curText.empty()) {
 		if (XGR_TextOutFnc)
 			(*(XGR_TextOutFnc))(
 				PromptX, PromptY, PromptColor, promptData->curText.data(), promptData->curFont, 1, 1

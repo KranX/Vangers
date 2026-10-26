@@ -16,6 +16,11 @@ ACS, iscreen, Diagen internals, the network protocol or save-file formats.
   source and binary readers then validate and retain UTF-8 directly. The flag
   applies to subsequent display strings in that parse, including included files.
   There is no encoding autodetection or rewrite of existing resource files.
+  Mixing a CP866 include after this flag is an error, not an implicit reset.
+  Invalid UTF-8 is reported through `handle_error` / `ErrH.Abort`, including the
+  input resource, option and source-line/binary-offset diagnostic. The new
+  `alloc_utf8` / `add_utf8_str` input boundaries also report invalid text through
+  `ErrH.Abort`, with the API name, instead of leaking an exception into the game.
 - Diagen phrases/topics and compass/player-name inputs are imported from their
   existing CP866 interfaces. Selected topics/compass names are encoded back at
   the call into the unchanged legacy subsystem, preserving lookup behavior.
@@ -27,7 +32,8 @@ ACS, iscreen, Diagen internals, the network protocol or save-file formats.
   `aPutStr`, `aStrLen`, `aPutStr32`, etc. still accept CP866 for other callers.
   Width and drawing share the same glyph mapping, including the smaller
   numeric-only font: unrepresentable characters/out-of-range glyph indices use
-  `?`, or a space when `?` is unavailable.
+  `?`, or a space when `?` is unavailable. Fonts with no space glyph (32 or fewer
+  glyphs) produce an empty bitmap view, never an embedded NUL or an invalid index.
 - XGR mouse-prompt copies, iscreen mechos captions, ACS toggle/slot labels and
   save metadata are encoded at those legacy boundaries. Save header lengths
   continue to describe CP866 bytes, not UTF-8 bytes.
@@ -35,6 +41,9 @@ ACS, iscreen, Diagen internals, the network protocol or save-file formats.
   own the converted CP866 bytes. Repeated updates release the previous copy;
   unchanged hover text reuses it. XGR also owns the active displayed snapshot,
   since its source can be replaced while the mouse remains stationary.
+  Active prompts are refreshed before capturing their background, so text and
+  geometry change together. No hit, empty text, or a list switch clears stale
+  state. A list switch never dereferences the old list: it may already be freed.
 
 The `$` currency glyph, arrow/control glyphs, palettes and numeric highlighting
 are unchanged. Source-code labels in `aci_str.h` are now UTF-8; they are not
@@ -47,8 +56,15 @@ Dialogue wrapping, prompt clipping, animated reveal and full-screen column
 limits operate on complete Unicode scalars instead of UTF-8 bytes. Existing
 dialogue leading spaces are retained. Long words can split at scalar boundaries
 instead of disappearing, and animated prefixes no longer need a 256-byte buffer.
+Prompt clipping modifies only a temporary presentation string, not `StrBuf`;
+a wider redraw can display the full original text again.
 This is not grapheme-aware editing, shaping, IME support or new glyph coverage.
 ACS input and chat are unchanged, including their pre-existing input limitations.
+
+Scalar-boundary helpers live in the neutral `text/utf8` module. Bitmap adapter
+declarations live in `actint/raster_text.h`, separate from text utilities.
+The animated help-text overlay lives in actint rather than the particle-lighting
+module; lighting no longer includes or calls the actint text APIs.
 
 ## Validation
 
@@ -60,7 +76,7 @@ the standalone module test also supports AddressSanitizer and UBSan:
 ```sh
 c++ -std=c++17 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer \
   -Isrc tests/actint_text_test.cpp src/actint/text.cpp \
-  src/settings/text_encoding.cpp -o /tmp/vangers-actint-text-test
+  src/text/utf8.cpp src/settings/text_encoding.cpp -o /tmp/vangers-actint-text-test
 ASAN_OPTIONS=detect_leaks=1 /tmp/vangers-actint-text-test
 ```
 
@@ -82,9 +98,41 @@ The original adapter's borrowed-pointer call was reproduced as an ASan
 heap-use-after-free by changing only `init_text` back to `set_text` in an external
 negative-control copy of the adapter. The fixed code passes ASan/UBSan and leak
 detection, including repeated updates. The initial nine-test suite did not
-exercise this lifetime boundary; the suite now includes ten tests.
+exercise this lifetime boundary; that follow-up added the mouse-prompt test.
 A separate negative control retaining a borrowed active snapshot also reproduces
 an ASan heap-use-after-free after the prompt source is replaced.
+
+The follow-up regression tests additionally cover the production boundaries:
+
+The current integration-branch suite has 14 CTest entries, including these two:
+
+- `actint_script_roundtrip` invokes the real actint source writer and binary
+  reader in separate processes. It checks `utf8_text` (option 157), included
+  files, CP866 compatibility, and non-CP866 characters in world/item/menu labels,
+  templates and prompts. Invalid source input in each decoder path, a corrupted
+  SCB payload, a mixed CP866 include, and invalid UTF-8 API inputs must produce
+  an error dialog/log diagnostic, not an uncaught exception.
+  Direct source fixtures without a trailing newline also round-trip; the final
+  unlinked source line and binary-output filename are released on normal cleanup.
+  Source buffers remain NUL-terminated after include expansion.
+- `actint_runtime_regressions` calls real `InitPrompt` / `PutPrompt`, checks
+  snapshot ownership, stationary updates, removed sources and list switches,
+  and calls real prompt redraw with a zero-height font fixture to check narrow
+  then wide layout without requiring video. It also constructs/destroys the
+  ML resource buffers and a loaded shutter. ASan can check their `new[]` /
+  `delete[]` pairing, including the adjacent event/flush/sequence arrays.
+  A deliberately unaligned `XBuffer` round-trip additionally checks the packed
+  scalar I/O used by SCB headers: byte copies replace typed references to
+  unaligned storage, without changing the serialized representation.
+
+Leak checking remains enabled for successful parsing and runtime-model cleanup.
+The negative-input subprocesses deliberately call the terminating error handler
+with live models; only those expected-abort cases disable leak-at-exit reporting.
+
+These tests do not use the standalone **iscreen** compiler as an actint parser.
+The common game objects are reused; only the script-mode-dependent translation
+units are rebuilt for the two parser modes. SDL's platform entry point is a thin
+separate file, allowing tests to link the runtime without starting the game.
 
 The ownership follow-up was also checked in the game under GDB with isolated
 RU/EN data and SDL dummy/software: all 13 initialized mouse prompts in each

@@ -2,6 +2,7 @@
 
 #include "../global.h"
 #include <memory>
+#include <stdexcept>
 
 #include "../iscreen/hfont.h"
 #include "../iscreen/iscreen.h"
@@ -9,6 +10,7 @@
 #include "a_consts.h"
 #include "actint.h"
 #include "item_api.h"
+#include "text.h"
 
 #include "../iscreen/iscript.h"
 
@@ -595,14 +597,23 @@ aciBitmapMenuItem *aciBM_it;
 aciBitmapMenu *aciBM;
 
 void aParseScript(const char *fname, const char *bname) {
-	int i, id, t_id = 0, sz = 0, num;
+	int i, id = -1, t_id = 0, sz = 0, num;
 	auto text_encoding = vangers::actint::TextEncoding::Cp866;
+	const auto decode_text = [&](std::string_view text) {
+		try {
+			return vangers::actint::decode_text(text, text_encoding);
+		} catch (const std::invalid_argument &error) {
+			const std::string context =
+				std::string(fname) + ": option " + aOptIDs[id] + ": " + error.what();
+			handle_error("Invalid actint display text", context.c_str());
+			return std::string{}; // handle_error terminates via ErrH.Abort.
+		}
+	};
 	const auto read_text = [&](char **destination) {
 		char *raw = nullptr;
 		script->read_pdata(&raw, 1);
 		const std::unique_ptr<char[]> resource(raw);
-		*destination =
-			vangers::actint::copy_text(vangers::actint::decode_text(resource.get(), text_encoding));
+		*destination = vangers::actint::copy_text(decode_text(resource.get()));
 	};
 
 	char *ptr;
@@ -1127,9 +1138,7 @@ void aParseScript(const char *fname, const char *bname) {
 				curMode = AS_INIT_ITEM;
 
 				script->prepare_pdata();
-				invItm->init_name(
-					vangers::actint::decode_text(script->get_conv_ptr(), text_encoding).c_str()
-				);
+				invItm->init_name(decode_text(script->get_conv_ptr()).c_str());
 				break;
 			case NEW_COUNTER:
 				if (curMode != AS_NONE)
@@ -1293,10 +1302,7 @@ void aParseScript(const char *fname, const char *bname) {
 				if (curMode == AS_INIT_ITEM) {
 					script->prepare_pdata();
 					if (strcasecmp(script->get_conv_ptr(), "NONE"))
-						invItm->set_template(
-							vangers::actint::decode_text(script->get_conv_ptr(), text_encoding)
-								.c_str()
-						);
+						invItm->set_template(decode_text(script->get_conv_ptr()).c_str());
 				} else {
 					handle_error("Misplaced option", aOptIDs[id]);
 				}
@@ -1812,9 +1818,7 @@ void aParseScript(const char *fname, const char *bname) {
 			case INIT_STRING:
 				if (curMode == AS_INIT_MENU_ITEM) {
 					script->prepare_pdata();
-					fnMnuItm->init_name(
-						vangers::actint::decode_text(script->get_conv_ptr(), text_encoding).c_str()
-					);
+					fnMnuItm->init_name(decode_text(script->get_conv_ptr()).c_str());
 				} else
 					handle_error("Misplaced option", aOptIDs[id]);
 				break;
