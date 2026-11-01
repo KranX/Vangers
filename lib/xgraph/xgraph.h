@@ -11,6 +11,7 @@
 #ifndef __XGRAPH_H__
 #define __XGRAPH_H__
 
+#include "text_layer.h"
 #include "xglobal.h"
 
 #include <string>
@@ -48,6 +49,12 @@ typedef void (*XGR_OutTextHandler)(
 );
 typedef int (*XGR_TextWidthHandler)(void *text, int font, int hspace);
 typedef int (*XGR_TextHeightHandler)(void *text, int font, int vspace);
+
+struct XGR_TextCallbacks {
+	XGR_OutTextHandler draw;
+	XGR_TextWidthHandler width;
+	XGR_TextHeightHandler height;
+};
 
 typedef unsigned char uchar;
 
@@ -207,6 +214,8 @@ struct XGR_Screen {
 	XGR_Screen(void);
 
   private:
+	void present_native_text();
+	SDL_Texture *textTextures[2]{};
 	void create_surfaces(int width, int height);
 	void destroy_surfaces();
 	bool is_scaled_renderer;
@@ -327,6 +336,7 @@ struct XGR_MousePromptData: XListElement {
 	int textSizeX;
 	int textSizeY;
 	char *textData;
+	const XGR_TextCallbacks *textCallbacks = nullptr;
 
 	void init(void);
 	// Own a copy, replacing any previous owned text. Input may alias textData.
@@ -348,6 +358,7 @@ struct XGR_MousePromptScreen: XList {
 	int curFont;
 	// Snapshot the displayed text: its source may be updated while the mouse is stationary.
 	std::string curText;
+	const XGR_TextCallbacks *curTextCallbacks = nullptr;
 
 	XGR_MousePromptData *check_xy(int x, int y);
 	XGR_MousePromptData *getData(int id);
@@ -672,6 +683,8 @@ inline uint8_t *XGR_GetVideoLine(int y) {
 }
 
 inline void XGR_SetPixelFast(int x, int y, int col) {
+	if (xgr::text::enabled)
+		xgr::text::erase(XGR_Obj.ScreenBuf, {x, y, 1, 1});
 	XGR_Obj.ScreenBuf[XGR_Obj.yOffsTable[y] + x] = col;
 }
 inline void XGR_SetPixel16Fast(int x, int y, int col) {

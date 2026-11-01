@@ -20,6 +20,7 @@ using BindingList = std::vector<std::string>;
 using BindingMap = std::map<std::string, BindingList>;
 
 struct VideoSettings {
+	bool ttf_text = false;
 	bool fullscreen = false;
 	ResolutionMode resolution = ResolutionMode::Desktop;
 	int fps = 60;

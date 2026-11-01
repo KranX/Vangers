@@ -19,6 +19,14 @@ int XGR_TextHeight(void *, int, int) {
 XGR_TextWidthHandler XGR_TextXFnc = nullptr;
 XGR_TextHeightHandler XGR_TextYFnc = nullptr;
 
+void aOutText32Utf8(int, int, int, const void *, int, int, int) {}
+int aTextWidth32Utf8(const void *text, int, int) {
+	return std::strlen((const char *)text) * 8;
+}
+int aTextHeight32Utf8(const void *, int, int) {
+	return 16;
+}
+
 static void check(bool condition, const char *message) {
 	if (!condition) {
 		std::cerr << message << '\n';
@@ -102,5 +110,24 @@ int main() {
 	XGR_TextYFnc = XGR_TextHeight;
 	vangers::actint::set_mouse_prompt(&default_prompt, "Подсказка");
 	check_text(default_prompt, vangers::settings::utf8_to_cp866("Подсказка"));
+	// Native actint prompts keep all UTF-8 bytes and do not replace global legacy callbacks.
+	xgr::text::enabled = true;
+	const std::string unicode = "Подсказка 日本 😀";
+	vangers::actint::set_mouse_prompt(&default_prompt, unicode.c_str());
+	check_text(default_prompt, unicode);
+	check(
+		default_prompt.textCallbacks && default_prompt.textCallbacks->draw,
+		"Native prompt must select its own measure/draw callbacks"
+	);
+	check(XGR_TextXFnc == XGR_TextWidth, "Native prompt must not reinterpret other XGR strings");
+	auto *storage = default_prompt.textData;
+	vangers::actint::set_mouse_prompt(&default_prompt, unicode.c_str());
+	check(storage == default_prompt.textData, "Unchanged UTF-8 prompt must reuse owned storage");
+	default_prompt.set_text("legacy");
+	check(!default_prompt.textCallbacks, "Legacy prompt assignment must reset native callbacks");
+	xgr::text::enabled = false;
+	vangers::actint::set_mouse_prompt(&default_prompt, unicode.c_str());
+	check_text(default_prompt, vangers::settings::utf8_to_cp866(unicode));
+	check(!default_prompt.textCallbacks, "Bitmap mode must retain the CP866 callback contract");
 	return 0;
 }

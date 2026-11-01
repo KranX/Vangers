@@ -110,6 +110,8 @@ void load_bindings(
 
 GameSettings decode_settings(const TomlValue &document) {
 	GameSettings settings = default_settings();
+	if (const auto value = read_bool(document, {"video", "ttf_text"}))
+		settings.video.ttf_text = *value;
 
 	if (const auto value = read_bool(document, {"video", "fullscreen"}))
 		settings.video.fullscreen = *value;
@@ -252,6 +254,12 @@ void encode_settings(TomlValue &document, const GameSettings &settings) {
 	);
 
 	TomlValue &video = ensure_table(document, "video", "Display and rendering settings.");
+	set_value(
+		video,
+		"ttf_text",
+		TomlValue(settings.video.ttf_text),
+		"Native-resolution actint TTF text. Restart required; false uses the original bitmap fonts."
+	);
 	set_value(video, "fullscreen", TomlValue(settings.video.fullscreen));
 	set_value(
 		video,

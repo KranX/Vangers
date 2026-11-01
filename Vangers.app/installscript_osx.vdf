@@ -62,5 +62,10 @@
 			"file"	"Vangers.app/Contents/Libs/libSDL3_net.0.dylib"
 			"mode"	"755"
 		}
+		"11"
+		{
+			"file"	"Vangers.app/Contents/Libs/libSDL3_ttf.0.dylib"
+			"mode"	"755"
+		}
 	}
 }

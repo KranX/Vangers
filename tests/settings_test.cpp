@@ -148,11 +148,13 @@ bool test_defaults_and_round_trip() {
 			first.get().video.resolution == ResolutionMode::Desktop,
 			"fresh installs no longer use the pre-settings desktop resolution"
 		) ||
+		!check(!first.get().video.ttf_text, "bitmap text must remain the default") ||
 		!check(first.get().video.fps == 60, "fresh installs must default to 60 FPS"))
 		return false;
 
 	GameSettings &changed = first.get_mutable();
 	changed.video.fullscreen = true;
+	changed.video.ttf_text = true;
 	changed.video.resolution = ResolutionMode::Desktop;
 	changed.video.fps = 20;
 	changed.audio.sound_volume = 17;
@@ -170,6 +172,7 @@ bool test_defaults_and_round_trip() {
 	const GameSettings &loaded = second.get();
 	return check(second_result.source == SettingsLoadSource::Toml, "TOML source was not used") &&
 		   check(loaded.video.fullscreen, "fullscreen was not restored") &&
+		   check(loaded.video.ttf_text, "TTF selection was not restored") &&
 		   check(
 			   loaded.video.resolution == ResolutionMode::Desktop, "resolution was not restored"
 		   ) &&

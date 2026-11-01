@@ -327,6 +327,18 @@ void put_buf2col(int x, int y, int sx, int sy, unsigned char *buf, int null_lev,
 	unsigned char **lta = ivMap->lineT;
 	unsigned char **ltc = ivMap->lineTcolor;
 	int yy, xx;
+	if (auto *layer = xgr::text::prepare(ivMap, H_SIZE, (iYCYCL(-1) + 1), false)) {
+		std::vector<uint8_t> visible(size_t(sx) * sy), written(size_t(sx) * sy);
+		for (int row = 0; row < sy; ++row)
+			for (int col = 0; col < sx; ++col) {
+				const auto offset = size_t(row) * sx + col;
+				visible[offset] = n_mode > 1 || (!n_mode && n > 255) || n > lta[y + row][x + col];
+				written[offset] = visible[offset] && (n_mode || buf[offset]);
+			}
+		layer->erase({x, y, sx, sy}, written.data(), sx);
+		if (auto *source = xgr::text::find(buf))
+			layer->copy(*source, {0, 0, sx, sy}, x, y, visible.data(), sx);
+	}
 
 	if (!n_mode) {
 		if (n > 255) {
@@ -714,6 +726,17 @@ void put_map(int x, int y, int sx, int sy) {
 	bsx = x1 - x0;
 
 	if (bsx > 0) {
+		if (auto *target = xgr::text::prepare(XGR_VIDEOBUF, XGR_MAXX, XGR_MAXY, false)) {
+			target->erase({x0 - scr_offs, y, bsx, sy});
+			if (auto *source = xgr::text::find(ivMap)) {
+				const int first_height = std::min(sy, int(iYCYCL(-1) + 1 - iYCYCL(y)));
+				target->copy(*source, {x0, int(iYCYCL(y)), bsx, first_height}, x0 - scr_offs, y);
+				if (first_height < sy)
+					target->copy(
+						*source, {x0, 0, bsx, sy - first_height}, x0 - scr_offs, y + first_height
+					);
+			}
+		}
 		index = (x0 - scr_offs) + y * XGR_MAXX;
 
 		for (j = 0; j < sy; j++) {

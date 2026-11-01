@@ -46,6 +46,7 @@ jobs:
             git
             mingw-w64-ucrt-x86_64-sdl3
             mingw-w64-ucrt-x86_64-sdl3-net
+            mingw-w64-ucrt-x86_64-sdl3-ttf
           pacboy: |
             cmake:p
             ffmpeg:p

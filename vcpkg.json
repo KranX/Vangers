@@ -6,6 +6,7 @@
   "dependencies": [
     "sdl3",
     "sdl3-net",
+    "sdl3-ttf",
     "libogg",
     "libvorbis",
     "zlib",

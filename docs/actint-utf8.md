@@ -28,13 +28,15 @@ ACS, iscreen, Diagen internals, the network protocol or save-file formats.
   input contracts. New producers use `add_utf8_str` / `alloc_utf8` directly;
   copying and storage preserve characters absent from the old fonts.
 - Actint uses explicitly named `*Utf8` width/draw entry points. They create a
-  temporary bitmap view through the existing UTF-8 to CP866 codec. The original
+  temporary bitmap view through the existing UTF-8 to CP866 codec when the
+  bitmap backend is selected. With `video.ttf_text = true`, the same entry points
+  lay out and draw Unicode directly; see [the TTF backend](actint-ttf.md). The original
   `aPutStr`, `aStrLen`, `aPutStr32`, etc. still accept CP866 for other callers.
   Width and drawing share the same glyph mapping, including the smaller
   numeric-only font: unrepresentable characters/out-of-range glyph indices use
   `?`, or a space when `?` is unavailable. Fonts with no space glyph (32 or fewer
   glyphs) produce an empty bitmap view, never an embedded NUL or an invalid index.
-- XGR mouse-prompt copies, iscreen mechos captions, ACS toggle/slot labels and
+- Bitmap-mode XGR mouse-prompt copies, iscreen mechos captions, ACS toggle/slot labels and
   save metadata are encoded at those legacy boundaries. Save header lengths
   continue to describe CP866 bytes, not UTF-8 bytes.
   XGR's `set_text` borrows storage, so the actint adapter uses `init_text` to
@@ -42,13 +44,16 @@ ACS, iscreen, Diagen internals, the network protocol or save-file formats.
   unchanged hover text reuses it. XGR also owns the active displayed snapshot,
   since its source can be replaced while the mouse remains stationary.
   Active prompts are refreshed before capturing their background, so text and
-  geometry change together. No hit, empty text, or a list switch clears stale
+  geometry change together. TTF-mode actint prompts own UTF-8 and select per-prompt
+  measure/draw callbacks; other XGR callers retain the global CP866 callbacks.
+  No hit, empty text, or a list switch clears stale
   state. A list switch never dereferences the old list: it may already be freed.
 
 The `$` currency glyph, arrow/control glyphs, palettes and numeric highlighting
 are unchanged. Source-code labels in `aci_str.h` are now UTF-8; they are not
 resource files. Existing allocation/clone structures are retained rather than
-replaced with a new UI/text framework. No dependencies or TTF backend are added.
+replaced with a new UI/text framework. The initial UTF-8 migration added no
+font dependency; the subsequent opt-in TTF backend uses SDL3_ttf.
 
 ## Text operations
 
@@ -88,7 +93,7 @@ constructors and the displayed snapshot's lifetime. It can also run standalone:
 ```sh
 c++ -std=c++17 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer \
   -Isrc -Ilib/xtool -Ilib/xgraph tests/actint_mouse_prompt_test.cpp \
-  lib/xgraph/xprompt.cpp src/settings/text_encoding.cpp \
+  lib/xgraph/xprompt.cpp lib/xgraph/text_layer.cpp src/settings/text_encoding.cpp \
   $(pkg-config --cflags --libs sdl3) -o /tmp/vangers-actint-mouse-prompt-test
 ASAN_OPTIONS=detect_leaks=1:detect_stack_use_after_return=1 \
   /tmp/vangers-actint-mouse-prompt-test
@@ -104,7 +109,7 @@ an ASan heap-use-after-free after the prompt source is replaced.
 
 The follow-up regression tests additionally cover the production boundaries:
 
-The current integration-branch suite has 14 CTest entries, including these two:
+The suite has 15 CTest entries after adding `actint_ttf`, including these two:
 
 - `actint_script_roundtrip` invokes the real actint source writer and binary
   reader in separate processes. It checks `utf8_text` (option 157), included

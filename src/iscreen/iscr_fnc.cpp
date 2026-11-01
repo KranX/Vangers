@@ -1600,6 +1600,7 @@ void aciSwapMatrices(void) {
 	for (i = 0; i < num2; i++) {
 		aScrDisp->curLocData->MatrixShutters2[i]->freeData();
 	}
+	xgr::text::forget(fon_buf);
 	delete[] fon_buf;
 #endif
 
@@ -1699,6 +1700,7 @@ void aciCancelMatrix(void) {
 	for (i = 0; i < num2; i++) {
 		aScrDisp->curLocData->MatrixShutters2[i]->freeData();
 	}
+	xgr::text::forget(fon_buf);
 	delete[] fon_buf;
 #endif
 
@@ -1791,6 +1793,7 @@ void aciShowScMatrix(void) {
 	for (i = 0; i < num2; i++) {
 		aScrDisp->curLocData->MatrixShutters2[i]->freeData();
 	}
+	xgr::text::forget(fon_buf);
 	delete[] fon_buf;
 #endif
 
@@ -1887,6 +1890,7 @@ void aciShowLocation(void) {
 	for (i = 0; i < max_timer; i++) {
 		aScrDisp->curLocData->GateShutters[i]->freeData();
 	}
+	xgr::text::forget(fon_buf);
 	delete[] fon_buf;
 
 	StopCDTRACK();
@@ -1949,6 +1953,7 @@ void aciOpenGate(void) {
 	for (i = 0; i < max_timer; i++) {
 		aScrDisp->curLocData->GateShutters[i]->freeData();
 	}
+	xgr::text::forget(fon_buf);
 	delete[] fon_buf;
 
 	XGR_MouseShow();
@@ -2011,6 +2016,7 @@ void aciHideLocation(void) {
 	for (i = 0; i < max_timer; i++) {
 		aScrDisp->curLocData->GateShutters[i]->freeData();
 	}
+	xgr::text::forget(fon_buf);
 	delete[] fon_buf;
 
 	if (v_flag)
@@ -2074,12 +2080,16 @@ void aciCloseGate(void) {
 	for (i = 0; i < max_timer; i++) {
 		aScrDisp->curLocData->GateShutters[i]->freeData();
 	}
+	xgr::text::forget(fon_buf);
 	delete[] fon_buf;
 
 	_iRESTORE_OFFS_;
 }
 
 void i_get_scrfon(int x, int y, int sx, int sy, unsigned char *buf) {
+	if (auto *target = xgr::text::prepare(buf, sx, sy))
+		if (auto *source = xgr::text::find(XGR_VIDEOBUF))
+			target->copy(*source, {x, y, sx, sy}, 0, 0);
 	int i, index, s_index;
 	unsigned char *p = (unsigned char *)XGR_VIDEOBUF;
 
@@ -2094,6 +2104,11 @@ void i_get_scrfon(int x, int y, int sx, int sy, unsigned char *buf) {
 }
 
 void i_put_scrfon(int x, int y, int sx, int sy, unsigned char *buf) {
+	if (auto *target = xgr::text::prepare(XGR_VIDEOBUF, XGR_MAXX, XGR_MAXY, false)) {
+		target->erase({x, y, sx, sy});
+		if (auto *source = xgr::text::find(buf))
+			target->copy(*source, {0, 0, sx, sy}, x, y);
+	}
 	int i, index, s_index;
 	unsigned char *p = (unsigned char *)XGR_VIDEOBUF;
 
@@ -2288,6 +2303,7 @@ void i_mem_putspr(int x, int y, int sx, int sy, unsigned char *ptr) {
 
 	scrBuf = (unsigned char *)XGR_VIDEOBUF + _y * XGR_MAXX + _x;
 	memBuf = ptr + dy * sx + dx;
+	xgr::text::erase(XGR_VIDEOBUF, {_x, _y, _sx, _sy}, memBuf, sx);
 
 	for (i = 0; i < _sy; i++) {
 		for (j = 0; j < _sx; j++) {

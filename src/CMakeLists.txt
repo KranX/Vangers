@@ -25,6 +25,16 @@ TARGET_LINK_LIBRARIES(vangers_settings PRIVATE
 	toml11::toml11
 )
 
+SET(ACTINT_TTF_FONT "${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/VangersText-Regular.ttf")
+SET_PROPERTY(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${ACTINT_TTF_FONT}")
+FILE(READ "${ACTINT_TTF_FONT}" ACTINT_TTF_HEX HEX)
+STRING(REGEX REPLACE "(..)" "0x\\1,\n" ACTINT_TTF_BYTES "${ACTINT_TTF_HEX}")
+FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/actint_font_data.cpp"
+	"#include <cstddef>\nnamespace vangers::actint {\nextern const unsigned char font_data[] = {\n${ACTINT_TTF_BYTES}};\nextern const std::size_t font_data_size = sizeof(font_data);\n}\n")
+ADD_LIBRARY(vangers_ttf STATIC actint/ttf_font.cpp "${CMAKE_CURRENT_BINARY_DIR}/actint_font_data.cpp")
+TARGET_LINK_LIBRARIES(vangers_ttf PUBLIC xgraph_text PRIVATE vangers_settings SDL3_ttf::SDL3_ttf)
+TARGET_INCLUDE_DIRECTORIES(vangers_ttf PUBLIC "${PROJECT_SOURCE_DIR}/src")
+
 SET(vangers_SRCS
 	3d/3d_math.cpp
 	3d/3dgraph.cpp
@@ -142,6 +152,7 @@ ENDIF()
 
 function(CONFIGURE_VANGERS_TARGET target_name)
 	TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+		vangers_ttf
 		vangers_text
 		vangers_settings
 		SDL3::SDL3

@@ -535,6 +535,7 @@ void aciScreenResourceBMO::load(void) {
 }
 
 void aciScreenResourceBMO::free(void) {
+	xgr::text::forget(data);
 	if (flags & ACS_LOADED) {
 		if (data) {
 			delete[] data;

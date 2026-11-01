@@ -786,6 +786,7 @@ aciWorldMap::~aciWorldMap(void) {
 	delete[] ShapeOffsY;
 
 	if (redraw_buf) {
+		xgr::text::forget(redraw_buf);
 		delete[] redraw_buf;
 	}
 
@@ -1749,6 +1750,7 @@ void CounterPanel::redraw(void) {
 		buf = (unsigned char *)iScreenOwner->fdata;
 	}
 	p = new unsigned char[dx * dx];
+	xgr::text::prepare(buf, SizeX, SizeY);
 
 	memset(buf, 0, SizeX * SizeY);
 	memcpy(p, frm, dx * dx);
@@ -1769,7 +1771,17 @@ void CounterPanel::redraw(void) {
 
 	x = (MaxLen - digits) * dx;
 	for (i = 0; i < digits; i++) {
-		if (flags & CP_RANGE_FONT)
+		if (xgr::text::enabled) {
+			char digit[]{ptr[i], 0};
+			// Old counter placement uses the complete cell, not trimmed bearings.
+			const int left = flags & CP_RANGE_FONT
+								 ? aScrFonts32[font]->LeftOffs[(unsigned char)ptr[i]]
+								 : aScrFonts[font]->LeftOffs[(unsigned char)ptr[i]];
+			if (flags & CP_RANGE_FONT)
+				aPutStr32Utf8(x + ox + left, y, font, col, col_sz, digit, SizeX, buf, 0);
+			else
+				aPutStrUtf8(x + ox + left, y, font, col, digit, SizeX, buf, 0);
+		} else if (flags & CP_RANGE_FONT)
 			aPutChar32(x + ox, y, font, col, col_sz, ptr[i], SizeX, buf);
 		else
 			aPutChar(x + ox, y, font, col, ptr[i], SizeX, SizeY, buf);
@@ -1783,6 +1795,7 @@ void CounterPanel::redraw(void) {
 
 	flags &= ~CP_REDRAW;
 	if (!iScreenOwner) {
+		xgr::text::forget(buf);
 		delete[] buf;
 	}
 	delete[] p;
@@ -1833,17 +1846,31 @@ void invItem::redraw(int x, int y, int drop_mode, int flush_mode) {
 			dx += (aCellSize >> 1);
 
 		buf = new unsigned char[aCellSize * aCellSize];
+		xgr::text::prepare(buf, aCellSize, aCellSize);
 		memset(buf, 0, aCellSize * aCellSize);
-		aPutNum(
-			aCellSize / 2 - aScrFonts[INV_FONT]->SizeX / 2,
-			aCellSize / 2 - aScrFonts[INV_FONT]->SizeY / 2,
-			INV_FONT,
-			col,
-			dropCount,
-			aCellSize,
-			buf,
-			1
-		);
+		if (xgr::text::enabled) {
+			const auto value = std::to_string(dropCount);
+			aPutStrUtf8(
+				aCellSize / 2 - aScrFonts[INV_FONT]->SizeX / 2,
+				aCellSize / 2 - aScrFonts[INV_FONT]->SizeY / 2,
+				INV_FONT,
+				col,
+				value.c_str(),
+				aCellSize,
+				buf,
+				1
+			);
+		} else
+			aPutNum(
+				aCellSize / 2 - aScrFonts[INV_FONT]->SizeX / 2,
+				aCellSize / 2 - aScrFonts[INV_FONT]->SizeY / 2,
+				INV_FONT,
+				col,
+				dropCount,
+				aCellSize,
+				buf,
+				1
+			);
 
 		if (aciBufRedrawFlag) {
 			put_buf2col(800 + x + dx, y + dy, aCellSize, aCellSize, buf, 300, 0);
@@ -1855,6 +1882,7 @@ void invItem::redraw(int x, int y, int drop_mode, int flush_mode) {
 				XGR_Flush(x + dx, y + dy, aCellSize, aCellSize);
 		}
 
+		xgr::text::forget(buf);
 		delete[] buf;
 	}
 	if (aciBufRedrawFlag && flush_mode) {
@@ -3453,6 +3481,7 @@ void actIntDispatcher::redraw(void) {
 }
 
 void actIntDispatcher::text_redraw() {
+	xgr::text::clear(XGR_Obj.get_default_render_buffer());
 	if (Pause > 1 && NetworkON) {
 		if (GameQuantReturnValue || acsQuant()) {
 			Pause = 0;
@@ -4546,6 +4575,15 @@ void fncMenu::redraw(void) {
 			sy = iScreenOwner->SizeY;
 		}
 
+		xgr::text::prepare(
+			buf,
+			iScreenOwner ? iScreenOwner->SizeX : SizeX,
+			iScreenOwner ? iScreenOwner->SizeY : SizeY,
+			!(flags & FM_NO_ALIGN)
+		);
+		if (flags & FM_NO_ALIGN)
+			xgr::text::erase(buf, {PosX, PosY, SizeX, SizeY});
+
 		if (!(flags & FM_NO_ALIGN)) {
 			b_col = (bCol == -1) ? aciCurColorScheme[ACI_BACK_COL] : bCol;
 			memset(buf, b_col, SizeX * SizeY);
@@ -4610,6 +4648,7 @@ void fncMenu::redraw(void) {
 			}
 			if (!iScreenOwner) {
 				XGR_PutSpr(PosX, PosY, SizeX, SizeY, buf, XGR_BLACK_FON);
+				xgr::text::forget(buf);
 				delete[] buf;
 			}
 		}
@@ -4640,6 +4679,7 @@ void InfoPanel::redraw(void) {
 		buf = (unsigned char *)iScreenOwner->fdata;
 	}
 
+	xgr::text::prepare(buf, SizeX, SizeY);
 	int b_col = (bCol == -1) ? aciCurColorScheme[ACI_BACK_COL] : bCol;
 	memset(buf, b_col, SizeX * SizeY);
 
@@ -4720,6 +4760,7 @@ void InfoPanel::redraw(void) {
 	}
 	if (!iScreenOwner) {
 		XGR_PutSpr(PosX, PosY, SizeX, SizeY, buf, XGR_BLACK_FON);
+		xgr::text::forget(buf);
 		delete[] buf;
 	}
 
@@ -6749,6 +6790,7 @@ void aciWorldMap::redraw(int x, int y) {
 }
 
 void aciWorldMap::build_map(void) {
+	xgr::text::prepare(redraw_buf, SizeX, SizeY);
 	int i;
 	aciWorldInfo *p;
 
@@ -8267,7 +8309,21 @@ void aciWorldInfo::redraw(int bsx, int bsy, unsigned char *buf) {
 	x = PosX - (aScrFonts[font]->SizeX >> 1) + ox;
 	y = PosY - (aScrFonts[font]->SizeY >> 1) + oy;
 
-	aPutChar(x, y, font, border_col, letter, bsx, bsy, buf);
+	if (xgr::text::enabled) {
+		const char legacy[]{static_cast<char>(letter), 0};
+		const auto text = vangers::settings::cp866_to_utf8(legacy);
+		aPutStrUtf8(
+			x + aScrFonts[font]->LeftOffs[(unsigned char)letter],
+			y,
+			font,
+			border_col,
+			text.c_str(),
+			bsx,
+			buf,
+			0
+		);
+	} else
+		aPutChar(x, y, font, border_col, letter, bsx, bsy, buf);
 	delete[] shape1;
 }
 
