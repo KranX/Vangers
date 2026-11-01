@@ -62,7 +62,9 @@ SET(vangers_surmap_SRCS
 	"${PROJECT_SOURCE_DIR}/src/rle.cpp"
 )
 
-ADD_EXECUTABLE(surmap ${surmap_SRCS} ${vangers_surmap_SRCS})
+ADD_EXECUTABLE(surmap ${surmap_SRCS} ${vangers_surmap_SRCS}
+	"${PROJECT_SOURCE_DIR}/lib/xtool/xtmain.cpp"
+)
 SET_SOURCE_FILES_PROPERTIES(${vangers_surmap_SRCS}
 		PROPERTIES COMPILE_OPTIONS "${vangers_surmap_COMPILE_OPTIONS}")
 

@@ -115,7 +115,7 @@ jobs:
             -DCMAKE_BUILD_TYPE="${BUILD_TYPE}"
 
       - name: Build Vangers
-        run: cmake --build build --parallel
+        run: cmake --build build --parallel --target all vangers_iscreen_compiler
 
       - name: Test Vangers
         run: ctest --test-dir build --output-on-failure

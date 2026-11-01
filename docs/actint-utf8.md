@@ -133,6 +133,11 @@ These tests do not use the standalone **iscreen** compiler as an actint parser.
 The common game objects are reused; only the script-mode-dependent translation
 units are rebuilt for the two parser modes. SDL's platform entry point is a thin
 separate file, allowing tests to link the runtime without starting the game.
+Desktop executables (`vangers`, `surmap`, and `vangers_iscreen_compiler`) compile
+that entry point directly rather than leaving it in the `xtool` static archive:
+MinGW's startup code otherwise leaves `WinMain` unresolved. The Android object
+library retains its entry point, and test executables retain their own `main`.
+Windows CI also explicitly builds the otherwise excluded iscreen compiler.
 
 The ownership follow-up was also checked in the game under GDB with isolated
 RU/EN data and SDL dummy/software: all 13 initialized mouse prompts in each

@@ -1,6 +1,5 @@
 SET(xtool_SRCS
 	xtcore.cpp
-	xtmain.cpp
 	port.cpp
 	xerrhead.cpp
 	xbuffer/xbcnvin.cpp
@@ -31,7 +30,7 @@ ENDIF(DXSTREAM_DEBUG)
 INCLUDE_DIRECTORIES(BEFORE .)
 
 if (ANDROID)
-	ADD_LIBRARY(xtool OBJECT ${xtool_SRCS})
+	ADD_LIBRARY(xtool OBJECT ${xtool_SRCS} xtmain.cpp)
 else()
 	ADD_LIBRARY(xtool STATIC ${xtool_SRCS})
 	TARGET_LINK_LIBRARIES(xtool PRIVATE ${WIN_DBG})

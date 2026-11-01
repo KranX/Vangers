@@ -117,8 +117,11 @@ else()
 	SET(vangers_COMMON_SRCS ${vangers_SRCS})
 	LIST(REMOVE_ITEM vangers_COMMON_SRCS ${vangers_SCRIPT_SRCS} ${WINDOWS_RES})
 	ADD_LIBRARY(vangers_common OBJECT ${vangers_COMMON_SRCS})
+	# Link the SDL entry point directly: MinGW does not pull WinMain from xtool's
+	# static archive. Integration tests keep their own main and share only runtime code.
 	ADD_EXECUTABLE(vangers
 		${vangers_SCRIPT_SRCS}
+		../lib/xtool/xtmain.cpp
 		${WINDOWS_RES}
 		$<TARGET_OBJECTS:vangers_common>
 	)
@@ -172,6 +175,7 @@ endif()
 if (NOT ANDROID)
 	ADD_EXECUTABLE(vangers_iscreen_compiler EXCLUDE_FROM_ALL
 		${vangers_SCRIPT_SRCS}
+		../lib/xtool/xtmain.cpp
 		${WINDOWS_RES}
 		$<TARGET_OBJECTS:vangers_common>
 		iscreen/script_compiler.cpp
