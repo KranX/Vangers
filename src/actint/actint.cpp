@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include <stdexcept>
 
 #include "../runtime.h"
 
@@ -15,6 +16,7 @@
 #include "actint.h"
 #include "credits.h"
 #include "item_api.h"
+#include "text.h"
 
 #include "mlconsts.h"
 #include "mlstruct.h"
@@ -9179,7 +9181,7 @@ void fncMenuItem::clone(fncMenuItem *p) {
 
 aciLocationShutterInfo::~aciLocationShutterInfo(void) {
 	if (data)
-		delete data;
+		delete[] data;
 	if (name)
 		delete[] name;
 }
@@ -9593,7 +9595,13 @@ void aciScreenText::alloc(char *ptr, int sz) {
 }
 
 void aciScreenText::alloc_utf8(std::string_view text) {
-	const auto valid = vangers::actint::decode_text(text, vangers::actint::TextEncoding::Utf8);
+	std::string valid;
+	try {
+		valid = vangers::actint::decode_text(text, vangers::actint::TextEncoding::Utf8);
+	} catch (const std::invalid_argument &error) {
+		ErrH.Abort(error.what(), XERR_USER, -1, "aciScreenText::alloc_utf8");
+		return;
+	}
 	const auto wrapped = vangers::actint::wrap_columns(valid, MaxStrLen) + '\n';
 	free();
 	data = vangers::actint::copy_text(wrapped);

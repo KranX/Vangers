@@ -1,6 +1,8 @@
 #ifndef __XBUFFER_H
 #define __XBUFFER_H
 
+#include <cstring>
+
 #ifndef NULL
 #	define NULL 0L
 #endif
@@ -227,12 +229,12 @@ struct XBuffer {
 	template<class T> XBuffer &write(const T &v) {
 		while (offset + sizeof(T) >= size)
 			handleOutOfSize();
-		(T &)buf[offset] = v;
+		std::memcpy(buf + offset, &v, sizeof(T));
 		offset += sizeof(T);
 		return *this;
 	}
 	template<class T> XBuffer &read(T &v) {
-		v = (T &)buf[offset];
+		std::memcpy(&v, buf + offset, sizeof(T));
 		offset += sizeof(T);
 		return *this;
 	}

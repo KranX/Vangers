@@ -1,5 +1,6 @@
 #include "actint/aci_str.h"
 #include "actint/text.h"
+#include "text/utf8.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -9,6 +10,7 @@
 
 using namespace vangers::actint;
 using namespace vangers::settings;
+using namespace vangers::text;
 
 static void check(bool condition, const char *message) {
 	if (!condition) {
@@ -33,6 +35,8 @@ int main() {
 	check(raster_text(unicode, 256) == utf8_to_cp866(unicode), "Only bitmap view may use fallback");
 	check(raster_text("A日", 58) == "  ", "Numeric font must never index nonexistent glyphs");
 	check(raster_text(unicode, 0).empty(), "Empty font has no glyphs");
+	check(raster_text(unicode, 32).empty(), "Font without a printable fallback has no text view");
+	check(raster_text("A日", 33) == "  ", "Smallest printable font must use its space glyph");
 	check(raster_text("$\x1e\x1f", 256) == "$\x1e\x1f", "Game icons/control glyphs must survive");
 
 	for (const auto encoding : {TextEncoding::Utf8, static_cast<TextEncoding>(-1)}) {
@@ -51,6 +55,8 @@ int main() {
 
 	auto *copy = copy_text(unicode);
 	check(std::strcmp(copy, unicode.c_str()) == 0, "Owned model must preserve unsupported Unicode");
+	std::string clipped = copy;
+	delete[] copy;
 	const auto count = text_length(unicode);
 	std::string long_text;
 	for (int i = 0; i < 2000; ++i)
@@ -62,15 +68,14 @@ int main() {
 	delete[] long_copy;
 	for (std::size_t i = count; i; --i) {
 		check(
-			std::strlen(copy) == prefix_bytes(unicode, i),
+			clipped.size() == prefix_bytes(unicode, i),
 			"Clipping/reveal must share scalar boundaries"
 		);
-		pop_back(copy);
-		check(is_valid_utf8(copy), "Clipping must never leave a partial UTF-8 sequence");
+		pop_back(clipped);
+		check(is_valid_utf8(clipped), "Clipping must never leave a partial UTF-8 sequence");
 	}
-	pop_back(copy);
-	check(!copy[0], "Clipping empty text must not underflow");
-	delete[] copy;
+	pop_back(clipped);
+	check(clipped.empty(), "Clipping empty text must not underflow");
 	for (std::size_t i = 0; i <= count + 2; ++i) {
 		const auto prefix = unicode.substr(0, prefix_bytes(unicode, i));
 		check(is_valid_utf8(prefix), "Animated prefix must be valid UTF-8");

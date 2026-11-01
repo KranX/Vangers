@@ -2,6 +2,7 @@
 
 #include "../global.h"
 #include "lang.h"
+#include <stdexcept>
 #include <zlib.h>
 
 #if defined(__APPLE__) || (defined(__GNUC__) && __GNUC__ < 9)
@@ -30,8 +31,10 @@
 
 #include "a_consts.h"
 
+#include "../text/utf8.h"
 #include "aci_str.h"
 #include "actint.h"
+#include "text.h"
 
 #include "credits.h"
 
@@ -5101,6 +5104,10 @@ void aciPromptData::redraw(int scr_x, int scr_y, int scr_sx, int scr_sy) {
 	if (!StrBuf)
 		return;
 
+	// Clip a presentation copy. A later wider layout must recover the full model text.
+	std::vector<std::string> clipped;
+	std::vector<unsigned char *> displayed;
+
 	int font = ACI_PROMPT_FONT;
 
 	if (!(aScrDisp->flags & AS_FULLSCR)) {
@@ -5127,18 +5134,36 @@ void aciPromptData::redraw(int scr_x, int scr_y, int scr_sx, int scr_sy) {
 			PosY[i] = y;
 
 			//			  if(x < 0) ErrH.Abort("Prompt string out of screen...");
-			while (x < 0 && StrBuf[i][0]) {
-				vangers::actint::pop_back((char *)StrBuf[i]);
-				sx = aStrLenUtf8(StrBuf[i], font, ACI_PROMPT_DELTA_X);
-				x = scr_x + (scr_sx - sx) / 2;
-				PosX[i] = x;
-				PosY[i] = y;
+			if (x < 0 && StrBuf[i][0]) {
+				if (clipped.empty()) {
+					clipped.resize(NumStr);
+					displayed.assign(StrBuf, StrBuf + NumStr);
+				}
+				clipped[i] = (char *)StrBuf[i];
+				while (x < 0 && !clipped[i].empty()) {
+					vangers::text::pop_back(clipped[i]);
+					displayed[i] = (unsigned char *)clipped[i].data();
+					sx = aStrLenUtf8(displayed[i], font, ACI_PROMPT_DELTA_X);
+					x = scr_x + (scr_sx - sx) / 2;
+					PosX[i] = x;
+					PosY[i] = y;
+				}
 			}
 
 			y += aScrFonts[font]->SizeY + ACI_PROMPT_DELTA_Y;
 		}
 	}
-	aWriteHelpString(NumStr, PosX, PosY, font, StrBuf, CurTimer, ACI_PROMPT_COLOR, 1, ColBuf);
+	aWriteHelpString(
+		NumStr,
+		PosX,
+		PosY,
+		font,
+		displayed.empty() ? StrBuf : displayed.data(),
+		CurTimer,
+		ACI_PROMPT_COLOR,
+		1,
+		ColBuf
+	);
 }
 
 void aciPromptData::add_str(int num, unsigned char *p) {
@@ -5146,7 +5171,13 @@ void aciPromptData::add_str(int num, unsigned char *p) {
 }
 
 void aciPromptData::add_utf8_str(int num, const char *text) {
-	const auto valid = vangers::actint::decode_text(text, vangers::actint::TextEncoding::Utf8);
+	std::string valid;
+	try {
+		valid = vangers::actint::decode_text(text, vangers::actint::TextEncoding::Utf8);
+	} catch (const std::invalid_argument &error) {
+		ErrH.Abort(error.what(), XERR_USER, -1, "aciPromptData::add_utf8_str");
+		return;
+	}
 	auto *copy = (unsigned char *)vangers::actint::copy_text(valid);
 	delete[] StrBuf[num];
 	StrBuf[num] = copy;
