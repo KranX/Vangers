@@ -147,6 +147,14 @@ SET_TESTS_PROPERTIES(actint_script_roundtrip PROPERTIES TIMEOUT 30)
 ADD_TEST(NAME actint_runtime_regressions COMMAND actint_script_binary_test --runtime)
 SET_TESTS_PROPERTIES(actint_runtime_regressions PROPERTIES TIMEOUT 15)
 
+FOREACH(renderer bitmap ttf)
+	FOREACH(widget menu counter)
+		ADD_TEST(NAME actint_${widget}_${renderer}
+			COMMAND actint_script_binary_test --render-${widget} ${renderer})
+		SET_TESTS_PROPERTIES(actint_${widget}_${renderer} PROPERTIES TIMEOUT 15)
+	ENDFOREACH()
+ENDFOREACH()
+
 ADD_EXECUTABLE(legacy_settings_migration_test
 	legacy_settings_migration_test.cpp
 )

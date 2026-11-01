@@ -905,7 +905,7 @@ void aFreeFonts(void) {
 	for (i = 0; i < AS_NUM_FONTS; i++) {
 		delete aScrFonts[i];
 	}
-	delete aScrFonts;
+	delete[] aScrFonts;
 	aScrFonts = NULL;
 	/*
 		for(i = 0; i < AS_NUM_FONTS_32; i ++){

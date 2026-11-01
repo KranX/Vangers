@@ -90,11 +90,24 @@ callbacks without changing the shared legacy XGR callbacks. The settings test
 checks bitmap-by-default and TTF-setting persistence. The existing source/binary
 script and runtime regressions remain in the suite.
 
+The `actint_menu_{bitmap,ttf}` and `actint_counter_{bitmap,ttf}` integration
+tests use real production widgets and generated BML fixtures (no private assets).
+They check question-menu centering, selection changes, scrolling and clearing,
+plus range/standard counter origins at 1×/2× output. Both TTF cases failed on
+the original PR revision and pass after the compositor/bearing fixes. The same
+tests also exercise menu and bitmap-font destruction under ASan.
+
 Local Linux validation on 1 November 2026 used SDL3 3.4.18 / SDL3_ttf 3.2.2:
 
 - Full binary-script build, including the standalone iscreen compiler; **15/15
-  CTests passed**. The source-script (`BINARY_SCRIPT=OFF`) executables also build.
-- **15/15 CTests passed with ASan + UBSan**, including leak detection.
+  CTests passed** initially; **19/19 passed after the self-review fixes**. The
+  source-script (`BINARY_SCRIPT=OFF`) executables also build.
+- **19/19 CTests passed with ASan + UBSan**, including leak detection, after
+  fixing the old menu base-pointer deletion and bitmap-font array deletion
+  exposed by the new integration fixtures.
+- Rechecked populated RU/EN escave question selectors in isolated game runs at
+  800×600 and 1600×1200 after advancing the opening speech and clicking the
+  question button. The text reaches the final screen in both languages.
 - Isolated RU/EN game-data copies and SDL dummy/software captures exercised
   dialogue, shop descriptions/prices, hover prompts, world/inventory overlays
   and the existing pause/save/load UI. The embedded font was also used from a

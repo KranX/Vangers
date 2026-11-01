@@ -678,11 +678,11 @@ aciFont::aciFont(void) {
 
 aciFont::~aciFont(void) {
 	if (data)
-		delete data;
+		delete[] data;
 	if (LeftOffs)
-		delete LeftOffs;
+		delete[] LeftOffs;
 	if (RightOffs)
-		delete RightOffs;
+		delete[] RightOffs;
 }
 
 void aciFont::load(char *fname) {
@@ -1773,14 +1773,13 @@ void CounterPanel::redraw(void) {
 	for (i = 0; i < digits; i++) {
 		if (xgr::text::enabled) {
 			char digit[]{ptr[i], 0};
-			// Old counter placement uses the complete cell, not trimmed bearings.
-			const int left = flags & CP_RANGE_FONT
-								 ? aScrFonts32[font]->LeftOffs[(unsigned char)ptr[i]]
-								 : aScrFonts[font]->LeftOffs[(unsigned char)ptr[i]];
 			if (flags & CP_RANGE_FONT)
-				aPutStr32Utf8(x + ox + left, y, font, col, col_sz, digit, SizeX, buf, 0);
-			else
+				aPutStr32Utf8(x + ox, y, font, col, col_sz, digit, SizeX, buf, 0);
+			else {
+				// Only aPutChar uses the full cell; aPutChar32 already trims bearings.
+				const int left = aScrFonts[font]->LeftOffs[(unsigned char)ptr[i]];
 				aPutStrUtf8(x + ox + left, y, font, col, digit, SizeX, buf, 0);
+			}
 		} else if (flags & CP_RANGE_FONT)
 			aPutChar32(x + ox, y, font, col, col_sz, ptr[i], SizeX, buf);
 		else
@@ -8823,7 +8822,6 @@ fncMenuSet::fncMenuSet(void) {
 
 fncMenuSet::~fncMenuSet(void) {
 	iListElement *p, *p1;
-	iScreenElement *el = (iScreenElement *)redraw_data;
 	fncMenu *m;
 	if (items) {
 		p = items->last;
@@ -8836,8 +8834,7 @@ fncMenuSet::~fncMenuSet(void) {
 		delete items;
 		items = NULL;
 	}
-	if (el)
-		delete el;
+	delete redraw_data;
 }
 
 void fncMenuSet::init(void) {
@@ -8935,6 +8932,7 @@ void fncMenuSet::redraw(void) {
 
 	obj = (iScreenObject *)data->owner;
 	obj->flags |= (OBJ_MUST_REDRAW | OBJ_CLEAR_FON);
+	auto *text = xgr::text::prepare(data->fdata, data->SizeX, data->SizeY);
 
 	if (!redraw_data || !(redraw_data->flags & EL_DATA_LOADED)) {
 		memset(data->fdata, 0, data->SizeX * data->SizeY);
@@ -8943,6 +8941,8 @@ void fncMenuSet::redraw(void) {
 
 	//	  memset(redraw_data -> fdata,4,redraw_data -> SizeX * redraw_data -> SizeY);
 	memset(redraw_data->fdata, 0, redraw_data->SizeX * redraw_data->SizeY);
+	// build() can move the children; clearing only their new rectangles leaves ghosts.
+	xgr::text::clear(redraw_data->fdata);
 	m = (fncMenu *)items->first;
 	for (i = 0; i < items->Size; i++) {
 		m->redraw();
@@ -8966,6 +8966,9 @@ void fncMenuSet::redraw(void) {
 		index += data->SizeX;
 		r_index += redraw_data->SizeX;
 	}
+	if (text)
+		if (auto *source = xgr::text::find(redraw_data->fdata))
+			text->copy(*source, {rdx, 0, sx, data->SizeY}, dx, 0);
 
 	flags &= ~FMC_REDRAW;
 }

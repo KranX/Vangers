@@ -200,6 +200,7 @@ if (NOT ANDROID)
 				${vangers_SCRIPT_SRCS}
 				$<TARGET_OBJECTS:vangers_common>
 				../tests/actint_script_test.cpp
+				../tests/actint_render_test.cpp
 				../lib/xtool/xerrhead.cpp
 			)
 			TARGET_COMPILE_DEFINITIONS(actint_script_${script_mode}_test PRIVATE

@@ -1377,6 +1377,7 @@ void iBitmapElement::free(void) {
 	if ((flags & EL_DATA_LOADED)) {
 		flags ^= EL_DATA_LOADED;
 		delete[] fdata;
+		fdata = NULL; // A later free must not unregister another buffer reusing this address.
 	}
 }
 

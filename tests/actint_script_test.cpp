@@ -18,6 +18,8 @@
 #include <string>
 
 void aParseScript(const char *, const char *);
+void actint_menu_render_test(bool native);
+void actint_counter_render_test(bool native);
 extern actIntDispatcher *aScrDisp;
 extern aciFont **aScrFonts;
 
@@ -245,7 +247,11 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 
 int main(int argc, char **argv) {
 	try {
-		if (argc == 5 && std::string(argv[1]) == "--parse") {
+		if (argc == 3 && std::string(argv[1]) == "--render-menu") {
+			actint_menu_render_test(std::string(argv[2]) == "ttf");
+		} else if (argc == 3 && std::string(argv[1]) == "--render-counter") {
+			actint_counter_render_test(std::string(argv[2]) == "ttf");
+		} else if (argc == 5 && std::string(argv[1]) == "--parse") {
 			parse(argv[2], argv[3], argv[4]);
 		} else if (argc == 4 && std::string(argv[1]) == "--corrupt") {
 			corrupt(argv[2], argv[3]);
