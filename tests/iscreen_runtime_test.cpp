@@ -26,10 +26,12 @@ extern int iNumFonts;
 extern HFont **HFntTable;
 extern iScreenFont **iScrFontTable;
 extern uint iclip_mask_y;
+void iYSetup();
+void iRenderPrepare();
 void init_hfonts();
 void free_hfonts();
 void iPutStr2buf(int, int, int, int, int, unsigned char *, unsigned char *, int, int, int);
-void scale_buf(int, int, int, unsigned char *, unsigned char *);
+void scale_buf(int, int, int, const unsigned char *, unsigned char *);
 void smooth_buf(int, int, unsigned char *, int);
 
 namespace {
@@ -201,7 +203,7 @@ void parse(const char *in, const char *out, bool unicode) {
 	delete[] small_font.RightOffs;
 }
 
-void input() {
+void init_renderer_fixture() {
 	std::filesystem::create_directories("resource/actint/hd");
 	auto *background = SDL_CreateSurface(8, 8, SDL_PIXELFORMAT_RGB24);
 	check(
@@ -212,6 +214,10 @@ void input() {
 	SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "dummy");
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
 	XGR_Init(0);
+}
+
+void input() {
+	init_renderer_fixture();
 	iScrDisp = new iScreenDispatcher;
 	std::vector<char> heap(1 << 20);
 	iMemHeap = heap.data();
@@ -272,7 +278,55 @@ void input() {
 	XGR_Finit();
 }
 
-void relief(bool ttf) {
+void shadow_damage() {
+	init_renderer_fixture();
+	XGR_Obj.set_resolution(I_RES_X, I_RES_Y);
+	auto *screen = XGR_Obj.get_active_render_buffer();
+	const size_t screen_size = size_t(XGR_MAXX) * XGR_MAXY;
+	std::vector<unsigned char> heights(H_SIZE * 2), colours(H_SIZE);
+	auto *height_row = heights.data();
+	auto *colour_row = colours.data();
+	ivrtMap map;
+	map.lineT = &height_row;
+	map.lineTcolor = &colour_row;
+	ivMap = &map;
+	iYSetup(); // One map row in this isolated fixture.
+	iRenderPrepare();
+	for (const auto [x, offset] :
+		{std::pair{100, 0}, std::pair{4, 0}, std::pair{4, int(H_SIZE) - I_RES_X}}) {
+		std::fill(heights.begin(), heights.end(), 0);
+		std::fill_n(heights.begin(), H_SIZE, 100);
+		heights[x] = heights[x + 1] = 230;
+		std::fill(colours.begin(), colours.end(), 7);
+		std::fill(screen, screen + screen_size, 99);
+		iScreenOffs = offset;
+		iregRender(x, 0, x + 10, 0);
+		check(
+			std::all_of(screen, screen + screen_size, [](auto n) { return n == 99; }),
+			"Map-only rendering unexpectedly copied pixels"
+		);
+		std::fill(colours.begin(), colours.end(), 7);
+		iregRenderToScreen(x, 0, x + 10, 0);
+		bool copied_shadow = false;
+		for (int i = 0; i < I_RES_X; ++i) {
+			const int map_x = i + offset;
+			const bool relit = colours[map_x] == 0;
+			check(screen[i] == (relit ? 0 : 99), "Did not copy exactly the relit scanline span");
+			if (relit && (map_x < x || map_x > x + 11))
+				copied_shadow = true;
+		}
+		check(copied_shadow, "Fixture did not exercise a shadow outside the object");
+		check(
+			std::all_of(screen + I_RES_X, screen + screen_size, [](auto n) { return n == 99; }),
+			"Shadow copy overran the framebuffer"
+		);
+	}
+	XGR_Finit();
+	ivMap = nullptr;
+	iScreenOffs = 0;
+}
+
+void relief(bool ttf, bool procedural = false) {
 	font_fixture();
 	iNumFonts = 3;
 	init_hfonts();
@@ -291,10 +345,104 @@ void relief(bool ttf) {
 		std::any_of(heights.begin(), heights.end(), [](auto n) { return n > 128; }),
 		"Relief has no raised height"
 	);
-	check(
-		std::any_of(heights.begin(), heights.end(), [](auto n) { return n < 128; }),
-		"Relief lost negative source height"
-	);
+	if (!ttf) {
+		check(
+			std::any_of(heights.begin(), heights.end(), [](auto n) { return n < 128; }),
+			"Relief lost negative source height"
+		);
+	} else {
+		check(
+			std::all_of(
+				heights.begin(), heights.end(), [](auto n) { return n >= 128 && n <= 170; }
+			),
+			"Procedural relief has invalid heights"
+		);
+		if (procedural)
+			for (auto family :
+				{vangers::actint::FontFamily::Menu, vangers::actint::FontFamily::Display}) {
+				vangers::iscreen::ReliefFont face(*HFntTable[0], family);
+				for (char32_t cp : {U'A', U'Ж', U'Ё', char32_t(0xe000)}) {
+					// The TTF path must work even when legacy glyph height storage is absent.
+					auto &legacy = *HFntTable[0]->data[vangers::settings::unicode_to_cp866(cp)];
+					auto *saved = legacy.HeightMap;
+					legacy.HeightMap = nullptr;
+					auto glyph = face.glyph(cp);
+					legacy.HeightMap = saved;
+					check(glyph.source.empty(), "Text retained legacy heights");
+					const auto uncached = glyph;
+					check(
+						glyph.heights(0, 50).empty() && glyph.heights(26, -1).empty(),
+						"Invalid dimensions were accepted"
+					);
+					for (auto size :
+						{std::pair{1, 1}, std::pair{7, 9}, std::pair{26, 50}, std::pair{52, 100}}) {
+						const auto baseline = glyph.heights(size.first, size.second);
+						check(
+							baseline.size() == size_t(size.first * size.second),
+							"Bad procedural output size"
+						);
+						check(
+							std::all_of(
+								baseline.begin(),
+								baseline.end(),
+								[](auto n) { return n >= 128 && n <= 170; }
+							),
+							"Invalid generated height"
+						);
+						check(
+							glyph.heights(size.first, size.second) == baseline,
+							"Cached relief changes between frames"
+						);
+						auto regenerated = uncached;
+						regenerated.source.assign(100, 0);
+						check(
+							regenerated.heights(size.first, size.second) == baseline,
+							"Procedural relief depends on old bitmap heights"
+						);
+					}
+				}
+			}
+	}
+	if (procedural) {
+		struct MaskImage: xgr::text::Image {
+			bool filled;
+			mutable int calls = 0;
+			explicit MaskImage(bool value): filled(value) {}
+			xgr::text::Raster rasterize(int width, int height) const override {
+				++calls;
+				xgr::text::Raster r{
+					width, height, std::vector<xgr::text::Pixel>(size_t(width) * height)};
+				for (auto &pixel : r.pixels)
+					pixel.alpha = filled ? 255 : 0;
+				return r;
+			}
+		};
+		vangers::iscreen::ReliefGlyph square;
+		square.decorative = true;
+		auto image = std::make_shared<MaskImage>(true);
+		square.outline = image;
+		const auto &raised = square.heights(32, 32);
+		const auto *pixels = raised.data();
+		for (int i = 0; i < 100; ++i) {
+			check(&square.heights(32, 32) == &raised, "Cache hit returned a copy");
+			check(square.heights(32, 32).data() == pixels, "Cache hit reallocated heights");
+		}
+		check(image->calls == 1, "Cache hit rerasterized the outline");
+		square.heights(16, 16);
+		check(
+			&square.heights(32, 32) == &raised && raised.data() == pixels,
+			"Another cached size invalidated a height reference"
+		);
+		check(image->calls == 2, "Size-specific cache missed unexpectedly");
+		check(raised[16 * 32 + 16] > raised[16 * 32] + 5, "Solid glyph has no edge bevel");
+		vangers::iscreen::ReliefGlyph transparent;
+		transparent.outline = std::make_shared<MaskImage>(false);
+		const auto empty = transparent.heights(32, 32);
+		check(
+			std::all_of(empty.begin(), empty.end(), [](auto n) { return n == 128; }),
+			"Grain escaped the glyph contour"
+		);
+	}
 	for (int scale : {256, 128, 0, -128, -256}) {
 		scale_buf(w, h, scale, heights.data(), scaled.data());
 		for (size_t i = 0; i < scaled.size(); ++i)
@@ -428,7 +576,9 @@ int main(int argc, char **argv) {
 		if (argc == 5 && std::string(argv[1]) == "--parse")
 			parse(argv[2], argv[3], std::string(argv[4]) == "unicode");
 		else if (argc == 3 && std::string(argv[1]) == "--relief")
-			relief(std::string(argv[2]) == "ttf");
+			relief(std::string(argv[2]) != "bitmap", std::string(argv[2]) == "procedural");
+		else if (argc == 2 && std::string(argv[1]) == "--shadow")
+			shadow_damage();
 		else if (argc == 2 && std::string(argv[1]) == "--input")
 			input();
 		else

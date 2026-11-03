@@ -21,7 +21,7 @@ extern char *iMouseBMP;
 
 /* --------------------------- PROTOTYPE SECTION ---------------------------- */
 
-void scale_buf(int sx, int sy, int sc, unsigned char *p, unsigned char *p1);
+void scale_buf(int sx, int sy, int sc, const unsigned char *p, unsigned char *p1);
 void dscale_buf(
 	int sx,
 	int sy,
@@ -37,8 +37,8 @@ void put_buf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode
 );
@@ -47,8 +47,8 @@ void put_tbuf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode,
 	int terr
@@ -93,7 +93,7 @@ void map_init(void) {
 	//	ivMap -> render(0,I_RES_Y - 1);
 }
 
-void scale_buf(int sx, int sy, int sc, unsigned char *p, unsigned char *p1) {
+void scale_buf(int sx, int sy, int sc, const unsigned char *p, unsigned char *p1) {
 	int i, j, index = 0, t, t1;
 	if (sc == 256) {
 		for (i = 0; i < sy; i++) {
@@ -154,8 +154,8 @@ void put_buf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode
 ) {
@@ -243,8 +243,8 @@ void put_tbuf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode,
 	int terr
@@ -601,7 +601,7 @@ void h_put_buf2buf(
 	int sy,
 	int bsx,
 	int bsy,
-	unsigned char *buf,
+	const unsigned char *buf,
 	unsigned char *buf_to
 ) {
 	int i, j, scr_index, index, start_x, start_y, end_x, end_y, size_x;
@@ -821,7 +821,7 @@ bool relief_string(int x, int y, int font, const char *text, int spacing, Paint 
 		}
 		const auto &glyph = face->glyph(cp);
 		if (glyph.bounds.w > 0 && glyph.bounds.h > 0) {
-			const auto heights = glyph.heights(glyph.bounds.w, glyph.bounds.h);
+			const auto &heights = glyph.heights(glyph.bounds.w, glyph.bounds.h);
 			// Outline antialiasing can overshoot a cell by a fraction of a pixel.
 			// Both direct and smoothed height writes must stay inside the same
 			// restored region, or a click would leave a one-pixel relief trail.
@@ -831,7 +831,10 @@ bool relief_string(int x, int y, int font, const char *text, int spacing, Paint 
 				std::min(glyph.bounds.h, int(HFntTable[font]->SizeY) - glyph.bounds.y);
 			const int right = std::min(glyph.bounds.w, right_limit - cursor_x - glyph.bounds.x);
 			const int w = right - left, h = bottom - top;
-			if (w > 0 && h > 0) {
+			if (w > 0 && h > 0 && left == 0 && top == 0 && w == glyph.bounds.w &&
+				h == glyph.bounds.h) {
+				paint(cursor_x + glyph.bounds.x, cursor_y + glyph.bounds.y, w, h, heights);
+			} else if (w > 0 && h > 0) {
 				std::vector<uint8_t> clipped(size_t(w) * h);
 				for (int row = 0; row < h; ++row)
 					std::copy_n(
@@ -867,7 +870,7 @@ void iPutStr(
 			fnt,
 			(const char *)str,
 			space,
-			[&](int gx, int gy, int w, int h, std::vector<uint8_t> &heights) {
+			[&](int gx, int gy, int w, int h, const std::vector<uint8_t> &heights) {
 				std::vector<uint8_t> scaled(heights.size());
 				scale_buf(w, h, scale, heights.data(), scaled.data());
 				put_buf(gx, gy, w, h, scaled.data(), heights.data(), level, hide_mode);
@@ -922,7 +925,7 @@ void i_terrPutStr(
 			fnt,
 			(const char *)str,
 			space,
-			[&](int gx, int gy, int w, int h, std::vector<uint8_t> &heights) {
+			[&](int gx, int gy, int w, int h, const std::vector<uint8_t> &heights) {
 				std::vector<uint8_t> scaled(heights.size());
 				scale_buf(w, h, scale, heights.data(), scaled.data());
 				put_tbuf(gx, gy, w, h, scaled.data(), heights.data(), level, hide_mode, terr);
@@ -977,7 +980,7 @@ void iPutStr2buf(
 			fnt,
 			(const char *)str,
 			space,
-			[&](int gx, int gy, int w, int h, std::vector<uint8_t> &heights) {
+			[&](int gx, int gy, int w, int h, const std::vector<uint8_t> &heights) {
 				h_put_buf2buf(gx, gy, w, h, bsx, bsy, heights.data(), buf_to);
 			}
 		))

@@ -8,17 +8,22 @@
 
 namespace vangers::iscreen {
 
-// The outline defines the footprint, not the lighting. Retain the source's
-// signed height profile; scale/smooth/terrain illumination remain separate.
+// Text heights are generated from the outline. Only non-text icons retain
+// bitmap heights. Scale/smooth/terrain illumination remain separate.
 struct ReliefGlyph {
 	int advance = 0;
 	SDL_Rect bounds{};
 	std::shared_ptr<const xgr::text::Image> outline;
-	int source_width = 0, source_height = 0, source_left = 0;
+	int source_width = 0, source_height = 0;
 	std::vector<uint8_t> source;
-	std::vector<int> profile;
 	bool bitmap = false;
-	std::vector<uint8_t> heights(int width, int height) const;
+	bool decorative = false;
+	// References stay valid until this glyph is destroyed; other sizes do not invalidate them.
+	const std::vector<uint8_t> &heights(int width, int height) const;
+
+  private:
+	mutable std::map<std::pair<int, int>, std::vector<uint8_t>> height_cache_;
+	std::vector<uint8_t> generate_heights(int width, int height) const;
 };
 
 class ReliefFont {
@@ -31,6 +36,7 @@ class ReliefFont {
 	const HFont &source_;
 	actint::TtfFont font_;
 	bool icons_only_;
+	actint::FontFamily family_;
 	std::map<char32_t, ReliefGlyph> glyphs_;
 };
 

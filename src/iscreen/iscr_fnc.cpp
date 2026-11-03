@@ -215,14 +215,14 @@ void get_fon(int x, int y, int sx, int sy, unsigned char *buf);
 
 void loadMouseFrames(void);
 
-void scale_buf(int sx, int sy, int sc, unsigned char *p, unsigned char *p1);
+void scale_buf(int sx, int sy, int sc, const unsigned char *p, unsigned char *p1);
 void put_buf(
 	int x,
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode
 );

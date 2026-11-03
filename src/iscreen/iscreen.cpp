@@ -2,6 +2,7 @@
 
 #include "../common.h"
 #include "../global.h"
+#include "../settings/settings.h"
 #include "../settings/text_encoding.h"
 
 #include "ikeys.h"
@@ -11,6 +12,7 @@
 #include "hfont.h"
 #include "i_mem.h"
 #include "iscreen.h"
+#include "ivmap.h"
 #include "text.h"
 
 #include "../actint/a_consts.h"
@@ -63,8 +65,8 @@ void put_buf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode
 );
@@ -73,8 +75,8 @@ void put_tbuf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode,
 	int terr
@@ -103,7 +105,7 @@ void put2fon(int x, int y, int sx, int sy, unsigned char *buf, int lev = 0);
 void change_terrain(int x, int y, int sx, int sy, int terr1, int terr2);
 void put_map(int x, int y, int sx, int sy);
 void get_buf(int x, int y, int sx, int sy, unsigned char *buf);
-void scale_buf(int sx, int sy, int sc, unsigned char *p, unsigned char *p1);
+void scale_buf(int sx, int sy, int sc, const unsigned char *p, unsigned char *p1);
 void dscale_buf(
 	int sx,
 	int sy,
@@ -131,8 +133,6 @@ void smooth_shape(int sx, int sy, unsigned char *buf);
 
 void init_hfonts(void);
 void free_hfonts(void);
-
-void iregRender(int x0, int y0, int x1, int y1);
 
 int iStrLen(unsigned char *p, int f, int space);
 void iPutStr(
@@ -2199,14 +2199,18 @@ void iScreenObject::init(void) {
 }
 
 void iScreenObject::redraw(int mode) {
+	// Preserve the bitmap fallback; procedural TTF relief can cast longer shadows.
+	const auto render = vangers::settings::settings_manager().get().video.ttf_text
+							? iregRenderToScreen
+							: iregRender;
 	int hide_mode = flags & OBJ_HIDE;
 	iScreenElement *p = (iScreenElement *)ElementList->last;
 
 	if (flags & OBJ_PIC_PRESENT && flags & OBJ_CLEAR_FON) {
 		if (FlushX == -1) {
-			iregRender(PosX, PosY, PosX + SizeX, PosY + SizeY);
+			render(PosX, PosY, PosX + SizeX, PosY + SizeY);
 		} else {
-			iregRender(FlushX, FlushY, FlushX + FlushSX, FlushY + FlushSY);
+			render(FlushX, FlushY, FlushX + FlushSX, FlushY + FlushSY);
 		}
 		flags ^= OBJ_CLEAR_FON;
 	}
@@ -2257,9 +2261,9 @@ void iScreenObject::redraw(int mode) {
 	}
 	if (!(flags & OBJ_AVI_PRESENT) && !(flags & OBJ_AVI_BORDER) && !(flags & OBJ_PIC_PRESENT)) {
 		if (FlushX == -1) {
-			iregRender(PosX, PosY, PosX + SizeX, PosY + SizeY);
+			render(PosX, PosY, PosX + SizeX, PosY + SizeY);
 		} else {
-			iregRender(FlushX, FlushY, FlushX + FlushSX, FlushY + FlushSY);
+			render(FlushX, FlushY, FlushX + FlushSX, FlushY + FlushSY);
 		}
 	}
 

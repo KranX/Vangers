@@ -207,3 +207,17 @@ FOREACH(renderer bitmap ttf)
 	SET_TESTS_PROPERTIES(iscreen_relief_${renderer} PROPERTIES TIMEOUT 15
 		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-relief-${renderer}")
 ENDFOREACH()
+
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-relief-procedural")
+ADD_TEST(NAME iscreen_relief_procedural COMMAND iscreen_binary_test --relief procedural)
+SET_TESTS_PROPERTIES(iscreen_relief_procedural PROPERTIES TIMEOUT 15
+ WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-relief-procedural")
+
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-shadow-damage")
+ADD_TEST(NAME iscreen_shadow_damage COMMAND iscreen_binary_test --shadow)
+SET_TESTS_PROPERTIES(iscreen_shadow_damage PROPERTIES TIMEOUT 15
+ WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-shadow-damage")
+
+ADD_EXECUTABLE(relief_cache_test relief_cache_test.cpp)
+TARGET_LINK_LIBRARIES(relief_cache_test PRIVATE vangers_iscreen_text)
+ADD_TEST(NAME iscreen_relief_cache COMMAND relief_cache_test)

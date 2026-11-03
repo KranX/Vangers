@@ -1,4 +1,4 @@
-# Iscreen: UTF-8 text and TTF outlines
+# Iscreen: UTF-8 text and procedural TTF relief
 
 This stage covers iscreen's menu, settings/controls, history, credits, text pages,
 load-slot/server-list labels, static mouse prompts and editable fields. It builds
@@ -25,20 +25,26 @@ See [font provenance](../data/resource/actint/fonts/README.md).
 ## Relief and clicks are not a flat shadow
 
 - `hfont01` selects **Menu**; `hfont00` selects **Display**. The smaller
-  `hfont03/04` roles use Display with their original dimensions and height maps.
+  `hfont03/04` roles use Display with their original dimensions.
   The icon-only `hfont02` and control cells remain bitmap.
-- TTF coverage defines the glyph footprint. Original signed relief heights are
-  retained inside it, extending the profile into newly covered samples instead
-  of clipping the TTF to the old silhouette. New letters without a source profile
-  get a neutral raised profile. Heights below 128 are preserved, not normalized
-  into positive opacity.
+- TTF coverage generates heights directly: a 4x mask, a two-pass chamfer
+  distance field and a rounded bevel. Smooth shape variation and deterministic
+  glyph-local grain produce the surface; grain is added after downsampling so
+  it is not averaged away with contour antialiasing. Menu/Display use two style
+  calibrations of the same algorithm, never per-language/per-letter rules.
+- No original letter height profile is read, copied, interpolated or filled in
+  the TTF path. The generic terrain renderer still provides lighting and shadows;
+  this does not replace them with a flat colour-noise/shadow overlay.
 - Existing glyph advances, spacing and hit boxes remain tied to the original
   resources; newly supplied glyphs use TTF metrics where the old cell was blank
   or CP866 cannot represent the codepoint. CP866's replacement `?` is never used
-  as a new letter's source metric or relief profile.
+  as a new letter's source metric.
 - Output still uses `scale_buf`, `smooth_buf`, `put_buf`/`put_tbuf` and
   `iregRender`: terrain, illumination, shadows, masks, negative scale, hide mode
-  and background restoration retain their existing meanings.
+  and background restoration retain their existing meanings. The TTF object
+  redraw also copies the exact relit scanline spans outside the nominal object,
+  including wrapped shadow tails, without copying stale pixels in a larger
+  rectangular bounding box. Bitmap-mode redraw remains unchanged.
 - No click script, event command or timing is changed. This includes the
   seven-tick press/release and blur schedule in `buttons.inc`; it is not replaced
   with a new interpolation/easing function.
@@ -48,7 +54,21 @@ output companion layer. Relief is rasterized into the original logical height
 map before terrain illumination. Enlarging the window therefore still enlarges
 that relief map. This is not a fully native-resolution relief renderer; that
 requires a separate height/lighting/compositing change, not a fake shadow overlay.
-Original `.fnh` assets must not be removed.
+Original `.fnh` assets are still needed for compatibility metrics, the bitmap
+fallback and non-text icons, but not as a source of TTF letter heights.
+
+### Cache and cost
+
+Generation is linear in mask area and runs once per glyph/size. Cached height
+vectors are returned by const reference; cache lookup precedes any output-buffer
+allocation. Inserting another size does not invalidate existing references.
+Unclipped drawing consumes the cached vector directly; only actual clipping or
+animation needs temporary buffers. Cache lifetime follows the font/interface.
+There is no per-frame random generation, new dependency or general material engine.
+
+A standalone regression counts allocations during 1,000 warmed height lookups:
+zero allocations, no copies and no additional rasterization. This is a cache-path
+check, not an FPS benchmark or a claim that a whole frame allocates nothing.
 
 ## Encoding boundaries
 
@@ -85,8 +105,7 @@ encoding flag, and the runtime decodes once when constructing its model.
   shaping, fallback font stacks and new translations remain future work.
 
 The goal is additional languages, not a new CP866 renderer with UTF-8 wrappers.
-Legacy glyph profiles are a compatibility adapter, not a Unicode repertoire
-limit. A regression uses U+E000 (present in TTF, absent from CP866) to verify
+Legacy metrics are a compatibility adapter, not a Unicode repertoire limit. A regression uses U+E000 (present in TTF, absent from CP866) to verify
 independent TTF metrics and generic relief; Japanese/emoji fixtures verify lossless
 storage, **not** visual coverage. The bundled faces still cover Latin/Russian,
 and the current scalar layout does not implement shaping, bidirectional text or
@@ -99,15 +118,15 @@ separate work; enabling TTF alone does not translate the game.
 The out-of-tree CTest suite includes production source/SCB parser round-trips,
 legacy and explicit UTF-8 resource/page loading, complete SDL input events for
 both field types, scalar deletion/cancel/commit, canonical settings versus legacy
-network views, signed relief, original scale/blur operations and the actual
+network views, procedural relief, signed bitmap relief, original scale/blur operations and the actual
 14-frame button command sequence. Tests generate their own assets outside the
 repository; private game data is not required.
 
-All **24/24** tests pass in RelWithDebInfo and Debug ASan+UBSan builds (leak
+All **27/27** tests pass in RelWithDebInfo and Debug ASan+UBSan builds (leak
 detection enabled). Both original RU/EN source scripts also compile to SCB with
 the rebuilt production compiler.
 
-Manual visual QA uses isolated copies of game data. On 2026-11-03:
+Initial-stage visual QA used isolated copies of game data. On 2026-11-03:
 
 - RU bitmap menu, settings, credits, credits detail and history were pixel-exact
   against the pre-change binary (`682d5ef`).
@@ -116,14 +135,28 @@ Manual visual QA uses isolated copies of game data. On 2026-11-03:
 - RU graphics, sound, controls/category and basic key-binding screens, plus
   empty load slots, were also captured and inspected.
 - Press and return transitions were captured frame-by-frame against the original;
-  intermediate relief depth, blur, transition timing and restored background were
-  checked rather than only the final menu frame. The selected/restored comparison
-  has a one-pixel residual in TTF versus three in the original at the same edge;
-  this is not a claim of pixel-identical TTF output or perfectly reversible legacy
-  terrain lighting.
+  intermediate relief depth, blur, transition timing and background were checked.
+
+The procedural-height/cache update was additionally verified against the chosen
+external grain prototype: all 73 captures per language (RU/EN, including press
+and return frames) are pixel-identical after the cache/drawing optimizations.
+All 73 bitmap-mode captures also match the previous branch binary (`de4a43f`).
+The updated RU menu, settings, credits, credits detail and history were visually
+inspected in the actual game.
+Selected/restored captures match exactly in that scenario. This is not a claim
+of pixel-identical TTF versus original bitmap contours or universally reversible
+terrain lighting. The original seven-tick click/blur schedule remains tested.
+
+Additional regressions cover generation with legacy `HeightMap = nullptr`,
+non-CP866 outlines, empty masks, solid-glyph edge bevels, deterministic cache
+regeneration/reference stability, and shadow-copy spans at a wrapped map edge.
+No experimental CJK font additions, environment switches or diagnostic probes
+are part of the implementation.
 
 Captures/builds/logs are external, not vendored game assets:
 `/home/stalkerg/projects/vangers-font-baseline/2026-11-03-iscreen-ttf-NQ16Anv9`.
+Procedural/cache follow-up captures and logs:
+`/home/stalkerg/projects/vangers-font-baseline/2026-11-03-relief-publish-zZlz0VXD`.
 The SDL dummy/software event observer is not a physical mouse, GPU, IME or live
 multiplayer acceptance test. The legacy non-virtual tagged UI object ownership
 is not refactored here; fixtures delete their known element types explicitly so

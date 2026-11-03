@@ -32,9 +32,38 @@ void free_relief_fonts() {
 	faces.clear();
 }
 
-std::vector<uint8_t> ReliefGlyph::heights(int width, int height) const {
-	if (width <= 0 || height <= 0)
-		return {};
+namespace {
+// Fixed, stateless grain in glyph-local logical pixels: never depends on a frame
+// number, global random generator, language or screen position.
+double relief_noise(int x, int y) {
+	uint32_t n = uint32_t(x) * 374761393u + uint32_t(y) * 668265263u + 1274126177u;
+	n = (n ^ (n >> 13)) * 1274126177u;
+	n ^= n >> 16;
+	return double(n & 65535u) / 32767.5 - 1;
+}
+double smooth_relief_noise(double x, double y) {
+	const int ix = int(std::floor(x)), iy = int(std::floor(y));
+	double u = x - ix, v = y - iy;
+	u = u * u * (3 - 2 * u);
+	v = v * v * (3 - 2 * v);
+	return (relief_noise(ix, iy) * (1 - u) + relief_noise(ix + 1, iy) * u) * (1 - v) +
+		   (relief_noise(ix, iy + 1) * (1 - u) + relief_noise(ix + 1, iy + 1) * u) * v;
+}
+constexpr double relief_grain_amplitude = 3.0;
+} // namespace
+
+const std::vector<uint8_t> &ReliefGlyph::heights(int width, int height) const {
+	if (width <= 0 || height <= 0) {
+		static const std::vector<uint8_t> empty;
+		return empty;
+	}
+	const auto key = std::make_pair(width, height);
+	if (auto found = height_cache_.find(key); found != height_cache_.end())
+		return found->second;
+	return height_cache_.emplace(key, generate_heights(width, height)).first->second;
+}
+
+std::vector<uint8_t> ReliefGlyph::generate_heights(int width, int height) const {
 	std::vector<uint8_t> result(size_t(width) * height, HFONT_NULL_LEVEL);
 	if (bitmap) {
 		for (int y = 0; y < height; ++y)
@@ -45,86 +74,109 @@ std::vector<uint8_t> ReliefGlyph::heights(int width, int height) const {
 	}
 	if (!outline)
 		return result;
-	const auto coverage = outline->rasterize(width, height);
-	const auto sample = [&](int x, int y) {
-		x = std::clamp(x, 0, source_width - 1);
-		y = std::clamp(y, 0, source_height - 1);
-		return profile[size_t(y) * source_width + x];
-	};
-	for (int y = 0; y < height; ++y) {
-		for (int x = 0; x < width; ++x) {
-			const auto alpha = coverage.pixels[size_t(y) * width + x].alpha;
-			if (!alpha)
-				continue;
-			const double px = (x + 0.5) * bounds.w / width + bounds.x + source_left - 0.5;
-			const double py = (y + 0.5) * bounds.h / height + bounds.y - 0.5;
-			const int ix = int(std::floor(px)), iy = int(std::floor(py));
-			const double fx = px - ix, fy = py - iy;
-			const double relief =
-				(sample(ix, iy) * (1 - fx) + sample(ix + 1, iy) * fx) * (1 - fy) +
-				(sample(ix, iy + 1) * (1 - fx) + sample(ix + 1, iy + 1) * fx) * fy;
-			result[size_t(y) * width + x] =
-				uint8_t(HFONT_NULL_LEVEL + std::lround(relief * alpha / 255));
-		}
+	constexpr int ss = 4;
+	const int w = width * ss, h = height * ss;
+	auto mask = outline->rasterize(w, h);
+	if (!decorative) {
+		// Quarter-pixel optical compensation, confined to the glyph's ink box.
+		const auto input = mask.pixels;
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x) {
+				auto alpha = input[size_t(y) * w + x].alpha;
+				for (int yy = std::max(0, y - 1); yy <= std::min(h - 1, y + 1); ++yy)
+					for (int xx = std::max(0, x - 1); xx <= std::min(w - 1, x + 1); ++xx)
+						alpha = std::max(alpha, input[size_t(yy) * w + xx].alpha);
+				mask.pixels[size_t(y) * w + x].alpha = alpha;
+			}
 	}
+	std::vector<float> d(size_t(w) * h, float(w + h));
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x) {
+			const size_t i = size_t(y) * w + x;
+			// Outside the tight ink box is background, including solid/rectangular glyphs.
+			d[i] =
+				mask.pixels[i].alpha < 128 ? 0.0f : float(std::min({x + 1, y + 1, w - x, h - y}));
+		}
+	// Two-pass chamfer distance inside the TTF contour, O(width * height).
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x) {
+			auto &v = d[size_t(y) * w + x];
+			if (x)
+				v = std::min(v, d[size_t(y) * w + x - 1] + 1);
+			if (y)
+				v = std::min(v, d[size_t(y - 1) * w + x] + 1);
+			if (x && y)
+				v = std::min(v, d[size_t(y - 1) * w + x - 1] + 1.41421356f);
+			if (x + 1 < w && y)
+				v = std::min(v, d[size_t(y - 1) * w + x + 1] + 1.41421356f);
+		}
+	for (int y = h - 1; y >= 0; --y)
+		for (int x = w - 1; x >= 0; --x) {
+			auto &v = d[size_t(y) * w + x];
+			if (x + 1 < w)
+				v = std::min(v, d[size_t(y) * w + x + 1] + 1);
+			if (y + 1 < h)
+				v = std::min(v, d[size_t(y + 1) * w + x] + 1);
+			if (x + 1 < w && y + 1 < h)
+				v = std::min(v, d[size_t(y + 1) * w + x + 1] + 1.41421356f);
+			if (x && y + 1 < h)
+				v = std::min(v, d[size_t(y + 1) * w + x - 1] + 1.41421356f);
+		}
+	const double floor = decorative ? 0.0 : 12.0;
+	const double peak = decorative ? 24.0 : 27.0;
+	const double bevel = (decorative ? 2.6 : 1.2) * height / 52.0;
+	for (int y = 0; y < height; ++y)
+		for (int x = 0; x < width; ++x) {
+			double sum = 0;
+			for (int sy = 0; sy < ss; ++sy)
+				for (int sx = 0; sx < ss; ++sx) {
+					const int i = (y * ss + sy) * w + x * ss + sx;
+					const double alpha = mask.pixels[i].alpha / 255.0;
+					const double distance = std::max(0.0, (d[i] - 0.5) / ss);
+					const double px = x + (sx + 0.5) / ss, py = y + (sy + 0.5) / ss;
+					double relief =
+						floor +
+						(peak - floor) * std::sin(std::min(1.0, distance / bevel) * 1.5707963268);
+					relief *= 0.88 + 0.17 * smooth_relief_noise(px / 5.0, py / 5.0) +
+							  0.06 * smooth_relief_noise(px / 2.3 + 17, py / 2.3 + 29);
+					sum += relief * alpha;
+				}
+			double relief = sum / (ss * ss);
+			// Grain belongs to the FINAL height grid, not the supersampled mask:
+			// downsampling must not average the surface texture away.
+			relief += relief_grain_amplitude * (decorative ? 1.0 : 0.45) *
+					  relief_noise(x + 41, y + 67) * std::min(1.0, relief / 8.0);
+			result[size_t(y) * width + x] =
+				uint8_t(HFONT_NULL_LEVEL + std::clamp(int(std::lround(relief)), 0, 127));
+		}
 	return result;
 }
 
 ReliefFont::ReliefFont(const HFont &source, actint::FontFamily family, bool icons_only)
-	: source_(source), font_(family), icons_only_(icons_only) {}
+	: source_(source), font_(family), icons_only_(icons_only), family_(family) {}
 
 const ReliefGlyph &ReliefFont::glyph(char32_t cp) {
 	const auto found = glyphs_.find(cp);
 	if (found != glyphs_.end())
 		return found->second;
 	ReliefGlyph result;
+	result.decorative = family_ == actint::FontFamily::Menu;
 	const auto legacy = settings::unicode_to_cp866(cp);
-	// The legacy lookup is only a compatibility profile. A new Unicode glyph
+	// The legacy lookup preserves existing UI metrics, not height profiles. A new Unicode glyph
 	// must never inherit '?' widths or heights merely because CP866 lacks it.
 	const bool legacy_character = settings::cp866_to_unicode(legacy) == cp &&
 								  legacy >= source_.StartChar && legacy <= source_.EndChar;
 	const auto index =
 		legacy >= source_.StartChar && legacy <= source_.EndChar ? legacy - source_.StartChar : 0;
 	const auto &original = *source_.data[index];
-	result.source_width = original.SizeX;
-	result.source_height = original.SizeY;
-	result.source_left = original.LeftOffs;
-	result.source.assign(original.HeightMap, original.HeightMap + original.SizeX * original.SizeY);
-	// Extend the signed relief profile underneath the new outline. Otherwise
-	// neutral source pixels would cut the TTF back to the old bitmap silhouette.
-	// Existing heights are unchanged; only previously empty samples are filled.
-	result.profile.assign(result.source.size(), 31);
-	std::vector<int> queue;
-	std::vector<bool> filled(result.source.size());
-	for (size_t i = 0; i < result.source.size(); ++i) {
-		if (legacy_character && result.source[i] != HFONT_NULL_LEVEL) {
-			result.profile[i] = int(result.source[i]) - HFONT_NULL_LEVEL;
-			filled[i] = true;
-			queue.push_back(int(i));
-		}
-	}
-	for (size_t i = 0; i < queue.size(); ++i) {
-		const int pos = queue[i], x = pos % original.SizeX, y = pos / original.SizeX;
-		const auto fill = [&](int next) {
-			if (!filled[next]) {
-				filled[next] = true;
-				result.profile[next] = result.profile[pos];
-				queue.push_back(next);
-			}
-		};
-		if (x)
-			fill(pos - 1);
-		if (x + 1 < original.SizeX)
-			fill(pos + 1);
-		if (y)
-			fill(pos - original.SizeX);
-		if (y + 1 < original.SizeY)
-			fill(pos + original.SizeX);
-	}
-
 	result.advance = original.SizeX - original.LeftOffs - original.RightOffs;
 	result.bitmap = icons_only_ || cp < 32;
 	if (result.bitmap) {
+		result.source_width = original.SizeX;
+		result.source_height = original.SizeY;
+		result.source.assign(
+			original.HeightMap, original.HeightMap + original.SizeX * original.SizeY
+		);
 		result.bounds = {-original.LeftOffs, 0, original.SizeX, original.SizeY};
 	} else {
 		char encoded[5]{};

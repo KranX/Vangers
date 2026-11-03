@@ -13,8 +13,8 @@ void put_buf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode
 );
