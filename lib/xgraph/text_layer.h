@@ -37,6 +37,8 @@ class Layer {
 	void clear();
 	bool empty() const;
 	void paint(SDL_Rect bounds, std::shared_ptr<const Image> image, const SDL_Rect *clip = nullptr);
+	// Remove this caller-owned image without erasing neighbouring text.
+	void remove(const Image *image);
 	void erase(SDL_Rect bounds, const uint8_t *mask = nullptr, int pitch = 0);
 	void copy(
 		const Layer &source,

@@ -2,6 +2,8 @@
 
 #include "settings/settings.h"
 #include "settings/text_encoding.h"
+#include "text/grain.h"
+#include "text/inside_distance.h"
 
 extern HFont **HFntTable;
 extern int iNumFonts;
@@ -33,22 +35,6 @@ void free_relief_fonts() {
 }
 
 namespace {
-// Fixed, stateless grain in glyph-local logical pixels: never depends on a frame
-// number, global random generator, language or screen position.
-double relief_noise(int x, int y) {
-	uint32_t n = uint32_t(x) * 374761393u + uint32_t(y) * 668265263u + 1274126177u;
-	n = (n ^ (n >> 13)) * 1274126177u;
-	n ^= n >> 16;
-	return double(n & 65535u) / 32767.5 - 1;
-}
-double smooth_relief_noise(double x, double y) {
-	const int ix = int(std::floor(x)), iy = int(std::floor(y));
-	double u = x - ix, v = y - iy;
-	u = u * u * (3 - 2 * u);
-	v = v * v * (3 - 2 * v);
-	return (relief_noise(ix, iy) * (1 - u) + relief_noise(ix + 1, iy) * u) * (1 - v) +
-		   (relief_noise(ix, iy + 1) * (1 - u) + relief_noise(ix + 1, iy + 1) * u) * v;
-}
 constexpr double relief_grain_amplitude = 2.1;
 } // namespace
 
@@ -89,39 +75,9 @@ std::vector<uint8_t> ReliefGlyph::generate_heights(int width, int height) const 
 				mask.pixels[size_t(y) * w + x].alpha = alpha;
 			}
 	}
-	std::vector<float> d(size_t(w) * h, float(w + h));
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x) {
-			const size_t i = size_t(y) * w + x;
-			// Outside the tight ink box is background, including solid/rectangular glyphs.
-			d[i] =
-				mask.pixels[i].alpha < 128 ? 0.0f : float(std::min({x + 1, y + 1, w - x, h - y}));
-		}
-	// Two-pass chamfer distance inside the TTF contour, O(width * height).
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x) {
-			auto &v = d[size_t(y) * w + x];
-			if (x)
-				v = std::min(v, d[size_t(y) * w + x - 1] + 1);
-			if (y)
-				v = std::min(v, d[size_t(y - 1) * w + x] + 1);
-			if (x && y)
-				v = std::min(v, d[size_t(y - 1) * w + x - 1] + 1.41421356f);
-			if (x + 1 < w && y)
-				v = std::min(v, d[size_t(y - 1) * w + x + 1] + 1.41421356f);
-		}
-	for (int y = h - 1; y >= 0; --y)
-		for (int x = w - 1; x >= 0; --x) {
-			auto &v = d[size_t(y) * w + x];
-			if (x + 1 < w)
-				v = std::min(v, d[size_t(y) * w + x + 1] + 1);
-			if (y + 1 < h)
-				v = std::min(v, d[size_t(y + 1) * w + x] + 1);
-			if (x + 1 < w && y + 1 < h)
-				v = std::min(v, d[size_t(y + 1) * w + x + 1] + 1.41421356f);
-			if (x && y + 1 < h)
-				v = std::min(v, d[size_t(y + 1) * w + x - 1] + 1.41421356f);
-		}
+	const auto d = text::inside_distance(w, h, [&](int x, int y) {
+		return mask.pixels[size_t(y) * w + x].alpha;
+	});
 	const double floor = decorative ? 0.0 : 12.0;
 	const double peak = decorative ? 24.0 : 27.0;
 	const double bevel = (decorative ? 2.6 : 1.2) * height / 52.0;
@@ -137,15 +93,15 @@ std::vector<uint8_t> ReliefGlyph::generate_heights(int width, int height) const 
 					double relief =
 						floor +
 						(peak - floor) * std::sin(std::min(1.0, distance / bevel) * 1.5707963268);
-					relief *= 0.88 + 0.17 * smooth_relief_noise(px / 5.0, py / 5.0) +
-							  0.06 * smooth_relief_noise(px / 2.3 + 17, py / 2.3 + 29);
+					relief *= 0.88 + 0.17 * text::smooth_grain(px / 5.0, py / 5.0) +
+							  0.06 * text::smooth_grain(px / 2.3 + 17, py / 2.3 + 29);
 					sum += relief * alpha;
 				}
 			double relief = sum / (ss * ss);
 			// Grain belongs to the FINAL height grid, not the supersampled mask:
 			// downsampling must not average the surface texture away.
 			relief += relief_grain_amplitude * (decorative ? 1.0 : 0.45) *
-					  relief_noise(x + 41, y + 67) * std::min(1.0, relief / 8.0);
+					  text::grain(x + 41, y + 67) * std::min(1.0, relief / 8.0);
 			result[size_t(y) * width + x] =
 				uint8_t(HFONT_NULL_LEVEL + std::clamp(int(std::lround(relief)), 0, 127));
 		}

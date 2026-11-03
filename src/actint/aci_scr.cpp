@@ -1,4 +1,3 @@
-#include "../settings/text_encoding.h"
 
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
@@ -11,8 +10,17 @@
 #include "aci_evnt.h"
 #include "aci_scr.h"
 
+#include "../iscreen/text.h"
+#include "../settings/settings.h"
+#include "../text/utf8.h"
 #include "a_consts.h"
 #include "acsconst.h"
+#include "raster_text.h"
+#include "text.h"
+#include "ttf_font.h"
+
+#include <algorithm>
+#include <limits>
 
 #include "../iscreen/iscreen.h"
 #include "../network.h"
@@ -52,7 +60,8 @@ int acsGetMaxFrame(int res_id);
 void aOutStr(int x, int y, int font, int color, unsigned char *str, int space = 1);
 int aStrLen(unsigned char *str, int font, int space = 1);
 
-void acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space);
+std::shared_ptr<const xgr::text::Image>
+acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space);
 void aciPutSpr32(int x, int y, int sx, int sy, void *buf, int col, int col_sz);
 int acsStrLen(int fnt, unsigned char *str, int space);
 
@@ -89,6 +98,26 @@ char *acsBackupStr = NULL;
 aciScreenDispatcher *acsScrD;
 
 HFont **acsFntTable = NULL;
+namespace {
+std::unique_ptr<vangers::actint::TtfFont> acsTtf;
+std::vector<std::shared_ptr<const std::vector<vangers::actint::FontIcon>>> acsIcons;
+
+vangers::actint::TextLayout acsLayout(const char *text, int font, int colour, int space) {
+	vangers::actint::FontStyle style;
+	style.cell_width = acsFntTable[font]->SizeX;
+	style.cell_height = acsFntTable[font]->SizeY;
+	style.spacing = style.line_spacing = space;
+	style.range = true;
+	style.embossed = true;
+	style.fixed_pitch = true;
+	style.zero_range_transparent = true;
+	style.highlight_numbers = false;
+	style.colour = colour & 255;
+	style.colour_size = (colour >> 8) & 255;
+	style.icons = acsIcons[font];
+	return acsTtf->layout(text, style);
+}
+} // namespace
 
 int aciCurCredits00 = 0;
 int acsSequenceCounter = 0;
@@ -1436,22 +1465,30 @@ void aciScreenScroller::Change(int x) {
 }
 
 void aciScreenInputField::redraw(void) {
-	int sz;
+	// BMO restoration does not cover padding/overhang outside the field. Retire
+	// only our previous draw, not its whole rectangle (which may overlap labels).
+	if (const auto previous = nativeText.lock())
+		if (auto *layer = xgr::text::find(XGR_Obj.get_active_render_buffer()))
+			layer->remove(previous.get());
+	nativeText.reset();
 	aciScreenObject::redraw();
-	if (!(flags & ACS_ALIGN_CENTER)) {
-		if (flags & ACS_ISCREEN_FONT)
-			acsOutStr(PosX, PosY, font, Color, (unsigned char *)string, Space);
-		else
-			aOutStr(PosX, PosY, font, Color, (unsigned char *)string, Space);
-	} else {
-		if (flags & ACS_ISCREEN_FONT) {
-			sz = acsStrLen(font, (unsigned char *)string, Space);
-			acsOutStr(PosX + (SizeX - sz) / 2, PosY, font, Color, (unsigned char *)string, Space);
-		} else {
-			sz = aStrLen((unsigned char *)string, font, Space);
-			aOutStr(PosX + (SizeX - sz) / 2, PosY, font, Color, (unsigned char *)string, Space);
-		}
+	int x = PosX;
+	if (flags & ACS_ALIGN_CENTER) {
+		// Reserve underscore advance even while the cursor blinks as a space.
+		// TTF space/underscore metrics differ; measuring the blinking bytes
+		// directly would move the entire centered label on every blink.
+		std::string measured(string);
+		if ((flags & ACS_ACTIVE_STRING) && !measured.empty())
+			measured.back() = '_';
+		const int width = flags & ACS_ISCREEN_FONT
+							  ? acsStrLen(font, (unsigned char *)measured.data(), Space)
+							  : aStrLenUtf8(measured.c_str(), font, Space);
+		x += (SizeX - width) / 2;
 	}
+	if (flags & ACS_ISCREEN_FONT)
+		nativeText = acsOutStr(x, PosY, font, Color, (unsigned char *)string, Space);
+	else
+		nativeText = aOutStrUtf8(x, PosY, font, Color, string, Space);
 }
 
 void aciScreenDispatcher::ChangeScroller(int obj_id, int x) {
@@ -1480,64 +1517,34 @@ void aciScreenScroller::init(void) {
 }
 
 void aciScreenDispatcher::InputQuant(SDL_Event *event) {
-	int sz;
-	unsigned char *ptr = NULL;
-	unsigned char chr;
-	HFont *hfnt = NULL;
-
-	if (!activeInput) {
+	if (!activeInput || !event)
 		return;
-	}
-
-	if (!(event != nullptr &&
-			(event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_TEXT_INPUT)))
-		return;
-
-	ptr = (unsigned char *)activeInput->string;
-	if (activeInput->flags & ACS_ISCREEN_FONT) {
-		hfnt = acsFntTable[activeInput->font];
-	}
-
-	if (event != nullptr && event->type == SDL_EVENT_KEY_DOWN) {
-		if (event->key.key > 0 && event->key.key < 127) {
-			chr = event->key.key;
-		} else {
-			return;
-		}
-
-		switch (event->key.key) {
-		case SDLK_RETURN:
+	if (event->type == SDL_EVENT_KEY_DOWN) {
+		if (event->key.key == SDLK_RETURN) {
 			DoneInput();
-			break;
-		case SDLK_ESCAPE:
+			return;
+		}
+		if (event->key.key == SDLK_ESCAPE) {
 			CancelInput();
-			break;
-		case SDLK_LEFT:
-		case SDLK_BACKSPACE:
-			sz = strlen((char *)ptr);
-			if (sz > 1) {
-				ptr[sz - 1] = 0;
-				ptr[sz - 2] = '_';
-				activeInput->flags |= ACS_REDRAW_OBJECT;
-			}
-			break;
-		}
-	} else if (event != nullptr && event->type == SDL_EVENT_TEXT_INPUT) {
-		const std::string encoded = vangers::settings::utf8_to_cp866(event->text.text);
-		if (encoded.empty())
 			return;
-		chr = static_cast<unsigned char>(encoded.front());
-		if (hfnt && chr < (hfnt->StartChar - hfnt->EndChar + 1) &&
-			(hfnt->data[chr]->Flags & NULL_HCHAR) && chr != ' ')
-			return;
-		sz = strlen((char *)ptr);
-		if (sz <= activeInput->MaxStrLen) {
-			ptr[sz - 1] = chr;
-			ptr[sz] = '_';
-			ptr[sz + 1] = 0;
-			activeInput->flags |= ACS_REDRAW_OBJECT;
 		}
+		if (event->key.key != SDLK_LEFT && event->key.key != SDLK_BACKSPACE)
+			return;
+	} else if (event->type != SDL_EVENT_TEXT_INPUT) {
+		return;
 	}
+	// Cursor is always the final ASCII byte, even while blinking as a space.
+	std::string value(activeInput->string);
+	value.pop_back();
+	if (event->type == SDL_EVENT_KEY_DOWN)
+		vangers::text::pop_back(value);
+	else
+		vangers::iscreen::append_input(value, event->text.text, activeInput->MaxStrLen, false);
+	activeInput->set_string(value.c_str());
+	const auto end = std::strlen(activeInput->string);
+	activeInput->string[end] = '_';
+	activeInput->string[end + 1] = 0;
+	activeInput->flags |= ACS_REDRAW_OBJECT;
 }
 
 void aciScreenDispatcher::PrepareInput(int obj_id) {
@@ -1563,8 +1570,20 @@ void aciScreenDispatcher::PrepareInput(int obj_id) {
 }
 
 void aciScreenInputField::alloc_str(void) {
-	string = new char[MaxStrLen + 2];
-	memset(string, 0, MaxStrLen + 2);
+	if (MaxStrLen < 0 || MaxStrLen > (std::numeric_limits<int>::max() - 2) / 4)
+		ErrH.Abort("Invalid ACS string length");
+	delete[] string;
+	string = new char[size_t(MaxStrLen) * 4 + 2]{};
+}
+
+void aciScreenInputField::set_string(const char *p) {
+	if (!string)
+		ErrH.Abort("ACS string requires string_len before string");
+	try {
+		vangers::iscreen::copy_text(string, p, MaxStrLen);
+	} catch (const std::exception &error) {
+		ErrH.Abort(error.what());
+	}
 }
 
 void acsLoadFonts(void) {
@@ -1586,9 +1605,25 @@ void acsLoadFonts(void) {
 		acsFntTable[i]->data[32]->LeftOffs = acsFntTable[i]->data[95]->LeftOffs;
 		acsFntTable[i]->data[32]->RightOffs = acsFntTable[i]->data[95]->RightOffs;
 	}
+	if (vangers::settings::settings_manager().get().video.ttf_text) {
+		acsTtf = std::make_unique<vangers::actint::TtfFont>(vangers::actint::FontFamily::Display);
+		for (int f = 0; f < ACS_MAX_FONT; ++f) {
+			auto icons = std::make_shared<std::vector<vangers::actint::FontIcon>>(32);
+			for (int c = 0; c < 32; ++c) {
+				const auto &glyph = *acsFntTable[f]->data[c];
+				auto &icon = (*icons)[c];
+				icon.left = glyph.LeftOffs;
+				icon.right = glyph.RightOffs;
+				icon.pixels.assign(glyph.HeightMap, glyph.HeightMap + glyph.SizeX * glyph.SizeY);
+			}
+			acsIcons.push_back(icons);
+		}
+	}
 }
 
 void acsFreeFonts(void) {
+	acsTtf.reset();
+	acsIcons.clear();
 	int i;
 	if (!acsFntTable)
 		return;
@@ -1598,7 +1633,27 @@ void acsFreeFonts(void) {
 	acsFntTable = NULL;
 }
 
-void acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space) {
+std::shared_ptr<const xgr::text::Image>
+acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space) {
+	if (acsTtf) {
+		auto layout = acsLayout((const char *)str, fnt, col, space);
+		if (layout.image) {
+			auto *layer =
+				xgr::text::prepare(XGR_Obj.get_active_render_buffer(), XGR_MAXX, XGR_MAXY, false);
+			layout.ink_bounds.x += x;
+			layout.ink_bounds.y += y;
+			const SDL_Rect clip{XGR_Obj.clipLeft,
+				XGR_Obj.clipTop,
+				XGR_Obj.clipRight - XGR_Obj.clipLeft,
+				XGR_Obj.clipBottom - XGR_Obj.clipTop};
+			layer->paint(
+				layout.ink_bounds, layout.image, XGR_Obj.ClipMode == XGR_CLIP_ALL ? &clip : nullptr
+			);
+		}
+		return layout.image;
+	}
+	auto legacy = vangers::settings::utf8_to_cp866((const char *)str);
+	str = (unsigned char *)legacy.data();
 	int _x, _y, i, sx, sy, ss, sz = strlen((char *)str), col_sz;
 	HFont *p = acsFntTable[fnt];
 	HChar *ch;
@@ -1625,6 +1680,7 @@ void acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space) {
 			_x += sx - ch->RightOffs - ch->LeftOffs + space;
 		}
 	}
+	return {};
 }
 
 int aciScreenDispatcher::GetObjectValue(int obj_id, int flag) {
@@ -1648,6 +1704,10 @@ int aciScreenDispatcher::GetObjectValue(int obj_id, int flag) {
 }
 
 int acsStrLen(int fnt, unsigned char *str, int space) {
+	if (acsTtf)
+		return acsLayout((const char *)str, fnt, 0, space).width;
+	auto legacy = vangers::settings::utf8_to_cp866((const char *)str);
+	str = (unsigned char *)legacy.data();
 	int i, sx, sz = strlen((char *)str), len = 0;
 	HFont *p = acsFntTable[fnt];
 	HChar *ch;
@@ -1709,25 +1769,25 @@ void aciScreenInputField::init(void) {
 }
 
 void aciScreenInputField::change_state(void) {
-	if (!strcmp(string, vangers::settings::utf8_to_cp866(aciSTR_OFF).c_str())) {
-		strcpy(string, vangers::settings::utf8_to_cp866(aciSTR_ON).c_str());
+	if (!strcmp(string, aciSTR_OFF)) {
+		set_string(aciSTR_ON);
 	} else {
-		strcpy(string, vangers::settings::utf8_to_cp866(aciSTR_OFF).c_str());
+		set_string(aciSTR_OFF);
 	}
 	flags |= ACS_REDRAW_OBJECT;
 }
 
 void aciScreenInputField::set_state(int v) {
 	if (v) {
-		strcpy(string, vangers::settings::utf8_to_cp866(aciSTR_ON).c_str());
+		set_string(aciSTR_ON);
 	} else {
-		strcpy(string, vangers::settings::utf8_to_cp866(aciSTR_OFF).c_str());
+		set_string(aciSTR_OFF);
 	}
 	flags |= ACS_REDRAW_OBJECT;
 }
 
 int aciScreenInputField::get_state(void) {
-	if (!strcmp(string, vangers::settings::utf8_to_cp866(aciSTR_OFF).c_str()))
+	if (!strcmp(string, aciSTR_OFF))
 		return 0;
 	return 1;
 }

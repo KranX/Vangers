@@ -3,8 +3,9 @@
 Actint stores display text in UTF-8: HUD and shop panels, inventory labels and
 comments, menu entries, dialogue lines and topics, world/location labels,
 mouse-prompt sources, animated messages and full-screen text pages. Existing
-bitmap output and shipped resources remain compatible. This does not migrate
-ACS, iscreen, Diagen internals, the network protocol or save-file formats.
+bitmap output and shipped resources remain compatible. This stage did not migrate Diagen internals or the network protocol. Subsequent
+[iscreen](iscreen-ttf.md) and [ACS](acs-ttf.md) stages cover those interfaces;
+the ACS stage also adds explicit UTF-8 save metadata with old-save read support.
 
 ## Input and output boundaries
 
@@ -36,9 +37,9 @@ ACS, iscreen, Diagen internals, the network protocol or save-file formats.
   numeric-only font: unrepresentable characters/out-of-range glyph indices use
   `?`, or a space when `?` is unavailable. Fonts with no space glyph (32 or fewer
   glyphs) produce an empty bitmap view, never an embedded NUL or an invalid index.
-- Bitmap-mode XGR mouse-prompt copies, iscreen mechos captions, ACS toggle/slot labels and
-  save metadata are encoded at those legacy boundaries. Save header lengths
-  continue to describe CP866 bytes, not UTF-8 bytes.
+- Bitmap-mode XGR mouse-prompt copies encode at the presentation boundary.
+  Iscreen mechos captions and ACS labels now remain UTF-8 after their follow-up
+  migrations. Save metadata encoding is explicit; see [ACS save compatibility](acs-ttf.md).
   XGR's `set_text` borrows storage, so the actint adapter uses `init_text` to
   own the converted CP866 bytes. Repeated updates release the previous copy;
   unchanged hover text reuses it. XGR also owns the active displayed snapshot,
@@ -64,7 +65,8 @@ instead of disappearing, and animated prefixes no longer need a 256-byte buffer.
 Prompt clipping modifies only a temporary presentation string, not `StrBuf`;
 a wider redraw can display the full original text again.
 This is not grapheme-aware editing, shaping, IME support or new glyph coverage.
-ACS input and chat are unchanged, including their pre-existing input limitations.
+ACS input is covered by its follow-up stage. Chat remains unchanged, including
+its pre-existing input limitations.
 
 Scalar-boundary helpers live in the neutral `text/utf8` module. Bitmap adapter
 declarations live in `actint/raster_text.h`, separate from text utilities.

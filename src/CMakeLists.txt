@@ -25,6 +25,9 @@ TARGET_LINK_LIBRARIES(vangers_settings PRIVATE
 	toml11::toml11
 )
 
+ADD_LIBRARY(vangers_save_text STATIC saves/text.cpp)
+TARGET_LINK_LIBRARIES(vangers_save_text PUBLIC vangers_settings)
+
 SET(EMBEDDED_FONT_SOURCES)
 FOREACH(face Text Menu Display)
 	SET(FONT_PATH "${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/Vangers${face}-Regular.ttf")
@@ -165,6 +168,7 @@ ENDIF()
 
 function(CONFIGURE_VANGERS_TARGET target_name)
 	TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+		vangers_save_text
 		vangers_iscreen_text
 		vangers_ttf
 		vangers_text
@@ -235,6 +239,16 @@ if (NOT ANDROID)
 				TARGET_COMPILE_DEFINITIONS(iscreen_${script_mode}_test PRIVATE _BINARY_SCRIPT_)
 			ENDIF()
 			CONFIGURE_VANGERS_TARGET(iscreen_${script_mode}_test)
+			ADD_EXECUTABLE(acs_${script_mode}_test
+				${vangers_SCRIPT_SRCS}
+				$<TARGET_OBJECTS:vangers_common>
+				../tests/acs_runtime_test.cpp
+				../lib/xtool/xerrhead.cpp)
+			TARGET_COMPILE_DEFINITIONS(acs_${script_mode}_test PRIVATE SDL_ShowSimpleMessageBox=VangersTest_ShowSimpleMessageBox)
+			IF(script_mode STREQUAL "binary")
+				TARGET_COMPILE_DEFINITIONS(acs_${script_mode}_test PRIVATE _BINARY_SCRIPT_)
+			ENDIF()
+			CONFIGURE_VANGERS_TARGET(acs_${script_mode}_test)
 		ENDFOREACH()
 	ENDIF()
 

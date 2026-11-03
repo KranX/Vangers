@@ -72,8 +72,8 @@ This follows the existing rendering path rather than adding another UI tree.
 
 [Iscreen's UTF-8/TTF stage](iscreen-ttf.md) now uses this backend for its flat
 text and static tooltips. Its relief uses Menu/Display outlines with the original
-height-map renderer. ACS pause/save UI, chat and service screens remain
-bitmap/legacy. Original `aPutStr`, `aOutStr`, `aOutText32`, etc. retain CP866
+height-map renderer. [ACS pause/save UI](acs-ttf.md) also uses the shared TTF
+backend; chat and service screens remain bitmap/legacy. Original `aPutStr`, `aOutStr`, `aOutText32`, etc. retain CP866
 contracts; only explicitly migrated `*Utf8` calls and prompts select this backend.
 
 ## Validation

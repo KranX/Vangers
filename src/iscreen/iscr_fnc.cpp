@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../saves/text.h"
 #include "../settings/settings.h"
 #include "../sound/hsound.h"
 
@@ -2530,10 +2531,9 @@ void iHandleExtEvent(int code, int data) {
 }
 
 void iPrepareSaveNames(void) {
-	int i, len, time_len;
+	int i;
 	XBuffer XBuf;
 	XBuffer XBufStr;
-	XStream fh(0);
 
 	iScreen *scr = (iScreen *)iScrDisp->get_object("Loading screen");
 	iScreenObject *obj, *obj1;
@@ -2561,28 +2561,15 @@ void iPrepareSaveNames(void) {
 			if (el1) {
 				obj1 = (iScreenObject *)el1->owner;
 			}
-			if (fh.open(XBuf.address(), XS_IN)) {
-				fh > len;
-
-				time_len = (len >> 16) & 0xFF;
-				len &= 0xFF;
-
-				std::string legacy_name(len, '\0');
-				fh.read(legacy_name.data(), len);
-				el->init_string(vangers::settings::cp866_to_utf8(legacy_name).c_str());
-
+			if (const auto text = vangers::saves::read_text(XBuf.address())) {
+				el->init_string(text->name.c_str());
 				if (el1) {
-					if (time_len) {
-						std::string legacy_time(time_len, '\0');
-						fh.read(legacy_time.data(), time_len);
-						el1->init_string(vangers::settings::cp866_to_utf8(legacy_time).c_str());
-						obj1->flags &= ~OBJ_LOCKED;
-					} else {
-						el1->string[0] = 0;
+					el1->init_string(text->description.c_str());
+					if (text->description.empty())
 						obj1->flags |= OBJ_LOCKED;
-					}
+					else
+						obj1->flags &= ~OBJ_LOCKED;
 				}
-				fh.close();
 				obj->flags &= ~OBJ_LOCKED;
 			} else {
 				el->init_string(vangers::settings::cp866_to_utf8(iSTR_EMPTY_SLOT).c_str());

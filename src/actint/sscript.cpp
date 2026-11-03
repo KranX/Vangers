@@ -8,6 +8,7 @@
 
 #include "aci_evnt.h"
 #include "aci_scr.h"
+#include "text.h"
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -97,6 +98,7 @@ enum acsOptions {
 	// Screen options...
 	ACS_SET_BACK_ID,
 
+	ACS_UTF8_TEXT,
 	MAX_OPTION
 };
 
@@ -153,7 +155,8 @@ static const char *acsOptIDs[MAX_OPTION] = {"}",
 	"string",
 
 	// Screen options...
-	"background"};
+	"background",
+	"utf8_text"};
 
 int acsScriptMode = ACS_NONE;
 int acsEndBlockMode = ACS_NONE;
@@ -169,6 +172,8 @@ aciScreen *acsScr;
 
 void acsParseScript(const char *fname, const char *bname) {
 	int id, num = 0;
+	bool utf8 = false;
+	acsScriptMode = acsEndBlockMode = ACS_NONE;
 
 	acsScrD = new aciScreenDispatcher;
 
@@ -202,6 +207,9 @@ void acsParseScript(const char *fname, const char *bname) {
 				acsEndScriptBlock();
 				break;
 			case ACS_END_STRING:
+				break;
+			case ACS_UTF8_TEXT:
+				utf8 = true;
 				break;
 			case ACS_NEW_RESOURCE:
 				if (acsScriptMode != ACS_NONE && acsScriptMode != ACS_INIT_SCREEN)
@@ -456,7 +464,18 @@ void acsParseScript(const char *fname, const char *bname) {
 			case ACS_SET_STRING:
 				if (acsScriptMode == ACS_INIT_OBJECT && acsObj->type == ACS_INPUT_FIELD_OBJ) {
 					script->prepare_pdata();
-					((aciScreenInputField *)acsObj)->set_string(script->get_conv_ptr());
+					try {
+						const auto text = vangers::actint::decode_text(
+							script->get_conv_ptr(),
+							utf8 ? vangers::actint::TextEncoding::Utf8
+								 : vangers::actint::TextEncoding::Cp866
+						);
+						((aciScreenInputField *)acsObj)->set_string(text.c_str());
+					} catch (const std::exception &error) {
+						const auto context =
+							std::string(fname) + ": option string: " + error.what();
+						handle_error("Invalid ACS display text", context.c_str());
+					}
 				} else {
 					handle_error("Misplaced option", acsOptIDs[id]);
 				}

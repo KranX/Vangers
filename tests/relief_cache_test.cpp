@@ -1,10 +1,12 @@
 #include "iscreen/relief_font.h"
+#include "text/grain.h"
+#include "text/inside_distance.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <new>
 
-// This executable exercises the height cache without loading game/font assets.
+// Exercise both caches without private game assets; ACS uses the embedded font.
 HFont **HFntTable = nullptr;
 int iNumFonts = 0;
 
@@ -36,6 +38,22 @@ void operator delete(void *p, std::size_t) noexcept {
 }
 
 int main() {
+	const auto solid = vangers::text::inside_distance(5, 5, [](int, int) { return 255; });
+	if (solid != std::vector<float>{
+					 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 3, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1})
+		return 1;
+	const auto hole = vangers::text::inside_distance(5, 5, [](int x, int y) {
+		return x == 2 && y == 2 ? 127 : 128;
+	});
+	if (hole[12] != 0 || hole[11] != 1 || hole[6] != 1.41421356f)
+		return 1;
+	for (int x = -3; x < 4; ++x) {
+		const double a = vangers::text::grain(x, 5), b = vangers::text::grain(x + 1, 5);
+		if (vangers::text::smooth_grain(x, 5) != a ||
+			std::abs(vangers::text::smooth_grain(x + 0.5, 5) - (a + b) / 2) > 1e-12)
+			return 1;
+	}
+
 	vangers::iscreen::ReliefGlyph glyph;
 	auto outline = std::make_shared<Outline>();
 	glyph.outline = outline;
@@ -56,6 +74,31 @@ int main() {
 	if (allocations || !same || outline->calls != 1) {
 		std::cerr << "Height cache hit allocated/copied/rasterized: " << allocations << '\n';
 		return 1;
+	}
+	// ACS retains only the last native-size raster for an immutable run. A
+	// cache hit allocates the returned pixel copy, not masks/height fields.
+	vangers::actint::TtfFont font(vangers::actint::FontFamily::Display);
+	vangers::actint::FontStyle style;
+	style.cell_width = 20;
+	style.cell_height = 39;
+	style.range = style.embossed = style.fixed_pitch = true;
+	const auto run = font.layout("Свободно", style);
+	for (int scale : {1, 2, 1}) {
+		const auto first = run.image->rasterize(run.ink_bounds.w * scale, run.ink_bounds.h * scale);
+		allocations = 0;
+		count_allocations = true;
+		const auto second = run.image->rasterize(first.width, first.height);
+		count_allocations = false;
+		if (allocations != 1 || first.pixels.size() != second.pixels.size()) {
+			std::cerr << "ACS surface cache regenerated glyphs: " << allocations << '\n';
+			return 1;
+		}
+		for (size_t i = 0; i < first.pixels.size(); ++i) {
+			const auto &a = first.pixels[i], &b = second.pixels[i];
+			if (a.colour != b.colour || a.alpha != b.alpha || a.border != b.border ||
+				a.border_alpha != b.border_alpha)
+				return 1;
+		}
 	}
 	return 0;
 }
