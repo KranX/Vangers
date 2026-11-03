@@ -24,9 +24,12 @@ The same approved v0.10 directory supplies two additional, unmodified faces:
 | `VangersDisplay-Regular.ttf` | `hfont00.fnh`, settings/headings | 26×50 | 44 | 5 | 72128 |
 
 Menu and Display are **not interchangeable**. Iscreen's smaller `hfont03/04`
-roles use Display at their original cell sizes with their own height profiles.
-`hfont02` is an icon font and stays bitmap. The original height maps remain
-required for relief; light, shadows, inversion and click blur are not TTF outlines.
+roles use Display at their original cell sizes. Letter heights are generated
+procedurally from TTF coverage; no old letter height profiles are used.
+`hfont02` is an icon font and stays bitmap. Original `.fnh` resources remain
+required for compatibility metrics, icons and bitmap mode. Generated text heights
+use the existing terrain lighting, shadows, inversion and click blur; see
+[the relief implementation](../../../../docs/iscreen-ttf.md).
 Newly supplied characters (including Menu lowercase/digits/Ё) are not evidence
 that the original bitmap contained those letters.
 
