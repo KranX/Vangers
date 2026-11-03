@@ -7,6 +7,10 @@
 #include "s_mem.h"
 
 #include "iscript.h"
+#include "text.h"
+
+#include <memory>
+#include <stdexcept>
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
@@ -209,6 +213,7 @@ enum Options {
 	SD_SET_DEFAULT_SCR,
 
 	SD_NEW_TEXT,
+	SD_UTF8_TEXT, // Append only: preserve existing SCB option numbers.
 
 	MAX_OPTION
 };
@@ -349,7 +354,8 @@ static const char *OptIDs[MAX_OPTION] = {"}",
 
 	"default_scr",
 
-	"text_object"};
+	"text_object",
+	"utf8_text"};
 
 iStack *iStk;
 
@@ -370,6 +376,7 @@ iListElement **ObjTable;
 int ObjIDSize = 0;
 
 iTextData *text_obj;
+static bool utf8_text = false;
 
 iList *curID_List;
 
@@ -414,6 +421,25 @@ iStackElement *iStack::get(void) {
 
 void ParseScript(const char *fname, const char *bname, bool initialize_objects) {
 	int id, t_id = 0, st = 0;
+	utf8_text = false;
+	const auto decode_text = [&](const char *value) {
+		try {
+			return vangers::iscreen::resource_text(value, utf8_text);
+		} catch (const std::invalid_argument &error) {
+			const std::string context =
+				std::string(fname) + ": option " + OptIDs[id] + ": " + error.what();
+			handle_error("Invalid iscreen display text", context.c_str());
+			return std::string{};
+		}
+	};
+	const auto read_text = [&](char *&destination) {
+		char *raw = nullptr;
+		script->read_pdata(&raw, 1);
+		const std::unique_ptr<char[]> owned(raw);
+		const auto decoded = decode_text(raw);
+		destination = new char[decoded.size() + 1];
+		std::memcpy(destination, decoded.c_str(), decoded.size() + 1);
+	};
 
 	iScanCode *cd;
 	iScrDisp = new iScreenDispatcher;
@@ -454,6 +480,9 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 #endif
 
 			switch (id) {
+			case SD_UTF8_TEXT:
+				utf8_text = true;
+				break;
 			case EL_SET_SCALE_NULL:
 				if (iCurObjType == I_ELEMENT) {
 					iElem->flags |= EL_SCALE_NULL;
@@ -487,7 +516,8 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 			case SD_NEW_TEXT:
 				text_obj = new iTextData;
 				text_obj->ID = script->read_idata();
-				script->read_pdata(&text_obj->objName, 1);
+				read_text(text_obj->objName);
+				text_obj->utf8_resource = utf8_text;
 				script->read_pdata(&text_obj->fname, 1);
 				iScrDisp->texts->connect((iListElement *)text_obj);
 				break;
@@ -604,7 +634,7 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 				break;
 			case OBJ_SET_PROMPT_TEXT:
 				if (iCurObjType == I_OBJECT) {
-					script->read_pdata(&iScrObj->promptData, 1);
+					read_text(iScrObj->promptData);
 				} else
 					handle_error("Misplaced option", OptIDs[id]);
 				break;
@@ -800,10 +830,10 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 				if (iCurObjType == I_ELEMENT) {
 					script->prepare_pdata();
 					if (iElem->type == I_STRING_ELEM) {
-						iElStr->init_string(script->get_conv_ptr());
+						iElStr->init_string(decode_text(script->get_conv_ptr()).c_str());
 					} else {
 						if (iElem->type == I_S_STRING_ELEM) {
-							iElS_Str->init_string(script->get_conv_ptr());
+							iElS_Str->init_string(decode_text(script->get_conv_ptr()).c_str());
 						} else {
 							handle_error("Misplaced option", OptIDs[id]);
 						}
@@ -1448,105 +1478,35 @@ void init_objects(void) {
 	}
 }
 
-void load_text(char *fname) {
-	XStream fh;
-	int i, sz, y = 0, t_sz;
-	char *buf;
-	iStringElement *p;
-	if (iCurObjType == I_OBJECT) {
-		fh.open(fname, XS_IN);
-		// buf = aciLoadPackedFile(fh,sz);
-		sz = fh.size();
-		buf = new char[sz];
-		fh.read(buf, sz);
-		fh.close();
-
-		for (i = 0; i < sz; i++) {
-			if (buf[i] == '\r' || buf[i] == '\n')
-				buf[i] = 0;
-		}
-		i = 0;
-		while (i < sz) {
-			while (!buf[i]) {
-				i++;
-				if (i >= sz)
-					break;
-			}
-			if (i < sz) {
-				p = new iStringElement;
-				t_sz = strlen(buf + i) + 1;
-				if (t_sz) {
-					strcpy(p->string, buf + i);
-					p->flags |= EL_TEXT_STRING;
-
-					p->font = DefFont;
-					p->null_level = DefLevel;
-					p->space = DefSpace;
-
-					p->lY = y;
-					y += HFntTable[p->font]->SizeY + p->space;
-					iScrObj->add_element((iListElement *)p);
-				}
-				while (buf[i]) {
-					i++;
-					if (i >= sz)
-						break;
-				}
-			}
-		}
+template<typename Element> static void load_text_elements(char *fname, bool small) {
+	if (iCurObjType != I_OBJECT)
+		return;
+	XStream fh(fname, XS_IN);
+	std::string bytes(fh.size(), '\0');
+	if (!bytes.empty())
+		fh.read(bytes.data(), bytes.size());
+	fh.close();
+	int y = 0;
+	for (const auto &line : vangers::iscreen::text_lines(bytes, utf8_text)) {
+		if (line.empty())
+			continue;
+		auto *p = new Element;
+		p->init_string(line.c_str());
+		p->flags |= EL_TEXT_STRING;
+		p->font = DefFont;
+		p->null_level = DefLevel;
+		p->space = DefSpace;
+		p->lY = y;
+		y += (small ? iScrFontTable[p->font]->SizeY : HFntTable[p->font]->SizeY) + p->space;
+		iScrObj->add_element(p);
 	}
 }
 
+void load_text(char *fname) {
+	load_text_elements<iStringElement>(fname, false);
+}
 void load_s_text(char *fname) {
-	XStream fh;
-	int i, sz, y = 0, t_sz;
-	char *buf;
-	iS_StringElement *p;
-	if (iCurObjType == I_OBJECT) {
-		fh.open(fname, XS_IN);
-		// buf = aciLoadPackedFile(fh,sz);
-		sz = fh.size();
-		buf = new char[sz + 1];
-		memset(buf, 0, sz + 1);
-		fh.read(buf, sz);
-		fh.close();
-
-		for (i = 0; i < sz; i++) {
-			if (buf[i] == '\r' || buf[i] == '\n')
-				buf[i] = 0;
-		}
-		i = 0;
-		while (i < sz) {
-			while (!buf[i]) {
-				i++;
-				if (i >= sz)
-					break;
-			}
-			if (i < sz) {
-				t_sz = strlen(buf + i) + 1;
-				if (t_sz) {
-					p = new iS_StringElement;
-					strcpy(p->string, buf + i);
-					p->flags |= EL_TEXT_STRING;
-
-					p->font = DefFont;
-					p->null_level = DefLevel;
-					p->space = DefSpace;
-
-					p->lY = y;
-					y += iScrFontTable[p->font]->SizeY + p->space;
-					iScrObj->add_element((iListElement *)p);
-				}
-				while (buf[i]) {
-					i++;
-					if (i >= sz)
-						break;
-				}
-			}
-		}
-
-		delete[] buf;
-	}
+	load_text_elements<iS_StringElement>(fname, true);
 }
 
 int GetOptionID(char *p) {

@@ -34,6 +34,9 @@ const int iS_STR_SEG_START_COL = 144;
 
 const int iSTR_LEN = 50;
 const int iS_STR_LEN = 512;
+// Limits above count characters; storage also accommodates a four-byte scalar and cursor.
+const int iSTR_BYTES = 4 * (iSTR_LEN - 1) + 2;
+const int iS_STR_BYTES = 4 * (iS_STR_LEN - 1) + 2;
 
 const int LEFT_MOUSE = -1;
 const int RIGHT_MOUSE = -2;
@@ -461,7 +464,7 @@ struct iS_StringElement: public iScreenElement {
 	int space;
 	char *string;
 
-	void init_string(char *p);
+	void init_string(const char *p);
 	void init_size(void);
 	void free_mem(void);
 
@@ -714,6 +717,7 @@ struct iScreen: public iListElement {
 #define iTEXT_EOF 0x01
 #define iTEXT_DATA_LOADED 0x02
 struct iTextData: public iListElement {
+	bool utf8_resource = false;
 	int ID;
 	char *fname;
 	char *objName;
@@ -731,7 +735,7 @@ struct iTextData: public iListElement {
 	void free(void);
 
 	void copy(iScreenObject *p);
-	void read_str(char *p);
+	void read_str(char *p, std::size_t maximum);
 	void reset(void);
 
 	int eof(void) {
@@ -847,6 +851,8 @@ struct iScreenFont {
 #define iOPTION_VALUE_MAX 1
 
 struct iScreenOption {
+	// Stable CP866 view for not-yet-migrated network/legacy callers.
+	char legacyText[iS_STR_LEN]{};
 	int ObjectType;
 	int ValueType;
 
@@ -857,7 +863,8 @@ struct iScreenOption {
 	int GetValueINT(void);
 	void SetValueINT(int val);
 
-	char *GetValueCHR(void);
+	char *GetValueCHR(void); // Canonical UTF-8.
+	char *GetLegacyText(void);
 	void SetValueCHR(const char *p);
 
 	void update(void);

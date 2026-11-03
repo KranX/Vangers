@@ -25,15 +25,28 @@ TARGET_LINK_LIBRARIES(vangers_settings PRIVATE
 	toml11::toml11
 )
 
-SET(ACTINT_TTF_FONT "${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/VangersText-Regular.ttf")
-SET_PROPERTY(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${ACTINT_TTF_FONT}")
-FILE(READ "${ACTINT_TTF_FONT}" ACTINT_TTF_HEX HEX)
-STRING(REGEX REPLACE "(..)" "0x\\1,\n" ACTINT_TTF_BYTES "${ACTINT_TTF_HEX}")
-FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/actint_font_data.cpp"
-	"#include <cstddef>\nnamespace vangers::actint {\nextern const unsigned char font_data[] = {\n${ACTINT_TTF_BYTES}};\nextern const std::size_t font_data_size = sizeof(font_data);\n}\n")
-ADD_LIBRARY(vangers_ttf STATIC actint/ttf_font.cpp "${CMAKE_CURRENT_BINARY_DIR}/actint_font_data.cpp")
+SET(EMBEDDED_FONT_SOURCES)
+FOREACH(face Text Menu Display)
+	SET(FONT_PATH "${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/Vangers${face}-Regular.ttf")
+	SET_PROPERTY(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${FONT_PATH}")
+	IF(face STREQUAL "Text")
+		SET(FONT_SYMBOL "font_data")
+	ELSE()
+		STRING(TOLOWER "${face}_font_data" FONT_SYMBOL)
+	ENDIF()
+	FILE(READ "${FONT_PATH}" FONT_HEX HEX)
+	STRING(REGEX REPLACE "(..)" "0x\\1,\n" FONT_BYTES "${FONT_HEX}")
+	SET(FONT_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/${FONT_SYMBOL}.cpp")
+	FILE(WRITE "${FONT_SOURCE}"
+		"#include <cstddef>\nnamespace vangers::actint {\nextern const unsigned char ${FONT_SYMBOL}[] = {\n${FONT_BYTES}};\nextern const std::size_t ${FONT_SYMBOL}_size = sizeof(${FONT_SYMBOL});\n}\n")
+	LIST(APPEND EMBEDDED_FONT_SOURCES "${FONT_SOURCE}")
+ENDFOREACH()
+ADD_LIBRARY(vangers_ttf STATIC actint/ttf_font.cpp ${EMBEDDED_FONT_SOURCES})
 TARGET_LINK_LIBRARIES(vangers_ttf PUBLIC xgraph_text PRIVATE vangers_settings SDL3_ttf::SDL3_ttf)
 TARGET_INCLUDE_DIRECTORIES(vangers_ttf PUBLIC "${PROJECT_SOURCE_DIR}/src")
+
+ADD_LIBRARY(vangers_iscreen_text STATIC iscreen/text.cpp iscreen/relief_font.cpp)
+TARGET_LINK_LIBRARIES(vangers_iscreen_text PUBLIC vangers_text vangers_settings vangers_ttf SDL3::SDL3)
 
 SET(vangers_SRCS
 	3d/3d_math.cpp
@@ -152,6 +165,7 @@ ENDIF()
 
 function(CONFIGURE_VANGERS_TARGET target_name)
 	TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+		vangers_iscreen_text
 		vangers_ttf
 		vangers_text
 		vangers_settings
@@ -210,6 +224,17 @@ if (NOT ANDROID)
 				TARGET_COMPILE_DEFINITIONS(actint_script_${script_mode}_test PRIVATE _BINARY_SCRIPT_)
 			ENDIF()
 			CONFIGURE_VANGERS_TARGET(actint_script_${script_mode}_test)
+			ADD_EXECUTABLE(iscreen_${script_mode}_test
+				${vangers_SCRIPT_SRCS}
+				$<TARGET_OBJECTS:vangers_common>
+				../tests/iscreen_runtime_test.cpp
+				../lib/xtool/xerrhead.cpp
+			)
+			TARGET_COMPILE_DEFINITIONS(iscreen_${script_mode}_test PRIVATE SDL_ShowSimpleMessageBox=VangersTest_ShowSimpleMessageBox)
+			IF(script_mode STREQUAL "binary")
+				TARGET_COMPILE_DEFINITIONS(iscreen_${script_mode}_test PRIVATE _BINARY_SCRIPT_)
+			ENDIF()
+			CONFIGURE_VANGERS_TARGET(iscreen_${script_mode}_test)
 		ENDFOREACH()
 	ENDIF()
 

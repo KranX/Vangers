@@ -9,6 +9,7 @@
 #include "settings/input_binding.h"
 #include "settings/settings.h"
 #include "settings/text_encoding.h"
+#include "text/utf8.h"
 
 #include <charconv>
 #include <iostream>
@@ -23,20 +24,17 @@ namespace {
 constexpr std::size_t ISCREEN_STRING_MAX_LENGTH = iSTR_LEN - 1;
 
 std::string ui_text(std::string_view utf8, std::size_t maximum_length) {
-	std::string text = utf8_to_cp866(utf8);
-	if (text.size() > maximum_length)
-		text.resize(maximum_length);
-	return text;
+	return std::string(utf8.substr(0, vangers::text::prefix_bytes(utf8, maximum_length)));
 }
 
 std::string option_text(int option_id) {
-	const char *text = iGetOptionValueCHR(option_id);
-	return text ? cp866_to_utf8(text) : std::string{};
+	const char *text = iGetOptionText(option_id);
+	return text ? std::string(text) : std::string{};
 }
 
 void set_text_option(int option_id, std::string_view text, std::size_t maximum_length) {
 	const std::string converted = ui_text(text, maximum_length);
-	iSetOptionValueCHR(option_id, converted.c_str());
+	iSetOptionText(option_id, converted.c_str());
 }
 
 std::optional<int> parse_port(const char *text) {

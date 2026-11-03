@@ -7,7 +7,7 @@
 
 namespace vangers::actint {
 
-// Only actint prompts select UTF-8 callbacks; unrelated XGR callers stay CP866.
+// Migrated actint/iscreen prompts select UTF-8 callbacks; other XGR callers stay CP866.
 // In either mode XGR owns the bytes, including any temporary codec result.
 inline void set_mouse_prompt(XGR_MousePromptData *prompt, const char *text) {
 	static const XGR_TextCallbacks callbacks{

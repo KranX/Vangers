@@ -24,9 +24,10 @@ to copy a new font into an existing private game-data installation.
 
 ## Font and text contract
 
-Only `data/resource/actint/fonts/VangersText-Regular.ttf` is imported from the
-approved v0.10 font experiment. That directory records its source/provenance.
-The Menu and Display faces are for a subsequent iscreen stage, not this backend.
+Actint uses `data/resource/actint/fonts/VangersText-Regular.ttf` from the approved
+v0.10 font experiment. That directory records its source/provenance. The shared
+backend also supplies Menu/Display to [iscreen](iscreen-ttf.md); their relief
+output is intentionally different from this native-resolution flat-text path.
 
 - Canonical UTF-8 reaches SDL3_ttf without a CP866 encode/decode round-trip.
 - The current face covers ASCII Latin, Russian including Ёё, digits,
@@ -69,12 +70,11 @@ cursor/prompt background is restored after presentation, including its text
 snapshot. Resizing and buffer destruction discard stale companion state.
 This follows the existing rendering path rather than adding another UI tree.
 
-Hooks in iscreen/ACS only transport or invalidate actint text underneath their
-existing drawing. They do not reinterpret those subsystems' strings. Their own
-fonts, main menu/history, ACS pause/save UI, chat and service screens remain
-bitmap/legacy. This includes static iscreen object tooltips (for example the
-shop-category hint); actint-owned HUD/item prompts select native callbacks. Original `aPutStr`, `aOutStr`, `aOutText32`, etc. keep CP866
-contracts; only actint's `*Utf8` calls and its mouse prompts select this backend.
+[Iscreen's UTF-8/TTF stage](iscreen-ttf.md) now uses this backend for its flat
+text and static tooltips. Its relief uses Menu/Display outlines with the original
+height-map renderer. ACS pause/save UI, chat and service screens remain
+bitmap/legacy. Original `aPutStr`, `aOutStr`, `aOutText32`, etc. retain CP866
+contracts; only explicitly migrated `*Utf8` calls and prompts select this backend.
 
 ## Validation
 

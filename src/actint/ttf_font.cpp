@@ -12,6 +12,8 @@
 namespace vangers::actint {
 extern const unsigned char font_data[];
 extern const std::size_t font_data_size;
+extern const unsigned char menu_font_data[], display_font_data[];
+extern const std::size_t menu_font_data_size, display_font_data_size;
 namespace {
 void require(bool success) {
 	if (!success)
@@ -29,17 +31,28 @@ struct TtfFont::Face {
 	TTF_Font *metrics = nullptr;
 	TTF_Font *drawing = nullptr;
 	std::map<Uint32, int> advances;
+	int cell_width = 10, cell_height = 18, baseline = 15, tracking = 1;
 
-	explicit Face(const std::string &path) {
+	explicit Face(const std::string &path, FontFamily family = FontFamily::Text) {
+		const unsigned char *bytes = font_data;
+		std::size_t size = font_data_size;
+		if (family != FontFamily::Text) {
+			cell_height = 50;
+			baseline = 44;
+			tracking = 5;
+			cell_width = family == FontFamily::Menu ? 45 : 26;
+			bytes = family == FontFamily::Menu ? menu_font_data : display_font_data;
+			size = family == FontFamily::Menu ? menu_font_data_size : display_font_data_size;
+		}
 		require(TTF_Init());
-		const auto open = [&path](float size) {
+		const auto open = [&path, bytes, size](float points) {
 			if (!path.empty())
-				return TTF_OpenFont(path.c_str(), size);
-			return TTF_OpenFontIO(SDL_IOFromConstMem(font_data, font_data_size), true, size);
+				return TTF_OpenFont(path.c_str(), points);
+			return TTF_OpenFontIO(SDL_IOFromConstMem(bytes, size), true, points);
 		};
-		metrics = open(1800);
+		metrics = open(cell_height * 100);
 		if (metrics)
-			drawing = open(18);
+			drawing = open(cell_height);
 		if (!metrics || !drawing) {
 			const std::string error = SDL_GetError();
 			TTF_CloseFont(drawing);
@@ -94,7 +107,12 @@ struct TtfFont::Face {
 			require(TTF_SetFontSizeDPI(
 				face->drawing,
 				1,
-				std::max(1, int(std::lround(style.cell_width * 18.0 / 10 * sx * 72))),
+				std::max(
+					1,
+					int(std::lround(
+						style.cell_width * double(face->cell_height) / face->cell_width * sx * 72
+					))
+				),
 				std::max(1, int(std::lround(style.cell_height * sy * 72)))
 			));
 			for (const auto &glyph : glyphs) {
@@ -134,7 +152,11 @@ struct TtfFont::Face {
 				require(bool(image));
 				const int left = int(std::lround(glyph.x * sx + minx));
 				const int top =
-					int(std::lround((glyph.y + style.cell_height * 15.0 / 18) * sy)) - maxy;
+					int(std::lround(
+						(glyph.y + style.cell_height * double(face->baseline) / face->cell_height) *
+						sy
+					)) -
+					maxy;
 				const int w = image->w;
 				const int h = image->h;
 				for (int y = 0; y < h; ++y) {
@@ -177,7 +199,9 @@ struct TtfFont::Face {
 };
 
 TtfFont::TtfFont(): TtfFont("") {}
-TtfFont::TtfFont(const std::string &path): face_(std::make_shared<Face>(path)) {}
+TtfFont::TtfFont(FontFamily family): face_(std::make_shared<Face>("", family)) {}
+TtfFont::TtfFont(const std::string &path, FontFamily family)
+	: face_(std::make_shared<Face>(path, family)) {}
 TtfFont::~TtfFont() = default;
 
 TextLayout TtfFont::layout(std::string_view text, const FontStyle &style) const {
@@ -220,8 +244,9 @@ TextLayout TtfFont::layout(std::string_view text, const FontStyle &style) const 
 		run->glyphs.push_back(
 			{cp, x, y, uint8_t(colour), uint8_t(colour >> 8), uint8_t(colour_size)}
 		);
-		// The TTF already contains one source pixel of tracking, not two.
-		x += (face_->advance(cp) / 100.0 - 1) * style.cell_width / 10.0 + style.spacing;
+		// Remove the face's baked-in tracking before applying the caller's spacing.
+		x += (face_->advance(cp) / 100.0 - face_->tracking) * style.cell_width / face_->cell_width +
+			 style.spacing;
 	}
 	maximum = std::max(maximum, x);
 	const int width = std::max(0, int(std::ceil(maximum)));

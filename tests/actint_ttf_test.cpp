@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -82,6 +83,43 @@ int main() {
 	vangers::actint::TtfFont font(TEST_FONT);
 	vangers::actint::TtfFont embedded;
 	vangers::actint::FontStyle style;
+	for (const auto family :
+		{vangers::actint::FontFamily::Menu, vangers::actint::FontFamily::Display}) {
+		const std::string name = family == vangers::actint::FontFamily::Menu ? "Menu" : "Display";
+		vangers::actint::TtfFont bundled(family);
+		vangers::actint::TtfFont original(
+			(std::filesystem::path(TEST_FONT).parent_path() / ("Vangers" + name + "-Regular.ttf"))
+				.string(),
+			family
+		);
+		vangers::actint::FontStyle large_style;
+		large_style.cell_width = family == vangers::actint::FontFamily::Menu ? 45 : 26;
+		large_style.cell_height = 50;
+		large_style.spacing = 5;
+		large_style.line_spacing = 0;
+		large_style.highlight_numbers = false;
+		const auto bundled_run = bundled.layout("НОВАЯ ИГРА Ёё09", large_style);
+		const auto original_run = original.layout("НОВАЯ ИГРА Ёё09", large_style);
+		check(
+			bundled_run.width == original_run.width && bundled_run.height == 50,
+			"Relief face metrics differ from approved asset"
+		);
+		Layer a(700, 60), b(700, 60);
+		a.paint(bundled_run.ink_bounds, bundled_run.image);
+		b.paint(original_run.ink_bounds, original_run.image);
+		for (int scale : {1, 2}) {
+			const auto rendered = a.render(700 * scale, 60 * scale, palette);
+			check(
+				rendered == b.render(700 * scale, 60 * scale, palette),
+				"Menu/Display embedding changed outlines"
+			);
+			check(
+				std::any_of(rendered.begin(), rendered.end(), [](auto p) { return p; }),
+				"Relief face has no ink"
+			);
+		}
+	}
+
 	// Low-resolution strokes get light vertical grid fitting, but enlarged
 	// output retains the unhinted outlines. Exercise both transitions on one face.
 	const auto soft_sign = font.layout("ь", style);

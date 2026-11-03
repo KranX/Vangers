@@ -9,6 +9,10 @@
 #include "i_mem.h"
 #include "ikeys.h"
 #include "iscreen.h"
+#include "relief_font.h"
+#include "settings/text_encoding.h"
+
+#include <algorithm>
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -798,6 +802,54 @@ void get_col_buf(int x, int y, int sx, int sy, unsigned char *buf) {
 	}
 }
 
+namespace {
+template<class Paint>
+bool relief_string(int x, int y, int font, const char *text, int spacing, Paint paint) {
+	auto *face = vangers::iscreen::relief_font(font);
+	if (!face)
+		return false;
+	const int right_limit = x + face->width(text, spacing);
+	int cursor_x = x, cursor_y = y;
+	while (*text) {
+		const auto cp = SDL_StepUTF8(&text, nullptr);
+		if (cp == '\r')
+			continue;
+		if (cp == '\n') {
+			cursor_x = x;
+			cursor_y += HFntTable[font]->SizeY + spacing;
+			continue;
+		}
+		const auto &glyph = face->glyph(cp);
+		if (glyph.bounds.w > 0 && glyph.bounds.h > 0) {
+			const auto heights = glyph.heights(glyph.bounds.w, glyph.bounds.h);
+			// Outline antialiasing can overshoot a cell by a fraction of a pixel.
+			// Both direct and smoothed height writes must stay inside the same
+			// restored region, or a click would leave a one-pixel relief trail.
+			const int left = std::max(0, x - cursor_x - glyph.bounds.x);
+			const int top = std::max(0, -glyph.bounds.y);
+			const int bottom =
+				std::min(glyph.bounds.h, int(HFntTable[font]->SizeY) - glyph.bounds.y);
+			const int right = std::min(glyph.bounds.w, right_limit - cursor_x - glyph.bounds.x);
+			const int w = right - left, h = bottom - top;
+			if (w > 0 && h > 0) {
+				std::vector<uint8_t> clipped(size_t(w) * h);
+				for (int row = 0; row < h; ++row)
+					std::copy_n(
+						heights.data() + size_t(top + row) * glyph.bounds.w + left,
+						w,
+						clipped.data() + size_t(row) * w
+					);
+				paint(
+					cursor_x + glyph.bounds.x + left, cursor_y + glyph.bounds.y + top, w, h, clipped
+				);
+			}
+		}
+		cursor_x += glyph.advance + spacing;
+	}
+	return true;
+}
+} // namespace
+
 void iPutStr(
 	int x,
 	int y,
@@ -809,6 +861,21 @@ void iPutStr(
 	int level,
 	int hide_mode
 ) {
+	if (relief_string(
+			x,
+			y,
+			fnt,
+			(const char *)str,
+			space,
+			[&](int gx, int gy, int w, int h, std::vector<uint8_t> &heights) {
+				std::vector<uint8_t> scaled(heights.size());
+				scale_buf(w, h, scale, heights.data(), scaled.data());
+				put_buf(gx, gy, w, h, scaled.data(), heights.data(), level, hide_mode);
+			}
+		))
+		return;
+	auto legacy = vangers::settings::utf8_to_cp866((const char *)str);
+	str = (unsigned char *)legacy.data();
 	int _x, _y, i, sx, sy, ss, sz = strlen((char *)str);
 	HFont *p = HFntTable[fnt];
 	HChar *ch;
@@ -849,6 +916,21 @@ void i_terrPutStr(
 	int hide_mode,
 	int terr
 ) {
+	if (relief_string(
+			x,
+			y,
+			fnt,
+			(const char *)str,
+			space,
+			[&](int gx, int gy, int w, int h, std::vector<uint8_t> &heights) {
+				std::vector<uint8_t> scaled(heights.size());
+				scale_buf(w, h, scale, heights.data(), scaled.data());
+				put_tbuf(gx, gy, w, h, scaled.data(), heights.data(), level, hide_mode, terr);
+			}
+		))
+		return;
+	auto legacy = vangers::settings::utf8_to_cp866((const char *)str);
+	str = (unsigned char *)legacy.data();
 	int _x, _y, i, sx, sy, ss, sz = strlen((char *)str);
 	HFont *p = HFntTable[fnt];
 	HChar *ch;
@@ -889,6 +971,19 @@ void iPutStr2buf(
 	int scale,
 	int space
 ) {
+	if (relief_string(
+			x,
+			y,
+			fnt,
+			(const char *)str,
+			space,
+			[&](int gx, int gy, int w, int h, std::vector<uint8_t> &heights) {
+				h_put_buf2buf(gx, gy, w, h, bsx, bsy, heights.data(), buf_to);
+			}
+		))
+		return;
+	auto legacy = vangers::settings::utf8_to_cp866((const char *)str);
+	str = (unsigned char *)legacy.data();
 	int _x, _y, i, sx, sy, ss, sz = strlen((char *)str);
 	HFont *p = HFntTable[fnt];
 	HChar *ch;
@@ -915,6 +1010,10 @@ void iPutStr2buf(
 }
 
 int iStrLen(unsigned char *p, int f, int space) {
+	if (auto *face = vangers::iscreen::relief_font(f))
+		return face->width((const char *)p, space);
+	auto legacy = vangers::settings::utf8_to_cp866((const char *)p);
+	p = (unsigned char *)legacy.data();
 	int i, len = 0, sz = strlen((char *)p);
 	unsigned char s;
 

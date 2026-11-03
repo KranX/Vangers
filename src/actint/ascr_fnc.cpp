@@ -2291,9 +2291,9 @@ void aciSetMechName(void) {
 		return;
 
 	if (aScrDisp->secondMatrix->mech_name)
-		strcpy(str->string, utf8_to_cp866(aScrDisp->secondMatrix->mech_name).c_str());
+		str->init_string(aScrDisp->secondMatrix->mech_name);
 	else
-		strcpy(str->string, " ");
+		str->init_string(" ");
 
 	str->SizeX = str->SizeY = 0;
 	str->lX = str->lY = 0;
