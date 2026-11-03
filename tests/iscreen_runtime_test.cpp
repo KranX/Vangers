@@ -135,10 +135,10 @@ void parse(const char *in, const char *out, bool unicode) {
 	auto *screen = static_cast<iScreen *>(iScrDisp->last);
 	auto *object = static_cast<iScreenObject *>(screen->objList->last);
 	check(object && object->promptData == expected, "Prompt did not decode at the boundary");
-	auto *small = static_cast<iS_StringElement *>(object->ElementList->last);
-	auto *large = static_cast<iStringElement *>(small->prev);
+	auto *small_element = static_cast<iS_StringElement *>(object->ElementList->last);
+	auto *large = static_cast<iStringElement *>(small_element->prev);
 	check(large && large->string == expected, "STRING lost Unicode in source/SCB");
-	check(small->string == expected, "S_STRING lost Unicode in source/SCB");
+	check(small_element->string == expected, "S_STRING lost Unicode in source/SCB");
 	int text_count = 0;
 	for (auto *e = large->prev; e; e = e->prev) {
 		auto *element = static_cast<iScreenElement *>(e);
@@ -225,13 +225,13 @@ void input() {
 	iHeapOffs = 0;
 	KeyBuf = new KeyBuffer;
 	iFrameFlag = 0;
-	for (bool small : {false, true}) {
+	for (bool small_font : {false, true}) {
 		iScreenObject object;
 		iScreenElement *element =
-			small ? static_cast<iScreenElement *>(new iS_StringElement) : new iStringElement;
+			small_font ? static_cast<iScreenElement *>(new iS_StringElement) : new iStringElement;
 		object.add_element(element);
-		char *value = small ? static_cast<iS_StringElement *>(element)->string
-							: static_cast<iStringElement *>(element)->string;
+		char *value = small_font ? static_cast<iS_StringElement *>(element)->string
+								 : static_cast<iStringElement *>(element)->string;
 		std::strcpy(value, "Ё");
 		iScrDisp->cur_max_input = 6;
 		iScrDisp->init_input_string(element);
@@ -265,7 +265,7 @@ void input() {
 		iScrDisp->drwObjHeap->init_list();
 		iHeapOffs = 0;
 		object.remove_element(element);
-		if (small)
+		if (small_font)
 			delete static_cast<iS_StringElement *>(element);
 		else
 			delete static_cast<iStringElement *>(element);

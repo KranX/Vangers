@@ -32,6 +32,8 @@ See [font provenance](../data/resource/actint/fonts/README.md).
   glyph-local grain produce the surface; grain is added after downsampling so
   it is not averaged away with contour antialiasing. Menu/Display use two style
   calibrations of the same algorithm, never per-language/per-letter rules.
+  Grain amplitude is 2.1 height units for Menu and 0.945 for Display: 30% below
+  the initial grain version, with the same pattern, bevel and broad variation.
 - No original letter height profile is read, copied, interpolated or filled in
   the TTF path. The generic terrain renderer still provides lighting and shadows;
   this does not replace them with a flat colour-noise/shadow overlay.
@@ -137,7 +139,7 @@ Initial-stage visual QA used isolated copies of game data. On 2026-11-03:
 - Press and return transitions were captured frame-by-frame against the original;
   intermediate relief depth, blur, transition timing and background were checked.
 
-The procedural-height/cache update was additionally verified against the chosen
+The procedural-height/cache update (`c045a2b`) was verified against the chosen
 external grain prototype: all 73 captures per language (RU/EN, including press
 and return frames) are pixel-identical after the cache/drawing optimizations.
 All 73 bitmap-mode captures also match the previous branch binary (`de4a43f`).
@@ -146,6 +148,11 @@ inspected in the actual game.
 Selected/restored captures match exactly in that scenario. This is not a claim
 of pixel-identical TTF versus original bitmap contours or universally reversible
 terrain lighting. The original seven-tick click/blur schedule remains tested.
+
+The subsequent 30% grain reduction was visually checked against that version
+and the original bitmap renderer. RU/EN press/return captures retain the same
+transition timing and return to the exact selected frame in this scenario;
+all 73 bitmap-mode captures remain unchanged. Both 27-test configurations pass.
 
 Additional regressions cover generation with legacy `HeightMap = nullptr`,
 non-CP866 outlines, empty masks, solid-glyph edge bevels, deterministic cache
@@ -157,6 +164,8 @@ Captures/builds/logs are external, not vendored game assets:
 `/home/stalkerg/projects/vangers-font-baseline/2026-11-03-iscreen-ttf-NQ16Anv9`.
 Procedural/cache follow-up captures and logs:
 `/home/stalkerg/projects/vangers-font-baseline/2026-11-03-relief-publish-zZlz0VXD`.
+Grain-reduction comparison:
+`/home/stalkerg/projects/vangers-font-baseline/2026-11-03-relief-grain70-H8w1WxT5`.
 The SDL dummy/software event observer is not a physical mouse, GPU, IME or live
 multiplayer acceptance test. The legacy non-virtual tagged UI object ownership
 is not refactored here; fixtures delete their known element types explicitly so

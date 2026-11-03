@@ -7,7 +7,9 @@ FOREACH(encoding unicode legacy)
 	IF(encoding STREQUAL "unicode")
 		SET(flag "utf8_text\n")
 	ENDIF()
-	FILE(WRITE "${TEST_ROOT}/${encoding}.txt" "${text}\r\n\r\n${text}")
+	# FILE(WRITE) uses text mode on Windows: explicit CRLF would become CRCRLF.
+	# Native LF/CRLF both describe three lines, with no final terminator.
+	FILE(WRITE "${TEST_ROOT}/${encoding}.txt" "${text}\n\n${text}")
 	FILE(WRITE "${TEST_ROOT}/${encoding}.inc" "text_object 1 \"${text}\" \"${encoding}.txt\"\nScreen \"screen\" {\ndefault_obj \"obj\"\nObject \"obj\" {\nprompt_text \"${text}\"\ntext \"${encoding}.txt\"\ns_text \"${encoding}.txt\"\nElement STRING {\nid \"large\"\nstring \"${text}\"\n}\nElement S_STRING {\nstring \"${text}\"\n}\n}\n}\ndefault_scr \"screen\"\n")
 	FILE(WRITE "${TEST_ROOT}/${encoding}.scr" "${flag}#include \"${encoding}.inc\"\n")
 	FOREACH(mode source binary)

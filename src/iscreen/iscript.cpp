@@ -1478,7 +1478,7 @@ void init_objects(void) {
 	}
 }
 
-template<typename Element> static void load_text_elements(char *fname, bool small) {
+template<typename Element> static void load_text_elements(char *fname, bool small_font) {
 	if (iCurObjType != I_OBJECT)
 		return;
 	XStream fh(fname, XS_IN);
@@ -1497,7 +1497,7 @@ template<typename Element> static void load_text_elements(char *fname, bool smal
 		p->null_level = DefLevel;
 		p->space = DefSpace;
 		p->lY = y;
-		y += (small ? iScrFontTable[p->font]->SizeY : HFntTable[p->font]->SizeY) + p->space;
+		y += (small_font ? iScrFontTable[p->font]->SizeY : HFntTable[p->font]->SizeY) + p->space;
 		iScrObj->add_element(p);
 	}
 }

@@ -1244,7 +1244,7 @@ static void init_legacy_text(
 	int font,
 	int space,
 	int null_level,
-	bool small
+	bool small_font
 ) {
 	int y = 0;
 	for (const auto &line : vangers::iscreen::text_lines(std::string_view(text, text_len), false)) {
@@ -1257,7 +1257,7 @@ static void init_legacy_text(
 		p->null_level = null_level;
 		p->space = space;
 		p->lY = y;
-		y += (small ? iScrFontTable[font]->SizeY : HFntTable[font]->SizeY) + space;
+		y += (small_font ? iScrFontTable[font]->SizeY : HFntTable[font]->SizeY) + space;
 		obj->add_element(p);
 	}
 }

@@ -49,7 +49,7 @@ double smooth_relief_noise(double x, double y) {
 	return (relief_noise(ix, iy) * (1 - u) + relief_noise(ix + 1, iy) * u) * (1 - v) +
 		   (relief_noise(ix, iy + 1) * (1 - u) + relief_noise(ix + 1, iy + 1) * u) * v;
 }
-constexpr double relief_grain_amplitude = 3.0;
+constexpr double relief_grain_amplitude = 2.1;
 } // namespace
 
 const std::vector<uint8_t> &ReliefGlyph::heights(int width, int height) const {
