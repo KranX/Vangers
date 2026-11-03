@@ -94,19 +94,14 @@ vangers::actint::TextLayout native_layout(
 	}
 }
 
-void native_paint(
-	void *buffer,
-	int x,
-	int y,
-	vangers::actint::TextLayout layout,
-	bool screen = false
-) {
+std::shared_ptr<const xgr::text::Image>
+native_paint(void *buffer, int x, int y, vangers::actint::TextLayout layout, bool screen = false) {
 	if (!layout.image)
-		return;
+		return {};
 	auto *layer = xgr::text::find(buffer);
 	if (!layer) {
 		ErrH.Abort("actint TTF: unregistered text buffer");
-		return;
+		return {};
 	}
 	const SDL_Rect clip{XGR_Obj.clipLeft,
 		XGR_Obj.clipTop,
@@ -116,9 +111,10 @@ void native_paint(
 	layout.ink_bounds.y += y;
 	layer->paint(
 		layout.ink_bounds,
-		std::move(layout.image),
+		layout.image,
 		screen && XGR_Obj.ClipMode == XGR_CLIP_ALL ? &clip : nullptr
 	);
+	return layout.image;
 }
 } // namespace
 
@@ -7658,18 +7654,19 @@ void aPutStr32Utf8(
 	aPutStr32(x, y, font, color, color_size, raster.data(), bsx, buf, space);
 }
 
-void aOutStrUtf8(int x, int y, int font, int color, const void *text, int space) {
+std::shared_ptr<const xgr::text::Image>
+aOutStrUtf8(int x, int y, int font, int color, const void *text, int space) {
 	if (ttf_font) {
 		auto *buffer = XGR_Obj.get_active_render_buffer();
 		xgr::text::prepare(buffer, XGR_MAXX, XGR_MAXY, false);
-		native_paint(
+		return native_paint(
 			buffer, x, y, native_layout(text, aScrFonts[font], color, 0, space, 1, false), true
 		);
-		return;
 	}
 
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts[font]->Size);
 	aOutStr(x, y, font, color, (unsigned char *)raster.data(), space);
+	return {};
 }
 
 void aOutText32Utf8(int x, int y, int color, const void *text, int font, int hspace, int vspace) {

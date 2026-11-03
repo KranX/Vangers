@@ -193,6 +193,78 @@ void rendering(bool ttf) {
 			);
 		}
 	}
+	if (ttf) {
+		// A real ACS field restores only its BMO rectangle, not the whole screen.
+		// Native layout padding must not retain a draw after that restore.
+		// Palette zero is transparent in ACS object restoration.
+		XGR_Rectangle(0, 0, XGR_MAXX, XGR_MAXY, 7, 7, XGR_FILLED);
+		field.PosX = 200;
+		field.SizeX = 120;
+		field.SizeY = 40;
+		aciScreenResourceBMO background;
+		background.flags = ACS_BUILD_RESOURCE;
+		background.OffsX = field.PosX;
+		background.OffsY = field.PosY;
+		background.SizeX = field.SizeX;
+		background.SizeY = field.SizeY;
+		background.load();
+		field.resPtr = &background;
+		auto *layer = xgr::text::find(XGR_Obj.get_active_render_buffer());
+		for (int frame = 0; frame < 128; ++frame) {
+			acsScrD->flushLine->clear();
+			field.font = frame % 2;
+			field.Color = (frame % 3 + 3) * 16 | (1 << 8);
+			field.set_string(frame % 2 ? "ШШШШШШШШШШШШШШШШШШШ_" : "Ёж_");
+			const int mode = (frame / 2) % 2 ? XGR_CLIP_ALL : XGR_CLIP_PUTSPR;
+			const SDL_Rect parent{
+				field.PosX + 10, field.PosY + 5, field.SizeX - 20, field.SizeY - 10};
+			XGR_SetClip(parent.x, parent.y, parent.x + parent.w, parent.y + parent.h);
+			XGR_SetClipMode(mode);
+			field.redraw();
+			check(layer && !layer->empty(), "BMO field produced no native text");
+			check(
+				XGR_Obj.ClipMode == mode && XGR_Obj.clipLeft == parent.x &&
+					XGR_Obj.clipTop == parent.y && XGR_Obj.clipRight == parent.x + parent.w &&
+					XGR_Obj.clipBottom == parent.y + parent.h,
+				"Field changed caller's clipping state"
+			);
+			if (frame < 4) {
+				std::array<SDL_Color, 256> palette{};
+				const int scale = frame < 2 ? 1 : 2;
+				const auto pixels =
+					layer->render(XGR_MAXX * scale, XGR_MAXY * scale, palette.data());
+				const SDL_Rect clip =
+					mode == XGR_CLIP_ALL ? parent : SDL_Rect{0, 0, XGR_MAXX, XGR_MAXY};
+				bool visible = false, overhang = false;
+				for (int y = 0; y < XGR_MAXY * scale; ++y)
+					for (int x = 0; x < XGR_MAXX * scale; ++x) {
+						if (!(pixels[size_t(y) * XGR_MAXX * scale + x] >> 24))
+							continue;
+						visible = true;
+						overhang |=
+							x < field.PosX * scale || x >= (field.PosX + field.SizeX) * scale;
+						check(
+							x >= clip.x * scale && y >= clip.y * scale &&
+								x < (clip.x + clip.w) * scale && y < (clip.y + clip.h) * scale,
+							"Native text escaped the parent clip"
+						);
+					}
+				check(visible, "Parent clip removed all text");
+				if (frame == 1)
+					check(overhang, "Field rectangle clipped overhanging letters");
+			}
+			field.set_string("");
+			field.redraw();
+			check(layer->empty(), "BMO restore retained stale native draws outside field");
+		}
+		field.set_string("Ёж");
+		field.redraw();
+		check(!field.nativeText.expired(), "Field lost its native draw handle");
+		layer->clear();
+		check(field.nativeText.expired(), "Field keeps a cleared native draw alive");
+		field.resPtr = nullptr;
+		background.free();
+	}
 	delete acsScrD;
 	acsScrD = nullptr;
 	acsFreeFonts();

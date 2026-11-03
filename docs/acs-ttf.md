@@ -25,6 +25,9 @@ language coverage is included.
   algorithm. Missing TTF glyphs affect presentation, never stored text.
 - Background capture/restoration uses the existing XGR/native layer transport.
   Rectangle erasure also clears native text coverage, preventing stale overlays.
+  Each field retires its own previous native draw before repainting. This removes
+  layout padding/overhang outside the restored background without clipping glyphs
+  or erasing neighbouring text. Weak handles do not extend font/run lifetimes.
   This change does not replace decorative images or text baked into images.
 
 This is scalar editing, not grapheme editing, shaping, bidi or physical IME
@@ -79,8 +82,9 @@ SDL dummy/software captures are not GPU/physical keyboard/IME acceptance tests.
 ### Verified on 2026-11-03
 
 - 33/33 CTest passed in RelWithDebInfo and Debug ASan+UBSan.
-- Actual RU/EN pause and save screens were captured and visually inspected at
-  800x600. The bitmap pause-control and save-label comparison regions matched
+- Actual RU/EN pause screens and the RU save screen were captured and visually
+  inspected at 800x600. Follow-up review corrected the initial EN save-screen
+  claim: that automation capture was still in the escave, not the save screen. The bitmap pause-control and save-label comparison regions matched
   the pre-ACS binary exactly (0 differing pixels); animated escave backgrounds
   and clocks are not claimed pixel-identical.
 - A real manual save named `Ёж日本😀` and a Russian autosave have UTF-8 headers
@@ -91,5 +95,12 @@ SDL dummy/software captures are not GPU/physical keyboard/IME acceptance tests.
 - Self-review additionally caught and fixed centered-text movement during cursor
   blinking, stale native coverage after rectangle erasure, and ACS palette-zero
   transparency for retained bitmap icons. These have rendering regressions.
+- Follow-up detailed review reproduced stale native draws outside a field's BMO
+  restoration rectangle. Per-field draw replacement fixes it without clipping
+  letters or changing bitmap output;
+  a production-linked regression checks 128 redraw/clear cycles, both ACS sizes,
+  short and over-wide strings, parent-clip preservation and 1x/2x rasterization.
+  Layer tests also verify that replacement preserves overlapping neighbours and
+  captured backgrounds.
 
 These are scripted SDL software-renderer checks, not a manual playthrough.

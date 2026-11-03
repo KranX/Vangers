@@ -2,6 +2,11 @@
 #define __ACI_SCR_H__
 
 #include <SDL3/SDL.h>
+#include <memory>
+
+namespace xgr::text {
+class Image;
+}
 
 // aciScreenResource::type values...
 #define ACS_NONE 0
@@ -282,6 +287,8 @@ struct aciScreenObject: XListElement {
 };
 
 struct aciScreenInputField: aciScreenObject {
+	// Weak ownership: clearing a screen must still release its font/run immediately.
+	std::weak_ptr<const xgr::text::Image> nativeText;
 	char *string;
 	int MaxStrLen;
 

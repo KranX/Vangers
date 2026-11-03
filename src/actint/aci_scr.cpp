@@ -60,7 +60,8 @@ int acsGetMaxFrame(int res_id);
 void aOutStr(int x, int y, int font, int color, unsigned char *str, int space = 1);
 int aStrLen(unsigned char *str, int font, int space = 1);
 
-void acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space);
+std::shared_ptr<const xgr::text::Image>
+acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space);
 void aciPutSpr32(int x, int y, int sx, int sy, void *buf, int col, int col_sz);
 int acsStrLen(int fnt, unsigned char *str, int space);
 
@@ -1462,6 +1463,12 @@ void aciScreenScroller::Change(int x) {
 }
 
 void aciScreenInputField::redraw(void) {
+	// BMO restoration does not cover padding/overhang outside the field. Retire
+	// only our previous draw, not its whole rectangle (which may overlap labels).
+	if (const auto previous = nativeText.lock())
+		if (auto *layer = xgr::text::find(XGR_Obj.get_active_render_buffer()))
+			layer->remove(previous.get());
+	nativeText.reset();
 	aciScreenObject::redraw();
 	int x = PosX;
 	if (flags & ACS_ALIGN_CENTER) {
@@ -1477,9 +1484,9 @@ void aciScreenInputField::redraw(void) {
 		x += (SizeX - width) / 2;
 	}
 	if (flags & ACS_ISCREEN_FONT)
-		acsOutStr(x, PosY, font, Color, (unsigned char *)string, Space);
+		nativeText = acsOutStr(x, PosY, font, Color, (unsigned char *)string, Space);
 	else
-		aOutStrUtf8(x, PosY, font, Color, string, Space);
+		nativeText = aOutStrUtf8(x, PosY, font, Color, string, Space);
 }
 
 void aciScreenDispatcher::ChangeScroller(int obj_id, int x) {
@@ -1624,7 +1631,8 @@ void acsFreeFonts(void) {
 	acsFntTable = NULL;
 }
 
-void acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space) {
+std::shared_ptr<const xgr::text::Image>
+acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space) {
 	if (acsTtf) {
 		auto layout = acsLayout((const char *)str, fnt, col, space);
 		if (layout.image) {
@@ -1640,7 +1648,7 @@ void acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space) {
 				layout.ink_bounds, layout.image, XGR_Obj.ClipMode == XGR_CLIP_ALL ? &clip : nullptr
 			);
 		}
-		return;
+		return layout.image;
 	}
 	auto legacy = vangers::settings::utf8_to_cp866((const char *)str);
 	str = (unsigned char *)legacy.data();
@@ -1670,6 +1678,7 @@ void acsOutStr(int x, int y, int fnt, int col, unsigned char *str, int space) {
 			_x += sx - ch->RightOffs - ch->LeftOffs + space;
 		}
 	}
+	return {};
 }
 
 int aciScreenDispatcher::GetObjectValue(int obj_id, int flag) {

@@ -52,6 +52,26 @@ int main() {
 	destination.erase({0, 0, 8, 6});
 	check(destination.empty(), "Overwritten text must release its retained image");
 
+	// Replacing one field must not erase neighbours whose ink bounds overlap.
+	const auto neighbour = std::make_shared<Solid>();
+	source.paint({0, 0, 4, 3}, neighbour);
+	const auto neighbour_pixels = source.render(8, 6, palette);
+	source.paint({0, 0, 4, 3}, solid);
+	destination.copy(source, {0, 0, 4, 3}, 0, 0);
+	const auto background_pixels = destination.render(8, 6, palette);
+	source.remove(solid.get());
+	check(
+		source.render(8, 6, palette) == neighbour_pixels,
+		"Removing one image damaged overlapping neighbour"
+	);
+	check(
+		destination.render(8, 6, palette) == background_pixels,
+		"Removing one image changed a captured background"
+	);
+	source.remove(neighbour.get());
+	source.remove(neighbour.get());
+	check(source.empty(), "Removed image retained draw entries");
+
 	// Palette lookup happens at presentation, not when text is queued.
 	Layer clipped(4, 3);
 	const SDL_Rect clip{1, 1, 2, 1};

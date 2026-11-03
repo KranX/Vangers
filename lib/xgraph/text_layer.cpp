@@ -101,6 +101,17 @@ void Layer::paint(SDL_Rect bounds, std::shared_ptr<const Image> image, const SDL
 	draws_.push_back(std::move(draw));
 }
 
+void Layer::remove(const Image *image) {
+	draws_.erase(
+		std::remove_if(
+			draws_.begin(),
+			draws_.end(),
+			[image](const Draw &draw) { return draw.image.get() == image; }
+		),
+		draws_.end()
+	);
+}
+
 void Layer::erase(SDL_Rect bounds, const uint8_t *mask, int pitch) {
 	if (bounds.w <= 0 || bounds.h <= 0)
 		return;
