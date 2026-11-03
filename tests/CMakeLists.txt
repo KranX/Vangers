@@ -187,3 +187,37 @@ TARGET_COMPILE_DEFINITIONS(actint_ttf_test PRIVATE
 	TEST_FONT="${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/VangersText-Regular.ttf"
 )
 ADD_TEST(NAME actint_ttf COMMAND actint_ttf_test)
+
+ADD_EXECUTABLE(iscreen_text_test iscreen_text_test.cpp)
+TARGET_LINK_LIBRARIES(iscreen_text_test PRIVATE vangers_iscreen_text)
+ADD_TEST(NAME iscreen_text COMMAND iscreen_text_test)
+
+ADD_TEST(NAME iscreen_script_roundtrip COMMAND ${CMAKE_COMMAND}
+	"-DSOURCE_PARSER=$<TARGET_FILE:iscreen_source_test>"
+	"-DBINARY_PARSER=$<TARGET_FILE:iscreen_binary_test>"
+	"-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/iscreen-script-roundtrip"
+	-P "${CMAKE_CURRENT_SOURCE_DIR}/iscreen_script_roundtrip.cmake")
+SET_TESTS_PROPERTIES(iscreen_script_roundtrip PROPERTIES TIMEOUT 30)
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-input")
+ADD_TEST(NAME iscreen_input COMMAND iscreen_binary_test --input)
+SET_TESTS_PROPERTIES(iscreen_input PROPERTIES TIMEOUT 15 WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-input")
+FOREACH(renderer bitmap ttf)
+	FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-relief-${renderer}")
+	ADD_TEST(NAME iscreen_relief_${renderer} COMMAND iscreen_binary_test --relief ${renderer})
+	SET_TESTS_PROPERTIES(iscreen_relief_${renderer} PROPERTIES TIMEOUT 15
+		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-relief-${renderer}")
+ENDFOREACH()
+
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-relief-procedural")
+ADD_TEST(NAME iscreen_relief_procedural COMMAND iscreen_binary_test --relief procedural)
+SET_TESTS_PROPERTIES(iscreen_relief_procedural PROPERTIES TIMEOUT 15
+ WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-relief-procedural")
+
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-shadow-damage")
+ADD_TEST(NAME iscreen_shadow_damage COMMAND iscreen_binary_test --shadow)
+SET_TESTS_PROPERTIES(iscreen_shadow_damage PROPERTIES TIMEOUT 15
+ WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-shadow-damage")
+
+ADD_EXECUTABLE(relief_cache_test relief_cache_test.cpp)
+TARGET_LINK_LIBRARIES(relief_cache_test PRIVATE vangers_iscreen_text)
+ADD_TEST(NAME iscreen_relief_cache COMMAND relief_cache_test)

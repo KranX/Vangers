@@ -9,6 +9,8 @@
 
 namespace vangers::actint {
 
+enum class FontFamily { Text, Menu, Display };
+
 struct FontIcon {
 	int left = 0, right = 0;
 	std::vector<uint8_t> pixels;
@@ -37,7 +39,8 @@ struct TextLayout {
 class TtfFont {
   public:
 	TtfFont();
-	explicit TtfFont(const std::string &path);
+	explicit TtfFont(FontFamily family);
+	explicit TtfFont(const std::string &path, FontFamily family = FontFamily::Text);
 	~TtfFont();
 	TtfFont(const TtfFont &) = delete;
 	TtfFont &operator=(const TtfFont &) = delete;

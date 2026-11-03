@@ -3,8 +3,11 @@
 
 int iGetOptionValue(int id);
 void iSetOptionValue(int id, int val);
+// Legacy CP866 boundary; settings and iscreen internals use the UTF-8 API below.
 char *iGetOptionValueCHR(int id);
 void iSetOptionValueCHR(int id, const char *p);
+const char *iGetOptionText(int id);
+void iSetOptionText(int id, const char *utf8);
 void iUpdateOptionValue(int id);
 
 enum iScreenOptionID {

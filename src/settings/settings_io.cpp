@@ -258,7 +258,7 @@ void encode_settings(TomlValue &document, const GameSettings &settings) {
 		video,
 		"ttf_text",
 		TomlValue(settings.video.ttf_text),
-		"Native-resolution actint TTF text. Restart required; false uses the original bitmap fonts."
+		"Actint/iscreen TTF text. Restart required; false uses the original bitmap fonts."
 	);
 	set_value(video, "fullscreen", TomlValue(settings.video.fullscreen));
 	set_value(

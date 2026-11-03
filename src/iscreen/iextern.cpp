@@ -11,6 +11,8 @@
 #include "controls.h"
 #include "hfont.h"
 #include "iscreen.h"
+#include "iscreen_options.h"
+#include "settings/text_encoding.h"
 
 #include "../actint/a_consts.h"
 #include "../actint/actint.h"
@@ -105,9 +107,9 @@ struct iMultiGameData {
 #define iMP_MAX_HALL_RESULT 10
 
 struct iMultiResultString {
-	char *place;
-	char *prmString;
-	char *prmNum;
+	std::string place;
+	std::string prmString;
+	std::string prmNum;
 
 	iListElement *placePtr;
 	iListElement *stringPtr;
@@ -815,7 +817,7 @@ void iScreenOption::SetValueCHR(const char *p) {
 		case iSTRING:
 			if (ValueType == iOPTION_VALUE_CUR) {
 				if (((iStringElement *)objPtr)->string != p) {
-					strcpy(((iStringElement *)objPtr)->string, p);
+					((iStringElement *)objPtr)->init_string(p);
 				}
 				((iStringElement *)objPtr)->init_size();
 				((iStringElement *)objPtr)->init_align();
@@ -827,7 +829,7 @@ void iScreenOption::SetValueCHR(const char *p) {
 		case iS_STRING:
 			if (ValueType == iOPTION_VALUE_CUR) {
 				if (((iS_StringElement *)objPtr)->string != p) {
-					strcpy(((iS_StringElement *)objPtr)->string, p);
+					((iS_StringElement *)objPtr)->init_string(p);
 				}
 				((iS_StringElement *)objPtr)->init_size();
 				((iS_StringElement *)objPtr)->init_align();
@@ -842,7 +844,7 @@ void iScreenOption::SetValueCHR(const char *p) {
 		switch (ptr->optionPtr->ObjectType) {
 		case iSTRING:
 			if (ptr->optionPtr->ValueType == iOPTION_VALUE_CUR) {
-				strcpy(((iStringElement *)ptr->optionPtr->objPtr)->string, p);
+				((iStringElement *)ptr->optionPtr->objPtr)->init_string(p);
 				((iStringElement *)ptr->optionPtr->objPtr)->init_size();
 				((iStringElement *)ptr->optionPtr->objPtr)->init_align();
 				obj = (iScreenObject *)((iStringElement *)ptr->optionPtr->objPtr)->owner;
@@ -852,7 +854,7 @@ void iScreenOption::SetValueCHR(const char *p) {
 			break;
 		case iS_STRING:
 			if (ptr->optionPtr->ValueType == iOPTION_VALUE_CUR) {
-				strcpy(((iS_StringElement *)ptr->optionPtr->objPtr)->string, p);
+				((iS_StringElement *)ptr->optionPtr->objPtr)->init_string(p);
 				((iS_StringElement *)ptr->optionPtr->objPtr)->init_size();
 				((iS_StringElement *)ptr->optionPtr->objPtr)->init_align();
 				obj = (iScreenObject *)((iS_StringElement *)ptr->optionPtr->objPtr)->owner;
@@ -861,8 +863,10 @@ void iScreenOption::SetValueCHR(const char *p) {
 			}
 			break;
 		}
+		ptr->optionPtr->GetLegacyText();
 		ptr = (iScreenOptionPtr *)ptr->next;
 	}
+	GetLegacyText();
 }
 
 int iGetOptionValue(int id) {
@@ -893,16 +897,33 @@ void iUpdateOptionValue(int id) {
 		iScrOpt[id]->update();
 }
 
-char *iGetOptionValueCHR(int id) {
-	if (iScrOpt && iScrOpt[id])
-		return iScrOpt[id]->GetValueCHR();
-	else
-		return NULL;
+const char *iGetOptionText(int id) {
+	return iScrOpt && iScrOpt[id] ? iScrOpt[id]->GetValueCHR() : nullptr;
 }
 
-void iSetOptionValueCHR(int id, const char *p) {
-	if (iScrOpt && iScrOpt[id])
-		iScrOpt[id]->SetValueCHR(p);
+void iSetOptionText(int id, const char *utf8) {
+	if (iScrOpt && iScrOpt[id]) {
+		iScrOpt[id]->SetValueCHR(utf8);
+	}
+}
+
+char *iScreenOption::GetLegacyText() {
+	const auto *value = GetValueCHR();
+	if (!value)
+		return nullptr;
+	const auto legacy = vangers::settings::utf8_to_cp866(value);
+	const auto size = std::min(legacy.size(), sizeof(legacyText) - 1);
+	std::memcpy(legacyText, legacy.data(), size);
+	legacyText[size] = 0;
+	return legacyText;
+}
+
+char *iGetOptionValueCHR(int id) {
+	return iScrOpt && iScrOpt[id] ? iScrOpt[id]->GetLegacyText() : nullptr;
+}
+
+void iSetOptionValueCHR(int id, const char *legacy) {
+	iSetOptionText(id, vangers::settings::cp866_to_utf8(legacy).c_str());
 }
 
 void iPrepareControls(void) {
@@ -961,14 +982,19 @@ void iInitControlObjects(void) {
 
 				if (str) {
 					if (strcasecmp(iControlsStr[index]->string, str)) {
-						strcpy(iControlsStr[index]->string, str);
+						iControlsStr[index]->init_string(str);
 						obj = (iScreenObject *)iControlsStr[index]->owner;
 						obj->flags |= OBJ_REINIT;
 						obj->flags |= OBJ_MUST_REDRAW;
 					}
 				} else {
-					if (strcasecmp(iControlsStr[index]->string, iSTR_NONE)) {
-						strcpy(iControlsStr[index]->string, iSTR_NONE);
+					if (strcasecmp(
+							iControlsStr[index]->string,
+							vangers::settings::cp866_to_utf8(iSTR_NONE).c_str()
+						)) {
+						iControlsStr[index]->init_string(
+							vangers::settings::cp866_to_utf8(iSTR_NONE).c_str()
+						);
 						obj = (iScreenObject *)iControlsStr[index]->owner;
 						obj->flags |= OBJ_REINIT;
 						obj->flags |= OBJ_MUST_REDRAW;
@@ -990,7 +1016,9 @@ void iDeleteControl(int vkey, int id) {
 				key = iGetControlCode(i, j);
 				if (key == vkey) {
 					iSetControlCode(i, 0, j);
-					strcpy(iControlsStr[index]->string, iSTR_NONE);
+					iControlsStr[index]->init_string(
+						vangers::settings::cp866_to_utf8(iSTR_NONE).c_str()
+					);
 					obj = (iScreenObject *)iControlsStr[index]->owner;
 					obj->flags |= OBJ_REINIT;
 					obj->flags |= OBJ_MUST_REDRAW;
@@ -1048,7 +1076,7 @@ void iMultiGameParameter::set_value(int num) {
 		*iResBuf <= num;
 		for (i = 0; i < NumObjects; i++) {
 			str = (iStringElement *)objData[i];
-			strcpy(str->string, iResBuf->address());
+			str->init_string(iResBuf->address());
 			str->init_size();
 			str->init_align();
 			obj = (iScreenObject *)str->owner;
@@ -1656,27 +1684,27 @@ void iSetMultiGameParameters(void) {
 }
 
 void iUpdateMultiGameName(void) {
-	char *name = NULL;
+	const char *name = NULL;
 	switch (iCurMultiGame) {
 	case 0:
-		name = iGetOptionValueCHR(iMPGAME0_ID);
+		name = iGetOptionText(iMPGAME0_ID);
 		break;
 	case 1:
-		name = iGetOptionValueCHR(iMPGAME1_ID);
+		name = iGetOptionText(iMPGAME1_ID);
 		break;
 	case 2:
-		name = iGetOptionValueCHR(iMPGAME2_ID);
+		name = iGetOptionText(iMPGAME2_ID);
 		break;
 	case 3:
-		name = iGetOptionValueCHR(iMPGAME3_ID);
+		name = iGetOptionText(iMPGAME3_ID);
 		break;
 	case 4:
-		name = iGetOptionValueCHR(iMPGAME4_ID);
+		name = iGetOptionText(iMPGAME4_ID);
 		break;
 	}
 	if (!name)
 		return;
-	iSetOptionValueCHR(iCUR_MPGAME_ID, name);
+	iSetOptionText(iCUR_MPGAME_ID, name);
 }
 
 void iLockMultiGameParameters(void) {
@@ -1694,10 +1722,6 @@ void iUnlockMultiGameParameters(void) {
 }
 
 iMultiResultString::iMultiResultString(void) {
-	place = new char[256];
-	prmString = new char[256];
-	prmNum = new char[256];
-
 	placePtr = stringPtr = numberPtr = NULL;
 }
 
@@ -1715,10 +1739,7 @@ void iMultiResultString::redraw(void) {
 		el = (iStringElement *)placePtr;
 		obj = (iScreenObject *)el->owner;
 
-		iResBuf->init();
-		*iResBuf < place;
-
-		strcpy(el->string, iResBuf->address());
+		el->init_string(place.c_str());
 		obj->flags |= OBJ_REINIT;
 		obj->flags |= OBJ_MUST_REDRAW;
 	}
@@ -1726,29 +1747,26 @@ void iMultiResultString::redraw(void) {
 		el = (iStringElement *)stringPtr;
 		obj = (iScreenObject *)el->owner;
 
-		strcpy(el->string, prmString);
+		el->init_string(prmString.c_str());
 		obj->flags |= OBJ_REINIT;
 		obj->flags |= OBJ_MUST_REDRAW;
-		if (!strlen(prmString))
+		if (prmString.empty())
 			obj->flags |= OBJ_LOCKED;
 	}
 	if (numberPtr) {
 		el = (iStringElement *)numberPtr;
 		obj = (iScreenObject *)el->owner;
 
-		iResBuf->init();
-		*iResBuf < prmNum;
-
-		strcpy(el->string, iResBuf->address());
+		el->init_string(prmNum.c_str());
 		obj->flags |= OBJ_REINIT;
 		obj->flags |= OBJ_MUST_REDRAW;
 	}
 }
 
 void iMultiResultString::set_data(const char *pl, const char *ptr, const char *num) {
-	strcpy(place, pl);
-	strcpy(prmString, ptr);
-	strcpy(prmNum, num);
+	place = vangers::settings::cp866_to_utf8(pl);
+	prmString = vangers::settings::cp866_to_utf8(ptr);
+	prmNum = vangers::settings::cp866_to_utf8(num);
 }
 
 void iPrepareResults(void) {
@@ -2190,7 +2208,7 @@ const char *iGetKeyNameText(int vkey, Language lang, bool scan) {
 	return ret;*/
 	if (vkey == 0) {
 		if (lang == RUSSIAN) {
-			return STR_NONE2;
+			return "НЕТ";
 		} else {
 			return STR_NONE1;
 		}

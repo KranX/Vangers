@@ -11,6 +11,8 @@ data/resource/actint/*
 !data/resource/actint/fonts/
 data/resource/actint/fonts/*
 !data/resource/actint/fonts/VangersText-Regular.ttf
+!data/resource/actint/fonts/VangersMenu-Regular.ttf
+!data/resource/actint/fonts/VangersDisplay-Regular.ttf
 !data/resource/actint/fonts/README.md
 !data/thechain/
 data/thechain/*

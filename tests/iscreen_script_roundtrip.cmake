@@ -1,0 +1,40 @@
+FILE(MAKE_DIRECTORY "${TEST_ROOT}")
+STRING(ASCII 240 166 legacy_text)
+SET(unicode_text "Ёж 日本 😀")
+FOREACH(encoding unicode legacy)
+	SET(text "${${encoding}_text}")
+	SET(flag "")
+	IF(encoding STREQUAL "unicode")
+		SET(flag "utf8_text\n")
+	ENDIF()
+	# FILE(WRITE) uses text mode on Windows: explicit CRLF would become CRCRLF.
+	# Native LF/CRLF both describe three lines, with no final terminator.
+	FILE(WRITE "${TEST_ROOT}/${encoding}.txt" "${text}\n\n${text}")
+	FILE(WRITE "${TEST_ROOT}/${encoding}.inc" "text_object 1 \"${text}\" \"${encoding}.txt\"\nScreen \"screen\" {\ndefault_obj \"obj\"\nObject \"obj\" {\nprompt_text \"${text}\"\ntext \"${encoding}.txt\"\ns_text \"${encoding}.txt\"\nElement STRING {\nid \"large\"\nstring \"${text}\"\n}\nElement S_STRING {\nstring \"${text}\"\n}\n}\n}\ndefault_scr \"screen\"\n")
+	FILE(WRITE "${TEST_ROOT}/${encoding}.scr" "${flag}#include \"${encoding}.inc\"\n")
+	FOREACH(mode source binary)
+		IF(mode STREQUAL "source")
+			SET(parser "${SOURCE_PARSER}")
+			SET(input "${encoding}.scr")
+		ELSE()
+			SET(parser "${BINARY_PARSER}")
+			SET(input "${encoding}.scb")
+		ENDIF()
+		EXECUTE_PROCESS(COMMAND "${parser}" --parse "${input}" "${encoding}.scb" "${encoding}"
+			WORKING_DIRECTORY "${TEST_ROOT}" RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr TIMEOUT 10)
+		IF(NOT result STREQUAL "0")
+			MESSAGE(FATAL_ERROR "iscreen ${encoding} ${mode}: ${result}: ${stdout}\n${stderr}")
+		ENDIF()
+	ENDFOREACH()
+ENDFOREACH()
+
+# An explicit UTF-8 include must not silently reinterpret legacy bytes.
+FILE(WRITE "${TEST_ROOT}/invalid.scr" "utf8_text\n#include \"legacy.inc\"\n")
+EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E env "ASAN_OPTIONS=$ENV{ASAN_OPTIONS}:detect_leaks=0"
+	"${SOURCE_PARSER}" --parse invalid.scr invalid.scb unicode
+	WORKING_DIRECTORY "${TEST_ROOT}" RESULT_VARIABLE result ERROR_VARIABLE stderr OUTPUT_VARIABLE stdout)
+STRING(FIND "${stderr}" "Invalid iscreen display text" diagnostic)
+STRING(FIND "${stderr}" "invalid.scr: option text_object" context)
+IF(NOT result STREQUAL "1" OR diagnostic LESS 0 OR context LESS 0)
+	MESSAGE(FATAL_ERROR "Invalid resource lost its diagnostic (${result}): ${stdout}\n${stderr}")
+ENDIF()

@@ -2,13 +2,18 @@
 
 #include "../common.h"
 #include "../global.h"
+#include "../settings/settings.h"
 #include "../settings/text_encoding.h"
 
 #include "ikeys.h"
 
+#include "../actint/mouse_prompt.h"
+#include "../text/utf8.h"
 #include "hfont.h"
 #include "i_mem.h"
 #include "iscreen.h"
+#include "ivmap.h"
+#include "text.h"
 
 #include "../actint/a_consts.h"
 #include "../actint/aci_scr.h"
@@ -60,8 +65,8 @@ void put_buf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode
 );
@@ -70,8 +75,8 @@ void put_tbuf(
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode,
 	int terr
@@ -100,7 +105,7 @@ void put2fon(int x, int y, int sx, int sy, unsigned char *buf, int lev = 0);
 void change_terrain(int x, int y, int sx, int sy, int terr1, int terr2);
 void put_map(int x, int y, int sx, int sy);
 void get_buf(int x, int y, int sx, int sy, unsigned char *buf);
-void scale_buf(int sx, int sy, int sc, unsigned char *p, unsigned char *p1);
+void scale_buf(int sx, int sy, int sc, const unsigned char *p, unsigned char *p1);
 void dscale_buf(
 	int sx,
 	int sy,
@@ -128,8 +133,6 @@ void smooth_shape(int sx, int sy, unsigned char *buf);
 
 void init_hfonts(void);
 void free_hfonts(void);
-
-void iregRender(int x0, int y0, int x1, int y1);
 
 int iStrLen(unsigned char *p, int f, int space);
 void iPutStr(
@@ -297,7 +300,7 @@ iScreenDispatcher::iScreenDispatcher(void) {
 	ActiveEv = NULL;
 	flags = 0;
 
-	BackupStr = new char[256];
+	BackupStr = new char[iS_STR_BYTES];
 
 	curPal = new unsigned char[768];
 	trgPal = new unsigned char[768];
@@ -396,16 +399,16 @@ iScreenObject::~iScreenObject(void) {
 
 	if (flags & OBJ_TRIGGER) {
 		lst = ((iTriggerObject *)this)->StateElem;
-		delete lst;
+		delete[] lst;
 	}
 	if (flags & OBJ_FON_DATA) {
 		flags ^= OBJ_FON_DATA;
-		delete fonData;
+		delete[] fonData;
 		if (flags & OBJ_STORE_TERRAIN)
-			delete terr_fonData;
+			delete[] terr_fonData;
 	}
 	if (promptData)
-		delete promptData;
+		delete[] promptData;
 }
 
 iScreenElement::iScreenElement(void) {
@@ -668,16 +671,16 @@ iStringElement::iStringElement(void) {
 	font = 0;
 	space = I_DEFAULT_SPACE;
 	type = I_STRING_ELEM;
-	string = new char[iSTR_LEN];
-	memset(string, '\0', iSTR_LEN);
+	string = new char[iSTR_BYTES];
+	memset(string, '\0', iSTR_BYTES);
 }
 
 iS_StringElement::iS_StringElement(void) {
 	font = 0;
 	space = I_DEFAULT_SPACE;
 	type = I_S_STRING_ELEM;
-	string = new char[iS_STR_LEN];
-	memset(string, '\0', iS_STR_LEN);
+	string = new char[iS_STR_BYTES];
+	memset(string, '\0', iS_STR_BYTES);
 }
 
 iBitmapElement::iBitmapElement(void) {
@@ -1517,7 +1520,8 @@ void iScreenElement::redraw(int x, int y, int sc, int sm, int hide_mode) {
 			// font,col,data,bsx,bsy,p,((iStringElement*)this) -> space);
 			//				  s_smooth_buf(bsx,bsy,p,0,iS_STR_SEG_START_COL);
 
-			aPutStr32(
+			xgr::text::prepare(p, bsx, bsy);
+			aPutStr32Utf8(
 				dx1,
 				dy1,
 				((iS_StringElement *)this)->font,
@@ -1529,6 +1533,7 @@ void iScreenElement::redraw(int x, int y, int sc, int sm, int hide_mode) {
 				((iStringElement *)this)->space
 			);
 			put_buf2col(x + lX - dx1, y + lY - dy1, bsx, bsy, p, lev);
+			xgr::text::forget(p);
 
 			_iFREE_A_(unsigned char, p, bsx *bsy);
 			break;
@@ -1999,7 +2004,7 @@ void iScreenObject::init(void) {
 					}
 				} else {
 					if (p->type == I_S_STRING_ELEM) {
-						p->SizeX = aStrLen32(
+						p->SizeX = aStrLen32Utf8(
 							((iS_StringElement *)p)->string,
 							((iS_StringElement *)p)->font,
 							((iS_StringElement *)p)->space
@@ -2194,14 +2199,18 @@ void iScreenObject::init(void) {
 }
 
 void iScreenObject::redraw(int mode) {
+	// Preserve the bitmap fallback; procedural TTF relief can cast longer shadows.
+	const auto render = vangers::settings::settings_manager().get().video.ttf_text
+							? iregRenderToScreen
+							: iregRender;
 	int hide_mode = flags & OBJ_HIDE;
 	iScreenElement *p = (iScreenElement *)ElementList->last;
 
 	if (flags & OBJ_PIC_PRESENT && flags & OBJ_CLEAR_FON) {
 		if (FlushX == -1) {
-			iregRender(PosX, PosY, PosX + SizeX, PosY + SizeY);
+			render(PosX, PosY, PosX + SizeX, PosY + SizeY);
 		} else {
-			iregRender(FlushX, FlushY, FlushX + FlushSX, FlushY + FlushSY);
+			render(FlushX, FlushY, FlushX + FlushSX, FlushY + FlushSY);
 		}
 		flags ^= OBJ_CLEAR_FON;
 	}
@@ -2252,9 +2261,9 @@ void iScreenObject::redraw(int mode) {
 	}
 	if (!(flags & OBJ_AVI_PRESENT) && !(flags & OBJ_AVI_BORDER) && !(flags & OBJ_PIC_PRESENT)) {
 		if (FlushX == -1) {
-			iregRender(PosX, PosY, PosX + SizeX, PosY + SizeY);
+			render(PosX, PosY, PosX + SizeX, PosY + SizeY);
 		} else {
-			iregRender(FlushX, FlushY, FlushX + FlushSX, FlushY + FlushSY);
+			render(FlushX, FlushY, FlushX + FlushSX, FlushY + FlushSY);
 		}
 	}
 
@@ -3583,7 +3592,7 @@ void iScreen::init_prompt(void) {
 	while (obj) {
 		if (obj->promptData) {
 			pr = new XGR_MousePromptData(obj->PosX, obj->PosY, obj->SizeX, obj->SizeY, 0);
-			pr->set_text(obj->promptData);
+			vangers::actint::set_mouse_prompt(pr, obj->promptData);
 			if (obj->promptID)
 				pr->ID = obj->promptID;
 			promptData->AddElement((XListElement *)pr);
@@ -3840,11 +3849,11 @@ void iAVIElement::prev_avi(void) {
 }
 
 void iStringElement::init_string(const char *ptr) {
-	strcpy(string, ptr);
+	vangers::iscreen::copy_text(string, ptr, iSTR_LEN - 1);
 }
 
-void iS_StringElement::init_string(char *ptr) {
-	strcpy(string, ptr);
+void iS_StringElement::init_string(const char *ptr) {
+	vangers::iscreen::copy_text(string, ptr, iS_STR_LEN - 1);
 }
 
 void iScreenDispatcher::init_input_string(iScreenElement *p) {
@@ -3891,13 +3900,11 @@ void iScreenDispatcher::input_string_quant(void) {
 	iScreenObject *obj;
 	unsigned char *ptr = NULL;
 	const char *key_name = NULL;
-	unsigned char code;
-	HFont *hfnt = NULL;
 
 	switch (ActiveEl->type) {
 	case I_STRING_ELEM:
 		ptr = (unsigned char *)(((iStringElement *)ActiveEl)->string);
-		hfnt = HFntTable[(((iStringElement *)ActiveEl)->font)];
+
 		break;
 	case I_S_STRING_ELEM:
 		ptr = (unsigned char *)(((iS_StringElement *)ActiveEl)->string);
@@ -3915,11 +3922,6 @@ void iScreenDispatcher::input_string_quant(void) {
 
 		if (!(ActiveEl->flags & EL_KEY_NAME)) {
 			if (event->type == SDL_EVENT_KEY_DOWN) {
-				if (event->key.key > 0 && event->key.key < 127) {
-					code = event->key.key;
-				} else {
-					continue;
-				}
 				switch (event->key.key) {
 				case SDLK_RETURN:
 					sz = strlen((char *)ptr);
@@ -3942,45 +3944,28 @@ void iScreenDispatcher::input_string_quant(void) {
 				case SDLK_BACKSPACE:
 					sz = strlen((char *)ptr);
 					if (sz > 1) {
-						ptr[sz - 1] = 0;
-						ptr[sz - 2] = '_';
+						std::string value((char *)ptr, sz - 1);
+						vangers::text::pop_back(value);
+						value += '_';
+						strcpy((char *)ptr, value.c_str());
 						init_flag = 1;
 						redraw_flag = 1;
 					}
 					break;
 				}
 			} else if (event->type == SDL_EVENT_TEXT_INPUT) {
-				if (!(ActiveEl->flags & EL_NUMBER)) {
-					const std::string encoded = vangers::settings::utf8_to_cp866(event->text.text);
-					code = encoded.empty() ? ' ' : static_cast<unsigned char>(encoded.front());
-					if ((hfnt->data[code]->Flags & NULL_HCHAR) && code != ' ') {
-						break;
-					}
-					sz = strlen((char *)ptr);
-					if (sz < cur_max_input) {
-						ptr[sz - 1] = code;
-						ptr[sz] = '_';
-						ptr[sz + 1] = 0;
-
-						init_flag = 1;
-						redraw_flag = 1;
-					}
-				} else {
-					if ((unsigned char)event->text.text[0] >= '0' &&
-						(unsigned char)event->text.text[0] <= '9') {
-						code = event->text.text[0];
-						if (hfnt && (hfnt->data[code]->Flags & NULL_HCHAR) && code != ' ')
-							break;
-						sz = strlen((char *)ptr);
-						if (sz < cur_max_input) {
-							ptr[sz - 1] = code;
-							ptr[sz] = '_';
-							ptr[sz + 1] = 0;
-
-							init_flag = 1;
-							redraw_flag = 1;
-						}
-					}
+				sz = strlen((char *)ptr);
+				std::string value((char *)ptr, sz ? sz - 1 : 0);
+				const auto maximum = std::min(
+					cur_max_input - 1,
+					ActiveEl->type == I_STRING_ELEM ? iSTR_LEN - 1 : iS_STR_LEN - 1
+				);
+				if (maximum > 0 && vangers::iscreen::append_input(
+									   value, event->text.text, maximum, ActiveEl->flags & EL_NUMBER
+								   )) {
+					value += '_';
+					strcpy((char *)ptr, value.c_str());
+					init_flag = redraw_flag = 1;
 				}
 			}
 		} else {
@@ -4000,7 +3985,11 @@ void iScreenDispatcher::input_string_quant(void) {
 					key_name = iGetKeyNameText(k, lang());
 					if (flags & SD_INPUT_STRING && key_name) {
 						if (!(ActiveEl->flags & EL_JOYSTICK_KEY) || (k & iJOYSTICK_MASK)) {
-							strcpy((char *)ptr, key_name);
+							vangers::iscreen::copy_text(
+								(char *)ptr,
+								key_name,
+								ActiveEl->type == I_STRING_ELEM ? iSTR_LEN - 1 : iS_STR_LEN - 1
+							);
 							flags ^= SD_INPUT_STRING;
 							flags |= SD_FINISH_INPUT;
 							init_flag = 1;
@@ -4013,6 +4002,8 @@ void iScreenDispatcher::input_string_quant(void) {
 				}
 			}
 		}
+		if (!(flags & SD_INPUT_STRING))
+			break;
 	}
 	if (init_flag) {
 		obj = (iScreenObject *)ActiveEl->owner;
@@ -4351,7 +4342,7 @@ void iStringElement::init_size(void) {
 void iS_StringElement::init_size(void) {
 	//	  SizeX = iS_StrLen((unsigned char*)string,font,space);
 	//	  SizeY = iScrFontTable[font] -> SizeY;
-	SizeX = aStrLen32(string, font, space);
+	SizeX = aStrLen32Utf8(string, font, space);
 	SizeY = aStrHeight32(font);
 }
 
@@ -4371,54 +4362,34 @@ iTextData::~iTextData(void) {
 	if (fname)
 		delete[] fname;
 	if (mem_heap)
-		delete mem_heap;
+		delete[] mem_heap;
 	if (data)
-		delete data;
+		delete[] data;
 	if (objName)
-		delete objName;
+		delete[] objName;
 }
 
 void iTextData::load(void) {
-	XStream fh;
-	int i, l = 0, num_len = 0;
-
-	fh.open(fname, XS_IN);
-	// mem_heap = aciLoadPackedFile(fh,heap_size);
-
-	heap_size = fh.size();
-	mem_heap = new char[heap_size];
-	fh.read(mem_heap, heap_size);
-
+	free();
+	XStream fh(fname, XS_IN);
+	std::string bytes(fh.size(), '\0');
+	if (!bytes.empty())
+		fh.read(bytes.data(), bytes.size());
 	fh.close();
-
-	for (i = 0; i < heap_size; i++) {
-		if (mem_heap[i] == '\n')
-			num_len++;
-	}
-
-	data = new char *[num_len];
-	for (i = 0; i < num_len; i++)
-		data[i] = NULL;
-
-	data[0] = mem_heap;
-
-	numLines = num_len;
-
-	for (i = 0; i < heap_size; i++) {
-		if (mem_heap[i] == '\n') {
-			l++;
-			mem_heap[i] = 0;
-			if (l <= num_len - 1)
-				data[l] = mem_heap + i + 1;
-		}
-	}
-
-	for (i = 0; i < heap_size; i++) {
-		if (mem_heap[i] == '\r')
-			mem_heap[i] = 0;
+	const auto lines = vangers::iscreen::text_lines(bytes, utf8_resource);
+	numLines = int(lines.size());
+	heap_size = 0;
+	for (const auto &line : lines)
+		heap_size += int(line.size()) + 1;
+	mem_heap = new char[heap_size];
+	data = new char *[numLines];
+	char *cursor = mem_heap;
+	for (int i = 0; i < numLines; ++i) {
+		data[i] = cursor;
+		std::memcpy(cursor, lines[i].c_str(), lines[i].size() + 1);
+		cursor += lines[i].size() + 1;
 	}
 	reset();
-
 	flags |= iTEXT_DATA_LOADED;
 }
 
@@ -4457,7 +4428,7 @@ void iTextData::copy(iScreenObject *p) {
 		}
 		if (ptr) {
 			if (!(flags & iTEXT_EOF))
-				read_str(ptr);
+				read_str(ptr, el->type == I_STRING_ELEM ? iSTR_LEN - 1 : iS_STR_LEN - 1);
 			else
 				strcpy(ptr, " ");
 
@@ -4475,10 +4446,10 @@ void iTextData::copy(iScreenObject *p) {
 	}
 }
 
-void iTextData::read_str(char *p) {
+void iTextData::read_str(char *p, std::size_t maximum) {
 	if (flags & iTEXT_EOF)
 		return;
-	strcpy(p, data[curLine]);
+	vangers::iscreen::copy_text(p, data[curLine], maximum);
 	curLine++;
 	if (curLine >= numLines)
 		flags |= iTEXT_EOF;
@@ -4486,7 +4457,10 @@ void iTextData::read_str(char *p) {
 
 void iTextData::reset(void) {
 	curLine = 0;
-	flags &= ~iTEXT_EOF;
+	if (numLines)
+		flags &= ~iTEXT_EOF;
+	else
+		flags |= iTEXT_EOF;
 }
 
 void iScreenDispatcher::init_texts(void) {
@@ -4573,7 +4547,7 @@ int iScreenDispatcher::copy_text_next(iScreen *scr, int mode) {
 					} else {
 						next_text();
 						if (title_obj) {
-							strcpy(title_obj->string, curText->objName);
+							title_obj->init_string(curText->objName);
 							title_obj->init_size();
 							title_obj->init_align();
 						}
@@ -4585,7 +4559,7 @@ int iScreenDispatcher::copy_text_next(iScreen *scr, int mode) {
 					} else {
 						next_text();
 						if (title_obj) {
-							strcpy(title_obj->string, curText->objName);
+							title_obj->init_string(curText->objName);
 							title_obj->init_size();
 							title_obj->init_align();
 						}
@@ -4600,7 +4574,7 @@ int iScreenDispatcher::copy_text_next(iScreen *scr, int mode) {
 			return 0;
 
 		if (title_obj) {
-			strcpy(title_obj->string, curText->objName);
+			title_obj->init_string(curText->objName);
 			title_obj->init_size();
 			title_obj->init_align();
 		}
@@ -4626,7 +4600,7 @@ int iScreenDispatcher::copy_text_prev(iScreen *scr, int mode) {
 				if ((lang() != RUSSIAN && id > 0) || id > iTEXT_RUS1_ID - 1) {
 					prev_text();
 					if (title_obj) {
-						strcpy(title_obj->string, curText->objName);
+						title_obj->init_string(curText->objName);
 						title_obj->init_size();
 						title_obj->init_align();
 					}
@@ -4655,7 +4629,7 @@ int iScreenDispatcher::copy_text_prev(iScreen *scr, int mode) {
 			return 0;
 
 		if (title_obj) {
-			strcpy(title_obj->string, curText->objName);
+			title_obj->init_string(curText->objName);
 			title_obj->init_size();
 			title_obj->init_align();
 		}

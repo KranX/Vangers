@@ -16,7 +16,10 @@
 #include "ikeys.h"
 #include "iscreen.h"
 #include "iscript.h"
+#include "relief_font.h"
+#include "settings/text_encoding.h"
 #include "settings_adapter.h"
+#include "text.h"
 
 #include "controls.h"
 
@@ -212,14 +215,14 @@ void get_fon(int x, int y, int sx, int sy, unsigned char *buf);
 
 void loadMouseFrames(void);
 
-void scale_buf(int sx, int sy, int sc, unsigned char *p, unsigned char *p1);
+void scale_buf(int sx, int sy, int sc, const unsigned char *p, unsigned char *p1);
 void put_buf(
 	int x,
 	int y,
 	int sx,
 	int sy,
-	unsigned char *buf,
-	unsigned char *mask,
+	const unsigned char *buf,
+	const unsigned char *mask,
 	int lev,
 	int hide_mode
 );
@@ -489,6 +492,7 @@ void init_hfonts(void) {
 }
 
 void free_hfonts(void) {
+	vangers::iscreen::free_relief_fonts();
 	int i;
 	for (i = 0; i < iNumFonts; i++)
 		delete HFntTable[i];
@@ -614,7 +618,7 @@ void iQuantFirst(void) {
 		iPrepareOptions();
 
 #ifndef _ACI_SKIP_MAINMENU_
-		iSetOptionValueCHR(iPLAYER_NAME2, (lang() == RUSSIAN ? "‚ ­ЈҐа" : "Vanger"));
+		iSetOptionText(iPLAYER_NAME2, (lang() == RUSSIAN ? "Вангер" : "Vanger"));
 		iSetOptionValueCHR(iPLAYER_PASSWORD, iSTR_DefaultPassword);
 		iSetOptionValueCHR(iHOST_NAME, "v5.vangers.net");
 		iSetOptionValueCHR(iSERVER_NAME, iSTR_NONE);
@@ -1232,45 +1236,34 @@ iScreenEventCommand *iCreateEventCommand(iScreenEventCommand *tpl) {
 	return p;
 }
 
+template<typename Element>
+static void init_legacy_text(
+	iScreenObject *obj,
+	char *text,
+	int text_len,
+	int font,
+	int space,
+	int null_level,
+	bool small_font
+) {
+	int y = 0;
+	for (const auto &line : vangers::iscreen::text_lines(std::string_view(text, text_len), false)) {
+		if (line.empty())
+			continue;
+		auto *p = new Element;
+		p->init_string(line.c_str());
+		p->flags |= EL_TEXT_STRING;
+		p->font = font;
+		p->null_level = null_level;
+		p->space = space;
+		p->lY = y;
+		y += (small_font ? iScrFontTable[font]->SizeY : HFntTable[font]->SizeY) + space;
+		obj->add_element(p);
+	}
+}
+
 void iInitText(iScreenObject *obj, char *text, int text_len, int font, int space, int null_level) {
-	int i, y = 0, t_sz;
-	char *buf;
-	iStringElement *p;
-	buf = new char[text_len];
-	memcpy(buf, text, text_len);
-
-	for (i = 0; i < text_len; i++) {
-		if (buf[i] == '\r' || buf[i] == '\n') {
-			buf[i] = 0;
-		}
-	}
-	i = 0;
-	while (i < text_len) {
-		while (!buf[i]) {
-			i++;
-		}
-		if (i < text_len) {
-			p = new iStringElement;
-			t_sz = strlen(buf + i) + 1;
-			if (t_sz) {
-				p->string = new char[t_sz];
-				strcpy(p->string, buf + i);
-				p->flags |= EL_TEXT_STRING;
-
-				p->font = font;
-				p->null_level = null_level;
-				p->space = space;
-
-				p->lY = y;
-				y += HFntTable[p->font]->SizeY + p->space;
-				obj->add_element((iListElement *)p);
-			}
-			while (buf[i]) {
-				i++;
-			}
-		}
-	}
-	delete[] buf;
+	init_legacy_text<iStringElement>(obj, text, text_len, font, space, null_level, false);
 }
 
 void iInitS_Text(
@@ -1281,40 +1274,7 @@ void iInitS_Text(
 	int space,
 	int null_level
 ) {
-	int i, y = 0, t_sz;
-	char *buf;
-	iS_StringElement *p;
-	buf = new char[text_len];
-	memcpy(buf, text, text_len);
-
-	for (i = 0; i < text_len; i++) {
-		if (buf[i] == '\r' || buf[i] == '\n')
-			buf[i] = 0;
-	}
-	i = 0;
-	while (i < text_len) {
-		while (!buf[i])
-			i++;
-		if (i < text_len) {
-			t_sz = strlen(buf + i) + 1;
-			if (t_sz) {
-				p = new iS_StringElement;
-				p->string = new char[t_sz];
-				strcpy(p->string, buf + i);
-				p->flags |= EL_TEXT_STRING;
-
-				p->font = font;
-				p->null_level = null_level;
-				p->space = space;
-
-				p->lY = y;
-				y += iScrFontTable[p->font]->SizeY + p->space;
-				obj->add_element((iListElement *)p);
-			}
-			while (buf[i])
-				i++;
-		}
-	}
+	init_legacy_text<iS_StringElement>(obj, text, text_len, font, space, null_level, true);
 }
 
 void i_change_res(void) {
@@ -2607,13 +2567,15 @@ void iPrepareSaveNames(void) {
 				time_len = (len >> 16) & 0xFF;
 				len &= 0xFF;
 
-				fh.read(el->string, len);
-				el->string[len] = 0;
+				std::string legacy_name(len, '\0');
+				fh.read(legacy_name.data(), len);
+				el->init_string(vangers::settings::cp866_to_utf8(legacy_name).c_str());
 
 				if (el1) {
 					if (time_len) {
-						fh.read(el1->string, time_len);
-						el1->string[time_len] = 0;
+						std::string legacy_time(time_len, '\0');
+						fh.read(legacy_time.data(), time_len);
+						el1->init_string(vangers::settings::cp866_to_utf8(legacy_time).c_str());
 						obj1->flags &= ~OBJ_LOCKED;
 					} else {
 						el1->string[0] = 0;
@@ -2623,7 +2585,7 @@ void iPrepareSaveNames(void) {
 				fh.close();
 				obj->flags &= ~OBJ_LOCKED;
 			} else {
-				strcpy(el->string, iSTR_EMPTY_SLOT);
+				el->init_string(vangers::settings::cp866_to_utf8(iSTR_EMPTY_SLOT).c_str());
 				obj->flags |= OBJ_LOCKED;
 				if (el1) {
 					el1->string[0] = 0;
@@ -2670,11 +2632,8 @@ void iInitServersList() {
 			obj = (iScreenObject *)el->owner;
 			memset(el->string, 0, ACI_SERVER_NAME_LEN + 1);
 			if (p) {
-				sz = strlen(p->name);
-				if (sz > ACI_SERVER_NAME_LEN)
-					memcpy(el->string, p->name, ACI_SERVER_NAME_LEN);
-				else
-					strcpy(el->string, p->name);
+				const auto legacy = std::string_view(p->name).substr(0, ACI_SERVER_NAME_LEN);
+				el->init_string(vangers::settings::cp866_to_utf8(legacy).c_str());
 				p = p->next;
 				obj->flags &= ~OBJ_LOCKED;
 			} else
@@ -2844,7 +2803,7 @@ void iDeleteControlKey(int id, int num) {
 	index = id * iKEY_OBJECT_SIZE + num;
 
 	if (iControlsStr && iControlsStr[index]) {
-		strcpy(iControlsStr[index]->string, iSTR_NONE);
+		iControlsStr[index]->init_string(vangers::settings::cp866_to_utf8(iSTR_NONE).c_str());
 		obj = (iScreenObject *)iControlsStr[index]->owner;
 		obj->flags |= OBJ_REINIT;
 		obj->flags |= OBJ_MUST_REDRAW;

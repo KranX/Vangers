@@ -22,6 +22,7 @@ extern int actIntLog;
 
 /* --------------------------- PROTOTYPE SECTION --------------------------- */
 void iWORLD_colcalc(int y0, int y1);
+void put_map(int x, int y, int sx, int sy);
 void iLINE_render(int y);
 void ipal_iter_init(void);
 /* --------------------------- DEFINITION SECTION -------------------------- */
@@ -641,7 +642,7 @@ inline void iMainStage(BYTE *pa0, int &hC, BYTE *pc0, int SizeX, int &x, BYTE *&
 	}
 }
 
-void iregRender(int LowX, int LowY, int HiX, int HiY) {
+static void render_region(int LowX, int LowY, int HiX, int HiY, bool copy_to_screen) {
 	LowX = iXCYCL(LowX);
 	HiX = iXCYCL(HiX);
 	LowY = iYCYCL(LowY);
@@ -820,19 +821,31 @@ void iregRender(int LowX, int LowY, int HiX, int HiY) {
 			if (CurrScanLenght > BackScanLen)
 				BackScanLen = CurrScanLenght;
 		}
+		// The shadow scan can repaint beyond LowX. A rectangular union would
+		// copy stale colour-map pixels on rows with a shorter shadow tail.
+		const int width =
+			std::min(int(H_SIZE), ((SizeX + 1) & ~1) + int(iXCYCL(shadow_start_x - x)));
+		const int start = iXCYCL(HiX - width + 1);
+		const int first = std::min(width, int(H_SIZE) - start);
 		if (auto *layer = xgr::text::find(ivMap)) {
-			// Main rendering writes pairs (including HiX); the shadow scan can
-			// repaint beyond LowX. Invalidate the actual wrapped span, not just
-			// the caller's requested rectangle.
-			const int width =
-				std::min(int(H_SIZE), ((SizeX + 1) & ~1) + int(iXCYCL(shadow_start_x - x)));
-			const int start = iXCYCL(HiX - width + 1);
-			const int first = std::min(width, int(H_SIZE) - start);
 			layer->erase({start, y, first, 1});
 			if (first < width)
 				layer->erase({0, y, width - first, 1});
 		}
+		if (copy_to_screen && y < XGR_MAXY) {
+			put_map(start, y, first, 1);
+			if (first < width)
+				put_map(0, y, width - first, 1);
+		}
 	}
+}
+
+void iregRender(int x0, int y0, int x1, int y1) {
+	render_region(x0, y0, x1, y1, false);
+}
+
+void iregRenderToScreen(int x0, int y0, int x1, int y1) {
+	render_region(x0, y0, x1, y1, true);
 }
 
 /* ------------------ PALETTE.CPP ----------------------*/

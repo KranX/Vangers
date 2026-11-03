@@ -50,4 +50,7 @@ struct ivrtMap {
 };
 
 extern ivrtMap *ivMap;
+void iregRender(int x0, int y0, int x1, int y1);
+// Also copies the exact relit scanline spans, including shadows outside the object.
+void iregRenderToScreen(int x0, int y0, int x1, int y1);
 #endif
