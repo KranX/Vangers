@@ -4580,8 +4580,8 @@ void fncMenu::redraw(void) {
 			iScreenOwner ? iScreenOwner->SizeY : SizeY,
 			!(flags & FM_NO_ALIGN)
 		);
-		if (flags & FM_NO_ALIGN)
-			xgr::text::erase(buf, {PosX, PosY, SizeX, SizeY});
+		// The menu set clears its shared canvas once. A child's allocation can
+		// overlap its neighbours when its selected label is shorter than SizeX.
 
 		if (!(flags & FM_NO_ALIGN)) {
 			b_col = (bCol == -1) ? aciCurColorScheme[ACI_BACK_COL] : bCol;

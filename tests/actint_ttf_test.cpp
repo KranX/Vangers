@@ -1,5 +1,6 @@
 #include "actint/ttf_font.h"
 #include "text_layer.h"
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include <algorithm>
 #include <cstdlib>
@@ -81,6 +82,58 @@ int main() {
 	vangers::actint::TtfFont font(TEST_FONT);
 	vangers::actint::TtfFont embedded;
 	vangers::actint::FontStyle style;
+	// Low-resolution strokes get light vertical grid fitting, but enlarged
+	// output retains the unhinted outlines. Exercise both transitions on one face.
+	const auto soft_sign = font.layout("ь", style);
+	const auto word_width = font.layout("есть", style).width;
+	std::unique_ptr<TTF_Font, decltype(&TTF_CloseFont)> reference_font(
+		TTF_OpenFont(TEST_FONT, 18), TTF_CloseFont
+	);
+	check(bool(reference_font), "Cannot open hinting reference font");
+	for (int scale : {1, 2, 1}) {
+		TTF_SetFontHinting(reference_font.get(), scale == 1 ? TTF_HINTING_LIGHT : TTF_HINTING_NONE);
+		check(
+			TTF_SetFontSizeDPI(reference_font.get(), 1, 18 * scale * 72, 18 * scale * 72),
+			"Cannot size hinting reference font"
+		);
+		int minx = 0, maxy = 0;
+		check(
+			TTF_GetGlyphMetrics(
+				reference_font.get(), 0x44c, &minx, nullptr, nullptr, &maxy, nullptr
+			),
+			"Cannot measure soft sign"
+		);
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> glyph(
+			TTF_GetGlyphImage(reference_font.get(), 0x44c, nullptr), SDL_DestroySurface
+		);
+		check(bool(glyph), "Cannot render reference soft sign");
+		const auto raster = soft_sign.image->rasterize(
+			soft_sign.ink_bounds.w * scale, soft_sign.ink_bounds.h * scale
+		);
+		std::vector<uint8_t> expected(raster.pixels.size());
+		const int left = scale + minx, top = 16 * scale - maxy;
+		for (int y = 0; y < glyph->h; ++y) {
+			const auto *row = reinterpret_cast<const uint32_t *>(
+				static_cast<const uint8_t *>(glyph->pixels) + y * glyph->pitch
+			);
+			for (int x = 0; x < glyph->w; ++x) {
+				const auto alpha = uint8_t(row[x] >> 24);
+				if (!alpha)
+					continue;
+				check(
+					left + x >= 0 && left + x < raster.width && top + y >= 0 &&
+						top + y < raster.height,
+					"Soft-sign ink extends beyond its run allocation"
+				);
+				expected[(top + y) * raster.width + left + x] = alpha;
+			}
+		}
+		for (size_t i = 0; i < expected.size(); ++i)
+			check(raster.pixels[i].alpha == expected[i], "Unexpected soft-sign raster/hinting");
+		check(
+			font.layout("есть", style).width == word_width, "Drawing hinting changed layout metrics"
+		);
+	}
 	const auto disk_layout = font.layout("Привет 09", style);
 	const auto embedded_layout = embedded.layout("Привет 09", style);
 	Layer disk_layer(200, 30), embedded_layer(200, 30);

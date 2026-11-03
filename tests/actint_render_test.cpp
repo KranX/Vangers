@@ -135,17 +135,43 @@ void actint_menu_render_test(bool native) {
 	set.redraw(); // No redraw buffer yet.
 	check(!has_ink(fixture.pixels(output)), "Uninitialized question menu retained ink");
 	set.init();
-	add_menu(set, {"Tell me about"}, false);
-	auto *topic = add_menu(set, {"Incubator", "Эскейв"}, true);
-	add_menu(set, {"?"}, false);
+	add_menu(set, {"А что иль кто есть"}, false);
+	auto *topic = add_menu(set, {"мехос", "Инкубатор"}, true);
+	add_menu(set, {"советник?"}, false);
 	set.init_redraw();
 	set.build();
 
 	const auto check_copy = [&](int from_x, int to_x, int width) {
+		xgr::text::Layer composed(set.redraw_data->SizeX, set.redraw_data->SizeY);
+		if (native) {
+			// Compose independently rendered children. A topic's allocation is
+			// sized for its longest label and may overlap the preceding prefix.
+			auto *child = (fncMenu *)set.items->first;
+			for (int i = 0; i < set.items->Size; ++i) {
+				xgr::text::clear(set.redraw_data->fdata);
+				child->redraw();
+				composed.copy(
+					*xgr::text::find(set.redraw_data->fdata),
+					{0, 0, set.redraw_data->SizeX, set.redraw_data->SizeY},
+					0,
+					0
+				);
+				child = (fncMenu *)child->next;
+			}
+		}
 		set.redraw();
 		for (int scale : {1, native ? 2 : 1}) {
 			const auto source = fixture.pixels(*set.redraw_data, scale);
 			check(has_ink(source), "Question fixture did not render its child menus");
+			if (native)
+				check(
+					source == composed.render(
+								  set.redraw_data->SizeX * scale,
+								  set.redraw_data->SizeY * scale,
+								  fixture.palette.data()
+							  ),
+					"Question topic erased part of its neighbouring prefix/postfix"
+				);
 			std::vector<uint32_t> expected(output.SizeX * output.SizeY * scale * scale);
 			for (int y = 0; y < output.SizeY * scale; ++y)
 				std::copy_n(

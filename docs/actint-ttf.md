@@ -39,6 +39,9 @@ The Menu and Display faces are for a subsequent iscreen stage, not this backend.
 - FreeType receives both native-output scales through SDL3_ttf, including narrow
   and wide legacy cell variants. Window resizing does not change wrapping or
   hit boxes. Neither axis of a rendered letter is stretched from an 800×600 image.
+- Drawing at 18 pixels per em or below uses light vertical hinting for small-text
+  clarity. Larger output and all layout metrics remain unhinted. This does not
+  change the font asset, advances, wrapping, or the legacy bitmap control icons.
 - Standard-font borders are an output effect, not baked into the outlines.
   Packed numeric/price colours and the currency sign remain supported.
   Range fonts select the existing palette bank/intensity; antialiasing coverage
@@ -96,6 +99,13 @@ They check question-menu centering, selection changes, scrolling and clearing,
 plus range/standard counter origins at 1×/2× output. Both TTF cases failed on
 the original PR revision and pass after the compositor/bearing fixes. The same
 tests also exercise menu and bitmap-font destruction under ASan.
+
+The 3 November follow-up also checks the composed question against independently
+rendered children: a short topic must not erase the end of its prefix (the `ь`
+in `А что иль кто есть`). Only the menu set clears that shared canvas; a child's
+allocation may overlap its neighbour because it accommodates longer topics.
+The glyph test checks complete soft-sign coverage, light hinting at 1×, unhinted
+outlines at 2×, and a return to 1× without changing layout metrics.
 
 Local Linux validation on 1 November 2026 used SDL3 3.4.18 / SDL3_ttf 3.2.2:
 

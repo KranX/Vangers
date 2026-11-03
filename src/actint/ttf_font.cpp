@@ -83,6 +83,12 @@ struct TtfFont::Face {
 				output_height,
 				std::vector<xgr::text::Pixel>(size_t(output_width) * output_height)};
 			const double sx = double(output_width) / width, sy = double(output_height) / height;
+			// At the source face's 18-pixel size (or below), use light vertical
+			// grid fitting. Keep enlarged outlines and layout metrics
+			// unhinted; never resample a low-resolution glyph to sharpen it.
+			TTF_SetFontHinting(
+				face->drawing, style.cell_height * sy <= 18.0 ? TTF_HINTING_LIGHT : TTF_HINTING_NONE
+			);
 			// One point at N*72 DPI is N pixels. Give FreeType both scales so
 			// legacy narrow/wide cells still rasterize outlines, not stretched bitmaps.
 			require(TTF_SetFontSizeDPI(
