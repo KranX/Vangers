@@ -122,6 +122,12 @@ void rendering(bool ttf) {
 		field.redraw();
 		auto *buffer = XGR_Obj.get_active_render_buffer();
 		if (ttf) {
+			for (const auto *label : {"Свободно", "iiiiiiii", " A_Ё日😀$!"})
+				check(
+					acsStrLen(f, (unsigned char *)label, field.Space) ==
+						8 * (acsFntTable[f]->SizeX + field.Space),
+					"ACS native layout lost fixed cell pitch"
+				);
 			auto *layer = xgr::text::find(buffer);
 			check(layer && !layer->empty(), "TTF path produced no native layer");
 			std::array<SDL_Color, 256> palette{};

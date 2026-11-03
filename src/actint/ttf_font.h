@@ -20,10 +20,14 @@ struct FontStyle {
 	int cell_width = 10;
 	int cell_height = 18;
 	int spacing = 1;
+	// ACS uses fixed cells; other roles keep proportional TTF advances.
+	bool fixed_pitch = false;
 	int line_spacing = 1;
 	uint32_t colour = 255;
 	uint32_t colour_size = 0;
 	bool range = false;
+	// Procedural palette bevel/grain from the TTF mask, never legacy letter pixels.
+	bool embossed = false;
 	// ACS discards range pixels that become zero after the palette shift.
 	bool zero_range_transparent = false;
 	bool highlight_numbers = true;

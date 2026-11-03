@@ -108,6 +108,8 @@ vangers::actint::TextLayout acsLayout(const char *text, int font, int colour, in
 	style.cell_height = acsFntTable[font]->SizeY;
 	style.spacing = style.line_spacing = space;
 	style.range = true;
+	style.embossed = true;
+	style.fixed_pitch = true;
 	style.zero_range_transparent = true;
 	style.highlight_numbers = false;
 	style.colour = colour & 255;
