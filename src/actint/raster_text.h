@@ -3,7 +3,7 @@
 
 // UTF-8 entry points for actint, dispatched to bitmap or TTF by video.ttf_text.
 // The original bitmap APIs remain CP866 for
-// iscreen, chat, ACS and other not-yet-migrated callers.
+// chat and other not-yet-migrated callers.
 int aStrLenUtf8(const void *text, int font, int space);
 int aStrLen32Utf8(const void *text, int font, int space);
 void aPutStrUtf8(

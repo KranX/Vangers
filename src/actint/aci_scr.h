@@ -303,9 +303,8 @@ struct aciScreenInputField: aciScreenObject {
 
 	virtual void Quant(void);
 
-	void set_string(char *p) {
-		strcpy(string, p);
-	}
+	// Canonical UTF-8; MaxStrLen counts Unicode scalars (cursor excluded).
+	void set_string(const char *p);
 
 	aciScreenInputField(void);
 	~aciScreenInputField(void);

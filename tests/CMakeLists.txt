@@ -221,3 +221,26 @@ SET_TESTS_PROPERTIES(iscreen_shadow_damage PROPERTIES TIMEOUT 15
 ADD_EXECUTABLE(relief_cache_test relief_cache_test.cpp)
 TARGET_LINK_LIBRARIES(relief_cache_test PRIVATE vangers_iscreen_text)
 ADD_TEST(NAME iscreen_relief_cache COMMAND relief_cache_test)
+
+ADD_TEST(NAME acs_script_roundtrip COMMAND ${CMAKE_COMMAND}
+ "-DSOURCE_PARSER=$<TARGET_FILE:acs_source_test>"
+ "-DBINARY_PARSER=$<TARGET_FILE:acs_binary_test>"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/acs-script-roundtrip"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/acs_script_roundtrip.cmake")
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-runtime")
+ADD_TEST(NAME acs_runtime COMMAND acs_binary_test --runtime)
+SET_TESTS_PROPERTIES(acs_runtime PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-runtime")
+ADD_EXECUTABLE(save_text_test save_text_test.cpp)
+TARGET_LINK_LIBRARIES(save_text_test PRIVATE vangers_save_text)
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/save-text")
+ADD_TEST(NAME save_text COMMAND save_text_test)
+SET_TESTS_PROPERTIES(save_text PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/save-text")
+
+FOREACH(renderer bitmap ttf)
+ FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-${renderer}")
+ ADD_TEST(NAME acs_render_${renderer} COMMAND acs_binary_test --render ${renderer})
+ SET_TESTS_PROPERTIES(acs_render_${renderer} PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-${renderer}")
+ENDFOREACH()
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-save")
+ADD_TEST(NAME acs_save_format COMMAND acs_binary_test --save)
+SET_TESTS_PROPERTIES(acs_save_format PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-save")

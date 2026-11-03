@@ -739,6 +739,7 @@ void XGR_Screen::erase(int x, int y, int sx, int sy, int col) {
 		_x = x;
 		_y = y;
 	}
+	xgr::text::erase(ScreenBuf, {_x, _y, sx, sy});
 	for (i = _y; i < _y + sy; i++) {
 		ptr = ScreenBuf + yOffsTable[i] + _x;
 		memset(ptr, col, sx);

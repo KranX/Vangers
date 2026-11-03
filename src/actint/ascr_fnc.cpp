@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../saves/text.h"
 #include "lang.h"
 #include <algorithm>
 #include <stdexcept>
@@ -5523,9 +5524,7 @@ void aciFreeAll(void) {
 }
 
 void acsPrepareSlotName(int id, int slot_num) {
-	int len, time_len;
 	XBuffer XBuf;
-	XStream fh(0);
 
 	aciScreenInputField *p = (aciScreenInputField *)acsScrD->GetObject(id);
 	if (!p)
@@ -5537,17 +5536,10 @@ void acsPrepareSlotName(int id, int slot_num) {
 		XBuf < "0";
 	XBuf <= slot_num < ".dat";
 
-	if (fh.open(XBuf.address(), XS_IN)) {
-		fh > len;
-
-		time_len = (len >> 16) & 0xFF;
-		len &= 0xFF;
-
-		memset(p->string, 0, p->MaxStrLen + 2);
-		fh.read(p->string, len);
-		fh.close();
-	} else
-		strcpy(p->string, utf8_to_cp866(aciSTR_EMPTY_SLOT).c_str());
+	if (const auto text = vangers::saves::read_text(XBuf.address()))
+		p->set_string(text->name.c_str());
+	else
+		p->set_string(aciSTR_EMPTY_SLOT);
 }
 
 void acsPrepareSlotNameInput(int id, int slot_num) {
@@ -5559,12 +5551,11 @@ void acsPrepareSlotNameInput(int id, int slot_num) {
 		acsScrD->activeInput->StopEvents();
 		acsScrD->CancelInput();
 	}
-	if (!strcmp(p->string, utf8_to_cp866(aciSTR_EMPTY_SLOT).c_str()) ||
-		!strcmp(p->string, utf8_to_cp866(aciSTR_UNNAMED_SAVE).c_str())) {
+	if (!strcmp(p->string, aciSTR_EMPTY_SLOT) || !strcmp(p->string, aciSTR_UNNAMED_SAVE)) {
 		sz = strlen(p->string) + 1;
 		acsBackupStr = new char[sz];
 		strcpy(acsBackupStr, p->string);
-		memset(p->string, 0, p->MaxStrLen + 2);
+		p->set_string("");
 	}
 	acsCurrentSlotID = id;
 	acsCurrentSlotNum = slot_num;
@@ -5603,12 +5594,10 @@ void acsSaveData(void) {
 	XStream fh;
 
 	const char *ptr = NULL;
-	std::string legacy_name;
 	aciScreenInputField *p;
 
 	if (aciAutoSaveFlag) {
-		legacy_name = utf8_to_cp866(aciSTR_AUTOSAVE);
-		ptr = legacy_name.c_str();
+		ptr = aciSTR_AUTOSAVE;
 		slot = ACS_NUM_SLOTS;
 	} else {
 		if (acsScrD->activeInput)
@@ -5628,8 +5617,7 @@ void acsSaveData(void) {
 				null_flag = 0;
 		}
 		if (null_flag) {
-			legacy_name = utf8_to_cp866(aciSTR_UNNAMED_SAVE);
-			ptr = legacy_name.c_str();
+			ptr = aciSTR_UNNAMED_SAVE;
 			len = strlen(ptr);
 		}
 
@@ -5638,10 +5626,8 @@ void acsSaveData(void) {
 			((uvsActInt *)aScrDisp->curItem->uvsDataPtr)->pos_y = aScrDisp->curItem->MatrixY = -1;
 		}
 
-		fh.open(XBuf.address(), XS_OUT);
-
 		aciXConv->init();
-		*aciXConv < utf8_to_cp866(aScrDisp->curLocData->nameID2).c_str() < ", ";
+		*aciXConv < aScrDisp->curLocData->nameID2 < ", ";
 
 		*aciXConv <= ConTimer.day < ":";
 		if (ConTimer.hour < 10)
@@ -5653,12 +5639,17 @@ void acsSaveData(void) {
 		if (ConTimer.sec < 10)
 			*aciXConv < "0";
 		*aciXConv <= ConTimer.sec;
+		int header;
+		try {
+			header = vangers::saves::text_header(ptr, aciXConv->address());
+		} catch (const std::exception &error) {
+			ErrH.Abort(error.what());
+			return;
+		}
 		time_len = aciXConv->tell();
-
-		fh < (len | (time_len << 16));
-
+		fh.open(XBuf.address(), XS_OUT);
+		fh < header;
 		fh.write(ptr, len);
-
 		fh.write(aciXConv->address(), time_len);
 
 		CurrentWorld = prevWorld;
@@ -7071,7 +7062,8 @@ void acsCompressData(char *p) {
 	/* ZLIB realization (stalkerg)*/
 	dest_buf[0] = (char)(8 & 0xFF); // 8 it is DEFLATE method
 	dest_buf[1] = (char)((8 >> 8) & 0xFF);
-	*(unsigned int *)(dest_buf + 2) = (unsigned int)src_sz;
+	const unsigned int unpacked_size = src_sz;
+	memcpy(dest_buf + 2, &unpacked_size, sizeof(unpacked_size));
 	dest_sz -= 2 + 4;
 	int stat =
 		compress((Bytef *)(dest_buf + 2 + 4), (uLongf *)&(dest_sz), (Bytef *)src_buf, src_sz);
@@ -7129,7 +7121,9 @@ void acsDecompressData(char *p) {
 	fh.close();
 
 	// dest_sz = ZIP_GetExpandedSize(src_buf);
-	dest_sz = *(unsigned int *)(src_buf + 2) + 12; //+12 for size need for zlib
+	unsigned int unpacked_size;
+	memcpy(&unpacked_size, src_buf + 2, sizeof(unpacked_size));
+	dest_sz = unpacked_size + 12; //+12 for size need for zlib
 	dest_buf = new char[dest_sz];
 
 	// ZIP_expand(dest_buf,dest_sz,src_buf,src_sz);

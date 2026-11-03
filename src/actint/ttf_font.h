@@ -24,6 +24,8 @@ struct FontStyle {
 	uint32_t colour = 255;
 	uint32_t colour_size = 0;
 	bool range = false;
+	// ACS discards range pixels that become zero after the palette shift.
+	bool zero_range_transparent = false;
 	bool highlight_numbers = true;
 	std::shared_ptr<const std::vector<FontIcon>> icons;
 };

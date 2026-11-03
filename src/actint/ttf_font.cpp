@@ -136,7 +136,9 @@ struct TtfFont::Face {
 									? glyph.colour + (value >> std::min(7, int(glyph.range_size)))
 								: value == 1 ? glyph.colour
 											 : glyph.border;
-							if (value && (style.range || value == 1 || glyph.border))
+							if (value && (style.range || value == 1 || glyph.border) &&
+								!(style.range && style.zero_range_transparent &&
+									colour == glyph.colour))
 								raster.pixels[size_t(top + y) * output_width + left + x] = {
 									uint8_t(colour), 255};
 						}
@@ -174,6 +176,8 @@ struct TtfFont::Face {
 						auto &pixel = raster.pixels[size_t(top + y) * output_width + left + x];
 						const int ramp =
 							style.range ? (31 >> std::min(7, int(glyph.range_size))) : 0;
+						if (style.range && style.zero_range_transparent && !ramp)
+							continue;
 						pixel.colour = uint8_t(glyph.colour + ramp);
 						pixel.alpha = alpha;
 						if (!style.range && glyph.border) {

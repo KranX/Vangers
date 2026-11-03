@@ -3,8 +3,8 @@
 This stage covers iscreen's menu, settings/controls, history, credits, text pages,
 load-slot/server-list labels, static mouse prompts and editable fields. It builds
 on actint's shared SDL3_ttf implementation rather than replacing the game UI.
-ACS pause/save editing, chat, Diagen and service screens remain separate legacy
-subsystems. No new translation or complete additional-language font coverage is
+[ACS pause/save editing](acs-ttf.md) now has its own UTF-8/TTF path.
+Chat, Diagen and service screens remain separate legacy subsystems. No new translation or complete additional-language font coverage is
 claimed.
 
 ## Enable
