@@ -384,8 +384,9 @@ int main() {
 			for (int y = 0; y < a.height; ++y)
 				for (int x = 0; x < a.width; ++x) {
 					const auto flat_alpha = a.pixels[size_t(y) * a.width + x].alpha;
-					const auto surface_alpha =
-						b.pixels[size_t(y + scale) * b.width + x + scale].alpha;
+					const int dx = (flat.ink_bounds.x - shaded.ink_bounds.x) * scale;
+					const int dy = (flat.ink_bounds.y - shaded.ink_bounds.y) * scale;
+					const auto surface_alpha = b.pixels[size_t(y + dy) * b.width + x + dx].alpha;
 					sharpened_edge |= surface_alpha < flat_alpha;
 					check(!flat_alpha || surface_alpha, "Surface contrast erased a thin stroke");
 					check(
@@ -414,13 +415,15 @@ int main() {
 					);
 					levels[pixel.colour - 48] = true;
 				}
+				// The raised body must visibly protrude, not disappear inside the
+				// antialiased face as the rejected shallow material did.
 				shadow |= pixel.border_alpha && !pixel.alpha;
 			}
 			check(
 				std::count(std::begin(levels), std::end(levels), true) >= 6,
 				"Surface lost its light/shade/grain variation"
 			);
-			check(shadow, "Surface lost its offset shadow");
+			check(shadow, "Raised body no longer protrudes outside the face");
 		}
 		for (double scale : {1.25, 1.5}) {
 			const auto a = shaded.image->rasterize(

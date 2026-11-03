@@ -7,13 +7,19 @@
 namespace vangers::text {
 // Two-pass chamfer distance inside a glyph mask; its image boundary is background.
 // Alpha reader returns coverage 0..255. O(width * height), no alphabet assumptions.
-template<class Alpha> std::vector<float> inside_distance(int w, int h, Alpha alpha) {
+template<class Alpha>
+std::vector<float> inside_distance(int w, int h, Alpha alpha, bool fractional_coverage = false) {
 	std::vector<float> d(std::size_t(w) * h, float(w + h));
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x) {
 			const std::size_t i = std::size_t(y) * w + x;
 			// Outside the tight ink box is background, including solid/rectangular glyphs.
-			d[i] = alpha(x, y) < 128 ? 0.0f : float(std::min({x + 1, y + 1, w - x, h - y}));
+			const int coverage = alpha(x, y);
+			// Optional fractional edge seeds propagate into opaque neighbours too.
+			// Default thresholding retains the original iscreen height field exactly.
+			d[i] = fractional_coverage && coverage < 255 ? float(coverage / 255.0)
+				   : coverage < 128 ? 0.0f
+									: float(std::min({x + 1, y + 1, w - x, h - y}));
 		}
 	// Two-pass chamfer distance inside the TTF contour, O(width * height).
 	for (int y = 0; y < h; ++y)

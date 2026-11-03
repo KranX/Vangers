@@ -222,6 +222,10 @@ ADD_EXECUTABLE(relief_cache_test relief_cache_test.cpp)
 TARGET_LINK_LIBRARIES(relief_cache_test PRIVATE vangers_iscreen_text)
 ADD_TEST(NAME iscreen_relief_cache COMMAND relief_cache_test)
 
+ADD_EXECUTABLE(glyph_surface_test glyph_surface_test.cpp)
+TARGET_INCLUDE_DIRECTORIES(glyph_surface_test PRIVATE "${PROJECT_SOURCE_DIR}/src")
+ADD_TEST(NAME glyph_surface COMMAND glyph_surface_test)
+
 ADD_TEST(NAME acs_script_roundtrip COMMAND ${CMAKE_COMMAND}
  "-DSOURCE_PARSER=$<TARGET_FILE:acs_source_test>"
  "-DBINARY_PARSER=$<TARGET_FILE:acs_binary_test>"

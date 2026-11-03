@@ -1,8 +1,7 @@
 #include "ttf_font.h"
 
 #include "settings/text_encoding.h"
-#include "text/grain.h"
-#include "text/inside_distance.h"
+#include "text/glyph_surface.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 
@@ -22,19 +21,8 @@ void require(bool success) {
 		throw std::runtime_error(std::string("actint TTF: ") + SDL_GetError());
 }
 
-// Bilinear samples with transparent/zero height outside the glyph's ink box.
-template<class Sample> double sample_grid(int w, int h, double x, double y, Sample value) {
-	const int ix = int(std::floor(x)), iy = int(std::floor(y));
-	const double u = x - ix, v = y - iy;
-	const auto sample = [&](int px, int py) {
-		return px < 0 || py < 0 || px >= w || py >= h ? 0.0 : double(value(px, py));
-	};
-	return (sample(ix, iy) * (1 - u) + sample(ix + 1, iy) * u) * (1 - v) +
-		   (sample(ix, iy + 1) * (1 - u) + sample(ix + 1, iy + 1) * u) * v;
-}
-
 double glyph_alpha(const SDL_Surface &image, double x, double y) {
-	return sample_grid(image.w, image.h, x, y, [&](int px, int py) {
+	return text::glyph::sample(image.w, image.h, x, y, [&](int px, int py) {
 		const auto *row = reinterpret_cast<const uint32_t *>(
 			static_cast<const uint8_t *>(image.pixels) + py * image.pitch
 		);
@@ -63,39 +51,6 @@ void strengthen_strokes(SDL_Surface &image, double sx, double sy) {
 		for (int x = 0; x < image.w; ++x)
 			row[x] = (row[x] & 0x00ffffffu) | (uint32_t(alpha[size_t(y) * image.w + x]) << 24);
 	}
-}
-
-// A shallow convex profile with small height irregularities. Lighting is derived
-// from this surface, rather than sprinkling brightness noise on a flat fill.
-std::vector<float> glyph_heights(const SDL_Surface &image, double sx, double sy) {
-	auto heights = text::inside_distance(image.w, image.h, [&](int x, int y) {
-		const auto *row = reinterpret_cast<const uint32_t *>(
-			static_cast<const uint8_t *>(image.pixels) + y * image.pitch
-		);
-		return row[x] >> 24;
-	});
-	for (int y = 0; y < image.h; ++y)
-		for (int x = 0; x < image.w; ++x) {
-			auto &height = heights[size_t(y) * image.w + x];
-			const double distance = std::max(0.0, (height - 0.5) / std::min(sx, sy));
-			const double profile = std::sin(std::min(1.0, distance / 1.2) * 1.5707963268);
-			height = float(profile * (1 + 0.32 * text::smooth_grain(x / sx, y / sy)));
-		}
-	return heights;
-}
-
-double surface_height(const std::vector<float> &heights, int w, int h, double x, double y) {
-	return sample_grid(w, h, x, y, [&](int px, int py) { return heights[size_t(py) * w + px]; });
-}
-
-// Contrast only the face coverage, after height/shadow generation. Preserve
-// transparent/opaque samples and tiny strokes; never threshold the glyph mask.
-uint8_t sharpen_coverage(uint8_t alpha, double amount) {
-	if (!alpha || alpha == 255 || amount == 0)
-		return alpha;
-	const double a = alpha / 255.0;
-	const double coverage = a + amount * a * (1 - a) * (2 * a - 1);
-	return uint8_t(std::clamp(int(std::lround(255 * coverage)), 1, 254));
 }
 
 struct Glyph {
@@ -252,18 +207,27 @@ struct TtfFont::Face {
 				const int h = image->h;
 				if (material)
 					strengthen_strokes(*image, sx, sy);
+				const auto alpha_at = [&](int x, int y) {
+					const auto *row = reinterpret_cast<const uint32_t *>(
+						static_cast<const uint8_t *>(image->pixels) + y * image->pitch
+					);
+					return row[x] >> 24;
+				};
 				const auto heights =
-					material ? glyph_heights(*image, sx, sy) : std::vector<float>{};
+					material ? text::glyph::heights(w, h, sx, sy, alpha_at) : std::vector<float>{};
 				if (material) {
-					const int pad_x = int(std::ceil(sx)), pad_y = int(std::ceil(sy));
+					const int pad_x = int(std::ceil(text::glyph::padding * sx)),
+							  pad_y = int(std::ceil(text::glyph::padding * sy));
 					for (int y = -pad_y; y < h + pad_y; ++y)
 						for (int x = -pad_x; x < w + pad_x; ++x) {
 							if (left + x < 0 || top + y < 0 || left + x >= output_width ||
 								top + y >= output_height)
 								continue;
-							const int coverage =
-								int(std::lround(255 * glyph_alpha(*image, x + sx, y - 0.5 * sy)));
-							// Slightly denser shadow, with the same support and offset.
+							const int coverage = int(std::lround(
+								255 * text::glyph::side_coverage(heights, w, h, sx, sy, x, y)
+							));
+							// Retain the dark-body tone/opacity without offsetting a copy
+							// of the glyph mask.
 							const auto alpha = uint8_t(std::min(255, (115 * coverage + 50) / 100));
 							const int level = 2 >> std::min(7, int(glyph.range_size));
 							if (!alpha || (style.zero_range_transparent && !level))
@@ -287,24 +251,16 @@ struct TtfFont::Face {
 							continue;
 						auto &pixel = raster.pixels[size_t(top + y) * output_width + left + x];
 						int tone = 31;
-						if (material) {
-							const double nx =
-								2.0 * (surface_height(heights, w, h, x - 0.5 * sx, y) -
-										  surface_height(heights, w, h, x + 0.5 * sx, y));
-							const double ny =
-								2.0 * (surface_height(heights, w, h, x, y - 0.5 * sy) -
-										  surface_height(heights, w, h, x, y + 0.5 * sy));
-							const double light = (-0.6 * nx - 0.4 * ny + 0.9) /
-												 std::sqrt((nx * nx + ny * ny + 1) * 1.33);
-							tone =
-								std::clamp(int(std::lround(4 + 27 * std::max(0.0, light))), 2, 31);
-						}
+						if (material)
+							tone = text::glyph::tone(heights, w, h, sx, sy, x, y);
 						const int ramp =
 							style.range ? (tone >> std::min(7, int(glyph.range_size))) : 0;
 						if (style.range && style.zero_range_transparent && !ramp)
 							continue;
 						pixel.colour = uint8_t(glyph.colour + ramp);
-						pixel.alpha = material ? sharpen_coverage(alpha, edge_contrast) : alpha;
+						pixel.alpha =
+							material ? text::glyph::coverage(w, h, x, y, edge_contrast, alpha_at)
+									 : alpha;
 						if (!style.range && glyph.border) {
 							const int radius_x = std::max(1, int(std::lround(sx)));
 							const int radius_y = std::max(1, int(std::lround(sy)));
@@ -388,7 +344,7 @@ TextLayout TtfFont::layout(std::string_view text, const FontStyle &style) const 
 	if (run->glyphs.empty())
 		return {width, height, {}, nullptr};
 	// Border ink can extend outside the advance without changing hit boxes.
-	const int padding = style.range && style.embossed ? 2 : 1;
+	const int padding = style.range && style.embossed ? text::glyph::padding : 1;
 	run->width = width + 2 * padding;
 	run->height = height + 2 * padding;
 	for (auto &glyph : run->glyphs) {
