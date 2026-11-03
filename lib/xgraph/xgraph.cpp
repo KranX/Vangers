@@ -6,8 +6,10 @@
 #include "xbmp.h"
 #include "xside.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <cmath>
+#include <optional>
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 
@@ -320,6 +322,12 @@ float XGR_Screen::get_screen_scale_y() const {
 }
 
 void XGR_Screen::destroy_surfaces() {
+	xgr::text::forget(XGR_ScreenSurface.get());
+	xgr::text::forget(XGR_ScreenSurface2D.get());
+	for (auto &texture : textTextures) {
+		SDL_DestroyTexture(texture);
+		texture = nullptr;
+	}
 	SDL_DestroyTexture(sdlTexture);
 	SDL_DestroyTexture(HDBackgroundTexture);
 
@@ -378,6 +386,8 @@ void XGR_Screen::setpixel(int x, int y, int col) {
 		return;
 	}
 	ScreenBuf[yOffsTable[y] + x] = col;
+	if (xgr::text::enabled)
+		xgr::text::erase(ScreenBuf, {x, y, 1, 1});
 }
 
 void XGR_Screen::setpixel16(int x, int y, int col) {
@@ -453,6 +463,11 @@ void XGR_Screen::putspr(int x, int y, int sx, int sy, void *p, int mode) {
 
 	scrBuf = ScreenBuf + yOffsTable[_y] + _x;
 	memBuf = ptr + dy * sx + dx;
+	if (auto *layer = xgr::text::prepare(ScreenBuf, ScreenX, ScreenY, false)) {
+		layer->erase({_x, _y, _sx, _sy}, mode & XGR_BLACK_FON ? nullptr : memBuf, sx);
+		if (auto *source = xgr::text::find(p))
+			layer->copy(*source, {dx, dy, _sx, _sy}, _x, _y);
+	}
 
 	// Draw video and cursor
 	if (mode & XGR_BLACK_FON) {
@@ -665,6 +680,9 @@ void XGR_Screen::getspr(int x, int y, int sx, int sy, void *p) {
 
 	if (sx <= 0 || sy <= 0)
 		return;
+	if (auto *target = xgr::text::prepare(p, sx, sy))
+		if (auto *source = xgr::text::find(ScreenBuf))
+			target->copy(*source, {x, y, sx, sy}, 0, 0);
 
 	scrBuf = ScreenBuf + yOffsTable[y] + x;
 	memBuf = ptr;
@@ -946,9 +964,64 @@ SDL_Surface *XGR_Screen::get_screenshot() {
 	return SDL_RenderReadPixels(sdlRenderer, NULL);
 }
 
+void XGR_Screen::present_native_text() {
+	if (!xgr::text::enabled)
+		return;
+	SDL_FRect viewport;
+	if (!SDL_GetRenderLogicalPresentationRect(sdlRenderer, &viewport))
+		ErrH.Abort(SDL_GetError());
+	const int sx = is_scaled_renderer ? XGR_SCALED_RENDER_SOURCE_X : ScreenX;
+	const int sy = is_scaled_renderer ? XGR_SCALED_RENDER_SOURCE_Y : ScreenY;
+	const float dest_width = is_scaled_renderer ? float(int(screen_scale_y * sx)) : float(ScreenX);
+	const SDL_FRect destination{(ScreenX - dest_width) / 2, 0, dest_width, float(ScreenY)};
+	const int width = std::max(1, int(std::lround(viewport.w * dest_width / ScreenX)));
+	const int height = std::max(1, int(std::lround(viewport.h)));
+	const void *buffers[]{get_default_render_buffer(), get_2d_render_buffer()};
+	for (int index = 0; index < 2; ++index) {
+		auto *layer = xgr::text::find(buffers[index]);
+		if (!layer || layer->empty())
+			continue;
+		xgr::text::Layer cropped(sx, sy);
+		cropped.copy(*layer, {0, 0, sx, sy}, 0, 0);
+		std::vector<uint8_t> occlusion;
+		if (index == 0) {
+			occlusion.resize(size_t(sx) * sy);
+			for (int y = 0; y < sy; ++y)
+				for (int x = 0; x < sx; ++x) {
+					const auto offset = size_t(y) * ScreenX + x;
+					occlusion[size_t(y) * sx + x] = get_2d_render_buffer()[offset] ||
+													(get_2d_rgba_render_buffer()[offset] >> 24);
+				}
+		}
+		const auto pixels = cropped.render(
+			width, height, XGR_Palette, occlusion.empty() ? nullptr : occlusion.data(), sx
+		);
+		auto &texture = textTextures[index];
+		float old_width = 0, old_height = 0;
+		if (texture)
+			SDL_GetTextureSize(texture, &old_width, &old_height);
+		if (old_width != width || old_height != height) {
+			SDL_DestroyTexture(texture);
+			texture = SDL_CreateTexture(
+				sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height
+			);
+			if (!texture || !SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND_PREMULTIPLIED) ||
+				!SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST))
+				ErrH.Abort(SDL_GetError());
+		}
+		if (!SDL_UpdateTexture(texture, nullptr, pixels.data(), width * sizeof(uint32_t)) ||
+			!SDL_RenderTexture(sdlRenderer, texture, nullptr, &destination))
+			ErrH.Abort(SDL_GetError());
+	}
+}
+
 void XGR_Screen::flip() {
 	if (flags & XGR_INIT) {
 		set_2d_render_buffer();
+		// Cursor/prompt save-restore must not fragment retained text on each move.
+		std::optional<xgr::text::Layer> text_background;
+		if (auto *layer = xgr::text::prepare(ScreenBuf, ScreenX, ScreenY, false))
+			text_background = *layer;
 		// Refresh before capturing the background: text changes can resize the prompt.
 		if (XGR_MouseObj.flags & XGM_PROMPT_ACTIVE)
 			XGR_MouseObj.InitPrompt();
@@ -1022,6 +1095,7 @@ void XGR_Screen::flip() {
 				ErrH.Abort(SDL_GetError(), XERR_USER, 0);
 		}
 
+		present_native_text();
 		if (!SDL_RenderPresent(sdlRenderer))
 			ErrH.Abort(SDL_GetError(), XERR_USER, 0);
 
@@ -1030,6 +1104,8 @@ void XGR_Screen::flip() {
 		if (XGR_MouseObj.flags & XGM_PROMPT_ACTIVE) {
 			XGR_MouseObj.PutPromptFon();
 		}
+		if (text_background)
+			*xgr::text::find(ScreenBuf) = std::move(*text_background);
 		set_default_render_buffer();
 	}
 }
@@ -1037,6 +1113,7 @@ void XGR_Screen::flip() {
 void XGR_Screen::flush(int, int, int, int) {}
 
 void XGR_Screen::fill(int col, void *buffer) {
+	xgr::text::clear(buffer ? buffer : ScreenBuf);
 	auto surface2dRgba = XGR_ScreenSurface2DRgba.get();
 	if (buffer == surface2dRgba) {
 		memset(surface2dRgba, col, ScreenX * ScreenY * 4);
@@ -1168,6 +1245,7 @@ void XGR_Screen::lineto(int x, int y, int len, int dir, int col) {
 			_x = (x < clipRight) ? x : clipRight;
 			_x1 = (v > clipLeft) ? v : clipLeft;
 			ptr = ScreenBuf + yOffsTable[y] + _x;
+			xgr::text::erase(ScreenBuf, {_x1 + 1, y, _x - _x1, 1});
 			for (i = _x; i > _x1; i--) {
 				*ptr = col;
 				ptr--;
@@ -1181,6 +1259,7 @@ void XGR_Screen::lineto(int x, int y, int len, int dir, int col) {
 			_x = (y < clipBottom) ? y : clipBottom - 1;
 			_x1 = (v > clipTop) ? v : clipTop;
 			ptr = ScreenBuf + yOffsTable[_x] + x;
+			xgr::text::erase(ScreenBuf, {x, _x1 + 1, 1, _x - _x1});
 			for (i = _x; i > _x1; i--) {
 				*ptr = col;
 				ptr -= yStrOffs;
@@ -1194,6 +1273,7 @@ void XGR_Screen::lineto(int x, int y, int len, int dir, int col) {
 			_x = (x > clipLeft) ? x : clipLeft;
 			_x1 = (v < clipRight) ? v : clipRight;
 			ptr = ScreenBuf + yOffsTable[y] + _x;
+			xgr::text::erase(ScreenBuf, {_x, y, _x1 - _x, 1});
 			for (i = _x; i < _x1; i++) {
 				*ptr = col;
 				ptr++;
@@ -1207,6 +1287,7 @@ void XGR_Screen::lineto(int x, int y, int len, int dir, int col) {
 			_x = (y > clipTop) ? y : clipTop;
 			_x1 = (v < clipBottom) ? v : clipBottom;
 			ptr = ScreenBuf + yOffsTable[_x] + x;
+			xgr::text::erase(ScreenBuf, {x, _x, 1, _x1 - _x});
 			for (i = _x; i < _x1; i++) {
 				*ptr = col;
 				ptr += yStrOffs;
@@ -1218,6 +1299,7 @@ void XGR_Screen::lineto(int x, int y, int len, int dir, int col) {
 		switch (dir) {
 		case XGR_LEFT:
 			v = x - len;
+			xgr::text::erase(ScreenBuf, {v + 1, y, len, 1});
 			for (i = x; i > v; i--) {
 				*ptr = col;
 				ptr--;
@@ -1225,6 +1307,7 @@ void XGR_Screen::lineto(int x, int y, int len, int dir, int col) {
 			break;
 		case XGR_TOP:
 			v = y - len;
+			xgr::text::erase(ScreenBuf, {x, v + 1, 1, len});
 			for (i = y; i > v; i--) {
 				*ptr = col;
 				ptr -= yStrOffs;
@@ -1232,6 +1315,7 @@ void XGR_Screen::lineto(int x, int y, int len, int dir, int col) {
 			break;
 		case XGR_RIGHT:
 			v = x + len;
+			xgr::text::erase(ScreenBuf, {x, y, len, 1});
 			for (i = x; i < v; i++) {
 				*ptr = col;
 				ptr++;
@@ -1239,6 +1323,7 @@ void XGR_Screen::lineto(int x, int y, int len, int dir, int col) {
 			break;
 		case XGR_BOTTOM:
 			v = y + len;
+			xgr::text::erase(ScreenBuf, {x, y, 1, len});
 			for (i = y; i < v; i++) {
 				*ptr = col;
 				ptr += yStrOffs;
@@ -1363,7 +1448,7 @@ void XGR_Screen::line(int x1, int y1, int x2, int y2, int col) {
 			cnt = dx + 1;
 			while (cnt--) {
 				if (x1 >= clipLeft && x1 < clipRight && y1 >= clipTop && y1 < clipBottom)
-					*(ScreenBuf + yOffsTable[y1] + x1) = col;
+					setpixel(x1, y1, col);
 
 				x1 += xinc;
 
@@ -1379,7 +1464,7 @@ void XGR_Screen::line(int x1, int y1, int x2, int y2, int col) {
 			cnt = dy + 1;
 			while (cnt--) {
 				if (x1 >= clipLeft && x1 < clipRight && y1 >= clipTop && y1 < clipBottom)
-					*(ScreenBuf + yOffsTable[y1] + x1) = col;
+					setpixel(x1, y1, col);
 
 				y1 += yinc;
 
@@ -1396,6 +1481,8 @@ void XGR_Screen::line(int x1, int y1, int x2, int y2, int col) {
 			err = dx / 2;
 			cnt = dx + 1;
 			while (cnt--) {
+				if (xgr::text::enabled)
+					xgr::text::erase(ScreenBuf, {x1, y1, 1, 1});
 				*ptr = col;
 				x1 += xinc;
 				ptr += i_xinc;
@@ -1411,6 +1498,8 @@ void XGR_Screen::line(int x1, int y1, int x2, int y2, int col) {
 			err = dy / 2;
 			cnt = dy + 1;
 			while (cnt--) {
+				if (xgr::text::enabled)
+					xgr::text::erase(ScreenBuf, {x1, y1, 1, 1});
 				*ptr = col;
 				y1 += yinc;
 				ptr += i_yinc;
@@ -2131,6 +2220,7 @@ void XGR_Mouse::SetCursor(int sx, int sy, int num, void *p) {
 	// std::cout<<"XGR_Mouse::SetCursor sx:"<<sx<<" sy:"<<sy<<std::endl;
 	int dx, dy;
 	if (BackBuf) {
+		xgr::text::forget(BackBuf);
 		delete[] BackBuf;
 	}
 
@@ -2666,6 +2756,7 @@ void XGR_Mouse::InitPrompt(void) {
 	if (!promptData)
 		return;
 	promptData->curText.clear();
+	promptData->curTextCallbacks = nullptr;
 
 	if (XGR_Obj.get_is_scaled_renderer()) {
 		if (prompt_sx > XGR_SCALED_RENDER_SOURCE_X)
@@ -2709,11 +2800,13 @@ void XGR_Mouse::InitPrompt(void) {
 		PromptFonBufSize = p->textSizeX * p->textSizeY * hiColorMult;
 		PromptFon = new char[PromptFonBufSize];
 		if (oldPromptFon) {
+			xgr::text::forget(oldPromptFon);
 			delete[] oldPromptFon;
 		}
 	}
 
 	promptData->curText = p->textData;
+	promptData->curTextCallbacks = p->textCallbacks;
 	promptData->curFont = p->font;
 
 	PromptSizeX = p->textSizeX;
@@ -2724,7 +2817,11 @@ void XGR_Mouse::InitPrompt(void) {
 
 void XGR_Mouse::PutPrompt(void) {
 	if ((flags & XGM_PROMPT_ACTIVE) && promptData && !promptData->curText.empty()) {
-		if (XGR_TextOutFnc)
+		if (promptData->curTextCallbacks)
+			promptData->curTextCallbacks->draw(
+				PromptX, PromptY, PromptColor, promptData->curText.data(), promptData->curFont, 1, 1
+			);
+		else if (XGR_TextOutFnc)
 			(*(XGR_TextOutFnc))(
 				PromptX, PromptY, PromptColor, promptData->curText.data(), promptData->curFont, 1, 1
 			);

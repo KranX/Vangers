@@ -58,6 +58,7 @@ PACKAGES=(
 	diffutils
 	"${MINGW_PKG_PREFIX}-sdl3"
 	"${MINGW_PKG_PREFIX}-sdl3-net"
+	"${MINGW_PKG_PREFIX}-sdl3-ttf"
 	"${MINGW_PKG_PREFIX}-cmake"
 	"${MINGW_PKG_PREFIX}-ffmpeg"
 	"${MINGW_PKG_PREFIX}-gcc"

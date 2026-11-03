@@ -2,6 +2,7 @@
 
 #include "../global.h"
 #include "lang.h"
+#include <algorithm>
 #include <stdexcept>
 #include <zlib.h>
 
@@ -31,10 +32,94 @@
 
 #include "a_consts.h"
 
+#include "../settings/settings.h"
 #include "../text/utf8.h"
 #include "aci_str.h"
 #include "actint.h"
 #include "text.h"
+#include "ttf_font.h"
+
+namespace {
+std::unique_ptr<vangers::actint::TtfFont> ttf_font;
+
+void init_ttf_font() {
+	if (ttf_font || !vangers::settings::settings_manager().get().video.ttf_text)
+		return;
+	try {
+		ttf_font = std::make_unique<vangers::actint::TtfFont>();
+		xgr::text::enabled = true;
+	} catch (const std::exception &error) {
+		ErrH.Abort(error.what());
+	}
+}
+
+vangers::actint::TextLayout native_layout(
+	const void *text,
+	aciFont *font,
+	int colour,
+	int colour_size,
+	int spacing,
+	int line_spacing = 1,
+	bool highlight = true
+) {
+	vangers::actint::FontStyle style;
+	style.cell_width = font->SizeX;
+	style.cell_height = font->SizeY;
+	style.spacing = spacing;
+	style.line_spacing = line_spacing;
+	style.colour = colour;
+	style.colour_size = colour_size;
+	style.range = font->flags & ACI_RANGE_FONT;
+	style.highlight_numbers = highlight;
+	const std::string_view value(static_cast<const char *>(text));
+	if (std::any_of(value.begin(), value.end(), [](unsigned char c) {
+			return c < 32 && c != '\r' && c != '\n';
+		})) {
+		auto icons = std::make_shared<std::vector<vangers::actint::FontIcon>>(32);
+		for (int i = 0; i < std::min(32, font->Size); ++i) {
+			auto &icon = (*icons)[i];
+			icon.left = font->LeftOffs[i];
+			icon.right = font->RightOffs[i];
+			const auto *begin = font->data + size_t(i) * font->SizeX * font->SizeY;
+			icon.pixels.assign(begin, begin + font->SizeX * font->SizeY);
+		}
+		style.icons = std::move(icons);
+	}
+	try {
+		return ttf_font->layout(static_cast<const char *>(text), style);
+	} catch (const std::exception &error) {
+		ErrH.Abort(error.what());
+		return {};
+	}
+}
+
+void native_paint(
+	void *buffer,
+	int x,
+	int y,
+	vangers::actint::TextLayout layout,
+	bool screen = false
+) {
+	if (!layout.image)
+		return;
+	auto *layer = xgr::text::find(buffer);
+	if (!layer) {
+		ErrH.Abort("actint TTF: unregistered text buffer");
+		return;
+	}
+	const SDL_Rect clip{XGR_Obj.clipLeft,
+		XGR_Obj.clipTop,
+		XGR_Obj.clipRight - XGR_Obj.clipLeft,
+		XGR_Obj.clipBottom - XGR_Obj.clipTop};
+	layout.ink_bounds.x += x;
+	layout.ink_bounds.y += y;
+	layer->paint(
+		layout.ink_bounds,
+		std::move(layout.image),
+		screen && XGR_Obj.ClipMode == XGR_CLIP_ALL ? &clip : nullptr
+	);
+}
+} // namespace
 
 #include "credits.h"
 
@@ -789,6 +874,7 @@ void aLoadFonts(void) {
 }
 
 void aLoadFonts32(void) {
+	init_ttf_font();
 	int i;
 	XBuffer XBuf;
 	XStream fh;
@@ -819,7 +905,7 @@ void aFreeFonts(void) {
 	for (i = 0; i < AS_NUM_FONTS; i++) {
 		delete aScrFonts[i];
 	}
-	delete aScrFonts;
+	delete[] aScrFonts;
 	aScrFonts = NULL;
 	/*
 		for(i = 0; i < AS_NUM_FONTS_32; i ++){
@@ -1984,6 +2070,7 @@ void mem_putspr(
 	unsigned char *src,
 	unsigned char *dest
 ) {
+	xgr::text::erase(dest, {x, y, sx, sy}, src, sx);
 	int i, j, index = 0, b_index = 0;
 
 	index = x + y * bsx;
@@ -4751,6 +4838,7 @@ void ibsout(int x, int y, void *ptr, uint8_t *renderBuffer) {
 		_y = *((int *)pbuf);
 		pbuf += 4;
 
+		xgr::text::erase(vbuf, {_x + x, _y + y, cnt, 1});
 		memcpy(vbuf + offs_table[_y + y] + _x + x, pbuf, cnt);
 		pbuf += cnt;
 
@@ -7521,14 +7609,18 @@ int sdlEventToCode(SDL_Event *event) {
 	return -1;
 }
 
-// The model stays UTF-8; only the temporary bitmap view is lossy for glyphs
-// outside CP866. Width and drawing use precisely the same conversion.
+// The model stays UTF-8. Native width/draw share one layout; only the optional
+// bitmap view is lossy for glyphs outside CP866. Legacy APIs remain unchanged.
 int aStrLenUtf8(const void *text, int font, int space) {
+	if (ttf_font)
+		return native_layout(text, aScrFonts[font], 0, 0, space).width;
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts[font]->Size);
 	return aStrLen((unsigned char *)raster.data(), font, space);
 }
 
 int aStrLen32Utf8(const void *text, int font, int space) {
+	if (ttf_font)
+		return native_layout(text, aScrFonts32[font], 0, 0, space).width;
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
 	return aStrLen32(raster.data(), font, space);
 }
@@ -7543,6 +7635,11 @@ void aPutStrUtf8(
 	unsigned char *buf,
 	int space
 ) {
+	if (ttf_font) {
+		native_paint(buf, x, y, native_layout(text, aScrFonts[font], color, 0, space));
+		return;
+	}
+
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts[font]->Size);
 	aPutStr(x, y, font, color, (unsigned char *)raster.data(), bsx, buf, space);
 }
@@ -7558,26 +7655,59 @@ void aPutStr32Utf8(
 	void *buf,
 	int space
 ) {
+	if (ttf_font) {
+		native_paint(buf, x, y, native_layout(text, aScrFonts32[font], color, color_size, space));
+		return;
+	}
+
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
 	aPutStr32(x, y, font, color, color_size, raster.data(), bsx, buf, space);
 }
 
 void aOutStrUtf8(int x, int y, int font, int color, const void *text, int space) {
+	if (ttf_font) {
+		auto *buffer = XGR_Obj.get_active_render_buffer();
+		xgr::text::prepare(buffer, XGR_MAXX, XGR_MAXY, false);
+		native_paint(
+			buffer, x, y, native_layout(text, aScrFonts[font], color, 0, space, 1, false), true
+		);
+		return;
+	}
+
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts[font]->Size);
 	aOutStr(x, y, font, color, (unsigned char *)raster.data(), space);
 }
 
 void aOutText32Utf8(int x, int y, int color, const void *text, int font, int hspace, int vspace) {
+	if (ttf_font) {
+		auto *buffer = XGR_Obj.get_active_render_buffer();
+		xgr::text::prepare(buffer, XGR_MAXX, XGR_MAXY, false);
+		native_paint(
+			buffer,
+			x,
+			y,
+			native_layout(
+				text, aScrFonts32[font], color & 0xffff, (color >> 16) & 255, hspace, vspace, false
+			),
+			true
+		);
+		return;
+	}
+
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
 	aOutText32(x, y, color, raster.data(), font, hspace, vspace);
 }
 
 int aTextWidth32Utf8(const void *text, int font, int hspace) {
+	if (ttf_font)
+		return native_layout(text, aScrFonts32[font], 0, 0, hspace).width;
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
 	return aTextWidth32(raster.data(), font, hspace);
 }
 
 int aTextHeight32Utf8(const void *text, int font, int vspace) {
+	if (ttf_font)
+		return native_layout(text, aScrFonts32[font], 0, 0, 1, vspace).height;
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
 	return aTextHeight32(raster.data(), font, vspace);
 }

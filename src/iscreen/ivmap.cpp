@@ -142,6 +142,7 @@ void ivrtMap::init(void) {
 }
 
 void ivrtMap::finit(void) {
+	xgr::text::forget(this);
 #ifdef SAVE_ABILITY
 	int max = iYCYCL(downLine + 1);
 	int i = upLine;
@@ -673,6 +674,7 @@ void iregRender(int LowX, int LowY, int HiX, int HiY) {
 		BYTE *grid = ishadowParent + MAX_ALT + MAX_ALT;
 		int MaxAlt = 0;
 		iMainStage(pa0, hC, pc0, SizeX, x, grid, MaxAlt);
+		const int shadow_start_x = x;
 
 		// пост проход
 		{
@@ -817,6 +819,18 @@ void iregRender(int LowX, int LowY, int HiX, int HiY) {
 			const int CurrScanLenght = iXCYCL(LowX - x);
 			if (CurrScanLenght > BackScanLen)
 				BackScanLen = CurrScanLenght;
+		}
+		if (auto *layer = xgr::text::find(ivMap)) {
+			// Main rendering writes pairs (including HiX); the shadow scan can
+			// repaint beyond LowX. Invalidate the actual wrapped span, not just
+			// the caller's requested rectangle.
+			const int width =
+				std::min(int(H_SIZE), ((SizeX + 1) & ~1) + int(iXCYCL(shadow_start_x - x)));
+			const int start = iXCYCL(HiX - width + 1);
+			const int first = std::min(width, int(H_SIZE) - start);
+			layer->erase({start, y, first, 1});
+			if (first < width)
+				layer->erase({0, y, width - first, 1});
 		}
 	}
 }

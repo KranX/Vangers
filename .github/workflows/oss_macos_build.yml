@@ -57,7 +57,8 @@ jobs:
             ninja \
             pkgconf \
             sdl3 \
-            sdl3_net
+            sdl3_net \
+            sdl3_ttf
 
       - name: Install latest CMake 4
         run: |

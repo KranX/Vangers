@@ -50,6 +50,7 @@ void XGR_MousePromptData::init_text(const char *p) {
 }
 
 void XGR_MousePromptData::set_text(const char *p) {
+	textCallbacks = nullptr;
 	if (p == textData) {
 		init();
 		return;
@@ -66,12 +67,16 @@ void XGR_MousePromptData::init(void) {
 	if (!textData)
 		return;
 
-	if (XGR_TextXFnc)
+	if (textCallbacks)
+		textSizeX = textCallbacks->width(textData, font, 1);
+	else if (XGR_TextXFnc)
 		textSizeX = (*XGR_TextXFnc)(textData, font, 1);
 	else
 		textSizeX = XGR_TextWidth(textData, font);
 
-	if (XGR_TextYFnc)
+	if (textCallbacks)
+		textSizeY = textCallbacks->height(textData, font, 1);
+	else if (XGR_TextYFnc)
 		textSizeY = (*XGR_TextYFnc)(textData, font, 1);
 	else
 		textSizeY = XGR_TextHeight(textData, font);

@@ -60,6 +60,8 @@ jobs:
             libibus-1.0-dev \
             libjack-dev \
             libogg-dev \
+            libfreetype-dev \
+            libharfbuzz-dev \
             libpipewire-0.3-dev \
             libpulse-dev \
             libsndio-dev \
@@ -103,6 +105,8 @@ jobs:
           SDL_SHA256: f07b958a9ac5020fb7a44cadb957f658b2149c3c8abb4f63145fac9303249db7
           SDL_NET_VERSION: 3.2.0
           SDL_NET_SHA256: 098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41
+          SDL_TTF_VERSION: 3.2.2
+          SDL_TTF_SHA256: 63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d
         run: |
           mkdir -p external
 
@@ -135,6 +139,21 @@ jobs:
             -DSDLNET_SAMPLES=OFF
           cmake --build external/SDL3_net-build --parallel
           sudo cmake --install external/SDL3_net-build
+
+          curl --fail --location --retry 3 \
+            --output external/SDL3_ttf.tar.gz \
+            "https://github.com/libsdl-org/SDL_ttf/releases/download/release-${SDL_TTF_VERSION}/SDL3_ttf-${SDL_TTF_VERSION}.tar.gz"
+          echo "${SDL_TTF_SHA256}  external/SDL3_ttf.tar.gz" | sha256sum --check --strict
+          tar --extract --gzip --file external/SDL3_ttf.tar.gz --directory external
+          cmake -S "external/SDL3_ttf-${SDL_TTF_VERSION}" -B external/SDL3_ttf-build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DBUILD_SHARED_LIBS=ON \
+            -DSDLTTF_VENDORED=OFF \
+            -DSDLTTF_SAMPLES=OFF
+          cmake --build external/SDL3_ttf-build --parallel
+          sudo cmake --install external/SDL3_ttf-build
           sudo ldconfig
 
       - name: Download Clunk

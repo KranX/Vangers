@@ -5,6 +5,7 @@ VANGERS: One for the Road
 
    - SDL 3.2 or newer
    - SDL_net 3.2 or newer
+   - SDL_ttf 3.2 or newer (SDL3 version)
    - libvorbis
    - SDL3-native clunk from the upstream `master` branch
      (https://github.com/stalkerg/clunk)
@@ -62,7 +63,7 @@ a. Install Visual Studio 2022 or newer with the "Desktop development with C++"
    workload (CMake and Ninja are included with the workload).
 b. Install vcpkg and set VCPKG_ROOT to its directory:
    https://learn.microsoft.com/vcpkg/get_started/get-started
-   Dependencies are declared in vcpkg.json (sdl3, sdl3-net, libogg, libvorbis,
+   Dependencies are declared in vcpkg.json (sdl3, sdl3-net, sdl3-ttf, libogg, libvorbis,
    zlib, toml11). Install them from the Vangers root into vcpkg_installed:
 
    > vcpkg install --triplet x64-windows
@@ -125,7 +126,7 @@ e. Configure and build Vangers:
 OSX prerequisites
 
 a. Install homebrew
-b. brew install sdl3 sdl3_net libvorbis libogg ffmpeg toml11
+b. brew install sdl3 sdl3_net sdl3_ttf libvorbis libogg ffmpeg toml11
 c. Build/install the upstream `master` branch of clunk
    (https://github.com/stalkerg/clunk).
 d. Go to 3.
@@ -133,7 +134,7 @@ d. Go to 3.
 
 Android integration
 
-The Android host project must provide native SDL3 and SDL3_net CMake packages,
+The Android host project must provide native SDL3, SDL3_net and SDL3_ttf CMake packages,
 for example through their official Prefab-enabled Android archives, and an
 SDL3-native Clunk build. With `ANDROID` enabled this repository builds the
 static `vangers` library and exports the standard SDL3 `SDL_main()` entry point

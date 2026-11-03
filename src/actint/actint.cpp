@@ -678,11 +678,11 @@ aciFont::aciFont(void) {
 
 aciFont::~aciFont(void) {
 	if (data)
-		delete data;
+		delete[] data;
 	if (LeftOffs)
-		delete LeftOffs;
+		delete[] LeftOffs;
 	if (RightOffs)
-		delete RightOffs;
+		delete[] RightOffs;
 }
 
 void aciFont::load(char *fname) {
@@ -786,6 +786,7 @@ aciWorldMap::~aciWorldMap(void) {
 	delete[] ShapeOffsY;
 
 	if (redraw_buf) {
+		xgr::text::forget(redraw_buf);
 		delete[] redraw_buf;
 	}
 
@@ -1749,6 +1750,7 @@ void CounterPanel::redraw(void) {
 		buf = (unsigned char *)iScreenOwner->fdata;
 	}
 	p = new unsigned char[dx * dx];
+	xgr::text::prepare(buf, SizeX, SizeY);
 
 	memset(buf, 0, SizeX * SizeY);
 	memcpy(p, frm, dx * dx);
@@ -1769,7 +1771,16 @@ void CounterPanel::redraw(void) {
 
 	x = (MaxLen - digits) * dx;
 	for (i = 0; i < digits; i++) {
-		if (flags & CP_RANGE_FONT)
+		if (xgr::text::enabled) {
+			char digit[]{ptr[i], 0};
+			if (flags & CP_RANGE_FONT)
+				aPutStr32Utf8(x + ox, y, font, col, col_sz, digit, SizeX, buf, 0);
+			else {
+				// Only aPutChar uses the full cell; aPutChar32 already trims bearings.
+				const int left = aScrFonts[font]->LeftOffs[(unsigned char)ptr[i]];
+				aPutStrUtf8(x + ox + left, y, font, col, digit, SizeX, buf, 0);
+			}
+		} else if (flags & CP_RANGE_FONT)
 			aPutChar32(x + ox, y, font, col, col_sz, ptr[i], SizeX, buf);
 		else
 			aPutChar(x + ox, y, font, col, ptr[i], SizeX, SizeY, buf);
@@ -1783,6 +1794,7 @@ void CounterPanel::redraw(void) {
 
 	flags &= ~CP_REDRAW;
 	if (!iScreenOwner) {
+		xgr::text::forget(buf);
 		delete[] buf;
 	}
 	delete[] p;
@@ -1833,17 +1845,31 @@ void invItem::redraw(int x, int y, int drop_mode, int flush_mode) {
 			dx += (aCellSize >> 1);
 
 		buf = new unsigned char[aCellSize * aCellSize];
+		xgr::text::prepare(buf, aCellSize, aCellSize);
 		memset(buf, 0, aCellSize * aCellSize);
-		aPutNum(
-			aCellSize / 2 - aScrFonts[INV_FONT]->SizeX / 2,
-			aCellSize / 2 - aScrFonts[INV_FONT]->SizeY / 2,
-			INV_FONT,
-			col,
-			dropCount,
-			aCellSize,
-			buf,
-			1
-		);
+		if (xgr::text::enabled) {
+			const auto value = std::to_string(dropCount);
+			aPutStrUtf8(
+				aCellSize / 2 - aScrFonts[INV_FONT]->SizeX / 2,
+				aCellSize / 2 - aScrFonts[INV_FONT]->SizeY / 2,
+				INV_FONT,
+				col,
+				value.c_str(),
+				aCellSize,
+				buf,
+				1
+			);
+		} else
+			aPutNum(
+				aCellSize / 2 - aScrFonts[INV_FONT]->SizeX / 2,
+				aCellSize / 2 - aScrFonts[INV_FONT]->SizeY / 2,
+				INV_FONT,
+				col,
+				dropCount,
+				aCellSize,
+				buf,
+				1
+			);
 
 		if (aciBufRedrawFlag) {
 			put_buf2col(800 + x + dx, y + dy, aCellSize, aCellSize, buf, 300, 0);
@@ -1855,6 +1881,7 @@ void invItem::redraw(int x, int y, int drop_mode, int flush_mode) {
 				XGR_Flush(x + dx, y + dy, aCellSize, aCellSize);
 		}
 
+		xgr::text::forget(buf);
 		delete[] buf;
 	}
 	if (aciBufRedrawFlag && flush_mode) {
@@ -3453,6 +3480,7 @@ void actIntDispatcher::redraw(void) {
 }
 
 void actIntDispatcher::text_redraw() {
+	xgr::text::clear(XGR_Obj.get_default_render_buffer());
 	if (Pause > 1 && NetworkON) {
 		if (GameQuantReturnValue || acsQuant()) {
 			Pause = 0;
@@ -4546,6 +4574,15 @@ void fncMenu::redraw(void) {
 			sy = iScreenOwner->SizeY;
 		}
 
+		xgr::text::prepare(
+			buf,
+			iScreenOwner ? iScreenOwner->SizeX : SizeX,
+			iScreenOwner ? iScreenOwner->SizeY : SizeY,
+			!(flags & FM_NO_ALIGN)
+		);
+		// The menu set clears its shared canvas once. A child's allocation can
+		// overlap its neighbours when its selected label is shorter than SizeX.
+
 		if (!(flags & FM_NO_ALIGN)) {
 			b_col = (bCol == -1) ? aciCurColorScheme[ACI_BACK_COL] : bCol;
 			memset(buf, b_col, SizeX * SizeY);
@@ -4610,6 +4647,7 @@ void fncMenu::redraw(void) {
 			}
 			if (!iScreenOwner) {
 				XGR_PutSpr(PosX, PosY, SizeX, SizeY, buf, XGR_BLACK_FON);
+				xgr::text::forget(buf);
 				delete[] buf;
 			}
 		}
@@ -4640,6 +4678,7 @@ void InfoPanel::redraw(void) {
 		buf = (unsigned char *)iScreenOwner->fdata;
 	}
 
+	xgr::text::prepare(buf, SizeX, SizeY);
 	int b_col = (bCol == -1) ? aciCurColorScheme[ACI_BACK_COL] : bCol;
 	memset(buf, b_col, SizeX * SizeY);
 
@@ -4720,6 +4759,7 @@ void InfoPanel::redraw(void) {
 	}
 	if (!iScreenOwner) {
 		XGR_PutSpr(PosX, PosY, SizeX, SizeY, buf, XGR_BLACK_FON);
+		xgr::text::forget(buf);
 		delete[] buf;
 	}
 
@@ -6749,6 +6789,7 @@ void aciWorldMap::redraw(int x, int y) {
 }
 
 void aciWorldMap::build_map(void) {
+	xgr::text::prepare(redraw_buf, SizeX, SizeY);
 	int i;
 	aciWorldInfo *p;
 
@@ -8267,7 +8308,21 @@ void aciWorldInfo::redraw(int bsx, int bsy, unsigned char *buf) {
 	x = PosX - (aScrFonts[font]->SizeX >> 1) + ox;
 	y = PosY - (aScrFonts[font]->SizeY >> 1) + oy;
 
-	aPutChar(x, y, font, border_col, letter, bsx, bsy, buf);
+	if (xgr::text::enabled) {
+		const char legacy[]{static_cast<char>(letter), 0};
+		const auto text = vangers::settings::cp866_to_utf8(legacy);
+		aPutStrUtf8(
+			x + aScrFonts[font]->LeftOffs[(unsigned char)letter],
+			y,
+			font,
+			border_col,
+			text.c_str(),
+			bsx,
+			buf,
+			0
+		);
+	} else
+		aPutChar(x, y, font, border_col, letter, bsx, bsy, buf);
 	delete[] shape1;
 }
 
@@ -8767,7 +8822,6 @@ fncMenuSet::fncMenuSet(void) {
 
 fncMenuSet::~fncMenuSet(void) {
 	iListElement *p, *p1;
-	iScreenElement *el = (iScreenElement *)redraw_data;
 	fncMenu *m;
 	if (items) {
 		p = items->last;
@@ -8780,8 +8834,7 @@ fncMenuSet::~fncMenuSet(void) {
 		delete items;
 		items = NULL;
 	}
-	if (el)
-		delete el;
+	delete redraw_data;
 }
 
 void fncMenuSet::init(void) {
@@ -8879,6 +8932,7 @@ void fncMenuSet::redraw(void) {
 
 	obj = (iScreenObject *)data->owner;
 	obj->flags |= (OBJ_MUST_REDRAW | OBJ_CLEAR_FON);
+	auto *text = xgr::text::prepare(data->fdata, data->SizeX, data->SizeY);
 
 	if (!redraw_data || !(redraw_data->flags & EL_DATA_LOADED)) {
 		memset(data->fdata, 0, data->SizeX * data->SizeY);
@@ -8887,6 +8941,8 @@ void fncMenuSet::redraw(void) {
 
 	//	  memset(redraw_data -> fdata,4,redraw_data -> SizeX * redraw_data -> SizeY);
 	memset(redraw_data->fdata, 0, redraw_data->SizeX * redraw_data->SizeY);
+	// build() can move the children; clearing only their new rectangles leaves ghosts.
+	xgr::text::clear(redraw_data->fdata);
 	m = (fncMenu *)items->first;
 	for (i = 0; i < items->Size; i++) {
 		m->redraw();
@@ -8910,6 +8966,9 @@ void fncMenuSet::redraw(void) {
 		index += data->SizeX;
 		r_index += redraw_data->SizeX;
 	}
+	if (text)
+		if (auto *source = xgr::text::find(redraw_data->fdata))
+			text->copy(*source, {rdx, 0, sx, data->SizeY}, dx, 0);
 
 	flags &= ~FMC_REDRAW;
 }

@@ -131,7 +131,7 @@ TARGET_INCLUDE_DIRECTORIES(actint_mouse_prompt_test PRIVATE
 	${PROJECT_SOURCE_DIR}/lib/xgraph
 )
 
-TARGET_LINK_LIBRARIES(actint_mouse_prompt_test PRIVATE vangers_settings SDL3::SDL3)
+TARGET_LINK_LIBRARIES(actint_mouse_prompt_test PRIVATE vangers_settings SDL3::SDL3 xgraph_text)
 
 ADD_TEST(NAME actint_mouse_prompt COMMAND actint_mouse_prompt_test)
 
@@ -146,6 +146,14 @@ SET_TESTS_PROPERTIES(actint_script_roundtrip PROPERTIES TIMEOUT 30)
 
 ADD_TEST(NAME actint_runtime_regressions COMMAND actint_script_binary_test --runtime)
 SET_TESTS_PROPERTIES(actint_runtime_regressions PROPERTIES TIMEOUT 15)
+
+FOREACH(renderer bitmap ttf)
+	FOREACH(widget menu counter)
+		ADD_TEST(NAME actint_${widget}_${renderer}
+			COMMAND actint_script_binary_test --render-${widget} ${renderer})
+		SET_TESTS_PROPERTIES(actint_${widget}_${renderer} PROPERTIES TIMEOUT 15)
+	ENDFOREACH()
+ENDFOREACH()
 
 ADD_EXECUTABLE(legacy_settings_migration_test
 	legacy_settings_migration_test.cpp
@@ -172,3 +180,10 @@ TARGET_INCLUDE_DIRECTORIES(rle_test PRIVATE
 TARGET_LINK_LIBRARIES(rle_test PRIVATE SDL3::SDL3)
 
 ADD_TEST(NAME rle_roundtrip COMMAND rle_test)
+
+ADD_EXECUTABLE(actint_ttf_test actint_ttf_test.cpp)
+TARGET_LINK_LIBRARIES(actint_ttf_test PRIVATE vangers_ttf SDL3_ttf::SDL3_ttf)
+TARGET_COMPILE_DEFINITIONS(actint_ttf_test PRIVATE
+	TEST_FONT="${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/VangersText-Regular.ttf"
+)
+ADD_TEST(NAME actint_ttf COMMAND actint_ttf_test)
