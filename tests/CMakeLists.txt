@@ -182,7 +182,7 @@ TARGET_LINK_LIBRARIES(rle_test PRIVATE SDL3::SDL3)
 ADD_TEST(NAME rle_roundtrip COMMAND rle_test)
 
 ADD_EXECUTABLE(actint_ttf_test actint_ttf_test.cpp)
-TARGET_LINK_LIBRARIES(actint_ttf_test PRIVATE vangers_ttf)
+TARGET_LINK_LIBRARIES(actint_ttf_test PRIVATE vangers_ttf SDL3_ttf::SDL3_ttf)
 TARGET_COMPILE_DEFINITIONS(actint_ttf_test PRIVATE
 	TEST_FONT="${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/VangersText-Regular.ttf"
 )
