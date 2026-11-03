@@ -37,8 +37,9 @@ int main() {
 			full[(h / 2) * w + w / 2] > surface::height(full, w, h, -0.5, 0),
 			"Solid image lost its outer boundary bevel"
 		);
-		for (int y = -10; y < h + 10; ++y)
-			for (int x = -10; x < w + 10; ++x) {
+		const int margin = int(std::ceil((surface::padding + 2) * scale));
+		for (int y = -margin; y < h + margin; ++y)
+			for (int x = -margin; x < w + margin; ++x) {
 				check(
 					surface::side_coverage(zero, w, h, scale, scale, x, y) == 0,
 					"Shadow copied alpha instead of following height"
@@ -79,15 +80,6 @@ int main() {
 		surface::tone(raised, w, h, 1, 1, 8, 9) > surface::tone(low_face, w, h, 1, 1, 8, 9),
 		"Raised face lost its height-based contrast"
 	);
-	// Opposing slopes on a thin vertical ridge must not cancel into a flat
-	// normal. The fixed left-facing material keeps a broad lit facet there.
-	std::vector<float> ridge(w * h);
-	for (int y = 0; y < h; ++y)
-		ridge[y * w + 8] = 1;
-	check(
-		surface::tone(ridge, w, h, 1, 1, 8, 9) > surface::tone(raised, w, h, 1, 1, 8, 9) + 3,
-		"Thin ridge lost its light-facing facet"
-	);
 	// The fractional edge affects solid neighbours, not just its own pixel.
 	const auto soft_edge = [](int x, int) { return x == 4 ? 64 : x >= 5 && x <= 11 ? 255 : 0; };
 	const auto edge_distance = vangers::text::inside_distance(w, h, soft_edge, true);
@@ -110,6 +102,13 @@ int main() {
 		surface::tone(toward, w, h, 1, 1, 8, 9) > surface::tone(away, w, h, 1, 1, 8, 9) + 3,
 		"Directional facet lost contrast"
 	);
+	const std::vector<float> flat_face(w * h, 0.6f);
+	check(
+		surface::tone(flat_face, w, h, 1, 1, 8, 9) == 19 &&
+			surface::tone(raised, w, h, 1, 1, 8, 9) == 23,
+		"Internal shading brightened or dimmed a flat face"
+	);
+	check(surface::tone(away, w, h, 1, 1, 8, 9) <= 8, "Away-facing slope lost its internal shade");
 	// Extra contrast must not suppress thin strokes with no opaque local core.
 	for (int peak : {64, 128, 200, 255})
 		for (double strength : {0.0, 0.25, 0.5, 1.0}) {
@@ -158,6 +157,17 @@ int main() {
 			change += b - a;
 		}
 	check(change > 0, "Shadow ignored height changes");
+	// The external body is half the preceding length. Retain a continuous
+	// short contact side without restoring the rejected long silhouette.
+	for (double x = 3; x <= 5; x += 0.25)
+		check(
+			surface::side_coverage(high, w, h, 1, 1, x, 8) > 0.9,
+			"Short shadow lost its extent or developed gaps"
+		);
+	check(
+		surface::side_coverage(high, w, h, 1, 1, 1, 8) == 0,
+		"Rejected long external shadow returned"
+	);
 	check(
 		surface::side_coverage(high, w, h, 1, 1, 4, 8) > 0 &&
 			surface::side_coverage(high, w, h, 1, 1, 8, 2) == 0 &&

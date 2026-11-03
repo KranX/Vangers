@@ -130,26 +130,30 @@ iscreen terrain/relief renderer retain their existing presentation.
   the image boundary. The existing two sweeps propagate fractional edge distances
   into solid neighbours too. Default thresholded seeding is unchanged for iscreen.
   This is an antialias-aware edge approximation, not an exact signed-distance field.
-  ACS uses a 0.85-logical-pixel linear bevel:
-  `min(1, distance/min(scale_x,scale_y)/0.85)`.
-- Height is multiplied by `1 + 0.075 * smooth_grain(x/scale_x,y/scale_y)`.
-  With depth 4 this is absolute grain amplitude 0.3. Grain remains deterministic
-  and smoothly interpolated at enlarged/fractional resolutions; stronger relief
-  does not mean stronger noise.
-- At +/-0.5 logical pixels, the horizontal slope uses the more light-facing of
-  the left and right one-sided differences; the vertical slope uses the central
-  difference. Both are multiplied by depth 4. This prevents opposing sides of a
-  thin ridge from cancelling into a flat normal. It is a fixed stylized material,
-  not a physically general normal estimator or a font/alphabet-specific rule.
-  Light direction is normalized `(-1,-0.1,0.2)`. Tone is
-  `clamp(round(4 + 17*clamp(height,0,1) + 12*max(0,N.L)),2,31)` before the
-  existing palette shift. A broad face and directional bevel replace the preceding
-  narrow specular glint; no general power function or material selector remains.
-- Eight bounded height samples project a dark body down-left, with sampling
-  offsets `(2.5*z,-0.75*z)` in logical pixels and a 0.125-height-unit transition.
+  ACS uses a one-logical-pixel linear bevel:
+  `min(1, distance/min(scale_x,scale_y))`.
+- Height is multiplied by `1 + 0.1 * smooth_grain(x/scale_x,y/scale_y)`.
+  With depth 4 this is absolute grain amplitude 0.4. The height, grain and face
+  base lighting are restored from the user's preferred five-cycle candidate, not
+  the rejected brighter ten-cycle variant. Away-facing slopes are additionally
+  darkened below; this is not a general increase in face brightness.
+- Central height differences at +/-0.5 logical pixels, multiplied by 4, give the
+  surface slopes. Light is normalized `(-1,-0.1,0.45)`. A fixed half-vector
+  highlight has exponent 16 (four squarings). Tone is
+  `clamp(round(6 + 10.8*clamp(height,0,1) + 12.96*max(0,N.L)
+  + 12*max(0,N.H)^16 - 12.96*shade),2,31)` before the existing palette shift,
+  where `shade=clamp(flat_incidence-N.L,0,1)` and
+  `flat_incidence=0.45/length(light)`. Flat faces and slopes with at least that
+  incidence keep their old brightness. Less-lit slopes darken inside the glyph
+  instead of extending the silhouette. This is a stylized contrast treatment,
+  not a physically traced self-shadow or a general material engine.
+- Sixteen bounded height samples project a dark body down-left, with offsets
+  `(3.25*z,-1.25*z)` in logical pixels and a 0.125-height-unit transition.
   Tone 2 and the 15% opacity boost are retained. Coverage comes from the height
   intersection, not a second multiplication by source alpha. This is a stylized
   oblique extrusion, **not** a physically traced cast shadow towards the light.
+  An exact early rejection skips rays entirely outside bilinear field support;
+  full occlusion also exits early. No extra cache or language-specific rule is used.
 - For small native glyphs, only the **front coverage** gets the existing S-curve:
   `a' = a + strength*a*(1-a)*(2*a-1)`, where `a=alpha/255` and
   `strength=clamp((64-native_cell_height)/24,0,1)`. A second curve uses strength
@@ -161,7 +165,7 @@ iscreen terrain/relief renderer retain their existing presentation.
   the half-coverage support is preserved. Height, lighting and body generation
   use the mask before these coverage adjustments. Large text retains ordinary
   antialiasing; other TTF roles are unaffected.
-- Four logical pixels of layout padding retain the larger body without changing
+- Five logical pixels of layout padding retain the short body without changing
   advances or hit boxes. Per-field image replacement removes it on redraw without
   clipping overhanging letters or neighbouring fields.
 
@@ -471,13 +475,14 @@ and the final comparison are retained outside the repository:
 supersedes its material and conditionally authorizes publication.
 
 
-### Ten further cycles — 2026-11-04 (current material)
+### Ten further cycles — 2026-11-04 (visually rejected)
 
 The user requested ten more cycles and authorized a normal commit/push only if
 visually better. This replaces the five-cycle candidate above, not the font assets.
-The assistant's comparison judges it an improvement, not an exact match or new
-user approval: the lit face is broader and less fragmented; the original FNC
-contours still have more angular, irregular facets. Original bitmap is the primary
+The assistant initially judged it an improvement, but the user explicitly
+rejected that assessment: the preceding version was better. Brightening flat
+faces did not solve the main problem, insufficient shadow. The following are
+historical measurements, not visual acceptance of the ten-cycle candidate. Original bitmap is the primary
 reference; the preceding local TTF is a secondary before/after comparison.
 
 | Cycle | Tested direction | Decision |
@@ -541,3 +546,128 @@ comparison report are retained outside the repository:
 `/home/stalkerg/projects/vangers-font-baseline/2026-11-04-acs-ten-GJfhUbIU`.
 `cycles.tsv` records each decision, `before-source` preserves the starting local
 version, and `final-source`/`final-manifest.json` identify the published candidate.
+
+
+### Strong shadow after the brightness correction — 2026-11-04 (superseded)
+
+The user explicitly preferred the preceding five-cycle lighting over commit
+1b12128 and requested a **serious increase in shadow**, not brighter flat faces.
+That correction supersedes the positive assessment of the ten-cycle result.
+This local follow-up restores the preferred height/grain/lighting and keeps
+front coverage and outlines unchanged. Three real-game shadow lengths were
+compared: `(3.5,-1.5)`, `(5,-2)` and `(6.5,-2.5)`; the last is selected for review.
+Relative to the preferred `(2.25,-0.75)`, it projects about 2.9x farther left and
+3.3x farther down. The original bitmap remains the primary visual reference.
+
+The algorithm remains a single height-driven extrusion with no alphabet rules,
+legacy profiles, contour changes, global black outline or new settings. Sixteen
+height steps keep the longer body continuous. Nine logical pixels of padding
+retain its full support; advances, hit boxes and centering are unchanged.
+Ray-support rejection reduces work outside the glyph. The dark palette tone and
+opacity are unchanged: the effect is from a larger visible side, not a brighter
+face or another screen-wide filter.
+
+Verification:
+
+- 34/34 release and 34/34 Debug ASan+UBSan CTest pass. The rejected one-sided
+  ridge-lighting assertion is removed with that lighting model. Directional
+  face-lighting and coverage tests remain. A new extent/continuity regression
+  requires >90% body coverage across four logical pixels outside a raised block;
+  an expanded bounds scan checks the larger padding at all tested scales.
+- 60 run/scale/palette cases check 10,588,068 pixels, deterministic cache/resize
+  and palette limits. Across 24 aligned 1x/2x cases, **both front shades and alpha
+  are byte-identical to the preferred five-cycle material**. All 30 non-material
+  rasters also remain identical. Fractional-scale byte identity is not asserted
+  because different ink padding changes output-size rounding.
+- On the diagnostic `ПАУЗА` at 1x, alpha-weighted visible body area increases
+  from 428.817 to 1154.72 pixels (2.69x). This measures border coverage outside
+  the face, not a brightness score or a claim for every string/font.
+- The optimized ray bound matches the unbounded sixteen-step reference at
+  1,114,992 samples, including anisotropic scales from 0.5 to 3.
+- All 30 production diagnostic sheets match leak-checked ASan+UBSan output.
+  CJK specimens now reserve the full enlarged shadow bounds instead of the
+  former fixed four-pixel diagnostic margin. Three real CJK families at four
+  sizes check the material, not integrated CJK coverage, layout or shaping.
+- Actual RU pause/save at 800x600 and 1600x1200 and EN pause at 800x600 were
+  inspected, including both `А`, `З`, green labels, heading and `Свободно`.
+  EN-save, GPU, physical-input and IME acceptance are not claimed.
+
+The same local eight-run/eight-letter, 200-cached-frame CPU benchmark uses nine
+interleaved trials; creation/layout are outside the timer. Median milliseconds:
+
+| Native output | Preferred before first / cached | Strong shadow first / cached |
+| --- | ---: | ---: |
+| 800x600 | 3.460 / 0.162 | 4.129 / 0.201 |
+| 1600x1200 | 12.639 / 0.690 | 15.639 / 0.848 |
+
+The larger raster and denser height sampling cost about 19–24% more on first
+render; cached cost rises by about 0.039/0.158 ms. The 2x first-render range is
+15.422–21.205 ms. This is not FPS or a cross-platform guarantee. There is still
+only one retained raster per run, replaced on resize; no unbounded cache.
+
+Sources, all three alternatives, game captures, parity and cost measurements:
+`/home/stalkerg/projects/vangers-font-baseline/2026-11-04-acs-shadow-Dwslvsh4`.
+That task left a local candidate without commit/push. The user then rejected
+the excessive green-letter shadow and clarified that relief must come primarily
+from shading on the letters themselves; the next section supersedes it.
+
+
+### Short outer shadow, stronger shading on the letter — 2026-11-04 (accepted material)
+
+The user clarified that the strong external shadow was excessive, especially on
+GREEN labels. The important relief is **shade on the letter itself**, not the
+long silhouette behind it. The external projection is now exactly half in both
+axes: `(6.5,-2.5)` -> `(3.25,-1.25)`. Padding drops from 9 to 5; the sixteen
+height samples, dark tone and opacity remain. This does not halve the visible
+shadow area exactly, because it overlaps the glyph differently.
+
+The preferred lighting remains the base. A small fixed term subtracts
+`12.96*clamp(flat_incidence-N.L,0,1)` from the face tone. Flat or better-lit
+surfaces keep their former brightness; less-lit slopes darken inside the glyph.
+This is directional material shading from the existing height normals, not a
+physical cast self-shadow, per-letter mask, blanket dimming or black outline.
+It adds no font/palette-specific branch, setting, dependency or cache.
+
+Four candidates were built and captured: three strengths applied only when
+`N.L<0`, then the selected flat-relative shading. The former affected too narrow
+an edge; the selected term separates a wider dark facet without raising the
+bright side. The assistant inspected original/previous/current А and З, green
+labels, complete pause, save heading and Свободно, including actual RU800/1600
+and ENpause800. The user subsequently accepted this visual compromise and authorized commit,
+push, full PR review and merge if the review/checks are clean.
+
+Validation:
+
+- 34/34 release and 34/34 ASan+UBSan CTest pass. Added flat-face brightness and
+  away-slope darkness checks. The contact-side test now requires a continuous
+  short side and rejects the old four-pixel extension, matching the user's
+  explicit shortening request. Bounds, cursor, fade/cache and BMO tests remain.
+- 60 scale/family/palette cases check 8,951,760 pixels and deterministic resize.
+  Front shades can intentionally reach the lowest nonzero palette step, as
+  allowed by the existing tone clamp; no alpha threshold or colour rule changed.
+- In 24 aligned 1x/2x cases, front alpha is identical to both the preceding long
+  shadow and a short-shadow/no-added-shading control. Of 435,927 ink samples,
+  226,140 darken and NONE brighten against the control. Flat-face reference
+  tones stay 19/23. All 30 ordinary non-material rasters are byte-identical.
+- All 30 production probe sheets match ASan+UBSan/leak-checked output, including
+  12 real CJK specimens. The ray bound still matches the unbounded reference
+  over 1,114,992 samples. These are material tests, not integrated CJK shaping,
+  fallback or new bundled glyph coverage. EN save/GPU/physical input/IME are not
+  acceptance claims.
+
+Local CPU benchmark, same eight eight-letter runs, 200 cached frames, nine
+interleaved trials; font creation/layout outside the timer. Median ms:
+
+| Native output | Previous long shadow first / cached | Current first / cached |
+| --- | ---: | ---: |
+| 800x600 | 4.133 / 0.204 | 3.551 / 0.175 |
+| 1600x1200 | 15.575 / 0.851 | 13.089 / 0.727 |
+
+The shorter shadow/padding offsets the extra shading arithmetic. These are CPU
+layer measurements, not gameplay FPS. Current 2x first-render range is
+12.988–19.083 ms; rebuilding/resizing still pays first-render cost.
+
+All snapshots, four captures, final RU/EN captures, probes and comparison:
+`/home/stalkerg/projects/vangers-font-baseline/2026-11-04-acs-facets-DQvzQkRR`.
+The user accepted this compromise for publication; it does not claim an exact
+recreation of the original raster contours.
