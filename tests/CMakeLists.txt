@@ -271,3 +271,10 @@ FOREACH(language ru en)
  ADD_TEST(NAME diagen_shipped_${language} COMMAND diagen_runtime_test shipped ${language})
  SET_TESTS_PROPERTIES(diagen_shipped_${language} PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${dir}")
 ENDFOREACH()
+
+FOREACH(mode empty empty-legacy)
+ FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${mode}")
+ ADD_TEST(NAME diagen_${mode} COMMAND diagen_runtime_test ${mode})
+ SET_TESTS_PROPERTIES(diagen_${mode} PROPERTIES TIMEOUT 30
+  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${mode}")
+ENDFOREACH()

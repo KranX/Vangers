@@ -81,7 +81,7 @@ struct Fixture {
 	std::string encode(const std::string &v) const {
 		return old ? legacy(v) : v;
 	}
-	void write(bool invalid = false, bool source = false) {
+	void write(bool invalid = false, bool source = false, bool empty_query = false) {
 		std::vector<std::pair<std::string, std::string>> entries;
 		std::vector<std::string> rooms;
 		for (int i = 0; i < 9; ++i) {
@@ -168,6 +168,8 @@ struct Fixture {
 						answer + " 2"}
 				)
 			);
+			if (empty_query && i == 0)
+				entries.back().second.clear();
 		}
 		for (int j = 0; j < 3; ++j) {
 			for (int i = 0; i < 3; ++i)
@@ -241,6 +243,26 @@ void old_save(const Fixture &f, int version) {
 		out.write(topic.c_str(), topic.size() + 1);
 	}
 }
+void run_empty(bool old, [[maybe_unused]] bool compiled) {
+	setLang(ENGLISH);
+	Fixture f(old, ENGLISH);
+#ifdef DIAGEN_TEST
+	f.write(false, true, true);
+#else
+	if (!compiled)
+		f.write(false, false, true);
+#endif
+	dgD = new DiagenDispatcher;
+	dgD->init();
+	const auto *room = dgD->seekR("Room0");
+	check(
+		!room->prefixQ && !room->postfixQ && !room->qAtail && !room->qVtail,
+		"Empty question file did not stay empty"
+	);
+	check(dgD->seekR("Room1")->qAtail != nullptr, "Empty entry corrupted the following room");
+	delete dgD;
+}
+
 void run(bool old, Language language, [[maybe_unused]] bool compiled) {
 	setLang(language);
 	Fixture f(old, language);
@@ -362,6 +384,10 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 int main(int argc, char **argv) {
 	try {
 		const std::string mode = argc > 1 ? argv[1] : "utf8";
+		if (mode == "empty" || mode == "empty-legacy") {
+			run_empty(mode == "empty-legacy", argc > 3 && std::string(argv[3]) == "compiled");
+			return 0;
+		}
 		if (mode == "invalid-source") {
 			setLang(ENGLISH);
 			Fixture(false, ENGLISH).write(false, true);
@@ -398,7 +424,7 @@ int main(int argc, char **argv) {
 			return 0;
 		}
 		if (mode == "invalid" || mode == "truncated" || mode == "signature" || mode == "count" ||
-			mode == "unterminated") {
+			mode == "unterminated" || mode == "negative-length") {
 			setLang(ENGLISH);
 			Fixture(false, ENGLISH).write(mode == "invalid");
 			if (mode == "truncated") {
@@ -413,6 +439,12 @@ int main(int argc, char **argv) {
 					file.seekp(2);
 					int count = -1;
 					file.write((char *)&count, 4);
+				} else if (mode == "negative-length") {
+					file.seekg(6);
+					const int name_length = file.get();
+					file.seekp(8 + name_length);
+					int length = -1;
+					file.write((char *)&length, 4);
 				} else {
 					file.seekp(-1, std::ios::end);
 					file.put('X');

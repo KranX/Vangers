@@ -2884,14 +2884,14 @@ void FileBox::load(void) {
 		int size;
 		read(&size, sizeof(size));
 #ifdef _ROAD_
-		if (size <= 0 || std::size_t(size) > ff.length() - ff.tell())
+		if (size < 0 || std::size_t(size) > ff.length() - ff.tell())
 #else
-		if (size <= 0 || std::size_t(size) > ff.size() - ff.tell())
+		if (size < 0 || std::size_t(size) > ff.size() - ff.tell())
 #endif
 			ErrH.Abort("Invalid Diagen archive entry length", XERR_USER, -1, names[i]);
 		std::string bytes(size, '\0');
 		read(bytes.data(), bytes.size());
-		if (bytes.back() || (utf8 && !vangers::settings::is_valid_utf8(bytes)))
+		if ((!bytes.empty() && bytes.back()) || (utf8 && !vangers::settings::is_valid_utf8(bytes)))
 			ErrH.Abort("Invalid Diagen text", XERR_USER, -1, names[i]);
 		const auto text = utf8 ? bytes : vangers::settings::cp1251_to_utf8(bytes);
 		if (text.size() > std::size_t(std::numeric_limits<int>::max()))

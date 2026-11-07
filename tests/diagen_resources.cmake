@@ -25,7 +25,7 @@ FOREACH(encoding legacy utf8)
   ENDIF()
  ENDFOREACH()
 ENDFOREACH()
-FOREACH(mode invalid truncated signature count unterminated)
+FOREACH(mode invalid truncated signature count unterminated negative-length)
  FILE(MAKE_DIRECTORY "${TEST_ROOT}/${mode}")
  # Expected-fatal paths terminate with live models. Successful cases keep leak checking.
  EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E env "ASAN_OPTIONS=$ENV{ASAN_OPTIONS}:detect_leaks=0"
@@ -53,4 +53,17 @@ STRING(FIND "${stderr}" "Invalid Diagen UTF-8 source" diagnostic)
 STRING(FIND "${stderr}" "data/Inventory.text" context)
 IF(NOT result STREQUAL "1" OR diagnostic LESS 0 OR context LESS 0)
  MESSAGE(FATAL_ERROR "Diagen invalid source: ${result}: ${stdout}\n${stderr}")
+ENDIF()
+
+FILE(MAKE_DIRECTORY "${TEST_ROOT}/empty-query")
+EXECUTE_PROCESS(COMMAND "${SOURCE_PARSER}" empty en
+ WORKING_DIRECTORY "${TEST_ROOT}/empty-query" RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr TIMEOUT 15)
+IF(NOT result STREQUAL "0")
+ MESSAGE(FATAL_ERROR "Diagen empty source: ${result}: ${stdout}\n${stderr}")
+ENDIF()
+FILE(COPY_FILE "${TEST_ROOT}/empty-query/diagen_new.text" "${TEST_ROOT}/empty-query/diagen_eng.text")
+EXECUTE_PROCESS(COMMAND "${BINARY_PARSER}" empty en compiled
+ WORKING_DIRECTORY "${TEST_ROOT}/empty-query" RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr TIMEOUT 15)
+IF(NOT result STREQUAL "0")
+ MESSAGE(FATAL_ERROR "Diagen empty packed query: ${result}: ${stdout}\n${stderr}")
 ENDIF()

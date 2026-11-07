@@ -25,7 +25,8 @@ cell/molecule IDs, network messages or language selection.
   single-language resource. Room-table lookup IDs stay separate from display names.
 - Existing compressed/encrypted archive loading still goes through `Parser`.
   FileBox checks the archive signature, entry bounds, terminated tokens and UTF-8
-  payloads before exposing them to Diagen. This does not harden the separate
+  payloads before exposing them to Diagen. Zero-length entries remain valid for
+  empty question files. This does not harden the separate
   legacy compression parser against arbitrary malicious input.
 
 The shared settings codec now includes a CP1251 decoder, including punctuation,
@@ -66,9 +67,11 @@ save progress, links, variants, commands and full-screen text. Unicode fixtures
 exercise mixed Latin/Cyrillic/CJK/emoji, subjects over 256 bytes, phrases over
 1311 bytes and expanding substitutions. Malformed signatures/counts/lengths,
 unterminated payloads and invalid UTF-8 source/archive data fail explicitly.
-All fixtures and output are written in the build tree, not the source data.
+Empty legacy `DG` / native UTF-8 `DU` question entries and empty UTF-8 source
+round trips are covered too; negative payload lengths remain invalid. All fixtures
+and output are written in the build tree, not the source data.
 
-Local verification on 2026-11-07: 41/41 release tests; 8/8 codec/Diagen tests
+Local verification on 2026-11-07: 43/43 release tests; 10/10 codec/Diagen tests
 with ASan, UBSan halt-on-error and normal leak checking. A strict whole-suite
 sanitizer run reports a pre-existing invalid-vptr issue in
 `aciScreenEventLine::aciScreenEventLine` (`aci_scr.cpp:319`), affecting four ACS
