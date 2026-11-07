@@ -235,6 +235,8 @@ void packed_buffer() {
 
 } // namespace
 
+void actint_flow_test(bool native);
+
 extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 	SDL_MessageBoxFlags,
 	const char *,
@@ -247,7 +249,9 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 
 int main(int argc, char **argv) {
 	try {
-		if (argc == 3 && std::string(argv[1]) == "--render-menu") {
+		if (argc == 3 && std::string(argv[1]) == "--flow") {
+			actint_flow_test(std::string(argv[2]) == "ttf");
+		} else if (argc == 3 && std::string(argv[1]) == "--render-menu") {
 			actint_menu_render_test(std::string(argv[2]) == "ttf");
 		} else if (argc == 3 && std::string(argv[1]) == "--render-counter") {
 			actint_counter_render_test(std::string(argv[2]) == "ttf");

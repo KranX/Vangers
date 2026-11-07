@@ -214,6 +214,7 @@ enum Options {
 
 	SD_NEW_TEXT,
 	SD_UTF8_TEXT, // Append only: preserve existing SCB option numbers.
+	SD_TEXT_FLOW,
 
 	MAX_OPTION
 };
@@ -355,7 +356,8 @@ static const char *OptIDs[MAX_OPTION] = {"}",
 	"default_scr",
 
 	"text_object",
-	"utf8_text"};
+	"utf8_text",
+	"text_flow"};
 
 iStack *iStk;
 
@@ -377,6 +379,7 @@ int ObjIDSize = 0;
 
 iTextData *text_obj;
 static bool utf8_text = false;
+static int text_flow_width = 0;
 
 iList *curID_List;
 
@@ -422,6 +425,7 @@ iStackElement *iStack::get(void) {
 void ParseScript(const char *fname, const char *bname, bool initialize_objects) {
 	int id, t_id = 0, st = 0;
 	utf8_text = false;
+	text_flow_width = 0;
 	const auto decode_text = [&](const char *value) {
 		try {
 			return vangers::iscreen::resource_text(value, utf8_text);
@@ -480,6 +484,11 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 #endif
 
 			switch (id) {
+			case SD_TEXT_FLOW:
+				text_flow_width = script->read_idata();
+				if (text_flow_width < 0 || text_flow_width > I_RES_X)
+					handle_error("Invalid text_flow width");
+				break;
 			case SD_UTF8_TEXT:
 				utf8_text = true;
 				break;
@@ -518,6 +527,7 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 				text_obj->ID = script->read_idata();
 				read_text(text_obj->objName);
 				text_obj->utf8_resource = utf8_text;
+				text_obj->flow_width = text_flow_width;
 				script->read_pdata(&text_obj->fname, 1);
 				iScrDisp->texts->connect((iListElement *)text_obj);
 				break;

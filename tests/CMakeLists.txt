@@ -278,3 +278,17 @@ FOREACH(mode empty empty-legacy)
  SET_TESTS_PROPERTIES(diagen_${mode} PROPERTIES TIMEOUT 30
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${mode}")
 ENDFOREACH()
+
+ADD_EXECUTABLE(text_layout_test text_layout_test.cpp)
+TARGET_LINK_LIBRARIES(text_layout_test PRIVATE vangers_text vangers_settings)
+ADD_TEST(NAME text_layout COMMAND text_layout_test)
+FOREACH(renderer bitmap ttf)
+ ADD_TEST(NAME actint_flow_${renderer} COMMAND actint_script_binary_test --flow ${renderer})
+ SET_TESTS_PROPERTIES(actint_flow_${renderer} PROPERTIES TIMEOUT 30)
+ENDFOREACH()
+
+FOREACH(renderer bitmap ttf)
+ FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-flow-${renderer}")
+ ADD_TEST(NAME iscreen_flow_${renderer} COMMAND iscreen_binary_test --flow ${renderer})
+ SET_TESTS_PROPERTIES(iscreen_flow_${renderer} PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-flow-${renderer}")
+ENDFOREACH()

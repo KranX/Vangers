@@ -82,43 +82,6 @@ int main() {
 		check(text_length(prefix) == std::min(i, count), "Reveal budget counts characters");
 	}
 
-	const auto measure = [](std::string_view text) { return static_cast<int>(text_length(text)); };
-	for (const auto &phrase : {std::string(),
-			 unicode,
-			 std::string("one two three four"),
-			 std::string("оченьдлинноесловобезпробелов"),
-			 std::string(2048, 'A')}) {
-		for (int width : {0, 1, 5, 20, 4096}) {
-			std::string restored;
-			const auto lines = wrap_text(phrase, width, measure);
-			check(!lines.empty(), "Empty panel text still has one line");
-			for (const auto &line : lines) {
-				check(is_valid_utf8(line), "Wrapped line must be valid UTF-8");
-				check(
-					line.empty() || width <= 1 || measure(line) < width,
-					"Panel line must fit the legacy strict width contract"
-				);
-				restored += line;
-			}
-			check(restored == phrase, "Wrapping must not lose spaces or Unicode characters");
-		}
-	}
-	const auto old_style = wrap_text("hello world again", 12, measure);
-	check(
-		old_style == std::vector<std::string>({"hello world", " again"}),
-		"Existing dialogue leading-space convention must be preserved"
-	);
-
-	check(
-		wrap_columns("Привет мир\n日本語😀", 6) == "Привет\nмир\n日本語😀",
-		"Screen-text limits count characters, not bytes"
-	);
-	check(wrap_columns("абвгдеж", 3) == "абв\nгде\nж", "Long words need lossless scalar wrapping");
-	check(
-		wrap_columns("abc\r\n\nxyz\n", 80) == "abc\r\n\nxyz\n",
-		"Existing paragraph delimiters stay intact"
-	);
-	check(wrap_columns(unicode, 0) == unicode, "Nonpositive column limit must make progress");
 	check(
 		is_valid_utf8(aciSTR_OFF2) && std::string(aciSTR_OFF2) == "Выкл.",
 		"Source labels must be canonical UTF-8 too"
@@ -127,6 +90,5 @@ int main() {
 		is_valid_utf8(aciSTR_PRICE2) && std::string(aciSTR_PRICE2) == "Цена: ",
 		"Composed shop strings must not mix UTF-8 and CP866"
 	);
-	std::cout
-		<< "actint UTF-8 boundaries, glyph compatibility, clipping, reveal and wrapping passed\n";
+	std::cout << "actint UTF-8 boundaries, glyph compatibility, clipping and reveal passed\n";
 }

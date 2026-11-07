@@ -3856,6 +3856,23 @@ void iS_StringElement::init_string(const char *ptr) {
 	vangers::iscreen::copy_text(string, ptr, iS_STR_LEN - 1);
 }
 
+namespace {
+void replace_text_line(char *&buffer, const std::string &text, size_t minimum) {
+	// These are display elements, not editable fields; their old scalar input caps
+	// must not truncate a measured line consisting of many narrow glyphs.
+	auto *replacement = new char[std::max(minimum, text.size() + 1)]{};
+	std::memcpy(replacement, text.c_str(), text.size() + 1);
+	delete[] buffer;
+	buffer = replacement;
+}
+} // namespace
+void iStringElement::init_text_line(const std::string &text) {
+	replace_text_line(string, text, iSTR_BYTES);
+}
+void iS_StringElement::init_text_line(const std::string &text) {
+	replace_text_line(string, text, iS_STR_BYTES);
+}
+
 void iScreenDispatcher::init_input_string(iScreenElement *p) {
 	int sz;
 	iListElementPtr *tmp;
@@ -4376,7 +4393,16 @@ void iTextData::load(void) {
 	if (!bytes.empty())
 		fh.read(bytes.data(), bytes.size());
 	fh.close();
-	const auto lines = vangers::iscreen::text_lines(bytes, utf8_resource);
+	source_text = vangers::iscreen::resource_text(bytes, utf8_resource);
+	store_lines(vangers::iscreen::text_lines(source_text, true));
+	layout_ready = false;
+	reset();
+	flags |= iTEXT_DATA_LOADED;
+}
+
+void iTextData::store_lines(const std::vector<std::string> &lines) {
+	delete[] mem_heap;
+	delete[] data;
 	numLines = int(lines.size());
 	heap_size = 0;
 	for (const auto &line : lines)
@@ -4389,11 +4415,69 @@ void iTextData::load(void) {
 		std::memcpy(cursor, lines[i].c_str(), lines[i].size() + 1);
 		cursor += lines[i].size() + 1;
 	}
+}
+
+void iTextData::layout_for(iScreenObject *object) {
+	if (layout_ready)
+		return;
+	if (!object->ElementList->Size)
+		ErrH.Abort("Text page box must fit at least one row");
+	auto *element = (iScreenElement *)object->ElementList->first;
+	const auto measure = [&](std::string_view line) {
+		const std::string value(line);
+		if (element->type == I_STRING_ELEM) {
+			auto *e = (iStringElement *)element;
+			return iStrLen((unsigned char *)value.c_str(), e->font, e->space);
+		}
+		auto *e = (iS_StringElement *)element;
+		return aStrLen32Utf8(value.c_str(), e->font, e->space);
+	};
+	// The existing row template defines the vertical rhythm. Only rows inside
+	// its logical box can consume source lines; hidden overflow is not a page.
+	layout_rows = 0;
+	for (auto *row = element; layout_rows < object->ElementList->Size;
+		row = (iScreenElement *)row->next) {
+		if (row->type != I_STRING_ELEM && row->type != I_S_STRING_ELEM)
+			ErrH.Abort("Text page requires a text row template");
+		const int height = row->type == I_STRING_ELEM
+							   ? HFntTable[((iStringElement *)row)->font]->SizeY
+							   : aStrHeight32(((iS_StringElement *)row)->font);
+		if (row->lY + height > object->SizeY)
+			break;
+		++layout_rows;
+	}
+	if (!layout_rows)
+		ErrH.Abort("Text page box must fit at least one row");
+	const auto pages = vangers::text::paginate(
+		vangers::text::layout_lines(
+			source_text,
+			flow_width ? std::min(flow_width, std::max(1, object->SizeX))
+					   : std::max(1, object->SizeX),
+			measure,
+			flow_width ? vangers::text::LineMode::Paragraphs : vangers::text::LineMode::Preserve
+		),
+		layout_rows
+	);
+	std::vector<std::string> lines;
+	for (size_t i = 0; i < pages.size(); ++i) {
+		lines.insert(lines.end(), pages[i].begin(), pages[i].end());
+		if (i + 1 < pages.size())
+			while (lines.size() % layout_rows)
+				lines.emplace_back();
+	}
+	store_lines(lines);
+	layout_ready = true;
 	reset();
-	flags |= iTEXT_DATA_LOADED;
+}
+
+int iTextData::page_size(iScreenObject *object) {
+	layout_for(object);
+	return layout_rows;
 }
 
 void iTextData::free(void) {
+	layout_ready = false;
+	source_text.clear();
 	numLines = curLine = 0;
 
 	if (mem_heap) {
@@ -4410,6 +4494,7 @@ void iTextData::free(void) {
 }
 
 void iTextData::copy(iScreenObject *p) {
+	layout_for(p);
 	int i;
 	iScreenElement *el;
 
@@ -4427,10 +4512,15 @@ void iTextData::copy(iScreenObject *p) {
 			break;
 		}
 		if (ptr) {
-			if (!(flags & iTEXT_EOF))
-				read_str(ptr, el->type == I_STRING_ELEM ? iSTR_LEN - 1 : iS_STR_LEN - 1);
+			const std::string value = (i >= layout_rows || flags & iTEXT_EOF || curLine >= numLines)
+										  ? " "
+										  : data[curLine++];
+			if (el->type == I_STRING_ELEM)
+				((iStringElement *)el)->init_text_line(value);
 			else
-				strcpy(ptr, " ");
+				((iS_StringElement *)el)->init_text_line(value);
+			if (curLine >= numLines)
+				flags |= iTEXT_EOF;
 
 			switch (el->type) {
 			case I_STRING_ELEM:
@@ -4447,8 +4537,10 @@ void iTextData::copy(iScreenObject *p) {
 }
 
 void iTextData::read_str(char *p, std::size_t maximum) {
-	if (flags & iTEXT_EOF)
+	if (flags & iTEXT_EOF || curLine >= numLines) {
+		p[0] = 0;
 		return;
+	}
 	vangers::iscreen::copy_text(p, data[curLine], maximum);
 	curLine++;
 	if (curLine >= numLines)
@@ -4591,7 +4683,8 @@ int iScreenDispatcher::copy_text_prev(iScreen *scr, int mode) {
 		if (!curText) {
 			next_text();
 		} else {
-			if (curText->curLine <= obj->ElementList->Size) {
+			const int capacity = curText->page_size(obj);
+			if (curText->curLine <= capacity) {
 				id = curText->ID - 1;
 				ActiveEv->flags &= ~EV_ACTIVE;
 				ActiveEv = NULL;
@@ -4604,24 +4697,15 @@ int iScreenDispatcher::copy_text_prev(iScreen *scr, int mode) {
 						title_obj->init_size();
 						title_obj->init_align();
 					}
-					curText->curLine = curText->numLines -
-									   (curText->numLines % obj->ElementList->Size) +
-									   obj->ElementList->Size * 2;
+					const int previous_capacity = curText->page_size(obj);
+					curText->curLine =
+						((std::max(1, curText->numLines) - 1) / previous_capacity + 2) *
+						previous_capacity;
 					key_trap(prev_code);
 				}
 				return 1;
 			} else {
-				if (curText->curLine >= obj->ElementList->Size * 2) {
-					if (curText->curLine != curText->numLines)
-						curText->curLine -= obj->ElementList->Size * 2;
-					else
-						curText->curLine -=
-							obj->ElementList->Size + (curText->numLines % obj->ElementList->Size);
-				} else {
-					ActiveEv->flags &= ~EV_ACTIVE;
-					ActiveEv = NULL;
-					return 1;
-				}
+				curText->curLine = std::max(0, ((curText->curLine - 1) / capacity - 1) * capacity);
 			}
 		}
 

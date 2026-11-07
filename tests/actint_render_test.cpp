@@ -1,6 +1,9 @@
 #include "global.h"
 
+#include "actint/a_consts.h"
 #include "actint/actint.h"
+#include "actint/mlconsts.h"
+#include "actint/mlstruct.h"
 #include "iscreen/iscreen.h"
 #include "settings/settings.h"
 
@@ -11,10 +14,17 @@
 #include <fstream>
 #include <stdexcept>
 
+void aciNextPhrase();
+void aciStartSpeech();
+extern aciML_Dispatcher *aciML_D;
+extern aciML_EventSeq *aciSpeechSeq;
+extern int aciSpeechEndLocked, aciSpeechBegLocked, aciSpeechStarted, dgMood;
 void aLoadFonts();
 void aLoadFonts32();
 void aFreeFonts();
 extern aciFont **aScrFonts, **aScrFonts32;
+extern actIntDispatcher *aScrDisp;
+extern int aciEscaveEmpty;
 extern unsigned char *aciCurColorScheme, *aCellFrame;
 extern int aCellSize;
 extern XBuffer *aciXConv;
@@ -39,7 +49,13 @@ struct RenderFixture {
 	bool native;
 
 	explicit RenderFixture(bool native): native(native) {
-		check(std::filesystem::create_directory(root), "Cannot create renderer fixture");
+		// Parallel bitmap/TTF tests may observe the same clock tick. Only retry
+		// an existing name; filesystem errors still throw normally.
+		const auto prefix = root.string();
+		for (int suffix = 0; !std::filesystem::create_directory(root); ++suffix) {
+			check(suffix < 100, "Cannot create renderer fixture");
+			root = prefix + "-" + std::to_string(suffix);
+		}
 		std::filesystem::create_directories(root / "resource/actint/fonts");
 		for (const auto range : {false, true}) {
 			for (int font = 0; font < (range ? AS_NUM_FONTS_32 : AS_NUM_FONTS); ++font) {
@@ -273,4 +289,144 @@ void actint_counter_render_test(bool native) {
 			}
 		}
 	}
+}
+
+void aciInitPanel(InfoPanel *, const char *);
+void actint_flow_test(bool native) {
+	RenderFixture fixture(native);
+	InfoPanel panel;
+	panel.font = 0;
+	panel.SizeX = 150;
+	panel.SizeY = 60;
+	panel.flags |= IP_RANGE_FONT;
+	const std::string phrase = "Привет мир. A long phrase must retain every word and every space "
+							   "when it exceeds the panel height.";
+	aciInitPanel(&panel, phrase.c_str());
+	check(
+		panel.textPages.size() > 1 && panel.items->Size <= 3,
+		"Dialogue was truncated instead of paginated"
+	);
+	actIntDispatcher dispatcher;
+	aScrDisp = &dispatcher;
+	iBitmapElement output;
+	panel.iScreenOwner = &output;
+	panel.type = ACI_ANSWER_PANEL;
+	dispatcher.i_infoPanels->connect(&panel);
+	const int oldEmpty = aciEscaveEmpty;
+	aciEscaveEmpty = 1;
+	std::string restored;
+	for (size_t page = 0; page < panel.textPages.size(); ++page) {
+		auto *item = panel.items->first;
+		for (int i = 0; i < panel.items->Size; ++i, item = item->next)
+			restored += item->ID_ptr;
+		if (page + 1 < panel.textPages.size()) {
+			// dgD is deliberately null: visual continuation must not query Diagen
+			// or touch the quest-menu path. Use the real click entry point.
+			aciNextPhrase();
+			check(panel.textPage == page + 1, "Click did not continue the visual phrase");
+		}
+	}
+	// A terminal/service phrase must not close the actual ML continue button
+	// after its first page. Test the real speech-sequence builder and click path.
+	{
+		aciML_Dispatcher animation;
+		auto *set = new aciML_DataSet;
+		animation.ml_data_sets->connect(set);
+		animation.curDataSet = set;
+		animation.ml_data = set->ml_data;
+		auto *lock = new aciML_EventSeq;
+		lock->ID = AML_LOCK0_SEQ;
+		lock->alloc_mem(1);
+		lock->SeqIDs[0] = 12345;
+		lock->SeqModes[0] = AML_KEY;
+		set->seq_list->connect(lock);
+		aciML_EventSeq speech;
+		speech.alloc_mem(256);
+		aciML_D = &animation;
+		aciSpeechSeq = &speech;
+		dgMood = 0;
+		aciSpeechEndLocked = aciSpeechBegLocked = aciSpeechStarted = 1;
+		aciEscaveEmpty = 0;
+		panel.set_text_pages({{"one"}, {"two"}, {"three"}}, 1);
+		aciStartSpeech();
+		check(speech.size == 0 && !aciSpeechBegLocked, "Terminal phrase locked unread pages");
+		aciNextPhrase();
+		check(speech.size == 0 && !aciSpeechBegLocked, "Middle page closed the speech window");
+		aciNextPhrase();
+		check(
+			speech.size == 1 && aciSpeechBegLocked, "Final page lost the original closing animation"
+		);
+		aciML_D = nullptr;
+		aciSpeechSeq = nullptr;
+	}
+
+	dispatcher.i_infoPanels->dconnect(&panel);
+	aciEscaveEmpty = oldEmpty;
+	aScrDisp = nullptr;
+	check(restored == phrase, "Dialogue lost data between visual pages");
+	panel.free_list();
+	check(!panel.next_text_page(), "Old dialogue page survived reset");
+	const int oldX = XGR_MAXX, oldY = XGR_MAXY;
+	XGR_MAXX = 800;
+	XGR_MAXY = 600;
+	{
+		aciScreenText text;
+		std::string body;
+		for (int i = 0; i < 300; ++i)
+			body += "Текст word ";
+		text.MaxPageStr = 1; // Flow mode must paginate by actual box height.
+		text.alloc_utf8(body, vangers::text::LineMode::Paragraphs);
+		check(text.ensure_layout() && text.PageTable->Size > 1, "Text page was not laid out");
+		auto *first = (aciScreenTextPage *)text.PageTable->first;
+		check(
+			first->NumStr > 2 && first->StrTable[first->NumStr - 1] == nullptr,
+			"Page sentinel/height contract"
+		);
+		auto *item = text.StrTable->first;
+		for (int i = 0; i < text.StrTable->Size; ++i, item = item->next)
+			check(
+				aTextWidth32Utf8(((aciScreenTextString *)item)->data, text.font, 1) <= 680,
+				"Full-screen row exceeds its box"
+			);
+		XGR_SetClip(11, 12, 400, 450);
+		text.redraw(); // No visible rows yet; it must still restore the caller's viewport.
+		check(
+			XGR_Obj.clipLeft == 11 && XGR_Obj.clipTop == 12 && XGR_Obj.clipRight == 400 &&
+				XGR_Obj.clipBottom == 450,
+			"Text leaked its fullscreen clip to the world renderer"
+		);
+		const auto *stable = text.data;
+		check(text.ensure_layout() && text.data == stable, "Unchanged layout was rebuilt");
+		check(
+			text.NextPage() == 1 && text.CurPageData == first->next, "Full-screen next page failed"
+		);
+		++text.DeltaY;
+		check(
+			text.ensure_layout() && text.CurPage == 0 && text.CurStr == 0,
+			"Changed logical metrics skipped source text"
+		);
+		text.alloc_utf8("one\ftwo");
+		check(text.ensure_layout() && text.PageTable->Size == 2, "Explicit page break lost");
+		text.font = 3;
+		text.DeltaY = -2;
+		text.MaxPageStr = 19; // Final-image text uses a different font/vertical rhythm.
+		text.alloc_utf8(body);
+		check(text.ensure_layout() && text.PageTable->Size > 1, "Final text was not paginated");
+		auto *page = (aciScreenTextPage *)text.PageTable->first;
+		for (int i = 0; i < text.PageTable->Size; ++i, page = (aciScreenTextPage *)page->next) {
+			check(page->NumStr <= 20, "Final text exceeds its authored page cap");
+			for (int row = 0; row < page->NumStr - 1; ++row)
+				check(
+					aTextWidth32Utf8(page->StrTable[row], 3, 1) <= 680, "Final row exceeds its box"
+				);
+		}
+		text.NextPage();
+		text.clear();
+		check(
+			text.CurPage == 0 && text.CurPageData == text.PageTable->first,
+			"Reset retained a stale page"
+		);
+	}
+	XGR_MAXX = oldX;
+	XGR_MAXY = oldY;
 }
