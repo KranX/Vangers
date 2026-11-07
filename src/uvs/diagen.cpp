@@ -11,7 +11,15 @@
 #include "../settings/text_encoding.h"
 #include "diagen.h"
 
+#include <algorithm>
 #include <limits>
+#include <string_view>
+#include <unordered_map>
+#include <unordered_set>
+
+#ifdef DIAGEN_TEST
+#	include <filesystem>
+#endif
 
 #include "../actint/credits.h"
 #include "../actint/mlconsts.h"
@@ -116,7 +124,11 @@ void showmap(void);
 /* --------------------------- DEFINITION SECTION -------------------------- */
 static char dgSyntaxError[] = "dgFile syntax error";
 
-const int saveVersion = 4;
+namespace {
+std::string legacyQuestionId(const char *ru, const char *en);
+}
+
+const int saveVersion = 5;
 
 int MP_GAME = 0;
 
@@ -184,9 +196,10 @@ void doCommand(void) {
 		dgD->endSession();
 	else if (!strcmp(c, "STATUS"))
 		dgD->getStatus();
-	else if (!strcmp(c, "ASK"))
-		dgD->getAnswer(Command[1]);
-	else if (!strcmp(c, "ESTATUS"))
+	else if (!strcmp(c, "ASK")) {
+		if (auto *answer = dgD->getAnswer(Command[1]))
+			std::cout << answer << '\n';
+	} else if (!strcmp(c, "ESTATUS"))
 		dgD->eStatus = atoi(Command[1]);
 	else if (!strcmp(c, "BSTATUS"))
 		dgD->bStatus = atoi(Command[1]);
@@ -293,7 +306,8 @@ void diagenEventHandle(int code) {
 			s = dgD->findQfirst();
 			while (s) {
 				std::cout << s << "\n";
-				dgD->getAnswer(s);
+				if (auto *answer = dgD->getAnswerById(dgD->currentQuestionId().c_str()))
+					std::cout << answer << '\n';
 				s = dgD->findQnext();
 			}
 			std::cout << strLine << strLine << "\n\n";
@@ -554,7 +568,15 @@ void dgFile::load(char *fname, int _len, bool verbose) {
 	if (!_len) {
 #ifdef DIAGEN_TEST
 		external = 0;
-		XStream ff(fname, XS_IN);
+		// Canonical authoring files are per locale; archive entry keys remain data/<name>.
+		// Flat historical fixtures/mod sources retain their existing input layout.
+		const std::filesystem::path logical(fname);
+		auto source = logical;
+		if ((logical.extension() == ".query" || logical.extension() == ".text") &&
+			(std::filesystem::is_directory(logical.parent_path() / "ru") ||
+				std::filesystem::is_directory(logical.parent_path() / "en")))
+			source = logical.parent_path() / (lang() == RUSSIAN ? "ru" : "en") / logical.filename();
+		XStream ff(source.string().c_str(), XS_IN);
 		buf = new char[(len = ff.size()) + 1];
 		ff.read(buf, len);
 		ff.close();
@@ -842,13 +864,11 @@ char *dgAtom::findQLnext(void) {
 	return ret;
 }
 
-int dgAtom::getVcode(char *vars, char *&cs) {
-	for (int i = 0; i < nvariant; i++)
-		if (!strcmp(variants[i], vars)) {
-			cs = comments[i];
-			return vcodes[i];
-		}
-	return 0;
+int dgAtom::getVcode(int index, char *&cs) {
+	if (index < 0 || index >= nvariant)
+		return 0;
+	cs = comments[index];
+	return vcodes[index];
 }
 
 // ----------------------------------- dgMolecule ------------------------------------
@@ -987,6 +1007,11 @@ dgQuery *dgQuery::delink(dgQuery *&tail) {
 }
 
 int dgQuery::getIndex(void) {
+	// Custom localizations may contain fewer answers than the saved resource.
+	// Keep the saved progress index for switching back, but never index beyond
+	// the currently available translation or advance/regress its hidden progress.
+	if (lindex >= nanswer)
+		return nanswer - 1;
 	int n = lindex;
 	if (solidQ) {
 		for (int i = 0; i < nanswer; i++) {
@@ -2014,17 +2039,34 @@ void dgRoom::acceptQUERY(void) {
 			}
 		}
 		(pq = new dgQuery)->link(qAtail);
+		pq->explicit_id = p[0] == '[' && p[1] == '#';
+		if (pq->explicit_id && std::strchr(p, ':'))
+			ErrH.Abort("Invalid Diagen topic ID", XERR_USER, -1, roomName);
 		pq->subj0 = getSubj(p, m);
 		p = pf->getElement(DGF_DUAL);
-		pq->subj1 = getSubj(p, m); // problem
+		pq->subj1 = getSubj(p, m);
 
-		if (lang() == GERMAN) {
+		if (pq->explicit_id) {
+			pq->subj = pq->subj1;
+		} else if (lang() == GERMAN) {
 			pq->subj = pq->subj0;
 		} else if (lang() == RUSSIAN) {
 			pq->subj = pq->subj0;
 		} else {
 			pq->subj = pq->subj1;
 		}
+
+		pq->id = pq->explicit_id ? pq->subj0 + 1 : legacyQuestionId(pq->subj0, pq->subj1);
+		if (pq->id.empty() || pq->id.size() > std::numeric_limits<short>::max() ||
+			pq->id.compare(0, 8, "variant/") == 0 ||
+			(pq->explicit_id && std::any_of(pq->id.begin(), pq->id.end(), [](unsigned char c) {
+				return c < 32 || c >= 127 || c == '#' || c == '[' || c == ']' || c == '{' ||
+					   c == '}';
+			})))
+			ErrH.Abort("Invalid Diagen topic ID", XERR_USER, -1, roomName);
+		for (auto *q = qAtail; q; q = q->next)
+			if (q != pq && q->id == pq->id)
+				ErrH.Abort("Duplicate Diagen topic ID", XERR_USER, -1, pq->id.c_str());
 
 		pq->mood = m;
 		i = j = 0;
@@ -2232,37 +2274,142 @@ dgMolecule *dgRoom::getCurrentMolecule(void) {
 	return currentM;
 }
 
-dgQuery *dgRoom::seekQall(char *_subj) {
-	if (!_subj)
+dgQuery *dgRoom::seekQall(const char *id) {
+	if (!id)
 		return NULL;
 	dgQuery *q = qAtail;
 	while (q) {
-		if (!strcmp(q->subj, _subj))
+		if (q->id == id)
 			return q;
 		q = q->next;
 	}
 	// #ifndef DIAGEN_TEST
-	//	ErrH.Abort("Query not found",XERR_USER,-1,_subj);
+	//	ErrH.Abort("Query not found",XERR_USER,-1,id);
 	// #endif
 	return NULL;
 }
 
-dgQuery *dgRoom::seekQvisible(char *_subj) {
-	if (!_subj)
+dgQuery *dgRoom::seekQvisible(const char *id) {
+	if (!id)
 		return NULL;
 	dgQuery *q = qVtail;
 	while (q) {
-		if (!strcmp(q->subj, _subj))
+		if (q->id == id)
 			return q;
 		q = q->next;
 	}
 	// #ifndef DIAGEN_TEST
-	//	ErrH.Abort("Query not found",XERR_USER,-1,_subj);
+	//	ErrH.Abort("Query not found",XERR_USER,-1,id);
 	// #endif
 	return NULL;
 }
 
 namespace {
+struct LegacyTopic {
+	const char *id, *ru, *en;
+};
+const LegacyTopic legacy_topics[]{
+#include "legacy_topics.inc"
+};
+std::string legacyQuestionId(const char *ru, const char *en) {
+	for (const auto &old : legacy_topics)
+		if (!strcmp(ru, old.ru) && !strcmp(en, old.en))
+			return old.id;
+	// Unrecognized historical mod resources still retain their old two-header contract.
+	return std::string("legacy/") + en;
+}
+struct LegacyAnswerIndices {
+	const char *room, *topic;
+	int count, indices[4];
+};
+const LegacyAnswerIndices legacy_answer_indices[]{
+#include "legacy_answer_indices.inc"
+};
+const LegacyAnswerIndices *answerIndices(const dgRoom &room, const dgQuery &q) {
+	for (const auto &old : legacy_answer_indices)
+		if (q.id == old.topic && !strcmp(room.roomName, old.room))
+			return &old;
+	return nullptr;
+}
+int importAnswerIndex(const dgRoom &room, const dgQuery &q, std::string_view key, int index) {
+	const auto *old = answerIndices(room, q);
+	if (!old || index < 0 || index >= old->count)
+		return index;
+	for (const auto &alias : legacy_topics)
+		if (q.id == alias.id && key == alias.en)
+			return old->indices[index];
+	return index; // Russian legacy subjects already use the canonical answer slots.
+}
+void normalizeLegacyAnswers(dgRoom &room) {
+	if (lang() != ENGLISH)
+		return;
+	for (auto *q = room.qAtail; q; q = q->next) {
+		if (q->explicit_id)
+			continue;
+		const auto *old = answerIndices(room, *q);
+		if (!old || q->nanswer != old->count)
+			continue;
+		// Known legacy shape only; do not infer grouping for custom scripted answers.
+		bool fragments = true;
+		for (int i = 0; i < q->nanswer; ++i)
+			if (q->levels[i] != i || q->answers[i]->nvariant)
+				fragments = false;
+		if (!fragments)
+			continue;
+		const std::vector<dgAtom *> original(q->answers, q->answers + q->nanswer);
+		const int count = old->indices[old->count - 1] + 1;
+		q->legacy_answers.resize(count);
+		for (int target = 0; target < count; ++target) {
+			dgAtom *keep = nullptr;
+			auto &joined = q->legacy_answers[target];
+			for (int i = 0; i < old->count; ++i) {
+				if (old->indices[i] != target)
+					continue;
+				if (!keep)
+					keep = original[i];
+				if (!joined.empty())
+					joined += ' ';
+				joined += original[i]->data;
+				if (original[i] != keep) {
+					for (const auto &id : original[i]->question_ids)
+						if (std::find(keep->question_ids.begin(), keep->question_ids.end(), id) ==
+							keep->question_ids.end())
+							keep->question_ids.push_back(id);
+					delete original[i];
+				}
+			}
+			keep->data = joined.data();
+			q->answers[target] = keep;
+			q->levels[target] = target;
+		}
+		q->nanswer = count;
+	}
+}
+bool legacyAlias(const dgQuery &q, std::string_view text) {
+	if (!q.explicit_id && (text == q.subj0 || text == q.subj1))
+		return true;
+	for (const auto &old : legacy_topics)
+		if (q.id == old.id && (text == old.ru || text == old.en))
+			return true;
+	return false;
+}
+dgQuery *importTopic(dgRoom &room, std::string_view text) {
+	// Frozen historical aliases take precedence over a coincidentally matching new label.
+	dgQuery *match = nullptr;
+	const auto find = [&](bool historical) {
+		for (auto *q = room.qAtail; q; q = q->next)
+			if (historical ? legacyAlias(*q, text) : text == q->subj) {
+				if (match)
+					ErrH.Abort("Ambiguous legacy Diagen saved topic", XERR_USER, -1, room.roomName);
+				match = q;
+			}
+	};
+	find(true);
+	if (!match)
+		find(false);
+	return match;
+}
+
 std::string readSaveString(XStream &file, int length) {
 	if (length < 0 || length > std::numeric_limits<short>::max())
 		ErrH.Abort("Invalid Diagen save string length");
@@ -2308,9 +2455,9 @@ void dgRoom::save(XStream &ff) {
 	ff < num;
 	q = qVtail;
 	while (q) {
-		checkSaveLength(q->subj, std::numeric_limits<short>::max());
-		ff < (short)strlen(q->subj) < (short)q->lindex;
-		ff.write(q->subj, strlen(q->subj) + 1);
+		checkSaveLength(q->id.c_str(), std::numeric_limits<short>::max());
+		ff < (short)q->id.size() < (short)q->lindex;
+		ff.write(q->id.c_str(), q->id.size() + 1);
 		q = q->next;
 	}
 }
@@ -2350,6 +2497,11 @@ void dgRoom::load(XStream &ff) {
 	int num;
 	short len, li;
 	ff > num;
+	int available = 0;
+	for (auto *closed = qAtail; closed; closed = closed->next)
+		++available;
+	if (num < 0 || (loadedVersion >= 5 && num > available))
+		ErrH.Abort("Invalid Diagen saved topic count");
 	for (i = 0; i < num; i++) {
 		ff > len > li;
 		auto subject = readSaveString(ff, len);
@@ -2357,9 +2509,14 @@ void dgRoom::load(XStream &ff) {
 			subject = vangers::settings::cp1251_to_utf8(subject);
 		else if (!vangers::settings::is_valid_utf8(subject))
 			ErrH.Abort("Invalid UTF-8 topic in Diagen save");
-		if ((q = seekQall(subject.data())) != NULL) {
+		q = loadedVersion >= 5 ? seekQall(subject.c_str()) : importTopic(*this, subject);
+		if (!q && loadedVersion >= 5)
+			ErrH.Abort("Unknown Diagen saved topic ID", XERR_USER, -1, subject.c_str());
+		if (q) {
+			if (li < 0)
+				ErrH.Abort("Invalid Diagen saved answer index", XERR_USER, li, q->id.c_str());
 			(q->delink(qAtail))->link(qVtail);
-			q->lindex = li;
+			q->lindex = loadedVersion < 5 ? importAnswerIndex(*this, *q, subject, li) : li;
 		}
 	}
 }
@@ -2495,6 +2652,9 @@ void DiagenDispatcher::init(void) {
 	invR = new dgRoom(this);
 	invR->roomName = "Inventory";
 	invR->acceptTEXT();
+	resolveQuestionLinks();
+	for (auto *r = rtail; r; r = r->next)
+		normalizeLegacyAnswers(*r);
 
 #ifdef DIAGEN_TEST
 	FBox->save();
@@ -2579,21 +2739,62 @@ void DiagenDispatcher::endSession(void) {
 	}
 }
 
+void DiagenDispatcher::resolveQuestionLinks() {
+	std::unordered_map<std::string, std::vector<std::string>> aliases;
+	std::unordered_set<std::string> known;
+	bool legacy = false;
+	const auto add_alias = [&](const char *name, const std::string &id) {
+		auto &ids = aliases[name];
+		if (std::find(ids.begin(), ids.end(), id) == ids.end())
+			ids.push_back(id);
+	};
+	for (auto *r = rtail; r; r = r->next)
+		for (auto *q = r->qAtail; q; q = q->next) {
+			known.insert(q->id);
+			if (!q->explicit_id) {
+				legacy = true;
+				add_alias(q->subj, q->id);
+			}
+		}
+	const auto resolve = [&](dgAtom *atom) {
+		for (auto *p = atom->findQLfirst(); p; p = atom->findQLnext()) {
+			std::vector<std::string> ids;
+			if (*p == '#') {
+				if (!known.count(p + 1))
+					ErrH.Abort("Unknown Diagen linked topic ID", XERR_USER, -1, p + 1);
+				ids.emplace_back(p + 1);
+			} else {
+				if (!legacy && !known.empty())
+					ErrH.Abort("Unkeyed Diagen link in explicit-ID resources", XERR_USER, -1, p);
+				if (auto old = aliases.find(p); old != aliases.end())
+					ids = old->second;
+			}
+			for (const auto &id : ids)
+				if (std::find(atom->question_ids.begin(), atom->question_ids.end(), id) ==
+					atom->question_ids.end())
+					atom->question_ids.push_back(id);
+		}
+	};
+	for (auto *r = rtail; r; r = r->next) {
+		for (auto *m = r->mtail; m; m = m->next)
+			for (auto *a = m->tail; a; a = a->next)
+				resolve(a);
+		for (auto *q = r->qAtail; q; q = q->next)
+			for (int i = 0; i < q->nanswer; ++i)
+				resolve(q->answers[i]);
+	}
+	for (auto *m = invR->mtail; m; m = m->next)
+		for (auto *a = m->tail; a; a = a->next)
+			resolve(a);
+}
+
 void DiagenDispatcher::involveQ(dgAtom *atom) {
 	if (!atom)
 		return;
-	char *p = atom->findQLfirst();
-	dgQuery *q;
-	dgRoom *r;
-	while (p) {
-		r = rtail;
-		while (r) {
-			if ((q = r->seekQall(p)) != NULL)
+	for (const auto &id : atom->question_ids)
+		for (auto *r = rtail; r; r = r->next)
+			if (auto *q = r->seekQall(id.c_str()))
 				(q->delink(r->qAtail))->link(r->qVtail);
-			r = r->next;
-		}
-		p = atom->findQLnext();
-	}
 }
 
 char *DiagenDispatcher::getNextPhrase(void) {
@@ -2675,46 +2876,55 @@ void DiagenDispatcher::getStatus(void) {
 }
 #endif
 
-char *DiagenDispatcher::getAnswer(char *subj) {
-	char *subject = subj;
+std::string DiagenDispatcher::currentQuestionId() const {
+	if (varAtom)
+		return cVind >= 0 && cVind < varAtom->nvariant ? "variant/" + std::to_string(cVind)
+													   : std::string();
+	return cqp ? cqp->id : std::string();
+}
+
+char *DiagenDispatcher::getAnswer(char *subject) {
+	// Compatibility for the interactive debug console, not game/menu identity.
+	if (!subject)
+		return nullptr;
 	if (varAtom) {
-		char *ret = NULL;
-		Qcode = varAtom->getVcode(subject, ret);
-		// #ifndef DIAGEN_TEST
-		dg_SendEvent(Qcode);
-		dg_SendEvent(AML_CLEAR_QUESTION);
-		// #endif
-		varAtom = NULL;
-		return ret;
+		for (int i = 0; i < varAtom->nvariant; ++i)
+			if (!strcmp(varAtom->variants[i], subject))
+				return getAnswerById(("variant/" + std::to_string(i)).c_str());
+	} else if (currentR) {
+		for (auto *q = currentR->qVtail; q; q = q->next)
+			if (!strcmp(q->subj, subject))
+				return getAnswerById(q->id.c_str());
 	}
+	return nullptr;
+}
 
-	// #ifndef DIAGEN_TEST
-	if (aciEscaveEmpty || aciEscaveDead)
-		return NULL;
-	// #endif
-	dgQuery *q = currentR->seekQvisible(subject);
-
-#ifdef DIAGEN_TEST
-	std::cout << "Subject: " << subj;
-#endif
-	if (q) {
+char *DiagenDispatcher::getAnswerById(const char *id) {
+	if (!id)
+		return nullptr;
+	if (varAtom) {
+		for (int i = 0; i < varAtom->nvariant; ++i) {
+			if ("variant/" + std::to_string(i) != id)
+				continue;
+			char *ret = nullptr;
+			Qcode = varAtom->getVcode(i, ret);
+			dg_SendEvent(Qcode);
+			dg_SendEvent(AML_CLEAR_QUESTION);
+			varAtom = nullptr;
+			return ret;
+		}
+		return nullptr;
+	}
+	if (!currentR || aciEscaveEmpty || aciEscaveDead)
+		return nullptr;
+	if (auto *q = currentR->seekQvisible(id)) {
 		dgMood = q->mood;
-		int n = q->getIndex();
-#ifdef DIAGEN_TEST
-		std::cout << " (" << n << ")\n";
-#endif
+		const int n = q->getIndex();
 		char *str = q->answers[n]->data;
 		involveQ(q->answers[n]);
-
-#ifdef DIAGEN_TEST
-		std::cout << str << "\n";
-#endif
 		return str;
 	}
-#ifdef DIAGEN_TEST
-	std::cout << "\n" << (q ? "Not available...\n" : "Not found...\n");
-#endif
-	return NULL;
+	return nullptr;
 }
 
 void DiagenDispatcher::save(XStream &ff) {
@@ -2792,7 +3002,7 @@ void DiagenDispatcher::load(XStream &ff) {
 		while (q) {
 			rr = rtail;
 			while (rr) {
-				if ((qq = rr->seekQall(q->subj)) != NULL)
+				if ((qq = rr->seekQall(q->id.c_str())) != NULL)
 					(qq->delink(rr->qAtail))->link(rr->qVtail);
 				rr = rr->next;
 			}

@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 struct DG_EXTERNS {
 	enum {
@@ -189,6 +190,7 @@ struct dgFile {
 };
 
 struct dgAtom {
+	std::vector<std::string> question_ids; // Resolved once at the legacy/resource boundary.
 	char *data;
 	char *qlinks;
 	int qlMax, qlPos, qlNum;
@@ -230,10 +232,14 @@ struct dgAtom {
 	char *findQLfirst(void);
 	char *findQLnext(void);
 
-	int getVcode(char *vars, char *&cs);
+	int getVcode(int index, char *&cs);
 };
 
 struct dgQuery {
+	std::vector<std::string>
+		legacy_answers; // Own joined legacy EN fragments at the input boundary.
+	std::string id;
+	bool explicit_id = false;
 	char *subj, *subj0, *subj1;
 	dgAtom **answers; // таблица ответов размером N
 	int *levels;	  // таблица уровней ответов
@@ -452,8 +458,8 @@ struct dgRoom {
 	void setCell(char *name, int value);
 	void updateLevel(void);
 
-	dgQuery *seekQall(char *_subj);
-	dgQuery *seekQvisible(char *_subj);
+	dgQuery *seekQall(const char *id);
+	dgQuery *seekQvisible(const char *id);
 	dgMolecule *seekM(const char *_name);
 
 	void save(XStream &ff);
@@ -486,6 +492,8 @@ struct DiagenDispatcher {
 
 	DiagenDispatcher(void) {
 		rtail = NULL;
+		cqp = NULL;
+		cVind = 0;
 		currentR = NULL;
 		varAtom = NULL;
 		lastR = NULL;
@@ -495,7 +503,7 @@ struct DiagenDispatcher {
 	}
 	~DiagenDispatcher();
 
-	// Display text, topics, links, variants and answers are canonical UTF-8.
+	// Display text and answers are canonical UTF-8; question/link identities use stable IDs.
 	// Returned pointers are borrowed, not allocations to be freed by callers.
 
 	void init(void);
@@ -520,7 +528,10 @@ struct DiagenDispatcher {
 	void endSession(void);
 	void checkSession(const char *rname);
 	char *getNextPhrase(void);
-	char *getAnswer(char *subject);
+	char *getAnswer(char *subject); // Legacy debug-console adapter only.
+	char *getAnswerById(const char *id);
+	std::string currentQuestionId() const;
+	void resolveQuestionLinks();
 	char *findQfirst(void);
 	char *findQnext(void);
 	int isEnd(void) {
