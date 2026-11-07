@@ -4205,6 +4205,7 @@ void aciBuildQuestList(void) {
 			itm = aScrDisp->alloc_menu_item();
 			itm->init_name(p);
 			itm->fnc_code = cd;
+			itm->dialogue_id = dgD->currentQuestionId();
 
 			itm->font = ACI_PHRASE_FONT;
 			itm->space = 1;
@@ -4256,7 +4257,7 @@ void aciShowBlockPhrase(void) {
 }
 
 void aciAskQuestion(void) {
-	char *str, *subj;
+	char *str;
 	fncMenuSet *m = aScrDisp->qMenu;
 	InfoPanel *p = aScrDisp->get_info_panel(ACI_ANSWER_PANEL);
 	if (!p || !m)
@@ -4268,8 +4269,9 @@ void aciAskQuestion(void) {
 	if (!(m->flags & FMC_DATA_INIT)) {
 		str = dgD->getQempty();
 	} else {
-		subj = m->get();
-		str = dgD->getAnswer(subj);
+		str = m->qMenu && m->qMenu->curItem
+				  ? dgD->getAnswerById(m->qMenu->curItem->dialogue_id.c_str())
+				  : nullptr;
 	}
 
 	if (str) {

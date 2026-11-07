@@ -6,6 +6,7 @@
 #include "actint/mlstruct.h"
 #include "iscreen/iscreen.h"
 #include "settings/settings.h"
+#include "uvs/diagen.h"
 
 #include <algorithm>
 #include <array>
@@ -14,6 +15,7 @@
 #include <fstream>
 #include <stdexcept>
 
+void aciBuildQuestList();
 void aciNextPhrase();
 void aciStartSpeech();
 extern aciML_Dispatcher *aciML_D;
@@ -223,6 +225,48 @@ void actint_menu_render_test(bool native) {
 	check(!set.redraw_data->fdata, "Freed menu bitmap retained a dangling companion-layer key");
 	set.redraw();
 	check(!has_ink(fixture.pixels(output)), "Cleared question menu retained output text");
+
+	// Build the actual dialogue menu, including its stable selection payload.
+	// Identical labels must stay two independent selectable items in both backends.
+	resize(output, 500, 100);
+	aScrDisp = new actIntDispatcher;
+	aScrDisp->qMenu = new fncMenuSet;
+	aScrDisp->qMenu->data = &output;
+	dgD = new DiagenDispatcher;
+	auto *room = new dgRoom(dgD);
+	room->link(dgD->rtail);
+	dgD->currentR = room;
+	char label[] = "Одинаковый вопрос";
+	for (const auto *id : {"topic.first", "topic.second"}) {
+		auto *q = new dgQuery;
+		q->id = id;
+		q->subj = label;
+		q->link(room->qVtail);
+	}
+	aciBuildQuestList();
+	auto *menu = aScrDisp->qMenu->qMenu;
+	check(menu && menu->items->Size == 2, "Dialogue menu collapsed duplicate labels");
+	auto *first = menu->get_fnc_item(0), *second = menu->get_fnc_item(1);
+	check(
+		first && second && !std::strcmp(first->name, second->name) &&
+			first->dialogue_id != second->dialogue_id && !first->dialogue_id.empty() &&
+			!second->dialogue_id.empty(),
+		"Dialogue menu used labels/ordinals instead of question IDs"
+	);
+	fncMenuItem copy;
+	delete copy.scankey; // clone borrows the source key object, as in production callers.
+	second->clone(&copy);
+	check(copy.dialogue_id == second->dialogue_id, "Cloning lost a dialogue selection ID");
+	aScrDisp->qMenu->redraw();
+	const auto first_pixels = fixture.pixels(output);
+	check(has_ink(first_pixels), "ID-bearing menu did not render");
+	menu->curItem = menu->firstItem = second;
+	aScrDisp->qMenu->build();
+	aScrDisp->qMenu->redraw();
+	check(fixture.pixels(output) == first_pixels, "An invisible ID changed the rendered label");
+	delete dgD;
+	delete aScrDisp;
+	aScrDisp = nullptr;
 }
 
 void actint_counter_render_test(bool native) {

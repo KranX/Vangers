@@ -730,6 +730,7 @@ const int FM_NO_DELETE = 0x10;
 const int FM_CLONE = 0x20;
 
 struct fncMenuItem: public iListElement {
+	std::string dialogue_id; // Diagen selection identity, never the localized name.
 	int PosX;
 	int PosY;
 

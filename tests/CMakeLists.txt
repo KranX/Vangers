@@ -249,7 +249,7 @@ FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-save")
 ADD_TEST(NAME acs_save_format COMMAND acs_binary_test --save)
 SET_TESTS_PROPERTIES(acs_save_format PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-save")
 
-FOREACH(encoding legacy utf8)
+FOREACH(encoding legacy utf8 ids)
  FOREACH(language ru en)
   FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${encoding}-${language}")
   ADD_TEST(NAME diagen_${encoding}_${language} COMMAND diagen_runtime_test ${encoding} ${language})
@@ -263,16 +263,35 @@ ADD_TEST(NAME diagen_resource_roundtrip COMMAND ${CMAKE_COMMAND}
  "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/diagen-resources"
  -P "${CMAKE_CURRENT_SOURCE_DIR}/diagen_resources.cmake")
 SET_TESTS_PROPERTIES(diagen_resource_roundtrip PROPERTIES TIMEOUT 90)
+ADD_TEST(NAME diagen_shipped_roundtrip COMMAND ${CMAKE_COMMAND}
+ "-DSOURCE_PARSER=$<TARGET_FILE:diagen_source_test>"
+ "-DSOURCE_ROOT=${PROJECT_SOURCE_DIR}/data/data"
+ "-DARCHIVE_ROOT=${PROJECT_SOURCE_DIR}/data"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/diagen-shipped-source"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/diagen_shipped_roundtrip.cmake")
+SET_TESTS_PROPERTIES(diagen_shipped_roundtrip PROPERTIES TIMEOUT 90)
+SET(diagen_legacy_dir "${CMAKE_CURRENT_BINARY_DIR}/diagen-legacy")
+FILE(ARCHIVE_EXTRACT INPUT "${CMAKE_CURRENT_SOURCE_DIR}/fixtures/diagen-legacy.zip" DESTINATION "${diagen_legacy_dir}")
+FILE(ARCHIVE_EXTRACT INPUT "${CMAKE_CURRENT_SOURCE_DIR}/fixtures/diagen-en-progress.zip" DESTINATION "${diagen_legacy_dir}")
 FOREACH(language ru en)
  SET(dir "${CMAKE_CURRENT_BINARY_DIR}/diagen-shipped-${language}")
  FILE(MAKE_DIRECTORY "${dir}")
  CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/data/diagen.text" "${dir}/diagen.text" COPYONLY)
  CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/data/diagen_eng.text" "${dir}/diagen_eng.text" COPYONLY)
- ADD_TEST(NAME diagen_shipped_${language} COMMAND diagen_runtime_test shipped ${language})
+ ADD_TEST(NAME diagen_shipped_${language} COMMAND diagen_runtime_test shipped ${language} "${diagen_legacy_dir}")
  SET_TESTS_PROPERTIES(diagen_shipped_${language} PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${dir}")
 ENDFOREACH()
 
-FOREACH(mode empty empty-legacy)
+FOREACH(mode canonical legacy-indices)
+ SET(dir "${CMAKE_CURRENT_BINARY_DIR}/diagen-${mode}")
+ FILE(MAKE_DIRECTORY "${dir}")
+ CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/data/diagen.text" "${dir}/diagen.text" COPYONLY)
+ CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/data/diagen_eng.text" "${dir}/diagen_eng.text" COPYONLY)
+ ADD_TEST(NAME diagen_${mode} COMMAND diagen_runtime_test ${mode} "${diagen_legacy_dir}")
+ SET_TESTS_PROPERTIES(diagen_${mode} PROPERTIES TIMEOUT 90 WORKING_DIRECTORY "${dir}")
+ENDFOREACH()
+
+FOREACH(mode empty empty-legacy empty-all empty-all-legacy)
  FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${mode}")
  ADD_TEST(NAME diagen_${mode} COMMAND diagen_runtime_test ${mode})
  SET_TESTS_PROPERTIES(diagen_${mode} PROPERTIES TIMEOUT 30

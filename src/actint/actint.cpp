@@ -9246,6 +9246,7 @@ void actIntDispatcher::remove_menu_item(fncMenu *p) {
 }
 
 void fncMenuItem::clone(fncMenuItem *p) {
+	p->dialogue_id = dialogue_id;
 	p->PosX = PosX;
 	p->PosY = PosY;
 
