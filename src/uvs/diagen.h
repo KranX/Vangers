@@ -4,6 +4,9 @@
 	Creator: K-D Lab::KranK
 */
 
+#include <memory>
+#include <string>
+
 struct DG_EXTERNS {
 	enum {
 		ELR_RESULT, // если получил элика то возвращается номер которым ты приехал среди остальных
@@ -157,8 +160,9 @@ struct dgFile {
 	char *buf;
 	int len, index;
 	int external;
+	bool utf8_text = false;
 
-	dgFile(char *fname, int _len = 0, bool verbose = false) {
+	dgFile(char *fname, int _len = 0, bool verbose = false): dgFile() {
 		load(fname, _len, verbose);
 	}
 	dgFile(void) {
@@ -168,14 +172,15 @@ struct dgFile {
 	}
 	~dgFile(void) {
 		if (!external && buf)
-			delete buf;
+			delete[] buf;
 	}
 
 	void load(char *fname, int _len, bool verbose = false);
 	char *getElement(int DualElements, int empty_available = 0);
 	void free(void) {
 		if (!external && buf)
-			delete buf;
+			delete[] buf;
+		buf = NULL;
 		len = index = -1;
 	}
 	void reset(void) {
@@ -213,7 +218,7 @@ struct dgAtom {
 	}
 	~dgAtom(void) {
 		if (variants) {
-			delete variants;
+			delete[] variants;
 			variants = NULL;
 			nvariant = 0;
 		}
@@ -252,7 +257,7 @@ struct dgQuery {
 		for (int i = 0; i < nanswer; i++)
 			delete answers[i];
 		if (answers)
-			delete answers;
+			delete[] answers;
 	}
 
 	void link(dgQuery *&tail);
@@ -270,6 +275,7 @@ struct dgMolecule {
 	char *name;
 	dgFile *dgf;
 	int mood;
+	std::string phrase;
 
 	dgAtom *tail;
 	dgAtom *curA; // текущий атом при разговоре
@@ -285,6 +291,11 @@ struct dgMolecule {
 		mood = 0;
 	}
 	~dgMolecule(void) {
+		while (tail) {
+			auto *next = tail->next;
+			delete tail;
+			tail = next;
+		}
 		::free(name);
 	}
 
@@ -307,7 +318,7 @@ struct dgMolecule {
 	void reset(void) {
 		curA = tail;
 	}
-	int getHandledPhrase(char *s);
+	int getHandledPhrase(std::string &s);
 	char *getVarPhrase(char *s);
 };
 
@@ -346,6 +357,8 @@ struct DG_CELLSTATUS {
 };
 
 struct dgRoom {
+	// Source parser tokens and archive views must outlive all borrowed strings.
+	std::unique_ptr<dgFile> textFile, dilFile, queryFile;
 	const char *roomName;
 	const char *escaveNames[2];
 	char *counsillorNames[2];
@@ -423,6 +436,7 @@ struct dgRoom {
 		bios = 0;
 		repeatable = 0;
 	}
+	~dgRoom();
 
 	void link(dgRoom *&tail);
 	void read(dgFile *pf);
@@ -451,6 +465,7 @@ struct dgRoom {
 };
 
 struct DiagenDispatcher {
+	std::unique_ptr<dgFile> roomFile;
 	dgRoom *rtail;
 	dgRoom *currentR;
 	dgRoom *lastR;
@@ -478,6 +493,10 @@ struct DiagenDispatcher {
 		invR = NULL;
 		eStatus = bStatus = zStatus = sStatus = 0;
 	}
+	~DiagenDispatcher();
+
+	// Display text, topics, links, variants and answers are canonical UTF-8.
+	// Returned pointers are borrowed, not allocations to be freed by callers.
 
 	void init(void);
 

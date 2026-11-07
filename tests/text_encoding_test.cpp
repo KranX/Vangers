@@ -54,6 +54,15 @@ bool test_box_drawing_and_special_characters() {
 } // namespace
 
 int main() {
+	if (!check(
+			cp1251_to_utf8("\xc0\xff\xa8\xb8\xb9\x97") == "АяЁё№—", "CP1251 repertoire mismatch"
+		) ||
+		!check(
+			cp1251_to_utf8(std::string("A\0\xb8", 3)) == std::string("A\0ё", 4),
+			"CP1251 embedded separators lost"
+		) ||
+		!check(cp1251_to_utf8("\x98") == "�", "Undefined CP1251 byte mismatch"))
+		return 1;
 	return test_russian_round_trip() && test_complete_cp866_round_trip() &&
 				   test_invalid_and_unrepresentable_input() &&
 				   test_box_drawing_and_special_characters()

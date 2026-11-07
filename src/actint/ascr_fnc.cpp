@@ -4000,7 +4000,7 @@ void aciNextPhrase(void) {
 
 		str = (unsigned char *)dgD->getQdead();
 		if (str)
-			aciInitPanel(p, cp866_to_utf8((char *)str).c_str());
+			aciInitPanel(p, (char *)str);
 		p->set_redraw();
 		return;
 	}
@@ -4025,7 +4025,7 @@ void aciNextPhrase(void) {
 	}
 
 	if (str)
-		aciInitPanel(p, cp866_to_utf8((char *)str).c_str());
+		aciInitPanel(p, (char *)str);
 
 	aciSpeechEndLocked = dgD->isEnd();
 
@@ -4168,7 +4168,7 @@ void aciBuildQuestList(void) {
 		m = new fncMenu;
 		m->flags |= FM_RANGE_FONT;
 		itm = aScrDisp->alloc_menu_item();
-		itm->init_name(cp866_to_utf8(p).c_str());
+		itm->init_name(p);
 		itm->fnc_code = 0;
 
 		itm->font = ACI_PHRASE_FONT;
@@ -4186,7 +4186,7 @@ void aciBuildQuestList(void) {
 		m->flags |= FM_RANGE_FONT;
 		while (p) {
 			itm = aScrDisp->alloc_menu_item();
-			itm->init_name(cp866_to_utf8(p).c_str());
+			itm->init_name(p);
 			itm->fnc_code = cd;
 
 			itm->font = ACI_PHRASE_FONT;
@@ -4207,7 +4207,7 @@ void aciBuildQuestList(void) {
 		m = new fncMenu;
 		m->flags |= FM_RANGE_FONT;
 		itm = aScrDisp->alloc_menu_item();
-		itm->init_name(cp866_to_utf8(p).c_str());
+		itm->init_name(p);
 		itm->fnc_code = 0;
 
 		itm->font = ACI_PHRASE_FONT;
@@ -4233,7 +4233,7 @@ void aciShowBlockPhrase(void) {
 
 	if (str) {
 		p->free_list();
-		aciInitPanel(p, cp866_to_utf8(str).c_str());
+		aciInitPanel(p, str);
 		p->set_redraw();
 	}
 }
@@ -4252,13 +4252,12 @@ void aciAskQuestion(void) {
 		str = dgD->getQempty();
 	} else {
 		subj = m->get();
-		auto legacy_subject = utf8_to_cp866(subj);
-		str = dgD->getAnswer(legacy_subject.data());
+		str = dgD->getAnswer(subj);
 	}
 
 	if (str) {
 		p->free_list();
-		aciInitPanel(p, cp866_to_utf8(str).c_str());
+		aciInitPanel(p, str);
 		p->set_redraw();
 	}
 	aciStartSpeech();
@@ -4274,7 +4273,7 @@ void aciEscaveKickOut(void) {
 
 	if (str) {
 		p->free_list();
-		aciInitPanel(p, cp866_to_utf8(str).c_str());
+		aciInitPanel(p, str);
 		p->set_redraw();
 	}
 	aciStartSpeech();
@@ -6503,6 +6502,11 @@ void aciShowRacingPlace(void) {
 	);
 }
 
+void aciPrepareTextUtf8(const char *ptr) {
+	aScrDisp->ScrTextData->alloc_utf8(ptr);
+	aScrDisp->send_event(ACI_SHOW_TEXT);
+}
+
 void aciPrepareText(char *ptr) {
 	int sz = strlen(ptr);
 	aScrDisp->ScrTextData->alloc(ptr, sz);
@@ -7411,7 +7415,7 @@ void aciInitEndGame(int id) {
 		p->SetName("img/img1.bmp");
 		ptr = dgD->getInvText(DG_FINAL, 3);
 		if (ptr) {
-			aciImgText->alloc(ptr, strlen(ptr));
+			aciImgText->alloc_utf8(ptr);
 			p->SetFlag(0, IMG_RTO_SHOW_TEXT | IMG_RTO_KEEP_IMAGE);
 		}
 		p->SetFlag(0, IMG_RTO_CDTRACK_TIME);
@@ -7420,7 +7424,7 @@ void aciInitEndGame(int id) {
 		p->SetName("img/img2.bmp");
 		ptr = dgD->getInvText(DG_FINAL, 4);
 		if (ptr) {
-			aciImgText->alloc(ptr, strlen(ptr));
+			aciImgText->alloc_utf8(ptr);
 			p->SetFlag(0, IMG_RTO_SHOW_TEXT | IMG_RTO_KEEP_IMAGE);
 		}
 		p->SetFlag(0, IMG_RTO_CDTRACK_TIME);
@@ -7429,7 +7433,7 @@ void aciInitEndGame(int id) {
 		p->SetName("img/img3.bmp");
 		ptr = dgD->getInvText(DG_FINAL, 5);
 		if (ptr) {
-			aciImgText->alloc(ptr, strlen(ptr));
+			aciImgText->alloc_utf8(ptr);
 			p->SetFlag(0, IMG_RTO_SHOW_TEXT | IMG_RTO_KEEP_IMAGE);
 		}
 		p->SetFlag(0, IMG_RTO_CDTRACK_TIME);
@@ -7438,7 +7442,7 @@ void aciInitEndGame(int id) {
 		p->SetName("img/img4.bmp");
 		ptr = dgD->getInvText(DG_FINAL, 2);
 		if (ptr) {
-			aciImgText->alloc(ptr, strlen(ptr));
+			aciImgText->alloc_utf8(ptr);
 			p->SetFlag(0, IMG_RTO_SHOW_TEXT | IMG_RTO_KEEP_IMAGE);
 		}
 		p->SetFlag(0, IMG_RTO_CDTRACK_TIME);
@@ -7447,7 +7451,7 @@ void aciInitEndGame(int id) {
 		p->SetName("img/img5.bmp");
 		ptr = dgD->getInvText(DG_FINAL, 1);
 		if (ptr) {
-			aciImgText->alloc(ptr, strlen(ptr));
+			aciImgText->alloc_utf8(ptr);
 			p->SetFlag(0, IMG_RTO_SHOW_TEXT | IMG_RTO_KEEP_IMAGE);
 		}
 		p->SetFlag(0, IMG_RTO_CDTRACK_TIME);

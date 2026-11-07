@@ -16,6 +16,7 @@ unicode_to_cp866(char32_t value, std::uint8_t replacement = CP866_REPLACEMENT_CH
 std::string cp866_to_utf8(std::string_view text);
 std::string
 utf8_to_cp866(std::string_view text, std::uint8_t replacement = CP866_REPLACEMENT_CHARACTER);
+std::string cp1251_to_utf8(std::string_view text);
 bool is_valid_utf8(std::string_view text);
 
 } // namespace vangers::settings

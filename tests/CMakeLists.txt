@@ -248,3 +248,33 @@ ENDFOREACH()
 FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-save")
 ADD_TEST(NAME acs_save_format COMMAND acs_binary_test --save)
 SET_TESTS_PROPERTIES(acs_save_format PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/acs-save")
+
+FOREACH(encoding legacy utf8)
+ FOREACH(language ru en)
+  FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${encoding}-${language}")
+  ADD_TEST(NAME diagen_${encoding}_${language} COMMAND diagen_runtime_test ${encoding} ${language})
+  SET_TESTS_PROPERTIES(diagen_${encoding}_${language} PROPERTIES TIMEOUT 30
+   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${encoding}-${language}")
+ ENDFOREACH()
+ENDFOREACH()
+ADD_TEST(NAME diagen_resource_roundtrip COMMAND ${CMAKE_COMMAND}
+ "-DSOURCE_PARSER=$<TARGET_FILE:diagen_source_test>"
+ "-DBINARY_PARSER=$<TARGET_FILE:diagen_runtime_test>"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/diagen-resources"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/diagen_resources.cmake")
+SET_TESTS_PROPERTIES(diagen_resource_roundtrip PROPERTIES TIMEOUT 90)
+FOREACH(language ru en)
+ SET(dir "${CMAKE_CURRENT_BINARY_DIR}/diagen-shipped-${language}")
+ FILE(MAKE_DIRECTORY "${dir}")
+ CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/data/diagen.text" "${dir}/diagen.text" COPYONLY)
+ CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/data/diagen_eng.text" "${dir}/diagen_eng.text" COPYONLY)
+ ADD_TEST(NAME diagen_shipped_${language} COMMAND diagen_runtime_test shipped ${language})
+ SET_TESTS_PROPERTIES(diagen_shipped_${language} PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${dir}")
+ENDFOREACH()
+
+FOREACH(mode empty empty-legacy)
+ FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${mode}")
+ ADD_TEST(NAME diagen_${mode} COMMAND diagen_runtime_test ${mode})
+ SET_TESTS_PROPERTIES(diagen_${mode} PROPERTIES TIMEOUT 30
+  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagen-${mode}")
+ENDFOREACH()

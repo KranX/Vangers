@@ -1018,7 +1018,7 @@ void DoorEngine::Quant(void) // Animation frame for threall connection point and
 							dgInThreall();
 							ThreallText = dgGetThreallPhrase();
 							if (ThreallText)
-								aciPrepareText(ThreallText);
+								aciPrepareTextUtf8(ThreallText);
 							ThreallMessageProcess = 1;
 						};
 						Mode = EngineModeList::OPEN;
