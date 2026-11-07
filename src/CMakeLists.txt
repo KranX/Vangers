@@ -4,7 +4,7 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/lib/xsound"
 )
 
-ADD_LIBRARY(vangers_text STATIC text/utf8.cpp)
+ADD_LIBRARY(vangers_text STATIC text/utf8.cpp text/layout.cpp)
 TARGET_INCLUDE_DIRECTORIES(vangers_text PUBLIC "${PROJECT_SOURCE_DIR}/src")
 
 ADD_LIBRARY(vangers_settings STATIC

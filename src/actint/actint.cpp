@@ -4421,6 +4421,35 @@ void InfoPanel::finit(void) {
 }
 
 void InfoPanel::free_list(void) {
+	textPages.clear();
+	textPage = 0;
+	clear_items();
+}
+
+void InfoPanel::set_text_pages(vangers::text::Pages pages, int color) {
+	textPages = std::move(pages);
+	textPage = 0;
+	textColor = color;
+	show_text_page();
+}
+
+void InfoPanel::show_text_page() {
+	clear_items();
+	if (textPage < textPages.size())
+		for (const auto &line : textPages[textPage])
+			add_item(line.c_str(), -1, textColor);
+	set_redraw();
+}
+
+bool InfoPanel::next_text_page() {
+	if (!has_next_text_page())
+		return false;
+	++textPage;
+	show_text_page();
+	return true;
+}
+
+void InfoPanel::clear_items() {
 	InfoPanelItem *p, *p1;
 
 	p = (InfoPanelItem *)items->last;
@@ -9595,13 +9624,13 @@ aciScreenText::aciScreenText(void) {
 
 	font = 0;
 	color = 255;
-	MaxStrLen = 60;
 	MaxPageStr = ACI_TEXT_PAGE_SIZE;
 
 	PageTable = new iList;
 	StrTable = new iList;
 
 	CurPage = CurStr = 0;
+	CurPageData = nullptr;
 
 	NextPageKey = new aKeyObj;
 	NextPageKey->add_key(SDL_SCANCODE_SPACE);
@@ -9624,11 +9653,14 @@ void aciScreenText::free(void) {
 	aciScreenTextPage *p, *p1;
 
 	CurStr = CurPage = 0;
+	CurPageData = nullptr;
 
 	if (data)
 		delete[] data;
 	data = NULL;
 	dataSize = 0;
+	source_text.clear();
+	layout_width = 0;
 
 	s = (aciScreenTextString *)StrTable->last;
 	while (s) {
@@ -9653,7 +9685,7 @@ void aciScreenText::alloc(char *ptr, int sz) {
 	alloc_utf8(cp866_to_utf8(std::string_view(ptr, sz)));
 }
 
-void aciScreenText::alloc_utf8(std::string_view text) {
+void aciScreenText::alloc_utf8(std::string_view text, vangers::text::LineMode mode) {
 	std::string valid;
 	try {
 		valid = vangers::actint::decode_text(text, vangers::actint::TextEncoding::Utf8);
@@ -9661,84 +9693,87 @@ void aciScreenText::alloc_utf8(std::string_view text) {
 		ErrH.Abort(error.what(), XERR_USER, -1, "aciScreenText::alloc_utf8");
 		return;
 	}
-	const auto wrapped = vangers::actint::wrap_columns(valid, MaxStrLen) + '\n';
 	free();
-	data = vangers::actint::copy_text(wrapped);
-	dataSize = wrapped.size();
-	prepare();
-	CurPageData = (aciScreenTextPage *)PageTable->first;
+	source_text = std::move(valid);
+	flow_mode = mode;
+	// Canonical storage is immediately available even before fonts/video initialize.
+	data = vangers::actint::copy_text(source_text);
+	dataSize = source_text.size();
+	layout_width = 0;
+	CurPageData = nullptr;
 	flags |= ACI_TEXT_INIT;
 	flags &= ~ACI_TEXT_END;
 }
 
-void aciScreenText::prepare(void) {
-	int i, j, cur_str, start_str, cur_text_str;
-	char *strStart;
-	aciScreenTextString *s;
-	aciScreenTextPage *p;
+bool aciScreenText::ensure_layout() {
+	if (!(flags & ACI_TEXT_INIT) || !aScrFonts32 || !aScrFonts32[font])
+		return false;
+	const int width = std::max(1, (XGR_Obj.get_is_scaled_renderer() ? I_RES_X : XGR_MAXX) - 120);
+	const int height = std::max(1, (XGR_Obj.get_is_scaled_renderer() ? I_RES_Y : XGR_MAXY) - 80);
+	if (width != layout_width || height != layout_height || font != layout_font ||
+		DeltaY != layout_delta)
+		prepare();
+	return CurPageData != nullptr;
+}
 
-	strStart = data;
-	start_str = cur_str = cur_text_str = 0;
-	for (i = 0; i < dataSize; i++) {
-		if (data[i] == '\\' && i < (dataSize - 1) && data[i + 1] == '\\') {
-			cur_text_str = MaxPageStr;
-			data[i] = 0;
-			data[i + 1] = 0;
-			while (i < (dataSize - 1) && data[i] != '\n')
-				i++;
+void aciScreenText::prepare() {
+	const int width = std::max(1, (XGR_Obj.get_is_scaled_renderer() ? I_RES_X : XGR_MAXX) - 120);
+	const int height = std::max(1, (XGR_Obj.get_is_scaled_renderer() ? I_RES_Y : XGR_MAXY) - 80);
+	const int step = std::max(1, DeltaY + aTextHeight32Utf8((void *)"", font, 1));
+	int rows = std::max(1, height / step);
+	if (flow_mode == vangers::text::LineMode::Preserve && MaxPageStr > 0)
+		rows = std::min(rows, MaxPageStr);
+	auto source = std::move(source_text);
+	free();
+	source_text = std::move(source);
+	auto input = source_text;
+	for (size_t pos = 0; (pos = input.find("\\\\", pos)) != std::string::npos;)
+		input.replace(pos, 2, "\f");
+	const auto measure = [&](std::string_view line) {
+		const std::string owned(line);
+		return aTextWidth32Utf8((void *)owned.c_str(), font, 1);
+	};
+	const auto pages = vangers::text::paginate(
+		vangers::text::layout_lines(input, width, measure, flow_mode), rows
+	);
+	std::string buffer;
+	for (const auto &lines : pages)
+		for (const auto &line : lines) {
+			buffer += line;
+			buffer += '\0';
 		}
-		if (data[i] == '\n') {
-			data[i] = 0;
-			s = new aciScreenTextString;
-			s->data = strStart;
-			StrTable->connect((iListElement *)s);
-			if (i < (dataSize - 1))
-				strStart = data + i + 1;
-
-			cur_text_str++;
-			cur_str++;
+	dataSize = buffer.size();
+	data = new char[buffer.size() + 1]{};
+	std::memcpy(data, buffer.data(), buffer.size());
+	char *cursor = data;
+	for (const auto &lines : pages) {
+		auto *p = new aciScreenTextPage;
+		p->StartStr = StrTable->Size;
+		p->NumStr = int(lines.size()) + 1; // Existing reveal API excludes a final sentinel.
+		p->StrTable = new char *[p->NumStr]{};
+		for (size_t i = 0; i < lines.size(); ++i) {
+			auto *line = new aciScreenTextString;
+			line->data = cursor;
+			p->StrTable[i] = cursor;
+			cursor += lines[i].size() + 1;
+			StrTable->connect(line);
 		}
-		if (cur_text_str >= MaxPageStr) {
-			p = new aciScreenTextPage;
-			p->StartStr = start_str;
-			p->NumStr = cur_str - start_str + 1;
-			if (p->NumStr)
-				p->StrTable = new char *[p->NumStr];
-			PageTable->connect((iListElement *)p);
-
-			start_str = cur_str;
-			cur_text_str = 0;
-		}
+		PageTable->connect(p);
 	}
-	if (cur_text_str) {
-		p = new aciScreenTextPage;
-		p->StartStr = start_str;
-		p->NumStr = cur_str - start_str + 1;
-		if (p->NumStr)
-			p->StrTable = new char *[p->NumStr];
-		PageTable->connect((iListElement *)p);
-
-		start_str = cur_str + 1;
-		cur_text_str = 0;
-	}
-	p = (aciScreenTextPage *)PageTable->first;
-	for (i = 0; i < PageTable->Size; i++) {
-		s = (aciScreenTextString *)StrTable->first;
-		for (j = 0; j < p->StartStr; j++) {
-			s = (aciScreenTextString *)s->next;
-		}
-		for (j = 0; j < p->NumStr; j++) {
-			p->StrTable[j] = s->data;
-			s = (aciScreenTextString *)s->next;
-		}
-		p = (aciScreenTextPage *)p->next;
-	}
-	for (i = 0; i < dataSize; i++)
-		if (data[i] == '\r')
-			data[i] = 0;
+	// A changed logical box/font invalidates page indices. Restart rather than
+	// silently skipping source text that moved to an earlier display page.
+	CurPageData = (aciScreenTextPage *)PageTable->first;
+	layout_width = width;
+	layout_height = height;
+	layout_font = font;
+	layout_delta = DeltaY;
+	flags |= ACI_TEXT_INIT;
+	flags &= ~ACI_TEXT_END;
 }
 
 void aciScreenText::redraw(void) {
+	if (!ensure_layout())
+		return;
 	int i, x, y;
 	aciScreenTextPage *p;
 	char *str;
@@ -9753,7 +9788,12 @@ void aciScreenText::redraw(void) {
 
 	int screenSizeX = XGR_Obj.get_is_scaled_renderer() ? I_RES_X : XGR_MAXX;
 	int screenSizeY = XGR_Obj.get_is_scaled_renderer() ? I_RES_Y : XGR_MAXY;
-	y = (screenSizeY - (DeltaY + aTextHeight32Utf8((void *)"", font, 1)) * p->NumStr) / 2;
+	// Keep the historical half-row offset for authored resources.
+	const int rows = p->NumStr - (flow_mode == vangers::text::LineMode::Paragraphs ? 1 : 0);
+	y = (screenSizeY - (DeltaY + aTextHeight32Utf8((void *)"", font, 1)) * rows) / 2;
+	int left, top, right, bottom;
+	XGR_GetClip(left, top, right, bottom);
+	XGR_SetClip(0, 0, screenSizeX, screenSizeY);
 	for (i = 0; i < CurStr; i++) {
 		str = p->StrTable[i];
 		x = (screenSizeX - aTextWidth32Utf8(str, font, 1)) / 2;
@@ -9761,10 +9801,13 @@ void aciScreenText::redraw(void) {
 		aOutText32Utf8(x, y, color, str, font, 1, 1);
 		y += DeltaY + aTextHeight32Utf8(str, font, 1);
 	}
+	XGR_SetClip(left, top, right, bottom);
 	CurPageData = p;
 }
 
 void aciScreenText::Quant(void) {
+	if (!ensure_layout())
+		return;
 	int ticks = (int)round(StrTimer * GAME_TIME_COEFF);
 	if (ticks <= 0)
 		ticks = 1;
@@ -9782,8 +9825,11 @@ void aciScreenText::Quant(void) {
 }
 
 int aciScreenText::NextPage(void) {
+	if (!ensure_layout())
+		return 0;
 	if (CurPage < (PageTable->Size - 1)) {
 		CurPage++;
+		CurPageData = (aciScreenTextPage *)CurPageData->next;
 		CurStr = 0;
 		return 1;
 	}

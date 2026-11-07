@@ -2,6 +2,7 @@
 #define _ACI_PACK_SAVES_
 
 #include "../iscreen/iscreen.h"
+#include "../text/layout.h"
 #include "item_api.h"
 #include "raster_text.h"
 
@@ -1043,6 +1044,18 @@ struct InfoPanel: public iListElement {
 	iList *items;
 	iList *item_pool;
 
+	// Display pages are local to this panel, never new Diagen atoms.
+	vangers::text::Pages textPages;
+	std::size_t textPage = 0;
+	int textColor = -1;
+	void set_text_pages(vangers::text::Pages pages, int color);
+	bool has_next_text_page() const {
+		return textPage + 1 < textPages.size();
+	}
+	bool next_text_page();
+	void show_text_page();
+	void clear_items();
+
 	void move(int delta);
 
 	void add_item(const char *ptr, int fnt = -1, int col = -1);
@@ -1187,11 +1200,14 @@ struct aciScreenTextPage: iListElement {
 #define ACI_TEXT_REDRAW 0x04
 
 struct aciScreenText {
+	std::string source_text;
+	vangers::text::LineMode flow_mode = vangers::text::LineMode::Preserve;
+	int layout_width = 0, layout_height = 0, layout_font = -1, layout_delta = 0;
+	bool ensure_layout();
 	int flags;
 
 	int font;
 	int color;
-	int MaxStrLen;
 	int MaxPageStr;
 
 	int DeltaY;
@@ -1217,12 +1233,16 @@ struct aciScreenText {
 	int NextPage(void);
 
 	void prepare(void);
-	// Existing game/Diagen callers supply CP866.
+	// Legacy game callers supply CP866; Diagen uses alloc_utf8.
 	void alloc(char *ptr, int sz);
-	void alloc_utf8(std::string_view text);
+	void alloc_utf8(
+		std::string_view text,
+		vangers::text::LineMode mode = vangers::text::LineMode::Preserve
+	);
 	void free(void);
 	void clear(void) {
 		CurPage = CurStr = 0;
+		CurPageData = (aciScreenTextPage *)PageTable->first;
 	}
 
 	aciScreenText(void);

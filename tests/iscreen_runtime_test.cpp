@@ -1,4 +1,6 @@
 #include "global.h"
+
+#include "actint/actint.h"
 #include "iscreen/hfont.h"
 #include "iscreen/i_mem.h"
 #include "iscreen/ikeys.h"
@@ -30,6 +32,8 @@ void iYSetup();
 void iRenderPrepare();
 void init_hfonts();
 void free_hfonts();
+void aLoadFonts32();
+extern aciFont **aScrFonts32;
 void iPutStr2buf(int, int, int, int, int, unsigned char *, unsigned char *, int, int, int);
 void scale_buf(int, int, int, const unsigned char *, unsigned char *);
 void smooth_buf(int, int, unsigned char *, int);
@@ -124,7 +128,7 @@ void free_dispatcher(bool parsed) {
 	iScrDisp = nullptr;
 }
 
-void parse(const char *in, const char *out, bool unicode) {
+void parse(const char *in, const char *out, bool unicode, bool flow = false) {
 	font_fixture();
 	std::array<char, 8 * 256> small_pixels{};
 	iScreenFont small_font(small_pixels.data(), small_pixels.size());
@@ -151,6 +155,7 @@ void parse(const char *in, const char *out, bool unicode) {
 	check(text_count == 4, "Static text loaders lost final lines or added blank elements");
 	auto *page = static_cast<iTextData *>(iScrDisp->texts->last);
 	check(page && page->objName == expected, "Text title lost Unicode");
+	check(page->flow_width == (flow ? 240 : 0), "text_flow policy lost in source/SCB");
 	page->load();
 	check(page->numLines == 3, "Page must preserve empty and unterminated lines");
 	char line[iS_STR_BYTES];
@@ -201,6 +206,192 @@ void parse(const char *in, const char *out, bool unicode) {
 	iScrFontTable = nullptr;
 	delete[] small_font.LeftOffs;
 	delete[] small_font.RightOffs;
+}
+
+void flow(bool ttf) {
+	font_fixture();
+	vangers::settings::settings_manager().get_mutable().video.ttf_text = ttf;
+	init_hfonts();
+	std::filesystem::create_directories("resource/actint/fonts");
+	for (int f = 0; f < AS_NUM_FONTS_32; ++f) {
+		std::ofstream out(
+			"resource/actint/fonts/cfont0" + std::to_string(f) + ".bml", std::ios::binary
+		);
+		const char header[]{4, 0, 18, 0, 0, 1};
+		out.write(header, sizeof header);
+		for (int cp = 0; cp < 256; ++cp) {
+			std::array<char, 72> pixels{};
+			if (cp != ' ')
+				pixels[16] = 31;
+			out.write(pixels.data(), pixels.size());
+		}
+	}
+	aLoadFonts32();
+	iScrDisp = new iScreenDispatcher;
+	for (bool small_font : {false, true}) {
+		iScreenObject object;
+		object.SizeX = 240;
+		object.SizeY = 90;
+		for (int i = 0; i < 3; ++i) {
+			iScreenElement *el = small_font ? static_cast<iScreenElement *>(new iS_StringElement)
+											: new iStringElement;
+			el->lY = i * 40;
+			object.add_element(el);
+		}
+		iTextData text;
+		text.flow_width = 240;
+		text.source_text = "Первый абзац. A long paragraph without authored manual line breaks. "
+						   "More words to ensure multiple pages.\n\nLast paragraph.\fEND";
+		text.layout_for(&object);
+		check(
+			text.numLines > 3 && text.source_text.find("\f") != std::string::npos,
+			"Layout discarded source/page breaks"
+		);
+		const auto *stable = text.mem_heap;
+		text.layout_for(&object);
+		check(text.mem_heap == stable, "Unchanged history was laid out again");
+		text.reset();
+		std::vector<std::string> shown;
+		while (!text.eof()) {
+			const int start = text.curLine;
+			text.copy(&object);
+			auto *el = (iScreenElement *)object.ElementList->first;
+			for (int i = start; i < text.curLine; ++i, el = (iScreenElement *)el->next) {
+				const char *value =
+					small_font ? ((iS_StringElement *)el)->string : ((iStringElement *)el)->string;
+				check(
+					std::string(value) == text.data[i],
+					"Flow page was clipped by old scalar input limit"
+				);
+				check(el->SizeX <= object.SizeX, "History row exceeds its box");
+				shown.emplace_back(value);
+			}
+		}
+		check(
+			shown.size() == size_t(text.numLines) && shown.back() == "END",
+			"History lost its last page"
+		);
+		while (object.ElementList->last) {
+			auto *el = (iScreenElement *)object.ElementList->last;
+			object.remove_element(el);
+			if (small_font)
+				delete (iS_StringElement *)el;
+			else
+				delete (iStringElement *)el;
+		}
+	}
+	if (!ttf) {
+		iScreenObject narrow;
+		narrow.SizeX = 700;
+		narrow.SizeY = 18;
+		auto *row = new iS_StringElement;
+		row->space = 0;
+		narrow.add_element(row);
+		iTextData text;
+		text.source_text =
+			std::string(1200, 'i'); // No flow flag is required for measured wrapping.
+		text.copy(&narrow);
+		check(std::strlen(row->string) > iS_STR_LEN, "Measured body still has the old scalar cap");
+		std::string restored = row->string;
+		while (!text.eof()) {
+			text.copy(&narrow);
+			restored += row->string;
+		}
+		check(restored == text.source_text, "Narrow unbroken text lost data across pages");
+		narrow.remove_element(row);
+		delete row;
+	}
+
+	// Display rows no longer obey editable-input caps. Cloning the element must
+	// preserve the same owned capacity, including multi-byte UTF-8 text.
+	std::string long_line;
+	for (int i = 0; i < 400; ++i)
+		long_line += "Ё日😀";
+	iStringElement large_source, large_copy;
+	large_source.init_text_line(long_line);
+	large_source.copy(&large_copy);
+	check(large_copy.string == long_line, "STRING clone truncated a dynamic display row");
+	iS_StringElement small_source, small_copy;
+	small_source.init_text_line(long_line);
+	small_source.copy(&small_copy);
+	check(small_copy.string == long_line, "S_STRING clone truncated a dynamic display row");
+
+	// Exercise the production previous-page entry point, including exact full pages.
+	iScreen screen;
+	iScreenObject object;
+	screen.curObj = &object;
+	iObjID id;
+	id.init("Text00", 0, &object);
+	screen.ObjIDs->connect(&id);
+	for (int i = 0; i < 2; ++i)
+		object.add_element(new iStringElement);
+	iTextData text;
+	iScrDisp->curText = &text;
+	for (int count : {3, 4, 5, 6}) {
+		std::vector<std::string> lines;
+		for (int i = 0; i < count; ++i)
+			lines.push_back(std::to_string(i));
+		text.store_lines(lines);
+		text.layout_ready = true;
+		text.layout_rows = 2;
+		text.curLine = count;
+		text.flags |= iTEXT_EOF;
+		check(iScrDisp->copy_text_prev(&screen, 0) == 0, "Previous page rejected");
+		const int expected = ((count - 1) / 2 - 1) * 2;
+		check(
+			std::string(((iStringElement *)object.ElementList->first)->string) ==
+				std::to_string(expected),
+			"Previous page skips or repeats rows"
+		);
+	}
+	setLang(ENGLISH);
+	text.ID = 1;
+	iTextData following;
+	following.ID = 2;
+	following.layout_ready = true;
+	following.layout_rows = 2;
+	iScrDisp->texts->connect(&text);
+	iScrDisp->texts->connect(&following);
+	iScrDisp->curScr = &screen;
+	for (int count : {0, 1, 4, 5}) {
+		std::vector<std::string> lines;
+		for (int i = 0; i < count; ++i)
+			lines.push_back(std::to_string(i));
+		text.store_lines(lines);
+		text.reset();
+		following.curLine = 1;
+		iScrDisp->curText = &following;
+		iScreenEvent event;
+		iScrDisp->ActiveEv = &event;
+		check(
+			iScrDisp->copy_text_prev(&screen, 0) == 1 && iScrDisp->curText == &text,
+			"Previous document selection failed"
+		);
+		// The existing script schedules this second invocation after the transition.
+		check(iScrDisp->copy_text_prev(&screen, 0) == 0, "Previous document last page failed");
+		const auto value = std::string(((iStringElement *)object.ElementList->first)->string);
+		check(
+			count ? value == std::to_string((count - 1) / 2 * 2) : value == " ",
+			"Previous document last page is off by one"
+		);
+	}
+	iScrDisp->texts->dconnect(&text);
+	iScrDisp->texts->dconnect(&following);
+	iScrDisp->curScr = nullptr;
+
+	screen.ObjIDs->dconnect(&id);
+	iScrDisp->curText = nullptr;
+	while (object.ElementList->last) {
+		auto *el = (iStringElement *)object.ElementList->last;
+		object.remove_element(el);
+		delete el;
+	}
+	free_dispatcher(false);
+	free_hfonts();
+	for (int f = 0; f < AS_NUM_FONTS_32; ++f)
+		delete aScrFonts32[f];
+	delete[] aScrFonts32;
+	aScrFonts32 = nullptr;
 }
 
 void init_renderer_fixture() {
@@ -573,8 +764,10 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 }
 int main(int argc, char **argv) {
 	try {
-		if (argc == 5 && std::string(argv[1]) == "--parse")
-			parse(argv[2], argv[3], std::string(argv[4]) == "unicode");
+		if ((argc == 5 || argc == 6) && std::string(argv[1]) == "--parse")
+			parse(argv[2], argv[3], std::string(argv[4]) == "unicode", argc == 6);
+		else if (argc == 3 && std::string(argv[1]) == "--flow")
+			flow(std::string(argv[2]) == "ttf");
 		else if (argc == 3 && std::string(argv[1]) == "--relief")
 			relief(std::string(argv[2]) != "bitmap", std::string(argv[2]) == "procedural");
 		else if (argc == 2 && std::string(argv[1]) == "--shadow")

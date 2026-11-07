@@ -3886,18 +3886,25 @@ int aciBadPhraseFlag = 0;
 void aciInitPanel(InfoPanel *p, const char *text) {
 	const auto measure = [&](std::string_view line) {
 		const std::string value(line);
-		return p->flags & IP_RANGE_FONT ? aStrLen32Utf8(value.c_str(), ACI_PHRASE_FONT, p->hSpace)
-										: aStrLenUtf8(value.c_str(), ACI_PHRASE_FONT, p->hSpace);
+		return p->flags & IP_RANGE_FONT ? aStrLen32Utf8(value.c_str(), p->font, p->hSpace)
+										: aStrLenUtf8(value.c_str(), p->font, p->hSpace);
 	};
 	const int color =
 		(aciCurColorScheme[FM_SELECT_BORDER_COL] << 8) | aciCurColorScheme[FM_SELECT_BORDER_COL];
-	for (const auto &line : vangers::actint::wrap_text(text, p->SizeX, measure)) {
-		if (p->items->Size >= p->MaxStr) {
-			std::cout << "Dialog phrase too long..." << std::endl;
-			break;
-		}
-		p->add_item(line.c_str(), -1, color);
-	}
+	const int step =
+		(p->flags & IP_RANGE_FONT ? aScrFonts32[p->font]->SizeY : aScrFonts[p->font]->SizeY) +
+		p->vSpace;
+	const int rows =
+		std::max(1, std::min(p->MaxStr, (p->SizeY - 2 * std::abs(p->OffsY)) / std::max(1, step)));
+	p->set_text_pages(
+		vangers::text::paginate(
+			vangers::text::layout_lines(
+				text, std::max(1, p->SizeX - 1), measure, vangers::text::LineMode::Preserve, true
+			),
+			rows
+		),
+		color
+	);
 }
 
 void aciStartSpeech(void) {
@@ -3971,7 +3978,10 @@ void aciStartSpeech(void) {
 		aciSpeechSeq->dropLevel[dropLev] = seq->dropLevel[0];
 		dropLev++;
 	}
-	if (aciSpeechEndLocked) {
+	// Keep the original closing sequence, but do not lock its continue button
+	// while the current phrase still has unread visual pages.
+	const bool end_locked = aciSpeechEndLocked && !p->has_next_text_page();
+	if (end_locked) {
 		seq = aciML_D->getEventSeq(lock_id);
 		if (seq) {
 			aciSpeechSeq->mergeSeq(seq);
@@ -3983,7 +3993,7 @@ void aciStartSpeech(void) {
 	aciSpeechSeq->ChannelID = aciML_D->curDataSet->SpeechChannel;
 	aciML_D->SeqList[0]->putSeq(aciSpeechSeq);
 
-	aciSpeechBegLocked = aciSpeechEndLocked;
+	aciSpeechBegLocked = end_locked;
 }
 
 void aciNextPhrase(void) {
@@ -3992,6 +4002,13 @@ void aciNextPhrase(void) {
 	InfoPanel *p = aScrDisp->get_info_panel(ACI_ANSWER_PANEL);
 	if (!p || !p->iScreenOwner)
 		return;
+
+	// Continue the current visual phrase before asking Diagen for another atom.
+	if (p->next_text_page()) {
+		if (!aciEscaveEmpty)
+			aciStartSpeech();
+		return;
+	}
 
 	if (aciEscaveDead) {
 		aciClearQuestMenu();
@@ -7396,7 +7413,6 @@ void aciInitEndGame(int id) {
 
 	if (!aciImgText) {
 		aciImgText = new aciScreenText;
-		aciImgText->MaxStrLen = 55;
 		aciImgText->MaxPageStr = 19;
 		aciImgText->color = 239 | (1 << 16);
 		aciImgText->DeltaY = -2;

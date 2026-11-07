@@ -1,6 +1,7 @@
 #ifndef __ISCREEN_H__
 #define __ISCREEN_H__
 
+#include "../text/layout.h"
 #include "hfont.h"
 #include "iscreen_options.h"
 #include "lang.h"
@@ -453,6 +454,7 @@ struct iStringElement: public iScreenElement {
 	char *string;
 
 	void init_string(const char *p);
+	void init_text_line(const std::string &text);
 	void init_size(void);
 	void free_mem(void);
 
@@ -465,6 +467,7 @@ struct iS_StringElement: public iScreenElement {
 	char *string;
 
 	void init_string(const char *p);
+	void init_text_line(const std::string &text);
 	void init_size(void);
 	void free_mem(void);
 
@@ -717,6 +720,13 @@ struct iScreen: public iListElement {
 #define iTEXT_EOF 0x01
 #define iTEXT_DATA_LOADED 0x02
 struct iTextData: public iListElement {
+	int flow_width = 0; // Logical width; zero preserves authored hard breaks.
+	int layout_rows = 0;
+	bool layout_ready = false;
+	std::string source_text;
+	void store_lines(const std::vector<std::string> &lines);
+	void layout_for(iScreenObject *object);
+	int page_size(iScreenObject *object);
 	bool utf8_resource = false;
 	int ID;
 	char *fname;
