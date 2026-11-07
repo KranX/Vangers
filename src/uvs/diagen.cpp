@@ -8,7 +8,10 @@
 #include "lang.h"
 
 #include "../common.h"
+#include "../settings/text_encoding.h"
 #include "diagen.h"
+
+#include <limits>
 
 #include "../actint/credits.h"
 #include "../actint/mlconsts.h"
@@ -47,15 +50,23 @@ struct FileBox {
 	char **data;
 	int *lens;
 
-	FileBox(void) {
-		cN = 0;
+	FileBox(): cN(0), names(nullptr), data(nullptr), lens(nullptr) {
 #ifdef DIAGEN_TEST
-		memset(names = new char *[256], 0, 256 * 4);
-		memset(data = new char *[256], 0, 256 * 4);
-		memset(lens = new int[256], 0, 256 * 4);
+		names = new char *[256]{};
+		data = new char *[256]{};
+		lens = new int[256]{};
 #endif
 	};
 
+	~FileBox() {
+		for (int i = 0; i < cN; ++i) {
+			delete[] names[i];
+			delete[] data[i];
+		}
+		delete[] names;
+		delete[] data;
+		delete[] lens;
+	}
 	void load(void);
 	char *get(char *fname, int &len);
 #ifdef DIAGEN_TEST
@@ -105,7 +116,7 @@ void showmap(void);
 /* --------------------------- DEFINITION SECTION -------------------------- */
 static char dgSyntaxError[] = "dgFile syntax error";
 
-const int saveVersion = 3;
+const int saveVersion = 4;
 
 int MP_GAME = 0;
 
@@ -142,287 +153,6 @@ int DGdata[DG_EXTERNS::MAX];
 // int aciEscaveEmpty;
 #endif
 
-union dual_char {
-	char c[2];
-	unsigned short sh;
-};
-
-char *ConvertUTF8(const char *s, int back = 0) {
-	static char *buffer = NULL;
-	int len = strlen(s);
-	buffer = new char[len + 2];
-	memset(buffer, 0, len + 2);
-	dual_char dc;
-	bool get_dual = false;
-	int i_dual_char = 0, i;
-	if (!back)
-		for (i = 0; i < len; i++) {
-			// NOT IMPLEMENT NOW
-			/*if((unsigned char)s[i]<128 && !get_dual)
-				std::cout<<" "<<(int)s[i];
-			if((unsigned char)s[i]>127 || get_dual)
-				{
-				dc.c[i_dual_char]=s[i];
-				if(get_dual)
-					{
-					get_dual=false;
-					i_dual_char=0;
-					std::cout<<" "<<std::dec<<dc.sh;
-					std::cout<<"-"<<std::hex<<(int)dc.c[0]<<(int)dc.c[1];
-					}
-				else
-					{
-					get_dual=true;
-					i_dual_char++;
-					}
-				}*/
-			buffer[i] = s[i];
-		}
-	else
-		std::cout << "ERROR:CP866 to UTF8 not implement!!!" << std::endl;
-	// std::cout<<std::endl;
-	// std::cout<<"A:"<<(unsigned char*)buffer<<std::endl;
-	return buffer;
-}
-
-char *Convert(const char *s, int back = 0) {
-	if (!(lang() == RUSSIAN)) {
-		char *buffer = NULL;
-		int len = strlen(s) + 1;
-		buffer = new char[len + 2];
-		memset(buffer, 0, len + 2);
-		strcpy(buffer, s);
-		return buffer;
-	}
-	static int len = 0;
-	static char *buffer = NULL;
-	len = strlen(s) + 1;
-	buffer = new char[len + 2];
-	memset(buffer, 0, len + 2);
-	int i;
-	if (!back) {
-		for (i = 0; i < len; i++) {
-			if ((unsigned char)s[i] >= 192 && (unsigned char)s[i] <= 239)
-				buffer[i] = (char)((unsigned char)s[i] - 64);
-			else if ((unsigned char)s[i] >= 240 && (unsigned char)s[i] <= 255)
-				buffer[i] = (char)((unsigned char)s[i] - 16);
-			else if ((unsigned char)s[i] == 184)
-				buffer[i] = (char)((unsigned char)241); // маленькое ё
-			else if ((unsigned char)s[i] == 168)
-				buffer[i] = (char)((unsigned char)240); // большое Ё
-			else if ((unsigned char)s[i] == 185)
-				buffer[i] = (char)((unsigned char)252); // знак №
-			else if ((unsigned char)s[i] < 128)
-				buffer[i] = s[i];
-			else
-				buffer[i] = ' ';
-		}
-	} else {
-		for (i = 0; i < len; i++) {
-			if ((unsigned char)s[i] >= 128 && (unsigned char)s[i] <= 175)
-				buffer[i] = (char)((unsigned char)s[i] + 64);
-			else if ((unsigned char)s[i] >= 224 && (unsigned char)s[i] <= 239)
-				buffer[i] = (char)((unsigned char)s[i] + 16);
-			else if ((unsigned char)s[i] == 241)
-				buffer[i] = (char)((unsigned char)184); // маленькое ё
-			else if ((unsigned char)s[i] == 240)
-				buffer[i] = (char)((unsigned char)168); // большое Ё
-			else if ((unsigned char)s[i] == 252)
-				buffer[i] = (char)((unsigned char)185); // знак №
-			else if ((unsigned char)s[i] < 128)
-				buffer[i] = s[i];
-			else
-				buffer[i] = ' ';
-		}
-	}
-	return buffer;
-}
-
-std::string cp866_to_cp1251(std::string in) {
-	if (lang() != RUSSIAN) {
-		return in;
-	}
-#ifdef WIN32
-	return in;
-#endif
-	unsigned int i;
-	for (i = 0; i < in.length(); i++) {
-		if ((unsigned char)in[i] >= 128 && (unsigned char)in[i] <= 175)
-			in[i] = (char)((unsigned char)in[i] + 64);
-		else if ((unsigned char)in[i] >= 224 && (unsigned char)in[i] <= 239)
-			in[i] = (char)((unsigned char)in[i] + 16);
-		else if ((unsigned char)in[i] == 241)
-			in[i] = (char)((unsigned char)184); // маленькое ё
-		else if ((unsigned char)in[i] == 240)
-			in[i] = (char)((unsigned char)168); // большое Ё
-		else if ((unsigned char)in[i] == 252)
-			in[i] = (char)((unsigned char)185); // знак №
-		else if ((unsigned char)in[i] < 128)
-			in[i] = in[i];
-		else
-			in[i] = ' ';
-	}
-	return in;
-}
-
-std::string cp1251_to_utf8(std::string in_string) {
-	if (lang() != RUSSIAN) {
-		return in_string;
-	}
-#ifdef WIN32
-	return in_string;
-#endif
-
-	char *out_mem = new char[in_string.length() * 3 + 3];
-	char *out = out_mem;
-	const char *in = in_string.c_str();
-
-	static const int table[128] = {0x82D0,
-		0x83D0,
-		0x9A80E2,
-		0x93D1,
-		0x9E80E2,
-		0xA680E2,
-		0xA080E2,
-		0xA180E2,
-		0xAC82E2,
-		0xB080E2,
-		0x89D0,
-		0xB980E2,
-		0x8AD0,
-		0x8CD0,
-		0x8BD0,
-		0x8FD0,
-		0x92D1,
-		0x9880E2,
-		0x9980E2,
-		0x9C80E2,
-		0x9D80E2,
-		0xA280E2,
-		0x9380E2,
-		0x9480E2,
-		0,
-		0xA284E2,
-		0x99D1,
-		0xBA80E2,
-		0x9AD1,
-		0x9CD1,
-		0x9BD1,
-		0x9FD1,
-		0xA0C2,
-		0x8ED0,
-		0x9ED1,
-		0x88D0,
-		0xA4C2,
-		0x90D2,
-		0xA6C2,
-		0xA7C2,
-		0x81D0,
-		0xA9C2,
-		0x84D0,
-		0xABC2,
-		0xACC2,
-		0xADC2,
-		0xAEC2,
-		0x87D0,
-		0xB0C2,
-		0xB1C2,
-		0x86D0,
-		0x96D1,
-		0x91D2,
-		0xB5C2,
-		0xB6C2,
-		0xB7C2,
-		0x91D1,
-		0x9684E2,
-		0x94D1,
-		0xBBC2,
-		0x98D1,
-		0x85D0,
-		0x95D1,
-		0x97D1,
-		0x90D0,
-		0x91D0,
-		0x92D0,
-		0x93D0,
-		0x94D0,
-		0x95D0,
-		0x96D0,
-		0x97D0,
-		0x98D0,
-		0x99D0,
-		0x9AD0,
-		0x9BD0,
-		0x9CD0,
-		0x9DD0,
-		0x9ED0,
-		0x9FD0,
-		0xA0D0,
-		0xA1D0,
-		0xA2D0,
-		0xA3D0,
-		0xA4D0,
-		0xA5D0,
-		0xA6D0,
-		0xA7D0,
-		0xA8D0,
-		0xA9D0,
-		0xAAD0,
-		0xABD0,
-		0xACD0,
-		0xADD0,
-		0xAED0,
-		0xAFD0,
-		0xB0D0,
-		0xB1D0,
-		0xB2D0,
-		0xB3D0,
-		0xB4D0,
-		0xB5D0,
-		0xB6D0,
-		0xB7D0,
-		0xB8D0,
-		0xB9D0,
-		0xBAD0,
-		0xBBD0,
-		0xBCD0,
-		0xBDD0,
-		0xBED0,
-		0xBFD0,
-		0x80D1,
-		0x81D1,
-		0x82D1,
-		0x83D1,
-		0x84D1,
-		0x85D1,
-		0x86D1,
-		0x87D1,
-		0x88D1,
-		0x89D1,
-		0x8AD1,
-		0x8BD1,
-		0x8CD1,
-		0x8DD1,
-		0x8ED1,
-		0x8FD1};
-	while (*in)
-		if (*in & 0x80) {
-			int v = table[(int)(0x7f & *in++)];
-			if (!v)
-				continue;
-			*out++ = (char)v;
-			*out++ = (char)(v >> 8);
-			if (v >>= 16)
-				*out++ = (char)v;
-		} else
-			*out++ = *in++;
-	*out = 0;
-
-	std::string string_out(out_mem);
-	delete[] out_mem;
-	return string_out;
-}
-
 #ifdef DIAGEN_TEST
 static char *strLine = (char *)"------------------------";
 static int CommandMax;
@@ -449,7 +179,7 @@ void ParseCommand(char *s) {
 void doCommand(void) {
 	char *c = Command[0];
 	if (!strcmp(c, "GO"))
-		dgD->startSession(strdup(Convert(Command[1], 1)));
+		dgD->startSession(Command[1]);
 	else if (!strcmp(c, "FINISH"))
 		dgD->endSession();
 	else if (!strcmp(c, "STATUS"))
@@ -544,16 +274,16 @@ void diagenEventHandle(int code) {
 		std::cout << strLine << strLine << "\n";
 		s = dgD->getQprefix();
 		if (s)
-			std::cout << cp1251_to_utf8(cp866_to_cp1251(s)) << ":\n\n";
+			std::cout << s << ":\n\n";
 		s = dgD->findQfirst();
 		while (s) {
 			//				dgLog(s);
-			std::cout << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
+			std::cout << s << "\n";
 			s = dgD->findQnext();
 		}
 		s = dgD->getQpostfix();
 		if (s)
-			std::cout << "\n" << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
+			std::cout << "\n" << s << "\n";
 		std::cout << strLine << strLine << "\n\n";
 		break;
 	case DG_TEST_QUERY:
@@ -562,7 +292,7 @@ void diagenEventHandle(int code) {
 			std::cout << strLine << strLine << "\n";
 			s = dgD->findQfirst();
 			while (s) {
-				std::cout << cp1251_to_utf8(cp866_to_cp1251(s)) << "\n";
+				std::cout << s << "\n";
 				dgD->getAnswer(s);
 				s = dgD->findQnext();
 			}
@@ -616,7 +346,7 @@ void dgLog(char *string) {
 #ifdef DIAGEN_TEST
 	if (checkStatus)
 		return;
-	std::cout << cp1251_to_utf8(cp866_to_cp1251(string)) << "\n";
+	std::cout << string << "\n";
 	std::cout << strLine << strLine << "\n\n";
 #endif
 }
@@ -698,6 +428,37 @@ int Comparision(char *opr, int a, int b) {
 		ErrH.Abort(mss);
 	}
 	return 0;
+}
+
+dgRoom::~dgRoom() {
+	while (mtail) {
+		auto *next = mtail->next;
+		delete mtail;
+		mtail = next;
+	}
+	for (auto *head : {qAtail, qVtail})
+		while (head) {
+			auto *next = head->next;
+			delete head;
+			head = next;
+		}
+	for (int i = 0; i < gridSX * gridSY; ++i)
+		delete grid[i];
+	delete[] grid;
+	delete[] status; // backup_status aliases the second half.
+}
+
+DiagenDispatcher::~DiagenDispatcher() {
+	while (rtail) {
+		auto *next = rtail->next;
+		delete rtail;
+		rtail = next;
+	}
+	delete invR;
+	delete FBox;
+	FBox = nullptr;
+	if (dgD == this)
+		dgD = nullptr;
 }
 
 void diagenPrepare(void) {
@@ -813,8 +574,26 @@ void dgFile::load(char *fname, int _len, bool verbose) {
 	}
 
 	if (!handle) {
+		utf8_text = true; // FileBox already decoded/validated the complete entry.
 		index = 0;
 		return;
+	}
+	if (!_len) {
+		std::string_view bytes(buf, len);
+		constexpr std::string_view marker = "utf8_text";
+		utf8_text = bytes.substr(0, marker.size()) == marker &&
+					(bytes.size() == marker.size() || bytes[marker.size()] == '\n' ||
+						bytes[marker.size()] == '\r');
+		if (utf8_text)
+			bytes.remove_prefix(marker.size());
+		if (utf8_text && !vangers::settings::is_valid_utf8(bytes))
+			ErrH.Abort("Invalid Diagen UTF-8 source", XERR_USER, -1, fname);
+		const auto text = utf8_text ? std::string(bytes) : vangers::settings::cp1251_to_utf8(bytes);
+		delete[] buf;
+		len = int(text.size());
+		buf = new char[text.size() + 1];
+		memcpy(buf, text.data(), text.size());
+		buf[text.size()] = 0;
 	}
 
 	int i = 0, mode = 1, j;
@@ -910,7 +689,7 @@ void dgFile::load(char *fname, int _len, bool verbose) {
 			break;
 
 #	ifdef SAVE_SINGE_LANGUAGE
-		if (!skip) {
+		if (!skip && !utf8_text) {
 			p2 = detect_text(p);
 			if (!(*p2 == SUBJ_SYMBOL || *p2 == COMMAND_SYMBOL || *p2 == '<' || *p2 == '#')) {
 				if (!((lang() != RUSSIAN && ISEALPHA(*p2)) ||
@@ -924,12 +703,17 @@ void dgFile::load(char *fname, int _len, bool verbose) {
 		off += l + 1;
 	}
 	FBox->add(fname, b, off);
-	delete b;
+	delete[] b;
 #endif
 	index = 0;
 }
 
 char *dgFile::getElement(int DualElements, int empty_available) {
+	if (!buf || index < 0 || index >= len) {
+		if (!empty_available)
+			ErrH.Abort(dgSyntaxError);
+		return nullptr;
+	}
 	char *p = buf + index;
 	while (index < len && !(*p))
 		p++, index++;
@@ -947,7 +731,7 @@ char *dgFile::getElement(int DualElements, int empty_available) {
 	char *ret2 = ret; //(stalkerg) Для определения символа по которому можно понять язык
 	char *elem;
 
-	if (DualElements == DGF_DUAL) {
+	if (DualElements == DGF_DUAL && !utf8_text) {
 		if (*ret2) {
 			if (*ret2 == '$' && *(ret2 + 1) == '(') {
 				std::cout << "Detect variable in start string." << std::endl;
@@ -1133,20 +917,16 @@ char *dgMolecule::getPhrase(int noHandle) {
 	}
 
 	if (!noHandle) {
-		static char *buf = new char[1311];
-		int log = 1;
-		//		if(strlen(ret) >= 310)
-		//			ErrH.Abort("getPhrase() too long", XERR_USER,-1,name);
-		strcpy(buf, ret);
-		while (log)
-			log = getHandledPhrase(buf);
-		return buf;
+		phrase = ret;
+		while (getHandledPhrase(phrase)) {
+		}
+		return phrase.data();
 	}
 	return ret;
 }
 
 char *dgMolecule::getVarPhrase(char *s) {
-	static char nbuf[] = "\0\0\0\0\0\0\0\0\0\0";
+	static char nbuf[32];
 	char *ret = NULL;
 	if (!strcmp(s, "World of Larva0"))
 		ret = dgD->getWorldName(uvsGetLarvaWorld(0));
@@ -1165,34 +945,19 @@ char *dgMolecule::getVarPhrase(char *s) {
 	if (!ret)
 		return s;
 	//		ErrH.Abort("Unknown VarPhrase",XERR_USER,-1,s);
-	if (strlen(ret) >= strlen(s))
-		ErrH.Abort("Too long VarPhrase");
 	return ret;
 }
 
-int dgMolecule::getHandledPhrase(char *s) {
-	static char mss[] = "Wrong VarPhrase format";
-
-	char *var = strchr(s, '$');
-	if (!var)
+int dgMolecule::getHandledPhrase(std::string &text) {
+	const auto start = text.find('$');
+	if (start == std::string::npos)
 		return 0;
-	char *p = var + 1;
-	if (*p != '(')
-		ErrH.Abort(mss);
-	p++;
-	while (*p != ')' && *p)
-		p++;
-	if (!*p)
-		ErrH.Abort(mss);
-	*p = '\0';
-	p++;
-	char *pp = p + strlen(p) - 1;
-	char *ns = getVarPhrase(var + 2);
-	strcpy(var, ns);
-	strcpy(var + strlen(ns), p);
-	while (*pp)
-		*pp-- = '\0';
-
+	const auto end = text.find(')', start + 2);
+	if (text.compare(start, 2, "$(") || end == std::string::npos)
+		ErrH.Abort("Wrong VarPhrase format");
+	auto key = text.substr(start + 2, end - start - 2);
+	const std::string replacement = getVarPhrase(key.data());
+	text.replace(start, end - start + 1, replacement);
 	return 1;
 }
 
@@ -1458,7 +1223,7 @@ void dataList(int val) {
 	while (r) {
 		// XCon.setpos(60,i++);
 		// XCon < "[" < *r -> roomName < "]: " <= r -> visitCounter < "/" <= r -> comingCounter < "
-		// (" < Convert(r -> roomName) < ")";
+		// (" < r -> roomName < ")";
 		r = r->next;
 	}
 	// XCon.setpos(0,24);
@@ -2171,7 +1936,8 @@ void dgRoom::read(dgFile *pf) {
 
 void dgRoom::acceptTEXT(void) {
 	// std::cout<<"dgRoom::acceptTEXT "<<getDGname(roomName,".text")<<std::endl;
-	dgFile *dgf = new dgFile(getDGname(roomName, ".text"));
+	textFile = std::make_unique<dgFile>(getDGname(roomName, ".text"));
+	dgFile *dgf = textFile.get();
 
 	char *p = NULL;
 	int m;
@@ -2193,7 +1959,6 @@ void dgRoom::acceptTEXT(void) {
 			p = pa->read(dgf, p);
 		}
 		if (!pm->tail) {
-			delete dgf;
 			XBuffer m;
 			m < "Empty molecule: " < pm->name;
 			ErrH.Abort(m.GetBuf(), XERR_USER, -1, roomName);
@@ -2201,12 +1966,12 @@ void dgRoom::acceptTEXT(void) {
 		if (!p)
 			break;
 	}
-	delete dgf;
 }
 
 void dgRoom::acceptDIL(void) {
 	// std::cout<<"dgRoom::acceptDIL "<<getDGname(roomName,".dil")<<std::endl;
-	dgFile *dgf = new dgFile(getDGname(roomName, ".dil"));
+	dilFile = std::make_unique<dgFile>(getDGname(roomName, ".dil"));
+	dgFile *dgf = dilFile.get();
 
 	gridSX = atoi(dgf->getElement(DGF_NONE));
 	gridSY = atoi(dgf->getElement(DGF_NONE));
@@ -2233,7 +1998,8 @@ void dgRoom::acceptQUERY(void) {
 	static int ldim[64];
 
 	// std::cout<<"dgRoom::acceptQUERY "<<getDGname(roomName,".query")<<std::endl;
-	dgFile *pf = new dgFile(getDGname(roomName, ".query"));
+	queryFile = std::make_unique<dgFile>(getDGname(roomName, ".query"));
+	dgFile *pf = queryFile.get();
 
 	prefixQ = pf->getElement(DGF_DUAL, 1);
 	postfixQ = pf->getElement(DGF_DUAL, 1);
@@ -2496,6 +2262,23 @@ dgQuery *dgRoom::seekQvisible(char *_subj) {
 	return NULL;
 }
 
+namespace {
+std::string readSaveString(XStream &file, int length) {
+	if (length < 0 || length > std::numeric_limits<short>::max())
+		ErrH.Abort("Invalid Diagen save string length");
+	std::string value(std::size_t(length) + 1, '\0');
+	if (file.read(value.data(), value.size()) != value.size() || value.back() ||
+		std::strlen(value.c_str()) != std::size_t(length))
+		ErrH.Abort("Invalid or truncated Diagen save string");
+	value.pop_back();
+	return value;
+}
+void checkSaveLength(const char *value, std::size_t maximum) {
+	if (std::strlen(value) > maximum)
+		ErrH.Abort("Diagen save string too long");
+}
+} // namespace
+
 void dgRoom::save(XStream &ff) {
 	ff < visitCounter < comingCounter;
 
@@ -2510,6 +2293,7 @@ void dgRoom::save(XStream &ff) {
 		for (i = 0; i < n; i++)
 			if (status[i] == ind) {
 				name = seekM(grid[i]->Name)->name;
+				checkSaveLength(name, std::numeric_limits<uchar>::max());
 				ff < (uchar)strlen(name);
 				ff.write(name, strlen(name) + 1);
 			}
@@ -2524,6 +2308,7 @@ void dgRoom::save(XStream &ff) {
 	ff < num;
 	q = qVtail;
 	while (q) {
+		checkSaveLength(q->subj, std::numeric_limits<short>::max());
 		ff < (short)strlen(q->subj) < (short)q->lindex;
 		ff.write(q->subj, strlen(q->subj) + 1);
 		q = q->next;
@@ -2534,7 +2319,6 @@ void dgRoom::load(XStream &ff) {
 	currentM = NULL;
 	ff > visitCounter > comingCounter;
 
-	char buf[256];
 	int n = gridSX * gridSY, i, ind;
 	short cnt;
 	uchar l;
@@ -2556,8 +2340,8 @@ void dgRoom::load(XStream &ff) {
 		ff > cnt;
 		for (i = 0; i < cnt; i++) {
 			ff > l;
-			ff.read(buf, l + 1);
-			setCell(buf, ind);
+			auto name = readSaveString(ff, l);
+			setCell(name.data(), ind);
 		}
 	}
 	//		}
@@ -2568,8 +2352,12 @@ void dgRoom::load(XStream &ff) {
 	ff > num;
 	for (i = 0; i < num; i++) {
 		ff > len > li;
-		ff.read(buf, len + 1);
-		if ((q = seekQall(buf)) != NULL) {
+		auto subject = readSaveString(ff, len);
+		if (loadedVersion < 4)
+			subject = vangers::settings::cp1251_to_utf8(subject);
+		else if (!vangers::settings::is_valid_utf8(subject))
+			ErrH.Abort("Invalid UTF-8 topic in Diagen save");
+		if ((q = seekQall(subject.data())) != NULL) {
 			(q->delink(qAtail))->link(qVtail);
 			q->lindex = li;
 		}
@@ -2609,7 +2397,7 @@ void dgRoom::test(void) {
 		ErrH.Abort("MAX comparing failed!");
 
 #	ifdef STARTUP_TESTING
-	std::cout << "*** " << cp1251_to_utf8(roomName) << " ***\n";
+	std::cout << "*** " << roomName << " ***\n";
 	dgMolecule *m;
 	owner->currentR = this;
 	for (i = 0; i < gridSX * gridSY; i++)
@@ -2633,33 +2421,33 @@ void dgRoom::test(void) {
 char *DiagenDispatcher::getQprefix(void) {
 	if (!currentR)
 		return NULL;
-	return varAtom ? NULL : Convert(currentR->prefixQ);
+	return varAtom ? NULL : currentR->prefixQ;
 }
 char *DiagenDispatcher::getQpostfix(void) {
 	if (!currentR)
 		return NULL;
-	return varAtom ? NULL : Convert(currentR->postfixQ);
+	return varAtom ? NULL : currentR->postfixQ;
 }
 char *DiagenDispatcher::getQempty(void) {
-	return currentR ? Convert(currentR->seekM("Empty Question")->tail->data) : NULL;
+	return currentR ? currentR->seekM("Empty Question")->tail->data : NULL;
 }
 char *DiagenDispatcher::getQend(void) {
 	return currentR ? (!ClearStatus ? currentR->seekM("Empty Molecule")->tail->data : (char *)"")
 					: NULL;
 }
 char *DiagenDispatcher::getQblock(void) {
-	return currentR ? Convert(currentR->seekM("Block Molecule")->tail->data) : NULL;
+	return currentR ? currentR->seekM("Block Molecule")->tail->data : NULL;
 }
 char *DiagenDispatcher::getQout(void) {
 	dgMood = 3;
-	return currentR ? Convert(currentR->seekM("Out Molecule")->tail->data) : NULL;
+	return currentR ? currentR->seekM("Out Molecule")->tail->data : NULL;
 }
 char *DiagenDispatcher::getQdead(void) {
 	if (!currentR)
 		return NULL;
 	if (*currentR->roomName == 'P' && isSpummyDeath())
-		return Convert(currentR->seekM("Last Letter")->tail->data);
-	return Convert(currentR->seekM("Dead Molecule")->tail->data);
+		return currentR->seekM("Last Letter")->tail->data;
+	return currentR->seekM("Dead Molecule")->tail->data;
 }
 
 void DiagenDispatcher::init(void) {
@@ -2668,7 +2456,8 @@ void DiagenDispatcher::init(void) {
 #ifndef DIAGEN_TEST
 	FBox->load();
 #endif
-	dgFile *pf = new dgFile(getDGname("room", ".lst"), 0, true);
+	roomFile = std::make_unique<dgFile>(getDGname("room", ".lst"), 0, true);
+	dgFile *pf = roomFile.get();
 	char *p = NULL;
 	dgRoom *pr;
 	int i, j;
@@ -2710,19 +2499,16 @@ void DiagenDispatcher::init(void) {
 #ifdef DIAGEN_TEST
 	FBox->save();
 #endif
-#ifndef DIAGEN_TEST
-	delete pf;
-#endif
 }
 
 char *DiagenDispatcher::findQfirst(void) {
 	if (varAtom)
-		return Convert(varAtom->variants[cVind = 0]);
+		return varAtom->variants[cVind = 0];
 	else {
 		if (!currentR)
 			return NULL;
 		cqp = currentR->qVtail;
-		return cqp ? Convert(cqp->subj) : NULL;
+		return cqp ? cqp->subj : NULL;
 	}
 }
 
@@ -2730,10 +2516,10 @@ char *DiagenDispatcher::findQnext(void) {
 	if (varAtom) {
 		if (++cVind >= varAtom->nvariant)
 			return NULL;
-		return Convert(varAtom->variants[cVind]);
+		return varAtom->variants[cVind];
 	} else {
 		cqp = cqp->next;
-		return cqp ? Convert(cqp->subj) : NULL;
+		return cqp ? cqp->subj : NULL;
 	}
 }
 
@@ -2749,9 +2535,7 @@ void DiagenDispatcher::startSession(const char *rname) {
 		std::cout << "\nError: room not found...\n\n";
 		return;
 	}
-	std::cout << "\n"
-			  << strLine << " SESSION IN " << cp1251_to_utf8(r->roomName) << " started" << strLine
-			  << "\n";
+	std::cout << "\n" << strLine << " SESSION IN " << r->roomName << " started" << strLine << "\n";
 	checkSession(rname);
 	if (dgAbortStatus)
 		std::cout << "This session will be aborted!\n";
@@ -2785,8 +2569,8 @@ void DiagenDispatcher::endSession(void) {
 #ifdef DIAGEN_TEST
 		if (!checkStatus)
 			std::cout << "\n"
-					  << strLine << " SESSION IN " << cp1251_to_utf8(currentR->roomName)
-					  << " finished" << strLine << "\n\n";
+					  << strLine << " SESSION IN " << currentR->roomName << " finished" << strLine
+					  << "\n\n";
 #endif
 		currentR->endSession();
 		if (!checkStatus)
@@ -2842,7 +2626,6 @@ char *DiagenDispatcher::getNextPhrase(void) {
 	} else {
 		endSessionLog = 0;
 	}
-	phr = Convert(phr);
 	dgLog(phr);
 	return phr;
 }
@@ -2893,10 +2676,7 @@ void DiagenDispatcher::getStatus(void) {
 #endif
 
 char *DiagenDispatcher::getAnswer(char *subj) {
-#ifdef DIAGEN_TEST
-	subj = strdup(subj);
-#endif
-	char *subject = Convert(subj, 1);
+	char *subject = subj;
 	if (varAtom) {
 		char *ret = NULL;
 		Qcode = varAtom->getVcode(subject, ret);
@@ -2905,7 +2685,7 @@ char *DiagenDispatcher::getAnswer(char *subj) {
 		dg_SendEvent(AML_CLEAR_QUESTION);
 		// #endif
 		varAtom = NULL;
-		return Convert(ret);
+		return ret;
 	}
 
 	// #ifndef DIAGEN_TEST
@@ -2915,8 +2695,7 @@ char *DiagenDispatcher::getAnswer(char *subj) {
 	dgQuery *q = currentR->seekQvisible(subject);
 
 #ifdef DIAGEN_TEST
-	std::cout << "Subject: " << cp866_to_cp1251(cp1251_to_utf8(subj));
-	free(subj);
+	std::cout << "Subject: " << subj;
 #endif
 	if (q) {
 		dgMood = q->mood;
@@ -2927,7 +2706,6 @@ char *DiagenDispatcher::getAnswer(char *subj) {
 		char *str = q->answers[n]->data;
 		involveQ(q->answers[n]);
 
-		str = Convert(str);
 #ifdef DIAGEN_TEST
 		std::cout << str << "\n";
 #endif
@@ -2957,6 +2735,7 @@ void DiagenDispatcher::save(XStream &ff) {
 	ff < num;
 	r = rtail;
 	while (r) {
+		checkSaveLength(r->roomName, std::numeric_limits<short>::max());
 		ff < (short)strlen(r->roomName);
 		ff.write(r->roomName, strlen(r->roomName) + 1);
 		r->save(ff);
@@ -2974,7 +2753,7 @@ void DiagenDispatcher::load(XStream &ff) {
 
 	ff > loadedVersion;
 	//	if(loadedVersion < 0 || loadedVersion > saveVersion) ErrH.Abort("Intolerable dgVersion");
-	if (!(loadedVersion == saveVersion || loadedVersion == saveVersion - 1))
+	if (loadedVersion < 2 || loadedVersion > saveVersion)
 		ErrH.Abort("Intolerable dgVersion");
 
 	/*	if(loadedVersion == 0){
@@ -2990,18 +2769,18 @@ void DiagenDispatcher::load(XStream &ff) {
 	if (loadedVersion >= 2)
 		ff > sStatus;
 	ff > singleRandAvailable > ClearStatus;
+	wasRubeecated = 0;
 	if (loadedVersion >= 3)
 		ff > wasRubeecated;
 
 	int num;
 	short len;
-	char buf[256];
 	dgRoom *r, *rr;
 	ff > num;
 	for (int i = 0; i < num; i++) {
 		ff > len;
-		ff.read(buf, len + 1);
-		r = seekR(buf);
+		auto name = readSaveString(ff, len);
+		r = seekR(name.c_str());
 		if (r)
 			r->load(ff);
 	}
@@ -3047,19 +2826,19 @@ char *DiagenDispatcher::getInvText(int type, int id, char *from, char *to) {
 	case DG_POPONKA:
 		buf < "Poponka " <= id;
 		m = invR->seekM(buf.GetBuf());
-		return Convert(m->tail->data);
+		return m->tail->data;
 	case DG_TABUTASK:
 		buf < "Tabutask " < *from <= id + 1;
 		m = invR->seekM(buf.GetBuf());
-		return Convert(m->tail->data);
+		return m->tail->data;
 	case DG_PASSENGER:
 		buf < "Passenger " < *from < "->" < *to < "";
 		m = invR->seekM(buf.GetBuf());
-		return Convert(m->tail->data);
+		return m->tail->data;
 	case DG_FINAL:
 		buf < "Final " <= id;
 		m = invR->seekM(buf.GetBuf());
-		return Convert(m->tail->data);
+		return m->tail->data;
 	}
 	return NULL;
 }
@@ -3067,24 +2846,60 @@ char *DiagenDispatcher::getInvText(int type, int id, char *from, char *to) {
 void FileBox::load(void) {
 #ifdef _ROAD_
 	Parser ff(DiagenTextName());
-	ff.set(2, XB_BEG);
 #else
 	XStream ff(DiagenTextName(), XS_IN);
-	ff.seek(2, XS_BEG);
 #endif
-	ff > cN;
-	names = new char *[cN];
-	lens = new int[cN];
-	data = new char *[cN];
-	uchar l;
-	for (int i = 0; i < cN; i++) {
-		ff > l;
-		l++;
-		names[i] = new char[l];
-		ff.read(names[i], l);
-		ff > lens[i];
-		data[i] = new char[lens[i]];
-		ff.read(data[i], lens[i]);
+	const auto read = [&](void *destination, std::size_t count) {
+#ifdef _ROAD_
+		if (ff.tell() > ff.length() || count > ff.length() - ff.tell())
+			ErrH.Abort("Truncated Diagen archive", XERR_USER, -1, DiagenTextName());
+#endif
+		if (ff.read(destination, count) != count)
+			ErrH.Abort("Truncated Diagen archive", XERR_USER, -1, DiagenTextName());
+	};
+	char signature[2];
+	read(signature, 2);
+	const bool utf8 = !memcmp(signature, "DU", 2);
+	if (!utf8 && memcmp(signature, "DG", 2))
+		ErrH.Abort("Unknown Diagen archive encoding", XERR_USER, -1, DiagenTextName());
+	read(&cN, sizeof(cN));
+#ifdef _ROAD_
+	const auto remaining = ff.length() - ff.tell();
+#else
+	const auto remaining = ff.size() - ff.tell();
+#endif
+	if (cN < 0 || std::size_t(cN) > remaining / 6)
+		ErrH.Abort("Invalid Diagen archive entry count");
+	names = new char *[cN]{};
+	lens = new int[cN]{};
+	data = new char *[cN]{};
+	for (int i = 0; i < cN; ++i) {
+		uchar length;
+		read(&length, 1);
+		const int name_size = int(length) + 1;
+		names[i] = new char[name_size];
+		read(names[i], name_size);
+		if (names[i][name_size - 1] || std::strlen(names[i]) != std::size_t(length))
+			ErrH.Abort("Invalid Diagen archive entry name");
+		int size;
+		read(&size, sizeof(size));
+#ifdef _ROAD_
+		if (size <= 0 || std::size_t(size) > ff.length() - ff.tell())
+#else
+		if (size <= 0 || std::size_t(size) > ff.size() - ff.tell())
+#endif
+			ErrH.Abort("Invalid Diagen archive entry length", XERR_USER, -1, names[i]);
+		std::string bytes(size, '\0');
+		read(bytes.data(), bytes.size());
+		if (bytes.back() || (utf8 && !vangers::settings::is_valid_utf8(bytes)))
+			ErrH.Abort("Invalid Diagen text", XERR_USER, -1, names[i]);
+		const auto text = utf8 ? bytes : vangers::settings::cp1251_to_utf8(bytes);
+		if (text.size() > std::size_t(std::numeric_limits<int>::max()))
+			ErrH.Abort("Diagen text too long");
+		lens[i] = int(text.size());
+		data[i] = new char[text.size() + 1];
+		std::memcpy(data[i], text.data(), text.size());
+		data[i][text.size()] = 0;
 	}
 }
 
@@ -3102,7 +2917,10 @@ char *FileBox::get(char *fname, int &len) {
 
 #ifdef DIAGEN_TEST
 void FileBox::add(char *fname, char *buf, int len) {
-	names[cN] = strdup(fname);
+	if (cN >= 256 || strlen(fname) > std::numeric_limits<uchar>::max())
+		ErrH.Abort("Diagen source archive too large");
+	names[cN] = new char[strlen(fname) + 1];
+	strcpy(names[cN], fname);
 	lens[cN] = len;
 	memcpy(data[cN] = new char[len], buf, len);
 	cN++;
@@ -3115,7 +2933,7 @@ void FileBox::save(void) {
 
 	XStream ff("diagen_new.text", XS_OUT); // see definition of DIAGEN_TEXT
 
-	ff.write("DG", 2);
+	ff.write("DU", 2);
 	ff < cN;
 	for (int i = 0; i < cN; i++) {
 		ff < (uchar)strlen(names[i]);

@@ -314,7 +314,9 @@ char *aciGetPlayerPassword(void);
 int aciGetPlayerColor(void);
 
 void aciRefreshTargetsMenu(void);
+// Existing callers supply CP866; Diagen supplies canonical UTF-8.
 void aciPrepareText(char *ptr);
+void aciPrepareTextUtf8(const char *ptr);
 
 void aciDropMoveItem(void);
 void SetWorldBeebos(int n);

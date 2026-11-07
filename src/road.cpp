@@ -32,6 +32,7 @@
 #endif
 #include "network.h"
 #include "settings/settings.h"
+#include "settings/text_encoding.h"
 #include "xgamepad.h"
 
 #include "3d/3d_math.h"
@@ -187,8 +188,6 @@ int acsQuant(void);
 void aciFreeAll(void);
 void aciFreeUVS(void);
 void aLoadFonts32(void);
-char *Convert(const char *s, int back = 0);
-char *ConvertUTF8(const char *s, int back = 0);
 #	ifndef ISCREEN
 void aKeyInit(void);
 #	endif
@@ -2564,7 +2563,9 @@ void LoadingMessage(int flush) {
 	sysfont.draw(8, XGR_MAXY - 35, (unsigned char *)str, 255, -1);
 	XBuffer buf;
 	if (lang() == RUSSIAN) {
-		buf < Convert(zSTR_LOADING_800_RU);
+		buf <
+			vangers::settings::utf8_to_cp866(vangers::settings::cp1251_to_utf8(zSTR_LOADING_800_RU))
+				.c_str();
 	} else if (lang() == GERMAN) {
 		if (XGR_MAXX == 800)
 			buf < "(C)1997-2014. Alle Rechte vorbehalten. Release Version 1.3. Gleich geht's "
@@ -2714,8 +2715,8 @@ char *getRC(void) {
 		"Exodus to Otherworld...",
 		"One for the Road..."};
 	if (lang() == RUSSIAN) {
-		b < ConvertUTF8("Vangers: ");
-		b < ConvertUTF8(sub[realRND(5)]);
+		b < "Vangers: ";
+		b < sub[realRND(5)];
 	} else {
 		b < "VANGERS: ";
 		b < sub[realRND(6)];

@@ -121,7 +121,7 @@ SET(vangers_SRCS
 	${WINDOWS_RES}
         actint/layout.h)
 
-# Only these translation units depend on the source/binary script mode.
+# Compile resource readers separately so tools/tests can select their source mode.
 # Reuse the remaining production objects in both tools and integration tests.
 SET(vangers_SCRIPT_SRCS
 	actint/ascr_fnc.cpp
@@ -131,6 +131,7 @@ SET(vangers_SCRIPT_SRCS
 	iscreen/iscript.cpp
 	iscreen/script.cpp
 	road.cpp
+	uvs/diagen.cpp
 )
 
 if (ANDROID)
@@ -249,6 +250,19 @@ if (NOT ANDROID)
 				TARGET_COMPILE_DEFINITIONS(acs_${script_mode}_test PRIVATE _BINARY_SCRIPT_)
 			ENDIF()
 			CONFIGURE_VANGERS_TARGET(acs_${script_mode}_test)
+		ENDFOREACH()
+		FOREACH(mode runtime source)
+			ADD_EXECUTABLE(diagen_${mode}_test
+				${vangers_SCRIPT_SRCS}
+				$<TARGET_OBJECTS:vangers_common>
+				../tests/diagen_runtime_test.cpp
+				../lib/xtool/xerrhead.cpp)
+			TARGET_COMPILE_DEFINITIONS(diagen_${mode}_test PRIVATE _BINARY_SCRIPT_
+				SDL_ShowSimpleMessageBox=VangersTest_ShowSimpleMessageBox)
+			IF(mode STREQUAL "source")
+				TARGET_COMPILE_DEFINITIONS(diagen_${mode}_test PRIVATE DIAGEN_TEST)
+			ENDIF()
+			CONFIGURE_VANGERS_TARGET(diagen_${mode}_test)
 		ENDFOREACH()
 	ENDIF()
 

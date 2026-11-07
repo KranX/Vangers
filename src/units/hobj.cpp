@@ -4103,8 +4103,6 @@ void NetworkWorldOpen(void) {
 
 void GeneralObject::GetUser(void) {};
 
-char *Convert(char *s, int back = 0);
-
 void aiMessageType::Load(Parser &in) {
 	int i;
 	char *n;

@@ -3,7 +3,9 @@
 Actint stores display text in UTF-8: HUD and shop panels, inventory labels and
 comments, menu entries, dialogue lines and topics, world/location labels,
 mouse-prompt sources, animated messages and full-screen text pages. Existing
-bitmap output and shipped resources remain compatible. This stage did not migrate Diagen internals or the network protocol. Subsequent
+bitmap output and shipped resources remain compatible. The initial actint stage
+did not migrate Diagen internals or the network protocol. The later
+[Diagen stage](diagen-utf8.md) makes dialogue UTF-8 end to end. Subsequent
 [iscreen](iscreen-ttf.md) and [ACS](acs-ttf.md) stages cover those interfaces;
 the ACS stage also adds explicit UTF-8 save metadata with old-save read support.
 
@@ -22,9 +24,10 @@ the ACS stage also adds explicit UTF-8 save metadata with old-save read support.
   input resource, option and source-line/binary-offset diagnostic. The new
   `alloc_utf8` / `add_utf8_str` input boundaries also report invalid text through
   `ErrH.Abort`, with the API name, instead of leaking an exception into the game.
-- Diagen phrases/topics and compass/player-name inputs are imported from their
-  existing CP866 interfaces. Selected topics/compass names are encoded back at
-  the call into the unchanged legacy subsystem, preserving lookup behavior.
+- Diagen phrases/topics now cross a UTF-8 boundary in both directions; see
+  [Diagen resources and save compatibility](diagen-utf8.md). Compass/player-name
+  inputs still use their existing CP866 interfaces. Selected compass names are
+  encoded back at the call into the unchanged legacy subsystem.
 - `aciPromptData::add_str` and `aciScreenText::alloc` retain their legacy CP866
   input contracts. New producers use `add_utf8_str` / `alloc_utf8` directly;
   copying and storage preserve characters absent from the old fonts.

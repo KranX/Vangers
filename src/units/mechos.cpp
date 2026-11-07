@@ -3371,7 +3371,7 @@ void ActionDispatcher::Quant(void) {
 			aciTextEndFlag = 0;
 			ThreallText = dgGetThreallPhrase();
 			if (ThreallText)
-				aciPrepareText(ThreallText);
+				aciPrepareTextUtf8(ThreallText);
 		};
 	};
 
@@ -9162,7 +9162,7 @@ void aciSendEvent2itmdsp(int code, actintItemData *p, int data) {
 				if (dev && uvsPrepareItemToDiagen(
 							   dev->uvsDeviceType, p->data0, p->data1, what, id, name_from, name_to
 						   ))
-					aciPrepareText(dgD->getInvText(what, id, name_from, name_to));
+					aciPrepareTextUtf8(dgD->getInvText(what, id, name_from, name_to));
 			};
 			break;
 		};
