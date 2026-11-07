@@ -69,7 +69,9 @@ viewport and silently hide the right-hand part of a measured line.
 and new resources wrap by the row template's actual font and logical width.
 Only template rows that fit its height consume text. Display rows own enough
 bytes for the whole measured line; editable-field limits (49/511 scalars) do not
-truncate these non-editable bodies. Input-field limits are unchanged.
+truncate these non-editable bodies. Cloning STRING/S_STRING elements uses the same
+owned-capacity path, not a copy into the old fixed input buffer. Input-field limits
+are unchanged.
 
 By default authored hard breaks remain intact. For flowing paragraph resources:
 
@@ -97,7 +99,8 @@ example credits) retain their authored layout; long paged prose belongs in a
 Automated coverage exercises UTF-8 boundaries, measured width, paragraphs, hard
 and page breaks, empty/final pages, long words, metric-query bounds, production
 bitmap/TTF consumers, full-screen page state/clipping restoration, whole dialogue
-continuations through `aciNextPhrase`, terminal-page speech locking, narrow rows exceeding the old input cap,
+continuations through `aciNextPhrase`, terminal-page speech locking, narrow rows exceeding the old input cap, cloning
+long Unicode display rows,
 next/back navigation and source/SCB policy round trips. Existing input, codecs,
 Diagen saves/events and renderer tests remain in the full suite.
 

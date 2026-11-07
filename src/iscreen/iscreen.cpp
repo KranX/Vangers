@@ -562,8 +562,7 @@ void iScreenElement::copy(iScreenElement *dest) {
 	case I_STRING_ELEM:
 		((iStringElement *)dest)->font = ((iStringElement *)this)->font;
 		((iStringElement *)dest)->space = ((iStringElement *)this)->space;
-		sz = strlen(((iStringElement *)this)->string);
-		strcpy(((iStringElement *)dest)->string, ((iStringElement *)this)->string);
+		((iStringElement *)dest)->init_text_line(((iStringElement *)this)->string);
 		break;
 	case I_BITMAP_ELEM:
 	case I_SCROLLER_ELEM:
@@ -617,9 +616,7 @@ void iScreenElement::copy(iScreenElement *dest) {
 	case I_S_STRING_ELEM:
 		((iS_StringElement *)dest)->font = ((iS_StringElement *)this)->font;
 		((iS_StringElement *)dest)->space = ((iS_StringElement *)this)->space;
-		//			  sz = strlen(((iS_StringElement*)this) -> string);
-		//			  ((iS_StringElement*)dest) -> string = new char[sz + 1];
-		strcpy(((iS_StringElement *)dest)->string, ((iS_StringElement *)this)->string);
+		((iS_StringElement *)dest)->init_text_line(((iS_StringElement *)this)->string);
 		break;
 	case I_AVI_ELEM:
 		((iAVIElement *)dest)->border_type = ((iAVIElement *)this)->border_type;

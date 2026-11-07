@@ -228,13 +228,13 @@ void flow(bool ttf) {
 	}
 	aLoadFonts32();
 	iScrDisp = new iScreenDispatcher;
-	for (bool small : {false, true}) {
+	for (bool small_font : {false, true}) {
 		iScreenObject object;
 		object.SizeX = 240;
 		object.SizeY = 90;
 		for (int i = 0; i < 3; ++i) {
-			iScreenElement *el =
-				small ? static_cast<iScreenElement *>(new iS_StringElement) : new iStringElement;
+			iScreenElement *el = small_font ? static_cast<iScreenElement *>(new iS_StringElement)
+											: new iStringElement;
 			el->lY = i * 40;
 			object.add_element(el);
 		}
@@ -258,7 +258,7 @@ void flow(bool ttf) {
 			auto *el = (iScreenElement *)object.ElementList->first;
 			for (int i = start; i < text.curLine; ++i, el = (iScreenElement *)el->next) {
 				const char *value =
-					small ? ((iS_StringElement *)el)->string : ((iStringElement *)el)->string;
+					small_font ? ((iS_StringElement *)el)->string : ((iStringElement *)el)->string;
 				check(
 					std::string(value) == text.data[i],
 					"Flow page was clipped by old scalar input limit"
@@ -274,7 +274,7 @@ void flow(bool ttf) {
 		while (object.ElementList->last) {
 			auto *el = (iScreenElement *)object.ElementList->last;
 			object.remove_element(el);
-			if (small)
+			if (small_font)
 				delete (iS_StringElement *)el;
 			else
 				delete (iStringElement *)el;
@@ -301,6 +301,20 @@ void flow(bool ttf) {
 		narrow.remove_element(row);
 		delete row;
 	}
+
+	// Display rows no longer obey editable-input caps. Cloning the element must
+	// preserve the same owned capacity, including multi-byte UTF-8 text.
+	std::string long_line;
+	for (int i = 0; i < 400; ++i)
+		long_line += "Ё日😀";
+	iStringElement large_source, large_copy;
+	large_source.init_text_line(long_line);
+	large_source.copy(&large_copy);
+	check(large_copy.string == long_line, "STRING clone truncated a dynamic display row");
+	iS_StringElement small_source, small_copy;
+	small_source.init_text_line(long_line);
+	small_source.copy(&small_copy);
+	check(small_copy.string == long_line, "S_STRING clone truncated a dynamic display row");
 
 	// Exercise the production previous-page entry point, including exact full pages.
 	iScreen screen;
