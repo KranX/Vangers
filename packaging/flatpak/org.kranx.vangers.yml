@@ -22,6 +22,7 @@ modules:
       - install -Dm755 vangers-wrapper /app/bin/surmap
       - install -Dm755 bin/vangers /app/lib/vangers/bin/vangers
       - install -Dm755 bin/surmap /app/lib/vangers/bin/surmap
+      - cp -a bin/locales /app/lib/vangers/bin/
       - mkdir -p /app/lib/vangers/lib
       - cp -a lib/. /app/lib/vangers/lib/
       - chmod -R u=rwX,go=rX /app/lib/vangers/lib

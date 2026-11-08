@@ -87,6 +87,7 @@ struct InputSettings {
 };
 
 struct GameSettings {
+	std::string locale = "en";
 	VideoSettings video;
 	AudioSettings audio;
 	GameplaySettings gameplay;

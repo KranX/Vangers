@@ -21,13 +21,13 @@
 
 /* ------------------------------ TEXT SECTION ------------------------------ */
 
-//text_object	  $iTEXT_ENG2_ID  $iSTR_Genesis 	  "resource/iscreen/text/eng/genesis.txt"
-//text_object	  $iTEXT_ENG1_ID  $iSTR_Prehistory	  "resource/iscreen/text/eng/prehist.txt"
-//text_object	  $iTEXT_ENG3_ID  $iSTR_Present 	  "resource/iscreen/text/eng/present.txt"
+//text_object	  $iTEXT_ENG2_ID  $iSTR_Genesis 	  "@resource:history.genesis"
+//text_object	  $iTEXT_ENG1_ID  $iSTR_Prehistory	  "@resource:history.prelude"
+//text_object	  $iTEXT_ENG3_ID  $iSTR_Present 	  "@resource:history.present"
 
-text_object	$iTEXT_RUS2_ID	$iSTR_Genesis		"resource/iscreen/text/rus/genesis.txt"
-text_object	$iTEXT_RUS1_ID	$iSTR_Prehistory	"resource/iscreen/text/rus/prehist.txt"
-text_object	$iTEXT_RUS3_ID	$iSTR_Present		"resource/iscreen/text/rus/present.txt"
+text_object	$iTEXT_RUS2_ID	$iSTR_Genesis		"@resource:history.genesis"
+text_object	$iTEXT_RUS1_ID	$iSTR_Prehistory	"@resource:history.prelude"
+text_object	$iTEXT_RUS3_ID	$iSTR_Present		"@resource:history.present"
 
 /* -------------------------- END OF TEXT SECTION --------------------------- */
 

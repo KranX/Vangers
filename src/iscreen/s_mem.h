@@ -1,15 +1,14 @@
 
-#define _sALLOC_(t, p)               \
-	p = (t *)(sMemHeap + sHeapOffs); \
-	sHeapOffs += sizeof(t);          \
-	if (sHeapOffs >= sHeapSize)      \
-	ErrH.Abort("MEMOUT...", sHeapSize)
+// Macro expansion mixes character strings and ScriptBlock objects in one arena.
+// Align each typed allocation before exposing it to the parser.
+#define _sALLOC_A_(t, p, n)                                                 \
+	sHeapOffs = (sHeapOffs + alignof(t) - 1) & ~(alignof(t) - 1);           \
+	if (sHeapOffs > sHeapSize || (n) > (sHeapSize - sHeapOffs) / sizeof(t)) \
+		ErrH.Abort("MEMOUT...", sHeapSize);                                 \
+	p = (t *)(sMemHeap + sHeapOffs);                                        \
+	sHeapOffs += (n) * sizeof(t)
 
-#define _sALLOC_A_(t, p, n)          \
-	p = (t *)(sMemHeap + sHeapOffs); \
-	sHeapOffs += (n) * sizeof(t);    \
-	if (sHeapOffs >= sHeapSize)      \
-	ErrH.Abort("MEMOUT...", sHeapSize)
+#define _sALLOC_(t, p) _sALLOC_A_(t, p, 1)
 
 #define _sFREE_(t, p) \
 	p = NULL;         \

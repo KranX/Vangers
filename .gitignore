@@ -3,6 +3,7 @@ data/*
 !data/iscreen
 !data/actint
 !data/data
+!data/locales/
 !data/resource/
 data/resource/*
 !data/resource/actint/

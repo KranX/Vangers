@@ -25,6 +25,10 @@ TARGET_LINK_LIBRARIES(vangers_settings PRIVATE
 	toml11::toml11
 )
 
+ADD_LIBRARY(vangers_localization STATIC localization/catalog.cpp)
+TARGET_INCLUDE_DIRECTORIES(vangers_localization PUBLIC "${PROJECT_SOURCE_DIR}/src")
+TARGET_LINK_LIBRARIES(vangers_localization PUBLIC vangers_settings PRIVATE toml11::toml11 SDL3::SDL3)
+
 ADD_LIBRARY(vangers_save_text STATIC saves/text.cpp)
 TARGET_LINK_LIBRARIES(vangers_save_text PUBLIC vangers_settings)
 
@@ -169,6 +173,7 @@ ENDIF()
 
 function(CONFIGURE_VANGERS_TARGET target_name)
 	TARGET_LINK_LIBRARIES(${target_name} PRIVATE
+		vangers_localization
 		vangers_save_text
 		vangers_iscreen_text
 		vangers_ttf
@@ -200,6 +205,12 @@ CONFIGURE_VANGERS_TARGET(vangers)
 
 if (NOT ANDROID)
 	CONFIGURE_VANGERS_TARGET(vangers_common)
+	# Run even when no C++ source changed: catalogs are editable runtime files.
+	ADD_CUSTOM_TARGET(vangers_locale_files
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+			"${PROJECT_SOURCE_DIR}/data/locales" "$<TARGET_FILE_DIR:vangers>/locales"
+		VERBATIM)
+	ADD_DEPENDENCIES(vangers vangers_locale_files)
 endif()
 
 if (NOT ANDROID)
@@ -273,9 +284,29 @@ if (NOT ANDROID)
 		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
 			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-iscreen
 			iscreen/oftr2.scr resource/iscreen/oftr2.scb
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-actint
+			actint/aci_low.scr resource/actint/aci_low.scb
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-actint
+			actint/aci_low2.scr resource/actint/aci_low2.scb
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-actint
+			actint/aci_hi.scr resource/actint/aci_hi.scb
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-actint
+			actint/aci_hi2.scr resource/actint/aci_hi2.scb
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-acs
+			actint/acs_low.scr resource/actint/acs_low.scb
+		COMMAND ${CMAKE_COMMAND} -E chdir "${PROJECT_SOURCE_DIR}/data"
+			"$<TARGET_FILE:vangers_iscreen_compiler>" --compile-acs
+			actint/acs_low2.scr resource/actint/acs_low2.scb
 		DEPENDS vangers_iscreen_compiler
 		COMMENT "Compiling English and Russian interface scripts"
 		USES_TERMINAL
 		VERBATIM
 	)
+	# Keep the historical target name working for existing packaging scripts.
+	ADD_CUSTOM_TARGET(compile_interface_scripts DEPENDS compile_iscreen_scripts)
 endif()

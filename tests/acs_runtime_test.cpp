@@ -39,12 +39,14 @@ void cleanup() {
 	delete acsScrD;
 	acsScrD = nullptr;
 }
-void parse(const char *source, const char *binary, bool utf8) {
+void parse(const char *source, const char *binary, bool utf8, bool keyed = false) {
 	acsParseScript(source, binary);
 	acsScrD->curScr = acsScrD->GetScreen(1);
 	auto *field = static_cast<aciScreenInputField *>(acsScrD->GetObject(2));
 	check(
-		field && std::string(field->string) == (utf8 ? "Ёж 日本 😀" : "Ёж"),
+		field && std::string(field->string) == (keyed	  ? "NEW GAME"
+												   : utf8 ? "Ёж 日本 😀"
+														  : "Ёж"),
 		"ACS source/SCB lost text"
 	);
 	check(
@@ -389,7 +391,9 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 int main(int argc, char **argv) {
 	try {
 		if (argc == 5 && std::string(argv[1]) == "--parse")
-			parse(argv[2], argv[3], std::string(argv[4]) == "unicode");
+			parse(
+				argv[2], argv[3], std::string(argv[4]) == "unicode", std::string(argv[4]) == "keyed"
+			);
 		else if (argc == 3 && std::string(argv[1]) == "--render")
 			rendering(std::string(argv[2]) == "ttf");
 		else if (argc == 2 && std::string(argv[1]) == "--save")

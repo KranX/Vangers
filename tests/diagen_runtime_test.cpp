@@ -1163,7 +1163,7 @@ int main(int argc, char **argv) {
 			return 0;
 		}
 		if (mode == "pack") {
-			setLang(argc > 2 && std::string(argv[2]) == "ru" ? RUSSIAN : ENGLISH);
+			setLocale(argc > 2 ? argv[2] : "en");
 			dgD = new DiagenDispatcher;
 			dgD->init();
 			delete dgD;

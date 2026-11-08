@@ -4,6 +4,7 @@
 #include "../global.h"
 #include "../network.h"
 #include "../runtime.h"
+#include "localization/catalog.h"
 
 #include "ivmap.h"
 #include "iworld.h"
@@ -988,13 +989,8 @@ void iInitControlObjects(void) {
 						obj->flags |= OBJ_MUST_REDRAW;
 					}
 				} else {
-					if (strcasecmp(
-							iControlsStr[index]->string,
-							vangers::settings::cp866_to_utf8(iSTR_NONE).c_str()
-						)) {
-						iControlsStr[index]->init_string(
-							vangers::settings::cp866_to_utf8(iSTR_NONE).c_str()
-						);
+					if (strcasecmp(iControlsStr[index]->string, iSTR_NONE)) {
+						iControlsStr[index]->init_string(iSTR_NONE);
 						obj = (iScreenObject *)iControlsStr[index]->owner;
 						obj->flags |= OBJ_REINIT;
 						obj->flags |= OBJ_MUST_REDRAW;
@@ -1016,9 +1012,7 @@ void iDeleteControl(int vkey, int id) {
 				key = iGetControlCode(i, j);
 				if (key == vkey) {
 					iSetControlCode(i, 0, j);
-					iControlsStr[index]->init_string(
-						vangers::settings::cp866_to_utf8(iSTR_NONE).c_str()
-					);
+					iControlsStr[index]->init_string(iSTR_NONE);
 					obj = (iScreenObject *)iControlsStr[index]->owner;
 					obj->flags |= OBJ_REINIT;
 					obj->flags |= OBJ_MUST_REDRAW;
@@ -2194,9 +2188,6 @@ void iPreparePlayerResults(int id) {
 	}
 }
 
-const char *STR_NONE1 = "NONE";
-const char STR_NONE2[] = {(char)0x8D, (char)0x85, (char)0x92, (char)0x00}; // cp866 - НЕТ
-
 const char *iGetKeyNameText(int vkey, Language lang, bool scan) {
 	// std::cout<<"iGetKeyNameText:"<<vkey<<" lang:"<<lang<<std::endl;
 	/*char* ret = NULL;
@@ -2206,13 +2197,9 @@ const char *iGetKeyNameText(int vkey, Language lang, bool scan) {
 	if(vkey>=256&&vkey-256<256)
 		ret = iKeyNamesSDL[vkey-256];
 	return ret;*/
-	if (vkey == 0) {
-		if (lang == RUSSIAN) {
-			return "НЕТ";
-		} else {
-			return STR_NONE1;
-		}
-	}
+	(void)lang; // The selected package, not a two-language enum, owns display labels.
+	if (vkey == 0)
+		return vangers::localization::text("iscreen.iSTR_NONE");
 	if (vkey & SDLK_GAMEPAD_BUTTON_MASK) {
 		return SDL_GetGamepadStringForButton((SDL_GamepadButton)(vkey ^ SDLK_GAMEPAD_BUTTON_MASK));
 	} else if (vkey & SDLK_SCANCODE_MASK) {

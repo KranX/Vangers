@@ -1,6 +1,7 @@
 #include "global.h"
 
 #include "actint/actint.h"
+#include "iscreen/controls.h"
 #include "iscreen/hfont.h"
 #include "iscreen/i_mem.h"
 #include "iscreen/ikeys.h"
@@ -28,6 +29,9 @@ extern int iNumFonts;
 extern HFont **HFntTable;
 extern iScreenFont **iScrFontTable;
 extern uint iclip_mask_y;
+extern iStringElement **iControlsStr;
+void iInitStrings();
+void iDeleteControl(int, int);
 void iYSetup();
 void iRenderPrepare();
 void init_hfonts();
@@ -128,14 +132,16 @@ void free_dispatcher(bool parsed) {
 	iScrDisp = nullptr;
 }
 
-void parse(const char *in, const char *out, bool unicode, bool flow = false) {
+void parse(const char *in, const char *out, bool unicode, bool flow = false, bool keyed = false) {
 	font_fixture();
 	std::array<char, 8 * 256> small_pixels{};
 	iScreenFont small_font(small_pixels.data(), small_pixels.size());
 	iScreenFont *small_fonts[]{&small_font};
 	iScrFontTable = small_fonts;
 	ParseScript(in, out, false);
-	const auto expected = unicode ? std::string("Ёж 日本 😀") : std::string("Ёж");
+	const auto expected = keyed		? std::string("NEW GAME")
+						  : unicode ? std::string("Ёж 日本 😀")
+									: std::string("Ёж");
 	auto *screen = static_cast<iScreen *>(iScrDisp->last);
 	auto *object = static_cast<iScreenObject *>(screen->objList->last);
 	check(object && object->promptData == expected, "Prompt did not decode at the boundary");
@@ -353,6 +359,20 @@ void flow(bool ttf) {
 	iScrDisp->texts->connect(&text);
 	iScrDisp->texts->connect(&following);
 	iScrDisp->curScr = &screen;
+	// Borrowing a legacy layout is independent of the selected text language.
+	setLang(RUSSIAN);
+	iScrDisp->curText = nullptr;
+	iScrDisp->prev_text();
+	check(!iScrDisp->curText, "Previous history selected a document before initialization");
+	iScrDisp->next_text();
+	check(iScrDisp->curText == &text, "English fallback history depends on Language");
+	following.ID = 42; // A package need not use adjacent legacy numeric IDs.
+	iScrDisp->next_text();
+	check(iScrDisp->curText == &following, "History skipped a nonconsecutive document ID");
+	iScrDisp->next_text();
+	check(iScrDisp->curText == &text, "History failed to wrap within the loaded package");
+	iScrDisp->prev_text();
+	check(iScrDisp->curText == &text, "Previous history wrapped before the first document");
 	for (int count : {0, 1, 4, 5}) {
 		std::vector<std::string> lines;
 		for (int i = 0; i < count; ++i)
@@ -409,6 +429,25 @@ void init_renderer_fixture() {
 
 void input() {
 	init_renderer_fixture();
+	// Catalog labels are already UTF-8, including the control-removal fallback.
+	setLang(RUSSIAN);
+	iInitStrings();
+	check(std::string(iGetKeyNameText(0)) == "НЕТ", "Empty control lost the selected locale");
+	{
+		iScreenObject object;
+		iStringElement element;
+		object.add_element(&element);
+		element.init_string("old binding");
+		std::array<iStringElement *, iKEY_MAX_ID * iKEY_OBJECT_SIZE> controls{};
+		controls[iKEY_MOVE_FORWARD * iKEY_OBJECT_SIZE] = &element;
+		iControlsStr = controls.data();
+		iDeleteControl(0, -1); // With no control model, the fixture's code is unbound.
+		check(std::string(element.string) == "НЕТ", "Control removal decoded UTF-8 as CP866");
+		iInitControlObjects();
+		check(std::string(element.string) == "НЕТ", "Control refresh corrupted a catalog label");
+		iControlsStr = nullptr;
+		object.remove_element(&element);
+	}
 	iScrDisp = new iScreenDispatcher;
 	std::vector<char> heap(1 << 20);
 	iMemHeap = heap.data();
@@ -765,7 +804,13 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 int main(int argc, char **argv) {
 	try {
 		if ((argc == 5 || argc == 6) && std::string(argv[1]) == "--parse")
-			parse(argv[2], argv[3], std::string(argv[4]) == "unicode", argc == 6);
+			parse(
+				argv[2],
+				argv[3],
+				std::string(argv[4]) == "unicode",
+				argc == 6,
+				std::string(argv[4]) == "keyed"
+			);
 		else if (argc == 3 && std::string(argv[1]) == "--flow")
 			flow(std::string(argv[2]) == "ttf");
 		else if (argc == 3 && std::string(argv[1]) == "--relief")

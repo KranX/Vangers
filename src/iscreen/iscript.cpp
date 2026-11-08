@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "localization/catalog.h"
 
 #include "hfont.h"
 #include "iscreen.h"
@@ -426,13 +427,17 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 	int id, t_id = 0, st = 0;
 	utf8_text = false;
 	text_flow_width = 0;
+	const auto text_error = [&](const char *prefix, const std::exception &error) {
+		const auto context = std::string(fname) + ": option " + OptIDs[id] + ": " + error.what();
+		handle_error(prefix, context.c_str());
+	};
 	const auto decode_text = [&](const char *value) {
 		try {
-			return vangers::iscreen::resource_text(value, utf8_text);
-		} catch (const std::invalid_argument &error) {
-			const std::string context =
-				std::string(fname) + ": option " + OptIDs[id] + ": " + error.what();
-			handle_error("Invalid iscreen display text", context.c_str());
+			return vangers::localization::resolve(
+				vangers::iscreen::resource_text(value, utf8_text)
+			);
+		} catch (const std::exception &error) {
+			text_error("Invalid iscreen display text", error);
 			return std::string{};
 		}
 	};
@@ -529,6 +534,19 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 				text_obj->utf8_resource = utf8_text;
 				text_obj->flow_width = text_flow_width;
 				script->read_pdata(&text_obj->fname, 1);
+				if (std::string_view(text_obj->fname).substr(0, 10) == "@resource:") {
+					try {
+						const std::string key = text_obj->fname + 10;
+						const auto &catalog = vangers::localization::catalog();
+						const auto &path = catalog.resource(key);
+						delete[] text_obj->fname;
+						text_obj->fname = new char[path.size() + 1];
+						std::memcpy(text_obj->fname, path.c_str(), path.size() + 1);
+						text_obj->utf8_resource = catalog.resource_is_utf8(key);
+					} catch (const std::exception &error) {
+						text_error("Invalid iscreen text resource", error);
+					}
+				}
 				iScrDisp->texts->connect((iListElement *)text_obj);
 				break;
 			case EL_SET_HIDDEN_FON:
@@ -875,14 +893,22 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 			case EL_INIT_TEXT:
 				if (iCurObjType == I_OBJECT) {
 					script->prepare_pdata();
-					load_text(script->get_conv_ptr());
+					try {
+						load_text(script->get_conv_ptr());
+					} catch (const std::exception &error) {
+						text_error("Invalid iscreen text resource", error);
+					}
 				} else
 					handle_error("Misplaced option", OptIDs[id]);
 				break;
 			case EL_INIT_S_TEXT:
 				if (iCurObjType == I_OBJECT) {
 					script->prepare_pdata();
-					load_s_text(script->get_conv_ptr());
+					try {
+						load_s_text(script->get_conv_ptr());
+					} catch (const std::exception &error) {
+						text_error("Invalid iscreen text resource", error);
+					}
 				} else
 					handle_error("Misplaced option", OptIDs[id]);
 				break;
@@ -1491,13 +1517,21 @@ void init_objects(void) {
 template<typename Element> static void load_text_elements(char *fname, bool small_font) {
 	if (iCurObjType != I_OBJECT)
 		return;
-	XStream fh(fname, XS_IN);
+	bool native = utf8_text;
+	const char *path = fname;
+	if (std::string_view(fname).substr(0, 10) == "@resource:") {
+		const std::string key = fname + 10;
+		const auto &catalog = vangers::localization::catalog();
+		path = catalog.resource(key).c_str();
+		native = catalog.resource_is_utf8(key);
+	}
+	XStream fh(path, XS_IN);
 	std::string bytes(fh.size(), '\0');
 	if (!bytes.empty())
 		fh.read(bytes.data(), bytes.size());
 	fh.close();
 	int y = 0;
-	for (const auto &line : vangers::iscreen::text_lines(bytes, utf8_text)) {
+	for (const auto &line : vangers::iscreen::text_lines(bytes, native)) {
 		if (line.empty())
 			continue;
 		auto *p = new Element;

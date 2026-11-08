@@ -27,3 +27,5 @@ data/data/*.dil -text
 data/data/room.lst -text
 data/data/ru/* -text whitespace=-trailing-space
 data/data/en/* -text whitespace=-trailing-space
+# These legacy authoring entry points intentionally retain CRLF.
+data/iscreen/oftr*.scr whitespace=cr-at-eol

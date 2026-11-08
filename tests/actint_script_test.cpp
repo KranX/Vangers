@@ -5,6 +5,8 @@
 #include "actint/mlstruct.h"
 #include "actint/text.h"
 #include "iscreen/ikeys.h"
+#include "lang.h"
+#include "localization/catalog.h"
 #include "runtime.h"
 
 #include <array>
@@ -35,9 +37,12 @@ void check(bool condition, const char *message) {
 
 void parse(const char *input, const char *output, const char *encoding) {
 	aParseScript(input, output);
-	const auto expected = std::string(encoding) == "legacy" ? "Ёж" : unicode_text;
+	const auto expected = std::string(encoding) == "keyed"	  ? "NEW GAME"
+						  : std::string(encoding) == "legacy" ? "Ёж"
+															  : unicode_text;
 	const auto *world = (aciWorldInfo *)aScrDisp->wMap->world_list->last;
-	check(world && world->name == expected, "World name did not survive the parser");
+	const auto world_id = std::string(encoding) == "keyed" ? "@l10n:menu.iSTR_NEW_GAME" : expected;
+	check(world && world->name == world_id, "A display translation changed a world lookup ID");
 	const auto *item = (invItem *)aScrDisp->itemList->last;
 	check(item && item->ID_ptr == expected, "Item label did not survive the parser");
 	check(item->pTemplate == expected, "Item template did not survive the parser");
@@ -45,6 +50,33 @@ void parse(const char *input, const char *output, const char *encoding) {
 	const auto *menu = (fncMenu *)aScrDisp->menuList->last;
 	const auto *entry = menu ? (fncMenuItem *)menu->items->last : nullptr;
 	check(entry && entry->name == expected, "Menu text did not survive the parser");
+	check(aScrDisp->get_locdata_id("lookup.id") == 3, "A translation renamed the location ID");
+	const auto *location = aScrDisp->get_locdata(3);
+	check(
+		location && std::string(location->nameID2) == expected,
+		"Location display name was not translated"
+	);
+	delete aScrDisp;
+	aScrDisp = nullptr;
+	delete aciML_D;
+	aciML_D = nullptr;
+}
+
+void comments(const char *input, const char *output, const char *locale) {
+	setLocale(locale);
+	aParseScript(input, output);
+	int count = 0;
+	for (auto *item = static_cast<invItem *>(aScrDisp->itemList->last); item;
+		item = static_cast<invItem *>(item->prev)) {
+		const auto &expected =
+			vangers::localization::catalog().text("items." + item->ID_ptr + "_COMMENTS");
+		check(
+			item->numComments == 1 && item->comments[0] == expected,
+			"A shared script profile lost part of a semantic item comment"
+		);
+		++count;
+	}
+	check(count > 60, "Stock comment fixture is incomplete");
 	delete aScrDisp;
 	aScrDisp = nullptr;
 	delete aciML_D;
@@ -255,6 +287,8 @@ int main(int argc, char **argv) {
 			actint_menu_render_test(std::string(argv[2]) == "ttf");
 		} else if (argc == 3 && std::string(argv[1]) == "--render-counter") {
 			actint_counter_render_test(std::string(argv[2]) == "ttf");
+		} else if (argc == 5 && std::string(argv[1]) == "--comments") {
+			comments(argv[2], argv[3], argv[4]);
 		} else if (argc == 5 && std::string(argv[1]) == "--parse") {
 			parse(argv[2], argv[3], argv[4]);
 		} else if (argc == 4 && std::string(argv[1]) == "--corrupt") {

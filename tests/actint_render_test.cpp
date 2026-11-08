@@ -338,6 +338,31 @@ void actint_counter_render_test(bool native) {
 void aciInitPanel(InfoPanel *, const char *);
 void actint_flow_test(bool native) {
 	RenderFixture fixture(native);
+	{
+		InfoPanel comments;
+		comments.flags |= IP_RANGE_FONT;
+		comments.SizeX = 600;
+		comments.SizeY = 300;
+		std::string text = "Самонаводящиеся боеприпасы\nдля Спитл Системы";
+		char *value = text.data();
+		comments.add_items(1, &value);
+		check(comments.items->Size == 2, "Semantic comment lost original hard breaks");
+		check(comments.items->last->ID_ptr == "для Спитл Системы", "Last comment line lost");
+		comments.free_list();
+		comments.SizeX = 150;
+		comments.add_items(1, &value);
+		std::string restored;
+		auto *row = comments.items->first;
+		for (int i = 0; i < comments.items->Size; ++i, row = row->next) {
+			check(
+				aStrLen32Utf8(row->ID_ptr.c_str(), 0, comments.hSpace) < comments.SizeX,
+				"Measured comment exceeds the panel"
+			);
+			restored += row->ID_ptr;
+		}
+		text.erase(text.find('\n'), 1);
+		check(restored == text, "Comment wrapping lost translated text");
+	}
 	InfoPanel panel;
 	panel.font = 0;
 	panel.SizeX = 150;

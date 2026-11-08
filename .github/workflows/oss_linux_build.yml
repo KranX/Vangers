@@ -224,6 +224,7 @@ jobs:
           mkdir -p artifacts/bin artifacts/lib
 
           cp build/src/vangers artifacts/bin/
+          cp -a build/src/locales artifacts/bin/
           cp build/surmap/surmap artifacts/bin/
 
           for exe in artifacts/bin/*; do

@@ -4569,40 +4569,34 @@ void iScreenDispatcher::finit_texts(void) {
 	}
 }
 
-void iScreenDispatcher::next_text(void) {
-	int id = 0;
-
-	if (curText)
-		id = curText->ID + 1;
-	if (lang() != RUSSIAN) {
-		if (!id || id > iTEXT_ENG_MAX)
-			id = iTEXT_ENG1_ID;
-	} else {
-		if (!id || id > iTEXT_RUS_MAX)
-			id = iTEXT_RUS1_ID;
+// The loaded resource defines the document sequence; a locale may borrow either
+// legacy layout, and English fallback must not depend on the Language adapter.
+static iTextData *adjacent_text(iList *texts, const iTextData *current, bool forward) {
+	iTextData *best = nullptr;
+	for (auto *p = static_cast<iTextData *>(texts->last); p;
+		p = static_cast<iTextData *>(p->prev)) {
+		if (current && (forward ? p->ID <= current->ID : p->ID >= current->ID))
+			continue;
+		if (!best || (forward ? p->ID < best->ID : p->ID > best->ID))
+			best = p;
 	}
-	curText = get_text(id);
-	if (!curText)
-		return;
-	curText->reset();
+	return best;
+}
+
+void iScreenDispatcher::next_text(void) {
+	auto *next = adjacent_text(texts, curText, true);
+	curText = next ? next : adjacent_text(texts, nullptr, true);
+	if (curText)
+		curText->reset();
 }
 
 void iScreenDispatcher::prev_text(void) {
-	int id = 0;
-
-	if (curText)
-		id = curText->ID - 1;
-	if (lang() != RUSSIAN) {
-		if (id <= 0)
-			return;
-	} else {
-		if (id <= iTEXT_RUS1_ID - 1)
-			return;
-	}
-	curText = get_text(id);
 	if (!curText)
 		return;
-	curText->reset();
+	if (auto *previous = adjacent_text(texts, curText, false)) {
+		curText = previous;
+		curText->reset();
+	}
 }
 
 iTextData *iScreenDispatcher::get_text(int id) {
@@ -4616,7 +4610,7 @@ iTextData *iScreenDispatcher::get_text(int id) {
 }
 
 int iScreenDispatcher::copy_text_next(iScreen *scr, int mode) {
-	int id, end_code, next_code;
+	int end_code, next_code;
 	iScreenObject *obj = (iScreenObject *)scr->get_object("Text00");
 	iStringElement *title_obj = (iStringElement *)scr->get_object("TextTitle00");
 	if (obj) {
@@ -4624,36 +4618,21 @@ int iScreenDispatcher::copy_text_next(iScreen *scr, int mode) {
 			next_text();
 		} else {
 			if (curText->eof()) {
-				id = curText->ID + 1;
 				ActiveEv->flags &= ~EV_ACTIVE;
 				ActiveEv = NULL;
 
 				end_code = (mode) ? iTEXT_END_EVENT_CODE1 : iTEXT_END_EVENT_CODE0;
 				next_code = (mode) ? iTEXT_NEXT_EVENT_CODE1 : iTEXT_NEXT_EVENT_CODE0;
-				if (lang() != RUSSIAN) {
-					if (id > iTEXT_ENG_MAX) {
-						key_trap(end_code);
-					} else {
-						next_text();
-						if (title_obj) {
-							title_obj->init_string(curText->objName);
-							title_obj->init_size();
-							title_obj->init_align();
-						}
-						key_trap(next_code);
-					}
+				if (!adjacent_text(texts, curText, true)) {
+					key_trap(end_code);
 				} else {
-					if (id > iTEXT_RUS_MAX) {
-						key_trap(end_code);
-					} else {
-						next_text();
-						if (title_obj) {
-							title_obj->init_string(curText->objName);
-							title_obj->init_size();
-							title_obj->init_align();
-						}
-						key_trap(next_code);
+					next_text();
+					if (title_obj) {
+						title_obj->init_string(curText->objName);
+						title_obj->init_size();
+						title_obj->init_align();
 					}
+					key_trap(next_code);
 				}
 				return 1;
 			}
@@ -4673,7 +4652,7 @@ int iScreenDispatcher::copy_text_next(iScreen *scr, int mode) {
 }
 
 int iScreenDispatcher::copy_text_prev(iScreen *scr, int mode) {
-	int id, prev_code;
+	int prev_code;
 	iScreenObject *obj = (iScreenObject *)scr->get_object("Text00");
 	iStringElement *title_obj = (iStringElement *)scr->get_object("TextTitle00");
 	if (obj) {
@@ -4682,12 +4661,11 @@ int iScreenDispatcher::copy_text_prev(iScreen *scr, int mode) {
 		} else {
 			const int capacity = curText->page_size(obj);
 			if (curText->curLine <= capacity) {
-				id = curText->ID - 1;
 				ActiveEv->flags &= ~EV_ACTIVE;
 				ActiveEv = NULL;
 
 				prev_code = (mode) ? iTEXT_PREV_EVENT_CODE1 : iTEXT_PREV_EVENT_CODE0;
-				if ((lang() != RUSSIAN && id > 0) || id > iTEXT_RUS1_ID - 1) {
+				if (adjacent_text(texts, curText, false)) {
 					prev_text();
 					if (title_obj) {
 						title_obj->init_string(curText->objName);
