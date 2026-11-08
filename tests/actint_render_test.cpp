@@ -611,7 +611,7 @@ void actint_description_switch_test() {
 	aciCurAviIndex = ACI_TEXT_AVI_ENG;
 	aciInitAviID();
 	check(!video.description_key, "Unknown mod item used a stock description");
-	invMatrix matrix;
+	invMatrix matrix(1, 1);
 	matrix.internalID = 16;
 	matrix.type = 30;
 	matrix.numAviIDs = 1;

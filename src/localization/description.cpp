@@ -180,10 +180,13 @@ Description::Description(std::string_view text, DescriptionStyle presentation)
 				for (int col = 0; col < raster.width; ++col) {
 					const auto alpha = raster.pixels[std::size_t(row) * raster.width + col].alpha;
 					const int x = left + col, dy = top + row;
-					if (alpha && x >= 0 && x < width && dy >= 0 && dy < height)
-						pixels_[std::size_t(dy) * width + x] = 0xFF000000u |
-															   (uint32_t(alpha) << 16) |
-															   ((uint32_t(alpha) * 211 / 255) << 8);
+					if (alpha && x >= 0 && x < width && dy >= 0 && dy < height) {
+						auto &pixel = pixels_[std::size_t(dy) * width + x];
+						// Compact rows may overlap. Union their coverage instead of
+						// letting a weaker edge erase the preceding glyph's stroke.
+						const auto coverage = std::max(uint32_t(alpha), (pixel >> 16) & 255);
+						pixel = 0xFF000000u | (coverage << 16) | ((coverage * 211 / 255) << 8);
+					}
 				}
 		}
 		y += line_advance;

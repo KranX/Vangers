@@ -23,6 +23,33 @@ template<class F> void rejects(F action) {
 	}
 	throw std::runtime_error("Invalid fixed-panel description accepted");
 }
+
+void overlapping_lines() {
+	// Adjacent rows from Nymbos: a descender overlaps weaker ink on the next row.
+	const std::string first = "первые бибы. Он получается из старых";
+	const std::string second = "элиподов. Мокрый, скользкий и";
+	const Description upper(first, DescriptionStyle::CompactCentered);
+	const Description lower(second, DescriptionStyle::CompactCentered);
+	const Description together(first + "\u2028" + second, DescriptionStyle::CompactCentered);
+	// A centered two-line block places each row six pixels from a single row.
+	constexpr int half_advance = 6;
+	int overlaps = 0;
+	for (int y = 0; y < Description::height; ++y)
+		for (int x = 0; x < Description::width; ++x) {
+			const auto a = y + half_advance < Description::height
+							   ? upper.pixels()[(y + half_advance) * Description::width + x]
+							   : 0xFF000000u;
+			const auto b = y >= half_advance
+							   ? lower.pixels()[(y - half_advance) * Description::width + x]
+							   : 0xFF000000u;
+			overlaps += a != b && a != 0xFF000000u && b != 0xFF000000u;
+			check(
+				together.pixels()[y * Description::width + x] == std::max(a, b),
+				"Overlapping description rows weakened existing glyph coverage"
+			);
+		}
+	check(overlaps > 0, "Description overlap fixture no longer exercises overlapping ink");
+}
 } // namespace
 
 int main(int argc, char **argv) {
@@ -140,6 +167,7 @@ int main(int argc, char **argv) {
 			check(empty == 9, "Missing source descriptions silently changed");
 			check(catalog.diagnostics().empty(), "Stock descriptions use fallback");
 		}
+		overlapping_lines();
 		rejects([] { Description bad("one\ftwo"); });
 		rejects([] { Description bad(std::string(100000, 'W')); });
 		rejects([] { Description bad(std::string("bad\xff", 4)); });

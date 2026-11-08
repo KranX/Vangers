@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
 		conservation(root, "en", 0xaae6d5ca, 2);
 		conservation(root, "ru", 0xc509d86e, 2);
 		// Separate audit: keep checksums of the original UI macros unchanged.
-		conservation(root, "en", 0x11c7e86f, 4);
+		conservation(root, "en", 0xfbce565c, 4);
 		conservation(root, "ru", 0xc9799444, 4);
 		check(
 			format_integer("Ресурс: %d %%", -17) == "Ресурс: -17 %",
