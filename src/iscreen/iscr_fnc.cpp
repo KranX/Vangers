@@ -806,9 +806,6 @@ int iQuantSecond(void) {
 			if (!(iScrDisp->flags & SD_INPUT_STRING)) {
 				while (KeyBuf->size) {
 					k = KeyBuf->get();
-					if (actIntLog && !iPause && !iChatON && !iScrDisp->ActiveEv &&
-						aScrDisp->scroll_info_panel(*k))
-						continue;
 					if (iChatON)
 						iChatKeyQuant(k);
 					if ((k->type == SDL_EVENT_KEY_DOWN && k->key.scancode == SDL_SCANCODE_ESCAPE) &&

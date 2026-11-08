@@ -4,7 +4,6 @@
 #include "actint/actint.h"
 #include "actint/mlconsts.h"
 #include "actint/mlstruct.h"
-#include "iscreen/ikeys.h"
 #include "iscreen/iscreen.h"
 #include "settings/settings.h"
 #include "uvs/diagen.h"
@@ -31,8 +30,6 @@ extern int aciEscaveEmpty;
 extern unsigned char *aciCurColorScheme, *aCellFrame;
 extern int aCellSize;
 extern XBuffer *aciXConv;
-extern int iMouseX, iMouseY;
-extern int aciKeyboardLocked;
 
 namespace {
 void check(bool condition, const char *message) {
@@ -340,11 +337,12 @@ void actint_counter_render_test(bool native) {
 
 void aciInitPanel(InfoPanel *, const char *);
 namespace {
-void item_panel_row_limit_test(RenderFixture &fixture) {
+void fixed_item_panel_test(RenderFixture &fixture) {
 	for (const bool range : {false, true}) {
 		iScreenObject owner;
-		iBitmapElement output;
+		iBitmapElement output, expected;
 		resize(output, 261, 89);
+		resize(expected, 261, 89);
 		output.owner = &owner;
 		InfoPanel panel;
 		panel.SizeX = output.SizeX;
@@ -357,223 +355,54 @@ void item_panel_row_limit_test(RenderFixture &fixture) {
 			panel.free_list();
 			panel.add_item("Title", -1, 1);
 			for (int i = 0; i < rows - 3; ++i)
-				panel.add_item("Comment");
+				panel.add_item("Описание");
 			panel.add_item("Resource: 42");
 			panel.add_item("Price: 150", -1, 1);
-			const auto view = panel.item_view();
-			// All 3/4/5-row cases fit in the rectangular buffer. The authored
-			// limit still protects the text from the shop's decorative frame.
-			check(view.count == panel.MaxStr, "Physically fitting rows bypassed max_str");
-			panel.redraw();
-			check(has_ink(fixture.pixels(output)), "Intermediate description rendered no ink");
-			if (rows == panel.MaxStr) {
-				check(!panel.scroll_items(1), "A fitting description became scrollable");
-				check(
-					view.y == ((panel.SizeY - rows * view.step) >> 1),
-					"A fitting description lost its original centering"
-				);
-			} else {
-				for (int first = 1; first <= rows - view.count; ++first) {
-					check(
-						panel.scroll_items(1) && panel.firstVisibleItem == first,
-						"Intermediate description cannot reach its final rows"
+			const int height = range ? aScrFonts32[0]->SizeY : aScrFonts[0]->SizeY;
+			const int step = height + panel.vSpace;
+			int y = (panel.SizeY - rows * step) >> 1;
+			check(
+				y >= 0 && y + (rows - 1) * step + height <= panel.SizeY,
+				"Fixed-row fixture exceeds the original panel"
+			);
+			xgr::text::prepare(expected.fdata, panel.SizeX, panel.SizeY);
+			std::fill_n(expected.fdata, panel.SizeX * panel.SizeY, 0);
+			auto *row = panel.items->first;
+			for (int i = 0; i < rows; ++i, row = row->next, y += step) {
+				const auto *text = row->ID_ptr.c_str();
+				const int width = range ? aStrLen32Utf8(text, 0, panel.hSpace)
+										: aStrLenUtf8(text, 0, panel.hSpace);
+				const int x = (panel.SizeX - width) >> 1;
+				// The fixture's scheme has palette index/gradient size 1 in every
+				// field. Render each original row directly, without InfoPanel state.
+				if (range)
+					aPutStr32Utf8(
+						x, y, 0, 0x10001, 0x10001, text, panel.SizeX, expected.fdata, panel.hSpace
 					);
-					panel.redraw();
-				}
+				else
+					aPutStrUtf8(
+						x,
+						y,
+						0,
+						0x1010101,
+						text,
+						panel.SizeX,
+						(unsigned char *)expected.fdata,
+						panel.hSpace
+					);
+			}
+			for (const int type : {ACI_INFO_PANEL, ACI_PRICE_PANEL, ACI_ANSWER_PANEL}) {
+				panel.type = type;
+				panel.redraw();
 				check(
-					panel.scroll_items(-rows) && panel.firstVisibleItem == 0,
-					"Intermediate description cannot return to its title"
+					fixture.pixels(output) == fixture.pixels(expected),
+					"Fixed panel hid rows, moved text or added continuation arrows"
+				);
+				check(
+					panel.items->Size == rows && panel.textPages.empty(),
+					"Fixed description became paginated"
 				);
 			}
-		}
-		// Non-item panels (e.g. full vehicle statistics) intentionally show
-		// more than the default three rows and are not the scrollable iP.
-		for (const int type : {ACI_PRICE_PANEL, ACI_ANSWER_PANEL}) {
-			panel.type = type;
-			check(panel.item_view().count == 5, "Item row limit truncated another panel");
-			panel.redraw();
-		}
-		const auto original = fixture.pixels(output);
-		panel.type = ACI_INFO_PANEL;
-		panel.MaxStr = 5;
-		check(
-			panel.item_view().count == 5 && !panel.scroll_items(1),
-			"An explicitly larger item panel ignored its row limit"
-		);
-		panel.redraw();
-		check(fixture.pixels(output) == original, "Fitting rows changed their rendering");
-	}
-}
-
-void item_panel_scroll_test(RenderFixture &fixture) {
-	for (const bool range : {false, true}) {
-		for (const auto size : {std::pair{580, 100}, {332, 112}, {261, 89}, {275, 94}, {220, 74}}) {
-			iScreenObject owner;
-			iBitmapElement output, expected;
-			resize(output, size.first, size.second);
-			resize(expected, size.first, size.second);
-			output.owner = expected.owner = &owner;
-			InfoPanel panel, control;
-			panel.SizeX = control.SizeX = size.first;
-			panel.SizeY = control.SizeY = size.second;
-			panel.bCol = control.bCol = 0;
-			panel.vSpace = control.vSpace = -2;
-			panel.flags = control.flags = range ? IP_RANGE_FONT : 0;
-			panel.iScreenOwner = &output;
-			control.iScreenOwner = &expected;
-			std::string comment;
-			for (int i = 0; i < 18; ++i)
-				comment += "Боеприпасы для Спитл Системы. Cruise missiles. ";
-			const auto populate = [&] {
-				panel.free_list();
-				panel.add_item("Спитл / Speettle", 1, 1);
-				char *value = comment.data();
-				panel.add_items(1, &value);
-				panel.add_item("Resource: 42", 1, 1);
-				panel.add_item("Price: 150", 0, 1);
-			};
-			populate();
-			check(panel.item_view().count < panel.items->Size, "Fixture did not overflow");
-			check(
-				panel.item_view().count <= panel.MaxStr, "Overflow ignored the authored row limit"
-			);
-			std::vector<bool> seen(panel.items->Size);
-			actIntDispatcher dispatcher;
-			dispatcher.iP = &panel;
-			dispatcher.curMode = AS_INV_MODE;
-			SDL_Event wheel{};
-			wheel.type = SDL_EVENT_MOUSE_WHEEL;
-			wheel.wheel.y = -1;
-			for (int first = 0;; ++first) {
-				const auto view = panel.item_view();
-				check(panel.firstVisibleItem == first, "Wheel skipped description rows");
-				check(
-					view.y >= 0 &&
-						view.y + (view.count - 1) * view.step + view.height <= panel.SizeY,
-					"Description glyph cells exceed the panel"
-				);
-				panel.redraw(); // The old code aborted here on the first long description.
-				control.free_list();
-				auto *row = static_cast<InfoPanelItem *>(panel.items->first);
-				for (int i = 0; i < first; ++i)
-					row = static_cast<InfoPanelItem *>(row->next);
-				for (int i = 0; i < view.count;
-					++i, row = static_cast<InfoPanelItem *>(row->next)) {
-					seen[first + i] = true;
-					control.add_item(row->ID_ptr.c_str(), row->font, row->color);
-				}
-				control.OffsY = view.y - ((control.SizeY - view.count * view.step) >> 1);
-				control.redraw();
-				const auto actual = fixture.pixels(output), wanted = fixture.pixels(expected);
-				check(has_ink(actual), "Long description rendered no ink");
-				// Ignore only the separate continuation indicators in the gutters.
-				check(
-					std::equal(
-						actual.begin() + view.y * panel.SizeX,
-						actual.begin() +
-							(view.y + (view.count - 1) * view.step + view.height) * panel.SizeX,
-						wanted.begin() + view.y * panel.SizeX
-					),
-					"Scrolling changed row fonts, colors or placement"
-				);
-				populate(); // Actual hover producers rebuild every frame.
-				check(
-					panel.item_view().count == view.count && panel.firstVisibleItem == first,
-					"Identical hover reset the reading position"
-				);
-				check(dispatcher.scroll_info_panel(wheel), "Overflow wheel event was not consumed");
-				if (panel.firstVisibleItem == first)
-					break;
-			}
-			check(
-				std::all_of(seen.begin(), seen.end(), [](bool value) { return value; }),
-				"Title, comment tail, parameters or price became inaccessible"
-			);
-			wheel.wheel.direction = SDL_MOUSEWHEEL_FLIPPED;
-			const int last = panel.firstVisibleItem;
-			check(
-				dispatcher.scroll_info_panel(wheel) && panel.firstVisibleItem == last - 1,
-				"Flipped wheel scrolled in the wrong direction"
-			);
-			{
-				// Exercise the real SDL key buffer and world inventory consumer,
-				// including its per-frame hover rebuild before reading the event.
-				KeyBuffer buffer;
-				auto *oldBuffer = KeyBuf;
-				const int oldLock = aciKeyboardLocked, oldX = iMouseX, oldY = iMouseY;
-				KeyBuf = &buffer;
-				aciKeyboardLocked = 0;
-				iMouseX = panel.PosX;
-				iMouseY = panel.PosY;
-				::key(&wheel);
-				dispatcher.KeyQuant();
-				check(
-					!buffer.size && panel.firstVisibleItem == last - 2,
-					"World inventory did not consume a buffered wheel event"
-				);
-				KeyBuf = oldBuffer;
-				aciKeyboardLocked = oldLock;
-				iMouseX = oldX;
-				iMouseY = oldY;
-			}
-			SDL_Event key{};
-			key.type = SDL_EVENT_KEY_DOWN;
-			key.key.scancode = SDL_SCANCODE_PAGEUP;
-			check(
-				dispatcher.scroll_info_panel(key) && panel.firstVisibleItem < last - 1,
-				"Page Up did not scroll the current description"
-			);
-			key.key.scancode = SDL_SCANCODE_PAGEDOWN;
-			dispatcher.flags = AS_ISCREEN | AS_ISCREEN_INV_MODE;
-			check(dispatcher.scroll_info_panel(key), "Escave descriptions cannot scroll");
-			const int oldX = iMouseX, oldY = iMouseY;
-			iMouseX = panel.PosX;
-			iMouseY = panel.PosY;
-			dispatcher.inv_mouse_move_quant();
-			dispatcher.inv_mouse_imove_quant();
-			check(
-				panel.items->Size == int(seen.size()), "Hovering the panel erased its description"
-			);
-			iMouseX = oldX;
-			iMouseY = oldY;
-			for (const int flags :
-				{AS_FULLSCR, AS_LOCKED, AS_TEXT_MODE, AS_CHAT_MODE, AS_INV_MOVE_ITEM, AS_ISCREEN}) {
-				dispatcher.flags = flags;
-				check(!dispatcher.scroll_info_panel(key), "Description stole another mode's input");
-			}
-			dispatcher.flags = 0;
-			output.flags |= EL_HIDE;
-			check(!dispatcher.scroll_info_panel(key), "Hidden description consumed input");
-			output.flags &= ~EL_HIDE;
-			comment += " Changed item.";
-			populate();
-			panel.item_view();
-			check(
-				panel.firstVisibleItem == 0, "New description inherited the old reading position"
-			);
-			panel.free_list();
-			panel.add_item("Short text", 1, 1);
-			panel.redraw();
-			control.free_list();
-			control.OffsY = 0;
-			control.add_item("Short text", 1, 1);
-			control.redraw();
-			check(
-				fixture.pixels(output) == fixture.pixels(expected) && !panel.scroll_items(1),
-				"Short description changed or became scrollable"
-			);
-			panel.set_text_pages({{"one"}, {"two"}}, 1);
-			check(
-				!dispatcher.scroll_info_panel(key) && panel.textPage == 0,
-				"Item scrolling advanced a Diagen page"
-			);
-			panel.free_list();
-			populate();
-			panel.SizeY = 1;
-			resize(output, panel.SizeX, panel.SizeY);
-			panel.redraw();
-			check(!panel.item_view().count && !panel.scroll_items(1), "Tiny panel overflowed");
-			dispatcher.iP = nullptr;
 		}
 	}
 }
@@ -581,8 +410,7 @@ void item_panel_scroll_test(RenderFixture &fixture) {
 
 void actint_flow_test(bool native) {
 	RenderFixture fixture(native);
-	item_panel_row_limit_test(fixture);
-	item_panel_scroll_test(fixture);
+	fixed_item_panel_test(fixture);
 	{
 		InfoPanel comments;
 		comments.flags |= IP_RANGE_FONT;

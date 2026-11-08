@@ -1056,16 +1056,6 @@ struct InfoPanel: public iListElement {
 	bool next_text_page();
 	void show_text_page();
 	void clear_items();
-	// Item descriptions retain their styled rows; only the visible window moves.
-	// Kept separate from dialogue pages and their Diagen click/animation contract.
-	int firstVisibleItem = 0;
-	std::string itemViewContent;
-	struct ItemView {
-		int count, y, step, height;
-	};
-	ItemView item_view();
-	bool scroll_items(int rows);
-	bool contains(int x, int y) const;
 
 	void move(int delta);
 
@@ -1430,7 +1420,6 @@ struct actIntDispatcher {
 	}
 
 	void KeyQuant(void);
-	bool scroll_info_panel(const SDL_Event &event);
 	void EventQuant(void);
 
 	void iKeyQuant(void);

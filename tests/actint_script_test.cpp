@@ -9,6 +9,7 @@
 #include "localization/catalog.h"
 #include "runtime.h"
 
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <cstring>
@@ -65,18 +66,35 @@ void parse(const char *input, const char *output, const char *encoding) {
 void comments(const char *input, const char *output, const char *locale) {
 	setLocale(locale);
 	aParseScript(input, output);
-	int count = 0;
+	int count = 0, described = 0, shop_described = 0;
 	for (auto *item = static_cast<invItem *>(aScrDisp->itemList->last); item;
 		item = static_cast<invItem *>(item->prev)) {
-		const auto &expected =
-			vangers::localization::catalog().text("items." + item->ID_ptr + "_COMMENTS");
+		++count;
+		const auto *expected =
+			vangers::localization::catalog().find_text("items." + item->ID_ptr + "_COMMENTS");
+		if (!expected) {
+			check(item->numComments == 0, "An originally empty comment became visible");
+			continue;
+		}
 		check(
-			item->numComments == 1 && item->comments[0] == expected,
+			item->numComments == 1 && item->comments[0] == *expected,
 			"A shared script profile lost part of a semantic item comment"
 		);
-		++count;
+		++described;
+		const bool shop = item->ID_ptr.front() == 'i';
+		shop_described += shop;
+		const auto comment_rows = 1 + std::count(expected->begin(), expected->end(), '\n');
+		check(comment_rows <= (shop ? 1 : 3), "Stock text exceeds its authored comment rows");
+		// Include title, optional parameter and price in the fixed panel budget.
+		check(
+			1 + comment_rows + (item->pTemplate ? 1 : 0) + 1 <= 5,
+			"Stock item text exceeds the fixed panel row budget"
+		);
 	}
-	check(count > 60, "Stock comment fixture is incomplete");
+	check(
+		count == 156 && described == 88 && shop_described == 15,
+		"Stock inventory/shop comment fixture is incomplete"
+	);
 	delete aScrDisp;
 	aScrDisp = nullptr;
 	delete aciML_D;
