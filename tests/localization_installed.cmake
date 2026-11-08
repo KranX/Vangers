@@ -17,8 +17,9 @@ FOREACH(locale en ru)
  IF(locale STREQUAL "ru")
   SET(expected "НОВАЯ ИГРА")
  ENDIF()
+ FILE(WRITE "${stage}/${locale}-expected.txt" "${expected}")
  EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E env --unset=VANGERS_LOCALES
-  "${stage}/bin/${exe}" --installed "${locale}" "${expected}"
+  "${stage}/bin/${exe}" --installed "${locale}" "${stage}/${locale}-expected.txt"
   WORKING_DIRECTORY "${stage}/old-data" RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr)
  IF(NOT result STREQUAL "0")
   MESSAGE(FATAL_ERROR "Installed ${locale}: ${result}: ${stdout}\n${stderr}")
@@ -29,15 +30,17 @@ FILE(COPY "${LOCALES}" DESTINATION "${stage}/old-data")
 FILE(READ "${stage}/old-data/locales/en/strings.toml" strings)
 STRING(REPLACE "NEW GAME" "LOCAL OVERRIDE" strings "${strings}")
 FILE(WRITE "${stage}/old-data/locales/en/strings.toml" "${strings}")
+FILE(WRITE "${stage}/override-expected.txt" "LOCAL OVERRIDE")
 EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E env --unset=VANGERS_LOCALES
- "${stage}/bin/${exe}" --installed en "LOCAL OVERRIDE"
+ "${stage}/bin/${exe}" --installed en "${stage}/override-expected.txt"
  WORKING_DIRECTORY "${stage}/old-data" RESULT_VARIABLE result)
 IF(NOT result STREQUAL "0")
  MESSAGE(FATAL_ERROR "The local override was ignored")
 ENDIF()
 EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E env "VANGERS_LOCALES=${stage}/missing"
- "${stage}/bin/${exe}" --installed en "NEW GAME"
- WORKING_DIRECTORY "${stage}/old-data" RESULT_VARIABLE result OUTPUT_QUIET ERROR_QUIET)
-IF(NOT result STREQUAL "1")
+ "${stage}/bin/${exe}" --installed en "${stage}/en-expected.txt"
+ WORKING_DIRECTORY "${stage}/old-data" RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr)
+STRING(FIND "${stderr}" "Invalid locale file" diagnostic)
+IF(NOT result STREQUAL "1" OR diagnostic LESS 0)
  MESSAGE(FATAL_ERROR "A broken explicit locale root was silently hidden")
 ENDIF()

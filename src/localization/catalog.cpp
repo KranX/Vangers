@@ -72,8 +72,10 @@ Table table(const toml::ordered_value &document, const std::string &name) {
 void paths(const Table &values) {
 	for (const auto &[key, value] : values) {
 		const std::filesystem::path path(value);
-		if (value.empty() || path.is_absolute() || path.has_root_name() ||
-			value.find('\\') != std::string::npos || value.find(':') != std::string::npos)
+		// Windows /file is rooted on the current drive, but is_absolute() is
+		// false because it has no drive name. Resources must have no root at all.
+		if (value.empty() || path.has_root_path() || value.find('\\') != std::string::npos ||
+			value.find(':') != std::string::npos)
 			throw std::runtime_error("Invalid locale resource path: " + key);
 		for (const auto &part : path)
 			if (part == "..")

@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <map>
 #include <stdexcept>
 #include <toml.hpp>
@@ -60,7 +61,13 @@ int main(int argc, char **argv) {
 	try {
 		if (argc == 4 && std::string(argv[1]) == "--installed") {
 			request_locale(argv[2]);
-			check(catalog().text("menu.iSTR_NEW_GAME") == argv[3], "Installed catalog not loaded");
+			// Read UTF-8 expectations as bytes, not through Windows' narrow argv
+			// conversion, which depends on the host's active code page.
+			std::ifstream expected_file(argv[3], std::ios::binary);
+			check(expected_file.is_open(), "Cannot open expected catalog text fixture");
+			const std::string expected{std::istreambuf_iterator<char>(expected_file), {}};
+			check(!expected_file.bad(), "Cannot read expected catalog text fixture");
+			check(catalog().text("menu.iSTR_NEW_GAME") == expected, "Installed catalog not loaded");
 			return 0;
 		}
 		check(argc == 2, "Expected stock package directory");
@@ -174,7 +181,13 @@ int main(int argc, char **argv) {
 		);
 		rejects([&] { Catalog c(temporary, "zz-test"); }, "Invalid UTF-8 accepted");
 		write(strings, "[strings]\n");
-		for (const auto *path : {"../outside", "/outside", "C:/outside", "folder\\file"}) {
+		for (const auto *path : {"../outside",
+				 "/outside",
+				 "/",
+				 "//server/share",
+				 "C:/outside",
+				 "C:relative",
+				 "folder\\file"}) {
 			write(manifest, std::string("[resources]\ndiagen = '") + path + "'\n");
 			rejects([&] { Catalog c(temporary, "zz-test"); }, "Unsafe resource path accepted");
 		}

@@ -5,6 +5,7 @@ FILE(MAKE_DIRECTORY "${stage}/build/src" "${stage}/game/locales/custom" "${stage
 FILE(WRITE "${stage}/build/src/vangers.exe" "fixture executable")
 FILE(WRITE "${stage}/game/locales/custom/keep.txt" "user-installed locale")
 FILE(COPY "${LOCALES}" DESTINATION "${stage}/build/src")
+FILE(WRITE "${stage}/ru-expected.txt" "НОВАЯ ИГРА")
 IF(HELPER STREQUAL "msys2")
  # Only path conversion and DLL inspection are platform-specific. All deployment
  # logic runs unmodified, including paths containing spaces and repeated copies.
@@ -39,7 +40,7 @@ FOREACH(pass RANGE 1 2)
  ENDIF()
  # Load the deployed catalog through the real loader as well as checking bytes.
  EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E env "VANGERS_LOCALES=${stage}/game/locales"
-  "${PROBE}" --installed ru "НОВАЯ ИГРА" RESULT_VARIABLE result)
+  "${PROBE}" --installed ru "${stage}/ru-expected.txt" RESULT_VARIABLE result)
  IF(NOT result STREQUAL "0")
   MESSAGE(FATAL_ERROR "Deployed catalogs cannot be loaded")
  ENDIF()
