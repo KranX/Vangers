@@ -44,6 +44,12 @@ $vangersExe = Join-Path $BuildDir 'src\vangers.exe'
 if (-not (Test-Path $vangersExe)) {
     throw "Built game not found at '$vangersExe'. Run build-msvc.ps1 first, or set -BuildDir."
 }
+$locales = Join-Path $BuildDir 'src\locales'
+foreach ($file in @('en\manifest.toml', 'en\strings.toml')) {
+    if (-not (Test-Path (Join-Path $locales $file) -PathType Leaf)) {
+        throw "Built locale catalogs not found at '$locales'. Build the project first."
+    }
+}
 
 $GameDir = [System.IO.Path]::GetFullPath($GameDir)
 New-Item -ItemType Directory -Force -Path $GameDir | Out-Null
@@ -52,6 +58,12 @@ Write-Host "Copying game to '$GameDir'..."
 
 # --- executables ------------------------------------------------------------
 Copy-Item $vangersExe $GameDir -Force
+# Copy contents so redeployment preserves user-installed languages without nesting.
+$localeDestination = Join-Path $GameDir 'locales'
+New-Item -ItemType Directory -Force -Path $localeDestination | Out-Null
+Get-ChildItem -LiteralPath $locales | ForEach-Object {
+    Copy-Item $_.FullName $localeDestination -Recurse -Force
+}
 foreach ($exe in @(
         (Join-Path $BuildDir 'surmap\surmap.exe'),
         (Join-Path $BuildDir 'server\vangers_server.exe'))) {

@@ -340,6 +340,24 @@ ADD_TEST(NAME localization_installed COMMAND ${CMAKE_COMMAND}
  "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/localization-install"
  -P "${CMAKE_CURRENT_SOURCE_DIR}/localization_installed.cmake")
 SET_TESTS_PROPERTIES(localization_installed PROPERTIES TIMEOUT 30)
+IF(UNIX)
+ FIND_PROGRAM(DEPLOY_BASH bash)
+ IF(DEPLOY_BASH)
+  ADD_TEST(NAME localization_deploy_msys2 COMMAND ${CMAKE_COMMAND}
+   "-DHELPER=msys2" "-DSHELL=${DEPLOY_BASH}" "-DPROBE=$<TARGET_FILE:localization_test>"
+   "-DSOURCE_ROOT=${PROJECT_SOURCE_DIR}" "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
+   "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/locale deploy" -P "${CMAKE_CURRENT_SOURCE_DIR}/localization_deploy.cmake")
+  SET_TESTS_PROPERTIES(localization_deploy_msys2 PROPERTIES TIMEOUT 30)
+ ENDIF()
+ENDIF()
+IF(WIN32)
+ FIND_PROGRAM(DEPLOY_POWERSHELL NAMES pwsh powershell REQUIRED)
+ ADD_TEST(NAME localization_deploy_msvc COMMAND ${CMAKE_COMMAND}
+  "-DHELPER=msvc" "-DSHELL=${DEPLOY_POWERSHELL}" "-DPROBE=$<TARGET_FILE:localization_test>"
+  "-DSOURCE_ROOT=${PROJECT_SOURCE_DIR}" "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
+  "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/locale deploy" -P "${CMAKE_CURRENT_SOURCE_DIR}/localization_deploy.cmake")
+ SET_TESTS_PROPERTIES(localization_deploy_msvc PROPERTIES TIMEOUT 60)
+ENDIF()
 ADD_TEST(NAME actint_comments COMMAND ${CMAKE_COMMAND}
  "-DSOURCE_PARSER=$<TARGET_FILE:actint_script_source_test>"
  "-DBINARY_PARSER=$<TARGET_FILE:actint_script_binary_test>"

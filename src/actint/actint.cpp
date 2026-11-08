@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include <algorithm>
 #include <stdexcept>
 
 #include "../runtime.h"
@@ -2657,6 +2658,7 @@ fncMenu::~fncMenu(void) {
 }
 
 InfoPanel::InfoPanel(void) {
+	PosX = PosY = 0;
 	anchor = 0;
 	ibs = NULL;
 	bml = NULL;
@@ -4437,6 +4439,8 @@ void InfoPanel::free_list(void) {
 }
 
 void InfoPanel::set_text_pages(vangers::text::Pages pages, int color) {
+	firstVisibleItem = 0;
+	itemViewContent.clear();
 	textPages = std::move(pages);
 	textPage = 0;
 	textColor = color;
@@ -4457,6 +4461,64 @@ bool InfoPanel::next_text_page() {
 	++textPage;
 	show_text_page();
 	return true;
+}
+
+InfoPanel::ItemView InfoPanel::item_view() {
+	const int step = std::max(
+		1, ((flags & IP_RANGE_FONT) ? aScrFonts32[font]->SizeY : aScrFonts[font]->SizeY) + vSpace
+	);
+	int height = 0;
+	auto *row = static_cast<InfoPanelItem *>(items->first);
+	for (int i = 0; i < items->Size; ++i, row = static_cast<InfoPanelItem *>(row->next)) {
+		const int face = row->font == -1 ? font : row->font;
+		height = std::max(
+			height, (flags & IP_RANGE_FONT) ? aScrFonts32[face]->SizeY : aScrFonts[face]->SizeY
+		);
+	}
+	// Item descriptions must also fit the authored row limit: the rectangular
+	// buffer may extend under a decorative frame. Other panels (e.g. vehicle
+	// statistics) are not the scrollable iP and retain their full fitting list.
+	const bool fits_rows = type != ACI_INFO_PANEL || items->Size <= std::max(1, MaxStr);
+	const int y = OffsY + ((SizeY - items->Size * step) >> 1);
+	if (!items->Size || (fits_rows && y >= 0 && y + (items->Size - 1) * step + height <= SizeY)) {
+		firstVisibleItem = 0;
+		itemViewContent.clear();
+		return {items->Size, y, step, height};
+	}
+	const int inset = std::abs(OffsY) + (SizeY >= height + 8 ? 4 : 0);
+	const int count =
+		SizeY - 2 * inset < height
+			? 0
+			: std::min({items->Size, std::max(1, MaxStr), 1 + (SizeY - 2 * inset - height) / step});
+	// Hover producers rebuild the list every frame. Retain the reading position
+	// for identical rows, but reset on a different item or different wrapping.
+	std::string content;
+	row = static_cast<InfoPanelItem *>(items->first);
+	for (int i = 0; i < items->Size; ++i, row = static_cast<InfoPanelItem *>(row->next)) {
+		content += row->ID_ptr;
+		content += '\0';
+	}
+	if (content != itemViewContent) {
+		itemViewContent = std::move(content);
+		firstVisibleItem = 0;
+	}
+	firstVisibleItem = std::clamp(firstVisibleItem, 0, items->Size - count);
+	return {count, std::max(0, (SizeY - (count - 1) * step - height) / 2), step, height};
+}
+
+bool InfoPanel::scroll_items(int rows) {
+	if (!textPages.empty())
+		return false;
+	const int count = item_view().count;
+	if (!count || count == items->Size)
+		return false;
+	firstVisibleItem = std::clamp(firstVisibleItem + rows, 0, items->Size - count);
+	set_redraw();
+	return true;
+}
+
+bool InfoPanel::contains(int x, int y) const {
+	return x >= PosX && y >= PosY && x - PosX < SizeX && y - PosY < SizeY;
 }
 
 void InfoPanel::clear_items() {
@@ -4704,6 +4766,10 @@ void InfoPanel::redraw(void) {
 	unsigned char *buf;
 	iScreenObject *obj;
 	InfoPanelItem *p = (InfoPanelItem *)items->first;
+	if (SizeX <= 0 || SizeY <= 0)
+		return;
+	const auto view = item_view();
+	const int count = view.count;
 
 	if (!iScreenOwner) {
 		buf = new unsigned char[SizeX * SizeY];
@@ -4721,12 +4787,11 @@ void InfoPanel::redraw(void) {
 	int b_col = (bCol == -1) ? aciCurColorScheme[ACI_BACK_COL] : bCol;
 	memset(buf, b_col, SizeX * SizeY);
 
-	if (!(flags & IP_RANGE_FONT))
-		y = OffsY + ((SizeY - items->Size * (aScrFonts[font]->SizeY + vSpace)) >> 1);
-	else
-		y = OffsY + ((SizeY - items->Size * (aScrFonts32[font]->SizeY + vSpace)) >> 1);
+	y = view.y;
+	for (i = 0; i < firstVisibleItem; ++i)
+		p = static_cast<InfoPanelItem *>(p->next);
 
-	for (i = 0; i < items->Size; i++) {
+	for (i = 0; i < count; i++) {
 		if (p->font == -1)
 			fnt = font;
 		else
@@ -4781,20 +4846,30 @@ void InfoPanel::redraw(void) {
 			else
 				x = OffsX + ((SizeX - aStrLen32Utf8((void *)p->ID_ptr.c_str(), font, hSpace)) >> 1);
 		}
-		if (y < 0)
-			ErrH.Abort("InfoPanel overflow...");
 		if (!(flags & IP_RANGE_FONT)) {
 			aPutStrUtf8(x, y, fnt, col, (unsigned char *)p->ID_ptr.c_str(), SizeX, buf, hSpace);
 		} else {
 			aPutStr32Utf8(x, y, fnt, col, col_sz, (void *)p->ID_ptr.c_str(), SizeX, buf, hSpace);
 		}
 
-		if (!(flags & IP_RANGE_FONT))
-			y += aScrFonts[font]->SizeY + vSpace;
-		else
-			y += aScrFonts32[font]->SizeY + vSpace;
+		y += view.step;
 
 		p = (InfoPanelItem *)p->next;
+	}
+	if (count && count < items->Size && SizeX >= 5) {
+		// Keep indicators next to the text, inside decorative panel borders.
+		// These are palette chevrons, not language-specific glyphs or assets.
+		if (view.y >= 4 && y - view.step + view.height <= SizeY - 4) {
+			const int colour = aciCurColorScheme[FM_SELECT_COL];
+			for (int dy = 0; dy < 3; ++dy)
+				for (int dx = -dy; dx <= dy; ++dx) {
+					if (firstVisibleItem)
+						buf[(view.y - 4 + dy) * SizeX + SizeX / 2 + dx] = colour;
+					if (firstVisibleItem + count < items->Size)
+						buf[(y - view.step + view.height + 3 - dy) * SizeX + SizeX / 2 + dx] =
+							colour;
+				}
+		}
 	}
 	if (!iScreenOwner) {
 		XGR_PutSpr(PosX, PosY, SizeX, SizeY, buf, XGR_BLACK_FON);
@@ -4874,6 +4949,34 @@ void aKeyObj::add_key(int k) {
 	iScanCode *p = new iScanCode;
 	p->code = k;
 	codes->connect((iListElement *)p);
+}
+
+bool actIntDispatcher::scroll_info_panel(const SDL_Event &event) {
+	if (!iP ||
+		(flags & (AS_FULLSCR | AS_LOCKED | AS_TEXT_MODE | AS_CHAT_MODE | AS_INV_MOVE_ITEM)) ||
+		((flags & AS_ISCREEN) && !(flags & AS_ISCREEN_INV_MODE)) ||
+		(!(flags & AS_ISCREEN) && curMode != AS_INV_MODE) || (iP->flags & IP_NO_REDRAW))
+		return false;
+	if (iP->iScreenOwner &&
+		(!(iP->iScreenOwner->flags & EL_DATA_LOADED) || (iP->iScreenOwner->flags & EL_HIDE)))
+		return false;
+	if (iP->iScreenOwner && iP->iScreenOwner->owner &&
+		(static_cast<iScreenObject *>(iP->iScreenOwner->owner)->flags & OBJ_HIDE))
+		return false;
+	int rows = 0;
+	if (event.type == SDL_EVENT_MOUSE_WHEEL && event.wheel.y != 0) {
+		// The current item is under the pointer, or the pointer is over its
+		// description. This also avoids losing hover text on the way to a panel.
+		rows = event.wheel.y > 0 ? -1 : 1;
+		if (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
+			rows = -rows;
+	} else if (event.type == SDL_EVENT_KEY_DOWN) {
+		if (event.key.scancode == SDL_SCANCODE_PAGEUP)
+			rows = -std::max(1, iP->item_view().count);
+		else if (event.key.scancode == SDL_SCANCODE_PAGEDOWN)
+			rows = std::max(1, iP->item_view().count);
+	}
+	return rows && iP->scroll_items(rows);
 }
 
 void actIntDispatcher::KeyQuant(void) {
@@ -5036,7 +5139,10 @@ void actIntDispatcher::KeyQuant(void) {
 	}
 
 	while (KeyBuf->size) {
-		k = sdlEventToCode(KeyBuf->get());
+		auto *event = KeyBuf->get();
+		if (scroll_info_panel(*event))
+			continue;
+		k = sdlEventToCode(event);
 		if (flags & AS_TEXT_MODE) {
 			if (iCheckKeyID(iKEY_SKIP_TEXT, k)) {
 				if (!ScrTextData->NextPage()) {
@@ -7437,6 +7543,9 @@ void actIntDispatcher::inv_mouse_move_quant(void) {
 
 	if (curMode != AS_INV_MODE)
 		return;
+	if (!(flags & AS_INV_MOVE_ITEM) && iP && iP->contains(iMouseX, iMouseY) &&
+		iP->textPages.empty() && iP->item_view().count < iP->items->Size)
+		return; // Keep a long description readable while the pointer is over it.
 
 	bt = get_button(ACI_WPN_PICKUP_BUTTON);
 	if (bt) {
@@ -7644,6 +7753,9 @@ void actIntDispatcher::inv_mouse_move_quant(void) {
 }
 
 void actIntDispatcher::inv_mouse_imove_quant(void) {
+	if (!(flags & AS_INV_MOVE_ITEM) && iP && iP->contains(iMouseX, iMouseY) &&
+		iP->textPages.empty() && iP->item_view().count < iP->items->Size)
+		return;
 	int mx, my, x, y;
 	invItem *p = NULL;
 	invItem *p1 = NULL;
