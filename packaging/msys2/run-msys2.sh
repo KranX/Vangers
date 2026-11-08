@@ -35,11 +35,20 @@ if [ ! -f "${BUILD_PATH}/src/vangers.exe" ]; then
 	echo "vangers.exe not found in '${BUILD_PATH}/src'. Build the project first." >&2
 	exit 1
 fi
+LOCALES="${BUILD_PATH}/src/locales"
+if [ ! -f "${LOCALES}/en/manifest.toml" ] || [ ! -f "${LOCALES}/en/strings.toml" ]; then
+	echo "Built locale catalogs not found in '${LOCALES}'. Build the project first." >&2
+	exit 1
+fi
 
 mkdir -p "${GAME_DIR}"
 
 echo "==> Copying game to ${GAME_DIR}"
 cp -f "${BUILD_PATH}/src/vangers.exe" "${GAME_DIR}/"
+# Merge contents, not the directory itself: repeated deployments must neither
+# create locales/locales nor remove additional user-installed languages.
+mkdir -p "${GAME_DIR}/locales"
+cp -R "${LOCALES}/." "${GAME_DIR}/locales/"
 if [ -f "${BUILD_PATH}/surmap/surmap.exe" ]; then
 	cp -f "${BUILD_PATH}/surmap/surmap.exe" "${GAME_DIR}/"
 fi

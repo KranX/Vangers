@@ -125,6 +125,7 @@ jobs:
         run: |
           mkdir -p artifacts
           cp build/src/vangers.exe artifacts/
+          cp -a build/src/locales artifacts/
           cp build/surmap/surmap.exe artifacts/
 
           for exe in artifacts/*.exe; do

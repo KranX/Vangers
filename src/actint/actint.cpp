@@ -12,7 +12,7 @@
 #include "a_consts.h"
 #include "aci_evnt.h"
 #include "aci_scr.h"
-#include "aci_str.h"
+
 #include "actint.h"
 #include "credits.h"
 #include "item_api.h"
@@ -2758,9 +2758,19 @@ CounterPanel::~CounterPanel(void) {
 }
 
 void InfoPanel::add_items(int num, char **ptr, int fnt, int col) {
-	int i;
-	for (i = 0; i < num; i++) {
-		add_item(ptr[i], fnt, col);
+	const int face = fnt == -1 ? font : fnt;
+	const auto measure = [&](std::string_view line) {
+		const std::string text(line);
+		return flags & IP_RANGE_FONT ? aStrLen32Utf8(text.c_str(), face, hSpace)
+									 : aStrLenUtf8(text.c_str(), face, hSpace);
+	};
+	for (int i = 0; i < num; i++) {
+		// A comment is one translation unit, not a locale-specific row in SCB.
+		// Keep intentional original breaks and use the existing measured wrapper.
+		for (const auto &line : vangers::text::layout_lines(
+				 ptr[i], std::max(1, SizeX - 1), measure, vangers::text::LineMode::Preserve, true
+			 ))
+			add_item(line.c_str(), fnt, col);
 	}
 }
 

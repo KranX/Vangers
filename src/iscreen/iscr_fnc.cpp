@@ -8,9 +8,9 @@
 #include "../network.h"
 #include "../xgamepad.h"
 
-#include "i_str.h"
 #include "ivmap.h"
 #include "iworld.h"
+#include "localization/catalog.h"
 
 #include "hfont.h"
 #include "i_mem.h"
@@ -397,68 +397,68 @@ XBuffer *iResBuf;
 const char *iVideoPath = "resource/video/";
 const char *iVideoPathDefault = "resource/video/";
 
-const char *iSTR_WORLD_NONE_CHAR = iSTR_WORLD_NONE_CHAR1;
-const char *iSTR_WORLD_FOSTRAL_CHAR = iSTR_WORLD_FOSTRAL_CHAR1;
-const char *iSTR_WORLD_GLORX_CHAR = iSTR_WORLD_GLORX_CHAR1;
-const char *iSTR_WORLD_NECROSS_CHAR = iSTR_WORLD_NECROSS_CHAR1;
-const char *iSTR_WORLD_XPLO_CHAR = iSTR_WORLD_XPLO_CHAR1;
-const char *iSTR_WORLD_KHOX_CHAR = iSTR_WORLD_KHOX_CHAR1;
-const char *iSTR_WORLD_BOOZEENA_CHAR = iSTR_WORLD_BOOZEENA_CHAR1;
-const char *iSTR_WORLD_WEEXOW_CHAR = iSTR_WORLD_WEEXOW_CHAR1;
-const char *iSTR_WORLD_HMOK_CHAR = iSTR_WORLD_HMOK_CHAR1;
-const char *iSTR_WORLD_THREALL_CHAR = iSTR_WORLD_THREALL_CHAR1;
-const char *iSTR_WORLD_ARK_A_ZNOY_CHAR = iSTR_WORLD_ARK_A_ZNOY_CHAR1;
-const char *iSTR_COLOR_GREEN_CHAR = iSTR_COLOR_GREEN_CHAR1;
-const char *iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR1;
-const char *iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR1;
-const char *iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR1;
-const char *iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR1;
-const char *iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR1;
-const char *iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR1;
-const char *iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR1;
-const char *iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR1;
-const char *iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR1;
-const char *iSTR_MUTE_ALL = iSTR_MUTE_ALL1;
-const char *iSTR_CLEAR_LOG = iSTR_CLEAR_LOG1;
-const char *iSTR_BACKGROUND = iSTR_BACKGROUND1;
-const char *iSTR_LEAVE_CHAT = iSTR_LEAVE_CHAT1;
-const char *iSTR_All = iSTR_All1;
-const char *iSTR_Yellow = iSTR_Yellow1;
-const char *iSTR_Orange = iSTR_Orange1;
-const char *iSTR_Blue = iSTR_Blue1;
-const char *iSTR_Green = iSTR_Green1;
-const char *iSTR_Red = iSTR_Red1;
-const char *iSTR_White = iSTR_White1;
-const char *iSTR_Gray = iSTR_Gray1;
-const char *iSTR_Black = iSTR_Black1;
-const char *iSTR_Camouflage = iSTR_Camouflage1;
-const char *iSTR_Patrol = iSTR_Patrol1;
-const char *iSTR_CleanUp = iSTR_CleanUp1;
-const char *iSTR_SpaceInUse = iSTR_SpaceInUse1;
-const char *iSTR_MBytes = iSTR_MBytes1;
-const char *iSTR_MP_Kills = iSTR_MP_Kills1;
-const char *iSTR_MP_Deaths = iSTR_MP_Deaths1;
-const char *iSTR_MP_DeathTimeMin = iSTR_MP_DeathTimeMin1;
-const char *iSTR_MP_DeathTimeMax = iSTR_MP_DeathTimeMax1;
-const char *iSTR_MP_Kills_rate = iSTR_MP_Kills_rate1;
-const char *iSTR_MP_Deaths_rate = iSTR_MP_Deaths_rate1;
-const char *iSTR_MP_Ware01_Delivery = iSTR_MP_Ware01_Delivery1;
-const char *iSTR_MP_Ware02_Delivery = iSTR_MP_Ware02_Delivery1;
-const char *iSTR_MP_Min_delivery_time = iSTR_MP_Min_delivery_time1;
-const char *iSTR_MP_Max_delivery_time = iSTR_MP_Max_delivery_time1;
-const char *iSTR_MP_StolenWares = iSTR_MP_StolenWares1;
-const char *iSTR_MP_Wares_lost = iSTR_MP_Wares_lost1;
-const char *iSTR_MP_Total_time = iSTR_MP_Total_time1;
-const char *iSTR_MP_Min_checkpoint_time = iSTR_MP_Min_checkpoint_time1;
-const char *iSTR_MP_Max_checkpoint_time = iSTR_MP_Max_checkpoint_time1;
-const char *iSTR_MP_1st_part_delivery = iSTR_MP_1st_part_delivery1;
-const char *iSTR_MP_2nd_part_delivery = iSTR_MP_2nd_part_delivery1;
-const char *iSTR_MP_Mechos_frame = iSTR_MP_Mechos_frame1;
-const char *iSTR_MP_Mechos_assembled_in = iSTR_MP_Mechos_assembled_in1;
-const char *iSTR_NONE = iSTR_NONE1;
-const char *iSTR_EMPTY_SLOT = iSTR_EMPTY_SLOT1;
-const char *iSTR_Checkpoints_Number = iSTR_Checkpoints_Number1;
-const char *iSTR_DefaultPassword = iSTR_DefaultPassword1;
+const char *iSTR_WORLD_NONE_CHAR = "";
+const char *iSTR_WORLD_FOSTRAL_CHAR = "";
+const char *iSTR_WORLD_GLORX_CHAR = "";
+const char *iSTR_WORLD_NECROSS_CHAR = "";
+const char *iSTR_WORLD_XPLO_CHAR = "";
+const char *iSTR_WORLD_KHOX_CHAR = "";
+const char *iSTR_WORLD_BOOZEENA_CHAR = "";
+const char *iSTR_WORLD_WEEXOW_CHAR = "";
+const char *iSTR_WORLD_HMOK_CHAR = "";
+const char *iSTR_WORLD_THREALL_CHAR = "";
+const char *iSTR_WORLD_ARK_A_ZNOY_CHAR = "";
+const char *iSTR_COLOR_GREEN_CHAR = "";
+const char *iSTR_COLOR_ORANGE_CHAR = "";
+const char *iSTR_COLOR_BLUE_CHAR = "";
+const char *iSTR_COLOR_YELLOW_CHAR = "";
+const char *iSTR_COLOR_RED_CHAR = "";
+const char *iSTR_COLOR_WHITE_CHAR = "";
+const char *iSTR_COLOR_GRAY_CHAR = "";
+const char *iSTR_COLOR_BLACK_CHAR = "";
+const char *iSTR_COLOR_CAMOUFLAGE_CHAR = "";
+const char *iSTR_COLOR_PATROL_CHAR = "";
+const char *iSTR_MUTE_ALL = "";
+const char *iSTR_CLEAR_LOG = "";
+const char *iSTR_BACKGROUND = "";
+const char *iSTR_LEAVE_CHAT = "";
+const char *iSTR_All = "";
+const char *iSTR_Yellow = "";
+const char *iSTR_Orange = "";
+const char *iSTR_Blue = "";
+const char *iSTR_Green = "";
+const char *iSTR_Red = "";
+const char *iSTR_White = "";
+const char *iSTR_Gray = "";
+const char *iSTR_Black = "";
+const char *iSTR_Camouflage = "";
+const char *iSTR_Patrol = "";
+const char *iSTR_CleanUp = "";
+const char *iSTR_SpaceInUse = "";
+const char *iSTR_MBytes = "";
+const char *iSTR_MP_Kills = "";
+const char *iSTR_MP_Deaths = "";
+const char *iSTR_MP_DeathTimeMin = "";
+const char *iSTR_MP_DeathTimeMax = "";
+const char *iSTR_MP_Kills_rate = "";
+const char *iSTR_MP_Deaths_rate = "";
+const char *iSTR_MP_Ware01_Delivery = "";
+const char *iSTR_MP_Ware02_Delivery = "";
+const char *iSTR_MP_Min_delivery_time = "";
+const char *iSTR_MP_Max_delivery_time = "";
+const char *iSTR_MP_StolenWares = "";
+const char *iSTR_MP_Wares_lost = "";
+const char *iSTR_MP_Total_time = "";
+const char *iSTR_MP_Min_checkpoint_time = "";
+const char *iSTR_MP_Max_checkpoint_time = "";
+const char *iSTR_MP_1st_part_delivery = "";
+const char *iSTR_MP_2nd_part_delivery = "";
+const char *iSTR_MP_Mechos_frame = "";
+const char *iSTR_MP_Mechos_assembled_in = "";
+const char *iSTR_NONE = "";
+const char *iSTR_EMPTY_SLOT = "";
+const char *iSTR_Checkpoints_Number = "";
+const char *iSTR_DefaultPassword = "";
 
 #ifdef iMOVE_MOUSE_OBJECTS
 iScreenObject *iMovedObj = NULL;
@@ -513,21 +513,16 @@ void iInit(void) {
 		iInitStrings();
 	}
 
+	if (!iFirstInit) {
 #ifdef _BINARY_SCRIPT_
-	if (!iFirstInit) {
-		if (lang() == RUSSIAN)
-			ParseScript("resource/iscreen/oftr2.scb");
-		else
-			ParseScript("resource/iscreen/oftr.scb");
-	}
+		ParseScript(vangers::localization::resource("iscreen.binary"));
 #else
-	if (!iFirstInit) {
-		if (lang() == RUSSIAN)
-			ParseScript("iscreen/oftr2.scr", "resource/iscreen/oftr2.scb");
-		else
-			ParseScript("iscreen/oftr.scr", "resource/iscreen/oftr.scb");
-	}
+		ParseScript(
+			vangers::localization::resource("iscreen.source"),
+			vangers::localization::resource("iscreen.binary")
+		);
 #endif
+	}
 
 	if (iFirstInit) {
 		iScrDisp->flags &= ~SD_EXIT;
@@ -619,10 +614,10 @@ void iQuantFirst(void) {
 		iPrepareOptions();
 
 #ifndef _ACI_SKIP_MAINMENU_
-		iSetOptionText(iPLAYER_NAME2, (lang() == RUSSIAN ? "Вангер" : "Vanger"));
+		iSetOptionText(iPLAYER_NAME2, vangers::localization::text("service.player_default"));
 		iSetOptionValueCHR(iPLAYER_PASSWORD, iSTR_DefaultPassword);
 		iSetOptionValueCHR(iHOST_NAME, "v5.vangers.net");
-		iSetOptionValueCHR(iSERVER_NAME, iSTR_NONE);
+		iSetOptionText(iSERVER_NAME, iSTR_NONE);
 		iSetOptionValueCHR(iPROXY_SERVER, "192.1.1.1");
 		iSetOptionValueCHR(iPROXY_PORT, "1080");
 		iSetOptionValueCHR(iSERVER_PORT, "2197");
@@ -2572,7 +2567,7 @@ void iPrepareSaveNames(void) {
 				}
 				obj->flags &= ~OBJ_LOCKED;
 			} else {
-				el->init_string(vangers::settings::cp866_to_utf8(iSTR_EMPTY_SLOT).c_str());
+				el->init_string(iSTR_EMPTY_SLOT);
 				obj->flags |= OBJ_LOCKED;
 				if (el1) {
 					el1->string[0] = 0;
@@ -2790,7 +2785,7 @@ void iDeleteControlKey(int id, int num) {
 	index = id * iKEY_OBJECT_SIZE + num;
 
 	if (iControlsStr && iControlsStr[index]) {
-		iControlsStr[index]->init_string(vangers::settings::cp866_to_utf8(iSTR_NONE).c_str());
+		iControlsStr[index]->init_string(iSTR_NONE);
 		obj = (iScreenObject *)iControlsStr[index]->owner;
 		obj->flags |= OBJ_REINIT;
 		obj->flags |= OBJ_MUST_REDRAW;
@@ -2806,10 +2801,10 @@ void iInitKeepOptions(void) {
 	iScreenObject *p;
 	if (iGetOptionValue(iKEEP_MODE)) {
 		sz = GetKeepSpace();
-		iResBuf->init();
-		*iResBuf < iSTR_SpaceInUse < " " <= sz < " " < iSTR_MBytes;
-		iSetOptionValueCHR(iKEEP_IN_USE, iResBuf->address());
-		iSetOptionValueCHR(iKEEP_CLEAN_UP, iSTR_CleanUp);
+		const auto label =
+			std::string(iSTR_SpaceInUse) + " " + std::to_string(sz) + " " + iSTR_MBytes;
+		iSetOptionText(iKEEP_IN_USE, label.c_str());
+		iSetOptionText(iKEEP_CLEAN_UP, iSTR_CleanUp);
 		p = (iScreenObject *)iGetObject("Graphics screen", "CleanUpObj");
 		if (p)
 			p->flags &= ~OBJ_LOCKED;
@@ -2840,135 +2835,78 @@ void iCreateServer(void) {
 }
 
 void iInitStrings(void) {
-	if (lang() == RUSSIAN) {
-		iSTR_WORLD_NONE_CHAR = iSTR_WORLD_NONE_CHAR2;
-		iSTR_WORLD_FOSTRAL_CHAR = iSTR_WORLD_FOSTRAL_CHAR2;
-		iSTR_WORLD_GLORX_CHAR = iSTR_WORLD_GLORX_CHAR2;
-		iSTR_WORLD_NECROSS_CHAR = iSTR_WORLD_NECROSS_CHAR2;
-		iSTR_WORLD_XPLO_CHAR = iSTR_WORLD_XPLO_CHAR2;
-		iSTR_WORLD_KHOX_CHAR = iSTR_WORLD_KHOX_CHAR2;
-		iSTR_WORLD_BOOZEENA_CHAR = iSTR_WORLD_BOOZEENA_CHAR2;
-		iSTR_WORLD_WEEXOW_CHAR = iSTR_WORLD_WEEXOW_CHAR2;
-		iSTR_WORLD_HMOK_CHAR = iSTR_WORLD_HMOK_CHAR2;
-		iSTR_WORLD_THREALL_CHAR = iSTR_WORLD_THREALL_CHAR2;
-		iSTR_WORLD_ARK_A_ZNOY_CHAR = iSTR_WORLD_ARK_A_ZNOY_CHAR2;
-		iSTR_COLOR_GREEN_CHAR = iSTR_COLOR_GREEN_CHAR2;
-		iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR2;
-		iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR2;
-		iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR2;
-		iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR2;
-		iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR2;
-		iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR2;
-		iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR2;
-		iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR2;
-		iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR2;
-		iSTR_MUTE_ALL = iSTR_MUTE_ALL2;
-		iSTR_CLEAR_LOG = iSTR_CLEAR_LOG2;
-		iSTR_BACKGROUND = iSTR_BACKGROUND2;
-		iSTR_LEAVE_CHAT = iSTR_LEAVE_CHAT2;
-		iSTR_All = iSTR_All2;
-		iSTR_Yellow = iSTR_Yellow2;
-		iSTR_Orange = iSTR_Orange2;
-		iSTR_Blue = iSTR_Blue2;
-		iSTR_Green = iSTR_Green2;
-		iSTR_Red = iSTR_Red2;
-		iSTR_White = iSTR_White2;
-		iSTR_Gray = iSTR_Gray2;
-		iSTR_Black = iSTR_Black2;
-		iSTR_Camouflage = iSTR_Camouflage2;
-		iSTR_Patrol = iSTR_Patrol2;
-		iSTR_CleanUp = iSTR_CleanUp2;
-		iSTR_SpaceInUse = iSTR_SpaceInUse2;
-		iSTR_MBytes = iSTR_MBytes2;
-
-		iSTR_MP_Kills = iSTR_MP_Kills2;
-		iSTR_MP_Deaths = iSTR_MP_Deaths2;
-		iSTR_MP_DeathTimeMin = iSTR_MP_DeathTimeMin2;
-		iSTR_MP_DeathTimeMax = iSTR_MP_DeathTimeMax2;
-		iSTR_MP_Kills_rate = iSTR_MP_Kills_rate2;
-		iSTR_MP_Deaths_rate = iSTR_MP_Deaths_rate2;
-		iSTR_MP_Ware01_Delivery = iSTR_MP_Ware01_Delivery2;
-		iSTR_MP_Ware02_Delivery = iSTR_MP_Ware02_Delivery2;
-		iSTR_MP_Min_delivery_time = iSTR_MP_Min_delivery_time2;
-		iSTR_MP_Max_delivery_time = iSTR_MP_Max_delivery_time2;
-		iSTR_MP_StolenWares = iSTR_MP_StolenWares2;
-		iSTR_MP_Wares_lost = iSTR_MP_Wares_lost2;
-		iSTR_MP_Total_time = iSTR_MP_Total_time2;
-		iSTR_MP_Min_checkpoint_time = iSTR_MP_Min_checkpoint_time2;
-		iSTR_MP_Max_checkpoint_time = iSTR_MP_Max_checkpoint_time2;
-		iSTR_MP_1st_part_delivery = iSTR_MP_1st_part_delivery2;
-		iSTR_MP_2nd_part_delivery = iSTR_MP_2nd_part_delivery2;
-		iSTR_MP_Mechos_frame = iSTR_MP_Mechos_frame2;
-		iSTR_MP_Mechos_assembled_in = iSTR_MP_Mechos_assembled_in2;
-		iSTR_NONE = iSTR_NONE2;
-		iSTR_EMPTY_SLOT = iSTR_EMPTY_SLOT2;
-		iSTR_Checkpoints_Number = iSTR_Checkpoints_Number2;
-		iSTR_DefaultPassword = iSTR_DefaultPassword2;
-	} else {
-		iSTR_WORLD_NONE_CHAR = iSTR_WORLD_NONE_CHAR1;
-		iSTR_WORLD_FOSTRAL_CHAR = iSTR_WORLD_FOSTRAL_CHAR1;
-		iSTR_WORLD_GLORX_CHAR = iSTR_WORLD_GLORX_CHAR1;
-		iSTR_WORLD_NECROSS_CHAR = iSTR_WORLD_NECROSS_CHAR1;
-		iSTR_WORLD_XPLO_CHAR = iSTR_WORLD_XPLO_CHAR1;
-		iSTR_WORLD_KHOX_CHAR = iSTR_WORLD_KHOX_CHAR1;
-		iSTR_WORLD_BOOZEENA_CHAR = iSTR_WORLD_BOOZEENA_CHAR1;
-		iSTR_WORLD_WEEXOW_CHAR = iSTR_WORLD_WEEXOW_CHAR1;
-		iSTR_WORLD_HMOK_CHAR = iSTR_WORLD_HMOK_CHAR1;
-		iSTR_WORLD_THREALL_CHAR = iSTR_WORLD_THREALL_CHAR1;
-		iSTR_WORLD_ARK_A_ZNOY_CHAR = iSTR_WORLD_ARK_A_ZNOY_CHAR1;
-		iSTR_COLOR_GREEN_CHAR = iSTR_COLOR_GREEN_CHAR1;
-		iSTR_COLOR_ORANGE_CHAR = iSTR_COLOR_ORANGE_CHAR1;
-		iSTR_COLOR_BLUE_CHAR = iSTR_COLOR_BLUE_CHAR1;
-		iSTR_COLOR_YELLOW_CHAR = iSTR_COLOR_YELLOW_CHAR1;
-		iSTR_COLOR_RED_CHAR = iSTR_COLOR_RED_CHAR1;
-		iSTR_COLOR_WHITE_CHAR = iSTR_COLOR_WHITE_CHAR1;
-		iSTR_COLOR_GRAY_CHAR = iSTR_COLOR_GRAY_CHAR1;
-		iSTR_COLOR_BLACK_CHAR = iSTR_COLOR_BLACK_CHAR1;
-		iSTR_COLOR_CAMOUFLAGE_CHAR = iSTR_COLOR_CAMOUFLAGE_CHAR1;
-		iSTR_COLOR_PATROL_CHAR = iSTR_COLOR_PATROL_CHAR1;
-		iSTR_MUTE_ALL = iSTR_MUTE_ALL1;
-		iSTR_CLEAR_LOG = iSTR_CLEAR_LOG1;
-		iSTR_BACKGROUND = iSTR_BACKGROUND1;
-		iSTR_LEAVE_CHAT = iSTR_LEAVE_CHAT1;
-		iSTR_All = iSTR_All1;
-		iSTR_Yellow = iSTR_Yellow1;
-		iSTR_Orange = iSTR_Orange1;
-		iSTR_Blue = iSTR_Blue1;
-		iSTR_Green = iSTR_Green1;
-		iSTR_Red = iSTR_Red1;
-		iSTR_White = iSTR_White1;
-		iSTR_Gray = iSTR_Gray1;
-		iSTR_Black = iSTR_Black1;
-		iSTR_Camouflage = iSTR_Camouflage1;
-		iSTR_Patrol = iSTR_Patrol1;
-		iSTR_CleanUp = iSTR_CleanUp1;
-		iSTR_SpaceInUse = iSTR_SpaceInUse1;
-		iSTR_MBytes = iSTR_MBytes1;
-
-		iSTR_MP_Kills = iSTR_MP_Kills1;
-		iSTR_MP_Deaths = iSTR_MP_Deaths1;
-		iSTR_MP_DeathTimeMin = iSTR_MP_DeathTimeMin1;
-		iSTR_MP_DeathTimeMax = iSTR_MP_DeathTimeMax1;
-		iSTR_MP_Kills_rate = iSTR_MP_Kills_rate1;
-		iSTR_MP_Deaths_rate = iSTR_MP_Deaths_rate1;
-		iSTR_MP_Ware01_Delivery = iSTR_MP_Ware01_Delivery1;
-		iSTR_MP_Ware02_Delivery = iSTR_MP_Ware02_Delivery1;
-		iSTR_MP_Min_delivery_time = iSTR_MP_Min_delivery_time1;
-		iSTR_MP_Max_delivery_time = iSTR_MP_Max_delivery_time1;
-		iSTR_MP_StolenWares = iSTR_MP_StolenWares1;
-		iSTR_MP_Wares_lost = iSTR_MP_Wares_lost1;
-		iSTR_MP_Total_time = iSTR_MP_Total_time1;
-		iSTR_MP_Min_checkpoint_time = iSTR_MP_Min_checkpoint_time1;
-		iSTR_MP_Max_checkpoint_time = iSTR_MP_Max_checkpoint_time1;
-		iSTR_MP_1st_part_delivery = iSTR_MP_1st_part_delivery1;
-		iSTR_MP_2nd_part_delivery = iSTR_MP_2nd_part_delivery1;
-		iSTR_MP_Mechos_frame = iSTR_MP_Mechos_frame1;
-		iSTR_MP_Mechos_assembled_in = iSTR_MP_Mechos_assembled_in1;
-		iSTR_NONE = iSTR_NONE1;
-		iSTR_EMPTY_SLOT = iSTR_EMPTY_SLOT1;
-		iSTR_Checkpoints_Number = iSTR_Checkpoints_Number1;
-		iSTR_DefaultPassword = iSTR_DefaultPassword1;
-	}
+	iSTR_WORLD_NONE_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_NONE_CHAR");
+	iSTR_WORLD_FOSTRAL_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_FOSTRAL_CHAR");
+	iSTR_WORLD_GLORX_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_GLORX_CHAR");
+	iSTR_WORLD_NECROSS_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_NECROSS_CHAR");
+	iSTR_WORLD_XPLO_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_XPLO_CHAR");
+	iSTR_WORLD_KHOX_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_KHOX_CHAR");
+	iSTR_WORLD_BOOZEENA_CHAR =
+		vangers::localization::legacy_text("iscreen.iSTR_WORLD_BOOZEENA_CHAR");
+	iSTR_WORLD_WEEXOW_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_WEEXOW_CHAR");
+	iSTR_WORLD_HMOK_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_HMOK_CHAR");
+	iSTR_WORLD_THREALL_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_THREALL_CHAR");
+	iSTR_WORLD_ARK_A_ZNOY_CHAR =
+		vangers::localization::legacy_text("iscreen.iSTR_WORLD_ARK_A_ZNOY_CHAR");
+	iSTR_COLOR_GREEN_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_GREEN_CHAR");
+	iSTR_COLOR_ORANGE_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_ORANGE_CHAR");
+	iSTR_COLOR_BLUE_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_BLUE_CHAR");
+	iSTR_COLOR_YELLOW_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_YELLOW_CHAR");
+	iSTR_COLOR_RED_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_RED_CHAR");
+	iSTR_COLOR_WHITE_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_WHITE_CHAR");
+	iSTR_COLOR_GRAY_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_GRAY_CHAR");
+	iSTR_COLOR_BLACK_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_BLACK_CHAR");
+	iSTR_COLOR_CAMOUFLAGE_CHAR =
+		vangers::localization::legacy_text("iscreen.iSTR_COLOR_CAMOUFLAGE_CHAR");
+	iSTR_COLOR_PATROL_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_PATROL_CHAR");
+	iSTR_MUTE_ALL = vangers::localization::legacy_text("iscreen.iSTR_MUTE_ALL");
+	iSTR_CLEAR_LOG = vangers::localization::legacy_text("iscreen.iSTR_CLEAR_LOG");
+	iSTR_BACKGROUND = vangers::localization::legacy_text("iscreen.iSTR_BACKGROUND");
+	iSTR_LEAVE_CHAT = vangers::localization::legacy_text("iscreen.iSTR_LEAVE_CHAT");
+	iSTR_All = vangers::localization::legacy_text("iscreen.iSTR_All");
+	iSTR_Yellow = vangers::localization::legacy_text("iscreen.iSTR_Yellow");
+	iSTR_Orange = vangers::localization::legacy_text("iscreen.iSTR_Orange");
+	iSTR_Blue = vangers::localization::legacy_text("iscreen.iSTR_Blue");
+	iSTR_Green = vangers::localization::legacy_text("iscreen.iSTR_Green");
+	iSTR_Red = vangers::localization::legacy_text("iscreen.iSTR_Red");
+	iSTR_White = vangers::localization::legacy_text("iscreen.iSTR_White");
+	iSTR_Gray = vangers::localization::legacy_text("iscreen.iSTR_Gray");
+	iSTR_Black = vangers::localization::legacy_text("iscreen.iSTR_Black");
+	iSTR_Camouflage = vangers::localization::legacy_text("iscreen.iSTR_Camouflage");
+	iSTR_Patrol = vangers::localization::legacy_text("iscreen.iSTR_Patrol");
+	iSTR_CleanUp = vangers::localization::text("iscreen.iSTR_CleanUp");
+	iSTR_SpaceInUse = vangers::localization::text("iscreen.iSTR_SpaceInUse");
+	iSTR_MBytes = vangers::localization::text("iscreen.iSTR_MBytes");
+	iSTR_MP_Kills = vangers::localization::legacy_text("iscreen.iSTR_MP_Kills");
+	iSTR_MP_Deaths = vangers::localization::legacy_text("iscreen.iSTR_MP_Deaths");
+	iSTR_MP_DeathTimeMin = vangers::localization::legacy_text("iscreen.iSTR_MP_DeathTimeMin");
+	iSTR_MP_DeathTimeMax = vangers::localization::legacy_text("iscreen.iSTR_MP_DeathTimeMax");
+	iSTR_MP_Kills_rate = vangers::localization::legacy_text("iscreen.iSTR_MP_Kills_rate");
+	iSTR_MP_Deaths_rate = vangers::localization::legacy_text("iscreen.iSTR_MP_Deaths_rate");
+	iSTR_MP_Ware01_Delivery = vangers::localization::legacy_text("iscreen.iSTR_MP_Ware01_Delivery");
+	iSTR_MP_Ware02_Delivery = vangers::localization::legacy_text("iscreen.iSTR_MP_Ware02_Delivery");
+	iSTR_MP_Min_delivery_time =
+		vangers::localization::legacy_text("iscreen.iSTR_MP_Min_delivery_time");
+	iSTR_MP_Max_delivery_time =
+		vangers::localization::legacy_text("iscreen.iSTR_MP_Max_delivery_time");
+	iSTR_MP_StolenWares = vangers::localization::legacy_text("iscreen.iSTR_MP_StolenWares");
+	iSTR_MP_Wares_lost = vangers::localization::legacy_text("iscreen.iSTR_MP_Wares_lost");
+	iSTR_MP_Total_time = vangers::localization::legacy_text("iscreen.iSTR_MP_Total_time");
+	iSTR_MP_Min_checkpoint_time =
+		vangers::localization::legacy_text("iscreen.iSTR_MP_Min_checkpoint_time");
+	iSTR_MP_Max_checkpoint_time =
+		vangers::localization::legacy_text("iscreen.iSTR_MP_Max_checkpoint_time");
+	iSTR_MP_1st_part_delivery =
+		vangers::localization::legacy_text("iscreen.iSTR_MP_1st_part_delivery");
+	iSTR_MP_2nd_part_delivery =
+		vangers::localization::legacy_text("iscreen.iSTR_MP_2nd_part_delivery");
+	iSTR_MP_Mechos_frame = vangers::localization::legacy_text("iscreen.iSTR_MP_Mechos_frame");
+	iSTR_MP_Mechos_assembled_in =
+		vangers::localization::legacy_text("iscreen.iSTR_MP_Mechos_assembled_in");
+	iSTR_NONE = vangers::localization::text("iscreen.iSTR_NONE");
+	iSTR_EMPTY_SLOT = vangers::localization::text("iscreen.iSTR_EMPTY_SLOT");
+	iSTR_Checkpoints_Number = vangers::localization::legacy_text("iscreen.iSTR_Checkpoints_Number");
+	iSTR_DefaultPassword = vangers::localization::legacy_text("iscreen.iSTR_DefaultPassword");
 }
 
 #ifdef iMOVE_MOUSE_OBJECTS

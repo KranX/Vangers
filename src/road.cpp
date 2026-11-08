@@ -3,6 +3,7 @@
 
 #include "global.h"
 #include "lang.h"
+#include "localization/catalog.h"
 
 #define SCREENSHOT
 
@@ -374,12 +375,16 @@ int xtInitApplication(void) {
 #ifdef ISCREEN_SCRIPT_COMPILER
 	extern int __internal_argc;
 	extern char **__internal_argv;
-	if (__internal_argc != 4 || strcmp(__internal_argv[1], "--compile-iscreen"))
+	if (__internal_argc != 4 || (strcmp(__internal_argv[1], "--compile-iscreen") &&
+									strcmp(__internal_argv[1], "--compile-actint") &&
+									strcmp(__internal_argv[1], "--compile-acs")))
 		ErrH.Abort(
-			"Usage: vangers_iscreen_compiler --compile-iscreen <source.scr> <output.scb>", XERR_USER
+			"Usage: vangers_iscreen_compiler --compile-{iscreen|actint|acs} <source.scr> "
+			"<output.scb>",
+			XERR_USER
 		);
 
-	CompileIScreenScript(__internal_argv[2], __internal_argv[3]);
+	CompileInterfaceScript(__internal_argv[1] + 10, __internal_argv[2], __internal_argv[3]);
 	return XT_TERMINATE_ID;
 #endif
 
@@ -472,6 +477,12 @@ int xtInitApplication(void) {
 	if (!user_settings.is_loaded()) {
 		const vangers::settings::SettingsLoadResult settings_result = user_settings.load();
 		vangers::settings::report_settings_diagnostic(settings_result.diagnostic);
+	}
+	try {
+		const auto &requested = vangers::localization::requested_locale();
+		setLocale(requested.empty() ? user_settings.get().locale : requested);
+	} catch (const std::exception &error) {
+		ErrH.Abort(error.what());
 	}
 	const vangers::settings::VideoSettings &startup_video = user_settings.get().video;
 
@@ -2562,19 +2573,7 @@ void LoadingMessage(int flush) {
 	char *str = getRC();
 	sysfont.draw(8, XGR_MAXY - 35, (unsigned char *)str, 255, -1);
 	XBuffer buf;
-	if (lang() == RUSSIAN) {
-		buf <
-			vangers::settings::utf8_to_cp866(vangers::settings::cp1251_to_utf8(zSTR_LOADING_800_RU))
-				.c_str();
-	} else if (lang() == GERMAN) {
-		if (XGR_MAXX == 800)
-			buf < "(C)1997-2014. Alle Rechte vorbehalten. Release Version 1.3. Gleich geht's "
-				  "weiter...";
-		else
-			buf < "Spiel wird geladen. Gleich geht's weiter...";
-	} else {
-		buf < "(C)1997-2014 All Rights Reserved. Release Version 1.3 Loading. Please wait...";
-	}
+	buf < vangers::localization::legacy_text("service.loading");
 	int len = MAX(strlen(str), strlen(buf.GetBuf()));
 	sysfont.draw(8, XGR_MAXY - 20, (unsigned char *)(buf.GetBuf()), 255, -1);
 	XGR_LineTo(8, XGR_MAXY - 45, len * 8 + 5 + 16, 2, 255);

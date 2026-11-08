@@ -35,8 +35,8 @@
 
 #include "../settings/settings.h"
 #include "../text/utf8.h"
-#include "aci_str.h"
 #include "actint.h"
+#include "localization/catalog.h"
 #include "text.h"
 #include "ttf_font.h"
 
@@ -614,43 +614,43 @@ int aci_dgMoodNext = -1;
 
 int aciAutoSaveFlag = 0;
 
-const char *aciSTR_ON = aciSTR_ON1;
-const char *aciSTR_OFF = aciSTR_OFF1;
-const char *aciSTR_DAY = aciSTR_DAY1;
-const char *aciSTR_UNDEFINED_PRICE = aciSTR_UNDEFINED_PRICE1;
-const char *aciSTR_PRICE = aciSTR_PRICE1;
-const char *aciSTR_EMPTY_SLOT = aciSTR_EMPTY_SLOT1;
-const char *aciSTR_UNNAMED_SAVE = aciSTR_UNNAMED_SAVE1;
-const char *aciSTR_AUTOSAVE = aciSTR_AUTOSAVE1;
-const char *aciSTR_WINS = aciSTR_WINS1;
-const char *aciSTR_LOSSES = aciSTR_LOSSES1;
-const char *aciSTR_LUCK = aciSTR_LUCK1;
-const char *aciSTR_DOMINANCE = aciSTR_DOMINANCE1;
-const char *aciSTR_BROKEN = aciSTR_BROKEN1;
-const char *aciSTR_ENERGY_SHIELD = aciSTR_ENERGY_SHIELD1;
-const char *aciSTR_RESTORING_SPEED = aciSTR_RESTORING_SPEED1;
-const char *aciSTR_MECHANIC_ARMOR = aciSTR_MECHANIC_ARMOR1;
-const char *aciSTR_VELOCITY = aciSTR_VELOCITY1;
-const char *aciSTR_SPIRAL_CAPACITY = aciSTR_SPIRAL_CAPACITY1;
-const char *aciSTR_AIR_RESERVE = aciSTR_AIR_RESERVE1;
-const char *aciSTR_DAMAGE = aciSTR_DAMAGE1;
-const char *aciSTR_LOAD = aciSTR_LOAD1;
-const char *aciSTR_SHOTS = aciSTR_SHOTS1;
-const char *aciSTR_BURST = aciSTR_BURST1;
-const char *aciSTR_WORKING_TIME = aciSTR_WORKING_TIME1;
-const char *aciSTR_SECONDS = aciSTR_SECONDS1;
-const char *aciSTR_IN_PACK = aciSTR_IN_PACK1;
-const char *aciSTR_NO_CASH = aciSTR_NO_CASH1;
-const char *aciSTR_PICKUP_ITEMS_OFF = aciSTR_PICKUP_ITEMS_OFF1;
-const char *aciSTR_PICKUP_WEAPONS_OFF = aciSTR_PICKUP_WEAPONS_OFF1;
-const char *aciSTR_PutThis = aciSTR_PutThis1;
-const char *aciSTR_Ware1 = aciSTR_Ware11;
-const char *aciSTR_Ware2 = aciSTR_Ware21;
-const char *aciSTR_Checkpoints = aciSTR_Checkpoints1;
+const char *aciSTR_ON = "";
+const char *aciSTR_OFF = "";
+const char *aciSTR_DAY = "";
+const char *aciSTR_UNDEFINED_PRICE = "";
+const char *aciSTR_PRICE = "";
+const char *aciSTR_EMPTY_SLOT = "";
+const char *aciSTR_UNNAMED_SAVE = "";
+const char *aciSTR_AUTOSAVE = "";
+const char *aciSTR_WINS = "";
+const char *aciSTR_LOSSES = "";
+const char *aciSTR_LUCK = "";
+const char *aciSTR_DOMINANCE = "";
+const char *aciSTR_BROKEN = "";
+const char *aciSTR_ENERGY_SHIELD = "";
+const char *aciSTR_RESTORING_SPEED = "";
+const char *aciSTR_MECHANIC_ARMOR = "";
+const char *aciSTR_VELOCITY = "";
+const char *aciSTR_SPIRAL_CAPACITY = "";
+const char *aciSTR_AIR_RESERVE = "";
+const char *aciSTR_DAMAGE = "";
+const char *aciSTR_LOAD = "";
+const char *aciSTR_SHOTS = "";
+const char *aciSTR_BURST = "";
+const char *aciSTR_WORKING_TIME = "";
+const char *aciSTR_SECONDS = "";
+const char *aciSTR_IN_PACK = "";
+const char *aciSTR_NO_CASH = "";
+const char *aciSTR_PICKUP_ITEMS_OFF = "";
+const char *aciSTR_PICKUP_WEAPONS_OFF = "";
+const char *aciSTR_PutThis = "";
+const char *aciSTR_Ware1 = "";
+const char *aciSTR_Ware2 = "";
+const char *aciSTR_Checkpoints = "";
 
-const char *aciSTR_RESTRICTIONS = aciSTR_RESTRICTIONS1;
-const char *aciSTR_STATISTICS = aciSTR_STATISTICS1;
-const char *aciSTR_MINUTES = aciSTR_MINUTES1;
+const char *aciSTR_RESTRICTIONS = "";
+const char *aciSTR_STATISTICS = "";
+const char *aciSTR_MINUTES = "";
 
 int aciItmTextQueueSize = 0;
 int aciItmTextQueueCur = 0;
@@ -707,42 +707,14 @@ void aInit(void) {
 		aciTreeData->load("resource/iscreen/ldata/l7/border.xbm");
 	}
 
+	using vangers::localization::resource;
+	const std::string variant = actintLowResFlag ? "actint.low" : "actint.high";
 #ifdef _BINARY_SCRIPT_
-	if (actintLowResFlag) {
-		if (lang() == RUSSIAN) {
-			aParseScript("resource/actint/aci_low2.scb");
-			acsParseScript("resource/actint/acs_low2.scb");
-		} else {
-			aParseScript("resource/actint/aci_low.scb");
-			acsParseScript("resource/actint/acs_low.scb");
-		}
-	} else {
-		if (lang() == RUSSIAN) {
-			aParseScript("resource/actint/aci_hi2.scb");
-			acsParseScript("resource/actint/acs_low2.scb");
-		} else {
-			aParseScript("resource/actint/aci_hi.scb");
-			acsParseScript("resource/actint/acs_low.scb");
-		}
-	}
+	aParseScript(resource(variant + ".binary"));
+	acsParseScript(resource("acs.binary"));
 #else
-	if (actintLowResFlag) {
-		if (lang() == RUSSIAN) {
-			aParseScript("actint/aci_low2.scr", "resource/actint/aci_low2.scb");
-			acsParseScript("actint/acs_low2.scr", "resource/actint/acs_low2.scb");
-		} else {
-			aParseScript("actint/aci_low.scr", "resource/actint/aci_low.scb");
-			acsParseScript("actint/acs_low.scr", "resource/actint/acs_low.scb");
-		}
-	} else {
-		if (lang() == RUSSIAN) {
-			aParseScript("actint/aci_hi2.scr", "resource/actint/aci_hi2.scb");
-			acsParseScript("actint/acs_low2.scr", "resource/actint/acs_low2.scb");
-		} else {
-			aParseScript("actint/aci_hi.scr", "resource/actint/aci_hi.scb");
-			acsParseScript("actint/acs_low.scr", "resource/actint/acs_low.scb");
-		}
-	}
+	aParseScript(resource(variant + ".source"), resource(variant + ".binary"));
+	acsParseScript(resource("acs.source"), resource("acs.binary"));
 #endif
 	a_calc_tables();
 
@@ -4377,42 +4349,28 @@ void aciGetEleech(void) {
 }
 
 char *aciGetItemLoad(invItem *p, int mode) {
-	char *ptr;
-	aciXConv->init();
-
-	if (p->pTemplate) {
-		switch (mode) {
-		case 0:
-			if (p->flags & INV_ITEM_SHOW_ESCAVE) {
-				if (p->item_ptr)
-					sprintf(
-						aciXConv->address(), p->pTemplate, aciGetItemEscave(p->item_ptr->data1)
-					);
-			} else {
-				if (p->item_ptr)
-					sprintf(aciXConv->address(), p->pTemplate, p->item_ptr->data1);
-			}
-			break;
-		case 1:
-			if (p->flags & INV_ITEM_SHOW_ESCAVE) {
-				if (p->uvsDataPtr)
-					sprintf(
-						aciXConv->address(),
-						p->pTemplate,
-						aciGetItemEscave(((uvsActInt *)p->uvsDataPtr)->param2)
-					);
-			} else {
-				if (p->uvsDataPtr)
-					sprintf(
-						aciXConv->address(), p->pTemplate, ((uvsActInt *)p->uvsDataPtr)->param2
-					);
-			}
-			break;
-		}
+	// Borrowed until the next call, as with the former shared conversion buffer.
+	static std::string formatted;
+	formatted.clear();
+	if (!p->pTemplate)
+		return formatted.data();
+	int value;
+	if (mode == 0 && p->item_ptr)
+		value = p->item_ptr->data1;
+	else if (mode == 1 && p->uvsDataPtr)
+		value = ((uvsActInt *)p->uvsDataPtr)->param2;
+	else
+		return formatted.data();
+	try {
+		if (p->flags & INV_ITEM_SHOW_ESCAVE) {
+			const char *name = aciGetItemEscave(value);
+			formatted = vangers::localization::format_text(p->pTemplate, name ? name : "");
+		} else
+			formatted = vangers::localization::format_integer(p->pTemplate, value);
+	} catch (const std::exception &error) {
+		ErrH.Abort(error.what());
 	}
-	ptr = aciXConv->address();
-
-	return ptr;
+	return formatted.data();
 }
 
 void aciAddTeleportMenuItem(int id, int fnc_id) {
@@ -7189,83 +7147,42 @@ void aciSetRedraw(void) {
 }
 
 void aciInitStrings(void) {
-	if (lang() != RUSSIAN) {
-		aciSTR_ON = aciSTR_ON1;
-		aciSTR_OFF = aciSTR_OFF1;
-		aciSTR_DAY = aciSTR_DAY1;
-		aciSTR_UNDEFINED_PRICE = aciSTR_UNDEFINED_PRICE1;
-		aciSTR_PRICE = aciSTR_PRICE1;
-		aciSTR_EMPTY_SLOT = aciSTR_EMPTY_SLOT1;
-		aciSTR_UNNAMED_SAVE = aciSTR_UNNAMED_SAVE1;
-		aciSTR_AUTOSAVE = aciSTR_AUTOSAVE1;
-		aciSTR_WINS = aciSTR_WINS1;
-		aciSTR_LOSSES = aciSTR_LOSSES1;
-		aciSTR_LUCK = aciSTR_LUCK1;
-		aciSTR_DOMINANCE = aciSTR_DOMINANCE1;
-		aciSTR_BROKEN = aciSTR_BROKEN1;
-		aciSTR_ENERGY_SHIELD = aciSTR_ENERGY_SHIELD1;
-		aciSTR_RESTORING_SPEED = aciSTR_RESTORING_SPEED1;
-		aciSTR_MECHANIC_ARMOR = aciSTR_MECHANIC_ARMOR1;
-		aciSTR_VELOCITY = aciSTR_VELOCITY1;
-		aciSTR_SPIRAL_CAPACITY = aciSTR_SPIRAL_CAPACITY1;
-		aciSTR_AIR_RESERVE = aciSTR_AIR_RESERVE1;
-		aciSTR_DAMAGE = aciSTR_DAMAGE1;
-		aciSTR_LOAD = aciSTR_LOAD1;
-		aciSTR_SHOTS = aciSTR_SHOTS1;
-		aciSTR_BURST = aciSTR_BURST1;
-		aciSTR_WORKING_TIME = aciSTR_WORKING_TIME1;
-		aciSTR_SECONDS = aciSTR_SECONDS1;
-		aciSTR_IN_PACK = aciSTR_IN_PACK1;
-		aciSTR_NO_CASH = aciSTR_NO_CASH1;
-		aciSTR_PICKUP_ITEMS_OFF = aciSTR_PICKUP_ITEMS_OFF1;
-		aciSTR_PICKUP_WEAPONS_OFF = aciSTR_PICKUP_WEAPONS_OFF1;
-		aciSTR_PutThis = aciSTR_PutThis1;
-		aciSTR_Ware1 = aciSTR_Ware11;
-		aciSTR_Ware2 = aciSTR_Ware21;
-		aciSTR_Checkpoints = aciSTR_Checkpoints1;
-
-		aciSTR_RESTRICTIONS = aciSTR_RESTRICTIONS1;
-		aciSTR_STATISTICS = aciSTR_STATISTICS1;
-		aciSTR_MINUTES = aciSTR_MINUTES1;
-	} else {
-		aciSTR_ON = aciSTR_ON2;
-		aciSTR_OFF = aciSTR_OFF2;
-		aciSTR_DAY = aciSTR_DAY2;
-		aciSTR_UNDEFINED_PRICE = aciSTR_UNDEFINED_PRICE2;
-		aciSTR_PRICE = aciSTR_PRICE2;
-		aciSTR_EMPTY_SLOT = aciSTR_EMPTY_SLOT2;
-		aciSTR_UNNAMED_SAVE = aciSTR_UNNAMED_SAVE2;
-		aciSTR_AUTOSAVE = aciSTR_AUTOSAVE2;
-		aciSTR_WINS = aciSTR_WINS2;
-		aciSTR_LOSSES = aciSTR_LOSSES2;
-		aciSTR_LUCK = aciSTR_LUCK2;
-		aciSTR_DOMINANCE = aciSTR_DOMINANCE2;
-		aciSTR_BROKEN = aciSTR_BROKEN2;
-		aciSTR_ENERGY_SHIELD = aciSTR_ENERGY_SHIELD2;
-		aciSTR_RESTORING_SPEED = aciSTR_RESTORING_SPEED2;
-		aciSTR_MECHANIC_ARMOR = aciSTR_MECHANIC_ARMOR2;
-		aciSTR_VELOCITY = aciSTR_VELOCITY2;
-		aciSTR_SPIRAL_CAPACITY = aciSTR_SPIRAL_CAPACITY2;
-		aciSTR_AIR_RESERVE = aciSTR_AIR_RESERVE2;
-		aciSTR_DAMAGE = aciSTR_DAMAGE2;
-		aciSTR_LOAD = aciSTR_LOAD2;
-		aciSTR_SHOTS = aciSTR_SHOTS2;
-		aciSTR_BURST = aciSTR_BURST2;
-		aciSTR_WORKING_TIME = aciSTR_WORKING_TIME2;
-		aciSTR_SECONDS = aciSTR_SECONDS2;
-		aciSTR_IN_PACK = aciSTR_IN_PACK2;
-		aciSTR_NO_CASH = aciSTR_NO_CASH2;
-		aciSTR_PICKUP_ITEMS_OFF = aciSTR_PICKUP_ITEMS_OFF2;
-		aciSTR_PICKUP_WEAPONS_OFF = aciSTR_PICKUP_WEAPONS_OFF2;
-		aciSTR_PutThis = aciSTR_PutThis2;
-		aciSTR_Ware1 = aciSTR_Ware12;
-		aciSTR_Ware2 = aciSTR_Ware22;
-		aciSTR_Checkpoints = aciSTR_Checkpoints2;
-
-		aciSTR_RESTRICTIONS = aciSTR_RESTRICTIONS2;
-		aciSTR_STATISTICS = aciSTR_STATISTICS2;
-		aciSTR_MINUTES = aciSTR_MINUTES2;
-	}
+	aciSTR_ON = vangers::localization::text("actint.aciSTR_ON");
+	aciSTR_OFF = vangers::localization::text("actint.aciSTR_OFF");
+	aciSTR_DAY = vangers::localization::text("actint.aciSTR_DAY");
+	aciSTR_UNDEFINED_PRICE = vangers::localization::text("actint.aciSTR_UNDEFINED_PRICE");
+	aciSTR_PRICE = vangers::localization::text("actint.aciSTR_PRICE");
+	aciSTR_EMPTY_SLOT = vangers::localization::text("actint.aciSTR_EMPTY_SLOT");
+	aciSTR_UNNAMED_SAVE = vangers::localization::text("actint.aciSTR_UNNAMED_SAVE");
+	aciSTR_AUTOSAVE = vangers::localization::text("actint.aciSTR_AUTOSAVE");
+	aciSTR_WINS = vangers::localization::text("actint.aciSTR_WINS");
+	aciSTR_LOSSES = vangers::localization::text("actint.aciSTR_LOSSES");
+	aciSTR_LUCK = vangers::localization::text("actint.aciSTR_LUCK");
+	aciSTR_DOMINANCE = vangers::localization::text("actint.aciSTR_DOMINANCE");
+	aciSTR_BROKEN = vangers::localization::text("actint.aciSTR_BROKEN");
+	aciSTR_ENERGY_SHIELD = vangers::localization::text("actint.aciSTR_ENERGY_SHIELD");
+	aciSTR_RESTORING_SPEED = vangers::localization::text("actint.aciSTR_RESTORING_SPEED");
+	aciSTR_MECHANIC_ARMOR = vangers::localization::text("actint.aciSTR_MECHANIC_ARMOR");
+	aciSTR_VELOCITY = vangers::localization::text("actint.aciSTR_VELOCITY");
+	aciSTR_SPIRAL_CAPACITY = vangers::localization::text("actint.aciSTR_SPIRAL_CAPACITY");
+	aciSTR_AIR_RESERVE = vangers::localization::text("actint.aciSTR_AIR_RESERVE");
+	aciSTR_DAMAGE = vangers::localization::text("actint.aciSTR_DAMAGE");
+	aciSTR_LOAD = vangers::localization::text("actint.aciSTR_LOAD");
+	aciSTR_SHOTS = vangers::localization::text("actint.aciSTR_SHOTS");
+	aciSTR_BURST = vangers::localization::text("actint.aciSTR_BURST");
+	aciSTR_WORKING_TIME = vangers::localization::text("actint.aciSTR_WORKING_TIME");
+	aciSTR_SECONDS = vangers::localization::text("actint.aciSTR_SECONDS");
+	aciSTR_IN_PACK = vangers::localization::text("actint.aciSTR_IN_PACK");
+	aciSTR_NO_CASH = vangers::localization::text("actint.aciSTR_NO_CASH");
+	aciSTR_PICKUP_ITEMS_OFF = vangers::localization::text("actint.aciSTR_PICKUP_ITEMS_OFF");
+	aciSTR_PICKUP_WEAPONS_OFF = vangers::localization::text("actint.aciSTR_PICKUP_WEAPONS_OFF");
+	aciSTR_PutThis = vangers::localization::text("actint.aciSTR_PutThis");
+	aciSTR_Ware1 = vangers::localization::text("actint.aciSTR_Ware1");
+	aciSTR_Ware2 = vangers::localization::text("actint.aciSTR_Ware2");
+	aciSTR_Checkpoints = vangers::localization::text("actint.aciSTR_Checkpoints");
+	aciSTR_RESTRICTIONS = vangers::localization::text("actint.aciSTR_RESTRICTIONS");
+	aciSTR_STATISTICS = vangers::localization::text("actint.aciSTR_STATISTICS");
+	aciSTR_MINUTES = vangers::localization::text("actint.aciSTR_MINUTES");
 }
 
 char *aciGetItemEscave(int p2) {
@@ -7422,10 +7339,7 @@ void aciInitEndGame(int id) {
 	}
 	switch (GameOverID) {
 	case GAME_OVER_EXPLOSION:
-		if (lang() == RUSSIAN)
-			p->SetName("img/img7.bmp");
-		else
-			p->SetName("img/img0.bmp");
+		p->SetName(vangers::localization::resource("image.explosion"));
 
 		p->SetFlag(0, IMG_RTO_CDTRACK_TIME);
 		break;
@@ -7535,10 +7449,7 @@ void aciPrepareEndImage(void) {
 
 	p = (ShowImageRTO *)xtGetRuntimeObject(RTO_SHOW_IMAGE_ID);
 	p->SetNumFiles(1);
-	if (lang() == RUSSIAN)
-		p->SetName("img/img8.bmp", 0);
-	else
-		p->SetName("img/img6.bmp", 0);
+	p->SetName(vangers::localization::resource("image.ending"), 0);
 	p->SetFlag(0, IMG_RTO_CD_IMAGE);
 	p->SetNext(XT_TERMINATE_ID);
 }

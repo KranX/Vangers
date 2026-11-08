@@ -1,5 +1,6 @@
 #include "../global.h"
 #include "lang.h"
+#include "localization/catalog.h"
 
 #define LOWLEVEL_OUTPUT
 // #define SAVE_ABILITY
@@ -107,10 +108,7 @@ void ivMapPrepare(void) {
 	if (!ivMap)
 		ivMap = new ivrtMap;
 	if (!actIntLog) {
-		if (lang() != RUSSIAN)
-			ivMap->load("resource/iscreen/mainmenu.ini");
-		else
-			ivMap->load("resource/iscreen/mainmenu2.ini");
+		ivMap->load(vangers::localization::resource("mainmenu.map"));
 	} else {
 		ivMap->load(aci_ivMapName);
 	}

@@ -336,8 +336,106 @@ void actint_counter_render_test(bool native) {
 }
 
 void aciInitPanel(InfoPanel *, const char *);
+namespace {
+void fixed_item_panel_test(RenderFixture &fixture) {
+	for (const bool range : {false, true}) {
+		iScreenObject owner;
+		iBitmapElement output, expected;
+		resize(output, 261, 89);
+		resize(expected, 261, 89);
+		output.owner = &owner;
+		InfoPanel panel;
+		panel.SizeX = output.SizeX;
+		panel.SizeY = output.SizeY;
+		panel.vSpace = -2;
+		panel.bCol = 0;
+		panel.flags = range ? IP_RANGE_FONT : 0;
+		panel.iScreenOwner = &output;
+		for (const int rows : {3, 4, 5}) {
+			panel.free_list();
+			panel.add_item("Title", -1, 1);
+			for (int i = 0; i < rows - 3; ++i)
+				panel.add_item("Описание");
+			panel.add_item("Resource: 42");
+			panel.add_item("Price: 150", -1, 1);
+			const int height = range ? aScrFonts32[0]->SizeY : aScrFonts[0]->SizeY;
+			const int step = height + panel.vSpace;
+			int y = (panel.SizeY - rows * step) >> 1;
+			check(
+				y >= 0 && y + (rows - 1) * step + height <= panel.SizeY,
+				"Fixed-row fixture exceeds the original panel"
+			);
+			xgr::text::prepare(expected.fdata, panel.SizeX, panel.SizeY);
+			std::fill_n(expected.fdata, panel.SizeX * panel.SizeY, 0);
+			auto *row = panel.items->first;
+			for (int i = 0; i < rows; ++i, row = row->next, y += step) {
+				const auto *text = row->ID_ptr.c_str();
+				const int width = range ? aStrLen32Utf8(text, 0, panel.hSpace)
+										: aStrLenUtf8(text, 0, panel.hSpace);
+				const int x = (panel.SizeX - width) >> 1;
+				// The fixture's scheme has palette index/gradient size 1 in every
+				// field. Render each original row directly, without InfoPanel state.
+				if (range)
+					aPutStr32Utf8(
+						x, y, 0, 0x10001, 0x10001, text, panel.SizeX, expected.fdata, panel.hSpace
+					);
+				else
+					aPutStrUtf8(
+						x,
+						y,
+						0,
+						0x1010101,
+						text,
+						panel.SizeX,
+						(unsigned char *)expected.fdata,
+						panel.hSpace
+					);
+			}
+			for (const int type : {ACI_INFO_PANEL, ACI_PRICE_PANEL, ACI_ANSWER_PANEL}) {
+				panel.type = type;
+				panel.redraw();
+				check(
+					fixture.pixels(output) == fixture.pixels(expected),
+					"Fixed panel hid rows, moved text or added continuation arrows"
+				);
+				check(
+					panel.items->Size == rows && panel.textPages.empty(),
+					"Fixed description became paginated"
+				);
+			}
+		}
+	}
+}
+} // namespace
+
 void actint_flow_test(bool native) {
 	RenderFixture fixture(native);
+	fixed_item_panel_test(fixture);
+	{
+		InfoPanel comments;
+		comments.flags |= IP_RANGE_FONT;
+		comments.SizeX = 600;
+		comments.SizeY = 300;
+		std::string text = "Самонаводящиеся боеприпасы\nдля Спитл Системы";
+		char *value = text.data();
+		comments.add_items(1, &value);
+		check(comments.items->Size == 2, "Semantic comment lost original hard breaks");
+		check(comments.items->last->ID_ptr == "для Спитл Системы", "Last comment line lost");
+		comments.free_list();
+		comments.SizeX = 150;
+		comments.add_items(1, &value);
+		std::string restored;
+		auto *row = comments.items->first;
+		for (int i = 0; i < comments.items->Size; ++i, row = row->next) {
+			check(
+				aStrLen32Utf8(row->ID_ptr.c_str(), 0, comments.hSpace) < comments.SizeX,
+				"Measured comment exceeds the panel"
+			);
+			restored += row->ID_ptr;
+		}
+		text.erase(text.find('\n'), 1);
+		check(restored == text, "Comment wrapping lost translated text");
+	}
 	InfoPanel panel;
 	panel.font = 0;
 	panel.SizeX = 150;

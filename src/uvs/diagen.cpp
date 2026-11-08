@@ -6,6 +6,7 @@
 
 #include "../global.h"
 #include "lang.h"
+#include "localization/catalog.h"
 
 #include "../common.h"
 #include "../settings/text_encoding.h"
@@ -150,11 +151,7 @@ static int eventOUT;
 static FileBox *FBox;
 
 const char *DiagenTextName() {
-	if (lang() == RUSSIAN) {
-		return "diagen.text";
-	}
-
-	return "diagen_eng.text";
+	return vangers::localization::resource("diagen");
 }
 // DiagenDispatcher* nDD;
 
@@ -572,10 +569,21 @@ void dgFile::load(char *fname, int _len, bool verbose) {
 		// Flat historical fixtures/mod sources retain their existing input layout.
 		const std::filesystem::path logical(fname);
 		auto source = logical;
+		const auto &requested = vangers::localization::requested_locale();
+		const auto directory = logical.parent_path() / (requested.empty() ? "en" : requested);
 		if ((logical.extension() == ".query" || logical.extension() == ".text") &&
 			(std::filesystem::is_directory(logical.parent_path() / "ru") ||
-				std::filesystem::is_directory(logical.parent_path() / "en")))
-			source = logical.parent_path() / (lang() == RUSSIAN ? "ru" : "en") / logical.filename();
+				std::filesystem::is_directory(logical.parent_path() / "en") ||
+				std::filesystem::is_directory(directory))) {
+			source = directory / logical.filename();
+			const auto english = logical.parent_path() / "en" / logical.filename();
+			if (!std::filesystem::exists(source) && directory != english.parent_path() &&
+				std::filesystem::exists(english)) {
+				std::cerr << "Localization: missing Diagen source " << source.string() << "; using "
+						  << english.string() << '\n';
+				source = english;
+			}
+		}
 		XStream ff(source.string().c_str(), XS_IN);
 		buf = new char[(len = ff.size()) + 1];
 		ff.read(buf, len);
@@ -956,10 +964,14 @@ char *dgMolecule::getVarPhrase(char *s) {
 		ret = dgD->getWorldName(uvsGetLarvaWorld(2));
 	else if (!strcmp(s, "Cirt Delivery"))
 		ret = port_itoa(uvsgetDGdata(DG_EXTERNS::CIRT_DELIVERY), nbuf, 10);
-	else if (!strcmp(s, "Cycle Name of Locked Larva"))
-		ret = dgD->CycleName[lang() == RUSSIAN ? 1 : 0][dgD->currentR->bios]
-							[uvsgetDGdata(DG_EXTERNS::LARVA_CYCLE)];
-	else if (!strcmp(s, "Boozeena Secret Code"))
+	else if (!strcmp(s, "Cycle Name of Locked Larva")) {
+		const int index = uvsgetDGdata(DG_EXTERNS::LARVA_CYCLE);
+		const auto key =
+			std::string("cycle.") + dgD->currentR->worldNames[0] + "." + std::to_string(index);
+		const auto *localized = vangers::localization::catalog().find_text(key);
+		ret = localized ? const_cast<char *>(localized->c_str())
+						: dgD->CycleName[lang() == RUSSIAN ? 1 : 0][dgD->currentR->bios][index];
+	} else if (!strcmp(s, "Boozeena Secret Code"))
 		ret = StringOfBoozeeniada();
 
 	if (!ret)
@@ -3014,6 +3026,9 @@ void DiagenDispatcher::load(XStream &ff) {
 
 char *DiagenDispatcher::getWorldName(char *name) {
 	if (name) {
+		if (const auto *localized =
+				vangers::localization::catalog().find_text(std::string("world.") + name))
+			return const_cast<char *>(localized->c_str());
 		dgRoom *r = rtail;
 		while (r) {
 			if (!strcmp(name, r->worldNames[0]))

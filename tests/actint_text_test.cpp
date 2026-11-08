@@ -1,5 +1,5 @@
-#include "actint/aci_str.h"
 #include "actint/text.h"
+#include "localization/catalog.h"
 #include "text/utf8.h"
 
 #include <algorithm>
@@ -20,6 +20,7 @@ static void check(bool condition, const char *message) {
 }
 
 int main() {
+	vangers::localization::request_locale("ru");
 	std::string legacy;
 	for (int i = 1; i < 256; ++i)
 		legacy += static_cast<char>(i);
@@ -83,11 +84,13 @@ int main() {
 	}
 
 	check(
-		is_valid_utf8(aciSTR_OFF2) && std::string(aciSTR_OFF2) == "Выкл.",
+		is_valid_utf8(vangers::localization::text("actint.aciSTR_OFF")) &&
+			std::string(vangers::localization::text("actint.aciSTR_OFF")) == "Выкл.",
 		"Source labels must be canonical UTF-8 too"
 	);
 	check(
-		is_valid_utf8(aciSTR_PRICE2) && std::string(aciSTR_PRICE2) == "Цена: ",
+		is_valid_utf8(vangers::localization::text("actint.aciSTR_PRICE")) &&
+			std::string(vangers::localization::text("actint.aciSTR_PRICE")) == "Цена: ",
 		"Composed shop strings must not mix UTF-8 and CP866"
 	);
 	std::cout << "actint UTF-8 boundaries, glyph compatibility, clipping and reveal passed\n";

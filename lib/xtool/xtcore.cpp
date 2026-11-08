@@ -2,6 +2,7 @@
 
 #include "../xgraph/xgraph.h"
 #include "lang.h"
+#include "localization/catalog.h"
 #include "xglobal.h"
 #include "xt_list.h"
 
@@ -138,6 +139,16 @@ int xtRunApplication(int argc, char *argv[]) {
 			XGR_FULL_SCREEN = true;
 		} else if (cmd_key == "-skipintro") {
 			SkipIntro = 1;
+		} else if (cmd_key == "--locale") {
+			if (i + 1 >= argc)
+				ErrH.Abort("--locale requires a locale ID");
+			try {
+				vangers::localization::request_locale(argv[++i]);
+			} catch (const std::exception &error) {
+				ErrH.Abort(error.what());
+			}
+		} else if (cmd_key == "-english") {
+			setLang(ENGLISH);
 		} else if (cmd_key == "-russian") {
 			setLang(RUSSIAN);
 		} else if (cmd_key == "-server") {
@@ -170,7 +181,8 @@ int xtRunApplication(int argc, char *argv[]) {
 			} else {
 				std::cout << "Invalid parameter usage: '-game [id|new|any]' expected" << std::endl;
 			}
-		} else if (cmd_key == "--compile-iscreen") {
+		} else if (cmd_key == "--compile-iscreen" || cmd_key == "--compile-actint" ||
+				   cmd_key == "--compile-acs") {
 			if (i + 2 < argc) {
 				i += 2;
 			} else {

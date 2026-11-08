@@ -148,6 +148,7 @@ jobs:
           cp Vangers.app/Contents/Resources/iconfile.icns "$APP/Contents/Resources/iconfile.icns"
           cp Vangers.app/Contents/MacOS/start "$APP/Contents/MacOS/start"
           cp build/src/vangers "$APP/Contents/MacOS/Vangers"
+          cp -a build/src/locales "$APP/Contents/Resources/"
 
           chmod +x "$APP/Contents/MacOS/start" "$APP/Contents/MacOS/Vangers"
 

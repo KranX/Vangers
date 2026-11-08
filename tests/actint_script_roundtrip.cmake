@@ -41,9 +41,11 @@ SET(unicode_text "Тест 日本 😀")
 STRING(ASCII 240 166 legacy_text) # CP866 Ёж, intentionally not UTF-8.
 STRING(ASCII 255 invalid_byte)
 
-FOREACH(encoding unicode legacy)
+SET(keyed_text "@l10n:menu.iSTR_NEW_GAME")
+FOREACH(encoding unicode legacy keyed)
 	SET(text "${${encoding}_text}")
 	SET(body "world_map {\nworld_data 0 0 0 {\nname \"${text}\"\n}\n}\ninvItem \"${text}\" {\nprm_template \"${text}\"\nprompt_text \"${text}\"\n}\nfncMenu {\nfncMenuItem {\nstring \"${text}\"\n}\n}\n")
+	STRING(APPEND body "location_data 3 {\nname \"lookup.id\" \"${text}\"\n}\n")
 	FILE(WRITE "${TEST_ROOT}/${encoding}.inc" "${body}")
 	IF(encoding STREQUAL "unicode")
 		SET(flag "utf8_text\n")

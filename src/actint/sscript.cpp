@@ -2,6 +2,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "localization/catalog.h"
 
 #include "../iscreen/iscript.h"
 #include "../iscreen/s_mem.h"
@@ -470,7 +471,8 @@ void acsParseScript(const char *fname, const char *bname) {
 							utf8 ? vangers::actint::TextEncoding::Utf8
 								 : vangers::actint::TextEncoding::Cp866
 						);
-						((aciScreenInputField *)acsObj)->set_string(text.c_str());
+						((aciScreenInputField *)acsObj)
+							->set_string(vangers::localization::resolve(text).c_str());
 					} catch (const std::exception &error) {
 						const auto context =
 							std::string(fname) + ": option string: " + error.what();

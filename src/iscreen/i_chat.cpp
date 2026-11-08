@@ -9,7 +9,7 @@
 #include "controls.h"
 #include "hfont.h"
 #include "i_chat.h"
-#include "i_str.h"
+
 #include "iscreen.h"
 
 #include "../network.h"

@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "localization/catalog.h"
 #include <memory>
 #include <stdexcept>
 
@@ -599,21 +600,22 @@ aciBitmapMenu *aciBM;
 void aParseScript(const char *fname, const char *bname) {
 	int i, id = -1, t_id = 0, sz = 0, num;
 	auto text_encoding = vangers::actint::TextEncoding::Cp866;
-	const auto decode_text = [&](std::string_view text) {
+	const auto decode_text = [&](std::string_view text, bool localize = true) {
 		try {
-			return vangers::actint::decode_text(text, text_encoding);
-		} catch (const std::invalid_argument &error) {
+			const auto decoded = vangers::actint::decode_text(text, text_encoding);
+			return localize ? vangers::localization::resolve(decoded) : decoded;
+		} catch (const std::exception &error) {
 			const std::string context =
 				std::string(fname) + ": option " + aOptIDs[id] + ": " + error.what();
 			handle_error("Invalid actint display text", context.c_str());
 			return std::string{}; // handle_error terminates via ErrH.Abort.
 		}
 	};
-	const auto read_text = [&](char **destination) {
+	const auto read_text = [&](char **destination, bool localize = true) {
 		char *raw = nullptr;
 		script->read_pdata(&raw, 1);
 		const std::unique_ptr<char[]> resource(raw);
-		*destination = vangers::actint::copy_text(decode_text(resource.get()));
+		*destination = vangers::actint::copy_text(decode_text(resource.get(), localize));
 	};
 
 	char *ptr;
@@ -959,7 +961,8 @@ void aParseScript(const char *fname, const char *bname) {
 				break;
 			case SET_WORLD_NAME:
 				if (curMode == AS_INIT_WORLD_DATA) {
-					read_text(&wData->name);
+					// World-map names are UVS lookup IDs, not localized labels.
+					read_text(&wData->name, false);
 				} else {
 					if (curMode == AML_INIT_DATA) {
 						script->read_pdata(&mlData->name, 1);

@@ -153,6 +153,7 @@ bool test_defaults_and_round_trip() {
 		return false;
 
 	GameSettings &changed = first.get_mutable();
+	changed.locale = "zz-test";
 	changed.video.fullscreen = true;
 	changed.video.ttf_text = true;
 	changed.video.resolution = ResolutionMode::Desktop;
@@ -171,6 +172,7 @@ bool test_defaults_and_round_trip() {
 	const SettingsLoadResult second_result = second.load();
 	const GameSettings &loaded = second.get();
 	return check(second_result.source == SettingsLoadSource::Toml, "TOML source was not used") &&
+		   check(loaded.locale == "zz-test", "locale ID was not restored") &&
 		   check(loaded.video.fullscreen, "fullscreen was not restored") &&
 		   check(loaded.video.ttf_text, "TTF selection was not restored") &&
 		   check(

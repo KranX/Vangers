@@ -311,3 +311,58 @@ FOREACH(renderer bitmap ttf)
  ADD_TEST(NAME iscreen_flow_${renderer} COMMAND iscreen_binary_test --flow ${renderer})
  SET_TESTS_PROPERTIES(iscreen_flow_${renderer} PROPERTIES TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/iscreen-flow-${renderer}")
 ENDFOREACH()
+
+GET_PROPERTY(locale_tests DIRECTORY PROPERTY TESTS)
+FOREACH(test IN LISTS locale_tests)
+ SET_PROPERTY(TEST "${test}" APPEND PROPERTY ENVIRONMENT "VANGERS_LOCALES=${PROJECT_SOURCE_DIR}/data/locales")
+ENDFOREACH()
+
+TARGET_LINK_LIBRARIES(actint_text_test PRIVATE vangers_localization)
+TARGET_LINK_LIBRARIES(actint_mouse_prompt_test PRIVATE vangers_localization)
+
+ADD_EXECUTABLE(localization_test localization_test.cpp)
+TARGET_LINK_LIBRARIES(localization_test PRIVATE vangers_localization toml11::toml11 ZLIB::ZLIB)
+ADD_TEST(NAME localization COMMAND localization_test "${PROJECT_SOURCE_DIR}/data/locales")
+SET_TESTS_PROPERTIES(localization PROPERTIES ENVIRONMENT "VANGERS_LOCALES=${PROJECT_SOURCE_DIR}/data/locales")
+ADD_TEST(NAME localization_cli COMMAND ${CMAKE_COMMAND}
+ "-DGAME=$<TARGET_FILE:vangers>" -P "${CMAKE_CURRENT_SOURCE_DIR}/localization_cli.cmake")
+SET_TESTS_PROPERTIES(localization_cli PROPERTIES TIMEOUT 45)
+ADD_TEST(NAME diagen_locale_source COMMAND ${CMAKE_COMMAND}
+ "-DSOURCE_PARSER=$<TARGET_FILE:diagen_source_test>"
+ "-DSOURCE_ROOT=${PROJECT_SOURCE_DIR}/data/data"
+ "-DENGLISH_ARCHIVE=${PROJECT_SOURCE_DIR}/data/diagen_eng.text"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/diagen-third-source"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/diagen_locale_source.cmake")
+SET_TESTS_PROPERTIES(diagen_locale_source PROPERTIES TIMEOUT 45
+ ENVIRONMENT "VANGERS_LOCALES=${PROJECT_SOURCE_DIR}/data/locales")
+ADD_TEST(NAME localization_installed COMMAND ${CMAKE_COMMAND}
+ "-DPROBE=$<TARGET_FILE:localization_test>" "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/localization-install"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/localization_installed.cmake")
+SET_TESTS_PROPERTIES(localization_installed PROPERTIES TIMEOUT 30)
+IF(UNIX)
+ FIND_PROGRAM(DEPLOY_BASH bash)
+ IF(DEPLOY_BASH)
+  ADD_TEST(NAME localization_deploy_msys2 COMMAND ${CMAKE_COMMAND}
+   "-DHELPER=msys2" "-DSHELL=${DEPLOY_BASH}" "-DPROBE=$<TARGET_FILE:localization_test>"
+   "-DSOURCE_ROOT=${PROJECT_SOURCE_DIR}" "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
+   "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/locale deploy" -P "${CMAKE_CURRENT_SOURCE_DIR}/localization_deploy.cmake")
+  SET_TESTS_PROPERTIES(localization_deploy_msys2 PROPERTIES TIMEOUT 30)
+ ENDIF()
+ENDIF()
+IF(WIN32)
+ FIND_PROGRAM(DEPLOY_POWERSHELL NAMES pwsh powershell REQUIRED)
+ ADD_TEST(NAME localization_deploy_msvc COMMAND ${CMAKE_COMMAND}
+  "-DHELPER=msvc" "-DSHELL=${DEPLOY_POWERSHELL}" "-DPROBE=$<TARGET_FILE:localization_test>"
+  "-DSOURCE_ROOT=${PROJECT_SOURCE_DIR}" "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
+  "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/locale deploy" -P "${CMAKE_CURRENT_SOURCE_DIR}/localization_deploy.cmake")
+ SET_TESTS_PROPERTIES(localization_deploy_msvc PROPERTIES TIMEOUT 60)
+ENDIF()
+ADD_TEST(NAME actint_comments COMMAND ${CMAKE_COMMAND}
+ "-DSOURCE_PARSER=$<TARGET_FILE:actint_script_source_test>"
+ "-DBINARY_PARSER=$<TARGET_FILE:actint_script_binary_test>"
+ "-DITEMS=${PROJECT_SOURCE_DIR}/data/actint/items.inc"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/actint-comments"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/actint_comments.cmake")
+SET_TESTS_PROPERTIES(actint_comments PROPERTIES TIMEOUT 30
+ ENVIRONMENT "VANGERS_LOCALES=${PROJECT_SOURCE_DIR}/data/locales")

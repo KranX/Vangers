@@ -110,6 +110,8 @@ void load_bindings(
 
 GameSettings decode_settings(const TomlValue &document) {
 	GameSettings settings = default_settings();
+	if (const auto value = read_string(document, {"locale"}))
+		settings.locale = *value;
 	if (const auto value = read_bool(document, {"video", "ttf_text"}))
 		settings.video.ttf_text = *value;
 
@@ -246,6 +248,7 @@ void update_bindings(TomlValue &table, const BindingMap &bindings) {
 void encode_settings(TomlValue &document, const GameSettings &settings) {
 	if (!document.is_table())
 		document = TomlTable{};
+	set_value(document, "locale", TomlValue(settings.locale));
 	set_value(
 		document,
 		"format_version",

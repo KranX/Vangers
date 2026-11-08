@@ -1,5 +1,5 @@
-#include "actint/aci_str.h"
 #include "actint/mouse_prompt.h"
+#include "localization/catalog.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -50,8 +50,9 @@ static void exercise(XGR_MousePromptData &prompt) {
 	check(!prompt.textSizeX && !prompt.textSizeY, "Both constructors must initialize text sizes");
 
 	// A real long Russian label forces a heap allocation in the codec.
-	const auto expected = utf8_to_cp866(aciSTR_PICKUP_ITEMS_OFF2);
-	set_mouse_prompt(&prompt, aciSTR_PICKUP_ITEMS_OFF2);
+	const auto expected =
+		utf8_to_cp866(vangers::localization::text("actint.aciSTR_PICKUP_ITEMS_OFF"));
+	set_mouse_prompt(&prompt, vangers::localization::text("actint.aciSTR_PICKUP_ITEMS_OFF"));
 	check_text(prompt, expected);
 	check(prompt.flags & XGR_PROMPT_MEM_ALLOC, "XGR must own the converted bytes");
 
@@ -59,12 +60,15 @@ static void exercise(XGR_MousePromptData &prompt) {
 	// type here: a borrowed char* would dangle after the following updates.
 	decltype(XGR_MousePromptScreen::curText) displayed = prompt.textData;
 	auto *unchanged = prompt.textData;
-	set_mouse_prompt(&prompt, aciSTR_PICKUP_ITEMS_OFF2);
+	set_mouse_prompt(&prompt, vangers::localization::text("actint.aciSTR_PICKUP_ITEMS_OFF"));
 	check(prompt.textData == unchanged, "Unchanged hover text must not reallocate every frame");
 
 	for (int i = 0; i < 1000; ++i) {
 		// Short (SSO), heap-backed, unsupported Unicode, icons, and empty text.
-		for (const auto *text : {"Ёж", aciSTR_PICKUP_ITEMS_OFF2, "ä 日本 😀 $\x1e\x1f", ""}) {
+		for (const auto *text : {"Ёж",
+				 vangers::localization::text("actint.aciSTR_PICKUP_ITEMS_OFF"),
+				 "ä 日本 😀 $\x1e\x1f",
+				 ""}) {
 			set_mouse_prompt(&prompt, text);
 			check_text(prompt, utf8_to_cp866(text));
 		}
@@ -97,6 +101,7 @@ static void exercise(XGR_MousePromptData &prompt) {
 }
 
 int main() {
+	vangers::localization::request_locale("ru");
 	XGR_MousePromptData default_prompt;
 	exercise(default_prompt);
 	XGR_MousePromptData positioned_prompt(10, 20, 30, 40, XGR_FONT0_8x8);
