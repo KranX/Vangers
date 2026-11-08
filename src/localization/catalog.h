@@ -1,5 +1,6 @@
 #ifndef VANGERS_LOCALIZATION_CATALOG_H
 #define VANGERS_LOCALIZATION_CATALOG_H
+#include "description.h"
 
 #include <filesystem>
 #include <map>
@@ -20,6 +21,10 @@ class Catalog {
 	const std::string &legacy_text(const std::string &key) const;
 	const std::string &resource(const std::string &key) const;
 	bool resource_is_utf8(const std::string &key) const;
+	DescriptionStyle description_style(const std::string &key = {}) const {
+		const auto found = description_styles_.find(key);
+		return found == description_styles_.end() ? description_style_ : found->second;
+	}
 	bool legacy_russian() const {
 		return russian_;
 	}
@@ -30,6 +35,8 @@ class Catalog {
   private:
 	std::string id_;
 	bool russian_ = false;
+	DescriptionStyle description_style_ = DescriptionStyle::RegularTop;
+	std::map<std::string, DescriptionStyle> description_styles_;
 	std::map<std::string, std::string> strings_, resources_, encodings_;
 	mutable std::map<std::string, std::string> legacy_;
 	mutable std::set<std::string> reported_;

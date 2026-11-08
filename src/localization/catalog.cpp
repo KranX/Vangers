@@ -84,6 +84,35 @@ void paths(const Table &values) {
 }
 std::string requested;
 std::unique_ptr<Catalog> active;
+
+DescriptionStyle parse_description_style(const std::string &value) {
+	if (value == "regular-top")
+		return DescriptionStyle::RegularTop;
+	if (value == "regular-centered")
+		return DescriptionStyle::RegularCentered;
+	if (value == "compact-centered")
+		return DescriptionStyle::CompactCentered;
+	throw std::runtime_error("Invalid description_style in locale manifest: " + value);
+}
+DescriptionStyle
+read_description_style(const toml::ordered_value &manifest, DescriptionStyle fallback) {
+	return manifest.contains("description_style")
+			   ? parse_description_style(manifest.at("description_style").as_string())
+			   : fallback;
+}
+void description_styles(
+	const toml::ordered_value &manifest,
+	const Table &strings,
+	std::map<std::string, DescriptionStyle> &styles
+) {
+	if (!manifest.contains("description_styles"))
+		return;
+	for (const auto &[key, value] : table(manifest, "description_styles")) {
+		if (key.rfind("descriptions.", 0) != 0 || !strings.count(key))
+			throw std::runtime_error("Unknown description style key: " + key);
+		styles[key] = parse_description_style(value);
+	}
+}
 } // namespace
 
 bool valid_locale_id(std::string_view id) {
@@ -99,9 +128,11 @@ Catalog::Catalog(const std::filesystem::path &root, const std::string &id): id_(
 	if (!valid_locale_id(id))
 		throw std::invalid_argument("Invalid locale ID: " + id);
 	const auto english = read(root / "en" / "manifest.toml");
+	description_style_ = read_description_style(english, description_style_);
 	resources_ = table(english, "resources");
 	paths(resources_);
 	strings_ = table(read(root / "en" / "strings.toml"), "strings");
+	description_styles(english, strings_, description_styles_);
 	encodings_ = table(english, "encodings");
 	for (const auto &[key, value] : encodings_)
 		if (!resources_.count(key) || (value != "utf8" && value != "cp866"))
@@ -114,6 +145,8 @@ Catalog::Catalog(const std::filesystem::path &root, const std::string &id): id_(
 		return;
 	}
 	const auto local = read(manifest);
+	description_style_ = read_description_style(local, description_style_);
+	description_styles(local, strings_, description_styles_);
 	if (local.contains("legacy_language")) {
 		const auto &language = local.at("legacy_language").as_string();
 		if (language != "en" && language != "ru")

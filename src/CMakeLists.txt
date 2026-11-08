@@ -55,6 +55,9 @@ TARGET_INCLUDE_DIRECTORIES(vangers_ttf PUBLIC "${PROJECT_SOURCE_DIR}/src")
 ADD_LIBRARY(vangers_iscreen_text STATIC iscreen/text.cpp iscreen/relief_font.cpp)
 TARGET_LINK_LIBRARIES(vangers_iscreen_text PUBLIC vangers_text vangers_settings vangers_ttf SDL3::SDL3)
 
+ADD_LIBRARY(vangers_descriptions STATIC localization/description.cpp)
+TARGET_LINK_LIBRARIES(vangers_descriptions PUBLIC vangers_ttf vangers_text)
+
 SET(vangers_SRCS
 	3d/3d_math.cpp
 	3d/3dgraph.cpp
@@ -174,6 +177,7 @@ ENDIF()
 function(CONFIGURE_VANGERS_TARGET target_name)
 	TARGET_LINK_LIBRARIES(${target_name} PRIVATE
 		vangers_localization
+		vangers_descriptions
 		vangers_save_text
 		vangers_iscreen_text
 		vangers_ttf

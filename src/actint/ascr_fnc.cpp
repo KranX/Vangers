@@ -37,6 +37,7 @@
 #include "../text/utf8.h"
 #include "actint.h"
 #include "localization/catalog.h"
+#include "localization/description.h"
 #include "text.h"
 #include "ttf_font.h"
 
@@ -2777,6 +2778,8 @@ int aciWorldLinkExist(int w1, int w2, int sp_flag) {
 }
 
 void aciInitAviID(void) {
+	using vangers::localization::description_key;
+	using vangers::localization::DescriptionKind;
 	invItem *p;
 	invMatrix *m;
 	iAVIElement *avi;
@@ -2787,6 +2790,7 @@ void aciInitAviID(void) {
 	if (!avi)
 		return;
 
+	avi->description_key = nullptr;
 	if (ip) {
 		ip->free_list();
 		ip->set_redraw();
@@ -2804,15 +2808,12 @@ void aciInitAviID(void) {
 		iEvLineID == CHANGE_2_MECHOS_MODE) {
 		m = (invMatrix *)iShopItem;
 		aci_SecondMatrixID = m->type;
-		if (!aciCurAviIndex) {
-			if (m->avi_ids && m->avi_ids[aciCurAviIndex + aciCurAviIndexDelta]) {
-				strcpy(avi->avi_name, m->avi_ids[aciCurAviIndex + aciCurAviIndexDelta]);
-			}
-		} else {
-			if (m->avi_ids && m->avi_ids[aciCurAviIndex]) {
-				strcpy(avi->avi_name, m->avi_ids[aciCurAviIndex]);
-			}
-		}
+		if (aciCurAviIndex == ACI_TEXT_AVI_ENG || aciCurAviIndex == ACI_TEXT_AVI_RUS)
+			avi->description_key = description_key(DescriptionKind::Mechos, m->type).data();
+		const int index = aciCurAviIndex ? aciCurAviIndex : aciCurAviIndexDelta;
+		if (!avi->description_key && m->avi_ids && index >= 0 && index < m->numAviIDs &&
+			m->avi_ids[index])
+			strcpy(avi->avi_name, m->avi_ids[index]);
 		if (ip && m->mech_name) {
 			aciInitPricePanel(ip, (iListElement *)m, MECHOS_MODE, 0);
 
@@ -2822,7 +2823,10 @@ void aciInitAviID(void) {
 		}
 	} else {
 		p = (invItem *)iShopItem;
-		if (p->avi_ids && p->avi_ids[aciCurAviIndex]) {
+		if (aciCurAviIndex == ACI_TEXT_AVI_ENG || aciCurAviIndex == ACI_TEXT_AVI_RUS)
+			avi->description_key = description_key(DescriptionKind::Item, p->ID).data();
+		if (!avi->description_key && p->avi_ids && aciCurAviIndex >= 0 &&
+			aciCurAviIndex < p->numAviIDs && p->avi_ids[aciCurAviIndex]) {
 			strcpy(avi->avi_name, p->avi_ids[aciCurAviIndex]);
 		}
 		if (ip) {
@@ -2838,7 +2842,10 @@ void aciInitShopAvi(void) {
 	if (!avi)
 		return;
 
-	avi->change_avi(avi->avi_name);
+	if (!avi->description_key)
+		avi->change_avi(avi->avi_name);
+	else
+		avi->change_description(avi->description_key);
 	avi->init_size();
 	avi->init_align();
 }

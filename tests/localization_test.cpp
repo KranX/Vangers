@@ -37,15 +37,16 @@ void conservation(const fs::path &root, const char *id, unsigned long expected, 
 	std::map<std::string, std::string> sorted;
 	for (const auto &[key, value] : parsed.at("strings").as_table(std::nothrow)) {
 		(void)value;
+		const bool description = key.rfind("descriptions.", 0) == 0;
 		const int field = key.rfind("items.", 0) == 0									 ? 1
 						  : (key.rfind("world.", 0) == 0 || key.rfind("cycle.", 0) == 0) ? 2
 						  : key.rfind("service.", 0) == 0								 ? 3
 																						 : 0;
-		if (field != group)
+		if ((description ? 4 : field) != group)
 			continue;
 		sorted.emplace(key, c.text(key));
 	}
-	const std::size_t sizes[]{394, 219, 19, 2};
+	const std::size_t sizes[]{394, 219, 19, 2, 92};
 	check(sorted.size() == sizes[group], "Incomplete stock UI catalog");
 	auto checksum = crc32(0, nullptr, 0);
 	for (const auto &[key, value] : sorted) {
@@ -79,6 +80,9 @@ int main(int argc, char **argv) {
 		conservation(root, "ru", 0x59e0c209, 1);
 		conservation(root, "en", 0xaae6d5ca, 2);
 		conservation(root, "ru", 0xc509d86e, 2);
+		// Separate audit: keep checksums of the original UI macros unchanged.
+		conservation(root, "en", 0x11c7e86f, 4);
+		conservation(root, "ru", 0xc9799444, 4);
 		check(
 			format_integer("Ресурс: %d %%", -17) == "Ресурс: -17 %",
 			"Typed integer formatting corrupted text"
@@ -94,6 +98,15 @@ int main(int argc, char **argv) {
 		for (const auto *pattern : {"%n", "%s", "%d %d", "%0200000d", "%"})
 			rejects([&] { format_integer(pattern, 1); }, "Unsafe template accepted");
 		Catalog ru(root, "ru"), en(root, "en");
+		check(
+			ru.description_style() == DescriptionStyle::CompactCentered &&
+				en.description_style() == DescriptionStyle::RegularTop,
+			"Description presentation lost package metadata"
+		);
+		check(
+			en.description_style("descriptions.item.33") == DescriptionStyle::RegularCentered,
+			"Authored centered block lost its per-description override"
+		);
 		check(ru.legacy_russian() && !en.legacy_russian(), "Wrong legacy-resource adapter");
 		check(ru.text("actint.aciSTR_PRICE") == "Цена: ", "Russian UTF-8 catalog corrupted");
 		const auto *stable = ru.text("actint.aciSTR_PRICE").c_str();
@@ -144,6 +157,11 @@ int main(int argc, char **argv) {
 			"Missing item comment did not fall back as a complete semantic unit"
 		);
 		check(
+			custom.text("descriptions.item.27") == en.text("descriptions.item.27") &&
+				custom.description_style() == en.description_style(),
+			"Third-locale description did not inherit English text/presentation"
+		);
+		check(
 			custom.resource("iscreen.binary") == en.resource("iscreen.binary"),
 			"Missing resource failed to use English"
 		);
@@ -191,6 +209,16 @@ int main(int argc, char **argv) {
 			write(manifest, std::string("[resources]\ndiagen = '") + path + "'\n");
 			rejects([&] { Catalog c(temporary, "zz-test"); }, "Unsafe resource path accepted");
 		}
+		write(strings, "[strings]\n");
+		write(manifest, "description_style = 'compact-centered'\n[resources]\n");
+		check(
+			Catalog(temporary, "zz-test").description_style() == DescriptionStyle::CompactCentered,
+			"Non-RU package cannot select centered presentation"
+		);
+		write(manifest, "description_style = 'shrink-and-scroll'\n[resources]\n");
+		rejects([&] { Catalog c(temporary, "zz-test"); }, "Invalid description style accepted");
+		write(manifest, "[resources]\n[description_styles]\n'descriptions.typo' = 'regular-top'\n");
+		rejects([&] { Catalog c(temporary, "zz-test"); }, "Unknown description style key accepted");
 		request_locale("ru");
 		check(resolve("@l10n:actint.aciSTR_PRICE") == "Цена: ", "Keyed script text not resolved");
 		check(

@@ -1,4 +1,5 @@
 legacy_language = "en"
+description_style = "regular-top"
 
 [resources]
 "diagen" = "diagen_eng.text"
@@ -47,3 +48,6 @@ legacy_language = "en"
 "credits.H" = "cp866"
 "credits.IA" = "cp866"
 "credits.IB" = "cp866"
+
+[description_styles]
+"descriptions.item.33" = "regular-centered"
