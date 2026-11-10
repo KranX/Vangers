@@ -1,6 +1,7 @@
 #include "settings/text_encoding.h"
 #include "text/layout.h"
 #include "text/utf8.h"
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +11,38 @@ void check(bool value, const char *message) {
 		throw std::runtime_error(message);
 }
 int main() {
+	check(compose_pairs("e\u0301 か\u3099 A\u0308") == "é が Ä", "Canonical font pairs");
+	check(compose_pairs("\u1100\u1161") == "가", "Non-mark canonical pair was dropped");
+	check(compose_pairs("РУССКИЙ English") == "РУССКИЙ English", "Unchanged stock text");
 	const auto measure = [](std::string_view s) { return int(text_length(s)); };
+	check(
+		layout_lines("日本語の文章。次です。", 6, measure) == Lines({"日本語の文", "章。次です。"}),
+		"Japanese punctuation stranded at line start"
+	);
+	check(
+		layout_lines("日本「文字」", 3, measure) == Lines({"日本", "「文", "字」"}),
+		"Japanese opening/closing brackets were stranded"
+	);
+	check(
+		layout_lines("xe\u0301z", 2, measure) == Lines({"x", "e\u0301", "z"}),
+		"Combining sequence split across lines"
+	);
+	const auto accent_width = [](std::string_view text) {
+		const auto composed = compose_pairs(text);
+		return int(text_length(composed) + std::count(composed.begin(), composed.end(), 'e'));
+	};
+	check(
+		layout_lines("e\u0301x", 1, accent_width) == Lines({"e\u0301", "x"}),
+		"Bare starter width hid a fitting completed accent"
+	);
+	check(
+		layout_lines("日本ｶﾞ文字", 3, measure) == Lines({"日本", "ｶﾞ文", "字"}),
+		"Half-width dakuten detached from kana"
+	);
+	check(
+		layout_lines("日本語\n文章", 20, measure, LineMode::Paragraphs) == Lines({"日本語文章"}),
+		"Japanese paragraph folding inserted an ASCII word space"
+	);
 	check(
 		layout_lines("one two three", 7, measure) == Lines({"one two", "three"}),
 		"Measured word wrapping"

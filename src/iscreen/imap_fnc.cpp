@@ -11,8 +11,10 @@
 #include "iscreen.h"
 #include "relief_font.h"
 #include "settings/text_encoding.h"
+#include "text/utf8.h"
 
 #include <algorithm>
+#include <stdexcept>
 
 /* ----------------------------- EXTERN SECTION ----------------------------- */
 
@@ -808,6 +810,10 @@ bool relief_string(int x, int y, int font, const char *text, int spacing, Paint 
 	auto *face = vangers::iscreen::relief_font(font);
 	if (!face)
 		return false;
+	if (!vangers::settings::is_valid_utf8(text))
+		throw std::invalid_argument("iscreen relief expects UTF-8");
+	const auto composed = vangers::text::compose_pairs(text);
+	text = composed.c_str();
 	const int right_limit = x + face->width(text, spacing);
 	int cursor_x = x, cursor_y = y;
 	while (*text) {

@@ -188,6 +188,27 @@ TARGET_COMPILE_DEFINITIONS(actint_ttf_test PRIVATE
 )
 ADD_TEST(NAME actint_ttf COMMAND actint_ttf_test)
 
+ADD_EXECUTABLE(font_language_test font_language_test.cpp)
+TARGET_LINK_LIBRARIES(font_language_test PRIVATE vangers_ttf SDL3_ttf::SDL3_ttf)
+TARGET_COMPILE_DEFINITIONS(font_language_test PRIVATE FONT_DIR="${PROJECT_SOURCE_DIR}/data/resource/actint/fonts")
+ADD_TEST(NAME font_languages COMMAND font_language_test)
+FILE(GLOB font_locale_manifests CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/data/locales/*/manifest.toml")
+FOREACH(manifest ${font_locale_manifests})
+ GET_FILENAME_COMPONENT(package "${manifest}" DIRECTORY)
+ GET_FILENAME_COMPONENT(locale "${package}" NAME)
+ ADD_TEST(NAME font_coverage_${locale} COMMAND vangers_font_check "${PROJECT_SOURCE_DIR}/data/locales" ${locale})
+ENDFOREACH()
+ADD_TEST(NAME font_coverage_diagnostics COMMAND ${CMAKE_COMMAND}
+ "-DCHECKER=$<TARGET_FILE:vangers_font_check>"
+ "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/font-coverage"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/font_coverage.cmake")
+ADD_TEST(NAME font_dialogue_coverage COMMAND ${CMAKE_COMMAND}
+ "-DCHECKER=$<TARGET_FILE:vangers_font_check>"
+ "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
+ "-DDIALOGUE_SOURCE=${PROJECT_SOURCE_DIR}/data/data"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/font_dialogue_coverage.cmake")
+
 ADD_EXECUTABLE(description_test description_test.cpp)
 TARGET_LINK_LIBRARIES(description_test PRIVATE vangers_descriptions vangers_localization SDL3_ttf::SDL3_ttf)
 TARGET_COMPILE_DEFINITIONS(description_test PRIVATE

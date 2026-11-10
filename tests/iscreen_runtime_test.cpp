@@ -568,7 +568,7 @@ void relief(bool ttf, bool procedural = false) {
 	iHeapOffs = 0;
 	const int w = 240, h = 60;
 	std::vector<unsigned char> heights(w * h, 128), scaled(w * h), blurred;
-	std::string label = "Есть Ёж";
+	std::string label = procedural ? "語が" : "Есть Ёж";
 	iPutStr2buf(
 		0, 0, 0, w, h, reinterpret_cast<unsigned char *>(label.data()), heights.data(), 0, 256, 5
 	);
@@ -592,7 +592,7 @@ void relief(bool ttf, bool procedural = false) {
 			for (auto family :
 				{vangers::actint::FontFamily::Menu, vangers::actint::FontFamily::Display}) {
 				vangers::iscreen::ReliefFont face(*HFntTable[0], family);
-				for (char32_t cp : {U'A', U'Ж', U'Ё', char32_t(0xe000)}) {
+				for (char32_t cp : {U'A', U'Ж', U'Ё', U'ä', U'語', U'が', char32_t(0xe000)}) {
 					// The TTF path must work even when legacy glyph height storage is absent.
 					auto &legacy = *HFntTable[0]->data[vangers::settings::unicode_to_cp866(cp)];
 					auto *saved = legacy.HeightMap;

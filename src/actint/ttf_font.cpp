@@ -2,12 +2,15 @@
 
 #include "settings/text_encoding.h"
 #include "text/glyph_surface.h"
+#include "text/utf8.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <map>
+#include <set>
 #include <stdexcept>
 
 namespace vangers::actint {
@@ -15,7 +18,11 @@ extern const unsigned char font_data[];
 extern const std::size_t font_data_size;
 extern const unsigned char menu_font_data[], display_font_data[];
 extern const std::size_t menu_font_data_size, display_font_data_size;
+extern const unsigned char fallback_font_data[];
+extern const std::size_t fallback_font_data_size;
 namespace {
+constexpr double fallback_em_ratio = .84;
+
 void require(bool success) {
 	if (!success)
 		throw std::runtime_error(std::string("actint TTF: ") + SDL_GetError());
@@ -57,6 +64,7 @@ struct Glyph {
 	Uint32 codepoint;
 	double x, y;
 	uint8_t colour, border, range_size;
+	bool fallback = false;
 };
 } // namespace
 
@@ -65,8 +73,13 @@ struct TtfFont::Face {
 	TTF_Font *drawing = nullptr;
 	std::map<Uint32, int> advances;
 	int cell_width = 10, cell_height = 18, baseline = 15, tracking = 1;
+	std::shared_ptr<Face> fallback;
 
-	explicit Face(const std::string &path, FontFamily family = FontFamily::Text) {
+	explicit Face(
+		const std::string &path,
+		FontFamily family = FontFamily::Text,
+		bool backup = false
+	) {
 		const unsigned char *bytes = font_data;
 		std::size_t size = font_data_size;
 		if (family != FontFamily::Text) {
@@ -76,6 +89,13 @@ struct TtfFont::Face {
 			cell_width = family == FontFamily::Menu ? 45 : 26;
 			bytes = family == FontFamily::Menu ? menu_font_data : display_font_data;
 			size = family == FontFamily::Menu ? menu_font_data_size : display_font_data_size;
+		}
+		if (backup) {
+			bytes = fallback_font_data;
+			size = fallback_font_data_size;
+			cell_width = cell_height = 100;
+			baseline = 88;
+			tracking = 0;
 		}
 		require(TTF_Init());
 		const auto open = [&path, bytes, size](float points) {
@@ -103,6 +123,19 @@ struct TtfFont::Face {
 		TTF_CloseFont(drawing);
 		TTF_CloseFont(metrics);
 		TTF_Quit();
+	}
+
+	Face &backup() {
+		// One lazy face shared by all three roles; runs retain its lifetime.
+		static std::weak_ptr<Face> shared;
+		if (!fallback) {
+			fallback = shared.lock();
+			if (!fallback) {
+				fallback = std::make_shared<Face>("", FontFamily::Text, true);
+				shared = fallback;
+			}
+		}
+		return *fallback;
 	}
 
 	int advance(Uint32 codepoint) {
@@ -159,6 +192,20 @@ struct TtfFont::Face {
 				),
 				std::max(1, int(std::lround(style.cell_height * sy * 72)))
 			));
+			const double em =
+				style.fixed_pitch
+					? std::min(double(style.cell_width), style.cell_height * fallback_em_ratio)
+					: style.cell_height * fallback_em_ratio;
+			if (face->fallback) {
+				auto *font = face->fallback->drawing;
+				TTF_SetFontHinting(font, em * sy <= 18 ? TTF_HINTING_LIGHT : TTF_HINTING_NONE);
+				require(TTF_SetFontSizeDPI(
+					font,
+					1,
+					std::max(1, int(std::lround(em * sx * 72))),
+					std::max(1, int(std::lround(em * sy * 72)))
+				));
+			}
 			for (const auto &glyph : glyphs) {
 				if (glyph.codepoint < 32 && style.icons) {
 					const auto &icon = (*style.icons)[glyph.codepoint];
@@ -188,21 +235,21 @@ struct TtfFont::Face {
 						}
 					continue;
 				}
+				auto &source = glyph.fallback ? *face->fallback : *face;
 				int minx, maxy;
 				require(TTF_GetGlyphMetrics(
-					face->drawing, glyph.codepoint, &minx, nullptr, nullptr, &maxy, nullptr
+					source.drawing, glyph.codepoint, &minx, nullptr, nullptr, &maxy, nullptr
 				));
 				std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> image(
-					TTF_GetGlyphImage(face->drawing, glyph.codepoint, nullptr), SDL_DestroySurface
+					TTF_GetGlyphImage(source.drawing, glyph.codepoint, nullptr), SDL_DestroySurface
 				);
 				require(bool(image));
 				const int left = int(std::lround(glyph.x * sx + minx));
-				const int top =
-					int(std::lround(
-						(glyph.y + style.cell_height * double(face->baseline) / face->cell_height) *
-						sy
-					)) -
-					maxy;
+				const double baseline =
+					glyph.fallback
+						? (style.cell_height - em) / 2 + em * source.baseline / source.cell_height
+						: style.cell_height * double(face->baseline) / face->cell_height;
+				const int top = int(std::lround((glyph.y + baseline) * sy)) - maxy;
 				const int w = image->w;
 				const int h = image->h;
 				if (material)
@@ -291,11 +338,33 @@ TtfFont::TtfFont(const std::string &path, FontFamily family)
 	: face_(std::make_shared<Face>(path, family)) {}
 TtfFont::~TtfFont() = default;
 
+bool TtfFont::has_glyph(char32_t cp) const {
+	return TTF_FontHasGlyph(face_->metrics, cp) || TTF_FontHasGlyph(face_->backup().metrics, cp);
+}
+
+std::vector<char32_t> TtfFont::missing_glyphs(std::string_view text) const {
+	if (!settings::is_valid_utf8(text))
+		throw std::invalid_argument("actint TTF: invalid UTF-8");
+	const auto composed = text::compose_pairs(text);
+	text = composed;
+	std::set<char32_t> missing;
+	const char *cursor = text.data();
+	std::size_t left = text.size();
+	while (left) {
+		const auto cp = SDL_StepUTF8(&cursor, &left);
+		if (cp >= 32 && cp != 0x2028 && !has_glyph(cp))
+			missing.insert(cp);
+	}
+	return {missing.begin(), missing.end()};
+}
+
 TextLayout TtfFont::layout(std::string_view text, const FontStyle &style) const {
 	if (!settings::is_valid_utf8(text))
 		throw std::invalid_argument("actint TTF: invalid UTF-8");
 	if (style.cell_width <= 0 || style.cell_height <= 0 || style.line_spacing < 0)
 		throw std::invalid_argument("actint TTF: invalid font dimensions");
+	const auto composed = text::compose_pairs(text);
+	text = composed;
 	auto run = std::make_shared<Face::Run>();
 	run->face = face_;
 	run->style = style;
@@ -326,17 +395,31 @@ TextLayout TtfFont::layout(std::string_view text, const FontStyle &style) const 
 			x += style.cell_width - icon.left - icon.right + style.spacing;
 			continue;
 		}
-		if (!TTF_FontHasGlyph(face_->metrics, cp))
-			cp = '?'; // Only a presentation fallback; the caller's UTF-8 stays untouched.
+		bool backup = !TTF_FontHasGlyph(face_->metrics, cp);
+		if (backup && !TTF_FontHasGlyph(face_->backup().metrics, cp)) {
+			static std::set<Uint32> reported;
+			if (reported.insert(cp).second)
+				std::cerr << "Missing font glyph U+" << std::hex << cp << std::dec << '\n';
+			cp = '?'; // Presentation only; retain the original UTF-8 at the input boundary.
+			backup = false;
+		}
 		run->glyphs.push_back(
-			{cp, x, y, uint8_t(colour), uint8_t(colour >> 8), uint8_t(colour_size)}
+			{cp, x, y, uint8_t(colour), uint8_t(colour >> 8), uint8_t(colour_size), backup}
 		);
 		// ACS retains its fixed cells. Proportional roles remove the face's
 		// baked-in tracking before applying the caller's spacing.
-		x += style.fixed_pitch ? style.cell_width + style.spacing
-							   : (face_->advance(cp) / 100.0 - face_->tracking) * style.cell_width /
-										 face_->cell_width +
-									 style.spacing;
+		double advance = style.cell_width;
+		if (!style.fixed_pitch) {
+			if (backup) {
+				const double em = style.cell_height * fallback_em_ratio;
+				advance =
+					face_->fallback->advance(cp) / (100.0 * face_->fallback->cell_height) * em;
+			} else {
+				advance = (face_->advance(cp) / 100.0 - face_->tracking) * style.cell_width /
+						  face_->cell_width;
+			}
+		}
+		x += advance + style.spacing;
 	}
 	maximum = std::max(maximum, x);
 	const int width = std::max(0, int(std::ceil(maximum)));

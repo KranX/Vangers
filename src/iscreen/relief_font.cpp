@@ -4,6 +4,7 @@
 #include "settings/text_encoding.h"
 #include "text/grain.h"
 #include "text/inside_distance.h"
+#include "text/utf8.h"
 
 extern HFont **HFntTable;
 extern int iNumFonts;
@@ -156,6 +157,8 @@ const ReliefGlyph &ReliefFont::glyph(char32_t cp) {
 int ReliefFont::width(std::string_view utf8, int spacing) {
 	if (!settings::is_valid_utf8(utf8))
 		throw std::invalid_argument("iscreen relief expects UTF-8");
+	const auto composed = text::compose_pairs(utf8);
+	utf8 = composed;
 	int line = 0, maximum = 0;
 	const char *cursor = utf8.data();
 	size_t left = utf8.size();
