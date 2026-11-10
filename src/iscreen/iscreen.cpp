@@ -2,6 +2,8 @@
 
 #include "../common.h"
 #include "../global.h"
+#include "../localization/catalog.h"
+#include "../localization/description.h"
 #include "../settings/settings.h"
 #include "../settings/text_encoding.h"
 
@@ -619,6 +621,7 @@ void iScreenElement::copy(iScreenElement *dest) {
 		((iS_StringElement *)dest)->init_text_line(((iS_StringElement *)this)->string);
 		break;
 	case I_AVI_ELEM:
+		dest->flags &= ~(EL_DATA_LOADED | EL_BORDER_INIT);
 		((iAVIElement *)dest)->border_type = ((iAVIElement *)this)->border_type;
 		((iAVIElement *)dest)->border_level = ((iAVIElement *)this)->border_level;
 		((iAVIElement *)dest)->border_null_level = ((iAVIElement *)this)->border_null_level;
@@ -643,6 +646,7 @@ void iScreenElement::copy(iScreenElement *dest) {
 		}
 
 		strcpy(((iAVIElement *)dest)->avi_name, ((iAVIElement *)this)->avi_name);
+		((iAVIElement *)dest)->description_key = ((iAVIElement *)this)->description_key;
 		break;
 	case I_AVI_BORDER_ELEM:
 		((iAVIBorderElement *)dest)->border_type = ((iAVIBorderElement *)this)->border_type;
@@ -707,6 +711,7 @@ iScrollerElement::iScrollerElement(void) {
 }
 
 iAVIElement::iAVIElement(void) {
+	data = nullptr;
 	border_type = AVI_FLAT_BORDER;
 	border_size = AVI_DEF_BORDER_SIZE;
 	border_level = 0;
@@ -786,8 +791,13 @@ void iAVIBorderElement::free_mem(void) {
 
 void iAVIElement::free(void) {
 	if (flags & EL_DATA_LOADED) {
-		AVIstop(data);
-		AVIclose(data);
+		if (data) {
+			AVIstop(data);
+			AVIclose(data);
+			data = nullptr;
+		}
+		delete description;
+		description = nullptr;
 
 		flags ^= EL_DATA_LOADED;
 	}
@@ -796,6 +806,20 @@ void iAVIElement::free(void) {
 void iAVIElement::load(void) {
 	if (!(flags & EL_DATA_LOADED)) {
 		flags &= ~AVI_STOPPED;
+		if (description_key) {
+			try {
+				description = new vangers::localization::Description(
+					vangers::localization::catalog().text(description_key),
+					vangers::localization::catalog().description_style(description_key)
+				);
+			} catch (const std::exception &error) {
+				const auto message =
+					std::string("Invalid description ") + description_key + ": " + error.what();
+				ErrH.Abort(message.c_str());
+			}
+			flags |= EL_DATA_LOADED;
+			return;
+		}
 
 		iResBuf->init();
 		*iResBuf < iVideoPathDefault < avi_name;
@@ -878,16 +902,23 @@ void iBitmapElement::load_shape(void) {
 
 void iAVIElement::init_size(void) {
 	if (flags & EL_DATA_LOADED) {
-		SizeX = AVIwidth(data);
-		SizeY = AVIheight(data);
+		SizeX = description ? description->width : AVIwidth(data);
+		SizeY = description ? description->height : AVIheight(data);
 	}
 }
 
 void iAVIElement::change_avi(char *fname) {
 	free();
+	description_key = nullptr;
 	if (avi_name != fname) {
 		strcpy(avi_name, fname);
 	}
+	load();
+}
+
+void iAVIElement::change_description(const char *key) {
+	free();
+	description_key = key;
 	load();
 }
 
@@ -1881,15 +1912,22 @@ void iScreenElement::redraw(int x, int y, int sc, int sm, int hide_mode) {
 			lev = (null_lev * abs(sc)) >> 8;
 
 			if (((iAVIElement *)this)->check_visible() && !(menu && menu->flags & FM_ACTIVE)) {
-				AVIPrepareFrame(((iAVIElement *)this)->data);
-				AVIDrawFrame(
-					((iAVIElement *)this)->data,
-					offsetX,
-					offsetY,
-					xgrScreenSizeX,
-					screenRgba,
-					lev / 82.0f
-				);
+				auto *avi = static_cast<iAVIElement *>(this);
+				if (avi->description) {
+					avi->description->draw(
+						screenRgba, xgrScreenSizeX, XGR_MAXY, offsetX, offsetY, lev / 82.0f
+					);
+				} else {
+					AVIPrepareFrame(avi->data);
+					AVIDrawFrame(
+						((iAVIElement *)this)->data,
+						offsetX,
+						offsetY,
+						xgrScreenSizeX,
+						screenRgba,
+						lev / 82.0f
+					);
+				}
 
 				if (((iAVIElement *)this)->ibs)
 					((iAVIElement *)this)->ibs->show(screen);
@@ -2039,16 +2077,12 @@ void iScreenObject::init(void) {
 			}
 		}
 		if (p->type == I_AVI_ELEM) {
-			iResBuf->init();
-			*iResBuf < iVideoPathDefault < ((iAVIElement *)p)->avi_name;
-			if (!AVIopen(
-					iResBuf->address(),
-					AVI_NOTIMER | AVI_NODRAW | AVI_LOOPING | AVI_NOPALETTE,
-					0,
-					&(((iAVIElement *)p)->data)
-				)) {
+			if (static_cast<iAVIElement *>(p)->description_key) {
+				p->SizeX = vangers::localization::Description::width;
+				p->SizeY = vangers::localization::Description::height;
+			} else {
 				iResBuf->init();
-				*iResBuf < iVideoPath < ((iAVIElement *)p)->avi_name;
+				*iResBuf < iVideoPathDefault < ((iAVIElement *)p)->avi_name;
 				if (!AVIopen(
 						iResBuf->address(),
 						AVI_NOTIMER | AVI_NODRAW | AVI_LOOPING | AVI_NOPALETTE,
@@ -2056,21 +2090,31 @@ void iScreenObject::init(void) {
 						&(((iAVIElement *)p)->data)
 					)) {
 					iResBuf->init();
-					*iResBuf < iVideoPath < iEMPTY_AVI;
+					*iResBuf < iVideoPath < ((iAVIElement *)p)->avi_name;
 					if (!AVIopen(
 							iResBuf->address(),
 							AVI_NOTIMER | AVI_NODRAW | AVI_LOOPING | AVI_NOPALETTE,
 							0,
 							&(((iAVIElement *)p)->data)
-						))
-						ErrH.Abort(AVInotFound);
+						)) {
+						iResBuf->init();
+						*iResBuf < iVideoPath < iEMPTY_AVI;
+						if (!AVIopen(
+								iResBuf->address(),
+								AVI_NOTIMER | AVI_NODRAW | AVI_LOOPING | AVI_NOPALETTE,
+								0,
+								&(((iAVIElement *)p)->data)
+							))
+							ErrH.Abort(AVInotFound);
+					}
 				}
+				if (!p->SizeX)
+					p->SizeX = AVIwidth(((iAVIElement *)p)->data);
+				if (!p->SizeY)
+					p->SizeY = AVIheight(((iAVIElement *)p)->data);
+				AVIclose(((iAVIElement *)p)->data);
+				((iAVIElement *)p)->data = nullptr;
 			}
-			if (!p->SizeX)
-				p->SizeX = AVIwidth(((iAVIElement *)p)->data);
-			if (!p->SizeY)
-				p->SizeY = AVIheight(((iAVIElement *)p)->data);
-			AVIclose(((iAVIElement *)p)->data);
 
 			flags |= OBJ_AVI_PRESENT;
 		}

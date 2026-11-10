@@ -6,6 +6,9 @@
 #include "iscreen_options.h"
 #include "lang.h"
 #include <vector>
+namespace vangers::localization {
+class Description;
+}
 // #define iMOVE_MOUSE_OBJECTS
 
 const int iJOYSTICK_MASK = ~0xFF;
@@ -394,6 +397,10 @@ const int AVI_SHAPED_BORDER = 0x01;
 struct iAVIElement: public iScreenElement {
 	char *avi_name;
 	void *data;
+	// Static stock key. Keep owning C++ members out of this legacy tagged-base
+	// model: its base destructor dispatches free_mem after derived destruction.
+	const char *description_key = nullptr;
+	vangers::localization::Description *description = nullptr;
 
 	iList *avi_ids;
 
@@ -415,6 +422,7 @@ struct iAVIElement: public iScreenElement {
 	void free_shape(void);
 	void free(void);
 	void change_avi(char *fname);
+	void change_description(const char *key);
 	void init_size(void);
 
 	int check_visible(void);

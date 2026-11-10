@@ -188,6 +188,22 @@ TARGET_COMPILE_DEFINITIONS(actint_ttf_test PRIVATE
 )
 ADD_TEST(NAME actint_ttf COMMAND actint_ttf_test)
 
+ADD_EXECUTABLE(description_test description_test.cpp)
+TARGET_LINK_LIBRARIES(description_test PRIVATE vangers_descriptions vangers_localization SDL3_ttf::SDL3_ttf)
+TARGET_COMPILE_DEFINITIONS(description_test PRIVATE
+ TEST_FONT="${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/VangersText-Regular.ttf")
+ADD_TEST(NAME item_descriptions COMMAND description_test "${PROJECT_SOURCE_DIR}/data/locales")
+SET_TESTS_PROPERTIES(item_descriptions PROPERTIES TIMEOUT 60)
+ADD_TEST(NAME item_description_lifecycle COMMAND iscreen_binary_test --description)
+ADD_TEST(NAME item_description_switch COMMAND actint_script_binary_test --description-switch)
+ADD_TEST(NAME item_description_map COMMAND ${CMAKE_COMMAND}
+ "-DSOURCE_PARSER=$<TARGET_FILE:actint_script_source_test>"
+ "-DBINARY_PARSER=$<TARGET_FILE:actint_script_binary_test>"
+ "-DDATA_ROOT=${PROJECT_SOURCE_DIR}/data"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/description-map"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/description_map.cmake")
+SET_TESTS_PROPERTIES(item_description_map PROPERTIES TIMEOUT 60)
+
 ADD_EXECUTABLE(iscreen_text_test iscreen_text_test.cpp)
 TARGET_LINK_LIBRARIES(iscreen_text_test PRIVATE vangers_iscreen_text)
 ADD_TEST(NAME iscreen_text COMMAND iscreen_text_test)

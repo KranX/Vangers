@@ -10,6 +10,7 @@
 #include "iscreen/ivmap.h"
 #include "iscreen/relief_font.h"
 #include "iscreen/settings_adapter.h"
+#include "localization/description.h"
 #include "settings/settings.h"
 #include "settings/text_encoding.h"
 
@@ -803,6 +804,42 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 }
 int main(int argc, char **argv) {
 	try {
+		if (argc == 2 && std::string(argv[1]) == "--description") {
+			using namespace vangers::localization;
+			iAVIElement video;
+			video.change_description(description_key(DescriptionKind::Item, 1).data());
+			video.init_size();
+			check(
+				video.description && !video.data && video.SizeX == 340 && video.SizeY == 255,
+				"Description tried to open an AVI or changed the panel"
+			);
+			const auto first = video.description->pixels();
+			// Selection updates the pending key before the shop loader runs.
+			video.description_key = description_key(DescriptionKind::Item, 27).data();
+			video.change_description(video.description_key);
+			check(first != video.description->pixels(), "New selection retained old cached text");
+			video.free();
+			check(!video.description && !video.data, "Freed description retained its surface");
+			video.load();
+			check(video.description && !video.data, "Reopened shop lost description mode");
+			iAVIElement copy;
+			video.copy(&copy);
+			copy.load();
+			check(
+				copy.description && copy.description->pixels() == video.description->pixels(),
+				"Copied screen element lost its description"
+			);
+			video.change_description(description_key(DescriptionKind::Item, 20).data());
+			check(
+				std::all_of(
+					video.description->pixels().begin(),
+					video.description->pixels().end(),
+					[](uint32_t p) { return p == 0xFF000000u; }
+				),
+				"Missing source invented a description"
+			);
+			return 0;
+		}
 		if ((argc == 5 || argc == 6) && std::string(argv[1]) == "--parse")
 			parse(
 				argv[2],

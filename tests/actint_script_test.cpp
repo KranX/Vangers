@@ -7,6 +7,7 @@
 #include "iscreen/ikeys.h"
 #include "lang.h"
 #include "localization/catalog.h"
+#include "localization/description.h"
 #include "runtime.h"
 
 #include <algorithm>
@@ -23,6 +24,7 @@
 void aParseScript(const char *, const char *);
 void actint_menu_render_test(bool native);
 void actint_counter_render_test(bool native);
+void actint_description_switch_test();
 extern actIntDispatcher *aScrDisp;
 extern aciFont **aScrFonts;
 
@@ -95,6 +97,52 @@ void comments(const char *input, const char *output, const char *locale) {
 		count == 156 && described == 88 && shop_described == 15,
 		"Stock inventory/shop comment fixture is incomplete"
 	);
+	delete aScrDisp;
+	aScrDisp = nullptr;
+	delete aciML_D;
+	aciML_D = nullptr;
+}
+
+void description_map(const char *input, const char *output, const char *locale) {
+	setLocale(locale);
+	aParseScript(input, output);
+	using namespace vangers::localization;
+	int items = 0, mechos = 0;
+	const auto check_key = [](DescriptionKind kind, int id, const char *avi) {
+		const auto key = description_key(kind, id);
+		check(!key.empty(), "Stock model ID is not mapped to a description");
+		const std::string path(avi);
+		const auto start = path.find(kind == DescriptionKind::Item ? "itm" : "mech");
+		check(start != std::string::npos, "Unexpected stock description AVI path");
+		const int offset = kind == DescriptionKind::Item ? 3 : 4;
+		check(
+			key.substr(key.size() - 2) == path.substr(start + offset, 2),
+			"Stable game ID selected another item's description"
+		);
+		check(
+			catalog().find_text(std::string(key)) != nullptr, "Description key absent from package"
+		);
+	};
+	for (auto *item = static_cast<invItem *>(aScrDisp->i_itemList->last); item;
+		item = static_cast<invItem *>(item->prev)) {
+		check(item->numAviIDs >= 3, "Stock item lost its representation switch");
+		check_key(DescriptionKind::Item, item->ID, item->avi_ids[1]);
+		++items;
+	}
+	for (auto *matrix = static_cast<invMatrix *>(aScrDisp->i_matrixList->last); matrix;
+		matrix = static_cast<invMatrix *>(matrix->prev)) {
+		check(matrix->numAviIDs >= 3, "Stock mechos lost its representation switch");
+		check_key(DescriptionKind::Mechos, matrix->type, matrix->avi_ids[1]);
+		++mechos;
+	}
+	check(items == 78 && mechos == 39, "Incomplete stock description ID audit");
+	// Iscreen item menus are process-lifetime shared models, not dispatcher
+	// list members. The parser fixture owns these otherwise-unlisted menus.
+	for (auto *item = static_cast<invItem *>(aScrDisp->i_itemList->last); item;
+		item = static_cast<invItem *>(item->prev)) {
+		delete static_cast<fncMenu *>(item->menu);
+		item->menu = nullptr;
+	}
 	delete aScrDisp;
 	aScrDisp = nullptr;
 	delete aciML_D;
@@ -299,7 +347,9 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 
 int main(int argc, char **argv) {
 	try {
-		if (argc == 3 && std::string(argv[1]) == "--flow") {
+		if (argc == 2 && std::string(argv[1]) == "--description-switch") {
+			actint_description_switch_test();
+		} else if (argc == 3 && std::string(argv[1]) == "--flow") {
 			actint_flow_test(std::string(argv[2]) == "ttf");
 		} else if (argc == 3 && std::string(argv[1]) == "--render-menu") {
 			actint_menu_render_test(std::string(argv[2]) == "ttf");
@@ -307,6 +357,8 @@ int main(int argc, char **argv) {
 			actint_counter_render_test(std::string(argv[2]) == "ttf");
 		} else if (argc == 5 && std::string(argv[1]) == "--comments") {
 			comments(argv[2], argv[3], argv[4]);
+		} else if (argc == 5 && std::string(argv[1]) == "--description-map") {
+			description_map(argv[2], argv[3], argv[4]);
 		} else if (argc == 5 && std::string(argv[1]) == "--parse") {
 			parse(argv[2], argv[3], argv[4]);
 		} else if (argc == 4 && std::string(argv[1]) == "--corrupt") {

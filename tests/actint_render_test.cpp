@@ -572,3 +572,64 @@ void actint_flow_test(bool native) {
 	XGR_MAXX = oldX;
 	XGR_MAXY = oldY;
 }
+
+// Stock text mode must not even index the old text AVI slots. New resources may
+// provide just their real picture; unknown mod IDs retain the legacy path.
+void actint_description_switch_test() {
+	extern iListElement *iShopItem;
+	extern int iEvLineID, aciCurAviIndex, aciCurAviIndexDelta;
+	void aciInitAviID();
+	actIntDispatcher dispatcher;
+	aScrDisp = &dispatcher;
+	aciLocationInfo location;
+	iAVIElement video;
+	location.objList[ACI_MECHOS_AVI_ID] = &video;
+	dispatcher.curLocData = &location;
+	invItem item;
+	item.ID = 27;
+	item.numAviIDs = 1;
+	item.avi_ids = new char *[1]{};
+	char picture[] = "picture-only.avi";
+	item.init_avi_id(picture, 0);
+	iShopItem = &item;
+	iEvLineID = ITEMS_MODE;
+	for (int index : {ACI_TEXT_AVI_ENG, ACI_TEXT_AVI_RUS}) {
+		aciCurAviIndex = index;
+		aciInitAviID();
+		check(
+			video.description_key && std::string(video.description_key) == "descriptions.item.27",
+			"Picture-only item did not use the catalog"
+		);
+	}
+	aciCurAviIndex = ACI_PICTURE_AVI_ENG;
+	aciInitAviID();
+	check(
+		!video.description_key && std::string(video.avi_name) == picture,
+		"Picture toggle retained text or changed its real AVI"
+	);
+	item.ID = 900;
+	aciCurAviIndex = ACI_TEXT_AVI_ENG;
+	aciInitAviID();
+	check(!video.description_key, "Unknown mod item used a stock description");
+	invMatrix matrix(1, 1);
+	matrix.internalID = 16;
+	matrix.type = 30;
+	matrix.numAviIDs = 1;
+	matrix.avi_ids = new char *[1]{};
+	matrix.init_avi_id(picture, 0);
+	iShopItem = &matrix;
+	iEvLineID = MECHOS_MODE;
+	aciInitAviID();
+	check(
+		video.description_key && std::string(video.description_key) == "descriptions.mechos.16",
+		"Mechos description used its shared internal ID instead of its game type"
+	);
+	aciCurAviIndex = ACI_PICTURE_AVI_ENG;
+	aciCurAviIndexDelta = ACI_PICTURE_AVI_ENG3;
+	aciInitAviID(); // Missing camera slot is not an out-of-bounds read.
+	check(!video.description_key, "Camera switch retained a stale description");
+	aciCurAviIndexDelta = 0;
+	iShopItem = nullptr;
+	dispatcher.curLocData = nullptr;
+	aScrDisp = nullptr;
+}

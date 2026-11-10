@@ -1,4 +1,5 @@
 legacy_language = "ru"
+description_style = "compact-centered"
 
 [resources]
 "diagen" = "diagen.text"
@@ -47,3 +48,6 @@ legacy_language = "ru"
 "credits.H" = "cp866"
 "credits.IA" = "cp866"
 "credits.IB" = "cp866"
+
+[description_styles]
+"descriptions.item.33" = "compact-centered"
