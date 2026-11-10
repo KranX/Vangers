@@ -21,6 +21,10 @@ class Catalog {
 	const std::string &legacy_text(const std::string &key) const;
 	const std::string &resource(const std::string &key) const;
 	bool resource_is_utf8(const std::string &key) const;
+	// Read-only view for offline translation/font validation.
+	const std::map<std::string, std::string> &strings() const {
+		return strings_;
+	}
 	DescriptionStyle description_style(const std::string &key = {}) const {
 		const auto found = description_styles_.find(key);
 		return found == description_styles_.end() ? description_style_ : found->second;
