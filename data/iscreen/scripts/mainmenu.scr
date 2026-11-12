@@ -8499,9 +8499,25 @@ Screen "Server Config screen"
 
 				event_line	3
 			}
+			EvComm {
+				rise_obj	"Ok Option"
+				start_time	$PRESS_OBJ_TIME
+				time		$PRESS_OBJ_TIME
+
+				event_line	100
+			}
+			EvComm {
+				move2screen	"Identification screen"
+				start_time	$PRESS_OBJ_TIME
+				time		$MOVE2SCREEN_TIME
+
+				event_line	100
+			}
 		}
 		Event {
 			key $VK_RBUTTON
+
+			multi_event
 
 			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 1 }
 			EvComm {
@@ -8531,6 +8547,20 @@ Screen "Server Config screen"
 				time		$MOVE2SCREEN_TIME
 
 				event_line	3
+			}
+			EvComm {
+				rise_obj	"Ok Option"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$PRESS_OBJ_TIME
+
+				event_line	100
+			}
+			EvComm {
+				move2screen	"Identification screen"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME }
+				time		$MOVE2SCREEN_TIME
+
+				event_line	100
 			}
 		}
 	}

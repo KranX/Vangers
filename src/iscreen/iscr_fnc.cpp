@@ -2506,11 +2506,19 @@ void iHandleExtEvent(int code, int data) {
 	case iEXT_CHOOSE_SERVER:
 		iCurServer = data;
 		break;
-	case iEXT_CHECK_SERVER_CONFIG:
-		// zmod fixed
-		if (is_current_server_configured(
-				iGetOptionValueCHR(iSERVER_NAME), &my_server_data, &z_my_server_data
-			)) {
+	case iEXT_CHECK_SERVER_CONFIG: {
+		// The response fetch below can block for a long time as well, so keep
+		// Escape cancellation active while it runs.
+		iArmConnectCancel();
+		const int configured = is_current_server_configured(
+			iGetOptionValueCHR(iSERVER_NAME), &my_server_data, &z_my_server_data
+		);
+		iDisarmConnectCancel();
+		if (configured < 0) {
+			iEvLineID = 100; // cancelled: stay on the connection screen
+			break;
+		}
+		if (configured) {
 			iUpdateOptionValue(iSERVER_NAME);
 			iSetMultiGameParameters();
 			iUpdateMultiGameName();
@@ -2523,6 +2531,7 @@ void iHandleExtEvent(int code, int data) {
 		NetRnd.Init(my_server_data.InitialRND);
 		// #endif
 		break;
+	}
 	case iEXT_CHECK_END_FLAG:
 		if (iEndGameFlag) {
 			iEvLineID = 1;
@@ -2557,12 +2566,17 @@ void iHandleExtEvent(int code, int data) {
 		iCurMultiGame = data;
 		iUpdateMultiGameName();
 		break;
-	case iEXT_SEND_CONFIG_DATA:
+	case iEXT_SEND_CONFIG_DATA: {
 		iGetMultiGameParameters();
-		// zmod fixed
-		if (!send_server_data(
-				iGetOptionValueCHR(iSERVER_NAME), &my_server_data, &z_my_server_data
-			)) {
+		iArmConnectCancel();
+		const int sent =
+			send_server_data(iGetOptionValueCHR(iSERVER_NAME), &my_server_data, &z_my_server_data);
+		iDisarmConnectCancel();
+		if (sent < 0) {
+			iEvLineID = 100; // cancelled: return to the connection screen
+			break;
+		}
+		if (!sent) {
 			iUpdateOptionValue(iSERVER_NAME);
 			iUpdateMultiGameName();
 			iSetMultiGameParameters();
@@ -2576,6 +2590,7 @@ void iHandleExtEvent(int code, int data) {
 		NetRnd.Init(my_server_data.InitialRND);
 		// #endif
 		break;
+	}
 	case iEXT_CHOOSE_PARAMS_SCREEN:
 		iEvLineID = iCurMultiGame + 1;
 		break;

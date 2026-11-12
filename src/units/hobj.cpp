@@ -852,7 +852,7 @@ void GeneralSystemFree(void) {
 			};
 		};
 
-		total_players_data_list_query();
+		(void)total_players_data_list_query();
 		disconnect_from_server();
 		NetworkON = 0;
 	};
@@ -3952,8 +3952,7 @@ int NetInit(ServerFindChain *p) {
 	std::cout << "NetInit - [3]" << std::endl;
 	send_player_body(my_player_body);
 	std::cout << "NetInit - [4]" << std::endl;
-	total_players_data_list_query();
-	if (XSocketWasCancelled()) {
+	if (!total_players_data_list_query()) {
 		NetworkON = 0;
 		main_socket.close();
 		return -1;

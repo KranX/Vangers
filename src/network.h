@@ -342,7 +342,7 @@ void disconnect_from_server();
 void set_time_by_server(int n_measures = 16);
 int set_world(int world, int world_y_size);
 void leave_world();
-void total_players_data_list_query();
+bool total_players_data_list_query();
 void request_total_players_data_list_query_async();
 
 void send_player_body(PlayerBody &body);

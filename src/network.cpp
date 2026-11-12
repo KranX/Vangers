@@ -11,6 +11,7 @@
 #endif
 
 #include "network.h"
+#include "network_query_gate.h"
 #include "runtime.h"
 #include "xgraph.h"
 #include <chrono>
@@ -2211,14 +2212,23 @@ void leave_world() {
 		CurrentWorld
 	);
 }
-void total_players_data_list_query() {
+bool total_players_data_list_query() {
 	total_players_data_list_query_pending = 1;
 	total_players_data_list_query_last_time = SDL_GetTicks();
 	network_log_printf("OUT", "TOTAL_PLAYERS_DATA_QUERY blocking=1");
 	events_out.send_simple_query(TOTAL_PLAYERS_DATA_QUERY);
-	events_in.receive_waiting_for_event(TOTAL_LIST_OF_PLAYERS_DATA);
-	players_list.parsing_total_body_query();
-	events_in.ignore_event();
+	const int received = events_in.receive_waiting_for_event(TOTAL_LIST_OF_PLAYERS_DATA);
+	const bool parsed = run_network_query_parser(received, TOTAL_LIST_OF_PLAYERS_DATA, [] {
+		players_list.parsing_total_body_query();
+		events_in.ignore_event();
+	});
+	if (!parsed) {
+		// Cancelled or failed before a complete response arrived. The input
+		// buffer has been reset, so parsing it would read stale/partial data.
+		total_players_data_list_query_pending = 0;
+		network_log_printf("WAIT", "TOTAL_LIST_OF_PLAYERS_DATA result=not_received");
+	}
+	return parsed;
 }
 
 void request_total_players_data_list_query_async() {
@@ -2410,7 +2420,10 @@ ServerData::ServerData() {
 int is_current_server_configured(char *name, ServerData *data, zServerData *zdata) {
 	if (current_server_addr.configured) {
 		events_out.send_simple_query(GET_GAME_DATA);
-		if (events_in.receive_waiting_for_event(GAME_DATA_RESPONSE)) {
+		const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
+		if (XSocketWasCancelled())
+			return -1;
+		if (received) {
 			if (events_in.current_body_size()) {
 				events_in > name;
 				events_in.read(data, sizeof(ServerData));
@@ -2418,7 +2431,10 @@ int is_current_server_configured(char *name, ServerData *data, zServerData *zdat
 				events_in.ignore_event();
 				//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 				if (zserver_version > 1) {
-					if (events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE)) {
+					const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
+					if (XSocketWasCancelled())
+						return -1;
+					if (zreceived) {
 						if (events_in.current_body_size()) {
 							zdata->mod_id = events_in.get_byte();
 							events_in.ignore_event();
@@ -2442,7 +2458,10 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	MP_GAME = data->GameType;
 	if (current_server_addr.configured) {
 		events_out.send_simple_query(GET_GAME_DATA);
-		if (events_in.receive_waiting_for_event(GAME_DATA_RESPONSE)) {
+		const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
+		if (XSocketWasCancelled())
+			return -1;
+		if (received) {
 			if (events_in.current_body_size()) {
 				events_in > name;
 				events_in.read(data, sizeof(ServerData));
@@ -2450,7 +2469,10 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 				events_in.ignore_event();
 				//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 				if (zserver_version > 1) {
-					if (events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE)) {
+					const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
+					if (XSocketWasCancelled())
+						return -1;
+					if (zreceived) {
 						if (events_in.current_body_size()) {
 							zdata->mod_id = events_in.get_byte();
 							events_in.ignore_event();
@@ -2473,7 +2495,10 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	events_out.write(data, sizeof(ServerData));
 	events_out.end_body();
 	events_out.send_simple_query(GET_GAME_DATA);
-	if (!events_in.receive_waiting_for_event(GAME_DATA_RESPONSE) || !events_in.current_body_size())
+	const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
+	if (XSocketWasCancelled())
+		return -1;
+	if (!received || !events_in.current_body_size())
 		ErrH.Abort("Network error: unable to configure server");
 	char name_tmp[256];
 	ServerData data_tmp;
@@ -2482,8 +2507,10 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	events_in.ignore_event();
 	//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 	if (zserver_version > 1) {
-		if (!events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE) ||
-			!events_in.current_body_size())
+		const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
+		if (XSocketWasCancelled())
+			return -1;
+		if (!zreceived || !events_in.current_body_size())
 			ErrH.Abort("Network error: unable to configure server");
 		zdata->mod_id = events_in.get_byte();
 		events_in.ignore_event();
