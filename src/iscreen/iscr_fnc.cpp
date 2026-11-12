@@ -11,13 +11,13 @@
 #include "ivmap.h"
 #include "iworld.h"
 
+#include "../settings/text_encoding.h"
 #include "hfont.h"
 #include "i_mem.h"
 #include "ikeys.h"
 #include "iscreen.h"
 #include "iscript.h"
 #include "settings_adapter.h"
-#include "../settings/text_encoding.h"
 
 #include "controls.h"
 
@@ -2361,10 +2361,7 @@ static void iShowConnectError(void) {
 	if (network_last_connect_error.empty())
 		return;
 	SDL_ShowSimpleMessageBox(
-		SDL_MESSAGEBOX_ERROR,
-		"Vangers",
-		network_last_connect_error.c_str(),
-		XGR_Obj.get_window()
+		SDL_MESSAGEBOX_ERROR, "Vangers", network_last_connect_error.c_str(), XGR_Obj.get_window()
 	);
 	ErrH.Log(network_last_connect_error.c_str());
 	network_last_connect_error.clear();
