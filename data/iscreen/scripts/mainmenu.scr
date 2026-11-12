@@ -11428,6 +11428,8 @@ Screen "INet Host screen"
 			key $VK_RETURN
 			key $VK_LBUTTON
 
+			multi_event
+
 			time { $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME * 2 + 3 }
 
 			EvComm {
@@ -11452,11 +11454,29 @@ Screen "INet Host screen"
 				move2screen	"iSearch server screen"
 				start_time	{ $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
 				time		$MOVE2SCREEN_TIME
+
+				event_line	1
+			}
+			EvComm {
+				rise_obj	"Ok Option"
+				start_time	{ $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
+				time		$PRESS_OBJ_TIME
+
+				event_line	101
+			}
+			EvComm {
+				move2screen	"INet Host screen"
+				start_time	{ $PRESS_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
+				time		$MOVE2SCREEN_TIME
+
+				event_line	101
 			}
 		}
 
 		Event {
 			key $VK_RBUTTON
+
+			multi_event
 
 			time { $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME * 2 + 3 }
 			EvComm {
@@ -11486,6 +11506,22 @@ Screen "INet Host screen"
 				move2screen	"iSearch server screen"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
 				time		$MOVE2SCREEN_TIME
+
+				event_line	1
+			}
+			EvComm {
+				rise_obj	"Ok Option"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
+				time		$PRESS_OBJ_TIME
+
+				event_line	101
+			}
+			EvComm {
+				move2screen	"INet Host screen"
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + $MOVE2SCREEN_TIME + 2 }
+				time		$MOVE2SCREEN_TIME
+
+				event_line	101
 			}
 		}
 	}

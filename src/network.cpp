@@ -845,7 +845,7 @@ void ServerFindChain::connect(XSocket &target) {
 /*****************************************************************
 				Servers List
 *****************************************************************/
-int identification(XSocket &socket, bool report_errors = false) {
+int identification(XSocket &socket) {
 	char string[256] = "";
 	memset(string, 0, 256);
 	unsigned int len, identificated = 0;
@@ -917,8 +917,7 @@ int identification(XSocket &socket, bool report_errors = false) {
 		socket.close();
 		// Do not abort the whole game on a connection-level problem: report it
 		// to the player through the interface and return to the connection screen.
-		if (report_errors)
-			network_last_connect_error = error_message;
+		network_last_connect_error = error_message;
 		return 0;
 	}
 	// zMod fixed ---------------------------------------------------------
@@ -971,6 +970,7 @@ void ServersList::clear_states() {
 	}
 }
 int ServersList::talk_to_server(int IP, int port, char *domain_name, int only_new_game) {
+	network_last_connect_error.clear();
 	XSocket sock;
 	if (IP) {
 		sock.open(IP, port);
@@ -1962,7 +1962,7 @@ int connect_to_server(ServerFindChain *p) {
 		network_log_close("connect_cancelled");
 		return -1;
 	}
-	if (main_socket.is_open() && identification(main_socket, true)) {
+	if (main_socket.is_open() && identification(main_socket)) {
 		current_server_addr = *p;
 
 		events_out.clear();

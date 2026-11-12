@@ -689,7 +689,7 @@ void iQuantFirst(void) {
 							}
 						} else if (iEvLineID == 100) {
 							iScrDisp->curScr =
-								(iScreen *)iScrDisp->get_object("iSearch server screen");
+								(iScreen *)iScrDisp->get_object("Identification screen");
 						}
 					}
 				}
@@ -2357,6 +2357,19 @@ static void iSetCancelHint(iScreen *screen) {
 		obj->flags |= OBJ_REINIT | OBJ_MUST_REDRAW;
 }
 
+static void iShowConnectError(void) {
+	if (network_last_connect_error.empty())
+		return;
+	SDL_ShowSimpleMessageBox(
+		SDL_MESSAGEBOX_ERROR,
+		"Vangers",
+		network_last_connect_error.c_str(),
+		XGR_Obj.get_window()
+	);
+	ErrH.Log(network_last_connect_error.c_str());
+	network_last_connect_error.clear();
+}
+
 static void iInitCancelHints(void) {
 	iSetCancelHint((iScreen *)iScrDisp->get_object("Identification screen"));
 	iSetCancelHint((iScreen *)iScrDisp->get_object("Identification screen2"));
@@ -2687,11 +2700,22 @@ void iPrepareSaveNames(void) {
 }
 
 void iUpdateServersList() {
+	iEvLineID = 1;
 	iArmConnectCancel();
 	avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME), iServerPort);
+	const bool cancelled = XSocketWasCancelled();
 	iDisarmConnectCancel();
 	iFirstServerPtr = avaible_servers.first();
 	iInitServersList();
+	if (cancelled) {
+		// Return to the connection screen instead of an empty server list.
+		iEvLineID = 101;
+		return;
+	}
+	if (!network_last_connect_error.empty()) {
+		iShowConnectError();
+		iEvLineID = 101;
+	}
 }
 
 void iInitServersList() {
@@ -2776,15 +2800,12 @@ void iConnect2Server(void) {
 			iEvLineID = 100; // cancelled by the user
 		} else {
 			if (!network_last_connect_error.empty()) {
-				SDL_ShowSimpleMessageBox(
-					SDL_MESSAGEBOX_ERROR,
-					"Vangers",
-					network_last_connect_error.c_str(),
-					XGR_Obj.get_window()
-				);
-				network_last_connect_error.clear();
+				iShowConnectError();
+				// Stay on the connection screen so the player can retry.
+				iEvLineID = 100;
+			} else {
+				iEvLineID = 1; // ordinary connection failure -> Failed screen
 			}
-			iEvLineID = 1;
 		}
 	}
 }
