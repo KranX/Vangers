@@ -2770,12 +2770,22 @@ void iConnect2Server(void) {
 		iArmConnectCancel();
 		const int result = NetInit(p);
 		iDisarmConnectCancel();
-		if (result > 0)
+		if (result > 0) {
 			iEvLineID = 2;
-		else if (result < 0)
+		} else if (result < 0) {
 			iEvLineID = 100; // cancelled by the user
-		else
+		} else {
+			if (!network_last_connect_error.empty()) {
+				SDL_ShowSimpleMessageBox(
+					SDL_MESSAGEBOX_ERROR,
+					"Vangers",
+					network_last_connect_error.c_str(),
+					XGR_Obj.get_window()
+				);
+				network_last_connect_error.clear();
+			}
 			iEvLineID = 1;
+		}
 	}
 }
 

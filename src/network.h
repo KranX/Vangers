@@ -397,6 +397,9 @@ int is_current_server_configured(
 void void_network_quant(); // receives messages only
 
 int NetInit(ServerFindChain *p);
+// Filled when a connection fails after the TCP handshake (protocol mismatch,
+// rejected handshake, silent server). Empty for ordinary connection failures.
+extern std::string network_last_connect_error;
 
 struct NetRndType {
 	unsigned NetRndVal;

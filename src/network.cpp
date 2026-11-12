@@ -150,6 +150,7 @@ MessageDispatcher message_dispatcher;
 XSocket main_socket;
 ServerFindChain current_server_addr;
 int number_of_reconnection_attempt = 5;
+std::string network_last_connect_error;
 
 int object_ID_offsets[16];
 
@@ -915,9 +916,9 @@ int identification(XSocket &socket, bool report_errors = false) {
 		);
 		socket.close();
 		// Do not abort the whole game on a connection-level problem: report it
-		// to the player and let the caller return to the server list.
+		// to the player through the interface and return to the connection screen.
 		if (report_errors)
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Vangers", error_message, nullptr);
+			network_last_connect_error = error_message;
 		return 0;
 	}
 	// zMod fixed ---------------------------------------------------------
@@ -1950,6 +1951,7 @@ void InputEventBuffer::ignore_event() {
 				Some utilites
 ***********************************************************************/
 int connect_to_server(ServerFindChain *p) {
+	network_last_connect_error.clear();
 	network_log_open(p, "connect_to_server");
 	network_log_printf("CONNECT", "server_game_id=%d", p ? p->game_ID : 0);
 	p->connect(main_socket);

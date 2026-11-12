@@ -8106,9 +8106,9 @@ Screen "Identification screen"
 				event_line	1
 			}
 			EvComm {
-				move2screen	"iSearch server screen"
+				rise_obj	"Ok Option"
 				start_time	{ $PRESS_OBJ_TIME + 1 }
-				time		$MOVE2SCREEN_TIME
+				time		$PRESS_OBJ_TIME
 
 				event_line	100
 			}
@@ -8185,9 +8185,9 @@ Screen "Identification screen"
 				event_line	1
 			}
 			EvComm {
-				move2screen	"iSearch server screen"
+				rise_obj	"Ok Option"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 1 }
-				time		$MOVE2SCREEN_TIME
+				time		$PRESS_OBJ_TIME
 
 				event_line	100
 			}
@@ -12725,9 +12725,9 @@ Screen "Identification screen2"
 				event_line	1
 			}
 			EvComm {
-				move2screen	"iSearch server screen"
+				rise_obj	"Ok Option"
 				start_time	{ $PRESS_OBJ_TIME + 1 }
-				time		$MOVE2SCREEN_TIME
+				time		$PRESS_OBJ_TIME
 
 				event_line	100
 			}
@@ -12804,9 +12804,9 @@ Screen "Identification screen2"
 				event_line	1
 			}
 			EvComm {
-				move2screen	"iSearch server screen"
+				rise_obj	"Ok Option"
 				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 1 }
-				time		$MOVE2SCREEN_TIME
+				time		$PRESS_OBJ_TIME
 
 				event_line	100
 			}
