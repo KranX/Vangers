@@ -844,7 +844,7 @@ void ServerFindChain::connect(XSocket &target) {
 /*****************************************************************
 				Servers List
 *****************************************************************/
-int identification(XSocket &socket) {
+int identification(XSocket &socket, bool report_errors = false) {
 	char string[256] = "";
 	memset(string, 0, 256);
 	unsigned int len, identificated = 0;
@@ -906,8 +906,18 @@ int identification(XSocket &socket) {
 		}
 		std::cout << "Network:identificated is wrong! SV:" << SERVER_VERSION
 				  << " SV2:" << server_protocol << " response:" << string << std::endl;
+		network_log_printf(
+			"IDENTIFICATION_FAILED",
+			"server_protocol=%d server_replied=%d unexpected_response=%d",
+			server_protocol,
+			server_replied,
+			unexpected_response
+		);
 		socket.close();
-		ErrH.Abort(error_message, XERR_USER);
+		// Do not abort the whole game on a connection-level problem: report it
+		// to the player and let the caller return to the server list.
+		if (report_errors)
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Vangers", error_message, nullptr);
 		return 0;
 	}
 	// zMod fixed ---------------------------------------------------------
@@ -1950,7 +1960,7 @@ int connect_to_server(ServerFindChain *p) {
 		network_log_close("connect_cancelled");
 		return -1;
 	}
-	if (main_socket.is_open() && identification(main_socket)) {
+	if (main_socket.is_open() && identification(main_socket, true)) {
 		current_server_addr = *p;
 
 		events_out.clear();
