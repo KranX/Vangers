@@ -3917,7 +3917,10 @@ void GeneralObject::NetEvent(int type, int id, int creator, int time, int x, int
 int NetInit(ServerFindChain *p) {
 	std::cout << "NetInit - [start]" << std::endl;
 	int i;
-	if (!connect_to_server(p))
+	const int connect_result = connect_to_server(p);
+	if (connect_result < 0)
+		return -1; // cancelled by the user
+	if (!connect_result)
 		return 0;
 
 	std::cout << "NetInit - [1]" << std::endl;
@@ -3930,6 +3933,11 @@ int NetInit(ServerFindChain *p) {
 	LocalNetEnvironment = 0;
 
 	set_time_by_server(3);
+	if (XSocketWasCancelled()) {
+		NetworkON = 0;
+		main_socket.close();
+		return -1;
+	}
 	std::cout << "NetInit - [1.5]" << std::endl;
 	my_player_body.clear();
 
@@ -3945,6 +3953,11 @@ int NetInit(ServerFindChain *p) {
 	send_player_body(my_player_body);
 	std::cout << "NetInit - [4]" << std::endl;
 	total_players_data_list_query();
+	if (XSocketWasCancelled()) {
+		NetworkON = 0;
+		main_socket.close();
+		return -1;
+	}
 	std::cout << "NetInit - [5]" << std::endl;
 
 	GloryPlaceNum = 0;

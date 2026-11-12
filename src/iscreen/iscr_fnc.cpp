@@ -17,6 +17,7 @@
 #include "iscreen.h"
 #include "iscript.h"
 #include "settings_adapter.h"
+#include "../settings/text_encoding.h"
 
 #include "controls.h"
 
@@ -151,6 +152,8 @@ void iUpdateServersList();
 void iServersListUp();
 void iServersListDown();
 void iConnect2Server(void);
+static void iArmConnectCancel(void);
+static void iDisarmConnectCancel(void);
 void iInitControlKey(int id, int num);
 void iDeleteControl(int vkey, int id);
 void iDeleteControlKey(int id, int num);
@@ -650,7 +653,9 @@ void iQuantFirst(void) {
 			iEndGameFlag = 1;
 		} else if (autoconnect) {
 			iScrDisp->curScr = (iScreen *)iScrDisp->get_object("iSearch server screen");
+			iArmConnectCancel();
 			avaible_servers.find_servers_in_the_internet(autoconnectHost, autoconnectPort);
+			iDisarmConnectCancel();
 			if (avaible_servers.size() > 0) {
 				iFirstServerPtr = avaible_servers.first();
 				iCurServer = 0;
@@ -682,6 +687,9 @@ void iQuantFirst(void) {
 								iScrDisp->curScr =
 									(iScreen *)iScrDisp->get_object("Server Config screen");
 							}
+						} else if (iEvLineID == 100) {
+							iScrDisp->curScr =
+								(iScreen *)iScrDisp->get_object("iSearch server screen");
 						}
 					}
 				}
@@ -2304,11 +2312,63 @@ void iKeyClear(void) {
 	KeyBuf->clear();
 }
 
+// Polls SDL input while the game is blocked in a synchronous network wait.
+// Returns true when the user pressed Escape to cancel the operation.
+static bool iConnectCancelPoll(void) {
+	SDL_PumpEvents();
+
+	bool cancelled = false;
+	SDL_Event event;
+	// Drain queued key presses: none of them are meaningful until the network
+	// operation finishes, and leaving Escape in the queue would trigger the
+	// "back" action right after we return to the menu.
+	while (SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_EVENT_KEY_DOWN, SDL_EVENT_KEY_DOWN) > 0) {
+		if (event.key.scancode == SDL_SCANCODE_ESCAPE)
+			cancelled = true;
+	}
+	return cancelled;
+}
+
+static void iArmConnectCancel(void) {
+	XSocketResetCancel();
+	XSocketSetWaitCallback(&iConnectCancelPoll);
+}
+
+static void iDisarmConnectCancel(void) {
+	XSocketSetWaitCallback(nullptr);
+	XSocketResetCancel();
+}
+
+static void iSetCancelHint(iScreen *screen) {
+	if (!screen)
+		return;
+	iStringElement *el = (iStringElement *)screen->get_object("CancelHintStr");
+	if (!el)
+		return;
+	if (!HFntTable || el->font < 0 || el->font >= iNumFonts)
+		return;
+	const char *text = (lang() == RUSSIAN) ? "ESC - ОТМЕНА" : "ESC - CANCEL";
+	const std::string encoded = vangers::settings::utf8_to_cp866(text);
+	el->init_string(encoded.c_str());
+	el->init_size();
+	el->init_align();
+	iScreenObject *obj = (iScreenObject *)el->owner;
+	if (obj)
+		obj->flags |= OBJ_REINIT | OBJ_MUST_REDRAW;
+}
+
+static void iInitCancelHints(void) {
+	iSetCancelHint((iScreen *)iScrDisp->get_object("Identification screen"));
+	iSetCancelHint((iScreen *)iScrDisp->get_object("Identification screen2"));
+	iSetCancelHint((iScreen *)iScrDisp->get_object("Searching screen"));
+}
+
 void iHandleExtEvent(int code, int data) {
 	int mode;
 	switch (code) {
 	case iEXT_INIT_SOCKETS:
 		XSocketInit();
+		iInitCancelHints();
 		iGetIP();
 		break;
 	case iEXT_INIT_PORT:
@@ -2627,7 +2687,9 @@ void iPrepareSaveNames(void) {
 }
 
 void iUpdateServersList() {
+	iArmConnectCancel();
 	avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME), iServerPort);
+	iDisarmConnectCancel();
 	iFirstServerPtr = avaible_servers.first();
 	iInitServersList();
 }
@@ -2705,8 +2767,13 @@ void iConnect2Server(void) {
 	if (!p)
 		iEvLineID = 1;
 	else {
-		if (NetInit(p))
+		iArmConnectCancel();
+		const int result = NetInit(p);
+		iDisarmConnectCancel();
+		if (result > 0)
 			iEvLineID = 2;
+		else if (result < 0)
+			iEvLineID = 100; // cancelled by the user
 		else
 			iEvLineID = 1;
 	}

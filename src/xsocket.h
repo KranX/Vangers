@@ -8,6 +8,18 @@
 int XSocketInit(int ErrHUsed = 1);
 void XSocketFinit();
 
+// Callback invoked from blocking network waits. It should return true when the
+// user asked to abort the current operation. The callback is expected to pump
+// input events itself, so it must be cheap.
+using XSocketWaitCallback = bool (*)();
+
+void XSocketSetWaitCallback(XSocketWaitCallback callback);
+// Polls the wait callback and remembers a cancellation request. Returns true if
+// the current wait has been cancelled.
+bool XSocketPollCancel();
+bool XSocketWasCancelled();
+void XSocketResetCancel();
+
 extern std::string XSocketLocalHostAddress;
 extern std::string XSocketLocalHostExternalAddress;
 

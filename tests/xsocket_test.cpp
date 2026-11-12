@@ -331,6 +331,54 @@ bool run_loopback_test() {
 	return true;
 }
 
+bool cancel_immediately() {
+	return true;
+}
+
+bool run_cancel_flag_test() {
+	XSocketSetWaitCallback(&cancel_immediately);
+	XSocketResetCancel();
+	if (!check(!XSocketWasCancelled(), "cancel flag was not reset"))
+		return false;
+	if (!check(XSocketPollCancel(), "wait callback did not request cancellation"))
+		return false;
+	if (!check(XSocketWasCancelled(), "cancellation request was not remembered"))
+		return false;
+	if (!check(XSocketPollCancel(), "repeated poll forgot the cancellation"))
+		return false;
+	XSocketSetWaitCallback(nullptr);
+	XSocketResetCancel();
+	if (!check(!XSocketPollCancel(), "cancellation was not cleared"))
+		return false;
+	return true;
+}
+
+bool run_cancelled_connection_test() {
+	// TEST-NET-1 is not routable, so a SYN sent there normally stays pending
+	// until the OS gives up. The wait callback must break out almost at once.
+	XSocketSetWaitCallback(&cancel_immediately);
+	XSocketResetCancel();
+
+	XSocket client;
+	const Uint64 start = SDL_GetTicks();
+	const bool opened = client.open("192.0.2.1", 2197);
+	const Uint64 elapsed = SDL_GetTicks() - start;
+	const bool cancelled = XSocketWasCancelled();
+
+	XSocketSetWaitCallback(nullptr);
+	XSocketResetCancel();
+
+	if (!check(!opened, "connection to an unroutable address succeeded"))
+		return false;
+	if (!check(!client.is_open(), "cancelled connection left a stream socket open"))
+		return false;
+	// A network stack may reject the address before the first slice completes.
+	// In that case cancellation was not needed; only assert that we never block.
+	if (cancelled)
+		return check(elapsed < 2000, "cancelled connection did not return promptly");
+	return check(elapsed < 2000, "unroutable connection attempt blocked for too long");
+}
+
 } // namespace
 
 int main() {
@@ -346,6 +394,7 @@ int main() {
 		XSocket invalid;
 		success = check(!invalid.open("127.0.0.1", 0), "invalid client port was accepted") &&
 				  check(!invalid.flush(0), "closed socket reported a successful flush") &&
+				  run_cancel_flag_test() && run_cancelled_connection_test() &&
 				  run_loopback_test() && run_send_backpressure_test();
 	}
 	XSocketFinit();

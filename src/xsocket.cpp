@@ -18,8 +18,32 @@
 static const char *XSocketLastErrorString = nullptr;
 static const char *XSocketLastErrorCode = nullptr;
 static bool XSocketInitializationOK = false;
+static XSocketWaitCallback XSocketWaitCallbackFn = nullptr;
+static bool XSocketCancelled = false;
 std::string XSocketLocalHostAddress;
 std::string XSocketLocalHostExternalAddress;
+
+void XSocketSetWaitCallback(XSocketWaitCallback callback) {
+	XSocketWaitCallbackFn = callback;
+}
+
+bool XSocketPollCancel() {
+	if (XSocketCancelled)
+		return true;
+	if (XSocketWaitCallbackFn && XSocketWaitCallbackFn()) {
+		XSocketCancelled = true;
+		return true;
+	}
+	return false;
+}
+
+bool XSocketWasCancelled() {
+	return XSocketCancelled;
+}
+
+void XSocketResetCancel() {
+	XSocketCancelled = false;
+}
 
 int XSocketInit(int ErrHUsed) {
 	if (XSocketInitializationOK)
@@ -108,7 +132,12 @@ XSocket &XSocket::operator=(XSocket &&donor) noexcept {
 }
 
 int XSocket::tcp_open(const char *name, int port) {
+	// Small slices keep the main thread responsive and let the user cancel a
+	// pending DNS lookup or TCP connection with Escape.
+	static const Sint32 wait_slice_ms = 50;
+
 	close();
+	XSocketResetCancel();
 	if (!name || port <= 0 || port > 65535) {
 		XSOCKET_ERROR("Invalid TCP endpoint", "");
 		return 0;
@@ -118,14 +147,35 @@ int XSocket::tcp_open(const char *name, int port) {
 		XSOCKET_ERROR("TCP socket hostname resolution failed", SDL_GetError());
 		return 0;
 	}
-	if (NET_WaitUntilResolved(address, -1) != NET_SUCCESS) {
+	NET_Status status;
+	do {
+		status = NET_WaitUntilResolved(address, wait_slice_ms);
+		if (status == NET_WAITING && XSocketPollCancel()) {
+			NET_UnrefAddress(address);
+			return 0;
+		}
+	} while (status == NET_WAITING);
+	if (status != NET_SUCCESS) {
 		XSOCKET_ERROR("TCP socket hostname resolution failed", SDL_GetError());
 		NET_UnrefAddress(address);
 		return 0;
 	}
 
 	streamSocket = NET_CreateClient(address, static_cast<Uint16>(port), 0);
-	if (!streamSocket || NET_WaitUntilConnected(streamSocket, -1) != NET_SUCCESS) {
+	if (!streamSocket) {
+		XSOCKET_ERROR("TCP socket open failed", SDL_GetError());
+		NET_UnrefAddress(address);
+		return 0;
+	}
+	do {
+		status = NET_WaitUntilConnected(streamSocket, wait_slice_ms);
+		if (status == NET_WAITING && XSocketPollCancel()) {
+			NET_UnrefAddress(address);
+			close();
+			return 0;
+		}
+	} while (status == NET_WAITING);
+	if (status != NET_SUCCESS) {
 		XSOCKET_ERROR("TCP socket open failed", SDL_GetError());
 		NET_UnrefAddress(address);
 		close();

@@ -858,6 +858,10 @@ int identification(XSocket &socket) {
 	string[strlen(string) + 1] = CLIENT_VERSION;
 	socket.send(string, strlen(string) + 2);
 	while (CHECK_TIMER()) {
+		if (XSocketPollCancel()) {
+			socket.close();
+			return 0;
+		}
 		memset(string, 0, 256);
 		if ((len = socket.receive(string, 255, 1000)) != 0) {
 			server_replied = 1;
@@ -914,9 +918,14 @@ int identification(XSocket &socket) {
 		return 0;
 
 	Uint64 z_end_time_ = SDL_GetTicks() + 2 * 60 * 1000;
-	while (SDL_GetTicks() < z_end_time_)
+	while (SDL_GetTicks() < z_end_time_) {
+		if (XSocketPollCancel()) {
+			socket.close();
+			return 0;
+		}
 		if (socket.receive(zbuffer.GetBuf(), zbuffer.length(), 1000))
 			break;
+	}
 
 	unsigned char zevent_ID;
 	short zevent_size;
@@ -964,6 +973,8 @@ int ServersList::talk_to_server(int IP, int port, char *domain_name, int only_ne
 	}
 	if (!sock || !identification(sock))
 		return 0;
+	if (XSocketWasCancelled())
+		return 0;
 
 	XBuffer servers_buffer(10000);
 	servers_buffer < short(1) < char(GAMES_LIST_QUERY);
@@ -971,9 +982,12 @@ int ServersList::talk_to_server(int IP, int port, char *domain_name, int only_ne
 		return 0;
 
 	START_TIMER(60 * 1000);
-	while (CHECK_TIMER())
+	while (CHECK_TIMER()) {
+		if (XSocketPollCancel())
+			return 0;
 		if (sock.receive(servers_buffer.GetBuf(), servers_buffer.length(), 1000))
 			break;
+	}
 
 	ServerFindChain *p;
 	unsigned char n_games, event_ID;
@@ -1436,6 +1450,11 @@ int InputEventBuffer::receive(XSocket &sock, int dont_free) {
 
 int InputEventBuffer::receive_waiting_for_event(int event, XSocket &sock, int skip_if_aint) {
 	// std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
+	if (XSocketPollCancel()) {
+		event_ID = 0;
+		offset = next_event_pointer = 0;
+		return 0;
+	}
 	receive(sock);
 	if (!sock) {
 		network_log_printf(
@@ -1443,7 +1462,7 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket &sock, int sk
 			"receive_waiting_for_event event=%s result=socket_closed",
 			network_event_name(event)
 		);
-		if (!skip_if_aint) {
+		if (!skip_if_aint && !XSocketWasCancelled()) {
 			if (lang() == RUSSIAN) {
 				ErrH.Abort("Сервер не отвечает", XERR_USER, event);
 			} else {
@@ -1487,11 +1506,17 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket &sock, int sk
 		if (!CHECK_TIMER())
 			break;
 
+		if (XSocketPollCancel()) {
+			event_ID = 0;
+			offset = next_event_pointer = 0;
+			return 0;
+		}
+
 		receive(sock, 1);
 		if (!sock)
 			break;
 	}
-	if (!skip_if_aint) {
+	if (!skip_if_aint && !XSocketWasCancelled()) {
 		network_log_printf(
 			"WAIT", "receive_waiting_for_event event=%s result=timeout", network_event_name(event)
 		);
@@ -1918,6 +1943,13 @@ int connect_to_server(ServerFindChain *p) {
 	network_log_open(p, "connect_to_server");
 	network_log_printf("CONNECT", "server_game_id=%d", p ? p->game_ID : 0);
 	p->connect(main_socket);
+	if (XSocketWasCancelled()) {
+		NetworkON = 0;
+		main_socket.close();
+		network_log_printf("CONNECT_CANCEL", "stage=connect");
+		network_log_close("connect_cancelled");
+		return -1;
+	}
 	if (main_socket.is_open() && identification(main_socket)) {
 		current_server_addr = *p;
 
@@ -1932,6 +1964,13 @@ int connect_to_server(ServerFindChain *p) {
 
 		// std::cout<<"ATTACH_TO_GAME_RESPONSE"<<std::endl;
 		events_in.receive_waiting_for_event(ATTACH_TO_GAME_RESPONSE);
+		if (XSocketWasCancelled()) {
+			NetworkON = 0;
+			main_socket.close();
+			network_log_printf("CONNECT_CANCEL", "stage=attach");
+			network_log_close("connect_cancelled");
+			return -1;
+		}
 		// std::cout<<"[ok]"<<std::endl;
 		current_server_addr.game_ID = events_in.get_int();
 		current_server_addr.configured = events_in.get_byte();
@@ -1953,6 +1992,13 @@ int connect_to_server(ServerFindChain *p) {
 		if (zserver_version > 1 || SERVER_VERSION > 1) {
 			// zMod second network packet, used as a seed for world activity cycles
 			events_in.receive_waiting_for_event(zTIME_RESPONSE);
+			if (XSocketWasCancelled()) {
+				NetworkON = 0;
+				main_socket.close();
+				network_log_printf("CONNECT_CANCEL", "stage=ztime");
+				network_log_close("connect_cancelled");
+				return -1;
+			}
 			zGameBirthTime = events_in.get_int();
 			events_in.ignore_event();
 		}
@@ -1969,6 +2015,13 @@ int connect_to_server(ServerFindChain *p) {
 		);
 
 		return GlobalStationID;
+	}
+	if (XSocketWasCancelled()) {
+		NetworkON = 0;
+		main_socket.close();
+		network_log_printf("CONNECT_CANCEL", "stage=handshake");
+		network_log_close("connect_cancelled");
+		return -1;
 	}
 	NetworkON = 0;
 	network_log_printf("CONNECT_FAIL", "socket_alive=%d", main_socket.is_open());
