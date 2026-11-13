@@ -2116,7 +2116,7 @@ void disconnect_from_server() {
 	events_in.reset();
 	network_log_close("disconnect_from_server");
 }
-void set_time_by_server(int n_measures) {
+bool set_time_by_server(int n_measures) {
 	int i;
 	int t0, T1, t2;
 	double tau = 0;
@@ -2125,7 +2125,8 @@ void set_time_by_server(int n_measures) {
 		// zmod
 		z_time_init();
 		events_out.send_simple_query(SERVER_TIME_QUERY);
-		events_in.receive_waiting_for_event(SERVER_TIME);
+		if (events_in.receive_waiting_for_event(SERVER_TIME) != SERVER_TIME)
+			return false;
 		t0 = events_in.current_time();
 		events_in.ignore_event();
 		T1 = GLOBAL_CLOCK();
@@ -2133,7 +2134,8 @@ void set_time_by_server(int n_measures) {
 		// zmod
 		z_time_init();
 		events_out.send_simple_query(SERVER_TIME_QUERY);
-		events_in.receive_waiting_for_event(SERVER_TIME);
+		if (events_in.receive_waiting_for_event(SERVER_TIME) != SERVER_TIME)
+			return false;
 		t2 = events_in.current_time();
 		events_in.ignore_event();
 		dtau = T1 - (t2 + t0) / 2;
@@ -2156,6 +2158,7 @@ void set_time_by_server(int n_measures) {
 		response_time,
 		time_synchronization_sigma
 	);
+	return true;
 }
 int set_world(int world, int world_y_size) // znfo - send set_world event
 {

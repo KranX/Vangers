@@ -3932,8 +3932,7 @@ int NetInit(ServerFindChain *p) {
 
 	LocalNetEnvironment = 0;
 
-	set_time_by_server(3);
-	if (XSocketWasCancelled()) {
+	if (!set_time_by_server(3)) {
 		network_rollback_cancelled_connection("netinit_time");
 		return -1;
 	}
