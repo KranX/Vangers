@@ -31,6 +31,14 @@ struct PeerDeleter {
 using TestServer = std::unique_ptr<NET_Server, ServerDeleter>;
 using TestPeer = std::unique_ptr<NET_StreamSocket, PeerDeleter>;
 
+struct PlayerListFixture {
+	PlayersList players;
+
+	~PlayerListFixture() {
+		players.delete_all();
+	}
+};
+
 int listen_on_available_port(TestServer &server) {
 	for (int port = 32397; port < 32497; ++port) {
 		server.reset(NET_CreateServer(nullptr, static_cast<Uint16>(port), 0));
@@ -55,10 +63,11 @@ TestPeer wait_for_client(const TestServer &server) {
 
 bool run_player_list_cancellation_test() {
 	InputEventBuffer events(1024);
-	PlayersList players;
+	PlayerListFixture fixture;
+	PlayersList &players = fixture.players;
 	PlayerData *existing = new PlayerData(3);
 	players.append(existing);
-	PlayerData *my_player = nullptr;
+	PlayerData *my_player = existing;
 
 	// Cancellation with an empty input buffer: the parser must not run.
 	if (!check(
@@ -67,7 +76,8 @@ bool run_player_list_cancellation_test() {
 		))
 		return false;
 	if (!check(
-			players.first() == existing && my_player == nullptr,
+			players.size() == 1 && players.first() == existing && my_player == existing &&
+				events.tell() == 0,
 			"empty cancelled response modified the player list"
 		))
 		return false;
@@ -81,7 +91,8 @@ bool run_player_list_cancellation_test() {
 		))
 		return false;
 	if (!check(
-			players.first() == existing && my_player == nullptr,
+			players.size() == 1 && players.first() == existing && my_player == existing &&
+				events.tell() == 0,
 			"partial cancelled response modified the player list"
 		))
 		return false;
@@ -90,8 +101,15 @@ bool run_player_list_cancellation_test() {
 	events.reset();
 	PlayerBody body;
 	std::memset(&body, 0, sizeof(body));
-	events < char(1) < char(7) < char(1) < char(2) < short(10) < short(20) < "tester";
+	body.kills = 4;
+	body.color = 3;
+	body.world = 2;
+	body.beebos = 100;
+	body.rating = 1.25f;
+	body.NetID = 12345;
+	events < char(1) < char(7) < char(1) < char(2) < short(10) < short(20) < "tester" < char(0);
 	events.write(&body, sizeof(body));
+	const auto response_size = events.tell();
 	events.set(0);
 	if (!check(
 			process_total_players_response(
@@ -103,15 +121,22 @@ bool run_player_list_cancellation_test() {
 
 	PlayerData *parsed = players.first();
 	if (!check(
-			parsed != nullptr && parsed->client_ID == 7 && my_player == parsed,
+			players.size() == 1 && parsed != nullptr && parsed->client_ID == 7 &&
+				my_player == parsed && parsed->status == 1 && parsed->world == 2 &&
+				parsed->x == 10 && parsed->y == 20 && parsed->name != nullptr &&
+				std::strcmp(parsed->name, "tester") == 0 &&
+				std::memcmp(&parsed->body, &body, sizeof(body)) == 0,
 			"parsed player list does not match the response"
 		))
+		return false;
+	if (!check(events.tell() == response_size, "parser did not consume exactly the response"))
 		return false;
 
 	return true;
 }
 
-bool run_session_reset_scenario(const char *waited_event) {
+// Exercises the shared cleanup operation, not configuration-response waits.
+bool run_session_reset_test() {
 	TestServer server;
 	const int port = listen_on_available_port(server);
 	if (!check(port != 0, "could not allocate a session reset test port"))
@@ -130,7 +155,8 @@ bool run_session_reset_scenario(const char *waited_event) {
 	InputEventBuffer events_in(1024);
 	events_in < char(0xAA) < char(0xBB);
 
-	PlayersList players;
+	PlayerListFixture fixture;
+	PlayersList &players = fixture.players;
 	PlayerData *player = new PlayerData(1);
 	players.append(player);
 	PlayerData *my_player = player;
@@ -140,15 +166,13 @@ bool run_session_reset_scenario(const char *waited_event) {
 	if (!check(events_in.tell() > 0, "input buffer was not populated"))
 		return false;
 
-	events_in.set(0);
-
 	reset_network_session_state(network_on, client, events_out, events_in, players, my_player);
 
 	if (!check(network_on == 0, "cancelled session kept NetworkON"))
 		return false;
 	if (!check(!client.is_open(), "cancelled session kept the socket open"))
 		return false;
-	if (!check(events_out.number_of_events() == 0, "cancelled session kept output events"))
+	if (!check(events_out.tell() == 0, "cancelled session kept the output buffer"))
 		return false;
 	if (!check(events_in.tell() == 0, "cancelled session kept the input buffer"))
 		return false;
@@ -157,7 +181,6 @@ bool run_session_reset_scenario(const char *waited_event) {
 	if (!check(my_player == nullptr, "cancelled session kept my_player_data"))
 		return false;
 
-	std::cout << "session reset after cancelled " << waited_event << '\n';
 	return true;
 }
 
@@ -169,9 +192,7 @@ int main() {
 	if (!check(XSocketInit(0), "SDL3_net initialization failed"))
 		return 1;
 
-	const bool success = run_player_list_cancellation_test() &&
-						 run_session_reset_scenario("GAME_DATA_RESPONSE") &&
-						 run_session_reset_scenario("zGAME_DATA_RESPONSE");
+	const bool success = run_player_list_cancellation_test() && run_session_reset_test();
 
 	XSocketFinit();
 	SDL_Quit();
