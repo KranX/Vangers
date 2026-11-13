@@ -52,6 +52,7 @@ SET(vangers_SRCS
 	iscreen/settings_adapter.cpp
 	iscreen/smooth.cpp
 	network.cpp
+	network_cancel.cpp
 	palette.cpp
 	particle/bmp2scr.cpp
 	particle/deform.cpp

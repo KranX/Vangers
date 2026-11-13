@@ -1,5 +1,7 @@
 #ifndef __NETWORK_H__
 #define __NETWORK_H__
+#include "xglobal.h"
+
 #include "zmod_client.h"
 
 #include "multiplayer.h"
@@ -77,6 +79,8 @@ struct PlayerData {
 	}
 };
 
+class InputEventBuffer;
+
 struct PlayersList: XTList<PlayerData> {
 	int NumGamingPeople;
 
@@ -90,7 +94,11 @@ struct PlayersList: XTList<PlayerData> {
 	void reset_states();
 	void delete_old_players();
 	void parsing_names_query();
-	void parsing_total_body_query();
+	void parsing_total_body_query(
+		InputEventBuffer &events,
+		int global_station_id,
+		PlayerData *&my_player
+	);
 	void merge_total_body_query();
 	unsigned int get_team_mask(int color);
 };

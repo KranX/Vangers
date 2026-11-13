@@ -89,6 +89,25 @@ TARGET_COMPILE_DEFINITIONS(iscreen_cancel_timing_test PRIVATE
 
 ADD_TEST(NAME iscreen_cancel_timing COMMAND iscreen_cancel_timing_test)
 
+ADD_EXECUTABLE(network_cancel_test
+	network_cancel_test.cpp
+	../src/network_cancel.cpp
+	../src/xsocket.cpp
+)
+
+TARGET_INCLUDE_DIRECTORIES(network_cancel_test PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_SOURCE_DIR}/lib/xtool
+)
+
+TARGET_LINK_LIBRARIES(network_cancel_test PRIVATE
+	xtool
+	SDL3::SDL3
+	SDL3_net::SDL3_net
+)
+
+ADD_TEST(NAME network_cancel COMMAND network_cancel_test)
+
 ADD_EXECUTABLE(traction_control_cadence_test
 	traction_control_cadence_test.cpp
 )

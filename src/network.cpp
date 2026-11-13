@@ -11,6 +11,7 @@
 #endif
 
 #include "network.h"
+#include "network_cancel.h"
 #include "runtime.h"
 #include "xgraph.h"
 #include <chrono>
@@ -1031,16 +1032,6 @@ int ServersList::find_servers_in_the_internet(char *host_name, int host_port) {
 /***********************************************************************
 				Output Event Buffer
 ***********************************************************************/
-OutputEventBuffer::OutputEventBuffer(unsigned int size): XBuffer(size) {
-	clear();
-}
-void OutputEventBuffer::clear() {
-	n_event = 0;
-	offset = 0;
-	pointer_to_the_first_event = 0;
-	pointer_to_the_last_event = 0;
-	pointer_to_size_of_event = -1;
-}
 int OutputEventBuffer::full_event_size(int index) {
 	return *((short *)(address() + index)) + 2;
 }
@@ -1397,23 +1388,6 @@ void OutputEventBuffer::set_player_body(PlayerBody &body) {
 /***********************************************************************
 				Input Event Buffer
 ***********************************************************************/
-InputEventBuffer::InputEventBuffer(unsigned int size): XBuffer(size) {
-	reset();
-}
-
-void InputEventBuffer::reset() {
-	next_event_pointer = 0;
-	filled_size = 0;
-	offset = 0;
-	event_ID = 0;
-	client_ID = 0;
-	item_state = 0;
-	item_previous_ID = 0;
-	item_removed_paired_ID = 0;
-	item_removed_reason = 0;
-	object_ID = 0;
-}
-
 int InputEventBuffer::receive(XSocket &sock, int dont_free) {
 	restore_connection();
 
@@ -1953,12 +1927,9 @@ void InputEventBuffer::ignore_event() {
 // Rolls a cancelled connection attempt back to the disconnected state so the
 // menu does not keep running a network session that the player abandoned.
 void network_rollback_cancelled_connection(const char *stage) {
-	NetworkON = 0;
-	main_socket.close();
-	events_out.clear();
-	events_in.reset();
-	my_player_data = NULL;
-	players_list.delete_all();
+	reset_network_session_state(
+		NetworkON, main_socket, events_out, events_in, players_list, my_player_data
+	);
 	total_players_data_list_query_pending = 0;
 	network_log_printf("CONNECT_CANCEL", "stage=%s", stage);
 	network_log_close("connect_cancelled");
@@ -2222,15 +2193,17 @@ bool total_players_data_list_query() {
 	network_log_printf("OUT", "TOTAL_PLAYERS_DATA_QUERY blocking=1");
 	events_out.send_simple_query(TOTAL_PLAYERS_DATA_QUERY);
 	const int received = events_in.receive_waiting_for_event(TOTAL_LIST_OF_PLAYERS_DATA);
-	if (received != TOTAL_LIST_OF_PLAYERS_DATA) {
+	if (!process_total_players_response(
+			received, events_in, players_list, GlobalStationID, my_player_data
+		)) {
 		// Cancelled or failed before a complete response arrived. The input
 		// buffer has been reset, so parsing it would read stale/partial data.
 		total_players_data_list_query_pending = 0;
 		network_log_printf("WAIT", "TOTAL_LIST_OF_PLAYERS_DATA result=not_received");
 		return false;
 	}
-	players_list.parsing_total_body_query();
 	events_in.ignore_event();
+	total_players_data_list_query_pending = 0;
 	return true;
 }
 
@@ -2549,25 +2522,6 @@ void void_network_quant() {
 /*******************************************************************************
 				Player's List
 *******************************************************************************/
-PlayerData::PlayerData(int client_id) {
-	client_ID = client_id;
-	status = 0;
-	name = 0;
-	x = y = 0;
-	world = 0;
-	GamingFlag = 0;
-	next = prev = 0;
-	list = 0;
-	CreatePlayerFlag = 0;
-	LastDestroyedNetID = 0;
-	uvsPoint = NULL;
-	for (int i = 0; i < MAX_ACTIVE_SLOT; i++) {
-		SlotNetID[i] = 0;
-		SlotStuffNetID[i] = 0;
-		SlotFireCount[i] = 0;
-	}
-}
-
 PlayerData *PlayersList::find_any(int client_id) {
 	PlayerData *p = first();
 	while (p) {
@@ -2642,39 +2596,6 @@ unsigned int PlayersList::get_team_mask(int color) {
 	}
 	return mask;
 }
-void PlayersList::parsing_total_body_query() {
-	unsigned char client_ID, status, world;
-	short x, y;
-	char name[257];
-	PlayerData *p;
-	delete_all();
-	my_player_data = 0;
-	int num = events_in.get_byte();
-	for (int i = 0; i < num; i++) {
-		events_in > client_ID > status > world > x > y > name;
-		p = new PlayerData(client_ID);
-		append(p);
-		p->status = status;
-		p->world = world;
-		p->x = x;
-		p->y = y;
-		events_in.read(&p->body, sizeof(PlayerBody));
-		if (!p->name) {
-			p->name = new char[strlen(name) + 1];
-			strcpy(p->name, name);
-		} else {
-			if (strcmp(p->name, name)) {
-				delete p->name;
-				p->name = new char[strlen(name) + 1];
-				strcpy(p->name, name);
-			}
-		}
-		if (p->client_ID == GlobalStationID)
-			my_player_data = p;
-	}
-	total_players_data_list_query_pending = 0;
-}
-
 void PlayersList::merge_total_body_query() {
 	unsigned char client_ID, status, world;
 	short x, y;
