@@ -11,7 +11,6 @@
 #endif
 
 #include "network.h"
-#include "network_query_gate.h"
 #include "runtime.h"
 #include "xgraph.h"
 #include <chrono>
@@ -1951,16 +1950,27 @@ void InputEventBuffer::ignore_event() {
 /***********************************************************************
 				Some utilites
 ***********************************************************************/
+// Rolls a cancelled connection attempt back to the disconnected state so the
+// menu does not keep running a network session that the player abandoned.
+void network_rollback_cancelled_connection(const char *stage) {
+	NetworkON = 0;
+	main_socket.close();
+	events_out.clear();
+	events_in.reset();
+	my_player_data = NULL;
+	players_list.delete_all();
+	total_players_data_list_query_pending = 0;
+	network_log_printf("CONNECT_CANCEL", "stage=%s", stage);
+	network_log_close("connect_cancelled");
+}
+
 int connect_to_server(ServerFindChain *p) {
 	network_last_connect_error.clear();
 	network_log_open(p, "connect_to_server");
 	network_log_printf("CONNECT", "server_game_id=%d", p ? p->game_ID : 0);
 	p->connect(main_socket);
 	if (XSocketWasCancelled()) {
-		NetworkON = 0;
-		main_socket.close();
-		network_log_printf("CONNECT_CANCEL", "stage=connect");
-		network_log_close("connect_cancelled");
+		network_rollback_cancelled_connection("connect");
 		return -1;
 	}
 	if (main_socket.is_open() && identification(main_socket)) {
@@ -1978,10 +1988,7 @@ int connect_to_server(ServerFindChain *p) {
 		// std::cout<<"ATTACH_TO_GAME_RESPONSE"<<std::endl;
 		events_in.receive_waiting_for_event(ATTACH_TO_GAME_RESPONSE);
 		if (XSocketWasCancelled()) {
-			NetworkON = 0;
-			main_socket.close();
-			network_log_printf("CONNECT_CANCEL", "stage=attach");
-			network_log_close("connect_cancelled");
+			network_rollback_cancelled_connection("attach");
 			return -1;
 		}
 		// std::cout<<"[ok]"<<std::endl;
@@ -2006,10 +2013,7 @@ int connect_to_server(ServerFindChain *p) {
 			// zMod second network packet, used as a seed for world activity cycles
 			events_in.receive_waiting_for_event(zTIME_RESPONSE);
 			if (XSocketWasCancelled()) {
-				NetworkON = 0;
-				main_socket.close();
-				network_log_printf("CONNECT_CANCEL", "stage=ztime");
-				network_log_close("connect_cancelled");
+				network_rollback_cancelled_connection("ztime");
 				return -1;
 			}
 			zGameBirthTime = events_in.get_int();
@@ -2030,10 +2034,7 @@ int connect_to_server(ServerFindChain *p) {
 		return GlobalStationID;
 	}
 	if (XSocketWasCancelled()) {
-		NetworkON = 0;
-		main_socket.close();
-		network_log_printf("CONNECT_CANCEL", "stage=handshake");
-		network_log_close("connect_cancelled");
+		network_rollback_cancelled_connection("handshake");
 		return -1;
 	}
 	NetworkON = 0;
@@ -2218,17 +2219,16 @@ bool total_players_data_list_query() {
 	network_log_printf("OUT", "TOTAL_PLAYERS_DATA_QUERY blocking=1");
 	events_out.send_simple_query(TOTAL_PLAYERS_DATA_QUERY);
 	const int received = events_in.receive_waiting_for_event(TOTAL_LIST_OF_PLAYERS_DATA);
-	const bool parsed = run_network_query_parser(received, TOTAL_LIST_OF_PLAYERS_DATA, [] {
-		players_list.parsing_total_body_query();
-		events_in.ignore_event();
-	});
-	if (!parsed) {
+	if (received != TOTAL_LIST_OF_PLAYERS_DATA) {
 		// Cancelled or failed before a complete response arrived. The input
 		// buffer has been reset, so parsing it would read stale/partial data.
 		total_players_data_list_query_pending = 0;
 		network_log_printf("WAIT", "TOTAL_LIST_OF_PLAYERS_DATA result=not_received");
+		return false;
 	}
-	return parsed;
+	players_list.parsing_total_body_query();
+	events_in.ignore_event();
+	return true;
 }
 
 void request_total_players_data_list_query_async() {
@@ -2421,8 +2421,10 @@ int is_current_server_configured(char *name, ServerData *data, zServerData *zdat
 	if (current_server_addr.configured) {
 		events_out.send_simple_query(GET_GAME_DATA);
 		const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
-		if (XSocketWasCancelled())
+		if (XSocketWasCancelled()) {
+			network_rollback_cancelled_connection("config_check");
 			return -1;
+		}
 		if (received) {
 			if (events_in.current_body_size()) {
 				events_in > name;
@@ -2432,8 +2434,10 @@ int is_current_server_configured(char *name, ServerData *data, zServerData *zdat
 				//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 				if (zserver_version > 1) {
 					const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
-					if (XSocketWasCancelled())
+					if (XSocketWasCancelled()) {
+						network_rollback_cancelled_connection("config_response");
 						return -1;
+					}
 					if (zreceived) {
 						if (events_in.current_body_size()) {
 							zdata->mod_id = events_in.get_byte();
@@ -2459,8 +2463,10 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	if (current_server_addr.configured) {
 		events_out.send_simple_query(GET_GAME_DATA);
 		const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
-		if (XSocketWasCancelled())
+		if (XSocketWasCancelled()) {
+			network_rollback_cancelled_connection("config_send");
 			return -1;
+		}
 		if (received) {
 			if (events_in.current_body_size()) {
 				events_in > name;
@@ -2470,8 +2476,10 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 				//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 				if (zserver_version > 1) {
 					const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
-					if (XSocketWasCancelled())
+					if (XSocketWasCancelled()) {
+						network_rollback_cancelled_connection("config_response");
 						return -1;
+					}
 					if (zreceived) {
 						if (events_in.current_body_size()) {
 							zdata->mod_id = events_in.get_byte();
@@ -2496,8 +2504,10 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	events_out.end_body();
 	events_out.send_simple_query(GET_GAME_DATA);
 	const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
-	if (XSocketWasCancelled())
+	if (XSocketWasCancelled()) {
+		network_rollback_cancelled_connection("config_send");
 		return -1;
+	}
 	if (!received || !events_in.current_body_size())
 		ErrH.Abort("Network error: unable to configure server");
 	char name_tmp[256];
@@ -2508,8 +2518,10 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 	if (zserver_version > 1) {
 		const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
-		if (XSocketWasCancelled())
+		if (XSocketWasCancelled()) {
+			network_rollback_cancelled_connection("config_send");
 			return -1;
+		}
 		if (!zreceived || !events_in.current_body_size())
 			ErrH.Abort("Network error: unable to configure server");
 		zdata->mod_id = events_in.get_byte();

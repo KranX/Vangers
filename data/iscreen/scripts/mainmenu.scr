@@ -8107,7 +8107,7 @@ Screen "Identification screen"
 			}
 			EvComm {
 				rise_obj	"Ok Option"
-				start_time	{ $PRESS_OBJ_TIME + 1 }
+				start_time	{ $PRESS_OBJ_TIME + 3 }
 				time		$PRESS_OBJ_TIME
 
 				event_line	100
@@ -8186,7 +8186,7 @@ Screen "Identification screen"
 			}
 			EvComm {
 				rise_obj	"Ok Option"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 1 }
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 3 }
 				time		$PRESS_OBJ_TIME
 
 				event_line	100
@@ -12792,7 +12792,7 @@ Screen "Identification screen2"
 			}
 			EvComm {
 				rise_obj	"Ok Option"
-				start_time	{ $PRESS_OBJ_TIME + 1 }
+				start_time	{ $PRESS_OBJ_TIME + 3 }
 				time		$PRESS_OBJ_TIME
 
 				event_line	100
@@ -12871,7 +12871,7 @@ Screen "Identification screen2"
 			}
 			EvComm {
 				rise_obj	"Ok Option"
-				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 1 }
+				start_time	{ $SMOOTH_OBJ_TIME + $HIDE_OBJ_TIME + 3 }
 				time		$PRESS_OBJ_TIME
 
 				event_line	100

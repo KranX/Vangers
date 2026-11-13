@@ -79,15 +79,15 @@ TARGET_LINK_LIBRARIES(network_control_flags_test PRIVATE SDL3::SDL3)
 
 ADD_TEST(NAME network_control_flags COMMAND network_control_flags_test)
 
-ADD_EXECUTABLE(network_query_gate_test
-	network_query_gate_test.cpp
+ADD_EXECUTABLE(iscreen_cancel_timing_test
+	iscreen_cancel_timing_test.cpp
 )
 
-TARGET_INCLUDE_DIRECTORIES(network_query_gate_test PRIVATE
-	${PROJECT_SOURCE_DIR}/src
+TARGET_COMPILE_DEFINITIONS(iscreen_cancel_timing_test PRIVATE
+	TEST_DATA_DIR="${PROJECT_SOURCE_DIR}/data"
 )
 
-ADD_TEST(NAME network_query_gate COMMAND network_query_gate_test)
+ADD_TEST(NAME iscreen_cancel_timing COMMAND iscreen_cancel_timing_test)
 
 ADD_EXECUTABLE(traction_control_cadence_test
 	traction_control_cadence_test.cpp

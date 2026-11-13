@@ -3934,8 +3934,7 @@ int NetInit(ServerFindChain *p) {
 
 	set_time_by_server(3);
 	if (XSocketWasCancelled()) {
-		NetworkON = 0;
-		main_socket.close();
+		network_rollback_cancelled_connection("netinit_time");
 		return -1;
 	}
 	std::cout << "NetInit - [1.5]" << std::endl;
@@ -3953,8 +3952,7 @@ int NetInit(ServerFindChain *p) {
 	send_player_body(my_player_body);
 	std::cout << "NetInit - [4]" << std::endl;
 	if (!total_players_data_list_query()) {
-		NetworkON = 0;
-		main_socket.close();
+		network_rollback_cancelled_connection("netinit_players");
 		return -1;
 	}
 	std::cout << "NetInit - [5]" << std::endl;

@@ -338,6 +338,8 @@ void destroy_server();
 int connect_to_server(ServerFindChain *p);
 int restore_connection();
 void disconnect_from_server();
+// Closes a connection left behind by a cancelled connect/configuration stage.
+void network_rollback_cancelled_connection(const char *stage);
 
 void set_time_by_server(int n_measures = 16);
 int set_world(int world, int world_y_size);
