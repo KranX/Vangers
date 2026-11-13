@@ -852,7 +852,7 @@ void GeneralSystemFree(void) {
 			};
 		};
 
-		total_players_data_list_query();
+		(void)total_players_data_list_query();
 		disconnect_from_server();
 		NetworkON = 0;
 	};
@@ -3917,7 +3917,10 @@ void GeneralObject::NetEvent(int type, int id, int creator, int time, int x, int
 int NetInit(ServerFindChain *p) {
 	std::cout << "NetInit - [start]" << std::endl;
 	int i;
-	if (!connect_to_server(p))
+	const int connect_result = connect_to_server(p);
+	if (connect_result < 0)
+		return -1; // cancelled by the user
+	if (!connect_result)
 		return 0;
 
 	std::cout << "NetInit - [1]" << std::endl;
@@ -3929,7 +3932,10 @@ int NetInit(ServerFindChain *p) {
 
 	LocalNetEnvironment = 0;
 
-	set_time_by_server(3);
+	if (!set_time_by_server(3)) {
+		network_rollback_cancelled_connection("netinit_time");
+		return -1;
+	}
 	std::cout << "NetInit - [1.5]" << std::endl;
 	my_player_body.clear();
 
@@ -3944,7 +3950,10 @@ int NetInit(ServerFindChain *p) {
 	std::cout << "NetInit - [3]" << std::endl;
 	send_player_body(my_player_body);
 	std::cout << "NetInit - [4]" << std::endl;
-	total_players_data_list_query();
+	if (!total_players_data_list_query()) {
+		network_rollback_cancelled_connection("netinit_players");
+		return -1;
+	}
 	std::cout << "NetInit - [5]" << std::endl;
 
 	GloryPlaceNum = 0;

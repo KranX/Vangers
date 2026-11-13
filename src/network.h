@@ -1,5 +1,7 @@
 #ifndef __NETWORK_H__
 #define __NETWORK_H__
+#include "xglobal.h"
+
 #include "zmod_client.h"
 
 #include "multiplayer.h"
@@ -77,6 +79,8 @@ struct PlayerData {
 	}
 };
 
+class InputEventBuffer;
+
 struct PlayersList: XTList<PlayerData> {
 	int NumGamingPeople;
 
@@ -90,7 +94,11 @@ struct PlayersList: XTList<PlayerData> {
 	void reset_states();
 	void delete_old_players();
 	void parsing_names_query();
-	void parsing_total_body_query();
+	void parsing_total_body_query(
+		InputEventBuffer &events,
+		int global_station_id,
+		PlayerData *&my_player
+	);
 	void merge_total_body_query();
 	unsigned int get_team_mask(int color);
 };
@@ -338,11 +346,13 @@ void destroy_server();
 int connect_to_server(ServerFindChain *p);
 int restore_connection();
 void disconnect_from_server();
+// Closes a connection left behind by a cancelled connect/configuration stage.
+void network_rollback_cancelled_connection(const char *stage);
 
-void set_time_by_server(int n_measures = 16);
+bool set_time_by_server(int n_measures = 16);
 int set_world(int world, int world_y_size);
 void leave_world();
-void total_players_data_list_query();
+bool total_players_data_list_query();
 void request_total_players_data_list_query_async();
 
 void send_player_body(PlayerBody &body);
@@ -397,6 +407,9 @@ int is_current_server_configured(
 void void_network_quant(); // receives messages only
 
 int NetInit(ServerFindChain *p);
+// Filled when a connection fails after the TCP handshake (protocol mismatch,
+// rejected handshake, silent server). Empty for ordinary connection failures.
+extern std::string network_last_connect_error;
 
 struct NetRndType {
 	unsigned NetRndVal;

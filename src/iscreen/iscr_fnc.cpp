@@ -11,6 +11,7 @@
 #include "ivmap.h"
 #include "iworld.h"
 
+#include "../settings/text_encoding.h"
 #include "hfont.h"
 #include "i_mem.h"
 #include "ikeys.h"
@@ -151,6 +152,8 @@ void iUpdateServersList();
 void iServersListUp();
 void iServersListDown();
 void iConnect2Server(void);
+static void iArmConnectCancel(void);
+static void iDisarmConnectCancel(void);
 void iInitControlKey(int id, int num);
 void iDeleteControl(int vkey, int id);
 void iDeleteControlKey(int id, int num);
@@ -650,7 +653,9 @@ void iQuantFirst(void) {
 			iEndGameFlag = 1;
 		} else if (autoconnect) {
 			iScrDisp->curScr = (iScreen *)iScrDisp->get_object("iSearch server screen");
+			iArmConnectCancel();
 			avaible_servers.find_servers_in_the_internet(autoconnectHost, autoconnectPort);
+			iDisarmConnectCancel();
 			if (avaible_servers.size() > 0) {
 				iFirstServerPtr = avaible_servers.first();
 				iCurServer = 0;
@@ -682,6 +687,9 @@ void iQuantFirst(void) {
 								iScrDisp->curScr =
 									(iScreen *)iScrDisp->get_object("Server Config screen");
 							}
+						} else if (iEvLineID == 100) {
+							iScrDisp->curScr =
+								(iScreen *)iScrDisp->get_object("Identification screen");
 						}
 					}
 				}
@@ -2304,11 +2312,73 @@ void iKeyClear(void) {
 	KeyBuf->clear();
 }
 
+// Polls SDL input while the game is blocked in a synchronous network wait.
+// Returns true when the user pressed Escape to cancel the operation.
+static bool iConnectCancelPoll(void) {
+	SDL_PumpEvents();
+
+	bool cancelled = false;
+	SDL_Event event;
+	// Drain queued key presses: none of them are meaningful until the network
+	// operation finishes, and leaving Escape in the queue would trigger the
+	// "back" action right after we return to the menu.
+	while (SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_EVENT_KEY_DOWN, SDL_EVENT_KEY_DOWN) > 0) {
+		if (event.key.scancode == SDL_SCANCODE_ESCAPE)
+			cancelled = true;
+	}
+	return cancelled;
+}
+
+static void iArmConnectCancel(void) {
+	XSocketResetCancel();
+	XSocketSetWaitCallback(&iConnectCancelPoll);
+}
+
+static void iDisarmConnectCancel(void) {
+	XSocketSetWaitCallback(nullptr);
+	XSocketResetCancel();
+}
+
+static void iSetCancelHint(iScreen *screen) {
+	if (!screen)
+		return;
+	iStringElement *el = (iStringElement *)screen->get_object("CancelHintStr");
+	if (!el)
+		return;
+	if (!HFntTable || el->font < 0 || el->font >= iNumFonts)
+		return;
+	const char *text = (lang() == RUSSIAN) ? "ESC - ОТМЕНА" : "ESC - CANCEL";
+	const std::string encoded = vangers::settings::utf8_to_cp866(text);
+	el->init_string(encoded.c_str());
+	el->init_size();
+	el->init_align();
+	iScreenObject *obj = (iScreenObject *)el->owner;
+	if (obj)
+		obj->flags |= OBJ_REINIT | OBJ_MUST_REDRAW;
+}
+
+static void iShowConnectError(void) {
+	if (network_last_connect_error.empty())
+		return;
+	SDL_ShowSimpleMessageBox(
+		SDL_MESSAGEBOX_ERROR, "Vangers", network_last_connect_error.c_str(), XGR_Obj.get_window()
+	);
+	ErrH.Log(network_last_connect_error.c_str());
+	network_last_connect_error.clear();
+}
+
+static void iInitCancelHints(void) {
+	iSetCancelHint((iScreen *)iScrDisp->get_object("Identification screen"));
+	iSetCancelHint((iScreen *)iScrDisp->get_object("Identification screen2"));
+	iSetCancelHint((iScreen *)iScrDisp->get_object("Searching screen"));
+}
+
 void iHandleExtEvent(int code, int data) {
 	int mode;
 	switch (code) {
 	case iEXT_INIT_SOCKETS:
 		XSocketInit();
+		iInitCancelHints();
 		iGetIP();
 		break;
 	case iEXT_INIT_PORT:
@@ -2436,11 +2506,19 @@ void iHandleExtEvent(int code, int data) {
 	case iEXT_CHOOSE_SERVER:
 		iCurServer = data;
 		break;
-	case iEXT_CHECK_SERVER_CONFIG:
-		// zmod fixed
-		if (is_current_server_configured(
-				iGetOptionValueCHR(iSERVER_NAME), &my_server_data, &z_my_server_data
-			)) {
+	case iEXT_CHECK_SERVER_CONFIG: {
+		// The response fetch below can block for a long time as well, so keep
+		// Escape cancellation active while it runs.
+		iArmConnectCancel();
+		const int configured = is_current_server_configured(
+			iGetOptionValueCHR(iSERVER_NAME), &my_server_data, &z_my_server_data
+		);
+		iDisarmConnectCancel();
+		if (configured < 0) {
+			iEvLineID = 100; // cancelled: stay on the connection screen
+			break;
+		}
+		if (configured) {
 			iUpdateOptionValue(iSERVER_NAME);
 			iSetMultiGameParameters();
 			iUpdateMultiGameName();
@@ -2453,6 +2531,7 @@ void iHandleExtEvent(int code, int data) {
 		NetRnd.Init(my_server_data.InitialRND);
 		// #endif
 		break;
+	}
 	case iEXT_CHECK_END_FLAG:
 		if (iEndGameFlag) {
 			iEvLineID = 1;
@@ -2487,12 +2566,17 @@ void iHandleExtEvent(int code, int data) {
 		iCurMultiGame = data;
 		iUpdateMultiGameName();
 		break;
-	case iEXT_SEND_CONFIG_DATA:
+	case iEXT_SEND_CONFIG_DATA: {
 		iGetMultiGameParameters();
-		// zmod fixed
-		if (!send_server_data(
-				iGetOptionValueCHR(iSERVER_NAME), &my_server_data, &z_my_server_data
-			)) {
+		iArmConnectCancel();
+		const int sent =
+			send_server_data(iGetOptionValueCHR(iSERVER_NAME), &my_server_data, &z_my_server_data);
+		iDisarmConnectCancel();
+		if (sent < 0) {
+			iEvLineID = 100; // cancelled: return to the connection screen
+			break;
+		}
+		if (!sent) {
 			iUpdateOptionValue(iSERVER_NAME);
 			iUpdateMultiGameName();
 			iSetMultiGameParameters();
@@ -2506,6 +2590,7 @@ void iHandleExtEvent(int code, int data) {
 		NetRnd.Init(my_server_data.InitialRND);
 		// #endif
 		break;
+	}
 	case iEXT_CHOOSE_PARAMS_SCREEN:
 		iEvLineID = iCurMultiGame + 1;
 		break;
@@ -2627,9 +2712,22 @@ void iPrepareSaveNames(void) {
 }
 
 void iUpdateServersList() {
+	iEvLineID = 1;
+	iArmConnectCancel();
 	avaible_servers.find_servers_in_the_internet(iGetOptionValueCHR(iHOST_NAME), iServerPort);
+	const bool cancelled = XSocketWasCancelled();
+	iDisarmConnectCancel();
 	iFirstServerPtr = avaible_servers.first();
 	iInitServersList();
+	if (cancelled) {
+		// Return to the connection screen instead of an empty server list.
+		iEvLineID = 101;
+		return;
+	}
+	if (!network_last_connect_error.empty()) {
+		iShowConnectError();
+		iEvLineID = 101;
+	}
 }
 
 void iInitServersList() {
@@ -2705,10 +2803,22 @@ void iConnect2Server(void) {
 	if (!p)
 		iEvLineID = 1;
 	else {
-		if (NetInit(p))
+		iArmConnectCancel();
+		const int result = NetInit(p);
+		iDisarmConnectCancel();
+		if (result > 0) {
 			iEvLineID = 2;
-		else
-			iEvLineID = 1;
+		} else if (result < 0) {
+			iEvLineID = 100; // cancelled by the user
+		} else {
+			if (!network_last_connect_error.empty()) {
+				iShowConnectError();
+				// Stay on the connection screen so the player can retry.
+				iEvLineID = 100;
+			} else {
+				iEvLineID = 1; // ordinary connection failure -> Failed screen
+			}
+		}
 	}
 }
 

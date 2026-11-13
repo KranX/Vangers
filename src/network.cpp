@@ -11,6 +11,7 @@
 #endif
 
 #include "network.h"
+#include "network_cancel.h"
 #include "runtime.h"
 #include "xgraph.h"
 #include <chrono>
@@ -150,6 +151,7 @@ MessageDispatcher message_dispatcher;
 XSocket main_socket;
 ServerFindChain current_server_addr;
 int number_of_reconnection_attempt = 5;
+std::string network_last_connect_error;
 
 int object_ID_offsets[16];
 
@@ -858,6 +860,10 @@ int identification(XSocket &socket) {
 	string[strlen(string) + 1] = CLIENT_VERSION;
 	socket.send(string, strlen(string) + 2);
 	while (CHECK_TIMER()) {
+		if (XSocketPollCancel()) {
+			socket.close();
+			return 0;
+		}
 		memset(string, 0, 256);
 		if ((len = socket.receive(string, 255, 1000)) != 0) {
 			server_replied = 1;
@@ -902,8 +908,17 @@ int identification(XSocket &socket) {
 		}
 		std::cout << "Network:identificated is wrong! SV:" << SERVER_VERSION
 				  << " SV2:" << server_protocol << " response:" << string << std::endl;
+		network_log_printf(
+			"IDENTIFICATION_FAILED",
+			"server_protocol=%d server_replied=%d unexpected_response=%d",
+			server_protocol,
+			server_replied,
+			unexpected_response
+		);
 		socket.close();
-		ErrH.Abort(error_message, XERR_USER);
+		// Do not abort the whole game on a connection-level problem: report it
+		// to the player through the interface and return to the connection screen.
+		network_last_connect_error = error_message;
 		return 0;
 	}
 	// zMod fixed ---------------------------------------------------------
@@ -914,9 +929,14 @@ int identification(XSocket &socket) {
 		return 0;
 
 	Uint64 z_end_time_ = SDL_GetTicks() + 2 * 60 * 1000;
-	while (SDL_GetTicks() < z_end_time_)
+	while (SDL_GetTicks() < z_end_time_) {
+		if (XSocketPollCancel()) {
+			socket.close();
+			return 0;
+		}
 		if (socket.receive(zbuffer.GetBuf(), zbuffer.length(), 1000))
 			break;
+	}
 
 	unsigned char zevent_ID;
 	short zevent_size;
@@ -951,6 +971,7 @@ void ServersList::clear_states() {
 	}
 }
 int ServersList::talk_to_server(int IP, int port, char *domain_name, int only_new_game) {
+	network_last_connect_error.clear();
 	XSocket sock;
 	if (IP) {
 		sock.open(IP, port);
@@ -964,6 +985,8 @@ int ServersList::talk_to_server(int IP, int port, char *domain_name, int only_ne
 	}
 	if (!sock || !identification(sock))
 		return 0;
+	if (XSocketWasCancelled())
+		return 0;
 
 	XBuffer servers_buffer(10000);
 	servers_buffer < short(1) < char(GAMES_LIST_QUERY);
@@ -971,9 +994,12 @@ int ServersList::talk_to_server(int IP, int port, char *domain_name, int only_ne
 		return 0;
 
 	START_TIMER(60 * 1000);
-	while (CHECK_TIMER())
+	while (CHECK_TIMER()) {
+		if (XSocketPollCancel())
+			return 0;
 		if (sock.receive(servers_buffer.GetBuf(), servers_buffer.length(), 1000))
 			break;
+	}
 
 	ServerFindChain *p;
 	unsigned char n_games, event_ID;
@@ -1006,16 +1032,6 @@ int ServersList::find_servers_in_the_internet(char *host_name, int host_port) {
 /***********************************************************************
 				Output Event Buffer
 ***********************************************************************/
-OutputEventBuffer::OutputEventBuffer(unsigned int size): XBuffer(size) {
-	clear();
-}
-void OutputEventBuffer::clear() {
-	n_event = 0;
-	offset = 0;
-	pointer_to_the_first_event = 0;
-	pointer_to_the_last_event = 0;
-	pointer_to_size_of_event = -1;
-}
 int OutputEventBuffer::full_event_size(int index) {
 	return *((short *)(address() + index)) + 2;
 }
@@ -1372,23 +1388,6 @@ void OutputEventBuffer::set_player_body(PlayerBody &body) {
 /***********************************************************************
 				Input Event Buffer
 ***********************************************************************/
-InputEventBuffer::InputEventBuffer(unsigned int size): XBuffer(size) {
-	reset();
-}
-
-void InputEventBuffer::reset() {
-	next_event_pointer = 0;
-	filled_size = 0;
-	offset = 0;
-	event_ID = 0;
-	client_ID = 0;
-	item_state = 0;
-	item_previous_ID = 0;
-	item_removed_paired_ID = 0;
-	item_removed_reason = 0;
-	object_ID = 0;
-}
-
 int InputEventBuffer::receive(XSocket &sock, int dont_free) {
 	restore_connection();
 
@@ -1436,6 +1435,11 @@ int InputEventBuffer::receive(XSocket &sock, int dont_free) {
 
 int InputEventBuffer::receive_waiting_for_event(int event, XSocket &sock, int skip_if_aint) {
 	// std::cout<<"InputEventBuffer::receive_waiting_for_event "<<event<<std::endl;
+	if (XSocketPollCancel()) {
+		event_ID = 0;
+		offset = next_event_pointer = 0;
+		return 0;
+	}
 	receive(sock);
 	if (!sock) {
 		network_log_printf(
@@ -1443,7 +1447,7 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket &sock, int sk
 			"receive_waiting_for_event event=%s result=socket_closed",
 			network_event_name(event)
 		);
-		if (!skip_if_aint) {
+		if (!skip_if_aint && !XSocketWasCancelled()) {
 			if (lang() == RUSSIAN) {
 				ErrH.Abort("Сервер не отвечает", XERR_USER, event);
 			} else {
@@ -1487,11 +1491,17 @@ int InputEventBuffer::receive_waiting_for_event(int event, XSocket &sock, int sk
 		if (!CHECK_TIMER())
 			break;
 
+		if (XSocketPollCancel()) {
+			event_ID = 0;
+			offset = next_event_pointer = 0;
+			return 0;
+		}
+
 		receive(sock, 1);
 		if (!sock)
 			break;
 	}
-	if (!skip_if_aint) {
+	if (!skip_if_aint && !XSocketWasCancelled()) {
 		network_log_printf(
 			"WAIT", "receive_waiting_for_event event=%s result=timeout", network_event_name(event)
 		);
@@ -1914,10 +1924,26 @@ void InputEventBuffer::ignore_event() {
 /***********************************************************************
 				Some utilites
 ***********************************************************************/
+// Rolls a cancelled connection attempt back to the disconnected state so the
+// menu does not keep running a network session that the player abandoned.
+void network_rollback_cancelled_connection(const char *stage) {
+	reset_network_session_state(
+		NetworkON, main_socket, events_out, events_in, players_list, my_player_data
+	);
+	total_players_data_list_query_pending = 0;
+	network_log_printf("CONNECT_CANCEL", "stage=%s", stage);
+	network_log_close("connect_cancelled");
+}
+
 int connect_to_server(ServerFindChain *p) {
+	network_last_connect_error.clear();
 	network_log_open(p, "connect_to_server");
 	network_log_printf("CONNECT", "server_game_id=%d", p ? p->game_ID : 0);
 	p->connect(main_socket);
+	if (XSocketWasCancelled()) {
+		network_rollback_cancelled_connection("connect");
+		return -1;
+	}
 	if (main_socket.is_open() && identification(main_socket)) {
 		current_server_addr = *p;
 
@@ -1932,6 +1958,10 @@ int connect_to_server(ServerFindChain *p) {
 
 		// std::cout<<"ATTACH_TO_GAME_RESPONSE"<<std::endl;
 		events_in.receive_waiting_for_event(ATTACH_TO_GAME_RESPONSE);
+		if (XSocketWasCancelled()) {
+			network_rollback_cancelled_connection("attach");
+			return -1;
+		}
 		// std::cout<<"[ok]"<<std::endl;
 		current_server_addr.game_ID = events_in.get_int();
 		current_server_addr.configured = events_in.get_byte();
@@ -1953,6 +1983,10 @@ int connect_to_server(ServerFindChain *p) {
 		if (zserver_version > 1 || SERVER_VERSION > 1) {
 			// zMod second network packet, used as a seed for world activity cycles
 			events_in.receive_waiting_for_event(zTIME_RESPONSE);
+			if (XSocketWasCancelled()) {
+				network_rollback_cancelled_connection("ztime");
+				return -1;
+			}
 			zGameBirthTime = events_in.get_int();
 			events_in.ignore_event();
 		}
@@ -1969,6 +2003,10 @@ int connect_to_server(ServerFindChain *p) {
 		);
 
 		return GlobalStationID;
+	}
+	if (XSocketWasCancelled()) {
+		network_rollback_cancelled_connection("handshake");
+		return -1;
 	}
 	NetworkON = 0;
 	network_log_printf("CONNECT_FAIL", "socket_alive=%d", main_socket.is_open());
@@ -2049,7 +2087,7 @@ void disconnect_from_server() {
 	events_in.reset();
 	network_log_close("disconnect_from_server");
 }
-void set_time_by_server(int n_measures) {
+bool set_time_by_server(int n_measures) {
 	int i;
 	int t0, T1, t2;
 	double tau = 0;
@@ -2058,7 +2096,8 @@ void set_time_by_server(int n_measures) {
 		// zmod
 		z_time_init();
 		events_out.send_simple_query(SERVER_TIME_QUERY);
-		events_in.receive_waiting_for_event(SERVER_TIME);
+		if (events_in.receive_waiting_for_event(SERVER_TIME) != SERVER_TIME)
+			return false;
 		t0 = events_in.current_time();
 		events_in.ignore_event();
 		T1 = GLOBAL_CLOCK();
@@ -2066,7 +2105,8 @@ void set_time_by_server(int n_measures) {
 		// zmod
 		z_time_init();
 		events_out.send_simple_query(SERVER_TIME_QUERY);
-		events_in.receive_waiting_for_event(SERVER_TIME);
+		if (events_in.receive_waiting_for_event(SERVER_TIME) != SERVER_TIME)
+			return false;
 		t2 = events_in.current_time();
 		events_in.ignore_event();
 		dtau = T1 - (t2 + t0) / 2;
@@ -2089,6 +2129,7 @@ void set_time_by_server(int n_measures) {
 		response_time,
 		time_synchronization_sigma
 	);
+	return true;
 }
 int set_world(int world, int world_y_size) // znfo - send set_world event
 {
@@ -2146,14 +2187,24 @@ void leave_world() {
 		CurrentWorld
 	);
 }
-void total_players_data_list_query() {
+bool total_players_data_list_query() {
 	total_players_data_list_query_pending = 1;
 	total_players_data_list_query_last_time = SDL_GetTicks();
 	network_log_printf("OUT", "TOTAL_PLAYERS_DATA_QUERY blocking=1");
 	events_out.send_simple_query(TOTAL_PLAYERS_DATA_QUERY);
-	events_in.receive_waiting_for_event(TOTAL_LIST_OF_PLAYERS_DATA);
-	players_list.parsing_total_body_query();
+	const int received = events_in.receive_waiting_for_event(TOTAL_LIST_OF_PLAYERS_DATA);
+	if (!process_total_players_response(
+			received, events_in, players_list, GlobalStationID, my_player_data
+		)) {
+		// Cancelled or failed before a complete response arrived. The input
+		// buffer has been reset, so parsing it would read stale/partial data.
+		total_players_data_list_query_pending = 0;
+		network_log_printf("WAIT", "TOTAL_LIST_OF_PLAYERS_DATA result=not_received");
+		return false;
+	}
 	events_in.ignore_event();
+	total_players_data_list_query_pending = 0;
+	return true;
 }
 
 void request_total_players_data_list_query_async() {
@@ -2345,7 +2396,12 @@ ServerData::ServerData() {
 int is_current_server_configured(char *name, ServerData *data, zServerData *zdata) {
 	if (current_server_addr.configured) {
 		events_out.send_simple_query(GET_GAME_DATA);
-		if (events_in.receive_waiting_for_event(GAME_DATA_RESPONSE)) {
+		const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
+		if (XSocketWasCancelled()) {
+			network_rollback_cancelled_connection("config_check");
+			return -1;
+		}
+		if (received) {
 			if (events_in.current_body_size()) {
 				events_in > name;
 				events_in.read(data, sizeof(ServerData));
@@ -2353,7 +2409,12 @@ int is_current_server_configured(char *name, ServerData *data, zServerData *zdat
 				events_in.ignore_event();
 				//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 				if (zserver_version > 1) {
-					if (events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE)) {
+					const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
+					if (XSocketWasCancelled()) {
+						network_rollback_cancelled_connection("config_response");
+						return -1;
+					}
+					if (zreceived) {
 						if (events_in.current_body_size()) {
 							zdata->mod_id = events_in.get_byte();
 							events_in.ignore_event();
@@ -2377,7 +2438,12 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	MP_GAME = data->GameType;
 	if (current_server_addr.configured) {
 		events_out.send_simple_query(GET_GAME_DATA);
-		if (events_in.receive_waiting_for_event(GAME_DATA_RESPONSE)) {
+		const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
+		if (XSocketWasCancelled()) {
+			network_rollback_cancelled_connection("config_send");
+			return -1;
+		}
+		if (received) {
 			if (events_in.current_body_size()) {
 				events_in > name;
 				events_in.read(data, sizeof(ServerData));
@@ -2385,7 +2451,12 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 				events_in.ignore_event();
 				//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 				if (zserver_version > 1) {
-					if (events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE)) {
+					const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
+					if (XSocketWasCancelled()) {
+						network_rollback_cancelled_connection("config_response");
+						return -1;
+					}
+					if (zreceived) {
 						if (events_in.current_body_size()) {
 							zdata->mod_id = events_in.get_byte();
 							events_in.ignore_event();
@@ -2408,7 +2479,12 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	events_out.write(data, sizeof(ServerData));
 	events_out.end_body();
 	events_out.send_simple_query(GET_GAME_DATA);
-	if (!events_in.receive_waiting_for_event(GAME_DATA_RESPONSE) || !events_in.current_body_size())
+	const int received = events_in.receive_waiting_for_event(GAME_DATA_RESPONSE);
+	if (XSocketWasCancelled()) {
+		network_rollback_cancelled_connection("config_send");
+		return -1;
+	}
+	if (!received || !events_in.current_body_size())
 		ErrH.Abort("Network error: unable to configure server");
 	char name_tmp[256];
 	ServerData data_tmp;
@@ -2417,8 +2493,12 @@ int send_server_data(char *name, ServerData *data, zServerData *zdata) {
 	events_in.ignore_event();
 	//---------------------------zMod fixed net packet zGAME_DATA_RESPONSE
 	if (zserver_version > 1) {
-		if (!events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE) ||
-			!events_in.current_body_size())
+		const int zreceived = events_in.receive_waiting_for_event(zGAME_DATA_RESPONSE);
+		if (XSocketWasCancelled()) {
+			network_rollback_cancelled_connection("config_send");
+			return -1;
+		}
+		if (!zreceived || !events_in.current_body_size())
 			ErrH.Abort("Network error: unable to configure server");
 		zdata->mod_id = events_in.get_byte();
 		events_in.ignore_event();
@@ -2442,25 +2522,6 @@ void void_network_quant() {
 /*******************************************************************************
 				Player's List
 *******************************************************************************/
-PlayerData::PlayerData(int client_id) {
-	client_ID = client_id;
-	status = 0;
-	name = 0;
-	x = y = 0;
-	world = 0;
-	GamingFlag = 0;
-	next = prev = 0;
-	list = 0;
-	CreatePlayerFlag = 0;
-	LastDestroyedNetID = 0;
-	uvsPoint = NULL;
-	for (int i = 0; i < MAX_ACTIVE_SLOT; i++) {
-		SlotNetID[i] = 0;
-		SlotStuffNetID[i] = 0;
-		SlotFireCount[i] = 0;
-	}
-}
-
 PlayerData *PlayersList::find_any(int client_id) {
 	PlayerData *p = first();
 	while (p) {
@@ -2535,39 +2596,6 @@ unsigned int PlayersList::get_team_mask(int color) {
 	}
 	return mask;
 }
-void PlayersList::parsing_total_body_query() {
-	unsigned char client_ID, status, world;
-	short x, y;
-	char name[257];
-	PlayerData *p;
-	delete_all();
-	my_player_data = 0;
-	int num = events_in.get_byte();
-	for (int i = 0; i < num; i++) {
-		events_in > client_ID > status > world > x > y > name;
-		p = new PlayerData(client_ID);
-		append(p);
-		p->status = status;
-		p->world = world;
-		p->x = x;
-		p->y = y;
-		events_in.read(&p->body, sizeof(PlayerBody));
-		if (!p->name) {
-			p->name = new char[strlen(name) + 1];
-			strcpy(p->name, name);
-		} else {
-			if (strcmp(p->name, name)) {
-				delete p->name;
-				p->name = new char[strlen(name) + 1];
-				strcpy(p->name, name);
-			}
-		}
-		if (p->client_ID == GlobalStationID)
-			my_player_data = p;
-	}
-	total_players_data_list_query_pending = 0;
-}
-
 void PlayersList::merge_total_body_query() {
 	unsigned char client_ID, status, world;
 	short x, y;
