@@ -58,6 +58,7 @@ extern iStringElement **iControlsStr;
 extern int MusicON;
 extern int SoundVolumePanning;
 extern int KeepON;
+extern int KeepSaveON;
 
 extern int iCurMultiGame;
 extern int SoundVolumeCD;
@@ -2423,6 +2424,9 @@ void iHandleExtEvent(int code, int data) {
 	case iEXT_UPDATE_FPS_MODE:
 		iSetFPS(iGetOptionValue(iFPS_60));
 		break;
+	case iEXT_UPDATE_TERRAIN_MODE:
+		iInitKeepOptions();
+		break;
 	case iEXT_UPDATE_MUSIC_MODE:
 #ifndef _NO_CDAUDIO_
 		//			mode = xsGetStatusCD();
@@ -2952,7 +2956,12 @@ int getWID(void) {
 void iInitKeepOptions(void) {
 	int sz;
 	iScreenObject *p;
-	if (iGetOptionValue(iKEEP_MODE)) {
+
+	const int terrainMode = iGetOptionValue(iTERRAIN_MODE);
+	KeepSaveON = terrainMode == iTERRAIN_MODE_SAVE ? 1 : 0;
+	KeepON = terrainMode != iTERRAIN_MODE_OFF ? 1 : 0;
+
+	if (KeepON) {
 		sz = GetKeepSpace();
 		iResBuf->init();
 		*iResBuf < iSTR_SpaceInUse < " " <= sz < " " < iSTR_MBytes;
@@ -2961,14 +2970,12 @@ void iInitKeepOptions(void) {
 		p = (iScreenObject *)iGetObject("Graphics screen", "CleanUpObj");
 		if (p)
 			p->flags &= ~OBJ_LOCKED;
-		KeepON = 1;
 	} else {
 		iSetOptionValueCHR(iKEEP_IN_USE, "");
 		iSetOptionValueCHR(iKEEP_CLEAN_UP, "");
 		p = (iScreenObject *)iGetObject("Graphics screen", "CleanUpObj");
 		if (p)
 			p->flags |= OBJ_LOCKED;
-		KeepON = 0;
 	}
 }
 

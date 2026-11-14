@@ -25,6 +25,7 @@ struct VideoSettings {
 	int fps = 60;
 	int detail = 0;
 	bool keep_terrain_changes = false;
+	bool save_terrain_changes = false;
 	bool destroy_terrain = true;
 };
 

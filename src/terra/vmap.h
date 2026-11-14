@@ -1,6 +1,10 @@
 #ifndef __TERRA__VMAP_H__
 #define __TERRA__VMAP_H__
 
+#include <string>
+
+#include "keep_files.h"
+
 const uint H_POWER = MAP_POWER_X;
 const uint H_SIZE = 1 << H_POWER;
 const uint H2_SIZE = 2 * H_SIZE;
@@ -77,6 +81,9 @@ struct vrtMap {
 	void load(const char *name, int nWorld);
 	void reload(int nWorld);
 	void release(void);
+	void flushKeep(void);
+	bool saveKeepToFile(const std::string &path);
+	void closeKeep(void);
 	void allocHeap(void);
 	void lockHeap(void);
 	void dump_terrain(void);

@@ -648,7 +648,7 @@ void iPrepareOptions(void) {
 	iScrOpt[iKEEP_IN_USE] = new iScreenOption(iSTRING, 0, "Graphics screen", "InUseStr");
 	iScrOpt[iKEEP_CLEAN_UP] = new iScreenOption(iSTRING, 0, "Graphics screen", "CleanUpStr");
 
-	iScrOpt[iKEEP_MODE] = new iScreenOption(iTRIGGER, 0, "Graphics screen", "KeepTrig");
+	iScrOpt[iTERRAIN_MODE] = new iScreenOption(iTRIGGER, 0, "Graphics screen", "TerrainModeTrig");
 	iScrOpt[iDESTR_MODE] = new iScreenOption(iTRIGGER, 0, "Graphics screen", "DestrTrig");
 
 	iScrOpt[iPROXY_USAGE] = new iScreenOption(iTRIGGER, 0, "INet Host screen", "ProxyTrg");

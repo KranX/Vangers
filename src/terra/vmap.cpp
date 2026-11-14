@@ -2,7 +2,10 @@
 // #include <iniparser.h>
 
 // #include <io.h>
+#include <algorithm>
 #include <fcntl.h>
+#include <filesystem>
+#include <fstream>
 #include <sys/stat.h>
 #include <vector>
 
@@ -104,6 +107,7 @@ uint PART_MAX;
 
 vrtMap *vMap;
 int KeepON = 0;
+int KeepSaveON = 0;
 
 extern const int MAX_MAP_IN_MEMORY_POWER = 12; // 4096
 #ifdef _SURMAP_
@@ -161,65 +165,156 @@ char *GetTargetName(const char *name) {
 	return namebuf;
 }
 
-int GetKeepSpace(void) {
+static std::string DirectoryOf(const std::string &path) {
+	const size_t pos = path.find_last_of("/\\");
+	return pos == std::string::npos ? std::string() : path.substr(0, pos + 1);
+}
+
+// Builds .vmt paths directly from the world list instead of using
+// GetTargetName(), whose "first call" state is used for the current world and
+// must not be disturbed while the game is running.
+static std::vector<std::string> CollectWorldKeepFiles(void) {
+	std::vector<std::string> files;
+
 	PrmFile pFile;
 	pFile.init(mapFName);
 	int maxWorld = atoi(pFile.getAtom());
 	if (maxWorld < 1)
 		ErrH.Abort("Empty world list");
-	int i;
+
 	char *atom;
-	char *buf = new char[256];
-	XStream ff(0);
-	int size = 0;
-	for (i = 0; i < maxWorld; i++) {
+	for (int i = 0; i < maxWorld; i++) {
 		atom = pFile.getAtom();
 		atom = pFile.getAtom();
 		if (!atom)
 			ErrH.Abort("Null world path");
-		GetTargetName(NULL);
-		strcpy(buf, GetTargetName(atom));
-		dictionary *dict_name = iniparser_load(buf);
-		strcpy(buf, iniparser_getstring(dict_name, "Storage:File Name", NULL));
+
+		const std::string iniPath = atom;
+		dictionary *dict_name = iniparser_load(iniPath.c_str());
+		if (!dict_name)
+			continue;
+		const char *fileName = iniparser_getstring(dict_name, "Storage:File Name", NULL);
+		if (fileName)
+			files.push_back(DirectoryOf(iniPath) + fileName + ".vmt");
 		iniparser_freedict(dict_name);
-		strcat(buf, ".vmt");
-		if (ff.open(GetTargetName(buf))) {
+	}
+	pFile.finit();
+	return files;
+}
+
+int GetKeepSpace(void) {
+	int size = 0;
+	XStream ff(0);
+	for (const auto &path : CollectWorldKeepFiles()) {
+		if (ff.open(path.c_str())) {
 			size += ff.size();
 			ff.close();
 		}
 	}
-	delete[] buf;
-	pFile.finit();
-	GetTargetName(NULL);
 	return size / 1024 / 1024;
 }
 
 void KeepCleanUp(void) {
-	PrmFile pFile;
-	pFile.init(mapFName);
-	int maxWorld = atoi(pFile.getAtom());
-	int i;
-	char *atom;
-	char *buf = new char[256];
 	XStream ff(0);
-	int size = 0;
-	for (i = 0; i < maxWorld; i++) {
-		atom = pFile.getAtom();
-		atom = pFile.getAtom();
-		GetTargetName(NULL);
-		strcpy(buf, GetTargetName(atom));
-		dictionary *dict_name = iniparser_load(buf);
-		strcpy(buf, iniparser_getstring(dict_name, "Storage:File Name", NULL));
-		strcat(buf, ".vmt");
-		if (ff.open(GetTargetName(buf))) {
+	for (const auto &path : CollectWorldKeepFiles()) {
+		if (ff.open(path.c_str())) {
 			ff.close();
-			remove(GetTargetName(buf));
+			remove(path.c_str());
 		}
 	}
-	delete[] buf;
-	pFile.finit();
-	GetTargetName(NULL);
 }
+
+void FlushKeep(void) {
+	if (vMap)
+		vMap->flushKeep();
+}
+
+#ifndef _SURMAP_
+static bool IsSameFile(const std::string &a, const std::string &b) {
+	std::error_code ec;
+	if (std::filesystem::exists(a, ec) && std::filesystem::exists(b, ec)) {
+		const bool same = std::filesystem::equivalent(a, b, ec);
+		if (!ec)
+			return same;
+	}
+	ec.clear();
+	return std::filesystem::absolute(a, ec) == std::filesystem::absolute(b, ec);
+}
+
+bool SaveKeepSnapshotTo(const std::string &dir) {
+	namespace fs = std::filesystem;
+	std::error_code ec;
+
+	fs::remove_all(dir, ec);
+	fs::create_directories(dir, ec);
+	if (ec)
+		return false;
+
+	const auto files = CollectWorldKeepFiles();
+	const auto snapshotNames = TerrainSnapshotNames(files);
+	for (size_t i = 0; i < files.size(); ++i) {
+		const std::string &path = files[i];
+		ec.clear();
+		if (!fs::exists(path, ec))
+			continue;
+
+		const fs::path destination = fs::path(dir) / snapshotNames[i];
+		bool ok = false;
+		if (vMap && vMap->kname && vMap->on && IsSameFile(path, vMap->kname)) {
+			ok = vMap->saveKeepToFile(destination.string());
+		} else {
+			fs::copy_file(path, destination, fs::copy_options::overwrite_existing, ec);
+			ok = !ec;
+		}
+
+		if (!ok) {
+			fs::remove_all(dir, ec);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void LoadKeepSnapshotFrom(const std::string &dir) {
+	namespace fs = std::filesystem;
+	std::error_code ec;
+
+	if (vMap)
+		vMap->closeKeep();
+
+	const auto files = CollectWorldKeepFiles();
+	for (const auto &path : files)
+		fs::remove(path, ec);
+
+	if (!fs::is_directory(dir, ec))
+		return;
+
+	const auto snapshotNames = TerrainSnapshotNames(files);
+	for (size_t i = 0; i < files.size(); ++i) {
+		const std::string &path = files[i];
+		const fs::path source = fs::path(dir) / snapshotNames[i];
+		ec.clear();
+		if (!fs::is_regular_file(source, ec))
+			continue;
+		fs::copy_file(source, path, fs::copy_options::overwrite_existing, ec);
+		if (ec) {
+			std::cerr << "Can't restore terrain file " << path << ": " << ec.message() << std::endl;
+			ec.clear();
+		}
+	}
+}
+
+void ClearKeepSession(void) {
+	namespace fs = std::filesystem;
+	std::error_code ec;
+	if (vMap)
+		vMap->closeKeep();
+
+	for (const auto &path : CollectWorldKeepFiles())
+		fs::remove(path, ec);
+}
+#endif
 
 void YSetup(void) {
 	map_size_y = 1 << MAP_POWER_Y;
@@ -383,18 +478,59 @@ void vrtMap::release(void) {
 	}
 #endif
 	fmap.close();
-	if (KeepON && on) {
-		for (uint i = 0; i < V_SIZE; i++)
-			if (lineT[i] && changedT[i]) {
-				keepT[i] = 1;
-				kmap.seek(i * H2_SIZE, XS_BEG);
-				kmap.write(lineT[i], H2_SIZE);
-			}
-		kmap.seek(V_SIZE * H2_SIZE, XS_BEG);
-		kmap.write(keepT, V_SIZE);
+	flushKeep();
+	if (kmap.handler)
 		kmap.close();
-	}
 	on = false;
+}
+
+void vrtMap::flushKeep(void) {
+	if (!KeepON || !on || !keepT || !kmap.handler)
+		return;
+
+	for (uint i = 0; i < V_SIZE; i++)
+		if (lineT[i] && changedT[i]) {
+			keepT[i] = 1;
+			kmap.seek(i * H2_SIZE, XS_BEG);
+			kmap.write(lineT[i], H2_SIZE);
+		}
+	kmap.seek(V_SIZE * H2_SIZE, XS_BEG);
+	kmap.write(keepT, V_SIZE);
+	kmap.flush();
+}
+
+bool vrtMap::saveKeepToFile(const std::string &path) {
+	if (!KeepON || !on || !keepT || !kmap.handler)
+		return false;
+
+	flushKeep();
+
+	std::ofstream out(path, std::ios::binary | std::ios::trunc);
+	if (!out)
+		return false;
+
+	const int size = kmap.size();
+	if (size <= 0)
+		return false;
+
+	kmap.seek(0, XS_BEG);
+	std::vector<char> buffer(1 << 16);
+	int remaining = size;
+	while (remaining > 0) {
+		const int chunk = std::min<int>(remaining, (int)buffer.size());
+		if (!kmap.read(buffer.data(), chunk))
+			return false;
+		out.write(buffer.data(), chunk);
+		remaining -= chunk;
+	}
+
+	out.flush();
+	return out.good();
+}
+
+void vrtMap::closeKeep(void) {
+	if (kmap.handler)
+		kmap.close();
 }
 
 void vrtMap::init(void) {

@@ -42,9 +42,9 @@ enum iScreenOptionID {
 	iKEEP_IN_USE,	// 23
 	iKEEP_CLEAN_UP, // 24
 
-	iKEEP_MODE,	 // 25
-	iPANNING_ON, // 26
-	iDESTR_MODE, // 27
+	iTERRAIN_MODE, // 25: 0 = off, 1 = per-save, 2 = global
+	iPANNING_ON,   // 26
+	iDESTR_MODE,   // 27
 
 	iPLAYER_COLOR2, // 28
 	iPLAYER_NAME3,	// 29
@@ -78,6 +78,12 @@ enum iScreenOptionID {
 	iFPS_60, // 47
 
 	iMAX_OPTION_ID, // 48
+};
+
+enum iTerrainPersistenceMode {
+	iTERRAIN_MODE_OFF = 0,
+	iTERRAIN_MODE_SAVE = 1,
+	iTERRAIN_MODE_GLOBAL = 2,
 };
 
 enum iScreenOptionObjType {

@@ -148,13 +148,17 @@ bool test_defaults_and_round_trip() {
 			first.get().video.resolution == ResolutionMode::Desktop,
 			"fresh installs no longer use the pre-settings desktop resolution"
 		) ||
-		!check(first.get().video.fps == 60, "fresh installs must default to 60 FPS"))
+		!check(first.get().video.fps == 60, "fresh installs must default to 60 FPS") ||
+		!check(
+			!first.get().video.save_terrain_changes, "fresh-install terrain saving default changed"
+		))
 		return false;
 
 	GameSettings &changed = first.get_mutable();
 	changed.video.fullscreen = true;
 	changed.video.resolution = ResolutionMode::Desktop;
 	changed.video.fps = 20;
+	changed.video.save_terrain_changes = true;
 	changed.audio.sound_volume = 17;
 	changed.network.player_name = "Tester";
 	changed.input.keyboard.bindings["fire_all"] = {"space"};
@@ -174,6 +178,7 @@ bool test_defaults_and_round_trip() {
 			   loaded.video.resolution == ResolutionMode::Desktop, "resolution was not restored"
 		   ) &&
 		   check(loaded.video.fps == 20, "saved 20 FPS was replaced by the new default") &&
+		   check(loaded.video.save_terrain_changes, "terrain saving setting was not restored") &&
 		   check(loaded.audio.sound_volume == 17, "sound volume was not restored") &&
 		   check(loaded.network.player_name == "Tester", "player name was not restored") &&
 		   check(
