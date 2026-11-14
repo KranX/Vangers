@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -157,6 +158,33 @@ std::size_t find_screen(const std::vector<std::string> &lines, const std::string
 	return lines.size();
 }
 
+int cancellation_end_time(
+	const std::vector<std::string> &lines,
+	const std::map<std::string, int> &macros,
+	std::size_t begin,
+	std::size_t end
+) {
+	for (std::size_t i = begin; i < end; ++i) {
+		if (!starts_with_keyword(lines[i], "end_event"))
+			continue;
+
+		// Stay inside this EvComm: another event line may end at a different time.
+		std::size_t command_end = i + 1;
+		while (command_end < end && !starts_with_keyword(lines[command_end], "}"))
+			++command_end;
+		for (std::size_t j = i + 1; j < command_end; ++j) {
+			if (!starts_with_keyword(lines[j], "event_line"))
+				continue;
+			std::istringstream field(lines[j]);
+			std::string keyword;
+			int line_id = -1;
+			if (field >> keyword >> line_id && line_id == 100)
+				return start_time_value(lines, macros, i + 1, command_end);
+		}
+	}
+	return -1;
+}
+
 bool check_screen(
 	const std::vector<std::string> &lines,
 	const std::map<std::string, int> &macros,
@@ -196,14 +224,19 @@ bool check_screen(
 			continue;
 
 		++checked_events;
+		const int cancel_end = cancellation_end_time(lines, macros, event_begin, event_end);
+		if (!check(cancel_end >= 0, screen + ": cancellation end_event was not found"))
+			return false;
+		if (!check(rise_time > 0, screen + ": OK recovery has no animation duration"))
+			return false;
 		if (!check(
 				rise_offset > config_offset,
 				screen + ": OK recovery starts before configuration cancellation can select it"
 			))
 			return false;
 		if (!check(
-				rise_offset + rise_time <= event_time,
-				screen + ": OK recovery cannot finish before the event ends"
+				rise_offset + rise_time <= event_time && rise_offset + rise_time <= cancel_end,
+				screen + ": OK recovery cannot finish before cancellation end_event"
 			))
 			return false;
 	}
