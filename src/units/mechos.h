@@ -1,6 +1,8 @@
 #ifndef __UNITS__MECHOS_H
 #define __UNITS__MECHOS_H
 
+#include <string>
+
 #include "../3d/3dobject.h"
 #include "../dast/poly3d.h"
 #include "../particle/light.h"
@@ -940,6 +942,7 @@ struct ModelDispatcher {
 };
 
 struct CompasTargetType {
+	std::string key; // Stable target identity, never a translated caption.
 	int ID;
 	UnitOrderType Data;
 	char *Name;
@@ -961,7 +964,8 @@ struct CompasObject {
 	void Close(void);
 	void Free(void);
 	void Quant(void);
-	void AddTarget(int id, UnitOrderType d, char *n1, const char *n2);
+	void
+	AddTarget(int id, UnitOrderType d, char *n1, const char *key, const char *caption = nullptr);
 	void DeleteTarget(CompasTargetType *p);
 };
 

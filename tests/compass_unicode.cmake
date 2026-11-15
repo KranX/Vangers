@@ -1,0 +1,16 @@
+FILE(MAKE_DIRECTORY "${TEST_ROOT}/qa-ja")
+FILE(COPY "${LOCALES}/en" DESTINATION "${TEST_ROOT}")
+FILE(COPY "${LOCALES}/en/manifest.toml" DESTINATION "${TEST_ROOT}/qa-ja")
+FILE(READ "${LOCALES}/en/strings.toml" strings)
+# Deliberate collisions, also with OFF. No translation package is shipped.
+FOREACH(key compass.CmpIncubator compass.CmpPodish actint.aciSTR_OFF)
+ STRING(REGEX REPLACE "\"${key}\" = \"[^\"]*\"" "\"${key}\" = \"日本語\"" strings "${strings}")
+ENDFOREACH()
+STRING(REPLACE "\"hud.ESCAVE_NAME0\" = \"Podish\"" "\"hud.ESCAVE_NAME0\" = \"日本語の町\"" strings "${strings}")
+STRING(REGEX REPLACE "\"uvs.task_complete\" = \"[^\"]*\"" "\"uvs.task_complete\" = \"{reward}$ / {location}\"" strings "${strings}")
+FILE(WRITE "${TEST_ROOT}/qa-ja/strings.toml" "${strings}")
+EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E env "VANGERS_LOCALES=${TEST_ROOT}" "${EXECUTABLE}" qa-ja
+ RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr)
+IF(NOT result STREQUAL "0")
+ MESSAGE(FATAL_ERROR "Japanese/colliding compass captions failed: ${stdout}\n${stderr}")
+ENDIF()

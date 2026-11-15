@@ -404,3 +404,14 @@ ADD_TEST(NAME actint_comments COMMAND ${CMAKE_COMMAND}
  -P "${CMAKE_CURRENT_SOURCE_DIR}/actint_comments.cmake")
 SET_TESTS_PROPERTIES(actint_comments PROPERTIES TIMEOUT 30
  ENVIRONMENT "VANGERS_LOCALES=${PROJECT_SOURCE_DIR}/data/locales")
+
+FOREACH(locale en ru)
+ ADD_TEST(NAME compass_${locale} COMMAND compass_runtime_test ${locale})
+ SET_TESTS_PROPERTIES(compass_${locale} PROPERTIES ENVIRONMENT "VANGERS_LOCALES=${PROJECT_SOURCE_DIR}/data/locales")
+ENDFOREACH()
+ADD_TEST(NAME compass_unicode COMMAND ${CMAKE_COMMAND}
+ "-DEXECUTABLE=$<TARGET_FILE:compass_runtime_test>"
+ "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
+ "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/compass-unicode"
+ -P "${CMAKE_CURRENT_SOURCE_DIR}/compass_unicode.cmake")
+SET_TESTS_PROPERTIES(compass_en compass_ru compass_unicode PROPERTIES TIMEOUT 30)

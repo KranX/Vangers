@@ -50,6 +50,8 @@
 #include "magnum.h"
 
 #include "../actint/credits.h"
+#include "../localization/catalog.h"
+#include "../settings/text_encoding.h"
 
 #include <cstdint>
 
@@ -7250,10 +7252,7 @@ void ActionDispatcher::PromptQuant(void) {
 									AI_MESSAGE_INCUBATOR_WAY, 0, 0xff, 0
 								); // aiMessageData[AI_MESSAGE_INCUBATOR_WAY].Send(0,0xff,0);
 								if (!GetCompasTarget()) {
-									if (lang() == RUSSIAN)
-										SelectCompasTarget(rCmpIncubator);
-									else
-										SelectCompasTarget(eCmpIncubator);
+									SelectCompasTarget("compass.CmpIncubator");
 									aciRefreshTargetsMenu();
 								};
 								return;
@@ -7294,10 +7293,7 @@ void ActionDispatcher::PromptQuant(void) {
 									AI_MESSAGE_PODISH_WAY, 0, 0xff, 0
 								); // aiMessageData[AI_MESSAGE_PODISH_WAY].Send(0,0xff,0);
 								if (!GetCompasTarget()) {
-									if (lang() == RUSSIAN)
-										SelectCompasTarget(rCmpPodish);
-									else
-										SelectCompasTarget(eCmpPodish);
+									SelectCompasTarget("compass.CmpPodish");
 									aciRefreshTargetsMenu();
 								};
 								return;
@@ -7313,10 +7309,7 @@ void ActionDispatcher::PromptQuant(void) {
 							AI_MESSAGE_GLORX_WAY, 0, 0xff, 0
 						); // aiMessageData[AI_MESSAGE_GLORX_WAY].Send(0,0xff,0);
 						if (!GetCompasTarget()) {
-							if (lang() == RUSSIAN)
-								SelectCompasTarget(rCmpPassGlorx);
-							else
-								SelectCompasTarget(eCmpPassGlorx);
+							SelectCompasTarget("compass.CmpPassGlorx");
 							aciRefreshTargetsMenu();
 						};
 					} else {
@@ -7326,10 +7319,7 @@ void ActionDispatcher::PromptQuant(void) {
 									AI_MESSAGE_ELR_LOW, 0, 0xff, 0
 								); // aiMessageData[AI_MESSAGE_ELR_LOW].Send(0,0xff,0);
 								if (!GetCompasTarget()) {
-									if (lang() == RUSSIAN)
-										SelectCompasTarget(rCmpIncubator);
-									else
-										SelectCompasTarget(eCmpIncubator);
+									SelectCompasTarget("compass.CmpIncubator");
 									aciRefreshTargetsMenu();
 								};
 							} else {
@@ -7338,10 +7328,7 @@ void ActionDispatcher::PromptQuant(void) {
 										AI_MESSAGE_ELR_HI, 0, 0xff, 0
 									); // aiMessageData[AI_MESSAGE_ELR_HI].Send(0,0xff,0);
 									if (!GetCompasTarget()) {
-										if (lang() == RUSSIAN)
-											SelectCompasTarget(rCmpIncubator);
-										else
-											SelectCompasTarget(eCmpIncubator);
+										SelectCompasTarget("compass.CmpIncubator");
 										aciRefreshTargetsMenu();
 									};
 								};
@@ -9137,26 +9124,10 @@ void aciSendEvent2itmdsp(int code, actintItemData *p, int data) {
 			break;
 		case ACI_SHOW_ITEM_TEXT:
 			if (p->type == ACI_TABUTASK_SUCCESSFUL) {
-				RaceTxtBuff.init();
-				if (lang() == RUSSIAN) {
-					// GERMAN
-					RaceTxtBuff < uvsGetNameByID(p->data1 & 0xffff, i);
-					RaceTxtBuff < rFirstTabuTaskMessage;
-					RaceTxtBuff < rSecondTabuTaskMessage;
-					RaceTxtBuff <= TabuTable[p->data1 & 0xffff]->cash < "$";
-					// ENGLISH
-					/*
-										RaceTxtBuff < rFirstTabuTaskMessage;
-										RaceTxtBuff < uvsGetNameByID(p->data1 & 0xffff,i);
-										RaceTxtBuff < rSecondTabuTaskMessage;
-										RaceTxtBuff <= TabuTable[p->data1 & 0xffff]->cash < "$";*/
-				} else {
-					RaceTxtBuff < uvsGetNameByID(p->data1 & 0xffff, i);
-					RaceTxtBuff < FirstTabuTaskMessage;
-					RaceTxtBuff < SecondTabuTaskMessage;
-					RaceTxtBuff <= TabuTable[p->data1 & 0xffff]->cash < "$";
-				};
-				aciPrepareText(RaceTxtBuff.address());
+				const auto message = aciFormatTaskCompleteUtf8(
+					p->data1 & 0xffff, TabuTable[p->data1 & 0xffff]->cash
+				);
+				aciPrepareTextUtf8(message.c_str());
 			} else {
 				dev = resolve_stuff_owner(active, p);
 				if (dev && uvsPrepareItemToDiagen(
@@ -9563,8 +9534,13 @@ void AddPhantomTarget(PlayerData *n) {
 			break;
 		p = p->Next;
 	};
-	if (!p)
-		CompasObj.AddTarget(CMP_OBJECT_PHANTOM, UnitOrderType(n->client_ID), NULL, n->name);
+	if (!p) {
+		const auto key = std::string("player:") + n->name;
+		const auto caption = vangers::settings::cp866_to_utf8(n->name);
+		CompasObj.AddTarget(
+			CMP_OBJECT_PHANTOM, UnitOrderType(n->client_ID), NULL, key.c_str(), caption.c_str()
+		);
+	}
 };
 
 void CreateArtefactTarget(StuffObject *n) {
@@ -9577,44 +9553,27 @@ void CreateArtefactTarget(StuffObject *n) {
 	};
 
 	if (!p) {
-		if (lang() == RUSSIAN) {
-			switch (n->ActIntBuffer.type) {
-			case ACI_PROTRACTOR:
-				CompasObj.AddTarget(
-					CMP_OBJECT_ITEM, UnitOrderType(n), NULL, rProtractorCompasTarget
-				);
-				break;
-			case ACI_MECHANIC_MESSIAH:
-				CompasObj.AddTarget(CMP_OBJECT_ITEM, UnitOrderType(n), NULL, rMessiahCompasTarget);
-				break;
-			case ACI_FUNCTION83:
-				CompasObj.AddTarget(
-					CMP_OBJECT_ITEM, UnitOrderType(n), NULL, rFunction83CompasTarget
-				);
-				break;
-			case ACI_SPUMMY:
-				CompasObj.AddTarget(CMP_OBJECT_ITEM, UnitOrderType(n), NULL, rSpummyCompasTarget);
-				break;
-			};
-		} else {
-			switch (n->ActIntBuffer.type) {
-			case ACI_PROTRACTOR:
-				CompasObj.AddTarget(
-					CMP_OBJECT_ITEM, UnitOrderType(n), NULL, ProtractorCompasTarget
-				);
-				break;
-			case ACI_MECHANIC_MESSIAH:
-				CompasObj.AddTarget(CMP_OBJECT_ITEM, UnitOrderType(n), NULL, MessiahCompasTarget);
-				break;
-			case ACI_FUNCTION83:
-				CompasObj.AddTarget(
-					CMP_OBJECT_ITEM, UnitOrderType(n), NULL, Function83CompasTarget
-				);
-				break;
-			case ACI_SPUMMY:
-				CompasObj.AddTarget(CMP_OBJECT_ITEM, UnitOrderType(n), NULL, SpummyCompasTarget);
-				break;
-			};
+		switch (n->ActIntBuffer.type) {
+		case ACI_PROTRACTOR:
+			CompasObj.AddTarget(
+				CMP_OBJECT_ITEM, UnitOrderType(n), NULL, "compass.ProtractorCompasTarget"
+			);
+			break;
+		case ACI_MECHANIC_MESSIAH:
+			CompasObj.AddTarget(
+				CMP_OBJECT_ITEM, UnitOrderType(n), NULL, "compass.MessiahCompasTarget"
+			);
+			break;
+		case ACI_FUNCTION83:
+			CompasObj.AddTarget(
+				CMP_OBJECT_ITEM, UnitOrderType(n), NULL, "compass.Function83CompasTarget"
+			);
+			break;
+		case ACI_SPUMMY:
+			CompasObj.AddTarget(
+				CMP_OBJECT_ITEM, UnitOrderType(n), NULL, "compass.SpummyCompasTarget"
+			);
+			break;
 		};
 	};
 };
@@ -9653,16 +9612,14 @@ void CreateTabutaskTarget(void) {
 					n = n->Next;
 				};
 				if (!n) {
-					RaceTxtBuff.init();
-					if (lang() == RUSSIAN)
-						RaceTxtBuff < rTaskCompasTarget <= i;
-					else
-						RaceTxtBuff < TaskCompasTarget <= i;
-
-					CompasObj.AddTarget(
-						CMP_OBJECT_VANGER, UnitOrderType(c), NULL, RaceTxtBuff.GetBuf()
+					const auto key = std::string("compass.TaskCompasTarget.") + std::to_string(i);
+					const auto caption = vangers::localization::format_integer(
+						vangers::localization::text("compass.TaskCompasTarget"), i
 					);
-					SelectCompasTarget(RaceTxtBuff.GetBuf());
+					CompasObj.AddTarget(
+						CMP_OBJECT_VANGER, UnitOrderType(c), NULL, key.c_str(), caption.c_str()
+					);
+					SelectCompasTarget(key.c_str());
 					aciRefreshTargetsMenu();
 				};
 				break;
@@ -9708,23 +9665,13 @@ void CreatePhantomTarget(void) {
 		};
 
 		if (!n) {
-			if (lang() == RUSSIAN) {
-				CompasObj.AddTarget(
-					CMP_OBJECT_VECTOR,
-					UnitOrderType(target.x, target.y, target.z),
-					NULL,
-					rCheckPointCompasTarget
-				);
-				SelectCompasTarget(rCheckPointCompasTarget);
-			} else {
-				CompasObj.AddTarget(
-					CMP_OBJECT_VECTOR,
-					UnitOrderType(target.x, target.y, target.z),
-					NULL,
-					CheckPointCompasTarget
-				);
-				SelectCompasTarget(CheckPointCompasTarget);
-			};
+			CompasObj.AddTarget(
+				CMP_OBJECT_VECTOR,
+				UnitOrderType(target.x, target.y, target.z),
+				NULL,
+				"compass.CheckPointCompasTarget"
+			);
+			SelectCompasTarget("compass.CheckPointCompasTarget");
 			aciRefreshTargetsMenu();
 		};
 	};
@@ -9896,17 +9843,29 @@ void CompasObject::Quant(void) {
 	XGR_SetClipMode(ccm);
 };
 
-void CompasObject::AddTarget(int id, UnitOrderType d, char *n1, const char *n2) {
+void CompasObject::AddTarget(
+	int id,
+	UnitOrderType d,
+	char *n1,
+	const char *key,
+	const char *caption
+) {
+	if (!key || !*key)
+		ErrH.Abort("Empty compass target key");
+	const char *n2 = caption ? caption : vangers::localization::text(key);
+	if (!n2 || !vangers::settings::is_valid_utf8(n2))
+		ErrH.Abort("Invalid compass UTF-8 target");
 	CompasTargetType *p;
 
 	p = TargetData;
 	while (p) {
-		if (!strcmp(p->aciName, n2))
+		if (p->key == key)
 			return;
 		p = p->Next;
 	};
 
 	p = new CompasTargetType;
+	p->key = key;
 
 	if (!TargetData) {
 		p->Next = p->Prev = NULL;
@@ -9928,7 +9887,7 @@ void CompasObject::AddTarget(int id, UnitOrderType d, char *n1, const char *n2) 
 	if (n2) {
 		p->aciName = new char[strlen(n2) + 1];
 		strcpy(p->aciName, n2);
-		aciAdd2Targets(p->aciName);
+		aciAdd2Targets(p->key.c_str(), p->aciName);
 	} else
 		p->aciName = NULL;
 
@@ -9937,10 +9896,14 @@ void CompasObject::AddTarget(int id, UnitOrderType d, char *n1, const char *n2) 
 };
 
 void CompasObject::DeleteTarget(CompasTargetType *p) {
+	// Hovering a different menu row does not change the actual compass target.
+	// Clear a removed destination by identity, before its key/storage is freed.
+	if (CurrentTarget == p)
+		SelectCompasTarget(nullptr);
 	if (p->Name)
 		delete[] p->Name;
 	if (p->aciName) {
-		aciDeleteFromTargets(p->aciName);
+		aciDeleteFromTargets(p->key.c_str());
 		delete[] p->aciName;
 	};
 	if ((!p->Prev) && (!p->Next))
@@ -9983,7 +9946,7 @@ void SelectCompasTarget(const char *n) {
 	};
 	p = CompasObj.TargetData;
 	while (p) {
-		if (!strcmp(n, p->aciName)) {
+		if (p->key == n) {
 			CompasObj.CurrentTarget = p;
 			return;
 		};
@@ -9992,9 +9955,9 @@ void SelectCompasTarget(const char *n) {
 	CompasObj.CurrentTarget = NULL;
 };
 
-char *GetCompasTarget(void) {
+const char *GetCompasTarget(void) {
 	if (CompasObj.CurrentTarget) {
-		return CompasObj.CurrentTarget->aciName;
+		return CompasObj.CurrentTarget->key.c_str();
 	};
 	return NULL;
 };

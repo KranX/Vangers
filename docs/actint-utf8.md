@@ -25,9 +25,10 @@ the ACS stage also adds explicit UTF-8 save metadata with old-save read support.
   `alloc_utf8` / `add_utf8_str` input boundaries also report invalid text through
   `ErrH.Abort`, with the API name, instead of leaking an exception into the game.
 - Diagen phrases/topics now cross a UTF-8 boundary in both directions; see
-  [Diagen resources and save compatibility](diagen-utf8.md). Compass/player-name
-  inputs still use their existing CP866 interfaces. Selected compass names are
-  encoded back at the call into the unchanged legacy subsystem.
+  [Diagen resources and save compatibility](diagen-utf8.md). Compass captions
+  now stay UTF-8, with independent opaque selection keys and no encoding-back
+  round trip; see [UVS/compass boundaries](uvs-compass-utf8.md). Incoming network
+  player names still use their existing CP866 contract, decoded at that boundary.
 - `aciPromptData::add_str` and `aciScreenText::alloc` retain their legacy CP866
   input contracts. New producers use `add_utf8_str` / `alloc_utf8` directly;
   copying and storage preserve characters absent from the old fonts.

@@ -731,6 +731,7 @@ const int FM_CLONE = 0x20;
 
 struct fncMenuItem: public iListElement {
 	std::string dialogue_id; // Diagen selection identity, never the localized name.
+	std::string compass_id;	 // Empty identifies the compass off entry.
 	int PosX;
 	int PosY;
 
@@ -876,6 +877,7 @@ struct fncMenu: public iListElement {
 	void add_obj(fncMenuItem *p);
 	void delete_obj(fncMenuItem *p);
 	fncMenuItem *get_obj(const char *ptr);
+	fncMenuItem *get_compass_item(const char *key);
 
 	void init_curItem(void);
 	void init_redraw(void);
