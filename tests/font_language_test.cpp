@@ -32,6 +32,19 @@ int main(int argc, char **argv) {
 		int index = 0;
 		for (auto family : {FontFamily::Text, FontFamily::Menu, FontFamily::Display}) {
 			TtfFont font(family);
+			const std::string embedded_nul("a\0b", 3);
+			for (bool coverage : {false, true}) {
+				bool rejected = false;
+				try {
+					if (coverage)
+						font.missing_glyphs(embedded_nul);
+					else
+						font.layout(embedded_nul, FontStyle{});
+				} catch (const std::invalid_argument &) {
+					rejected = true;
+				}
+				check(rejected, "Embedded NUL was accepted by the UTF-8 font boundary");
+			}
 			const char *names[]{"Text", "Menu", "Display"};
 			const auto path = std::filesystem::path(FONT_DIR) /
 							  (std::string("Vangers") + names[index] + "-Regular.ttf");

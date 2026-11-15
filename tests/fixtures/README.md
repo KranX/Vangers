@@ -24,3 +24,7 @@ plus `english-indices.tsv` exercise every valid old slot of all 18 affected
 questions (147 version/slot cases). They are immutable migration evidence.
 The tests verify the Russian-canonical result in either locale and a subsequent
 v5 save/load, rather than preserving the old English fragment indices.
+
+`font-embedded-nul.txt` is exactly three bytes (`61 00 62`, `a\0b`). It verifies
+that the offline font checker rejects embedded NUL instead of hanging in SDL's
+UTF-8 iterator. This is intentionally not an authorable text resource.

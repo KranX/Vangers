@@ -17,7 +17,13 @@ bool listed(char32_t cp, std::u32string_view values) {
 
 // Horizontal Japanese kinsoku: choose a legal boundary within the measured
 // width, never add a page, shrink glyphs, or hang punctuation outside the box.
-bool legal_boundary(char32_t before, char32_t after) {
+bool legal_boundary(std::string_view left, std::string_view right) {
+	// Authored separator spaces must not conceal a bracket or punctuation
+	// when choosing a break, regardless of whether the caller retains spaces.
+	left = left.substr(0, left.find_last_not_of(" \t") + 1);
+	const auto next = right.find_first_not_of(" \t");
+	right.remove_prefix(next == std::string_view::npos ? right.size() : next);
+	const auto before = last_scalar(left), after = first_scalar(right);
 	return !combining_mark(after) && !listed(before, U"（〔［｛〈《「『【〖〘〚‘“([{\uFF62") &&
 		   !listed(
 			   after,
@@ -71,15 +77,18 @@ void wrap(std::string_view line, int width, const Measure &measure, Lines &out, 
 		if (!low && (cjk(first_scalar(line)) || fit > prefix_bytes(line, 1)))
 			throw std::runtime_error("Text box cannot fit a complete CJK/combining sequence");
 		const auto space = line.substr(0, std::min(line.size(), fit + 1)).find_last_of(" \t");
-		std::size_t candidate = 0;
+		std::size_t candidate = 0, emergency = 0;
 		bool constrained = false;
 		for (std::size_t pos = 0; pos < fit;) {
 			const auto before = first_scalar(line.substr(pos));
 			pos += prefix_bytes(line.substr(pos), 1);
 			const auto after = first_scalar(line.substr(pos));
+			const bool legal = legal_boundary(line.substr(0, pos), line.substr(pos));
+			if (legal)
+				emergency = pos;
 			if (cjk(before) || cjk(after)) {
 				constrained = true;
-				if (legal_boundary(before, after))
+				if (legal)
 					candidate = pos;
 			}
 		}
@@ -87,8 +96,12 @@ void wrap(std::string_view line, int width, const Measure &measure, Lines &out, 
 			// A space is also a valid opportunity unless it strands prohibited
 			// punctuation. Prefer the last legal CJK boundary, not an early space.
 			if (space != std::string_view::npos && space &&
-				legal_boundary(U' ', first_scalar(line.substr(space + 1))))
+				legal_boundary(line.substr(0, space), line.substr(space + 1)))
 				candidate = std::max(candidate, space);
+			// Preserve the existing emergency split for an unspaced Latin word
+			// inside Japanese brackets, but never detach marks/punctuation.
+			if (!candidate)
+				candidate = emergency;
 			if (!candidate)
 				throw std::runtime_error("Text box cannot fit a legal CJK line");
 			out.emplace_back(line.substr(0, candidate));

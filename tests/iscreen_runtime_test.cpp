@@ -592,6 +592,13 @@ void relief(bool ttf, bool procedural = false) {
 			for (auto family :
 				{vangers::actint::FontFamily::Menu, vangers::actint::FontFamily::Display}) {
 				vangers::iscreen::ReliefFont face(*HFntTable[0], family);
+				bool rejected_nul = false;
+				try {
+					face.width(std::string_view("a\0b", 3), 0);
+				} catch (const std::invalid_argument &) {
+					rejected_nul = true;
+				}
+				check(rejected_nul, "Relief width accepted an embedded NUL");
 				for (char32_t cp : {U'A', U'Ж', U'Ё', U'ä', U'語', U'が', char32_t(0xe000)}) {
 					// The TTF path must work even when legacy glyph height storage is absent.
 					auto &legacy = *HFntTable[0]->data[vangers::settings::unicode_to_cp866(cp)];

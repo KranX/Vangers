@@ -343,8 +343,8 @@ bool TtfFont::has_glyph(char32_t cp) const {
 }
 
 std::vector<char32_t> TtfFont::missing_glyphs(std::string_view text) const {
-	if (!settings::is_valid_utf8(text))
-		throw std::invalid_argument("actint TTF: invalid UTF-8");
+	if (!settings::is_valid_utf8(text) || text.find('\0') != std::string_view::npos)
+		throw std::invalid_argument("actint TTF: invalid UTF-8 or embedded NUL");
 	const auto composed = text::compose_pairs(text);
 	text = composed;
 	std::set<char32_t> missing;
@@ -359,8 +359,8 @@ std::vector<char32_t> TtfFont::missing_glyphs(std::string_view text) const {
 }
 
 TextLayout TtfFont::layout(std::string_view text, const FontStyle &style) const {
-	if (!settings::is_valid_utf8(text))
-		throw std::invalid_argument("actint TTF: invalid UTF-8");
+	if (!settings::is_valid_utf8(text) || text.find('\0') != std::string_view::npos)
+		throw std::invalid_argument("actint TTF: invalid UTF-8 or embedded NUL");
 	if (style.cell_width <= 0 || style.cell_height <= 0 || style.line_spacing < 0)
 		throw std::invalid_argument("actint TTF: invalid font dimensions");
 	const auto composed = text::compose_pairs(text);

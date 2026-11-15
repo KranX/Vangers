@@ -66,6 +66,9 @@ report locale, catalog key/file, role and Unicode scalar. Exit status 0 means
 covered, 1 means missing glyphs, 2 means invalid input/package. Catalog fallback
 diagnostics are distinct from glyph coverage: English fallback is not evidence
 that a translation is complete. No encoding autodetection is added.
+The requested package must exist: an absent package exits with status 2, rather
+than validating English under a mistyped locale ID. NUL-containing files are
+rejected, not truncated or passed to SDL's NUL-terminated scalar iterator.
 
 CTest discovers every committed `locales/*/manifest.toml` automatically. Separate
 regressions exercise Japanese, canonical pairs, unsupported U+10FFFF, malformed

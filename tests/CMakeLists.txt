@@ -208,6 +208,7 @@ ADD_TEST(NAME font_dialogue_coverage COMMAND ${CMAKE_COMMAND}
  "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
  "-DDIALOGUE_SOURCE=${PROJECT_SOURCE_DIR}/data/data"
  -P "${CMAKE_CURRENT_SOURCE_DIR}/font_dialogue_coverage.cmake")
+SET_TESTS_PROPERTIES(font_languages font_coverage_diagnostics PROPERTIES TIMEOUT 30)
 
 ADD_EXECUTABLE(description_test description_test.cpp)
 TARGET_LINK_LIBRARIES(description_test PRIVATE vangers_descriptions vangers_localization SDL3_ttf::SDL3_ttf)

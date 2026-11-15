@@ -23,6 +23,22 @@ int main() {
 		layout_lines("日本「文字」", 3, measure) == Lines({"日本", "「文", "字」"}),
 		"Japanese opening/closing brackets were stranded"
 	);
+	for (bool keep_spaces : {false, true}) {
+		check(
+			layout_lines("日本「 文字」", 3, measure, LineMode::Preserve, keep_spaces) ==
+				Lines({"日本", "「 文", "字」"}),
+			"A space stranded an opening bracket at the line end"
+		);
+		check(
+			layout_lines("日本 。次", 3, measure, LineMode::Preserve, keep_spaces) ==
+				Lines({"日", "本 。", "次"}),
+			"A space stranded closing punctuation at the line start"
+		);
+	}
+	check(
+		layout_lines("「HelloWorld」", 3, measure) == Lines({"「He", "llo", "Wor", "ld」"}),
+		"A Latin word inside Japanese brackets failed instead of wrapping"
+	);
 	check(
 		layout_lines("xe\u0301z", 2, measure) == Lines({"x", "e\u0301", "z"}),
 		"Combining sequence split across lines"

@@ -14,7 +14,12 @@ int main(int argc, char **argv) {
 			std::cerr << "Usage: vangers_font_check LOCALE_ROOT LOCALE [--text UTF8_FILE]\n";
 			return 2;
 		}
-		vangers::localization::Catalog catalog(std::filesystem::u8path(argv[1]), argv[2]);
+		const auto root = std::filesystem::u8path(argv[1]);
+		if (!vangers::localization::valid_locale_id(argv[2]))
+			throw std::invalid_argument("Invalid locale ID: " + std::string(argv[2]));
+		if (!std::filesystem::is_regular_file(root / argv[2] / "manifest.toml"))
+			throw std::invalid_argument("Missing locale package: " + std::string(argv[2]));
+		vangers::localization::Catalog catalog(root, argv[2]);
 		std::string extra;
 		if (argc == 5) {
 			if (std::string(argv[3]) != "--text")
@@ -23,8 +28,9 @@ int main(int argc, char **argv) {
 			if (!file)
 				throw std::runtime_error("Cannot read UTF-8 input file");
 			extra.assign(std::istreambuf_iterator<char>(file), {});
-			if (file.bad() || !vangers::settings::is_valid_utf8(extra))
-				throw std::runtime_error("Invalid UTF-8 input file");
+			if (file.bad() || !vangers::settings::is_valid_utf8(extra) ||
+				extra.find('\0') != std::string::npos)
+				throw std::runtime_error("Expected NUL-free UTF-8 input file");
 		}
 		bool missing = false;
 		using vangers::actint::FontFamily;
