@@ -614,39 +614,96 @@ bool test_concurrent_saves_use_independent_temporary_files() {
 }
 
 bool test_filesystem_errors_are_nonfatal_and_retryable() {
-	TemporaryDirectory settings_directory;
-	SettingsPaths paths = paths_for(settings_directory.path());
 	// A directory where a regular file is required fails deterministically on
 	// every supported platform; path-length limits differ between filesystems.
-	std::filesystem::create_directory(paths.settings_file);
-	SettingsManager inaccessible_settings(paths);
-	const SettingsLoadResult settings_result = inaccessible_settings.load();
-	std::string save_diagnostic;
-	if (!check(settings_result.read_only, "settings status error was not made read-only") ||
-		!check(!inaccessible_settings.can_save(), "settings status error still permits saving") ||
-		!check(!settings_result.diagnostic.empty(), "settings status error has no diagnostic") ||
-		!check(
-			!inaccessible_settings.save(&save_diagnostic),
-			"settings status error unexpectedly allowed a save"
-		) ||
-		!check(!save_diagnostic.empty(), "read-only save has no diagnostic"))
-		return false;
+	for (bool nonempty : {false, true}) {
+		TemporaryDirectory settings_directory;
+		const SettingsPaths paths = paths_for(settings_directory.path());
+		std::filesystem::create_directory(paths.settings_file);
+		const auto sentinel = paths.settings_file / "keep.txt";
+		if (nonempty)
+			write_file(sentinel, "keep this data");
+		SettingsManager inaccessible_settings(paths);
+		const SettingsLoadResult settings_result = inaccessible_settings.load();
+		std::string save_diagnostic;
+		if (!check(settings_result.read_only, "settings status error was not made read-only") ||
+			!check(
+				!inaccessible_settings.can_save(), "settings status error still permits saving"
+			) ||
+			!check(!settings_result.settings_file_written, "invalid settings path was written") ||
+			!check(
+				settings_result.source != SettingsLoadSource::Toml, "directory accepted as TOML"
+			) ||
+			!check(
+				!settings_result.diagnostic.empty(), "settings status error has no diagnostic"
+			) ||
+			!check(
+				!inaccessible_settings.save(&save_diagnostic),
+				"settings status error unexpectedly allowed a save"
+			) ||
+			!check(!save_diagnostic.empty(), "read-only save has no diagnostic") ||
+			!check(
+				std::filesystem::is_directory(paths.settings_file), "settings directory replaced"
+			) ||
+			!check(
+				!nonempty || read_file(sentinel) == "keep this data", "directory data changed"
+			) ||
+			!check(
+				!has_temporary_settings_file(paths.settings_file), "failed load left a temporary"
+			))
+			return false;
 
-	TemporaryDirectory legacy_directory;
-	paths = paths_for(legacy_directory.path());
-	std::filesystem::create_directory(paths.legacy_options_file);
-	SettingsManager inaccessible_legacy(paths);
-	const SettingsLoadResult legacy_result = inaccessible_legacy.load();
-	return check(legacy_result.read_only, "legacy status error was not made read-only") &&
-		   check(
-			   !legacy_result.settings_file_written,
-			   "legacy status error incorrectly completed migration"
-		   ) &&
-		   check(!legacy_result.diagnostic.empty(), "legacy status error has no diagnostic") &&
-		   check(
-			   !std::filesystem::exists(paths.settings_file),
-			   "legacy status error created settings.toml"
-		   );
+		// Repair the fixture, not the original game data. A fresh manager/run
+		// must load and save the repaired file instead of retaining read-only.
+		if (nonempty)
+			std::filesystem::remove(sentinel);
+		std::filesystem::remove(paths.settings_file);
+		write_file(paths.settings_file, "format_version = 1\n[video]\nfps = 60\n");
+		SettingsManager retry(paths);
+		const auto retried = retry.load();
+		if (!check(retried.source == SettingsLoadSource::Toml, "repaired settings not loaded") ||
+			!check(!retried.read_only && retry.can_save(), "repaired settings remain read-only") ||
+			!check(retry.get().video.fps == 60, "repaired settings lost their value") ||
+			!check(retry.save(), "repaired settings cannot be saved"))
+			return false;
+	}
+
+	for (bool options : {false, true}) {
+		TemporaryDirectory legacy_directory;
+		const SettingsPaths paths = paths_for(legacy_directory.path());
+		const auto &legacy_path = options ? paths.legacy_options_file : paths.legacy_controls_file;
+		std::filesystem::create_directory(legacy_path);
+		SettingsManager inaccessible_legacy(paths);
+		const SettingsLoadResult legacy_result = inaccessible_legacy.load();
+		if (!check(legacy_result.read_only, "legacy status error was not made read-only") ||
+			!check(!inaccessible_legacy.can_save(), "legacy status error still permits saving") ||
+			!check(!legacy_result.settings_file_written, "legacy error completed migration") ||
+			!check(!legacy_result.diagnostic.empty(), "legacy status error has no diagnostic") ||
+			!check(
+				!std::filesystem::exists(paths.settings_file), "legacy error created settings.toml"
+			) ||
+			!check(std::filesystem::is_directory(legacy_path), "legacy directory was replaced"))
+			return false;
+
+		std::filesystem::remove(legacy_path);
+		write_bytes(legacy_path, options ? legacy_options() : legacy_controls());
+		const auto original = read_file(legacy_path);
+		SettingsManager retry(paths);
+		const auto retried = retry.load();
+		if (!check(retried.source == SettingsLoadSource::Legacy, "legacy migration not retried") ||
+			!check(retried.settings_file_written, "repaired migration did not write settings") ||
+			!check(
+				!retried.read_only && retry.can_save(), "repaired migration remains read-only"
+			) ||
+			!check(
+				options ? retry.get().network.player_name == "Legacy player"
+						: retry.get().input.keyboard.bindings.at("turn_left") == BindingList{"a"},
+				"repaired legacy file was not imported"
+			) ||
+			!check(read_file(legacy_path) == original, "migration changed the legacy file"))
+			return false;
+	}
+	return true;
 }
 
 } // namespace

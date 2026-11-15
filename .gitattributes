@@ -22,6 +22,9 @@ CMakeLists.txt text eol=lf
 *.hpp text eol=lf
 *.hxx text eol=lf
 
+# Preserve the upstream OFL notice byte-for-byte, including its one trailing space.
+data/resource/actint/fonts/NotoSansJP-OFL.txt whitespace=-blank-at-eol
+
 # Multiline quoted dialogue tokens contain intentional CRLF, independent of source lines.
 data/data/*.dil -text
 data/data/room.lst -text

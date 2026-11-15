@@ -40,7 +40,8 @@ struct TextLayout {
 	std::shared_ptr<const xgr::text::Image> image;
 };
 
-// One face, with the historical fixed vertical placement encoded in its glyphs.
+// Historical role face plus a coverage-selected fallback. Old fixed vertical
+// placement remains encoded in the primary outlines.
 // Layout uses font units; resizing a window must not change wrapping/hit boxes.
 class TtfFont {
   public:
@@ -51,6 +52,9 @@ class TtfFont {
 	TtfFont(const TtfFont &) = delete;
 	TtfFont &operator=(const TtfFont &) = delete;
 	TextLayout layout(std::string_view text, const FontStyle &style) const;
+	// Checks the same ordered chain as layout, without the final '?' substitute.
+	bool has_glyph(char32_t codepoint) const;
+	std::vector<char32_t> missing_glyphs(std::string_view text) const;
 
   private:
 	struct Face;

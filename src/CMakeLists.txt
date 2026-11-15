@@ -33,8 +33,11 @@ ADD_LIBRARY(vangers_save_text STATIC saves/text.cpp)
 TARGET_LINK_LIBRARIES(vangers_save_text PUBLIC vangers_settings)
 
 SET(EMBEDDED_FONT_SOURCES)
-FOREACH(face Text Menu Display)
+FOREACH(face Text Menu Display Fallback)
 	SET(FONT_PATH "${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/Vangers${face}-Regular.ttf")
+	IF(face STREQUAL "Fallback")
+		SET(FONT_PATH "${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/NotoSansJP-Medium.ttf")
+	ENDIF()
 	SET_PROPERTY(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${FONT_PATH}")
 	IF(face STREQUAL "Text")
 		SET(FONT_SYMBOL "font_data")
@@ -44,12 +47,12 @@ FOREACH(face Text Menu Display)
 	FILE(READ "${FONT_PATH}" FONT_HEX HEX)
 	STRING(REGEX REPLACE "(..)" "0x\\1,\n" FONT_BYTES "${FONT_HEX}")
 	SET(FONT_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/${FONT_SYMBOL}.cpp")
-	FILE(WRITE "${FONT_SOURCE}"
+	FILE(CONFIGURE OUTPUT "${FONT_SOURCE}" CONTENT
 		"#include <cstddef>\nnamespace vangers::actint {\nextern const unsigned char ${FONT_SYMBOL}[] = {\n${FONT_BYTES}};\nextern const std::size_t ${FONT_SYMBOL}_size = sizeof(${FONT_SYMBOL});\n}\n")
 	LIST(APPEND EMBEDDED_FONT_SOURCES "${FONT_SOURCE}")
 ENDFOREACH()
 ADD_LIBRARY(vangers_ttf STATIC actint/ttf_font.cpp ${EMBEDDED_FONT_SOURCES})
-TARGET_LINK_LIBRARIES(vangers_ttf PUBLIC xgraph_text PRIVATE vangers_settings SDL3_ttf::SDL3_ttf)
+TARGET_LINK_LIBRARIES(vangers_ttf PUBLIC xgraph_text PRIVATE vangers_text vangers_settings SDL3_ttf::SDL3_ttf)
 TARGET_INCLUDE_DIRECTORIES(vangers_ttf PUBLIC "${PROJECT_SOURCE_DIR}/src")
 
 ADD_LIBRARY(vangers_iscreen_text STATIC iscreen/text.cpp iscreen/relief_font.cpp)
@@ -57,6 +60,11 @@ TARGET_LINK_LIBRARIES(vangers_iscreen_text PUBLIC vangers_text vangers_settings 
 
 ADD_LIBRARY(vangers_descriptions STATIC localization/description.cpp)
 TARGET_LINK_LIBRARIES(vangers_descriptions PUBLIC vangers_ttf vangers_text)
+
+IF(NOT ANDROID)
+	ADD_EXECUTABLE(vangers_font_check localization/font_check.cpp)
+	TARGET_LINK_LIBRARIES(vangers_font_check PRIVATE vangers_ttf vangers_localization)
+ENDIF()
 
 SET(vangers_SRCS
 	3d/3d_math.cpp
@@ -213,6 +221,12 @@ if (NOT ANDROID)
 	ADD_CUSTOM_TARGET(vangers_locale_files
 		COMMAND ${CMAKE_COMMAND} -E copy_directory
 			"${PROJECT_SOURCE_DIR}/data/locales" "$<TARGET_FILE_DIR:vangers>/locales"
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			"${PROJECT_SOURCE_DIR}/data/resource/actint/fonts/NotoSansJP-OFL.txt"
+			"$<TARGET_FILE_DIR:vangers>/locales/NotoSansJP-OFL.txt"
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			"${PROJECT_SOURCE_DIR}/tools/fonts/UNICODE-LICENSE.txt"
+			"$<TARGET_FILE_DIR:vangers>/locales/Unicode-LICENSE.txt"
 		VERBATIM)
 	ADD_DEPENDENCIES(vangers vangers_locale_files)
 endif()
