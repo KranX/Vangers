@@ -495,6 +495,16 @@ available_backup_path(const std::filesystem::path &settings_path, std::string *d
 bool inspect_path(const std::filesystem::path &path, bool &exists, std::string *diagnostic) {
 	std::error_code error;
 	exists = std::filesystem::exists(path, error);
+	// A directory can open as an empty stream on some platforms. Reject it
+	// (and other non-file objects) before the TOML parser accepts empty input.
+	if (!error && exists) {
+		const bool regular = std::filesystem::is_regular_file(path, error);
+		if (!error && !regular) {
+			if (diagnostic)
+				*diagnostic = "settings path is not a regular file: '" + path.string() + "'";
+			return false;
+		}
+	}
 	if (!error)
 		return true;
 	if (diagnostic)

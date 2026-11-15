@@ -93,9 +93,12 @@ Corpus audit found one intentionally restored character in shipped RU dialogue:
 Existing glyphs are unchanged; previously unsupported characters now use fallback.
 No relief/material parameters or click-animation commands were changed.
 
-Local verification: 69 tests passed three times excluding the unchanged
-`settings` fixture failure (also reproduced with the base binary). ASan/UBSan
-and leak checks passed 65 tests three times, excluding that fixture and four
+Local verification: all 70 tests passed three times, including `settings`.
+The pre-existing settings failure was fixed in this PR at the user's request:
+an existing non-file path is rejected before TOML parsing, and loading remains
+read-only for that run. Tests cover preservation of empty/nonempty directories
+and successful loading/migration on a new run after repairing the path.
+ASan/UBSan and leak checks passed 66 tests three times, excluding only four
 pre-existing ACS invalid-vptr cases. Those ACS cases remain covered by the
 normal suite; the new fallback/cache tests pass under sanitizers. This does not
 substitute for native Windows/macOS or physical IME testing.
