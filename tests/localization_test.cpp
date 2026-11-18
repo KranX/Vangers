@@ -38,7 +38,8 @@ void conservation(const fs::path &root, const char *id, unsigned long expected, 
 	for (const auto &[key, value] : parsed.at("strings").as_table(std::nothrow)) {
 		(void)value;
 		const bool description = key.rfind("descriptions.", 0) == 0;
-		const int field = key.rfind("items.", 0) == 0									 ? 1
+		const int field = (key.rfind("compass.", 0) == 0 || key.rfind("uvs.", 0) == 0)	 ? 5
+						  : key.rfind("items.", 0) == 0									 ? 1
 						  : (key.rfind("world.", 0) == 0 || key.rfind("cycle.", 0) == 0) ? 2
 						  : key.rfind("service.", 0) == 0								 ? 3
 																						 : 0;
@@ -46,7 +47,7 @@ void conservation(const fs::path &root, const char *id, unsigned long expected, 
 			continue;
 		sorted.emplace(key, c.text(key));
 	}
-	const std::size_t sizes[]{394, 219, 19, 2, 92};
+	const std::size_t sizes[]{394, 219, 19, 2, 92, 36};
 	check(sorted.size() == sizes[group], "Incomplete stock UI catalog");
 	auto checksum = crc32(0, nullptr, 0);
 	for (const auto &[key, value] : sorted) {
@@ -83,6 +84,23 @@ int main(int argc, char **argv) {
 		// Separate audit: keep checksums of the original UI macros unchanged.
 		conservation(root, "en", 0xfbce565c, 4);
 		conservation(root, "ru", 0xc9799444, 4);
+		conservation(root, "ru", 0x126051b0, 5);
+		conservation(root, "en", 0xe97f8473, 5);
+		check(
+			format_task_complete("{reward}$ / {location}", "日本語", 123) == "123$ / 日本語",
+			"Task fields cannot be reordered"
+		);
+		check(
+			format_task_complete("{location} / {reward}", "{reward}", 5) == "{reward} / 5",
+			"Task field value was interpreted as a template"
+		);
+		for (const auto *bad : {"{location}",
+				 "{reward}",
+				 "{unknown}{location}{reward}",
+				 "{location}{location}{reward}",
+				 "{location}{reward}}"})
+			rejects([&] { format_task_complete(bad, "x", 0); }, "Invalid task template accepted");
+
 		check(
 			format_integer("Ресурс: %d %%", -17) == "Ресурс: -17 %",
 			"Typed integer formatting corrupted text"
@@ -186,6 +204,24 @@ int main(int argc, char **argv) {
 			[&] { Catalog c(temporary, "zz-test"); },
 			"Translation changed the template argument type"
 		);
+		for (const auto *pattern :
+			{"{location}", "{unknown}{location}{reward}", "{location}{reward}{reward}"}) {
+			write(strings, std::string("[strings]\n\"uvs.task_complete\" = '") + pattern + "'\n");
+			rejects(
+				[&] { Catalog invalid(temporary, "zz-test"); },
+				"Invalid translated task template accepted"
+			);
+		}
+		for (const auto *separator : {"\\n", "\\u2028", "\\u2029"}) {
+			write(
+				strings,
+				std::string("[strings]\n\"compass.CmpPodish\" = \"bad") + separator + "caption\"\n"
+			);
+			rejects(
+				[&] { Catalog invalid(temporary, "zz-test"); }, "Multiline compass caption accepted"
+			);
+		}
+
 		write(strings, "[strings]\n\"not.a.key\" = 'typo'\n");
 		rejects([&] { Catalog c(temporary, "zz-test"); }, "Translation typo accepted");
 		write(strings, "[strings]\n\"menu.iSTR_NEW_GAME\" = 42\n");

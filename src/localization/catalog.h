@@ -59,6 +59,8 @@ std::string resolve(std::string_view display_text); // @l10n:key or unchanged li
 // The item UI uses one integer or one escave name; never execute translator-provided printf.
 std::string format_integer(std::string_view pattern, int value);
 std::string format_text(std::string_view pattern, std::string_view value);
+// This notification has two independently reorderable fields, not printf code.
+std::string format_task_complete(std::string_view pattern, std::string_view location, int reward);
 
 } // namespace vangers::localization
 #endif

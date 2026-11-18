@@ -65,6 +65,17 @@ Table table(const toml::ordered_value &document, const std::string &name) {
 		const auto &s = value.as_string(std::nothrow);
 		if (s.find('\0') != std::string::npos || !settings::is_valid_utf8(s))
 			throw std::runtime_error("Invalid UTF-8 locale string: " + key);
+		if (name == "strings" && key.rfind("compass.", 0) == 0 &&
+			(s.find_first_of("\r\n\f") != std::string::npos ||
+				s.find("\u2028") != std::string::npos || s.find("\u2029") != std::string::npos))
+			throw std::runtime_error("Compass caption must be a single line: " + key);
+		if (name == "strings" && key == "uvs.task_complete") {
+			try {
+				(void)format_task_complete(s, {}, 0);
+			} catch (const std::invalid_argument &error) {
+				throw std::runtime_error("Invalid locale template " + key + ": " + error.what());
+			}
+		}
 		out.emplace(key, s);
 	}
 	return out;
@@ -266,5 +277,29 @@ std::string format_integer(std::string_view pattern, int value) {
 }
 std::string format_text(std::string_view pattern, std::string_view value) {
 	return format(pattern, 's', value);
+}
+
+std::string format_task_complete(std::string_view pattern, std::string_view location, int reward) {
+	std::string out;
+	bool have_location = false, have_reward = false;
+	for (std::size_t pos = 0; pos < pattern.size();) {
+		if (pattern[pos] != '{' && pattern[pos] != '}') {
+			out += pattern[pos++];
+			continue;
+		}
+		if (pattern.substr(pos, 10) == "{location}" && !have_location) {
+			out += location; // Values are data, never recursively interpreted.
+			have_location = true;
+			pos += 10;
+		} else if (pattern.substr(pos, 8) == "{reward}" && !have_reward) {
+			out += std::to_string(reward);
+			have_reward = true;
+			pos += 8;
+		} else
+			throw std::invalid_argument("Expected each of {location} and {reward} exactly once");
+	}
+	if (!have_location || !have_reward)
+		throw std::invalid_argument("Expected each of {location} and {reward} exactly once");
+	return out;
 }
 } // namespace vangers::localization

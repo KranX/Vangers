@@ -12143,6 +12143,7 @@ void uvsChangeTabuTask(int type, int status) {
 	}
 }
 
+// Opaque quest/route lookup tag, not a display caption. Never localize it.
 char *uvsGetNameByID(int type, int &ID) {
 	uvsEscave *pe = (uvsEscave *)EscaveTail;
 	uvsSpot *ps = (uvsSpot *)SpotTail;

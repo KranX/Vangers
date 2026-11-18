@@ -4,6 +4,7 @@
 #include "../saves/text.h"
 #include "lang.h"
 #include <algorithm>
+#include <iostream>
 #include <stdexcept>
 #include <zlib.h>
 
@@ -142,7 +143,6 @@ namespace fs = std::filesystem;
 #endif
 
 using vangers::settings::cp866_to_utf8;
-using vangers::settings::utf8_to_cp866;
 
 /* ----------------------------- STRUCT SECTION ----------------------------- */
 /* ----------------------------- EXTERN SECTION ----------------------------- */
@@ -276,6 +276,7 @@ void uvsTabuCreate(uvsActInt *pa, int num);
 void aciReadItmText(void);
 
 char *uvsGetNameByID(int type, int &ID);
+
 char *aciGetItemEscave(int p2);
 
 void acsChangeStrState(int id);
@@ -444,7 +445,7 @@ void aciOpenGate(void);
 void aciCloseGate(void);
 
 void SelectCompasTarget(const char *n);
-char *GetCompasTarget(void);
+const char *GetCompasTarget(void);
 
 int aciCheckCredits(void);
 
@@ -4381,32 +4382,17 @@ char *aciGetItemLoad(invItem *p, int mode) {
 }
 
 void aciAddTeleportMenuItem(int id, int fnc_id) {
-	const char *ptr;
 	fncMenu *mn;
 	fncMenuItem *itm;
-	invMatrix *m;
 
 	mn = aScrDisp->get_menu(FMENU_TELEPORT_MENU);
 	if (!mn)
 		return;
 
-	if (id == -1) {
-		if (lang() == RUSSIAN) {
-			if (strcmp(aci_curLocationName, (char *)eCmpPodish) == 0)
-				ptr = rCmpPodish;
-			else if (strcmp(aci_curLocationName, (char *)eCmpVigBoo) == 0)
-				ptr = rCmpVigBoo;
-			else if (strcmp(aci_curLocationName, (char *)eCmpZeePa) == 0)
-				ptr = rCmpZeePa;
-		} else
-			ptr = aci_curLocationName;
-	} else {
-		m = aScrDisp->get_matrix(id);
-		ptr = m->mech_name;
-	}
-
+	const std::string caption = id == -1 ? aciGetLocationNameUtf8(aci_curLocationName)
+										 : std::string(aScrDisp->get_matrix(id)->mech_name);
 	itm = aScrDisp->alloc_menu_item();
-	itm->init_name(id == -1 ? cp866_to_utf8(ptr).c_str() : ptr);
+	itm->init_name(caption.c_str());
 	itm->font = FMENU_TARGETS_FONT;
 	itm->space = FMENU_TARGETS_SPACE;
 	itm->fnc_code = fnc_id;
@@ -4430,9 +4416,7 @@ void aciDeleteTeleportMenuItem(int fnc_id) {
 		m->set_redraw();
 }
 
-void aciAdd2Targets(char *p) {
-	char *ptr;
-
+void aciAdd2Targets(const char *key, const char *caption) {
 	fncMenu *mn;
 	fncMenuItem *itm;
 
@@ -4441,7 +4425,8 @@ void aciAdd2Targets(char *p) {
 		return;
 
 	itm = aScrDisp->alloc_menu_item();
-	itm->init_name(cp866_to_utf8(p).c_str());
+	itm->init_name(caption);
+	itm->compass_id = key;
 	itm->font = FMENU_TARGETS_FONT;
 	itm->space = FMENU_TARGETS_SPACE;
 	itm->fnc_code = FMENU_OFF;
@@ -4449,34 +4434,26 @@ void aciAdd2Targets(char *p) {
 	mn->add_item(itm);
 
 	// rebuild...
-	ptr = GetCompasTarget();
-
-	if (ptr)
-		mn->curItem = mn->get_obj(cp866_to_utf8(ptr).c_str());
-	else
-		mn->curItem = mn->get_obj(aciSTR_OFF);
+	mn->curItem = mn->get_compass_item(GetCompasTarget());
 
 	mn->firstItem = mn->curItem;
 	mn->init_objects();
+	if (itm->SizeX > mn->SizeX)
+		std::cerr << "Compass caption exceeds fixed menu width [" << key << "]: " << itm->SizeX
+				  << " > " << mn->SizeX << '\n';
 
 	if (mn->flags & FM_ACTIVE && aScrDisp->curMode == AS_INFO_MODE)
 		mn->set_redraw();
 }
 
 void aciRefreshTargetsMenu(void) {
-	char *ptr;
 	fncMenu *mn;
 
 	mn = aScrDisp->get_menu(FMENU_TARGETS_MENU);
 	if (!mn)
 		return;
 
-	ptr = GetCompasTarget();
-
-	if (ptr)
-		mn->curItem = mn->get_obj(cp866_to_utf8(ptr).c_str());
-	else
-		mn->curItem = mn->get_obj(aciSTR_OFF);
+	mn->curItem = mn->get_compass_item(GetCompasTarget());
 
 	mn->init_objects();
 
@@ -4484,8 +4461,7 @@ void aciRefreshTargetsMenu(void) {
 		mn->set_redraw();
 }
 
-void aciDeleteFromTargets(char *p) {
-	char *ptr;
+void aciDeleteFromTargets(const char *key) {
 	fncMenu *mn;
 	fncMenuItem *itm;
 
@@ -4493,10 +4469,7 @@ void aciDeleteFromTargets(char *p) {
 	if (!mn)
 		return;
 
-	itm = mn->get_obj(cp866_to_utf8(p).c_str());
-
-	if (itm == mn->curItem)
-		SelectCompasTarget(NULL);
+	itm = mn->get_compass_item(key);
 
 	if (itm) {
 		mn->delete_obj(itm);
@@ -4504,12 +4477,7 @@ void aciDeleteFromTargets(char *p) {
 	}
 
 	// rebuild...
-	ptr = GetCompasTarget();
-
-	if (ptr)
-		mn->curItem = mn->get_obj(cp866_to_utf8(ptr).c_str());
-	else
-		mn->curItem = mn->get_obj(aciSTR_OFF);
+	mn->curItem = mn->get_compass_item(GetCompasTarget());
 
 	mn->firstItem = mn->curItem;
 	mn->init_objects();
@@ -4633,11 +4601,7 @@ void aciHandleSubmenuEvent(int id, fncMenuItem *p) {
 	}
 	switch (id) {
 	case FMENU_TARGETS_MENU:
-		if (strcmp(p->name, aciSTR_OFF)) {
-			SelectCompasTarget(utf8_to_cp866(p->name).c_str());
-		} else {
-			SelectCompasTarget(NULL);
-		}
+		SelectCompasTarget(p->compass_id.empty() ? nullptr : p->compass_id.c_str());
 		break;
 	case FMENU_TELEPORT_MENU:
 		aciTeleportEvent = p->fnc_code;
@@ -7190,6 +7154,28 @@ void aciInitStrings(void) {
 	aciSTR_RESTRICTIONS = vangers::localization::text("actint.aciSTR_RESTRICTIONS");
 	aciSTR_STATISTICS = vangers::localization::text("actint.aciSTR_STATISTICS");
 	aciSTR_MINUTES = vangers::localization::text("actint.aciSTR_MINUTES");
+}
+
+std::string aciGetLocationNameUtf8(const char *lookup) {
+	if (!lookup)
+		return {};
+	if (aScrDisp) {
+		for (auto *location = static_cast<aciLocationInfo *>(aScrDisp->locationList->last);
+			location;
+			location = static_cast<aciLocationInfo *>(location->prev))
+			if (location->nameID && !strcmp(location->nameID, lookup) && location->nameID2)
+				return location->nameID2;
+	}
+	// Unknown legacy/mod lookup: preserve the previous display, never guess encoding.
+	return cp866_to_utf8(lookup);
+}
+
+std::string aciFormatTaskCompleteUtf8(int task_type, int reward) {
+	int id;
+	const auto location = aciGetLocationNameUtf8(uvsGetNameByID(task_type, id));
+	return vangers::localization::format_task_complete(
+		vangers::localization::text("uvs.task_complete"), location, reward
+	);
 }
 
 char *aciGetItemEscave(int p2) {

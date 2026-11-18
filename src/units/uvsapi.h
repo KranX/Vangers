@@ -1,6 +1,12 @@
 #ifndef __UNITS__UVSAPI_H
 #define __UNITS__UVSAPI_H
 
+#include <string>
+
+// Presentation only: UVS lookup tags themselves remain unchanged.
+std::string aciGetLocationNameUtf8(const char *lookup);
+std::string aciFormatTaskCompleteUtf8(int task_type, int reward);
+
 const int BUNCH_CHANGE_CYCLE = 1;
 
 const int UVS_DEVICE_POWER = 1000;

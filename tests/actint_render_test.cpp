@@ -254,7 +254,7 @@ void actint_menu_render_test(bool native) {
 		"Dialogue menu used labels/ordinals instead of question IDs"
 	);
 	fncMenuItem copy;
-	delete copy.scankey; // clone borrows the source key object, as in production callers.
+	// clone releases the destination's default key before borrowing the source.
 	second->clone(&copy);
 	check(copy.dialogue_id == second->dialogue_id, "Cloning lost a dialogue selection ID");
 	aScrDisp->qMenu->redraw();

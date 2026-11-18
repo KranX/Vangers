@@ -280,6 +280,14 @@ if (NOT ANDROID)
 			ENDIF()
 			CONFIGURE_VANGERS_TARGET(acs_${script_mode}_test)
 		ENDFOREACH()
+        ADD_EXECUTABLE(compass_runtime_test
+            ${vangers_SCRIPT_SRCS}
+            $<TARGET_OBJECTS:vangers_common>
+            ../tests/compass_runtime_test.cpp
+            ../lib/xtool/xerrhead.cpp)
+        TARGET_COMPILE_DEFINITIONS(compass_runtime_test PRIVATE _BINARY_SCRIPT_ SDL_ShowSimpleMessageBox=VangersTest_ShowSimpleMessageBox)
+        CONFIGURE_VANGERS_TARGET(compass_runtime_test)
+
 		FOREACH(mode runtime source)
 			ADD_EXECUTABLE(diagen_${mode}_test
 				${vangers_SCRIPT_SRCS}

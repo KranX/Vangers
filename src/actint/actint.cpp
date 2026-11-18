@@ -281,7 +281,7 @@ int aciGetScreenMechos(int x, int y);
 
 void redraw_fnc(int x, int y, int sx, int sy, int fnc);
 
-char *GetCompasTarget(void);
+const char *GetCompasTarget(void);
 
 void swap_buf_col(int src, int dest, int sx, int sy, unsigned char *buf);
 
@@ -6038,8 +6038,6 @@ int fncMenu::change(int x, int y, int mode) {
 }
 
 void actIntDispatcher::init_submenu(fncMenu *m) {
-	char *ptr;
-
 	fncMenu *p = NULL;
 	aciBitmapMenu *bm = NULL;
 
@@ -6076,11 +6074,7 @@ void actIntDispatcher::init_submenu(fncMenu *m) {
 	case FMENU_TARGETS:
 		if (!p)
 			return;
-		ptr = GetCompasTarget();
-		if (!ptr)
-			p->curItem = p->get_obj(aciSTR_OFF);
-		else
-			p->curItem = p->get_obj(cp866_to_utf8(ptr).c_str());
+		p->curItem = p->get_compass_item(GetCompasTarget());
 
 		if (p->VItems < p->items->Size)
 			p->firstItem = p->curItem;
@@ -8630,6 +8624,14 @@ fncMenuItem *fncMenu::get_obj(const char *ptr) {
 	return NULL;
 }
 
+fncMenuItem *fncMenu::get_compass_item(const char *key) {
+	for (auto *p = static_cast<fncMenuItem *>(items->last); p;
+		p = static_cast<fncMenuItem *>(p->prev))
+		if (p->compass_id == (key ? key : ""))
+			return p;
+	return nullptr;
+}
+
 void fncMenu::go2upmenu(int mode) {
 	if (flags & FM_SUBMENU) {
 		upMenu->flags &= ~(FM_HIDDEN | FM_ACTIVE);
@@ -9256,7 +9258,17 @@ void actIntDispatcher::remove_menu_item(fncMenu *p) {
 }
 
 void fncMenuItem::clone(fncMenuItem *p) {
+	if (p == this)
+		return;
+	// Clones borrow these resources. Release the destination's owned ones
+	// before replacing them (even a fresh item owns a default key object).
+	if (!(p->flags & FM_CLONE)) {
+		delete p->scankey;
+		delete p->eventPtr;
+		delete[] p->name;
+	}
 	p->dialogue_id = dialogue_id;
+	p->compass_id = compass_id;
 	p->PosX = PosX;
 	p->PosY = PosY;
 

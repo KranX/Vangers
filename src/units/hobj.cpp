@@ -599,189 +599,68 @@ void GeneralSystemOpen(void) {
 
 		ResortEnter();
 
-		if (lang() == RUSSIAN) {
-			switch (CurrentWorld) {
-			case WORLD_FOSTRAL:
-				// zNfo - add target 2 compass
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Incubator"), rCmpIncubator);
-				AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("Podish"), rCmpPodish);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate1"), rCmpRepair1);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate2"), rCmpRepair2);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate1"), rCmpRigs);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FireUpdate1"), rCmpGhOrb);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate1"), rCmpBroken1);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate2"), rCmpBroken2);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate1"), rCmpSpiral);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("F2G"), rCmpPassGlorx);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("F2W"), rCmpPassWeexow);
-				if (GamerResult.earth_unable)
-					AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("PASS83"), rCmpPassEarth);
-				break;
-			case WORLD_GLORX:
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Ogorod"), rCmpOgorod);
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Lampasso"), rCmpLampasso);
-				AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("VigBoo"), rCmpVigBoo);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2F"), rCmpPassFostral);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2N"), rCmpPassNecross);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2X"), rCmpPassXplo);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2K"), rCmpPassKhox);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate01"), rCmpRigs1);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate02"), rCmpRigs2);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate01"), rCmpRepair1);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate02"), rCmpRepair2);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FireUpdate01"), rCmpGhOrb);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate01"), rCmpSpiral);
-				break;
-			case WORLD_NECROSS:
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("B-Zone"), rCmpBZone);
-				AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("ZeePa"), rCmpZeePa);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2G"), rCmpPassGlorx);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2B"), rCmpPassBoozeena);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2A"), rCmpPassArk);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate01"), rCmpRigs);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate01"), rCmpRepair);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate01"), rCmpSpiral);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate01"), rCmpBroken);
-				break;
-			case WORLD_XPLO:
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Spobs"), rCmpSpobs);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("X2G"), rCmpPassGlorx);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("X2T"), rCmpPassThreall);
-				break;
-			case WORLD_KHOX:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("K2G"), rCmpPassGlorx);
-				break;
-			case WORLD_BOOZEENA:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("B2N"), rCmpPassNecross);
-				break;
-			case WORLD_WEEXOW:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("W2F"), rCmpPassFostral);
-				break;
-			case WORLD_THREALL:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("T2X"), rCmpPassXplo);
-				break;
-			case WORLD_ARKONOY:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("A2N"), rCmpPassNecross);
-				break;
-			};
-		} else {
-			switch (CurrentWorld) {
-			case WORLD_FOSTRAL:
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Incubator"), eCmpIncubator);
-				AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("Podish"), eCmpPodish);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate1"), eCmpRepair1);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate2"), eCmpRepair2);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate1"), eCmpRigs);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FireUpdate1"), eCmpGhOrb);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate1"), eCmpBroken1);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate2"), eCmpBroken2);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate1"), eCmpSpiral);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("F2G"), eCmpPassGlorx);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("F2W"), eCmpPassWeexow);
-				if (GamerResult.earth_unable)
-					AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("PASS83"), eCmpPassEarth);
-				break;
-			case WORLD_GLORX:
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Ogorod"), eCmpOgorod);
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Lampasso"), eCmpLampasso);
-				AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("VigBoo"), eCmpVigBoo);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2F"), eCmpPassFostral);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2N"), eCmpPassNecross);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2X"), eCmpPassXplo);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2K"), eCmpPassKhox);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate01"), eCmpRigs1);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate02"), eCmpRigs2);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate01"), eCmpRepair1);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate02"), eCmpRepair2);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FireUpdate01"), eCmpGhOrb);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate01"), eCmpSpiral);
-				break;
-			case WORLD_NECROSS:
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("B-Zone"), eCmpBZone);
-				AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("ZeePa"), eCmpZeePa);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2G"), eCmpPassGlorx);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2B"), eCmpPassBoozeena);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2A"), eCmpPassArk);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate01"), eCmpRigs);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate01"), eCmpRepair);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate01"), eCmpSpiral);
-				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate01"), eCmpBroken);
-				break;
-			case WORLD_XPLO:
-				AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Spobs"), eCmpSpobs);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("X2G"), eCmpPassGlorx);
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("X2T"), eCmpPassThreall);
-				break;
-			case WORLD_KHOX:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("K2G"), eCmpPassGlorx);
-				break;
-			case WORLD_BOOZEENA:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("B2N"), eCmpPassNecross);
-				break;
-			case WORLD_WEEXOW:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("W2F"), eCmpPassFostral);
-				break;
-			case WORLD_THREALL:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("T2X"), eCmpPassXplo);
-				break;
-			case WORLD_ARKONOY:
-				AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("A2N"), eCmpPassNecross);
-				break;
-			};
-			/*			switch(CurrentWorld){
-							case WORLD_FOSTRAL:
-								AddTarget2Compas(CMP_TARGET_SPOT,(void*)("Incubator"),"Incubator");
-								AddTarget2Compas(CMP_TARGET_ESCAVE,(void*)("Podish"),"Podish");
-								AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate1"),"Repair
-			   Station I"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate2"),"Repair
-			   Station II"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("FlyUpdate1"),"Rigs
-			   Station"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("FireUpdate1"),"ghOrb
-			   Station"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("RandomUpdate1"),"Broken
-			   Station I"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("RandomUpdate2"),"Broken
-			   Station II"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("KeyUpdate1"),"Spiral
-			   Station"); AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("F2G"),"Passage to Glorx");
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("F2W"),"Passage to
-			   Weexow"); break; case WORLD_GLORX:
-								AddTarget2Compas(CMP_TARGET_SPOT,(void*)("Ogorod"),"Ogorod");
-								AddTarget2Compas(CMP_TARGET_SPOT,(void*)("Lampasso"),"Lampasso");
-								AddTarget2Compas(CMP_TARGET_ESCAVE,(void*)("VigBoo"),"VigBoo");
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("G2F"),"Passage to
-			   Fostral"); AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("G2N"),"Passage to  Necross");
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("G2X"),"Passage to
-			   Xplo"); AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("G2K"),"Passage to  Khox");
-								AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("FlyUpdate01"),"Rigs
-			   Station I"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("FlyUpdate02"),"Rigs Station
-			   II"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate01"),"Repair Station
-			   I"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate02"),"Repair Station
-			   II"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("FireUpdate01"),"ghOrb Station");
-								AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("KeyUpdate01"),"Spiral
-			   Station"); break; case WORLD_NECROSS:
-								AddTarget2Compas(CMP_TARGET_SPOT,(void*)("B-Zone"),"B-Zone");
-								AddTarget2Compas(CMP_TARGET_ESCAVE,(void*)("ZeePa"),"ZeePa");
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("N2G"),"Passage to
-			   Glorx"); AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("N2B"),"Passage to  Boozeena");
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("N2A"),"Passage to
-			   Ark'a'Znoy"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("FlyUpdate01"),"Rigs
-			   Station"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("ArmorUpdate01"),"Repair
-			   Station"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("KeyUpdate01"),"Spiral
-			   Station"); AddTarget2Compas(CMP_TARGET_SENSOR,(void*)("RandomUpdate01"),"Broken
-			   Station"); break; case WORLD_XPLO:
-								AddTarget2Compas(CMP_TARGET_SPOT,(void*)("Spobs"),"Spobs");
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("X2G"),"Passage to
-			   Glorx"); AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("X2T"),"Passage to Threall");
-								break;
-							case WORLD_KHOX:
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("K2G"),"Passage to
-			   Glorx"); break; case WORLD_BOOZEENA:
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("B2N"),"Passage to
-			   Necross"); break; case WORLD_WEEXOW:
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("W2F"),"Passage to
-			   Fostral"); break; case WORLD_THREALL:
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("T2X"),"Passage to
-			   Xplo"); break; case WORLD_ARKONOY:
-								AddTarget2Compas(CMP_TARGET_PASSAGE,(void*)("A2N"),"Passage to
-			   Necross"); break;
-						};*/
+		switch (CurrentWorld) {
+		case WORLD_FOSTRAL:
+			AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Incubator"), "compass.CmpIncubator");
+			AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("Podish"), "compass.CmpPodish");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate1"), "compass.CmpRepair1");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate2"), "compass.CmpRepair2");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate1"), "compass.CmpRigs");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FireUpdate1"), "compass.CmpGhOrb");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate1"), "compass.CmpBroken1");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate2"), "compass.CmpBroken2");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate1"), "compass.CmpSpiral");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("F2G"), "compass.CmpPassGlorx");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("F2W"), "compass.CmpPassWeexow");
+			if (GamerResult.earth_unable)
+				AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("PASS83"), "compass.CmpPassEarth");
+			break;
+		case WORLD_GLORX:
+			AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Ogorod"), "compass.CmpOgorod");
+			AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Lampasso"), "compass.CmpLampasso");
+			AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("VigBoo"), "compass.CmpVigBoo");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2F"), "compass.CmpPassFostral");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2N"), "compass.CmpPassNecross");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2X"), "compass.CmpPassXplo");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("G2K"), "compass.CmpPassKhox");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate01"), "compass.CmpRigs1");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate02"), "compass.CmpRigs2");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate01"), "compass.CmpRepair1");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate02"), "compass.CmpRepair2");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FireUpdate01"), "compass.CmpGhOrb");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate01"), "compass.CmpSpiral");
+			break;
+		case WORLD_NECROSS:
+			AddTarget2Compas(CMP_TARGET_SPOT, (void *)("B-Zone"), "compass.CmpBZone");
+			AddTarget2Compas(CMP_TARGET_ESCAVE, (void *)("ZeePa"), "compass.CmpZeePa");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2G"), "compass.CmpPassGlorx");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2B"), "compass.CmpPassBoozeena");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("N2A"), "compass.CmpPassArk");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("FlyUpdate01"), "compass.CmpRigs");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("ArmorUpdate01"), "compass.CmpRepair");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("KeyUpdate01"), "compass.CmpSpiral");
+			AddTarget2Compas(CMP_TARGET_SENSOR, (void *)("RandomUpdate01"), "compass.CmpBroken");
+			break;
+		case WORLD_XPLO:
+			AddTarget2Compas(CMP_TARGET_SPOT, (void *)("Spobs"), "compass.CmpSpobs");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("X2G"), "compass.CmpPassGlorx");
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("X2T"), "compass.CmpPassThreall");
+			break;
+		case WORLD_KHOX:
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("K2G"), "compass.CmpPassGlorx");
+			break;
+		case WORLD_BOOZEENA:
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("B2N"), "compass.CmpPassNecross");
+			break;
+		case WORLD_WEEXOW:
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("W2F"), "compass.CmpPassFostral");
+			break;
+		case WORLD_THREALL:
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("T2X"), "compass.CmpPassXplo");
+			break;
+		case WORLD_ARKONOY:
+			AddTarget2Compas(CMP_TARGET_PASSAGE, (void *)("A2N"), "compass.CmpPassNecross");
+			break;
 		};
 
 		SelectCompasTarget(NULL);

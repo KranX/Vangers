@@ -17,12 +17,13 @@ const int CMP_OBJECT_SENSOR = 5;
 const int CMP_OBJECT_PHANTOM = 6;
 const int CMP_OBJECT_VECTOR = 7;
 
-void AddTarget2Compas(int type, void *point, const char *head);
-void SelectCompasTarget(const char *n);
-char *GetCompasTarget(void);
+// Lookup names/target keys are opaque identities; captions are UTF-8.
+void AddTarget2Compas(int type, void *point, const char *caption_key);
+void SelectCompasTarget(const char *key);
+const char *GetCompasTarget(void); // Borrowed key, not the displayed caption.
 
-void aciAdd2Targets(char *p);
-void aciDeleteFromTargets(char *p);
+void aciAdd2Targets(const char *key, const char *caption);
+void aciDeleteFromTargets(const char *key);
 
 extern int GlobalFuryLevel;
 inline void IncFuryFactor(void) {
