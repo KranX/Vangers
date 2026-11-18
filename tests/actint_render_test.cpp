@@ -9,6 +9,7 @@
 #include "iscreen/iscreen.h"
 #include "localization/catalog.h"
 #include "network.h"
+#include "runtime.h"
 #include "settings/settings.h"
 #include "settings/text_encoding.h"
 #include "uvs/diagen.h"
@@ -35,6 +36,8 @@ void iChatFinit();
 void iInitChatScreen();
 void iChatMouseQuant(int x, int y, int button);
 void iChatInputFlush();
+void aiPromptDominanceMessage(int delta);
+void aiPromptLuckMessage(int delta);
 extern XList *iChatButtons;
 extern iChatInputField *iChatInput;
 extern aciFont **aScrFonts, **aScrFonts32;
@@ -136,6 +139,79 @@ void resize(iBitmapElement &bitmap, int width, int height) {
 
 bool has_ink(const std::vector<uint32_t> &pixels) {
 	return std::any_of(pixels.begin(), pixels.end(), [](uint32_t p) { return p != 0; });
+}
+
+void game_notification_test(const RenderFixture &fixture, int width, int height) {
+	actIntDispatcher dispatcher;
+	auto *previous = aScrDisp;
+	aScrDisp = &dispatcher;
+	const auto previous_time_coeff = GAME_TIME_COEFF;
+	GAME_TIME_COEFF = 1;
+	dispatcher.flags |= AS_FULLSCR;
+	auto *prompt = dispatcher.curPrompt;
+	const std::string first = "Hurry up, fitters!";
+	const std::string name = "日本語の参加者あいうえおかきくけ";
+	const std::string second = name + " has just finished the game!";
+	const std::string third = "You don't want to be last do you?";
+	aciSendGameNotification(first + '\n' + second + '\n' + third);
+	check(prompt->NumStr == 3 && prompt->CurTimer == 0 && prompt->wrap_lines, "Not a HUD prompt");
+	for (int i = 0; i < 3; ++i)
+		check(
+			prompt->TimeBuf[i] == 200 && prompt->ColBuf[i] == 143, "Prompt timing/colour changed"
+		);
+
+	// A small logical viewport forces wrapping while the framebuffer still
+	// has room for every row. Check that no ink escapes the viewport.
+	for (const int viewport : {width, 220}) {
+		auto *buffer = XGR_Obj.get_default_render_buffer();
+		std::fill_n(buffer, width * height, 0);
+		xgr::text::clear(buffer);
+		const int left = (width - viewport) / 2;
+		prompt->CurTimer = 180; // Complete reveal without the game's loaded fireball frames.
+		prompt->redraw(left, 0, viewport, height);
+		std::vector<uint32_t> pixels;
+		if (fixture.native) {
+			const auto *layer = xgr::text::find(buffer);
+			check(layer != nullptr, "HUD notice did not populate the text layer");
+			pixels = layer->render(width, height, fixture.palette.data());
+		} else {
+			pixels.assign(buffer, buffer + width * height);
+		}
+		check(has_ink(pixels), "Empty rendered HUD notice");
+		int last_y = 0;
+		for (int y = 0; y < height; ++y)
+			for (int x = 0; x < width; ++x)
+				if (pixels[y * width + x]) {
+					last_y = y;
+					check(
+						x >= left && x < left + viewport,
+						"HUD notification escaped its logical width"
+					);
+				}
+		check(
+			viewport == width ? last_y < 110 : last_y >= 110,
+			"HUD message did not preserve short lines or wrap the long ones"
+		);
+		check(
+			std::string_view(reinterpret_cast<const char *>(prompt->StrBuf[1])) == second,
+			"Prompt discarded or changed the Unicode model text"
+		);
+	}
+
+	aiPromptDominanceMessage(5);
+	check(
+		prompt->NumStr == 1 &&
+			std::string_view(reinterpret_cast<const char *>(prompt->StrBuf[0])) == "Dominance  +5",
+		"Dominance notice changed the stock English wording or sign"
+	);
+	aiPromptLuckMessage(0);
+	check(
+		std::string_view(reinterpret_cast<const char *>(prompt->StrBuf[0])) == "Luck -0",
+		"Luck notice changed the stock zero sign"
+	);
+	xgr::text::clear(XGR_Obj.get_default_render_buffer());
+	GAME_TIME_COEFF = previous_time_coeff;
+	aScrDisp = previous;
 }
 
 fncMenu *add_menu(fncMenuSet &set, std::initializer_list<const char *> labels, bool topic) {
@@ -437,6 +513,7 @@ void chat_button_bounds_test(RenderFixture &fixture) {
 		XGR_Obj.set_resolution(width, height);
 		auto *buffer = XGR_Obj.get_default_render_buffer();
 		XGR_Obj.set_default_render_buffer();
+		game_notification_test(fixture, width, height);
 		std::fill_n(buffer, width * height, 0);
 		iChatButton button(1);
 		button.init(width - 175, 100, 170, 20, 0, 0);

@@ -14,6 +14,7 @@
 #include "../sqexp.h"
 
 #include "../actint/item_api.h"
+#include "../localization/catalog.h"
 #include "../network.h"
 #include "uvsapi.h"
 
@@ -39,7 +40,6 @@
 #include "track.h"
 
 #include "../sound/hsound.h"
-#include "magnum.h"
 
 #include <cstdio>
 
@@ -4862,92 +4862,31 @@ void GloryPlace::Quant(void) {
 	};
 };
 
-extern aciPromptData aiMessageBuffer;
 extern uvsTabuTaskType **TabuTable;
 
+namespace {
+std::string stat_notification(const char *key, int delta) {
+	// Keep the original explicit sign, including "-0".
+	const auto value = delta == 0 ? "-0" : (delta > 0 ? "+" : "") + std::to_string(delta);
+	using namespace vangers::localization;
+	return format_text(text(key), value);
+}
+} // namespace
+
 void aiPromptTaskMessage(int l) {
-	//	if(!uvsKronActive) return;
-	aiMessageBuffer.align_type = 0;
-	if (l >= 0) {
-		if (lang() == RUSSIAN)
-			aiMessageBuffer.add_str(0, (unsigned char *)rSuccessTaskMessageData);
-		else
-			aiMessageBuffer.add_str(0, (unsigned char *)SuccessTaskMessageData);
-	} else {
-		if (lang() == RUSSIAN)
-			aiMessageBuffer.add_str(0, (unsigned char *)rFailedTaskMessageData);
-		else
-			aiMessageBuffer.add_str(0, (unsigned char *)FailedTaskMessageData);
-	};
-
-	//	aiMessageBuffer.add_str(0,(uchar*)(s));
-	aiMessageBuffer.TimeBuf[0] = 200;
-	aiMessageBuffer.ColBuf[0] = 143;
-
-	RaceTxtBuff.init();
-	if (lang() == RUSSIAN)
-		RaceTxtBuff < rTaskMessageLuck;
-	else
-		RaceTxtBuff < TaskMessageLuck;
-	if (l > 0)
-		RaceTxtBuff < " +";
-	else
-		RaceTxtBuff < " -";
-
-	RaceTxtBuff <= abs(l);
-
-	aiMessageBuffer.add_str(1, (uchar *)(RaceTxtBuff.GetBuf()));
-	aiMessageBuffer.TimeBuf[1] = 200;
-	aiMessageBuffer.ColBuf[1] = 143;
-
-	aiMessageBuffer.NumStr = 2;
-	aciSendPrompt(&aiMessageBuffer);
+	aciSendGameNotification(
+		stat_notification(l >= 0 ? "notification.task_success" : "notification.task_failed", l)
+	);
 	ClearTabutaskTarget();
-};
+}
 
 void aiPromptDominanceMessage(int d) {
-	//	if(!uvsKronActive) return;
-	RaceTxtBuff.init();
-	if (lang() == RUSSIAN)
-		RaceTxtBuff < rDominanceMessageData;
-	else
-		RaceTxtBuff < DominanceMessageData;
-	if (d > 0)
-		RaceTxtBuff < " +";
-	else
-		RaceTxtBuff < " -";
-	RaceTxtBuff <= abs(d);
-
-	aiMessageBuffer.align_type = 0;
-	aiMessageBuffer.TimeBuf[0] = 200;
-	aiMessageBuffer.ColBuf[0] = 143;
-	aiMessageBuffer.NumStr = 1;
-	aiMessageBuffer.add_str(0, (uchar *)(RaceTxtBuff.GetBuf()));
-	aciSendPrompt(&aiMessageBuffer);
-};
+	aciSendGameNotification(stat_notification("notification.dominance", d));
+}
 
 void aiPromptLuckMessage(int d) {
-	//	if(!uvsKronActive) return;
-	RaceTxtBuff.init();
-
-	if (lang() == RUSSIAN)
-		RaceTxtBuff < rTaskMessageLuck;
-	else
-		RaceTxtBuff < TaskMessageLuck;
-
-	if (d > 0)
-		RaceTxtBuff < " +";
-	else
-		RaceTxtBuff < " -";
-	RaceTxtBuff <= abs(d);
-
-	aiMessageBuffer.align_type = 0;
-	aiMessageBuffer.TimeBuf[0] = 200;
-	aiMessageBuffer.ColBuf[0] = 143;
-	aiMessageBuffer.NumStr = 1;
-	aiMessageBuffer.add_str(0, (uchar *)(RaceTxtBuff.GetBuf()));
-	aciSendPrompt(&aiMessageBuffer);
-};
+	aciSendGameNotification(stat_notification("notification.luck", d));
+}
 
 void ShowTaskMessage(int l) {
 	if (NetworkON)

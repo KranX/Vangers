@@ -25,7 +25,6 @@
 #include "../iscreen/iscreen.h"
 #include "../iscreen/iscript.h"
 
-#include "../units/magnum.h"
 #include "../units/uvsapi.h"
 #include "item_api.h"
 
@@ -35,6 +34,7 @@
 #include "a_consts.h"
 
 #include "../settings/settings.h"
+#include "../text/layout.h"
 #include "../text/utf8.h"
 #include "actint.h"
 #include "localization/catalog.h"
@@ -5067,6 +5067,7 @@ void aciPromptData::free_mem(void) {
 
 	NumStr = 0;
 	fontID = -1;
+	wrap_lines = false;
 }
 
 aciPromptData::~aciPromptData(void) {
@@ -5109,6 +5110,7 @@ void aciPromptData::copy_data(aciPromptData *src) {
 	alloc_mem(src->NumStr);
 
 	align_type = src->align_type;
+	wrap_lines = src->wrap_lines;
 
 	if (src->StrBuf) {
 		for (i = 0; i < NumStr; i++) {
@@ -5157,6 +5159,58 @@ void aciPromptData::redraw(int scr_x, int scr_y, int scr_sx, int scr_sy) {
 		y = scr_y + (scr_sy - sy) / 2;
 	} else
 		y = scr_y + ACI_PROMPT_OFFSET;
+
+	// The HUD's decorative overlay can cover the edges of the underlying
+	// map rectangle. Reserve a gutter for wrapped notices, not for legacy
+	// scripted prompts. Symmetric insets keep the original centre.
+	if (wrap_lines) {
+		const int inset = std::min(80, scr_sx / 6);
+		scr_x += inset;
+		scr_sx -= 2 * inset;
+	}
+
+	if (wrap_lines && std::any_of(StrBuf, StrBuf + NumStr, [&](const unsigned char *line) {
+			return line && aStrLenUtf8(line, font, ACI_PROMPT_DELTA_X) > scr_sx;
+		})) {
+		const auto measure = [font](std::string_view line) {
+			return aStrLenUtf8(std::string(line).c_str(), font, ACI_PROMPT_DELTA_X);
+		};
+		// Keep the original authored lines. Reflow only lines that do not fit
+		// this prompt's current logical viewport, without changing the timer.
+		std::vector<std::string> rows;
+		std::vector<int> xs, ys;
+		std::vector<unsigned int> colours;
+		for (int line = 0; line < NumStr; ++line) {
+			if (!StrBuf[line])
+				continue;
+			const auto *text = reinterpret_cast<const char *>(StrBuf[line]);
+			auto wrapped = vangers::text::layout_lines(
+				text, scr_sx, measure, vangers::text::LineMode::Preserve, true
+			);
+			for (auto &row : wrapped) {
+				xs.push_back(scr_x + (scr_sx - measure(row)) / 2);
+				ys.push_back(y);
+				colours.push_back(ColBuf[line]);
+				y += aScrFonts[font]->SizeY + ACI_PROMPT_DELTA_Y;
+				rows.push_back(std::move(row));
+			}
+		}
+		std::vector<unsigned char *> text;
+		for (auto &row : rows)
+			text.push_back(reinterpret_cast<unsigned char *>(row.data()));
+		aWriteHelpString(
+			static_cast<int>(text.size()),
+			xs.data(),
+			ys.data(),
+			font,
+			text.data(),
+			CurTimer,
+			ACI_PROMPT_COLOR,
+			ACI_PROMPT_DELTA_X,
+			colours.data()
+		);
+		return;
+	}
 
 	for (i = 0; i < NumStr; i++) {
 		if (StrBuf[i]) {
@@ -5242,6 +5296,20 @@ void aciPromptData::quant(void) {
 void aciSendPrompt(aciPromptData *p) {
 	aScrDisp->curPrompt->copy_data(p);
 	aScrDisp->curPrompt->CurTimer = 0;
+}
+
+void aciSendGameNotification(std::string_view text) {
+	aciPromptData prompt(1 + static_cast<int>(std::count(text.begin(), text.end(), '\n')));
+	prompt.wrap_lines = true;
+	for (int row = 0; row < prompt.NumStr; ++row) {
+		const auto end = text.find('\n');
+		prompt.add_utf8_str(row, std::string(text.substr(0, end)).c_str());
+		prompt.TimeBuf[row] = 200;
+		prompt.ColBuf[row] = 143;
+		if (end != text.npos)
+			text.remove_prefix(end + 1);
+	}
+	aciSendPrompt(&prompt);
 }
 
 void aciActivateItemFunction(int itemID, int fncID) {
