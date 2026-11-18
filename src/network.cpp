@@ -2520,19 +2520,21 @@ PlayerData *PlayersList::find_any(int client_id) {
 	return NULL;
 }
 
-PlayerData *PlayersList::find(int client_id) {
-	PlayerData *p = first();
-	while (p) {
-		if (p->client_ID == client_id && p->status != FINISHED_STATUS) {
+PlayerData *PlayersList::find_active(int client_id) {
+	for (auto *p = first(); p; p = p->next) {
+		if (p->client_ID == client_id && p->status != FINISHED_STATUS)
 			return p;
-		}
-		p = p->next;
 	}
-	p = new PlayerData(client_id);
+	return nullptr;
+}
+
+PlayerData *PlayersList::find(int client_id) {
+	if (auto *p = find_active(client_id))
+		return p;
+	auto *p = new PlayerData(client_id);
 	append(p);
 	return p;
 }
-
 
 void PlayersList::single_parsing(int event_ID) {
 	if (!events_in.remaining_event_bytes())
@@ -2800,7 +2802,7 @@ void MessageDispatcher::receive() {
 	);
 	if (!msg || msg->empty())
 		return;
-	const auto *p = players_list.find_any(events_in.current_creator());
+	const auto *p = players_list.find_active(events_in.current_creator());
 	append_message(
 		p && !p->name.empty() ? p->name : "Unknown", *msg, p && !p->name.empty() ? p->body.color : 0
 	);

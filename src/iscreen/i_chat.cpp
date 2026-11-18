@@ -325,7 +325,6 @@ void iChatScreenObject::flush(void) {
 iChatInputField::iChatInputField(void) {
 	string = std::string();
 
-
 	if (!iScreenChat)
 		color = ICS_STRING_COL1;
 	else
@@ -473,7 +472,6 @@ iChatButton::iChatButton(int num_state) {
 	StateColors = new int[NumState];
 
 	extData = 0;
-
 }
 
 iChatButton::~iChatButton(void) {
@@ -489,10 +487,25 @@ void iChatButton::redraw(void) {
 		aOutText32(PosX + dx, PosY + dy, StateColors[CurState], string.data(), font, 1, 0);
 		return;
 	}
-	dx = (SizeX - aTextWidth32Utf8(string.c_str(), font, 1)) / 2;
+	dx = std::max(0, (SizeX - aTextWidth32Utf8(string.c_str(), font, 1)) / 2);
 	dy = (SizeY - aTextHeight32Utf8(string.c_str(), font, 0)) / 2;
 
-	aOutText32Utf8(PosX + dx, PosY + dy, StateColors[CurState], string.c_str(), font, 1, 0);
+	// Names may be wider than the fixed button. Clip only this presentation;
+	// the full name remains available in chat and the player roster.
+	const int mode = XGR_Obj.ClipMode;
+	const int left = XGR_Obj.clipLeft, top = XGR_Obj.clipTop;
+	const int right = XGR_Obj.clipRight, bottom = XGR_Obj.clipBottom;
+	const int clip_left = std::max(PosX, mode == XGR_CLIP_ALL ? left : 0);
+	const int clip_top = std::max(PosY, mode == XGR_CLIP_ALL ? top : 0);
+	const int clip_right = std::min(PosX + SizeX, mode == XGR_CLIP_ALL ? right : XGR_MAXX);
+	const int clip_bottom = std::min(PosY + SizeY, mode == XGR_CLIP_ALL ? bottom : XGR_MAXY);
+	if (clip_left >= clip_right || clip_top >= clip_bottom)
+		return;
+	XGR_SetClipMode(XGR_CLIP_ALL);
+	XGR_SetClip(clip_left, clip_top, clip_right, clip_bottom);
+	aOutText32ClipUtf8(PosX + dx, PosY + dy, StateColors[CurState], string.c_str(), font, 1, 0);
+	XGR_SetClip(left, top, right, bottom);
+	XGR_SetClipMode(mode);
 }
 
 void iChatScreenObject::init(int x, int y, int sx, int sy, int col1, int col2) {

@@ -34,6 +34,7 @@
 #include "network.h"
 #include "settings/settings.h"
 #include "settings/text_encoding.h"
+#include "text_layer.h"
 #include "xgamepad.h"
 
 #include "3d/3d_math.h"
@@ -1943,6 +1944,9 @@ void iGameMap::draw(int self) {
 	}
 
 	if (GeneralSystemSkip && !ChangeWorldSkipQuant) {
+		// World names, compass and HUD chat are drawn before actint's text pass.
+		// Clear the previous frame, not the text already drawn in this one.
+		xgr::text::clear(XGR_Obj.get_default_render_buffer());
 		if (curGMap) {
 			BackD.restore();
 

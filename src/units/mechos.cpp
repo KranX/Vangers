@@ -9828,7 +9828,8 @@ void CompasObject::Quant(void) {
 	};
 
 	RaceTxtBuff <= (int)(sqrt(dx * (double)dx + dy * (double)dy)) / 100;
-	dx = ((ScreenCX - tx) * (int)(strlen(RaceTxtBuff.address())) * 10 + 32) / (int)(curGMap->xside);
+	const int label_width = aTextWidth32Utf8(RaceTxtBuff.address(), 0, 0);
+	dx = ((ScreenCX - tx) * label_width + 32) / (int)(curGMap->xside);
 	dy = ((ScreenCY - ty) * 18 + 32) / (int)(curGMap->yside);
 	aOutText32ClipUtf8(tx + dx, ty + dy, 165 | (2 << 16), RaceTxtBuff.address(), 0, 0, 0);
 	/*	if(ty < ScreenCY){

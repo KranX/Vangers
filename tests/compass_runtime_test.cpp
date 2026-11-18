@@ -54,8 +54,23 @@ struct Fonts {
 		font.LeftOffs = font.RightOffs = nullptr;
 	}
 };
+void check_reused_player_slot() {
+	PlayersList list;
+	auto *finished = new PlayerData(2);
+	finished->name = "以前";
+	finished->status = FINISHED_STATUS;
+	list.append(finished);
+	check(!list.find_active(2) && list.size() == 1, "Chat lookup created a player");
+	auto *active = list.find(2);
+	active->name = "新しい人";
+	check(list.find_any(2) == finished, "Fixture must keep the old row first");
+	check(list.find_active(2) == active && list.size() == 2, "Chat attributed sender to old row");
+	list.delete_all();
+}
+
 void run() {
 	using namespace vangers;
+	check_reused_player_slot();
 	settings::settings_manager().get_mutable().video.ttf_text = true;
 	Fonts fonts;
 	actIntDispatcher dispatcher;

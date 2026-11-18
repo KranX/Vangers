@@ -4,6 +4,8 @@
 #include "actint/actint.h"
 #include "actint/mlconsts.h"
 #include "actint/mlstruct.h"
+#include "actint/raster_text.h"
+#include "iscreen/i_chat.h"
 #include "iscreen/iscreen.h"
 #include "settings/settings.h"
 #include "uvs/diagen.h"
@@ -408,6 +410,62 @@ void fixed_item_panel_test(RenderFixture &fixture) {
 }
 } // namespace
 
+namespace {
+void chat_button_bounds_test(RenderFixture &fixture) {
+	std::filesystem::create_directories("resource/actint/hd");
+	auto *background = SDL_CreateSurface(8, 8, SDL_PIXELFORMAT_RGB24);
+	check(
+		background && SDL_SaveBMP(background, "resource/actint/hd/hd_background.bmp"),
+		"Chat button background fixture failed"
+	);
+	SDL_DestroySurface(background);
+	SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "dummy");
+	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
+	XGR_Init(0);
+	for (const auto &[width, height] : {std::pair{640, 480}, std::pair{800, 600}}) {
+		XGR_Obj.set_resolution(width, height);
+		auto *buffer = XGR_Obj.get_default_render_buffer();
+		XGR_Obj.set_default_render_buffer();
+		std::fill_n(buffer, width * height, 0);
+		iChatButton button(1);
+		button.init(width - 175, 100, 170, 20, 0, 0);
+		button.set_color(0, 165 | (2 << 16));
+		button.set_string("日本語の参加者あいうえおかきくけ Fostral/Yellow");
+		check(
+			aTextWidth32Utf8(button.string.c_str(), 0, 1) > button.SizeX,
+			"Nickname must overflow fixture"
+		);
+		const int mode = XGR_Obj.ClipMode;
+		button.redraw();
+		check(
+			button.string == "日本語の参加者あいうえおかきくけ Fostral/Yellow",
+			"Button changed stored nickname"
+		);
+		check(
+			XGR_Obj.ClipMode == mode && XGR_Obj.clipLeft == 0 && XGR_Obj.clipTop == 0 &&
+				XGR_Obj.clipRight == width && XGR_Obj.clipBottom == height,
+			"Button did not restore renderer clip"
+		);
+		std::vector<uint32_t> pixels;
+		if (fixture.native) {
+			const auto *layer = xgr::text::find(buffer);
+			check(layer, "Chat button did not populate native text layer");
+			pixels = layer->render(width, height, fixture.palette.data());
+		} else {
+			pixels.assign(buffer, buffer + width * height);
+		}
+		check(has_ink(pixels), "Clipped button has no visible text");
+		for (int y = 0; y < height; ++y)
+			for (int x = 0; x < width; ++x)
+				check(
+					button.check_xy(x, y) || pixels[y * width + x] == 0,
+					"Nickname escaped its button"
+				);
+	}
+	XGR_Finit();
+}
+} // namespace
+
 void actint_flow_test(bool native) {
 	RenderFixture fixture(native);
 	fixed_item_panel_test(fixture);
@@ -571,6 +629,7 @@ void actint_flow_test(bool native) {
 	}
 	XGR_MAXX = oldX;
 	XGR_MAXY = oldY;
+	chat_button_bounds_test(fixture);
 }
 
 // Stock text mode must not even index the old text AVI slots. New resources may

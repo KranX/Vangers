@@ -3490,7 +3490,6 @@ void actIntDispatcher::redraw(void) {
 }
 
 void actIntDispatcher::text_redraw() {
-	xgr::text::clear(XGR_Obj.get_default_render_buffer());
 	if (Pause > 1 && NetworkON) {
 		if (GameQuantReturnValue || acsQuant()) {
 			Pause = 0;

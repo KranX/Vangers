@@ -84,6 +84,7 @@ struct PlayersList: XTList<PlayerData> {
 	}
 
 	PlayerData *find_any(int client_id);
+	PlayerData *find_active(int client_id); // Non-creating; ignore finished records for reused IDs.
 	PlayerData *find(int client_id);
 	void single_parsing(int event_ID);
 	void reset_states();
@@ -294,7 +295,7 @@ class InputEventBuffer: public XBuffer {
 	void ignore_event(); // Skip body, if any
 	std::size_t remaining_event_bytes();
 	std::optional<std::string> read_display_text(std::size_t max_bytes, std::size_t trailing = 0);
-	int next_event();	 // 0 if there isn't any enents,  EventID othewise
+	int next_event(); // 0 if there isn't any enents,  EventID othewise
 
 	int get_byte() {
 		unsigned char t;
