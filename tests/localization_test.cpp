@@ -118,7 +118,8 @@ int main(int argc, char **argv) {
 		for (const auto *pattern : {"%n", "%s", "%d %d", "%0200000d", "%"})
 			rejects([&] { format_integer(pattern, 1); }, "Unsafe template accepted");
 		Catalog ru(root, "ru"), en(root, "en");
-		for (const auto *key : {"chat.legacy_name", "chat.legacy_message"})
+		for (const auto *key :
+			{"chat.legacy_name", "chat.legacy_message", "chat.recipient_unavailable"})
 			check(
 				!ru.text(key).empty() && !en.text(key).empty(), "Missing chat compatibility notice"
 			);

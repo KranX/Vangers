@@ -1,6 +1,7 @@
 /* ---------------------------- INCLUDE SECTION ----------------------------- */
 
 #include "../global.h"
+#include "../localization/catalog.h"
 #include "../settings/text_encoding.h"
 #include "../text/network_text.h"
 #include "../text/utf8.h"
@@ -90,7 +91,6 @@ void iChatClearButtons(void);
 void iChatClearLog(void);
 
 iChatButton *iGetChatButton(int id);
-iChatButton *iGetChatPlayerButton(int id);
 
 void put_map(int x, int y, int sx, int sy);
 
@@ -164,6 +164,8 @@ int iChatSkip = 0;
 
 int iChatFilter = MESSAGE_FOR_ALL;
 int iChatFilterID = 0;
+static std::uint64_t iChatRecipientIdentity = 0;
+static int iChatRecipientCount = 0;
 
 int iChatMUTE = 0;
 int iChatBackLog = 1;
@@ -175,6 +177,11 @@ iChatInputField iChatInputPrev;
 
 static bool iChatReady(void) {
 	return iChatON && iChatInput && iChatHistory && iChatButtons;
+}
+
+static bool is_current_chat_recipient(int slot, std::uint64_t identity) {
+	const auto *player = players_list.find_active(slot);
+	return player && player->is_chat_recipient() && player->chat_identity == identity;
 }
 
 static int chatBoundary(std::string_view text, int pos) {
@@ -470,12 +477,26 @@ iChatButton::iChatButton(int num_state) {
 	CurState = 0;
 	NumState = num_state;
 	StateColors = new int[NumState];
-
-	extData = 0;
 }
 
 iChatButton::~iChatButton(void) {
 	delete[] StateColors;
+}
+
+void iChatButton::set_player_label(std::string_view name, std::string_view details) {
+	const auto fits = [&] { return aTextWidth32Utf8(string.c_str(), font, 1) <= SizeX; };
+	string = std::string(name) + " " + std::string(details);
+	if (fits())
+		return;
+
+	// Keep the world/team suffix whole; shorten only the presentation of the name.
+	while (!name.empty()) {
+		name.remove_suffix(name.size() - chatPrevious(name, static_cast<int>(name.size())));
+		string = std::string(name) + "... " + std::string(details);
+		if (fits())
+			return;
+	}
+	string = details;
 }
 
 void iChatButton::redraw(void) {
@@ -1167,7 +1188,7 @@ void iChatMouseHandler(iChatButton *bt, int bt_id) {
 			iChatSkip--;
 		break;
 	case ICS_DN_BUTTON:
-		if (iChatSkip < players_list.size() - 5)
+		if (iChatSkip < iChatRecipientCount - 5)
 			iChatSkip++;
 		break;
 
@@ -1256,9 +1277,10 @@ void iChatMouseHandler(iChatButton *bt, int bt_id) {
 	case ICS_PLAYER5_BUTTON:
 		if (!(bt->flags & ICS_HIDDEN_OBJECT)) {
 			iChatClearButtons();
-			bt->CurState = 1;
 			iChatFilter = MESSAGE_FOR_PLAYER;
-			iChatFilterID = bt->extData;
+			iChatFilterID = bt->player_slot;
+			iChatRecipientIdentity = bt->player_identity;
+			bt->CurState = is_current_chat_recipient(iChatFilterID, iChatRecipientIdentity);
 		}
 		break;
 	}
@@ -1289,35 +1311,6 @@ void iChatClearButtons(void) {
 		}
 		p = (iChatButton *)p->next;
 	}
-}
-
-iChatButton *iGetChatPlayerButton(int id) {
-	iChatButton *p = (iChatButton *)iChatButtons->fPtr;
-	while (p) {
-		switch (p->ID) {
-		case ICS_ALL_BUTTON:
-		case ICS_YELLOW_BUTTON:
-		case ICS_ORANGE_BUTTON:
-		case ICS_BLUE_BUTTON:
-		case ICS_GREEN_BUTTON:
-		case ICS_RED_BUTTON:
-		case ICS_WHITE_BUTTON:
-		case ICS_GRAY_BUTTON:
-		case ICS_BLACK_BUTTON:
-		case ICS_CAMOUFLAGE_BUTTON:
-		case ICS_PATROL_BUTTON:
-		case ICS_PLAYER1_BUTTON:
-		case ICS_PLAYER2_BUTTON:
-		case ICS_PLAYER3_BUTTON:
-		case ICS_PLAYER4_BUTTON:
-		case ICS_PLAYER5_BUTTON:
-			if (p->extData == id)
-				return p;
-			break;
-		}
-		p = (iChatButton *)p->next;
-	}
-	return 0;
 }
 
 void iChatInputDrawCursor(void) {
@@ -1406,8 +1399,15 @@ void iChatInputFlush(void) {
 
 	const std::string_view message = std::string_view(iChatInput->string).substr(1);
 	if (!message.empty()) {
+		if (iChatFilter == MESSAGE_FOR_PLAYER &&
+			!is_current_chat_recipient(iChatFilterID, iChatRecipientIdentity)) {
+			message_dispatcher.show_notice(
+				vangers::localization::text("chat.recipient_unavailable")
+			);
+			return; // Never retarget a private draft to a new player or to everyone.
+		}
 		if (!message_dispatcher.can_send_text(message)) {
-			message_dispatcher.show_legacy_text_warning();
+			message_dispatcher.show_notice(vangers::localization::text("chat.legacy_message"));
 			return; // The user can edit or copy the unsent draft.
 		}
 		const std::string prefix = std::string(network_player_name()) + ": ";
@@ -1684,8 +1684,8 @@ void iInitChatScreen(void) {
 	iChatButton *p;
 	MessageElement *el;
 
-	iInitChatButtons();
 	iChatClearButtons();
+	iInitChatButtons();
 
 	if (iChatFilterID > 3) {
 		teamFilterID = teamFilterID + 9;
@@ -1698,25 +1698,6 @@ void iInitChatScreen(void) {
 		break;
 	case MESSAGE_FOR_TEAM:
 		p = iGetChatButton(teamFilterID);
-		p->CurState = 1;
-		break;
-	case MESSAGE_FOR_PLAYER:
-		if (!players_list.find(iChatFilterID)) {
-			p = iGetChatButton(ICS_ALL_BUTTON);
-			p->CurState = 1;
-			iChatFilter = MESSAGE_FOR_ALL;
-			iChatFilterID = 0;
-		}
-		p = iGetChatPlayerButton(iChatFilterID);
-		if (!p) {
-			iChatSkip = 0;
-			while (!p) {
-				iInitChatButtons();
-				p = iGetChatPlayerButton(iChatFilterID);
-				if (!p)
-					iChatSkip++;
-			}
-		}
 		p->CurState = 1;
 		break;
 	}
@@ -1743,57 +1724,44 @@ void iInitChatScreen(void) {
 }
 
 void iInitChatButtons(void) {
-	int i;
-	PlayerData *p = players_list.first();
-	iChatButton *bt;
-
-	if (players_list.size() < 5) {
-		iChatSkip = 0;
-		bt = iGetChatButton(ICS_UP_BUTTON);
-		bt->flags |= ICS_HIDDEN_OBJECT;
-		bt = iGetChatButton(ICS_DN_BUTTON);
-		bt->flags |= ICS_HIDDEN_OBJECT;
-	} else {
-		bt = iGetChatButton(ICS_UP_BUTTON);
-		bt->flags &= ~ICS_HIDDEN_OBJECT;
-		bt = iGetChatButton(ICS_DN_BUTTON);
-		bt->flags &= ~ICS_HIDDEN_OBJECT;
+	iChatRecipientCount = 0;
+	for (auto *p = players_list.first(); p; p = p->next)
+		if (p->is_chat_recipient())
+			++iChatRecipientCount;
+	iChatSkip = std::clamp(iChatSkip, 0, std::max(0, iChatRecipientCount - 5));
+	for (const int id : {ICS_UP_BUTTON, ICS_DN_BUTTON}) {
+		auto *button = iGetChatButton(id);
+		if (iChatRecipientCount <= 5)
+			button->flags |= ICS_HIDDEN_OBJECT;
+		else
+			button->flags &= ~ICS_HIDDEN_OBJECT;
 	}
 
-	for (i = 0; i < 5; i++) {
-		bt = iGetChatButton(ICS_PLAYER1_BUTTON + i);
-		bt->flags |= ICS_HIDDEN_OBJECT;
-	}
-	if (!p)
-		return;
-	for (i = 0; i < iChatSkip; i++) {
-		if (p) {
-			p = (PlayerData *)p->next;
-		} else {
-			iChatSkip = 0;
-			p = players_list.first();
+	for (int i = 0; i < 5; ++i)
+		iGetChatButton(ICS_PLAYER1_BUTTON + i)->flags |= ICS_HIDDEN_OBJECT;
+
+	int skip = iChatSkip;
+	int shown = 0;
+	for (auto *p = players_list.first(); p && shown < 5; p = p->next) {
+		if (!p->is_chat_recipient())
+			continue;
+		if (skip > 0) {
+			--skip;
+			continue;
 		}
-	}
-	for (i = 0; i < 5; i++) {
-		if (p->client_ID == GlobalStationID)
-			p = (PlayerData *)p->next;
-		if (!p)
-			break;
-		bt = iGetChatButton(ICS_PLAYER1_BUTTON + i);
-		iResBuf->init();
+		auto *bt = iGetChatButton(ICS_PLAYER1_BUTTON + shown++);
 		const auto world = std::clamp(
 			static_cast<int>(p->body.world) + 1, 0, static_cast<int>(std::size(iChatWorlds)) - 1
 		);
 		const auto color = std::clamp(
 			static_cast<int>(p->body.color), 0, static_cast<int>(std::size(iChatColors)) - 1
 		);
-		*iResBuf < p->name.c_str() < " " < *iChatWorlds[world] < "/" < *iChatColors[color];
-		bt->set_string(iResBuf->address());
+		bt->set_player_label(p->name, std::string(*iChatWorlds[world]) + "/" + *iChatColors[color]);
 		bt->flags &= ~ICS_HIDDEN_OBJECT;
-		bt->extData = p->client_ID;
-		p = (PlayerData *)p->next;
-		if (!p)
-			break;
+		bt->player_slot = p->client_ID;
+		bt->player_identity = p->chat_identity;
+		bt->CurState = iChatFilter == MESSAGE_FOR_PLAYER && p->client_ID == iChatFilterID &&
+					   p->chat_identity == iChatRecipientIdentity;
 	}
 }
 

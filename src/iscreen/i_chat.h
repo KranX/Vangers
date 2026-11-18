@@ -1,4 +1,6 @@
+#include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 // iChatScreenObject::type...
@@ -106,7 +108,8 @@ struct iChatButton: iChatScreenObject {
 	int NumState;
 	int CurState;
 
-	int extData;
+	int player_slot = 0;
+	std::uint64_t player_identity = 0;
 
 	int *StateColors;
 
@@ -115,6 +118,7 @@ struct iChatButton: iChatScreenObject {
 	void set_string(const char *p) {
 		string = p;
 	}
+	void set_player_label(std::string_view name, std::string_view details);
 	void set_color(int id, int col) {
 		StateColors[id] = col;
 	}

@@ -769,3 +769,4 @@
 # Compatibility notices for a server without Unicode text support.
 "chat.legacy_name" = "This server needs a temporary name."
 "chat.legacy_message" = "Unsupported characters. Draft kept."
+"chat.recipient_unavailable" = "Recipient unavailable. Draft kept."

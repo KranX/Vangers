@@ -5,6 +5,7 @@
 #include "multiplayer.h"
 #include "xcontainers.h"
 #include "xsocket.h"
+#include <cstdint>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -56,7 +57,8 @@ struct PlayerData {
 	int client_ID;
 	int x, y;
 	int world;
-	std::string name; // UTF-8 display text, never a wire string.
+	std::string name;				 // UTF-8 display text, never a wire string.
+	std::uint64_t chat_identity = 0; // Local registration identity, not the reusable wire slot.
 	int status;
 	int GamingFlag;
 	PlayerData *next;
@@ -74,6 +76,8 @@ struct PlayerData {
 	PlayerBody body;
 
 	PlayerData(int client_id);
+	void register_chat_name(std::string value);
+	bool is_chat_recipient() const;
 };
 
 struct PlayersList: XTList<PlayerData> {
@@ -137,7 +141,7 @@ struct MessageDispatcher: XList {
 	}
 	bool can_send_text(std::string_view message) const;
 	bool fits_wire(std::string_view message) const;
-	void show_legacy_text_warning();
+	void show_notice(std::string_view message);
 	void send(std::string_view message, int mode, int parameter);
 	void append_message(std::string_view player_name, std::string_view message, int color);
 	void clear_messages();

@@ -13,6 +13,11 @@ by this change. The older Hall of Fame query remains CP866. TTF uses the
 existing font roles/fallback; the optional bitmap renderer remains lossy only at
 the rasterization boundary. Existing chat geometry, controls and history
 scrolling are retained. Wider incoming text can use successive history rows.
+Player buttons shorten only the name when necessary, leaving the world/team
+suffix visible. If a player leaves or the roster changes the selected slot's
+occupant, sending keeps the private draft until another recipient is explicitly
+selected. Protocol 6 still routes by slot on the wire; this check uses the last
+roster/registration received by the client.
 
 ## Protocol 6: explicit opt-in, per connection
 

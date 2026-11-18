@@ -7,7 +7,10 @@
 #include "actint/raster_text.h"
 #include "iscreen/i_chat.h"
 #include "iscreen/iscreen.h"
+#include "localization/catalog.h"
+#include "network.h"
 #include "settings/settings.h"
+#include "settings/text_encoding.h"
 #include "uvs/diagen.h"
 
 #include <algorithm>
@@ -26,6 +29,14 @@ extern int aciSpeechEndLocked, aciSpeechBegLocked, aciSpeechStarted, dgMood;
 void aLoadFonts();
 void aLoadFonts32();
 void aFreeFonts();
+void iInitStrings();
+void iChatInit();
+void iChatFinit();
+void iInitChatScreen();
+void iChatMouseQuant(int x, int y, int button);
+void iChatInputFlush();
+extern XList *iChatButtons;
+extern iChatInputField *iChatInput;
 extern aciFont **aScrFonts, **aScrFonts32;
 extern actIntDispatcher *aScrDisp;
 extern int aciEscaveEmpty;
@@ -430,17 +441,25 @@ void chat_button_bounds_test(RenderFixture &fixture) {
 		iChatButton button(1);
 		button.init(width - 175, 100, 170, 20, 0, 0);
 		button.set_color(0, 165 | (2 << 16));
-		button.set_string("日本語の参加者あいうえおかきくけ Fostral/Yellow");
+		const std::string name = "日本語の参加者あいうえおかきくけ";
+		const std::string suffix = "Fostral/Yellow";
+		const auto full = name + " " + suffix;
 		check(
-			aTextWidth32Utf8(button.string.c_str(), 0, 1) > button.SizeX,
-			"Nickname must overflow fixture"
+			aTextWidth32Utf8(full.c_str(), 0, 1) > button.SizeX, "Nickname must overflow fixture"
+		);
+		button.set_player_label(name, suffix);
+		check(
+			button.string.find("... " + suffix) == button.string.size() - suffix.size() - 4 &&
+				aTextWidth32Utf8(button.string.c_str(), 0, 1) <= button.SizeX,
+			"Long nickname pushed world/team out of the button"
+		);
+		check(
+			name.find(button.string.substr(0, button.string.find("..."))) == 0 &&
+				vangers::settings::is_valid_utf8(button.string),
+			"Chat button truncated inside a UTF-8 scalar"
 		);
 		const int mode = XGR_Obj.ClipMode;
 		button.redraw();
-		check(
-			button.string == "日本語の参加者あいうえおかきくけ Fostral/Yellow",
-			"Button changed stored nickname"
-		);
 		check(
 			XGR_Obj.ClipMode == mode && XGR_Obj.clipLeft == 0 && XGR_Obj.clipTop == 0 &&
 				XGR_Obj.clipRight == width && XGR_Obj.clipBottom == height,
@@ -462,6 +481,69 @@ void chat_button_bounds_test(RenderFixture &fixture) {
 					"Nickname escaped its button"
 				);
 	}
+
+	// Use the real chat controls and output queue. No network connection is needed
+	// to distinguish a rejected draft from a queued private message.
+	const auto previous_station = GlobalStationID;
+	GlobalStationID = 1;
+	auto *old = players_list.find(2);
+	old->register_chat_name("Éloïse");
+	iInitStrings();
+	iChatInit();
+	const auto visible_recipient = []() -> iChatButton * {
+		for (auto *node = iChatButtons->fPtr; node; node = node->next) {
+			auto *button = static_cast<iChatButton *>(node);
+			if (!(button->flags & ICS_HIDDEN_OBJECT) && button->player_slot == 2)
+				return button;
+		}
+		return nullptr;
+	};
+	auto *button = visible_recipient();
+	check(button && button->player_identity == old->chat_identity, "Old player button missing");
+	const auto choose = [](const iChatButton &button) {
+		iChatMouseQuant(button.PosX + button.SizeX / 2, button.PosY + button.SizeY / 2, 1);
+	};
+	// Simulate an update between the last painted frame and the click.
+	old->status = FINISHED_STATUS;
+	choose(*button);
+	const auto assert_draft_kept = [&] {
+		iChatInput->string = ">Private";
+		const auto queued = events_out.tell();
+		iChatInputFlush();
+		check(events_out.tell() == queued, "Chat queued a message for the wrong recipient");
+		check(iChatInput->string == ">Private", "Chat discarded the unsent private draft");
+		check(
+			message_dispatcher.last() &&
+				message_dispatcher.last()->message ==
+					vangers::localization::text("chat.recipient_unavailable"),
+			"Missing unavailable-recipient notice"
+		);
+	};
+	assert_draft_kept();
+	iInitChatScreen();
+	check(!visible_recipient(), "Finished player remained a selectable recipient");
+
+	auto *replacement = players_list.find(2);
+	replacement->register_chat_name(old->name); // Even the same name must not inherit the draft.
+	iInitChatScreen();
+	button = visible_recipient();
+	check(
+		button && !button->CurState && button->player_identity == replacement->chat_identity,
+		"New station occupant inherited the old selection"
+	);
+	assert_draft_kept();
+
+	choose(*button);
+	iChatInputFlush();
+	check(
+		iChatInput->string == ">" && events_out.tell() > 0,
+		"Explicitly reselecting the new recipient did not send the draft"
+	);
+	events_out.clear();
+	message_dispatcher.clear_messages();
+	iChatFinit();
+	players_list.delete_all();
+	GlobalStationID = previous_station;
 	XGR_Finit();
 }
 } // namespace

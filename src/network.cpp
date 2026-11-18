@@ -2510,6 +2510,17 @@ PlayerData::PlayerData(int client_id) {
 	}
 }
 
+void PlayerData::register_chat_name(std::string value) {
+	static std::uint64_t last_identity = 0;
+	name = std::move(value);
+	chat_identity = name.empty() ? 0 : ++last_identity;
+}
+
+bool PlayerData::is_chat_recipient() const {
+	return chat_identity && status != FINISHED_STATUS && client_ID >= 1 && client_ID <= 32 &&
+		   client_ID != GlobalStationID;
+}
+
 PlayerData *PlayersList::find_any(int client_id) {
 	PlayerData *p = first();
 	while (p) {
@@ -2543,7 +2554,7 @@ void PlayersList::single_parsing(int event_ID) {
 	switch (event_ID) {
 	case PLAYERS_NAME: {
 		if (auto name = events_in.read_display_text(vangers::network_text::name_limit))
-			p->name = std::move(*name);
+			p->register_chat_name(std::move(*name));
 		events_in.ignore_event();
 	} break;
 	case PLAYERS_POSITION:
@@ -2555,8 +2566,10 @@ void PlayersList::single_parsing(int event_ID) {
 		break;
 	case PLAYERS_STATUS:
 		p->status = events_in.get_byte();
-		if (p->status == FINISHED_STATUS)
+		if (p->status == FINISHED_STATUS) {
+			p->chat_identity = 0;
 			PLAYER_REMOVAL_EVENT(p);
+		}
 		break;
 	case PLAYERS_DATA:
 		events_in.read(&(p->body), sizeof(PlayerBody));
@@ -2625,7 +2638,7 @@ void PlayersList::parsing_total_body_query() {
 		p->world = row.world;
 		p->x = row.x;
 		p->y = row.y;
-		p->name = std::move(row.name);
+		p->register_chat_name(std::move(row.name));
 		p->body = row.body;
 		if (p->client_ID == GlobalStationID)
 			my_player_data = p;
@@ -2689,7 +2702,12 @@ void PlayersList::merge_total_body_query() {
 		p->world = row.world;
 		p->x = row.x;
 		p->y = row.y;
-		p->name = std::move(row.name);
+		// A routine roster refresh preserves selection. A missing player, a new
+		// row, or a changed registration must not inherit the previous selection.
+		if (!p->chat_identity || p->name != row.name)
+			p->register_chat_name(std::move(row.name));
+		if (p->status == FINISHED_STATUS)
+			p->chat_identity = 0;
 		p->body = row.body;
 
 		if (prev_status != FINISHED_STATUS && p->status == FINISHED_STATUS)
@@ -2703,6 +2721,10 @@ void PlayersList::merge_total_body_query() {
 
 	if (current_player_data)
 		my_player_data = current_player_data;
+
+	for (auto *player = first(); player; player = player->next)
+		if (!player->GamingFlag)
+			player->chat_identity = 0;
 
 	total_players_data_list_query_pending = 0;
 }
@@ -2759,10 +2781,9 @@ bool MessageDispatcher::fits_wire(std::string_view message) const {
 	return bytes && bytes->size() <= vangers::network_text::chat_limit;
 }
 
-void MessageDispatcher::show_legacy_text_warning() {
-	const auto *warning = vangers::localization::text("chat.legacy_message");
-	if (!last() || last()->message != warning)
-		append_message({}, warning, my_player_body.color);
+void MessageDispatcher::show_notice(std::string_view message) {
+	if (!last() || last()->message != message)
+		append_message({}, message, my_player_body.color);
 }
 
 void MessageDispatcher::send(std::string_view message, int mode, int parameter) {
