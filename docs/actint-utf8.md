@@ -27,8 +27,8 @@ the ACS stage also adds explicit UTF-8 save metadata with old-save read support.
 - Diagen phrases/topics now cross a UTF-8 boundary in both directions; see
   [Diagen resources and save compatibility](diagen-utf8.md). Compass captions
   now stay UTF-8, with independent opaque selection keys and no encoding-back
-  round trip; see [UVS/compass boundaries](uvs-compass-utf8.md). Incoming network
-  player names still use their existing CP866 contract, decoded at that boundary.
+  round trip; see [UVS/compass boundaries](uvs-compass-utf8.md). Player names
+  are decoded at the [negotiated network boundary](chat-player-utf8.md).
 - `aciPromptData::add_str` and `aciScreenText::alloc` retain their legacy CP866
   input contracts. New producers use `add_utf8_str` / `alloc_utf8` directly;
   copying and storage preserve characters absent from the old fonts.
@@ -69,8 +69,8 @@ instead of disappearing, and animated prefixes no longer need a 256-byte buffer.
 Prompt clipping modifies only a temporary presentation string, not `StrBuf`;
 a wider redraw can display the full original text again.
 This is not grapheme-aware editing, shaping, IME support or new glyph coverage.
-ACS input is covered by its follow-up stage. Chat remains unchanged, including
-its pre-existing input limitations.
+ACS input is covered by its follow-up stage. Chat and player-name input, storage
+and protocol boundaries are covered in [stage 6b](chat-player-utf8.md).
 
 Scalar-boundary helpers live in the neutral `text/utf8` module. Bitmap adapter
 declarations live in `actint/raster_text.h`, separate from text utilities.

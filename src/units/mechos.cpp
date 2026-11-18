@@ -50,6 +50,7 @@
 #include "magnum.h"
 
 #include "../actint/credits.h"
+#include "../actint/raster_text.h"
 #include "../localization/catalog.h"
 #include "../settings/text_encoding.h"
 
@@ -4179,7 +4180,7 @@ void VangerUnit::DrawQuant(void) {
 	if (NetworkON && (Status & SOBJ_AUTOMAT)) {
 		pl = players_list.first();
 		while (pl) {
-			if (uvsPoint == ((uvsVanger *)(pl->uvsPoint)) && pl->name) {
+			if (uvsPoint == ((uvsVanger *)(pl->uvsPoint)) && !pl->name.empty()) {
 				ccm = XGR_Obj.ClipMode;
 				XGR_SetClipMode(XGR_CLIP_ALL);
 				cclx = XGR_Obj.clipLeft;
@@ -4187,7 +4188,7 @@ void VangerUnit::DrawQuant(void) {
 				ccrx = XGR_Obj.clipRight;
 				ccry = XGR_Obj.clipBottom;
 				XGR_SetClip(UcutLeft, VcutUp, UcutRight, VcutDown);
-				aOutText32clip(R_scr.x, R_scr.y, 165 | (2 << 16), pl->name, 0, 0, 0);
+				aOutText32ClipUtf8(R_scr.x, R_scr.y, 165 | (2 << 16), pl->name.c_str(), 0, 0, 0);
 				XGR_SetClip(cclx, ccly, ccrx, ccry);
 				XGR_SetClipMode(ccm);
 				break;
@@ -9536,7 +9537,7 @@ void AddPhantomTarget(PlayerData *n) {
 	};
 	if (!p) {
 		const auto key = std::string("player:") + n->name;
-		const auto caption = vangers::settings::cp866_to_utf8(n->name);
+		const auto &caption = n->name;
 		CompasObj.AddTarget(
 			CMP_OBJECT_PHANTOM, UnitOrderType(n->client_ID), NULL, key.c_str(), caption.c_str()
 		);
@@ -9711,7 +9712,7 @@ void CompasObject::Quant(void) {
 				R_curr.x = p->x;
 				R_curr.y = p->y;
 				R_curr.z = 0;
-				RaceTxtBuff < p->name < " : ";
+				RaceTxtBuff < p->name.c_str() < " : ";
 				break;
 			};
 			p = (PlayerData *)p->next;
@@ -9827,9 +9828,10 @@ void CompasObject::Quant(void) {
 	};
 
 	RaceTxtBuff <= (int)(sqrt(dx * (double)dx + dy * (double)dy)) / 100;
-	dx = ((ScreenCX - tx) * (int)(strlen(RaceTxtBuff.address())) * 10 + 32) / (int)(curGMap->xside);
+	const int label_width = aTextWidth32Utf8(RaceTxtBuff.address(), 0, 0);
+	dx = ((ScreenCX - tx) * label_width + 32) / (int)(curGMap->xside);
 	dy = ((ScreenCY - ty) * 18 + 32) / (int)(curGMap->yside);
-	aOutText32clip(tx + dx, ty + dy, 165 | (2 << 16), RaceTxtBuff.address(), 0, 0, 0);
+	aOutText32ClipUtf8(tx + dx, ty + dy, 165 | (2 << 16), RaceTxtBuff.address(), 0, 0, 0);
 	/*	if(ty < ScreenCY){
 			if(tx < ScreenCX)
 				aOutText32clip(tx + 32,ty + 32,165 | (2 << 16),RaceTxtBuff.address(),0,0,0);
@@ -13928,7 +13930,7 @@ void CheckPlayerList(void) {
 
 	p = players_list.first();
 	while (p) {
-		if (p->client_ID != GlobalStationID && p->name) {
+		if (p->client_ID != GlobalStationID && !p->name.empty()) {
 			if (p->status == GAMING_STATUS) {
 				if (p->CreatePlayerFlag == 3) {
 					if (p->body.NetID == 0) {
@@ -15752,18 +15754,20 @@ void NetCheckRemovePlayer(PlayerData *p) {
 		};
 	};
 
-	if (uvsKronActive && ActD.Active && p->name) {
+	if (uvsKronActive && ActD.Active && !p->name.empty()) {
 		RaceTxtBuff.init();
 
 		switch (my_server_data.GameType) {
 		case MECHOSOMA:
 			if (p->body.MechosomaStat.ItemCount1 >= my_server_data.Mechosoma.ProductQuantity1 &&
 				p->body.MechosomaStat.ItemCount2 >= my_server_data.Mechosoma.ProductQuantity2) {
-				RaceTxtBuff < p->name;
+				RaceTxtBuff < p->name.c_str();
 				if (lang() == RUSSIAN)
-					RaceTxtBuff < rPlayerWinnerSecondMessage;
+					RaceTxtBuff <
+						vangers::settings::cp866_to_utf8(rPlayerWinnerSecondMessage).c_str();
 				else
-					RaceTxtBuff < PlayerWinnerSecondMessage;
+					RaceTxtBuff <
+						vangers::settings::cp866_to_utf8(PlayerWinnerSecondMessage).c_str();
 				aiMessageBuffer.align_type = 0;
 				aiMessageBuffer.TimeBuf[0] = 200;
 				aiMessageBuffer.ColBuf[0] = 143;
@@ -15779,21 +15783,23 @@ void NetCheckRemovePlayer(PlayerData *p) {
 					aiMessageBuffer.add_str(0, (uchar *)(PlayerWinnerFirstMessage));
 					aiMessageBuffer.add_str(2, (uchar *)(PlayerWinnerOtherMessage));
 				};
-				aiMessageBuffer.add_str(1, (uchar *)(RaceTxtBuff.GetBuf()));
+				aiMessageBuffer.add_utf8_str(1, RaceTxtBuff.GetBuf());
 				aciSendPrompt(&aiMessageBuffer);
 			} else {
-				RaceTxtBuff < p->name;
+				RaceTxtBuff < p->name.c_str();
 				if (lang() == RUSSIAN)
-					RaceTxtBuff < rPlayerFirstDropedMessage;
+					RaceTxtBuff <
+						vangers::settings::cp866_to_utf8(rPlayerFirstDropedMessage).c_str();
 				else
-					RaceTxtBuff < PlayerFirstDropedMessage;
+					RaceTxtBuff <
+						vangers::settings::cp866_to_utf8(PlayerFirstDropedMessage).c_str();
 				aiMessageBuffer.align_type = 0;
 				aiMessageBuffer.TimeBuf[0] = 200;
 				aiMessageBuffer.ColBuf[0] = 143;
 				aiMessageBuffer.TimeBuf[1] = 200;
 				aiMessageBuffer.ColBuf[1] = 143;
 				aiMessageBuffer.NumStr = 2;
-				aiMessageBuffer.add_str(0, (uchar *)(RaceTxtBuff.GetBuf()));
+				aiMessageBuffer.add_utf8_str(0, RaceTxtBuff.GetBuf());
 				if (lang() == RUSSIAN)
 					aiMessageBuffer.add_str(1, (uchar *)(rPlayerSecondDropedMessage));
 				else
@@ -15804,11 +15810,13 @@ void NetCheckRemovePlayer(PlayerData *p) {
 		case PASSEMBLOSS:
 			if (p->body.PassemblossStat.CheckpointLighting >=
 				my_server_data.Passembloss.CheckpointsNumber) {
-				RaceTxtBuff < p->name;
+				RaceTxtBuff < p->name.c_str();
 				if (lang() == RUSSIAN)
-					RaceTxtBuff < rPlayerWinnerSecondMessage;
+					RaceTxtBuff <
+						vangers::settings::cp866_to_utf8(rPlayerWinnerSecondMessage).c_str();
 				else
-					RaceTxtBuff < PlayerWinnerSecondMessage;
+					RaceTxtBuff <
+						vangers::settings::cp866_to_utf8(PlayerWinnerSecondMessage).c_str();
 				aiMessageBuffer.align_type = 0;
 				aiMessageBuffer.TimeBuf[0] = 200;
 				aiMessageBuffer.ColBuf[0] = 143;
@@ -15824,21 +15832,23 @@ void NetCheckRemovePlayer(PlayerData *p) {
 					aiMessageBuffer.add_str(0, (uchar *)(PlayerWinnerFirstMessage));
 					aiMessageBuffer.add_str(2, (uchar *)(PlayerWinnerOtherMessage));
 				};
-				aiMessageBuffer.add_str(1, (uchar *)(RaceTxtBuff.GetBuf()));
+				aiMessageBuffer.add_utf8_str(1, RaceTxtBuff.GetBuf());
 				aciSendPrompt(&aiMessageBuffer);
 			} else {
-				RaceTxtBuff < p->name;
+				RaceTxtBuff < p->name.c_str();
 				if (lang() == RUSSIAN)
-					RaceTxtBuff < rPlayerFirstDropedMessage;
+					RaceTxtBuff <
+						vangers::settings::cp866_to_utf8(rPlayerFirstDropedMessage).c_str();
 				else
-					RaceTxtBuff < PlayerFirstDropedMessage;
+					RaceTxtBuff <
+						vangers::settings::cp866_to_utf8(PlayerFirstDropedMessage).c_str();
 				aiMessageBuffer.align_type = 0;
 				aiMessageBuffer.TimeBuf[0] = 200;
 				aiMessageBuffer.ColBuf[0] = 143;
 				aiMessageBuffer.TimeBuf[1] = 200;
 				aiMessageBuffer.ColBuf[1] = 143;
 				aiMessageBuffer.NumStr = 2;
-				aiMessageBuffer.add_str(0, (uchar *)(RaceTxtBuff.GetBuf()));
+				aiMessageBuffer.add_utf8_str(0, RaceTxtBuff.GetBuf());
 				if (lang() == RUSSIAN)
 					aiMessageBuffer.add_str(1, (uchar *)(rPlayerSecondDropedMessage));
 				else
@@ -15847,18 +15857,18 @@ void NetCheckRemovePlayer(PlayerData *p) {
 			};
 			break;
 		case VAN_WAR:
-			RaceTxtBuff < p->name;
+			RaceTxtBuff < p->name.c_str();
 			if (lang() == RUSSIAN)
-				RaceTxtBuff < rPlayerFirstDropedMessage;
+				RaceTxtBuff < vangers::settings::cp866_to_utf8(rPlayerFirstDropedMessage).c_str();
 			else
-				RaceTxtBuff < PlayerFirstDropedMessage;
+				RaceTxtBuff < vangers::settings::cp866_to_utf8(PlayerFirstDropedMessage).c_str();
 			aiMessageBuffer.align_type = 0;
 			aiMessageBuffer.TimeBuf[0] = 200;
 			aiMessageBuffer.ColBuf[0] = 143;
 			aiMessageBuffer.TimeBuf[1] = 200;
 			aiMessageBuffer.ColBuf[1] = 143;
 			aiMessageBuffer.NumStr = 2;
-			aiMessageBuffer.add_str(0, (uchar *)(RaceTxtBuff.GetBuf()));
+			aiMessageBuffer.add_utf8_str(0, RaceTxtBuff.GetBuf());
 			if (lang() == RUSSIAN)
 				aiMessageBuffer.add_str(1, (uchar *)(rPlayerSecondDropedMessage));
 			else

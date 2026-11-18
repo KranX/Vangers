@@ -5884,8 +5884,8 @@ void aciChange2Raffa(void) {
 	aScrDisp->curMatrix->uvsDataPtr = u;
 }
 
-char *aciGetPlayerName(void) {
-	return iGetOptionValueCHR(iPLAYER_NAME2);
+const char *aciGetPlayerName(void) {
+	return iGetOptionText(iPLAYER_NAME2);
 }
 
 char *aciGetPlayerPassword(void) {
@@ -7613,6 +7613,23 @@ void aOutText32Utf8(int x, int y, int color, const void *text, int font, int hsp
 
 	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
 	aOutText32(x, y, color, raster.data(), font, hspace, vspace);
+}
+
+void aOutText32ClipUtf8(
+	int x,
+	int y,
+	int color,
+	const void *text,
+	int font,
+	int hspace,
+	int vspace
+) {
+	if (ttf_font) {
+		aOutText32Utf8(x, y, color, text, font, hspace, vspace);
+		return;
+	}
+	auto raster = vangers::actint::raster_text((const char *)text, aScrFonts32[font]->Size);
+	aOutText32clip(x, y, color, raster.data(), font, hspace, vspace);
 }
 
 int aTextWidth32Utf8(const void *text, int font, int hspace) {

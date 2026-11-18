@@ -34,6 +34,7 @@
 #include "network.h"
 #include "settings/settings.h"
 #include "settings/text_encoding.h"
+#include "text_layer.h"
 #include "xgamepad.h"
 
 #include "3d/3d_math.h"
@@ -42,6 +43,7 @@
 #include "3d/parser.h"
 
 #include "actint/item_api.h"
+#include "actint/raster_text.h"
 #include "units/uvsapi.h"
 
 void reconfigure_runtime_fps_scaled_state(double old_coeff, double new_coeff);
@@ -127,6 +129,7 @@ extern int BackgroundSound;
 
 extern int aciGroundPressingEnabled;
 extern int aciKeyboardLocked;
+extern int iChatON;
 extern int SoundVolumePanning;
 
 #ifdef ACTINT
@@ -1574,6 +1577,14 @@ void KeyCenter(SDL_Event *key) {
 	extern int entry_scan_code;
 	SDL_Keymod mod;
 
+	// Chat uses actint's SDL event queue even in builds without the old ACTINT define.
+	if (iChatON ||
+		(!aciKeyboardLocked && NetworkON &&
+			(key->type == SDL_EVENT_KEY_DOWN || key->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) &&
+			iCheckKeyID(iKEY_CHAT, sdlEventToCode(key)))) {
+		aKeyTrap(key);
+		return;
+	}
 	if (aciKeyboardLocked) {
 #ifdef ACTINT
 		aKeyTrap(key);
@@ -1933,6 +1944,9 @@ void iGameMap::draw(int self) {
 	}
 
 	if (GeneralSystemSkip && !ChangeWorldSkipQuant) {
+		// World names, compass and HUD chat are drawn before actint's text pass.
+		// Clear the previous frame, not the text already drawn in this one.
+		xgr::text::clear(XGR_Obj.get_default_render_buffer());
 		if (curGMap) {
 			BackD.restore();
 
@@ -1989,7 +2003,6 @@ void iGameMap::draw(int self) {
 		if (!FirstDraw) {
 			// zmod chat onscreen
 			if (message_dispatcher.ListSize > 0 && message_dispatcher.new_messages) {
-				XBuffer zChat;
 				int zColor = zCOLOR_WHITE;
 				int zCount = 0;
 				MessageElement *msg = message_dispatcher.last();
@@ -2033,17 +2046,24 @@ void iGameMap::draw(int self) {
 					if (msg->message[0] == '$' && msg->message[1] == ':')
 						zColor = zCOLOR_RED;
 
-					zChat.init();
-					zChat < msg->message;
 					if (!iChatMUTE) {
-						zchatfont.draw(
-							xc - xside + 80,
-							yc - yside + 20 + (zCHAT_ROWLIMIT * zCHAT_ROWHEIGHT) -
-								(zCount * zCHAT_ROWHEIGHT),
-							(unsigned char *)(zChat.GetBuf()),
-							zColor,
-							zCOLOR_TRANSPARENT
-						);
+						const int chat_x = xc - xside + 80;
+						const int chat_y =
+							yc - yside + 20 + (zCHAT_ROWLIMIT - zCount) * zCHAT_ROWHEIGHT;
+						if (vangers::settings::settings_manager().get().video.ttf_text) {
+							aOutText32Utf8(
+								chat_x, chat_y, zColor | (1 << 16), msg->message.c_str(), 0, 0, 0
+							);
+						} else {
+							auto raster = vangers::settings::utf8_to_cp866(msg->message);
+							zchatfont.draw(
+								chat_x,
+								chat_y,
+								reinterpret_cast<unsigned char *>(raster.data()),
+								zColor,
+								zCOLOR_TRANSPARENT
+							);
+						}
 					}
 
 					if (msg == message_dispatcher.first())

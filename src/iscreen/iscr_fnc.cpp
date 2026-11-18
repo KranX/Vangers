@@ -325,7 +325,6 @@ int iNumFonts = 1;
 uchar *iscrPal;
 
 const char *CurServerName = "Server";
-const char *CurPlayerName = "Vanger";
 
 int iMouseX = 0;
 int iMouseY = 0;
@@ -626,7 +625,6 @@ void iQuantFirst(void) {
 		iInitMultiGames();
 
 		CurServerName = iGetOptionValueCHR(iSERVER_NAME);
-		CurPlayerName = iGetOptionValueCHR(iPLAYER_NAME2);
 	}
 
 	iScreen *p;
@@ -2835,45 +2833,42 @@ void iCreateServer(void) {
 }
 
 void iInitStrings(void) {
-	iSTR_WORLD_NONE_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_NONE_CHAR");
-	iSTR_WORLD_FOSTRAL_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_FOSTRAL_CHAR");
-	iSTR_WORLD_GLORX_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_GLORX_CHAR");
-	iSTR_WORLD_NECROSS_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_NECROSS_CHAR");
-	iSTR_WORLD_XPLO_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_XPLO_CHAR");
-	iSTR_WORLD_KHOX_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_KHOX_CHAR");
-	iSTR_WORLD_BOOZEENA_CHAR =
-		vangers::localization::legacy_text("iscreen.iSTR_WORLD_BOOZEENA_CHAR");
-	iSTR_WORLD_WEEXOW_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_WEEXOW_CHAR");
-	iSTR_WORLD_HMOK_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_HMOK_CHAR");
-	iSTR_WORLD_THREALL_CHAR = vangers::localization::legacy_text("iscreen.iSTR_WORLD_THREALL_CHAR");
-	iSTR_WORLD_ARK_A_ZNOY_CHAR =
-		vangers::localization::legacy_text("iscreen.iSTR_WORLD_ARK_A_ZNOY_CHAR");
-	iSTR_COLOR_GREEN_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_GREEN_CHAR");
-	iSTR_COLOR_ORANGE_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_ORANGE_CHAR");
-	iSTR_COLOR_BLUE_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_BLUE_CHAR");
-	iSTR_COLOR_YELLOW_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_YELLOW_CHAR");
-	iSTR_COLOR_RED_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_RED_CHAR");
-	iSTR_COLOR_WHITE_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_WHITE_CHAR");
-	iSTR_COLOR_GRAY_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_GRAY_CHAR");
-	iSTR_COLOR_BLACK_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_BLACK_CHAR");
-	iSTR_COLOR_CAMOUFLAGE_CHAR =
-		vangers::localization::legacy_text("iscreen.iSTR_COLOR_CAMOUFLAGE_CHAR");
-	iSTR_COLOR_PATROL_CHAR = vangers::localization::legacy_text("iscreen.iSTR_COLOR_PATROL_CHAR");
-	iSTR_MUTE_ALL = vangers::localization::legacy_text("iscreen.iSTR_MUTE_ALL");
-	iSTR_CLEAR_LOG = vangers::localization::legacy_text("iscreen.iSTR_CLEAR_LOG");
-	iSTR_BACKGROUND = vangers::localization::legacy_text("iscreen.iSTR_BACKGROUND");
-	iSTR_LEAVE_CHAT = vangers::localization::legacy_text("iscreen.iSTR_LEAVE_CHAT");
-	iSTR_All = vangers::localization::legacy_text("iscreen.iSTR_All");
-	iSTR_Yellow = vangers::localization::legacy_text("iscreen.iSTR_Yellow");
-	iSTR_Orange = vangers::localization::legacy_text("iscreen.iSTR_Orange");
-	iSTR_Blue = vangers::localization::legacy_text("iscreen.iSTR_Blue");
-	iSTR_Green = vangers::localization::legacy_text("iscreen.iSTR_Green");
-	iSTR_Red = vangers::localization::legacy_text("iscreen.iSTR_Red");
-	iSTR_White = vangers::localization::legacy_text("iscreen.iSTR_White");
-	iSTR_Gray = vangers::localization::legacy_text("iscreen.iSTR_Gray");
-	iSTR_Black = vangers::localization::legacy_text("iscreen.iSTR_Black");
-	iSTR_Camouflage = vangers::localization::legacy_text("iscreen.iSTR_Camouflage");
-	iSTR_Patrol = vangers::localization::legacy_text("iscreen.iSTR_Patrol");
+	iSTR_WORLD_NONE_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_NONE_CHAR");
+	iSTR_WORLD_FOSTRAL_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_FOSTRAL_CHAR");
+	iSTR_WORLD_GLORX_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_GLORX_CHAR");
+	iSTR_WORLD_NECROSS_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_NECROSS_CHAR");
+	iSTR_WORLD_XPLO_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_XPLO_CHAR");
+	iSTR_WORLD_KHOX_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_KHOX_CHAR");
+	iSTR_WORLD_BOOZEENA_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_BOOZEENA_CHAR");
+	iSTR_WORLD_WEEXOW_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_WEEXOW_CHAR");
+	iSTR_WORLD_HMOK_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_HMOK_CHAR");
+	iSTR_WORLD_THREALL_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_THREALL_CHAR");
+	iSTR_WORLD_ARK_A_ZNOY_CHAR = vangers::localization::text("iscreen.iSTR_WORLD_ARK_A_ZNOY_CHAR");
+	iSTR_COLOR_GREEN_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_GREEN_CHAR");
+	iSTR_COLOR_ORANGE_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_ORANGE_CHAR");
+	iSTR_COLOR_BLUE_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_BLUE_CHAR");
+	iSTR_COLOR_YELLOW_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_YELLOW_CHAR");
+	iSTR_COLOR_RED_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_RED_CHAR");
+	iSTR_COLOR_WHITE_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_WHITE_CHAR");
+	iSTR_COLOR_GRAY_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_GRAY_CHAR");
+	iSTR_COLOR_BLACK_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_BLACK_CHAR");
+	iSTR_COLOR_CAMOUFLAGE_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_CAMOUFLAGE_CHAR");
+	iSTR_COLOR_PATROL_CHAR = vangers::localization::text("iscreen.iSTR_COLOR_PATROL_CHAR");
+	iSTR_MUTE_ALL = vangers::localization::text("iscreen.iSTR_MUTE_ALL");
+	iSTR_CLEAR_LOG = vangers::localization::text("iscreen.iSTR_CLEAR_LOG");
+	iSTR_BACKGROUND = vangers::localization::text("iscreen.iSTR_BACKGROUND");
+	iSTR_LEAVE_CHAT = vangers::localization::text("iscreen.iSTR_LEAVE_CHAT");
+	iSTR_All = vangers::localization::text("iscreen.iSTR_All");
+	iSTR_Yellow = vangers::localization::text("iscreen.iSTR_Yellow");
+	iSTR_Orange = vangers::localization::text("iscreen.iSTR_Orange");
+	iSTR_Blue = vangers::localization::text("iscreen.iSTR_Blue");
+	iSTR_Green = vangers::localization::text("iscreen.iSTR_Green");
+	iSTR_Red = vangers::localization::text("iscreen.iSTR_Red");
+	iSTR_White = vangers::localization::text("iscreen.iSTR_White");
+	iSTR_Gray = vangers::localization::text("iscreen.iSTR_Gray");
+	iSTR_Black = vangers::localization::text("iscreen.iSTR_Black");
+	iSTR_Camouflage = vangers::localization::text("iscreen.iSTR_Camouflage");
+	iSTR_Patrol = vangers::localization::text("iscreen.iSTR_Patrol");
 	iSTR_CleanUp = vangers::localization::text("iscreen.iSTR_CleanUp");
 	iSTR_SpaceInUse = vangers::localization::text("iscreen.iSTR_SpaceInUse");
 	iSTR_MBytes = vangers::localization::text("iscreen.iSTR_MBytes");

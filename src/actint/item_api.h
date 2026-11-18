@@ -309,7 +309,7 @@ void aciAddTeleportMenuItem(int id, int fnc_id);
 void aciDeleteTeleportMenuItem(int fnc_id);
 void aciClearTeleportMenu(void);
 
-char *aciGetPlayerName(void);
+const char *aciGetPlayerName(void);
 char *aciGetPlayerPassword(void);
 int aciGetPlayerColor(void);
 

@@ -765,3 +765,8 @@
 "compass.SpummyCompasTarget" = "Спумия"
 "compass.TaskCompasTarget" = "Объект табутаска%d"
 "uvs.task_complete" = "{location}Выполнен табутаск из эскейва\n\nТам за него дадут {reward}$"
+
+# Compatibility notices for a server without Unicode text support.
+"chat.legacy_name" = "На этом сервере у вас временное имя."
+"chat.legacy_message" = "Не все символы поддерживаются. Черновик сохранён."
+"chat.recipient_unavailable" = "Адресат недоступен. Черновик сохранён."

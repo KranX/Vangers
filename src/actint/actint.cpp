@@ -3490,7 +3490,6 @@ void actIntDispatcher::redraw(void) {
 }
 
 void actIntDispatcher::text_redraw() {
-	xgr::text::clear(XGR_Obj.get_default_render_buffer());
 	if (Pause > 1 && NetworkON) {
 		if (GameQuantReturnValue || acsQuant()) {
 			Pause = 0;
@@ -4895,18 +4894,16 @@ void actIntDispatcher::KeyQuant(void) {
 	if (aciKeyboardLocked && !(flags & AS_CHAT_MODE))
 		return;
 
-	if (flags & AS_LOCKED) {
-		if (flags & AS_CHAT_MODE) {
-			if (!iChatON) {
-				flags &= ~AS_CHAT_MODE;
-				unlock();
-				flags &= ~aMS_PRESS;
-				KeyBuf->clear();
-				return;
-			}
+	// The chat flag owns input; other UI events can clear the generic lock
+	// during a screen transition while the chat is still open.
+	if (flags & AS_CHAT_MODE) {
+		if (!iChatON) {
+			flags &= ~AS_CHAT_MODE;
+			unlock();
+		} else {
 			while (KeyBuf->size)
 				iChatKeyQuant(KeyBuf->get());
-			if (flags & aMS_LEFT_PRESS || flags & aMS_RIGHT_PRESS) {
+			if (flags & (aMS_LEFT_PRESS | aMS_RIGHT_PRESS)) {
 				iChatMouseQuant(
 					XGR_MouseObj.PosX + XGR_MouseObj.SpotX,
 					XGR_MouseObj.PosY + XGR_MouseObj.SpotY,
@@ -4914,6 +4911,11 @@ void actIntDispatcher::KeyQuant(void) {
 				);
 			}
 		}
+		flags &= ~aMS_PRESS;
+		KeyBuf->clear();
+		return;
+	}
+	if (flags & AS_LOCKED) {
 		flags &= ~aMS_PRESS;
 		KeyBuf->clear();
 		return;

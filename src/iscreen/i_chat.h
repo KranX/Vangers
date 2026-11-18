@@ -1,3 +1,6 @@
+#include <cstdint>
+#include <string>
+#include <string_view>
 #include <vector>
 
 // iChatScreenObject::type...
@@ -42,13 +45,11 @@ struct iChatScreenObject: XListElement {
 	iChatScreenObject(void);
 };
 
-#define ISC_MAX_STRING_LEN 100
-
 struct iChatInputField: iChatScreenObject {
 	int color;
 	std::string string;
-	XBuffer *XConv;
 
+	// Byte offsets at UTF-8 scalar boundaries.
 	int cursorPosition;
 	int selectionPosition;
 
@@ -81,6 +82,8 @@ struct Message {
 
 struct iChatHistoryScreen: iChatScreenObject {
 	int position; // position of the first line drawn in the history
+	std::size_t revision = 0;
+	int muted = -1;
 	std::vector<Message> data;
 
 	void redrawScroll(void);
@@ -88,31 +91,34 @@ struct iChatHistoryScreen: iChatScreenObject {
 		position = std::max(0, position - 1);
 	}
 	void scrollDown(void) {
-		position = std::min((int)(data.size()) - ICS_HISTORY_MAX_MESSAGES, position + 1);
+		position =
+			std::min(std::max(0, (int)(data.size()) - ICS_HISTORY_MAX_MESSAGES), position + 1);
 	}
 
 	virtual void redraw(void);
 
-	void add_str(char *str, int col = 0);
+	void add_str(const char *str, int col = 0);
 
 	iChatHistoryScreen(void);
 };
 
 struct iChatButton: iChatScreenObject {
-	char *string;
+	std::string string;
 
 	int NumState;
 	int CurState;
 
-	int extData;
+	int player_slot = 0;
+	std::uint64_t player_identity = 0;
 
 	int *StateColors;
 
 	virtual void redraw(void);
 
 	void set_string(const char *p) {
-		strcpy(string, p);
+		string = p;
 	}
+	void set_player_label(std::string_view name, std::string_view details);
 	void set_color(int id, int col) {
 		StateColors[id] = col;
 	}

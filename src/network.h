@@ -5,6 +5,10 @@
 #include "multiplayer.h"
 #include "xcontainers.h"
 #include "xsocket.h"
+#include <cstdint>
+#include <optional>
+#include <string>
+#include <string_view>
 
 #define DEFAULT_SERVER_PORT 2197
 
@@ -53,7 +57,8 @@ struct PlayerData {
 	int client_ID;
 	int x, y;
 	int world;
-	char *name;
+	std::string name;				 // UTF-8 display text, never a wire string.
+	std::uint64_t chat_identity = 0; // Local registration identity, not the reusable wire slot.
 	int status;
 	int GamingFlag;
 	PlayerData *next;
@@ -71,10 +76,8 @@ struct PlayerData {
 	PlayerBody body;
 
 	PlayerData(int client_id);
-	~PlayerData() {
-		if (name)
-			delete[] name;
-	}
+	void register_chat_name(std::string value);
+	bool is_chat_recipient() const;
 };
 
 struct PlayersList: XTList<PlayerData> {
@@ -85,6 +88,7 @@ struct PlayersList: XTList<PlayerData> {
 	}
 
 	PlayerData *find_any(int client_id);
+	PlayerData *find_active(int client_id); // Non-creating; ignore finished records for reused IDs.
 	PlayerData *find(int client_id);
 	void single_parsing(int event_ID);
 	void reset_states();
@@ -116,18 +120,16 @@ enum {
 };
 
 struct MessageElement: XListElement {
-	char *message;
+	std::string message;
 	int color;
-	Uint64 time; // zmod
-	MessageElement(const char *player_name, char *msg, int color = 0);
-	~MessageElement() {
-		delete[] message;
-	}
+	Uint64 time;
+	MessageElement(std::string_view player_name, std::string_view msg, int color);
 };
 
 struct MessageDispatcher: XList {
 	int max_number_of_messages;
-	int new_messages; // zmod
+	int new_messages = 0; // zmod
+	std::size_t revision = 0;
 	MessageDispatcher(int max_num_messages = 100): XList() {
 		max_number_of_messages = max_num_messages;
 	}
@@ -137,7 +139,12 @@ struct MessageDispatcher: XList {
 	MessageElement *last() {
 		return (MessageElement *)lPtr;
 	}
-	void send(char *message, int mode, int parameter);
+	bool can_send_text(std::string_view message) const;
+	bool fits_wire(std::string_view message) const;
+	void show_notice(std::string_view message);
+	void send(std::string_view message, int mode, int parameter);
+	void append_message(std::string_view player_name, std::string_view message, int color);
+	void clear_messages();
 	void receive();
 };
 
@@ -199,7 +206,7 @@ class OutputEventBuffer: public XBuffer {
 
 	void end_body();
 
-	void register_name(char *name, char *password);
+	void register_name(const char *utf8_name, const char *legacy_password);
 	void set_world(int world, int y_size_of_world);
 	void set_position(int x, int y, int y_half_size_of_screen);
 	void set_player_body(PlayerBody &body);
@@ -290,7 +297,9 @@ class InputEventBuffer: public XBuffer {
 	// generated
 	// 2. To read body use > or read() of XBuffer.
 	void ignore_event(); // Skip body, if any
-	int next_event();	 // 0 if there isn't any enents,  EventID othewise
+	std::size_t remaining_event_bytes();
+	std::optional<std::string> read_display_text(std::size_t max_bytes, std::size_t trailing = 0);
+	int next_event(); // 0 if there isn't any enents,  EventID othewise
 
 	int get_byte() {
 		unsigned char t;
@@ -450,7 +459,7 @@ extern int NetworkON;
 extern NetRndType NetRnd;
 extern int zGameBirthTime;
 extern int CurrentWorld;
-extern const char *CurPlayerName;
+const char *network_player_name(); // UTF-8, current registered name or configured local value.
 
 extern PlayerBody my_player_body;
 extern PlayerData *my_player_data;

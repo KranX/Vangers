@@ -3813,8 +3813,8 @@ int NetInit(ServerFindChain *p) {
 	my_player_body.clear();
 
 	NETWORK_OUT_STREAM.register_name(
-		(char *)(aciGetPlayerName() ? aciGetPlayerName() : "Finger"),
-		(char *)(aciGetPlayerPassword() ? aciGetPlayerPassword() : "Password")
+		aciGetPlayerName() ? aciGetPlayerName() : "Finger",
+		aciGetPlayerPassword() ? aciGetPlayerPassword() : "Password"
 	);
 	std::cout << "NetInit - [2]" << std::endl;
 	// NETWORK_OUT_STREAM.register_name(aciGetPlayerName() ? aciGetPlayerName() : "Finger",

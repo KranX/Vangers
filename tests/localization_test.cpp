@@ -37,6 +37,8 @@ void conservation(const fs::path &root, const char *id, unsigned long expected, 
 	std::map<std::string, std::string> sorted;
 	for (const auto &[key, value] : parsed.at("strings").as_table(std::nothrow)) {
 		(void)value;
+		if (key.rfind("chat.", 0) == 0)
+			continue;
 		const bool description = key.rfind("descriptions.", 0) == 0;
 		const int field = (key.rfind("compass.", 0) == 0 || key.rfind("uvs.", 0) == 0)	 ? 5
 						  : key.rfind("items.", 0) == 0									 ? 1
@@ -116,6 +118,11 @@ int main(int argc, char **argv) {
 		for (const auto *pattern : {"%n", "%s", "%d %d", "%0200000d", "%"})
 			rejects([&] { format_integer(pattern, 1); }, "Unsafe template accepted");
 		Catalog ru(root, "ru"), en(root, "en");
+		for (const auto *key :
+			{"chat.legacy_name", "chat.legacy_message", "chat.recipient_unavailable"})
+			check(
+				!ru.text(key).empty() && !en.text(key).empty(), "Missing chat compatibility notice"
+			);
 		check(
 			ru.description_style() == DescriptionStyle::CompactCentered &&
 				en.description_style() == DescriptionStyle::RegularTop,

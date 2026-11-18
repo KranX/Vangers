@@ -119,7 +119,7 @@ struct iMultiResultString {
 	void init(const char *scr, char *pl, char *str, char *num);
 	void redraw(void);
 
-	void set_data(const char *pl, const char *ptr, const char *num);
+	void set_data(const char *pl, const char *ptr, const char *num, bool utf8 = false);
 
 	iMultiResultString(void);
 };
@@ -1757,9 +1757,9 @@ void iMultiResultString::redraw(void) {
 	}
 }
 
-void iMultiResultString::set_data(const char *pl, const char *ptr, const char *num) {
+void iMultiResultString::set_data(const char *pl, const char *ptr, const char *num, bool utf8) {
 	place = vangers::settings::cp866_to_utf8(pl);
-	prmString = vangers::settings::cp866_to_utf8(ptr);
+	prmString = utf8 ? ptr : vangers::settings::cp866_to_utf8(ptr);
 	prmNum = vangers::settings::cp866_to_utf8(num);
 }
 
@@ -1779,7 +1779,7 @@ void iPrepareResults(void) {
 
 		XNum <= (int)round(iPlayerRatings[i]);
 
-		iPlaces[i]->set_data(XPlace.address(), iPlayers[i]->name, XNum.address());
+		iPlaces[i]->set_data(XPlace.address(), iPlayers[i]->name.c_str(), XNum.address(), true);
 		iPlaces[i]->redraw();
 	}
 
@@ -1807,7 +1807,8 @@ void iSortPlayers(int mode) {
 	iNumPlayers = 0;
 	for (i = 0; i < num; i++) {
 		// Играющие отображаются всегда, прошедшие - только в результатах игры
-		if (p->name && (p->status == GAMING_STATUS || (p->status == FINISHED_STATUS && !mode))) {
+		if (!p->name.empty() &&
+			(p->status == GAMING_STATUS || (p->status == FINISHED_STATUS && !mode))) {
 			iPlayers[iNumPlayers] = p;
 			iPlayerRatings[iNumPlayers] = p->body.rating;
 			iNumPlayers++;
