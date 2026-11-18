@@ -111,6 +111,9 @@ TARGET_LINK_LIBRARIES(text_encoding_test PRIVATE
 )
 
 ADD_TEST(NAME text_encoding COMMAND text_encoding_test)
+ADD_EXECUTABLE(network_text_test network_text_test.cpp)
+TARGET_LINK_LIBRARIES(network_text_test PRIVATE vangers_settings vangers_text)
+ADD_TEST(NAME network_text COMMAND network_text_test)
 
 ADD_EXECUTABLE(actint_text_test
 	actint_text_test.cpp

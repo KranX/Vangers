@@ -10,8 +10,12 @@
 #	include "sound/hsound.h"
 #endif
 
+#include "actint/item_api.h"
+#include "localization/catalog.h"
 #include "network.h"
 #include "runtime.h"
+#include "text/network_text.h"
+#include "text/utf8.h"
 #include "xgraph.h"
 #include <chrono>
 #include <cstdarg>
@@ -148,6 +152,7 @@ static const unsigned int TOTAL_PLAYERS_DATA_LIST_QUERY_RETRY_MS = 1000;
 MessageDispatcher message_dispatcher;
 
 XSocket main_socket;
+static bool main_socket_utf8_text;
 ServerFindChain current_server_addr;
 int number_of_reconnection_attempt = 5;
 
@@ -447,7 +452,7 @@ static void network_log_open(const ServerFindChain *p, const char *reason) {
 		XGR_MAXY,
 		server,
 		p ? p->game_ID : current_server_addr.game_ID,
-		CurPlayerName ? CurPlayerName : "",
+		network_player_name(),
 		GlobalStationID,
 		CurrentWorld
 	);
@@ -845,6 +850,9 @@ void ServerFindChain::connect(XSocket &target) {
 				Servers List
 *****************************************************************/
 int identification(XSocket &socket) {
+	const bool is_main = &socket == &main_socket;
+	if (is_main)
+		main_socket_utf8_text = false;
 	char string[256] = "";
 	memset(string, 0, 256);
 	unsigned int len, identificated = 0;
@@ -908,36 +916,44 @@ int identification(XSocket &socket) {
 	}
 	// zMod fixed ---------------------------------------------------------
 
-	XBuffer zbuffer(10000);
-	zbuffer < short(1) < char(SERVER_TIME_QUERY);
-	if (!socket.send(zbuffer.GetBuf(), zbuffer.tell()))
+	const auto capability = is_main ? vangers::network_text::capability : std::string_view{};
+	XBuffer query(32);
+	query < short(1 + capability.size()) < char(SERVER_TIME_QUERY);
+	if (!capability.empty())
+		query.write(capability.data(), capability.size(), 0);
+	if (!socket.send(query.GetBuf(), query.tell()))
 		return 0;
 
-	Uint64 z_end_time_ = SDL_GetTicks() + 2 * 60 * 1000;
-	while (SDL_GetTicks() < z_end_time_)
-		if (socket.receive(zbuffer.GetBuf(), zbuffer.length(), 1000))
-			break;
-
-	unsigned char zevent_ID;
-	short zevent_size;
-	int zresponse;
-
-	zbuffer.set(0);
-	zbuffer > zevent_size > zevent_ID > zresponse;
-
-	if (zevent_ID == SERVER_TIME)
-		zserver_version = 1;
-
-	// std::cout<<"Client auth: "<<(int)zevent_ID<<" "<<zSERVER_VERSION_RESPONSE<<"
-	// "<<(int)zresponse<<" "<<zCLIENT_VERSION<<std::endl;
-	if (zevent_ID == zSERVER_VERSION_RESPONSE) {
-		if (zCLIENT_VERSION == zresponse) {
-			zserver_version = zresponse;
-		} else {
-			// NEED SEE!
-			//     ErrH.Abort(zSTR_WRONG_VERSION);
-			//    return 0;
+	const auto deadline = SDL_GetTicks() + 2 * 60 * 1000;
+	const auto read_exact = [&](char *data, unsigned int size) {
+		while (size && SDL_GetTicks() < deadline && socket.is_open()) {
+			const auto got = socket.receive(data, size, 1000);
+			if (got < 0)
+				return false;
+			data += got;
+			size -= got;
 		}
+		return size == 0;
+	};
+	char header[2];
+	if (!read_exact(header, sizeof(header)))
+		return 0;
+	const auto size = static_cast<unsigned char>(header[0]) |
+					  (static_cast<unsigned int>(static_cast<unsigned char>(header[1])) << 8);
+	char response[64];
+	if (size < 5 || size > sizeof(response) || !read_exact(response, size))
+		return 0;
+	const auto event = static_cast<unsigned char>(response[0]);
+	if (event == SERVER_TIME) {
+		zserver_version = 1;
+		if (is_main && std::string_view(response + 5, size - 5) == capability)
+			main_socket_utf8_text = true;
+	} else if (event == zSERVER_VERSION_RESPONSE) {
+		XBuffer data(response + 1, size - 1);
+		int version;
+		data > version;
+		if (version == zCLIENT_VERSION)
+			zserver_version = version;
 	}
 	// /zMod ---------------------------------------------------------
 
@@ -1117,12 +1133,22 @@ void OutputEventBuffer::set_position(int x, int y, int y_half_size_of_screen) {
 	}
 }
 
-void OutputEventBuffer::register_name(char *name, char *password) {
+void OutputEventBuffer::register_name(const char *utf8_name, const char *legacy_password) {
+	using namespace vangers;
+	auto name = network_text::encode(utf8_name, main_socket_utf8_text);
+	const bool legacy_alias = !name.has_value();
+	if (legacy_alias || name->empty())
+		name = "Vanger-" + std::to_string(GlobalStationID);
 	n_event++;
-	*this < short(1 + strlen(name) + 1 + strlen(password) + 1) < (unsigned char)(REGISTER_NAME) <
-		name < char(0) < password < char(0);
+	*this < short(1 + name->size() + 1 + strlen(legacy_password) + 1) <
+		static_cast<unsigned char>(REGISTER_NAME) < name->c_str() < char(0) < legacy_password <
+		char(0);
 	OUT_EVENTS_LOG(REGISTER_NAME);
-	network_log_printf("OUT", "REGISTER_NAME player_name=\"%s\"", name ? name : "");
+	network_log_printf(
+		"OUT", "REGISTER_NAME utf8=%d legacy_alias=%d", main_socket_utf8_text, legacy_alias
+	);
+	if (legacy_alias)
+		message_dispatcher.append_message({}, localization::text("chat.legacy_name"), 0);
 }
 void OutputEventBuffer::begin_event(int event_ID) {
 	if (pointer_to_size_of_event != -1)
@@ -1884,6 +1910,10 @@ int InputEventBuffer::next_event() {
 			break;
 
 		case DIRECT_RECEIVING:
+			if (remaining_event_bytes() < 2) {
+				ignore_event();
+				break;
+			}
 			*this > client_ID;
 			network_log_printf(
 				"IN", "DIRECT_RECEIVING creator=%d body_size=%d", client_ID, event_size - 2
@@ -1903,6 +1933,25 @@ int InputEventBuffer::next_event() {
 		}
 	}
 	return event_ID ? event_ID : next_event();
+}
+
+std::size_t InputEventBuffer::remaining_event_bytes() {
+	const auto start = static_cast<unsigned int>(tell());
+	return start <= next_event_pointer ? next_event_pointer - start : 0;
+}
+
+std::optional<std::string>
+InputEventBuffer::read_display_text(std::size_t max_bytes, std::size_t trailing) {
+	const auto remaining = remaining_event_bytes();
+	if (remaining <= trailing)
+		return std::nullopt;
+	const auto *start = address() + tell();
+	const auto *end = static_cast<const char *>(std::memchr(start, 0, remaining - trailing));
+	if (!end || static_cast<std::size_t>(end - start) > max_bytes)
+		return std::nullopt;
+	const std::string_view bytes(start, end - start);
+	set(tell() + static_cast<int>(bytes.size()) + 1);
+	return vangers::network_text::decode(bytes, main_socket_utf8_text);
 }
 
 void InputEventBuffer::ignore_event() {
@@ -2040,6 +2089,7 @@ int restore_connection() {
 	return resp;
 }
 void disconnect_from_server() {
+	main_socket_utf8_text = false;
 	network_log_printf("CLOSE_SOCKET", "reason=disconnect_from_server");
 	events_out.send_simple_query(CLOSE_SOCKET);
 	main_socket.flush(1000);
@@ -2188,8 +2238,8 @@ void network_analysis(XBuffer &out, int integral) {
 	while (p) {
 		out <= p->client_ID < "\ts:" <= p->status < "\tw:" <= p->world < "\tx:" <= p->x < "\ty:" <=
 			p->y < "\tk:" <= p->body.kills < "\td:" <= p->body.deaths < "\t";
-		if (p->name)
-			out < p->name < "\t";
+		if (!p->name.empty())
+			out < p->name.c_str() < "\t";
 		out < "\n";
 		p = p->next;
 	}
@@ -2197,7 +2247,7 @@ void network_analysis(XBuffer &out, int integral) {
 	out < "Chat:\n";
 	MessageElement *pm = message_dispatcher.last();
 	while (pm) {
-		out < pm->message < "\n";
+		out < pm->message.c_str() < "\n";
 		if (pm == message_dispatcher.first())
 			break;
 		pm = (MessageElement *)pm->prev;
@@ -2445,7 +2495,6 @@ void void_network_quant() {
 PlayerData::PlayerData(int client_id) {
 	client_ID = client_id;
 	status = 0;
-	name = 0;
 	x = y = 0;
 	world = 0;
 	GamingFlag = 0;
@@ -2484,26 +2533,16 @@ PlayerData *PlayersList::find(int client_id) {
 	return p;
 }
 
-static void assign_player_name(PlayerData *p, const char *name) {
-	if (!p->name) {
-		p->name = new char[strlen(name) + 1];
-		strcpy(p->name, name);
-	} else {
-		if (strcmp(p->name, name)) {
-			delete[] p->name;
-			p->name = new char[strlen(name) + 1];
-			strcpy(p->name, name);
-		}
-	}
-}
 
 void PlayersList::single_parsing(int event_ID) {
+	if (!events_in.remaining_event_bytes())
+		return;
 	PlayerData *p = find(events_in.get_byte());
 	switch (event_ID) {
 	case PLAYERS_NAME: {
-		char name[257];
-		events_in > name;
-		assign_player_name(p, name);
+		if (auto name = events_in.read_display_text(vangers::network_text::name_limit))
+			p->name = std::move(*name);
+		events_in.ignore_event();
 	} break;
 	case PLAYERS_POSITION:
 		p->x = events_in.get_short();
@@ -2535,58 +2574,80 @@ unsigned int PlayersList::get_team_mask(int color) {
 	}
 	return mask;
 }
-void PlayersList::parsing_total_body_query() {
-	unsigned char client_ID, status, world;
+namespace {
+struct PlayerSnapshotRow {
+	unsigned char id, status, world;
 	short x, y;
-	char name[257];
-	PlayerData *p;
+	std::string name;
+	PlayerBody body;
+};
+
+std::optional<std::vector<PlayerSnapshotRow>> read_player_snapshot() {
+	if (!events_in.remaining_event_bytes())
+		return std::nullopt;
+	const auto count = events_in.get_byte();
+	std::vector<PlayerSnapshotRow> result;
+	result.reserve(count);
+	for (int i = 0; i < count; ++i) {
+		if (events_in.remaining_event_bytes() < 7 + sizeof(PlayerBody) + 1)
+			return std::nullopt;
+		PlayerSnapshotRow row;
+		events_in > row.id > row.status > row.world > row.x > row.y;
+		auto name =
+			events_in.read_display_text(vangers::network_text::name_limit, sizeof(PlayerBody));
+		if (!name)
+			return std::nullopt;
+		row.name = std::move(*name);
+		events_in.read(&row.body, sizeof(PlayerBody));
+		result.push_back(std::move(row));
+	}
+	if (events_in.remaining_event_bytes())
+		return std::nullopt;
+	return result;
+}
+} // namespace
+
+void PlayersList::parsing_total_body_query() {
+	auto rows = read_player_snapshot();
+	total_players_data_list_query_pending = 0;
+	if (!rows) {
+		events_in.ignore_event();
+		return;
+	}
 	delete_all();
-	my_player_data = 0;
-	int num = events_in.get_byte();
-	for (int i = 0; i < num; i++) {
-		events_in > client_ID > status > world > x > y > name;
-		p = new PlayerData(client_ID);
+	my_player_data = nullptr;
+	for (auto &row : *rows) {
+		auto *p = new PlayerData(row.id);
 		append(p);
-		p->status = status;
-		p->world = world;
-		p->x = x;
-		p->y = y;
-		events_in.read(&p->body, sizeof(PlayerBody));
-		if (!p->name) {
-			p->name = new char[strlen(name) + 1];
-			strcpy(p->name, name);
-		} else {
-			if (strcmp(p->name, name)) {
-				delete p->name;
-				p->name = new char[strlen(name) + 1];
-				strcpy(p->name, name);
-			}
-		}
+		p->status = row.status;
+		p->world = row.world;
+		p->x = row.x;
+		p->y = row.y;
+		p->name = std::move(row.name);
+		p->body = row.body;
 		if (p->client_ID == GlobalStationID)
 			my_player_data = p;
 	}
-	total_players_data_list_query_pending = 0;
 }
 
 void PlayersList::merge_total_body_query() {
-	unsigned char client_ID, status, world;
-	short x, y;
-	char name[257];
-	PlayerBody body;
+	auto rows = read_player_snapshot();
+	total_players_data_list_query_pending = 0;
+	if (!rows) {
+		events_in.ignore_event();
+		return;
+	}
 	PlayerData *p;
-	PlayerData *current_player_data = NULL;
-	int num = events_in.get_byte();
-
+	PlayerData *current_player_data = nullptr;
 	p = first();
 	while (p) {
 		p->GamingFlag = 0;
 		p = (PlayerData *)(p->next);
 	}
 
-	for (int i = 0; i < num; i++) {
-		events_in > client_ID > status > world > x > y > name;
-		events_in.read(&body, sizeof(PlayerBody));
-
+	for (auto &row : *rows) {
+		const auto client_ID = row.id;
+		const auto status = row.status;
 		p = NULL;
 		if (status != FINISHED_STATUS) {
 			PlayerData *n = first();
@@ -2623,11 +2684,11 @@ void PlayersList::merge_total_body_query() {
 		int prev_status = p->status;
 		p->GamingFlag = 1;
 		p->status = status;
-		p->world = world;
-		p->x = x;
-		p->y = y;
-		assign_player_name(p, name);
-		p->body = body;
+		p->world = row.world;
+		p->x = row.x;
+		p->y = row.y;
+		p->name = std::move(row.name);
+		p->body = row.body;
 
 		if (prev_status != FINISHED_STATUS && p->status == FINISHED_STATUS)
 			PLAYER_REMOVAL_EVENT(p);
@@ -2647,62 +2708,107 @@ void PlayersList::merge_total_body_query() {
 /*******************************************************************************
 			Chat Tool
 *******************************************************************************/
-MessageElement::MessageElement(const char *player_name, char *msg, int col) {
-	message = new char[strlen(player_name) + strlen(msg) + 3];
-	strcpy(message, player_name);
-	strcat(message, ": ");
-	strcat(message, msg);
-	color = col;
-	// zmod
-	time = SDL_GetTicks();
+const char *network_player_name() {
+	if (NetworkON && my_player_data && !my_player_data->name.empty())
+		return my_player_data->name.c_str();
+	const auto *configured = aciGetPlayerName();
+	return configured && *configured ? configured : "Vanger";
 }
 
-void MessageDispatcher::send(char *message, int mode, int parameter) {
-	unsigned int cors;
+MessageElement::MessageElement(std::string_view player_name, std::string_view msg, int col)
+	: color(col), time(SDL_GetTicks()) {
+	if (!player_name.empty()) {
+		message = player_name;
+		message += ": ";
+	}
+	message += msg;
+}
+
+void MessageDispatcher::append_message(
+	std::string_view player_name,
+	std::string_view message,
+	int color
+) {
+	AddElement(new MessageElement(player_name, message, color));
+	if (ListSize > max_number_of_messages) {
+		auto *old = first();
+		RemoveElement(old);
+		delete old;
+	}
+	new_messages = 1;
+	++revision;
+}
+
+void MessageDispatcher::clear_messages() {
+	while (auto *message = first()) {
+		RemoveElement(message);
+		delete message;
+	}
+	new_messages = 0;
+	++revision;
+}
+
+bool MessageDispatcher::can_send_text(std::string_view message) const {
+	return vangers::network_text::encode(message, main_socket_utf8_text).has_value();
+}
+
+bool MessageDispatcher::fits_wire(std::string_view message) const {
+	const auto bytes = vangers::network_text::encode(message, main_socket_utf8_text);
+	return bytes && bytes->size() <= vangers::network_text::chat_limit;
+}
+
+void MessageDispatcher::show_legacy_text_warning() {
+	const auto *warning = vangers::localization::text("chat.legacy_message");
+	if (!last() || last()->message != warning)
+		append_message({}, warning, my_player_body.color);
+}
+
+void MessageDispatcher::send(std::string_view message, int mode, int parameter) {
+	if (GlobalStationID < 1 || GlobalStationID > 32)
+		return;
+	const auto wire = vangers::network_text::encode(message, main_socket_utf8_text);
+	if (!wire || wire->empty() || wire->size() > vangers::network_text::chat_limit)
+		return;
+	unsigned int recipients;
 	switch (mode) {
 	case MESSAGE_FOR_ALL:
-		cors = 0xffffffff & ~(1 << (GlobalStationID - 1));
+		recipients = 0xffffffffu & ~(1u << (GlobalStationID - 1));
 		break;
 	case MESSAGE_FOR_TEAM:
-		cors = players_list.get_team_mask(parameter) & ~(1 << (GlobalStationID - 1));
+		recipients = players_list.get_team_mask(parameter) & ~(1u << (GlobalStationID - 1));
 		break;
 	case MESSAGE_FOR_PLAYER:
-		cors = 1 << (parameter - 1);
+		if (parameter < 1 || parameter > 32)
+			return;
+		recipients = 1u << (parameter - 1);
 		break;
+	default:
+		return;
 	}
-	events_out.begin_direct_send(cors);
-	events_out < message < char(0);
+	events_out.begin_direct_send(recipients);
+	events_out < wire->c_str() < char(0);
 	events_out.end_body();
 	events_out.send(1);
-
-	MessageElement *p = new MessageElement(CurPlayerName, message, my_player_body.color);
-	AddElement(p);
-	if (ListSize > max_number_of_messages) {
-		RemoveElement(p = first());
-		delete p;
-	}
-	// zmod
-	new_messages = 1;
+	append_message(network_player_name(), message, my_player_body.color);
 }
 
 void IncomingChatMessage(void);
 void MessageDispatcher::receive() {
-	char msg[512];
-	events_in > msg;
-	PlayerData *p = players_list.find(events_in.current_creator());
-	MessageElement *pm = new MessageElement(p ? p->name : (char *)"Unknown", msg, p->body.color);
-	AddElement(pm);
-	if (ListSize > max_number_of_messages) {
-		RemoveElement(pm = first());
-		delete pm;
-	}
+	const auto msg = events_in.read_display_text(
+		main_socket_utf8_text ? 3 * vangers::network_text::chat_limit
+							  : vangers::network_text::chat_limit
+	);
+	if (!msg || msg->empty())
+		return;
+	const auto *p = players_list.find_any(events_in.current_creator());
+	append_message(
+		p && !p->name.empty() ? p->name : "Unknown", *msg, p && !p->name.empty() ? p->body.color : 0
+	);
 #ifdef _ROAD_
 	SOUND_BEEP();
 	// zmod
 	// IncomingChatMessage();
 #endif
-	// zmod
-	new_messages = 1;
 }
 
 /********************************************************************

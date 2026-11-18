@@ -765,3 +765,7 @@
 "compass.SpummyCompasTarget" = "SpuMMy"
 "compass.TaskCompasTarget" = "Task%d"
 "uvs.task_complete" = "{location} tabutask complete\nsell it in the escave for {reward}$"
+
+# Compatibility notices for a server without Unicode text support.
+"chat.legacy_name" = "This server needs a temporary name."
+"chat.legacy_message" = "Unsupported characters. Draft kept."
