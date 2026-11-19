@@ -9,12 +9,10 @@
 #include "../text/utf8.h"
 #include "../units/effect.h"
 #include "../units/hobj.h"
+#include "item_api.h"
 #include "raster_text.h"
 
 extern int FrameCount;
-namespace {
-constexpr int CHAR_SPEED = 2;
-}
 
 void aWriteHelpString(
 	int count,
@@ -28,7 +26,7 @@ void aWriteHelpString(
 	unsigned int *pcolor
 ) {
 	int i, total_len = 0;
-	int draw_len = (CHAR_SPEED * timer) / GAME_TIME_COEFF;
+	int draw_len = (ACI_PROMPT_REVEAL_SPEED * timer) / GAME_TIME_COEFF;
 	std::string tmp;
 	int _x;
 	int _color = color;

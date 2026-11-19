@@ -23,6 +23,19 @@ int main() {
 		layout_lines("日本「文字」", 3, measure) == Lines({"日本", "「文", "字」"}),
 		"Japanese opening/closing brackets were stranded"
 	);
+	check(
+		layout_lines(
+			"日！！e\u0301", 2, measure, LineMode::Preserve, true, BreakPolicy::Emergency
+		) == Lines({"日！", "！", "e\u0301"}),
+		"Emergency kinsoku split lost a character or detached a combining mark"
+	);
+	bool strict_rejected = false;
+	try {
+		(void)layout_lines("日！！", 2, measure);
+	} catch (const std::runtime_error &) {
+		strict_rejected = true;
+	}
+	check(strict_rejected, "Emergency wrapping changed the default strict policy");
 	for (bool keep_spaces : {false, true}) {
 		check(
 			layout_lines("日本「 文字」", 3, measure, LineMode::Preserve, keep_spaces) ==

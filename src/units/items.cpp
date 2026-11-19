@@ -14,7 +14,6 @@
 #include "../sqexp.h"
 
 #include "../actint/item_api.h"
-#include "../localization/catalog.h"
 #include "../network.h"
 #include "uvsapi.h"
 
@@ -4865,27 +4864,25 @@ void GloryPlace::Quant(void) {
 extern uvsTabuTaskType **TabuTable;
 
 namespace {
-std::string stat_notification(const char *key, int delta) {
+std::string signed_stat_change(int delta) {
 	// Keep the original explicit sign, including "-0".
-	const auto value = delta == 0 ? "-0" : (delta > 0 ? "+" : "") + std::to_string(delta);
-	using namespace vangers::localization;
-	return format_text(text(key), value);
+	return delta == 0 ? "-0" : (delta > 0 ? "+" : "") + std::to_string(delta);
 }
 } // namespace
 
 void aiPromptTaskMessage(int l) {
 	aciSendGameNotification(
-		stat_notification(l >= 0 ? "notification.task_success" : "notification.task_failed", l)
+		l >= 0 ? "notification.task_success" : "notification.task_failed", signed_stat_change(l)
 	);
 	ClearTabutaskTarget();
 }
 
 void aiPromptDominanceMessage(int d) {
-	aciSendGameNotification(stat_notification("notification.dominance", d));
+	aciSendGameNotification("notification.dominance", signed_stat_change(d));
 }
 
 void aiPromptLuckMessage(int d) {
-	aciSendGameNotification(stat_notification("notification.luck", d));
+	aciSendGameNotification("notification.luck", signed_stat_change(d));
 }
 
 void ShowTaskMessage(int l) {

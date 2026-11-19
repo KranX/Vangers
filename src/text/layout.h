@@ -9,6 +9,7 @@
 namespace vangers::text {
 // Encoding and layout are independent. Existing authored lines stay hard breaks.
 enum class LineMode { Preserve, Paragraphs };
+enum class BreakPolicy { Strict, Emergency };
 using Measure = std::function<int(std::string_view)>;
 using Lines = std::vector<std::string>;
 using Pages = std::vector<Lines>;
@@ -20,7 +21,8 @@ Lines layout_lines(
 	int width,
 	const Measure &measure,
 	LineMode mode = LineMode::Preserve,
-	bool keep_wrap_spaces = false
+	bool keep_wrap_spaces = false,
+	BreakPolicy breaks = BreakPolicy::Strict
 );
 Pages paginate(const Lines &lines, int rows);
 } // namespace vangers::text

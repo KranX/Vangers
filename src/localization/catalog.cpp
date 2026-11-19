@@ -76,6 +76,14 @@ Table table(const toml::ordered_value &document, const std::string &name) {
 				throw std::runtime_error("Invalid locale template " + key + ": " + error.what());
 			}
 		}
+		if (name == "strings" && key.rfind("notification.", 0) == 0) {
+			try {
+				if (signature(s) != "s" || s.find('\f') != s.npos)
+					throw std::invalid_argument("Expected one %s and no page breaks");
+			} catch (const std::invalid_argument &error) {
+				throw std::runtime_error("Invalid locale template " + key + ": " + error.what());
+			}
+		}
 		out.emplace(key, s);
 	}
 	return out;
@@ -178,6 +186,8 @@ Catalog::Catalog(const std::filesystem::path &root, const std::string &id): id_(
 				english_text.find("%s") != std::string::npos) &&
 			signature(english_text) != signature(value))
 			throw std::runtime_error("Locale template argument changed: " + key);
+		if (key.rfind("notification.", 0) == 0 && english_text != value)
+			english_notifications_.emplace(key, english_text);
 		strings_[key] = value;
 	}
 	const auto assets = table(local, "resources");
@@ -210,6 +220,10 @@ const std::string &Catalog::text(const std::string &key) const {
 	if (it == strings_.end())
 		throw std::runtime_error("Unknown locale string key: " + key);
 	return it->second;
+}
+const std::string &Catalog::english_notification(const std::string &key) const {
+	const auto it = english_notifications_.find(key);
+	return it == english_notifications_.end() ? text(key) : it->second;
 }
 const std::string *Catalog::find_text(const std::string &key) const {
 	const auto it = strings_.find(key);

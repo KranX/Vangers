@@ -5067,7 +5067,9 @@ void aciPromptData::free_mem(void) {
 
 	NumStr = 0;
 	fontID = -1;
-	wrap_lines = false;
+	notification_key.clear();
+	notification_fallback.clear();
+	notification_reported = false;
 }
 
 aciPromptData::~aciPromptData(void) {
@@ -5110,7 +5112,8 @@ void aciPromptData::copy_data(aciPromptData *src) {
 	alloc_mem(src->NumStr);
 
 	align_type = src->align_type;
-	wrap_lines = src->wrap_lines;
+	notification_key = src->notification_key;
+	notification_fallback = src->notification_fallback;
 
 	if (src->StrBuf) {
 		for (i = 0; i < NumStr; i++) {
@@ -5160,44 +5163,95 @@ void aciPromptData::redraw(int scr_x, int scr_y, int scr_sx, int scr_sy) {
 	} else
 		y = scr_y + ACI_PROMPT_OFFSET;
 
-	// The HUD's decorative overlay can cover the edges of the underlying
-	// map rectangle. Reserve a gutter for wrapped notices, not for legacy
-	// scripted prompts. Symmetric insets keep the original centre.
-	if (wrap_lines) {
+	if (!notification_key.empty()) {
+		// The decorative overlay can cover the edge of the map rectangle.
 		const int inset = std::min(80, scr_sx / 6);
 		scr_x += inset;
 		scr_sx -= 2 * inset;
-	}
-
-	if (wrap_lines && std::any_of(StrBuf, StrBuf + NumStr, [&](const unsigned char *line) {
-			return line && aStrLenUtf8(line, font, ACI_PROMPT_DELTA_X) > scr_sx;
-		})) {
+		const int step = aScrFonts[font]->SizeY + ACI_PROMPT_DELTA_Y;
+		const int max_rows = (std::min(scr_y + scr_sy, XGR_MAXY) - y) / step;
+		if (max_rows < 1 || scr_sx < 1 || GAME_TIME_COEFF <= 0)
+			return;
+		const int tick = NetworkON ? 2 : 1;
+		const int expiry = static_cast<int>(TimeBuf[0] * GAME_TIME_COEFF);
+		const auto budget = static_cast<std::size_t>(
+			ACI_PROMPT_REVEAL_SPEED * (expiry - expiry % tick) / GAME_TIME_COEFF
+		);
 		const auto measure = [font](std::string_view line) {
 			return aStrLenUtf8(std::string(line).c_str(), font, ACI_PROMPT_DELTA_X);
 		};
-		// Keep the original authored lines. Reflow only lines that do not fit
-		// this prompt's current logical viewport, without changing the timer.
-		std::vector<std::string> rows;
-		std::vector<int> xs, ys;
-		std::vector<unsigned int> colours;
-		for (int line = 0; line < NumStr; ++line) {
-			if (!StrBuf[line])
-				continue;
-			const auto *text = reinterpret_cast<const char *>(StrBuf[line]);
-			auto wrapped = vangers::text::layout_lines(
-				text, scr_sx, measure, vangers::text::LineMode::Preserve, true
-			);
-			for (auto &row : wrapped) {
-				xs.push_back(scr_x + (scr_sx - measure(row)) / 2);
-				ys.push_back(y);
-				colours.push_back(ColBuf[line]);
-				y += aScrFonts[font]->SizeY + ACI_PROMPT_DELTA_Y;
-				rows.push_back(std::move(row));
+		const auto layout = [&](std::string_view text, vangers::text::Lines &rows) {
+			using namespace vangers::text;
+			// Bounds also limit the amount of text measured each frame. Hard
+			// breaks aren't revealed, so leave room for their UTF-8 bytes.
+			if (text.size() > 4 * budget + 3 * static_cast<std::size_t>(max_rows) ||
+				text.find('\f') != text.npos)
+				return false;
+			try {
+				std::size_t length = 0;
+				do {
+					const auto end = text.find('\n');
+					const auto line = text.substr(0, end);
+					auto wrapped = measure(line) <= scr_sx && line.find('\r') == line.npos &&
+										   line.find("\xe2\x80\xa8") == line.npos
+									   ? Lines{std::string(line)}
+									   : layout_lines(
+											 line,
+											 scr_sx,
+											 measure,
+											 LineMode::Preserve,
+											 true,
+											 BreakPolicy::Emergency
+										 );
+					for (auto &row : wrapped) {
+						length += text_length(row);
+						if (rows.size() >= static_cast<std::size_t>(max_rows) || length > budget ||
+							measure(row) > scr_sx)
+							return false;
+						rows.push_back(std::move(row));
+					}
+					if (end == text.npos)
+						break;
+					text.remove_prefix(end + 1);
+				} while (true);
+			} catch (const std::runtime_error &) {
+				// An over-wide combining sequence still cannot be split safely.
+				return false;
 			}
+			return true;
+		};
+
+		std::string source;
+		for (int line = 0; line < NumStr; ++line) {
+			if (line)
+				source += '\n';
+			if (StrBuf[line])
+				source += reinterpret_cast<const char *>(StrBuf[line]);
 		}
+		vangers::text::Lines rows;
+		if (!layout(source, rows)) {
+			rows.clear();
+			const bool fallback =
+				!notification_fallback.empty() && layout(notification_fallback, rows);
+			if (!notification_reported) {
+				std::cerr << "Notification " << notification_key
+						  << " does not fit its HUD bounds or reveal budget"
+						  << (fallback ? "; using English\n" : "; skipped\n");
+				notification_reported = true;
+			}
+			if (!fallback)
+				return; // Never display half a sentence or write outside the viewport.
+		}
+
+		std::vector<int> xs, ys;
 		std::vector<unsigned char *> text;
-		for (auto &row : rows)
+		for (auto &row : rows) {
+			xs.push_back(scr_x + (scr_sx - measure(row)) / 2);
+			ys.push_back(y);
 			text.push_back(reinterpret_cast<unsigned char *>(row.data()));
+			y += step;
+		}
+		std::vector<unsigned int> colours(rows.size(), ColBuf[0]);
 		aWriteHelpString(
 			static_cast<int>(text.size()),
 			xs.data(),
@@ -5298,9 +5352,16 @@ void aciSendPrompt(aciPromptData *p) {
 	aScrDisp->curPrompt->CurTimer = 0;
 }
 
-void aciSendGameNotification(std::string_view text) {
+void aciSendGameNotification(const char *key, std::string_view value) {
+	using namespace vangers::localization;
+	const auto &locale = catalog();
+	const auto source = format_text(locale.text(key), value);
+	std::string_view text = source;
 	aciPromptData prompt(1 + static_cast<int>(std::count(text.begin(), text.end(), '\n')));
-	prompt.wrap_lines = true;
+	prompt.notification_key = key;
+	const auto &english = locale.english_notification(key);
+	if (english != locale.text(key))
+		prompt.notification_fallback = format_text(english, value);
 	for (int row = 0; row < prompt.NumStr; ++row) {
 		const auto end = text.find('\n');
 		prompt.add_utf8_str(row, std::string(text.substr(0, end)).c_str());

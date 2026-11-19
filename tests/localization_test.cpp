@@ -122,6 +122,12 @@ int main(int argc, char **argv) {
 			rejects([&] { format_integer(pattern, 1); }, "Unsafe template accepted");
 		Catalog ru(root, "ru"), en(root, "en");
 		check(
+			ru.english_notification("notification.player_finished") ==
+					en.text("notification.player_finished") &&
+				ru.text("notification.player_finished") != en.text("notification.player_finished"),
+			"HUD fallback lost the original English template"
+		);
+		check(
 			format_text(ru.text("notification.player_finished"), "春日%s") ==
 				"Торопись, механик!\n春日%s окончил игру!\nТы хочешь быть последним?",
 			"Winner prompt changed stock Russian wording or reinterpreted the player name"
@@ -231,6 +237,16 @@ int main(int argc, char **argv) {
 			[&] { Catalog c(temporary, "zz-test"); },
 			"Translation changed the template argument type"
 		);
+		for (const auto *pattern : {"no name", "%s %s", "%d", "%s\\fpage"}) {
+			write(
+				strings,
+				std::string("[strings]\n\"notification.player_left\" = \"") + pattern + "\"\n"
+			);
+			rejects(
+				[&] { Catalog invalid(temporary, "zz-test"); },
+				"HUD template accepted an invalid argument or page break"
+			);
+		}
 		for (const auto *pattern :
 			{"{location}", "{unknown}{location}{reward}", "{location}{reward}{reward}"}) {
 			write(strings, std::string("[strings]\n\"uvs.task_complete\" = '") + pattern + "'\n");

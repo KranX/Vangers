@@ -15770,10 +15770,9 @@ void NetCheckRemovePlayer(PlayerData *p) {
 	default:
 		return;
 	}
-	using namespace vangers::localization;
-	aciSendGameNotification(format_text(
-		text(winner ? "notification.player_finished" : "notification.player_left"), p->name
-	));
+	aciSendGameNotification(
+		winner ? "notification.player_finished" : "notification.player_left", p->name
+	);
 }
 
 void VangerUnit::ClearItemList(void) {
