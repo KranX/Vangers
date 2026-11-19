@@ -9,6 +9,7 @@
 #include "iscreen/iscreen.h"
 #include "localization/catalog.h"
 #include "network.h"
+#include "runtime.h"
 #include "settings/settings.h"
 #include "settings/text_encoding.h"
 #include "uvs/diagen.h"
@@ -35,6 +36,8 @@ void iChatFinit();
 void iInitChatScreen();
 void iChatMouseQuant(int x, int y, int button);
 void iChatInputFlush();
+void aiPromptDominanceMessage(int delta);
+void aiPromptLuckMessage(int delta);
 extern XList *iChatButtons;
 extern iChatInputField *iChatInput;
 extern aciFont **aScrFonts, **aScrFonts32;
@@ -136,6 +139,101 @@ void resize(iBitmapElement &bitmap, int width, int height) {
 
 bool has_ink(const std::vector<uint32_t> &pixels) {
 	return std::any_of(pixels.begin(), pixels.end(), [](uint32_t p) { return p != 0; });
+}
+
+void game_notification_test(const RenderFixture &fixture, int width, int height) {
+	actIntDispatcher dispatcher;
+	auto *previous = aScrDisp;
+	aScrDisp = &dispatcher;
+	const auto previous_time_coeff = GAME_TIME_COEFF;
+	GAME_TIME_COEFF = 1;
+	dispatcher.flags |= AS_FULLSCR;
+	auto *prompt = dispatcher.curPrompt;
+	const std::string name = "日本語の参加者あいうえおかきくけ";
+	const std::string second = name + " has just finished the game!";
+	aciSendGameNotification("notification.player_finished", name);
+	check(
+		prompt->NumStr == 3 && prompt->CurTimer == 0 && !prompt->notification_key.empty(),
+		"Not a HUD prompt"
+	);
+	for (int i = 0; i < 3; ++i)
+		check(
+			prompt->TimeBuf[i] == 200 && prompt->ColBuf[i] == 143, "Prompt timing/colour changed"
+		);
+
+	const auto render = [&](int viewport, int viewport_height) -> std::vector<uint32_t> {
+		auto *buffer = XGR_Obj.get_default_render_buffer();
+		std::fill_n(buffer, width * height, 0);
+		xgr::text::clear(buffer);
+		prompt->CurTimer = 200; // Complete reveal without the game's loaded fireball frames.
+		prompt->redraw((width - viewport) / 2, 0, viewport, viewport_height);
+		if (fixture.native) {
+			const auto *layer = xgr::text::find(buffer);
+			if (layer)
+				return layer->render(width, height, fixture.palette.data());
+			return {};
+		}
+		return {buffer, buffer + width * height};
+	};
+	// A small logical viewport forces wrapping while the framebuffer still
+	// has room for every row. Check that no ink escapes the viewport.
+	for (const int viewport : {width, 220}) {
+		const auto pixels = render(viewport, height);
+		const int left = (width - viewport) / 2;
+		check(has_ink(pixels), "Empty rendered HUD notice");
+		int last_y = 0;
+		for (int y = 0; y < height; ++y)
+			for (int x = 0; x < width; ++x)
+				if (pixels[y * width + x]) {
+					last_y = y;
+					check(
+						x >= left && x < left + viewport,
+						"HUD notification escaped its logical width"
+					);
+				}
+		check(
+			viewport == width ? last_y < 110 : last_y >= 110,
+			"HUD message did not preserve short lines or wrap the long ones"
+		);
+		check(
+			std::string_view(reinterpret_cast<const char *>(prompt->StrBuf[1])) == second,
+			"Prompt discarded or changed the Unicode model text"
+		);
+	}
+
+	check(!has_ink(render(width, 72)), "Height overflow displayed an incomplete notice");
+	prompt->notification_fallback = "Ready";
+	const auto fallback = render(width, 72);
+	check(has_ink(fallback), "A fitting fallback was not drawn");
+	check(
+		std::none_of(
+			fallback.begin() + 72 * width, fallback.end(), [](uint32_t p) { return p != 0; }
+		),
+		"English fallback escaped the prompt height"
+	);
+	aciSendGameNotification("notification.player_left", std::string(401, 'a'));
+	check(!has_ink(render(width, height)), "Notice exceeded the legacy reveal budget");
+
+	std::string punctuation;
+	for (int i = 0; i < 16; ++i)
+		punctuation += "！";
+	aciSendGameNotification("notification.player_left", punctuation);
+	check(has_ink(render(135, height)), "No emergency wrap for a valid Unicode name");
+
+	aiPromptDominanceMessage(5);
+	check(
+		prompt->NumStr == 1 &&
+			std::string_view(reinterpret_cast<const char *>(prompt->StrBuf[0])) == "Dominance  +5",
+		"Dominance notice changed the stock English wording or sign"
+	);
+	aiPromptLuckMessage(0);
+	check(
+		std::string_view(reinterpret_cast<const char *>(prompt->StrBuf[0])) == "Luck -0",
+		"Luck notice changed the stock zero sign"
+	);
+	xgr::text::clear(XGR_Obj.get_default_render_buffer());
+	GAME_TIME_COEFF = previous_time_coeff;
+	aScrDisp = previous;
 }
 
 fncMenu *add_menu(fncMenuSet &set, std::initializer_list<const char *> labels, bool topic) {
@@ -437,6 +535,7 @@ void chat_button_bounds_test(RenderFixture &fixture) {
 		XGR_Obj.set_resolution(width, height);
 		auto *buffer = XGR_Obj.get_default_render_buffer();
 		XGR_Obj.set_default_render_buffer();
+		game_notification_test(fixture, width, height);
 		std::fill_n(buffer, width * height, 0);
 		iChatButton button(1);
 		button.init(width - 175, 100, 170, 20, 0, 0);

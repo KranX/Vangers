@@ -40,7 +40,8 @@ void conservation(const fs::path &root, const char *id, unsigned long expected, 
 		if (key.rfind("chat.", 0) == 0)
 			continue;
 		const bool description = key.rfind("descriptions.", 0) == 0;
-		const int field = (key.rfind("compass.", 0) == 0 || key.rfind("uvs.", 0) == 0)	 ? 5
+		const int field = key.rfind("notification.", 0) == 0							 ? 6
+						  : (key.rfind("compass.", 0) == 0 || key.rfind("uvs.", 0) == 0) ? 5
 						  : key.rfind("items.", 0) == 0									 ? 1
 						  : (key.rfind("world.", 0) == 0 || key.rfind("cycle.", 0) == 0) ? 2
 						  : key.rfind("service.", 0) == 0								 ? 3
@@ -49,7 +50,7 @@ void conservation(const fs::path &root, const char *id, unsigned long expected, 
 			continue;
 		sorted.emplace(key, c.text(key));
 	}
-	const std::size_t sizes[]{394, 219, 19, 2, 92, 36};
+	const std::size_t sizes[]{394, 219, 19, 2, 92, 36, 6};
 	check(sorted.size() == sizes[group], "Incomplete stock UI catalog");
 	auto checksum = crc32(0, nullptr, 0);
 	for (const auto &[key, value] : sorted) {
@@ -88,6 +89,8 @@ int main(int argc, char **argv) {
 		conservation(root, "ru", 0xc9799444, 4);
 		conservation(root, "ru", 0x126051b0, 5);
 		conservation(root, "en", 0xe97f8473, 5);
+		conservation(root, "ru", 0xa197fd66, 6);
+		conservation(root, "en", 0x1a796bdd, 6);
 		check(
 			format_task_complete("{reward}$ / {location}", "日本語", 123) == "123$ / 日本語",
 			"Task fields cannot be reordered"
@@ -118,6 +121,29 @@ int main(int argc, char **argv) {
 		for (const auto *pattern : {"%n", "%s", "%d %d", "%0200000d", "%"})
 			rejects([&] { format_integer(pattern, 1); }, "Unsafe template accepted");
 		Catalog ru(root, "ru"), en(root, "en");
+		check(
+			ru.english_notification("notification.player_finished") ==
+					en.text("notification.player_finished") &&
+				ru.text("notification.player_finished") != en.text("notification.player_finished"),
+			"HUD fallback lost the original English template"
+		);
+		check(
+			format_text(ru.text("notification.player_finished"), "春日%s") ==
+				"Торопись, механик!\n春日%s окончил игру!\nТы хочешь быть последним?",
+			"Winner prompt changed stock Russian wording or reinterpreted the player name"
+		);
+		check(
+			format_text(en.text("notification.player_left"), "春日") ==
+				"春日 has departed from the\nChain of Worlds.",
+			"Departure prompt changed the stock English wording or row break"
+		);
+		check(
+			format_text(ru.text("notification.task_failed"), "-7") ==
+					"Табутаск провален\nУдача -7" &&
+				format_text(en.text("notification.task_success"), "+3") ==
+					"TabuTask Complete\nLuck +3",
+			"Tabutask prompts lost the stat change"
+		);
 		for (const auto *key :
 			{"chat.legacy_name", "chat.legacy_message", "chat.recipient_unavailable"})
 			check(
@@ -211,6 +237,16 @@ int main(int argc, char **argv) {
 			[&] { Catalog c(temporary, "zz-test"); },
 			"Translation changed the template argument type"
 		);
+		for (const auto *pattern : {"no name", "%s %s", "%d", "%s\\fpage"}) {
+			write(
+				strings,
+				std::string("[strings]\n\"notification.player_left\" = \"") + pattern + "\"\n"
+			);
+			rejects(
+				[&] { Catalog invalid(temporary, "zz-test"); },
+				"HUD template accepted an invalid argument or page break"
+			);
+		}
 		for (const auto *pattern :
 			{"{location}", "{unknown}{location}{reward}", "{location}{reward}{reward}"}) {
 			write(strings, std::string("[strings]\n\"uvs.task_complete\" = '") + pattern + "'\n");

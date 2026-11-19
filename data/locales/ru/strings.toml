@@ -766,6 +766,14 @@
 "compass.TaskCompasTarget" = "Объект табутаска%d"
 "uvs.task_complete" = "{location}Выполнен табутаск из эскейва\n\nТам за него дадут {reward}$"
 
+# %s — имя игрока или изменение характеристики со знаком.
+"notification.player_finished" = "Торопись, механик!\n%s окончил игру!\nТы хочешь быть последним?"
+"notification.player_left" = "%s покинул\nЦепь Миров..."
+"notification.task_success" = "Табутаск выполнен\nУдача %s"
+"notification.task_failed" = "Табутаск провален\nУдача %s"
+"notification.dominance" = "Авторитет %s"
+"notification.luck" = "Удача %s"
+
 # Compatibility notices for a server without Unicode text support.
 "chat.legacy_name" = "На этом сервере у вас временное имя."
 "chat.legacy_message" = "Не все символы поддерживаются. Черновик сохранён."

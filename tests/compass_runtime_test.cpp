@@ -22,6 +22,7 @@ extern aciFont **aScrFonts;
 extern aciFont **aScrFonts32;
 void aciAddTeleportMenuItem(int, int);
 extern CompasObject CompasObj;
+extern int uvsKronActive;
 extern listElem *EscaveTail, *SpotTail;
 void aciHandleSubmenuEvent(int, fncMenuItem *);
 void aciRefreshTargetsMenu();
@@ -68,6 +69,53 @@ void check_reused_player_slot() {
 	list.delete_all();
 }
 
+void check_game_notifications(aciPromptData &prompt) {
+	const auto before = my_server_data;
+	const auto prev_active = ActD.Active;
+	const auto prev_kron = uvsKronActive;
+	VangerUnit active{};
+	ActD.Active = &active;
+	uvsKronActive = 1;
+
+	PlayerData peer(2);
+	peer.name = "日本語の参加者";
+	peer.body.clear();
+	const auto line_with_name = [&](int n) {
+		return std::string_view(reinterpret_cast<const char *>(prompt.StrBuf[n])).find(peer.name) !=
+			   std::string_view::npos;
+	};
+	my_server_data.GameType = MECHOSOMA;
+	my_server_data.Mechosoma.ProductQuantity1 = 1;
+	my_server_data.Mechosoma.ProductQuantity2 = 1;
+	peer.body.MechosomaStat.ItemCount1 = 1;
+	NetCheckRemovePlayer(&peer);
+	check(prompt.NumStr == 2 && line_with_name(0), "Mechosoma counted only one delivery");
+	peer.body.MechosomaStat.ItemCount2 = 1;
+	NetCheckRemovePlayer(&peer);
+	check(prompt.NumStr == 3 && line_with_name(1), "Mechosoma finish notice missing");
+
+	my_server_data.GameType = PASSEMBLOSS;
+	my_server_data.Passembloss.CheckpointsNumber = 1;
+	peer.body.PassemblossStat.CheckpointLighting = 1;
+	NetCheckRemovePlayer(&peer);
+	check(prompt.NumStr == 3 && line_with_name(1), "Passembloss finish notice missing");
+	peer.body.PassemblossStat.CheckpointLighting = 0;
+	NetCheckRemovePlayer(&peer);
+	check(prompt.NumStr == 2 && line_with_name(0), "Passembloss departure notice missing");
+
+	my_server_data.GameType = VAN_WAR;
+	NetCheckRemovePlayer(&peer);
+	check(prompt.NumStr == 2 && line_with_name(0), "Van War departure notice missing");
+	prompt.CurTimer = 50;
+	uvsKronActive = 0;
+	NetCheckRemovePlayer(&peer);
+	check(prompt.CurTimer == 50, "Inactive world started a multiplayer notice");
+
+	my_server_data = before;
+	ActD.Active = prev_active;
+	uvsKronActive = prev_kron;
+}
+
 void run() {
 	using namespace vangers;
 	check_reused_player_slot();
@@ -75,6 +123,7 @@ void run() {
 	Fonts fonts;
 	actIntDispatcher dispatcher;
 	aScrDisp = &dispatcher;
+	check_game_notifications(*dispatcher.curPrompt);
 	CompasObj.Init();
 	CompasObj.TargetData = nullptr;
 	auto *menu = new fncMenu;

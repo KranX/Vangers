@@ -3,6 +3,8 @@
 #define __ITEM_API_H__
 
 #include <cstddef>
+#include <string>
+#include <string_view>
 
 struct XStream;
 
@@ -210,11 +212,15 @@ struct actintItemData {
 // aciPromptData::align_type values...
 #define ACI_PROMPT_UP 0
 #define ACI_PROMPT_CENTER 1
+inline constexpr int ACI_PROMPT_REVEAL_SPEED = 2;
 
 struct aciPromptData {
 	int NumStr;
 	int align_type;
 	int fontID;
+	std::string notification_key;
+	std::string notification_fallback;
+	bool notification_reported = false;
 
 	int CurTimer;
 
@@ -249,6 +255,9 @@ struct aciPromptData {
 
 	~aciPromptData(void);
 };
+
+// Catalog notifications use the existing prompt lifetime and reveal.
+void aciSendGameNotification(const char *key, std::string_view value);
 
 extern int aciCurEnergy;
 extern int aciMaxEnergy;

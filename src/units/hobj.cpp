@@ -41,7 +41,6 @@
 
 #include "../palette.h"
 #include "../sound/hsound.h"
-#include "magnum.h"
 
 const int TOUCH_SHIFT = 11;
 

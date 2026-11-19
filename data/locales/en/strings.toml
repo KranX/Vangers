@@ -766,6 +766,14 @@
 "compass.TaskCompasTarget" = "Task%d"
 "uvs.task_complete" = "{location} tabutask complete\nsell it in the escave for {reward}$"
 
+# HUD notifications. %s is a UTF-8 player name or a signed stat change.
+"notification.player_finished" = "Hurry up, fitters!\n%s has just finished the game!\nYou don't want to be last do you?"
+"notification.player_left" = "%s has departed from the\nChain of Worlds."
+"notification.task_success" = "TabuTask Complete\nLuck %s"
+"notification.task_failed" = "TabuTask Failed\nLuck %s"
+"notification.dominance" = "Dominance  %s"
+"notification.luck" = "Luck %s"
+
 # Compatibility notices for a server without Unicode text support.
 "chat.legacy_name" = "This server needs a temporary name."
 "chat.legacy_message" = "Unsupported characters. Draft kept."

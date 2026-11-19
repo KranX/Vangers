@@ -42,7 +42,14 @@ std::size_t complete_prefix(std::string_view text, std::size_t count) {
 	return end;
 }
 
-void wrap(std::string_view line, int width, const Measure &measure, Lines &out, bool keep_spaces) {
+void wrap(
+	std::string_view line,
+	int width,
+	const Measure &measure,
+	Lines &out,
+	bool keep_spaces,
+	BreakPolicy breaks
+) {
 	if (line.empty()) {
 		out.emplace_back();
 		return;
@@ -102,6 +109,8 @@ void wrap(std::string_view line, int width, const Measure &measure, Lines &out, 
 			// inside Japanese brackets, but never detach marks/punctuation.
 			if (!candidate)
 				candidate = emergency;
+			if (!candidate && breaks == BreakPolicy::Emergency && low)
+				candidate = fit; // No legal break, but the complete combining sequence fits.
 			if (!candidate)
 				throw std::runtime_error("Text box cannot fit a legal CJK line");
 			out.emplace_back(line.substr(0, candidate));
@@ -126,14 +135,15 @@ Lines layout_lines(
 	int width,
 	const Measure &measure,
 	LineMode mode,
-	bool keep_wrap_spaces
+	bool keep_wrap_spaces,
+	BreakPolicy breaks
 ) {
 	if (width <= 0)
 		throw std::invalid_argument("Text box width must be positive");
 	Lines out;
 	std::string paragraph;
 	const auto flush = [&] {
-		wrap(paragraph, width, measure, out, keep_wrap_spaces);
+		wrap(paragraph, width, measure, out, keep_wrap_spaces, breaks);
 		paragraph.clear();
 	};
 	std::size_t start = 0;

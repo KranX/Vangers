@@ -47,7 +47,6 @@
 #include "track.h"
 
 #include "../uvs/diagen.h"
-#include "magnum.h"
 
 #include "../actint/credits.h"
 #include "../actint/raster_text.h"
@@ -15740,7 +15739,6 @@ void VangerUnit::ChangeVangerProcess(void) {
 	PrevImpuseFrame = 0;
 };
 
-extern aciPromptData aiMessageBuffer;
 void NetCheckRemovePlayer(PlayerData *p) {
 	VangerUnit *v;
 	if (p->uvsPoint) {
@@ -15754,130 +15752,28 @@ void NetCheckRemovePlayer(PlayerData *p) {
 		};
 	};
 
-	if (uvsKronActive && ActD.Active && !p->name.empty()) {
-		RaceTxtBuff.init();
+	if (!uvsKronActive || !ActD.Active || p->name.empty())
+		return;
 
-		switch (my_server_data.GameType) {
-		case MECHOSOMA:
-			if (p->body.MechosomaStat.ItemCount1 >= my_server_data.Mechosoma.ProductQuantity1 &&
-				p->body.MechosomaStat.ItemCount2 >= my_server_data.Mechosoma.ProductQuantity2) {
-				RaceTxtBuff < p->name.c_str();
-				if (lang() == RUSSIAN)
-					RaceTxtBuff <
-						vangers::settings::cp866_to_utf8(rPlayerWinnerSecondMessage).c_str();
-				else
-					RaceTxtBuff <
-						vangers::settings::cp866_to_utf8(PlayerWinnerSecondMessage).c_str();
-				aiMessageBuffer.align_type = 0;
-				aiMessageBuffer.TimeBuf[0] = 200;
-				aiMessageBuffer.ColBuf[0] = 143;
-				aiMessageBuffer.TimeBuf[1] = 200;
-				aiMessageBuffer.ColBuf[1] = 143;
-				aiMessageBuffer.TimeBuf[2] = 200;
-				aiMessageBuffer.ColBuf[2] = 143;
-				aiMessageBuffer.NumStr = 3;
-				if (lang() == RUSSIAN) {
-					aiMessageBuffer.add_str(0, (uchar *)(rPlayerWinnerFirstMessage));
-					aiMessageBuffer.add_str(2, (uchar *)(rPlayerWinnerOtherMessage));
-				} else {
-					aiMessageBuffer.add_str(0, (uchar *)(PlayerWinnerFirstMessage));
-					aiMessageBuffer.add_str(2, (uchar *)(PlayerWinnerOtherMessage));
-				};
-				aiMessageBuffer.add_utf8_str(1, RaceTxtBuff.GetBuf());
-				aciSendPrompt(&aiMessageBuffer);
-			} else {
-				RaceTxtBuff < p->name.c_str();
-				if (lang() == RUSSIAN)
-					RaceTxtBuff <
-						vangers::settings::cp866_to_utf8(rPlayerFirstDropedMessage).c_str();
-				else
-					RaceTxtBuff <
-						vangers::settings::cp866_to_utf8(PlayerFirstDropedMessage).c_str();
-				aiMessageBuffer.align_type = 0;
-				aiMessageBuffer.TimeBuf[0] = 200;
-				aiMessageBuffer.ColBuf[0] = 143;
-				aiMessageBuffer.TimeBuf[1] = 200;
-				aiMessageBuffer.ColBuf[1] = 143;
-				aiMessageBuffer.NumStr = 2;
-				aiMessageBuffer.add_utf8_str(0, RaceTxtBuff.GetBuf());
-				if (lang() == RUSSIAN)
-					aiMessageBuffer.add_str(1, (uchar *)(rPlayerSecondDropedMessage));
-				else
-					aiMessageBuffer.add_str(1, (uchar *)(PlayerSecondDropedMessage));
-				aciSendPrompt(&aiMessageBuffer);
-			};
-			break;
-		case PASSEMBLOSS:
-			if (p->body.PassemblossStat.CheckpointLighting >=
-				my_server_data.Passembloss.CheckpointsNumber) {
-				RaceTxtBuff < p->name.c_str();
-				if (lang() == RUSSIAN)
-					RaceTxtBuff <
-						vangers::settings::cp866_to_utf8(rPlayerWinnerSecondMessage).c_str();
-				else
-					RaceTxtBuff <
-						vangers::settings::cp866_to_utf8(PlayerWinnerSecondMessage).c_str();
-				aiMessageBuffer.align_type = 0;
-				aiMessageBuffer.TimeBuf[0] = 200;
-				aiMessageBuffer.ColBuf[0] = 143;
-				aiMessageBuffer.TimeBuf[1] = 200;
-				aiMessageBuffer.ColBuf[1] = 143;
-				aiMessageBuffer.TimeBuf[2] = 200;
-				aiMessageBuffer.ColBuf[2] = 143;
-				aiMessageBuffer.NumStr = 3;
-				if (lang() == RUSSIAN) {
-					aiMessageBuffer.add_str(0, (uchar *)(rPlayerWinnerFirstMessage));
-					aiMessageBuffer.add_str(2, (uchar *)(rPlayerWinnerOtherMessage));
-				} else {
-					aiMessageBuffer.add_str(0, (uchar *)(PlayerWinnerFirstMessage));
-					aiMessageBuffer.add_str(2, (uchar *)(PlayerWinnerOtherMessage));
-				};
-				aiMessageBuffer.add_utf8_str(1, RaceTxtBuff.GetBuf());
-				aciSendPrompt(&aiMessageBuffer);
-			} else {
-				RaceTxtBuff < p->name.c_str();
-				if (lang() == RUSSIAN)
-					RaceTxtBuff <
-						vangers::settings::cp866_to_utf8(rPlayerFirstDropedMessage).c_str();
-				else
-					RaceTxtBuff <
-						vangers::settings::cp866_to_utf8(PlayerFirstDropedMessage).c_str();
-				aiMessageBuffer.align_type = 0;
-				aiMessageBuffer.TimeBuf[0] = 200;
-				aiMessageBuffer.ColBuf[0] = 143;
-				aiMessageBuffer.TimeBuf[1] = 200;
-				aiMessageBuffer.ColBuf[1] = 143;
-				aiMessageBuffer.NumStr = 2;
-				aiMessageBuffer.add_utf8_str(0, RaceTxtBuff.GetBuf());
-				if (lang() == RUSSIAN)
-					aiMessageBuffer.add_str(1, (uchar *)(rPlayerSecondDropedMessage));
-				else
-					aiMessageBuffer.add_str(1, (uchar *)(PlayerSecondDropedMessage));
-				aciSendPrompt(&aiMessageBuffer);
-			};
-			break;
-		case VAN_WAR:
-			RaceTxtBuff < p->name.c_str();
-			if (lang() == RUSSIAN)
-				RaceTxtBuff < vangers::settings::cp866_to_utf8(rPlayerFirstDropedMessage).c_str();
-			else
-				RaceTxtBuff < vangers::settings::cp866_to_utf8(PlayerFirstDropedMessage).c_str();
-			aiMessageBuffer.align_type = 0;
-			aiMessageBuffer.TimeBuf[0] = 200;
-			aiMessageBuffer.ColBuf[0] = 143;
-			aiMessageBuffer.TimeBuf[1] = 200;
-			aiMessageBuffer.ColBuf[1] = 143;
-			aiMessageBuffer.NumStr = 2;
-			aiMessageBuffer.add_utf8_str(0, RaceTxtBuff.GetBuf());
-			if (lang() == RUSSIAN)
-				aiMessageBuffer.add_str(1, (uchar *)(rPlayerSecondDropedMessage));
-			else
-				aiMessageBuffer.add_str(1, (uchar *)(PlayerSecondDropedMessage));
-			aciSendPrompt(&aiMessageBuffer);
-			break;
-		};
-	};
-};
+	bool winner = false;
+	switch (my_server_data.GameType) {
+	case MECHOSOMA:
+		winner = p->body.MechosomaStat.ItemCount1 >= my_server_data.Mechosoma.ProductQuantity1 &&
+				 p->body.MechosomaStat.ItemCount2 >= my_server_data.Mechosoma.ProductQuantity2;
+		break;
+	case PASSEMBLOSS:
+		winner = p->body.PassemblossStat.CheckpointLighting >=
+				 my_server_data.Passembloss.CheckpointsNumber;
+		break;
+	case VAN_WAR:
+		break;
+	default:
+		return;
+	}
+	aciSendGameNotification(
+		winner ? "notification.player_finished" : "notification.player_left", p->name
+	);
+}
 
 void VangerUnit::ClearItemList(void) {
 	StuffObject *p;

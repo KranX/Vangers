@@ -17,6 +17,7 @@ class Catalog {
   public:
 	Catalog(const std::filesystem::path &root, const std::string &id);
 	const std::string &text(const std::string &key) const;
+	const std::string &english_notification(const std::string &key) const;
 	const std::string *find_text(const std::string &key) const;
 	const std::string &legacy_text(const std::string &key) const;
 	const std::string &resource(const std::string &key) const;
@@ -42,6 +43,7 @@ class Catalog {
 	DescriptionStyle description_style_ = DescriptionStyle::RegularTop;
 	std::map<std::string, DescriptionStyle> description_styles_;
 	std::map<std::string, std::string> strings_, resources_, encodings_;
+	std::map<std::string, std::string> english_notifications_;
 	mutable std::map<std::string, std::string> legacy_;
 	mutable std::set<std::string> reported_;
 	mutable std::vector<std::string> diagnostics_;
