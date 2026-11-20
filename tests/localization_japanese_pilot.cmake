@@ -1,0 +1,20 @@
+FILE(MAKE_DIRECTORY "${TEST_ROOT}/data" "${TEST_ROOT}/locales")
+FILE(GLOB common "${DATA_ROOT}/data/*.dil" "${DATA_ROOT}/data/room.lst")
+FILE(COPY ${common} "${DATA_ROOT}/data/en" "${DATA_ROOT}/data/ja" DESTINATION "${TEST_ROOT}/data")
+FILE(COPY "${DATA_ROOT}/locales/en" "${DATA_ROOT}/locales/ja" DESTINATION "${TEST_ROOT}/locales")
+FILE(COPY "${DATA_ROOT}/diagen_eng.text" DESTINATION "${TEST_ROOT}")
+EXECUTE_PROCESS(COMMAND "${SOURCE_PARSER}" pack ja
+ WORKING_DIRECTORY "${TEST_ROOT}" RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr)
+IF(NOT result EQUAL 0)
+ MESSAGE(FATAL_ERROR "Japanese archive generation failed: ${stdout}\n${stderr}")
+ENDIF()
+EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E compare_files
+ "${TEST_ROOT}/diagen_new.text" "${TEST_ROOT}/locales/ja/diagen.text" RESULT_VARIABLE result)
+IF(NOT result EQUAL 0)
+ MESSAGE(FATAL_ERROR "Packaged Japanese dialogue is stale")
+ENDIF()
+EXECUTE_PROCESS(COMMAND "${RUNTIME_PARSER}" japanese-pilot
+ WORKING_DIRECTORY "${TEST_ROOT}" RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr)
+IF(NOT result EQUAL 0)
+ MESSAGE(FATAL_ERROR "Japanese runtime regression: ${stdout}\n${stderr}")
+ENDIF()

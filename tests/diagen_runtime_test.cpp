@@ -1076,6 +1076,53 @@ void run_shipped(Language language, const std::filesystem::path &legacy_root) {
 		delete dgD;
 	}
 }
+void run_japanese_pilot() {
+	setLocale("en");
+	dgD = new DiagenDispatcher;
+	dgD->init();
+	const auto english = model(true, false);
+	delete dgD;
+
+	setLocale("ja");
+	dgD = new DiagenDispatcher;
+	dgD->init();
+	compare(english, model(true, false), "Japanese pilot changed dialogue structure");
+	const auto localized = model(true);
+	check(
+		localized.at("Podish/molecule/Leepky Introduction/0")[0].find("目を覚ましたか") == 0 &&
+			localized.at("Podish/query/topic.mechos")[0] == "メホス",
+		"Pilot did not load the Japanese introductory phrase or topic"
+	);
+	dgAtom links;
+	links.question_ids.push_back("topic.mechos");
+	dgD->currentR = dgD->seekR("Podish");
+	dgD->involveQ(&links);
+	auto *topic = dgD->currentR->seekQvisible("topic.mechos");
+	check(topic != nullptr, "Japanese topic did not unlock by stable ID");
+	topic->lindex = 1;
+	dgD->currentR->visitCounter = 3;
+	{
+		XStream out("japanese-pilot.sav", XS_OUT);
+		dgD->save(out);
+	}
+	delete dgD;
+	for (const auto *language : {"en", "ja"}) {
+		setLocale(language);
+		dgD = new DiagenDispatcher;
+		dgD->init();
+		{
+			XStream in("japanese-pilot.sav", XS_IN);
+			dgD->load(in);
+		}
+		auto *room = dgD->seekR("Podish");
+		const auto *restored = room->seekQvisible("topic.mechos");
+		check(
+			room->visitCounter == 3 && restored && restored->lindex == 1,
+			"Japanese pilot did not restore Podish topic progress"
+		);
+		delete dgD;
+	}
+}
 } // namespace
 extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 	SDL_MessageBoxFlags,
@@ -1089,6 +1136,10 @@ extern "C" bool SDLCALL VangersTest_ShowSimpleMessageBox(
 int main(int argc, char **argv) {
 	try {
 		const std::string mode = argc > 1 ? argv[1] : "utf8";
+		if (mode == "japanese-pilot") {
+			run_japanese_pilot();
+			return 0;
+		}
 		if (mode == "ids") {
 			run_ids(
 				argc > 2 && std::string(argv[2]) == "ru" ? RUSSIAN : ENGLISH,

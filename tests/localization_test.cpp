@@ -40,7 +40,8 @@ void conservation(const fs::path &root, const char *id, unsigned long expected, 
 		if (key.rfind("chat.", 0) == 0)
 			continue;
 		const bool description = key.rfind("descriptions.", 0) == 0;
-		const int field = key.rfind("notification.", 0) == 0							 ? 6
+		const int field = key.rfind("tutorial.", 0) == 0								 ? 7
+						  : key.rfind("notification.", 0) == 0							 ? 6
 						  : (key.rfind("compass.", 0) == 0 || key.rfind("uvs.", 0) == 0) ? 5
 						  : key.rfind("items.", 0) == 0									 ? 1
 						  : (key.rfind("world.", 0) == 0 || key.rfind("cycle.", 0) == 0) ? 2
@@ -50,7 +51,7 @@ void conservation(const fs::path &root, const char *id, unsigned long expected, 
 			continue;
 		sorted.emplace(key, c.text(key));
 	}
-	const std::size_t sizes[]{394, 219, 19, 2, 92, 36, 6};
+	const std::size_t sizes[]{394, 219, 19, 2, 92, 36, 6, 25};
 	check(sorted.size() == sizes[group], "Incomplete stock UI catalog");
 	auto checksum = crc32(0, nullptr, 0);
 	for (const auto &[key, value] : sorted) {
@@ -91,6 +92,9 @@ int main(int argc, char **argv) {
 		conservation(root, "en", 0xe97f8473, 5);
 		conservation(root, "ru", 0xa197fd66, 6);
 		conservation(root, "en", 0x1a796bdd, 6);
+		// Frozen from the iscreen/actint tutorial includes before extracting the keys.
+		conservation(root, "ru", 0xe3ba5f0c, 7);
+		conservation(root, "en", 0xdbe6f389, 7);
 		check(
 			format_task_complete("{reward}$ / {location}", "日本語", 123) == "123$ / 日本語",
 			"Task fields cannot be reordered"
