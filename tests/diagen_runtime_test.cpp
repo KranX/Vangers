@@ -3,6 +3,7 @@
 #include "actint/actint.h"
 #include "actint/item_api.h"
 #include "lang.h"
+#include "localization/catalog.h"
 #include "settings/text_encoding.h"
 #include "units/uvsapi.h"
 #include "uvs/diagen.h"
@@ -1077,13 +1078,26 @@ void run_shipped(Language language, const std::filesystem::path &legacy_root) {
 	}
 }
 void run_japanese_pilot() {
-	setLocale("en");
+	using namespace vangers::localization;
+	check(startup_locale("ru") == "ru", "Settings cannot select a regular locale");
+	check(startup_locale("ja") == "en", "Settings activated the CLI-only Japanese package");
+	setLocale(startup_locale("ja"));
 	dgD = new DiagenDispatcher;
 	dgD->init();
 	const auto english = model(true, false);
 	delete dgD;
 
-	setLocale("ja");
+	request_locale("ja");
+	setLocale(startup_locale("en"));
+	for (const auto &[role, prefix] : {std::pair{"history.prelude", "二十世紀"},
+			 std::pair{"history.genesis", "ソフティ"},
+			 std::pair{"history.present", "ゲームの舞台"}}) {
+		check(catalog().resource_is_utf8(role), "Japanese history is not UTF-8");
+		XStream file(resource(role), XS_IN);
+		std::string bytes(file.size(), '\0');
+		file.read(bytes.data(), bytes.size());
+		check(is_valid_utf8(bytes) && bytes.find(prefix) == 0, "Japanese history failed to load");
+	}
 	dgD = new DiagenDispatcher;
 	dgD->init();
 	compare(english, model(true, false), "Japanese pilot changed dialogue structure");

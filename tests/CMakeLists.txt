@@ -382,8 +382,7 @@ ADD_TEST(NAME localization_japanese_pilot COMMAND ${CMAKE_COMMAND}
  "-DDATA_ROOT=${PROJECT_SOURCE_DIR}/data"
  "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/japanese-pilot"
  -P "${CMAKE_CURRENT_SOURCE_DIR}/localization_japanese_pilot.cmake")
-SET_TESTS_PROPERTIES(localization_japanese_pilot PROPERTIES TIMEOUT 45
- ENVIRONMENT "VANGERS_LOCALES=${CMAKE_CURRENT_BINARY_DIR}/japanese-pilot/locales")
+SET_TESTS_PROPERTIES(localization_japanese_pilot PROPERTIES TIMEOUT 45)
 ADD_TEST(NAME localization_installed COMMAND ${CMAKE_COMMAND}
  "-DPROBE=$<TARGET_FILE:localization_test>" "-DLOCALES=${PROJECT_SOURCE_DIR}/data/locales"
  "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/localization-install"

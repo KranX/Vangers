@@ -289,9 +289,13 @@ int main(int argc, char **argv) {
 				 "C:/outside",
 				 "C:relative",
 				 "folder\\file"}) {
-			write(manifest, std::string("[resources]\ndiagen = '") + path + "'\n");
-			rejects([&] { Catalog c(temporary, "zz-test"); }, "Unsafe resource path accepted");
+			for (const auto *prefix : {"", "@package:"}) {
+				write(manifest, std::string("[resources]\ndiagen = '") + prefix + path + "'\n");
+				rejects([&] { Catalog c(temporary, "zz-test"); }, "Unsafe resource path accepted");
+			}
 		}
+		write(manifest, "[resources]\ndiagen = '@package:'\n");
+		rejects([&] { Catalog c(temporary, "zz-test"); }, "Empty package-relative path accepted");
 		write(strings, "[strings]\n");
 		write(manifest, "description_style = 'compact-centered'\n[resources]\n");
 		check(

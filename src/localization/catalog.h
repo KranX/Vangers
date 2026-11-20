@@ -53,6 +53,8 @@ class Catalog {
 bool valid_locale_id(std::string_view id);
 void request_locale(const std::string &id);
 const std::string &requested_locale();
+// Explicit launch options override settings; cli_only packages are never loaded from settings.
+std::string startup_locale(const std::string &configured);
 const Catalog &catalog();
 const char *text(const std::string &key);
 const char *legacy_text(const std::string &key); // Explicit CP866 boundary for legacy consumers.
