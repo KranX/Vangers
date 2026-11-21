@@ -16,21 +16,23 @@ IF(NOT result STREQUAL "0")
 ENDIF()
 
 # Match an installed game: the executable and locale payload are separate
-# from the original game data, with no explicit locale-root override.
-FILE(MAKE_DIRECTORY "${stage}/bin" "${stage}/game data")
-FILE(COPY "${RUNTIME_PARSER}" DESTINATION "${stage}/bin")
-FILE(COPY "${DATA_ROOT}/locales/en" "${DATA_ROOT}/locales/ja" DESTINATION "${stage}/bin/locales")
+# from the original game data, with no explicit locale-root override. Include
+# characters that cannot round-trip through the usual Windows code pages.
+SET(bin "${stage}/bin-日本語-Ж")
+FILE(MAKE_DIRECTORY "${bin}" "${stage}/game data")
+FILE(COPY "${RUNTIME_PARSER}" DESTINATION "${bin}")
+FILE(COPY "${DATA_ROOT}/locales/en" "${DATA_ROOT}/locales/ja" DESTINATION "${bin}/locales")
 FILE(COPY "${DATA_ROOT}/diagen_eng.text" DESTINATION "${stage}/game data")
 GET_FILENAME_COMPONENT(exe "${RUNTIME_PARSER}" NAME)
 IF(WIN32)
  GET_FILENAME_COMPONENT(runtime_dir "${RUNTIME_PARSER}" DIRECTORY)
  FILE(GLOB dlls "${runtime_dir}/*.dll")
  IF(dlls)
-  FILE(COPY ${dlls} DESTINATION "${stage}/bin")
+  FILE(COPY ${dlls} DESTINATION "${bin}")
  ENDIF()
 ENDIF()
 EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -E env --unset=VANGERS_LOCALES
- "${stage}/bin/${exe}" japanese-pilot
+ "${bin}/${exe}" japanese-pilot
  WORKING_DIRECTORY "${stage}/game data" RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr)
 IF(NOT result STREQUAL "0")
  MESSAGE(FATAL_ERROR "Japanese runtime regression: ${stdout}\n${stderr}")

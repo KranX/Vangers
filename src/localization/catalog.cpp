@@ -5,6 +5,7 @@
 #include <SDL3/SDL_filesystem.h>
 
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -41,11 +42,16 @@ std::string format(std::string_view pattern, char kind, std::string_view value) 
 	return result;
 }
 toml::ordered_value read(const std::filesystem::path &path) {
-	auto result = toml::try_parse<toml::ordered_type_config>(path);
+	const auto label = path.u8string();
+	std::ifstream in(path, std::ios::binary);
+	if (!in)
+		throw std::runtime_error("Invalid locale file: " + label + ": could not open");
+	// toml11's path overload narrows the path to name its input. Open the
+	// native path ourselves and give the stream parser a UTF-8 diagnostic label.
+	auto result = toml::try_parse<toml::ordered_type_config>(in, label);
 	if (result.is_err())
 		throw std::runtime_error(
-			"Invalid locale file: " + path.string() + ": " +
-			toml::format_error(result.unwrap_err().front())
+			"Invalid locale file: " + label + ": " + toml::format_error(result.unwrap_err().front())
 		);
 	return std::move(result.unwrap());
 }
@@ -88,9 +94,10 @@ Table table(const toml::ordered_value &document, const std::string &name) {
 	}
 	return out;
 }
-void resolve_paths(Table &values, const std::filesystem::path &package) {
+auto resolve_paths(const Table &values, const std::filesystem::path &package) {
 	constexpr std::string_view prefix = "@package:";
-	for (auto &[key, value] : values) {
+	std::map<std::string, std::filesystem::path> resolved;
+	for (const auto &[key, value] : values) {
 		std::string_view relative = value;
 		const bool bundled = relative.substr(0, prefix.size()) == prefix;
 		if (bundled)
@@ -104,9 +111,9 @@ void resolve_paths(Table &values, const std::filesystem::path &package) {
 		for (const auto &part : path)
 			if (part == "..")
 				throw std::runtime_error("Locale resource escapes its root: " + key);
-		if (bundled)
-			value = (package / path).string();
+		resolved.emplace(key, bundled ? package / path : path);
 	}
+	return resolved;
 }
 std::string requested;
 std::unique_ptr<Catalog> active;
@@ -165,8 +172,7 @@ Catalog::Catalog(const std::filesystem::path &root, const std::string &id): id_(
 		throw std::invalid_argument("Invalid locale ID: " + id);
 	const auto english = read(root / "en" / "manifest.toml");
 	description_style_ = read_description_style(english, description_style_);
-	resources_ = table(english, "resources");
-	resolve_paths(resources_, root / "en");
+	resources_ = resolve_paths(table(english, "resources"), root / "en");
 	strings_ = table(read(root / "en" / "strings.toml"), "strings");
 	description_styles(english, strings_, description_styles_);
 	encodings_ = table(english, "encodings");
@@ -186,7 +192,7 @@ Catalog::Catalog(const std::filesystem::path &root, const std::string &id): id_(
 	if (local.contains("legacy_language")) {
 		const auto &language = local.at("legacy_language").as_string();
 		if (language != "en" && language != "ru")
-			throw std::runtime_error("Invalid legacy_language in " + manifest.string());
+			throw std::runtime_error("Invalid legacy_language in " + manifest.u8string());
 		russian_ = language == "ru";
 	}
 	const auto translated = table(read(root / id / "strings.toml"), "strings");
@@ -207,8 +213,7 @@ Catalog::Catalog(const std::filesystem::path &root, const std::string &id): id_(
 			english_notifications_.emplace(key, english_text);
 		strings_[key] = value;
 	}
-	auto assets = table(local, "resources");
-	resolve_paths(assets, manifest.parent_path());
+	const auto assets = resolve_paths(table(local, "resources"), manifest.parent_path());
 	const auto encodings = local.contains("encodings") ? table(local, "encodings") : Table{};
 	for (const auto &[key, value] : encodings)
 		if (!assets.count(key) || (value != "utf8" && value != "cp866"))
@@ -251,11 +256,16 @@ const std::string &Catalog::legacy_text(const std::string &key) const {
 		return it->second;
 	return legacy_.emplace(key, settings::utf8_to_cp866(text(key))).first->second;
 }
-const std::string &Catalog::resource(const std::string &key) const {
+const std::filesystem::path &Catalog::resource(const std::string &key) const {
 	const auto it = resources_.find(key);
 	if (it == resources_.end())
 		throw std::runtime_error("Unknown locale resource key: " + key);
 	return it->second;
+}
+const std::string &Catalog::legacy_resource(const std::string &key) const {
+	if (const auto it = legacy_resource_names_.find(key); it != legacy_resource_names_.end())
+		return it->second;
+	return legacy_resource_names_.emplace(key, resource(key).string()).first->second;
 }
 bool Catalog::resource_is_utf8(const std::string &key) const {
 	(void)resource(key);
@@ -300,7 +310,10 @@ const char *legacy_text(const std::string &key) {
 	return catalog().legacy_text(key).c_str();
 }
 const char *resource(const std::string &key) {
-	return catalog().resource(key).c_str();
+	return catalog().legacy_resource(key).c_str();
+}
+const std::filesystem::path &resource_path(const std::string &key) {
+	return catalog().resource(key);
 }
 std::string resolve(std::string_view display_text) {
 	constexpr std::string_view prefix = "@l10n:";

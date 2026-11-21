@@ -1093,7 +1093,7 @@ void run_japanese_pilot() {
 			 std::pair{"history.genesis", "ソフティ"},
 			 std::pair{"history.present", "ゲームの舞台"}}) {
 		check(catalog().resource_is_utf8(role), "Japanese history is not UTF-8");
-		XStream file(resource(role), XS_IN);
+		XStream file(resource_path(role), XS_IN);
 		std::string bytes(file.size(), '\0');
 		file.read(bytes.data(), bytes.size());
 		check(is_valid_utf8(bytes) && bytes.find(prefix) == 0, "Japanese history failed to load");

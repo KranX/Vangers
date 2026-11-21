@@ -90,7 +90,7 @@ inline unsigned crt(unsigned &VAL) {
 
 	return VAL;
 }
-Parser::Parser(const char *name, const char *del_chars): XBuffer(0, 0) {
+Parser::Parser(const std::filesystem::path &name, const char *del_chars): XBuffer(0, 0) {
 	int i;
 	char c;
 	unsigned _time_;
