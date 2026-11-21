@@ -5,6 +5,7 @@
 #include "hfont.h"
 #include "iscreen_options.h"
 #include "lang.h"
+#include <filesystem>
 #include <vector>
 namespace vangers::localization {
 class Description;
@@ -737,7 +738,7 @@ struct iTextData: public iListElement {
 	int page_size(iScreenObject *object);
 	bool utf8_resource = false;
 	int ID;
-	char *fname;
+	std::filesystem::path fname;
 	char *objName;
 
 	int flags;

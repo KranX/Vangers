@@ -11,26 +11,26 @@
 
 // actInt tutorial texts...
 
-#define MODE_BUTTON_TEXT1		"Inventory ON/OFF"
-#define MODE_BUTTON_TEXT2		"Показывать трюм: ДА/НЕТ"
+#define MODE_BUTTON_TEXT1		"@l10n:tutorial.hud_inventory"
+#define MODE_BUTTON_TEXT2		"@l10n:tutorial.hud_inventory"
 
-#define PICKUP_ITEMS_BUTTON_TEXT1	"Pick-up items ON"
-#define PICKUP_ITEMS_BUTTON_TEXT2	"Подбирать предметы"
+#define PICKUP_ITEMS_BUTTON_TEXT1	"@l10n:tutorial.hud_pickup_items"
+#define PICKUP_ITEMS_BUTTON_TEXT2	"@l10n:tutorial.hud_pickup_items"
 
-#define PICKUP_WEAPONS_BUTTON_TEXT1	"Pick-up weapons ON"
-#define PICKUP_WEAPONS_BUTTON_TEXT2	"Подбирать оружие"
+#define PICKUP_WEAPONS_BUTTON_TEXT1	"@l10n:tutorial.hud_pickup_weapons"
+#define PICKUP_WEAPONS_BUTTON_TEXT2	"@l10n:tutorial.hud_pickup_weapons"
 
-#define ESCAVE_BUTTON_TEXT1		"Open..."
-#define ESCAVE_BUTTON_TEXT2		"Открыть..."
+#define ESCAVE_BUTTON_TEXT1		"@l10n:tutorial.hud_open"
+#define ESCAVE_BUTTON_TEXT2		"@l10n:tutorial.hud_open"
 
-#define ENERGY_IND_TEXT1		"Energy Shield/Armor"
-#define ENERGY_IND_TEXT2		"Энергия/Броня"
+#define ENERGY_IND_TEXT1		"@l10n:tutorial.hud_armor"
+#define ENERGY_IND_TEXT2		"@l10n:tutorial.hud_armor"
 
-#define LOAD_IND_TEXT1			"Inventory Charge"
-#define LOAD_IND_TEXT2			"Загрузка трюма"
+#define LOAD_IND_TEXT1			"@l10n:tutorial.hud_cargo"
+#define LOAD_IND_TEXT2			"@l10n:tutorial.hud_cargo"
 
-#define POWERUP_IND_TEXT1		"Device Energy"
-#define POWERUP_IND_TEXT2		"Ресурс прибора"
+#define POWERUP_IND_TEXT1		"@l10n:tutorial.hud_device"
+#define POWERUP_IND_TEXT2		"@l10n:tutorial.hud_device"
 
-#define SPIRAL_IND_TEXT1		"Spiral Energy"
-#define SPIRAL_IND_TEXT2		"Заряд Спирали"
+#define SPIRAL_IND_TEXT1		"@l10n:tutorial.hud_spiral"
+#define SPIRAL_IND_TEXT2		"@l10n:tutorial.hud_spiral"

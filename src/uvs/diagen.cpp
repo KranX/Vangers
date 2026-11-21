@@ -150,9 +150,6 @@ static int eventOUT;
 
 static FileBox *FBox;
 
-const char *DiagenTextName() {
-	return vangers::localization::resource("diagen");
-}
 // DiagenDispatcher* nDD;
 
 #ifdef DIAGEN_TEST
@@ -3069,24 +3066,26 @@ char *DiagenDispatcher::getInvText(int type, int id, char *from, char *to) {
 }
 
 void FileBox::load(void) {
+	const auto &path = vangers::localization::resource_path("diagen");
+	const auto name = path.u8string();
 #ifdef _ROAD_
-	Parser ff(DiagenTextName());
+	Parser ff(path);
 #else
-	XStream ff(DiagenTextName(), XS_IN);
+	XStream ff(path, XS_IN);
 #endif
 	const auto read = [&](void *destination, std::size_t count) {
 #ifdef _ROAD_
 		if (ff.tell() > ff.length() || count > ff.length() - ff.tell())
-			ErrH.Abort("Truncated Diagen archive", XERR_USER, -1, DiagenTextName());
+			ErrH.Abort("Truncated Diagen archive", XERR_USER, -1, name.c_str());
 #endif
 		if (ff.read(destination, count) != count)
-			ErrH.Abort("Truncated Diagen archive", XERR_USER, -1, DiagenTextName());
+			ErrH.Abort("Truncated Diagen archive", XERR_USER, -1, name.c_str());
 	};
 	char signature[2];
 	read(signature, 2);
 	const bool utf8 = !memcmp(signature, "DU", 2);
 	if (!utf8 && memcmp(signature, "DG", 2))
-		ErrH.Abort("Unknown Diagen archive encoding", XERR_USER, -1, DiagenTextName());
+		ErrH.Abort("Unknown Diagen archive encoding", XERR_USER, -1, name.c_str());
 	read(&cN, sizeof(cN));
 #ifdef _ROAD_
 	const auto remaining = ff.length() - ff.tell();

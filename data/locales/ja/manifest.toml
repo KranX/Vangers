@@ -1,0 +1,9 @@
+# Experimental first-game route; all other resources retain the English fallback.
+legacy_language = "en"
+cli_only = true
+
+[resources]
+"diagen" = "@package:diagen.text"
+"history.prelude" = "@package:prehist.txt"
+"history.genesis" = "@package:genesis.txt"
+"history.present" = "@package:present.txt"

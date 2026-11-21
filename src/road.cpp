@@ -482,8 +482,7 @@ int xtInitApplication(void) {
 		vangers::settings::report_settings_diagnostic(settings_result.diagnostic);
 	}
 	try {
-		const auto &requested = vangers::localization::requested_locale();
-		setLocale(requested.empty() ? user_settings.get().locale : requested);
+		setLocale(vangers::localization::startup_locale(user_settings.get().locale));
 	} catch (const std::exception &error) {
 		ErrH.Abort(error.what());
 	}
