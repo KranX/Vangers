@@ -2,7 +2,8 @@
 #include <fstream>
 #include <iostream>
 
-std::fstream *open_file(const char *name, unsigned f) {
+namespace {
+std::ios::openmode stream_mode(unsigned f) {
 	std::ios::openmode mode;
 	mode = std::ios::binary;
 	if (f & XS_IN)
@@ -12,20 +13,29 @@ std::fstream *open_file(const char *name, unsigned f) {
 	if (f & XS_APPEND)
 		mode |= std::ios::app;
 
-	return new std::fstream(name, mode);
+	return mode;
 }
+} // namespace
 
 int XStream::open(const char *name, unsigned f) {
+	return open_stream(new std::fstream(name, stream_mode(f)), name);
+}
+
+int XStream::open(const std::filesystem::path &path, unsigned f) {
+	const auto label = path.u8string();
+	return open_stream(new std::fstream(path, stream_mode(f)), label.c_str());
+}
+
+int XStream::open_stream(std::fstream *file, const char *name) {
 	std::string smode;
 	smode += "File name:";
 	smode += name;
 	file_name = name;
 
 #ifdef XSTREAM_DEBUG
-	std::cerr << "DBG: XStream::open(\"" << name << "\", 0x" << std::hex << f << ")" << std::endl;
+	std::cerr << "DBG: XStream::open(\"" << name << "\")" << std::endl;
 #endif
 
-	std::fstream *file = open_file(name, f);
 	handler = file;
 	if (file->is_open()) {
 		fname = name;
@@ -33,8 +43,7 @@ int XStream::open(const char *name, unsigned f) {
 		eofFlag = 0;
 	} else {
 #ifdef XSTREAM_DEBUG
-		std::cerr << "ERR: XStream::open(\"" << name << "\", 0x" << std::hex << f << ")"
-				  << std::endl;
+		std::cerr << "ERR: XStream::open(\"" << name << "\")" << std::endl;
 #endif
 		if (ErrHUsed) {
 			char *error = strerror(errno);

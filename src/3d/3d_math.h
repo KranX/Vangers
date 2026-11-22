@@ -88,25 +88,11 @@ inline int mina(int x, int y, int z) {
 	return mina(mina(x, y), z);
 }
 
-inline double fmax(double x, double y) {
-	return x > y ? x : y;
-}
-inline double fmax(double x, double y, double z) {
-	return fmax(fmax(x, y), z);
-}
-
 inline double fmaxa(double x, double y) {
 	return fabs(x) > fabs(y) ? x : y;
 }
 inline double fmaxa(double x, double y, double z) {
 	return fmaxa(fmaxa(x, y), z);
-}
-
-inline double fmin(double x, double y) {
-	return x < y ? x : y;
-}
-inline double fmin(double x, double y, double z) {
-	return fmin(fmin(x, y), z);
 }
 
 inline double fmina(double x, double y) {

@@ -1,6 +1,7 @@
 #ifndef __XSTREAM_H
 #define __XSTREAM_H
 
+#include <filesystem>
 #include <fstream>
 
 #define XS_IN 0x0001
@@ -36,19 +37,16 @@ struct XStream {
 	char _ConvertBuffer[_CONV_BUFFER_LEN + 1];
 
 	XStream(int err = 1);
-	XStream(const char *name, unsigned flags, int err = 1) {
-		ErrHUsed = err;
-		handler = NULL; //(XSHANDLE)-1;
-		eofFlag = 1;
-		radix = XS_DEFRADIX;
-		digits = XS_DEFDIGITS;
-		extSize = -1;
-		extPos = 0;
+	XStream(const char *name, unsigned flags, int err = 1): XStream(err) {
 		open(name, flags);
+	}
+	XStream(const std::filesystem::path &path, unsigned flags, int err = 1): XStream(err) {
+		open(path, flags);
 	}
 	~XStream();
 
 	int open(const char *name, unsigned f = XS_IN);
+	int open(const std::filesystem::path &path, unsigned f = XS_IN);
 	int open(XStream *owner, long start, long ext_sz = -1);
 	void close();
 	unsigned long read(void *buf, unsigned long len);
@@ -149,6 +147,9 @@ struct XStream {
 		read(&v, sizeof(T));
 		return *this;
 	}
+
+  private:
+	int open_stream(std::fstream *file, const char *label);
 };
 
 #endif /* __XSTREAM_H */

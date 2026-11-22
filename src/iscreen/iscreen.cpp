@@ -4410,15 +4410,12 @@ iTextData::iTextData(void) {
 
 	numLines = curLine = 0;
 
-	fname = NULL;
 	data = NULL;
 	mem_heap = NULL;
 	objName = NULL;
 }
 
 iTextData::~iTextData(void) {
-	if (fname)
-		delete[] fname;
 	if (mem_heap)
 		delete[] mem_heap;
 	if (data)

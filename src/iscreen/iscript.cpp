@@ -423,6 +423,17 @@ iStackElement *iStack::get(void) {
 	return heap[curSize];
 }
 
+static std::filesystem::path text_resource_path(std::string_view filename, bool &native) {
+	constexpr std::string_view prefix = "@resource:";
+	if (filename.substr(0, prefix.size()) != prefix)
+		return std::filesystem::path(filename);
+	const std::string key(filename.substr(prefix.size()));
+	const auto &catalog = vangers::localization::catalog();
+	const auto &path = catalog.resource(key);
+	native = catalog.resource_is_utf8(key);
+	return path;
+}
+
 void ParseScript(const char *fname, const char *bname, bool initialize_objects) {
 	int id, t_id = 0, st = 0;
 	utf8_text = false;
@@ -527,28 +538,23 @@ void ParseScript(const char *fname, const char *bname, bool initialize_objects) 
 				} else
 					handle_error("Misplaced option", OptIDs[id]);
 				break;
-			case SD_NEW_TEXT:
+			case SD_NEW_TEXT: {
 				text_obj = new iTextData;
 				text_obj->ID = script->read_idata();
 				read_text(text_obj->objName);
 				text_obj->utf8_resource = utf8_text;
 				text_obj->flow_width = text_flow_width;
-				script->read_pdata(&text_obj->fname, 1);
-				if (std::string_view(text_obj->fname).substr(0, 10) == "@resource:") {
-					try {
-						const std::string key = text_obj->fname + 10;
-						const auto &catalog = vangers::localization::catalog();
-						const auto &path = catalog.resource(key);
-						delete[] text_obj->fname;
-						text_obj->fname = new char[path.size() + 1];
-						std::memcpy(text_obj->fname, path.c_str(), path.size() + 1);
-						text_obj->utf8_resource = catalog.resource_is_utf8(key);
-					} catch (const std::exception &error) {
-						text_error("Invalid iscreen text resource", error);
-					}
+				char *data = nullptr;
+				script->read_pdata(&data, 1);
+				const std::unique_ptr<char[]> filename(data);
+				try {
+					text_obj->fname = text_resource_path(filename.get(), text_obj->utf8_resource);
+				} catch (const std::exception &error) {
+					text_error("Invalid iscreen text resource", error);
 				}
 				iScrDisp->texts->connect((iListElement *)text_obj);
 				break;
+			}
 			case EL_SET_HIDDEN_FON:
 				if (iCurObjType == I_ELEMENT) {
 					iElem->flags |= EL_HIDDEN_FON;
@@ -1518,14 +1524,7 @@ template<typename Element> static void load_text_elements(char *fname, bool smal
 	if (iCurObjType != I_OBJECT)
 		return;
 	bool native = utf8_text;
-	const char *path = fname;
-	if (std::string_view(fname).substr(0, 10) == "@resource:") {
-		const std::string key = fname + 10;
-		const auto &catalog = vangers::localization::catalog();
-		path = catalog.resource(key).c_str();
-		native = catalog.resource_is_utf8(key);
-	}
-	XStream fh(path, XS_IN);
+	XStream fh(text_resource_path(fname, native), XS_IN);
 	std::string bytes(fh.size(), '\0');
 	if (!bytes.empty())
 		fh.read(bytes.data(), bytes.size());

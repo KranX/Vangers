@@ -2,7 +2,8 @@ FILE(GLOB manifests "${LOCALES}/*/manifest.toml")
 FOREACH(manifest ${manifests})
  GET_FILENAME_COMPONENT(package "${manifest}" DIRECTORY)
  GET_FILENAME_COMPONENT(locale "${package}" NAME)
- FILE(GLOB sources "${DIALOGUE_SOURCE}/${locale}/*.text" "${DIALOGUE_SOURCE}/${locale}/*.query")
+ FILE(GLOB sources "${DIALOGUE_SOURCE}/${locale}/*.text" "${DIALOGUE_SOURCE}/${locale}/*.query"
+  "${package}/*.txt")
  FOREACH(source ${sources})
   EXECUTE_PROCESS(COMMAND "${CHECKER}" "${LOCALES}" "${locale}" --text "${source}"
    RESULT_VARIABLE result OUTPUT_VARIABLE stdout ERROR_VARIABLE stderr)
